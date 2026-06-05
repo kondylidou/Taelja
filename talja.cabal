@@ -1,0 +1,32 @@
+cabal-version: 3.0
+name:          talja
+version:       0.1.0.0
+synopsis:      A tool that translates refutation proofs to a readable (pretty) proof format for the Horn clause fragment
+
+common warnings
+  ghc-options: -Wall
+
+library
+  import:           warnings
+  hs-source-dirs:   src
+  exposed-modules:
+    Types
+    Translator
+    Emitter
+  build-depends:
+    base       ^>=4.18,
+    containers ^>=0.6,
+    tptp       ^>=0.1
+  default-language: GHC2021
+
+executable talja
+  import:         warnings
+  main-is:        Main.hs
+  hs-source-dirs: app
+  build-depends:
+    base        ^>=4.18,
+    text        ^>=2.0,
+    attoparsec  ^>=0.14,
+    tptp        ^>=0.1,
+    talja
+  default-language: GHC2021
