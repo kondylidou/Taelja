@@ -1,0 +1,45 @@
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+% No SInE strategy applied
+% Search class: FHUNF-FFSF00-SFFFFFNN
+% Configuration: SAT001_MinMin_p005000_rr_RG
+% Initializing proof state
+% Scanning for AC axioms
+%
+%cnf(i_0_4, negated_conjecture, (~r(a))).
+%
+%cnf(i_0_1, plain, (p(a))).
+%
+%cnf(i_0_3, plain, (r(X1)|~q(X1))).
+%
+%cnf(i_0_2, plain, (q(X1)|~p(X1))).
+% Presaturation interreduction done
+%
+%cnf(i_0_4, negated_conjecture, (~r(a))).
+%
+%cnf(i_0_1, plain, (p(a))).
+%
+%cnf(i_0_3, plain, (r(X1)|~q(X1))).
+%
+%cnf(i_0_5, negated_conjecture, (~q(a))).
+%
+%cnf(i_0_2, plain, (q(X1)|~p(X1))).
+
+% Proof found!
+% SZS status Theorem
+% SZS output start CNFRefutation
+fof(goal, conjecture, r(a), file('input/resolution_pqr.p', goal)).
+fof(ax3, axiom, ![X1]:((q(X1)=>r(X1))), file('input/resolution_pqr.p', ax3)).
+fof(ax2, axiom, ![X1]:((p(X1)=>q(X1))), file('input/resolution_pqr.p', ax2)).
+fof(ax1, axiom, p(a), file('input/resolution_pqr.p', ax1)).
+fof(c_0_4, negated_conjecture, ~r(a), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
+fof(c_0_5, negated_conjecture, ~r(a), inference(fof_nnf,[status(thm)],[c_0_4])).
+fof(c_0_6, plain, ![X3]:((~q(X3)|r(X3))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax3])])])).
+cnf(c_0_7, negated_conjecture, (~r(a)), inference(split_conjunct,[status(thm)],[c_0_5])).
+cnf(c_0_8, plain, (r(X1)|~q(X1)), inference(split_conjunct,[status(thm)],[c_0_6])).
+fof(c_0_9, plain, ![X2]:((~p(X2)|q(X2))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax2])])])).
+cnf(c_0_10, negated_conjecture, (~q(a)), inference(spm,[status(thm)],[c_0_7, c_0_8])).
+cnf(c_0_11, plain, (q(X1)|~p(X1)), inference(split_conjunct,[status(thm)],[c_0_9])).
+cnf(c_0_12, plain, (p(a)), inference(split_conjunct,[status(thm)],[ax1])).
+cnf(c_0_13, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_10, c_0_11]), c_0_12])]), ['proof']).
+% SZS output end CNFRefutation

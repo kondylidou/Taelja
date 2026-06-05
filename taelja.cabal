@@ -1,5 +1,5 @@
 cabal-version: 3.0
-name:          talja
+name:          taelja
 version:       0.1.0.0
 synopsis:      A tool that translates refutation proofs to a readable (pretty) proof format for the Horn clause fragment
 
@@ -16,10 +16,12 @@ library
   build-depends:
     base       ^>=4.18,
     containers ^>=0.6,
+    mtl        ^>=2.3,
+    text       ^>=2.0,
     tptp       ^>=0.1
   default-language: GHC2021
 
-executable talja
+executable taelja
   import:         warnings
   main-is:        Main.hs
   hs-source-dirs: app
@@ -28,5 +30,5 @@ executable talja
     text        ^>=2.0,
     attoparsec  ^>=0.14,
     tptp        ^>=0.1,
-    talja
+    taelja
   default-language: GHC2021

@@ -1,0 +1,26 @@
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+% No SInE strategy applied
+% Search class: FUUPF-FFSF22-SFFFFFNN
+% Configuration: SAT001_MinMin_p005000_rr_RG
+% Initializing proof state
+% Scanning for AC axioms
+%
+%cnf(i_0_1, plain, (b=a)).
+%# Presaturation interreduction done
+
+% Proof found!
+% SZS status Theorem
+% SZS output start CNFRefutation
+fof(goal, conjecture, h(f(b),a)=h(a,f(b)), file('input/krympa_example5.p', goal)).
+fof(ax2, axiom, ![X1]:(f(X1)=X1), file('input/krympa_example5.p', ax2)).
+fof(ax1, axiom, a=b, file('input/krympa_example5.p', ax1)).
+fof(c_0_3, negated_conjecture, h(f(b),a)!=h(a,f(b)), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
+fof(c_0_4, negated_conjecture, h(f(b),a)!=h(a,f(b)), inference(fof_nnf,[status(thm)],[c_0_3])).
+fof(c_0_5, plain, ![X2]:(f(X2)=X2), inference(variable_rename,[status(thm)],[ax2])).
+cnf(c_0_6, negated_conjecture, (h(f(b),a)!=h(a,f(b))), inference(split_conjunct,[status(thm)],[c_0_4])).
+cnf(c_0_7, plain, (f(X1)=X1), inference(split_conjunct,[status(thm)],[c_0_5])).
+cnf(c_0_8, negated_conjecture, (h(b,a)!=h(a,b)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_6, c_0_7]), c_0_7])).
+cnf(c_0_9, plain, (a=b), inference(split_conjunct,[status(thm)],[ax1])).
+cnf(c_0_10, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_8, c_0_9]), c_0_9])]), ['proof']).
+% SZS output end CNFRefutation

@@ -6,7 +6,7 @@ into human-readable proofs for the Horn clause fragment.
 ## Usage
 
 ```
-talja <proof-file>
+taelja <proof-file>
 ```
 
 ## Proof Format
@@ -52,7 +52,7 @@ Requires GHC and Cabal ([GHCup](https://www.haskell.org/ghcup/) is the recommend
 
 ```
 cabal build
-cabal run talja -- <proof-file>
+cabal run taelja -- <proof-file>
 ```
 
 ## Fragment

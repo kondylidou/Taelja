@@ -1,0 +1,32 @@
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+% No SInE strategy applied
+% Search class: FHUSF-FFSF00-SFFFFFNN
+% Configuration: SAT001_MinMin_p005000_rr_RG
+% Initializing proof state
+% Scanning for AC axioms
+%
+%cnf(i_0_2, plain, (a=b)).
+%
+%cnf(i_0_4, negated_conjecture, (~q(b))).
+%
+%cnf(i_0_3, plain, (~p(b))).
+%# Presaturation interreduction done
+
+% Proof found!
+% SZS status Theorem
+% SZS output start CNFRefutation
+fof(goal, conjecture, q(b), file('input/resolution_example_eq_positive_rewrite.p', goal)).
+fof(ax3, axiom, (p(b)=>q(b)), file('input/resolution_example_eq_positive_rewrite.p', ax3)).
+fof(ax1, axiom, p(a), file('input/resolution_example_eq_positive_rewrite.p', ax1)).
+fof(ax2, axiom, a=b, file('input/resolution_example_eq_positive_rewrite.p', ax2)).
+fof(c_0_4, negated_conjecture, ~q(b), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
+fof(c_0_5, plain, (~p(b)|q(b)), inference(fof_nnf,[status(thm)],[inference(fof_nnf,[status(thm)],[ax3])])).
+fof(c_0_6, negated_conjecture, ~q(b), inference(fof_nnf,[status(thm)],[c_0_4])).
+cnf(c_0_7, plain, (q(b)|~p(b)), inference(split_conjunct,[status(thm)],[c_0_5])).
+cnf(c_0_8, negated_conjecture, (~q(b)), inference(split_conjunct,[status(thm)],[c_0_6])).
+cnf(c_0_9, plain, (p(a)), inference(split_conjunct,[status(thm)],[ax1])).
+cnf(c_0_10, plain, (a=b), inference(split_conjunct,[status(thm)],[ax2])).
+cnf(c_0_11, plain, (~p(b)), inference(sr,[status(thm)],[c_0_7, c_0_8])).
+cnf(c_0_12, plain, ($false), inference(sr,[status(thm)],[inference(rw,[status(thm)],[c_0_9, c_0_10]), c_0_11]), ['proof']).
+% SZS output end CNFRefutation
