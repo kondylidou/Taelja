@@ -1,0 +1,83 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for resolution_example_horn_general
+% SZS output start Proof for resolution_example_horn_general
+fof(f1,axiom,(
+  s(a)),
+  file('benchmarks/input/resolution_example_horn_general.p',unknown)).
+fof(f2,axiom,(
+  ! [X0] : (s(X0) => p(X0))),
+  file('benchmarks/input/resolution_example_horn_general.p',unknown)).
+fof(f3,axiom,(
+  t(b)),
+  file('benchmarks/input/resolution_example_horn_general.p',unknown)).
+fof(f4,axiom,(
+  ! [X0] : (t(X0) => q(X0))),
+  file('benchmarks/input/resolution_example_horn_general.p',unknown)).
+fof(f5,axiom,(
+  ! [X0,X1] : ((p(X0) & q(X1)) => r(X0,X1))),
+  file('benchmarks/input/resolution_example_horn_general.p',unknown)).
+fof(f6,conjecture,(
+  r(a,b)),
+  file('benchmarks/input/resolution_example_horn_general.p',unknown)).
+fof(f7,negated_conjecture,(
+  ~r(a,b)),
+  inference(negated_conjecture,[status(cth)],[f6])).
+fof(f8,plain,(
+  ~r(a,b)),
+  inference(flattening,[],[f7])).
+fof(f9,plain,(
+  ! [X0] : (p(X0) | ~s(X0))),
+  inference(ennf_transformation,[],[f2])).
+fof(f10,plain,(
+  ! [X0] : (q(X0) | ~t(X0))),
+  inference(ennf_transformation,[],[f4])).
+fof(f11,plain,(
+  ! [X0,X1] : (r(X0,X1) | (~p(X0) | ~q(X1)))),
+  inference(ennf_transformation,[],[f5])).
+fof(f12,plain,(
+  ! [X0,X1] : (r(X0,X1) | ~p(X0) | ~q(X1))),
+  inference(flattening,[],[f11])).
+fof(f13,plain,(
+  s(a)),
+  inference(cnf_transformation,[],[f1])).
+fof(f14,plain,(
+  ( ! [X0] : (~s(X0) | p(X0)) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f15,plain,(
+  t(b)),
+  inference(cnf_transformation,[],[f3])).
+fof(f16,plain,(
+  ( ! [X0] : (~t(X0) | q(X0)) )),
+  inference(cnf_transformation,[],[f10])).
+fof(f17,plain,(
+  ( ! [X0,X1] : (r(X0,X1) | ~p(X0) | ~q(X1)) )),
+  inference(cnf_transformation,[],[f12])).
+fof(f18,plain,(
+  ~r(a,b)),
+  inference(cnf_transformation,[],[f8])).
+fof(f19,plain,(
+  p(a)),
+  inference(resolution,[],[f14,f13])).
+fof(f20,plain,(
+  q(b)),
+  inference(resolution,[],[f16,f15])).
+fof(f21,plain,(
+  ~p(a) | ~q(b)),
+  inference(resolution,[],[f17,f18])).
+fof(f22,plain,(
+  ~q(b)),
+  inference(forward_subsumption_resolution,[],[f21,f19])).
+fof(f23,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f22,f20])).
+% SZS output end Proof for resolution_example_horn_general
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.001 s
+% Peak memory usage: 7 MB
+% ------------------------------
+% ------------------------------

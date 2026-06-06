@@ -1,0 +1,50 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for superposition_exercise12_2
+% SZS output start Proof for superposition_exercise12_2
+fof(f1,axiom,(
+  ! [X0] : (f(X0) = c => f(X0) = b)),
+  file('benchmarks/input/superposition_exercise12_2.p',unknown)).
+fof(f2,axiom,(
+  ! [X0] : f(f(X0)) = X0),
+  file('benchmarks/input/superposition_exercise12_2.p',unknown)).
+fof(f3,conjecture,(
+  b = c),
+  file('benchmarks/input/superposition_exercise12_2.p',unknown)).
+fof(f4,negated_conjecture,(
+  ~b = c),
+  inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  c != b),
+  inference(flattening,[],[f4])).
+fof(f6,plain,(
+  ! [X0] : (f(X0) = b | f(X0) != c)),
+  inference(ennf_transformation,[],[f1])).
+fof(f7,plain,(
+  ( ! [X0] : (f(X0) != c | f(X0) = b) )),
+  inference(cnf_transformation,[],[f6])).
+fof(f8,plain,(
+  ( ! [X0] : (f(f(X0)) = X0) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f9,plain,(
+  c != b),
+  inference(cnf_transformation,[],[f5])).
+fof(f10,plain,(
+  ( ! [X0] : (c != X0 | b = X0) )),
+  inference(superposition,[],[f7,f8])).
+fof(f11,plain,(
+  c = b),
+  inference(equality_resolution,[],[f10])).
+fof(f12,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f11,f9])).
+% SZS output end Proof for superposition_exercise12_2
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.0000 s
+% Peak memory usage: 7 MB
+% ------------------------------
+% ------------------------------

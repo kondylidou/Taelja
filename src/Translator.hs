@@ -22,23 +22,31 @@ translate (T.TSTP _ units) =
   in error "translate: TODO"
 
 -- Separate TSTP units into positive unit axioms, non-unit Horn axioms, and the goal.
--- Axioms come as FOF units in E's output; the negated conjecture comes as CNF.
+-- Handles both E (negated conjecture as CNF via split_conjunct) and
+-- Vampire (negated conjecture as FOF via negated_conjecture inference).
 classifyAxioms :: [T.Unit]
                -> ([(String, Literal)], [(Maybe String, Clause, Subst)], Literal)
 classifyAxioms units =
   let fofAxioms = [ (unitNameToString n, f)
                   | T.Unit n (T.Formula (T.Standard T.Axiom) (T.FOF f)) _ <- units ]
-      negConj   = [ cl
+      -- E prover: negated conjecture as CNF via split_conjunct
+      negConjE  = [ cl
                   | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.CNF cl))
                               (Just (T.Inference (T.Atom rule) _ _, _)) <- units
-                  , rule == Text.pack "split_conjunct" -- E's rule for negating the conjecture
+                  , rule == Text.pack "split_conjunct"
                   , not (isFalsum cl) ]
+      -- Vampire: negated conjecture as FOF via negated_conjecture inference
+      negConjV  = [ f
+                  | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.FOF f))
+                              (Just (T.Inference (T.Atom rule) _ _, _)) <- units
+                  , rule == Text.pack "negated_conjecture" ]
       (unitFOFs, nonUnitFOFs) = partition (isPositiveUnitFOF . snd) fofAxioms
       axUnits    = [ (n, extractUnitFOF f)      | (n, f) <- unitFOFs    ]
       axNonUnits = [ (Just n, fofToClause f, []) | (n, f) <- nonUnitFOFs ]
-      goalLit    = case negConj of
-                     [cl] -> negateGoal cl
-                     _    -> error "classifyAxioms: expected exactly one negated conjecture"
+      goalLit    = case (negConjE, negConjV) of
+                     ([cl], []) -> negateGoal cl
+                     ([], [f])  -> negateGoalFOF f
+                     _          -> error "classifyAxioms: expected exactly one negated conjecture"
   in (axUnits, axNonUnits, goalLit)
 
 isPositiveUnitFOF :: T.UnsortedFirstOrder -> Bool
@@ -77,6 +85,10 @@ negateGoal (T.Clause lits) = case toList lits of
   [(T.Negative, lit)]                       -> convertLit lit
   [(T.Positive, T.Equality l T.Negative r)] -> Eq (convertTerm l) (convertTerm r)
   _ -> error "negateGoal: unexpected negated conjecture shape"
+
+negateGoalFOF :: T.UnsortedFirstOrder -> Literal
+negateGoalFOF (T.Negated (T.Atomic lit)) = convertLit lit
+negateGoalFOF _ = error "negateGoalFOF: unexpected negated conjecture shape"
 
 convertLit :: T.Literal -> Literal
 convertLit (T.Predicate (T.Defined (T.Atom n)) args) = Rel (Text.unpack n) (map convertTerm args)
