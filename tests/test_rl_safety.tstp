@@ -1,0 +1,13 @@
+% Test: equation with LHS variable absent from RHS.
+% Axiom: ! [X0] : f(X0) = c   (X0 in lhs, not in rhs. RL would leave X0 unbound)
+% Goal: f(a) = c
+% Proof should use LR only: rewrite f(a) -> c via axiom 1.
+fof(f1,axiom,(
+  ! [X0] : (f(X0) = c)),
+  file('test',unknown)).
+fof(f2,conjecture,(
+  f(a) = c),
+  file('test',unknown)).
+fof(f3,negated_conjecture,(
+  ~(f(a) = c)),
+  inference(negated_conjecture,[status(cth)],[f2])).

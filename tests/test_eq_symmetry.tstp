@@ -1,0 +1,13 @@
+% Test for fix 5: matchLit on Eq is now symmetric.
+% Axiom: b = a  (stored as Eq b a)
+% Goal:  a = b  (goal is Eq a b, the symmetric form)
+% matchLit must try (b,a) against (a,b) symmetrically to find the match.
+fof(f1,axiom,(
+  b = a),
+  file('test',unknown)).
+fof(f2,conjecture,(
+  a = b),
+  file('test',unknown)).
+fof(f3,negated_conjecture,(
+  ~(a = b)),
+  inference(negated_conjecture,[status(cth)],[f2])).
