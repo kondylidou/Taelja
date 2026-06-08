@@ -44,7 +44,7 @@ main = do
         putStrLn ""
         putStrLn ("goal: " ++ ppLiteral goalLit)
         putStrLn ""
-      putStrLn (emit (translate tstp))
+      putStr (emit (translate tstp))
 
 ppLiteral :: Literal -> String
 ppLiteral = show
