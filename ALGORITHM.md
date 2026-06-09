@@ -35,6 +35,7 @@ function ensure_named(l=r):
 
 ### `make_block(U, rw)`
 Builds the proof lines for a unit U, optionally followed by rewrite steps.
+`rw` is a list of `(l=r, dir)` pairs — names are resolved inside via `ensure_named`.
 
 ```
 function make_block(U, rw):
@@ -48,7 +49,7 @@ function make_block(U, rw):
     return b
 
   cur ← U
-  for each (name, l = r, dir) in rw:
+  for each (l = r, dir) in rw:
     name ← ensure_named(l=r)
     cur ← cur[l → r]   (or cur[r → l] if dir = R→L)
     b ← b + "hence cur
@@ -56,36 +57,59 @@ function make_block(U, rw):
   return b
 ```
 
+**RL safety.** An equation `l = r` may be applied R→L only when `vars(l) ⊆ vars(r)`,
+so that matching `r` binds every variable that appears in `l`. Equations where
+`vars(l) ⊄ vars(r)` are LR-only.
+
+### `find_path(s, t, visited)`
+DFS search for a rewrite path from term `s` to term `t` using unit equations.
+
+**Precondition.** All equation units in `Units` are named.
+
+```
+function find_path(s, t, visited):
+  if s = t: return []
+  if s ∈ visited: return failure
+  for each named equation (name, l=r) in Units:
+    for dir ∈ { LR } ∪ { RL | vars(l) ⊆ vars(r) }:
+      s' = s[l → r]   (or s[r → l] if dir = RL)
+      if s' ≠ s:
+        path = find_path(s', t, visited ∪ {s})
+        if path ≠ failure:
+          return [(name, l=r, dir, s')] + path
+  return failure
+```
+
 ### `rw_chain_to(s, t)`
-Rewrites `s` toward `t` using unit equations from `Units`.
+Finds a rewrite path from `s` to `t` via DFS.
+Errors if no path exists — callers rely on the invariant that a path always exists.
 
 ```
 function rw_chain_to(s, t):
-  cur = s;  steps = []
-  while cur ≠ t:
-    if (name, l=r, dir) ∈ Units s.t. cur[l→r] ≠ cur  else break
-    name ← ensure_named(l=r)
-    cur ← cur[l → r]   (or cur[r → l] if dir = R→L)
-    steps.append((name, l = r, dir, cur))
-  return (cur, steps)
+  steps = find_path(s, t, {})
+  if steps = failure: error "no rewrite path from s to t"
+  return steps              // [(name, l=r, dir, cur)] for each step
 ```
 
 ## Main Loop
 
 ```
 if NonUnits = ∅:
-  if ∃ (_, U, _) ∈ Units, σ, rw such that U[σ] →^{rw} goal:
-    emit "Goal 1: goal"
-    emit "Proof:" + make_block(U, rw)[σ]
-  else:
-    // equational chain from LHS s to RHS t
-    (_, steps) = rw_chain_to(s, t)
+  if goal is equational (goal = s = t):
+    // always use the chain format for equational goals — more readable than have/hence
+    steps = rw_chain_to(s, t)
     emit "Goal 1: s = t"
     emit "Proof:"
     emit "  s"
     for (name, l = r, dir, cur) in steps:
       emit "= { by name" (+ " R->L" if dir = R→L) + " }"
       emit "  cur"
+  else:
+    if ∃ (_, U, _) ∈ Units, σ, rw such that U[σ] →^{rw} goal:
+      emit "Goal 1: goal"
+      emit "Proof:" + make_block(U, rw)[σ]
+    else:
+      error "no unit matches goal"
 
 for each (name, N, σ) ∈ NonUnits:
 
@@ -108,16 +132,11 @@ for each (name, N, σ) ∈ NonUnits:
   block ← block + "hence H[σ]
                      by <name of N>"
 
-  σ' matches H[σ] against goal
-  (cur, steps) = rw_chain_to(H[σ][σ'], goal)
-  for (name, l = r, dir, s) in steps:
-    block ← block + "hence s
-                        by rw name" (+ " R->L" if dir = R→L)
-  if cur = goal:
+  if ∃ σ' s.t. H[σ][σ'] = goal:
     emit "Goal 1: goal"
     emit "Proof:" + block[σ·σ']
   else:
-    Units ← Units ∪ { (nil, H[σ], block) }
+    Units ← Units ∪ { (nil, H[σ], block[σ]) }
 ```
 
 ## Lemmatization

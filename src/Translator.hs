@@ -5,6 +5,7 @@ import Data.List (find, partition)
 import Data.List.NonEmpty (toList)
 import qualified Data.Text as Text
 import Control.Applicative ((<|>))
+import Control.Monad (foldM)
 import Control.Monad.State
 import Data.Maybe (fromMaybe, listToMaybe, maybeToList)
 
@@ -46,8 +47,8 @@ translateNonUnitsEmpty goal = case goal of
     units <- gets tsUnits
     case findMatchingUnit goal units of
       Just (ue, subst, rws) -> do
-        let rwList = [ (rwName rs, rwEq rs, rwDir rs) | rs <- rws ]
-        let block = makeBlock ue rwList
+        let rwList = [ (rwEq rs, rwDir rs) | rs <- rws ]
+        block <- makeBlock ue rwList
         return (applySubstBlock subst block)
       Nothing ->
         error ("translateNonUnitsEmpty: no unit matches goal: " ++ show goal)
@@ -104,8 +105,10 @@ processNonUnit _ _ _ _ = error "processNonUnit: TODO"
 topoSort :: [(Maybe String, Clause, Subst)] -> [T.Unit] -> [(Maybe String, Clause, Subst)]
 topoSort _ _ = error "topoSort: TODO"
 
-makeBlock :: UnitEntry -> [(String, (Term, Term), Dir)] -> ProofBlock
-makeBlock ue rw = HaveHence . reverse . fst $ foldl step (reverse baseLines, ueUnit ue) rw
+makeBlock :: UnitEntry -> [((Term, Term), Dir)] -> TransM ProofBlock
+makeBlock ue rw = do
+  (ls, _) <- foldM step (reverse baseLines, ueUnit ue) rw
+  return (HaveHence (reverse ls))
   where
     baseLines = case ueDeriv ue of
       Just (HaveHence ls) -> ls
@@ -114,11 +117,12 @@ makeBlock ue rw = HaveHence . reverse . fst $ foldl step (reverse baseLines, ueU
         [ Have (ueUnit ue)
             (fromMaybe (error "makeBlock: unnamed unit has no derivation") (ueName ue))
         ]
-    step (acc, curLit) (name, (origL, origR), dir) =
+    step (acc, curLit) ((origL, origR), dir) = do
+      nm <- ensureNamed (Eq origL origR)
       let (lhs, rhs) = if dir == LR then (origL, origR) else (origR, origL)
           cur'       = rewriteLit lhs rhs curLit
           justDir    = if dir == RL then Just RL else Nothing
-      in (Hence cur' (ByRw name justDir) : acc, cur')
+      return (Hence cur' (ByRw nm justDir) : acc, cur')
 
 rwChainTo :: Term -> Term -> TransM [(RwStep, Term)]
 rwChainTo s t = do
