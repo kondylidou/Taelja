@@ -1,5 +1,5 @@
 Axiom 1: f(X) = c => f(X) = b
-Axiom 2: f(f(Y)) = Y
+Axiom 2: f(f(X)) = X
 
 Goal 1: b = c
 Proof:

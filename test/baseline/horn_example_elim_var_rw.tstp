@@ -1,0 +1,20 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for horn_example_elim_var_rw
+% SZS output start Proof for horn_example_elim_var_rw
+fof(f1,axiom,(
+  ! [X0] : q(a,X0)),
+  file('benchmarks/input/horn_example_elim_var_rw.p',unknown)).
+fof(f2,axiom,(
+  ! [X0,X1] : (q(X0,X1) => f(X0) = g(X1))),
+  file('benchmarks/input/horn_example_elim_var_rw.p',unknown)).
+fof(f3,axiom,(
+  ! [X0] : g(X0) = c),
+  file('benchmarks/input/horn_example_elim_var_rw.p',unknown)).
+fof(f4,conjecture,(
+  f(a) = c),
+  file('benchmarks/input/horn_example_elim_var_rw.p',unknown)).
+fof(f5,negated_conjecture,(
+  ~f(a) = c),
+  inference(negated_conjecture,[status(cth)],[f4])).
+% SZS output end Proof for horn_example_elim_var_rw

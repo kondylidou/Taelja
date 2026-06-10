@@ -1,7 +1,7 @@
 Axiom 1: p(a)
 Axiom 2: q(b)
 Axiom 3: p(X) => f(X) = c
-Axiom 4: q(Y) => a = Y
+Axiom 4: q(X) => a = X
 
 Lemma 5: a = b
 Proof:
