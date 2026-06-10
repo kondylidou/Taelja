@@ -1,0 +1,10 @@
+Axiom 1: b = a
+Axiom 2: c = a
+
+Goal 1: f(c) = f(b)
+Proof:
+  f(c)
+= { by axiom 2 }
+  f(a)
+= { by axiom 1 R->L }
+  f(b)

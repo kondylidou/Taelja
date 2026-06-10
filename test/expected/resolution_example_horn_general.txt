@@ -1,0 +1,28 @@
+Axiom 1: s(a)
+Axiom 2: s(X) => p(X)
+Axiom 3: t(b)
+Axiom 4: t(Y) => q(Y)
+Axiom 5: p(X) /\ q(Y) => r(X,Y)
+
+Lemma 7: p(a)
+Proof:
+  have s(a)
+    by axiom 1
+  hence p(a)
+    by axiom 2
+
+Lemma 8: q(b)
+Proof:
+  have t(b)
+    by axiom 3
+  hence q(b)
+    by axiom 4
+
+Goal 1: r(a,b)
+Proof:
+  have p(a)
+    by lemma 7
+   and q(b)
+    by lemma 8
+  hence r(a,b)
+    by axiom 5

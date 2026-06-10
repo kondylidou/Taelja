@@ -1,0 +1,9 @@
+Axiom 1: p(a)
+Axiom 2: p(a) => q(a)
+
+Goal 1: q(a)
+Proof:
+  have p(a)
+    by axiom 1
+  hence q(a)
+    by axiom 2

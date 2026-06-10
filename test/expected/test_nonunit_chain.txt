@@ -1,0 +1,19 @@
+Axiom 1: p(a)
+Axiom 2: p(a) => q(a)
+Axiom 3: p(a) /\ q(a) => r(a)
+
+Lemma 4: q(a)
+Proof:
+  have p(a)
+    by axiom 1
+  hence q(a)
+    by axiom 2
+
+Goal 1: r(a)
+Proof:
+  have p(a)
+    by axiom 1
+   and q(a)
+    by lemma 4
+  hence r(a)
+    by axiom 3

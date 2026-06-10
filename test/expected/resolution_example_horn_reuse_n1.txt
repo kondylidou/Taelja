@@ -1,0 +1,15 @@
+Axiom 1: p(X)
+Axiom 2: q(b,X)
+Axiom 3: q(X,Y) /\ p(Y) => q(f(X),Y)
+Axiom 4: q(f(b),Y) => r(Y)
+
+Goal 1: r(a)
+Proof:
+  have q(b,a)
+    by axiom 2
+   and p(a)
+    by axiom 1
+  hence q(f(b),a)
+    by axiom 3
+  hence r(a)
+    by axiom 4

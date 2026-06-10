@@ -1,0 +1,22 @@
+Axiom 1: p(X) /\ q(X) => X = 0
+Axiom 2: p(f(X))
+Axiom 3: q(f(X))
+Axiom 4: f(X) = g(X)
+
+Lemma 7: q(g(X))
+Proof:
+  have q(f(X))
+    by axiom 3
+  hence q(g(X))
+    by rw axiom 4
+
+Goal 1: g(a) = 0
+Proof:
+  have p(f(a))
+    by axiom 2
+  hence p(g(a))
+    by rw axiom 4
+   and q(g(a))
+    by lemma 7
+  hence g(a) = 0
+    by axiom 1

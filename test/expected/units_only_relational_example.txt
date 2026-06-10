@@ -1,0 +1,9 @@
+Axiom 1: p(f(X))
+Axiom 2: f(X) = X
+
+Goal 1: p(a)
+Proof:
+  have p(f(a))
+    by axiom 1
+  hence p(a)
+    by rw axiom 2

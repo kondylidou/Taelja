@@ -1,0 +1,5 @@
+fof(f1,axiom,p(a),file('test',unknown)).
+fof(f2,axiom,(p(a) => q(a)),file('test',unknown)).
+fof(f3,axiom,((p(a) & q(a)) => r(a)),file('test',unknown)).
+fof(f4,conjecture,r(a),file('test',unknown)).
+fof(f5,negated_conjecture,(~r(a)),inference(negated_conjecture,[status(cth)],[f4])).

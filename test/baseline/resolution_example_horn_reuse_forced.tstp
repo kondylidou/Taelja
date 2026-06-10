@@ -1,0 +1,77 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for resolution_example_horn_reuse_forced
+% SZS output start Proof for resolution_example_horn_reuse_forced
+fof(f1,axiom,(
+  ! [X0] : s(X0)),
+  file('benchmarks/input/resolution_example_horn_reuse_forced.p',unknown)).
+fof(f2,axiom,(
+  ! [X0] : (s(X0) => q(b,X0))),
+  file('benchmarks/input/resolution_example_horn_reuse_forced.p',unknown)).
+fof(f3,axiom,(
+  ! [X0] : (s(X0) => p(X0))),
+  file('benchmarks/input/resolution_example_horn_reuse_forced.p',unknown)).
+fof(f4,axiom,(
+  ! [X0,X1] : ((q(X0,X1) & p(X1)) => r(X0,X1))),
+  file('benchmarks/input/resolution_example_horn_reuse_forced.p',unknown)).
+fof(f5,conjecture,(
+  r(b,a)),
+  file('benchmarks/input/resolution_example_horn_reuse_forced.p',unknown)).
+fof(f6,negated_conjecture,(
+  ~r(b,a)),
+  inference(negated_conjecture,[status(cth)],[f5])).
+fof(f7,plain,(
+  ~r(b,a)),
+  inference(flattening,[],[f6])).
+fof(f8,plain,(
+  ! [X0] : (q(b,X0) | ~s(X0))),
+  inference(ennf_transformation,[],[f2])).
+fof(f9,plain,(
+  ! [X0] : (p(X0) | ~s(X0))),
+  inference(ennf_transformation,[],[f3])).
+fof(f10,plain,(
+  ! [X0,X1] : (r(X0,X1) | (~q(X0,X1) | ~p(X1)))),
+  inference(ennf_transformation,[],[f4])).
+fof(f11,plain,(
+  ! [X0,X1] : (r(X0,X1) | ~q(X0,X1) | ~p(X1))),
+  inference(flattening,[],[f10])).
+fof(f12,plain,(
+  ( ! [X0] : (s(X0)) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f13,plain,(
+  ( ! [X0] : (q(b,X0) | ~s(X0)) )),
+  inference(cnf_transformation,[],[f8])).
+fof(f14,plain,(
+  ( ! [X0] : (~s(X0) | p(X0)) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f15,plain,(
+  ( ! [X0,X1] : (~q(X0,X1) | r(X0,X1) | ~p(X1)) )),
+  inference(cnf_transformation,[],[f11])).
+fof(f16,plain,(
+  ~r(b,a)),
+  inference(cnf_transformation,[],[f7])).
+fof(f17,plain,(
+  ( ! [X0] : (p(X0)) )),
+  inference(resolution,[],[f14,f12])).
+fof(f18,plain,(
+  ( ! [X0] : (r(b,X0) | ~p(X0) | ~s(X0)) )),
+  inference(resolution,[],[f15,f13])).
+fof(f19,plain,(
+  ( ! [X0] : (r(b,X0) | ~s(X0)) )),
+  inference(forward_subsumption_resolution,[],[f18,f17])).
+fof(f20,plain,(
+  ( ! [X0] : (r(b,X0)) )),
+  inference(forward_subsumption_resolution,[],[f19,f12])).
+fof(f21,plain,(
+  $false),
+  inference(resolution,[],[f20,f16])).
+% SZS output end Proof for resolution_example_horn_reuse_forced
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.0000 s
+% Peak memory usage: 7 MB
+% ------------------------------
+% ------------------------------

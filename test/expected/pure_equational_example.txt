@@ -1,0 +1,10 @@
+Axiom 1: b = c
+Axiom 2: a = b
+
+Goal 1: a = c
+Proof:
+  a
+= { by axiom 2 }
+  b
+= { by axiom 1 }
+  c

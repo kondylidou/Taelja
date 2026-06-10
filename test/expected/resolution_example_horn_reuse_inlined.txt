@@ -1,0 +1,16 @@
+Axiom 1: p(Z)
+Axiom 2: q(b,Z)
+Axiom 3: q(X,Y) /\ p(Y) => q(f(X),Y)
+
+Goal 1: q(f(f(b)),a)
+Proof:
+  have q(b,a)
+    by axiom 2
+   and p(a)
+    by axiom 1
+  hence q(f(b),a)
+    by axiom 3
+   and p(a)
+    by axiom 1
+  hence q(f(f(b)),a)
+    by axiom 3

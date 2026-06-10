@@ -1,4 +1,4 @@
-Axiom 1: f(X0) = c
+Axiom 1: f(X) = c
 
 Goal 1: f(a) = c
 Proof:

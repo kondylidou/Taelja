@@ -29,6 +29,7 @@ test-suite taelja-tests
   build-depends:
     base          ^>=4.18,
     bytestring    ^>=0.11,
+    deepseq       ^>=1.4,
     text          ^>=2.0,
     attoparsec    ^>=0.14,
     tptp          ^>=0.1,
