@@ -25,6 +25,7 @@ tests = testGroup "Taelja"
       ]
   , testGroup "Benchmarks"
       [ benchmark "horn_example_derived_rw"
+      , benchmark "horn_example_elim_var_rw"
       , benchmark "horn_example_eq_head_inlined"
       , benchmark "horn_example_eq_rw_chain"
       , benchmark "horn_example_relational_rw"
