@@ -1,5 +1,5 @@
-Axiom 1: p(Z)
-Axiom 2: q(b,Z)
+Axiom 1: p(X)
+Axiom 2: q(b,X)
 Axiom 3: q(X,Y) /\ p(Y) => q(f(X),Y)
 
 Goal 1: q(f(f(b)),a)

@@ -4,32 +4,24 @@ Axiom 3: q(X,b) => r1(X)
 Axiom 4: q(X,c) => r2(X)
 Axiom 5: r1(X) /\ r2(X) => r0(X)
 
-Lemma 7: q(a,Y)
+Lemma 6: r2(a)
 Proof:
   have p(a)
     by axiom 1
-  hence q(a,Y)
+  hence q(a,c)
     by axiom 2
-
-Lemma 8: r1(a)
-Proof:
-  have q(a,b)
-    by lemma 7
-  hence r1(a)
-    by axiom 3
-
-Lemma 9: r2(a)
-Proof:
-  have q(a,c)
-    by lemma 7
   hence r2(a)
     by axiom 4
 
 Goal 1: r0(a)
 Proof:
-  have r1(a)
-    by lemma 8
+  have p(a)
+    by axiom 1
+  hence q(a,b)
+    by axiom 2
+  hence r1(a)
+    by axiom 3
    and r2(a)
-    by lemma 9
+    by lemma 6
   hence r0(a)
     by axiom 5

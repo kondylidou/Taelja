@@ -1,7 +1,7 @@
 Axiom 1: p(X)
 Axiom 2: q(b,X)
 Axiom 3: q(X,Y) /\ p(Y) => q(f(X),Y)
-Axiom 4: q(f(b),Y) => r(Y)
+Axiom 4: q(f(b),X) => r(X)
 
 Goal 1: r(a)
 Proof:
