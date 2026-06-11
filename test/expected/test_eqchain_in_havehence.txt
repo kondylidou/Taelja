@@ -1,0 +1,18 @@
+Axiom 1: f(X) = g(X)
+Axiom 2: g(X) = h(X)
+Axiom 3: f(X) = h(X) => p(X)
+
+Lemma 4: f(X) = h(X)
+Proof:
+  f(X)
+= { by axiom 1 }
+  g(X)
+= { by axiom 2 }
+  h(X)
+
+Goal 1: p(a)
+Proof:
+  have f(a) = h(a)
+    by lemma 4
+  hence p(a)
+    by axiom 3

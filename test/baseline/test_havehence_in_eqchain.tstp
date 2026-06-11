@@ -1,0 +1,6 @@
+fof(f1,axiom,p(a),file('test',unknown)).
+fof(f2,axiom,q(a),file('test',unknown)).
+fof(f3,axiom,(! [X] : (p(X) => f(X) = g(X))),file('test',unknown)).
+fof(f4,axiom,(! [X] : (q(X) => g(X) = h(X))),file('test',unknown)).
+fof(f5,conjecture,(s(f(a)) = s(h(a))),file('test',unknown)).
+fof(f6,negated_conjecture,(~(s(f(a)) = s(h(a)))),inference(negated_conjecture,[status(cth)],[f5])).

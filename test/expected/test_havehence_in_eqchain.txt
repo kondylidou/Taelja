@@ -1,0 +1,26 @@
+Axiom 1: p(a)
+Axiom 2: q(a)
+Axiom 3: p(X) => f(X) = g(X)
+Axiom 4: q(X) => g(X) = h(X)
+
+Lemma 5: f(a) = g(a)
+Proof:
+  have p(a)
+    by axiom 1
+  hence f(a) = g(a)
+    by axiom 3
+
+Lemma 6: g(a) = h(a)
+Proof:
+  have q(a)
+    by axiom 2
+  hence g(a) = h(a)
+    by axiom 4
+
+Goal 1: s(f(a)) = s(h(a))
+Proof:
+  s(f(a))
+= { by lemma 5 }
+  s(g(a))
+= { by lemma 6 }
+  s(h(a))

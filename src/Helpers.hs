@@ -86,10 +86,11 @@ rewritePosLit lhs rhs lit = case lit of
             ++ [Eq  l r' | r' <- rewritePos lhs rhs r]
   NEq l r   -> [NEq l' r | l' <- rewritePos lhs rhs l]
             ++ [NEq l r' | r' <- rewritePos lhs rhs r]
-  Rel n ts  -> [ Rel  n (take i ts ++ [t'] ++ drop (i+1) ts)
-               | (i, t) <- zip [0..] ts, t' <- rewritePos lhs rhs t ]
-  NRel n ts -> [ NRel n (take i ts ++ [t'] ++ drop (i+1) ts)
-               | (i, t) <- zip [0..] ts, t' <- rewritePos lhs rhs t ]
+  Rel  n ts -> rwArgs (Rel  n) ts
+  NRel n ts -> rwArgs (NRel n) ts
+  where
+    rwArgs con ts = [ con (take i ts ++ [t'] ++ drop (i+1) ts)
+                    | (i, t) <- zip [0..] ts, t' <- rewritePos lhs rhs t ]
 
 matchTerm :: Term -> Term -> Subst -> Maybe Subst
 matchTerm (Var x) t subst =
@@ -137,8 +138,7 @@ unifyTerm (Const c1) (Const c2) subst
   | c1 == c2  = Just subst
   | otherwise = Nothing
 unifyTerm (App f1 as1) (App f2 as2) subst
-  | f1 == f2 && length as1 == length as2 =
-      foldl (\acc (a, b) -> acc >>= unifyTerm a b) (Just subst) (zip as1 as2)
+  | f1 == f2 && length as1 == length as2 = unifyAll (zip as1 as2) subst
   | otherwise = Nothing
 unifyTerm _ _ _ = Nothing
 
@@ -224,15 +224,14 @@ bfsRewrite rwFn sizeFn eqs check start bound =
       ]
 
 -- Only named equations make it here. Unnamed ones cannot be cited in a proof.
+-- Equations where rhs has variables not in lhs are skipped: they cannot be
+-- applied as rewrite rules without introducing unbound variables.
 eqUnits :: [UnitEntry] -> [(String, Term, Term)]
 eqUnits = concatMap toEq
   where
     toEq ue = case (ueName ue, ueUnit ue) of
-      (Just nm, Eq l r) ->
-        let extra = filter (`notElem` termVars l) (termVars r)
-        in if null extra
-           then [(nm, l, r)]
-           else error ("eqUnits: " ++ nm ++ " has rhs variables not in lhs: " ++ show extra)
+      (Just nm, Eq l r)
+        | all (`elem` termVars l) (termVars r) -> [(nm, l, r)]
       _ -> []
 
 findUnitByLit :: Literal -> [UnitEntry] -> Maybe UnitEntry

@@ -16,13 +16,11 @@ import Helpers
 import Converter
 
 -- The unit map mirrors the sequence so lookups in ensureNamed and addToUnits
--- are O(log n) rather than a linear scan. The count lets the fixpoint
--- detect progress without traversing the whole sequence each round.
+-- are O(log n) rather than a linear scan.
 -- tsUnits is a Seq so snoc (append-at-end) is O(log n) rather than O(n).
 data TransState = TransState
   { tsUnits      :: Seq UnitEntry
   , tsUnitMap    :: Map.Map Literal UnitEntry
-  , tsUnitCount  :: Int
   , tsLemmaCount :: Int
   , tsLemmas     :: [(String, Literal, ProofBlock)]
   }
@@ -35,7 +33,6 @@ translate (T.TSTP _ units) =
       initState = TransState
         { tsUnits      = Seq.fromList initUnitEntries
         , tsUnitMap    = Map.fromList [(ueUnit ue, ue) | ue <- initUnitEntries]
-        , tsUnitCount  = length initUnitEntries
         , tsLemmaCount = length axEntries
         , tsLemmas     = []
         }
@@ -70,12 +67,12 @@ translateNonUnits :: [(String, Clause)] -> Literal -> TransM ProofBlock
 translateNonUnits nonUnits goalLit = fixpoint
   where
     fixpoint = do
-      before <- gets tsUnitCount
+      before <- gets (Map.size . tsUnitMap)
       mBlock <- oneRound nonUnits
       case mBlock of
         Just block -> return block
         Nothing    -> do
-          after <- gets tsUnitCount
+          after <- gets (Map.size . tsUnitMap)
           if after > before
             then fixpoint
             else do
@@ -187,7 +184,7 @@ addAndLitAcc (Just (revLs, σ)) lit = do
     Just (BodyMatch ue blkSubst rws clauseUpd) -> do
       let σ'         = σ ++ clauseUpd
           displayLit = applySubst clauseUpd target
-      if null rws
+      if null rws && null clauseUpd
         then do
           name <- ensureNamed (ueUnit ue)
           return (Just (And displayLit name : revLs, σ'))
@@ -234,8 +231,7 @@ makeBlock ue rwPath = case nonGroundEqEnd rwPath of
       _                                        -> Nothing
     stepToLine (RwStep _ (origL, origR) dir, nextLit) = do
       nm' <- ensureNamed (Eq origL origR)
-      let justDir = if dir == RL then Just RL else Nothing
-      return (Hence nextLit (ByRw nm' justDir))
+      return (Hence nextLit (ByRw nm' (renderDir dir)))
 
 rwChainTo :: Term -> Term -> TransM [(RwStep, Term)]
 rwChainTo s t = do
@@ -244,13 +240,16 @@ rwChainTo s t = do
     Nothing   -> error ("rwChainTo: no rewrite path from " ++ show s ++ " to " ++ show t)
     Just path -> return path
 
+renderDir :: Dir -> Maybe Dir
+renderDir RL = Just RL
+renderDir LR = Nothing
+
 extendWithRw :: ProofBlock -> [(RwStep, Literal)] -> TransM ProofBlock
 extendWithRw = foldM step
   where
     step blk (RwStep _ (origL, origR) dir, nextLit) = do
       nm <- ensureNamed (Eq origL origR)
-      let justDir = if dir == RL then Just RL else Nothing
-      return (appendLine blk (Hence nextLit (ByRw nm justDir)))
+      return (appendLine blk (Hence nextLit (ByRw nm (renderDir dir))))
 
 -- Names unnamed units that exactly match a tail body literal before we start,
 -- so the same derivation does not end up inlined in multiple places.
@@ -313,8 +312,7 @@ addToUnits ue = do
   m <- gets tsUnitMap
   case Map.lookup (ueUnit ue) m of
     Nothing -> modify $ \s -> s
-      { tsUnits     = tsUnits s |> ue
-      , tsUnitMap   = Map.insert (ueUnit ue) ue m
-      , tsUnitCount = tsUnitCount s + 1
+      { tsUnits   = tsUnits s |> ue
+      , tsUnitMap = Map.insert (ueUnit ue) ue m
       }
     Just _  -> return ()

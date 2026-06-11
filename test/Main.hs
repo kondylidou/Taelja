@@ -25,6 +25,8 @@ tests = testGroup "Taelja"
       , golden "test_split_derived_unit"
       , golden "test_instantiations_no_ground"
       , golden "test_prelemmatize_sym_eq"
+      , golden "test_eqchain_in_havehence"
+      , golden "test_havehence_in_eqchain"
       ]
   , testGroup "Benchmarks"
       [ benchmark "horn_example_derived_rw"
