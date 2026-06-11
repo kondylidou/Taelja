@@ -289,8 +289,8 @@ bodyLitMatch target units =
 -- All equation units usable as BFS rewrite steps, including unnamed ones.
 -- Unnamed equations get an empty placeholder name; any caller that needs to cite
 -- an equation in a proof must call ensureNamed to obtain the real name.
-allEqUnitsForRw :: [UnitEntry] -> [(String, Term, Term)]
-allEqUnitsForRw = mapMaybe toEq
+rwEquations :: [UnitEntry] -> [(String, Term, Term)]
+rwEquations = mapMaybe toEq
   where
     toEq ue = case ueUnit ue of
       Eq l r | all (`elem` termVars l) (termVars r) ->
@@ -306,7 +306,7 @@ tryRwPath lit goal units =
     Just (σ, path) | not (null path) -> Just (path, σ)
     _                                -> Nothing
   where
-    eqs   = allEqUnitsForRw units
+    eqs   = rwEquations units
     bound = rwBound eqs (litSize lit) (litSize goal)
 
 -- Term-level BFS for building equational chains in EqChain goals and lemmas.

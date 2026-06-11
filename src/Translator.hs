@@ -163,20 +163,15 @@ processBody σ0 (l1 : rest) = do
     Just (BodyMatch ue1 blkSubst1 rws1 clauseUpd1) -> do
       let σ1 = σ0 ++ clauseUpd1
       blk1 <- makeBlock ue1 rws1
-      -- The accumulator carries lines in reverse so addAndLitAcc can prepend in O(1).
-      -- ls1 is reversed here to start the accumulator; the whole list is reversed
-      -- once at the end to restore insertion order.
       let ls1 = case applySubstBlock blkSubst1 blk1 of
                   HaveHence ls -> ls
                   EqChain {}   -> error "processBody: initial block is EqChain"
-      result <- foldM addAndLitAcc (Just (reverse ls1, σ1)) rest
+      result <- foldM foldBodyLit (Just (reverse ls1, σ1)) rest
       return $ fmap (\(revLs, σ) -> (HaveHence (reverse revLs), σ)) result
 
--- Each additional body literal prepends to the reversed accumulator rather than
--- appending, so the list is reversed just once when processBody finishes.
-addAndLitAcc :: Maybe ([ProofLine], Subst) -> Literal -> TransM (Maybe ([ProofLine], Subst))
-addAndLitAcc Nothing _ = return Nothing
-addAndLitAcc (Just (revLs, σ)) lit = do
+foldBodyLit :: Maybe ([ProofLine], Subst) -> Literal -> TransM (Maybe ([ProofLine], Subst))
+foldBodyLit Nothing _ = return Nothing
+foldBodyLit (Just (revLs, σ)) lit = do
   let target = applySubst σ lit
   units <- gets (toList . tsUnits)
   case bodyLitMatch target units of
@@ -231,7 +226,7 @@ makeBlock ue rwPath = case nonGroundEqEnd rwPath of
       _                                        -> Nothing
     stepToLine (RwStep _ (origL, origR) dir, nextLit) = do
       nm' <- ensureNamed (Eq origL origR)
-      return (Hence nextLit (ByRw nm' (renderDir dir)))
+      return (Hence nextLit (ByRw nm' (rlAnnotation dir)))
 
 rwChainTo :: Term -> Term -> TransM [(RwStep, Term)]
 rwChainTo s t = do
@@ -240,16 +235,16 @@ rwChainTo s t = do
     Nothing   -> error ("rwChainTo: no rewrite path from " ++ show s ++ " to " ++ show t)
     Just path -> return path
 
-renderDir :: Dir -> Maybe Dir
-renderDir RL = Just RL
-renderDir LR = Nothing
+rlAnnotation :: Dir -> Maybe Dir
+rlAnnotation RL = Just RL
+rlAnnotation LR = Nothing
 
 extendWithRw :: ProofBlock -> [(RwStep, Literal)] -> TransM ProofBlock
 extendWithRw = foldM step
   where
     step blk (RwStep _ (origL, origR) dir, nextLit) = do
       nm <- ensureNamed (Eq origL origR)
-      return (appendLine blk (Hence nextLit (ByRw nm (renderDir dir))))
+      return (appendLine blk (Hence nextLit (ByRw nm (rlAnnotation dir))))
 
 -- Names unnamed units that exactly match a tail body literal before we start,
 -- so the same derivation does not end up inlined in multiple places.
