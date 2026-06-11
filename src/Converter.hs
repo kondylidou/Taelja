@@ -10,9 +10,9 @@ import Types
 import Helpers
 
 -- Splits the TSTP unit list into four buckets: axiom entries for output,
--- unit axioms pre-loaded into the working set, non-unit clauses for proof
--- search, and goal literals extracted from the negated conjecture.
--- Supports both E (split_conjunct / CNF) and Vampire (negated_conjecture / FOF).
+-- unit axioms pre-loaded into the working set, non-unit clauses for proof search,
+-- and goal literals from the negated conjecture.
+-- Handles both E (split_conjunct / CNF) and Vampire (negated_conjecture / FOF).
 classifyAxioms :: [T.Unit]
                -> ([AxiomEntry], [UnitEntry], [(String, Clause, Subst)], [Literal])
 classifyAxioms units =
@@ -74,7 +74,7 @@ isFalsum (T.Clause lits) = case toList lits of
   [(_, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])] -> True
   _ -> False
 
--- The negated conjecture is ¬goal, so we negate it back to recover the goal.
+-- The negated conjecture is the negation of the goal, so we negate it back.
 negateGoal :: T.Clause -> Literal
 negateGoal (T.Clause lits) = case toList lits of
   [(T.Negative, lit)]                       -> convertLit lit
@@ -107,8 +107,8 @@ unitNameToString :: T.UnitName -> String
 unitNameToString (Left (T.Atom t)) = Text.unpack t
 unitNameToString (Right n)         = show n
 
--- Prefix every clause variable with "c" so they never collide with unit
--- variables (which are uppercase-initial per the TPTP standard).
+-- Prefixes every clause variable with "c" so it can never collide with unit
+-- variables, which are uppercase-initial per the TPTP standard.
 -- tryMatchBodyLit relies on this invariant to split the combined substitution.
 freshenClause :: Clause -> Clause
 freshenClause (Clause bs mh) =

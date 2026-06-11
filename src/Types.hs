@@ -13,7 +13,7 @@ data Literal
   | NRel String [Term]   -- ¬P(t̄)
   deriving (Eq, Ord, Show)
 
--- at most one positive literal (the head); Nothing means goal clause
+-- At most one positive literal. A Nothing head marks this as the goal clause.
 data Clause = Clause
   { body :: [Literal]
   , hd   :: Maybe Literal
@@ -29,15 +29,14 @@ data RwStep = RwStep
   , rwDir  :: Dir
   } deriving (Show)
 
--- a unit is a single established literal; unnamed ones carry their derivation
--- so they can be promoted to a named lemma later if needed
+-- Unnamed entries carry their derivation so they can be promoted to a lemma later.
 data UnitEntry = UnitEntry
   { ueName  :: Maybe String
   , ueUnit  :: Literal
   , ueDeriv :: Maybe ProofBlock
   } deriving (Show)
 
--- EqChain is only used for pure equational goals; everything else is HaveHence
+-- EqChain is only for pure equational goals. Everything else uses HaveHence.
 data ProofBlock
   = HaveHence [ProofLine]
   | EqChain   Term [(RwStep, Term)]
@@ -65,10 +64,10 @@ data StructuredProof = StructuredProof
   , goals  :: [(Literal, ProofBlock)]
   } deriving (Show)
 
--- result of matching a body literal against the unit set
+-- Result of matching a body literal against the unit set.
 data BodyMatch = BodyMatch
   { bmEntry     :: UnitEntry
-  , bmUnitSubst :: Subst               -- applied to the stored proof block
+  , bmUnitSubst :: Subst               -- Applied to the stored proof block.
   , bmRewrites  :: [(RwStep, Literal)]
-  , bmClauseUpd :: Subst               -- appended to the running clause substitution
+  , bmClauseUpd :: Subst               -- Appended to the running clause substitution.
   }

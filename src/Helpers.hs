@@ -63,6 +63,7 @@ renameLit r (NEq l ri)  = NEq (renameTerm r l) (renameTerm r ri)
 renameLit r (Rel n ts)  = Rel n  (map (renameTerm r) ts)
 renameLit r (NRel n ts) = NRel n (map (renameTerm r) ts)
 
+-- Rewrites lhs to rhs at every position in t and returns all possible results.
 rewritePos :: Term -> Term -> Term -> [Term]
 rewritePos lhs rhs t =
   [ applySubstTerm subst rhs | Just subst <- [matchTerm lhs t []] ]
@@ -117,9 +118,9 @@ matchAll = pairFold matchTerm
 pairFold :: (a -> b -> c -> Maybe c) -> [(a, b)] -> c -> Maybe c
 pairFold f pairs s = foldl (\acc (a, b) -> acc >>= f a b) (Just s) pairs
 
--- Two-sided unification: both sides can bind variables.
--- Safe to skip occurs-check because body vars (c-prefixed) and unit vars
--- (uppercase-initial) are disjoint namespaces, so a binding can never loop.
+-- Two-sided unification. The occurs-check is skipped because body vars (c-prefixed)
+-- and unit vars (uppercase-initial) are disjoint, so a variable can never
+-- appear on both sides of a binding.
 unifyTerm :: Term -> Term -> Subst -> Maybe Subst
 unifyTerm (Var x) t subst
   | Var x == t = Just subst
@@ -167,15 +168,19 @@ groundSubtermsLit (NRel _ ts) = concatMap groundSubterms ts
 groundSubtermsLit (Eq l r)    = groundSubterms l ++ groundSubterms r
 groundSubtermsLit (NEq l r)   = groundSubterms l ++ groundSubterms r
 
+-- All ways to assign each free variable to one of the given ground terms.
 instantiations :: [String] -> [Term] -> [Subst]
 instantiations freeVs terms =
   foldr (\v acc -> [(v, t) : s | t <- terms, s <- acc]) [[]] (nub freeVs)
 
--- BFS size bound: sum of start/goal sizes plus the largest equation lhs.
--- Keeps the search finite while still finding all reachable rewrites.
+-- The bound is generous enough to reach any term reachable in one equation
+-- application from either side, so no useful path gets pruned.
 rwBound :: [(String, Term, Term)] -> Int -> Int -> Int
 rwBound eqs a b = a + b + maximum (0 : [termSize l | (_, l, _) <- eqs])
 
+-- Generic BFS engine over rewrite sequences.
+-- rwFn applies one equation step. The check fires when the goal is reached.
+-- The path accumulates in reverse and gets flipped on success.
 bfsRewrite :: Ord a
            => (Term -> Term -> a -> [a])
            -> (a -> Int)
@@ -203,8 +208,8 @@ bfsRewrite rwFn sizeFn eqs check start bound =
         go ((k, v) : rest) seen
           | Set.member k seen = go rest seen
           | otherwise         = (k, v) : go rest (Set.insert k seen)
-    -- RL rewrites are only allowed when all rhs vars also appear on the lhs,
-    -- otherwise applying RL would introduce new ungroundable variables.
+    -- RL is only safe when lhs vars are a subset of rhs vars. Otherwise
+    -- applying the equation right-to-left would introduce unbound variables.
     step visited (cur, path) =
       [ (cur', (RwStep nm (origL, origR) dir, cur') : path)
       | (nm, origL, origR) <- eqs
@@ -216,8 +221,7 @@ bfsRewrite rwFn sizeFn eqs check start bound =
       , Set.notMember cur' visited
       ]
 
--- Only named equations can appear here — unnamed ones can't be cited in proofs.
--- Call ensureNamed before using an equation in a BFS that needs to be recorded.
+-- Only named equations make it here. Unnamed ones cannot be cited in a proof.
 eqUnits :: [UnitEntry] -> [(String, Term, Term)]
 eqUnits = concatMap toEq
   where
@@ -232,6 +236,7 @@ eqUnits = concatMap toEq
 findUnitByLit :: Literal -> [UnitEntry] -> Maybe UnitEntry
 findUnitByLit lit = find (\ue -> ueUnit ue == lit)
 
+-- BFS from lit, trying to reach goal using one-sided matching. Unit vars can bind.
 tryMatchLit :: Literal -> Literal -> [UnitEntry] -> Maybe (Subst, [(RwStep, Literal)])
 tryMatchLit lit goal units =
   bfsRewrite rewritePosLit litSize eqs (`matchLit` goal) lit bound
@@ -239,6 +244,7 @@ tryMatchLit lit goal units =
     eqs   = eqUnits units
     bound = rwBound eqs (litSize lit) (litSize goal)
 
+-- Scans units in order and returns the first one that can be rewritten to match goal.
 findMatchingUnit :: Literal -> [UnitEntry] -> Maybe (UnitEntry, Subst, [(RwStep, Literal)])
 findMatchingUnit goal units = listToMaybe
   [ (ue, subst, rws)
@@ -246,10 +252,9 @@ findMatchingUnit goal units = listToMaybe
   , Just (subst, rws) <- [tryMatchLit (ueUnit ue) goal units]
   ]
 
--- Body vars are "c"-prefixed (from freshenClause); unit vars are uppercase-initial
--- (TPTP convention). The namespaces are disjoint so splitting the combined
--- substitution by whether the variable starts with "c" correctly separates
--- σClause from σUnit.
+-- BFS from unitLit using two-sided unification against bodyLit.
+-- Body vars are c-prefixed and unit vars are uppercase-initial, so the namespaces
+-- are disjoint. Splitting the result by prefix cleanly separates σClause from σUnit.
 tryMatchBodyLit :: Literal -> Literal -> [UnitEntry] -> Maybe (Subst, Subst, [(RwStep, Literal)])
 tryMatchBodyLit bodyLit unitLit allUnits =
   fmap split (bfsRewrite rewritePosLit litSize eqs (\cur -> unifyLit bodyLit cur []) unitLit bound)
@@ -269,16 +274,17 @@ findBodyLitMatch bodyLit units = listToMaybe
   , Just (σClause, σUnit, rws) <- [tryMatchBodyLit bodyLit (ueUnit ue) units]
   ]
 
--- Try one-sided matching first (cheaper); fall back to two-sided unification
--- for body literals that still have uninstantiated clause variables.
+-- Tries matching first since it's cheaper. Falls back to unification only
+-- when the target has free clause variables that matching cannot bind.
 bodyLitMatch :: Literal -> [UnitEntry] -> Maybe BodyMatch
 bodyLitMatch target units =
   ((\(ue, σUnit, rws)          -> BodyMatch ue σUnit rws [])       <$> findMatchingUnit  target units)
   <|>
   ((\(ue, σUnit, σClause, rws) -> BodyMatch ue σUnit rws σClause)  <$> findBodyLitMatch target units)
 
--- Unlike eqUnits, this includes unnamed equations (with a blank placeholder
--- name) so BFS can use them as stepping stones even if they can't be cited yet.
+-- Like tryMatchLit but includes unnamed equations as stepping stones.
+-- BFS can route through them even when they cannot yet be cited in the proof.
+-- Requires a non-empty path. Trivial matches go through findMatchingUnit instead.
 tryRwPath :: Literal -> Literal -> [UnitEntry] -> Maybe ([(RwStep, Literal)], Subst)
 tryRwPath lit goal units =
   case bfsRewrite rewritePosLit litSize eqs (`matchLit` goal) lit bound of
@@ -291,6 +297,7 @@ tryRwPath lit goal units =
             , not (any (`notElem` termVars l) (termVars r)) ]
     bound = rwBound eqs (litSize lit) (litSize goal)
 
+-- Term-level BFS for building equational chains in EqChain goals and lemmas.
 findPath :: [UnitEntry] -> Term -> Term -> Maybe [(RwStep, Term)]
 findPath units s t =
   fmap snd (bfsRewrite rewritePos termSize eqs check s bound)
@@ -303,8 +310,8 @@ appendLine :: ProofBlock -> ProofLine -> ProofBlock
 appendLine (HaveHence ls) l = HaveHence (ls ++ [l])
 appendLine (EqChain {})   _ = error "appendLine: cannot extend EqChain"
 
--- Returns True if any step in the derivation came from the named clause,
--- used to avoid promoting units that would create a circular reference.
+-- Checks whether a unit's derivation cites the named clause anywhere.
+-- Used to avoid prelemmatizing something that would create a circular reference.
 derivedByClause :: String -> UnitEntry -> Bool
 derivedByClause name ue = case ueDeriv ue of
   Just (HaveHence ls) -> any isFromClause ls
