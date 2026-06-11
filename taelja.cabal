@@ -11,6 +11,8 @@ library
   hs-source-dirs:   src
   exposed-modules:
     Types
+    Helpers
+    Converter
     Translator
     Emitter
   build-depends:

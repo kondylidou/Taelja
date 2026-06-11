@@ -1,7 +1,5 @@
 module Types where
 
-import Data.Maybe (fromMaybe)
-
 data Term
   = Var   String
   | Const String
@@ -15,13 +13,12 @@ data Literal
   | NRel String [Term]   -- ¬P(t̄)
   deriving (Eq, Ord, Show)
 
--- at most one positive literal (the head)
+-- at most one positive literal (the head); Nothing means goal clause
 data Clause = Clause
-  { body :: [Literal]       -- negative literals
-  , hd   :: Maybe Literal   -- positive literal; Nothing for a goal clause
+  { body :: [Literal]
+  , hd   :: Maybe Literal
   } deriving (Eq, Show)
 
--- variable name → term
 type Subst = [(String, Term)]
 
 data Dir = LR | RL deriving (Eq, Show)
@@ -32,13 +29,15 @@ data RwStep = RwStep
   , rwDir  :: Dir
   } deriving (Show)
 
--- entry in the Units set; ueDeriv holds the proof block for unnamed intermediates
+-- a unit is a single established literal; unnamed ones carry their derivation
+-- so they can be promoted to a named lemma later if needed
 data UnitEntry = UnitEntry
   { ueName  :: Maybe String
   , ueUnit  :: Literal
   , ueDeriv :: Maybe ProofBlock
   } deriving (Show)
 
+-- EqChain is only used for pure equational goals; everything else is HaveHence
 data ProofBlock
   = HaveHence [ProofLine]
   | EqChain   Term [(RwStep, Term)]
@@ -51,8 +50,8 @@ data ProofLine
   deriving (Show)
 
 data Justification
-  = ByAxiom String             -- by axiom/lemma N
-  | ByRw    String (Maybe Dir) -- by rw name [R->L]
+  = ByAxiom String
+  | ByRw    String (Maybe Dir)
   deriving (Show)
 
 data AxiomEntry
@@ -66,63 +65,10 @@ data StructuredProof = StructuredProof
   , goals  :: [(Literal, ProofBlock)]
   } deriving (Show)
 
--- Variable extraction
-termVars :: Term -> [String]
-termVars (Var x)    = [x]
-termVars (Const _)  = []
-termVars (App _ ts) = concatMap termVars ts
-
-litVars :: Literal -> [String]
-litVars (Eq l r)    = termVars l ++ termVars r
-litVars (NEq l r)   = termVars l ++ termVars r
-litVars (Rel _ ts)  = concatMap termVars ts
-litVars (NRel _ ts) = concatMap termVars ts
-
--- Size (for BFS pruning)
-termSize :: Term -> Int
-termSize (Var _)    = 1
-termSize (Const _)  = 1
-termSize (App _ ts) = 1 + sum (map termSize ts)
-
-litSize :: Literal -> Int
-litSize (Eq l r)    = termSize l + termSize r
-litSize (NEq l r)   = termSize l + termSize r
-litSize (Rel _ ts)  = sum (map termSize ts)
-litSize (NRel _ ts) = sum (map termSize ts)
-
--- Substitution
-applySubstTerm :: Subst -> Term -> Term
-applySubstTerm subst (Var x)    = fromMaybe (Var x) (lookup x subst)
-applySubstTerm _     (Const c)  = Const c
-applySubstTerm subst (App f ts) = App f (map (applySubstTerm subst) ts)
-
-applySubst :: Subst -> Literal -> Literal
-applySubst subst (Eq l r)    = Eq  (applySubstTerm subst l) (applySubstTerm subst r)
-applySubst subst (NEq l r)   = NEq (applySubstTerm subst l) (applySubstTerm subst r)
-applySubst subst (Rel n ts)  = Rel n  (map (applySubstTerm subst) ts)
-applySubst subst (NRel n ts) = NRel n (map (applySubstTerm subst) ts)
-
-applySubstLine :: Subst -> ProofLine -> ProofLine
-applySubstLine subst (Have  lit nm) = Have  (applySubst subst lit) nm
-applySubstLine subst (And   lit nm) = And   (applySubst subst lit) nm
-applySubstLine subst (Hence lit j)  = Hence (applySubst subst lit) j
-
-applySubstBlock :: Subst -> ProofBlock -> ProofBlock
-applySubstBlock subst (HaveHence ls)    = HaveHence (map (applySubstLine subst) ls)
-applySubstBlock subst (EqChain s steps) =
-  EqChain (applySubstTerm subst s) (map applyStep steps)
-  where
-    applyStep (RwStep nm (l, r) d, cur) =
-      (RwStep nm (applySubstTerm subst l, applySubstTerm subst r) d, applySubstTerm subst cur)
-
--- Variable renaming (for pretty-printing)
-renameTerm :: [(String, String)] -> Term -> Term
-renameTerm r (Var x)    = maybe (Var x) Var (lookup x r)
-renameTerm _ (Const c)  = Const c
-renameTerm r (App f ts) = App f (map (renameTerm r) ts)
-
-renameLit :: [(String, String)] -> Literal -> Literal
-renameLit r (Eq l ri)   = Eq  (renameTerm r l) (renameTerm r ri)
-renameLit r (NEq l ri)  = NEq (renameTerm r l) (renameTerm r ri)
-renameLit r (Rel n ts)  = Rel n  (map (renameTerm r) ts)
-renameLit r (NRel n ts) = NRel n (map (renameTerm r) ts)
+-- result of matching a body literal against the unit set
+data BodyMatch = BodyMatch
+  { bmEntry     :: UnitEntry
+  , bmUnitSubst :: Subst               -- applied to the stored proof block
+  , bmRewrites  :: [(RwStep, Literal)]
+  , bmClauseUpd :: Subst               -- appended to the running clause substitution
+  }

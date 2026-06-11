@@ -4,6 +4,7 @@ import Data.Char (toUpper)
 import Data.List (intercalate, nub)
 import Data.Maybe (maybeToList)
 import Types
+import Helpers
 
 emit :: StructuredProof -> String
 emit sp = unlines $ concat
@@ -13,6 +14,8 @@ emit sp = unlines $ concat
   , intercalate [""] (zipWith goalLines [1..] (goals sp))
   ]
 
+-- A single global renaming covers all axiom entries so that a variable shared
+-- across multiple axioms (including non-unit clauses) gets the same display name.
 axiomLines :: [AxiomEntry] -> [String]
 axiomLines entries = map ppEntry entries
   where
@@ -41,8 +44,11 @@ ppClause c@(Clause bodyLits mHead) =
     localRenaming = zip (nub (concatMap litVars allLits)) prettyVarNames
 
 prettyVarNames :: [String]
-prettyVarNames = ["X", "Y", "Z", "A", "B", "C", "U", "V", "W"] ++ ["X" ++ show n | n <- [(1 :: Int)..]]
+prettyVarNames = ["X", "Y", "Z", "A", "B", "C", "U", "V", "W"]
+              ++ ["X" ++ show n | n <- [(1 :: Int)..]]
 
+-- Variable names are local to each block — the same display name can mean
+-- different things in different lemmas, which is standard mathematical style.
 blockRenaming :: Literal -> ProofBlock -> [(String, String)]
 blockRenaming lit block = zip (nub (litVars lit ++ blockVars block)) prettyVarNames
 
@@ -53,27 +59,6 @@ lemmaLines (name, lit, block) =
   blockLines (renameBlock renaming block) ++
   [""]
   where renaming = blockRenaming lit block
-
-blockVars :: ProofBlock -> [String]
-blockVars (HaveHence ls)    = nub (concatMap lineVars ls)
-blockVars (EqChain s steps) = nub (termVars s ++ concatMap stepVars steps)
-  where stepVars (RwStep _ (l, r) _, cur) = termVars l ++ termVars r ++ termVars cur
-
-lineVars :: ProofLine -> [String]
-lineVars (Have  lit _) = litVars lit
-lineVars (And   lit _) = litVars lit
-lineVars (Hence lit _) = litVars lit
-
-renameBlock :: [(String, String)] -> ProofBlock -> ProofBlock
-renameBlock r (HaveHence ls)    = HaveHence (map (renameProofLine r) ls)
-renameBlock r (EqChain s steps) = EqChain (renameTerm r s) (map renameStep steps)
-  where renameStep (RwStep nm (l, ri) d, cur) =
-          (RwStep nm (renameTerm r l, renameTerm r ri) d, renameTerm r cur)
-
-renameProofLine :: [(String, String)] -> ProofLine -> ProofLine
-renameProofLine r (Have  lit nm) = Have  (renameLit r lit) nm
-renameProofLine r (And   lit nm) = And   (renameLit r lit) nm
-renameProofLine r (Hence lit j)  = Hence (renameLit r lit) j
 
 goalLines :: Int -> (Literal, ProofBlock) -> [String]
 goalLines n (lit, block) =

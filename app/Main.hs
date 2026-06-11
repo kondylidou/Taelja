@@ -12,7 +12,8 @@ import Data.TPTP.Parse.Text (parseTSTP)
 import qualified Data.TPTP as T
 
 import Types (AxiomEntry(..), Clause(..))
-import Translator (translate, classifyAxioms)
+import Translator (translate)
+import Converter (classifyAxioms)
 import Emitter (emit, ppClause)
 import qualified Emitter as E
 
