@@ -87,8 +87,3 @@ cabal run taelja -- <proof-file>
 ```
 cabal test
 ```
-
-Golden tests live in `test/`. To add a new test: place the input `.tstp` file
-in `test/`, run the tool to produce the expected output, save it to
-`test/expected/<name>.txt`, and add a `golden "<name>"` entry in
-`test/Main.hs`.
