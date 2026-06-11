@@ -14,7 +14,7 @@ import Helpers
 -- and goal literals from the negated conjecture.
 -- Handles both E (split_conjunct / CNF) and Vampire (negated_conjecture / FOF).
 classifyAxioms :: [T.Unit]
-               -> ([AxiomEntry], [UnitEntry], [(String, Clause, Subst)], [Literal])
+               -> ([Axiom], [UnitEntry], [(String, Clause)], [Literal])
 classifyAxioms units =
   let fofAxioms = [ (unitNameToString n, f)
                   | T.Unit n (T.Formula (T.Standard T.Axiom) (T.FOF f)) _ <- units ]
@@ -39,7 +39,7 @@ classifyAxioms units =
         | otherwise =
             let nm = "axiom " ++ show i
                 cl = fofToClause f
-            in (ANonUnit nm cl, Nothing, Just (nm, freshenClause cl, []))
+            in (ANonUnit nm cl, Nothing, Just (nm, freshenClause cl))
       classified             = zipWith (curry classify) [(1::Int)..] fofAxioms
       (axEntries, mUs, mNUs) = unzip3 classified
   in (axEntries, catMaybes mUs, catMaybes mNUs, goalLits)

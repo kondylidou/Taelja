@@ -4,6 +4,9 @@ import qualified Data.TPTP as T
 import Data.Char (isUpper)
 import Data.List (nub, partition)
 import qualified Data.Map.Strict as Map
+import qualified Data.Sequence as Seq
+import Data.Sequence (Seq, (|>))
+import Data.Foldable (toList) -- explicit: Map.toList in scope prevents Prelude resolution
 import Control.Monad (foldM, forM_, void)
 import Control.Monad.State
 import Data.Maybe (fromMaybe, isJust, isNothing)
@@ -12,11 +15,12 @@ import Types
 import Helpers
 import Converter
 
--- The unit map mirrors the list so lookups in ensureNamed and addToUnits
+-- The unit map mirrors the sequence so lookups in ensureNamed and addToUnits
 -- are O(log n) rather than a linear scan. The count lets the fixpoint
--- detect progress without traversing the whole list each round.
+-- detect progress without traversing the whole sequence each round.
+-- tsUnits is a Seq so snoc (append-at-end) is O(log n) rather than O(n).
 data TransState = TransState
-  { tsUnits      :: [UnitEntry]
+  { tsUnits      :: Seq UnitEntry
   , tsUnitMap    :: Map.Map Literal UnitEntry
   , tsUnitCount  :: Int
   , tsLemmaCount :: Int
@@ -29,7 +33,7 @@ translate :: T.TSTP -> StructuredProof
 translate (T.TSTP _ units) =
   let (axEntries, initUnitEntries, axNonUnits, goalLits) = classifyAxioms units
       initState = TransState
-        { tsUnits      = initUnitEntries
+        { tsUnits      = Seq.fromList initUnitEntries
         , tsUnitMap    = Map.fromList [(ueUnit ue, ue) | ue <- initUnitEntries]
         , tsUnitCount  = length initUnitEntries
         , tsLemmaCount = length axEntries
@@ -42,7 +46,7 @@ translate (T.TSTP _ units) =
        , goals  = zip goalLits goalBlocks
        }
 
-mainLoop :: [(String, Clause, Subst)] -> Literal -> TransM ProofBlock
+mainLoop :: [(String, Clause)] -> Literal -> TransM ProofBlock
 mainLoop []       goalLit = translateNonUnitsEmpty goalLit
 mainLoop nonUnits goalLit = translateNonUnits nonUnits goalLit
 
@@ -52,7 +56,7 @@ translateNonUnitsEmpty goal = case goal of
     steps <- rwChainTo s t
     return (EqChain s steps)
   _ -> do
-    units <- gets tsUnits
+    units <- gets (toList . tsUnits)
     case findMatchingUnit goal units of
       Just (ue, subst, rws) -> do
         block <- makeBlock ue rws
@@ -62,7 +66,7 @@ translateNonUnitsEmpty goal = case goal of
 
 -- Keeps retrying all clauses as long as each round adds at least one new unit.
 -- A new unit can unlock body literals that were stuck in earlier rounds.
-translateNonUnits :: [(String, Clause, Subst)] -> Literal -> TransM ProofBlock
+translateNonUnits :: [(String, Clause)] -> Literal -> TransM ProofBlock
 translateNonUnits nonUnits goalLit = fixpoint
   where
     fixpoint = do
@@ -80,9 +84,9 @@ translateNonUnits nonUnits goalLit = fixpoint
               case mBlock2 of
                 Just block -> return block
                 Nothing    -> translateNonUnitsEmpty goalLit
-    oneRound []               = return Nothing
-    oneRound ((n, c, s) : rest) = do
-      mBlock <- processNonUnit n c s goalLit
+    oneRound []              = return Nothing
+    oneRound ((n, c) : rest) = do
+      mBlock <- processNonUnit n c goalLit
       case mBlock of
         Just block -> return (Just block)
         Nothing    -> oneRound rest
@@ -99,20 +103,19 @@ ensureAllEqNamed = do
 
 -- Top-down first: match the head to the goal and prove the body under that substitution.
 -- If that fails (head doesn't match or body cannot be proved), try bottom-up instead.
-processNonUnit :: String -> Clause -> Subst -> Literal -> TransM (Maybe ProofBlock)
-processNonUnit clauseName (Clause bodyLits mHead) σ0 goalLit = do
+processNonUnit :: String -> Clause -> Literal -> TransM (Maybe ProofBlock)
+processNonUnit clauseName (Clause bodyLits mHead) goalLit = do
   let headLit = fromMaybe (error "processNonUnit: unit clause") mHead
   case matchLit headLit goalLit of
     Just σHead -> do
-      let σ       = σ0 ++ σHead
-          targets = map (applySubst σ) bodyLits
+      let targets = map (applySubst σHead) bodyLits
       -- Name tail body literals now so their derivations are ready when we cite them.
       case targets of { _ : _ : _ -> prelemmatize clauseName (tail targets); _ -> return () }
-      mResult <- processBody σ bodyLits
+      mResult <- processBody σHead bodyLits
       case mResult of
-        Nothing         -> nonUnitBottomUp clauseName bodyLits σ0 headLit goalLit
+        Nothing         -> nonUnitBottomUp clauseName bodyLits headLit goalLit
         Just (block, _) -> return (Just (appendLine block (Hence goalLit (ByAxiom clauseName))))
-    Nothing -> nonUnitBottomUp clauseName bodyLits σ0 headLit goalLit
+    Nothing -> nonUnitBottomUp clauseName bodyLits headLit goalLit
 
 -- Proves the body first, then derives the grounded head and tries to connect it
 -- to the goal via matching or rewriting. If it still cannot reach the goal, stores
@@ -120,9 +123,9 @@ processNonUnit clauseName (Clause bodyLits mHead) σ0 goalLit = do
 -- Free unit variables (uppercase-initial) get instantiated over the goal's ground
 -- subterms. This works because freshenClause always c-prefixes clause variables,
 -- so isUpper reliably distinguishes unit vars from clause vars.
-nonUnitBottomUp :: String -> [Literal] -> Subst -> Literal -> Literal -> TransM (Maybe ProofBlock)
-nonUnitBottomUp clauseName bodyLits σ0 headLit goalLit = do
-  mResult <- processBody σ0 bodyLits
+nonUnitBottomUp :: String -> [Literal] -> Literal -> Literal -> TransM (Maybe ProofBlock)
+nonUnitBottomUp clauseName bodyLits headLit goalLit = do
+  mResult <- processBody [] bodyLits
   case mResult of
     Nothing -> return Nothing
     Just (block, σFinal) -> do
@@ -131,7 +134,7 @@ nonUnitBottomUp clauseName bodyLits σ0 headLit goalLit = do
       case matchLit groundH goalLit of
         Just σ' -> return (Just (applySubstBlock σ' block'))
         Nothing -> do
-          units' <- gets tsUnits
+          units' <- gets (toList . tsUnits)
           case tryRwPath groundH goalLit units' of
             Just (rwPath, σRw) -> do
               blk <- extendWithRw block' rwPath
@@ -141,24 +144,31 @@ nonUnitBottomUp clauseName bodyLits σ0 headLit goalLit = do
                   (unitFree, _) = partition (isUpper . head) freeVs
               if null unitFree
                 then addToUnits (UnitEntry Nothing groundH (Just block'))
-                else forM_ (instantiations unitFree (groundSubtermsLit goalLit)) $ \σ -> do
-                       let gh = applySubst σ groundH
-                           bl = applySubstBlock σ block'
-                       addToUnits (UnitEntry Nothing gh (Just bl))
+                else do
+                  let terms = groundSubtermsLit goalLit
+                  if null terms
+                    -- Goal has no ground subterms; add groundH as-is with unit vars free.
+                    -- findMatchingUnit will bind those vars when the goal is later matched.
+                    then addToUnits (UnitEntry Nothing groundH (Just block'))
+                    else forM_ (instantiations unitFree terms) $ \σ -> do
+                           let gh = applySubst σ groundH
+                               bl = applySubstBlock σ block'
+                           addToUnits (UnitEntry Nothing gh (Just bl))
               return Nothing
 
 processBody :: Subst -> [Literal] -> TransM (Maybe (ProofBlock, Subst))
 processBody _ [] = error "processBody: empty body"
 processBody σ0 (l1 : rest) = do
-  units <- gets tsUnits
+  units <- gets (toList . tsUnits)
   let target1 = applySubst σ0 l1
   case bodyLitMatch target1 units of
     Nothing -> return Nothing
     Just (BodyMatch ue1 blkSubst1 rws1 clauseUpd1) -> do
       let σ1 = σ0 ++ clauseUpd1
       blk1 <- makeBlock ue1 rws1
-      -- Accumulate tail lines in reverse so each prepend is O(1),
-      -- then reverse the whole list once at the end.
+      -- The accumulator carries lines in reverse so addAndLitAcc can prepend in O(1).
+      -- ls1 is reversed here to start the accumulator; the whole list is reversed
+      -- once at the end to restore insertion order.
       let ls1 = case applySubstBlock blkSubst1 blk1 of
                   HaveHence ls -> ls
                   EqChain {}   -> error "processBody: initial block is EqChain"
@@ -171,7 +181,7 @@ addAndLitAcc :: Maybe ([ProofLine], Subst) -> Literal -> TransM (Maybe ([ProofLi
 addAndLitAcc Nothing _ = return Nothing
 addAndLitAcc (Just (revLs, σ)) lit = do
   let target = applySubst σ lit
-  units <- gets tsUnits
+  units <- gets (toList . tsUnits)
   case bodyLitMatch target units of
     Nothing -> return Nothing
     Just (BodyMatch ue blkSubst rws clauseUpd) -> do
@@ -195,7 +205,7 @@ makeBlock ue rwPath = case nonGroundEqEnd rwPath of
     m <- gets tsUnitMap
     case Map.lookup finalLit m of
       Nothing -> do
-        units <- gets tsUnits
+        units <- gets (toList . tsUnits)
         eqBlock <- case findPath units l r of
           Just path -> return (EqChain l path)
           Nothing   -> buildInline
@@ -229,7 +239,7 @@ makeBlock ue rwPath = case nonGroundEqEnd rwPath of
 
 rwChainTo :: Term -> Term -> TransM [(RwStep, Term)]
 rwChainTo s t = do
-  units <- gets tsUnits
+  units <- gets (toList . tsUnits)
   case findPath units s t of
     Nothing   -> error ("rwChainTo: no rewrite path from " ++ show s ++ " to " ++ show t)
     Just path -> return path
@@ -244,21 +254,25 @@ extendWithRw = foldM step
 
 -- Names unnamed units that exactly match a tail body literal before we start,
 -- so the same derivation does not end up inlined in multiple places.
+-- Uses Map.lookup (O(log n)) rather than BFS since only exact matches qualify.
 -- Skips units derived from the current clause to avoid circular references.
 prelemmatize :: String -> [Literal] -> TransM ()
-prelemmatize currentClause targets = do
-  units <- gets tsUnits
-  mapM_ (go units) targets
+prelemmatize currentClause = mapM_ go
   where
-    go units t = case findMatchingUnit t units of
-      Just (ue, σUnit, rws)
-        | null σUnit
-        , null rws
-        , isNothing (ueName ue)
-        , isJust (ueDeriv ue)
-        , not (derivedByClause currentClause ue) ->
-            void (ensureNamed (ueUnit ue))
-      _ -> return ()
+    go t = do
+      m <- gets tsUnitMap
+      let found = case Map.lookup t m of
+                    Just ue -> Just ue
+                    Nothing -> case t of
+                      Eq a b -> Map.lookup (Eq b a) m
+                      _      -> Nothing
+      case found of
+        Just ue
+          | isNothing (ueName ue)
+          , isJust (ueDeriv ue)
+          , not (derivedByClause currentClause ue) ->
+              void (ensureNamed (ueUnit ue))
+        _ -> return ()
 
 ensureNamed :: Literal -> TransM String
 ensureNamed lit = do
@@ -288,12 +302,9 @@ emitLemma name lit block =
 modifyUnit :: Literal -> UnitEntry -> TransM ()
 modifyUnit lit new =
   modify $ \s -> s
-    { tsUnits   = replaceFirst (tsUnits s)
+    { tsUnits   = fmap (\u -> if ueUnit u == lit then new else u) (tsUnits s)
     , tsUnitMap = Map.insert lit new (tsUnitMap s)
     }
-  where
-    replaceFirst []     = []
-    replaceFirst (u:us) = if ueUnit u == lit then new : us else u : replaceFirst us
 
 -- First-write-wins: if a unit for this literal already exists we keep it,
 -- even if the new derivation might be shorter.
@@ -302,7 +313,7 @@ addToUnits ue = do
   m <- gets tsUnitMap
   case Map.lookup (ueUnit ue) m of
     Nothing -> modify $ \s -> s
-      { tsUnits     = tsUnits s ++ [ue]
+      { tsUnits     = tsUnits s |> ue
       , tsUnitMap   = Map.insert (ueUnit ue) ue m
       , tsUnitCount = tsUnitCount s + 1
       }

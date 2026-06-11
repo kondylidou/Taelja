@@ -16,7 +16,7 @@ emit sp = unlines $ concat
 
 -- A single global renaming covers all axiom entries so that a variable shared
 -- across multiple axioms (including non-unit clauses) gets the same display name.
-axiomLines :: [AxiomEntry] -> [String]
+axiomLines :: [Axiom] -> [String]
 axiomLines entries = map ppEntry entries
   where
     globalRenaming = zip (nub (concatMap entryVars entries)) prettyVarNames

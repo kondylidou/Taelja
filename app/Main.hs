@@ -11,7 +11,7 @@ import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
 import qualified Data.TPTP as T
 
-import Types (AxiomEntry(..), Clause(..))
+import Types (Axiom(..), Clause(..))
 import Translator (translate)
 import Converter (classifyAxioms)
 import Emitter (emit, ppClause)
@@ -46,12 +46,12 @@ main = do
         putStrLn ""
       putStr (emit (translate tstp))
 
-ppEntry :: AxiomEntry -> String
+ppEntry :: Axiom -> String
 ppEntry (AUnit n l)    = n ++ " : " ++ E.ppLiteral l
 ppEntry (ANonUnit n c) = n ++ " : " ++ ppClause c
 
-ppNonUnit :: (String, Clause, a) -> String
-ppNonUnit (n, c, _) = "  " ++ n ++ " : " ++ ppClause c
+ppNonUnit :: (String, Clause) -> String
+ppNonUnit (n, c) = "  " ++ n ++ " : " ++ ppClause c
 
 dumpUnit :: T.Unit -> IO ()
 dumpUnit (T.Unit name decl source) = do

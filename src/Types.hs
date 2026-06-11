@@ -53,13 +53,13 @@ data Justification
   | ByRw    String (Maybe Dir)
   deriving (Show)
 
-data AxiomEntry
+data Axiom
   = AUnit    String Literal
   | ANonUnit String Clause
   deriving (Show)
 
 data StructuredProof = StructuredProof
-  { axioms :: [AxiomEntry]
+  { axioms :: [Axiom]
   , lemmas :: [(String, Literal, ProofBlock)]
   , goals  :: [(Literal, ProofBlock)]
   } deriving (Show)

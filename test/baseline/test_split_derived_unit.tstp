@@ -1,0 +1,21 @@
+% Regression test for tryMatchBodyLit split.
+% A derived unit q(a, cX1) with a c-prefixed free variable is stored after
+% proving axiom 2 bottom-up. When axiom 3 then tries to prove q(cX0, b),
+% the unifier binds both cX0 (target var) and cX1 (unit var). The split must
+% put cX0 into σClause and cX1 into σUnit (by targetVarSet membership), so the
+% stored proof block gets cX1 → b applied and the proof shows q(a,b), not q(a,X).
+fof(f1,axiom,(
+  p(a)),
+  file('test',unknown)).
+fof(f2,axiom,(
+  ! [X0,X1] : (p(X0) => q(X0,X1))),
+  file('test',unknown)).
+fof(f3,axiom,(
+  ! [X0] : (q(X0,b) => r(X0))),
+  file('test',unknown)).
+fof(f4,conjecture,(
+  r(a)),
+  file('test',unknown)).
+fof(f5,negated_conjecture,(
+  ~r(a)),
+  inference(negated_conjecture,[status(cth)],[f4])).

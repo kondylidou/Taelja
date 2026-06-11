@@ -2,7 +2,7 @@ module Helpers where
 
 import Control.Applicative ((<|>))
 import Data.List (find, nub)
-import Data.Maybe (fromMaybe, listToMaybe)
+import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import qualified Data.Set as Set
 import Types
 
@@ -12,10 +12,7 @@ termVars (Const _)  = []
 termVars (App _ ts) = concatMap termVars ts
 
 litVars :: Literal -> [String]
-litVars (Eq l r)    = termVars l ++ termVars r
-litVars (NEq l r)   = termVars l ++ termVars r
-litVars (Rel _ ts)  = concatMap termVars ts
-litVars (NRel _ ts) = concatMap termVars ts
+litVars = foldLiteralTerms termVars
 
 termSize :: Term -> Int
 termSize (Var _)    = 1
@@ -33,11 +30,22 @@ applySubstTerm subst (Var x)    = fromMaybe (Var x) (lookup x subst)
 applySubstTerm _     (Const c)  = Const c
 applySubstTerm subst (App f ts) = App f (map (applySubstTerm subst) ts)
 
+-- Applies a function to every term position in a literal.
+mapLiteralTerms :: (Term -> Term) -> Literal -> Literal
+mapLiteralTerms f (Eq l r)    = Eq  (f l) (f r)
+mapLiteralTerms f (NEq l r)   = NEq (f l) (f r)
+mapLiteralTerms f (Rel n ts)  = Rel n  (map f ts)
+mapLiteralTerms f (NRel n ts) = NRel n (map f ts)
+
+-- Collects results from every term position in a literal.
+foldLiteralTerms :: (Term -> [a]) -> Literal -> [a]
+foldLiteralTerms f (Eq l r)    = f l ++ f r
+foldLiteralTerms f (NEq l r)   = f l ++ f r
+foldLiteralTerms f (Rel _ ts)  = concatMap f ts
+foldLiteralTerms f (NRel _ ts) = concatMap f ts
+
 applySubst :: Subst -> Literal -> Literal
-applySubst subst (Eq l r)    = Eq  (applySubstTerm subst l) (applySubstTerm subst r)
-applySubst subst (NEq l r)   = NEq (applySubstTerm subst l) (applySubstTerm subst r)
-applySubst subst (Rel n ts)  = Rel n  (map (applySubstTerm subst) ts)
-applySubst subst (NRel n ts) = NRel n (map (applySubstTerm subst) ts)
+applySubst subst = mapLiteralTerms (applySubstTerm subst)
 
 applySubstLine :: Subst -> ProofLine -> ProofLine
 applySubstLine subst (Have  lit nm) = Have  (applySubst subst lit) nm
@@ -58,10 +66,7 @@ renameTerm _ (Const c)  = Const c
 renameTerm r (App f ts) = App f (map (renameTerm r) ts)
 
 renameLit :: [(String, String)] -> Literal -> Literal
-renameLit r (Eq l ri)   = Eq  (renameTerm r l) (renameTerm r ri)
-renameLit r (NEq l ri)  = NEq (renameTerm r l) (renameTerm r ri)
-renameLit r (Rel n ts)  = Rel n  (map (renameTerm r) ts)
-renameLit r (NRel n ts) = NRel n (map (renameTerm r) ts)
+renameLit r = mapLiteralTerms (renameTerm r)
 
 -- Rewrites lhs to rhs at every position in t and returns all possible results.
 rewritePos :: Term -> Term -> Term -> [Term]
@@ -163,10 +168,7 @@ groundSubterms t@(App _ ts)
 groundSubterms (Var _) = []
 
 groundSubtermsLit :: Literal -> [Term]
-groundSubtermsLit (Rel _ ts)  = concatMap groundSubterms ts
-groundSubtermsLit (NRel _ ts) = concatMap groundSubterms ts
-groundSubtermsLit (Eq l r)    = groundSubterms l ++ groundSubterms r
-groundSubtermsLit (NEq l r)   = groundSubterms l ++ groundSubterms r
+groundSubtermsLit = foldLiteralTerms groundSubterms
 
 -- All ways to assign each free variable to one of the given ground terms.
 instantiations :: [String] -> [Term] -> [Subst]
@@ -253,16 +255,19 @@ findMatchingUnit goal units = listToMaybe
   ]
 
 -- BFS from unitLit using two-sided unification against bodyLit.
--- Body vars are c-prefixed and unit vars are uppercase-initial, so the namespaces
--- are disjoint. Splitting the result by prefix cleanly separates σClause from σUnit.
+-- Split the combined unifier by membership in the target's (bodyLit's) variable
+-- set: bindings for target vars update the running clause substitution (σClause),
+-- bindings for unit vars are applied to the stored proof block (σUnit).
+-- This handles both axiom units (uppercase vars) and derived units (c-prefixed
+-- vars from a prior clause computation) without relying on a naming convention.
 tryMatchBodyLit :: Literal -> Literal -> [UnitEntry] -> Maybe (Subst, Subst, [(RwStep, Literal)])
 tryMatchBodyLit bodyLit unitLit allUnits =
   fmap split (bfsRewrite rewritePosLit litSize eqs (\cur -> unifyLit bodyLit cur []) unitLit bound)
   where
     split (combined, path) =
-      let bodyVarSet = litVars bodyLit
-          σClause    = [(v, t) | (v, t) <- combined, v `elem`    bodyVarSet]
-          σUnit      = [(v, t) | (v, t) <- combined, v `notElem` bodyVarSet]
+      let targetVarSet = litVars bodyLit
+          σClause = [(v, t) | (v, t) <- combined, v `elem`    targetVarSet]
+          σUnit   = [(v, t) | (v, t) <- combined, v `notElem` targetVarSet]
       in (σClause, σUnit, path)
     eqs   = eqUnits allUnits
     bound = rwBound eqs (litSize bodyLit) (litSize unitLit)
@@ -282,6 +287,17 @@ bodyLitMatch target units =
   <|>
   ((\(ue, σUnit, σClause, rws) -> BodyMatch ue σUnit rws σClause)  <$> findBodyLitMatch target units)
 
+-- All equation units usable as BFS rewrite steps, including unnamed ones.
+-- Unnamed equations get an empty placeholder name; any caller that needs to cite
+-- an equation in a proof must call ensureNamed to obtain the real name.
+allEqUnitsForRw :: [UnitEntry] -> [(String, Term, Term)]
+allEqUnitsForRw = mapMaybe toEq
+  where
+    toEq ue = case ueUnit ue of
+      Eq l r | all (`elem` termVars l) (termVars r) ->
+        Just (fromMaybe "" (ueName ue), l, r)
+      _ -> Nothing
+
 -- Like tryMatchLit but includes unnamed equations as stepping stones.
 -- BFS can route through them even when they cannot yet be cited in the proof.
 -- Requires a non-empty path. Trivial matches go through findMatchingUnit instead.
@@ -291,10 +307,7 @@ tryRwPath lit goal units =
     Just (σ, path) | not (null path) -> Just (path, σ)
     _                                -> Nothing
   where
-    eqs   = [ (fromMaybe "" (ueName ue), l, r)
-            | ue     <- units
-            , Eq l r <- [ueUnit ue]
-            , not (any (`notElem` termVars l) (termVars r)) ]
+    eqs   = allEqUnitsForRw units
     bound = rwBound eqs (litSize lit) (litSize goal)
 
 -- Term-level BFS for building equational chains in EqChain goals and lemmas.

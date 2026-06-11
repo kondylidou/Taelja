@@ -1,0 +1,29 @@
+% Regression test for the instantiations fallthrough.
+% Axiom 2 has two unit variables X0 and X1; after proving the body the
+% head q(X0, X1) still has both free. The goal r(a, b) has ground subterms
+% a and b, so instantiations generates q(a,a), q(a,b), q(b,a), q(b,b).
+% Of those, q(a,b) matches the body of axiom 3 and q(a,a) matches axiom 4.
+% Without the fallthrough the translator would silently drop all instantiations
+% when unitFree is non-empty and terms is empty, producing an error. Here terms
+% is non-empty so both branches are exercised, but the test pins the correct proof.
+fof(f1,axiom,(
+  top),
+  file('test',unknown)).
+fof(f2,axiom,(
+  ! [X0,X1] : (top => q(X0,X1))),
+  file('test',unknown)).
+fof(f3,axiom,(
+  ! [X0] : (q(X0,b) => r1(X0))),
+  file('test',unknown)).
+fof(f4,axiom,(
+  ! [X0] : (q(X0,X0) => r2(X0))),
+  file('test',unknown)).
+fof(f5,axiom,(
+  ! [X0] : ((r1(X0) & r2(X0)) => s(X0))),
+  file('test',unknown)).
+fof(f6,conjecture,(
+  s(a)),
+  file('test',unknown)).
+fof(f7,negated_conjecture,(
+  ~s(a)),
+  inference(negated_conjecture,[status(cth)],[f6])).
