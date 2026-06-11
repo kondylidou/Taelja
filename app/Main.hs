@@ -1,8 +1,6 @@
 module Main where
 
 import Control.Monad (when)
-import Data.List (intercalate)
-import Data.Maybe (fromMaybe)
 import System.Environment (getArgs)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
@@ -13,9 +11,10 @@ import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
 import qualified Data.TPTP as T
 
-import Types (Literal, Clause(..))
+import Types (AxiomEntry(..), Clause(..))
 import Translator (translate, classifyAxioms)
-import Emitter (emit)
+import Emitter (emit, ppClause)
+import qualified Emitter as E
 
 main :: IO ()
 main = do
@@ -31,28 +30,27 @@ main = do
       when debug $ do
         putStrLn ("Parsed " ++ show (length units) ++ " units\n")
         mapM_ dumpUnit units
-        let (axUnits, axNonUnits, goalLit) = classifyAxioms units
+        let (axEntries, _initUnits, axNonUnits, goalLits) = classifyAxioms units
         putStrLn "Setup:"
         putStrLn ""
-        putStrLn "units:"
-        mapM_ (\(n, l) -> putStrLn ("  " ++ n ++ " : " ++ ppLiteral l)) axUnits
+        putStrLn "axioms:"
+        mapM_ (putStrLn . ("  " ++) . ppEntry) axEntries
         putStrLn ""
         putStrLn "non-units:"
         if null axNonUnits
           then putStrLn "  (none)"
           else mapM_ (putStrLn . ppNonUnit) axNonUnits
         putStrLn ""
-        putStrLn ("goal: " ++ ppLiteral goalLit)
+        mapM_ (\g -> putStrLn ("goal: " ++ E.ppLiteral g)) goalLits
         putStrLn ""
       putStr (emit (translate tstp))
 
-ppLiteral :: Literal -> String
-ppLiteral = show
+ppEntry :: AxiomEntry -> String
+ppEntry (AUnit n l)    = n ++ " : " ++ E.ppLiteral l
+ppEntry (ANonUnit n c) = n ++ " : " ++ ppClause c
 
-ppNonUnit :: (Maybe String, Clause, a) -> String
-ppNonUnit (mn, Clause bs hd, _) =
-  "  " ++ fromMaybe "?" mn ++ " : "
-  ++ intercalate ", " (map ppLiteral bs) ++ " => " ++ maybe "⊥" ppLiteral hd
+ppNonUnit :: (String, Clause, a) -> String
+ppNonUnit (n, c, _) = "  " ++ n ++ " : " ++ ppClause c
 
 dumpUnit :: T.Unit -> IO ()
 dumpUnit (T.Unit name decl source) = do
