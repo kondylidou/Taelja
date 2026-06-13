@@ -130,7 +130,9 @@ preScanShared nonUnits = do
   forM_ shared $ \lit -> do
     m <- gets tsUnitMap
     case Map.lookup lit m of
-      Just ue | isNothing (ueName ue), isJust (ueDeriv ue) -> void (ensureNamed lit)
+      Just ue | isNothing (ueName ue), isJust (ueDeriv ue) -> do
+        whenDebug ("  [preScanShared] pre-naming shared unit: " ++ show lit)
+        void (ensureNamed lit)
       _ -> return ()
 
 -- When the fixpoint stalls, names every unnamed equation so BFS can see it.
@@ -221,7 +223,9 @@ foldBodyLit (Just (revLs, σ)) lit = do
   let target = applySubst σ lit
   units <- gets (toList . tsUnits)
   case bodyLitMatch target units of
-    Nothing -> return Nothing
+    Nothing -> do
+      whenDebug ("    body literal no match: " ++ show target)
+      return Nothing
     Just (BodyMatch ue _blkSubst rws clauseUpd) -> do
       let σ'         = σ ++ clauseUpd
           displayLit = applySubst clauseUpd target
@@ -331,6 +335,7 @@ ensureNamed lit = do
     Just (UnitEntry Nothing _ (Just stored)) -> do
       k <- freshLemmaNum
       let name = "lemma " ++ show k
+      whenDebug ("  [ensureNamed] " ++ name ++ ": " ++ show lit)
       emitLemma name lit stored
       modifyUnit lit (UnitEntry (Just name) lit Nothing)
       return name
@@ -369,6 +374,8 @@ addToUnits ue = do
       | isNothing (ueName old)
       , Just newBlk <- ueDeriv ue
       , Just oldBlk <- ueDeriv old
-      , blockSize newBlk < blockSize oldBlk ->
+      , blockSize newBlk < blockSize oldBlk -> do
+          whenDebug ("  [addToUnits] shorter proof for " ++ show (ueUnit ue)
+                     ++ " (" ++ show (blockSize oldBlk) ++ " -> " ++ show (blockSize newBlk) ++ ")")
           modifyUnit (ueUnit ue) ue
     Just _ -> return ()
