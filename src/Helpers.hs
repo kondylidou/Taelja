@@ -323,16 +323,14 @@ blockSize (EqChain _ steps) = 1 + length steps
 
 -- Checks whether a unit's derivation cites the named clause anywhere.
 -- Used to avoid prelemmatizing something that would create a circular reference.
--- Checks all line types: Have/And cite by name string, Hence cites via Justification.
 derivedByClause :: String -> UnitEntry -> Bool
 derivedByClause name ue = case ueDeriv ue of
   Just (HaveHence ls) -> any isFromClause ls
   _                   -> False
   where
-    isFromClause (Have  _ nm)           = nm == name
-    isFromClause (And   _ nm)           = nm == name
     isFromClause (Hence _ (ByAxiom nm)) = nm == name
     isFromClause (Hence _ (ByRw nm _))  = nm == name
+    isFromClause _                      = False
 
 blockVars :: ProofBlock -> [String]
 blockVars (HaveHence ls)    = nub (concatMap lineVars ls)

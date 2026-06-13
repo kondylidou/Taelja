@@ -7,7 +7,7 @@ import Data.Sequence (Seq, (|>))
 import Data.Foldable (toList) -- explicit: Map.toList in scope prevents Prelude resolution
 import Control.Monad (foldM, forM_, void, when)
 import Debug.Trace (traceM)
-import Control.Monad.State
+import Control.Monad.State.Strict
 import Data.List (nub)
 import Data.Maybe (fromMaybe, isJust, isNothing)
 
@@ -76,9 +76,8 @@ translateNonUnits :: [(String, Clause)] -> Literal -> TransM ProofBlock
 translateNonUnits nonUnits goalLit = fixpoint (0 :: Int)
   where
     fixpoint n = do
-      sz <- gets (Map.size . tsUnitMap)
-      whenDebug ("[round " ++ show n ++ "] goal=" ++ show goalLit ++ " units=" ++ show sz)
       before <- gets (Map.size . tsUnitMap)
+      whenDebug ("[round " ++ show n ++ "] goal=" ++ show goalLit ++ " units=" ++ show before)
       mBlock <- oneRound nonUnits
       case mBlock of
         Just block -> do
