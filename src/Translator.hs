@@ -1,13 +1,12 @@
 module Translator where
 
 import qualified Data.TPTP as T
-import Data.Char (isUpper)
-import Data.List (nub, partition)
 import qualified Data.Map.Strict as Map
 import qualified Data.Sequence as Seq
 import Data.Sequence (Seq, (|>))
 import Data.Foldable (toList) -- explicit: Map.toList in scope prevents Prelude resolution
-import Control.Monad (foldM, forM_, void)
+import Control.Monad (foldM, forM_, void, when)
+import Debug.Trace (traceM)
 import Control.Monad.State
 import Data.Maybe (fromMaybe, isJust, isNothing)
 
@@ -23,18 +22,25 @@ data TransState = TransState
   , tsUnitMap    :: Map.Map Literal UnitEntry
   , tsLemmaCount :: Int
   , tsLemmas     :: [(String, Literal, ProofBlock)]
+  , tsDebug      :: Bool
   }
 
 type TransM a = State TransState a
 
-translate :: T.TSTP -> StructuredProof
-translate (T.TSTP _ units) =
+whenDebug :: String -> TransM ()
+whenDebug msg = do
+  d <- gets tsDebug
+  when d (traceM msg)
+
+translate :: Bool -> T.TSTP -> StructuredProof
+translate debug (T.TSTP _ units) =
   let (axEntries, initUnitEntries, axNonUnits, goalLits) = classifyAxioms units
       initState = TransState
         { tsUnits      = Seq.fromList initUnitEntries
         , tsUnitMap    = Map.fromList [(ueUnit ue, ue) | ue <- initUnitEntries]
         , tsLemmaCount = length axEntries
         , tsLemmas     = []
+        , tsDebug      = debug
         }
       (goalBlocks, finalState) = runState (mapM (mainLoop axNonUnits) goalLits) initState
   in StructuredProof
@@ -58,24 +64,33 @@ translateNonUnitsEmpty goal = case goal of
       Just (ue, subst, rws) -> do
         block <- makeBlock ue rws
         return (applySubstBlock subst block)
-      Nothing ->
-        error ("translateNonUnitsEmpty: no unit matches goal: " ++ show goal)
+      Nothing -> do
+        unitList <- gets (map (show . ueUnit) . toList . tsUnits)
+        error ("cannot discharge goal " ++ show goal
+               ++ "\n  units in set: " ++ show unitList)
 
 -- Keeps retrying all clauses as long as each round adds at least one new unit.
 -- A new unit can unlock body literals that were stuck in earlier rounds.
 translateNonUnits :: [(String, Clause)] -> Literal -> TransM ProofBlock
-translateNonUnits nonUnits goalLit = fixpoint
+translateNonUnits nonUnits goalLit = fixpoint (0 :: Int)
   where
-    fixpoint = do
+    fixpoint n = do
+      sz <- gets (Map.size . tsUnitMap)
+      whenDebug ("[round " ++ show n ++ "] goal=" ++ show goalLit ++ " units=" ++ show sz)
       before <- gets (Map.size . tsUnitMap)
       mBlock <- oneRound nonUnits
       case mBlock of
-        Just block -> return block
+        Just block -> do
+          whenDebug ("[round " ++ show n ++ "] goal proved")
+          return block
         Nothing    -> do
           after <- gets (Map.size . tsUnitMap)
           if after > before
-            then fixpoint
+            then do
+              whenDebug ("[round " ++ show n ++ "] +" ++ show (after - before) ++ " unit(s), retrying")
+              fixpoint (n + 1)
             else do
+              whenDebug ("[round " ++ show n ++ "] fixpoint stalled, forcing equation names")
               ensureAllEqNamed
               mBlock2 <- oneRound nonUnits
               case mBlock2 of
@@ -93,6 +108,7 @@ translateNonUnits nonUnits goalLit = fixpoint
 -- is better than failing to find a proof that exists.
 ensureAllEqNamed :: TransM ()
 ensureAllEqNamed = do
+  whenDebug "[ensureAllEqNamed] naming all anonymous equations for BFS"
   units <- gets tsUnits
   forM_ units $ \ue -> case ueUnit ue of
     Eq _ _ -> void (ensureNamed (ueUnit ue))
@@ -105,14 +121,21 @@ processNonUnit clauseName (Clause bodyLits mHead) goalLit = do
   let headLit = fromMaybe (error "processNonUnit: unit clause") mHead
   case matchLit headLit goalLit of
     Just σHead -> do
+      whenDebug ("  [" ++ clauseName ++ "] top-down: head matches goal, proving body")
       let targets = map (applySubst σHead) bodyLits
       -- Name tail body literals now so their derivations are ready when we cite them.
       case targets of { _ : _ : _ -> prelemmatize clauseName (tail targets); _ -> return () }
       mResult <- processBody σHead bodyLits
       case mResult of
-        Nothing         -> nonUnitBottomUp clauseName bodyLits headLit goalLit
-        Just (block, _) -> return (Just (appendLine block (Hence goalLit (ByAxiom clauseName))))
-    Nothing -> nonUnitBottomUp clauseName bodyLits headLit goalLit
+        Nothing         -> do
+          whenDebug ("  [" ++ clauseName ++ "] top-down: body failed, falling back to bottom-up")
+          nonUnitBottomUp clauseName bodyLits headLit goalLit
+        Just (block, _) -> do
+          whenDebug ("  [" ++ clauseName ++ "] top-down: succeeded")
+          return (Just (appendLine block (Hence goalLit (ByAxiom clauseName))))
+    Nothing -> do
+      whenDebug ("  [" ++ clauseName ++ "] top-down: head does not match goal, trying bottom-up")
+      nonUnitBottomUp clauseName bodyLits headLit goalLit
 
 -- Proves the body first, then derives the grounded head and tries to connect it
 -- to the goal via matching or rewriting. If it still cannot reach the goal, stores
@@ -124,33 +147,26 @@ nonUnitBottomUp :: String -> [Literal] -> Literal -> Literal -> TransM (Maybe Pr
 nonUnitBottomUp clauseName bodyLits headLit goalLit = do
   mResult <- processBody [] bodyLits
   case mResult of
-    Nothing -> return Nothing
+    Nothing -> do
+      whenDebug ("  [" ++ clauseName ++ "] bottom-up: body failed")
+      return Nothing
     Just (block, σFinal) -> do
       let groundH = applySubst σFinal headLit
           block'  = appendLine block (Hence groundH (ByAxiom clauseName))
       case matchLit groundH goalLit of
-        Just σ' -> return (Just (applySubstBlock σ' block'))
+        Just σ' -> do
+          whenDebug ("  [" ++ clauseName ++ "] bottom-up: derived " ++ show groundH ++ " matches goal directly")
+          return (Just (applySubstBlock σ' block'))
         Nothing -> do
           units' <- gets (toList . tsUnits)
           case tryRwPath groundH goalLit units' of
             Just (rwPath, σRw) -> do
+              whenDebug ("  [" ++ clauseName ++ "] bottom-up: derived " ++ show groundH ++ " reaches goal via rewriting")
               blk <- extendWithRw block' rwPath
               return (Just (applySubstBlock σRw blk))
             Nothing -> do
-              let freeVs        = nub (litVars groundH)
-                  (unitFree, _) = partition (isUpper . head) freeVs
-              if null unitFree
-                then addToUnits (UnitEntry Nothing groundH (Just block'))
-                else do
-                  let terms = groundSubtermsLit goalLit
-                  if null terms
-                    -- Goal has no ground subterms; add groundH as-is with unit vars free.
-                    -- findMatchingUnit will bind those vars when the goal is later matched.
-                    then addToUnits (UnitEntry Nothing groundH (Just block'))
-                    else forM_ (instantiations unitFree terms) $ \σ -> do
-                           let gh = applySubst σ groundH
-                               bl = applySubstBlock σ block'
-                           addToUnits (UnitEntry Nothing gh (Just bl))
+              whenDebug ("  [" ++ clauseName ++ "] bottom-up: derived " ++ show groundH ++ ", stored as new unit")
+              addToUnits (UnitEntry Nothing groundH (Just block'))
               return Nothing
 
 processBody :: Subst -> [Literal] -> TransM (Maybe (ProofBlock, Subst))
@@ -176,7 +192,7 @@ foldBodyLit (Just (revLs, σ)) lit = do
   units <- gets (toList . tsUnits)
   case bodyLitMatch target units of
     Nothing -> return Nothing
-    Just (BodyMatch ue blkSubst rws clauseUpd) -> do
+    Just (BodyMatch ue _blkSubst rws clauseUpd) -> do
       let σ'         = σ ++ clauseUpd
           displayLit = applySubst clauseUpd target
       if null rws && null clauseUpd
@@ -185,8 +201,14 @@ foldBodyLit (Just (revLs, σ)) lit = do
           return (Just (And displayLit name : revLs, σ'))
         else do
           blk <- makeBlock ue rws
-          addToUnits (UnitEntry Nothing displayLit (Just (applySubstBlock blkSubst blk)))
-          name <- ensureNamed displayLit
+          -- Store the generic (pre-instantiation) form so lemmas are non-ground.
+          -- When rws is non-empty, the last rewrite result is the generic literal
+          -- with unit vars (uppercase) still free. When rws is empty but clauseUpd
+          -- is non-null, the unit itself is the generic form.
+          let genericLit | null rws  = ueUnit ue
+                         | otherwise = snd (last rws)
+          addToUnits (UnitEntry Nothing genericLit (Just blk))
+          name <- ensureNamed genericLit
           return (Just (And displayLit name : revLs, σ'))
 
 -- If the rewrite path ends at a non-ground equation, give it its own lemma
@@ -232,7 +254,10 @@ rwChainTo :: Term -> Term -> TransM [(RwStep, Term)]
 rwChainTo s t = do
   units <- gets (toList . tsUnits)
   case findPath units s t of
-    Nothing   -> error ("rwChainTo: no rewrite path from " ++ show s ++ " to " ++ show t)
+    Nothing   -> do
+      let eqs = map (\(n,l,r) -> n ++ ": " ++ show l ++ "=" ++ show r) (eqUnits units)
+      error ("no equational chain from " ++ show s ++ " to " ++ show t
+             ++ "\n  available equations: " ++ show eqs)
     Just path -> return path
 
 rlAnnotation :: Dir -> Maybe Dir
@@ -300,8 +325,8 @@ modifyUnit lit new =
     , tsUnitMap = Map.insert lit new (tsUnitMap s)
     }
 
--- First-write-wins: if a unit for this literal already exists we keep it,
--- even if the new derivation might be shorter.
+-- New derivations replace an existing unnamed entry when they are strictly shorter.
+-- Named entries are never replaced: they may already be cited in emitted lemmas.
 addToUnits :: UnitEntry -> TransM ()
 addToUnits ue = do
   m <- gets tsUnitMap
@@ -310,4 +335,10 @@ addToUnits ue = do
       { tsUnits   = tsUnits s |> ue
       , tsUnitMap = Map.insert (ueUnit ue) ue m
       }
-    Just _  -> return ()
+    Just old
+      | isNothing (ueName old)
+      , Just newBlk <- ueDeriv ue
+      , Just oldBlk <- ueDeriv old
+      , blockSize newBlk < blockSize oldBlk ->
+          modifyUnit (ueUnit ue) ue
+    Just _ -> return ()

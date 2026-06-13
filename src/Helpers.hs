@@ -170,11 +170,6 @@ groundSubterms (Var _) = []
 groundSubtermsLit :: Literal -> [Term]
 groundSubtermsLit = foldLiteralTerms groundSubterms
 
--- All ways to assign each free variable to one of the given ground terms.
-instantiations :: [String] -> [Term] -> [Subst]
-instantiations freeVs terms =
-  foldr (\v acc -> [(v, t) : s | t <- terms, s <- acc]) [[]] (nub freeVs)
-
 -- The bound is generous enough to reach any term reachable in one equation
 -- application from either side, so no useful path gets pruned.
 rwBound :: [(String, Term, Term)] -> Int -> Int -> Int
@@ -322,15 +317,22 @@ appendLine :: ProofBlock -> ProofLine -> ProofBlock
 appendLine (HaveHence ls) l = HaveHence (ls ++ [l])
 appendLine (EqChain {})   _ = error "appendLine: cannot extend EqChain"
 
+blockSize :: ProofBlock -> Int
+blockSize (HaveHence ls)    = length ls
+blockSize (EqChain _ steps) = 1 + length steps
+
 -- Checks whether a unit's derivation cites the named clause anywhere.
 -- Used to avoid prelemmatizing something that would create a circular reference.
+-- Checks all line types: Have/And cite by name string, Hence cites via Justification.
 derivedByClause :: String -> UnitEntry -> Bool
 derivedByClause name ue = case ueDeriv ue of
   Just (HaveHence ls) -> any isFromClause ls
   _                   -> False
   where
-    isFromClause (Hence _ (ByAxiom n)) = n == name
-    isFromClause _                     = False
+    isFromClause (Have  _ nm)           = nm == name
+    isFromClause (And   _ nm)           = nm == name
+    isFromClause (Hence _ (ByAxiom nm)) = nm == name
+    isFromClause (Hence _ (ByRw nm _))  = nm == name
 
 blockVars :: ProofBlock -> [String]
 blockVars (HaveHence ls)    = nub (concatMap lineVars ls)

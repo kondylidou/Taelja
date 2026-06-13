@@ -44,7 +44,7 @@ main = do
         putStrLn ""
         mapM_ (\g -> putStrLn ("goal: " ++ E.ppLiteral g)) goalLits
         putStrLn ""
-      putStr (emit (translate tstp))
+      putStr (emit (translate debug tstp))
 
 ppEntry :: Axiom -> String
 ppEntry (AUnit n l)    = n ++ " : " ++ E.ppLiteral l

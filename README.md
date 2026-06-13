@@ -14,21 +14,21 @@ before the proof.
 
 ## Proof Format
 
-**Equational chain** — for goals of the form `s = t`:
+**Have/hence** — for goals discharged via Horn clause steps (including equational goals that go through a Horn implication):
+```
+have p(a)
+  by axiom 1
+hence p(b)
+  by rw axiom 2
+```
+
+**Equational chain** — only when there are no Horn clause non-units and the goal is a pure equation `s = t`:
 ```
   s
 = { by axiom 1 }
   t1
 = { by axiom 2 R->L }
   t
-```
-
-**Have/hence** — for relational goals:
-```
-have p(a)
-  by axiom 1
-hence p(b)
-  by rw axiom 2
 ```
 
 A complete proof consists of axioms, optional lemmas, and the main goal:
@@ -70,7 +70,7 @@ The **fixpoint loop** retries all clauses until the goal is reached or Units sto
 
 **Proof blocks** take one of two shapes: `have … and … hence …` for relational goals, and `s = {by eq} t₁ = … = t` for equational goals.
 
-**Lemmatization** promotes an anonymous proved fact to a named lemma. It is forced when an `and`-line or a rewrite step must cite a fact by name, and when an equational chain cannot embed a `have/hence` derivation inline. As a heuristic, a rewrite path that ends at a non-ground equation is extracted as a named equational-chain lemma rather than inlined.
+**Lemmatization** promotes an anonymous proved fact to a named lemma. It is forced when an `and`-line or a rewrite step must cite a fact by name, and when an equational chain cannot embed a `have/hence` derivation inline. As a heuristic, a rewrite path that ends at a non-ground equation is extracted as a named equational-chain lemma rather than inlined. Lemmas are stored in their most general (non-ground) form and instantiated at the point of use.
 
 ## Building
 

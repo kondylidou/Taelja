@@ -31,23 +31,44 @@ classifyAxioms units =
                     ([cl], []) -> [negateGoal cl]
                     ([], [f])  -> negateGoalFOF f
                     _          -> error "classifyAxioms: expected exactly one negated conjecture"
-      classify (i, (_, f))
+      classify (i, (origName, f))
         | isPositiveUnitFOF f =
             let lit = extractUnitFOF f
                 nm  = "axiom " ++ show i
             in (AUnit nm lit, Just (UnitEntry (Just nm) lit Nothing), Nothing)
-        | otherwise =
+        | isHornImplicationFOF f =
             let nm = "axiom " ++ show i
                 cl = fofToClause f
             in (ANonUnit nm cl, Nothing, Just (nm, freshenClause cl))
+        | otherwise =
+            error ("input is not in the Horn fragment: " ++ origName
+                   ++ "\n  formula: " ++ show f)
       classified             = zipWith (curry classify) [(1::Int)..] fofAxioms
       (axEntries, mUs, mNUs) = unzip3 classified
   in (axEntries, catMaybes mUs, catMaybes mNUs, goalLits)
 
+-- Accepts ∀X₁…∀Xₙ. L where L is atomic — a positive unit clause.
 isPositiveUnitFOF :: T.UnsortedFirstOrder -> Bool
 isPositiveUnitFOF (T.Atomic _)                   = True
 isPositiveUnitFOF (T.Quantified T.Forall _ body) = isPositiveUnitFOF body
 isPositiveUnitFOF _                              = False
+
+-- Accepts ∀X₁…∀Xₙ. (A₁ ∧ … ∧ Aₙ) → H where each Aᵢ and H are atomic.
+-- Together with isPositiveUnitFOF this covers the full Horn fragment.
+isHornImplicationFOF :: T.UnsortedFirstOrder -> Bool
+isHornImplicationFOF (T.Quantified T.Forall _ body) = isHornImplicationFOF body
+isHornImplicationFOF (T.Connected ante T.Implication cons) =
+  isHornBodyFOF ante && isAtomicFOF cons
+isHornImplicationFOF _ = False
+
+isAtomicFOF :: T.UnsortedFirstOrder -> Bool
+isAtomicFOF (T.Atomic _) = True
+isAtomicFOF _            = False
+
+isHornBodyFOF :: T.UnsortedFirstOrder -> Bool
+isHornBodyFOF (T.Connected l T.Conjunction r) = isHornBodyFOF l && isHornBodyFOF r
+isHornBodyFOF (T.Atomic _)                    = True
+isHornBodyFOF _                               = False
 
 extractUnitFOF :: T.UnsortedFirstOrder -> Literal
 extractUnitFOF (T.Atomic lit)                 = convertLit lit

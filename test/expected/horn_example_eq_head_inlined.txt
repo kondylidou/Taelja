@@ -3,11 +3,11 @@ Axiom 2: p(f(X))
 Axiom 3: q(f(X))
 Axiom 4: f(X) = g(X)
 
-Lemma 5: q(g(a))
+Lemma 5: q(g(X))
 Proof:
-  have q(f(a))
+  have q(f(X))
     by axiom 3
-  hence q(g(a))
+  hence q(g(X))
     by rw axiom 4
 
 Goal 1: g(a) = zero
