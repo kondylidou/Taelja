@@ -4,24 +4,27 @@ Axiom 3: q(X,b) => r1(X)
 Axiom 4: q(X,X) => r2(X)
 Axiom 5: r1(X) /\ r2(X) => s(X)
 
-Lemma 6: r2(X)
+Lemma 6: q(X,Y)
 Proof:
   have top
     by axiom 1
-  hence q(X,X)
+  hence q(X,Y)
     by axiom 2
+
+Lemma 7: r2(X)
+Proof:
+  have q(X,X)
+    by lemma 6
   hence r2(X)
     by axiom 4
 
 Goal 1: s(a)
 Proof:
-  have top
-    by axiom 1
-  hence q(a,b)
-    by axiom 2
+  have q(a,b)
+    by lemma 6
   hence r1(a)
     by axiom 3
    and r2(a)
-    by lemma 6
+    by lemma 7
   hence s(a)
     by axiom 5

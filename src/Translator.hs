@@ -8,6 +8,7 @@ import Data.Foldable (toList) -- explicit: Map.toList in scope prevents Prelude 
 import Control.Monad (foldM, forM_, void, when)
 import Debug.Trace (traceM)
 import Control.Monad.State
+import Data.List (nub)
 import Data.Maybe (fromMaybe, isJust, isNothing)
 
 import Types
@@ -96,12 +97,42 @@ translateNonUnits nonUnits goalLit = fixpoint (0 :: Int)
               case mBlock2 of
                 Just block -> return block
                 Nothing    -> translateNonUnitsEmpty goalLit
+    -- After each clause adds a new unit, scan that unit against the remaining
+    -- clauses' first body literals. If it would match ≥2 of them, pre-name it
+    -- before those clauses run — so they all cite the same named lemma rather
+    -- than each inlining their own copy of the derivation.
     oneRound []              = return Nothing
     oneRound ((n, c) : rest) = do
+      szBefore <- gets (Map.size . tsUnitMap)
       mBlock <- processNonUnit n c goalLit
       case mBlock of
         Just block -> return (Just block)
-        Nothing    -> oneRound rest
+        Nothing    -> do
+          szAfter <- gets (Map.size . tsUnitMap)
+          when (szAfter > szBefore) (preScanShared rest)
+          oneRound rest
+
+-- Before processing each round, detect unnamed units that would match the first
+-- body literal of ≥2 different non-unit clauses. Those units sit at DAG merge
+-- points: multiple derivation paths share the same intermediate result. Pre-naming
+-- them avoids duplicating the derivation in each consumer's proof block.
+preScanShared :: [(String, Clause)] -> TransM ()
+preScanShared nonUnits = do
+  units <- gets (toList . tsUnits)
+  let firstLits = [(cn, l) | (cn, Clause (l:_) _) <- nonUnits]
+      -- For each clause's first body literal, find which unnamed unit matches it.
+      matches = [ (cn, ueUnit (bmEntry bm))
+                | (cn, lit) <- firstLits
+                , Just bm  <- [bodyLitMatch lit units]
+                , isNothing (ueName (bmEntry bm))
+                ]
+      grouped = Map.fromListWith (++) [(unitLit, [cn]) | (cn, unitLit) <- matches]
+      shared  = [lit | (lit, cns) <- Map.toList grouped, length (nub cns) >= 2]
+  forM_ shared $ \lit -> do
+    m <- gets tsUnitMap
+    case Map.lookup lit m of
+      Just ue | isNothing (ueName ue), isJust (ueDeriv ue) -> void (ensureNamed lit)
+      _ -> return ()
 
 -- When the fixpoint stalls, names every unnamed equation so BFS can see it.
 -- This can emit lemmas for equations that turn out not to matter, but that
