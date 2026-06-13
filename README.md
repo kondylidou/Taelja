@@ -9,8 +9,9 @@ human-readable proofs for the Horn clause fragment.
 taelja [--debug] <proof-file>
 ```
 
-The input is a TSTP proof file. `--debug` prints the parsed unit structure
-before the proof.
+The input is a TSTP proof file. `--debug` emits a per-round trace to stderr:
+which clause was tried each round, whether top-down or bottom-up was taken,
+what unit was derived, and when the fixpoint stalls.
 
 ## Proof Format
 
@@ -20,6 +21,18 @@ have p(a)
   by axiom 1
 hence p(b)
   by rw axiom 2
+hence q(b)
+  by axiom 3
+```
+
+A multi-premise step uses `and` for the second and later premises:
+```
+have p(a)
+  by axiom 1
+ and q(b)
+  by lemma 5
+hence r(a,b)
+  by axiom 4
 ```
 
 **Equational chain** — only when there are no Horn clause non-units and the goal is a pure equation `s = t`:
@@ -35,7 +48,7 @@ A complete proof consists of axioms, optional lemmas, and the main goal:
 ```
 Axiom 1: ...
 
-Lemma 1: ...
+Lemma 5: ...
 Proof:
   ...
 
@@ -48,7 +61,8 @@ Proof:
 
 The tool handles the **Horn clause fragment**: clauses with at most one
 positive literal, where literals may be equational (`s = t`, `s ≠ t`) or
-relational (`P(t̄)`, `¬P(t̄)`).
+relational (`P(t̄)`, `¬P(t̄)`). Input is validated on load; a clear error is
+reported if any axiom falls outside this fragment.
 
 ## How It Works
 
@@ -70,7 +84,20 @@ The **fixpoint loop** retries all clauses until the goal is reached or Units sto
 
 **Proof blocks** take one of two shapes: `have … and … hence …` for relational goals, and `s = {by eq} t₁ = … = t` for equational goals.
 
-**Lemmatization** promotes an anonymous proved fact to a named lemma. It is forced when an `and`-line or a rewrite step must cite a fact by name, and when an equational chain cannot embed a `have/hence` derivation inline. As a heuristic, a rewrite path that ends at a non-ground equation is extracted as a named equational-chain lemma rather than inlined. Lemmas are stored in their most general (non-ground) form and instantiated at the point of use.
+**Lemmatization** promotes an anonymous proved fact to a named lemma.
+
+Forced cases:
+
+- An `and`-line must cite a fact by name (non-first premises in a multi-premise step).
+- A rewrite step (`by rw`) must cite an equation by name.
+- An equational chain cannot embed a `have/hence` derivation inline.
+
+Heuristic cases:
+
+- **DAG sharing** — a fact that would be consumed as the first premise by two or more clauses is named before any of them runs, avoiding duplicated derivations.
+- **Non-ground equational end** — a rewrite path ending at a non-ground equation is extracted as a named equational-chain lemma rather than inlined.
+
+Lemmas are stored in their most general (non-ground) form and instantiated at the point of use.
 
 ## Building
 
@@ -79,7 +106,7 @@ recommended installer).
 
 ```
 cabal build
-cabal run taelja -- <proof-file>
+cabal install --overwrite-policy=always
 ```
 
 ## Testing
