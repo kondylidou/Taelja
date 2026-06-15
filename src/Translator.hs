@@ -33,6 +33,7 @@ whenDebug msg = do
   d <- gets tsDebug
   when d (traceM msg)
 
+-- Entry point: classify the TSTP axioms, then prove each goal in order.
 translate :: Bool -> T.TSTP -> StructuredProof
 translate debug (T.TSTP _ units) =
   let (axEntries, initUnitEntries, axNonUnits, goalLits) = classifyAxioms units
@@ -43,19 +44,19 @@ translate debug (T.TSTP _ units) =
         , tsLemmas     = []
         , tsDebug      = debug
         }
-      (goalBlocks, finalState) = runState (mapM (mainLoop axNonUnits) goalLits) initState
+      (goalBlocks, finalState) = runState (mapM (proveGoal axNonUnits) goalLits) initState
   in StructuredProof
        { axioms = axEntries
        , lemmas = reverse (tsLemmas finalState)
        , goals  = zip goalLits goalBlocks
        }
 
-mainLoop :: [(String, Clause)] -> Literal -> TransM ProofBlock
-mainLoop []       goalLit = translateNonUnitsEmpty goalLit
-mainLoop nonUnits goalLit = translateNonUnits nonUnits goalLit
+proveGoal :: [(String, Clause)] -> Literal -> TransM ProofBlock
+proveGoal []       goalLit = proveFromUnits goalLit
+proveGoal nonUnits goalLit = proveWithNonUnits nonUnits goalLit
 
-translateNonUnitsEmpty :: Literal -> TransM ProofBlock
-translateNonUnitsEmpty goal = case goal of
+proveFromUnits :: Literal -> TransM ProofBlock
+proveFromUnits goal = case goal of
   Eq s t -> do
     steps <- rwChainTo s t
     return (EqChain s steps)
@@ -70,46 +71,43 @@ translateNonUnitsEmpty goal = case goal of
         error ("cannot discharge goal " ++ show goal
                ++ "\n  units in set: " ++ show unitList)
 
--- Keeps retrying all clauses as long as each round adds at least one new unit.
--- A new unit can unlock body literals that were stuck in earlier rounds.
-translateNonUnits :: [(String, Clause)] -> Literal -> TransM ProofBlock
-translateNonUnits nonUnits goalLit = fixpoint (0 :: Int)
+-- Process non-unit clauses in Waldmann's position ordering (Lemma 0.6):
+-- a single ordered pass suffices because when we reach clause C, all units
+-- its body requires have already been derived by earlier clauses.
+-- If the pass stalls, name all anonymous equations and retry once; if that
+-- also fails, fall back to pure unit-based proof search.
+proveWithNonUnits :: [(String, Clause)] -> Literal -> TransM ProofBlock
+proveWithNonUnits nonUnits goalLit = do
+  before <- gets (Map.size . tsUnitMap)
+  whenDebug ("[pass] goal=" ++ show goalLit ++ " units=" ++ show before
+             ++ " clauses=" ++ show (length nonUnits))
+  mBlock <- onePass nonUnits
+  case mBlock of
+    Just block -> do
+      whenDebug "[pass] goal proved"
+      return block
+    Nothing -> do
+      whenDebug "[pass] stalled, forcing equation names and retrying"
+      ensureAllEqNamed
+      mBlock2 <- onePass nonUnits
+      case mBlock2 of
+        Just block -> return block
+        Nothing    -> proveFromUnits goalLit
   where
-    fixpoint n = do
-      before <- gets (Map.size . tsUnitMap)
-      whenDebug ("[round " ++ show n ++ "] goal=" ++ show goalLit ++ " units=" ++ show before)
-      mBlock <- oneRound nonUnits
-      case mBlock of
-        Just block -> do
-          whenDebug ("[round " ++ show n ++ "] goal proved")
-          return block
-        Nothing    -> do
-          after <- gets (Map.size . tsUnitMap)
-          if after > before
-            then do
-              whenDebug ("[round " ++ show n ++ "] +" ++ show (after - before) ++ " unit(s), retrying")
-              fixpoint (n + 1)
-            else do
-              whenDebug ("[round " ++ show n ++ "] fixpoint stalled, forcing equation names")
-              ensureAllEqNamed
-              mBlock2 <- oneRound nonUnits
-              case mBlock2 of
-                Just block -> return block
-                Nothing    -> translateNonUnitsEmpty goalLit
-    -- After each clause adds a new unit, scan that unit against the remaining
-    -- clauses' first body literals. If it would match ≥2 of them, pre-name it
-    -- before those clauses run — so they all cite the same named lemma rather
-    -- than each inlining their own copy of the derivation.
-    oneRound []              = return Nothing
-    oneRound ((n, c) : rest) = do
+    -- After each clause adds a new unit, scan all clauses for DAG sharing:
+    -- if the new unit would be the first body literal of ≥2 clauses, pre-name
+    -- it so they all cite the same lemma. We scan all nonUnits (not just the
+    -- remaining ones) so that sharing is detected regardless of processing order.
+    onePass []              = return Nothing
+    onePass ((n, c) : rest) = do
       szBefore <- gets (Map.size . tsUnitMap)
       mBlock <- processNonUnit n c goalLit
       case mBlock of
         Just block -> return (Just block)
         Nothing    -> do
           szAfter <- gets (Map.size . tsUnitMap)
-          when (szAfter > szBefore) (preScanShared rest)
-          oneRound rest
+          when (szAfter > szBefore) (preScanShared nonUnits)
+          onePass rest
 
 -- Before processing each round, detect unnamed units that would match the first
 -- body literal of ≥2 different non-unit clauses. Those units sit at DAG merge
@@ -217,6 +215,8 @@ processBody σ0 (l1 : rest) = do
       result <- foldM foldBodyLit (Just (reverse ls1, σ1)) rest
       return $ fmap (\(revLs, σ) -> (HaveHence (reverse revLs), σ)) result
 
+-- Accumulator for the body fold: tries to match the next literal under the
+-- current substitution and appends an And-line to the reversed line list.
 foldBodyLit :: Maybe ([ProofLine], Subst) -> Literal -> TransM (Maybe ([ProofLine], Subst))
 foldBodyLit Nothing _ = return Nothing
 foldBodyLit (Just (revLs, σ)) lit = do
@@ -248,7 +248,7 @@ foldBodyLit (Just (revLs, σ)) lit = do
 -- If the rewrite path ends at a non-ground equation, give it its own lemma
 -- rather than inlining all the steps. The emitter renders it as an EqChain.
 makeBlock :: UnitEntry -> [(RwStep, Literal)] -> TransM ProofBlock
-makeBlock ue rwPath = case nonGroundEqEnd rwPath of
+makeBlock ue rwPath = case finalNonGroundEq rwPath of
   Just (finalLit, l, r) -> do
     m <- gets tsUnitMap
     case Map.lookup finalLit m of
@@ -276,13 +276,13 @@ makeBlock ue rwPath = case nonGroundEqEnd rwPath of
                                (ueName ue))]
       rwLines <- mapM stepToLine rwPath
       return (HaveHence (baseLines ++ rwLines))
-    nonGroundEqEnd []    = Nothing
-    nonGroundEqEnd steps = case snd (last steps) of
+    finalNonGroundEq []    = Nothing
+    finalNonGroundEq steps = case snd (last steps) of
       lit@(Eq l r) | not (null (litVars lit)) -> Just (lit, l, r)
       _                                        -> Nothing
     stepToLine (RwStep _ (origL, origR) dir, nextLit) = do
       nm' <- ensureNamed (Eq origL origR)
-      return (Hence nextLit (ByRw nm' (rlAnnotation dir)))
+      return (Hence nextLit (ByRw nm' (dirAnnotation dir)))
 
 rwChainTo :: Term -> Term -> TransM [(RwStep, Term)]
 rwChainTo s t = do
@@ -294,16 +294,17 @@ rwChainTo s t = do
              ++ "\n  available equations: " ++ show eqs)
     Just path -> return path
 
-rlAnnotation :: Dir -> Maybe Dir
-rlAnnotation RL = Just RL
-rlAnnotation LR = Nothing
+-- LR is the default direction so needs no annotation; only RL is marked explicitly.
+dirAnnotation :: Dir -> Maybe Dir
+dirAnnotation RL = Just RL
+dirAnnotation LR = Nothing
 
 extendWithRw :: ProofBlock -> [(RwStep, Literal)] -> TransM ProofBlock
 extendWithRw = foldM step
   where
     step blk (RwStep _ (origL, origR) dir, nextLit) = do
       nm <- ensureNamed (Eq origL origR)
-      return (appendLine blk (Hence nextLit (ByRw nm (rlAnnotation dir))))
+      return (appendLine blk (Hence nextLit (ByRw nm (dirAnnotation dir))))
 
 -- Names unnamed units that exactly match a tail body literal before we start,
 -- so the same derivation does not end up inlined in multiple places.
@@ -336,7 +337,7 @@ ensureNamed lit = do
       k <- freshLemmaNum
       let name = "lemma " ++ show k
       whenDebug ("  [ensureNamed] " ++ name ++ ": " ++ show lit)
-      emitLemma name lit stored
+      recordLemma name lit stored
       modifyUnit lit (UnitEntry (Just name) lit Nothing)
       return name
     Just (UnitEntry Nothing _ Nothing) ->
@@ -349,8 +350,8 @@ freshLemmaNum = do
   modify $ \s -> s { tsLemmaCount = tsLemmaCount s + 1 }
   gets tsLemmaCount
 
-emitLemma :: String -> Literal -> ProofBlock -> TransM ()
-emitLemma name lit block =
+recordLemma :: String -> Literal -> ProofBlock -> TransM ()
+recordLemma name lit block =
   modify $ \s -> s { tsLemmas = (name, lit, block) : tsLemmas s }
 
 modifyUnit :: Literal -> UnitEntry -> TransM ()

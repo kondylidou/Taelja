@@ -12,6 +12,7 @@ library
   exposed-modules:
     Types
     Helpers
+    ProofTree
     Converter
     Translator
     Emitter

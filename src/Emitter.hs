@@ -3,16 +3,19 @@ module Emitter where
 import Data.Char (toUpper)
 import Data.List (intercalate, nub)
 import Data.Maybe (maybeToList)
+import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 import Types
 import Helpers
 
 emit :: StructuredProof -> String
-emit sp = unlines $ concat
+emit sp0 = unlines $ concat
   [ axiomLines (axioms sp)
   , [ "" | not (null (axioms sp)) ]
   , concatMap lemmaLines (lemmas sp)
   , intercalate [""] (zipWith goalLines [1..] (goals sp))
   ]
+  where sp = pruneUnusedLemmas sp0
 
 -- A single global renaming covers all axiom entries so that a variable shared
 -- across multiple axioms (including non-unit clauses) gets the same display name.
@@ -105,3 +108,47 @@ ppTerm :: Term -> String
 ppTerm (Var x)    = x
 ppTerm (Const c)  = c
 ppTerm (App f ts) = f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+
+-- Remove lemmas unreferenced by any goal or other lemma, then renumber.
+pruneUnusedLemmas :: StructuredProof -> StructuredProof
+pruneUnusedLemmas sp = renumber (fixpoint prune sp)
+  where
+    prune sp0 = sp0 { lemmas = filter (isUsed sp0) (lemmas sp0) }
+
+    isUsed sp0 (nm, _, _) = Set.member nm (allRefs sp0)
+
+    allRefs sp0 = Set.fromList $
+      concatMap (blockRefs . snd) (goals sp0) ++
+      concatMap (\(_, _, b) -> blockRefs b) (lemmas sp0)
+
+    blockRefs (HaveHence ls)    = concatMap lineRefs ls
+    blockRefs (EqChain _ steps) = map (rwName . fst) steps
+
+    lineRefs (Have _ nm)            = [nm]
+    lineRefs (And _ nm)             = [nm]
+    lineRefs (Hence _ (ByAxiom nm)) = [nm]
+    lineRefs (Hence _ (ByRw nm _))  = [nm]
+
+    fixpoint f x =
+      let x' = f x
+      in if length (lemmas x') == length (lemmas x) then x' else fixpoint f x'
+
+    renumber sp0 =
+      let lemmaNms = map (\(n, _, _) -> n) (lemmas sp0)
+          axCount  = length (axioms sp0)
+          mapping  = Map.fromList (zip lemmaNms ["lemma " ++ show k | k <- [axCount+1..]])
+      in applyRenaming mapping sp0
+
+    applyRenaming mapping sp0 = sp0
+      { lemmas = [(ren n, lit, renBlock b) | (n, lit, b) <- lemmas sp0]
+      , goals  = [(lit, renBlock b)        | (lit, b)    <- goals sp0]
+      }
+      where
+        ren nm = Map.findWithDefault nm nm mapping
+        renBlock (HaveHence ls)    = HaveHence (map renLine ls)
+        renBlock (EqChain s steps) = EqChain s
+          [(rw { rwName = ren (rwName rw) }, t) | (rw, t) <- steps]
+        renLine (Have lit nm)            = Have lit (ren nm)
+        renLine (And lit nm)             = And lit (ren nm)
+        renLine (Hence lit (ByAxiom nm)) = Hence lit (ByAxiom (ren nm))
+        renLine (Hence lit (ByRw nm d))  = Hence lit (ByRw (ren nm) d)

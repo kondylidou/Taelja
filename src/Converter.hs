@@ -1,13 +1,17 @@
 module Converter where
 
 import qualified Data.TPTP as T
-import Data.List (nub)
+import Data.List (nub, foldl', sortBy)
 import Data.List.NonEmpty (toList)
 import Data.Maybe (catMaybes)
+import Data.Ord (comparing)
+import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 import qualified Data.Text as Text
 
 import Types
 import Helpers
+import ProofTree (buildProofTree, leafPositions, isFalsum)
 
 -- Splits the TSTP unit list into four buckets: axiom entries for output,
 -- unit axioms pre-loaded into the working set, non-unit clauses for proof search,
@@ -45,7 +49,21 @@ classifyAxioms units =
                    ++ "\n  formula: " ++ show f)
       classified             = zipWith (curry classify) [(1::Int)..] fofAxioms
       (axEntries, mUs, mNUs) = unzip3 classified
-  in (axEntries, catMaybes mUs, catMaybes mNUs, goalLits)
+      rawNonUnits            = catMaybes mNUs
+      -- Build mapping from TSTP unit name (e.g. "f3") to Taelja name ("axiom 3")
+      -- for every non-unit axiom. The ancestry map uses TSTP names internally.
+      tsptToTaelja           = Map.fromList
+        [ (origName, "axiom " ++ show i)
+        | (i, (origName, f)) <- zip [(1::Int)..] fofAxioms
+        , isHornImplicationFOF f ]
+      -- Sort non-unit clauses by their forward position in the TSTP proof tree so
+      -- the translator can process them in a single ordered pass (paper Lemma 0.6).
+      nonUnitNames    = map fst rawNonUnits
+      orderedNames    = proofTreeOrder units tsptToTaelja nonUnitNames
+      nonUnitMap      = Map.fromList rawNonUnits
+      orderedNonUnits = [ (n, c) | n <- orderedNames
+                                 , Just c <- [Map.lookup n nonUnitMap] ]
+  in (axEntries, catMaybes mUs, orderedNonUnits, goalLits)
 
 -- Accepts ∀X₁…∀Xₙ. L where L is atomic — a positive unit clause.
 isPositiveUnitFOF :: T.UnsortedFirstOrder -> Bool
@@ -90,11 +108,6 @@ fofToClause = go
     atomLit (T.Atomic lit) = lit
     atomLit _              = error "fofToClause: head is not atomic"
 
-isFalsum :: T.Clause -> Bool
-isFalsum (T.Clause lits) = case toList lits of
-  [(_, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])] -> True
-  _ -> False
-
 -- The negated conjecture is the negation of the goal, so we negate it back.
 negateGoal :: T.Clause -> Literal
 negateGoal (T.Clause lits) = case toList lits of
@@ -128,6 +141,51 @@ unitNameToString :: T.UnitName -> String
 unitNameToString (Left (T.Atom t)) = Text.unpack t
 unitNameToString (Right n)         = show n
 
+-- Order non-unit axiom names by Waldmann's lexicographic leaf-position ordering
+-- (Lemma 0.6). Builds the refutation proof tree, assigns binary position strings
+-- to leaves (left child "0", right child "1"), then sorts each non-unit axiom
+-- by the minimum leaf position across all its occurrences in the tree.
+proofTreeOrder :: [T.Unit] -> Map.Map String String -> [String] -> [String]
+proofTreeOrder allUnits tsptToTaelja nonUnitNames =
+  case buildProofTree allUnits of
+    Nothing   -> nonUnitNames
+    Just tree ->
+      let ancestryMap = buildAncestryMap allUnits
+          posMap      = leafPositions tree
+          firstPos    = Map.foldlWithKey'
+            (\acc tspt pos ->
+              let taxSet   = Map.findWithDefault Set.empty tspt ancestryMap
+                  taeNames = [t | a <- Set.toList taxSet, Just t <- [Map.lookup a tsptToTaelja]]
+              in foldl' (\m nm -> Map.insertWith min nm pos m) acc taeNames)
+            Map.empty posMap
+          withOrder   = [(n, Map.findWithDefault "2" n firstPos) | n <- nonUnitNames]
+      in map fst (sortBy (comparing snd) withOrder)
+
+-- Maps each TSTP unit name to the set of original FOF axiom names in its ancestry.
+buildAncestryMap :: [T.Unit] -> Map.Map String (Set.Set String)
+buildAncestryMap = foldl' addUnit Map.empty
+  where
+    addUnit acc (T.Unit name formula msource) =
+      let n       = unitNameToString name
+          selfSet = case formula of
+            T.Formula (T.Standard T.Axiom) _ -> Set.singleton n
+            _                                -> Set.empty
+          parentSet = case msource of
+            Just (T.Inference _ _ parents, _) ->
+              Set.unions (map (parentAncestry acc) parents)
+            Just (T.UnitSource pname, _) ->
+              Map.findWithDefault Set.empty (unitNameToString pname) acc
+            _ -> Set.empty
+          combined = Set.union selfSet parentSet
+      in if Set.null combined then acc else Map.insert n combined acc
+    addUnit acc _ = acc  -- T.Include and other non-formula units
+
+    parentAncestry acc (T.Parent (T.UnitSource n) _) =
+      Map.findWithDefault Set.empty (unitNameToString n) acc
+    parentAncestry acc (T.Parent (T.Inference _ _ ps) _) =
+      Set.unions (map (parentAncestry acc) ps)
+    parentAncestry _ _ = Set.empty
+
 -- Prefixes every clause variable with "c" so it can never collide with unit
 -- variables, which are uppercase-initial per the TPTP standard.
 -- tryMatchBodyLit relies on this invariant to split the combined substitution.
@@ -136,3 +194,4 @@ freshenClause (Clause bs mh) =
   let allVs = nub (concatMap litVars bs ++ maybe [] litVars mh)
       sub   = [(v, Var ("c" ++ v)) | v <- allVs]
   in Clause (map (applySubst sub) bs) (fmap (applySubst sub) mh)
+

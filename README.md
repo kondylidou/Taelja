@@ -35,7 +35,7 @@ hence r(a,b)
   by axiom 4
 ```
 
-**Equational chain** — only when there are no Horn clause non-units and the goal is a pure equation `s = t`:
+**Equational chain** — when the goal is a pure equation `s = t` and no non-unit clause produces it (either because there are no non-units, or all passes over them have been exhausted):
 ```
   s
 = { by axiom 1 }
@@ -71,14 +71,27 @@ The input axioms split into two groups:
 - **Units** — positive unit clauses (single facts such as `p(a)` or `f(a) = b`).
 - **Non-units** — Horn implications `L₁ ∧ … ∧ Lₙ → H` with two or more literals.
 
-The **goal** is the unnegated conjecture. Units starts with the axioms and grows as new facts are derived.
+The **goal** is the unnegated conjecture. Units start with the axioms and grow as new facts are derived.
+
+**Ordering non-unit clauses** follows Waldmann's position ordering (Lemma 0.6).
+The TSTP proof is a DAG; Tälja expands it into a full proof tree with ⊥ at the
+root. Each node is assigned a binary position string: left child (positive
+provider) gets suffix `0`, right child (negative consumer) gets suffix `1`,
+unary inference gets suffix `1`. Non-unit clauses are sorted by the
+lexicographic minimum of their leaf positions across all occurrences in the
+tree. By Lemma 0.6, this ordering guarantees that when a non-unit clause is
+processed, all the units its premises require are already available — a single
+ordered pass suffices.
 
 Each non-unit clause is tried two ways:
 
 - **Top-down** — if the head matches the goal, match each premise against Units under the same substitution. If all premises are covered, the proof is done.
 - **Bottom-up** — match the premises against Units freely, derive the grounded head, then check whether it reaches the goal by matching or rewriting. If not, add the derived head to Units for later rounds.
 
-The **fixpoint loop** retries all clauses until the goal is reached or Units stops growing. If it stalls, every anonymous equation is named so it can be cited in a proof step, and one final round is attempted. If that also fails, the goal is discharged as a pure rewriting problem over the accumulated units.
+**Stall recovery**: if the ordered pass does not reach the goal, every
+anonymous equation is named so it can be cited in a rewrite step, and one
+further pass is attempted. If that also fails, the goal is discharged as a
+pure rewriting problem over the accumulated units.
 
 **Rewriting** uses BFS over unit equations in three places: matching a body literal against a unit (rewrite a known fact until it matches the target), connecting a derived head to the goal, and building equational chains `s = … = t`.
 
@@ -94,10 +107,10 @@ Forced cases:
 
 Heuristic cases:
 
-- **DAG sharing** — a fact that would be consumed as the first premise by two or more clauses is named before any of them runs, avoiding duplicated derivations.
+- **DAG sharing** — a fact that would be consumed as the first premise by two or more clauses is named before any of them runs, avoiding duplicated derivations. The scan covers all non-unit clauses so sharing is detected regardless of processing order.
 - **Non-ground equational end** — a rewrite path ending at a non-ground equation is extracted as a named equational-chain lemma rather than inlined.
 
-Lemmas are stored in their most general (non-ground) form and instantiated at the point of use.
+Lemmas are stored in their most general (non-ground) form and instantiated at the point of use. After translation, a post-processing pass removes any lemmas that are not referenced by any goal or other lemma, then renumbers the survivors sequentially.
 
 ## Building
 

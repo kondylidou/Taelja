@@ -21,15 +21,18 @@ data Clause = Clause
 
 type Subst = [(String, Term)]
 
+-- Direction of an equation used as a rewrite rule.
 data Dir = LR | RL deriving (Eq, Show)
 
+-- One step in a rewrite sequence: the equation used, which direction, and the result.
 data RwStep = RwStep
   { rwName :: String
   , rwEq   :: (Term, Term)
   , rwDir  :: Dir
   } deriving (Show)
 
--- Unnamed entries carry their derivation so they can be promoted to a lemma later.
+-- An entry in the working unit set. Named entries are lemmas; unnamed entries
+-- carry their derivation block so they can be promoted to a lemma on demand.
 data UnitEntry = UnitEntry
   { ueName  :: Maybe String
   , ueUnit  :: Literal
@@ -58,6 +61,7 @@ data Axiom
   | ANonUnit String Clause
   deriving (Show)
 
+-- The fully translated proof: axioms in input order, intermediate lemmas, and goal proofs.
 data StructuredProof = StructuredProof
   { axioms :: [Axiom]
   , lemmas :: [(String, Literal, ProofBlock)]

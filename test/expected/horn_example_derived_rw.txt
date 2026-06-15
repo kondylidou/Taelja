@@ -14,7 +14,7 @@ Goal 1: f(b) = c
 Proof:
   have p(a)
     by axiom 1
-  hence f(a) = c
-    by axiom 3
-  hence f(b) = c
+  hence p(b)
     by rw lemma 5
+  hence f(b) = c
+    by axiom 3
