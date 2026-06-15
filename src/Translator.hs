@@ -92,7 +92,9 @@ proveWithNonUnits nonUnits goalLit = do
       mBlock2 <- onePass nonUnits
       case mBlock2 of
         Just block -> return block
-        Nothing    -> proveFromUnits goalLit
+        Nothing    -> do
+          whenDebug "[pass] both passes failed, falling back to unit-only proof"
+          proveFromUnits goalLit
   where
     -- After each clause adds a new unit, scan all clauses for DAG sharing:
     -- if the new unit would be the first body literal of ≥2 clauses, pre-name
@@ -250,6 +252,7 @@ foldBodyLit (Just (revLs, σ)) lit = do
 makeBlock :: UnitEntry -> [(RwStep, Literal)] -> TransM ProofBlock
 makeBlock ue rwPath = case finalNonGroundEq rwPath of
   Just (finalLit, l, r) -> do
+    whenDebug ("  [makeBlock] non-ground eq end, extracting lemma: " ++ show finalLit)
     m <- gets tsUnitMap
     case Map.lookup finalLit m of
       Nothing -> do
@@ -324,7 +327,8 @@ prelemmatize currentClause = mapM_ go
         Just ue
           | isNothing (ueName ue)
           , isJust (ueDeriv ue)
-          , not (derivedByClause currentClause ue) ->
+          , not (derivedByClause currentClause ue) -> do
+              whenDebug ("  [prelemmatize] pre-naming tail literal: " ++ show (ueUnit ue))
               void (ensureNamed (ueUnit ue))
         _ -> return ()
 
@@ -367,10 +371,12 @@ addToUnits :: UnitEntry -> TransM ()
 addToUnits ue = do
   m <- gets tsUnitMap
   case Map.lookup (ueUnit ue) m of
-    Nothing -> modify $ \s -> s
-      { tsUnits   = tsUnits s |> ue
-      , tsUnitMap = Map.insert (ueUnit ue) ue m
-      }
+    Nothing -> do
+      whenDebug ("  [addToUnits] new unit: " ++ show (ueUnit ue))
+      modify $ \s -> s
+        { tsUnits   = tsUnits s |> ue
+        , tsUnitMap = Map.insert (ueUnit ue) ue m
+        }
     Just old
       | isNothing (ueName old)
       , Just newBlk <- ueDeriv ue
