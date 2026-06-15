@@ -80,6 +80,7 @@ rewritePos lhs rhs t =
          ]
        _ -> []
 
+-- Rewrites lhs to rhs at every position in a literal and returns all results.
 rewritePosLit :: Term -> Term -> Literal -> [Literal]
 rewritePosLit lhs rhs lit = case lit of
   Eq  l r   -> [Eq  l' r | l' <- rewritePos lhs rhs l]
@@ -119,10 +120,11 @@ matchLit (NEq l1 r1) (NEq l2 r2) = matchAll [(l1, l2), (r1, r2)] []
 matchLit _ _ = Nothing
 
 matchAll :: [(Term, Term)] -> Subst -> Maybe Subst
-matchAll = pairFold matchTerm
+matchAll = foldPairs matchTerm
 
-pairFold :: (a -> b -> c -> Maybe c) -> [(a, b)] -> c -> Maybe c
-pairFold f pairs s = foldl (\acc (a, b) -> acc >>= f a b) (Just s) pairs
+-- Left-fold over a list of pairs, threading an accumulator through a fallible step.
+foldPairs :: (a -> b -> c -> Maybe c) -> [(a, b)] -> c -> Maybe c
+foldPairs f pairs s = foldl (\acc (a, b) -> acc >>= f a b) (Just s) pairs
 
 -- Two-sided unification. The occurs-check is skipped because body vars (c-prefixed)
 -- and unit vars (uppercase-initial) are disjoint, so a variable can never
@@ -143,7 +145,7 @@ unifyTerm (App f1 as1) (App f2 as2) subst
 unifyTerm _ _ _ = Nothing
 
 unifyAll :: [(Term, Term)] -> Subst -> Maybe Subst
-unifyAll = pairFold unifyTerm
+unifyAll = foldPairs unifyTerm
 
 unifyLit :: Literal -> Literal -> Subst -> Maybe Subst
 unifyLit (Rel n1 ts1) (Rel n2 ts2) subst
@@ -254,8 +256,8 @@ findMatchingUnit goal units = listToMaybe
 -- bindings for unit vars are applied to the stored proof block (σUnit).
 -- This handles both axiom units (uppercase vars) and derived units (c-prefixed
 -- vars from a prior clause computation) without relying on a naming convention.
-tryMatchBodyLit :: Literal -> Literal -> [UnitEntry] -> Maybe (Subst, Subst, [(RwStep, Literal)])
-tryMatchBodyLit bodyLit unitLit allUnits =
+unifyBodyLit :: Literal -> Literal -> [UnitEntry] -> Maybe (Subst, Subst, [(RwStep, Literal)])
+unifyBodyLit bodyLit unitLit allUnits =
   fmap split (bfsRewrite rewritePosLit litSize eqs (\cur -> unifyLit bodyLit cur []) unitLit bound)
   where
     split (combined, path) =
@@ -266,11 +268,12 @@ tryMatchBodyLit bodyLit unitLit allUnits =
     eqs   = eqUnits allUnits
     bound = rwBound eqs (litSize bodyLit) (litSize unitLit)
 
+-- Scans units in order and returns the first that unifies with bodyLit (after BFS rewriting).
 findBodyLitMatch :: Literal -> [UnitEntry] -> Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)])
 findBodyLitMatch bodyLit units = listToMaybe
   [ (ue, σUnit, σClause, rws)
   | ue <- units
-  , Just (σClause, σUnit, rws) <- [tryMatchBodyLit bodyLit (ueUnit ue) units]
+  , Just (σClause, σUnit, rws) <- [unifyBodyLit bodyLit (ueUnit ue) units]
   ]
 
 -- Tries matching first since it's cheaper. Falls back to unification only
@@ -324,7 +327,7 @@ blockSize (EqChain _ steps) = 1 + length steps
 -- Checks whether a unit's derivation cites the named clause anywhere.
 -- Used to avoid prelemmatizing something that would create a circular reference.
 derivedByClause :: String -> UnitEntry -> Bool
-derivedByClause name ue = case ueDeriv ue of
+derivedByClause name ue = case ueProof ue of
   Just (HaveHence ls) -> any isFromClause ls
   _                   -> False
   where

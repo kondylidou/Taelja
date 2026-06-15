@@ -36,7 +36,7 @@ data RwStep = RwStep
 data UnitEntry = UnitEntry
   { ueName  :: Maybe String
   , ueUnit  :: Literal
-  , ueDeriv :: Maybe ProofBlock
+  , ueProof :: Maybe ProofBlock
   } deriving (Show)
 
 -- EqChain is only for pure equational goals. Everything else uses HaveHence.
@@ -73,5 +73,5 @@ data BodyMatch = BodyMatch
   { bmEntry     :: UnitEntry
   , bmUnitSubst :: Subst               -- Applied to the stored proof block.
   , bmRewrites  :: [(RwStep, Literal)]
-  , bmClauseUpd :: Subst               -- Appended to the running clause substitution.
+  , bmClauseSubst :: Subst               -- Appended to the running clause substitution.
   }

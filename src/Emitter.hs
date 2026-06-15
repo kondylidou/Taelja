@@ -134,9 +134,9 @@ pruneUnusedLemmas sp = renumber (fixpoint prune sp)
       in if length (lemmas x') == length (lemmas x) then x' else fixpoint f x'
 
     renumber sp0 =
-      let lemmaNms = map (\(n, _, _) -> n) (lemmas sp0)
+      let lemmaNames = map (\(n, _, _) -> n) (lemmas sp0)
           axCount  = length (axioms sp0)
-          mapping  = Map.fromList (zip lemmaNms ["lemma " ++ show k | k <- [axCount+1..]])
+          mapping  = Map.fromList (zip lemmaNames ["lemma " ++ show k | k <- [axCount+1..]])
       in applyRenaming mapping sp0
 
     applyRenaming mapping sp0 = sp0

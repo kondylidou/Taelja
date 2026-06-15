@@ -13,18 +13,18 @@ import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map
 import qualified Data.Text as Text
 import Data.List.NonEmpty (toList)
+import Data.Maybe (fromMaybe)
 
 -- The refutation proof tree with ⊥ at the root.
 --
 -- PTLeaf: a node whose inference rule is not a core proof step — either an
 --   original input clause or a preprocessing result (CNF conversion, etc.).
---   These are the leaves in Waldmann's sense: the axiom instances at the tips.
+--   These are the axiom instances at the tips of the tree.
 --
 -- PTNode: a core proof step (resolution, superposition, equality_resolution, …).
 --   Binary nodes have children ordered [leftChild, rightChild]: the positive
---   provider goes LEFT (position p0) and the negative consumer goes RIGHT (p1),
---   matching Waldmann's position convention. Unary nodes have their single
---   premise as the right child (position p1).
+--   provider goes LEFT (position p0) and the negative consumer goes RIGHT (p1).
+--   Unary nodes have their single premise as the right child (position p1).
 data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
@@ -58,7 +58,7 @@ buildProofTree allUnits =
         case coreParentNames u of
           Nothing      -> PTLeaf name decl
           Just parents ->
-            let rule = maybe Text.empty id (inferenceRuleName u)
+            let rule = fromMaybe Text.empty (inferenceRuleName u)
             in PTNode name decl rule (orderedChildren decl rule parents)
       Just _ ->
         error "buildProofTree: unexpected non-formula unit"
@@ -68,7 +68,7 @@ buildProofTree allUnits =
         let d1          = declOf p1n decl
             d2          = declOf p2n decl
             (leftN, rightN) =
-              if parent1IsLeft rule decl d1 d2 then (p1n, p2n) else (p2n, p1n)
+              if firstParentIsLeft rule decl d1 d2 then (p1n, p2n) else (p2n, p1n)
         in [expand leftN, expand rightN]
       _ -> map expand parents
 
@@ -166,7 +166,7 @@ headInFOF _ _                                   = False
 
 litSameHead :: T.Literal -> T.Literal -> Bool
 litSameHead (T.Predicate n1 _) (T.Predicate n2 _) = n1 == n2
-litSameHead (T.Equality _ _ _) (T.Equality _ _ _) = True
+litSameHead (T.Equality {}) (T.Equality {}) = True
 litSameHead _ _                                    = False
 
 -- DFS assignment of binary position strings to leaf nodes.
@@ -188,14 +188,14 @@ leafPositions = go ""
 -- Resolution with one positive unit: the positive unit is the provider.
 -- Resolution with two non-units: the parent whose head is absent from the result
 --   provided the positive literal that got resolved away.
-parent1IsLeft :: Text.Text -> T.Declaration -> T.Declaration -> T.Declaration -> Bool
-parent1IsLeft rule _ d1 _
+firstParentIsLeft :: Text.Text -> T.Declaration -> T.Declaration -> T.Declaration -> Bool
+firstParentIsLeft rule _ d1 _
   | rule `elem` map Text.pack ["superposition", "paramodulation"] =
       isPositiveUnitFormula d1   -- equation is positive unit; into-clause is not
-parent1IsLeft _ _ d1 d2
+firstParentIsLeft _ _ d1 d2
   | isPositiveUnitFormula d1 && not (isPositiveUnitFormula d2) = True
   | isPositiveUnitFormula d2 && not (isPositiveUnitFormula d1) = False
-parent1IsLeft _ result d1 d2 = case (headLitOf d1, headLitOf d2) of
+firstParentIsLeft _ result d1 d2 = case (headLitOf d1, headLitOf d2) of
   (Just h1, _)       -> not (headInDecl h1 result)  -- d1's head absent → d1 is the provider
   (Nothing, Just h2) -> headInDecl h2 result         -- d2's head survives → d2 is the consumer → d1 is left
   (Nothing, Nothing) -> True

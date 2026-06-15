@@ -73,15 +73,15 @@ The input axioms split into two groups:
 
 The **goal** is the unnegated conjecture. Units start with the axioms and grow as new facts are derived.
 
-**Ordering non-unit clauses** follows Waldmann's position ordering (Lemma 0.6).
+**Ordering non-unit clauses** uses a lexicographic position ordering.
 The TSTP proof is a DAG; Tälja expands it into a full proof tree with ⊥ at the
 root. Each node is assigned a binary position string: left child (positive
 provider) gets suffix `0`, right child (negative consumer) gets suffix `1`,
 unary inference gets suffix `1`. Non-unit clauses are sorted by the
 lexicographic minimum of their leaf positions across all occurrences in the
-tree. By Lemma 0.6, this ordering guarantees that when a non-unit clause is
-processed, all the units its premises require are already available — a single
-ordered pass suffices.
+tree. This ordering guarantees that when a non-unit clause is processed, all
+the units its premises require are already available — a single ordered pass
+suffices.
 
 Each non-unit clause is tried two ways:
 

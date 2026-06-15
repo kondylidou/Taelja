@@ -71,9 +71,9 @@ proveFromUnits goal = case goal of
         error ("cannot discharge goal " ++ show goal
                ++ "\n  units in set: " ++ show unitList)
 
--- Process non-unit clauses in Waldmann's position ordering (Lemma 0.6):
--- a single ordered pass suffices because when we reach clause C, all units
--- its body requires have already been derived by earlier clauses.
+-- Process non-unit clauses in lexicographic position order (left child = "0",
+-- right child = "1"). A single ordered pass suffices: when we reach clause C,
+-- all units its body requires have already been derived by earlier clauses.
 -- If the pass stalls, name all anonymous equations and retry once; if that
 -- also fails, fall back to pure unit-based proof search.
 proveWithNonUnits :: [(String, Clause)] -> Literal -> TransM ProofBlock
@@ -130,7 +130,7 @@ preScanShared nonUnits = do
   forM_ shared $ \lit -> do
     m <- gets tsUnitMap
     case Map.lookup lit m of
-      Just ue | isNothing (ueName ue), isJust (ueDeriv ue) -> do
+      Just ue | isNothing (ueName ue), isJust (ueProof ue) -> do
         whenDebug ("  [preScanShared] pre-naming shared unit: " ++ show lit)
         void (ensureNamed lit)
       _ -> return ()
@@ -169,12 +169,11 @@ processNonUnit clauseName (Clause bodyLits mHead) goalLit = do
       whenDebug ("  [" ++ clauseName ++ "] top-down: head does not match goal, trying bottom-up")
       nonUnitBottomUp clauseName bodyLits headLit goalLit
 
--- Proves the body first, then derives the grounded head and tries to connect it
--- to the goal via matching or rewriting. If it still cannot reach the goal, stores
--- the grounded head as a new unit for the next fixpoint round.
--- Free unit variables (uppercase-initial) get instantiated over the goal's ground
--- subterms. This works because freshenClause always c-prefixes clause variables,
--- so isUpper reliably distinguishes unit vars from clause vars.
+-- Proves the body first, then derives the head and tries to connect it to the
+-- goal via matching or rewriting. If it still cannot reach the goal, stores the
+-- derived head as a new unit for the next round.
+-- Clause vars are c-prefixed by freshenClause, so σFinal only binds clause vars;
+-- applying it to the head gives a fully instantiated derived literal.
 nonUnitBottomUp :: String -> [Literal] -> Literal -> Literal -> TransM (Maybe ProofBlock)
 nonUnitBottomUp clauseName bodyLits headLit goalLit = do
   mResult <- processBody [] bodyLits
@@ -201,6 +200,9 @@ nonUnitBottomUp clauseName bodyLits headLit goalLit = do
               addToUnits (UnitEntry Nothing groundH (Just block'))
               return Nothing
 
+-- Matches the first body literal directly, then folds over the rest.
+-- Returns the combined proof block and the final clause substitution, or Nothing
+-- if any literal fails to match.
 processBody :: Subst -> [Literal] -> TransM (Maybe (ProofBlock, Subst))
 processBody _ [] = error "processBody: empty body"
 processBody σ0 (l1 : rest) = do
@@ -208,10 +210,10 @@ processBody σ0 (l1 : rest) = do
   let target1 = applySubst σ0 l1
   case bodyLitMatch target1 units of
     Nothing -> return Nothing
-    Just (BodyMatch ue1 blkSubst1 rws1 clauseUpd1) -> do
-      let σ1 = σ0 ++ clauseUpd1
+    Just (BodyMatch ue1 unitSubst1 rws1 clauseSubst1) -> do
+      let σ1 = σ0 ++ clauseSubst1
       blk1 <- makeBlock ue1 rws1
-      let ls1 = case applySubstBlock blkSubst1 blk1 of
+      let ls1 = case applySubstBlock unitSubst1 blk1 of
                   HaveHence ls -> ls
                   EqChain {}   -> error "processBody: initial block is EqChain"
       result <- foldM foldBodyLit (Just (reverse ls1, σ1)) rest
@@ -228,10 +230,10 @@ foldBodyLit (Just (revLs, σ)) lit = do
     Nothing -> do
       whenDebug ("    body literal no match: " ++ show target)
       return Nothing
-    Just (BodyMatch ue _blkSubst rws clauseUpd) -> do
-      let σ'         = σ ++ clauseUpd
-          displayLit = applySubst clauseUpd target
-      if null rws && null clauseUpd
+    Just (BodyMatch ue _unitSubst rws clauseSubst) -> do
+      let σ'         = σ ++ clauseSubst
+          displayLit = applySubst clauseSubst target
+      if null rws && null clauseSubst
         then do
           name <- ensureNamed (ueUnit ue)
           return (Just (And displayLit name : revLs, σ'))
@@ -239,7 +241,7 @@ foldBodyLit (Just (revLs, σ)) lit = do
           blk <- makeBlock ue rws
           -- Store the generic (pre-instantiation) form so lemmas are non-ground.
           -- When rws is non-empty, the last rewrite result is the generic literal
-          -- with unit vars (uppercase) still free. When rws is empty but clauseUpd
+          -- with unit vars (uppercase) still free. When rws is empty but clauseSubst
           -- is non-null, the unit itself is the generic form.
           let genericLit | null rws  = ueUnit ue
                          | otherwise = snd (last rws)
@@ -267,7 +269,7 @@ makeBlock ue rwPath = case finalNonGroundEq rwPath of
   Nothing -> buildInline
   where
     buildInline = do
-      baseLines <- case ueDeriv ue of
+      baseLines <- case ueProof ue of
         Just (HaveHence ls) -> return ls
         -- Cannot inline an EqChain, so name it and reference it with a single Have line.
         Just (EqChain {})   -> do
@@ -287,6 +289,7 @@ makeBlock ue rwPath = case finalNonGroundEq rwPath of
       nm' <- ensureNamed (Eq origL origR)
       return (Hence nextLit (ByRw nm' (dirAnnotation dir)))
 
+-- Finds the rewrite chain from s to t for an EqChain proof. Errors if no chain exists.
 rwChainTo :: Term -> Term -> TransM [(RwStep, Term)]
 rwChainTo s t = do
   units <- gets (toList . tsUnits)
@@ -302,6 +305,7 @@ dirAnnotation :: Dir -> Maybe Dir
 dirAnnotation RL = Just RL
 dirAnnotation LR = Nothing
 
+-- Appends rewrite steps to a proof block, naming each equation used.
 extendWithRw :: ProofBlock -> [(RwStep, Literal)] -> TransM ProofBlock
 extendWithRw = foldM step
   where
@@ -326,12 +330,13 @@ prelemmatize currentClause = mapM_ go
       case found of
         Just ue
           | isNothing (ueName ue)
-          , isJust (ueDeriv ue)
+          , isJust (ueProof ue)
           , not (derivedByClause currentClause ue) -> do
               whenDebug ("  [prelemmatize] pre-naming tail literal: " ++ show (ueUnit ue))
               void (ensureNamed (ueUnit ue))
         _ -> return ()
 
+-- Returns the name of lit if it is already a lemma; otherwise promotes it to one.
 ensureNamed :: Literal -> TransM String
 ensureNamed lit = do
   m <- gets tsUnitMap
@@ -379,8 +384,8 @@ addToUnits ue = do
         }
     Just old
       | isNothing (ueName old)
-      , Just newBlk <- ueDeriv ue
-      , Just oldBlk <- ueDeriv old
+      , Just newBlk <- ueProof ue
+      , Just oldBlk <- ueProof old
       , blockSize newBlk < blockSize oldBlk -> do
           whenDebug ("  [addToUnits] shorter proof for " ++ show (ueUnit ue)
                      ++ " (" ++ show (blockSize oldBlk) ++ " -> " ++ show (blockSize newBlk) ++ ")")

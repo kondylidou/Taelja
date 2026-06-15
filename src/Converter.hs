@@ -22,19 +22,19 @@ classifyAxioms :: [T.Unit]
 classifyAxioms units =
   let fofAxioms = [ (unitNameToString n, f)
                   | T.Unit n (T.Formula (T.Standard T.Axiom) (T.FOF f)) _ <- units ]
-      negConjE  = [ cl
-                  | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.CNF cl))
-                              (Just (T.Inference (T.Atom rule) _ _, _)) <- units
-                  , rule == Text.pack "split_conjunct"
-                  , not (isFalsum cl) ]
-      negConjV  = [ f
-                  | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.FOF f))
-                              (Just (T.Inference (T.Atom rule) _ _, _)) <- units
-                  , rule == Text.pack "negated_conjecture" ]
-      goalLits  = case (negConjE, negConjV) of
-                    ([cl], []) -> [negateGoal cl]
-                    ([], [f])  -> negateGoalFOF f
-                    _          -> error "classifyAxioms: expected exactly one negated conjecture"
+      negConjCNF = [ cl
+                   | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.CNF cl))
+                               (Just (T.Inference (T.Atom rule) _ _, _)) <- units
+                   , rule == Text.pack "split_conjunct"
+                   , not (isFalsum cl) ]
+      negConjFOF = [ f
+                   | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.FOF f))
+                               (Just (T.Inference (T.Atom rule) _ _, _)) <- units
+                   , rule == Text.pack "negated_conjecture" ]
+      goalLits   = case (negConjCNF, negConjFOF) of
+                     ([cl], []) -> [negateGoal cl]
+                     ([], [f])  -> negateGoalFOF f
+                     _          -> error "classifyAxioms: expected exactly one negated conjecture"
       classify (i, (origName, f))
         | isPositiveUnitFOF f =
             let lit = extractUnitFOF f
@@ -48,22 +48,22 @@ classifyAxioms units =
             error ("input is not in the Horn fragment: " ++ origName
                    ++ "\n  formula: " ++ show f)
       classified             = zipWith (curry classify) [(1::Int)..] fofAxioms
-      (axEntries, mUs, mNUs) = unzip3 classified
-      rawNonUnits            = catMaybes mNUs
-      -- Build mapping from TSTP unit name (e.g. "f3") to Taelja name ("axiom 3")
-      -- for every non-unit axiom. The ancestry map uses TSTP names internally.
-      tsptToTaelja           = Map.fromList
+      (axEntries, maybeUnits, maybeNonUnits) = unzip3 classified
+      rawNonUnits            = catMaybes maybeNonUnits
+      -- Maps each original FOF axiom name to its Taelja display name ("axiom N"),
+      -- but only for non-unit axioms. The ancestry map uses the original names internally.
+      displayNames           = Map.fromList
         [ (origName, "axiom " ++ show i)
         | (i, (origName, f)) <- zip [(1::Int)..] fofAxioms
         , isHornImplicationFOF f ]
-      -- Sort non-unit clauses by their forward position in the TSTP proof tree so
-      -- the translator can process them in a single ordered pass (paper Lemma 0.6).
+      -- Sort non-unit clauses by their position in the TSTP proof tree so
+      -- the translator can process them in a single ordered pass.
       nonUnitNames    = map fst rawNonUnits
-      orderedNames    = proofTreeOrder units tsptToTaelja nonUnitNames
+      orderedNames    = proofTreeOrder units displayNames nonUnitNames
       nonUnitMap      = Map.fromList rawNonUnits
       orderedNonUnits = [ (n, c) | n <- orderedNames
                                  , Just c <- [Map.lookup n nonUnitMap] ]
-  in (axEntries, catMaybes mUs, orderedNonUnits, goalLits)
+  in (axEntries, catMaybes maybeUnits, orderedNonUnits, goalLits)
 
 -- Accepts ∀X₁…∀Xₙ. L where L is atomic — a positive unit clause.
 isPositiveUnitFOF :: T.UnsortedFirstOrder -> Bool
@@ -115,6 +115,8 @@ negateGoal (T.Clause lits) = case toList lits of
   [(T.Positive, T.Equality l T.Negative r)] -> Eq (convertTerm l) (convertTerm r)
   _ -> error "negateGoal: unexpected negated conjecture shape"
 
+-- Same as negateGoal but for FOF negated conjectures (Vampire style), which may
+-- be a conjunction of goals.
 negateGoalFOF :: T.UnsortedFirstOrder -> [Literal]
 negateGoalFOF (T.Negated f) = collectConjuncts f
   where
@@ -141,22 +143,22 @@ unitNameToString :: T.UnitName -> String
 unitNameToString (Left (T.Atom t)) = Text.unpack t
 unitNameToString (Right n)         = show n
 
--- Order non-unit axiom names by Waldmann's lexicographic leaf-position ordering
--- (Lemma 0.6). Builds the refutation proof tree, assigns binary position strings
--- to leaves (left child "0", right child "1"), then sorts each non-unit axiom
--- by the minimum leaf position across all its occurrences in the tree.
+-- Order non-unit axiom names by lexicographic leaf-position order.
+-- Builds the refutation proof tree, assigns binary position strings to leaves
+-- (left child "0", right child "1"), then sorts each non-unit axiom by the
+-- minimum leaf position across all its occurrences in the tree.
 proofTreeOrder :: [T.Unit] -> Map.Map String String -> [String] -> [String]
-proofTreeOrder allUnits tsptToTaelja nonUnitNames =
+proofTreeOrder allUnits displayNames nonUnitNames =
   case buildProofTree allUnits of
     Nothing   -> nonUnitNames
     Just tree ->
       let ancestryMap = buildAncestryMap allUnits
           posMap      = leafPositions tree
           firstPos    = Map.foldlWithKey'
-            (\acc tspt pos ->
-              let taxSet   = Map.findWithDefault Set.empty tspt ancestryMap
-                  taeNames = [t | a <- Set.toList taxSet, Just t <- [Map.lookup a tsptToTaelja]]
-              in foldl' (\m nm -> Map.insertWith min nm pos m) acc taeNames)
+            (\acc leafName pos ->
+              let ancestorAxioms = Map.findWithDefault Set.empty leafName ancestryMap
+                  matchingNames  = [nm | a <- Set.toList ancestorAxioms, Just nm <- [Map.lookup a displayNames]]
+              in foldl' (\m nm -> Map.insertWith min nm pos m) acc matchingNames)
             Map.empty posMap
           withOrder   = [(n, Map.findWithDefault "2" n firstPos) | n <- nonUnitNames]
       in map fst (sortBy (comparing snd) withOrder)
@@ -188,7 +190,7 @@ buildAncestryMap = foldl' addUnit Map.empty
 
 -- Prefixes every clause variable with "c" so it can never collide with unit
 -- variables, which are uppercase-initial per the TPTP standard.
--- tryMatchBodyLit relies on this invariant to split the combined substitution.
+-- unifyBodyLit relies on this invariant to split the combined substitution.
 freshenClause :: Clause -> Clause
 freshenClause (Clause bs mh) =
   let allVs = nub (concatMap litVars bs ++ maybe [] litVars mh)
