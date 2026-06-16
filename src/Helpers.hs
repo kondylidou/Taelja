@@ -1,8 +1,10 @@
 module Helpers where
 
 import Control.Applicative ((<|>))
-import Data.List (find, nub)
-import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
+import Control.Monad (foldM)
+import Data.Bifunctor (second)
+import Data.List (nub)
+import Data.Maybe (fromMaybe, listToMaybe)
 import qualified Data.Set as Set
 import Types
 
@@ -124,7 +126,7 @@ matchAll = foldPairs matchTerm
 
 -- Left-fold over a list of pairs, threading an accumulator through a fallible step.
 foldPairs :: (a -> b -> c -> Maybe c) -> [(a, b)] -> c -> Maybe c
-foldPairs f pairs s = foldl (\acc (a, b) -> acc >>= f a b) (Just s) pairs
+foldPairs f pairs s = foldM (\acc (a, b) -> f a b acc) s pairs
 
 -- Two-sided unification. The occurs-check is skipped because body vars (c-prefixed)
 -- and unit vars (uppercase-initial) are disjoint, so a variable can never
@@ -168,9 +170,6 @@ groundSubterms t@(App _ ts)
   | null (termVars t) = t : concatMap groundSubterms ts
   | otherwise         = concatMap groundSubterms ts
 groundSubterms (Var _) = []
-
-groundSubtermsLit :: Literal -> [Term]
-groundSubtermsLit = foldLiteralTerms groundSubterms
 
 -- The bound is generous enough to reach any term reachable in one equation
 -- application from either side, so no useful path gets pruned.
@@ -220,19 +219,20 @@ bfsRewrite rwFn sizeFn eqs check start bound =
       , Set.notMember cur' visited
       ]
 
--- Only named equations make it here. Unnamed ones cannot be cited in a proof.
--- Equations where rhs has variables not in lhs are skipped: they cannot be
--- applied as rewrite rules without introducing unbound variables.
+-- True when at least one rewrite direction is safe: LR requires vars(rhs) ⊆ vars(lhs),
+-- RL requires vars(lhs) ⊆ vars(rhs). Applying in an unsafe direction would introduce
+-- unbound variables in the result.
+eitherDirSafe :: Term -> Term -> Bool
+eitherDirSafe l r = all (`elem` termVars l) (termVars r)
+                 || all (`elem` termVars r) (termVars l)
+
+-- Only named equations: unnamed ones cannot be cited in a proof.
 eqUnits :: [UnitEntry] -> [(String, Term, Term)]
 eqUnits = concatMap toEq
   where
     toEq ue = case (ueName ue, ueUnit ue) of
-      (Just nm, Eq l r)
-        | all (`elem` termVars l) (termVars r) -> [(nm, l, r)]
-      _ -> []
-
-findUnitByLit :: Literal -> [UnitEntry] -> Maybe UnitEntry
-findUnitByLit lit = find (\ue -> ueUnit ue == lit)
+      (Just nm, Eq l r) | eitherDirSafe l r -> [(nm, l, r)]
+      _                                      -> []
 
 -- BFS from lit, trying to reach goal using one-sided matching. Unit vars can bind.
 tryMatchLit :: Literal -> Literal -> [UnitEntry] -> Maybe (Subst, [(RwStep, Literal)])
@@ -254,8 +254,11 @@ findMatchingUnit goal units = listToMaybe
 -- Split the combined unifier by membership in the target's (bodyLit's) variable
 -- set: bindings for target vars update the running clause substitution (σClause),
 -- bindings for unit vars are applied to the stored proof block (σUnit).
--- This handles both axiom units (uppercase vars) and derived units (c-prefixed
--- vars from a prior clause computation) without relying on a naming convention.
+-- After splitting, apply σUnit to the terms in σClause: when a non-linear unit
+-- (repeated variable) forces a clause var to bind to a unit var (e.g. cX → A),
+-- σUnit resolves that unit var to its ground value (A → f(a)), giving the fully
+-- ground clause binding (cX → f(a)) and preventing uppercase vars from leaking
+-- into the running clause substitution.
 unifyBodyLit :: Literal -> Literal -> [UnitEntry] -> Maybe (Subst, Subst, [(RwStep, Literal)])
 unifyBodyLit bodyLit unitLit allUnits =
   fmap split (bfsRewrite rewritePosLit litSize eqs (\cur -> unifyLit bodyLit cur []) unitLit bound)
@@ -264,7 +267,8 @@ unifyBodyLit bodyLit unitLit allUnits =
       let targetVarSet = litVars bodyLit
           σClause = [(v, t) | (v, t) <- combined, v `elem`    targetVarSet]
           σUnit   = [(v, t) | (v, t) <- combined, v `notElem` targetVarSet]
-      in (σClause, σUnit, path)
+          σClause' = map (second (applySubstTerm σUnit)) σClause
+      in (σClause', σUnit, path)
     eqs   = eqUnits allUnits
     bound = rwBound eqs (litSize bodyLit) (litSize unitLit)
 
@@ -285,15 +289,17 @@ bodyLitMatch target units =
   ((\(ue, σUnit, σClause, rws) -> BodyMatch ue σUnit rws σClause)  <$> findBodyLitMatch target units)
 
 -- All equation units usable as BFS rewrite steps, including unnamed ones.
--- Unnamed equations get an empty placeholder name; any caller that needs to cite
--- an equation in a proof must call ensureNamed to obtain the real name.
+-- Named equations come from eqUnits. Unnamed equations get an empty placeholder
+-- name; any caller that needs to cite an equation must call ensureNamed first.
 rwEquations :: [UnitEntry] -> [(String, Term, Term)]
-rwEquations = mapMaybe toEq
-  where
-    toEq ue = case ueUnit ue of
-      Eq l r | all (`elem` termVars l) (termVars r) ->
-        Just (fromMaybe "" (ueName ue), l, r)
-      _ -> Nothing
+rwEquations units =
+  eqUnits units ++
+  [ ("", l, r)
+  | ue <- units
+  , Nothing <- [ueName ue]
+  , Eq l r <- [ueUnit ue]
+  , eitherDirSafe l r
+  ]
 
 -- Like tryMatchLit but includes unnamed equations as stepping stones.
 -- BFS can route through them even when they cannot yet be cited in the proof.
@@ -315,6 +321,17 @@ findPath units s t =
     eqs   = eqUnits units
     bound = maximum (0 : [termSize l | (_, l, _) <- eqs]) + max (termSize s) (termSize t)
     check cur = if cur == t then Just () else Nothing
+
+-- Cheap structural pre-filter: same predicate name for relational literals,
+-- same type for equational ones. BFS rewrites terms but cannot change a
+-- predicate name, so different-headed literals are never reachable from one
+-- another and can be skipped without running BFS.
+sameHead :: Literal -> Literal -> Bool
+sameHead (Rel n _)  (Rel m _)  = n == m
+sameHead (NRel n _) (NRel m _) = n == m
+sameHead (Eq _ _)   (Eq _ _)   = True
+sameHead (NEq _ _)  (NEq _ _)  = True
+sameHead _          _           = False
 
 appendLine :: ProofBlock -> ProofLine -> ProofBlock
 appendLine (HaveHence ls) l = HaveHence (ls ++ [l])

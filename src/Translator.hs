@@ -3,12 +3,12 @@ module Translator where
 import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map
 import qualified Data.Sequence as Seq
+import qualified Data.Set as Set
 import Data.Sequence (Seq, (|>))
 import Data.Foldable (toList) -- explicit: Map.toList in scope prevents Prelude resolution
 import Control.Monad (foldM, forM_, void, when)
 import Debug.Trace (traceM)
 import Control.Monad.State.Strict
-import Data.List (nub)
 import Data.Maybe (fromMaybe, isJust, isNothing)
 
 import Types
@@ -21,6 +21,7 @@ import Converter
 data TransState = TransState
   { tsUnits      :: Seq UnitEntry
   , tsUnitMap    :: Map.Map Literal UnitEntry
+  , tsUnitIndex  :: Map.Map Literal Int        -- position of each literal in tsUnits
   , tsLemmaCount :: Int
   , tsLemmas     :: [(String, Literal, ProofBlock)]
   , tsDebug      :: Bool
@@ -40,6 +41,7 @@ translate debug (T.TSTP _ units) =
       initState = TransState
         { tsUnits      = Seq.fromList initUnitEntries
         , tsUnitMap    = Map.fromList [(ueUnit ue, ue) | ue <- initUnitEntries]
+        , tsUnitIndex  = Map.fromList (zip (map ueUnit initUnitEntries) [0..])
         , tsLemmaCount = length axEntries
         , tsLemmas     = []
         , tsDebug      = debug
@@ -108,25 +110,27 @@ proveWithNonUnits nonUnits goalLit = do
         Just block -> return (Just block)
         Nothing    -> do
           szAfter <- gets (Map.size . tsUnitMap)
-          when (szAfter > szBefore) (preScanShared nonUnits)
+          when (szAfter > szBefore) $ do
+            newUnits <- gets (Seq.drop szBefore . tsUnits)
+            mapM_ (preScanShared nonUnits . ueUnit) (toList newUnits)
           onePass rest
 
--- Before processing each round, detect unnamed units that would match the first
--- body literal of ≥2 different non-unit clauses. Those units sit at DAG merge
--- points: multiple derivation paths share the same intermediate result. Pre-naming
--- them avoids duplicating the derivation in each consumer's proof block.
-preScanShared :: [(String, Clause)] -> TransM ()
-preScanShared nonUnits = do
+-- Detect unnamed units that match the first body literal of ≥2 non-unit clauses
+-- and pre-name them. Pre-naming avoids duplicating the derivation in each
+-- consumer's proof block. Only clauses whose first body literal shares the same
+-- predicate head as the trigger are checked (see sameHead).
+preScanShared :: [(String, Clause)] -> Literal -> TransM ()
+preScanShared nonUnits trigger = do
   units <- gets (toList . tsUnits)
-  let firstLits = [(cn, l) | (cn, Clause (l:_) _) <- nonUnits]
-      -- For each clause's first body literal, find which unnamed unit matches it.
+  let firstLits = [(cn, l) | (cn, Clause (l:_) _) <- nonUnits
+                            , sameHead trigger l]
       matches = [ (cn, ueUnit (bmEntry bm))
                 | (cn, lit) <- firstLits
                 , Just bm  <- [bodyLitMatch lit units]
                 , isNothing (ueName (bmEntry bm))
                 ]
       grouped = Map.fromListWith (++) [(unitLit, [cn]) | (cn, unitLit) <- matches]
-      shared  = [lit | (lit, cns) <- Map.toList grouped, length (nub cns) >= 2]
+      shared  = [lit | (lit, cns) <- Map.toList grouped, Set.size (Set.fromList cns) >= 2]
   forM_ shared $ \lit -> do
     m <- gets tsUnitMap
     case Map.lookup lit m of
@@ -279,15 +283,12 @@ makeBlock ue rwPath = case finalNonGroundEq rwPath of
           return [Have (ueUnit ue)
                     (fromMaybe (error "makeBlock: unnamed unit has no derivation")
                                (ueName ue))]
-      rwLines <- mapM stepToLine rwPath
+      rwLines <- mapM rwStepToLine rwPath
       return (HaveHence (baseLines ++ rwLines))
     finalNonGroundEq []    = Nothing
     finalNonGroundEq steps = case snd (last steps) of
       lit@(Eq l r) | not (null (litVars lit)) -> Just (lit, l, r)
       _                                        -> Nothing
-    stepToLine (RwStep _ (origL, origR) dir, nextLit) = do
-      nm' <- ensureNamed (Eq origL origR)
-      return (Hence nextLit (ByRw nm' (dirAnnotation dir)))
 
 -- Finds the rewrite chain from s to t for an EqChain proof. Errors if no chain exists.
 rwChainTo :: Term -> Term -> TransM [(RwStep, Term)]
@@ -305,13 +306,19 @@ dirAnnotation :: Dir -> Maybe Dir
 dirAnnotation RL = Just RL
 dirAnnotation LR = Nothing
 
+-- Converts one BFS rewrite step into a Hence proof line, naming the equation used.
+rwStepToLine :: (RwStep, Literal) -> TransM ProofLine
+rwStepToLine (RwStep _ (origL, origR) dir, nextLit) = do
+  nm <- ensureNamed (Eq origL origR)
+  return (Hence nextLit (ByRw nm (dirAnnotation dir)))
+
 -- Appends rewrite steps to a proof block, naming each equation used.
 extendWithRw :: ProofBlock -> [(RwStep, Literal)] -> TransM ProofBlock
-extendWithRw = foldM step
-  where
-    step blk (RwStep _ (origL, origR) dir, nextLit) = do
-      nm <- ensureNamed (Eq origL origR)
-      return (appendLine blk (Hence nextLit (ByRw nm (dirAnnotation dir))))
+extendWithRw blk rwPath = do
+  newLines <- mapM rwStepToLine rwPath
+  return $ case blk of
+    HaveHence ls -> HaveHence (ls ++ newLines)
+    EqChain {}   -> error "extendWithRw: cannot extend EqChain"
 
 -- Names unnamed units that exactly match a tail body literal before we start,
 -- so the same derivation does not end up inlined in multiple places.
@@ -365,10 +372,13 @@ recordLemma name lit block =
 
 modifyUnit :: Literal -> UnitEntry -> TransM ()
 modifyUnit lit new =
-  modify $ \s -> s
-    { tsUnits   = fmap (\u -> if ueUnit u == lit then new else u) (tsUnits s)
-    , tsUnitMap = Map.insert lit new (tsUnitMap s)
-    }
+  modify $ \s ->
+    let idx = Map.findWithDefault
+                (error ("modifyUnit: literal not in index: " ++ show lit))
+                lit (tsUnitIndex s)
+    in s { tsUnits   = Seq.update idx new (tsUnits s)
+         , tsUnitMap = Map.insert lit new (tsUnitMap s)
+         }
 
 -- New derivations replace an existing unnamed entry when they are strictly shorter.
 -- Named entries are never replaced: they may already be cited in emitted lemmas.
@@ -379,8 +389,9 @@ addToUnits ue = do
     Nothing -> do
       whenDebug ("  [addToUnits] new unit: " ++ show (ueUnit ue))
       modify $ \s -> s
-        { tsUnits   = tsUnits s |> ue
-        , tsUnitMap = Map.insert (ueUnit ue) ue m
+        { tsUnits      = tsUnits s |> ue
+        , tsUnitMap    = Map.insert (ueUnit ue) ue (tsUnitMap s)
+        , tsUnitIndex  = Map.insert (ueUnit ue) (Seq.length (tsUnits s)) (tsUnitIndex s)
         }
     Just old
       | isNothing (ueName old)

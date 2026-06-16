@@ -1,12 +1,15 @@
 module Emitter where
 
 import Data.Char (toUpper)
-import Data.List (intercalate, nub)
+import Data.List (intercalate, nub, partition)
 import Data.Maybe (maybeToList)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import Types
 import Helpers
+
+cap :: String -> String
+cap s = toUpper (head s) : tail s
 
 emit :: StructuredProof -> String
 emit sp0 = unlines $ concat
@@ -27,7 +30,6 @@ axiomLines entries = map ppEntry entries
     entryVars (ANonUnit _ (Clause bs mh))  = concatMap litVars bs ++ maybe [] litVars mh
     ppEntry (AUnit n l)    = cap n ++ ": " ++ ppLiteral (renameLit globalRenaming l)
     ppEntry (ANonUnit n c) = cap n ++ ": " ++ ppClauseWith globalRenaming c
-    cap s = toUpper (head s) : tail s
 
 ppClauseWith :: [(String, String)] -> Clause -> String
 ppClauseWith renaming (Clause bodyLits mHead) =
@@ -57,7 +59,7 @@ blockRenaming lit block = zip (nub (litVars lit ++ blockVars block)) prettyVarNa
 
 lemmaLines :: (String, Literal, ProofBlock) -> [String]
 lemmaLines (name, lit, block) =
-  (toUpper (head name) : tail name ++ ": " ++ ppLiteral (renameLit renaming lit)) :
+  (cap name ++ ": " ++ ppLiteral (renameLit renaming lit)) :
   "Proof:" :
   blockLines (renameBlock renaming block) ++
   [""]
@@ -113,9 +115,10 @@ ppTerm (App f ts) = f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 pruneUnusedLemmas :: StructuredProof -> StructuredProof
 pruneUnusedLemmas sp = renumber (fixpoint prune sp)
   where
-    prune sp0 = sp0 { lemmas = filter (isUsed sp0) (lemmas sp0) }
-
-    isUsed sp0 (nm, _, _) = Set.member nm (allRefs sp0)
+    prune sp0 =
+      let refs           = allRefs sp0
+          (kept, dropped) = partition (\(nm, _, _) -> Set.member nm refs) (lemmas sp0)
+      in (sp0 { lemmas = kept }, not (null dropped))
 
     allRefs sp0 = Set.fromList $
       concatMap (blockRefs . snd) (goals sp0) ++
@@ -130,8 +133,8 @@ pruneUnusedLemmas sp = renumber (fixpoint prune sp)
     lineRefs (Hence _ (ByRw nm _))  = [nm]
 
     fixpoint f x =
-      let x' = f x
-      in if length (lemmas x') == length (lemmas x) then x' else fixpoint f x'
+      let (x', changed) = f x
+      in if changed then fixpoint f x' else x'
 
     renumber sp0 =
       let lemmaNames = map (\(n, _, _) -> n) (lemmas sp0)

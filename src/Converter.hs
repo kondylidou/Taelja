@@ -11,7 +11,7 @@ import qualified Data.Text as Text
 
 import Types
 import Helpers
-import ProofTree (buildProofTree, leafPositions, isFalsum)
+import ProofTree (buildProofTree, leafPositions, isFalsum, unitNameStr)
 
 -- Splits the TSTP unit list into four buckets: axiom entries for output,
 -- unit axioms pre-loaded into the working set, non-unit clauses for proof search,
@@ -20,7 +20,7 @@ import ProofTree (buildProofTree, leafPositions, isFalsum)
 classifyAxioms :: [T.Unit]
                -> ([Axiom], [UnitEntry], [(String, Clause)], [Literal])
 classifyAxioms units =
-  let fofAxioms = [ (unitNameToString n, f)
+  let fofAxioms = [ (unitNameStr n, f)
                   | T.Unit n (T.Formula (T.Standard T.Axiom) (T.FOF f)) _ <- units ]
       negConjCNF = [ cl
                    | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.CNF cl))
@@ -139,10 +139,6 @@ convertTerm (T.Function (T.Defined (T.Atom f)) args) = case args of
   _  -> App   (Text.unpack f) (map convertTerm args)
 convertTerm _ = error "convertTerm: unsupported term form"
 
-unitNameToString :: T.UnitName -> String
-unitNameToString (Left (T.Atom t)) = Text.unpack t
-unitNameToString (Right n)         = show n
-
 -- Order non-unit axiom names by lexicographic leaf-position order.
 -- Builds the refutation proof tree, assigns binary position strings to leaves
 -- (left child "0", right child "1"), then sorts each non-unit axiom by the
@@ -168,7 +164,7 @@ buildAncestryMap :: [T.Unit] -> Map.Map String (Set.Set String)
 buildAncestryMap = foldl' addUnit Map.empty
   where
     addUnit acc (T.Unit name formula msource) =
-      let n       = unitNameToString name
+      let n       = unitNameStr name
           selfSet = case formula of
             T.Formula (T.Standard T.Axiom) _ -> Set.singleton n
             _                                -> Set.empty
@@ -176,14 +172,14 @@ buildAncestryMap = foldl' addUnit Map.empty
             Just (T.Inference _ _ parents, _) ->
               Set.unions (map (parentAncestry acc) parents)
             Just (T.UnitSource pname, _) ->
-              Map.findWithDefault Set.empty (unitNameToString pname) acc
+              Map.findWithDefault Set.empty (unitNameStr pname) acc
             _ -> Set.empty
           combined = Set.union selfSet parentSet
       in if Set.null combined then acc else Map.insert n combined acc
     addUnit acc _ = acc  -- T.Include and other non-formula units
 
     parentAncestry acc (T.Parent (T.UnitSource n) _) =
-      Map.findWithDefault Set.empty (unitNameToString n) acc
+      Map.findWithDefault Set.empty (unitNameStr n) acc
     parentAncestry acc (T.Parent (T.Inference _ _ ps) _) =
       Set.unions (map (parentAncestry acc) ps)
     parentAncestry _ _ = Set.empty

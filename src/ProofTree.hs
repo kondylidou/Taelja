@@ -1,16 +1,16 @@
 module ProofTree
   ( ProofTree(..)
-  , ptName
-  , ptDecl
   , buildProofTree
   , leafPositions
   -- re-exported helpers used by Converter
   , isFalsum
   , isPositiveUnitFormula
+  , unitNameStr
   ) where
 
 import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Data.List.NonEmpty (toList)
 import Data.Maybe (fromMaybe)
@@ -29,14 +29,6 @@ data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
   deriving (Show)
-
-ptName :: ProofTree -> String
-ptName (PTLeaf n _)     = n
-ptName (PTNode n _ _ _) = n
-
-ptDecl :: ProofTree -> T.Declaration
-ptDecl (PTLeaf _ d)     = d
-ptDecl (PTNode _ d _ _) = d
 
 -- Build the refutation proof tree from a flat TSTP unit list.
 -- Returns Nothing when no ⊥ unit is present.
@@ -82,13 +74,16 @@ unitNameStr :: T.UnitName -> String
 unitNameStr (Left (T.Atom t)) = Text.unpack t
 unitNameStr (Right n)         = show n
 
-isCoreInference :: Text.Text -> Bool
-isCoreInference name = name `elem` map Text.pack
+coreInferenceNames :: Set.Set Text.Text
+coreInferenceNames = Set.fromList $ map Text.pack
   [ "resolution", "superposition", "paramodulation"
   , "equality_resolution", "equality_factoring"
   , "forward_subsumption_resolution", "backward_subsumption_resolution"
   , "factoring", "condensation"
   , "definition_unfolding", "trivial_inequality_removal" ]
+
+isCoreInference :: Text.Text -> Bool
+isCoreInference name = Set.member name coreInferenceNames
 
 coreParentNames :: T.Unit -> Maybe [String]
 coreParentNames (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ parents, _)))
@@ -105,16 +100,22 @@ inferenceRuleName _ = Nothing
 
 isFalsum :: T.Clause -> Bool
 isFalsum (T.Clause lits) = case toList lits of
-  [(_, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])] -> True
+  [(T.Positive, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])] -> True
   _ -> False
 
 declIsBottom :: T.Declaration -> Bool
 declIsBottom (T.Formula _ (T.CNF cl)) = isFalsum cl
 declIsBottom (T.Formula _ (T.FOF (T.Atomic (T.Predicate (T.Reserved (T.Standard T.Falsum)) [])))) = True
+-- ¬$true is logically equivalent to $false; some provers use this form.
+declIsBottom (T.Formula _ (T.FOF (T.Negated (T.Atomic (T.Predicate (T.Reserved (T.Standard T.Tautology)) []))))) = True
 declIsBottom _ = False
 
 findRoot :: [T.Unit] -> Maybe String
 findRoot units =
+  -- TSTP output is topologically sorted (parents before children), so the
+  -- actual refutation root is always the LAST bottom unit in the file.
+  -- When E-prover splitting produces intermediate empty clauses, they appear
+  -- before the final root, so `last` correctly selects the true root.
   case [unitNameStr n | T.Unit n decl _ <- units, declIsBottom decl] of
     [] -> Nothing
     rs -> Just (last rs)
@@ -181,17 +182,22 @@ leafPositions = go ""
     go pos (PTNode _ _ _ [k])    = go (pos ++ "1") k
     go pos (PTNode _ _ _ [l, r]) = Map.union (go (pos ++ "0") l) (go (pos ++ "1") r)
     go pos (PTNode _ _ _ kids)   = Map.unions
-      [go (pos ++ [c]) kid | (c, kid) <- zip "01" kids]
+      [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
 
 -- True when Vampire's parent1 should be the LEFT (positive provider) child.
 -- Superposition: Vampire lists [into_clause, equation]; the equation is the provider.
+--   d1 = into_clause (consumer, goes RIGHT), d2 = equation (provider, goes LEFT).
+--   We always return False regardless of whether into_clause is a unit formula.
 -- Resolution with one positive unit: the positive unit is the provider.
 -- Resolution with two non-units: the parent whose head is absent from the result
 --   provided the positive literal that got resolved away.
+superpositionRules :: Set.Set Text.Text
+superpositionRules = Set.fromList (map Text.pack ["superposition", "paramodulation"])
+
 firstParentIsLeft :: Text.Text -> T.Declaration -> T.Declaration -> T.Declaration -> Bool
-firstParentIsLeft rule _ d1 _
-  | rule `elem` map Text.pack ["superposition", "paramodulation"] =
-      isPositiveUnitFormula d1   -- equation is positive unit; into-clause is not
+firstParentIsLeft rule _ _ _
+  | Set.member rule superpositionRules =
+      False  -- equation (d2) is always the LEFT provider; into-clause (d1) goes RIGHT
 firstParentIsLeft _ _ d1 d2
   | isPositiveUnitFormula d1 && not (isPositiveUnitFormula d2) = True
   | isPositiveUnitFormula d2 && not (isPositiveUnitFormula d1) = False

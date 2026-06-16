@@ -5,7 +5,6 @@ import System.Environment (getArgs)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 
-import qualified Data.Text as Text
 import qualified Data.Text.IO as TIO
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
@@ -16,6 +15,7 @@ import Translator (translate)
 import Converter (classifyAxioms)
 import Emitter (emit, ppClause)
 import qualified Emitter as E
+import ProofTree (unitNameStr)
 
 main :: IO ()
 main = do
@@ -62,10 +62,6 @@ dumpUnit (T.Unit name decl source) = do
   putStrLn ""
 dumpUnit (T.Include path _) =
   putStrLn ("include(" ++ show path ++ ")")
-
-unitNameStr :: T.UnitName -> String
-unitNameStr (Left (T.Atom t)) = Text.unpack t
-unitNameStr (Right n)         = show n
 
 roleStr :: T.Declaration -> String
 roleStr (T.Formula (T.Standard r) _) = show r
