@@ -1,3 +1,4 @@
+{-# LANGUAGE LambdaCase #-}
 module Translator where
 
 import qualified Data.TPTP as T
@@ -9,6 +10,7 @@ import Data.Foldable (toList) -- explicit: Map.toList in scope prevents Prelude 
 import Control.Monad (foldM, forM_, void, when)
 import Debug.Trace (traceM)
 import Control.Monad.State.Strict
+import Data.List (isPrefixOf)
 import Data.Maybe (fromMaybe, isJust, isNothing)
 
 import Types
@@ -166,9 +168,16 @@ processNonUnit clauseName (Clause bodyLits mHead) goalLit = do
         Nothing         -> do
           whenDebug ("  [" ++ clauseName ++ "] top-down: body failed, falling back to bottom-up")
           nonUnitBottomUp clauseName bodyLits headLit goalLit
-        Just (block, _) -> do
-          whenDebug ("  [" ++ clauseName ++ "] top-down: succeeded")
-          return (Just (appendLine block (Hence goalLit (ByAxiom clauseName))))
+        Just (block, _)
+          | not (null σHead) && blockHasLemmaRw block -> do
+              -- σHead forced the body targets; a derived-lemma rw on the body means
+              -- the rw really belongs on the head. Switch to bottom-up so the
+              -- substitution comes from body matching and the rw lands on the head.
+              whenDebug ("  [" ++ clauseName ++ "] top-down: body needed rw under forced subst, using bottom-up")
+              nonUnitBottomUp clauseName bodyLits headLit goalLit
+          | otherwise -> do
+              whenDebug ("  [" ++ clauseName ++ "] top-down: succeeded")
+              return (Just (appendLine block (Hence goalLit (ByAxiom clauseName))))
     Nothing -> do
       whenDebug ("  [" ++ clauseName ++ "] top-down: head does not match goal, trying bottom-up")
       nonUnitBottomUp clauseName bodyLits headLit goalLit
@@ -379,6 +388,14 @@ modifyUnit lit new =
     in s { tsUnits   = Seq.update idx new (tsUnits s)
          , tsUnitMap = Map.insert lit new (tsUnitMap s)
          }
+
+-- True when any Hence line in the block rewrites via a derived lemma.
+-- Axiom-equation rw steps are valid on the body side (definition_unfolding);
+-- derived-lemma rw steps belong on the head after the inference, not on the body.
+blockHasLemmaRw :: ProofBlock -> Bool
+blockHasLemmaRw (HaveHence ls) =
+  any (\case Hence _ (ByRw nm _) -> "lemma " `isPrefixOf` nm; _ -> False) ls
+blockHasLemmaRw (EqChain {}) = False
 
 -- New derivations replace an existing unnamed entry when they are strictly shorter.
 -- Named entries are never replaced: they may already be cited in emitted lemmas.

@@ -35,7 +35,7 @@ hence r(a,b)
   by axiom 4
 ```
 
-**Equational chain** — when the goal is a pure equation `s = t` and no non-unit clause produces it (either because there are no non-units, or all passes over them have been exhausted):
+**Equational chain** — when the goal is a pure equation `s = t` not produced by any non-unit clause:
 ```
   s
 = { by axiom 1 }
@@ -73,29 +73,19 @@ The input axioms split into two groups:
 
 The **goal** is the unnegated conjecture. Units start with the axioms and grow as new facts are derived.
 
-**Ordering non-unit clauses** uses a lexicographic position ordering.
-The TSTP proof is a DAG; Tälja expands it into a full proof tree with ⊥ at the
-root. Each node is assigned a binary position string: left child (positive
-provider) gets suffix `0`, right child (negative consumer) gets suffix `1`,
-unary inference gets suffix `1`. Non-unit clauses are sorted by the
-lexicographic minimum of their leaf positions across all occurrences in the
-tree. This ordering guarantees that when a non-unit clause is processed, all
-the units its premises require are already available — a single ordered pass
-suffices.
+**Ordering non-unit clauses**: the TSTP proof is a DAG; Tälja expands it into a full proof tree and assigns each non-unit clause a position based on where it appears as a leaf. Sorting by the lexicographically earliest leaf position guarantees that when a clause is processed, all units its premises require are already available — a single ordered pass suffices.
 
 Each non-unit clause is tried two ways:
 
-- **Top-down** — if the head matches the goal, match each premise against Units under the same substitution. If all premises are covered, the proof is done.
-- **Bottom-up** — match the premises against Units freely, derive the grounded head, then check whether it reaches the goal by matching or rewriting. If not, add the derived head to Units for later rounds.
+- **Top-down** — if the head matches the goal, prove each premise against Units under that substitution. If all premises are covered, the proof is done. Falls back to bottom-up when the substitution forces a body target that requires a derived-lemma rewrite.
+- **Bottom-up** — match premises against Units freely, derive the grounded head, then connect it to the goal by matching or rewriting. If it doesn't reach the goal, add it to Units for later rounds.
 
 **Stall recovery**: if the ordered pass does not reach the goal, every
 anonymous equation is named so it can be cited in a rewrite step, and one
 further pass is attempted. If that also fails, the goal is discharged as a
 pure rewriting problem over the accumulated units.
 
-**Rewriting** uses BFS over unit equations in three places: matching a body literal against a unit (rewrite a known fact until it matches the target), connecting a derived head to the goal, and building equational chains `s = … = t`.
-
-**Proof blocks** take one of two shapes: `have … and … hence …` for relational goals, and `s = {by eq} t₁ = … = t` for equational goals.
+**Rewriting** uses BFS over unit equations in three places: matching a body literal against a unit, connecting a derived head to the goal, and building equational chains. Each equation may be applied left-to-right or right-to-left; the direction that would introduce unbound variables is skipped. Body rewrites via axiom equations are valid in place. Body rewrites via derived lemma equations are an equational complication: the rewrite belongs on the head after the inference, not on the body literal, so top-down falls back to bottom-up in that case.
 
 **Lemmatization** promotes an anonymous proved fact to a named lemma.
 
@@ -107,10 +97,10 @@ Forced cases:
 
 Heuristic cases:
 
-- **DAG sharing** — a fact that would be consumed as the first premise by two or more clauses is named before any of them runs, avoiding duplicated derivations. The scan covers all non-unit clauses so sharing is detected regardless of processing order.
+- **DAG sharing** — a fact that would be consumed as the first premise by two or more clauses is named before any of them runs, avoiding duplicated derivations.
 - **Non-ground equational end** — a rewrite path ending at a non-ground equation is extracted as a named equational-chain lemma rather than inlined.
 
-Lemmas are stored in their most general (non-ground) form and instantiated at the point of use. After translation, a post-processing pass removes any lemmas that are not referenced by any goal or other lemma, then renumbers the survivors sequentially.
+Lemmas are stored in their most general (non-ground) form and instantiated at the point of use. After translation, unreferenced lemmas are removed and the survivors are renumbered sequentially.
 
 ## Building
 
