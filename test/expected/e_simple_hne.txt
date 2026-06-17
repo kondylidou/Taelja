@@ -1,0 +1,9 @@
+Axiom 1: r(X,Y) => s(Y,X)
+Axiom 2: r(a,b)
+
+Goal 1: s(b,a)
+Proof:
+  have r(a,b)
+    by axiom 2
+  hence s(b,a)
+    by axiom 1

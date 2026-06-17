@@ -80,7 +80,9 @@ coreInferenceNames = Set.fromList $ map Text.pack
   , "equality_resolution", "equality_factoring"
   , "forward_subsumption_resolution", "backward_subsumption_resolution"
   , "factoring", "condensation"
-  , "definition_unfolding", "trivial_inequality_removal" ]
+  , "definition_unfolding", "trivial_inequality_removal"
+  -- E prover
+  , "spm", "csr", "er", "ef", "rw", "cn", "pm" ]
 
 isCoreInference :: Text.Text -> Bool
 isCoreInference name = Set.member name coreInferenceNames
@@ -192,7 +194,7 @@ leafPositions = go ""
 -- Resolution with two non-units: the parent whose head is absent from the result
 --   provided the positive literal that got resolved away.
 superpositionRules :: Set.Set Text.Text
-superpositionRules = Set.fromList (map Text.pack ["superposition", "paramodulation"])
+superpositionRules = Set.fromList (map Text.pack ["superposition", "paramodulation", "spm"])
 
 firstParentIsLeft :: Text.Text -> T.Declaration -> T.Declaration -> T.Declaration -> Bool
 firstParentIsLeft rule _ _ _

@@ -1,0 +1,10 @@
+
+cnf(nc, negated_conjecture, (~s(b,a)), file('/tmp/simple_hne.p', nc)).
+cnf(ax2, axiom, (s(X2,X1)|~r(X1,X2)), file('/tmp/simple_hne.p', ax2)).
+cnf(ax1, axiom, (r(a,b)), file('/tmp/simple_hne.p', ax1)).
+cnf(c_0_3, negated_conjecture, (~s(b,a)), inference(fof_simplification,[status(thm)],[nc])).
+cnf(c_0_4, plain, (s(X2,X1)|~r(X1,X2)), inference(fof_simplification,[status(thm)],[ax2])).
+cnf(c_0_5, negated_conjecture, (~s(b,a)), c_0_3).
+cnf(c_0_6, plain, (s(X2,X1)|~r(X1,X2)), c_0_4).
+cnf(c_0_7, axiom, (r(a,b)), ax1).
+cnf(c_0_8, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_5, c_0_6]), c_0_7])]), ['proof']).

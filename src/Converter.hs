@@ -3,7 +3,7 @@ module Converter where
 import qualified Data.TPTP as T
 import Data.List (nub, foldl', sortBy)
 import Data.List.NonEmpty (toList)
-import Data.Maybe (catMaybes)
+import Data.Maybe (catMaybes, listToMaybe)
 import Data.Ord (comparing)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -16,26 +16,42 @@ import ProofTree (buildProofTree, leafPositions, isFalsum, unitNameStr)
 -- Splits the TSTP unit list into four buckets: axiom entries for output,
 -- unit axioms pre-loaded into the working set, non-unit clauses for proof search,
 -- and goal literals from the negated conjecture.
--- Handles both E (split_conjunct / CNF) and Vampire (negated_conjecture / FOF).
+-- Handles Vampire (FOF axioms, single negated_conjecture) and
+-- E (CNF axioms, file-sourced negated_conjecture clauses).
 classifyAxioms :: [T.Unit]
                -> ([Axiom], [UnitEntry], [(String, Clause)], [Literal])
 classifyAxioms units =
-  let fofAxioms = [ (unitNameStr n, f)
-                  | T.Unit n (T.Formula (T.Standard T.Axiom) (T.FOF f)) _ <- units ]
-      negConjCNF = [ cl
-                   | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.CNF cl))
-                               (Just (T.Inference (T.Atom rule) _ _, _)) <- units
-                   , rule == Text.pack "split_conjunct"
-                   , not (isFalsum cl) ]
-      negConjFOF = [ f
-                   | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.FOF f))
-                               (Just (T.Inference (T.Atom rule) _ _, _)) <- units
-                   , rule == Text.pack "negated_conjecture" ]
-      goalLits   = case (negConjCNF, negConjFOF) of
-                     ([cl], []) -> [negateGoal cl]
-                     ([], [f])  -> negateGoalFOF f
-                     _          -> error "classifyAxioms: expected exactly one negated conjecture"
-      classify (i, (origName, f))
+  let fofAxioms  = [ (unitNameStr n, f)
+                   | T.Unit n (T.Formula (T.Standard T.Axiom) (T.FOF f)) _ <- units ]
+      -- E also emits unit-source copies of each clause for its internal pipeline;
+      -- only the file-sourced ones are the original inputs.
+      cnfAxioms  = [ (unitNameStr n, cl)
+                   | T.Unit n (T.Formula (T.Standard T.Axiom) (T.CNF cl))
+                               (Just (T.File _ _, _)) <- units ]
+      negConjSplit = [ cl
+                     | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.CNF cl))
+                                 (Just (T.Inference (T.Atom rule) _ _, _)) <- units
+                     , rule == Text.pack "split_conjunct"
+                     , not (isFalsum cl) ]
+      negConjFOF   = [ f
+                     | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.FOF f))
+                                 (Just (T.Inference (T.Atom rule) _ _, _)) <- units
+                     , rule == Text.pack "negated_conjecture" ]
+      -- In E output the original negated_conjecture clauses carry a file(...) source;
+      -- the inference-sourced copies of them are excluded here.
+      negConjFile  = [ cl
+                     | T.Unit _ (T.Formula (T.Standard T.NegatedConjecture) (T.CNF cl))
+                                 (Just (T.File _ _, _)) <- units
+                     , not (isFalsum cl) ]
+
+      goalLits = case (negConjSplit, negConjFOF, negConjFile, cnfAxioms) of
+        ([cl], [], _, _)   -> [negateGoal cl]
+        ([], [f], _, _)    -> negateGoalFOF f
+        ([], [], cls, _:_) -> map negateGoal cls
+        _                  -> error "classifyAxioms: could not determine goal literals"
+
+      -- FOF path (Vampire)
+      classifyFOF (i, (origName, f))
         | isPositiveUnitFOF f =
             let lit = extractUnitFOF f
                 nm  = "axiom " ++ show i
@@ -47,17 +63,33 @@ classifyAxioms units =
         | otherwise =
             error ("input is not in the Horn fragment: " ++ origName
                    ++ "\n  formula: " ++ show f)
-      classified             = zipWith (curry classify) [(1::Int)..] fofAxioms
+
+      -- CNF path (E)
+      classifyCNF (i, (origName, cl))
+        | isPositiveUnitCNF cl =
+            let lit = extractUnitCNF cl
+                nm  = "axiom " ++ show i
+            in (AUnit nm lit, Just (UnitEntry (Just nm) lit Nothing), Nothing)
+        | isHornCNF cl =
+            let nm  = "axiom " ++ show i
+                c   = cnfToClause cl
+            in (ANonUnit nm c, Nothing, Just (nm, freshenClause c))
+        | otherwise =
+            error ("input is not in the Horn fragment: " ++ origName)
+
+      (classified, displayNames) =
+        if not (null fofAxioms)
+        then ( zipWith (curry classifyFOF) [(1::Int)..] fofAxioms
+             , Map.fromList [ (origName, "axiom " ++ show i)
+                            | (i, (origName, f)) <- zip [(1::Int)..] fofAxioms
+                            , isHornImplicationFOF f ] )
+        else ( zipWith (curry classifyCNF) [(1::Int)..] cnfAxioms
+             , Map.fromList [ (origName, "axiom " ++ show i)
+                            | (i, (origName, cl)) <- zip [(1::Int)..] cnfAxioms
+                            , isHornCNF cl ] )
+
       (axEntries, maybeUnits, maybeNonUnits) = unzip3 classified
-      rawNonUnits            = catMaybes maybeNonUnits
-      -- Maps each original FOF axiom name to its Taelja display name ("axiom N"),
-      -- but only for non-unit axioms. The ancestry map uses the original names internally.
-      displayNames           = Map.fromList
-        [ (origName, "axiom " ++ show i)
-        | (i, (origName, f)) <- zip [(1::Int)..] fofAxioms
-        , isHornImplicationFOF f ]
-      -- Sort non-unit clauses by their position in the TSTP proof tree so
-      -- the translator can process them in a single ordered pass.
+      rawNonUnits     = catMaybes maybeNonUnits
       nonUnitNames    = map fst rawNonUnits
       orderedNames    = proofTreeOrder units displayNames nonUnitNames
       nonUnitMap      = Map.fromList rawNonUnits
@@ -108,7 +140,30 @@ fofToClause = go
     atomLit (T.Atomic lit) = lit
     atomLit _              = error "fofToClause: head is not atomic"
 
--- The negated conjecture is the negation of the goal, so we negate it back.
+isPositiveUnitCNF :: T.Clause -> Bool
+isPositiveUnitCNF (T.Clause lits) = case toList lits of
+  [(T.Positive, _)] -> True
+  _                 -> False
+
+isHornCNF :: T.Clause -> Bool
+isHornCNF (T.Clause lits) =
+  let ls = toList lits
+  in length [() | (T.Positive, _) <- ls] == 1
+  && not (null [() | (T.Negative, _) <- ls])
+
+extractUnitCNF :: T.Clause -> Literal
+extractUnitCNF (T.Clause lits) = case toList lits of
+  [(T.Positive, l)] -> convertLit l
+  _                 -> error "extractUnitCNF: not a positive unit"
+
+-- Body literals are stored positively; negation is implicit from position.
+cnfToClause :: T.Clause -> Clause
+cnfToClause (T.Clause lits) =
+  let ls      = toList lits
+      posLits = [convertLit l | (T.Positive, l) <- ls]
+      negLits = [convertLit l | (T.Negative, l) <- ls]
+  in Clause { body = negLits, hd = listToMaybe posLits }
+
 negateGoal :: T.Clause -> Literal
 negateGoal (T.Clause lits) = case toList lits of
   [(T.Negative, lit)]                       -> convertLit lit

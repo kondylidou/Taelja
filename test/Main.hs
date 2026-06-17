@@ -53,6 +53,9 @@ tests = testGroup "Taelja"
       , benchmark "superposition_example_clausal1"
       , benchmark "superposition_example_clausal2"
       ]
+  , testGroup "E prover"
+      [ golden "e_simple_hne"
+      ]
   ]
 
 golden :: String -> TestTree
