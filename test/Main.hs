@@ -9,7 +9,7 @@ import Data.TPTP.Parse.Text (parseTSTP)
 import Test.Tasty
 import Test.Tasty.Golden
 
-import Translator (translate)
+import Translate (translate)
 import Emitter (emit)
 
 main :: IO ()
