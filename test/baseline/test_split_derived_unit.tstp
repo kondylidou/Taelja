@@ -1,21 +1,59 @@
-% Regression test for tryMatchBodyLit split.
-% A derived unit q(a, cX1) with a c-prefixed free variable is stored after
-% proving axiom 2 bottom-up. When axiom 3 then tries to prove q(cX0, b),
-% the unifier binds both cX0 (target var) and cX1 (unit var). The split must
-% put cX0 into σClause and cX1 into σUnit (by targetVarSet membership), so the
-% stored proof block gets cX1 → b applied and the proof shows q(a,b), not q(a,X).
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for test_split_derived_unit
+% SZS output start Proof for test_split_derived_unit
 fof(f1,axiom,(
   p(a)),
-  file('test',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
 fof(f2,axiom,(
   ! [X0,X1] : (p(X0) => q(X0,X1))),
-  file('test',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (q(X0,b) => r(X0))),
-  file('test',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
 fof(f4,conjecture,(
   r(a)),
-  file('test',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
 fof(f5,negated_conjecture,(
   ~r(a)),
   inference(negated_conjecture,[status(cth)],[f4])).
+fof(f6,plain,(
+  ~r(a)),
+  inference(flattening,[],[f5])).
+fof(f7,plain,(
+  ! [X0,X1] : (q(X0,X1) | ~p(X0))),
+  inference(ennf_transformation,[],[f2])).
+fof(f8,plain,(
+  ! [X0] : (r(X0) | ~q(X0,b))),
+  inference(ennf_transformation,[],[f3])).
+fof(f9,plain,(
+  p(a)),
+  inference(cnf_transformation,[],[f1])).
+fof(f10,plain,(
+  ( ! [X0,X1] : (q(X0,X1) | ~p(X0)) )),
+  inference(cnf_transformation,[],[f7])).
+fof(f11,plain,(
+  ( ! [X0] : (~q(X0,b) | r(X0)) )),
+  inference(cnf_transformation,[],[f8])).
+fof(f12,plain,(
+  ~r(a)),
+  inference(cnf_transformation,[],[f6])).
+fof(f13,plain,(
+  ( ! [X0] : (~p(X0) | r(X0)) )),
+  inference(resolution,[],[f11,f10])).
+fof(f14,plain,(
+  r(a)),
+  inference(resolution,[],[f13,f9])).
+fof(f15,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f14,f12])).
+% SZS output end Proof for test_split_derived_unit
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.0000 s
+% Peak memory usage: 7 MB
+% ------------------------------
+% ------------------------------

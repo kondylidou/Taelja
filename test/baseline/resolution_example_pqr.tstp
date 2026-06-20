@@ -4,16 +4,16 @@
 % SZS output start Proof for resolution_example_pqr
 fof(f1,axiom,(
   p(a)),
-  file('benchmarks/input/resolution_example_pqr.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_pqr.p',unknown)).
 fof(f2,axiom,(
   ! [X0] : (p(X0) => q(X0))),
-  file('benchmarks/input/resolution_example_pqr.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_pqr.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (q(X0) => r(X0))),
-  file('benchmarks/input/resolution_example_pqr.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_pqr.p',unknown)).
 fof(f4,conjecture,(
   r(a)),
-  file('benchmarks/input/resolution_example_pqr.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_pqr.p',unknown)).
 fof(f5,negated_conjecture,(
   ~r(a)),
   inference(negated_conjecture,[status(cth)],[f4])).

@@ -4,19 +4,19 @@
 % SZS output start Proof for horn_example_eq_rw_chain
 fof(f1,axiom,(
   a = b),
-  file('benchmarks/input/horn_example_eq_rw_chain.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
 fof(f2,axiom,(
   f(b) = c),
-  file('benchmarks/input/horn_example_eq_rw_chain.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (f(X0) = c => g(X0) = c)),
-  file('benchmarks/input/horn_example_eq_rw_chain.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
 fof(f4,axiom,(
   g(a) = c => h(a) = c),
-  file('benchmarks/input/horn_example_eq_rw_chain.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
 fof(f5,conjecture,(
   h(a) = c),
-  file('benchmarks/input/horn_example_eq_rw_chain.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
 fof(f6,negated_conjecture,(
   ~h(a) = c),
   inference(negated_conjecture,[status(cth)],[f5])).
@@ -68,7 +68,7 @@ fof(f20,plain,(
 % Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
 % CaDiCaL version: 2.1.3
 % Termination reason: Refutation
-% Time elapsed: 0.0000 s
+% Time elapsed: 0.001 s
 % Peak memory usage: 7 MB
 % ------------------------------
 % ------------------------------

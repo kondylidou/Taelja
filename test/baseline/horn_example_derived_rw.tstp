@@ -4,19 +4,19 @@
 % SZS output start Proof for horn_example_derived_rw
 fof(f1,axiom,(
   p(a)),
-  file('benchmarks/input/horn_example_derived_rw.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
 fof(f2,axiom,(
   q(b)),
-  file('benchmarks/input/horn_example_derived_rw.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (p(X0) => f(X0) = c)),
-  file('benchmarks/input/horn_example_derived_rw.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
 fof(f4,axiom,(
   ! [X0] : (q(X0) => a = X0)),
-  file('benchmarks/input/horn_example_derived_rw.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
 fof(f5,conjecture,(
   f(b) = c),
-  file('benchmarks/input/horn_example_derived_rw.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
 fof(f6,negated_conjecture,(
   ~f(b) = c),
   inference(negated_conjecture,[status(cth)],[f5])).
@@ -62,7 +62,7 @@ fof(f19,plain,(
 % Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
 % CaDiCaL version: 2.1.3
 % Termination reason: Refutation
-% Time elapsed: 0.001 s
+% Time elapsed: 0.010 s
 % Peak memory usage: 7 MB
 % ------------------------------
 % ------------------------------

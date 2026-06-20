@@ -1,10 +1,20 @@
+-- Phase 0: build the refutation proof tree from a flat TSTP unit list.
+-- Nodes are assigned bit-string positions: root ⊥ is ε, and each inference
+-- step extends the parent's position:
+--   unary premise              → parent ++ "1"
+--   resolution positive provider (C1∨A1) → parent ++ "0"
+--   resolution negative consumer (C2∨¬A2) → parent ++ "1"
+--   superposition equation (C1∨s≈s')  → parent ++ "0"
+--   superposition into-clause (C2∨L[t]) → parent ++ "1"
+-- leafPositions returns leaf positions in lexicographic (left-first DFS) order.
 module ProofTree
   ( ProofTree(..)
   , buildProofTree
   , leafPositions
-  -- re-exported helpers used by Converter
+  , leafList
   , isFalsum
   , isPositiveUnitFormula
+  , headLitOf
   , unitNameStr
   ) where
 
@@ -62,6 +72,15 @@ buildProofTree allUnits =
             (leftN, rightN) =
               if firstParentIsLeft rule decl d1 d2 then (p1n, p2n) else (p2n, p1n)
         in [expand leftN, expand rightN]
+      (p0:p1:p2:rest) ->
+        -- 3+ parents: fold into nested binary steps to keep the tree binary.
+        -- p0 is the main clause (innermost right child); the remaining parents
+        -- are equations applied one at a time, each becoming a left child.
+        let eqs      = p1:p2:rest
+            innerKids = foldl (\r eq -> PTNode "?" decl rule [expand eq, r])
+                               (expand p0)
+                               (init eqs)
+        in [expand (last eqs), innerKids]
       _ -> map expand parents
 
     declOf n fallback = case Map.lookup n unitMap of
@@ -82,7 +101,7 @@ coreInferenceNames = Set.fromList $ map Text.pack
   , "factoring", "condensation"
   , "definition_unfolding", "trivial_inequality_removal"
   -- E prover
-  , "spm", "csr", "er", "ef", "rw", "cn", "pm" ]
+  , "spm", "sr", "csr", "er", "ef", "rw", "cn", "pm" ]
 
 isCoreInference :: Text.Text -> Bool
 isCoreInference name = Set.member name coreInferenceNames
@@ -128,15 +147,16 @@ isPositiveUnitFormula (T.Formula _ (T.CNF cl)) = isPosAtomCNF cl
 isPositiveUnitFormula _                        = False
 
 isPosAtomFOF :: T.UnsortedFirstOrder -> Bool
-isPosAtomFOF (T.Atomic (T.Equality _ T.Positive _)) = True
-isPosAtomFOF (T.Atomic (T.Predicate _ _))           = True
-isPosAtomFOF _                                      = False
+isPosAtomFOF (T.Quantified T.Forall _ body)           = isPosAtomFOF body
+isPosAtomFOF (T.Atomic (T.Equality _ T.Positive _))   = True
+isPosAtomFOF (T.Atomic (T.Predicate (T.Defined _) _)) = True
+isPosAtomFOF _                                         = False
 
 isPosAtomCNF :: T.Clause -> Bool
 isPosAtomCNF (T.Clause lits) = case toList lits of
-  [(T.Positive, T.Equality _ T.Positive _)] -> True
-  [(T.Positive, T.Predicate _ _)]           -> True
-  _                                         -> False
+  [(T.Positive, T.Equality _ T.Positive _)]   -> True
+  [(T.Positive, T.Predicate (T.Defined _) _)] -> True
+  _                                           -> False
 
 -- Extract the unique positive literal from a Horn clause (CNF or FOF).
 headLitOf :: T.Declaration -> Maybe T.Literal
@@ -151,7 +171,16 @@ headLitOfFOF :: T.UnsortedFirstOrder -> Maybe T.Literal
 headLitOfFOF (T.Quantified T.Forall _ body)               = headLitOfFOF body
 headLitOfFOF (T.Atomic lit)                               = Just lit
 headLitOfFOF (T.Connected _ T.Implication (T.Atomic lit)) = Just lit
-headLitOfFOF _                                            = Nothing
+headLitOfFOF f = case posLitsOfDisjFOF f of
+  [lit] -> Just lit
+  _     -> Nothing
+
+-- Collect positive literal atoms from a disjunctive FOF formula (¬A₁ ∨ … ∨ L).
+posLitsOfDisjFOF :: T.UnsortedFirstOrder -> [T.Literal]
+posLitsOfDisjFOF (T.Atomic lit)                   = [lit]
+posLitsOfDisjFOF (T.Negated _)                    = []
+posLitsOfDisjFOF (T.Connected l T.Disjunction r)  = posLitsOfDisjFOF l ++ posLitsOfDisjFOF r
+posLitsOfDisjFOF _                                = []
 
 -- True if a literal with the same predicate/functor head appears in the declaration.
 headInDecl :: T.Literal -> T.Declaration -> Bool
@@ -184,6 +213,18 @@ leafPositions = go ""
     go pos (PTNode _ _ _ [k])    = go (pos ++ "1") k
     go pos (PTNode _ _ _ [l, r]) = Map.union (go (pos ++ "0") l) (go (pos ++ "1") r)
     go pos (PTNode _ _ _ kids)   = Map.unions
+      [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
+
+-- All leaf nodes in left-first DFS order: (position, name, declaration).
+-- Unlike leafPositions, duplicates are preserved — a clause reused at two
+-- positions in the expanded tree appears twice.
+leafList :: ProofTree -> [(String, String, T.Declaration)]
+leafList = go ""
+  where
+    go pos (PTLeaf n d)          = [(pos, n, d)]
+    go pos (PTNode _ _ _ [k])    = go (pos ++ "1") k
+    go pos (PTNode _ _ _ [l, r]) = go (pos ++ "0") l ++ go (pos ++ "1") r
+    go pos (PTNode _ _ _ kids)   = concat
       [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
 
 -- True when Vampire's parent1 should be the LEFT (positive provider) child.

@@ -4,13 +4,13 @@
 % SZS output start Proof for superposition_example_unit2
 fof(f1,axiom,(
   c = a),
-  file('benchmarks/input/superposition_example_unit2.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_unit2.p',unknown)).
 fof(f2,axiom,(
   b = a),
-  file('benchmarks/input/superposition_example_unit2.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_unit2.p',unknown)).
 fof(f3,conjecture,(
   f(c) = f(b)),
-  file('benchmarks/input/superposition_example_unit2.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_unit2.p',unknown)).
 fof(f4,negated_conjecture,(
   ~f(c) = f(b)),
   inference(negated_conjecture,[status(cth)],[f3])).

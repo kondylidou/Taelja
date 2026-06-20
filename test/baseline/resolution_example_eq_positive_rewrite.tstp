@@ -4,16 +4,16 @@
 % SZS output start Proof for resolution_example_eq_positive_rewrite
 fof(f1,axiom,(
   p(a)),
-  file('benchmarks/input/resolution_example_eq_positive_rewrite.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_eq_positive_rewrite.p',unknown)).
 fof(f2,axiom,(
   a = b),
-  file('benchmarks/input/resolution_example_eq_positive_rewrite.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_eq_positive_rewrite.p',unknown)).
 fof(f3,axiom,(
   p(b) => q(b)),
-  file('benchmarks/input/resolution_example_eq_positive_rewrite.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_eq_positive_rewrite.p',unknown)).
 fof(f4,conjecture,(
   q(b)),
-  file('benchmarks/input/resolution_example_eq_positive_rewrite.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_eq_positive_rewrite.p',unknown)).
 fof(f5,negated_conjecture,(
   ~q(b)),
   inference(negated_conjecture,[status(cth)],[f4])).

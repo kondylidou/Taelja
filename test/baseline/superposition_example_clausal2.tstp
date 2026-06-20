@@ -4,16 +4,16 @@
 % SZS output start Proof for superposition_example_clausal2
 fof(f1,axiom,(
   ! [X0,X1] : (f(X0) = f(X1) => X0 = X1)),
-  file('benchmarks/input/superposition_example_clausal2.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_clausal2.p',unknown)).
 fof(f2,axiom,(
   ! [X0,X1] : (g(X0) = g(X1) => X0 = X1)),
-  file('benchmarks/input/superposition_example_clausal2.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_clausal2.p',unknown)).
 fof(f3,axiom,(
   g(f(a)) = g(f(b))),
-  file('benchmarks/input/superposition_example_clausal2.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_clausal2.p',unknown)).
 fof(f4,conjecture,(
   a = b),
-  file('benchmarks/input/superposition_example_clausal2.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_clausal2.p',unknown)).
 fof(f5,negated_conjecture,(
   ~a = b),
   inference(negated_conjecture,[status(cth)],[f4])).

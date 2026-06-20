@@ -1,29 +1,92 @@
-% Regression test for the instantiations fallthrough.
-% Axiom 2 has two unit variables X0 and X1; after proving the body the
-% head q(X0, X1) still has both free. The goal r(a, b) has ground subterms
-% a and b, so instantiations generates q(a,a), q(a,b), q(b,a), q(b,b).
-% Of those, q(a,b) matches the body of axiom 3 and q(a,a) matches axiom 4.
-% Without the fallthrough the translator would silently drop all instantiations
-% when unitFree is non-empty and terms is empty, producing an error. Here terms
-% is non-empty so both branches are exercised, but the test pins the correct proof.
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for test_instantiations_no_ground
+% SZS output start Proof for test_instantiations_no_ground
 fof(f1,axiom,(
   top),
-  file('test',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f2,axiom,(
   ! [X0,X1] : (top => q(X0,X1))),
-  file('test',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (q(X0,b) => r1(X0))),
-  file('test',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f4,axiom,(
   ! [X0] : (q(X0,X0) => r2(X0))),
-  file('test',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f5,axiom,(
   ! [X0] : ((r1(X0) & r2(X0)) => s(X0))),
-  file('test',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f6,conjecture,(
   s(a)),
-  file('test',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f7,negated_conjecture,(
   ~s(a)),
   inference(negated_conjecture,[status(cth)],[f6])).
+fof(f8,plain,(
+  ~s(a)),
+  inference(flattening,[],[f7])).
+fof(f9,plain,(
+  ! [X0,X1] : (q(X0,X1) | ~top)),
+  inference(ennf_transformation,[],[f2])).
+fof(f10,plain,(
+  ! [X0] : (r1(X0) | ~q(X0,b))),
+  inference(ennf_transformation,[],[f3])).
+fof(f11,plain,(
+  ! [X0] : (r2(X0) | ~q(X0,X0))),
+  inference(ennf_transformation,[],[f4])).
+fof(f12,plain,(
+  ! [X0] : (s(X0) | (~r1(X0) | ~r2(X0)))),
+  inference(ennf_transformation,[],[f5])).
+fof(f13,plain,(
+  ! [X0] : (s(X0) | ~r1(X0) | ~r2(X0))),
+  inference(flattening,[],[f12])).
+fof(f14,plain,(
+  top),
+  inference(cnf_transformation,[],[f1])).
+fof(f15,plain,(
+  ( ! [X0,X1] : (q(X0,X1) | ~top) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f16,plain,(
+  ( ! [X0] : (~q(X0,b) | r1(X0)) )),
+  inference(cnf_transformation,[],[f10])).
+fof(f17,plain,(
+  ( ! [X0] : (~q(X0,X0) | r2(X0)) )),
+  inference(cnf_transformation,[],[f11])).
+fof(f18,plain,(
+  ( ! [X0] : (~r2(X0) | ~r1(X0) | s(X0)) )),
+  inference(cnf_transformation,[],[f13])).
+fof(f19,plain,(
+  ~s(a)),
+  inference(cnf_transformation,[],[f8])).
+fof(f20,plain,(
+  ( ! [X0] : (r1(X0) | ~top) )),
+  inference(resolution,[],[f16,f15])).
+fof(f21,plain,(
+  ( ! [X0] : (r1(X0)) )),
+  inference(forward_subsumption_resolution,[],[f20,f14])).
+fof(f22,plain,(
+  ( ! [X0] : (r2(X0) | ~top) )),
+  inference(resolution,[],[f17,f15])).
+fof(f23,plain,(
+  ( ! [X0] : (r2(X0)) )),
+  inference(forward_subsumption_resolution,[],[f22,f14])).
+fof(f24,plain,(
+  ( ! [X0] : (~r1(X0) | s(X0)) )),
+  inference(resolution,[],[f18,f23])).
+fof(f25,plain,(
+  ( ! [X0] : (s(X0)) )),
+  inference(forward_subsumption_resolution,[],[f24,f21])).
+fof(f26,plain,(
+  $false),
+  inference(resolution,[],[f25,f19])).
+% SZS output end Proof for test_instantiations_no_ground
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.0000 s
+% Peak memory usage: 7 MB
+% ------------------------------
+% ------------------------------

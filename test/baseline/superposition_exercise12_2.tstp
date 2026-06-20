@@ -4,13 +4,13 @@
 % SZS output start Proof for superposition_exercise12_2
 fof(f1,axiom,(
   ! [X0] : (f(X0) = c => f(X0) = b)),
-  file('benchmarks/input/superposition_exercise12_2.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_exercise12_2.p',unknown)).
 fof(f2,axiom,(
   ! [X0] : f(f(X0)) = X0),
-  file('benchmarks/input/superposition_exercise12_2.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_exercise12_2.p',unknown)).
 fof(f3,conjecture,(
   b = c),
-  file('benchmarks/input/superposition_exercise12_2.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_exercise12_2.p',unknown)).
 fof(f4,negated_conjecture,(
   ~b = c),
   inference(negated_conjecture,[status(cth)],[f3])).

@@ -4,16 +4,16 @@
 % SZS output start Proof for superposition_example_nonground_lemma
 fof(f1,axiom,(
   ! [X0] : f(X0) = X0),
-  file('benchmarks/input/superposition_example_nonground_lemma.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_nonground_lemma.p',unknown)).
 fof(f2,axiom,(
   ! [X0] : g(X0) = f(X0)),
-  file('benchmarks/input/superposition_example_nonground_lemma.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_nonground_lemma.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (g(X0) = X0 => p(g(X0)))),
-  file('benchmarks/input/superposition_example_nonground_lemma.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_nonground_lemma.p',unknown)).
 fof(f4,conjecture,(
   p(g(a))),
-  file('benchmarks/input/superposition_example_nonground_lemma.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_nonground_lemma.p',unknown)).
 fof(f5,negated_conjecture,(
   ~p(g(a))),
   inference(negated_conjecture,[status(cth)],[f4])).

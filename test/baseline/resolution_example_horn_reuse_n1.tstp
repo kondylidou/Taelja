@@ -4,19 +4,19 @@
 % SZS output start Proof for resolution_example_horn_reuse_n1
 fof(f1,axiom,(
   ! [X0] : p(X0)),
-  file('benchmarks/input/resolution_example_horn_reuse_n1.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_reuse_n1.p',unknown)).
 fof(f2,axiom,(
   ! [X0] : q(b,X0)),
-  file('benchmarks/input/resolution_example_horn_reuse_n1.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_reuse_n1.p',unknown)).
 fof(f3,axiom,(
   ! [X0,X1] : ((q(X0,X1) & p(X1)) => q(f(X0),X1))),
-  file('benchmarks/input/resolution_example_horn_reuse_n1.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_reuse_n1.p',unknown)).
 fof(f4,axiom,(
   ! [X0] : (q(f(b),X0) => r(X0))),
-  file('benchmarks/input/resolution_example_horn_reuse_n1.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_reuse_n1.p',unknown)).
 fof(f5,conjecture,(
   r(a)),
-  file('benchmarks/input/resolution_example_horn_reuse_n1.p',unknown)).
+  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_reuse_n1.p',unknown)).
 fof(f6,negated_conjecture,(
   ~r(a)),
   inference(negated_conjecture,[status(cth)],[f5])).
@@ -65,7 +65,7 @@ fof(f19,plain,(
 % Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
 % CaDiCaL version: 2.1.3
 % Termination reason: Refutation
-% Time elapsed: 0.001 s
+% Time elapsed: 0.0000 s
 % Peak memory usage: 7 MB
 % ------------------------------
 % ------------------------------
