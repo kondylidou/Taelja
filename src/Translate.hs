@@ -1,38 +1,19 @@
-module Translate (translate, phaseOne, UnitEntry(..)) where
+module Translate (translate, phaseOne) where
 
-import Control.Monad.State.Strict
 import Data.List.NonEmpty (toList)
 import Data.Maybe (listToMaybe)
 import qualified Data.Map.Strict as Map
+import qualified Data.Text as Text
 import qualified Data.TPTP as T
 
+import Types
 import ProofTree
   ( ProofTree, buildProofTree, leafList
   , isPositiveUnitFormula, headLitOf, unitNameStr
   )
 
--- A positive unit clause tracked through proof construction.
--- name=Nothing means unnamed; a name will be assigned when the unit is first cited.
--- ueProof=Nothing means no proof block has been emitted for it yet.
--- uePos=Nothing means this is a derived unit, not a leaf of the proof tree.
-data UnitEntry = UnitEntry
-  { ueName  :: Maybe String
-  , ueLit   :: T.Literal
-  , ueProof :: Maybe String
-  , uePos   :: Maybe String
-  } deriving (Show)
-
--- Mutable state carried through proof construction.
-data ConvState = ConvState
-  { csUnits  :: [UnitEntry]  -- current unit set; grows as derived units are added
-  , csLemmaK :: Int          -- next available lemma number
-  , csOutput :: [String]     -- accumulated output lines in order
-  }
-
-type ConvM a = State ConvState a
-
--- Top-level entry: parse the proof tree, run the algorithm, return the proof text.
-translate :: Bool -> T.TSTP -> String
+-- Top-level entry: build the proof tree, run the algorithm, return the structured proof.
+translate :: Bool -> T.TSTP -> StructuredProof
 translate _ (T.TSTP _ units) =
   case buildProofTree units of
     Nothing   -> error "translate: no refutation found"
@@ -40,31 +21,44 @@ translate _ (T.TSTP _ units) =
       case phaseOne tree units of
         Nothing                          -> error "translate: no goal found"
         Just (initUnits, nonUnits, goal) ->
-          let s0 = ConvState { csUnits = initUnits, csLemmaK = 1, csOutput = [] }
-              sf = execState (runAlgorithm nonUnits goal) s0
-          in unlines (csOutput sf)
+          runAlgorithm initUnits nonUnits goal
 
 -- Phase 1: classify leaf clauses into electrons (Units) and nuclei (NonUnits).
 -- Leaves are visited in ≺-increasing (left-first DFS) position order.
 -- The goal is a list of literals (conjunction); usually one, but can be more
 -- when the conjecture is a conjunction (e.g. G1 ∧ G2).
 -- Electron names are resolved to their original problem-file names (ax1, goal, …).
-phaseOne :: ProofTree -> [T.Unit] -> Maybe ([UnitEntry], [(String, String, T.Declaration)], [T.Literal])
+phaseOne :: ProofTree -> [T.Unit] -> Maybe ([UnitEntry], [(String, String, T.Declaration)], [Literal])
 phaseOne tree units =
   case findGoal units of
-    Nothing   -> Nothing
-    Just goal ->
-      let unitMap = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n _ _) <- units ]
+    Nothing      -> Nothing
+    Just rawGoal ->
+      let goal    = map convertLit rawGoal
+          unitMap = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n _ _) <- units ]
           resolve = resolveSourceName unitMap
-          ls  = leafList tree
-          us  = [ UnitEntry (Just (resolve name)) lit Nothing (Just pos)
-                | (pos, name, decl) <- ls
-                , isPositiveUnitFormula decl
-                , Just lit <- [headLitOf decl] ]
-          nus = [ (pos, name, decl)
-                | (pos, name, decl) <- ls
-                , not (isPositiveUnitFormula decl) ]
+          ls      = leafList tree
+          us      = [ UnitEntry (Just (resolve name)) (convertLit lit) Nothing (Just pos)
+                    | (pos, name, decl) <- ls
+                    , isPositiveUnitFormula decl
+                    , Just lit <- [headLitOf decl] ]
+          nus     = [ (pos, name, decl)
+                    | (pos, name, decl) <- ls
+                    , not (isPositiveUnitFormula decl) ]
       in Just (us, nus, goal)
+
+-- Conversion from TPTP terms/literals to our working types.
+convertTerm :: T.Term -> Term
+convertTerm (T.Variable (T.Var v))                   = Var (Text.unpack v)
+convertTerm (T.Function (T.Defined (T.Atom f)) [])   = Const (Text.unpack f)
+convertTerm (T.Function (T.Defined (T.Atom f)) args) = App (Text.unpack f) (map convertTerm args)
+convertTerm (T.Number (T.IntegerConstant n))          = Const (show n)
+convertTerm t = error ("convertTerm: unsupported term: " ++ show t)
+
+convertLit :: T.Literal -> Literal
+convertLit (T.Predicate (T.Defined (T.Atom n)) args) = Rel (Text.unpack n) (map convertTerm args)
+convertLit (T.Equality l T.Positive r)               = Eq  (convertTerm l) (convertTerm r)
+convertLit (T.Equality l T.Negative r)               = NEq (convertTerm l) (convertTerm r)
+convertLit t = error ("convertLit: unsupported literal: " ++ show t)
 
 -- Follow the annotation chain to recover the original problem-file name for a unit.
 -- Vampire and E rename/split clauses during preprocessing; this traces those steps
@@ -79,8 +73,8 @@ resolveSourceName unitMap = go
           []    -> name
       _ -> name
 
-    flatParents (T.Parent (T.UnitSource n) _)      = [unitNameStr n]
-    flatParents (T.Parent (T.Inference _ _ ps) _)  = concatMap flatParents ps
+    flatParents (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
+    flatParents (T.Parent (T.Inference _ _ ps) _) = concatMap flatParents ps
     flatParents _                                  = []
 
 -- Scan the TSTP unit list for the goal literals.
@@ -137,5 +131,5 @@ unnegateFOF (T.Negated (T.Atomic lit))     = Just lit
 unnegateFOF _                              = Nothing
 
 -- Phases 2 & 3: not yet implemented.
-runAlgorithm :: [(String, String, T.Declaration)] -> [T.Literal] -> ConvM ()
-runAlgorithm _nonUnits _goal = return ()
+runAlgorithm :: [UnitEntry] -> [(String, String, T.Declaration)] -> [Literal] -> StructuredProof
+runAlgorithm _units _nonUnits _goal = StructuredProof [] [] []

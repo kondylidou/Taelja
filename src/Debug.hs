@@ -11,7 +11,8 @@ import qualified Data.Text as Text
 import qualified Data.TPTP as T
 
 import ProofTree (ProofTree(..), unitNameStr)
-import Translate (UnitEntry(..))
+import Types (UnitEntry(..), Literal)
+import Emitter (ppLiteral)
 
 -- Terms
 
@@ -133,9 +134,9 @@ dumpProofTree = putStr . ppProofTree
 
 -- Phase 1 result
 
-dumpPhaseOne :: [UnitEntry] -> [(String, String, T.Declaration)] -> [T.Literal] -> IO ()
+dumpPhaseOne :: [UnitEntry] -> [(String, String, T.Declaration)] -> [Literal] -> IO ()
 dumpPhaseOne us nus goal = do
-  putStrLn ("Goal: " ++ intercalate " ∧ " (map ppLit goal))
+  putStrLn ("Goal: " ++ intercalate " ∧ " (map ppLiteral goal))
   putStrLn ""
   putStrLn ("Units (electrons) [" ++ show (length us) ++ "]:")
   mapM_ goU us
@@ -143,9 +144,9 @@ dumpPhaseOne us nus goal = do
   putStrLn ("NonUnits (nuclei) [" ++ show (length nus) ++ "]:")
   mapM_ goN nus
   where
-    goU (UnitEntry name lit _ pos) =
+    goU UnitEntry { ueName = name, ueUnit = lit, uePos = pos } =
       putStrLn ("  pos=" ++ fromMaybe "nil" pos
              ++ "  " ++ fromMaybe "?" name
-             ++ ": " ++ ppLit lit)
+             ++ ": " ++ ppLiteral lit)
     goN (pos, name, decl) =
       putStrLn ("  pos=" ++ pos ++ "  " ++ name ++ ": " ++ ppDecl decl)
