@@ -112,7 +112,8 @@ coreParentNames (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ parents, _)))
   where
     extractName (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
     extractName (T.Parent (T.Inference _ _ ps) _) = concatMap extractName ps
-    extractName _                                 = []
+    extractName (T.Parent src _)                  =
+      error ("buildProofTree: unexpected parent source in core inference: " ++ show src)
 coreParentNames _ = Nothing
 
 inferenceRuleName :: T.Unit -> Maybe Text.Text
@@ -247,4 +248,4 @@ firstParentIsLeft _ _ d1 d2
 firstParentIsLeft _ result d1 d2 = case (headLitOf d1, headLitOf d2) of
   (Just h1, _)       -> not (headInDecl h1 result)  -- d1's head absent → d1 is the provider
   (Nothing, Just h2) -> headInDecl h2 result         -- d2's head survives → d2 is the consumer → d1 is left
-  (Nothing, Nothing) -> True
+  (Nothing, Nothing) -> error "firstParentIsLeft: both parents have no positive head literal (non-Horn clause in proof?)"

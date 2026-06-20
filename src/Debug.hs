@@ -20,7 +20,14 @@ ppTerm (T.Variable (T.Var v))                   = Text.unpack v
 ppTerm (T.Function (T.Defined (T.Atom f)) [])   = Text.unpack f
 ppTerm (T.Function (T.Defined (T.Atom f)) args) =
   Text.unpack f ++ "(" ++ intercalate ", " (map ppTerm args) ++ ")"
-ppTerm _ = "_"
+ppTerm (T.Function (T.Reserved (T.Standard f)) args) =
+  "$" ++ Text.unpack (T.name f) ++ (if null args then "" else "(" ++ intercalate ", " (map ppTerm args) ++ ")")
+ppTerm (T.Function (T.Reserved (T.Extended t)) args) =
+  "$" ++ Text.unpack t ++ (if null args then "" else "(" ++ intercalate ", " (map ppTerm args) ++ ")")
+ppTerm (T.Number (T.IntegerConstant n))      = show n
+ppTerm (T.Number (T.RationalConstant n d))   = show n ++ "/" ++ show d
+ppTerm (T.Number (T.RealConstant r))         = show r
+ppTerm (T.DistinctTerm (T.DistinctObject t)) = "\"" ++ Text.unpack t ++ "\""
 
 -- Literals
 
@@ -28,9 +35,12 @@ ppLit :: T.Literal -> String
 ppLit (T.Predicate (T.Defined (T.Atom n)) [])   = Text.unpack n
 ppLit (T.Predicate (T.Defined (T.Atom n)) args) =
   Text.unpack n ++ "(" ++ intercalate ", " (map ppTerm args) ++ ")"
+ppLit (T.Predicate (T.Reserved (T.Standard p)) args) =
+  "$" ++ Text.unpack (T.name p) ++ (if null args then "" else "(" ++ intercalate ", " (map ppTerm args) ++ ")")
+ppLit (T.Predicate (T.Reserved (T.Extended t)) args) =
+  "$" ++ Text.unpack t ++ (if null args then "" else "(" ++ intercalate ", " (map ppTerm args) ++ ")")
 ppLit (T.Equality l T.Positive r) = ppTerm l ++ " = " ++ ppTerm r
 ppLit (T.Equality l T.Negative r) = ppTerm l ++ " ≠ " ++ ppTerm r
-ppLit _ = "_"
 
 -- CNF clauses: body → head notation (Horn convention)
 
@@ -52,15 +62,18 @@ isReserved _                              = False
 -- FOF formulas
 
 ppFOF :: T.UnsortedFirstOrder -> String
-ppFOF (T.Atomic lit)                  = ppLit lit
-ppFOF (T.Negated f)                   = "¬" ++ ppFOF f
-ppFOF (T.Quantified T.Forall vs body) = "∀" ++ ppVars vs ++ ". " ++ ppFOF body
-ppFOF (T.Quantified T.Exists vs body) = "∃" ++ ppVars vs ++ ". " ++ ppFOF body
-ppFOF (T.Connected l T.Conjunction r) = ppFOF l ++ " ∧ " ++ ppFOF r
-ppFOF (T.Connected l T.Disjunction r) = ppFOF l ++ " ∨ " ++ ppFOF r
-ppFOF (T.Connected l T.Implication r) = ppFOF l ++ " → " ++ ppFOF r
-ppFOF (T.Connected l T.Equivalence r) = ppFOF l ++ " ↔ " ++ ppFOF r
-ppFOF _                               = "?"
+ppFOF (T.Atomic lit)                          = ppLit lit
+ppFOF (T.Negated f)                           = "¬" ++ ppFOF f
+ppFOF (T.Quantified T.Forall vs body)         = "∀" ++ ppVars vs ++ ". " ++ ppFOF body
+ppFOF (T.Quantified T.Exists vs body)         = "∃" ++ ppVars vs ++ ". " ++ ppFOF body
+ppFOF (T.Connected l T.Conjunction r)         = ppFOF l ++ " ∧ " ++ ppFOF r
+ppFOF (T.Connected l T.Disjunction r)         = ppFOF l ++ " ∨ " ++ ppFOF r
+ppFOF (T.Connected l T.Implication r)         = ppFOF l ++ " → " ++ ppFOF r
+ppFOF (T.Connected l T.Equivalence r)         = ppFOF l ++ " ↔ " ++ ppFOF r
+ppFOF (T.Connected l T.ExclusiveOr r)         = ppFOF l ++ " ⊕ " ++ ppFOF r
+ppFOF (T.Connected l T.NegatedConjunction r)  = "¬(" ++ ppFOF l ++ " ∧ " ++ ppFOF r ++ ")"
+ppFOF (T.Connected l T.NegatedDisjunction r)  = "¬(" ++ ppFOF l ++ " ∨ " ++ ppFOF r ++ ")"
+ppFOF (T.Connected l T.ReversedImplication r) = ppFOF r ++ " → " ++ ppFOF l
 
 ppVars :: NonEmpty (T.Var, b) -> String
 ppVars vs = intercalate ", " [Text.unpack v | (T.Var v, _) <- toList vs]
