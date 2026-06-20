@@ -1,2 +1,0 @@
-packages: .
-allow-newer: tptp:attoparsec, tptp:prettyprinter, tptp:text
