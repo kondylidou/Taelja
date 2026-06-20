@@ -1,0 +1,22 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FUUPF-FFSF00-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_1, plain, (a=b)).
+## Presaturation interreduction done
+
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+fof(eq_goal, conjecture, a=b, file('/Users/kondylidou/Developer/Taelja/test/input/test_eq_symmetry.p', eq_goal)).
+fof(eq_axiom, axiom, b=a, file('/Users/kondylidou/Developer/Taelja/test/input/test_eq_symmetry.p', eq_axiom)).
+fof(c_0_2, negated_conjecture, a!=b, inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[eq_goal])])).
+fof(c_0_3, negated_conjecture, a!=b, inference(fof_nnf,[status(thm)],[c_0_2])).
+cnf(c_0_4, negated_conjecture, (a!=b), inference(split_conjunct,[status(thm)],[c_0_3])).
+cnf(c_0_5, plain, (b=a), inference(split_conjunct,[status(thm)],[eq_axiom])).
+cnf(c_0_6, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_4, c_0_5])]), ['proof']).
+# SZS output end CNFRefutation

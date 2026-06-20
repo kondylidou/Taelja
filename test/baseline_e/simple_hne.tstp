@@ -1,0 +1,34 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FHUNF-FFSF00-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_6, negated_conjecture, (~s(b,a))).
+#
+#cnf(i_0_4, plain, (r(a,b))).
+#
+#cnf(i_0_5, plain, (s(X1,X2)|~r(X2,X1))).
+# Presaturation interreduction done
+#
+#cnf(i_0_6, negated_conjecture, (~s(b,a))).
+#
+#cnf(i_0_4, plain, (r(a,b))).
+#
+#cnf(i_0_5, plain, (s(X1,X2)|~r(X2,X1))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(conj, negated_conjecture, (~s(b,a)), file('/Users/kondylidou/Developer/Taelja/test/input/simple_hne.p', conj)).
+cnf(ax2, axiom, (s(X1,X2)|~r(X2,X1)), file('/Users/kondylidou/Developer/Taelja/test/input/simple_hne.p', ax2)).
+cnf(ax1, axiom, (r(a,b)), file('/Users/kondylidou/Developer/Taelja/test/input/simple_hne.p', ax1)).
+cnf(c_0_3, negated_conjecture, (~s(b,a)), inference(fof_simplification,[status(thm)],[conj])).
+cnf(c_0_4, plain, (s(X1,X2)|~r(X2,X1)), inference(fof_simplification,[status(thm)],[ax2])).
+cnf(c_0_5, negated_conjecture, (~s(b,a)), c_0_3).
+cnf(c_0_6, plain, (s(X1,X2)|~r(X2,X1)), c_0_4).
+cnf(c_0_7, axiom, (r(a,b)), ax1).
+cnf(c_0_8, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_5, c_0_6]), c_0_7])]), ['proof']).
+# SZS output end CNFRefutation

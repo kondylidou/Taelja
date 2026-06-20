@@ -1,0 +1,36 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FUUPS-FFSF22-SFFFFFNN
+# Configuration: G-E--_208_C18_F1_SE_CS_SP_PS_S5PRR_S0Y
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_3, negated_conjecture, (c!=a)).
+#
+#cnf(i_0_1, plain, (h(a,X1)=c)).
+#
+#cnf(i_0_2, plain, (h(X1,b)=X1)).
+# Presaturation interreduction done
+#
+#cnf(i_0_3, negated_conjecture, (c!=a)).
+#
+#cnf(i_0_1, plain, (h(a,X1)=c)).
+#
+#cnf(i_0_2, plain, (h(X1,b)=X1)).
+
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+fof(goal, conjecture, a=c, file('/Users/kondylidou/Developer/Taelja/test/input/krympa_example_hay.p', goal)).
+fof(ax1, axiom, ![X1]:(h(a,X1)=c), file('/Users/kondylidou/Developer/Taelja/test/input/krympa_example_hay.p', ax1)).
+fof(ax2, axiom, ![X2]:(h(X2,b)=X2), file('/Users/kondylidou/Developer/Taelja/test/input/krympa_example_hay.p', ax2)).
+fof(c_0_3, negated_conjecture, a!=c, inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
+fof(c_0_4, plain, ![X3]:(h(a,X3)=c), inference(variable_rename,[status(thm)],[ax1])).
+fof(c_0_5, plain, ![X4]:(h(X4,b)=X4), inference(variable_rename,[status(thm)],[ax2])).
+fof(c_0_6, negated_conjecture, a!=c, inference(fof_nnf,[status(thm)],[c_0_3])).
+cnf(c_0_7, plain, (h(a,X1)=c), inference(split_conjunct,[status(thm)],[c_0_4])).
+cnf(c_0_8, plain, (h(X1,b)=X1), inference(split_conjunct,[status(thm)],[c_0_5])).
+cnf(c_0_9, negated_conjecture, (a!=c), inference(split_conjunct,[status(thm)],[c_0_6])).
+cnf(c_0_10, plain, ($false), inference(sr,[status(thm)],[inference(spm,[status(thm)],[c_0_7, c_0_8]), c_0_9]), ['proof']).
+# SZS output end CNFRefutation
