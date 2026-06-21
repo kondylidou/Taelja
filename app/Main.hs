@@ -13,7 +13,7 @@ import Data.TPTP.Parse.Text (parseTSTP)
 import ProofTree (buildProofTree)
 import Translate (translate, phaseOne)
 import Emitter (emit)
-import Debug (dumpTSTP, dumpProofTree, dumpPhaseOne, dumpStructuredProof)
+import Debug (dumpTSTP, dumpProofTree, dumpPhaseOne)
 
 main :: IO ()
 main = do
@@ -33,7 +33,6 @@ main = do
       case buildProofTree units of
         Nothing   -> hPutStrLn stderr "No refutation proof tree found" >> exitFailure
         Just tree -> do
-          let proof = translate False tstp
           when debug $ do
             putStrLn "-- Proof tree"
             dumpProofTree tree
@@ -43,7 +42,4 @@ main = do
               Nothing              -> putStrLn "No goal found (missing negated conjecture)"
               Just (us, nus, goal) -> dumpPhaseOne us nus goal
             putStrLn ""
-            putStrLn "-- Structured proof"
-            dumpStructuredProof proof
-            putStrLn ""
-          putStr (emit proof)
+          putStr (emit (translate False tstp))
