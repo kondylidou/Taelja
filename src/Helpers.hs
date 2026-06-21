@@ -5,7 +5,7 @@ import Data.List (nub)
 import Data.Maybe (fromMaybe)
 import Types
 
--- Variable collection --------------------------------------------------------
+-- Variable collection 
 
 termVars :: Term -> [String]
 termVars (Var x)    = [x]
@@ -15,7 +15,7 @@ termVars (App _ ts) = concatMap termVars ts
 litVars :: Literal -> [String]
 litVars = foldLiteralTerms termVars
 
--- Traversal ------------------------------------------------------------------
+-- Traversal
 
 -- Collect [a] by applying f to every term in a literal.
 foldLiteralTerms :: (Term -> [a]) -> Literal -> [a]
@@ -31,7 +31,7 @@ mapLiteralTerms f (NEq l r)   = NEq (f l) (f r)
 mapLiteralTerms f (Rel n ts)  = Rel n  (map f ts)
 mapLiteralTerms f (NRel n ts) = NRel n (map f ts)
 
--- Substitution application ---------------------------------------------------
+-- Substitution
 
 applySubstTerm :: Subst -> Term -> Term
 applySubstTerm subst (Var x)    = fromMaybe (Var x) (lookup x subst)
@@ -54,7 +54,15 @@ applySubstBlock subst (EqChain s steps) =
     applyStep (RwStep nm (l, r) d, cur) =
       (RwStep nm (applySubstTerm subst l, applySubstTerm subst r) d, applySubstTerm subst cur)
 
--- Matching -------------------------------------------------------------------
+-- Merge two substitutions, checking that shared variables agree.
+extendSubst :: Subst -> Subst -> Maybe Subst
+extendSubst base []           = Just base
+extendSubst base ((x,t):rest) =
+  case lookup x base of
+    Nothing -> extendSubst ((x,t):base) rest
+    Just t' -> if t == t' then extendSubst base rest else Nothing
+
+-- Matching
 
 -- One-way term matching: find σ s.t. applySubstTerm σ pat = tgt.
 -- pat may have Vars (bindable); Vars in tgt are treated as ground atoms.
@@ -80,11 +88,42 @@ matchLit (Rel n1 ts1) (Rel n2 ts2)
   = foldl (\ms (p, u) -> ms >>= matchTerm p u) (Just []) (zip ts1 ts2)
 matchLit _ _ = Nothing
 
--- Rewriting (REWRITE) --------------------------------------------------------
+-- Bidirectional separate matching: nucleus-side Vars (in l) bind into σ0;
+-- electron-side Vars (in r) bind into σi.  Consts must agree.
+-- Used when both the body literal and the electron have free variables in
+-- complementary positions so neither one-way direction suffices.
+matchBothLit :: Literal -> Literal -> Subst -> Subst -> Maybe (Subst, Subst)
+matchBothLit (Rel n1 ts1) (Rel n2 ts2) σ0 σi
+  | n1 == n2, length ts1 == length ts2 =
+      foldl step (Just (σ0, σi)) (zip ts1 ts2)
+  where step ms (t, s) = ms >>= \(a, b) -> matchBothTerm t s a b
+matchBothLit (Eq l1 r1) (Eq l2 r2) σ0 σi =
+  matchBothTerm l1 l2 σ0 σi >>= \(s0, si) -> matchBothTerm r1 r2 s0 si
+matchBothLit _ _ _ _ = Nothing
 
--- REWRITE(s, l=r, dir): one-step rewrite of term t using equation (l,r) in
--- direction dir. Tries root first, then subterms left-to-right.
--- Returns Nothing if no position matches.
+matchBothTerm :: Term -> Term -> Subst -> Subst -> Maybe (Subst, Subst)
+matchBothTerm (Var x) k σ0 σi =
+  let k' = applySubstTerm σi k
+  in case lookup x σ0 of
+    Nothing -> Just ((x, k') : σ0, σi)
+    Just t  -> if t == k' then Just (σ0, σi) else Nothing
+matchBothTerm l (Var y) σ0 σi =
+  let l' = applySubstTerm σ0 l
+  in case lookup y σi of
+    Nothing -> Just (σ0, (y, l') : σi)
+    Just t  -> if t == l' then Just (σ0, σi) else Nothing
+matchBothTerm (Const c) (Const d) σ0 σi =
+  if c == d then Just (σ0, σi) else Nothing
+matchBothTerm (App f ts) (App g us) σ0 σi
+  | f == g, length ts == length us =
+      foldl step (Just (σ0, σi)) (zip ts us)
+  where step ms (t, u) = ms >>= \(a, b) -> matchBothTerm t u a b
+matchBothTerm _ _ _ _ = Nothing
+
+-- Rewriting (REWRITE) 
+
+-- One-step rewrite using equation (l,r) in direction dir.
+-- Tries root first, then subterms left-to-right.
 rewriteTerm :: Term -> (Term, Term) -> Dir -> Maybe Term
 rewriteTerm t (l, r) dir = tryRoot <|> trySubs
   where
@@ -97,6 +136,22 @@ rewriteTerm t (l, r) dir = tryRoot <|> trySubs
     rewriteFirst (u:us) = case rewriteTerm u (l, r) dir of
       Just u' -> Just (u' : us)
       Nothing -> (u :) <$> rewriteFirst us
+
+-- All one-step rewrites of term t using equation (l,r) in direction dir.
+-- Unlike rewriteTerm, generates every applicable position (root + each subterm).
+rewriteTermAll :: Term -> (Term, Term) -> Dir -> [Term]
+rewriteTermAll t (l, r) dir = rootResult ++ subResults
+  where
+    (lhs, rhs) = if dir == LR then (l, r) else (r, l)
+    rootResult = case matchTerms lhs t of
+      Just σ  -> [applySubstTerm σ rhs]
+      Nothing -> []
+    subResults = case t of
+      App f ts -> [ App f (take i ts ++ [u'] ++ drop (i+1) ts)
+                  | (i, u) <- zip [0..] ts
+                  , u' <- rewriteTermAll u (l, r) dir
+                  ]
+      _ -> []
 
 -- Lift rewriteTerm to a literal: rewrite the leftmost applicable subterm.
 rewriteLit :: Literal -> (Term, Term) -> Dir -> Maybe Literal
@@ -113,12 +168,16 @@ rewriteLit lit eq dir = case lit of
       Just u' -> Just (u' : us)
       Nothing -> (u :) <$> rewriteFirst us
 
--- IS_EQ_CHAIN(pf): true if the proof block is an equational chain.
 isEqChain :: ProofBlock -> Bool
 isEqChain (EqChain {}) = True
 isEqChain _            = False
 
--- Renaming -------------------------------------------------------------------
+-- Equality is symmetric: flip swaps sides of an Eq literal.
+flipLit :: Literal -> Literal
+flipLit (Eq l r) = Eq r l
+flipLit x        = x
+
+-- Renaming
 
 renameTerm :: [(String, String)] -> Term -> Term
 renameTerm r (Var x)    = maybe (Var x) Var (lookup x r)
@@ -139,7 +198,7 @@ renameBlock r (EqChain s steps) = EqChain (renameTerm r s) (map renameStep steps
   where renameStep (RwStep nm (l, ri) d, cur) =
           (RwStep nm (renameTerm r l, renameTerm r ri) d, renameTerm r cur)
 
--- Variable collection from proof structures ----------------------------------
+-- Variable collection from proof structures
 
 lineVars :: ProofLine -> [String]
 lineVars (Have  lit _) = litVars lit
@@ -151,7 +210,17 @@ blockVars (HaveHence ls)    = nub (concatMap lineVars ls)
 blockVars (EqChain s steps) = nub (termVars s ++ concatMap stepVars steps)
   where stepVars (RwStep _ (l, r) _, cur) = termVars l ++ termVars r ++ termVars cur
 
--- Block construction ---------------------------------------------------------
+-- Term size (number of nodes in the term tree).
+-- Used to prefer simpler rewrite candidates and avoid non-terminating chains.
+termSize :: Term -> Int
+termSize (Var _)    = 1
+termSize (Const _)  = 1
+termSize (App _ ts) = 1 + sum (map termSize ts)
+
+litSize :: Literal -> Int
+litSize = sum . foldLiteralTerms (\t -> [termSize t])
+
+-- Block construction
 
 appendLine :: ProofBlock -> ProofLine -> ProofBlock
 appendLine (HaveHence ls) l = HaveHence (ls ++ [l])

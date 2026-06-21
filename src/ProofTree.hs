@@ -100,6 +100,7 @@ coreInferenceNames = Set.fromList $ map Text.pack
   , "forward_subsumption_resolution", "backward_subsumption_resolution"
   , "factoring", "condensation"
   , "definition_unfolding", "trivial_inequality_removal"
+  , "forward_demodulation", "backward_demodulation"
   -- E prover
   , "spm", "sr", "csr", "er", "ef", "rw", "cn", "pm" ]
 
@@ -183,18 +184,20 @@ posLitsOfDisjFOF (T.Negated _)                    = []
 posLitsOfDisjFOF (T.Connected l T.Disjunction r)  = posLitsOfDisjFOF l ++ posLitsOfDisjFOF r
 posLitsOfDisjFOF _                                = []
 
--- True if a literal with the same predicate/functor head appears in the declaration.
+-- True if a POSITIVE literal with the same predicate/functor head appears in the declaration.
+-- Only positive literals matter: resolution removes the provider's positive head literal,
+-- so we check whether it still appears positively in the resolvent.
 headInDecl :: T.Literal -> T.Declaration -> Bool
 headInDecl needle (T.Formula _ (T.CNF (T.Clause lits))) =
-  any (litSameHead needle . snd) (toList lits)
+  any (litSameHead needle) [l | (T.Positive, l) <- toList lits]
 headInDecl needle (T.Formula _ (T.FOF f)) = headInFOF needle f
 headInDecl _ _ = False
 
 headInFOF :: T.Literal -> T.UnsortedFirstOrder -> Bool
 headInFOF needle (T.Quantified T.Forall _ body) = headInFOF needle body
 headInFOF needle (T.Atomic lit)                 = litSameHead needle lit
+headInFOF needle (T.Connected _ T.Implication r) = headInFOF needle r
 headInFOF needle (T.Connected l _ r)            = headInFOF needle l || headInFOF needle r
-headInFOF needle (T.Negated f)                  = headInFOF needle f
 headInFOF _ _                                   = False
 
 litSameHead :: T.Literal -> T.Literal -> Bool
@@ -236,7 +239,9 @@ leafList = go ""
 -- Resolution with two non-units: the parent whose head is absent from the result
 --   provided the positive literal that got resolved away.
 superpositionRules :: Set.Set Text.Text
-superpositionRules = Set.fromList (map Text.pack ["superposition", "paramodulation", "spm"])
+superpositionRules = Set.fromList (map Text.pack
+  [ "superposition", "paramodulation", "spm"
+  , "forward_demodulation", "backward_demodulation" ])
 
 firstParentIsLeft :: Text.Text -> T.Declaration -> T.Declaration -> T.Declaration -> Bool
 firstParentIsLeft rule _ _ _
@@ -245,6 +250,15 @@ firstParentIsLeft rule _ _ _
 firstParentIsLeft _ _ d1 d2
   | isPositiveUnitFormula d1 && not (isPositiveUnitFormula d2) = True
   | isPositiveUnitFormula d2 && not (isPositiveUnitFormula d1) = False
+  | isPositiveUnitFormula d1 && isPositiveUnitFormula d2 =
+      -- Both are positive units.  Treat like superposition: if one is a pure
+      -- equation and the other a predicate, the equation goes LEFT.  If both
+      -- are equations (or both predicates), keep TSTP order (first goes LEFT).
+      let isEqLitOf d = case headLitOf d of { Just (T.Equality {}) -> True; _ -> False }
+      in case (isEqLitOf d1, isEqLitOf d2) of
+           (True,  False) -> True   -- d1 is equation, d2 is predicate → d1 LEFT
+           (False, True ) -> False  -- d2 is equation, d1 is predicate → d2 LEFT
+           _              -> True   -- both equations or both predicates → TSTP order
 firstParentIsLeft _ result d1 d2 = case (headLitOf d1, headLitOf d2) of
   (Just h1, _)       -> not (headInDecl h1 result)  -- d1's head absent → d1 is the provider
   (Nothing, Just h2) -> headInDecl h2 result         -- d2's head survives → d2 is the consumer → d1 is left

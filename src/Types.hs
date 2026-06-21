@@ -70,3 +70,11 @@ data StructuredProof = StructuredProof
   , lemmas :: [(String, Literal, ProofBlock)]
   , goals  :: [(Literal, ProofBlock)]
   } deriving (Show)
+
+-- Working state threaded through the algorithm (Phases 1–3).
+data AlgState = AlgState
+  { stUnits   :: [UnitEntry]
+  , stLemmas  :: [(String, Literal, ProofBlock)]
+  , stGoals   :: [(Literal, ProofBlock)]
+  , stCounter :: Int
+  }

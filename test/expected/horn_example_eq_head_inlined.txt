@@ -1,22 +1,15 @@
-Axiom 1: p(X) /\ q(X) => X = zero
+Axiom 1: f(X) = g(X)
 Axiom 2: p(f(X))
 Axiom 3: q(f(X))
-Axiom 4: f(X) = g(X)
-
-Lemma 5: q(g(X))
-Proof:
-  have q(f(X))
-    by axiom 3
-  hence q(g(X))
-    by rw axiom 4
+Axiom 4: p(X) /\ q(X) => X = zero
 
 Goal 1: g(a) = zero
 Proof:
   have p(f(a))
     by axiom 2
-  hence p(g(a))
-    by rw axiom 4
-   and q(g(a))
-    by lemma 5
+   and q(f(a))
+    by axiom 3
+  hence f(a) = zero
+    by axiom 4
   hence g(a) = zero
-    by axiom 1
+    by rw axiom 1

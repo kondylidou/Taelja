@@ -2,6 +2,7 @@ module Debug
   ( dumpTSTP
   , dumpProofTree
   , dumpPhaseOne
+  , dumpStructuredProof
   ) where
 
 import Data.List (intercalate)
@@ -11,7 +12,7 @@ import qualified Data.Text as Text
 import qualified Data.TPTP as T
 
 import ProofTree (ProofTree(..), unitNameStr)
-import Types (UnitEntry(..), Literal)
+import Types
 import Emitter (ppLiteral)
 
 -- Terms
@@ -150,3 +151,32 @@ dumpPhaseOne us nus goal = do
              ++ ": " ++ ppLiteral lit)
     goN (pos, name, decl) =
       putStrLn ("  pos=" ++ pos ++ "  " ++ name ++ ": " ++ ppDecl decl)
+
+-- Structured proof (post Phase 2/3, pre emission)
+
+dumpStructuredProof :: StructuredProof -> IO ()
+dumpStructuredProof sp = do
+  putStrLn "-- Axioms"
+  mapM_ goAxiom (axioms sp)
+  putStrLn ""
+  if null (lemmas sp)
+    then putStrLn "-- Lemmas: none"
+    else do
+      putStrLn "-- Lemmas"
+      mapM_ goLemma (lemmas sp)
+  putStrLn ""
+  putStrLn "-- Goals"
+  mapM_ goGoal (goals sp)
+  where
+    goAxiom (AUnit name lit)   = putStrLn ("  " ++ name ++ ": " ++ ppLiteral lit)
+    goAxiom (ANonUnit name cl) = putStrLn ("  " ++ name ++ ": " ++ ppClauseI cl)
+    goLemma (name, lit, blk)   = do
+      putStrLn ("  " ++ name ++ ": " ++ ppLiteral lit)
+      putStrLn ("    " ++ show blk)
+    goGoal (lit, blk) = do
+      putStrLn ("  goal: " ++ ppLiteral lit)
+      putStrLn ("    " ++ show blk)
+
+ppClauseI :: Clause -> String
+ppClauseI (Clause body Nothing)  = intercalate ", " (map ppLiteral body) ++ " → ⊥"
+ppClauseI (Clause body (Just h)) = intercalate ", " (map ppLiteral body) ++ " → " ++ ppLiteral h

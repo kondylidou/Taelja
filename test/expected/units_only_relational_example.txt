@@ -1,9 +1,9 @@
-Axiom 1: p(f(X))
-Axiom 2: f(X) = X
+Axiom 1: f(X) = X
+Axiom 2: p(f(X))
 
 Goal 1: p(a)
 Proof:
   have p(f(a))
-    by axiom 1
+    by axiom 2
   hence p(a)
-    by rw axiom 2
+    by rw axiom 1

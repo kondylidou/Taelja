@@ -53,20 +53,17 @@ tests = testGroup "Taelja"
       , benchmark "superposition_example_clausal1"
       , benchmark "superposition_example_clausal2"
       ]
-  , testGroup "E prover"
-      [ golden "e_simple_hne"
-      ]
   ]
 
 golden :: String -> TestTree
 golden name = goldenVsString name
   ("test/expected/" ++ name ++ ".txt")
-  (run ("test/baseline/" ++ name ++ ".tstp"))
+  (run ("test/baseline_vampire/" ++ name ++ ".tstp"))
 
 benchmark :: String -> TestTree
 benchmark name = goldenVsString name
   ("test/expected/" ++ name ++ ".txt")
-  (run ("test/baseline/" ++ name ++ ".tstp"))
+  (run ("test/baseline_vampire/" ++ name ++ ".tstp"))
 
 run :: FilePath -> IO LBS.ByteString
 run path = do

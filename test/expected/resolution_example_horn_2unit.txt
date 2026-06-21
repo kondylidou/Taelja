@@ -1,12 +1,12 @@
-Axiom 1: p(X) /\ q(Y) => r(X,Y)
-Axiom 2: q(b)
-Axiom 3: p(a)
+Axiom 1: q(b)
+Axiom 2: p(a)
+Axiom 3: p(X) /\ q(Y) => r(X,Y)
 
 Goal 1: r(a,b)
 Proof:
   have p(a)
-    by axiom 3
-   and q(b)
     by axiom 2
-  hence r(a,b)
+   and q(b)
     by axiom 1
+  hence r(a,b)
+    by axiom 3

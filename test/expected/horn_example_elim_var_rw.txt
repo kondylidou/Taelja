@@ -1,12 +1,12 @@
 Axiom 1: q(a,X)
-Axiom 2: q(X,Y) => f(X) = g(Y)
-Axiom 3: g(X) = c
+Axiom 2: g(X) = c
+Axiom 3: q(X,Y) => f(X) = g(Y)
 
 Goal 1: f(a) = c
 Proof:
   have q(a,X)
     by axiom 1
   hence f(a) = g(X)
-    by axiom 2
+    by axiom 3
   hence f(a) = c
-    by rw axiom 3
+    by rw axiom 2

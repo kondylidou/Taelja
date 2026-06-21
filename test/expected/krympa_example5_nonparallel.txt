@@ -1,14 +1,14 @@
-Axiom 1: a = b
-Axiom 2: f(X) = X
+Axiom 1: f(X) = X
+Axiom 2: a = b
 
 Goal 1: h(f(b),a) = h(a,f(b))
 Proof:
   h(f(b),a)
 = { by axiom 1 }
-  h(f(b),b)
-= { by axiom 1 R->L }
-  h(f(a),b)
+  h(b,a)
 = { by axiom 2 }
-  h(a,b)
+  h(b,b)
 = { by axiom 2 R->L }
+  h(a,b)
+= { by axiom 1 R->L }
   h(a,f(b))

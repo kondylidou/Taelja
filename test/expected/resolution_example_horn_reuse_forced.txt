@@ -1,6 +1,6 @@
 Axiom 1: s(X)
-Axiom 2: s(X) => q(b,X)
-Axiom 3: s(X) => p(X)
+Axiom 2: s(X) => p(X)
+Axiom 3: s(X) => q(b,X)
 Axiom 4: q(X,Y) /\ p(Y) => r(X,Y)
 
 Lemma 5: p(X)
@@ -8,14 +8,14 @@ Proof:
   have s(X)
     by axiom 1
   hence p(X)
-    by axiom 3
+    by axiom 2
 
 Goal 1: r(b,a)
 Proof:
   have s(a)
     by axiom 1
   hence q(b,a)
-    by axiom 2
+    by axiom 3
    and p(a)
     by lemma 5
   hence r(b,a)

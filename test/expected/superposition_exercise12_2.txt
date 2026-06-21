@@ -1,11 +1,11 @@
-Axiom 1: f(X) = c => f(X) = b
-Axiom 2: f(f(X)) = X
+Axiom 1: f(f(X)) = X
+Axiom 2: f(X) = c => f(X) = b
 
 Goal 1: b = c
 Proof:
   have f(f(c)) = c
-    by axiom 2
-  hence f(f(c)) = b
     by axiom 1
+  hence f(f(c)) = b
+    by axiom 2
   hence c = b
-    by rw axiom 2
+    by rw axiom 1

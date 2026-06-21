@@ -1,12 +1,12 @@
 Axiom 1: p(a)
-Axiom 2: q(b)
-Axiom 3: p(X) => f(X) = c
+Axiom 2: p(X) => f(X) = c
+Axiom 3: q(b)
 Axiom 4: q(X) => a = X
 
 Lemma 5: a = b
 Proof:
   have q(b)
-    by axiom 2
+    by axiom 3
   hence a = b
     by axiom 4
 
@@ -15,6 +15,6 @@ Proof:
   have p(a)
     by axiom 1
   hence f(a) = c
-    by axiom 3
+    by axiom 2
   hence f(b) = c
     by rw lemma 5
