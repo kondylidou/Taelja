@@ -1,0 +1,4 @@
+Axiom 1: a = b
+Axiom 2: b = c
+Axiom 3: f(X) = X
+

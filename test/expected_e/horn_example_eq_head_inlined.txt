@@ -1,0 +1,15 @@
+Axiom 1: q(f(X))
+Axiom 2: p(f(X))
+Axiom 3: p(X) /\ q(X) => X = zero
+Axiom 4: f(X) = g(X)
+
+Goal 1: g(a) = zero
+Proof:
+  have p(f(a))
+    by axiom 2
+   and q(f(a))
+    by axiom 1
+  hence f(a) = zero
+    by axiom 3
+  hence g(a) = zero
+    by rw axiom 4

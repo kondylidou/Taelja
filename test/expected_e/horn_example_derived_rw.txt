@@ -1,0 +1,20 @@
+Axiom 1: q(b)
+Axiom 2: q(X) => a = X
+Axiom 3: p(a)
+Axiom 4: p(Y) => f(Y) = c
+
+Lemma 5: a = b
+Proof:
+  have q(b)
+    by axiom 1
+  hence a = b
+    by axiom 2
+
+Goal 1: f(b) = c
+Proof:
+  have p(a)
+    by axiom 3
+  hence f(a) = c
+    by axiom 4
+  hence f(b) = c
+    by rw lemma 5

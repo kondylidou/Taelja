@@ -260,14 +260,16 @@ nextCounter = do
   modify $ \s -> s { stCounter = k + 1 }
   return k
 
--- ELECTRONS(p, Units): units at positions q ≺ p, plus all derived units (pos = nil).
--- Derived units are listed first — they're more specific and usually the right match.
+-- ELECTRONS(p, Units): all units with position q ≺ p.
+-- Unnamed (derived) units come before named (axiom) units — they tend to be more
+-- specific and match body literals directly, so trying them first avoids picking
+-- a generic axiom that only works after additional rewriting.
 getElectrons :: String -> AlgM [UnitEntry]
 getElectrons p = gets (\s ->
-  let us = stUnits s
-      derived = filter (\ue -> isNothing (uePos ue)) us
-      named   = filter (\ue -> case uePos ue of { Just q -> q < p; Nothing -> False }) us
-  in derived ++ named)
+  let available = filter (\ue -> case uePos ue of { Just q -> q < p; Nothing -> False }) (stUnits s)
+      unnamed   = filter (isNothing . ueName) available
+      named     = filter (isJust    . ueName) available
+  in unnamed ++ named)
 
 -- ENSURE_NAMED: return the name of a unit, promoting it to a lemma if unnamed.
 ensureNamed :: Literal -> AlgM String
@@ -300,8 +302,8 @@ promoteToLemma lit blk = do
 
 -- MATCH: for each body literal find an electron and substitutions (σ0, σi) such
 -- that K_i[σ_i] rewrites to L_i[σ0].  Returns Nothing on failure.
-matchBody :: [Literal] -> [UnitEntry] -> AlgM (Maybe (Subst, [(UnitEntry, Subst, Literal)]))
-matchBody bodyLits electrons = go bodyLits [] []
+matchBody :: String -> [Literal] -> [UnitEntry] -> AlgM (Maybe (Subst, [(UnitEntry, Subst, Literal)]))
+matchBody pos bodyLits electrons = go bodyLits [] []
   where
     go [] σ0 acc = return $ Just (σ0, reverse acc)
     go (li:rest) σ0 acc = do
@@ -337,7 +339,7 @@ matchBody bodyLits electrons = go bodyLits [] []
         then return Nothing
         else do
           let proof = EqChain l steps
-              ue    = UnitEntry Nothing (Eq l r) (Just proof) Nothing
+              ue    = UnitEntry Nothing (Eq l r) (Just proof) (Just pos)
           addUnit ue
           return $ Just (ue, [], σ0)
     eqChainFallback _ _ = return Nothing
@@ -581,7 +583,7 @@ processNonUnit
   -> AlgM Bool     -- True when a goal was emitted
 processNonUnit pos mAxiomName (Clause bodyLits mHead) goalLit = do
   elecs <- getElectrons pos
-  mMatch <- matchBody bodyLits elecs
+  mMatch <- matchBody pos bodyLits elecs
   case mMatch of
     Nothing -> return False
     Just (σ0, matched) ->
@@ -620,7 +622,7 @@ processNonUnit pos mAxiomName (Clause bodyLits mHead) goalLit = do
                     Just ρ0 ->
                       emitGoalProof goalLit (applySubstBlock ρ0 blk2) >> return True
                     Nothing -> do
-                      addUnit (UnitEntry Nothing l0σ0 (Just blk1) Nothing)
+                      addUnit (UnitEntry Nothing l0σ0 (Just blk1) (Just pos))
                       return False
   where
     addRwLine b (rw, c) =

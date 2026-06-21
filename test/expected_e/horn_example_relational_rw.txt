@@ -1,0 +1,12 @@
+Axiom 1: a = b
+Axiom 2: p(a)
+Axiom 3: p(b) => q(b)
+
+Goal 1: q(b)
+Proof:
+  have p(a)
+    by axiom 2
+  hence p(b)
+    by rw axiom 1
+  hence q(b)
+    by axiom 3

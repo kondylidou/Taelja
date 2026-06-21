@@ -74,13 +74,17 @@ buildProofTree allUnits =
         in [expand leftN, expand rightN]
       (p0:p1:p2:rest) ->
         -- 3+ parents: fold into nested binary steps to keep the tree binary.
-        -- p0 is the main clause (innermost right child); the remaining parents
-        -- are equations applied one at a time, each becoming a left child.
+        -- If the last parent is a positive unit it is a provider → goes LEFT.
+        -- Otherwise it is the negative consumer → goes RIGHT, so that unit
+        -- electrons at smaller positions satisfy q ≺ p.
         let eqs      = p1:p2:rest
             innerKids = foldl (\r eq -> PTNode "?" decl rule [expand eq, r])
                                (expand p0)
                                (init eqs)
-        in [expand (last eqs), innerKids]
+            lastIsProvider = isPositiveUnitFormula (declOf (last eqs) decl)
+        in if lastIsProvider
+           then [expand (last eqs), innerKids]   -- unit provider goes LEFT
+           else [innerKids, expand (last eqs)]   -- consumer goes RIGHT
       _ -> map expand parents
 
     declOf n fallback = case Map.lookup n unitMap of

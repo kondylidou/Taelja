@@ -1,0 +1,27 @@
+Axiom 1: p(a)
+Axiom 2: p(X) => q(X,Y)
+Axiom 3: q(X,b) => r1(X)
+Axiom 4: q(X,c) => r2(X)
+Axiom 5: r1(X) /\ r2(X) => r0(X)
+
+Lemma 6: r2(a)
+Proof:
+  have p(a)
+    by axiom 1
+  hence q(a,c)
+    by axiom 2
+  hence r2(a)
+    by axiom 4
+
+Goal 1: r0(a)
+Proof:
+  have p(a)
+    by axiom 1
+  hence q(a,b)
+    by axiom 2
+  hence r1(a)
+    by axiom 3
+   and r2(a)
+    by lemma 6
+  hence r0(a)
+    by axiom 5

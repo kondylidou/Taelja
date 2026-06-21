@@ -1,0 +1,15 @@
+Axiom 1: f(b) = c
+Axiom 2: a = b
+Axiom 3: f(X) = c => g(X) = c
+Axiom 4: g(a) = c => h(a) = c
+
+Goal 1: h(a) = c
+Proof:
+  have f(b) = c
+    by axiom 1
+  hence g(b) = c
+    by axiom 3
+  hence g(a) = c
+    by rw axiom 2 R->L
+  hence h(a) = c
+    by axiom 4

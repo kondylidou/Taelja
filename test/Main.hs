@@ -17,53 +17,79 @@ main = defaultMain tests
 
 tests :: TestTree
 tests = testGroup "Taelja"
-  [ testGroup "Handcrafted"
-      [ golden "test_rl_safety"
-      , golden "test_eq_symmetry"
-      , golden "test_nonunit_single"
-      , golden "test_nonunit_chain"
-      , golden "test_split_derived_unit"
-      , golden "test_instantiations_no_ground"
-      , golden "test_prelemmatize_sym_eq"
-      , golden "test_eqchain_in_havehence"
-      , golden "test_havehence_in_eqchain"
-      ]
-  , testGroup "Benchmarks"
-      [ benchmark "horn_example_derived_rw"
-      , benchmark "horn_example_elim_var_rw"
-      , benchmark "horn_example_eq_head_inlined"
-      , benchmark "horn_example_eq_rw_chain"
-      , benchmark "horn_example_relational_rw"
-      , benchmark "krympa_example_hay"
-      , benchmark "pure_equational_example"
-      , benchmark "resolution_example_eq_positive_rewrite"
-      , benchmark "resolution_example_horn_2unit"
-      , benchmark "resolution_example_horn_dag"
-      , benchmark "resolution_example_horn_general"
-      , benchmark "resolution_example_horn_reuse_forced"
-      , benchmark "resolution_example_horn_reuse_n1"
-      , benchmark "resolution_example_pqr"
-      , benchmark "superposition_example_nonground_lemma"
-      , benchmark "superposition_example_unit1"
-      , benchmark "superposition_example_unit2"
-      , benchmark "superposition_exercise12_2"
-      , benchmark "units_only_relational_example"
-      , benchmark "krympa_example5_nonparallel"
-      , benchmark "resolution_example_horn_reuse_inlined"
-      , benchmark "superposition_example_clausal1"
-      , benchmark "superposition_example_clausal2"
-      ]
+  [ testGroup "Handcrafted" (map (mkTest "expected"   "baseline_vampire") handcraftedNames)
+  , testGroup "Vampire"     (map (mkTest "expected"   "baseline_vampire") benchmarkNames)
+  , testGroup "E"           (map (mkTest "expected_e" "baseline_e")       eBenchmarkNames)
   ]
 
-golden :: String -> TestTree
-golden name = goldenVsString name
-  ("test/expected/" ++ name ++ ".txt")
-  (run ("test/baseline_vampire/" ++ name ++ ".tstp"))
+handcraftedNames :: [String]
+handcraftedNames =
+  [ "test_rl_safety"
+  , "test_eq_symmetry"
+  , "test_nonunit_single"
+  , "test_nonunit_chain"
+  , "test_split_derived_unit"
+  , "test_instantiations_no_ground"
+  , "test_prelemmatize_sym_eq"
+  , "test_eqchain_in_havehence"
+  , "test_havehence_in_eqchain"
+  ]
 
-benchmark :: String -> TestTree
-benchmark name = goldenVsString name
-  ("test/expected/" ++ name ++ ".txt")
-  (run ("test/baseline_vampire/" ++ name ++ ".tstp"))
+benchmarkNames :: [String]
+benchmarkNames =
+  [ "horn_example_derived_rw"
+  , "horn_example_elim_var_rw"
+  , "horn_example_eq_head_inlined"
+  , "horn_example_eq_rw_chain"
+  , "horn_example_relational_rw"
+  , "krympa_example_hay"
+  , "pure_equational_example"
+  , "resolution_example_eq_positive_rewrite"
+  , "resolution_example_horn_2unit"
+  , "resolution_example_horn_dag"
+  , "resolution_example_horn_general"
+  , "resolution_example_horn_reuse_forced"
+  , "resolution_example_horn_reuse_n1"
+  , "resolution_example_pqr"
+  , "superposition_example_nonground_lemma"
+  , "superposition_example_unit1"
+  , "superposition_example_unit2"
+  , "superposition_exercise12_2"
+  , "units_only_relational_example"
+  , "krympa_example5_nonparallel"
+  , "resolution_example_horn_reuse_inlined"
+  , "superposition_example_clausal1"
+  , "superposition_example_clausal2"
+  ]
+
+-- Benchmarks for which an E prover output exists.
+eBenchmarkNames :: [String]
+eBenchmarkNames =
+  [ "horn_example_derived_rw"
+  , "horn_example_elim_var_rw"
+  , "horn_example_eq_head_inlined"
+  , "horn_example_eq_rw_chain"
+  , "horn_example_relational_rw"
+  , "krympa_example_hay"
+  , "pure_equational_example"
+  , "resolution_example_eq_positive_rewrite"
+  , "resolution_example_horn_2unit"
+  , "resolution_example_horn_dag"
+  , "resolution_example_horn_general"
+  , "resolution_example_horn_reuse_forced"
+  , "resolution_example_horn_reuse_n1"
+  , "resolution_example_pqr"
+  , "superposition_example_nonground_lemma"
+  , "krympa_example5_nonparallel"
+  , "resolution_example_horn_reuse_inlined"
+  , "superposition_example_clausal1"
+  , "superposition_example_clausal2"
+  ]
+
+mkTest :: String -> String -> String -> TestTree
+mkTest expectedDir prover name = goldenVsString name
+  ("test/" ++ expectedDir ++ "/" ++ name ++ ".txt")
+  (run ("test/" ++ prover ++ "/" ++ name ++ ".tstp"))
 
 run :: FilePath -> IO LBS.ByteString
 run path = do
