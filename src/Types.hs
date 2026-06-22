@@ -33,8 +33,7 @@ data RwStep = RwStep
   , rwDir  :: Dir
   } deriving (Show)
 
--- An entry in the working unit set. Corresponds to (name, U, pf, q) in Algorithm 4.
--- All units (including derived ones) carry a real position; uePos is never Nothing.
+-- Entry in the working unit set: name (if assigned), unit literal, stored proof, position.
 data UnitEntry = UnitEntry
   { ueName  :: Maybe String
   , ueUnit  :: Literal

@@ -5,7 +5,7 @@ import Data.List (nub)
 import Data.Maybe (fromMaybe)
 import Types
 
--- Variable collection 
+-- Variable collection
 
 termVars :: Term -> [String]
 termVars (Var x)    = [x]
@@ -96,9 +96,9 @@ matchBothLit :: Literal -> Literal -> Subst -> Subst -> Maybe (Subst, Subst)
 matchBothLit (Rel n1 ts1) (Rel n2 ts2) σ0 σi
   | n1 == n2, length ts1 == length ts2 =
       foldl step (Just (σ0, σi)) (zip ts1 ts2)
-  where step ms (t, s) = ms >>= \(a, b) -> matchBothTerm t s a b
+  where step ms (t, s) = ms >>= uncurry (matchBothTerm t s)
 matchBothLit (Eq l1 r1) (Eq l2 r2) σ0 σi =
-  matchBothTerm l1 l2 σ0 σi >>= \(s0, si) -> matchBothTerm r1 r2 s0 si
+  matchBothTerm l1 l2 σ0 σi >>= uncurry (matchBothTerm r1 r2)
 matchBothLit _ _ _ _ = Nothing
 
 matchBothTerm :: Term -> Term -> Subst -> Subst -> Maybe (Subst, Subst)
@@ -117,10 +117,10 @@ matchBothTerm (Const c) (Const d) σ0 σi =
 matchBothTerm (App f ts) (App g us) σ0 σi
   | f == g, length ts == length us =
       foldl step (Just (σ0, σi)) (zip ts us)
-  where step ms (t, u) = ms >>= \(a, b) -> matchBothTerm t u a b
+  where step ms (t, u) = ms >>= uncurry (matchBothTerm t u)
 matchBothTerm _ _ _ _ = Nothing
 
--- Rewriting (REWRITE) 
+-- Rewriting
 
 -- One-step rewrite using equation (l,r) in direction dir.
 -- Tries root first, then subterms left-to-right.
@@ -198,7 +198,7 @@ renameBlock r (EqChain s steps) = EqChain (renameTerm r s) (map renameStep steps
   where renameStep (RwStep nm (l, ri) d, cur) =
           (RwStep nm (renameTerm r l, renameTerm r ri) d, renameTerm r cur)
 
--- Variable collection from proof structures
+-- Variable collectionfrom proof structures
 
 lineVars :: ProofLine -> [String]
 lineVars (Have  lit _) = litVars lit

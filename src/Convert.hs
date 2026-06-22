@@ -40,9 +40,8 @@ phaseOne tree units =
       let goal    = map convertLit rawGoal
           unitMap = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n _ _) <- units ]
           resolveName = resolveSourceName unitMap
-          -- For negated conjectures, keep the leaf's own declaration so that
-          -- the negated-conjecture treatment in assignAxiomNames/processNonUnit
-          -- continues to work correctly.
+          -- Negated conjecture leaves keep their own declaration (not the source-resolved
+          -- one) so their role is visible when assigning axiom names and building blocks.
           origDecl name leafDecl =
             case resolveSourceUnit unitMap name of
               T.Unit origN origD _
@@ -160,9 +159,8 @@ convertDeclToClause (T.Formula _ (T.CNF (T.Clause lits))) =
 convertDeclToClause (T.Formula _ (T.FOF f)) = convertFOFToClause f
 convertDeclToClause _ = Nothing
 
--- A NEq in head position represents ¬(s=t), which is a body literal s=t with L0=⊥.
--- For multiple NEqs (negated conjunctive conjecture) we keep only the first,
--- proving just that one conjunct of the goal.
+-- A NEq in head position represents ¬(s=t), so it becomes a body equality with L0=⊥.
+-- Multiple NEqs arise from negated conjunctive conjectures; all are kept as body equalities.
 mkClause :: [Literal] -> [Literal] -> Maybe Clause
 mkClause body []                  = Just (Clause body Nothing)
 mkClause body [NEq s t]           = Just (Clause (body ++ [Eq s t]) Nothing)
@@ -255,7 +253,6 @@ assignAxiomNames initUnits nonUnits =
             _ ->
               (axAcc, posMap, origSeen)
 
--- State monad alias for the algorithm.
 type AlgM a = State AlgState a
 
 addUnit :: UnitEntry -> AlgM ()
