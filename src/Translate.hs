@@ -1,4 +1,4 @@
-module Convert (translate, phaseOne) where
+module Translate (translate, phaseOne) where
 
 import Control.Monad (foldM)
 import Control.Monad.State
@@ -392,8 +392,8 @@ matchBody pos bodyLits electrons = go bodyLits [] []
 -- 1. Try li as pattern against ki → extends σ0 with nucleus-var bindings.
 -- 2. Try ki as pattern against li → gives σi (electron-var bindings); σ0 unchanged.
 -- Both directions also try flipped equality (Eq is symmetric).
--- Intentionally no unification — the document requires matching only, and binding
--- nucleus and electron vars simultaneously causes naming-collision bugs.
+-- Intentionally no unification — binding nucleus and electron vars simultaneously
+-- causes naming-collision bugs.
 tryMatch :: Literal -> Literal -> Subst -> Maybe (Subst, Subst)
 tryMatch li ki σ0 =
   tryAsPattern li ki

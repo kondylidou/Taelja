@@ -91,7 +91,7 @@ The conversion proceeds in three phases:
   TSTP unit list, assigning bit-string positions to every node (left child
   appends `0`, right child appends `1`).
 
-- **Phase 1** (`Translate.hs` → `phaseOne`): visit leaves in left-first DFS
+- **Phase 1** (`Translate.hs`, `phaseOne`): visit leaves in left-first DFS
   order (≺-increasing position order). Positive unit clauses become
   *electrons* in `Units`; everything else becomes a nucleus in `NonUnits`.
 
@@ -112,6 +112,6 @@ The conversion proceeds in three phases:
 | `Types.hs` | Core data types: `Term`, `Literal`, `Clause`, `UnitEntry`, `ProofBlock`, `StructuredProof` |
 | `Helpers.hs` | Shared functions: substitution, matching, rewriting, literal utilities |
 | `ProofTree.hs` | Phase 0: build and label the refutation proof tree |
-| `Convert.hs` | Phases 1–3: the main translation algorithm |
+| `Translate.hs` | Phases 1–3: the main translation algorithm |
 | `Emitter.hs` | Render a `StructuredProof` to the output text format |
 | `Debug.hs` | Optional debug dumps: TSTP units, proof tree, Phase 1 result |
