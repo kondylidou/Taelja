@@ -34,7 +34,7 @@ data RwStep = RwStep
   } deriving (Show)
 
 -- An entry in the working unit set. Corresponds to (name, U, pf, q) in Algorithm 4.
--- uePos = Nothing for derived units (q = nil in the paper).
+-- All units (including derived ones) carry a real position; uePos is never Nothing.
 data UnitEntry = UnitEntry
   { ueName  :: Maybe String
   , ueUnit  :: Literal

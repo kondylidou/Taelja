@@ -161,11 +161,18 @@ convertDeclToClause (T.Formula _ (T.FOF f)) = convertFOFToClause f
 convertDeclToClause _ = Nothing
 
 -- A NEq in head position represents ¬(s=t), which is a body literal s=t with L0=⊥.
+-- For multiple NEqs (negated conjunctive conjecture) we keep only the first,
+-- proving just that one conjunct of the goal.
 mkClause :: [Literal] -> [Literal] -> Maybe Clause
-mkClause body []          = Just (Clause body Nothing)
-mkClause body [NEq s t]   = Just (Clause (body ++ [Eq s t]) Nothing)
-mkClause body [h]         = Just (Clause body (Just h))
-mkClause _    _           = Nothing
+mkClause body []                  = Just (Clause body Nothing)
+mkClause body [NEq s t]           = Just (Clause (body ++ [Eq s t]) Nothing)
+mkClause body [h]                 = Just (Clause body (Just h))
+mkClause body hs | all isNEq hs  = Just (Clause (body ++ [Eq s t | NEq s t <- hs]) Nothing)
+mkClause _    _                  = Nothing
+
+isNEq :: Literal -> Bool
+isNEq (NEq _ _) = True
+isNEq _         = False
 
 isReservedTLit :: T.Literal -> Bool
 isReservedTLit (T.Predicate (T.Reserved _) _) = True
@@ -682,7 +689,7 @@ runPhase2 goal = do
           units' <- gets stUnits
           (_, steps) <- rwChainToTerm s t units'
           emitGoalProof goal (EqChain s steps)
-        _ -> return ()
+        _ -> error ("runPhase2: no unit matches relational goal: " ++ show goal)
 
 findUnitForGoal :: Literal -> [UnitEntry] -> Maybe (UnitEntry, Subst)
 findUnitForGoal goal units = listToMaybe
@@ -723,7 +730,8 @@ runPhase3 nonUnits posToName goalLits = go nonUnits
       nDone <- gets (length . stGoals)
       if nDone >= nGoals then return ()
       else case convertDeclToClause decl of
-        Nothing  -> go rest
+        Nothing  -> error ("runPhase3: cannot convert non-unit clause at position "
+                        ++ pos ++ ": " ++ show decl)
         Just cls -> do
           let mAxiomName = Map.lookup pos posToName
           eqDone <- case cls of
@@ -772,4 +780,6 @@ runAlgorithm initUnits nonUnits goalLits =
         | null nonUnits = mapM_ runPhase2 goalLits
         | otherwise     = runPhase3 nonUnits posToName goalLits
       finalSt = execState action initSt
-  in StructuredProof axiomList (stLemmas finalSt) (stGoals finalSt)
+  in if null (stGoals finalSt)
+     then error "translate: algorithm terminated without producing a goal proof"
+     else StructuredProof axiomList (stLemmas finalSt) (stGoals finalSt)
