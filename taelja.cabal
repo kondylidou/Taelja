@@ -14,7 +14,7 @@ library
     Helpers
     Emitter
     ProofTree
-    Translate
+    Convert
     Debug
   build-depends:
     base       ^>=4.18,

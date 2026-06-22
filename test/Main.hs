@@ -9,7 +9,7 @@ import Data.TPTP.Parse.Text (parseTSTP)
 import Test.Tasty
 import Test.Tasty.Golden
 
-import Translate (translate)
+import Convert (translate)
 import Emitter (emit)
 
 main :: IO ()
@@ -17,9 +17,9 @@ main = defaultMain tests
 
 tests :: TestTree
 tests = testGroup "Taelja"
-  [ testGroup "Handcrafted" (map (mkTest "expected"   "baseline_vampire") handcraftedNames)
-  , testGroup "Vampire"     (map (mkTest "expected"   "baseline_vampire") benchmarkNames)
-  , testGroup "E"           (map (mkTest "expected_e" "baseline_e")       eBenchmarkNames)
+  [ testGroup "Handcrafted" (map (mkTest "expected_vampire" "baseline_vampire") handcraftedNames)
+  , testGroup "Vampire"     (map (mkTest "expected_vampire" "baseline_vampire") benchmarkNames)
+  , testGroup "E"           (map (mkTest "expected_e"       "baseline_e")       eBenchmarkNames)
   ]
 
 handcraftedNames :: [String]

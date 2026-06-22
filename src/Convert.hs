@@ -1,4 +1,4 @@
-module Translate (translate, phaseOne) where
+module Convert (translate, phaseOne) where
 
 import Control.Monad (foldM)
 import Control.Monad.State

@@ -11,7 +11,7 @@ import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
 
 import ProofTree (buildProofTree)
-import Translate (translate, phaseOne)
+import Convert (translate, phaseOne)
 import Emitter (emit)
 import Debug (dumpTSTP, dumpProofTree, dumpPhaseOne)
 

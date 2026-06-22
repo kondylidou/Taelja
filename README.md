@@ -4,8 +4,7 @@ Taelja converts Horn resolution/superposition refutation proofs in TSTP format
 into structured, human-readable hyperresolution proofs.
 
 It takes the TSTP output of a prover such as Vampire or E and produces a
-`have … and … hence … by axiom N` proof that follows the algorithm described
-in `document.tex`.
+`have … and … hence … by axiom N` proof.
 
 ## Example
 
@@ -76,7 +75,7 @@ cabal test
 
 The test suite runs golden-file tests against TSTP proofs produced by both
 Vampire (`test/baseline_vampire/`) and E (`test/baseline_e/`).
-Expected outputs live in `test/expected/` (Vampire) and `test/expected_e/` (E).
+Expected outputs live in `test/expected_vampire/` (Vampire) and `test/expected_e/` (E).
 
 To regenerate expected files after an intentional output change:
 
@@ -86,7 +85,7 @@ cabal test --test-option=--accept
 
 ## Algorithm
 
-The conversion follows the three-phase algorithm in `document.tex`:
+The conversion proceeds in three phases:
 
 - **Phase 0** (`ProofTree.hs`): build the refutation proof tree from the flat
   TSTP unit list, assigning bit-string positions to every node (left child
@@ -113,6 +112,6 @@ The conversion follows the three-phase algorithm in `document.tex`:
 | `Types.hs` | Core data types: `Term`, `Literal`, `Clause`, `UnitEntry`, `ProofBlock`, `StructuredProof` |
 | `Helpers.hs` | Shared functions: substitution, matching, rewriting, literal utilities |
 | `ProofTree.hs` | Phase 0: build and label the refutation proof tree |
-| `Translate.hs` | Phases 1–3: the main translation algorithm |
+| `Convert.hs` | Phases 1–3: the main translation algorithm |
 | `Emitter.hs` | Render a `StructuredProof` to the output text format |
 | `Debug.hs` | Optional debug dumps: TSTP units, proof tree, Phase 1 result |
