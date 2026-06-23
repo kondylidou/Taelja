@@ -427,8 +427,7 @@ tryMatch li ki σ0 =
     flipEq (Eq l r) = Eq r l
     flipEq x        = x
 
--- RW_CHAIN_TO (literal version): pure exploration pass with no side effects,
--- used only for ranking candidate electrons. Returns (final literal, step count).
+-- RW_CHAIN_TO (literal, pure): greedy chain length used to rank electron candidates.
 rwChainToLitPure :: Literal -> Literal -> [UnitEntry] -> (Literal, Int)
 rwChainToLitPure s t units
   | s == t         = (s, 0)
@@ -436,110 +435,98 @@ rwChainToLitPure s t units
   | otherwise      = go s 0 (Set.singleton s)
   where
     go cur n seen
-      | cur == t || flipLit cur == t = (t, n)
-      | otherwise =
-          case findRwStep cur seen of
-            Nothing              -> (cur, n)
-            Just (_, _, cur', _) -> go cur' (n+1) (Set.insert cur' seen)
-
-    findRwStep cur seen = listToMaybe (sortCandidates candidates)
+      | isTarget cur = (t, n)
+      | otherwise    = case findStep cur seen of
+          Nothing              -> (cur, n)
+          Just (_, _, _, cur') -> go cur' (n + 1) (Set.insert cur' seen)
+    isTarget c = c == t || flipLit c == t
+    findStep cur seen = listToMaybe (sortCandidates
+      [ (ue, (l, r), dir, cur')
+      | ue          <- units
+      , Eq l r      <- [ueUnit ue]
+      , (dir, cur') <- litSteps l r cur
+      , Set.notMember cur' seen ])
       where
-        candidates =
-          [ (ue, (l, r), cur', dir)
-          | ue <- units
-          , Eq l r <- [ueUnit ue]
-          , (dir, cur') <- litDirs l r cur
-          , Set.notMember cur' seen
-          ]
+        curSize = litSize cur
         sortCandidates cs =
-          filter (\(_,_,c,_) -> c == t || flipLit c == t) cs ++
-          sortBy (comparing (\(_,_,c,_) -> litSize c))
-                 (filter (\(_,_,c,_) -> c /= t && flipLit c /= t && litSize c <= litSize cur) cs) ++
-          sortBy (comparing (\(_,_,c,_) -> litSize c))
-                 (filter (\(_,_,c,_) -> c /= t && flipLit c /= t && litSize c > litSize cur) cs)
+          filter (\(_, _, _, c) -> isTarget c) cs ++
+          sortBy (comparing (\(_, _, _, c) -> litSize c))
+                 (filter (\(_, _, _, c) -> litSize c <= curSize) cs) ++
+          sortBy (comparing (\(_, _, _, c) -> litSize c))
+                 (filter (\(_, _, _, c) -> litSize c >  curSize) cs)
+    litSteps l r cur =
+      [ (LR, c) | Just c <- [rewriteLit cur (l, r) LR] ] ++
+      [ (RL, c) | Just c <- [rewriteLit cur (l, r) RL] ]
 
-    litDirs l r cur =
-      [(LR, c) | Just c <- [rewriteLit cur (l,r) LR]] ++
-      [(RL, c) | Just c <- [rewriteLit cur (l,r) RL]]
-
--- RW_CHAIN_TO (literal version, with side effects): calls ensureNamed at each step
--- so intermediate equations are promoted to lemmas as needed.
+-- RW_CHAIN_TO (literal, with side effects): greedy best-effort rewriting toward t.
+-- Returns (cur, steps) where cur may not equal t if no exact path exists;
+-- the caller uses matchLit to close the remaining gap (Lemma 0.6).
 rwChainToLit :: Literal -> Literal -> [UnitEntry] -> AlgM (Literal, [(RwStep, Literal)])
 rwChainToLit s t units
-  | s == t          = return (s, [])
-  | flipLit s == t  = return (t, [])
-  | otherwise = go s [] (Set.singleton s)
+  | s == t         = return (s, [])
+  | flipLit s == t = return (t, [])
+  | otherwise      = go s (Set.singleton s) []
   where
-    go cur steps seen =
-      case findRwStep cur seen of
-        Nothing              -> return (cur, reverse steps)
-        Just (ue, eq, cur', dir)
-          | cur' == t || flipLit cur' == t -> do
-              name <- ensureNamed (ueUnit ue)
-              return (t, reverse ((RwStep name eq dir, cur') : steps))
-          | otherwise -> do
-              name <- ensureNamed (ueUnit ue)
-              go cur' ((RwStep name eq dir, cur') : steps) (Set.insert cur' seen)
-
-    findRwStep cur seen = listToMaybe (sortCandidates candidates)
+    go cur seen acc = case findStep cur seen of
+      Nothing -> return (cur, reverse acc)
+      Just (ue, eq, dir, cur')
+        | isTarget cur' -> do
+            name <- ensureNamed (ueUnit ue)
+            return (t, reverse ((RwStep name eq dir, cur') : acc))
+        | otherwise -> do
+            name <- ensureNamed (ueUnit ue)
+            go cur' (Set.insert cur' seen) ((RwStep name eq dir, cur') : acc)
+    isTarget c = c == t || flipLit c == t
+    findStep cur seen = listToMaybe (sortCandidates
+      [ (ue, (l, r), dir, cur')
+      | ue          <- units
+      , Eq l r      <- [ueUnit ue]
+      , (dir, cur') <- litSteps l r cur
+      , Set.notMember cur' seen ])
       where
-        candidates =
-          [ (ue, (l, r), cur', dir)
-          | ue <- units
-          , Eq l r <- [ueUnit ue]
-          , (dir, cur') <- litDirs l r cur
-          , Set.notMember cur' seen
-          ]
+        curSize = litSize cur
         sortCandidates cs =
-          filter (\(_,_,c,_) -> c == t || flipLit c == t) cs ++
-          sortBy (comparing (\(_,_,c,_) -> litSize c))
-                 (filter (\(_,_,c,_) -> c /= t && flipLit c /= t && litSize c <= litSize cur) cs) ++
-          sortBy (comparing (\(_,_,c,_) -> litSize c))
-                 (filter (\(_,_,c,_) -> c /= t && flipLit c /= t && litSize c > litSize cur) cs)
+          filter (\(_, _, _, c) -> isTarget c) cs ++
+          sortBy (comparing (\(_, _, _, c) -> litSize c))
+                 (filter (\(_, _, _, c) -> litSize c <= curSize) cs) ++
+          sortBy (comparing (\(_, _, _, c) -> litSize c))
+                 (filter (\(_, _, _, c) -> litSize c >  curSize) cs)
+    litSteps l r cur =
+      [ (LR, c) | Just c <- [rewriteLit cur (l, r) LR] ] ++
+      [ (RL, c) | Just c <- [rewriteLit cur (l, r) RL] ]
 
-    litDirs l r cur =
-      [(LR, c) | Just c <- [rewriteLit cur (l,r) LR]] ++
-      [(RL, c) | Just c <- [rewriteLit cur (l,r) RL]]
-
--- RW_CHAIN_TO (term version): used in Phase 2 for equational goal proofs.
--- The step limit prevents divergence when only size-increasing rules are available.
+-- RW_CHAIN_TO (term, with side effects): greedy with step limit.
 rwChainToTerm :: Term -> Term -> [UnitEntry] -> AlgM (Term, [(RwStep, Term)])
 rwChainToTerm s t units
   | s == t    = return (s, [])
-  | otherwise = go s [] (Set.singleton s) (0 :: Int)
+  | otherwise = go s (Set.singleton s) [] (0 :: Int)
   where
-    maxSteps = 30
-
-    go cur steps seen n
-      | cur == t  = return (cur, reverse steps)
-      | n >= maxSteps = return (cur, reverse steps)
-      | otherwise =
-          case findRwStep cur seen of
-            Nothing              -> return (cur, reverse steps)
-            Just (ue, eq, cur', dir) -> do
-              name <- ensureNamed (ueUnit ue)
-              go cur' ((RwStep name eq dir, cur') : steps) (Set.insert cur' seen) (n+1)
-
-    findRwStep cur seen = listToMaybe (sortCandidates candidates)
+    maxSteps = 30 :: Int
+    go cur seen acc n
+      | cur == t      = return (cur, reverse acc)
+      | n >= maxSteps = return (cur, reverse acc)
+      | otherwise     = case findStep cur seen of
+          Nothing -> return (cur, reverse acc)
+          Just (ue, eq, dir, cur') -> do
+            name <- ensureNamed (ueUnit ue)
+            go cur' (Set.insert cur' seen) ((RwStep name eq dir, cur') : acc) (n + 1)
+    findStep cur seen = listToMaybe (sortCandidates
+      [ (ue, (l, r), dir, cur')
+      | ue          <- units
+      , Eq l r      <- [ueUnit ue]
+      , (dir, cur') <- termSteps l r cur
+      , Set.notMember cur' seen ])
       where
-        candidates =
-          [ (ue, (l, r), cur', dir)
-          | ue <- units
-          , Eq l r <- [ueUnit ue]
-          , (dir, cur') <- termDirs l r cur
-          , Set.notMember cur' seen
-          ]
-        -- Exact target first; then size-non-increasing; then size-increasing as last resort.
+        curSize = termSize cur
         sortCandidates cs =
-          filter (\(_,_,c,_) -> c == t) cs ++
-          sortBy (comparing (\(_,_,c,_) -> termSize c))
-                 (filter (\(_,_,c,_) -> c /= t && termSize c <= termSize cur) cs) ++
-          sortBy (comparing (\(_,_,c,_) -> termSize c))
-                 (filter (\(_,_,c,_) -> c /= t && termSize c > termSize cur) cs)
-
-    termDirs l r cur =
-      [(LR, c) | c <- rewriteTermAll cur (l,r) LR] ++
-      [(RL, c) | c <- rewriteTermAll cur (l,r) RL]
+          filter (\(_, _, _, c) -> c == t) cs ++
+          sortBy (comparing (\(_, _, _, c) -> termSize c))
+                 (filter (\(_, _, _, c) -> termSize c <= curSize) cs) ++
+          sortBy (comparing (\(_, _, _, c) -> termSize c))
+                 (filter (\(_, _, _, c) -> termSize c >  curSize) cs)
+    termSteps l r cur =
+      [ (LR, c) | c <- rewriteTermAll cur (l, r) LR ] ++
+      [ (RL, c) | c <- rewriteTermAll cur (l, r) RL ]
 
 -- MAKE_BLOCK: build the proof block for an electron K with substitution σ and
 -- a list of rewrite steps leading from K[σ] to the target body literal.
