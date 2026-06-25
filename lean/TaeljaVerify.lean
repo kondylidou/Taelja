@@ -1,0 +1,59 @@
+-- This module serves as the root of the `TaeljaVerify` library.
+-- Import modules here that should be built as part of the library.
+import TaeljaVerify.Basic
+
+-- Vampire prover test cases
+import TaeljaVerify.Vampire.ESimpleHne
+import TaeljaVerify.Vampire.HornExampleDerivedRw
+import TaeljaVerify.Vampire.HornExampleElimVarRw
+import TaeljaVerify.Vampire.HornExampleEqHeadInlined
+import TaeljaVerify.Vampire.HornExampleEqRwChain
+import TaeljaVerify.Vampire.HornExampleRelationalRw
+import TaeljaVerify.Vampire.KrympaExample5Nonparallel
+import TaeljaVerify.Vampire.KrympaExampleHay
+import TaeljaVerify.Vampire.PureEquationalExample
+import TaeljaVerify.Vampire.ResolutionExampleEqPositiveRewrite
+import TaeljaVerify.Vampire.ResolutionExampleHorn2unit
+import TaeljaVerify.Vampire.ResolutionExampleHornDag
+import TaeljaVerify.Vampire.ResolutionExampleHornGeneral
+import TaeljaVerify.Vampire.ResolutionExampleHornReuseForced
+import TaeljaVerify.Vampire.ResolutionExampleHornReuseInlined
+import TaeljaVerify.Vampire.ResolutionExampleHornReuseN1
+import TaeljaVerify.Vampire.ResolutionExamplePqr
+import TaeljaVerify.Vampire.SuperpositionExampleClausal1
+import TaeljaVerify.Vampire.SuperpositionExampleClausal2
+import TaeljaVerify.Vampire.SuperpositionExampleNongroundLemma
+import TaeljaVerify.Vampire.SuperpositionExampleUnit1
+import TaeljaVerify.Vampire.SuperpositionExampleUnit2
+import TaeljaVerify.Vampire.SuperpositionExercise122
+import TaeljaVerify.Vampire.TestEqSymmetry
+import TaeljaVerify.Vampire.TestEqchainInHavehence
+import TaeljaVerify.Vampire.TestHavehenceInEqchain
+import TaeljaVerify.Vampire.TestInstantiationsNoGround
+import TaeljaVerify.Vampire.TestNonunitChain
+import TaeljaVerify.Vampire.TestNonunitSingle
+import TaeljaVerify.Vampire.TestPrelemmatizeSymEq
+import TaeljaVerify.Vampire.TestRlSafety
+import TaeljaVerify.Vampire.TestSplitDerivedUnit
+import TaeljaVerify.Vampire.UnitsOnlyRelationalExample
+
+-- E prover test cases
+import TaeljaVerify.E.HornExampleDerivedRw
+import TaeljaVerify.E.HornExampleElimVarRw
+import TaeljaVerify.E.HornExampleEqHeadInlined
+import TaeljaVerify.E.HornExampleEqRwChain
+import TaeljaVerify.E.HornExampleRelationalRw
+import TaeljaVerify.E.KrympaExample5Nonparallel
+import TaeljaVerify.E.KrympaExampleHay
+import TaeljaVerify.E.PureEquationalExample
+import TaeljaVerify.E.ResolutionExampleEqPositiveRewrite
+import TaeljaVerify.E.ResolutionExampleHorn2unit
+import TaeljaVerify.E.ResolutionExampleHornDag
+import TaeljaVerify.E.ResolutionExampleHornGeneral
+import TaeljaVerify.E.ResolutionExampleHornReuseForced
+import TaeljaVerify.E.ResolutionExampleHornReuseInlined
+import TaeljaVerify.E.ResolutionExampleHornReuseN1
+import TaeljaVerify.E.ResolutionExamplePqr
+import TaeljaVerify.E.SuperpositionExampleClausal1
+import TaeljaVerify.E.SuperpositionExampleClausal2
+import TaeljaVerify.E.SuperpositionExampleNongroundLemma

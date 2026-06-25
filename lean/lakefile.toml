@@ -1,0 +1,10 @@
+name = "TaeljaVerify"
+version = "0.1.0"
+defaultTargets = ["taeljaverify"]
+
+[[lean_lib]]
+name = "TaeljaVerify"
+
+[[lean_exe]]
+name = "taeljaverify"
+root = "Main"
