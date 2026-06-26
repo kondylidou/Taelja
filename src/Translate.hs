@@ -276,8 +276,14 @@ getElectrons p = gets (\s ->
   in unnamed ++ named)
 
 -- ENSURE_NAMED: return the name of a unit, promoting it to a lemma if unnamed.
-ensureNamed :: Literal -> AlgM String
-ensureNamed lit = do
+-- ENSURE_NAMED(lit, buildBlk): return the name of `lit` in Units.
+-- Works for any literal (equational or relational).
+-- If unnamed but a proof is stored, promotes it to a lemma.
+-- If unnamed with no stored proof, or not in Units at all, runs `buildBlk`
+-- to construct the proof block, then promotes and (if missing) registers
+-- the unit so future lookups find the assigned name.
+ensureNamed :: Literal -> AlgM ProofBlock -> AlgM String
+ensureNamed lit buildBlk = do
   units <- gets stUnits
   case find (\u -> ueUnit u == lit) units of
     Just ue ->
@@ -286,8 +292,12 @@ ensureNamed lit = do
         Nothing   ->
           case ueProof ue of
             Just blk -> promoteToLemma lit blk
-            Nothing  -> error ("ensureNamed: unnamed unit has no proof: " ++ show lit)
-    Nothing -> error ("ensureNamed: unit not found: " ++ show lit)
+            Nothing  -> buildBlk >>= promoteToLemma lit
+    Nothing -> do
+      blk  <- buildBlk
+      name <- promoteToLemma lit blk
+      addUnit (UnitEntry (Just name) lit Nothing Nothing)
+      return name
 
 promoteToLemma :: Literal -> ProofBlock -> AlgM String
 promoteToLemma lit blk = do
@@ -471,10 +481,10 @@ rwChainToLit s t units
       Nothing -> return (cur, reverse acc)
       Just (ue, eq, dir, cur')
         | isTarget cur' -> do
-            name <- ensureNamed (ueUnit ue)
+            name <- ensureNamed (ueUnit ue) (error "rwChainToLit: eq unit has no proof")
             return (t, reverse ((RwStep name eq dir, cur') : acc))
         | otherwise -> do
-            name <- ensureNamed (ueUnit ue)
+            name <- ensureNamed (ueUnit ue) (error "rwChainToLit: eq unit has no proof")
             go cur' (Set.insert cur' seen) ((RwStep name eq dir, cur') : acc)
     isTarget c = c == t || flipLit c == t
     findStep cur seen = listToMaybe (sortCandidates
@@ -508,7 +518,7 @@ rwChainToTerm s t units
       | otherwise     = case findStep cur seen of
           Nothing -> return (cur, reverse acc)
           Just (ue, eq, dir, cur') -> do
-            name <- ensureNamed (ueUnit ue)
+            name <- ensureNamed (ueUnit ue) (error "rwChainToTerm: eq unit has no proof")
             go cur' (Set.insert cur' seen) ((RwStep name eq dir, cur') : acc) (n + 1)
     findStep cur seen = listToMaybe (sortCandidates
       [ (ue, (l, r), dir, cur')
@@ -544,9 +554,8 @@ makeBlock electronUe σi rwSteps = do
           case ueProof unnamed of
             Just stored
               | isEqChain stored -> do
-                  -- An EqChain proof cannot be inlined inside a HaveHence block
-                  -- (only names can be cited), so we promote it to a lemma first.
-                  name <- ensureNamed lit
+                  -- EqChain cannot be inlined inside a HaveHence block.
+                  name <- ensureNamed lit (error "makeBlock: EqChain unit has no stored proof")
                   return $ HaveHence [Have (applySubst σi lit) name]
               | otherwise ->
                   return $ applySubstBlock σi stored
@@ -638,24 +647,8 @@ buildElectronBlock _σ0 ((k1, σ1, target1):rest) = do
     addAndLine blk (ki, σi, targeti) = do
       units <- gets stUnits
       (_, rwi) <- rwChainToLit (applySubst σi (ueUnit ki)) targeti units
-      nameI <- nameForAnd targeti ki σi rwi
+      nameI <- ensureNamed targeti (makeBlock ki σi rwi)
       return $ appendLine blk (And targeti nameI)
-
-    nameForAnd targeti ki σi rwi = do
-      units <- gets stUnits
-      case find (\u -> ueUnit u == targeti) units of
-        Just ue | isNothing (ueName ue) -> do
-          subBlk <- makeBlock ki σi rwi
-          promoteToLemma targeti subBlk
-        Just ue ->
-          return $ fromMaybe (error "nameForAnd: unit has nil name") (ueName ue)
-        Nothing -> do
-          subBlk <- makeBlock ki σi rwi
-          k <- nextCounter
-          let nm = "lemma " ++ show k
-          modify $ \s -> s { stLemmas = stLemmas s ++ [(nm, targeti, subBlk)] }
-          addUnit (UnitEntry (Just nm) targeti Nothing Nothing)
-          return nm
 
 -- Phase 2: NonUnits is empty — prove each goal conjunct directly from the unit set.
 runPhase2 :: Literal -> AlgM ()
