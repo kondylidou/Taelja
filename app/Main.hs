@@ -11,9 +11,9 @@ import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
 
 import ProofTree (buildProofTree)
-import Translate (translate, phaseOne)
+import Translate (translate, collectLeaves)
 import Emitter (emit)
-import Debug (dumpTSTP, dumpProofTree, dumpPhaseOne)
+import Debug (dumpTSTP, dumpProofTree, dumpCollectLeaves)
 
 main :: IO ()
 main = do
@@ -37,9 +37,9 @@ main = do
             putStrLn "-- Proof tree"
             dumpProofTree tree
             putStrLn ""
-            putStrLn "-- Phase 1"
-            case phaseOne tree units of
+            putStrLn "-- Collect leaves"
+            case collectLeaves tree units of
               Nothing              -> putStrLn "No goal found (missing negated conjecture)"
-              Just (us, nus, goal) -> dumpPhaseOne us nus goal
+              Just (us, nus, goal) -> dumpCollectLeaves us nus goal
             putStrLn ""
           putStr (emit (translate False tstp))

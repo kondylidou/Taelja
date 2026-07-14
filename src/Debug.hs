@@ -1,7 +1,7 @@
 module Debug
   ( dumpTSTP
   , dumpProofTree
-  , dumpPhaseOne
+  , dumpCollectLeaves
   ) where
 
 import Data.List (intercalate)
@@ -132,10 +132,10 @@ treeShift first rest = zipWith (++) (first : repeat rest)
 dumpProofTree :: ProofTree -> IO ()
 dumpProofTree = putStr . ppProofTree
 
--- Phase 1 result
+-- collectLeaves result
 
-dumpPhaseOne :: [UnitEntry] -> [(String, String, T.Declaration)] -> [Literal] -> IO ()
-dumpPhaseOne us nus goal = do
+dumpCollectLeaves :: [UnitEntry] -> [(String, String, T.Declaration)] -> [Literal] -> IO ()
+dumpCollectLeaves us nus goal = do
   putStrLn ("Goal: " ++ intercalate " ∧ " (map ppLiteral goal))
   putStrLn ""
   putStrLn ("Units (electrons) [" ++ show (length us) ++ "]:")

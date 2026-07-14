@@ -1,6 +1,6 @@
-module Translate (translate, phaseOne) where
+module Translate (translate, collectLeaves) where
 
-import Control.Monad (foldM)
+import Control.Monad (foldM, when)
 import Control.Monad.State
 import Data.List (find, sortBy)
 import Data.List.NonEmpty (toList)
@@ -15,7 +15,7 @@ import qualified Data.TPTP as T
 import Types
 import Helpers
 import ProofTree
-  ( ProofTree, buildProofTree, leafList
+  ( ProofTree, buildProofTree, leafList, demodChainsForLeaves
   , isPositiveUnitFormula, headLitOf, unitNameStr
   )
 
@@ -25,15 +25,17 @@ translate _ (T.TSTP _ units) =
   case buildProofTree units of
     Nothing   -> error "translate: no refutation found"
     Just tree ->
-      case phaseOne tree units of
+      case collectLeaves tree units of
         Nothing                          -> error "translate: no goal found"
         Just (initUnits, nonUnits, goal) ->
-          runAlgorithm initUnits nonUnits goal
+          let unitMap     = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- units]
+              demodChains = demodChainsForLeaves (resolveSourceName unitMap) tree
+          in runAlgorithm initUnits nonUnits goal demodChains
 
--- Phase 1: classify leaf clauses into electrons (Units) and nuclei (NonUnits).
+-- Classify leaf clauses into electrons (Units) and nuclei (NonUnits).
 -- Leaves are visited in ≺-increasing (left-first DFS) position order.
-phaseOne :: ProofTree -> [T.Unit] -> Maybe ([UnitEntry], [(String, String, T.Declaration)], [Literal])
-phaseOne tree units =
+collectLeaves :: ProofTree -> [T.Unit] -> Maybe ([UnitEntry], [(String, String, T.Declaration)], [Literal])
+collectLeaves tree units =
   case findGoal units of
     Nothing      -> Nothing
     Just rawGoal ->
@@ -316,8 +318,8 @@ promoteToLemma lit blk = do
 
 -- MATCH: for each body literal find an electron and substitutions (σ0, σi) such
 -- that K_i[σ_i] rewrites to L_i[σ0].  Returns Nothing on failure.
-matchBody :: String -> [Literal] -> [UnitEntry] -> AlgM (Maybe (Subst, [(UnitEntry, Subst, Literal)]))
-matchBody pos bodyLits electrons = go bodyLits [] []
+matchBody :: String -> [Literal] -> [UnitEntry] -> Map.Map String [(String, Dir)] -> AlgM (Maybe (Subst, [(UnitEntry, Subst, Literal)]))
+matchBody pos bodyLits electrons demodChains = go bodyLits [] []
   where
     go [] σ0 acc = return $ Just (σ0, reverse acc)
     go (li:rest) σ0 acc = do
@@ -326,27 +328,35 @@ matchBody pos bodyLits electrons = go bodyLits [] []
         Just (ue, σi, σ0') -> go rest σ0' ((ue, σi, applySubst σ0' li) : acc)
         Nothing            -> return Nothing
 
-    findElec li' σ0 = case direct li' σ0 electrons of
-      Just res -> return (Just res)
-      Nothing  -> do
-        let symbolic = not (null (litVars li'))
-        r1 <- if symbolic then eqChainFallback li' σ0 else eqRwFallback li' σ0
-        case r1 of
-          Just _  -> return r1
-          Nothing -> do
-            r2 <- if symbolic then eqRwFallback li' σ0 else eqChainFallback li' σ0
-            case r2 of
-              Just _  -> return r2
-              Nothing -> relFallback li' σ0
+    findElec li' σ0 = do
+      units <- gets stUnits
+      let symbolic = not (null (litVars li'))
+          chain ue = maybe [] (\p -> fromMaybe [] (Map.lookup p demodChains)) (uePos ue)
+          tryMatchAgainst ue k =
+            case tryMatch li' k σ0 of
+              Just (σi, σ0') -> Just (ue, σi, σ0')
+              Nothing        -> Nothing
+          kstar ue = fst (rwChainFromDemod (ueUnit ue) (chain ue) units)
+          tryGreedy ue =
+            let kgreedy = fst (rwChainToLitPure (ueUnit ue) li' units)
+            in tryMatchAgainst ue kgreedy
+          greedyResult = listToMaybe [res | ue <- electrons, Just res <- [tryGreedy ue]]
+          matchResult  = listToMaybe $
+                           [res | ue <- electrons, Just res <- [tryMatchAgainst ue (ueUnit ue)]] ++
+                           [res | ue <- electrons, Just res <- [tryMatchAgainst ue (kstar ue)]]
+      case matchResult of
+        Just res -> return (Just res)
+        Nothing | symbolic -> do
+          -- For non-ground body literals: synthesise EqChain lemma first (heuristic).
+          r <- eqChainHeuristic li' σ0
+          case r of
+            Just _  -> return r
+            Nothing -> return greedyResult
+        Nothing -> case greedyResult of
+          Just _  -> return greedyResult
+          Nothing -> eqChainHeuristic li' σ0
 
-    direct _   _   []       = Nothing
-    direct li' σ0 (ue:ues) =
-      case tryMatch li' (ueUnit ue) σ0 of
-        Just (σi, σ0') -> Just (ue, σi, σ0')
-        Nothing        -> direct li' σ0 ues
-
-    -- Build an EqChain unit from the rewrite path to the body literal.
-    eqChainFallback (Eq l r) σ0 = do
+    eqChainHeuristic (Eq l r) σ0 = do
       units <- gets stUnits
       (cur, steps) <- rwChainToTerm l r units
       if cur /= r || null steps
@@ -356,47 +366,7 @@ matchBody pos bodyLits electrons = go bodyLits [] []
               ue    = UnitEntry Nothing (Eq l r) (Just proof) (Just pos)
           addUnit ue
           return $ Just (ue, [], σ0)
-    eqChainFallback _ _ = return Nothing
-
-    -- Find an equational electron that can be rewritten to reach the body literal.
-    -- Uses a pure (side-effect-free) exploration to rank candidates by chain length.
-    eqRwFallback li'@(Eq _ _) σ0 = do
-      allUnits <- gets stUnits
-      let targets  = [li', flipLit li']
-          eqUnits  = filter (isEqLit . ueUnit) allUnits
-          ordered  = filter (isNothing . ueName) eqUnits
-                  ++ filter (not . isNothing . ueName) eqUnits
-          hits     = [ (ue, n)
-                     | ue <- ordered
-                     , let (cur, n) = rwChainToLitPure (ueUnit ue) li' allUnits
-                     , cur `elem` targets ]
-      case sortBy (comparing snd) hits of
-        []           -> return Nothing
-        (ue, _) : _ -> return $ Just (ue, [], σ0)
-      where
-        isEqLit (Eq _ _) = True
-        isEqLit _        = False
-    eqRwFallback _ _ = return Nothing
-
-    -- For relational body literals: find an electron with the same predicate
-    -- that can be rewritten (or matched after rewriting) to the target.
-    relFallback li'@(Rel _ _) σ0 = do
-      units <- gets stUnits
-      tryElecs units units
-      where
-        tryElecs [] _ = return Nothing
-        tryElecs (ue:rest) allUnits
-          | samePred (ueUnit ue) li' = do
-              (cur, _) <- rwChainToLit (ueUnit ue) li' allUnits
-              if cur == li'
-                then return $ Just (ue, [], σ0)
-                else case matchLit cur li' of
-                  Just σi -> return $ Just (ue, σi, σ0)
-                  Nothing -> tryElecs rest allUnits
-          | otherwise = tryElecs rest allUnits
-        samePred (Rel n1 _) (Rel n2 _) = n1 == n2
-        samePred _ _ = False
-    relFallback _ _ = return Nothing
+    eqChainHeuristic _ _ = return Nothing
 
 -- One-way matching: body literal li against electron ki.
 -- 1. Try li as pattern against ki → extends σ0 with nucleus-var bindings.
@@ -437,7 +407,9 @@ tryMatch li ki σ0 =
     flipEq (Eq l r) = Eq r l
     flipEq x        = x
 
--- RW_CHAIN_TO (literal, pure): greedy chain length used to rank electron candidates.
+
+-- RW_CHAIN_TO (literal, pure): greedy; returns endpoint reached (= t when successful).
+-- Used to rank or find electron candidates without triggering monadic side effects.
 rwChainToLitPure :: Literal -> Literal -> [UnitEntry] -> (Literal, Int)
 rwChainToLitPure s t units
   | s == t         = (s, 0)
@@ -538,6 +510,66 @@ rwChainToTerm s t units
       [ (LR, c) | c <- rewriteTermAll cur (l, r) LR ] ++
       [ (RL, c) | c <- rewriteTermAll cur (l, r) RL ]
 
+-- RW_CHAIN_TO (proof-tree guided): replay the demodulation chain for an electron.
+-- demodChain is outermost-first; steps are replayed in forward order (innermost first)
+-- using the SAME direction as the original demodulation.
+-- Steps whose equation is not in Units (derived equations) are silently skipped.
+-- Steps that don't match cur (they rewrote a different literal) are also skipped.
+rwChainFromDemod
+  :: Literal              -- Ki·σi (electron after substitution)
+  -> [(String, Dir)]      -- demodulation chain for the electron, outermost first
+  -> [UnitEntry]          -- to look up equation literals by resolved name
+  -> (Literal, [(RwStep, Literal)])
+rwChainFromDemod s demodChain units = go s [] (reverse demodChain)
+  where
+    go cur acc [] = (cur, reverse acc)
+    go cur acc ((name, dir) : rest) =
+      case findEq name of
+        Nothing     -> go cur acc rest  -- derived equation not in initUnits, skip
+        Just (l, r) ->
+          case rewriteLit cur (l, r) dir of
+            Nothing   -> go cur acc rest  -- step rewrote a different literal, skip
+            Just cur' -> go cur' ((RwStep name (l, r) dir, cur') : acc) rest
+
+    findEq name = listToMaybe
+      [ (l, r) | ue <- units, ueName ue == Just name, Eq l r <- [ueUnit ue] ]
+
+-- D&S SplitChain: reconstruct an equational proof of l=r from the demodulation
+-- chain at p_{G₁}.  The chain records how l≠r was reduced to t≠t; replaying it
+-- in forward proof order (innermost first) and splitting each step by which side
+-- of l≠r it rewrites gives leftSteps (l→…→t) and rightSteps (r→…→t).
+-- Reversing and flipping rightSteps yields t→…→r, completing l=…=t=…=r.
+-- Steps whose equation is not in Units are silently skipped.
+eqChain :: Term -> Term -> [(String, Dir)] -> [UnitEntry] -> [(RwStep, Term)]
+eqChain l r chain units =
+    if curL == curR then reverse leftSteps ++ reverseRight (reverse rightSteps) else []
+  where
+    (leftSteps, rightSteps, curL, curR) = foldl step ([], [], l, r) (reverse chain)
+
+    step (ls, rs, accL, accR) (name, dir) =
+      case findEq name of
+        Nothing     -> (ls, rs, accL, accR)  -- derived equation not in initUnits, skip
+        Just (a, b) ->
+          case rewriteTerm accL (a, b) dir of
+            Just accL' -> ((RwStep name (a, b) dir, accL') : ls, rs, accL', accR)
+            Nothing    ->
+              case rewriteTerm accR (a, b) dir of
+                Just accR' -> (ls, (RwStep name (a, b) dir, accR') : rs, accL, accR')
+                Nothing    -> (ls, rs, accL, accR)
+
+    findEq name = listToMaybe
+      [ (a, b) | ue <- units, ueName ue == Just name, Eq a b <- [ueUnit ue] ]
+
+    reverseRight [] = []
+    reverseRight rs =
+      let prevTerms = r : map snd (init rs)
+          flipped   = [ (RwStep nm eq (flipDir d), prev)
+                      | ((RwStep nm eq d, _), prev) <- zip rs prevTerms ]
+      in reverse flipped
+
+    flipDir LR = RL
+    flipDir RL = LR
+
 -- MAKE_BLOCK: build the proof block for an electron K with substitution σ and
 -- a list of rewrite steps leading from K[σ] to the target body literal.
 makeBlock :: UnitEntry -> Subst -> [(RwStep, Literal)] -> AlgM ProofBlock
@@ -580,10 +612,11 @@ processNonUnit
   -> Maybe String  -- axiom name (Nothing for negated conjecture)
   -> Clause
   -> Literal       -- goal literal
+  -> Map.Map String [(String, Dir)]  -- demodulation chains (keyed by leaf position)
   -> AlgM Bool     -- True when a goal was emitted
-processNonUnit pos mAxiomName (Clause bodyLits mHead) goalLit = do
+processNonUnit pos mAxiomName (Clause bodyLits mHead) goalLit demodChains = do
   elecs <- getElectrons pos
-  mMatch <- matchBody pos bodyLits elecs
+  mMatch <- matchBody pos bodyLits elecs demodChains
   case mMatch of
     Nothing -> return False
     Just (σ0, matched) ->
@@ -598,10 +631,10 @@ processNonUnit pos mAxiomName (Clause bodyLits mHead) goalLit = do
               , Just chain@(EqChain {}) <- ueProof elecUe ->
                   emitGoalProof goalLit (applySubstBlock σi chain) >> return True
             _ -> do
-              blk <- buildElectronBlock σ0 matched
+              blk <- buildElectronBlock σ0 matched demodChains
               emitGoalProof goalLit blk >> return True
         Just l0 -> do
-          blk <- buildElectronBlock σ0 matched
+          blk <- buildElectronBlock σ0 matched demodChains
           let l0σ0   = applySubst σ0 l0
               axName = fromMaybe (error "processNonUnit: no axiom name") mAxiomName
               blk1   = appendLine blk (Hence l0σ0 (ByAxiom axName))
@@ -634,21 +667,35 @@ emitGoalProof :: Literal -> ProofBlock -> AlgM ()
 emitGoalProof lit blk = modify $ \s -> s { stGoals = stGoals s ++ [(lit, blk)] }
 
 -- Build the combined proof block from all matched electrons.
--- The first electron becomes the "have" base; subsequent ones become "and" lines
--- (with forced lemmatization if the target is unnamed).
-buildElectronBlock :: Subst -> [(UnitEntry, Subst, Literal)] -> AlgM ProofBlock
-buildElectronBlock _ [] = error "buildElectronBlock: empty electron list"
-buildElectronBlock _σ0 ((k1, σ1, target1):rest) = do
+-- For each electron, first try proof-tree-guided demod replay (rwChainFromDemod);
+-- if that yields no steps and the electron differs from the target, fall back to
+-- greedy rewriting (rwChainToLit).
+buildElectronBlock :: Subst -> [(UnitEntry, Subst, Literal)] -> Map.Map String [(String, Dir)] -> AlgM ProofBlock
+buildElectronBlock _ [] _ = error "buildElectronBlock: empty electron list"
+buildElectronBlock _σ0 ((k1, σ1, target1):rest) demodChains = do
   units <- gets stUnits
-  (_, rw1) <- rwChainToLit (applySubst σ1 (ueUnit k1)) target1 units
+  rw1 <- electronRwSteps k1 σ1 target1 units
   blk0 <- makeBlock k1 σ1 rw1
   foldM addAndLine blk0 rest
   where
     addAndLine blk (ki, σi, targeti) = do
       units <- gets stUnits
-      (_, rwi) <- rwChainToLit (applySubst σi (ueUnit ki)) targeti units
+      rwi <- electronRwSteps ki σi targeti units
       nameI <- ensureNamed targeti (makeBlock ki σi rwi)
       return $ appendLine blk (And targeti nameI)
+
+    electronRwSteps ki σi targeti units =
+      let chain = maybe [] (\p -> fromMaybe [] (Map.lookup p demodChains)) (uePos ki)
+          (_, demodSteps) = rwChainFromDemod (applySubst σi (ueUnit ki)) chain units
+          stepsApplied = demodSteps
+          kiσi = applySubst σi (ueUnit ki)
+      in if kiσi == targeti || flipLit kiσi == targeti
+         -- K already matches the target (direct match found via tryDirect).
+         -- The demod chain may point elsewhere; suppress it.
+         then return []
+         else if null stepsApplied
+              then fmap snd (rwChainToLit kiσi targeti units)
+              else return stepsApplied
 
 -- Phase 2: NonUnits is empty — prove each goal conjunct directly from the unit set.
 runPhase2 :: Literal -> AlgM ()
@@ -675,6 +722,16 @@ findUnitForGoal goal units = listToMaybe
   , Just σ <- [matchLit (ueUnit ue) goal]
   ]
 
+-- Try to prove an equational goal via proof-tree-guided demod chain at p_{G₁}.
+-- Returns True if successful; caller falls back to tryEqChainGoal on False.
+tryEqChainFromDemod :: Term -> Term -> Literal -> [(String, Dir)] -> [UnitEntry] -> AlgM Bool
+tryEqChainFromDemod _ _ goalLit chain units = do
+  let (lhs, rhs) = case goalLit of { Eq gl gr -> (gl, gr); _ -> error "tryEqChainFromDemod: non-eq goal" }
+      steps = eqChain lhs rhs chain units
+  if null steps
+    then return False
+    else emitGoalProof goalLit (EqChain lhs steps) >> return True
+
 -- Try to prove an equational goal directly via a named-equation-only rewrite chain.
 -- Used as a Phase-2-style shortcut inside Phase 3 when the negated conjecture has
 -- a single equational body literal and no electrons are needed.
@@ -696,11 +753,20 @@ runPhase3
   :: [(String, String, T.Declaration)]
   -> Map.Map String String
   -> [Literal]
+  -> Map.Map String [(String, Dir)]  -- resolved demodulation chains
   -> AlgM ()
-runPhase3 nonUnits posToName goalLits = go nonUnits
+runPhase3 nonUnits posToName goalLits demodChains = go nonUnits
   where
     nGoals  = length goalLits
     goalLit = head goalLits
+
+    -- pG1Chain: demod chain at p_{G₁} — the negated conjecture position.
+    -- Identified as the non-unit whose position has no assigned axiom name
+    -- (only negated-conjecture clauses, with empty head, lack axiom names).
+    pG1Chain = listToMaybe
+      [ fromMaybe [] (Map.lookup pos demodChains)
+      | (pos, _, _) <- nonUnits
+      , isNothing (Map.lookup pos posToName) ]
 
     go [] = return ()
     go ((pos, _, decl):rest) = do
@@ -713,14 +779,23 @@ runPhase3 nonUnits posToName goalLits = go nonUnits
           let mAxiomName = Map.lookup pos posToName
           eqDone <- case cls of
             Clause [Eq s t] Nothing | isNothing mAxiomName ->
-              tryEqChainGoal s t goalLit
+              tryEqGoal s t goalLit
             Clause _ Nothing | isNothing mAxiomName, nGoals > 1 ->
               tryAllEqChain goalLits
             _ -> return False
           if eqDone then return ()
           else do
-            finished <- processNonUnit pos mAxiomName cls goalLit
+            finished <- processNonUnit pos mAxiomName cls goalLit demodChains
             if finished then return () else go rest
+
+    -- Try proof-tree-guided eqChain first; fall back to greedy rwChainToTerm.
+    tryEqGoal s t gl = do
+      units <- gets stUnits
+      case pG1Chain of
+        Just chain | not (null chain) -> do
+          done <- tryEqChainFromDemod s t gl chain units
+          if done then return True else tryEqChainGoal s t gl
+        _ -> tryEqChainGoal s t gl
 
 -- For conjunctive conjectures: prove each goal conjunct independently via EqChain.
 tryAllEqChain :: [Literal] -> AlgM Bool
@@ -740,22 +815,73 @@ tryAllEqChain goalLits = do
     isEqLit (Eq _ _) = True
     isEqLit _        = False
 
+-- Post-loop: prove remaining goals from the unit set (for goals not handled by Phase 3).
+runPostLoop :: Maybe [(String, Dir)] -> Literal -> AlgM ()
+runPostLoop mChain goal = do
+  units <- gets stUnits
+  case findUnitForGoal goal units of
+    Just (ue, σ) -> do
+      units' <- gets stUnits
+      (_, rw) <- rwChainToLit (applySubst σ (ueUnit ue)) goal units'
+      blk <- makeBlock ue σ rw
+      emitGoalProof goal blk
+    Nothing ->
+      case goal of
+        Eq s t -> do
+          units' <- gets stUnits
+          case mChain of
+            Just chain | not (null chain) -> do
+              let steps = eqChain s t chain units'
+              if not (null steps)
+                then emitGoalProof goal (EqChain s steps)
+                else do
+                  (_, steps2) <- rwChainToTerm s t units'
+                  emitGoalProof goal (EqChain s steps2)
+            _ -> do
+              (_, steps) <- rwChainToTerm s t units'
+              emitGoalProof goal (EqChain s steps)
+        _ -> error ("runPostLoop: no unit matches relational goal: " ++ show goal)
+
 runAlgorithm
   :: [UnitEntry]
   -> [(String, String, T.Declaration)]
   -> [Literal]
+  -> Map.Map String [(String, Dir)]  -- demodulation chains from proof tree
   -> StructuredProof
-runAlgorithm initUnits nonUnits goalLits =
+runAlgorithm initUnits nonUnits goalLits demodChains =
   let (axiomList, posToName, namedUnits) = assignAxiomNames initUnits nonUnits
+      -- Map resolved TSTP source names → assigned "axiom N" names so demod
+      -- chain entries (which carry TSTP names) can be looked up in stUnits.
+      srcToAxiom = Map.fromList
+        [ (resName, axName)
+        | ue <- initUnits
+        , Just pos <- [uePos ue]
+        , let resName = fromMaybe ("@" ++ pos) (ueName ue)
+        , Just axName <- [Map.lookup pos posToName] ]
+      resolvedChains = Map.map (map (\(n, d) -> (fromMaybe n (Map.lookup n srcToAxiom), d))) demodChains
       initSt = AlgState
         { stUnits   = namedUnits
         , stLemmas  = []
         , stGoals   = []
         , stCounter = length axiomList + 1
         }
+      pG1Chain = listToMaybe
+        [ fromMaybe [] (Map.lookup pos resolvedChains)
+        | (pos, _, _) <- nonUnits
+        , isNothing (Map.lookup pos posToName) ]
       action
-        | null nonUnits = mapM_ runPhase2 goalLits
-        | otherwise     = runPhase3 nonUnits posToName goalLits
+        | null nonUnits = do
+            mapM_ (runPostLoop pG1Chain) goalLits
+            nDone <- gets (length . stGoals)
+            when (nDone < length goalLits) $
+              mapM_ runPhase2 (drop nDone goalLits)
+        | otherwise     = do
+            runPhase3 nonUnits posToName goalLits resolvedChains
+            nDone <- gets (length . stGoals)
+            when (nDone < length goalLits) $ do
+              proven <- gets (map fst . stGoals)
+              let unproven = filter (`notElem` proven) goalLits
+              mapM_ (runPostLoop pG1Chain) unproven
       finalSt = execState action initSt
   in if null (stGoals finalSt)
      then error "translate: algorithm terminated without producing a goal proof"

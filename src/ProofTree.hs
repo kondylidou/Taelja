@@ -1,4 +1,4 @@
--- Phase 0: build the refutation proof tree from a flat TSTP unit list.
+-- Build the refutation proof tree from a flat TSTP unit list.
 -- Nodes are assigned bit-string positions: root ⊥ is ε, and each inference
 -- step extends the parent's position:
 --   unary premise              → parent ++ "1"
@@ -12,6 +12,7 @@ module ProofTree
   , buildProofTree
   , leafPositions
   , leafList
+  , demodChainsForLeaves
   , isFalsum
   , isPositiveUnitFormula
   , headLitOf
@@ -24,6 +25,7 @@ import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Data.List.NonEmpty (toList)
 import Data.Maybe (fromMaybe)
+import Types (Dir(..))
 
 -- The refutation proof tree with ⊥ at the root.
 --
@@ -242,6 +244,10 @@ leafList = go ""
 -- Resolution with one positive unit: the positive unit is the provider.
 -- Resolution with two non-units: the parent whose head is absent from the result
 --   provided the positive literal that got resolved away.
+demodRuleNames :: Set.Set Text.Text
+demodRuleNames = Set.fromList $ map Text.pack
+  [ "forward_demodulation", "backward_demodulation", "rw", "definition_unfolding" ]
+
 superpositionRules :: Set.Set Text.Text
 superpositionRules = Set.fromList (map Text.pack
   [ "superposition", "paramodulation", "spm"
@@ -267,3 +273,56 @@ firstParentIsLeft _ result d1 d2 = case (headLitOf d1, headLitOf d2) of
   (Just h1, _)       -> not (headInDecl h1 result)  -- d1's head absent → d1 is the provider
   (Nothing, Just h2) -> headInDecl h2 result         -- d2's head survives → d2 is the consumer → d1 is left
   (Nothing, Nothing) -> error "firstParentIsLeft: both parents have no positive head literal (non-Horn clause in proof?)"
+
+-- For each leaf position p, the chain of demodulation steps applied to the
+-- clause at p before it was consumed by the binary inference above it.
+-- Outermost step (applied last to the clause in proof order) is listed first.
+-- Each entry: (resolved_eq_name, direction_applied_to_the_clause).
+-- LR = forward_demodulation (equation used left-to-right to simplify),
+-- RL = backward_demodulation.
+demodChainsForLeaves
+  :: (String -> String)             -- raw unit name → resolved axiom name
+  -> ProofTree
+  -> Map.Map String [(String, Dir)]
+demodChainsForLeaves resolveName = go ""
+  where
+    go pos (PTLeaf _ _) = Map.singleton pos []
+    go pos (PTNode _ _ rule [l, r])
+      | isDemodRule rule && isDemodApplicationTo rule r =
+          -- l = equation provider (LEFT/pos0), r = positive unit predicate (RIGHT/pos1).
+          -- The equation in l was applied to the clause in r.
+          let eqName = resolveName (treeName l)
+              dir    = if rule == Text.pack "forward_demodulation"
+                            || rule == Text.pack "rw"
+                            || rule == Text.pack "definition_unfolding" then LR else RL
+              step   = (eqName, dir)
+              lMap   = go (pos ++ "0") l
+              rMap   = go (pos ++ "1") r
+          in Map.union lMap (Map.map (step :) rMap)
+      | otherwise =
+          Map.union (go (pos ++ "0") l) (go (pos ++ "1") r)
+    go pos (PTNode _ _ _ [k])  = go (pos ++ "1") k
+    go pos (PTNode _ _ _ kids) = Map.unions
+      [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
+
+    -- definition_unfolding has three distinct uses in Vampire:
+    --   (a) rewrite a positive unit PREDICATE using an equation → track as demod step
+    --   (b) chain two equations via transitivity (f=g, g=h → f=h) → let EqChain handle it
+    --   (c) rewrite a non-unit clause (nucleus) using an equation → don't track;
+    --       the demod chain would bleed into units synthesised at that position (e.g. EqChain
+    --       lemmas) and produce spurious rw steps.
+    -- For (b) and (c), fall through to | otherwise.
+    isDemodApplicationTo rule r
+      | rule == Text.pack "definition_unfolding" =
+          case headLitOf (ptDecl r) of
+            Just (T.Equality {}) -> False  -- (b) transitivity
+            Just _               -> True   -- (a) predicate unit
+            Nothing              -> False  -- (c) non-unit nucleus
+      | otherwise = True
+    ptDecl (PTLeaf _ d)     = d
+    ptDecl (PTNode _ d _ _) = d
+
+    isDemodRule r = Set.member r demodRuleNames
+
+    treeName (PTLeaf n _)     = n
+    treeName (PTNode n _ _ _) = n
