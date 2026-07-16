@@ -781,10 +781,10 @@ runPhase2 :: Literal -> AlgM ()
 runPhase2 goal = do
   units <- gets stUnits
   case findUnitForGoal goal units of
-    Just (ue, σ) -> do
+    Just (ue, ρ0) -> do
       units' <- gets stUnits
-      (_, rw) <- rwChainToLit (applySubst σ (ueUnit ue)) goal units'
-      blk <- makeBlock ue σ rw
+      (_, rw) <- rwChainToLit (applySubst ρ0 (ueUnit ue)) goal units'
+      blk <- makeBlock ue ρ0 rw
       emitGoalProof goal blk
     Nothing ->
       case goal of
@@ -796,9 +796,9 @@ runPhase2 goal = do
 
 findUnitForGoal :: Literal -> [UnitEntry] -> Maybe (UnitEntry, Subst)
 findUnitForGoal goal units = listToMaybe
-  [ (ue, σ)
+  [ (ue, ρ0)
   | ue <- units
-  , Just σ <- [matchLit (ueUnit ue) goal]
+  , Just ρ0 <- [matchLit (ueUnit ue) goal]
   ]
 
 -- Try to prove an equational goal via proof-tree-guided demod chain at p_{G₁}.
@@ -899,10 +899,10 @@ runPostLoop :: Maybe [(String, Dir)] -> Literal -> AlgM ()
 runPostLoop mChain goal = do
   units <- gets stUnits
   case findUnitForGoal goal units of
-    Just (ue, σ) -> do
+    Just (ue, ρ0) -> do
       units' <- gets stUnits
-      (_, rw) <- rwChainToLit (applySubst σ (ueUnit ue)) goal units'
-      blk <- makeBlock ue σ rw
+      (_, rw) <- rwChainToLit (applySubst ρ0 (ueUnit ue)) goal units'
+      blk <- makeBlock ue ρ0 rw
       emitGoalProof goal blk
     Nothing ->
       case goal of
