@@ -97,6 +97,6 @@ run path = do
   case eitherResult (feed (parseTSTP contents) mempty) of
     Left err   -> fail ("Parse error in " ++ path ++ ": " ++ err)
     Right tstp -> do
-      result <- catch (evaluate (force (emit (translate False tstp))))
+      result <- catch (translate False tstp >>= \sp -> evaluate (force (emit sp)))
                       (\e -> return (show (e :: SomeException)))
       return (LBS.pack result)

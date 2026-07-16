@@ -42,4 +42,5 @@ main = do
               Nothing              -> putStrLn "No goal found (missing negated conjecture)"
               Just (us, nus, goal) -> dumpCollectLeaves us nus goal
             putStrLn ""
-          putStr (emit (translate False tstp))
+          sp <- translate False tstp
+          putStr (emit sp)

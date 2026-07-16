@@ -2,15 +2,18 @@ module Translate (translate, collectLeaves) where
 
 import Control.Monad (foldM, when)
 import Control.Monad.State
-import Data.List (find, sortBy)
+import Data.Char (toUpper)
+import Data.List (find, intercalate, isInfixOf, nub, sortBy)
 import Data.List.NonEmpty (toList)
-import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe)
+import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
 import Control.Applicative ((<|>))
 import Data.Ord (comparing)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
+import System.Exit (ExitCode(..))
+import System.Process (readProcessWithExitCode)
 
 import Types
 import Helpers
@@ -20,7 +23,7 @@ import ProofTree
   )
 
 -- Top-level entry: build the proof tree, run the algorithm, return the structured proof.
-translate :: Bool -> T.TSTP -> StructuredProof
+translate :: Bool -> T.TSTP -> IO StructuredProof
 translate _ (T.TSTP _ units) =
   case buildProofTree units of
     Nothing   -> error "translate: no refutation found"
@@ -255,7 +258,7 @@ assignAxiomNames initUnits nonUnits =
             _ ->
               (axAcc, posMap, origSeen)
 
-type AlgM a = State AlgState a
+type AlgM a = StateT AlgState IO a
 
 addUnit :: UnitEntry -> AlgM ()
 addUnit ue = modify $ \s -> s { stUnits = stUnits s ++ [ue] }
@@ -316,6 +319,99 @@ promoteToLemma lit blk = do
           u { ueName = Just name, ueProof = Nothing }
       | otherwise = u
 
+tweeBin :: FilePath
+tweeBin = "bin/twee_mac"
+
+-- Format a Term as a TPTP term string (variables uppercase, functions lowercase).
+toTptpTerm :: Term -> String
+toTptpTerm (Var [])   = []
+toTptpTerm (Var (c:cs)) = toUpper c : cs
+toTptpTerm (Const f)  = f
+toTptpTerm (App f ts) = f ++ "(" ++ intercalate "," (map toTptpTerm ts) ++ ")"
+
+-- Wrap a universally quantified TPTP fof formula around an equational body.
+toTptpFof :: String -> String -> Term -> Term -> String
+toTptpFof name role l r =
+  let vs   = nub (termVars l ++ termVars r)
+      body = toTptpTerm l ++ " = " ++ toTptpTerm r
+      capVar []     = []
+      capVar (c:cs) = toUpper c : cs
+      qbody = if null vs then body
+              else "![" ++ intercalate "," (map capVar vs) ++ "]: " ++ body
+  in "fof(" ++ name ++ ", " ++ role ++ ", " ++ qbody ++ ")."
+
+-- "axiom 1" → "axiom_1", "lemma 3" → "lemma_3"
+sanitizeId :: String -> String
+sanitizeId = map (\c -> if c == ' ' then '_' else c)
+
+-- Parse "= { by axiom N (name) }" lines and return the name tokens in order.
+parseTweeStepNames :: String -> [String]
+parseTweeStepNames output =
+  let ls         = lines output
+      inBlock    = dropWhile (not . ("% SZS output start Proof" `isInfixOf`)) ls
+      proofLines = takeWhile (not . ("% SZS output end Proof"   `isInfixOf`)) (drop 1 inBlock)
+      stepLines  = filter ("{ by axiom" `isInfixOf`) proofLines
+  in mapMaybe extractName stepLines
+  where
+    extractName line =
+      case dropWhile (/= '(') line of
+        []      -> Nothing
+        (_:rest) -> let nm = takeWhile (/= ')') rest
+                    in if null nm then Nothing else Just nm
+
+-- Replay a list of sanitized-TPTP step names from term l.
+-- Returns (UnitEntry, Dir, resultTerm) — the caller handles naming.
+replayTweeChain :: Map.Map String UnitEntry -> [String] -> Term -> [(UnitEntry, Dir, Term)]
+replayTweeChain idToUe stepNames startTerm = go startTerm stepNames []
+  where
+    go _ [] acc = reverse acc
+    go cur (tptpId:rest) acc =
+      case Map.lookup tptpId idToUe of
+        Nothing -> go cur rest acc
+        Just ue ->
+          case ueUnit ue of
+            Eq a b ->
+              case listToMaybe (rewriteTermAll cur (a, b) LR) of
+                Just cur' -> go cur' rest ((ue, LR, cur') : acc)
+                Nothing   ->
+                  case listToMaybe (rewriteTermAll cur (a, b) RL) of
+                    Just cur' -> go cur' rest ((ue, RL, cur') : acc)
+                    Nothing   -> go cur rest acc
+            _ -> go cur rest acc
+
+-- Call Twee to prove Eq l r using all equational units (named and unnamed).
+-- Returns (startTerm, chain) — startTerm may be l or r depending on how Twee
+-- oriented the proof; caller uses startTerm as the EqChain start.
+callTwee :: [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
+callTwee units (Eq l r) = do
+  let eqUnits   = [(i, ue) | (i, ue) <- zip [(0::Int)..] units, isEqLit (ueUnit ue)]
+      mkId i ue = fromMaybe ("anon_" ++ show i) (sanitizeId <$> ueName ue)
+      idToUe    = Map.fromList [(mkId i ue, ue) | (i, ue) <- eqUnits]
+      axioms    = [ toTptpFof (mkId i ue) "axiom" a b
+                  | (i, ue) <- eqUnits, Eq a b <- [ueUnit ue] ]
+      conj      = toTptpFof "goal" "conjecture" l r
+      input     = unlines (axioms ++ [conj])
+      tmpFile   = "/tmp/taelja_twee_input.p"
+  writeFile tmpFile input
+  (ec, out, _) <- readProcessWithExitCode tweeBin
+                    ["--tstp", "--no-colour", "--max-time", "10", tmpFile] ""
+  case ec of
+    ExitSuccess -> do
+      let stepNames = parseTweeStepNames out
+          chainL    = replayTweeChain idToUe stepNames l
+          chainR    = replayTweeChain idToUe stepNames r
+          chainEnd  = fmap (\(_, _, t) -> t) . listToMaybe . reverse
+          result
+            | not (null chainL) && chainEnd chainL == Just r = Just (l, chainL)
+            | not (null chainR) && chainEnd chainR == Just l = Just (r, chainR)
+            | otherwise                                       = Nothing
+      return result
+    _ -> return Nothing
+  where
+    isEqLit (Eq _ _) = True
+    isEqLit _        = False
+callTwee _ _ = return Nothing
+
 -- MATCH: for each body literal find an electron and substitutions (σ0, σi) such
 -- that K_i[σ_i] rewrites to L_i[σ0].  Returns Nothing on failure.
 matchBody :: String -> [Literal] -> [UnitEntry] -> Map.Map String [(String, Dir)] -> AlgM (Maybe (Subst, [(UnitEntry, Subst, Literal)]))
@@ -330,42 +426,57 @@ matchBody pos bodyLits electrons demodChains = go bodyLits [] []
 
     findElec li' σ0 = do
       units <- gets stUnits
-      let symbolic = not (null (litVars li'))
-          chain ue = maybe [] (\p -> fromMaybe [] (Map.lookup p demodChains)) (uePos ue)
+      let chain ue = maybe [] (\p -> fromMaybe [] (Map.lookup p demodChains)) (uePos ue)
           tryMatchAgainst ue k =
             case tryMatch li' k σ0 of
               Just (σi, σ0') -> Just (ue, σi, σ0')
               Nothing        -> Nothing
           kstar ue = fst (rwChainFromDemod (ueUnit ue) (chain ue) units)
-          tryGreedy ue =
-            let kgreedy = fst (rwChainToLitPure (ueUnit ue) li' units)
-            in tryMatchAgainst ue kgreedy
-          greedyResult = listToMaybe [res | ue <- electrons, Just res <- [tryGreedy ue]]
-          matchResult  = listToMaybe $
-                           [res | ue <- electrons, Just res <- [tryMatchAgainst ue (ueUnit ue)]] ++
-                           [res | ue <- electrons, Just res <- [tryMatchAgainst ue (kstar ue)]]
+          matchResult = listToMaybe $
+                          [res | ue <- electrons, Just res <- [tryMatchAgainst ue (ueUnit ue)]] ++
+                          [res | ue <- electrons, Just res <- [tryMatchAgainst ue (kstar ue)]]
       case matchResult of
         Just res -> return (Just res)
-        Nothing | symbolic -> do
-          -- For non-ground body literals: synthesise EqChain lemma first (heuristic).
-          r <- eqChainHeuristic li' σ0
-          case r of
-            Just _  -> return r
-            Nothing -> return greedyResult
-        Nothing -> case greedyResult of
-          Just _  -> return greedyResult
-          Nothing -> eqChainHeuristic li' σ0
+        Nothing  -> do
+          -- Phase 2b: single-step rewrite of li' to close the gap to an electron.
+          -- For Rel literals, try all electrons (eqChainHeuristic won't apply).
+          -- For Eq literals, restrict to unnamed electrons so that cases needing
+          -- a multi-step chain (handled by eqChainHeuristic via Twee) are not
+          -- short-circuited by a single-step match against a named unit.
+          let candidateElecs = case li' of
+                Rel _ _ -> electrons
+                _       -> filter (isNothing . ueName) electrons
+              phase2b = listToMaybe
+                [ (ue, σi, σ0')
+                | eqUe <- units
+                , Eq ea eb <- [ueUnit eqUe]
+                , dir     <- [LR, RL]
+                , Just li'' <- [rewriteLit li' (ea, eb) dir]
+                , ue <- candidateElecs
+                , Just (σi, σ0') <- [tryMatch li'' (ueUnit ue) σ0]
+                ]
+          case phase2b of
+            Just res -> return (Just res)
+            Nothing  -> eqChainHeuristic li' σ0
 
     eqChainHeuristic (Eq l r) σ0 = do
-      units <- gets stUnits
-      (cur, steps) <- rwChainToTerm l r units
-      if cur /= r || null steps
-        then return Nothing
-        else do
-          let proof = EqChain l steps
+      units  <- gets stUnits
+      mChain <- liftIO (callTwee units (Eq l r))
+      case mChain of
+        Nothing           -> return Nothing
+        Just (_, [])      -> return Nothing
+        Just (start, chain) -> do
+          steps <- mapM promoteStep chain
+          let proof = EqChain start steps
               ue    = UnitEntry Nothing (Eq l r) (Just proof) (Just pos)
           addUnit ue
           return $ Just (ue, [], σ0)
+      where
+        promoteStep (stepUe, dir, cur) = do
+          nm <- ensureNamed (ueUnit stepUe) (makeBlock stepUe [] [])
+          case ueUnit stepUe of
+            Eq a b -> return (RwStep nm (a, b) dir, cur)
+            _      -> error "eqChainHeuristic: non-eq unit in Twee chain"
     eqChainHeuristic _ _ = return Nothing
 
 -- One-way matching: body literal li against electron ki.
@@ -407,38 +518,6 @@ tryMatch li ki σ0 =
     flipEq (Eq l r) = Eq r l
     flipEq x        = x
 
-
--- RW_CHAIN_TO (literal, pure): greedy; returns endpoint reached (= t when successful).
--- Used to rank or find electron candidates without triggering monadic side effects.
-rwChainToLitPure :: Literal -> Literal -> [UnitEntry] -> (Literal, Int)
-rwChainToLitPure s t units
-  | s == t         = (s, 0)
-  | flipLit s == t = (t, 0)
-  | otherwise      = go s 0 (Set.singleton s)
-  where
-    go cur n seen
-      | isTarget cur = (t, n)
-      | otherwise    = case findStep cur seen of
-          Nothing              -> (cur, n)
-          Just (_, _, _, cur') -> go cur' (n + 1) (Set.insert cur' seen)
-    isTarget c = c == t || flipLit c == t
-    findStep cur seen = listToMaybe (sortCandidates
-      [ (ue, (l, r), dir, cur')
-      | ue          <- units
-      , Eq l r      <- [ueUnit ue]
-      , (dir, cur') <- litSteps l r cur
-      , Set.notMember cur' seen ])
-      where
-        curSize = litSize cur
-        sortCandidates cs =
-          filter (\(_, _, _, c) -> isTarget c) cs ++
-          sortBy (comparing (\(_, _, _, c) -> litSize c))
-                 (filter (\(_, _, _, c) -> litSize c <= curSize) cs) ++
-          sortBy (comparing (\(_, _, _, c) -> litSize c))
-                 (filter (\(_, _, _, c) -> litSize c >  curSize) cs)
-    litSteps l r cur =
-      [ (LR, c) | Just c <- [rewriteLit cur (l, r) LR] ] ++
-      [ (RL, c) | Just c <- [rewriteLit cur (l, r) RL] ]
 
 -- RW_CHAIN_TO (literal, with side effects): greedy best-effort rewriting toward t.
 -- Returns (cur, steps) where cur may not equal t if no exact path exists;
@@ -847,8 +926,8 @@ runAlgorithm
   -> [(String, String, T.Declaration)]
   -> [Literal]
   -> Map.Map String [(String, Dir)]  -- demodulation chains from proof tree
-  -> StructuredProof
-runAlgorithm initUnits nonUnits goalLits demodChains =
+  -> IO StructuredProof
+runAlgorithm initUnits nonUnits goalLits demodChains = do
   let (axiomList, posToName, namedUnits) = assignAxiomNames initUnits nonUnits
       -- Map resolved TSTP source names → assigned "axiom N" names so demod
       -- chain entries (which carry TSTP names) can be looked up in stUnits.
@@ -882,7 +961,7 @@ runAlgorithm initUnits nonUnits goalLits demodChains =
               proven <- gets (map fst . stGoals)
               let unproven = filter (`notElem` proven) goalLits
               mapM_ (runPostLoop pG1Chain) unproven
-      finalSt = execState action initSt
-  in if null (stGoals finalSt)
-     then error "translate: algorithm terminated without producing a goal proof"
-     else StructuredProof axiomList (stLemmas finalSt) (stGoals finalSt)
+  finalSt <- execStateT action initSt
+  if null (stGoals finalSt)
+    then error "translate: algorithm terminated without producing a goal proof"
+    else return (StructuredProof axiomList (stLemmas finalSt) (stGoals finalSt))
