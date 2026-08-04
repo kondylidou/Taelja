@@ -1,0 +1,13 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~is_a_theorem(implies(implies(x, y), implies(implies(implies(x, z), u), implies(implies(y, z), u)))), file('LCL357-1.p', prove_cn_06)).
+cnf(c2, axiom, is_a_theorem(implies(implies(X, Y), implies(implies(Y, Z), implies(X, Z)))), file('LCL357-1.p', cn_1)).
+cnf(c3, axiom, ~is_a_theorem(implies(X2, Y2)) | ~is_a_theorem(X2) | is_a_theorem(Y2), file('LCL357-1.p', condensed_detachment)).
+cnf(c4, plain, ~is_a_theorem(implies(implies(x, y), implies(implies(y, z), implies(x, z)))) | is_a_theorem(implies(implies(implies(implies(y, z), implies(x, z)), implies(implies(implies(x, z), u), implies(implies(y, z), u))), implies(implies(x, y), implies(implies(implies(x, z), u), implies(implies(y, z), u))))), inference(resolution, [status(thm)], [c2, c3])).
+cnf(c5, plain, is_a_theorem(implies(implies(implies(implies(y, z), implies(x, z)), implies(implies(implies(x, z), u), implies(implies(y, z), u))), implies(implies(x, y), implies(implies(implies(x, z), u), implies(implies(y, z), u))))), inference(resolution, [status(thm)], [c2, c4])).
+cnf(c6, plain, ~is_a_theorem(implies(implies(implies(implies(y, z), implies(x, z)), implies(implies(implies(x, z), u), implies(implies(y, z), u))), implies(implies(x, y), implies(implies(implies(x, z), u), implies(implies(y, z), u))))) | is_a_theorem(implies(implies(x, y), implies(implies(implies(x, z), u), implies(implies(y, z), u)))), inference(resolution, [status(thm)], [c2, c3])).
+cnf(c7, plain, is_a_theorem(implies(implies(x, y), implies(implies(implies(x, z), u), implies(implies(y, z), u)))), inference(resolution, [status(thm)], [c5, c6])).
+cnf(c8, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c7])).
+% SZS output end CNFRefutation
+

@@ -1,0 +1,12 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~c_in(c_Tarski_Olub(v_S, v_cl, t_a), c_Tarski_Opotype_Opset(v_cl, t_a, tc_Product__Type_Ounit), t_a), file('LAT275-2.p', cls_conjecture_2)).
+cnf(c2, axiom, v_A=c_Tarski_Opotype_Opset(v_cl, t_a, tc_Product__Type_Ounit), file('LAT275-2.p', cls_Tarski_OA_A_61_61_Apset_Acl_0)).
+cnf(c3, negated_conjecture, c_lessequals(v_S, v_A, tc_set(t_a)), file('LAT275-2.p', cls_conjecture_0)).
+cnf(c4, axiom, ~c_lessequals(V_S, v_A, tc_set(t_a)) | c_in(c_Tarski_Olub(V_S, v_cl, t_a), v_A, t_a), file('LAT275-2.p', cls_Tarski_OS_A_60_61_AA_A_61_61_62_Alub_AS_Acl_A_58_AA_0)).
+cnf(c5, plain, c_in(c_Tarski_Olub(v_S, v_cl, t_a), v_A, t_a), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c6, plain, c_in(c_Tarski_Olub(v_S, v_cl, t_a), c_Tarski_Opotype_Opset(v_cl, t_a, tc_Product__Type_Ounit), t_a), inference(rewriting, [status(thm)], [c2, c5])).
+cnf(c7, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c6])).
+% SZS output end CNFRefutation
+

@@ -1,0 +1,28 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~fixed_point(apply(apply(b, apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b)), b)), file('COL003-7.p', prove_strong_fixed_point)).
+cnf(c2, axiom, apply(apply(apply(b, X), Y), Z)=apply(X, apply(Y, Z)), file('COL003-7.p', b_definition)).
+cnf(c3, plain, apply(X2, apply(apply(apply(b, apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b)), b), X2))=apply(X2, apply(apply(apply(b, apply(w, w)), apply(b, w)), apply(b, apply(b, X2)))), inference(rewriting, [status(thm)], [c2, c2])).
+cnf(c4, plain, apply(X2, apply(apply(apply(b, apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b)), b), X2))=apply(X2, apply(apply(w, w), apply(apply(b, w), apply(b, apply(b, X2))))), inference(rewriting, [status(thm)], [c3, c2])).
+cnf(c5, axiom, apply(apply(w, X2), Y2)=apply(apply(X2, Y2), Y2), file('COL003-7.p', w_definition)).
+cnf(c6, plain, apply(apply(w, apply(apply(b, X2), X4)), X3)=apply(apply(X2, apply(X4, X3)), X3), inference(rewriting, [status(thm)], [c5, c2])).
+cnf(c7, plain, apply(apply(apply(X3, X2), X2), X2)=apply(apply(w, apply(w, X3)), X2), inference(rewriting, [status(thm)], [c5, c5])).
+cnf(c8, plain, apply(apply(w, apply(w, X3)), X2)=apply(apply(w, apply(X3, X2)), X2), inference(rewriting, [status(thm)], [c7, c5])).
+cnf(c9, plain, apply(apply(w, apply(apply(b, w), X3)), X2)=apply(apply(w, apply(w, X3)), X2), inference(rewriting, [status(thm)], [c6, c8])).
+cnf(c10, plain, apply(apply(w, apply(apply(b, w), apply(b, apply(b, X3)))), X2)=apply(apply(apply(w, apply(b, apply(b, X3))), X2), X2), inference(rewriting, [status(thm)], [c9, c5])).
+cnf(c11, plain, apply(apply(w, apply(b, X3)), X2)=apply(X3, apply(X2, X2)), inference(rewriting, [status(thm)], [c5, c2])).
+cnf(c12, plain, apply(apply(apply(w, apply(b, apply(b, X4))), X3), X2)=apply(X4, apply(apply(X3, X3), X2)), inference(rewriting, [status(thm)], [c11, c2])).
+cnf(c13, plain, apply(apply(w, apply(apply(b, w), apply(b, apply(b, X3)))), X2)=apply(X3, apply(apply(X2, X2), X2)), inference(rewriting, [status(thm)], [c10, c12])).
+cnf(c14, plain, apply(apply(w, apply(apply(b, w), apply(b, apply(b, X3)))), X2)=apply(X3, apply(apply(w, X2), X2)), inference(rewriting, [status(thm)], [c13, c5])).
+cnf(c15, plain, apply(apply(w, apply(apply(b, w), apply(b, apply(b, X3)))), X2)=apply(X3, apply(apply(w, w), X2)), inference(rewriting, [status(thm)], [c14, c5])).
+cnf(c16, plain, apply(apply(w, apply(apply(b, w), apply(b, apply(b, X2)))), apply(apply(b, w), apply(b, apply(b, X2))))=apply(X2, apply(apply(apply(b, apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b)), b), X2)), inference(rewriting, [status(thm)], [c4, c15])).
+cnf(c17, plain, apply(X2, apply(apply(apply(b, apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b)), b), X2))=apply(apply(w, w), apply(apply(b, w), apply(b, apply(b, X2)))), inference(rewriting, [status(thm)], [c16, c5])).
+cnf(c18, plain, apply(X2, apply(apply(apply(b, apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b)), b), X2))=apply(apply(apply(b, apply(w, w)), apply(b, w)), apply(b, apply(b, X2))), inference(rewriting, [status(thm)], [c17, c2])).
+cnf(c19, plain, apply(X2, apply(apply(apply(b, apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b)), b), X2))=apply(apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b), apply(b, X2)), inference(rewriting, [status(thm)], [c18, c2])).
+cnf(c20, plain, apply(X2, apply(apply(apply(b, apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b)), b), X2))=apply(apply(apply(b, apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b)), b), X2), inference(rewriting, [status(thm)], [c19, c2])).
+cnf(c21, axiom, apply(Strong_fixed_point, fixed_pt)!=apply(fixed_pt, apply(Strong_fixed_point, fixed_pt)) | fixed_point(Strong_fixed_point), file('COL003-7.p', strong_fixed_point)).
+cnf(c22, plain, fixed_point(apply(apply(b, apply(apply(b, apply(apply(b, apply(w, w)), apply(b, w))), b)), b)), inference(resolution, [status(thm)], [c20, c21])).
+cnf(c23, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c22])).
+% SZS output end CNFRefutation
+

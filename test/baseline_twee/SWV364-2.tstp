@@ -1,0 +1,14 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~c_in(v_X, c_Message_Oanalz(c_Event_Oknows(c_Message_Oagent_OSpy, v_evs)), tc_Message_Omsg), file('SWV364-2.p', cls_conjecture_2)).
+cnf(c2, negated_conjecture, c_in(v_evs, c_Yahalom_Oyahalom, tc_List_Olist(tc_Event_Oevent)), file('SWV364-2.p', cls_conjecture_1)).
+cnf(c3, negated_conjecture, c_in(c_Event_Oevent_OGets(v_A, c_Message_Omsg_OMPair(c_Message_Omsg_OCrypt(c_Public_OshrK(v_A), v_Y), v_X)), c_List_Oset(v_evs, tc_Event_Oevent), tc_Event_Oevent), file('SWV364-2.p', cls_conjecture_0)).
+cnf(c4, axiom, ~c_in(V_evs, c_Yahalom_Oyahalom, tc_List_Olist(tc_Event_Oevent)) | ~c_in(c_Event_Oevent_OGets(V_B, V_X), c_List_Oset(V_evs, tc_Event_Oevent), tc_Event_Oevent) | c_in(V_X, c_Message_Oanalz(c_Event_Oknows(c_Message_Oagent_OSpy, V_evs)), tc_Message_Omsg), file('SWV364-2.p', cls_Yahalom_OGets__imp__analz__Spy__dest_0)).
+cnf(c5, plain, ~c_in(v_evs, c_Yahalom_Oyahalom, tc_List_Olist(tc_Event_Oevent)) | c_in(c_Message_Omsg_OMPair(c_Message_Omsg_OCrypt(c_Public_OshrK(v_A), v_Y), v_X), c_Message_Oanalz(c_Event_Oknows(c_Message_Oagent_OSpy, v_evs)), tc_Message_Omsg), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c6, plain, c_in(c_Message_Omsg_OMPair(c_Message_Omsg_OCrypt(c_Public_OshrK(v_A), v_Y), v_X), c_Message_Oanalz(c_Event_Oknows(c_Message_Oagent_OSpy, v_evs)), tc_Message_Omsg), inference(resolution, [status(thm)], [c2, c5])).
+cnf(c7, axiom, ~c_in(c_Message_Omsg_OMPair(V_X2, V_Y), c_Message_Oanalz(V_H), tc_Message_Omsg) | c_in(V_Y, c_Message_Oanalz(V_H), tc_Message_Omsg), file('SWV364-2.p', cls_Message_OMPair__analz_0)).
+cnf(c8, plain, c_in(v_X, c_Message_Oanalz(c_Event_Oknows(c_Message_Oagent_OSpy, v_evs)), tc_Message_Omsg), inference(resolution, [status(thm)], [c6, c7])).
+cnf(c9, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c8])).
+% SZS output end CNFRefutation
+

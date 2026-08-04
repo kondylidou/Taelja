@@ -1,0 +1,16 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~state(State1) | ~state(State2) | ~borders(State1, State2) | ~borders(State1, Ocean) | ~borders(State2, Ocean) | ~ocean(Ocean), file('PUZ022-1.p', prove_borders)).
+cnf(c2, negated_conjecture, state(western_australia), file('PUZ022-1.p', western_australia)).
+cnf(c3, negated_conjecture, state(northern_territory), file('PUZ022-1.p', northern_territory)).
+cnf(c4, negated_conjecture, borders(western_australia, northern_territory), file('PUZ022-1.p', wa_nt)).
+cnf(c5, negated_conjecture, borders(indian, western_australia), file('PUZ022-1.p', indian_wa)).
+cnf(c6, axiom, ~borders(Y, X) | borders(X, Y), file('PUZ022-1.p', symmetry_of_borders)).
+cnf(c7, plain, borders(western_australia, indian), inference(resolution, [status(thm)], [c5, c6])).
+cnf(c8, negated_conjecture, borders(indian, northern_territory), file('PUZ022-1.p', indian_nt)).
+cnf(c9, plain, borders(northern_territory, indian), inference(resolution, [status(thm)], [c8, c6])).
+cnf(c10, negated_conjecture, ocean(indian), file('PUZ022-1.p', indian)).
+cnf(c11, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c2, c3, c4, c7, c9, c10])).
+% SZS output end CNFRefutation
+

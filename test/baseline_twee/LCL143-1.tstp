@@ -1,0 +1,16 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~ordered(implies(z, x), implies(z, y)), file('LCL143-1.p', prove_wajsberg_theorem)).
+cnf(c2, axiom, implies(truth, X)=X, file('LCL143-1.p', wajsberg_1)).
+cnf(c3, negated_conjecture, ordered(x, y), file('LCL143-1.p', antecedent)).
+cnf(c4, axiom, ~ordered(X2, Y) | implies(X2, Y)=truth, file('LCL143-1.p', partial_order_definition1)).
+cnf(c5, plain, implies(x, y)=truth, inference(resolution, [status(thm)], [c3, c4])).
+cnf(c6, plain, implies(implies(X2, x), implies(implies(x, y), implies(X2, y)))=implies(implies(X2, x), implies(X2, y)), inference(rewriting, [status(thm)], [c2, c5])).
+cnf(c7, axiom, implies(implies(X2, Y2), implies(implies(Y2, Z), implies(X2, Z)))=truth, file('LCL143-1.p', wajsberg_2)).
+cnf(c8, plain, implies(implies(X2, x), implies(X2, y))=truth, inference(rewriting, [status(thm)], [c6, c7])).
+cnf(c9, axiom, implies(X2, Y2)!=truth | ordered(X2, Y2), file('LCL143-1.p', partial_order_definition2)).
+cnf(c10, plain, ordered(implies(z, x), implies(z, y)), inference(resolution, [status(thm)], [c8, c9])).
+cnf(c11, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c10])).
+% SZS output end CNFRefutation
+

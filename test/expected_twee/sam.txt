@@ -1,0 +1,74 @@
+Axiom 1: join(X,Y) = join(Y,X)
+Axiom 2: join(Z,join(A,B)) = join(join(Z,A),B)
+Axiom 3: meet(Z,A) = meet(A,Z)
+Axiom 4: join(Z,meet(Z,A)) = Z
+Axiom 5: meet(Z,join(Z,A)) = Z
+Axiom 6: meet(Z,meet(A,C)) = meet(meet(Z,A),C)
+Axiom 7: meet(zero,Z) = zero
+Axiom 8: join(zero,Z) = Z
+Axiom 9: comp(b,join(c,d))
+Axiom 10: comp(Z,A) => meet(Z,A) = zero
+
+Goal 1: meet(join(a,meet(b,c)),join(a,meet(b,d))) = a
+Proof:
+  meet(join(a,meet(b,c)),join(a,meet(b,d)))
+= { by axiom 1 }
+  meet(join(meet(b,c),a),join(a,meet(b,d)))
+= { by axiom 1 }
+  meet(join(meet(b,c),a),join(meet(b,d),a))
+= { by axiom 1 }
+  meet(join(a,meet(b,c)),join(meet(b,d),a))
+= { by axiom 3 }
+  meet(join(meet(b,d),a),join(a,meet(b,c)))
+= { by axiom 1 }
+  meet(join(a,meet(b,d)),join(a,meet(b,c)))
+= { by axiom 1 }
+  meet(join(a,meet(b,d)),join(meet(b,c),a))
+= { by axiom 1 }
+  meet(join(meet(b,d),a),join(meet(b,c),a))
+= { by axiom 3 }
+  meet(join(meet(d,b),a),join(meet(b,c),a))
+= { by axiom 1 }
+  meet(join(a,meet(d,b)),join(meet(b,c),a))
+= { by axiom 1 }
+  meet(join(a,meet(d,b)),join(a,meet(b,c)))
+= { by axiom 1 }
+  meet(join(meet(d,b),a),join(a,meet(b,c)))
+= { by axiom 3 }
+  meet(join(a,meet(b,c)),join(meet(d,b),a))
+= { by axiom 1 }
+  meet(join(meet(b,c),a),join(meet(d,b),a))
+= { by axiom 1 }
+  meet(join(meet(b,c),a),join(a,meet(d,b)))
+= { by axiom 1 }
+  meet(join(a,meet(b,c)),join(a,meet(d,b)))
+= { by axiom 3 }
+  meet(join(a,meet(c,b)),join(a,meet(d,b)))
+= { by axiom 1 }
+  meet(join(meet(c,b),a),join(a,meet(d,b)))
+= { by axiom 1 }
+  meet(join(meet(c,b),a),join(meet(d,b),a))
+= { by axiom 1 }
+  meet(join(a,meet(c,b)),join(meet(d,b),a))
+= { by axiom 3 }
+  meet(join(meet(d,b),a),join(a,meet(c,b)))
+= { by axiom 1 }
+  meet(join(a,meet(d,b)),join(a,meet(c,b)))
+= { by axiom 1 }
+  meet(join(a,meet(d,b)),join(meet(c,b),a))
+= { by axiom 1 }
+  meet(join(meet(d,b),a),join(meet(c,b),a))
+= { by axiom 3 }
+  meet(join(meet(b,d),a),join(meet(c,b),a))
+= { by axiom 1 }
+  meet(join(a,meet(b,d)),join(meet(c,b),a))
+= { by axiom 1 }
+  meet(join(a,meet(b,d)),join(a,meet(c,b)))
+= { by axiom 1 }
+  meet(join(meet(b,d),a),join(a,meet(c,b)))
+= { by axiom 3 }
+  meet(join(a,meet(c,b)),join(meet(b,d),a))
+= { by axiom 1 }
+  meet(join(meet(c,b),a),join(meet(b,d),a))
+= { by axiom 1 }
+  meet(join(meet(c,b),a),join(a,meet(b,d)))

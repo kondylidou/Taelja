@@ -1,0 +1,9 @@
+Axiom 1: implies(implies(X,x),implies(X,y)) = truth
+Axiom 2: implies(X,Y) = truth => ordered(X,Y)
+
+Goal 1: ordered(implies(z,x),implies(z,y))
+Proof:
+  have implies(implies(z,x),implies(z,y)) = truth
+    by axiom 1
+  hence ordered(implies(z,x),implies(z,y))
+    by axiom 2

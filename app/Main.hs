@@ -40,7 +40,7 @@ main = do
             putStrLn "-- Collect leaves"
             case collectLeaves tree units of
               Nothing              -> putStrLn "No goal found (missing negated conjecture)"
-              Just (us, nus, goal) -> dumpCollectLeaves us nus goal
+              Just (us, nus, _innerNus, goal) -> dumpCollectLeaves us nus goal
             putStrLn ""
           sp <- translate False tstp
           putStr (emit sp)

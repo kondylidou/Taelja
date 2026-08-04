@@ -1,0 +1,12 @@
+Axiom 1: achievable(west(X,Y),Z,east(m(s(A)),c(s(s(A)))))
+Axiom 2: achievable(west(m(X),c(B)),boatoneast,east(m(C),c(s(U)))) => achievable(west(m(X),c(s(B))),boatonwest,east(m(C),c(U)))
+Axiom 3: achievable(west(m(s(X)),c(s(B))),boatonwest,east(m(C),c(U))) => achievable(west(m(X),c(B)),boatoneast,east(m(s(C)),c(s(U))))
+
+Goal 1: achievable(west(m(n0),c(n0)),X,east(m(s(s(s(n0)))),c(s(s(s(n0))))))
+Proof:
+  have achievable(west(m(s(n0)),c(n0)),boatoneast,east(m(s(s(n0))),c(s(s(s(n0))))))
+    by axiom 1
+  hence achievable(west(m(s(n0)),c(s(n0))),boatonwest,east(m(s(s(n0))),c(s(s(n0)))))
+    by axiom 2
+  hence achievable(west(m(n0),c(n0)),boatoneast,east(m(s(s(s(n0)))),c(s(s(s(n0))))))
+    by axiom 3

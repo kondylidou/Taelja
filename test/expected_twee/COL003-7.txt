@@ -1,0 +1,9 @@
+Axiom 1: apply(X,apply(apply(apply(b,apply(apply(b,apply(apply(b,apply(w,w)),apply(b,w))),b)),b),X)) = apply(apply(apply(b,apply(apply(b,apply(apply(b,apply(w,w)),apply(b,w))),b)),b),X)
+Axiom 2: apply(Y,fixed_pt) = apply(fixed_pt,apply(Y,fixed_pt)) => fixed_point(Y)
+
+Goal 1: fixed_point(apply(apply(b,apply(apply(b,apply(apply(b,apply(w,w)),apply(b,w))),b)),b))
+Proof:
+  have apply(fixed_pt,apply(apply(apply(b,apply(apply(b,apply(apply(b,apply(w,w)),apply(b,w))),b)),b),fixed_pt)) = apply(apply(apply(b,apply(apply(b,apply(apply(b,apply(w,w)),apply(b,w))),b)),b),fixed_pt)
+    by axiom 1
+  hence fixed_point(apply(apply(b,apply(apply(b,apply(apply(b,apply(w,w)),apply(b,w))),b)),b))
+    by axiom 2

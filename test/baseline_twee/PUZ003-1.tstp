@@ -1,0 +1,24 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~shaved(petruchio, lorenzo), file('PUZ003-1.p', prove_petruchio_has_shaved_lorenzo)).
+cnf(c2, hypothesis, member(lorenzo), file('PUZ003-1.p', lorenzo)).
+cnf(c3, hypothesis, member(guido), file('PUZ003-1.p', guido)).
+cnf(c4, hypothesis, member(cesare), file('PUZ003-1.p', cesare)).
+cnf(c5, hypothesis, shaved(guido, cesare), file('PUZ003-1.p', guido_has_shaved_cesare)).
+cnf(c6, axiom, ~member(X) | ~member(Y) | ~shaved(X, Y) | shaved(members, X), file('PUZ003-1.p', one_shaved_then_all_shaved)).
+cnf(c7, plain, ~member(guido) | ~member(cesare) | shaved(members, guido), inference(resolution, [status(thm)], [c5, c6])).
+cnf(c8, plain, ~member(guido) | shaved(members, guido), inference(resolution, [status(thm)], [c4, c7])).
+cnf(c9, plain, shaved(members, guido), inference(resolution, [status(thm)], [c3, c8])).
+cnf(c10, axiom, ~shaved(members, X2) | ~member(Y2) | shaved(Y2, X2), file('PUZ003-1.p', all_shaved_then_one_shaved)).
+cnf(c11, plain, ~member(X2) | shaved(X2, guido), inference(resolution, [status(thm)], [c9, c10])).
+cnf(c12, plain, shaved(lorenzo, guido), inference(resolution, [status(thm)], [c2, c11])).
+cnf(c13, plain, ~member(lorenzo) | ~member(guido) | shaved(members, lorenzo), inference(resolution, [status(thm)], [c12, c6])).
+cnf(c14, plain, ~member(lorenzo) | shaved(members, lorenzo), inference(resolution, [status(thm)], [c3, c13])).
+cnf(c15, plain, shaved(members, lorenzo), inference(resolution, [status(thm)], [c2, c14])).
+cnf(c16, hypothesis, member(petruchio), file('PUZ003-1.p', petruchio)).
+cnf(c17, plain, ~shaved(members, X2) | shaved(petruchio, X2), inference(resolution, [status(thm)], [c16, c10])).
+cnf(c18, plain, shaved(petruchio, lorenzo), inference(resolution, [status(thm)], [c15, c17])).
+cnf(c19, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c18])).
+% SZS output end CNFRefutation
+

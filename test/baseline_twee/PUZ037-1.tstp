@@ -1,0 +1,10 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~state(b, b, b, b, b, b, b, b, b, r, r, r, g, g, g, o, o, o, y, y, y, r, r, r, g, g, g, o, o, o, y, y, y, r, r, r, g, g, g, o, o, o, y, y, y, w, w, w, w, w, w, w, w, w), file('PUZ037-1.p', make_like_this)).
+cnf(c2, hypothesis, state(b, b, b, b, b, b, b, b, b, r, r, r, g, g, g, o, o, o, y, y, y, g, g, g, o, o, o, y, y, y, r, r, r, r, r, r, g, g, g, o, o, o, y, y, y, w, w, w, w, w, w, w, w, w), file('PUZ037-1.p', start_with_this)).
+cnf(c3, axiom, ~state(A1, A2, A3, A4, A5, A6, A7, A8, A9, B1, B2, B3, B4, B5, B6, B7, B8, B9, C1, C2, C3, X1, X2, X3, X4, X5, X6, X7, X8, X9, Y1, Y2, Y3, C4, C5, C6, C7, C8, C9, D1, D2, D3, D4, D5, D6, D7, D8, D9, E1, E2, E3, E4, E5, E6) | state(A1, A2, A3, A4, A5, A6, A7, A8, A9, B1, B2, B3, B4, B5, B6, B7, B8, B9, C1, C2, C3, Y1, Y2, Y3, X1, X2, X3, X4, X5, X6, X7, X8, X9, C4, C5, C6, C7, C8, C9, D1, D2, D3, D4, D5, D6, D7, D8, D9, E1, E2, E3, E4, E5, E6), file('PUZ037-1.p', myx)).
+cnf(c4, plain, state(b, b, b, b, b, b, b, b, b, r, r, r, g, g, g, o, o, o, y, y, y, r, r, r, g, g, g, o, o, o, y, y, y, r, r, r, g, g, g, o, o, o, y, y, y, w, w, w, w, w, w, w, w, w), inference(resolution, [status(thm)], [c2, c3])).
+cnf(c5, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c4])).
+% SZS output end CNFRefutation
+

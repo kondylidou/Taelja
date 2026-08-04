@@ -1,0 +1,17 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, inverse(inverse(a))!=a, file('GRP022-1.p', prove_inverse_of_inverse_is_original)).
+cnf(c2, axiom, product(X, inverse(X), identity), file('GRP022-1.p', right_inverse)).
+cnf(c3, axiom, product(X2, identity, X2), file('GRP022-1.p', right_identity)).
+cnf(c4, axiom, ~product(X2, Y, U) | ~product(Y, Z, V) | ~product(X2, V, W) | product(U, Z, W), file('GRP022-1.p', associativity2)).
+cnf(c5, plain, ~product(X2, inverse(X2), identity) | ~product(inverse(X2), inverse(inverse(X2)), identity) | product(identity, inverse(inverse(X2)), X2), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c6, plain, ~product(X2, inverse(X2), identity) | product(identity, inverse(inverse(X2)), X2), inference(resolution, [status(thm)], [c2, c5])).
+cnf(c7, plain, product(identity, inverse(inverse(X2)), X2), inference(resolution, [status(thm)], [c2, c6])).
+cnf(c8, axiom, product(identity, X2, X2), file('GRP022-1.p', left_identity)).
+cnf(c9, axiom, ~product(X2, Y2, Z2) | ~product(X2, Y2, W2) | Z2=W2, file('GRP022-1.p', total_function2)).
+cnf(c10, plain, ~product(identity, X2, X3) | X3=X2, inference(resolution, [status(thm)], [c8, c9])).
+cnf(c11, plain, inverse(inverse(X2))=X2, inference(resolution, [status(thm)], [c7, c10])).
+cnf(c12, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c11])).
+% SZS output end CNFRefutation
+

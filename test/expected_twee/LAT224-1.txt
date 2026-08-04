@@ -1,0 +1,74 @@
+Axiom 1: join(X,Y) = join(Y,X)
+Axiom 2: meet(Z,A) = meet(A,Z)
+Axiom 3: meet(Z,complement(Z)) = zero
+Axiom 4: meet(meet(Z,A),B) = meet(Z,meet(A,B))
+Axiom 5: meet(Z,join(Z,A)) = Z
+Axiom 6: join(Z,meet(Z,A)) = Z
+Axiom 7: join(join(Z,A),C) = join(Z,join(A,C))
+Axiom 8: meet(Z,join(A,meet(Z,C))) = join(meet(Z,A),meet(Z,join(A,meet(C,join(Z,meet(A,C))))))
+Axiom 9: join(Z,complement(Z)) = one
+Axiom 10: meet(b,a) = a
+
+Goal 1: join(complement(b),complement(a)) = complement(a)
+Proof:
+  join(complement(b),complement(a))
+= { by axiom 1 }
+  join(complement(a),complement(b))
+= { by axiom 10 R->L }
+  join(complement(meet(b,a)),complement(b))
+= { by axiom 1 }
+  join(complement(b),complement(meet(b,a)))
+= { by axiom 2 }
+  join(complement(b),complement(meet(a,b)))
+= { by axiom 1 }
+  join(complement(meet(a,b)),complement(b))
+= { by axiom 10 R->L }
+  join(complement(meet(meet(b,a),b)),complement(b))
+= { by axiom 1 }
+  join(complement(b),complement(meet(meet(b,a),b)))
+= { by axiom 2 }
+  join(complement(b),complement(meet(b,meet(b,a))))
+= { by axiom 1 }
+  join(complement(meet(b,meet(b,a))),complement(b))
+= { by axiom 2 }
+  join(complement(meet(b,meet(a,b))),complement(b))
+= { by axiom 1 }
+  join(complement(b),complement(meet(b,meet(a,b))))
+= { by axiom 2 }
+  join(complement(b),complement(meet(meet(a,b),b)))
+= { by axiom 1 }
+  join(complement(meet(meet(a,b),b)),complement(b))
+= { by axiom 4 }
+  join(complement(meet(a,meet(b,b))),complement(b))
+= { by axiom 1 }
+  join(complement(b),complement(meet(a,meet(b,b))))
+= { by axiom 2 }
+  join(complement(b),complement(meet(meet(b,b),a)))
+= { by axiom 1 }
+  join(complement(meet(meet(b,b),a)),complement(b))
+= { by axiom 10 R->L }
+  join(complement(meet(meet(b,b),meet(b,a))),complement(b))
+= { by axiom 1 }
+  join(complement(b),complement(meet(meet(b,b),meet(b,a))))
+= { by axiom 2 }
+  join(complement(b),complement(meet(meet(b,a),meet(b,b))))
+= { by axiom 1 }
+  join(complement(meet(meet(b,a),meet(b,b))),complement(b))
+= { by axiom 2 }
+  join(complement(meet(meet(a,b),meet(b,b))),complement(b))
+= { by axiom 1 }
+  join(complement(b),complement(meet(meet(a,b),meet(b,b))))
+= { by axiom 2 }
+  join(complement(b),complement(meet(meet(b,b),meet(a,b))))
+= { by axiom 1 }
+  join(complement(meet(meet(b,b),meet(a,b))),complement(b))
+= { by axiom 4 }
+  join(complement(meet(b,meet(b,meet(a,b)))),complement(b))
+= { by axiom 1 }
+  join(complement(b),complement(meet(b,meet(b,meet(a,b)))))
+= { by axiom 2 }
+  join(complement(b),complement(meet(meet(b,meet(a,b)),b)))
+= { by axiom 1 }
+  join(complement(meet(meet(b,meet(a,b)),b)),complement(b))
+= { by axiom 2 }
+  join(complement(meet(meet(meet(a,b),b),b)),complement(b))

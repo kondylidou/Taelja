@@ -12,6 +12,7 @@ module ProofTree
   , buildProofTree
   , leafPositions
   , leafList
+  , innerList
   , demodChainsForLeaves
   , isFalsum
   , isPositiveUnitFormula
@@ -108,19 +109,31 @@ coreInferenceNames = Set.fromList $ map Text.pack
   , "definition_unfolding", "trivial_inequality_removal"
   , "forward_demodulation", "backward_demodulation"
   -- E prover
-  , "spm", "sr", "csr", "er", "ef", "rw", "cn", "pm" ]
+  , "spm", "sr", "csr", "er", "ef", "rw", "cn", "pm"
+  -- Twee horn branch
+  , "proved_conjecture" ]
 
 isCoreInference :: Text.Text -> Bool
 isCoreInference name = Set.member name coreInferenceNames
 
 coreParentNames :: T.Unit -> Maybe [String]
-coreParentNames (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ parents, _)))
-  | isCoreInference rule = Just (concatMap extractName parents)
+coreParentNames (T.Unit _ decl (Just (T.Inference (T.Atom rule) _ parents, _)))
+  | isCoreInference rule                    = Just (concatMap extractName parents)
+  | isPredicateRewriting rule decl          = Just (concatMap extractName parents)
   where
     extractName (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
     extractName (T.Parent (T.Inference _ _ ps) _) = concatMap extractName ps
     extractName (T.Parent src _)                  =
       error ("buildProofTree: unexpected parent source in core inference: " ++ show src)
+    -- "rewriting" is core only when the result is a predicate (not an equation).
+    -- Equation-to-equation rewriting chains are left as PTLeafs to avoid
+    -- exponential tree expansion in long equational proof chains.
+    isPredicateRewriting r d
+      | r == Text.pack "rewriting" = case headLitOf d of
+          Just (T.Equality {}) -> False
+          Just _               -> True
+          Nothing              -> False
+      | otherwise = False
 coreParentNames _ = Nothing
 
 inferenceRuleName :: T.Unit -> Maybe Text.Text
@@ -237,6 +250,24 @@ leafList = go ""
     go pos (PTNode _ _ _ kids)   = concat
       [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
 
+-- All intermediate PTNode nodes that are multi-literal (not positive unit formulas
+-- and not proved_conjecture) in bottom-up left-first DFS order: (position, name, decl).
+-- These are core inference steps skipped by leafList; their positions are the same
+-- bit-strings used by leafList so getElectrons ordering applies correctly.
+innerList :: ProofTree -> [(String, String, T.Declaration)]
+innerList = go ""
+  where
+    go _   (PTLeaf _ _)              = []
+    go pos (PTNode n d rule [k])     = go (pos ++ "1") k     ++ keep pos n d rule
+    go pos (PTNode n d rule [l, r])  = go (pos ++ "0") l
+                                    ++ go (pos ++ "1") r     ++ keep pos n d rule
+    go pos (PTNode n d rule kids)    = concat [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
+                                    ++ keep pos n d rule
+    keep pos n d rule
+      | rule == Text.pack "proved_conjecture" = []
+      | isPositiveUnitFormula d               = []
+      | otherwise                             = [(pos, n, d)]
+
 -- True when Vampire's parent1 should be the LEFT (positive provider) child.
 -- Superposition: Vampire lists [into_clause, equation]; the equation is the provider.
 --   d1 = into_clause (consumer, goes RIGHT), d2 = equation (provider, goes LEFT).
@@ -246,7 +277,8 @@ leafList = go ""
 --   provided the positive literal that got resolved away.
 demodRuleNames :: Set.Set Text.Text
 demodRuleNames = Set.fromList $ map Text.pack
-  [ "forward_demodulation", "backward_demodulation", "rw", "definition_unfolding" ]
+  [ "forward_demodulation", "backward_demodulation", "rw", "definition_unfolding"
+  , "rewriting" ]
 
 superpositionRules :: Set.Set Text.Text
 superpositionRules = Set.fromList (map Text.pack

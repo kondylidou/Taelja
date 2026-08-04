@@ -1,0 +1,44 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, meet(join(a, meet(b, c)), join(a, meet(b, d)))!=a, file('sam.p', goal)).
+cnf(c2, axiom, join(X, Y)=join(Y, X), file('sam.p', g_comm)).
+cnf(c3, axiom, join(X2, join(Y2, Z))=join(join(X2, Y2), Z), file('sam.p', g_assoc)).
+cnf(c4, plain, join(join(meet(X4, X3), X3), X2)=join(meet(X4, X3), join(X2, X3)), inference(rewriting, [status(thm)], [c2, c3])).
+cnf(c5, axiom, meet(X2, Y2)=meet(Y2, X2), file('sam.p', f_comm)).
+cnf(c6, plain, join(meet(X3, X2), X2)=join(X2, meet(X2, X3)), inference(rewriting, [status(thm)], [c2, c5])).
+cnf(c7, axiom, join(X2, meet(X2, Y2))=X2, file('sam.p', ax34)).
+cnf(c8, plain, join(meet(X3, X2), X2)=X2, inference(rewriting, [status(thm)], [c6, c7])).
+cnf(c9, plain, join(meet(X4, X3), join(X2, X3))=join(X3, X2), inference(rewriting, [status(thm)], [c4, c8])).
+cnf(c10, plain, join(meet(X4, X3), join(X2, X3))=join(X2, X3), inference(rewriting, [status(thm)], [c9, c2])).
+cnf(c11, axiom, meet(X2, join(X2, Y2))=X2, file('sam.p', ax31)).
+cnf(c12, plain, meet(meet(X4, X3), join(X2, X3))=meet(X4, X3), inference(rewriting, [status(thm)], [c10, c11])).
+cnf(c13, plain, meet(meet(b, c), join(c, d))=meet(b, c), inference(rewriting, [status(thm)], [c12, c2])).
+cnf(c14, plain, meet(meet(X4, X2), X3)=meet(X3, meet(X2, X4)), inference(rewriting, [status(thm)], [c5, c5])).
+cnf(c15, axiom, meet(X2, meet(Y2, Z2))=meet(meet(X2, Y2), Z2), file('sam.p', f_assoc)).
+cnf(c16, plain, meet(X3, meet(X2, X4))=meet(X4, meet(X2, X3)), inference(rewriting, [status(thm)], [c14, c15])).
+cnf(c17, plain, meet(X3, meet(X2, X4))=meet(X4, meet(X3, X2)), inference(rewriting, [status(thm)], [c16, c5])).
+cnf(c18, plain, meet(X2, meet(X3, X4))=meet(X4, meet(X3, X2)), inference(rewriting, [status(thm)], [c17, c5])).
+cnf(c19, plain, meet(meet(b, X2), join(c, d))=meet(X2, meet(b, join(c, d))), inference(rewriting, [status(thm)], [c5, c18])).
+cnf(c20, axiom, comp(b, join(c, d)), file('sam.p', premise2)).
+cnf(c21, axiom, ~comp(X2, Y2) | meet(X2, Y2)=zero, file('sam.p', comp1)).
+cnf(c22, plain, meet(b, join(c, d))=zero, inference(resolution, [status(thm)], [c20, c21])).
+cnf(c23, plain, meet(meet(b, X2), join(c, d))=meet(X2, zero), inference(rewriting, [status(thm)], [c19, c22])).
+cnf(c24, axiom, meet(zero, X2)=zero, file('sam.p', ax32)).
+cnf(c25, plain, meet(X2, zero)=zero, inference(rewriting, [status(thm)], [c5, c24])).
+cnf(c26, plain, meet(meet(b, X2), join(c, d))=zero, inference(rewriting, [status(thm)], [c23, c25])).
+cnf(c27, plain, meet(b, c)=zero, inference(rewriting, [status(thm)], [c13, c26])).
+cnf(c28, axiom, join(zero, X2)=X2, file('sam.p', ax33)).
+cnf(c29, plain, join(meet(b, c), X2)=X2, inference(rewriting, [status(thm)], [c27, c28])).
+cnf(c30, plain, join(join(X4, X2), X3)=join(X3, join(X2, X4)), inference(rewriting, [status(thm)], [c2, c2])).
+cnf(c31, plain, join(X3, join(X2, X4))=join(X4, join(X2, X3)), inference(rewriting, [status(thm)], [c30, c3])).
+cnf(c32, plain, join(X3, join(X2, X4))=join(X4, join(X3, X2)), inference(rewriting, [status(thm)], [c31, c2])).
+cnf(c33, plain, join(X2, join(X3, X4))=join(X4, join(X3, X2)), inference(rewriting, [status(thm)], [c32, c2])).
+cnf(c34, plain, meet(X3, join(X2, X3))=X3, inference(rewriting, [status(thm)], [c2, c11])).
+cnf(c35, plain, meet(join(X4, X3), join(X3, join(X4, X2)))=join(X4, X3), inference(rewriting, [status(thm)], [c33, c34])).
+cnf(c36, plain, meet(join(X3, meet(b, c)), join(X3, X2))=join(X3, meet(b, c)), inference(rewriting, [status(thm)], [c29, c35])).
+cnf(c37, plain, join(X2, meet(b, c))=X2, inference(rewriting, [status(thm)], [c2, c29])).
+cnf(c38, plain, meet(join(a, meet(b, c)), join(a, meet(b, d)))=a, inference(rewriting, [status(thm)], [c36, c37])).
+cnf(c39, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c38])).
+% SZS output end CNFRefutation
+

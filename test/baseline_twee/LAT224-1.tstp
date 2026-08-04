@@ -1,0 +1,88 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, join(complement(b), complement(a))!=complement(a), file('LAT224-1.p', prove_distributivity)).
+cnf(c2, axiom, join(X, Y)=join(Y, X), file('LAT224-1.p', commutativity_of_join)).
+cnf(c3, axiom, meet(X2, Y2)=meet(Y2, X2), file('LAT224-1.p', commutativity_of_meet)).
+cnf(c4, axiom, meet(X2, complement(X2))=zero, file('LAT224-1.p', complement_meet)).
+cnf(c5, plain, meet(complement(X2), X2)=zero, inference(rewriting, [status(thm)], [c3, c4])).
+cnf(c6, axiom, meet(meet(X2, Y2), Z)=meet(X2, meet(Y2, Z)), file('LAT224-1.p', associativity_of_meet)).
+cnf(c7, plain, meet(X2, meet(X3, complement(meet(X2, X3))))=zero, inference(rewriting, [status(thm)], [c6, c4])).
+cnf(c8, plain, join(X3, meet(complement(meet(X3, X2)), join(X2, X3)))=join(X3, meet(join(X3, X2), complement(meet(X3, X2)))), inference(rewriting, [status(thm)], [c2, c3])).
+cnf(c9, plain, join(meet(X3, join(X4, X2)), meet(X2, X3))=join(meet(X3, X2), meet(X3, join(X4, X2))), inference(rewriting, [status(thm)], [c3, c2])).
+cnf(c10, plain, meet(X3, meet(X2, X4))=meet(X4, meet(X3, X2)), inference(rewriting, [status(thm)], [c3, c6])).
+cnf(c11, plain, meet(X3, meet(X4, X2))=meet(X4, meet(X3, X2)), inference(rewriting, [status(thm)], [c10, c3])).
+cnf(c12, axiom, meet(X2, join(X2, Y2))=X2, file('LAT224-1.p', absorption1)).
+cnf(c13, plain, meet(X3, join(X2, X3))=X3, inference(rewriting, [status(thm)], [c2, c12])).
+cnf(c14, plain, meet(X4, meet(X3, join(X2, X4)))=meet(X3, X4), inference(rewriting, [status(thm)], [c11, c13])).
+cnf(c15, plain, meet(X4, meet(X3, join(X2, X4)))=meet(X4, X3), inference(rewriting, [status(thm)], [c14, c3])).
+cnf(c16, plain, join(meet(X4, join(X2, X3)), meet(X3, meet(X4, join(X2, X3))))=join(meet(X4, X3), meet(X4, join(X2, X3))), inference(rewriting, [status(thm)], [c9, c15])).
+cnf(c17, axiom, join(X2, meet(X2, Y2))=X2, file('LAT224-1.p', absorption2)).
+cnf(c18, plain, join(X3, meet(X2, X3))=X3, inference(rewriting, [status(thm)], [c3, c17])).
+cnf(c19, plain, join(meet(X4, X3), meet(X4, join(X2, X3)))=meet(X4, join(X2, X3)), inference(rewriting, [status(thm)], [c16, c18])).
+cnf(c20, plain, join(meet(X4, X3), meet(X3, join(X2, X4)))=meet(X3, join(X2, X4)), inference(rewriting, [status(thm)], [c3, c19])).
+cnf(c21, plain, join(meet(X4, X3), meet(X3, join(X2, X4)))=meet(X3, join(X4, X2)), inference(rewriting, [status(thm)], [c20, c2])).
+cnf(c22, plain, join(meet(X4, X3), meet(join(X2, X4), X3))=meet(X3, join(X4, X2)), inference(rewriting, [status(thm)], [c3, c21])).
+cnf(c23, plain, join(X3, join(meet(X2, complement(meet(X3, X2))), meet(join(X3, X2), complement(meet(X3, X2)))))=join(X3, meet(join(X3, X2), complement(meet(X3, X2)))), inference(rewriting, [status(thm)], [c8, c22])).
+cnf(c24, axiom, join(join(X2, Y2), Z2)=join(X2, join(Y2, Z2)), file('LAT224-1.p', associativity_of_join)).
+cnf(c25, plain, join(join(X3, meet(X2, complement(meet(X3, X2)))), meet(join(X3, X2), complement(meet(X3, X2))))=join(X3, meet(join(X3, X2), complement(meet(X3, X2)))), inference(rewriting, [status(thm)], [c23, c24])).
+cnf(c26, plain, join(meet(X4, join(X3, X2)), meet(X3, X4))=join(meet(X4, X3), meet(X4, join(X3, X2))), inference(rewriting, [status(thm)], [c3, c2])).
+cnf(c27, plain, meet(meet(X4, join(X4, X2)), X3)=meet(X4, meet(X3, join(X4, X2))), inference(rewriting, [status(thm)], [c3, c6])).
+cnf(c28, plain, meet(X4, meet(X3, join(X4, X2)))=meet(X4, X3), inference(rewriting, [status(thm)], [c27, c12])).
+cnf(c29, plain, join(meet(X4, join(X3, X2)), meet(X3, meet(X4, join(X3, X2))))=join(meet(X4, X3), meet(X4, join(X3, X2))), inference(rewriting, [status(thm)], [c26, c28])).
+cnf(c30, plain, join(meet(X4, X3), meet(X4, join(X3, X2)))=meet(X4, join(X3, X2)), inference(rewriting, [status(thm)], [c29, c18])).
+cnf(c31, axiom, meet(X2, join(Y2, meet(X2, Z2)))=join(meet(X2, Y2), meet(X2, join(Y2, meet(Z2, join(X2, meet(Y2, Z2)))))), file('LAT224-1.p', equation_H8)).
+cnf(c32, plain, meet(X4, join(X3, meet(X2, join(X4, meet(X3, X2)))))=meet(X4, join(X3, meet(X4, X2))), inference(rewriting, [status(thm)], [c30, c31])).
+cnf(c33, plain, meet(X4, join(X3, meet(X2, join(meet(X3, X2), X4))))=meet(X4, join(X3, meet(X4, X2))), inference(rewriting, [status(thm)], [c2, c32])).
+cnf(c34, plain, meet(complement(meet(X3, X2)), join(X3, meet(X2, join(meet(X3, X2), complement(meet(X3, X2))))))=meet(complement(meet(X3, X2)), join(X3, meet(X2, complement(meet(X3, X2))))), inference(rewriting, [status(thm)], [c3, c33])).
+cnf(c35, axiom, join(X2, complement(X2))=one, file('LAT224-1.p', complement_join)).
+cnf(c36, plain, meet(complement(meet(X3, X2)), join(X3, meet(X2, complement(meet(X3, X2)))))=meet(complement(meet(X3, X2)), join(X3, meet(X2, one))), inference(rewriting, [status(thm)], [c34, c35])).
+cnf(c37, plain, meet(X2, one)=X2, inference(rewriting, [status(thm)], [c35, c12])).
+cnf(c38, plain, meet(complement(meet(X3, X2)), join(X3, meet(X2, complement(meet(X3, X2)))))=meet(complement(meet(X3, X2)), join(X3, X2)), inference(rewriting, [status(thm)], [c36, c37])).
+cnf(c39, plain, meet(complement(meet(X3, X2)), join(X3, meet(X2, complement(meet(X3, X2)))))=meet(join(X3, X2), complement(meet(X3, X2))), inference(rewriting, [status(thm)], [c38, c3])).
+cnf(c40, plain, join(join(X3, meet(X2, complement(meet(X3, X2)))), meet(complement(meet(X3, X2)), join(X3, meet(X2, complement(meet(X3, X2))))))=join(X3, meet(join(X3, X2), complement(meet(X3, X2)))), inference(rewriting, [status(thm)], [c25, c39])).
+cnf(c41, plain, join(X3, meet(join(X3, X2), complement(meet(X3, X2))))=join(X3, meet(X2, complement(meet(X3, X2)))), inference(rewriting, [status(thm)], [c40, c18])).
+cnf(c42, hypothesis, meet(b, a)=a, file('LAT224-1.p', prove_distributivity_hypothesis)).
+cnf(c43, plain, join(b, a)=b, inference(rewriting, [status(thm)], [c42, c17])).
+cnf(c44, plain, join(X3, join(X2, X4))=join(X4, join(X3, X2)), inference(rewriting, [status(thm)], [c2, c24])).
+cnf(c45, plain, join(X3, join(X4, X2))=join(X4, join(X3, X2)), inference(rewriting, [status(thm)], [c44, c2])).
+cnf(c46, plain, join(complement(X2), X2)=one, inference(rewriting, [status(thm)], [c2, c35])).
+cnf(c47, plain, join(complement(X3), join(X2, X3))=join(X2, one), inference(rewriting, [status(thm)], [c45, c46])).
+cnf(c48, plain, meet(one, X2)=X2, inference(rewriting, [status(thm)], [c3, c37])).
+cnf(c49, plain, join(one, meet(one, X2))=join(X2, one), inference(rewriting, [status(thm)], [c2, c48])).
+cnf(c50, plain, join(X2, one)=one, inference(rewriting, [status(thm)], [c49, c17])).
+cnf(c51, plain, join(complement(X3), join(X2, X3))=one, inference(rewriting, [status(thm)], [c47, c50])).
+cnf(c52, plain, join(complement(a), b)=one, inference(rewriting, [status(thm)], [c43, c51])).
+cnf(c53, plain, join(complement(a), meet(b, complement(meet(complement(a), b))))=join(complement(a), meet(one, complement(meet(complement(a), b)))), inference(rewriting, [status(thm)], [c41, c52])).
+cnf(c54, plain, join(complement(a), meet(b, complement(meet(complement(a), b))))=join(complement(a), complement(meet(complement(a), b))), inference(rewriting, [status(thm)], [c53, c48])).
+cnf(c55, plain, join(join(X4, meet(X4, X2)), X3)=join(X4, join(X3, meet(X4, X2))), inference(rewriting, [status(thm)], [c2, c24])).
+cnf(c56, plain, join(X4, join(X3, meet(X4, X2)))=join(X4, X3), inference(rewriting, [status(thm)], [c55, c17])).
+cnf(c57, plain, join(X4, join(meet(X4, X3), X2))=join(X4, X2), inference(rewriting, [status(thm)], [c2, c56])).
+cnf(c58, plain, join(X3, complement(meet(X3, X2)))=join(X3, one), inference(rewriting, [status(thm)], [c57, c35])).
+cnf(c59, plain, join(X3, complement(meet(X3, X2)))=one, inference(rewriting, [status(thm)], [c58, c50])).
+cnf(c60, plain, join(complement(a), meet(b, complement(meet(complement(a), b))))=one, inference(rewriting, [status(thm)], [c54, c59])).
+cnf(c61, axiom, meet(X2, Y2)!=zero | join(X2, Y2)!=one | complement(X2)=Y2, file('LAT224-1.p', meet_join_complement)).
+cnf(c62, plain, meet(complement(a), meet(b, complement(meet(complement(a), b))))!=zero | meet(b, complement(meet(complement(a), b)))=complement(complement(a)), inference(resolution, [status(thm)], [c60, c61])).
+cnf(c63, plain, meet(b, complement(meet(complement(a), b)))=complement(complement(a)), inference(resolution, [status(thm)], [c7, c62])).
+cnf(c64, plain, meet(complement(X2), X2)!=zero | complement(complement(X2))=X2, inference(resolution, [status(thm)], [c46, c61])).
+cnf(c65, plain, complement(complement(X2))=X2, inference(resolution, [status(thm)], [c5, c64])).
+cnf(c66, plain, meet(b, complement(meet(complement(a), b)))=a, inference(rewriting, [status(thm)], [c63, c65])).
+cnf(c67, plain, join(b, meet(complement(meet(complement(a), b)), complement(meet(b, complement(meet(complement(a), b))))))=join(b, meet(complement(a), complement(meet(complement(a), b)))), inference(rewriting, [status(thm)], [c3, c66])).
+cnf(c68, plain, join(b, meet(join(b, complement(meet(complement(a), b))), complement(meet(b, complement(meet(complement(a), b))))))=join(b, meet(complement(a), complement(meet(complement(a), b)))), inference(rewriting, [status(thm)], [c67, c41])).
+cnf(c69, plain, join(b, meet(join(b, complement(meet(complement(a), b))), complement(a)))=join(b, meet(complement(a), complement(meet(complement(a), b)))), inference(rewriting, [status(thm)], [c68, c66])).
+cnf(c70, plain, join(X3, complement(meet(X2, X3)))=one, inference(rewriting, [status(thm)], [c3, c59])).
+cnf(c71, plain, join(b, meet(complement(a), complement(meet(complement(a), b))))=join(b, meet(one, complement(a))), inference(rewriting, [status(thm)], [c69, c70])).
+cnf(c72, plain, join(b, meet(complement(a), complement(meet(complement(a), b))))=join(b, complement(a)), inference(rewriting, [status(thm)], [c71, c48])).
+cnf(c73, plain, join(b, meet(complement(a), complement(meet(complement(a), b))))=join(complement(a), b), inference(rewriting, [status(thm)], [c72, c2])).
+cnf(c74, plain, join(b, meet(complement(a), complement(meet(complement(a), b))))=one, inference(rewriting, [status(thm)], [c73, c52])).
+cnf(c75, plain, meet(b, meet(complement(a), complement(meet(complement(a), b))))!=zero | meet(complement(a), complement(meet(complement(a), b)))=complement(b), inference(resolution, [status(thm)], [c74, c61])).
+cnf(c76, plain, meet(meet(b, complement(meet(complement(a), b))), X2)=meet(b, meet(X2, complement(meet(complement(a), b)))), inference(rewriting, [status(thm)], [c3, c6])).
+cnf(c77, plain, meet(b, meet(X2, complement(meet(complement(a), b))))=meet(a, X2), inference(rewriting, [status(thm)], [c76, c66])).
+cnf(c78, plain, meet(b, meet(X2, complement(meet(complement(a), b))))=meet(X2, a), inference(rewriting, [status(thm)], [c77, c3])).
+cnf(c79, plain, meet(complement(a), a)!=zero | meet(complement(a), complement(meet(complement(a), b)))=complement(b), inference(rewriting, [status(thm)], [c75, c78])).
+cnf(c80, plain, meet(complement(a), complement(meet(complement(a), b)))=complement(b), inference(resolution, [status(thm)], [c5, c79])).
+cnf(c81, plain, join(complement(a), meet(complement(a), complement(meet(complement(a), b))))=join(complement(b), complement(a)), inference(rewriting, [status(thm)], [c2, c80])).
+cnf(c82, plain, join(complement(b), complement(a))=complement(a), inference(rewriting, [status(thm)], [c81, c17])).
+cnf(c83, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c82])).
+% SZS output end CNFRefutation
+

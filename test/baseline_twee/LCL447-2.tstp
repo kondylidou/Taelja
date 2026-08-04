@@ -1,0 +1,12 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~c_in(c_PropLog_Opl_Oop_A_N_62(v_p, v_q, t_a), c_PropLog_Othms(v_H, t_a), tc_PropLog_Opl(t_a)), file('LCL447-2.p', cls_conjecture_1)).
+cnf(c2, negated_conjecture, c_in(v_q, c_PropLog_Othms(v_H, t_a), tc_PropLog_Opl(t_a)), file('LCL447-2.p', cls_conjecture_0)).
+cnf(c3, axiom, c_in(c_PropLog_Opl_Oop_A_N_62(V_p, c_PropLog_Opl_Oop_A_N_62(V_q, V_p, T_a), T_a), c_PropLog_Othms(V_H, T_a), tc_PropLog_Opl(T_a)), file('LCL447-2.p', cls_PropLog_Othms_OK_0)).
+cnf(c4, axiom, ~c_in(V_p2, c_PropLog_Othms(V_H2, T_a2), tc_PropLog_Opl(T_a2)) | ~c_in(c_PropLog_Opl_Oop_A_N_62(V_p2, V_q2, T_a2), c_PropLog_Othms(V_H2, T_a2), tc_PropLog_Opl(T_a2)) | c_in(V_q2, c_PropLog_Othms(V_H2, T_a2), tc_PropLog_Opl(T_a2)), file('LCL447-2.p', cls_PropLog_Othms_OMP_0)).
+cnf(c5, plain, ~c_in(v_q, c_PropLog_Othms(v_H, t_a), tc_PropLog_Opl(t_a)) | c_in(c_PropLog_Opl_Oop_A_N_62(v_p, v_q, t_a), c_PropLog_Othms(v_H, t_a), tc_PropLog_Opl(t_a)), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c6, plain, c_in(c_PropLog_Opl_Oop_A_N_62(v_p, v_q, t_a), c_PropLog_Othms(v_H, t_a), tc_PropLog_Opl(t_a)), inference(resolution, [status(thm)], [c2, c5])).
+cnf(c7, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c6])).
+% SZS output end CNFRefutation
+

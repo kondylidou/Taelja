@@ -1,0 +1,12 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~achievable(west(m(n0), c(n0)), X, east(m(s(s(s(n0)))), c(s(s(s(n0)))))), file('PUZ008-1.p', prove_can_get_to_east_bank)).
+cnf(c2, axiom, achievable(west(X2, Y), Z, east(m(s(W)), c(s(s(W))))), file('PUZ008-1.p', extra_cannibal_meal_on_east_bank)).
+cnf(c3, axiom, ~achievable(west(m(X2), c(Y2)), boatoneast, east(m(Z2), c(s(W2)))) | achievable(west(m(X2), c(s(Y2))), boatonwest, east(m(Z2), c(W2))), file('PUZ008-1.p', cannibal_east_to_west)).
+cnf(c4, plain, achievable(west(m(s(n0)), c(s(n0))), boatonwest, east(m(s(s(n0))), c(s(s(n0))))), inference(resolution, [status(thm)], [c2, c3])).
+cnf(c5, axiom, ~achievable(west(m(s(X2)), c(s(Y2))), boatonwest, east(m(Z2), c(W2))) | achievable(west(m(X2), c(Y2)), boatoneast, east(m(s(Z2)), c(s(W2)))), file('PUZ008-1.p', missionary_and_cannibal_west_to_east)).
+cnf(c6, plain, achievable(west(m(n0), c(n0)), boatoneast, east(m(s(s(s(n0)))), c(s(s(s(n0)))))), inference(resolution, [status(thm)], [c4, c5])).
+cnf(c7, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c6])).
+% SZS output end CNFRefutation
+

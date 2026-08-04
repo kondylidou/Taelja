@@ -1,0 +1,26 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~less_equal(a, c), file('HEN005-6.p', prove_a_LE_c)).
+cnf(c2, hypothesis, less_equal(b, c), file('HEN005-6.p', b_LE_c)).
+cnf(c3, axiom, ~less_equal(X, Y) | divide(X, Y)=zero, file('HEN005-6.p', quotient_less_equal1)).
+cnf(c4, plain, divide(b, c)=zero, inference(resolution, [status(thm)], [c2, c3])).
+cnf(c5, axiom, less_equal(divide(divide(X2, Z), divide(Y2, Z)), divide(divide(X2, Y2), Z)), file('HEN005-6.p', quotient_property)).
+cnf(c6, hypothesis, less_equal(a, b), file('HEN005-6.p', a_LE_b)).
+cnf(c7, plain, divide(a, b)=zero, inference(resolution, [status(thm)], [c6, c3])).
+cnf(c8, plain, less_equal(divide(divide(a, X2), divide(b, X2)), divide(zero, X2)), inference(rewriting, [status(thm)], [c5, c7])).
+cnf(c9, axiom, divide(zero, X2)=zero, file('HEN005-6.p', zero_divide_anything_is_zero)).
+cnf(c10, plain, less_equal(divide(divide(a, X2), divide(b, X2)), zero), inference(rewriting, [status(thm)], [c8, c9])).
+cnf(c11, axiom, less_equal(zero, X2), file('HEN005-6.p', zero_is_smallest)).
+cnf(c12, axiom, ~less_equal(X2, Y2) | ~less_equal(Y2, X2) | X2=Y2, file('HEN005-6.p', less_equal_and_equal)).
+cnf(c13, plain, ~less_equal(divide(divide(a, X2), divide(b, X2)), zero) | divide(divide(a, X2), divide(b, X2))=zero, inference(resolution, [status(thm)], [c11, c12])).
+cnf(c14, plain, divide(divide(a, X2), divide(b, X2))=zero, inference(resolution, [status(thm)], [c10, c13])).
+cnf(c15, plain, divide(divide(a, c), zero)=zero, inference(rewriting, [status(thm)], [c4, c14])).
+cnf(c16, axiom, divide(X2, Y2)!=zero | less_equal(X2, Y2), file('HEN005-6.p', quotient_less_equal2)).
+cnf(c17, plain, less_equal(divide(a, c), zero), inference(resolution, [status(thm)], [c15, c16])).
+cnf(c18, plain, ~less_equal(divide(a, c), zero) | divide(a, c)=zero, inference(resolution, [status(thm)], [c11, c12])).
+cnf(c19, plain, divide(a, c)=zero, inference(resolution, [status(thm)], [c17, c18])).
+cnf(c20, plain, less_equal(a, c), inference(resolution, [status(thm)], [c19, c16])).
+cnf(c21, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c20])).
+% SZS output end CNFRefutation
+

@@ -1,0 +1,12 @@
+Axiom 1: v_A = c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit)
+Axiom 2: c_lessequals(v_S,v_A,tc_set(t_a))
+Axiom 3: c_lessequals(X,v_A,tc_set(t_a)) => c_in(c_Tarski_Olub(X,v_cl,t_a),v_A,t_a)
+
+Goal 1: c_in(c_Tarski_Olub(v_S,v_cl,t_a),c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),t_a)
+Proof:
+  have c_lessequals(v_S,v_A,tc_set(t_a))
+    by axiom 2
+  hence c_in(c_Tarski_Olub(v_S,v_cl,t_a),v_A,t_a)
+    by axiom 3
+  hence c_in(c_Tarski_Olub(v_S,v_cl,t_a),c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),t_a)
+    by rw axiom 1

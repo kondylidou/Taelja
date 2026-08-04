@@ -1,0 +1,14 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~subgroup_member(c), file('GRP038-3.p', prove_c_is_in_subgroup)).
+cnf(c2, hypothesis, subgroup_member(a), file('GRP038-3.p', a_is_in_subgroup)).
+cnf(c3, hypothesis, subgroup_member(b), file('GRP038-3.p', b_is_in_subgroup)).
+cnf(c4, hypothesis, product(a, inverse(b), c), file('GRP038-3.p', a_times_inverse_b_is_c)).
+cnf(c5, axiom, ~subgroup_member(A) | ~subgroup_member(B) | ~product(A, inverse(B), C) | subgroup_member(C), file('GRP038-3.p', closure_of_product_and_inverse)).
+cnf(c6, plain, ~subgroup_member(a) | ~subgroup_member(b) | subgroup_member(c), inference(resolution, [status(thm)], [c4, c5])).
+cnf(c7, plain, ~subgroup_member(a) | subgroup_member(c), inference(resolution, [status(thm)], [c3, c6])).
+cnf(c8, plain, subgroup_member(c), inference(resolution, [status(thm)], [c2, c7])).
+cnf(c9, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c8])).
+% SZS output end CNFRefutation
+

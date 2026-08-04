@@ -1,0 +1,41 @@
+Axiom 1: ocean(indian)
+Axiom 2: borders(indian,northern_territory)
+Axiom 3: borders(X,Y) => borders(Y,X)
+Axiom 4: borders(indian,western_australia)
+Axiom 5: borders(western_australia,northern_territory)
+Axiom 6: state(northern_territory)
+Axiom 7: state(western_australia)
+
+Goal 1: state(western_australia)
+Proof:
+  have state(western_australia)
+    by axiom 7
+
+Goal 2: state(northern_territory)
+Proof:
+  have state(northern_territory)
+    by axiom 6
+
+Goal 3: borders(western_australia,northern_territory)
+Proof:
+  have borders(western_australia,northern_territory)
+    by axiom 5
+
+Goal 4: borders(western_australia,indian)
+Proof:
+  have borders(indian,western_australia)
+    by axiom 4
+  hence borders(western_australia,indian)
+    by axiom 3
+
+Goal 5: borders(northern_territory,indian)
+Proof:
+  have borders(indian,northern_territory)
+    by axiom 2
+  hence borders(northern_territory,indian)
+    by axiom 3
+
+Goal 6: ocean(indian)
+Proof:
+  have ocean(indian)
+    by axiom 1

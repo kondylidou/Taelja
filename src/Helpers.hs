@@ -3,6 +3,7 @@ module Helpers where
 import Control.Applicative ((<|>))
 import Data.List (nub)
 import Data.Maybe (fromMaybe)
+import qualified Data.Set as Set
 import Types
 
 -- Variable collection
@@ -67,6 +68,11 @@ extendSubst base ((x,t):rest) =
 -- One-way term matching: find σ s.t. applySubstTerm σ pat = tgt.
 -- pat may have Vars (bindable); Vars in tgt are treated as ground atoms.
 -- Threads an existing substitution s for consistency checking across multiple pairs.
+occursIn :: String -> Term -> Bool
+occursIn x (Var y)    = x == y
+occursIn x (App _ ts) = any (occursIn x) ts
+occursIn _ _          = False
+
 matchTerm :: Term -> Term -> Subst -> Maybe Subst
 matchTerm (Var x)    t     s = case lookup x s of
   Nothing -> Just ((x, t) : s)
@@ -102,6 +108,7 @@ matchBothLit (Eq l1 r1) (Eq l2 r2) σ0 σi =
 matchBothLit _ _ _ _ = Nothing
 
 matchBothTerm :: Term -> Term -> Subst -> Subst -> Maybe (Subst, Subst)
+matchBothTerm (Var x) (Var y) σ0 σi | x == y = Just (σ0, σi)
 matchBothTerm (Var x) k σ0 σi =
   let k' = applySubstTerm σi k
   in case lookup x σ0 of
@@ -119,6 +126,38 @@ matchBothTerm (App f ts) (App g us) σ0 σi
       foldl step (Just (σ0, σi)) (zip ts us)
   where step ms (t, u) = ms >>= uncurry (matchBothTerm t u)
 matchBothTerm _ _ _ _ = Nothing
+
+-- Nucleus-variable-aware bidirectional matching.
+-- nvars: variables that belong to the clause being processed (nucleus vars).
+-- Vars in l NOT in nvars are electron-leaked: treated as ground (bind electron side).
+matchBothLitN :: Set.Set String -> Literal -> Literal -> Subst -> Subst -> Maybe (Subst, Subst)
+matchBothLitN nvars (Rel n1 ts1) (Rel n2 ts2) σ0 σi
+  | n1 == n2, length ts1 == length ts2 =
+      foldl step (Just (σ0, σi)) (zip ts1 ts2)
+  where step ms (t, s) = ms >>= uncurry (matchBothTermN nvars t s)
+matchBothLitN nvars (Eq l1 r1) (Eq l2 r2) σ0 σi =
+  matchBothTermN nvars l1 l2 σ0 σi >>= uncurry (matchBothTermN nvars r1 r2)
+matchBothLitN _ _ _ _ _ = Nothing
+
+matchBothTermN :: Set.Set String -> Term -> Term -> Subst -> Subst -> Maybe (Subst, Subst)
+matchBothTermN _ (Var x) (Var y) σ0 σi | x == y = Just (σ0, σi)
+matchBothTermN nvars (Var x) k σ0 σi
+  | Set.member x nvars =
+      let k' = applySubstTerm σi k
+      in case lookup x σ0 of
+           Nothing -> Just ((x, k') : σ0, σi)
+           Just t  -> if t == k' then Just (σ0, σi) else Nothing
+matchBothTermN _ l (Var y) σ0 σi =
+  let l' = applySubstTerm σ0 l
+  in case lookup y σi of
+       Nothing -> Just (σ0, (y, l') : σi)
+       Just t  -> if t == l' then Just (σ0, σi) else Nothing
+matchBothTermN _ (Const c) (Const d) σ0 σi | c == d = Just (σ0, σi)
+matchBothTermN nvars (App f ts) (App g us) σ0 σi
+  | f == g, length ts == length us =
+      foldl step (Just (σ0, σi)) (zip ts us)
+  where step ms (t, u) = ms >>= uncurry (matchBothTermN nvars t u)
+matchBothTermN _ _ _ _ _ = Nothing
 
 -- Rewriting
 
