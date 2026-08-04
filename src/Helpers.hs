@@ -6,7 +6,7 @@ import Data.Maybe (fromMaybe)
 import qualified Data.Set as Set
 import Types
 
--- Variable collection
+-- Variable and constant collection
 
 termVars :: Term -> [String]
 termVars (Var x)    = [x]
@@ -15,6 +15,14 @@ termVars (App _ ts) = concatMap termVars ts
 
 litVars :: Literal -> [String]
 litVars = foldLiteralTerms termVars
+
+termConsts :: Term -> [String]
+termConsts (Const c)  = [c]
+termConsts (Var _)    = []
+termConsts (App _ ts) = concatMap termConsts ts
+
+litConsts :: Literal -> [String]
+litConsts = foldLiteralTerms termConsts
 
 -- Traversal
 
@@ -147,6 +155,13 @@ matchBothTermN nvars (Var x) k σ0 σi
       in case lookup x σ0 of
            Nothing -> Just ((x, k') : σ0, σi)
            Just t  -> if t == k' then Just (σ0, σi) else Nothing
+  | let k' = applySubstTerm σi k, null (termVars k') =
+      -- x is a non-nucleus var leaked into li' via a prior σ0 binding; the right
+      -- side is ground after applying σi, so we can resolve x on the nucleus side
+      -- for consistency across body literals.
+      case lookup x σ0 of
+        Nothing -> Just ((x, k') : σ0, σi)
+        Just t  -> if t == k' then Just (σ0, σi) else Nothing
 matchBothTermN _ l (Var y) σ0 σi =
   let l' = applySubstTerm σ0 l
   in case lookup y σi of

@@ -593,10 +593,10 @@ matchBodyAll _pos bodyLits electrons demodChains nvars initSigma = go bodyLits i
                 origMap  = [(fv, Var ov) | (fv, ov) <- invMap]
                 deFresh s = [(v, applySubstTerm origMap t) | (v, t) <- s]
             return $ case tryMatchN nvars li' kFresh σ0 of
-              Nothing          -> Nothing
-              Just (σiF, σ0') ->
-                let σiOrig = deFresh (convertSigma invMap σiF)
-                in Just (ue, σiOrig, deFresh σ0')
+                        Nothing          -> Nothing
+                        Just (σiF, σ0') ->
+                          let σiOrig = deFresh (convertSigma invMap σiF)
+                          in Just (ue, σiOrig, deFresh σ0')
       directResults <- mapM (\ue -> tryFresh ue (ueUnit ue)) electrons
       let directHits      = catMaybes directResults
           directElecUnits = map (\(u,_,_) -> ueUnit u) directHits
@@ -896,6 +896,31 @@ splitChain l r chain units =
     flipDir LR = RL
     flipDir RL = LR
 
+-- Apply a grounding substitution to all body and head literals of a clause.
+applyGroundingClause :: Subst -> Clause -> Clause
+applyGroundingClause θ (Clause bs mh) =
+  Clause (map (applySubst θ) bs) (fmap (applySubst θ) mh)
+
+-- Build a grounding substitution for variables that are free in derived inner
+-- non-unit clauses but do NOT appear in any leaf axiom clause.  These are
+-- variables that Twee left uninstantiated because the proof works for any value
+-- (e.g. X in LCL446-2).  Each such variable is mapped to the first logical
+-- constant from the goal literals.
+-- leafVars: variables that appear in any leaf unit or non-unit axiom clause —
+-- these are legitimately universally-quantified and must NOT be grounded.
+-- For fully-ground proof trees this returns [] and every application is a no-op.
+buildGroundingSubst :: [Literal] -> Set.Set String -> [(String, String, T.Declaration)] -> Subst
+buildGroundingSubst goalLits leafVars innerNusList =
+  let innerClauses  = mapMaybe (\(_,_,d) -> convertDeclToClause d) innerNusList
+      innerLits     = concatMap (\(Clause bs mh) -> bs ++ catMaybes [mh]) innerClauses
+      innerFreeVars = nub $ concatMap litVars innerLits
+      trueFreeVars  = filter (`Set.notMember` leafVars) innerFreeVars
+      goalConsts    = nub $ concatMap litConsts goalLits
+      groundTerm    = case goalConsts of
+        (c:_) -> Const c
+        []    -> Const "c_ground"
+  in [(v, groundTerm) | v <- trueFreeVars]
+
 -- MAKE_BLOCK: build the proof block for an electron K with substitution σ and
 -- For a 2-body right-child axiom and a single-body inner non-unit, infer the
 -- literal that the left child (pos++"0") must have provided.
@@ -1002,7 +1027,16 @@ processNonUnit pos mAxiomName mLeftAxiomName mRightAxiomName mRightAxiomClause (
               blk1 = appendLine blk (Hence l0σ0 (ByAxiom axName))
           emitGoalProof goalLit (applySubstBlock ρ0 blk1) >> return True
         Nothing ->
-          case allMatches of
+          -- Only add a derived intermediate unit if σ0 contains no non-nucleus
+          -- variable bindings.  Non-nucleus keys in σ0 come from Attempt 3
+          -- (matchBothTermN firing for a non-nucleus Var against a ground term),
+          -- which produces spurious σ0 entries from electron variable name collisions
+          -- with prior body matches (e.g. LCL046-1).  A match with only nucleus keys
+          -- in σ0 is always valid even if l0σ0 has free electron variables (e.g.
+          -- q(f(b),Z) where Z is ax2's universally-quantified variable).
+          let nucleusOnly (σ0, _) = all ((`Set.member` nvars) . fst) σ0
+              validMatches = filter nucleusOnly allMatches
+          in case validMatches of
             [] -> return False
             ((σ0,matched):_) -> do
               blk <- buildElectronBlock σ0 matched demodChains
@@ -1242,21 +1276,22 @@ tryGreedySplitChain s t goalLit = do
 
 -- Main loop: process non-unit clauses until all goals are emitted.
 processNonUnits
-  :: [(String, String, T.Declaration)]
+  :: Subst                           -- grounding substitution θ for inner-clause free vars
+  -> [(String, String, T.Declaration)]
   -> Map.Map String String
   -> [Literal]
   -> Map.Map String [(String, Dir)]  -- resolved demodulation chains
   -> Maybe [(String, Dir)]           -- demod chain at p_{G₁}
   -> AlgM ()
-processNonUnits nonUnits posToName goalLits demodChains pG1Chain = go nonUnits
+processNonUnits θ nonUnits posToName goalLits demodChains pG1Chain = go nonUnits
   where
     nGoals  = length goalLits
     goalLit = head goalLits
 
-    -- Map position → clause for every node in allNus (both leaf and inner).
-    -- Used to recover the right child's clause when building complete inner-node proofs.
+    -- Map position → grounded clause for every node in allNus (both leaf and inner).
+    -- θ is a no-op for leaf axiom clauses (their variable names are not in θ's domain).
     posToClause = Map.fromList
-      [ (p, cls)
+      [ (p, applyGroundingClause θ cls)
       | (p, _, d) <- nonUnits
       , Just cls  <- [convertDeclToClause d] ]
 
@@ -1268,11 +1303,12 @@ processNonUnits nonUnits posToName goalLits demodChains pG1Chain = go nonUnits
         Nothing  -> error ("processNonUnits: cannot convert non-unit clause at position "
                         ++ pos ++ ": " ++ show decl)
         Just cls -> do
-          let mAxiomName       = Map.lookup pos         posToName
-              mLeftAxiomName   = Map.lookup (pos ++ "0") posToName
-              mRightAxiomName  = Map.lookup (pos ++ "1") posToName
+          let clsθ = applyGroundingClause θ cls
+              mAxiomName        = Map.lookup pos          posToName
+              mLeftAxiomName    = Map.lookup (pos ++ "0") posToName
+              mRightAxiomName   = Map.lookup (pos ++ "1") posToName
               mRightAxiomClause = Map.lookup (pos ++ "1") posToClause
-          eqDone <- case cls of
+          eqDone <- case clsθ of
             Clause [Eq s t] Nothing | isNothing mAxiomName ->
               tryEqGoal s t goalLit
             Clause bodyLits Nothing | isNothing mAxiomName, nGoals > 1 ->
@@ -1283,7 +1319,7 @@ processNonUnits nonUnits posToName goalLits demodChains pG1Chain = go nonUnits
           if eqDone then return ()
           else do
             finished <- processNonUnit pos mAxiomName mLeftAxiomName mRightAxiomName
-                          mRightAxiomClause cls goalLit demodChains
+                          mRightAxiomClause clsθ goalLit demodChains
             if finished then return () else go rest
 
     -- Try proof-tree-guided splitChain first; fall back to greedy search.
@@ -1428,16 +1464,29 @@ runAlgorithm initUnits nonUnits innerNus goalLits demodChains origEqPairs origPr
         | (pos, _, _) <- nonUnits
         , isNothing (Map.lookup pos posToName) ]
       action = do
+        -- Variables in leaf axiom clauses (unit leaves + non-unit leaves).
+        -- Excluded from θ's domain: they are legitimately universally-quantified.
+        let leafUnitVars    = Set.fromList $ concatMap (litVars . ueUnit) namedUnits
+            leafNonUnitVars = Set.fromList $ concatMap (\(_,_,d) ->
+                maybe [] (\(Clause bs mh) -> concatMap litVars (bs ++ catMaybes [mh]))
+                (convertDeclToClause d)) nonUnits
+            leafVars = Set.union leafUnitVars leafNonUnitVars
+            -- θ is non-empty only when inner derived clauses contain variables that
+            -- are absent from all leaf axioms (e.g. X in LCL446-2 left uninstantiated
+            -- by Twee because the proof holds for any value of that variable).
+            θ = buildGroundingSubst goalLits leafVars innerNus
         -- Sort leaf non-units and inner non-units together by position.
         -- Inner non-units with no positive head (mHead=Nothing, e.g. derived ¬p(a)) are
         -- excluded: they can't contribute lemmas and must not steal goal emission from
         -- the leaf negated conjecture.
-        let hasGroundPositiveHead (_, _, d) = case convertDeclToClause d of
-              Just (Clause _ (Just headLit)) -> null (litVars headLit)
+        -- After applying θ, inner non-units whose head was non-ground (free variable)
+        -- become ground-headed and are included so their derived electrons reach the loop.
+            hasGroundPositiveHead (_, _, d) = case convertDeclToClause d of
+              Just (Clause _ (Just headLit)) -> null (litVars (applySubst θ headLit))
               _                              -> False
             innerNusGround = filter hasGroundPositiveHead innerNus
             allNus = sortBy (comparing (\(p,_,_) -> p)) (nonUnits ++ innerNusGround)
-        processNonUnits allNus posToName goalLits resolvedChains pG1Chain
+        processNonUnits θ allNus posToName goalLits resolvedChains pG1Chain
         nDone <- gets (length . stGoals)
         when (nDone < length goalLits) $ do
           -- Try deferred Fix 2 candidates (single-electron proofs for inner non-units
