@@ -3,10 +3,7 @@ module Helpers where
 import Control.Applicative ((<|>))
 import Data.List (nub)
 import Data.Maybe (fromMaybe)
-import qualified Data.Set as Set
 import Types
-
--- Variable and constant collection
 
 termVars :: Term -> [String]
 termVars (Var x)    = [x]
@@ -24,23 +21,17 @@ termConsts (App _ ts) = concatMap termConsts ts
 litConsts :: Literal -> [String]
 litConsts = foldLiteralTerms termConsts
 
--- Traversal
-
--- Collect [a] by applying f to every term in a literal.
 foldLiteralTerms :: (Term -> [a]) -> Literal -> [a]
 foldLiteralTerms f (Eq l r)    = f l ++ f r
 foldLiteralTerms f (NEq l r)   = f l ++ f r
 foldLiteralTerms f (Rel _ ts)  = concatMap f ts
 foldLiteralTerms f (NRel _ ts) = concatMap f ts
 
--- Transform every term in a literal by applying f.
 mapLiteralTerms :: (Term -> Term) -> Literal -> Literal
 mapLiteralTerms f (Eq l r)    = Eq  (f l) (f r)
 mapLiteralTerms f (NEq l r)   = NEq (f l) (f r)
 mapLiteralTerms f (Rel n ts)  = Rel n  (map f ts)
 mapLiteralTerms f (NRel n ts) = NRel n (map f ts)
-
--- Substitution
 
 applySubstTerm :: Subst -> Term -> Term
 applySubstTerm subst (Var x)    = fromMaybe (Var x) (lookup x subst)
@@ -63,7 +54,7 @@ applySubstBlock subst (EqChain s steps) =
     applyStep (RwStep nm (l, r) d, cur) =
       (RwStep nm (applySubstTerm subst l, applySubstTerm subst r) d, applySubstTerm subst cur)
 
--- Merge two substitutions, checking that shared variables agree.
+-- fails if any shared variable has conflicting bindings
 extendSubst :: Subst -> Subst -> Maybe Subst
 extendSubst base []           = Just base
 extendSubst base ((x,t):rest) =
@@ -71,16 +62,7 @@ extendSubst base ((x,t):rest) =
     Nothing -> extendSubst ((x,t):base) rest
     Just t' -> if t == t' then extendSubst base rest else Nothing
 
--- Matching
-
--- One-way term matching: find σ s.t. applySubstTerm σ pat = tgt.
--- pat may have Vars (bindable); Vars in tgt are treated as ground atoms.
--- Threads an existing substitution s for consistency checking across multiple pairs.
-occursIn :: String -> Term -> Bool
-occursIn x (Var y)    = x == y
-occursIn x (App _ ts) = any (occursIn x) ts
-occursIn _ _          = False
-
+-- threads an existing substitution so multiple patterns can share bindings
 matchTerm :: Term -> Term -> Subst -> Maybe Subst
 matchTerm (Var x)    t     s = case lookup x s of
   Nothing -> Just ((x, t) : s)
@@ -93,7 +75,6 @@ matchTerm _          _          _ = Nothing
 matchTerms :: Term -> Term -> Maybe Subst
 matchTerms pat tgt = matchTerm pat tgt []
 
--- Match a pattern literal against a target literal (structural, one-way).
 matchLit :: Literal -> Literal -> Maybe Subst
 matchLit (Eq  l1 r1) (Eq  l2 r2)
   = matchTerm l1 l2 [] >>= matchTerm r1 r2
@@ -102,10 +83,7 @@ matchLit (Rel n1 ts1) (Rel n2 ts2)
   = foldl (\ms (p, u) -> ms >>= matchTerm p u) (Just []) (zip ts1 ts2)
 matchLit _ _ = Nothing
 
--- Bidirectional separate matching: nucleus-side Vars (in l) bind into σ0;
--- electron-side Vars (in r) bind into σi.  Consts must agree.
--- Used when both the body literal and the electron have free variables in
--- complementary positions so neither one-way direction suffices.
+-- bidirectional: body-side vars bind σ0, electron-side vars bind σi
 matchBothLit :: Literal -> Literal -> Subst -> Subst -> Maybe (Subst, Subst)
 matchBothLit (Rel n1 ts1) (Rel n2 ts2) σ0 σi
   | n1 == n2, length ts1 == length ts2 =
@@ -135,49 +113,6 @@ matchBothTerm (App f ts) (App g us) σ0 σi
   where step ms (t, u) = ms >>= uncurry (matchBothTerm t u)
 matchBothTerm _ _ _ _ = Nothing
 
--- Nucleus-variable-aware bidirectional matching.
--- nvars: variables that belong to the clause being processed (nucleus vars).
--- Vars in l NOT in nvars are electron-leaked: treated as ground (bind electron side).
-matchBothLitN :: Set.Set String -> Literal -> Literal -> Subst -> Subst -> Maybe (Subst, Subst)
-matchBothLitN nvars (Rel n1 ts1) (Rel n2 ts2) σ0 σi
-  | n1 == n2, length ts1 == length ts2 =
-      foldl step (Just (σ0, σi)) (zip ts1 ts2)
-  where step ms (t, s) = ms >>= uncurry (matchBothTermN nvars t s)
-matchBothLitN nvars (Eq l1 r1) (Eq l2 r2) σ0 σi =
-  matchBothTermN nvars l1 l2 σ0 σi >>= uncurry (matchBothTermN nvars r1 r2)
-matchBothLitN _ _ _ _ _ = Nothing
-
-matchBothTermN :: Set.Set String -> Term -> Term -> Subst -> Subst -> Maybe (Subst, Subst)
-matchBothTermN _ (Var x) (Var y) σ0 σi | x == y = Just (σ0, σi)
-matchBothTermN nvars (Var x) k σ0 σi
-  | Set.member x nvars =
-      let k' = applySubstTerm σi k
-      in case lookup x σ0 of
-           Nothing -> Just ((x, k') : σ0, σi)
-           Just t  -> if t == k' then Just (σ0, σi) else Nothing
-  | let k' = applySubstTerm σi k, null (termVars k') =
-      -- x is a non-nucleus var leaked into li' via a prior σ0 binding; the right
-      -- side is ground after applying σi, so we can resolve x on the nucleus side
-      -- for consistency across body literals.
-      case lookup x σ0 of
-        Nothing -> Just ((x, k') : σ0, σi)
-        Just t  -> if t == k' then Just (σ0, σi) else Nothing
-matchBothTermN _ l (Var y) σ0 σi =
-  let l' = applySubstTerm σ0 l
-  in case lookup y σi of
-       Nothing -> Just (σ0, (y, l') : σi)
-       Just t  -> if t == l' then Just (σ0, σi) else Nothing
-matchBothTermN _ (Const c) (Const d) σ0 σi | c == d = Just (σ0, σi)
-matchBothTermN nvars (App f ts) (App g us) σ0 σi
-  | f == g, length ts == length us =
-      foldl step (Just (σ0, σi)) (zip ts us)
-  where step ms (t, u) = ms >>= uncurry (matchBothTermN nvars t u)
-matchBothTermN _ _ _ _ _ = Nothing
-
--- Rewriting
-
--- One-step rewrite using equation (l,r) in direction dir.
--- Tries root first, then subterms left-to-right.
 rewriteTerm :: Term -> (Term, Term) -> Dir -> Maybe Term
 rewriteTerm t (l, r) dir = tryRoot <|> trySubs
   where
@@ -191,8 +126,7 @@ rewriteTerm t (l, r) dir = tryRoot <|> trySubs
       Just u' -> Just (u' : us)
       Nothing -> (u :) <$> rewriteFirst us
 
--- All one-step rewrites of term t using equation (l,r) in direction dir.
--- Unlike rewriteTerm, generates every applicable position (root + each subterm).
+-- all matching positions, not just leftmost
 rewriteTermAll :: Term -> (Term, Term) -> Dir -> [Term]
 rewriteTermAll t (l, r) dir = rootResult ++ subResults
   where
@@ -207,7 +141,6 @@ rewriteTermAll t (l, r) dir = rootResult ++ subResults
                   ]
       _ -> []
 
--- Lift rewriteTerm to a literal: rewrite the leftmost applicable subterm.
 rewriteLit :: Literal -> (Term, Term) -> Dir -> Maybe Literal
 rewriteLit lit eq dir = case lit of
   Eq  l r   -> ((`Eq`  r) <$> rewriteTerm l eq dir)
@@ -226,12 +159,10 @@ isEqChain :: ProofBlock -> Bool
 isEqChain (EqChain {}) = True
 isEqChain _            = False
 
--- Equality is symmetric: flip swaps sides of an Eq literal.
+-- Eq is symmetric; used when trying both orientations during matching.
 flipLit :: Literal -> Literal
 flipLit (Eq l r) = Eq r l
 flipLit x        = x
-
--- Renaming
 
 renameTerm :: [(String, String)] -> Term -> Term
 renameTerm r (Var x)    = maybe (Var x) Var (lookup x r)
@@ -252,8 +183,6 @@ renameBlock r (EqChain s steps) = EqChain (renameTerm r s) (map renameStep steps
   where renameStep (RwStep nm (l, ri) d, cur) =
           (RwStep nm (renameTerm r l, renameTerm r ri) d, renameTerm r cur)
 
--- Variable collectionfrom proof structures
-
 lineVars :: ProofLine -> [String]
 lineVars (Have  lit _) = litVars lit
 lineVars (And   lit _) = litVars lit
@@ -264,8 +193,7 @@ blockVars (HaveHence ls)    = nub (concatMap lineVars ls)
 blockVars (EqChain s steps) = nub (termVars s ++ concatMap stepVars steps)
   where stepVars (RwStep _ (l, r) _, cur) = termVars l ++ termVars r ++ termVars cur
 
--- Term size (number of nodes in the term tree).
--- Used to prefer simpler rewrite candidates and avoid non-terminating chains.
+-- node count; smaller = simpler rw candidate
 termSize :: Term -> Int
 termSize (Var _)    = 1
 termSize (Const _)  = 1
@@ -273,8 +201,6 @@ termSize (App _ ts) = 1 + sum (map termSize ts)
 
 litSize :: Literal -> Int
 litSize = sum . foldLiteralTerms (\t -> [termSize t])
-
--- Block construction
 
 appendLine :: ProofBlock -> ProofLine -> ProofBlock
 appendLine (HaveHence ls) l = HaveHence (ls ++ [l])

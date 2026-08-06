@@ -10,10 +10,10 @@ import qualified Data.TPTP as T
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
 
-import ProofTree (buildProofTree)
-import Translate (translate, collectLeaves)
+import ProofTree (buildProofInfo)
+import Translate (translate)
 import Emitter (emit)
-import Debug (dumpTSTP, dumpProofTree, dumpCollectLeaves)
+import Debug (dumpProofTree, dumpInferenceRules)
 
 main :: IO ()
 main = do
@@ -27,20 +27,14 @@ main = do
     Left err    -> hPutStrLn stderr ("Parse error: " ++ err) >> exitFailure
     Right tstp@(T.TSTP _ units) -> do
       when debug $ do
-        putStrLn "-- TSTP parser output"
-        dumpTSTP units
-
-      case buildProofTree units of
-        Nothing   -> hPutStrLn stderr "No refutation proof tree found" >> exitFailure
-        Just tree -> do
-          when debug $ do
+        case buildProofInfo units of
+          Nothing   -> putStrLn "No refutation proof tree found"
+          Just info -> do
             putStrLn "-- Proof tree"
-            dumpProofTree tree
+            dumpProofTree info
             putStrLn ""
-            putStrLn "-- Collect leaves"
-            case collectLeaves tree units of
-              Nothing              -> putStrLn "No goal found (missing negated conjecture)"
-              Just (us, nus, _innerNus, goal) -> dumpCollectLeaves us nus goal
+            putStrLn "-- Inference rules"
+            dumpInferenceRules units
             putStrLn ""
-          sp <- translate False tstp
-          putStr (emit sp)
+      sp <- translate debug tstp
+      putStr (emit sp)

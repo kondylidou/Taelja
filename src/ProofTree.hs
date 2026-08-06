@@ -1,100 +1,309 @@
--- Build the refutation proof tree from a flat TSTP unit list.
--- Nodes are assigned bit-string positions: root ⊥ is ε, and each inference
--- step extends the parent's position:
---   unary premise              → parent ++ "1"
---   resolution positive provider (C1∨A1) → parent ++ "0"
---   resolution negative consumer (C2∨¬A2) → parent ++ "1"
---   superposition equation (C1∨s≈s')  → parent ++ "0"
---   superposition into-clause (C2∨L[t]) → parent ++ "1"
--- leafPositions returns leaf positions in lexicographic (left-first DFS) order.
+-- Extract all information needed by the algorithm from a flat TSTP unit list.
+-- Nodes are assigned bit-string positions: root ⊥ is ε, left child gets suffix
+-- "0", right child gets suffix "1".  Leaves at smaller positions are available
+-- as electrons for nuclei at larger positions.
 module ProofTree
-  ( ProofTree(..)
-  , buildProofTree
-  , leafPositions
-  , leafList
-  , innerList
-  , demodChainsForLeaves
-  , isFalsum
-  , isPositiveUnitFormula
+  ( LeafRole(..)
+  , LeafEntry(..)
+  , ProofInfo(..)
+  , buildProofInfo
   , headLitOf
   , unitNameStr
+  , demodRuleNames
   ) where
 
 import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
+import Data.List (sortBy)
 import Data.List.NonEmpty (toList)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, listToMaybe)
+import Data.Ord (comparing)
 import Types (Dir(..))
 
--- The refutation proof tree with ⊥ at the root.
---
--- PTLeaf: a node whose inference rule is not a core proof step — either an
---   original input clause or a preprocessing result (CNF conversion, etc.).
---   These are the axiom instances at the tips of the tree.
---
--- PTNode: a core proof step (resolution, superposition, equality_resolution, …).
---   Binary nodes have children ordered [leftChild, rightChild]: the positive
---   provider goes LEFT (position p0) and the negative consumer goes RIGHT (p1).
---   Unary nodes have their single premise as the right child (position p1).
 data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
   deriving (Show)
 
--- Build the refutation proof tree from a flat TSTP unit list.
--- Returns Nothing when no ⊥ unit is present.
--- DAG nodes that appear as premises of multiple steps are fully expanded
--- (the tree may therefore contain repeated subtrees).
+data LeafRole
+  = OrigAxiom     -- file-sourced clause (not the negated conjecture)
+  | NegConjecture -- the negated conjecture / goal
+  | Derived       -- derived via inference (includes Twee rewriting steps)
+  deriving (Show, Eq)
+
+data LeafEntry = LeafEntry
+  { lePos     :: String          -- bit-string position in the expanded tree
+  , leName    :: String          -- resolved source name
+  , leDecl    :: T.Declaration   -- raw TPTP declaration (for clause conversion)
+  , leSrcDecl :: T.Declaration   -- source (original axiom) declaration; equals leDecl for Derived/NegConj
+  , leRole    :: LeafRole
+  , leSimpl   :: [(String, Dir)] -- Simpl[pos]: demod/rewriting chain, outermost-first
+  } deriving (Show)
+
+-- Everything the algorithm needs, extracted once from the proof tree.
+data ProofInfo = ProofInfo
+  { piElectrons :: [LeafEntry]  -- positive unit nodes (leaf + inner), DFS position order
+  , piNonUnits  :: [LeafEntry]  -- non-positive-unit nodes (incl. NegConjecture), position order
+  , piGoalLits  :: [T.Literal]  -- goal literals from the negated conjecture
+  } deriving (Show)
+
+buildProofInfo :: [T.Unit] -> Maybe ProofInfo
+buildProofInfo allUnits = do
+  tree <- buildProofTree allUnits
+  let unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
+      resolve = resolveSourceName unitMap
+      chains  = demodChainsForLeaves resolve tree
+
+      leafRows  = gatherLeaves "" tree
+      innerRows = gatherInner  "" tree
+
+      mkLeaf (pos, name, decl) =
+        let srcName = if isNegConj decl then name else resolve name
+            srcDecl = case Map.lookup srcName unitMap of
+                        Just (T.Unit _ d _) -> d
+                        _                   -> decl
+        in LeafEntry
+        { lePos     = pos
+        , leName    = srcName
+        , leDecl    = decl
+        , leSrcDecl = srcDecl
+        , leRole    = classifyRole unitMap name decl
+        , leSimpl   = fromMaybe [] (Map.lookup pos chains)
+        }
+      mkInner (pos, name, decl) = LeafEntry
+        { lePos     = pos
+        , leName    = name
+        , leDecl    = decl
+        , leSrcDecl = decl   -- inner nodes are already the derived form
+        , leRole    = Derived
+        , leSimpl   = []
+        }
+
+      byPos  = sortBy (comparing lePos)
+      lEs    = map mkLeaf  leafRows
+      iEs    = map mkInner innerRows
+
+      electrons = byPos $
+                    [e | e <- lEs, isPositiveUnitFormula (leDecl e)] ++
+                    [e | e <- iEs, isPositiveUnitFormula (leDecl e)]
+      nonUnits  = byPos $
+                    [e | e <- lEs, not (isPositiveUnitFormula (leDecl e))] ++
+                    [e | e <- iEs, not (isPositiveUnitFormula (leDecl e))]
+
+  -- prefer the original Conjecture unit: provers may split/simplify before refutation
+  goalLits <- case extractConjectureGoals allUnits of
+    Just lits -> Just lits
+    Nothing   -> do
+      goalEntry <- listToMaybe [e | e <- nonUnits, leRole e == NegConjecture]
+      let goalDecl = fromMaybe (leDecl goalEntry) (lookupDecl unitMap (leName goalEntry))
+      extractGoalLits goalDecl
+  return ProofInfo
+    { piElectrons = electrons
+    , piNonUnits  = nonUnits
+    , piGoalLits  = goalLits
+    }
+
 buildProofTree :: [T.Unit] -> Maybe ProofTree
 buildProofTree allUnits =
   case findRoot allUnits of
     Nothing   -> Nothing
     Just root -> Just (expand root)
   where
-    unitMap = Map.fromList
-      [ (unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits ]
+    unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
 
     expand name = case Map.lookup name unitMap of
-      Nothing ->
-        error ("buildProofTree: unit not found: " ++ name)
+      Nothing             -> error ("buildProofTree: unit not found: " ++ name)
       Just u@(T.Unit _ decl _) ->
         case coreParentNames u of
           Nothing      -> PTLeaf name decl
           Just parents ->
             let rule = fromMaybe Text.empty (inferenceRuleName u)
             in PTNode name decl rule (orderedChildren decl rule parents)
-      Just _ ->
-        error "buildProofTree: unexpected non-formula unit"
+      Just _ -> error "buildProofTree: unexpected non-formula unit"
 
     orderedChildren decl rule parents = case parents of
       [p1n, p2n] ->
-        let d1          = declOf p1n decl
-            d2          = declOf p2n decl
-            (leftN, rightN) =
-              if firstParentIsLeft rule decl d1 d2 then (p1n, p2n) else (p2n, p1n)
-        in [expand leftN, expand rightN]
+        let d1 = declOf p1n; d2 = declOf p2n
+            (ln, rn) = if firstParentIsLeft rule decl d1 d2
+                       then (p1n, p2n) else (p2n, p1n)
+        in [expand ln, expand rn]
       (p0:p1:p2:rest) ->
-        -- 3+ parents: fold into nested binary steps to keep the tree binary.
-        -- If the last parent is a positive unit it is a provider → goes LEFT.
-        -- Otherwise it is the negative consumer → goes RIGHT, so that unit
-        -- electrons at smaller positions satisfy q ≺ p.
-        let eqs      = p1:p2:rest
-            innerKids = foldl (\r eq -> PTNode "?" decl rule [expand eq, r])
-                               (expand p0)
-                               (init eqs)
-            lastIsProvider = isPositiveUnitFormula (declOf (last eqs) decl)
+        let eqs  = p1:p2:rest
+            inner = foldl (\r eq -> PTNode "?" decl rule [expand eq, r])
+                          (expand p0) (init eqs)
+            lastIsProvider = isPositiveUnitFormula (declOf (last eqs))
         in if lastIsProvider
-           then [expand (last eqs), innerKids]   -- unit provider goes LEFT
-           else [innerKids, expand (last eqs)]   -- consumer goes RIGHT
+           then [expand (last eqs), inner]
+           else [inner, expand (last eqs)]
       _ -> map expand parents
 
-    declOf n fallback = case Map.lookup n unitMap of
+    declOf n = case Map.lookup n unitMap of
       Just (T.Unit _ d _) -> d
-      _                   -> fallback
+      _                   -> T.Formula (T.Standard T.Plain)
+                               (T.CNF (T.Clause (pure (T.Positive,
+                                 T.Predicate (T.Defined (T.Atom (Text.pack "unknown"))) []))))
 
--- Helpers --------------------------------------------------------------------
+-- DAG-shared nodes appear at each position they're referenced from
+gatherLeaves :: String -> ProofTree -> [(String, String, T.Declaration)]
+gatherLeaves pos (PTLeaf n d)         = [(pos, n, d)]
+gatherLeaves pos (PTNode _ _ _ [k])   = gatherLeaves (pos ++ "1") k
+gatherLeaves pos (PTNode _ _ _ [l,r]) = gatherLeaves (pos ++ "0") l
+                                     ++ gatherLeaves (pos ++ "1") r
+gatherLeaves pos (PTNode _ _ _ kids)  =
+  concat [gatherLeaves (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
+
+gatherInner :: String -> ProofTree -> [(String, String, T.Declaration)]
+gatherInner _   (PTLeaf _ _)              = []
+gatherInner pos (PTNode n d rule [k])     =
+  gatherInner (pos ++ "1") k ++ keepNode pos n d rule
+gatherInner pos (PTNode n d rule [l,r])   =
+  gatherInner (pos ++ "0") l ++ gatherInner (pos ++ "1") r ++ keepNode pos n d rule
+gatherInner pos (PTNode n d rule kids)    =
+  concat [gatherInner (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
+  ++ keepNode pos n d rule
+
+keepNode :: String -> String -> T.Declaration -> Text.Text -> [(String, String, T.Declaration)]
+keepNode pos n d rule
+  | rule == Text.pack "proved_conjecture" = []
+  | otherwise                             = [(pos, n, d)]
+
+classifyRole :: Map.Map String T.Unit -> String -> T.Declaration -> LeafRole
+classifyRole unitMap name decl
+  -- positive-unit file clauses are axioms even if labeled negated_conjecture
+  -- (Vampire's "prove the negation" mode does this for all input clauses)
+  | isPositiveUnitFormula decl && isFileSrc unitMap name     = OrigAxiom
+  | isPositiveUnitFormula decl && isFileSrc unitMap resolvedNm = OrigAxiom
+  | isNegConj decl                                           = NegConjecture
+  | maybe False isNegConj (lookupDecl unitMap resolvedNm)    = NegConjecture
+  | isFileSrc unitMap name                                    = OrigAxiom
+  | isFileSrc unitMap resolvedNm                              = OrigAxiom
+  | otherwise                                                 = Derived
+  where
+    resolvedNm = resolveSourceName unitMap name
+
+isNegConj :: T.Declaration -> Bool
+isNegConj (T.Formula (T.Standard T.NegatedConjecture) _) = True
+isNegConj _                                              = False
+
+isFileSrc :: Map.Map String T.Unit -> String -> Bool
+isFileSrc unitMap name = case Map.lookup name unitMap of
+  Just (T.Unit _ _ (Just (T.File _ _, _))) -> True
+  _                                         -> False
+
+lookupDecl :: Map.Map String T.Unit -> String -> Maybe T.Declaration
+lookupDecl unitMap name = case Map.lookup name unitMap of
+  Just (T.Unit _ d _) -> Just d
+  _                   -> Nothing
+
+-- trace back to the original file-sourced unit; stop at negated_conjecture inferences
+resolveSourceName :: Map.Map String T.Unit -> String -> String
+resolveSourceName unitMap = go
+  where
+    go name = case Map.lookup name unitMap of
+      Just (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ parents, _)))
+        | rule /= Text.pack "negated_conjecture" ->
+            case concatMap flatParents parents of
+              (p:_) -> go p
+              []    -> name
+      Just (T.Unit n _ _) -> unitNameStr n
+      Just _               -> name
+      Nothing              -> name
+
+    flatParents (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
+    flatParents (T.Parent (T.Inference _ _ ps) _) = concatMap flatParents ps
+    flatParents _                                  = []
+
+extractGoalLits :: T.Declaration -> Maybe [T.Literal]
+extractGoalLits (T.Formula _ (T.CNF (T.Clause lits))) = case toList lits of
+  [(T.Negative, lit)]                       -> Just [lit]
+  [(T.Positive, T.Equality l T.Negative r)] -> Just [T.Equality l T.Positive r]
+  ls | all ((== T.Negative) . fst) ls      -> Just (map snd ls)
+  _                                         -> Nothing
+extractGoalLits (T.Formula _ (T.FOF f)) = extractFOF f
+  where
+    extractFOF (T.Quantified T.Forall _ body)          = extractFOF body
+    extractFOF (T.Negated body)                        = extractConj body
+    extractFOF (T.Atomic (T.Equality l T.Negative r)) = Just [T.Equality l T.Positive r]
+    extractFOF _                                       = Nothing
+
+    extractConj (T.Atomic lit)                   = Just [lit]
+    extractConj (T.Connected l T.Conjunction r)  = do
+      ls <- extractConj l
+      rs <- extractConj r
+      return (ls ++ rs)
+    extractConj _                                = Nothing
+extractGoalLits _ = Nothing
+
+-- more reliable than NegConjecture entry: E may split/simplify before refutation
+extractConjectureGoals :: [T.Unit] -> Maybe [T.Literal]
+extractConjectureGoals units = listToMaybe
+  [ lits
+  | T.Unit _ decl _ <- units
+  , isConjDecl decl
+  , Just lits <- [extractConjLits decl]
+  ]
+  where
+    isConjDecl (T.Formula (T.Standard T.Conjecture) _) = True
+    isConjDecl _                                        = False
+
+    extractConjLits (T.Formula _ (T.FOF f)) = extractFOFConj f
+    extractConjLits _                        = Nothing
+
+    extractFOFConj (T.Quantified T.Forall _ body) = extractFOFConj body
+    extractFOFConj (T.Atomic lit)                  = Just [lit]
+    extractFOFConj (T.Connected l T.Conjunction r) = do
+      ls <- extractFOFConj l
+      rs <- extractFOFConj r
+      return (ls ++ rs)
+    extractFOFConj _                               = Nothing
+
+-- for each PTLeaf position, the chain of demod steps before it was consumed;
+-- outermost step listed first
+demodChainsForLeaves
+  :: (String -> String)
+  -> ProofTree
+  -> Map.Map String [(String, Dir)]
+demodChainsForLeaves resolveName = go ""
+  where
+    go pos (PTLeaf _ _) = Map.singleton pos []
+    go pos (PTNode _ _ rule [l, r])
+      | isDemodRule rule && isDemodApplicationTo rule r =
+          let eqName = resolveName (treeName l)
+              dir    = if rule `elem` map Text.pack
+                            ["forward_demodulation", "rw", "definition_unfolding"]
+                       then LR else RL
+              lMap   = go (pos ++ "0") l
+              rMap   = go (pos ++ "1") r
+          in Map.union lMap (Map.map ((eqName, dir) :) rMap)
+      | otherwise =
+          Map.union (go (pos ++ "0") l) (go (pos ++ "1") r)
+    go pos (PTNode _ _ _ [k])  = go (pos ++ "1") k
+    go pos (PTNode _ _ _ kids) =
+      Map.unions [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
+
+    -- definition_unfolding has three uses; only track it when rewriting a predicate unit.
+    isDemodApplicationTo rule r
+      | rule == Text.pack "definition_unfolding" =
+          case headLitOf (ptDecl r) of
+            Just (T.Equality {}) -> False  -- transitivity chain
+            Just _               -> True   -- predicate unit rewrite
+            Nothing              -> False  -- non-unit nucleus
+      | otherwise = True
+
+    ptDecl (PTLeaf _ d)     = d
+    ptDecl (PTNode _ d _ _) = d
+
+    isDemodRule r = Set.member r demodRuleNames
+
+    treeName (PTLeaf n _)     = n
+    treeName (PTNode n _ _ _) = n
+
+demodRuleNames :: Set.Set Text.Text
+demodRuleNames = Set.fromList $ map Text.pack
+  [ "forward_demodulation", "backward_demodulation"
+  , "rw", "definition_unfolding", "rewriting" ]
 
 unitNameStr :: T.UnitName -> String
 unitNameStr (Left (T.Atom t)) = Text.unpack t
@@ -108,26 +317,18 @@ coreInferenceNames = Set.fromList $ map Text.pack
   , "factoring", "condensation"
   , "definition_unfolding", "trivial_inequality_removal"
   , "forward_demodulation", "backward_demodulation"
-  -- E prover
   , "spm", "sr", "csr", "er", "ef", "rw", "cn", "pm"
-  -- Twee horn branch
   , "proved_conjecture" ]
-
-isCoreInference :: Text.Text -> Bool
-isCoreInference name = Set.member name coreInferenceNames
 
 coreParentNames :: T.Unit -> Maybe [String]
 coreParentNames (T.Unit _ decl (Just (T.Inference (T.Atom rule) _ parents, _)))
-  | isCoreInference rule                    = Just (concatMap extractName parents)
-  | isPredicateRewriting rule decl          = Just (concatMap extractName parents)
+  | Set.member rule coreInferenceNames = Just (concatMap extractName parents)
+  | isPredicateRewriting rule decl     = Just (concatMap extractName parents)
   where
     extractName (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
     extractName (T.Parent (T.Inference _ _ ps) _) = concatMap extractName ps
-    extractName (T.Parent src _)                  =
-      error ("buildProofTree: unexpected parent source in core inference: " ++ show src)
-    -- "rewriting" is core only when the result is a predicate (not an equation).
-    -- Equation-to-equation rewriting chains are left as PTLeafs to avoid
-    -- exponential tree expansion in long equational proof chains.
+    extractName (T.Parent src _) =
+      error ("buildProofTree: unexpected parent source: " ++ show src)
     isPredicateRewriting r d
       | r == Text.pack "rewriting" = case headLitOf d of
           Just (T.Equality {}) -> False
@@ -147,17 +348,14 @@ isFalsum (T.Clause lits) = case toList lits of
 
 declIsBottom :: T.Declaration -> Bool
 declIsBottom (T.Formula _ (T.CNF cl)) = isFalsum cl
-declIsBottom (T.Formula _ (T.FOF (T.Atomic (T.Predicate (T.Reserved (T.Standard T.Falsum)) [])))) = True
--- ¬$true is logically equivalent to $false; some provers use this form.
-declIsBottom (T.Formula _ (T.FOF (T.Negated (T.Atomic (T.Predicate (T.Reserved (T.Standard T.Tautology)) []))))) = True
+declIsBottom (T.Formula _ (T.FOF (T.Atomic
+  (T.Predicate (T.Reserved (T.Standard T.Falsum)) [])))) = True
+declIsBottom (T.Formula _ (T.FOF (T.Negated (T.Atomic
+  (T.Predicate (T.Reserved (T.Standard T.Tautology)) []))))) = True
 declIsBottom _ = False
 
 findRoot :: [T.Unit] -> Maybe String
 findRoot units =
-  -- TSTP output is topologically sorted (parents before children), so the
-  -- actual refutation root is always the LAST bottom unit in the file.
-  -- When E-prover splitting produces intermediate empty clauses, they appear
-  -- before the final root, so `last` correctly selects the true root.
   case [unitNameStr n | T.Unit n decl _ <- units, declIsBottom decl] of
     [] -> Nothing
     rs -> Just (last rs)
@@ -179,7 +377,6 @@ isPosAtomCNF (T.Clause lits) = case toList lits of
   [(T.Positive, T.Predicate (T.Defined _) _)] -> True
   _                                           -> False
 
--- Extract the unique positive literal from a Horn clause (CNF or FOF).
 headLitOf :: T.Declaration -> Maybe T.Literal
 headLitOf (T.Formula _ (T.CNF (T.Clause lits))) =
   case [l | (T.Positive, l) <- toList lits] of
@@ -196,16 +393,13 @@ headLitOfFOF f = case posLitsOfDisjFOF f of
   [lit] -> Just lit
   _     -> Nothing
 
--- Collect positive literal atoms from a disjunctive FOF formula (¬A₁ ∨ … ∨ L).
 posLitsOfDisjFOF :: T.UnsortedFirstOrder -> [T.Literal]
 posLitsOfDisjFOF (T.Atomic lit)                   = [lit]
 posLitsOfDisjFOF (T.Negated _)                    = []
-posLitsOfDisjFOF (T.Connected l T.Disjunction r)  = posLitsOfDisjFOF l ++ posLitsOfDisjFOF r
+posLitsOfDisjFOF (T.Connected l T.Disjunction r)  =
+  posLitsOfDisjFOF l ++ posLitsOfDisjFOF r
 posLitsOfDisjFOF _                                = []
 
--- True if a POSITIVE literal with the same predicate/functor head appears in the declaration.
--- Only positive literals matter: resolution removes the provider's positive head literal,
--- so we check whether it still appears positively in the resolvent.
 headInDecl :: T.Literal -> T.Declaration -> Bool
 headInDecl needle (T.Formula _ (T.CNF (T.Clause lits))) =
   any (litSameHead needle) [l | (T.Positive, l) <- toList lits]
@@ -213,148 +407,37 @@ headInDecl needle (T.Formula _ (T.FOF f)) = headInFOF needle f
 headInDecl _ _ = False
 
 headInFOF :: T.Literal -> T.UnsortedFirstOrder -> Bool
-headInFOF needle (T.Quantified T.Forall _ body) = headInFOF needle body
-headInFOF needle (T.Atomic lit)                 = litSameHead needle lit
-headInFOF needle (T.Connected _ T.Implication r) = headInFOF needle r
-headInFOF needle (T.Connected l _ r)            = headInFOF needle l || headInFOF needle r
-headInFOF _ _                                   = False
+headInFOF needle (T.Quantified T.Forall _ body)    = headInFOF needle body
+headInFOF needle (T.Atomic lit)                    = litSameHead needle lit
+headInFOF needle (T.Connected _ T.Implication r)   = headInFOF needle r
+headInFOF needle (T.Connected l _ r)               =
+  headInFOF needle l || headInFOF needle r
+headInFOF _ _                                      = False
 
 litSameHead :: T.Literal -> T.Literal -> Bool
 litSameHead (T.Predicate n1 _) (T.Predicate n2 _) = n1 == n2
-litSameHead (T.Equality {}) (T.Equality {}) = True
+litSameHead (T.Equality {})    (T.Equality {})     = True
 litSameHead _ _                                    = False
 
--- DFS assignment of binary position strings to leaf nodes.
--- Left child gets suffix "0", right child gets suffix "1".
--- When a TSTP unit appears in multiple branches (DAG sharing), it gets
--- multiple positions; the minimum (leftmost in DFS order) is kept via
--- Map.unions with left-bias on a left-to-right traversal.
-leafPositions :: ProofTree -> Map.Map String String
-leafPositions = go ""
-  where
-    go pos (PTLeaf n _)          = Map.singleton n pos
-    go pos (PTNode _ _ _ [k])    = go (pos ++ "1") k
-    go pos (PTNode _ _ _ [l, r]) = Map.union (go (pos ++ "0") l) (go (pos ++ "1") r)
-    go pos (PTNode _ _ _ kids)   = Map.unions
-      [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
-
--- All leaf nodes in left-first DFS order: (position, name, declaration).
--- Unlike leafPositions, duplicates are preserved — a clause reused at two
--- positions in the expanded tree appears twice.
-leafList :: ProofTree -> [(String, String, T.Declaration)]
-leafList = go ""
-  where
-    go pos (PTLeaf n d)          = [(pos, n, d)]
-    go pos (PTNode _ _ _ [k])    = go (pos ++ "1") k
-    go pos (PTNode _ _ _ [l, r]) = go (pos ++ "0") l ++ go (pos ++ "1") r
-    go pos (PTNode _ _ _ kids)   = concat
-      [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
-
--- All intermediate PTNode nodes that are multi-literal (not positive unit formulas
--- and not proved_conjecture) in bottom-up left-first DFS order: (position, name, decl).
--- These are core inference steps skipped by leafList; their positions are the same
--- bit-strings used by leafList so getElectrons ordering applies correctly.
-innerList :: ProofTree -> [(String, String, T.Declaration)]
-innerList = go ""
-  where
-    go _   (PTLeaf _ _)              = []
-    go pos (PTNode n d rule [k])     = go (pos ++ "1") k     ++ keep pos n d rule
-    go pos (PTNode n d rule [l, r])  = go (pos ++ "0") l
-                                    ++ go (pos ++ "1") r     ++ keep pos n d rule
-    go pos (PTNode n d rule kids)    = concat [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
-                                    ++ keep pos n d rule
-    keep pos n d rule
-      | rule == Text.pack "proved_conjecture" = []
-      | isPositiveUnitFormula d               = []
-      | otherwise                             = [(pos, n, d)]
-
--- True when Vampire's parent1 should be the LEFT (positive provider) child.
--- Superposition: Vampire lists [into_clause, equation]; the equation is the provider.
---   d1 = into_clause (consumer, goes RIGHT), d2 = equation (provider, goes LEFT).
---   We always return False regardless of whether into_clause is a unit formula.
--- Resolution with one positive unit: the positive unit is the provider.
--- Resolution with two non-units: the parent whose head is absent from the result
---   provided the positive literal that got resolved away.
-demodRuleNames :: Set.Set Text.Text
-demodRuleNames = Set.fromList $ map Text.pack
-  [ "forward_demodulation", "backward_demodulation", "rw", "definition_unfolding"
-  , "rewriting" ]
-
 superpositionRules :: Set.Set Text.Text
-superpositionRules = Set.fromList (map Text.pack
+superpositionRules = Set.fromList $ map Text.pack
   [ "superposition", "paramodulation", "spm"
-  , "forward_demodulation", "backward_demodulation" ])
+  , "forward_demodulation", "backward_demodulation" ]
 
 firstParentIsLeft :: Text.Text -> T.Declaration -> T.Declaration -> T.Declaration -> Bool
 firstParentIsLeft rule _ _ _
-  | Set.member rule superpositionRules =
-      False  -- equation (d2) is always the LEFT provider; into-clause (d1) goes RIGHT
+  | Set.member rule superpositionRules = False
 firstParentIsLeft _ _ d1 d2
   | isPositiveUnitFormula d1 && not (isPositiveUnitFormula d2) = True
   | isPositiveUnitFormula d2 && not (isPositiveUnitFormula d1) = False
   | isPositiveUnitFormula d1 && isPositiveUnitFormula d2 =
-      -- Both are positive units.  Treat like superposition: if one is a pure
-      -- equation and the other a predicate, the equation goes LEFT.  If both
-      -- are equations (or both predicates), keep TSTP order (first goes LEFT).
       let isEqLitOf d = case headLitOf d of { Just (T.Equality {}) -> True; _ -> False }
       in case (isEqLitOf d1, isEqLitOf d2) of
-           (True,  False) -> True   -- d1 is equation, d2 is predicate → d1 LEFT
-           (False, True ) -> False  -- d2 is equation, d1 is predicate → d2 LEFT
-           _              -> True   -- both equations or both predicates → TSTP order
+           (True,  False) -> True
+           (False, True ) -> False
+           _              -> True
 firstParentIsLeft _ result d1 d2 = case (headLitOf d1, headLitOf d2) of
-  (Just h1, _)       -> not (headInDecl h1 result)  -- d1's head absent → d1 is the provider
-  (Nothing, Just h2) -> headInDecl h2 result         -- d2's head survives → d2 is the consumer → d1 is left
-  (Nothing, Nothing) -> error "firstParentIsLeft: both parents have no positive head literal (non-Horn clause in proof?)"
-
--- For each leaf position p, the chain of demodulation steps applied to the
--- clause at p before it was consumed by the binary inference above it.
--- Outermost step (applied last to the clause in proof order) is listed first.
--- Each entry: (resolved_eq_name, direction_applied_to_the_clause).
--- LR = forward_demodulation (equation used left-to-right to simplify),
--- RL = backward_demodulation.
-demodChainsForLeaves
-  :: (String -> String)             -- raw unit name → resolved axiom name
-  -> ProofTree
-  -> Map.Map String [(String, Dir)]
-demodChainsForLeaves resolveName = go ""
-  where
-    go pos (PTLeaf _ _) = Map.singleton pos []
-    go pos (PTNode _ _ rule [l, r])
-      | isDemodRule rule && isDemodApplicationTo rule r =
-          -- l = equation provider (LEFT/pos0), r = positive unit predicate (RIGHT/pos1).
-          -- The equation in l was applied to the clause in r.
-          let eqName = resolveName (treeName l)
-              dir    = if rule == Text.pack "forward_demodulation"
-                            || rule == Text.pack "rw"
-                            || rule == Text.pack "definition_unfolding" then LR else RL
-              step   = (eqName, dir)
-              lMap   = go (pos ++ "0") l
-              rMap   = go (pos ++ "1") r
-          in Map.union lMap (Map.map (step :) rMap)
-      | otherwise =
-          Map.union (go (pos ++ "0") l) (go (pos ++ "1") r)
-    go pos (PTNode _ _ _ [k])  = go (pos ++ "1") k
-    go pos (PTNode _ _ _ kids) = Map.unions
-      [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
-
-    -- definition_unfolding has three distinct uses in Vampire:
-    --   (a) rewrite a positive unit PREDICATE using an equation → track as demod step
-    --   (b) chain two equations via transitivity (f=g, g=h → f=h) → let EqChain handle it
-    --   (c) rewrite a non-unit clause (nucleus) using an equation → don't track;
-    --       the demod chain would bleed into units synthesised at that position (e.g. EqChain
-    --       lemmas) and produce spurious rw steps.
-    -- For (b) and (c), fall through to | otherwise.
-    isDemodApplicationTo rule r
-      | rule == Text.pack "definition_unfolding" =
-          case headLitOf (ptDecl r) of
-            Just (T.Equality {}) -> False  -- (b) transitivity
-            Just _               -> True   -- (a) predicate unit
-            Nothing              -> False  -- (c) non-unit nucleus
-      | otherwise = True
-    ptDecl (PTLeaf _ d)     = d
-    ptDecl (PTNode _ d _ _) = d
-
-    isDemodRule r = Set.member r demodRuleNames
-
-    treeName (PTLeaf n _)     = n
-    treeName (PTNode n _ _ _) = n
+  (Just h1, _)       -> not (headInDecl h1 result)
+  (Nothing, Just h2) -> headInDecl h2 result
+  (Nothing, Nothing) ->
+    error "firstParentIsLeft: both parents have no positive head"

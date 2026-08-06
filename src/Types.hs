@@ -70,14 +70,9 @@ data StructuredProof = StructuredProof
   , goals  :: [(Literal, ProofBlock)]
   } deriving (Show)
 
--- Working state threaded through the algorithm (Phases 1–3).
 data AlgState = AlgState
-  { stUnits             :: [UnitEntry]
-  , stLemmas            :: [(String, Literal, ProofBlock)]
-  , stGoals             :: [(Literal, ProofBlock)]
-  , stCounter           :: Int
-  , stDeferredGoalProof :: Maybe (Literal, ProofBlock)
-    -- ^ A goal proof candidate deferred until after the main loop.
-    -- Used when an inner non-unit derives the goal but a named leaf axiom
-    -- may still produce a better (more complete) proof first.
+  { stUnits   :: [UnitEntry]
+  , stLemmas  :: [(String, Literal, ProofBlock)]
+  , stGoals   :: [(Literal, ProofBlock)]
+  , stCounter :: Int
   }
