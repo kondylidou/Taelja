@@ -53,3 +53,13 @@ executable taelja
     tptp        ^>=0.1,
     taelja
   default-language: GHC2021
+
+executable test-parse
+  main-is:        TestParse.hs
+  hs-source-dirs: app
+  build-depends:
+    base        ^>=4.18,
+    text        ^>=2.0,
+    attoparsec  ^>=0.14,
+    tptp        ^>=0.1
+  default-language: GHC2021

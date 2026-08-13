@@ -1,0 +1,23 @@
+Axiom 1: l0(c)
+Axiom 2: q0(X,d)
+Axiom 3: s0(d)
+Axiom 4: s0(X) => q1(X,X,X)
+Axiom 5: q1(d,Y,d) /\ q0(X,Y) /\ s0(d) => r1(X)
+Axiom 6: r1(X) /\ l0(X) => r2(X)
+
+Goal 1: r2(c)
+Proof:
+  have s0(d)
+    by axiom 3
+  hence q1(d,d,d)
+    by axiom 4
+   and q0(X,d)
+    by axiom 2
+   and s0(d)
+    by axiom 3
+  hence r1(X)
+    by axiom 5
+   and l0(c)
+    by axiom 1
+  hence r2(c)
+    by axiom 6

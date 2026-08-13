@@ -1,7 +1,7 @@
 module Helpers where
 
 import Control.Applicative ((<|>))
-import Data.List (nub)
+import Data.List (isSuffixOf, nub)
 import Data.Maybe (fromMaybe)
 import Types
 
@@ -83,33 +83,58 @@ matchLit (Rel n1 ts1) (Rel n2 ts2)
   = foldl (\ms (p, u) -> ms >>= matchTerm p u) (Just []) (zip ts1 ts2)
 matchLit _ _ = Nothing
 
--- bidirectional: body-side vars bind σ0, electron-side vars bind σi
+-- Apply σ until fixed point; resolves chained bindings (e.g. X→f(Y), Y→c becomes X→f(c)).
+deepApplySubstTerm :: Subst -> Term -> Term
+deepApplySubstTerm s t =
+  let t' = applySubstTerm s t
+  in if t' == t then t else deepApplySubstTerm s t'
+
+-- Rename all variables in a literal by appending a suffix; used to
+-- avoid name clashes when unifying a unit with a goal literal.
+suffixVarsLit :: String -> Literal -> Literal
+suffixVarsLit suf = mapLiteralTerms go
+  where
+    go (Var x)    = Var (x ++ suf)
+    go (Const c)  = Const c
+    go (App f ts) = App f (map go ts)
+
+-- bidirectional: body-side vars bind σ0, electron-side vars bind ρi
 matchBothLit :: Literal -> Literal -> Subst -> Subst -> Maybe (Subst, Subst)
-matchBothLit (Rel n1 ts1) (Rel n2 ts2) σ0 σi
+matchBothLit (Rel n1 ts1) (Rel n2 ts2) σ0 ρi
   | n1 == n2, length ts1 == length ts2 =
-      foldl step (Just (σ0, σi)) (zip ts1 ts2)
+      foldl step (Just (σ0, ρi)) (zip ts1 ts2)
   where step ms (t, s) = ms >>= uncurry (matchBothTerm t s)
-matchBothLit (Eq l1 r1) (Eq l2 r2) σ0 σi =
-  matchBothTerm l1 l2 σ0 σi >>= uncurry (matchBothTerm r1 r2)
+matchBothLit (Eq l1 r1) (Eq l2 r2) σ0 ρi =
+  matchBothTerm l1 l2 σ0 ρi >>= uncurry (matchBothTerm r1 r2)
 matchBothLit _ _ _ _ = Nothing
 
 matchBothTerm :: Term -> Term -> Subst -> Subst -> Maybe (Subst, Subst)
-matchBothTerm (Var x) (Var y) σ0 σi | x == y = Just (σ0, σi)
-matchBothTerm (Var x) k σ0 σi =
-  let k' = applySubstTerm σi k
+matchBothTerm (Var x) (Var y) σ0 ρi | x == y = Just (σ0, ρi)
+matchBothTerm (Var x) k σ0 ρi =
+  let k' = applySubstTerm ρi k
   in case lookup x σ0 of
-    Nothing -> Just ((x, k') : σ0, σi)
-    Just t  -> if t == k' then Just (σ0, σi) else Nothing
-matchBothTerm l (Var y) σ0 σi =
+    Nothing -> Just ((x, k') : σ0, ρi)
+    -- x already bound to t; propagate by matching t against k'.
+    -- If t is an electron var (suffix "_e"), further constrain it on the
+    -- electron side (ρi) — not σ0 — so repeated body vars like m0(X,X,Y)
+    -- correctly ground the electron var on both occurrences.
+    Just t  -> if t == k' then Just (σ0, ρi)
+               else case t of
+                 Var y | "_e" `isSuffixOf` y ->
+                   case lookup y ρi of
+                     Nothing -> Just (σ0, (y, k') : ρi)
+                     Just t' -> if t' == k' then Just (σ0, ρi) else Nothing
+                 _ -> matchBothTerm t k' σ0 ρi
+matchBothTerm l (Var y) σ0 ρi =
   let l' = applySubstTerm σ0 l
-  in case lookup y σi of
-    Nothing -> Just (σ0, (y, l') : σi)
-    Just t  -> if t == l' then Just (σ0, σi) else Nothing
-matchBothTerm (Const c) (Const d) σ0 σi =
-  if c == d then Just (σ0, σi) else Nothing
-matchBothTerm (App f ts) (App g us) σ0 σi
+  in case lookup y ρi of
+    Nothing -> Just (σ0, (y, l') : ρi)
+    Just t  -> if t == l' then Just (σ0, ρi) else Nothing
+matchBothTerm (Const c) (Const d) σ0 ρi =
+  if c == d then Just (σ0, ρi) else Nothing
+matchBothTerm (App f ts) (App g us) σ0 ρi
   | f == g, length ts == length us =
-      foldl step (Just (σ0, σi)) (zip ts us)
+      foldl step (Just (σ0, ρi)) (zip ts us)
   where step ms (t, u) = ms >>= uncurry (matchBothTerm t u)
 matchBothTerm _ _ _ _ = Nothing
 

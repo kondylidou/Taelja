@@ -36,5 +36,7 @@ main = do
             putStrLn "-- Inference rules"
             dumpInferenceRules units
             putStrLn ""
-      sp <- translate debug tstp
-      putStr (emit sp)
+      msp <- translate debug tstp
+      case msp of
+        Nothing -> exitFailure
+        Just sp -> putStr (emit sp)

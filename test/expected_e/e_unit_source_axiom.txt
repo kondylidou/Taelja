@@ -1,0 +1,9 @@
+Axiom 1: less_equal(X,top)
+Axiom 2: less_equal(X,Y) => member(X,Y)
+
+Goal 1: member(a,top)
+Proof:
+  have less_equal(a,top)
+    by axiom 1
+  hence member(a,top)
+    by axiom 2

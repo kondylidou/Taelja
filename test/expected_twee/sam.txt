@@ -1,0 +1,95 @@
+Axiom 1: join(X,Y) = join(Y,X)
+Axiom 2: join(Z,join(A,B)) = join(join(Z,A),B)
+Axiom 3: meet(Z,A) = meet(A,Z)
+Axiom 4: join(Z,meet(Z,A)) = Z
+Axiom 5: meet(Z,join(Z,A)) = Z
+Axiom 6: meet(Z,meet(A,C)) = meet(meet(Z,A),C)
+Axiom 7: comp(b,join(c,d))
+Axiom 8: comp(Z,A) => meet(Z,A) = zero
+Axiom 9: meet(zero,Z) = zero
+Axiom 10: join(zero,Z) = Z
+
+Lemma 11: meet(b,join(c,d)) = zero
+Proof:
+  have comp(b,join(c,d))
+    by axiom 7
+  hence meet(b,join(c,d)) = zero
+    by axiom 8
+
+Goal 1: meet(join(a,meet(b,c)),join(a,meet(b,d))) = a
+Proof:
+  meet(join(a,meet(b,c)),join(a,meet(b,d)))
+= { by axiom 10 R->L }
+  join(zero,meet(join(a,meet(b,c)),join(a,meet(b,d))))
+= { by axiom 1 }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),zero)
+= { by axiom 9 R->L }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(zero,c))
+= { by axiom 3 }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(c,zero))
+= { by lemma 11 R->L }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(c,meet(b,join(c,d))))
+= { by axiom 6 }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(meet(c,b),join(c,d)))
+= { by axiom 3 R->L }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(meet(b,c),join(c,d)))
+= { by axiom 4 R->L }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(meet(b,c),join(join(c,meet(c,b)),d)))
+= { by axiom 3 R->L }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(meet(b,c),join(join(c,meet(b,c)),d)))
+= { by axiom 1 }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(meet(b,c),join(join(meet(b,c),c),d)))
+= { by axiom 2 R->L }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(meet(b,c),join(meet(b,c),join(c,d))))
+= { by axiom 1 }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(meet(b,c),join(meet(b,c),join(d,c))))
+= { by axiom 5 }
+  join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(b,c))
+= { by axiom 1 R->L }
+  join(meet(b,c),meet(join(a,meet(b,c)),join(a,meet(b,d))))
+= { by axiom 4 R->L }
+  join(meet(b,c),join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(meet(join(a,meet(b,c)),join(a,meet(b,d))),a)))
+= { by axiom 6 R->L }
+  join(meet(b,c),join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(join(a,meet(b,c)),meet(join(a,meet(b,d)),a))))
+= { by axiom 3 R->L }
+  join(meet(b,c),join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(join(a,meet(b,c)),meet(a,join(a,meet(b,d))))))
+= { by axiom 5 }
+  join(meet(b,c),join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(join(a,meet(b,c)),a)))
+= { by axiom 3 R->L }
+  join(meet(b,c),join(meet(join(a,meet(b,c)),join(a,meet(b,d))),meet(a,join(a,meet(b,c)))))
+= { by axiom 5 }
+  join(meet(b,c),join(meet(join(a,meet(b,c)),join(a,meet(b,d))),a))
+= { by axiom 1 R->L }
+  join(meet(b,c),join(a,meet(join(a,meet(b,c)),join(a,meet(b,d)))))
+= { by axiom 2 }
+  join(join(meet(b,c),a),meet(join(a,meet(b,c)),join(a,meet(b,d))))
+= { by axiom 1 R->L }
+  join(join(a,meet(b,c)),meet(join(a,meet(b,c)),join(a,meet(b,d))))
+= { by axiom 4 }
+  join(a,meet(b,c))
+= { by axiom 1 }
+  join(meet(b,c),a)
+= { by axiom 5 R->L }
+  join(meet(meet(b,c),join(meet(b,c),join(d,c))),a)
+= { by axiom 1 R->L }
+  join(meet(meet(b,c),join(meet(b,c),join(c,d))),a)
+= { by axiom 2 }
+  join(meet(meet(b,c),join(join(meet(b,c),c),d)),a)
+= { by axiom 1 R->L }
+  join(meet(meet(b,c),join(join(c,meet(b,c)),d)),a)
+= { by axiom 3 }
+  join(meet(meet(b,c),join(join(c,meet(c,b)),d)),a)
+= { by axiom 4 }
+  join(meet(meet(b,c),join(c,d)),a)
+= { by axiom 3 }
+  join(meet(meet(c,b),join(c,d)),a)
+= { by axiom 6 R->L }
+  join(meet(c,meet(b,join(c,d))),a)
+= { by lemma 11 }
+  join(meet(c,zero),a)
+= { by axiom 3 R->L }
+  join(meet(zero,c),a)
+= { by axiom 9 }
+  join(zero,a)
+= { by axiom 10 }
+  a

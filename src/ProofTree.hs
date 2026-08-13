@@ -49,8 +49,13 @@ data ProofInfo = ProofInfo
   , piGoalLits  :: [T.Literal]  -- goal literals from the negated conjecture
   } deriving (Show)
 
+maxProofUnits :: Int
+maxProofUnits = 2000
+
 buildProofInfo :: [T.Unit] -> Maybe ProofInfo
-buildProofInfo allUnits = do
+buildProofInfo allUnits
+  | length allUnits > maxProofUnits = Nothing
+  | otherwise = do
   tree <- buildProofTree allUnits
   let unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
       resolve = resolveSourceName unitMap
@@ -95,10 +100,12 @@ buildProofInfo allUnits = do
   -- prefer the original Conjecture unit: provers may split/simplify before refutation
   goalLits <- case extractConjectureGoals allUnits of
     Just lits -> Just lits
-    Nothing   -> do
-      goalEntry <- listToMaybe [e | e <- nonUnits, leRole e == NegConjecture]
-      let goalDecl = fromMaybe (leDecl goalEntry) (lookupDecl unitMap (leName goalEntry))
-      extractGoalLits goalDecl
+    Nothing   -> listToMaybe
+      [ lits
+      | e <- nonUnits, leRole e == NegConjecture
+      , let goalDecl = fromMaybe (leDecl e) (lookupDecl unitMap (leName e))
+      , Just lits <- [extractGoalLits goalDecl]
+      ]
   return ProofInfo
     { piElectrons = electrons
     , piNonUnits  = nonUnits
@@ -109,35 +116,51 @@ buildProofTree :: [T.Unit] -> Maybe ProofTree
 buildProofTree allUnits =
   case findRoot allUnits of
     Nothing   -> Nothing
-    Just root -> Just (expand root)
+    Just root -> Just (expandMemo root)
   where
     unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
 
-    expand name = case Map.lookup name unitMap of
-      Nothing             -> error ("buildProofTree: unit not found: " ++ name)
-      Just u@(T.Unit _ decl _) ->
+    -- Memoised node table: each TSTP clause is built at most once.
+    -- Data.Map.Strict forces each value to WHNF (the outer constructor),
+    -- but the children field of PTNode is a lazy thunk — it is not forced
+    -- during Map.fromList.  Because TSTP proofs are acyclic DAGs, the
+    -- thunks are safe to force later and are evaluated at most once.
+    expandedNodes :: Map.Map String ProofTree
+    expandedNodes = Map.fromList
+      [ (name, buildNode name u)
+      | (name, u) <- Map.toList unitMap ]
+
+    expandMemo name = case Map.lookup name expandedNodes of
+      Just t  -> t
+      Nothing -> PTLeaf name (T.Formula (T.Standard T.Plain)
+                   (T.FOF (T.Atomic (T.Predicate (T.Defined (T.Atom (Text.pack name))) []))))
+
+    buildNode name u = case u of
+      T.Unit _ decl _ ->
         case coreParentNames u of
           Nothing      -> PTLeaf name decl
           Just parents ->
             let rule = fromMaybe Text.empty (inferenceRuleName u)
             in PTNode name decl rule (orderedChildren decl rule parents)
-      Just _ -> error "buildProofTree: unexpected non-formula unit"
+      _ ->
+        PTLeaf name (T.Formula (T.Standard T.Plain)
+          (T.FOF (T.Atomic (T.Predicate (T.Defined (T.Atom (Text.pack name))) []))))
 
     orderedChildren decl rule parents = case parents of
       [p1n, p2n] ->
         let d1 = declOf p1n; d2 = declOf p2n
             (ln, rn) = if firstParentIsLeft rule decl d1 d2
                        then (p1n, p2n) else (p2n, p1n)
-        in [expand ln, expand rn]
+        in [expandMemo ln, expandMemo rn]
       (p0:p1:p2:rest) ->
         let eqs  = p1:p2:rest
-            inner = foldl (\r eq -> PTNode "?" decl rule [expand eq, r])
-                          (expand p0) (init eqs)
+            inner = foldl (\r eq -> PTNode "?" decl rule [expandMemo eq, r])
+                          (expandMemo p0) (init eqs)
             lastIsProvider = isPositiveUnitFormula (declOf (last eqs))
         in if lastIsProvider
-           then [expand (last eqs), inner]
-           else [inner, expand (last eqs)]
-      _ -> map expand parents
+           then [expandMemo (last eqs), inner]
+           else [inner, expandMemo (last eqs)]
+      _ -> map expandMemo parents
 
     declOf n = case Map.lookup n unitMap of
       Just (T.Unit _ d _) -> d
@@ -145,29 +168,98 @@ buildProofTree allUnits =
                                (T.CNF (T.Clause (pure (T.Positive,
                                  T.Predicate (T.Defined (T.Atom (Text.pack "unknown"))) []))))
 
--- DAG-shared nodes appear at each position they're referenced from
+-- Gather leaves with two-level deduplication to prevent exponential traversal
+-- of DAG-shared nodes in the memoised proof tree:
+--
+--  seenElec  – names of positive-unit (electron) leaves already recorded;
+--              each such leaf is recorded at most once (first/shallowest DFS
+--              position).
+--
+--  seenInner – Map from inner-node name → non-unit leaves collected during
+--              that node's first traversal, stored as (relative_pos, name, decl).
+--              On a second encounter of the same PTNode at a new absolute
+--              position, those non-unit leaves are re-emitted at new absolute
+--              positions (new_pos ++ relative_pos) rather than re-traversing
+--              the whole subtree.  Positive-unit leaves are NOT re-emitted
+--              (they are already in seenElec and deduplicated globally).
+--
+-- This gives O(N) traversal while allowing non-unit leaves (rule clauses) to
+-- appear at every logically distinct position: each occurrence is a separate
+-- rule application that may use different available electrons.
 gatherLeaves :: String -> ProofTree -> [(String, String, T.Declaration)]
-gatherLeaves pos (PTLeaf n d)         = [(pos, n, d)]
-gatherLeaves pos (PTNode _ _ _ [k])   = gatherLeaves (pos ++ "1") k
-gatherLeaves pos (PTNode _ _ _ [l,r]) = gatherLeaves (pos ++ "0") l
-                                     ++ gatherLeaves (pos ++ "1") r
-gatherLeaves pos (PTNode _ _ _ kids)  =
-  concat [gatherLeaves (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
+gatherLeaves pos0 tree0 =
+    let (_, _, res) = go pos0 tree0 Set.empty Map.empty in res
+  where
+    -- seenElec  :: Set String
+    -- seenInner :: Map String [(String, String, T.Declaration)]
+    --              inner-name → [(rel_pos, leaf_name, leaf_decl)]  (non-unit only)
 
+    go pos (PTLeaf n d) seenElec seenInner
+      | isPositiveUnitFormula d =
+          if Set.member n seenElec
+            then (seenElec, seenInner, [])
+            else (Set.insert n seenElec, seenInner, [(pos, n, d)])
+      | otherwise = (seenElec, seenInner, [(pos, n, d)])
+
+    go pos (PTNode n _ _ kids) seenElec seenInner
+      | n /= "?" =
+          case Map.lookup n seenInner of
+            Just stored ->
+              -- Re-emit stored non-unit leaves at the current absolute position.
+              let reemit = [(pos ++ rel, nm, d) | (rel, nm, d) <- stored]
+              in (seenElec, seenInner, reemit)
+            Nothing ->
+              let (se', si', res) = goKids pos kids seenElec seenInner
+                  -- Store only non-unit leaves, using relative positions.
+                  nonUnitEntries =
+                    [(drop (length pos) p, nm, d)
+                    | (p, nm, d) <- res, not (isPositiveUnitFormula d)]
+                  si'' = Map.insert n nonUnitEntries si'
+              in (se', si'', res)
+      | otherwise = goKids pos kids seenElec seenInner
+
+    goKids pos [k] seenElec seenInner =
+      go (pos ++ "1") k seenElec seenInner
+    goKids pos [l, r] seenElec seenInner =
+      let (se',  si',  ls) = go (pos ++ "0") l seenElec seenInner
+          (se'', si'', rs) = go (pos ++ "1") r se' si'
+      in (se'', si'', ls ++ rs)
+    goKids pos kids seenElec seenInner =
+      foldl (\(se, si, acc) (c, kid) ->
+               let (se', si', r) = go (pos ++ [c]) kid se si
+               in (se', si', acc ++ r))
+            (seenElec, seenInner, []) (zip ['0'..] kids)
+
+-- Gather inner nodes, recording each distinct TSTP clause name at most once.
+-- Synthetic nodes (name "?") are always included since they are distinct objects.
 gatherInner :: String -> ProofTree -> [(String, String, T.Declaration)]
-gatherInner _   (PTLeaf _ _)              = []
-gatherInner pos (PTNode n d rule [k])     =
-  gatherInner (pos ++ "1") k ++ keepNode pos n d rule
-gatherInner pos (PTNode n d rule [l,r])   =
-  gatherInner (pos ++ "0") l ++ gatherInner (pos ++ "1") r ++ keepNode pos n d rule
-gatherInner pos (PTNode n d rule kids)    =
-  concat [gatherInner (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
-  ++ keepNode pos n d rule
+gatherInner pos0 tree0 = snd (go pos0 tree0 Set.empty)
+  where
+    go _   (PTLeaf _ _) seen = (seen, [])
+    go pos (PTNode n d rule [k]) seen =
+      let (seen', ks)       = go (pos ++ "1") k seen
+          (seen'', inner)   = addNode pos n d rule seen'
+      in  (seen'', ks ++ inner)
+    go pos (PTNode n d rule [l,r]) seen =
+      let (seen',  ls)      = go (pos ++ "0") l seen
+          (seen'', rs)      = go (pos ++ "1") r seen'
+          (seen''', inner)  = addNode pos n d rule seen''
+      in  (seen''', ls ++ rs ++ inner)
+    go pos (PTNode n d rule kids) seen =
+      let (seen', kidsRes) =
+            foldl (\(s, acc) (c, kid) ->
+                     let (s', res) = go (pos ++ [c]) kid s
+                     in  (s', acc ++ res))
+                  (seen, []) (zip ['0'..] kids)
+          (seen'', inner) = addNode pos n d rule seen'
+      in  (seen'', kidsRes ++ inner)
 
-keepNode :: String -> String -> T.Declaration -> Text.Text -> [(String, String, T.Declaration)]
-keepNode pos n d rule
-  | rule == Text.pack "proved_conjecture" = []
-  | otherwise                             = [(pos, n, d)]
+    addNode pos n d rule seen
+      | rule == Text.pack "proved_conjecture" = (seen, [])
+      | n == "?"               = (seen, [(pos, n, d)])   -- synthetic: always include
+      | Set.member n seen      = (seen, [])
+      | otherwise              = (Set.insert n seen, [(pos, n, d)])
+
 
 classifyRole :: Map.Map String T.Unit -> String -> T.Declaration -> LeafRole
 classifyRole unitMap name decl
@@ -198,12 +290,19 @@ lookupDecl unitMap name = case Map.lookup name unitMap of
   _                   -> Nothing
 
 -- trace back to the original file-sourced unit; stop at negated_conjecture inferences
+-- and at Twee's rewriting steps (which create new equations by completion, not demodulate existing ones)
 resolveSourceName :: Map.Map String T.Unit -> String -> String
 resolveSourceName unitMap = go
   where
     go name = case Map.lookup name unitMap of
+      -- trace through bare UnitSource references (E copies axioms this way)
+      Just (T.Unit _ _ (Just (T.UnitSource parentName, _))) ->
+        go (unitNameStr parentName)
       Just (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ parents, _)))
-        | rule /= Text.pack "negated_conjecture" ->
+        | rule /= Text.pack "negated_conjecture"
+        , rule /= Text.pack "rewriting"        -- Twee: creates new eqs, don't trace back
+        , rule /= Text.pack "proved_conjecture" -- Twee: terminal step
+        ->
             case concatMap flatParents parents of
               (p:_) -> go p
               []    -> name
@@ -226,7 +325,14 @@ extractGoalLits (T.Formula _ (T.FOF f)) = extractFOF f
     extractFOF (T.Quantified T.Forall _ body)          = extractFOF body
     extractFOF (T.Negated body)                        = extractConj body
     extractFOF (T.Atomic (T.Equality l T.Negative r)) = Just [T.Equality l T.Positive r]
-    extractFOF _                                       = Nothing
+    extractFOF g =
+      let posLits = posLitsOfDisjFOF g
+          negLits = negLitsOfDisjFOF g
+      in case posLits of
+        [lit] -> Just [lit]   -- Horn clause A ∨ ¬B₁ ∨ … with single positive head
+        []    -> if null negLits then Nothing
+                 else Just negLits  -- all-negative clause: each negated atom is a goal
+        _     -> Nothing
 
     extractConj (T.Atomic lit)                   = Just [lit]
     extractConj (T.Connected l T.Conjunction r)  = do
@@ -265,23 +371,47 @@ demodChainsForLeaves
   :: (String -> String)
   -> ProofTree
   -> Map.Map String [(String, Dir)]
-demodChainsForLeaves resolveName = go ""
+demodChainsForLeaves resolveName tree0 =
+    let (_, _, m) = go "" tree0 Set.empty Set.empty in m
   where
-    go pos (PTLeaf _ _) = Map.singleton pos []
-    go pos (PTNode _ _ rule [l, r])
+    go pos (PTLeaf n d) seenElec seenInner
+      | isPositiveUnitFormula d =
+          if Set.member n seenElec
+            then (seenElec, seenInner, Map.empty)
+            else (Set.insert n seenElec, seenInner, Map.singleton pos [])
+      | otherwise = (seenElec, seenInner, Map.singleton pos [])
+    go pos (PTNode n _ rule [l, r]) seenElec seenInner
+      | n /= "?" && Set.member n seenInner = (seenElec, seenInner, Map.empty)
       | isDemodRule rule && isDemodApplicationTo rule r =
           let eqName = resolveName (treeName l)
               dir    = if rule `elem` map Text.pack
                             ["forward_demodulation", "rw", "definition_unfolding"]
                        then LR else RL
-              lMap   = go (pos ++ "0") l
-              rMap   = go (pos ++ "1") r
-          in Map.union lMap (Map.map ((eqName, dir) :) rMap)
+              (se',  si',  lMap) = go (pos ++ "0") l seenElec seenInner
+              (se'', si'', rMap) = go (pos ++ "1") r se' si'
+              si''' = if n /= "?" then Set.insert n si'' else si''
+          in  (se'', si''', Map.union lMap (Map.map ((eqName, dir) :) rMap))
       | otherwise =
-          Map.union (go (pos ++ "0") l) (go (pos ++ "1") r)
-    go pos (PTNode _ _ _ [k])  = go (pos ++ "1") k
-    go pos (PTNode _ _ _ kids) =
-      Map.unions [go (pos ++ [c]) kid | (c, kid) <- zip ['0'..] kids]
+          let (se',  si',  lMap) = go (pos ++ "0") l seenElec seenInner
+              (se'', si'', rMap) = go (pos ++ "1") r se' si'
+              si''' = if n /= "?" then Set.insert n si'' else si''
+          in  (se'', si''', Map.union lMap rMap)
+    go pos (PTNode n _ _ [k]) seenElec seenInner
+      | n /= "?" && Set.member n seenInner = (seenElec, seenInner, Map.empty)
+      | otherwise =
+          let (se', si', m) = go (pos ++ "1") k seenElec seenInner
+              si'' = if n /= "?" then Set.insert n si' else si'
+          in (se', si'', m)
+    go pos (PTNode n _ _ kids) seenElec seenInner
+      | n /= "?" && Set.member n seenInner = (seenElec, seenInner, Map.empty)
+      | otherwise =
+          let (se', si', m) =
+                foldl (\(se, si, acc) (c, kid) ->
+                         let (se2, si2, km) = go (pos ++ [c]) kid se si
+                         in (se2, si2, Map.union acc km))
+                      (seenElec, seenInner, Map.empty) (zip ['0'..] kids)
+              si'' = if n /= "?" then Set.insert n si' else si'
+          in (se', si'', m)
 
     -- definition_unfolding has three uses; only track it when rewriting a predicate unit.
     isDemodApplicationTo rule r
@@ -303,7 +433,8 @@ demodChainsForLeaves resolveName = go ""
 demodRuleNames :: Set.Set Text.Text
 demodRuleNames = Set.fromList $ map Text.pack
   [ "forward_demodulation", "backward_demodulation"
-  , "rw", "definition_unfolding", "rewriting" ]
+  , "rw", "definition_unfolding" ]
+  -- Note: Twee's "rewriting" is NOT here — it creates new equations (not demodulation)
 
 unitNameStr :: T.UnitName -> String
 unitNameStr (Left (T.Atom t)) = Text.unpack t
@@ -317,8 +448,10 @@ coreInferenceNames = Set.fromList $ map Text.pack
   , "factoring", "condensation"
   , "definition_unfolding", "trivial_inequality_removal"
   , "forward_demodulation", "backward_demodulation"
+  , "duplicate_literal_removal", "subsumption_resolution"
   , "spm", "sr", "csr", "er", "ef", "rw", "cn", "pm"
-  , "proved_conjecture" ]
+  , "proved_conjecture"
+  , "rewriting" ]  -- Twee: creates new equations by rewriting; expands into proof tree
 
 coreParentNames :: T.Unit -> Maybe [String]
 coreParentNames (T.Unit _ decl (Just (T.Inference (T.Atom rule) _ parents, _)))
@@ -327,8 +460,7 @@ coreParentNames (T.Unit _ decl (Just (T.Inference (T.Atom rule) _ parents, _)))
   where
     extractName (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
     extractName (T.Parent (T.Inference _ _ ps) _) = concatMap extractName ps
-    extractName (T.Parent src _) =
-      error ("buildProofTree: unexpected parent source: " ++ show src)
+    extractName (T.Parent _ _)                    = []  -- unknown source: skip
     isPredicateRewriting r d
       | r == Text.pack "rewriting" = case headLitOf d of
           Just (T.Equality {}) -> False
@@ -400,6 +532,14 @@ posLitsOfDisjFOF (T.Connected l T.Disjunction r)  =
   posLitsOfDisjFOF l ++ posLitsOfDisjFOF r
 posLitsOfDisjFOF _                                = []
 
+-- atoms under negation in a disjunction (for all-negative clauses like ~P | ~Q)
+negLitsOfDisjFOF :: T.UnsortedFirstOrder -> [T.Literal]
+negLitsOfDisjFOF (T.Negated (T.Atomic lit))       = [lit]
+negLitsOfDisjFOF (T.Atomic _)                     = []
+negLitsOfDisjFOF (T.Connected l T.Disjunction r)  =
+  negLitsOfDisjFOF l ++ negLitsOfDisjFOF r
+negLitsOfDisjFOF _                                = []
+
 headInDecl :: T.Literal -> T.Declaration -> Bool
 headInDecl needle (T.Formula _ (T.CNF (T.Clause lits))) =
   any (litSameHead needle) [l | (T.Positive, l) <- toList lits]
@@ -439,5 +579,4 @@ firstParentIsLeft _ _ d1 d2
 firstParentIsLeft _ result d1 d2 = case (headLitOf d1, headLitOf d2) of
   (Just h1, _)       -> not (headInDecl h1 result)
   (Nothing, Just h2) -> headInDecl h2 result
-  (Nothing, Nothing) ->
-    error "firstParentIsLeft: both parents have no positive head"
+  (Nothing, Nothing) -> True  -- both non-unit: keep original order

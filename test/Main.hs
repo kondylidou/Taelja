@@ -20,6 +20,12 @@ tests = testGroup "Taelja"
   [ testGroup "Handcrafted" (map (mkTest "expected_vampire" "baseline_vampire") handcraftedNames)
   , testGroup "Vampire"     (map (mkTest "expected_vampire" "baseline_vampire") benchmarkNames)
   , testGroup "E"           (map (mkTest "expected_e"       "baseline_e")       eBenchmarkNames)
+  , testGroup "Twee"        (map (mkTest "expected_twee"    "baseline_twee")    tweeBenchmarkNames)
+  ]
+
+tweeBenchmarkNames :: [String]
+tweeBenchmarkNames =
+  [ "sam"
   ]
 
 handcraftedNames :: [String]
@@ -58,6 +64,7 @@ benchmarkNames =
   , "units_only_relational_example"
   , "krympa_example5_nonparallel"
   , "resolution_example_horn_reuse_inlined"
+  , "resolution_example_shared_varname"
   , "superposition_example_clausal1"
   , "superposition_example_clausal2"
   ]
@@ -65,7 +72,8 @@ benchmarkNames =
 -- Benchmarks for which an E prover output exists.
 eBenchmarkNames :: [String]
 eBenchmarkNames =
-  [ "horn_example_derived_rw"
+  [ "e_unit_source_axiom"
+  , "horn_example_derived_rw"
   , "horn_example_elim_var_rw"
   , "horn_example_eq_head_inlined"
   , "horn_example_eq_rw_chain"
@@ -97,6 +105,6 @@ run path = do
   case eitherResult (feed (parseTSTP contents) mempty) of
     Left err   -> fail ("Parse error in " ++ path ++ ": " ++ err)
     Right tstp -> do
-      result <- catch (translate False tstp >>= \sp -> evaluate (force (emit sp)))
+      result <- catch (translate False tstp >>= \msp -> evaluate (force (maybe "" emit msp)))
                       (\e -> return (show (e :: SomeException)))
       return (LBS.pack result)

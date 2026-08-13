@@ -1,13 +1,15 @@
+{-# LANGUAGE LambdaCase #-}
 module Translate (translate) where
 
 import Control.Applicative ((<|>))
-import Control.Monad (foldM, forM_, void, when)
+import Control.Monad (foldM, forM_, unless, void, when)
+import Data.Bifunctor (second)
 import Control.Monad.State
 import Data.Char (toUpper)
-import Data.List (find, intercalate, isInfixOf, nub, partition, sortBy)
+import Data.List (find, intercalate, isInfixOf, isPrefixOf, nub, nubBy, partition, sortBy)
 import Data.List.NonEmpty (toList)
 import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
-import Data.Ord (comparing)
+import Data.Ord (Down(..), comparing)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
@@ -22,11 +24,13 @@ import ProofTree
   , buildProofInfo, headLitOf, unitNameStr
   )
 
-translate :: Bool -> T.TSTP -> IO StructuredProof
+translate :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translate debug (T.TSTP _ units) =
   case buildProofInfo units of
-    Nothing   -> error "translate: no refutation found"
-    Just info -> runAlgorithm debug info units
+    Nothing   -> do
+      hPutStrLn stderr "translate: no refutation found (unsupported proof structure)"
+      return Nothing
+    Just info -> Just <$> runAlgorithm debug info units
 
 type AlgM a = StateT AlgState IO a
 
@@ -83,7 +87,11 @@ ensureNamed lit buildBlk = do
       addUnit (UnitEntry (Just nm) lit Nothing Nothing)
       return nm
 
--- match body literal li against electron ki; returns (σi, σ0') on success
+-- Length of common prefix of two strings.
+commonPrefixLen :: String -> String -> Int
+commonPrefixLen s1 s2 = length $ takeWhile id $ zipWith (==) s1 s2
+
+-- match body literal li against electron ki; returns (ρi, σ0') on success
 tryMatch :: Literal -> Literal -> Subst -> Maybe (Subst, Subst)
 tryMatch li ki σ0 =
   tryAsPattern li ki
@@ -95,23 +103,39 @@ tryMatch li ki σ0 =
   <|> tryBothSides (flipEq li) ki
   where
     tryAsPattern li' k = case matchLit li' k of
-      Just σn -> case extendSubst σ0 σn of
-        Just σ0' -> Just ([], σ0')
-        Nothing  -> Nothing
+      Just σn ->
+        -- Remove self-bindings (x → Var x): these arise when body lit and electron
+        -- share a variable name (e.g. both use "X0"). An identity binding would
+        -- prevent a later body literal from properly grounding that variable.
+        let σn' = filter (\(x, t) -> Var x /= t) σn
+        in case extendSubst σ0 σn' of
+          Just σ0' -> Just ([], σ0')
+          Nothing  -> Nothing
       Nothing -> Nothing
     tryKiPattern k = case matchLit k li of
-      Just σi -> Just (σi, σ0)
+      Just ρi -> Just (ρi, σ0)
       Nothing -> Nothing
     tryKiFlip k = case matchLit k (flipEq li) of
-      Just σi -> Just (σi, σ0)
+      Just ρi -> Just (ρi, σ0)
       Nothing -> Nothing
-    tryBothSides li' k = case matchBothLit li' k σ0 [] of
-      Just (σ0', σi) ->
-        let σ0c = [(x, applySubstTerm σi t) | (x, t) <- σ0']
-        in if applySubst σ0c li' == applySubst σi k
-           then Just (σi, σ0c)
-           else Nothing
-      _ -> Nothing
+    tryBothSides li' k =
+      -- Rename ki's vars to avoid clashes with li's vars in matchBothLit.
+      -- Without this, shared var names (e.g. both using "X0") confuse matchBothLit
+      -- into treating them as the same variable, producing incorrect bindings.
+      let kVars = nub (litVars k)
+          k'    = suffixVarsLit "_e" k
+      in case matchBothLit li' k' σ0 [] of
+        Just (σ0', ρi') ->
+          -- Occurs check: if any ki-var's binding contains itself, deepApplySubstTerm loops.
+          if any (\(v, t) -> v `elem` termVars t) ρi'
+            then Nothing
+            else
+              let ρi  = [ (v, deepApplySubstTerm ρi' (Var (v ++ "_e"))) | v <- kVars ]
+                  σ0c = [(x, deepApplySubstTerm ρi' t) | (x, t) <- σ0']
+              in if applySubst σ0c li' == applySubst ρi' k'
+                 then Just (ρi, σ0c)
+                 else Nothing
+        _ -> Nothing
     flipEq (Eq l r) = Eq r l
     flipEq x        = x
 
@@ -160,16 +184,32 @@ processBody
   -> AlgM (Maybe (Subst, [(UnitEntry, Subst, [(RwStep, Literal)])]))
 processBody lits σ0 elecs simpl pos = go lits σ0 []
   where
+    -- Three-tier ordering:
+    --  1. Direct sibling at pos[:-1]+"0" (the proof-tree electron for the outermost body lit)
+    --  2. Unnamed derived electrons, sorted by proximity (nearest first)
+    --  3. Named (axiom) electrons, sorted by proximity
+    sortedElecs =
+      let siblingPos = if not (null pos) && last pos == '1'
+                       then Just (init pos ++ "0") else Nothing
+          (sibling, rest) = case siblingPos of
+            Nothing -> ([], elecs)
+            Just sp -> partition (\e -> uePos e == Just sp) elecs
+          (unnamed, named) = partition (isNothing . ueName) rest
+          byProx = Down . commonPrefixLen pos . fromMaybe "" . uePos
+          sortedUnnamed = sortBy (comparing byProx) unnamed
+          sortedNamed   = sortBy (comparing byProx) named
+      in sibling ++ sortedUnnamed ++ sortedNamed
+
     go [] σ0' _ = return (Just (σ0', []))
     go (li : rest) σ0' usedPos = do
       let liInst    = applySubst σ0' li
-          (unused, used') = partition (\e -> uePos e `notElem` usedPos) elecs
+          (unused, used') = partition (\e -> uePos e `notElem` usedPos) sortedElecs
           prioritized = unused ++ used'
           step1Elecs  = filter (\ue -> isJust (ueName ue) || isJust (ueProof ue)) prioritized
           -- All pure step-1 candidates (no IO)
-          pureMatches = [ (ue, σi, σ0'', [])
+          pureMatches = [ (ue, ρi, σ0'', [])
                         | ue <- step1Elecs
-                        , Just (σi, σ0'') <- [tryMatch liInst (ueUnit ue) σ0'] ]
+                        , Just (ρi, σ0'') <- [tryMatch liInst (ueUnit ue) σ0'] ]
       mBT <- tryAll pureMatches rest usedPos
       case mBT of
         Just res -> return (Just res)
@@ -177,13 +217,13 @@ processBody lits σ0 elecs simpl pos = go lits σ0 []
           -- IO fallback: steps 2 / 2.5 / 3
           units <- gets stUnits
           let step2Matches =
-                [ (ue, σi, σ0'', rw)
+                [ (ue, ρi, σ0'', rw)
                 | ue <- elecs
                 , let chain = fromMaybe [] (Map.lookup (fromMaybe "" (uePos ue)) simpl)
                 , not (null chain)
                 , let (kstar, rw) = rwChain (ueUnit ue) chain units
                 , not (null rw)
-                , Just (σi, σ0'') <- [tryMatch liInst kstar σ0'] ]
+                , Just (ρi, σ0'') <- [tryMatch liInst kstar σ0'] ]
           mBT2 <- tryAll step2Matches rest usedPos
           case mBT2 of
             Just res -> return (Just res)
@@ -191,21 +231,21 @@ processBody lits σ0 elecs simpl pos = go lits σ0 []
               mRes <- findElecIO liInst σ0' prioritized pos units
               case mRes of
                 Nothing -> return Nothing
-                Just (ki, σi, σ0'', rwi) ->
-                  complete ki σi σ0'' rwi rest usedPos
+                Just (ki, ρi, σ0'', rwi) ->
+                  complete ki ρi σ0'' rwi rest usedPos
 
     tryAll [] _ _ = return Nothing
-    tryAll ((ki, σi, σ0'', rwi) : rest_cands) restLits usedPos = do
+    tryAll ((ki, ρi, σ0'', rwi) : rest_cands) restLits usedPos = do
       mResult <- go restLits σ0'' (uePos ki : usedPos)
       case mResult of
-        Just (σ0''', matched) -> return (Just (σ0''', (ki, σi, rwi) : matched))
+        Just (σ0''', matched) -> return (Just (σ0''', (ki, ρi, rwi) : matched))
         Nothing               -> tryAll rest_cands restLits usedPos
 
-    complete ki σi σ0'' rwi restLits usedPos = do
+    complete ki ρi σ0'' rwi restLits usedPos = do
       mRest <- go restLits σ0'' (uePos ki : usedPos)
       case mRest of
         Nothing              -> return Nothing
-        Just (σ0''', matched) -> return (Just (σ0''', (ki, σi, rwi) : matched))
+        Just (σ0''', matched) -> return (Just (σ0''', (ki, ρi, rwi) : matched))
 
 -- step 2.5: dynamic rw match; step 3: Twee fallback for equational literals
 findElecIO
@@ -222,16 +262,16 @@ findElecIO li σ0 elecs pos units = do
           Eq _ _ -> haveHenceElecs
           _      -> haveHenceElecs ++ namedElecs
         rwMatches =
-          [ (u, eq, a, b, dir, σi, σ0')
+          [ (u, eq, a, b, dir, ρi, σ0')
           | u <- srcElecs, (eq, a, b) <- rwEqs, dir <- [LR, RL]
           , Just res <- [rewriteLit (ueUnit u) (a, b) dir]
-          , Just (σi, σ0') <- [tryMatch li res σ0] ]
+          , Just (ρi, σ0') <- [tryMatch li res σ0] ]
     case listToMaybe rwMatches of
       Nothing -> return Nothing
-      Just (u, eq, a, b, dir, σi, σ0') -> do
+      Just (u, eq, a, b, dir, ρi, σ0') -> do
         nm <- ensureNamed (ueUnit eq) (makeBlock eq [] [])
-        let result = applySubst σi (fromMaybe li (rewriteLit (ueUnit u) (a, b) dir))
-        return (Just (u, σi, σ0', [(RwStep nm (a, b) dir, result)]))
+        let result = applySubst ρi (fromMaybe li (rewriteLit (ueUnit u) (a, b) dir))
+        return (Just (u, ρi, σ0', [(RwStep nm (a, b) dir, result)]))
   case step25 of
     Just res -> return (Just res)
     Nothing  ->
@@ -246,22 +286,22 @@ findElecIO li σ0 elecs pos units = do
               return (Just (ki, [], σ0, []))
         _ -> return Nothing
 
--- rwSteps come from rwChain on the uninstantiated electron; σi applied to literals
+-- rwSteps come from rwChain on the uninstantiated electron; ρi applied to literals
 -- so "hence p(a)" appears instead of "hence p(X)"
 makeBlock :: UnitEntry -> Subst -> [(RwStep, Literal)] -> AlgM ProofBlock
-makeBlock ki σi rwSteps = do
+makeBlock ki ρi rwSteps = do
   units <- gets stUnits
   base  <- buildBase units
-  let rwStepsInst = map (\(rw, c) -> (rw, applySubst σi c)) rwSteps
+  let rwStepsInst = map (second (applySubst ρi)) rwSteps
   return (foldl applyRwLine base rwStepsInst)
   where
-    lit = applySubst σi (ueUnit ki)
+    lit = applySubst ρi (ueUnit ki)
 
     buildBase units =
       let allUnnamed = filter (\u -> ueUnit u == ueUnit ki && isNothing (ueName u)) units
-          hasHence (HaveHence ls) = any (\l -> case l of Hence {} -> True; _ -> False) ls
+          hasHence (HaveHence ls) = any (\case Hence {} -> True; _ -> False) ls
           hasHence _              = False
-          mBest = find (\u -> maybe False hasHence (ueProof u)) allUnnamed
+          mBest = find (maybe False hasHence . ueProof) allUnnamed
               <|> listToMaybe allUnnamed
       in case mBest of
         Just unnamed ->
@@ -274,7 +314,7 @@ makeBlock ki σi rwSteps = do
                   nm <- ensureNamed (ueUnit ki) (return stored)
                   return (HaveHence [Have lit nm])
               | otherwise ->
-                  return (applySubstBlock σi stored)
+                  return (applySubstBlock ρi stored)
             Nothing ->
               -- named-only so Twee doesn't see circular unnamed units
               case ueUnit unnamed of
@@ -292,15 +332,36 @@ makeBlock ki σi rwSteps = do
     namedCase units =
       case find (\u -> ueUnit u == ueUnit ki) units of
         Just u ->
-          let nm = fromMaybe (error ("makeBlock: unnamed: " ++ show (ueUnit ki)))
-                             (ueName u)
-          in return (HaveHence [Have lit nm])
-        Nothing ->
-          error ("makeBlock: electron not in Units: " ++ show (ueUnit ki))
+          case ueName u of
+            Just nm -> return (HaveHence [Have lit nm])
+            Nothing -> do
+              -- unnamed unit with no stored proof: try to give it a name via Twee
+              case ueUnit u of
+                Eq l r -> do
+                  let namedUs = filter (isJust . ueName) units
+                  mBlk <- tweeChain l r namedUs
+                  case mBlk of
+                    Just blk -> do
+                      nm <- ensureNamed (ueUnit u) (return blk)
+                      return (HaveHence [Have lit nm])
+                    Nothing -> do
+                      liftIO $ hPutStrLn stderr $
+                        "[warn] makeBlock: cannot prove unnamed eq unit: " ++ ppLitI (ueUnit ki)
+                      return (EqChain l [])
+                _ -> do
+                  liftIO $ hPutStrLn stderr $
+                    "[warn] makeBlock: unnamed relational unit: " ++ ppLitI (ueUnit ki)
+                  return (HaveHence [])
+        Nothing -> do
+          liftIO $ hPutStrLn stderr $
+            "[warn] makeBlock: unit not in table: " ++ ppLitI (ueUnit ki)
+          case ueUnit ki of
+            Eq l _ -> return (EqChain l [])
+            _      -> return (HaveHence [])
 
 electronTarget :: UnitEntry -> Subst -> [(RwStep, Literal)] -> Literal
-electronTarget ki σi rw = case rw of
-  [] -> applySubst σi (ueUnit ki)
+electronTarget ki ρi rw = case rw of
+  [] -> applySubst ρi (ueUnit ki)
   _  -> snd (last rw)
 
 buildProofBlock
@@ -309,7 +370,11 @@ buildProofBlock
   -> Subst         -- σ0
   -> Literal       -- head literal L0
   -> AlgM ProofBlock
-buildProofBlock [] _ _ _ = error "buildProofBlock: empty"
+-- unit clause with no body: treat as direct assertion
+buildProofBlock [] mAxName _σ0 headLit =
+  return $ HaveHence $ case mAxName of
+    Just ax -> [Have headLit ax]
+    Nothing -> []
 buildProofBlock ((k1, σ1, rw1) : rest) mAxName σ0 headLit = do
   blk1 <- makeBlock k1 σ1 rw1
   blk  <- foldM addAnd blk1 rest
@@ -317,35 +382,35 @@ buildProofBlock ((k1, σ1, rw1) : rest) mAxName σ0 headLit = do
     Just ax -> appendLine blk (Hence (applySubst σ0 headLit) (ByAxiom ax))
     Nothing -> blk
   where
-    addAnd blk (ki, σi, rwi) = do
-      let targ = electronTarget ki σi rwi
-      blki <- makeBlock ki σi rwi
+    addAnd blk (ki, ρi, rwi) = do
+      let targ = electronTarget ki ρi rwi
+      blki <- makeBlock ki ρi rwi
       nm   <- ensureNamed targ (return blki)
       return (appendLine blk (And targ nm))
 
 -- equational goals use EqChain; relational goals use HaveHence
 -- rwi non-empty forces HaveHence so "hence … by rw" is preserved
 emitBlockForGoal :: Literal -> UnitEntry -> Subst -> [(RwStep, Literal)] -> AlgM ProofBlock
-emitBlockForGoal gl@(Eq l r) ki σi rwi
-  | not (null rwi) = makeBlock ki σi rwi
+emitBlockForGoal gl@(Eq l r) ki ρi rwi
+  | not (null rwi) = makeBlock ki ρi rwi
   | isNothing (ueName ki)
   , Just (HaveHence {}) <- ueProof ki
-  = makeBlock ki σi []
+  = makeBlock ki ρi []
   | otherwise      =
-      case buildEqChainFromElectron gl ki σi [] of
+      case buildEqChainFromElectron gl ki ρi [] of
         Just blk -> return blk
         Nothing  -> do
           units <- gets stUnits
           mBlk  <- tweeChain l r (tweableUnits units)
           return (fromMaybe (EqChain l []) mBlk)
-emitBlockForGoal _gl ki σi rwi = makeBlock ki σi rwi
+emitBlockForGoal _gl ki ρi rwi = makeBlock ki ρi rwi
 
 buildEqChainFromElectron :: Literal -> UnitEntry -> Subst -> [(RwStep, Literal)] -> Maybe ProofBlock
-buildEqChainFromElectron (Eq l r) ki σi [] = do
+buildEqChainFromElectron (Eq l r) ki ρi [] = do
   nm    <- ueName ki
   (a,b) <- case ueUnit ki of { Eq a b -> Just (a,b); _ -> Nothing }
-  let a' = applySubstTerm σi a
-      b' = applySubstTerm σi b
+  let a' = applySubstTerm ρi a
+      b' = applySubstTerm ρi b
       tryDir d = case rewriteTerm l (a', b') d of
                    Just cur | cur == r -> Just (EqChain l [(RwStep nm (a,b) d, r)])
                    _                   -> Nothing
@@ -380,18 +445,18 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
               Nothing ->
                 -- L0 = ⊥: emit goal proofs; σ0 instantiates any remaining variables
                 case (goalLits, matched) of
-                  ([gl], [(ki, σi, _)])
+                  ([gl], [(ki, ρi, _)])
                     | isNothing (ueName ki)
                     , Just chain@(EqChain {}) <- ueProof ki ->
-                        emitGoalProof (applySubst σ0 gl) (applySubstBlock σi chain) >> return True
+                        emitGoalProof (applySubst σ0 gl) (applySubstBlock ρi chain) >> return True
                   _ -> do
                     let pairs = zip goalLits matched
                     if null pairs
                       then return False
                       else do
-                        forM_ pairs $ \(gl, (ki, σi, rwi)) -> do
+                        forM_ pairs $ \(gl, (ki, ρi, rwi)) -> do
                           let gl' = applySubst σ0 gl
-                          blk <- emitBlockForGoal gl' ki σi rwi
+                          blk <- emitBlockForGoal gl' ki ρi rwi
                           emitGoalProof gl' blk
                         return True
               Just headLit -> do
@@ -478,8 +543,8 @@ proveGoal mChain goal = do
           let mDerivedUnit = listToMaybe
                 [ u | u <- us
                     , isNothing (ueName u)
-                    , Just (HaveHence {}) <- [ueProof u]
-                    , isJust (tryMatch goal (ueUnit u) []) ]
+                    , isJust (tryMatch goal (ueUnit u) [])
+                    , Just (HaveHence {}) <- [ueProof u] ]
           mDerivedBlk <- case mDerivedUnit of
             Nothing -> return Nothing
             Just u  -> Just <$> makeBlock u [] []
@@ -580,7 +645,7 @@ applyGroundingClause θ (Clause bs mh) =
 
 buildGroundingSubst :: [Literal] -> Set.Set String -> [LeafEntry] -> Subst
 buildGroundingSubst goalLits leafVars nonUnits =
-  let innerClauses  = mapMaybe (\e -> convertDeclToClause (leDecl e))
+  let innerClauses  = mapMaybe (convertDeclToClause . leDecl)
                         (filter (\e -> leRole e == Derived) nonUnits)
       innerLits     = concatMap (\(Clause bs mh) -> bs ++ catMaybes [mh]) innerClauses
       innerFreeVars = nub $ concatMap litVars innerLits
@@ -649,12 +714,48 @@ runAlgorithm debug info allUnits = do
         , let lit = electronLit unitMap e
         , lit `notElem` goalLits' ]
 
+      -- Equational axioms from the TSTP file not visible as proof-tree leaves.
+      -- Twee proofs often bury the original axioms inside rewriting chains, so
+      -- they never appear as leaves and are absent from namedUnits.  We add them
+      -- here so that callTwee has background axioms to work with.
+      -- For Vampire/E proofs this is unnecessary (unused axioms were genuinely
+      -- not needed) and can make Twee subprocesses very heavy, so we skip it.
+      isTweeProof = any isTweeUnit allUnits
+        where
+          isTweeUnit (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ _, _))) =
+            rule `elem` map Text.pack ["rewriting", "proved_conjecture"]
+          isTweeUnit _ = False
+      proofTreeAxNames = Set.fromList
+        [ leName e | e <- piElectrons info ++ piNonUnits info
+                   , leRole e == OrigAxiom ]
+      bgEqPairs = if not isTweeProof then [] else
+        nubBy (\(_, l1) (_, l2) -> l1 == l2)
+        [ (unitNameStr n, clit)
+        | u@(T.Unit n decl _) <- allUnits
+        , isOrigAxiomDecl decl
+        , not (isDerivedUnit u)
+        , unitNameStr n `Set.notMember` proofTreeAxNames
+        -- only pure positive-unit clauses: nuclei like (comp(X,Y) → meet(X,Y)=zero)
+        -- must be excluded because headLitOf strips the body, creating unsound axioms
+        , case convertDeclToClause decl of
+            Just (Clause [] (Just _)) -> True
+            _                         -> False
+        , Just lit <- [headLitOf decl]
+        , let clit = convertLit lit
+        , isEqLit clit
+        ]
+      nBgBase = length axiomList
+      bgAxiomList  = [ AUnit ("axiom " ++ show (nBgBase + i)) lit
+                     | (i, (_, lit)) <- zip [1..] bgEqPairs ]
+      bgNamedUnits = [ UnitEntry (Just ("axiom " ++ show (nBgBase + i))) lit Nothing Nothing
+                     | (i, (_, lit)) <- zip [1..] bgEqPairs ]
+
       -- variables from file-sourced axioms are legitimately universally quantified
       leafVars = Set.fromList $
         concatMap (litVars . electronLit unitMap)
           (filter (\e -> leRole e == OrigAxiom) (piElectrons info))
         ++
-        concatMap (\e -> maybe [] clauseVars (convertDeclToClause (leDecl e)))
+        concatMap (maybe [] clauseVars . convertDeclToClause . leDecl)
           (filter (\e -> leRole e `elem` [OrigAxiom, NegConjecture]) (piNonUnits info))
         where clauseVars (Clause bs mh) = concatMap litVars (bs ++ catMaybes [mh])
 
@@ -668,9 +769,9 @@ runAlgorithm debug info allUnits = do
       innerNus     = filter (\e -> leRole e == Derived && hasGroundHead e) (piNonUnits info)
       allNonUnits  = sortBy (comparing lePos) (leafNonUnits ++ innerNus)
 
-      nAll = length axiomList
+      nAll = length axiomList + length bgAxiomList
       initSt = AlgState
-        { stUnits   = namedUnits ++ derivedUnits
+        { stUnits   = namedUnits ++ derivedUnits ++ bgNamedUnits
         , stLemmas  = []
         , stGoals   = []
         , stCounter = nAll + 1
@@ -699,7 +800,7 @@ runAlgorithm debug info allUnits = do
                      [] -> ""
                      ss -> "  {" ++ ppSimplChain ss ++ "}"
       dbg debug $ "  @" ++ padPos (lePos e) ++ " [" ++ tag ++ "] " ++ label ++ ": " ++ lit ++ simplS
-    when (not (null θ)) $ do
+    unless (null θ) $ do
       dbg debug ""
       dbg debug $ "θ: " ++ intercalate ", " [v ++ " → " ++ ppTerm t | (v, t) <- θ]
     forM_ pG1Chain $ \chain -> do
@@ -709,8 +810,10 @@ runAlgorithm debug info allUnits = do
 
   finalSt <- execStateT (action θ allNonUnits posToName goalLits' simpl pG1Chain) initSt
   if null (stGoals finalSt)
-    then error "translate: no goal proof produced"
-    else return (StructuredProof axiomList (stLemmas finalSt) (stGoals finalSt))
+    then do
+      hPutStrLn stderr "translate: no goal proof produced"
+      return (StructuredProof (axiomList ++ bgAxiomList) (stLemmas finalSt) [])
+    else return (StructuredProof (axiomList ++ bgAxiomList) (stLemmas finalSt) (stGoals finalSt))
   where
     action θ allNonUnits posToName goalLits simpl pG1Chain = do
       processNonUnits debug θ allNonUnits posToName goalLits simpl
@@ -744,6 +847,16 @@ isEqLit :: Literal -> Bool
 isEqLit (Eq _ _) = True
 isEqLit _        = False
 
+isDerivedUnit :: T.Unit -> Bool
+isDerivedUnit (T.Unit _ _ (Just (T.Inference _ _ _, _))) = True
+isDerivedUnit _                                           = False
+
+-- True only for TPTP roles that indicate an original problem axiom.
+isOrigAxiomDecl :: T.Declaration -> Bool
+isOrigAxiomDecl (T.Formula (T.Standard T.Axiom)      _) = True
+isOrigAxiomDecl (T.Formula (T.Standard T.Hypothesis) _) = True
+isOrigAxiomDecl _                                        = False
+
 dirFlag :: Dir -> Maybe Dir
 dirFlag LR = Nothing
 dirFlag RL = Just RL
@@ -756,36 +869,126 @@ findEqByName nm units = listToMaybe
 applyRwLine :: ProofBlock -> (RwStep, Literal) -> ProofBlock
 applyRwLine b (rw, c) = appendLine b (Hence c (ByRw (rwName rw) (dirFlag (rwDir rw))))
 
-parseTweeStepNames :: String -> [String]
-parseTweeStepNames output =
-  mapMaybe extractName (filter ("{ by axiom" `isInfixOf`) (lines output))
+-- Parse a TPTP-style term from a string (Twee human-readable proof format).
+-- Variables start uppercase; constants/functions start lowercase or '_'.
+parseTweeTerm :: String -> Maybe (Term, String)
+parseTweeTerm [] = Nothing
+parseTweeTerm s  =
+  let s' = dropWhile (== ' ') s
+  in case s' of
+       [] -> Nothing
+       (c:_)
+         | c >= 'A' && c <= 'Z' ->
+             let (nm, rest) = span isTweeIdChar s'
+             in if null nm then Nothing else Just (Var nm, rest)
+         | (c >= 'a' && c <= 'z') || c == '_' ->
+             let (nm, rest) = span isTweeIdChar s'
+             in case rest of
+                  '(':more ->
+                    case parseTweeArgList more of
+                      Just (args, rest') -> Just (App nm args, rest')
+                      Nothing            -> Nothing
+                  _ -> Just (Const nm, rest)
+         | otherwise -> Nothing
   where
-    extractName line = case dropWhile (/= '(') line of
-      []       -> Nothing
-      (_:rest) -> let nm = takeWhile (/= ')') rest
-                  in if null nm then Nothing else Just nm
+    isTweeIdChar x = (x >= 'a' && x <= 'z') || (x >= 'A' && x <= 'Z') ||
+                     (x >= '0' && x <= '9') || x == '_'
 
--- backtrack over rewrite positions because root-first order may be wrong
--- (e.g. f(X)=X matches root and subterm; root can be the wrong choice)
-replayTweeChainTo
-  :: Map.Map String UnitEntry -> [String] -> Term -> Term
-  -> [(UnitEntry, Dir, Term)]
-replayTweeChainTo idToUe stepNames start end = fromMaybe [] (go start stepNames)
+parseTweeArgList :: String -> Maybe ([Term], String)
+parseTweeArgList s = go [] (dropWhile (== ' ') s)
   where
-    go cur [] = if cur == end then Just [] else Nothing
-    go cur (tid:rest) =
-      case Map.lookup tid idToUe of
-        Nothing -> go cur rest
-        Just ue ->
-          case ueUnit ue of
-            Eq a b ->
-              listToMaybe
-                [ (ue, dir, t) : steps
-                | (dir, t) <- [(LR, u) | u <- rewriteTermAll cur (a, b) LR]
-                           ++ [(RL, u) | u <- rewriteTermAll cur (a, b) RL]
-                , Just steps <- [go t rest]
-                ]
-            _ -> go cur rest
+    go acc str = case parseTweeTerm str of
+      Nothing -> Nothing
+      Just (t, rest) ->
+        case dropWhile (== ' ') rest of
+          ',':more -> go (acc ++ [t]) (dropWhile (== ' ') more)
+          ')':more -> Just (acc ++ [t], more)
+          _        -> Nothing
+
+-- Parse Twee's --formal-proof output and build the rewrite chain.
+--
+-- Two strategies, tried in order:
+--  1. Direct: parse intermediate terms from Twee's output and use them verbatim.
+--     Works for ground proofs where Twee's output terms match exactly.
+--  2. Guided replay: use the axiom IDs and directions from the proof but
+--     re-derive intermediate terms via rewriteTermAll on the stored equations.
+--     Needed when Twee renames variables (e.g. X0 → X in non-ground proofs).
+--     Only tries the one direction Twee specified, avoiding direction backtracking
+--     while remaining robust to position ambiguity in short chains.
+parseTweeChain
+  :: Map.Map String UnitEntry
+  -> String        -- Twee's stdout
+  -> Term -> Term  -- expected start and end of chain
+  -> Maybe (Term, [(UnitEntry, Dir, Term)])
+parseTweeChain idToUe output l r =
+  case extractProof of
+    Nothing -> Nothing
+    Just (startStr, rawSteps) ->
+      directChain startStr rawSteps <|> guidedChain rawSteps
+  where
+    -- Strategy 1: parse intermediate terms verbatim from Twee's output.
+    directChain startStr rawSteps =
+      let mStart = fst <$> parseTweeTerm startStr
+          mChain = sequence
+            [ case (Map.lookup nm idToUe, fst <$> parseTweeTerm termStr) of
+                (Just ue, Just t) -> Just (ue, dir, t)
+                _                 -> Nothing
+            | (nm, dir, termStr) <- rawSteps ]
+      in case (mStart, mChain) of
+           (Just start, Just chain)
+             | start == l && (null chain || lastTerm chain == r) -> Just (l, chain)
+             | start == r && (null chain || lastTerm chain == l) -> Just (r, chain)
+           _ -> Nothing
+
+    -- Strategy 2: guided replay using stored equations (handles variable renaming).
+    guidedChain rawSteps =
+      let steps = [(nm, dir) | (nm, dir, _) <- rawSteps]
+      in replayGuided steps l r <|> replayGuided steps r l
+      where
+        replayGuided steps start end = (start,) <$> go start steps
+          where
+            go cur [] = if cur == end then Just [] else Nothing
+            go cur ((tid, dir):rest) =
+              case Map.lookup tid idToUe of
+                Nothing -> go cur rest
+                Just ue -> case ueUnit ue of
+                  Eq a b ->
+                    listToMaybe
+                      [ (ue, dir, t) : chain
+                      | t <- rewriteTermAll cur (a, b) dir
+                      , Just chain <- [go t rest] ]
+                  _ -> go cur rest
+
+    lastTerm xs = let (_, _, t) = last xs in t
+
+    isTermLine l' =
+      let s = dropWhile (== ' ') l'
+      in not (null s) && (head s `elem` (['a'..'z'] ++ ['A'..'Z'] ++ "_"))
+
+    extractStep l' = case dropWhile (/= '{') l' of
+      s | "by axiom" `isInfixOf` s ->
+            let nm  = case dropWhile (/= '(') s of
+                        []      -> ""
+                        (_:r') -> takeWhile (/= ')') r'
+                dir = if "R->L" `isInfixOf` s then RL else LR
+            in if null nm then Nothing else Just (nm, dir)
+        | otherwise -> Nothing
+
+    collectSteps [] = []
+    collectSteps (l':ls) = case extractStep l' of
+      Just (nm, dir) ->
+        case dropWhile (not . isTermLine) ls of
+          []          -> []
+          (tl:rest) -> (nm, dir, dropWhile (== ' ') tl) : collectSteps rest
+      Nothing -> collectSteps ls
+
+    extractProof =
+      let ls         = lines output
+          afterProof = drop 1 (dropWhile (not . isPrefixOf "Proof:" . dropWhile (== ' ')) ls)
+      in case dropWhile (not . isTermLine) afterProof of
+           [] -> Nothing
+           (startLine:rest) ->
+             Just (dropWhile (== ' ') startLine, collectSteps rest)
 
 callTwee :: [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
 callTwee units (Eq l r) = do
@@ -795,7 +998,7 @@ callTwee units (Eq l r) = do
       eqUnits = sortBy (\(_, u1) (_, u2) ->
                   compare (null (litVars (ueUnit u1))) (null (litVars (ueUnit u2))))
                 rawEqUnits
-      mkId i ue = fromMaybe ("anon_" ++ show i) (sanitizeId <$> ueName ue)
+      mkId i ue = maybe ("anon_" ++ show i) sanitizeId (ueName ue)
       idToUe  = Map.fromList [(mkId i ue, ue) | (i, ue) <- eqUnits]
       axioms  = [ toCnfAxiom (mkId i ue) a b
                 | (i, ue) <- eqUnits, Eq a b <- [ueUnit ue] ]
@@ -804,15 +1007,8 @@ callTwee units (Eq l r) = do
       tmpFile = "/tmp/taelja_twee_input.p"
   writeFile tmpFile input
   (_, out, _) <- readProcessWithExitCode tweeBin
-                   ["--no-colour", "--formal-proof", "--max-time", "10", tmpFile] ""
-  let stepNames = parseTweeStepNames out
-      chainL    = replayTweeChainTo idToUe stepNames l r
-      chainR    = replayTweeChainTo idToUe stepNames r l
-      result
-        | not (null chainL) = Just (l, chainL)
-        | not (null chainR) = Just (r, chainR)
-        | otherwise         = Nothing
-  return result
+                   ["--no-colour", "--formal-proof", "--no-lemmas", "--max-time", "15", tmpFile] ""
+  return (parseTweeChain idToUe out l r)
 callTwee _ _ = return Nothing
 
 -- ── TPTP → internal conversion ───────────────────────────────────────────────
