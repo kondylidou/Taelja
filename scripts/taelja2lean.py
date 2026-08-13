@@ -597,6 +597,125 @@ def lean_var_name(uppercase_name: str, idx: int) -> str:
     return uppercase_name.lower()
 
 
+# ─── Occurrence-based rewrite helpers ────────────────────────────────────────
+
+def term_equal(t1, t2) -> bool:
+    """Structural equality of two term objects."""
+    if type(t1) != type(t2):
+        return False
+    if isinstance(t1, Var):
+        return t1.name == t2.name
+    if isinstance(t1, Const):
+        return t1.name == t2.name
+    if isinstance(t1, App):
+        return (t1.head == t2.head and
+                len(t1.args) == len(t2.args) and
+                all(term_equal(a, b) for a, b in zip(t1.args, t2.args)))
+    return False
+
+
+def match_term_pat(pat, term, subst=None):
+    """Pattern match: pat (Var = wildcard) against term. Returns substitution dict or None."""
+    if subst is None:
+        subst = {}
+    if isinstance(pat, Var):
+        existing = subst.get(pat.name)
+        if existing is None:
+            return dict(subst, **{pat.name: term})
+        return subst if term_equal(existing, term) else None
+    if isinstance(pat, Const) and isinstance(term, Const):
+        return subst if pat.name == term.name else None
+    if isinstance(pat, App) and isinstance(term, App):
+        if pat.head != term.head or len(pat.args) != len(term.args):
+            return None
+        s = dict(subst)
+        for p, t in zip(pat.args, term.args):
+            s = match_term_pat(p, t, s)
+            if s is None:
+                return None
+        return s
+    return None
+
+
+def apply_subst_obj(subst, term):
+    """Apply substitution (str -> Term) to a term object."""
+    if isinstance(term, Var) and term.name in subst:
+        return subst[term.name]
+    if isinstance(term, App):
+        return App(term.head, [apply_subst_obj(subst, a) for a in term.args])
+    return term
+
+
+def count_pat_occurrences(pat, term) -> int:
+    """Count DFS (leftmost-outermost) occurrences of pattern pat in term."""
+    count = 1 if match_term_pat(pat, term) is not None else 0
+    if isinstance(term, App):
+        for arg in term.args:
+            count += count_pat_occurrences(pat, arg)
+    return count
+
+
+def rewrite_occurrence(term, pat, rep, target_n):
+    """Rewrite only the target_n-th DFS occurrence of pat -> rep in term."""
+    count = [0]
+    done = [False]
+
+    def go(t):
+        if done[0]:
+            return t
+        s = match_term_pat(pat, t)
+        if s is not None:
+            count[0] += 1
+            if count[0] == target_n:
+                done[0] = True
+                return apply_subst_obj(s, rep)
+        if isinstance(t, App):
+            return App(t.head, [go(a) for a in t.args])
+        return t
+
+    return go(term)
+
+
+def find_rw_subst(prev_term, new_term, ax_formula, direction):
+    """
+    Find the concrete substitution σ used in the calc rewrite step prev_term → new_term.
+
+    For LR: rw [axN] finds ax_lhs in prev_term (LHS of calc goal) and rewrites to ax_rhs.
+    For RL: rw [axN] finds ax_lhs in new_term (RHS of calc goal) and rewrites to ax_rhs,
+            because for a reverse step the expanded (ax_lhs) form lives in new_term.
+
+    Returns the substitution dict {VarName: Term} or None if not found / not an EqLit.
+    """
+    if not isinstance(ax_formula, EqLit):
+        return None
+
+    ax_lhs, ax_rhs = ax_formula.lhs, ax_formula.rhs
+    pat, rep = ax_lhs, ax_rhs  # rw [axN] always uses lhs->rhs direction
+
+    search_in = prev_term if direction == 'LR' else new_term
+    target    = new_term  if direction == 'LR' else prev_term
+
+    count  = [0]
+    result = [None]
+
+    def search(t):
+        if result[0] is not None:
+            return
+        s = match_term_pat(pat, t)
+        if s is not None:
+            count[0] += 1
+            candidate = rewrite_occurrence(search_in, pat, rep, count[0])
+            if term_equal(candidate, target):
+                result[0] = s
+                return
+        if isinstance(t, App):
+            for arg in t.args:
+                search(arg)
+
+    search(search_in)
+    return result[0]
+
+
 # ─── Lean 4 code emitter ─────────────────────────────────────────────────────
 
 def ref_lean_name(ref: Ref) -> str:
@@ -742,20 +861,53 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
 
     start_str = lean_term(proof.start, var_map)
 
-    def step_tactic(step):
-        # rw [axN] works for both LR and RL calc steps:
-        # - LR: rewrites l→r in the LHS of the goal, making both sides equal
-        # - RL: rewrites l→r in the RHS of the goal, making both sides equal
-        ref_name = ref_lean_name(step.ref)
-        return f'by rw [{ref_name}]'
+    def step_tactic(step, prev_term):
+        # Strategy: pre-instantiate the axiom with concrete ground terms so that
+        # rw [h_rw] finds exactly one occurrence (the right one) in the calc goal.
+        # For LR: ax_lhs appears in prev_term → rw rewrites LHS of goal.
+        # For RL: ax_lhs appears in new_term → rw rewrites RHS of goal (no ← needed).
+        ref_name  = ref_lean_name(step.ref)
+        direction = step.ref.direction
 
-    # First calc line: "calc start = term1 := tactic1"
+        ax_formula = None
+        if step.ref.kind == 'axiom' and step.ref.num in axiom_types:
+            ax_formula = axiom_types[step.ref.num][2]
+        elif step.ref.kind == 'lemma' and step.ref.num in lemma_types:
+            ax_formula = lemma_types[step.ref.num][2]
+
+        if ax_formula is None or not isinstance(ax_formula, EqLit):
+            return f'by rw [{ref_name}]'
+
+        subst = find_rw_subst(prev_term, step.term, ax_formula, direction)
+        if subst is None:
+            return f'by rw [{ref_name}]'  # fallback
+
+        # Build instantiated application: axN arg1 arg2 ...
+        fvars = sorted(vars_in_lit(ax_formula))
+        args  = []
+        for v in fvars:
+            if v in subst:
+                t       = subst[v]
+                a_str   = lean_term(t, var_map)
+                if isinstance(t, App) and t.args:
+                    a_str = f'({a_str})'
+                args.append(a_str)
+        if args:
+            inst = f'{ref_name} {" ".join(args)}'
+        else:
+            inst = ref_name  # ground lemma (no vars)
+
+        return f'by have h_rw := {inst}; rw [h_rw]'
+
+    # First calc line
     first = proof.steps[0]
     first_term = lean_term(first.term, var_map)
-    lines.append(f'calc {start_str} = {first_term} := {step_tactic(first)}')
+    lines.append(f'calc {start_str} = {first_term} := {step_tactic(first, proof.start)}')
+    prev_term = first.term
     for step in proof.steps[1:]:
         term_str = lean_term(step.term, var_map)
-        lines.append(f'    _ = {term_str} := {step_tactic(step)}')
+        lines.append(f'    _ = {term_str} := {step_tactic(step, prev_term)}')
+        prev_term = step.term
 
     return lines
 
