@@ -20,6 +20,7 @@ import TaeljaVerify.Vampire.ResolutionExampleHornReuseForced
 import TaeljaVerify.Vampire.ResolutionExampleHornReuseInlined
 import TaeljaVerify.Vampire.ResolutionExampleHornReuseN1
 import TaeljaVerify.Vampire.ResolutionExamplePqr
+import TaeljaVerify.Vampire.ResolutionExampleSharedVarname
 import TaeljaVerify.Vampire.SuperpositionExampleClausal1
 import TaeljaVerify.Vampire.SuperpositionExampleClausal2
 import TaeljaVerify.Vampire.SuperpositionExampleNongroundLemma
@@ -37,7 +38,12 @@ import TaeljaVerify.Vampire.TestRlSafety
 import TaeljaVerify.Vampire.TestSplitDerivedUnit
 import TaeljaVerify.Vampire.UnitsOnlyRelationalExample
 
+-- Twee prover test cases
+import TaeljaVerify.Twee.Sam
+import TaeljaVerify.Twee.Ana0072
+
 -- E prover test cases
+import TaeljaVerify.E.EUnitSourceAxiom
 import TaeljaVerify.E.HornExampleDerivedRw
 import TaeljaVerify.E.HornExampleElimVarRw
 import TaeljaVerify.E.HornExampleEqHeadInlined

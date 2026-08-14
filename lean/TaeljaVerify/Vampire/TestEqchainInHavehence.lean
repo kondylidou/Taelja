@@ -25,8 +25,8 @@ axiom ax3 : ∀ (x : α), (f x) = (h x) → p x
 -- Lemma 4
 theorem taelja_lemma4 : ∀ (x : α), (f x) = (h x) := by
   intro x
-  calc f x = g x := by rw [ax1]
-      _ = h x := by rw [ax2]
+  calc f x = g x := by have h_rw := ax1 x; rw [h_rw]
+      _ = h x := by have h_rw := ax2 x; rw [h_rw]
 
 -- Goal 1
 theorem taelja_goal1 : p a := by

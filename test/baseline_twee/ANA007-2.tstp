@@ -1,0 +1,15 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~c_lessequals(c_HOL_Oabs(v_f(v_x(V_U)), t_b), c_times(V_U, c_HOL_Oabs(v_f(v_x(V_U)), t_b), t_b), t_b), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/ANA/ANA007-2.p', cls_conjecture_0)).
+cnf(c2, negated_conjecture, class_Ring__and__Field_Oordered__idom(t_b), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/ANA/ANA007-2.p', tfree_tcs)).
+cnf(c3, axiom, ~class_Ring__and__Field_Oordered__idom(T_a) | V_c=c_times(c_1, V_c, T_a), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/ANA/ANA007-2.p', cls_Ring__and__Field_Omult__cancel__right1_2)).
+cnf(c4, plain, c_times(c_1, X, t_b)=X, inference(resolution, [status(thm)], [c2, c3])).
+cnf(c5, axiom, ~class_Ring__and__Field_Oordered__idom(T) | class_Orderings_Oorder(T), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/ANA/ANA007-2.p', clsrel_Ring__and__Field_Oordered__idom_44)).
+cnf(c6, plain, class_Orderings_Oorder(t_b), inference(resolution, [status(thm)], [c2, c5])).
+cnf(c7, axiom, ~class_Orderings_Oorder(T_a2) | c_lessequals(V_x, V_x, T_a2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/ANA/ANA007-2.p', cls_Orderings_Oorder__class_Oaxioms__1_0)).
+cnf(c8, plain, c_lessequals(c_HOL_Oabs(v_f(v_x(c_1)), t_b), c_HOL_Oabs(v_f(v_x(c_1)), t_b), t_b), inference(resolution, [status(thm)], [c6, c7])).
+cnf(c9, plain, c_lessequals(c_HOL_Oabs(v_f(v_x(c_1)), t_b), c_times(c_1, c_HOL_Oabs(v_f(v_x(c_1)), t_b), t_b), t_b), inference(rewriting, [status(thm)], [c4, c8])).
+cnf(c10, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c9])).
+% SZS output end CNFRefutation
+

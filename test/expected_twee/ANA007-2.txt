@@ -1,0 +1,22 @@
+Axiom 1: class_Ring__and__Field_Oordered__idom(t_b)
+Axiom 2: class_Ring__and__Field_Oordered__idom(X) => Y = c_times(c_1,Y,X)
+Axiom 3: class_Ring__and__Field_Oordered__idom(Z) => class_Orderings_Oorder(Z)
+Axiom 4: class_Orderings_Oorder(A) => c_lessequals(B,B,A)
+
+Lemma 5: X = c_times(c_1,X,t_b)
+Proof:
+  have class_Ring__and__Field_Oordered__idom(t_b)
+    by axiom 1
+  hence X = c_times(c_1,X,t_b)
+    by axiom 2
+
+Goal 1: c_lessequals(c_HOL_Oabs(v_f(v_x(c_1)),t_b),c_times(c_1,c_HOL_Oabs(v_f(v_x(c_1)),t_b),t_b),t_b)
+Proof:
+  have class_Ring__and__Field_Oordered__idom(t_b)
+    by axiom 1
+  hence class_Orderings_Oorder(t_b)
+    by axiom 3
+  hence c_lessequals(c_HOL_Oabs(v_f(v_x(c_1)),t_b),c_HOL_Oabs(v_f(v_x(c_1)),t_b),t_b)
+    by axiom 4
+  hence c_lessequals(c_HOL_Oabs(v_f(v_x(c_1)),t_b),c_times(c_1,c_HOL_Oabs(v_f(v_x(c_1)),t_b),t_b),t_b)
+    by rw lemma 5

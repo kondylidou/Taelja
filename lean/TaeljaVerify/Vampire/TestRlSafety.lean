@@ -17,7 +17,7 @@ axiom ax1 : ∀ (x : α), (f x) = c
 
 -- Goal 1
 theorem taelja_goal1 : (f a) = c := by
-  calc f a = c := by rw [ax1]
+  calc f a = c := by have h_rw := ax1 a; rw [h_rw]
 
 end VampireTestRlSafety
 

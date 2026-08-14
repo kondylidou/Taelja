@@ -40,8 +40,8 @@ theorem taelja_lemma6 : (g a) = (h a) := by
 
 -- Goal 1
 theorem taelja_goal1 : (s (f a)) = (s (h a)) := by
-  calc s (f a) = s (g a) := by rw [taelja_lemma5]
-      _ = s (h a) := by rw [taelja_lemma6]
+  calc s (f a) = s (g a) := by have h_rw := taelja_lemma5; rw [h_rw]
+      _ = s (h a) := by have h_rw := taelja_lemma6; rw [h_rw]
 
 end VampireTestHavehenceInEqchain
 

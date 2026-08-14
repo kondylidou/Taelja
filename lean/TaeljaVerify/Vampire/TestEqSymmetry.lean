@@ -15,7 +15,7 @@ axiom ax1 : b = a
 
 -- Goal 1
 theorem taelja_goal1 : a = b := by
-  calc a = b := by rw [ax1]
+  calc a = b := by have h_rw := ax1; rw [h_rw]
 
 end VampireTestEqSymmetry
 

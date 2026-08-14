@@ -20,8 +20,8 @@ axiom ax2 : b = a
 
 -- Goal 1
 theorem taelja_goal1 : (f c) = (f b) := by
-  calc f c = f a := by rw [ax1]
-      _ = f b := by rw [ax2]
+  calc f c = f a := by have h_rw := ax1; rw [h_rw]
+      _ = f b := by have h_rw := ax2; rw [h_rw]
 
 end VampireSuperpositionExampleUnit1
 

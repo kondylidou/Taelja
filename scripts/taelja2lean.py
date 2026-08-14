@@ -1007,7 +1007,9 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                 prev_new_vars = [v for v in prev_sv if v not in var_map]
 
                 if ref.direction == 'RL':
-                    # RL: rewrite the GOAL using axiom LR (brings goal back to prev's form)
+                    # RL: rewrite the GOAL forward with axiom LR (brings goal back to prev's form).
+                    # The goal has 'a' where prev has 'b'; rw [ref_name] in goal uses LHS (a) as
+                    # pattern and replaces with RHS (b), turning the goal into prev's form.
                     if prev_new_vars:
                         inst = ' _' * len(prev_new_vars)
                         prev_inst = f'{prev_name}{inst}'
@@ -1015,22 +1017,40 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                         prev_inst = prev_name
                     lines.append(f'have {hname} : {full_lit_str} := by rw [{ref_name}]; exact {prev_inst}')
                 else:
-                    # LR: rewrite the HYPOTHESIS forward with axiom LR.
-                    # NEVER use rw [← ax] here — its pattern can be a metavar when
-                    # the axiom RHS is a plain variable (e.g. f(X)=X), which Lean rejects.
+                    # LR: rewrite the GOAL backward with axiom RL (brings goal back to prev's form).
+                    # The goal has 'b' where prev has 'a'; rw [← ref_name] in goal uses RHS (b) as
+                    # pattern and replaces with LHS (a), turning the goal into prev's form.
+                    # This avoids the metavar-LHS problem: when the lemma has the form x = f(x),
+                    # rw [ref_name] at h would use 'x' (a pure metavar) as pattern and fail in Lean,
+                    # whereas rw [← ref_name] uses 'f(x)' (a compound term) as pattern and succeeds.
                     if prev_new_vars and isinstance(prev_lit, EqLit):
                         # Non-ground equational prev: simp the axiom into the hypothesis copy,
                         # then apply at any concrete constant (the ∀ becomes spurious after simp).
                         witness = lean_name(consts[0]) if consts else 'a'
                         lines.append(f'have {hname} : {full_lit_str} := by have h_rw := {prev_name}; simp only [{ref_name}] at h_rw; exact h_rw {witness}')
                     else:
-                        # Ground (or relational) prev: copy then rw at hypothesis.
+                        # Ground (or relational) prev: choose rewrite strategy based on whether
+                        # the referenced lemma's LHS is a plain Var or a compound term.
                         if prev_new_vars:
                             inst = ' _' * len(prev_new_vars)
                             prev_copy = f'({prev_name}{inst})'
                         else:
                             prev_copy = prev_name
-                        lines.append(f'have {hname} : {full_lit_str} := by have h_rw := {prev_copy}; rw [{ref_name}] at h_rw; exact h_rw')
+                        # Look up the formula to decide which direction avoids a metavar pattern.
+                        rw_formula = None
+                        if ref.kind == 'axiom' and ref.num in axiom_types:
+                            rw_formula = axiom_types[ref.num][2]
+                        elif ref.kind == 'lemma' and ref.num in lemma_types:
+                            rw_formula = lemma_types[ref.num][2]
+                        lhs_is_var = isinstance(rw_formula, EqLit) and isinstance(rw_formula.lhs, Var)
+                        if lhs_is_var:
+                            # LHS is a pure variable (e.g. x = f(x)): rw [ref] would use ?x as
+                            # pattern and fail in Lean. rw [← ref] uses the compound RHS instead.
+                            lines.append(f'have {hname} : {full_lit_str} := by rw [← {ref_name}]; exact {prev_copy}')
+                        else:
+                            # LHS is compound (e.g. f(f(x)) = x, a = b): apply the rewrite forward
+                            # into the hypothesis copy so the compound LHS is the pattern.
+                            lines.append(f'have {hname} : {full_lit_str} := by have h_rw := {prev_copy}; rw [{ref_name}] at h_rw; exact h_rw')
             else:
                 # Regular apply step
                 if lit_has_new_vars:

@@ -23,12 +23,12 @@ axiom ax3 : b = c
 
 -- Goal 1
 theorem taelja_goal1 : c = a := by
-  calc c = b := by rw [ax3]
-      _ = a := by rw [ax2]
+  calc c = b := by have h_rw := ax3; rw [h_rw]
+      _ = a := by have h_rw := ax2; rw [h_rw]
 
 -- Goal 2
 theorem taelja_goal2 : (f d) = d := by
-  calc f d = d := by rw [ax1]
+  calc f d = d := by have h_rw := ax1 d; rw [h_rw]
 
 end VampireSuperpositionExampleClausal1
 

@@ -262,15 +262,15 @@ findElecIO li σ0 elecs pos units = do
           Eq _ _ -> haveHenceElecs
           _      -> haveHenceElecs ++ namedElecs
         rwMatches =
-          [ (u, eq, a, b, dir, ρi, σ0')
+          [ (u, eq, a, b, dir, res, ρi, σ0')
           | u <- srcElecs, (eq, a, b) <- rwEqs, dir <- [LR, RL]
-          , Just res <- [rewriteLit (ueUnit u) (a, b) dir]
+          , res <- rewriteLitAll (ueUnit u) (a, b) dir
           , Just (ρi, σ0') <- [tryMatch li res σ0] ]
     case listToMaybe rwMatches of
       Nothing -> return Nothing
-      Just (u, eq, a, b, dir, ρi, σ0') -> do
+      Just (u, eq, a, b, dir, res, ρi, σ0') -> do
         nm <- ensureNamed (ueUnit eq) (makeBlock eq [] [])
-        let result = applySubst ρi (fromMaybe li (rewriteLit (ueUnit u) (a, b) dir))
+        let result = applySubst ρi res
         return (Just (u, ρi, σ0', [(RwStep nm (a, b) dir, result)]))
   case step25 of
     Just res -> return (Just res)
@@ -457,7 +457,37 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
             -- Goal-grounding fallback: if the head matches a goal lit,
             -- instantiate free variables and retry processBody.
             case mHead of
-              Nothing -> return False
+              -- Sibling-grounding fallback for NegConjecture: when the body lit
+              -- has free variables, match against the sibling derived electron to
+              -- ground them (e.g. V_U → c_1), then retry so that step-2.5 can
+              -- find a rewriting match.
+              Nothing -> case bodyLits of
+                [singleLit] -> do
+                  let sibPos = if not (null pos) && last pos == '1'
+                               then Just (init pos ++ "0") else Nothing
+                  case sibPos of
+                    Nothing -> return False
+                    Just sp -> do
+                      allUnits <- gets stUnits
+                      case listToMaybe [u | u <- allUnits, uePos u == Just sp] of
+                        Nothing  -> return False
+                        Just sib -> case matchLit singleLit (ueUnit sib) of
+                          Nothing    -> return False
+                          Just σ_sib -> do
+                            let bodyLitsG = [applySubst σ_sib singleLit]
+                            mResult2 <- processBody bodyLitsG [] elecs simpl pos
+                            case mResult2 of
+                              Nothing -> return False
+                              Just (σ0, matched) -> do
+                                let pairs = zip goalLits matched
+                                if null pairs then return False
+                                else do
+                                  forM_ pairs $ \(gl, (ki, ρi, rwi)) -> do
+                                    let gl' = applySubst σ_sib (applySubst σ0 gl)
+                                    blk <- emitBlockForGoal gl' ki ρi rwi
+                                    emitGoalProof gl' blk
+                                  return True
+                _ -> return False
               Just hl ->
                 case listToMaybe [σ | gl <- goalLits, Just σ <- [matchLit hl gl]] of
                   Nothing   -> return False

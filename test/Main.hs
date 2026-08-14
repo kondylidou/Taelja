@@ -26,6 +26,7 @@ tests = testGroup "Taelja"
 tweeBenchmarkNames :: [String]
 tweeBenchmarkNames =
   [ "sam"
+  , "ANA007-2"
   ]
 
 handcraftedNames :: [String]

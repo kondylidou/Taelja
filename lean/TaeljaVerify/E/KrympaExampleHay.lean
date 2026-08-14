@@ -20,8 +20,8 @@ axiom ax2 : ∀ (y : α), (h a y) = c
 
 -- Goal 1
 theorem taelja_goal1 : a = c := by
-  calc a = h a b := by rw [ax1]
-      _ = c := by rw [ax2]
+  calc a = h a b := by have h_rw := ax1 a; rw [h_rw]
+      _ = c := by have h_rw := ax2 b; rw [h_rw]
 
 end EKrympaExampleHay
 

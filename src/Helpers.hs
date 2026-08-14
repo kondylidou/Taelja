@@ -180,6 +180,20 @@ rewriteLit lit eq dir = case lit of
       Just u' -> Just (u' : us)
       Nothing -> (u :) <$> rewriteFirst us
 
+-- all single-step rewriting positions (not just leftmost)
+rewriteLitAll :: Literal -> (Term, Term) -> Dir -> [Literal]
+rewriteLitAll lit eq dir = case lit of
+  Eq  l r -> [Eq  l' r  | l' <- rewriteTermAll l eq dir]
+          ++ [Eq  l  r' | r' <- rewriteTermAll r eq dir]
+  NEq l r -> [NEq l' r  | l' <- rewriteTermAll l eq dir]
+          ++ [NEq l  r' | r' <- rewriteTermAll r eq dir]
+  Rel  n ts -> map (Rel  n) (rewriteListAll ts)
+  NRel n ts -> map (NRel n) (rewriteListAll ts)
+  where
+    rewriteListAll []     = []
+    rewriteListAll (t:ts) = [t' : ts | t' <- rewriteTermAll t eq dir]
+                         ++ [t : ts' | ts' <- rewriteListAll ts]
+
 isEqChain :: ProofBlock -> Bool
 isEqChain (EqChain {}) = True
 isEqChain _            = False

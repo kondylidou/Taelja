@@ -20,10 +20,10 @@ axiom ax2 : a = b
 
 -- Goal 1
 theorem taelja_goal1 : (h (f b) a) = (h a (f b)) := by
-  calc h (f b) a = h b a := by rw [ax1]
-      _ = h b b := by rw [ax2]
-      _ = h a b := by rw [ax2]
-      _ = h a (f b) := by rw [ax1]
+  calc h (f b) a = h b a := by have h_rw := ax1 b; rw [h_rw]
+      _ = h a a := by have h_rw := ax2; rw [h_rw]
+      _ = h a b := by have h_rw := ax2; rw [h_rw]
+      _ = h a (f b) := by have h_rw := ax1 b; rw [h_rw]
 
 end VampireKrympaExample5Nonparallel
 
