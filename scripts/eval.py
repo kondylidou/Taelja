@@ -65,7 +65,8 @@ def classify_problem(p_file):
 
 def find_taelja():
     project = SCRIPT_DIR.parent
-    hits = list(project.glob('dist-newstyle/**/taelja/taelja'))
+    hits = [p for p in project.glob('dist-newstyle/**/taelja/taelja')
+            if '/t/' not in str(p)]  # exclude test executables (dist-newstyle/.../t/...)
     if hits:
         return str(sorted(hits)[-1])
     import shutil

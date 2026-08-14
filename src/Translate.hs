@@ -326,7 +326,15 @@ makeBlock ki ρi rwSteps = do
                       nm <- ensureNamed (ueUnit unnamed) (return blk)
                       return (HaveHence [Have lit nm])
                     Nothing  -> namedCase units
-                _ -> namedCase units
+                _ -> do
+                  let genCands = filter (\u -> isNothing (ueName u)
+                                           && isJust (ueProof u)
+                                           && isJust (matchLit (ueUnit u) lit)) units
+                  case genCands of
+                    (genU : _) | Just ρg <- matchLit (ueUnit genU) lit
+                                , Just stored <- ueProof genU ->
+                        return (applySubstBlock ρg stored)
+                    _ -> namedCase units
         Nothing -> namedCase units
 
     namedCase units =
@@ -402,7 +410,12 @@ emitBlockForGoal gl@(Eq l r) ki ρi rwi
         Nothing  -> do
           units <- gets stUnits
           mBlk  <- tweeChain l r (tweableUnits units)
-          return (fromMaybe (EqChain l []) mBlk)
+          case mBlk of
+            Just blk -> return blk
+            Nothing  -> do
+              liftIO $ hPutStrLn stderr $
+                "[warn] emitBlockForGoal: Twee could not prove: " ++ ppLitI gl
+              return (EqChain l [])
 emitBlockForGoal _gl ki ρi rwi = makeBlock ki ρi rwi
 
 buildEqChainFromElectron :: Literal -> UnitEntry -> Subst -> [(RwStep, Literal)] -> Maybe ProofBlock
@@ -429,7 +442,9 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
   let pos    = lePos entry
       mAxName = Map.lookup pos posToName
   case convertDeclToClause (leSrcDecl entry) of
-    Nothing  -> return False
+    Nothing  -> do
+      liftIO $ dbg debug $ "[skip] pos=" ++ pos ++ " (" ++ leName entry ++ ") — could not convert to clause"
+      return False
     Just cls ->
       let Clause bodyLits mHead = applyGroundingClause θ cls
       in do
@@ -439,7 +454,28 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
           Nothing -> do
             liftIO $ dbg debug $ "[skip] pos=" ++ pos ++ " (" ++ leName entry ++ ")"
                 ++ "  body=[" ++ intercalate ", " (map ppLitI bodyLits) ++ "] — no matching electron found"
-            return False
+            -- Goal-grounding fallback: if the head matches a goal lit,
+            -- instantiate free variables and retry processBody.
+            case mHead of
+              Nothing -> return False
+              Just hl ->
+                case listToMaybe [σ | gl <- goalLits, Just σ <- [matchLit hl gl]] of
+                  Nothing   -> return False
+                  Just σ_gl -> do
+                    let bodyLitsG = map (applySubst σ_gl) bodyLits
+                        headLitG  = applySubst σ_gl hl
+                    mResult2 <- processBody bodyLitsG [] elecs simpl pos
+                    case mResult2 of
+                      Nothing -> return False
+                      Just (σ0, matched) -> do
+                        blk <- buildProofBlock matched mAxName σ0 headLitG
+                        let headInst = applySubst σ0 headLitG
+                        when (isJust mAxName) $ do
+                          addUnit (UnitEntry Nothing headInst (Just blk) (Just pos))
+                          case blk of
+                            EqChain {} -> void (ensureNamed headInst (return blk))
+                            _          -> return ()
+                        return False
           Just (σ0, matched)  ->
             case mHead of
               Nothing ->
@@ -450,7 +486,8 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                     , Just chain@(EqChain {}) <- ueProof ki ->
                         emitGoalProof (applySubst σ0 gl) (applySubstBlock ρi chain) >> return True
                   _ -> do
-                    let pairs = zip goalLits matched
+                    let pairs     = zip goalLits matched
+                        unmatched = drop (length matched) goalLits
                     if null pairs
                       then return False
                       else do
@@ -458,6 +495,10 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                           let gl' = applySubst σ0 gl
                           blk <- emitBlockForGoal gl' ki ρi rwi
                           emitGoalProof gl' blk
+                        forM_ unmatched $ \gl -> do
+                          liftIO $ hPutStrLn stderr $
+                            "[warn] processOneNonUnit: unmatched goal lit: " ++ ppLitI (applySubst σ0 gl)
+                          emitGoalProof (applySubst σ0 gl) (HaveHence [])
                         return True
               Just headLit -> do
                 blk <- buildProofBlock matched mAxName σ0 headLit

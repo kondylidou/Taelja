@@ -100,11 +100,16 @@ buildProofInfo allUnits
   -- prefer the original Conjecture unit: provers may split/simplify before refutation
   goalLits <- case extractConjectureGoals allUnits of
     Just lits -> Just lits
-    Nothing   -> listToMaybe
+    Nothing   -> listToMaybe $
       [ lits
       | e <- nonUnits, leRole e == NegConjecture
       , let goalDecl = fromMaybe (leDecl e) (lookupDecl unitMap (leName e))
       , Just lits <- [extractGoalLits goalDecl]
+      ] ++
+      -- UEQ problems: the negated conjecture is a disequality axiom (no negated_conjecture role)
+      [ lits
+      | e <- nonUnits, leRole e == OrigAxiom
+      , Just lits <- [extractGoalLits (leDecl e)]
       ]
   return ProofInfo
     { piElectrons = electrons
