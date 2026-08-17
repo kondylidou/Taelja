@@ -33,12 +33,12 @@ axiom ax6 : ∀ (x : α), r1 x → l0 x → r2 x
 -- Goal 1
 theorem taelja_goal1 : r2 c := by
   have h1 : s0 d := by apply ax3
-  have h2 : q1 d d d := by apply ax4 <;> first | assumption | simp_all
+  have h2 : q1 d d d := by apply ax4 <;> (first | assumption | exact Eq.symm (by assumption))
   have h3 : ∀ (x : α), q0 x d := fun x => by apply ax2
   have h4 : s0 d := by apply ax3
-  have h5 : ∀ (x : α), r1 x := fun x => by have h3_i := h3 x; apply ax5 <;> assumption
+  have h5 : ∀ (x : α), r1 x := fun x => by have h3_i := h3 x; apply ax5 <;> (first | assumption | exact Eq.symm (by assumption) | apply h3)
   have h6 : l0 c := by apply ax1
-  have h7 : r2 c := by apply ax6 <;> first | assumption | simp_all
+  have h7 : r2 c := by apply ax6 <;> (first | assumption | exact Eq.symm (by assumption) | apply h3 | apply h5)
   exact h7
 
 end VampireResolutionExampleSharedVarname

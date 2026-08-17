@@ -30,7 +30,7 @@ theorem taelja_lemma4 : ∀ (x : α), (g x) = x := by
 -- Goal 1
 theorem taelja_goal1 : p (g a) := by
   have h1 : (g a) = a := by apply taelja_lemma4
-  have h2 : p (g a) := by apply ax3 <;> first | assumption | simp_all
+  have h2 : p (g a) := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h2
 
 end VampireSuperpositionExampleNongroundLemma

@@ -29,13 +29,13 @@ axiom ax4 : ∀ (x : α), q x → (g x) = (h x)
 -- Lemma 5
 theorem taelja_lemma5 : (f a) = (g a) := by
   have h1 : p a := by apply ax1
-  have h2 : (f a) = (g a) := by apply ax2 <;> first | assumption | simp_all
+  have h2 : (f a) = (g a) := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h2
 
 -- Lemma 6
 theorem taelja_lemma6 : (g a) = (h a) := by
   have h1 : q a := by apply ax3
-  have h2 : (g a) = (h a) := by apply ax4 <;> first | assumption | simp_all
+  have h2 : (g a) = (h a) := by apply ax4 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h2
 
 -- Goal 1

@@ -531,10 +531,17 @@ def lean_term(t, var_map: dict) -> str:
     return str(t)
 
 def lean_name(name: str) -> str:
-    """Escape Lean keywords."""
-    keywords = {'fun', 'let', 'in', 'do', 'if', 'then', 'else', 'match', 'with',
-                'have', 'show', 'from', 'theorem', 'def', 'where', 'by', 'exact',
-                'apply', 'intro', 'calc', 'rw', 'simp', 'type', 'sort', 'prop'}
+    """Escape Lean 4 keywords that would be invalid as identifiers."""
+    keywords = {
+        # declaration keywords
+        'axiom', 'def', 'theorem', 'lemma', 'class', 'structure', 'instance',
+        'abbrev', 'variable', 'universe', 'example', 'noncomputable', 'attribute',
+        'namespace', 'end', 'section', 'open', 'import', 'export',
+        # expression / tactic keywords
+        'fun', 'let', 'in', 'do', 'return', 'if', 'then', 'else', 'match', 'with',
+        'have', 'show', 'from', 'where', 'by', 'exact', 'apply', 'intro', 'calc',
+        'rw', 'simp', 'type', 'sort', 'prop', 'extends',
+    }
     if name.lower() in keywords:
         return name + '_'
     return name
@@ -567,17 +574,18 @@ def lean_lit(f, var_map: dict) -> str:
         return ' → '.join(parts + [head])
     return str(f)
 
-def lean_type(formula, all_vars: list) -> Tuple[str, dict]:
+def lean_type(formula, all_vars: list, extra_vars=None) -> Tuple[str, dict]:
     """
     Return (lean_type_string, var_map) where var_map maps uppercase var names
     to their Lean lowercase variable names. Wraps in ∀ if there are free vars.
+    extra_vars: additional Taelja variable names (uppercase) to include in ∀,
+                used when an EqChainProof has chain-internal variables not in formula.
     """
-    fvars = sorted(vars_in_lit(formula))
+    fvars = sorted(vars_in_lit(formula) | (set(extra_vars) if extra_vars else set()))
     var_map = {v: lean_var_name(v, i) for i, v in enumerate(fvars)}
     body = lean_lit(formula, var_map)
 
     if isinstance(formula, Implies):
-        # Body is already rendered as P → Q → R
         type_str = body
     else:
         type_str = body
@@ -708,6 +716,12 @@ def find_rw_subst(prev_term, new_term, ax_formula, direction):
             if term_equal(candidate, target):
                 result[0] = s
                 return
+            # LHS vars are resolved in s; RHS may still have free vars (e.g. ax: X = f(Y)).
+            # Match the candidate (with free RHS vars as patterns) against target to resolve them.
+            full_s = match_term_pat(candidate, target, dict(s))
+            if full_s is not None:
+                result[0] = full_s
+                return
         if isinstance(t, App):
             for arg in t.args:
                 search(arg)
@@ -788,9 +802,19 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
     if doc.axioms:
         lines.append('')
 
+    def chain_only_vars(formula, proof):
+        """Return Taelja var names that appear only in EqChain intermediate steps, not in formula."""
+        if not isinstance(proof, EqChainProof):
+            return set()
+        cvars = vars_in_term(proof.start)
+        for step in proof.steps:
+            cvars |= vars_in_term(step.term)
+        return cvars - vars_in_lit(formula)
+
     lemma_types = {}   # num -> (type_str, var_map, formula)
     for lem in doc.lemmas:
-        type_str, var_map = lean_type(lem.formula, [])
+        extra = chain_only_vars(lem.formula, lem.proof)
+        type_str, var_map = lean_type(lem.formula, [], extra_vars=extra)
         lemma_types[lem.num] = (type_str, var_map, lem.formula)
 
     # Emit lemmas
@@ -805,7 +829,8 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
 
     # Emit goals
     for g in doc.goals:
-        type_str, var_map = lean_type(g.formula, [])
+        extra = chain_only_vars(g.formula, g.proof)
+        type_str, var_map = lean_type(g.formula, [], extra_vars=extra)
         lines.append(f'-- Goal {g.num}')
         lines.append(f'theorem taelja_goal{g.num} : {type_str} := by')
         proof_lines = emit_proof(g.proof, axiom_types, lemma_types, g.formula, consts_sorted)
@@ -1015,7 +1040,42 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                         prev_inst = f'{prev_name}{inst}'
                     else:
                         prev_inst = prev_name
-                    lines.append(f'have {hname} : {full_lit_str} := by rw [{ref_name}]; exact {prev_inst}')
+                    # Check if the lemma's LHS is a bare Var — rw [ref] would fail with metavar error.
+                    # For ∀ X Y, X = f(Y,...): use Eq.trans (ref A _) prev instead, letting Lean
+                    # unify the middle term from prev's type.
+                    rl_rw_formula = None
+                    if ref.kind == 'axiom' and ref.num in axiom_types:
+                        rl_rw_formula = axiom_types[ref.num][2]
+                    elif ref.kind == 'lemma' and ref.num in lemma_types:
+                        rl_rw_formula = lemma_types[ref.num][2]
+                    rl_lhs_is_var = isinstance(rl_rw_formula, EqLit) and isinstance(rl_rw_formula.lhs, Var)
+                    if rl_lhs_is_var and isinstance(step.lit, EqLit) and not prev_new_vars:
+                        # Goal is an equation: bridge via Eq.trans so Lean unifies the middle term.
+                        goal_lhs = lean_term(step.lit.lhs, svm)
+                        lines.append(f'have {hname} : {full_lit_str} := Eq.trans ({ref_name} {goal_lhs} _) {prev_inst}')
+                    elif rl_lhs_is_var and isinstance(step.lit, PredLit) and not prev_new_vars:
+                        # Goal is a predicate: find where step.lit and prev_lit differ, instantiate
+                        # the lemma with those two terms, then rw [h_eq] in goal.
+                        step_args = step.lit.args if isinstance(step.lit, PredLit) else []
+                        prev_args = prev_lit.args if isinstance(prev_lit, PredLit) else []
+                        x_inst_term = None
+                        y_inst_term = None
+                        for sa, pa in zip(step_args, prev_args):
+                            if not term_equal(sa, pa):
+                                x_inst_term, y_inst_term = sa, pa
+                                break
+                        if x_inst_term is not None:
+                            x_str = lean_term(x_inst_term, svm)
+                            y_str = lean_term(y_inst_term, svm)
+                            if isinstance(x_inst_term, App) and x_inst_term.args:
+                                x_str = f'({x_str})'
+                            if isinstance(y_inst_term, App) and y_inst_term.args:
+                                y_str = f'({y_str})'
+                            lines.append(f'have {hname} : {full_lit_str} := by have h_eq := {ref_name} {x_str} {y_str}; rw [h_eq]; exact {prev_inst}')
+                        else:
+                            lines.append(f'have {hname} : {full_lit_str} := by rw [{ref_name}]; exact {prev_inst}')
+                    else:
+                        lines.append(f'have {hname} : {full_lit_str} := by rw [{ref_name}]; exact {prev_inst}')
                 else:
                     # LR: rewrite the GOAL backward with axiom RL (brings goal back to prev's form).
                     # The goal has 'b' where prev has 'a'; rw [← ref_name] in goal uses RHS (b) as
@@ -1052,7 +1112,23 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                             # into the hypothesis copy so the compound LHS is the pattern.
                             lines.append(f'have {hname} : {full_lit_str} := by have h_rw := {prev_copy}; rw [{ref_name}] at h_rw; exact h_rw')
             else:
-                # Regular apply step
+                # Regular apply step.
+                # Build a closing tactic that handles three cases strictly:
+                #   1. direct match               — assumption
+                #   2. equation in wrong orientation — exact Eq.symm (by assumption)
+                #   3. universally-quantified hyp needs instantiation — apply h_i
+                # Collecting universally-quantified prior hyps for case 3:
+                univ_hyp_names = [
+                    hyp_names[pidx]
+                    for pidx in sorted(hyp_names.keys())
+                    if hyp_lits.get(pidx) is not None
+                    and any(v not in var_map
+                            for v in sorted(vars_in_lit(hyp_lits[pidx])))
+                ]
+                close_parts = ['assumption', 'exact Eq.symm (by assumption)']
+                close_parts += [f'apply {h}' for h in univ_hyp_names]
+                close_tac = 'first | ' + ' | '.join(close_parts)
+
                 if lit_has_new_vars:
                     # Wrap in lambda, instantiate any ∀-quantified previous hyps
                     fvars_str = ' '.join(svm[v] for v in new_vars)
@@ -1067,11 +1143,10 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                             pname = hyp_names[pidx]
                             pvars_args = ' '.join(svm.get(v, '_') for v in p_new_vars)
                             inst_lines.append(f'have {pname}_i := {pname} {pvars_args}')
-                    inner = '; '.join(inst_lines + [f'apply {ref_name} <;> assumption'])
+                    inner = '; '.join(inst_lines + [f'apply {ref_name} <;> ({close_tac})'])
                     lines.append(f'have {hname} : {full_lit_str} := fun {fvars_str} => by {inner}')
                 else:
-                    # Use assumption first; fall back to simp_all for symmetric-equation subgoals
-                    lines.append(f'have {hname} : {full_lit_str} := by apply {ref_name} <;> first | assumption | simp_all')
+                    lines.append(f'have {hname} : {full_lit_str} := by apply {ref_name} <;> ({close_tac})')
 
             hyp_names[idx] = hname
             hyp_lits[idx] = step.lit

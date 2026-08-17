@@ -20,7 +20,7 @@ axiom ax2 : p a → q a
 -- Goal 1
 theorem taelja_goal1 : q a := by
   have h1 : p a := by apply ax1
-  have h2 : q a := by apply ax2 <;> first | assumption | simp_all
+  have h2 : q a := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h2
 
 end VampireTestNonunitSingle

@@ -28,15 +28,15 @@ axiom ax4 : ∀ (x : α), p x → q x → r x
 -- Lemma 5
 theorem taelja_lemma5 : q a := by
   have h1 : (h a) = (k a) := by apply ax1
-  have h2 : q a := by apply ax3 <;> first | assumption | simp_all
+  have h2 : q a := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : r a := by
   have h1 : (h a) = (k a) := by apply ax1
-  have h2 : p a := by apply ax2 <;> first | assumption | simp_all
+  have h2 : p a := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
   have h3 : q a := by apply taelja_lemma5
-  have h4 : r a := by apply ax4 <;> first | assumption | simp_all
+  have h4 : r a := by apply ax4 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h4
 
 end VampireTestPrelemmatizeSymEq

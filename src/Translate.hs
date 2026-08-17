@@ -174,7 +174,7 @@ tweeChain l r units = do
         Eq a b -> return (RwStep nm (a, b) dir, cur)
         _      -> error "tweeChain: non-eq unit in Twee chain"
 
--- step 1: pure match with backtracking; steps 2/2.5/3 (IO) only when step 1 fails
+-- step 1: pure match with backtracking; steps 2 and 3 (IO) only when step 1 fails
 processBody
   :: [Literal]
   -> Subst
@@ -214,7 +214,7 @@ processBody lits σ0 elecs simpl pos = go lits σ0 []
       case mBT of
         Just res -> return (Just res)
         Nothing  -> do
-          -- IO fallback: steps 2 / 2.5 / 3
+          -- IO fallback: steps 2 and 3
           units <- gets stUnits
           let step2Matches =
                 [ (ue, ρi, σ0'', rw)
@@ -247,44 +247,105 @@ processBody lits σ0 elecs simpl pos = go lits σ0 []
         Nothing              -> return Nothing
         Just (σ0''', matched) -> return (Just (σ0''', (ki, ρi, rwi) : matched))
 
--- step 2.5: dynamic rw match; step 3: Twee fallback for equational literals
+-- step 3: Twee fallback for any literal type (equational or Horn).
+-- For equational literals, first tries to recover an existing HaveHence electron
+-- from the Twee chain (avoids promoting intermediates to lemmas); falls back to
+-- creating a synthetic unit only when recovery is not possible.
 findElecIO
   :: Literal -> Subst -> [UnitEntry] -> String
   -> [UnitEntry]
   -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
-findElecIO li σ0 elecs pos units = do
-  step25 <- do
-    let haveHenceElecs =
-          [ u | u <- elecs, isNothing (ueName u), Just (HaveHence _) <- [ueProof u] ]
-        namedElecs = [ u | u <- elecs, isJust (ueName u) ]
-        rwEqs = [ (eq, a, b) | eq <- tweableUnits elecs, Eq a b <- [ueUnit eq] ]
-        srcElecs = case li of
-          Eq _ _ -> haveHenceElecs
-          _      -> haveHenceElecs ++ namedElecs
-        rwMatches =
-          [ (u, eq, a, b, dir, res, ρi, σ0')
-          | u <- srcElecs, (eq, a, b) <- rwEqs, dir <- [LR, RL]
-          , res <- rewriteLitAll (ueUnit u) (a, b) dir
-          , Just (ρi, σ0') <- [tryMatch li res σ0] ]
-    case listToMaybe rwMatches of
-      Nothing -> return Nothing
-      Just (u, eq, a, b, dir, res, ρi, σ0') -> do
-        nm <- ensureNamed (ueUnit eq) (makeBlock eq [] [])
-        let result = applySubst ρi res
-        return (Just (u, ρi, σ0', [(RwStep nm (a, b) dir, result)]))
-  case step25 of
-    Just res -> return (Just res)
-    Nothing  ->
-      case li of
-        Eq l r -> do
-          mBlk <- tweeChain l r (tweableUnits units)
-          case mBlk of
-            Nothing  -> return Nothing
-            Just blk -> do
-              let ki = UnitEntry Nothing li (Just blk) (Just pos)
-              addUnit ki
-              return (Just (ki, [], σ0, []))
-        _ -> return Nothing
+findElecIO li σ0 _ pos units = case li of
+  Eq l r -> do
+    mRaw <- liftIO (callTwee (tweableUnits units) (Eq l r))
+    case mRaw of
+      Nothing       -> return Nothing
+      Just (_, [])  -> return Nothing
+      Just (_, chain) -> do
+        mRes <- recoverFromChainParticipants li σ0 chain
+        case mRes of
+          Just res -> return (Just res)
+          Nothing  -> do
+            steps' <- mapM promoteStep chain
+            let blk = EqChain l steps'
+                ki  = UnitEntry Nothing li (Just blk) (Just pos)
+            addUnit ki
+            return (Just (ki, [], σ0, []))
+  _ -> step25 li σ0 units
+  where
+    promoteStep (stepUe, dir, cur) = do
+      nm <- ensureNamed (ueUnit stepUe) (makeBlock stepUe [] [])
+      case ueUnit stepUe of
+        Eq a b -> return (RwStep nm (a, b) dir, cur)
+        _      -> error "findElecIO: non-eq unit in Twee chain"
+
+-- Step-2.5-style recovery restricted to participants of a Twee chain.
+-- Finds the HaveHence electron in the chain, then tries applying each other
+-- chain entry as a single-equation rewrite on the whole electron literal.
+-- Promotes unnamed-but-proven equation entries to lemmas when needed.
+recoverFromChainParticipants
+  :: Literal -> Subst
+  -> [(UnitEntry, Dir, Term)]
+  -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
+recoverFromChainParticipants li σ0 chain = do
+  let chainUes  = map (\(ue, _, _) -> ue) chain
+      hhElecs   = filter isHH chainUes
+      eqEntries = filter isEq chainUes
+  step25rw li σ0 hhElecs eqEntries
+  where
+    isHH ue = case ueProof ue of { Just (HaveHence _) -> True; _ -> False }
+    isEq ue = case ueUnit ue of { Eq _ _ -> True; _ -> False }
+
+-- Step-2.5 for relational body literals: rewrite a named/HH electron using
+-- an available equation, exactly as old step 2.5 did.
+step25 :: Literal -> Subst -> [UnitEntry] -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
+step25 li σ0 units = do
+  let hhElecs   = [u | u <- units, isNothing (ueName u),
+                       case ueProof u of { Just (HaveHence _) -> True; _ -> False }]
+      namedElecs = [u | u <- units, isJust (ueName u)]
+      srcElecs   = hhElecs ++ namedElecs
+      eqEntries  = [ue | ue <- tweableUnits units, case ueUnit ue of { Eq _ _ -> True; _ -> False }]
+  step25rw li σ0 srcElecs eqEntries
+
+-- Core step-2.5 matching: for each (electron, equation) pair, rewrite the whole
+-- electron literal and check if the result matches the target body literal li.
+step25rw
+  :: Literal -> Subst
+  -> [UnitEntry]  -- candidate electrons (HaveHence or named)
+  -> [UnitEntry]  -- candidate equation units
+  -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
+step25rw li σ0 srcElecs eqEntries = firstJustM tryElec srcElecs
+  where
+    firstJustM _ [] = return Nothing
+    firstJustM f (x:xs) = f x >>= \case
+      Just r  -> return (Just r)
+      Nothing -> firstJustM f xs
+
+    tryElec u = case tryMatch li (ueUnit u) σ0 of
+      Just (ρi, σ0') -> return (Just (u, ρi, σ0', []))
+      Nothing        -> firstJustM (tryRw u) eqEntries
+
+    tryRw u eq
+      | ueUnit u == ueUnit eq = return Nothing
+    tryRw u eq = case ueUnit eq of
+      Eq sa sb -> case listToMaybe
+                    [ (dir, res, ρi, σ0')
+                    | dir <- [LR, RL]
+                    , res <- rewriteLitAll (ueUnit u) (sa, sb) dir
+                    , Just (ρi, σ0') <- [tryMatch li res σ0] ] of
+        Nothing -> return Nothing
+        Just (dir, res, ρi, σ0') -> do
+          nm <- getEqName eq
+          case nm of
+            Nothing -> return Nothing
+            Just n  -> return $ Just (u, ρi, σ0', [(RwStep n (sa, sb) dir, applySubst ρi res)])
+      _ -> return Nothing
+
+    getEqName eq = case ueName eq of
+      Just n  -> return (Just n)
+      Nothing -> case ueProof eq of
+        Just _  -> Just <$> ensureNamed (ueUnit eq) (makeBlock eq [] [])
+        Nothing -> return Nothing
 
 -- rwSteps come from rwChain on the uninstantiated electron; ρi applied to literals
 -- so "hence p(a)" appears instead of "hence p(X)"
@@ -412,10 +473,7 @@ emitBlockForGoal gl@(Eq l r) ki ρi rwi
           mBlk  <- tweeChain l r (tweableUnits units)
           case mBlk of
             Just blk -> return blk
-            Nothing  -> do
-              liftIO $ hPutStrLn stderr $
-                "[warn] emitBlockForGoal: Twee could not prove: " ++ ppLitI gl
-              return (EqChain l [])
+            Nothing  -> makeBlock ki ρi []
 emitBlockForGoal _gl ki ρi rwi = makeBlock ki ρi rwi
 
 buildEqChainFromElectron :: Literal -> UnitEntry -> Subst -> [(RwStep, Literal)] -> Maybe ProofBlock
@@ -637,8 +695,10 @@ proveGoal mChain goal = do
           blk <- makeBlock ue ρ0 []
           emitGoalProof instGoal blk
         Nothing -> do
-          liftIO $ hPutStrLn stderr $
-            "[warn] no unit found for goal: " ++ ppLitI goal
+          mTwee <- liftIO (callTwee (tweableUnits units) goal)
+          when (isNothing mTwee) $
+            liftIO $ hPutStrLn stderr $
+              "[warn] no unit found for goal: " ++ ppLitI goal
           emitGoalProof goal (HaveHence [])
   where
     promoteTweeStep (stepUe, dir, cur) = do
@@ -1080,6 +1140,24 @@ callTwee units (Eq l r) = do
   (_, out, _) <- readProcessWithExitCode tweeBin
                    ["--no-colour", "--formal-proof", "--no-lemmas", "--max-time", "15", tmpFile] ""
   return (parseTweeChain idToUe out l r)
+callTwee units (Rel name args) = do
+  let goalTerm  = if null args then Const name else App name args
+      indexed   = zip [(0::Int)..] units
+      mkId i ue = maybe ("anon_" ++ show i) sanitizeId (ueName ue)
+      toAxiom (i, ue) = case ueUnit ue of
+        Eq a b   -> Just (toCnfAxiom (mkId i ue) a b)
+        Rel n as -> Just (toCnfAxiom (mkId i ue) (if null as then Const n else App n as) (Const "true"))
+        _        -> Nothing
+      axioms  = mapMaybe toAxiom indexed
+      negGoal = toCnfNegGoal "goal" goalTerm (Const "true")
+      input   = unlines (axioms ++ [negGoal])
+      tmpFile = "/tmp/taelja_twee_horn_input.p"
+  writeFile tmpFile input
+  (_, out, _) <- readProcessWithExitCode tweeBin
+                   ["--no-colour", "--no-lemmas", "--max-time", "15", tmpFile] ""
+  if "Unsatisfiable" `isInfixOf` out
+    then return (Just (goalTerm, []))
+    else return Nothing
 callTwee _ _ = return Nothing
 
 -- ── TPTP → internal conversion ───────────────────────────────────────────────

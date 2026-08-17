@@ -25,7 +25,7 @@ axiom ax3 : ∀ (x : α) (y : α), q x y → (f x) = (g y)
 -- Goal 1
 theorem taelja_goal1 : (f a) = c := by
   have h1 : ∀ (x : α), q a x := fun x => by apply ax1
-  have h2 : ∀ (x : α), (f a) = (g x) := fun x => by have h1_i := h1 x; apply ax3 <;> assumption
+  have h2 : ∀ (x : α), (f a) = (g x) := fun x => by have h1_i := h1 x; apply ax3 <;> (first | assumption | exact Eq.symm (by assumption) | apply h1)
   have h3 : (f a) = c := by have h_rw := h2; simp only [ax2] at h_rw; exact h_rw a
   exact h3
 

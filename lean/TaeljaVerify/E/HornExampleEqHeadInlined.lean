@@ -29,7 +29,7 @@ axiom ax4 : ∀ (x : α), (f x) = (g x)
 theorem taelja_goal1 : (g a) = zero := by
   have h1 : p (f a) := by apply ax2
   have h2 : q (f a) := by apply ax1
-  have h3 : (f a) = zero := by apply ax3 <;> first | assumption | simp_all
+  have h3 : (f a) = zero := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
   have h4 : (g a) = zero := by have h_rw := h3; rw [ax4] at h_rw; exact h_rw
   exact h4
 

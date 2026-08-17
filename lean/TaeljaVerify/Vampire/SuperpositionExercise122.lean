@@ -20,7 +20,7 @@ axiom ax2 : ∀ (x : α), (f x) = c → (f x) = b
 -- Goal 1
 theorem taelja_goal1 : b = c := by
   have h1 : (f (f c)) = c := by apply ax1
-  have h2 : (f (f c)) = b := by apply ax2 <;> first | assumption | simp_all
+  have h2 : (f (f c)) = b := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
   have h3 : c = b := by have h_rw := h2; rw [ax1] at h_rw; exact h_rw
   exact h3.symm
 

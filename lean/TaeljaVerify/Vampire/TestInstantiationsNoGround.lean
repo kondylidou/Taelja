@@ -31,17 +31,17 @@ axiom ax5 : ∀ (x : α), r1 x → r2 x → s x
 theorem taelja_lemma6 : ∀ (x : α), r2 x := by
   intro x
   have h1 : top := by apply ax1
-  have h2 : q x x := by apply ax2 <;> first | assumption | simp_all
-  have h3 : r2 x := by apply ax4 <;> first | assumption | simp_all
+  have h2 : q x x := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h3 : r2 x := by apply ax4 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : s a := by
   have h1 : top := by apply ax1
-  have h2 : q a b := by apply ax2 <;> first | assumption | simp_all
-  have h3 : r1 a := by apply ax3 <;> first | assumption | simp_all
+  have h2 : q a b := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h3 : r1 a := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
   have h4 : r2 a := by apply taelja_lemma6
-  have h5 : s a := by apply ax5 <;> first | assumption | simp_all
+  have h5 : s a := by apply ax5 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h5
 
 end VampireTestInstantiationsNoGround

@@ -28,15 +28,15 @@ axiom ax4 : ∀ (y : α) (z : α), q y z → p z → r y z
 theorem taelja_lemma5 : ∀ (x : α), p x := by
   intro x
   have h1 : s x := by apply ax1
-  have h2 : p x := by apply ax3 <;> first | assumption | simp_all
+  have h2 : p x := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : r b a := by
   have h1 : s a := by apply ax1
-  have h2 : q b a := by apply ax2 <;> first | assumption | simp_all
+  have h2 : q b a := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
   have h3 : p a := by apply taelja_lemma5
-  have h4 : r b a := by apply ax4 <;> first | assumption | simp_all
+  have h4 : r b a := by apply ax4 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h4
 
 end EResolutionExampleHornReuseForced

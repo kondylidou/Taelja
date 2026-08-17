@@ -26,9 +26,9 @@ axiom ax3 : ∀ (y : α) (z : α), q y z → p z → q (f y) z
 theorem taelja_goal1 : q (f (f b)) a := by
   have h1 : q b a := by apply ax1
   have h2 : p a := by apply ax2
-  have h3 : q (f b) a := by apply ax3 <;> first | assumption | simp_all
+  have h3 : q (f b) a := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
   have h4 : p a := by apply ax2
-  have h5 : q (f (f b)) a := by apply ax3 <;> first | assumption | simp_all
+  have h5 : q (f (f b)) a := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h5
 
 end EResolutionExampleHornReuseInlined
