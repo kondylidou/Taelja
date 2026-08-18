@@ -129,7 +129,8 @@ matchBothTerm l (Var y) σ0 ρi =
   let l' = applySubstTerm σ0 l
   in case lookup y ρi of
     Nothing -> Just (σ0, (y, l') : ρi)
-    Just t  -> if t == l' then Just (σ0, ρi) else Nothing
+    -- Apply σ0 to the stored binding: it may contain σ0-variables bound later.
+    Just t  -> if applySubstTerm σ0 t == l' then Just (σ0, ρi) else Nothing
 matchBothTerm (Const c) (Const d) σ0 ρi =
   if c == d then Just (σ0, ρi) else Nothing
 matchBothTerm (App f ts) (App g us) σ0 ρi

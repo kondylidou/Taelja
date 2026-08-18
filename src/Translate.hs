@@ -130,9 +130,10 @@ tryMatch li ki σ0 =
           if any (\(v, t) -> v `elem` termVars t) ρi'
             then Nothing
             else
-              let ρi  = [ (v, deepApplySubstTerm ρi' (Var (v ++ "_e"))) | v <- kVars ]
-                  σ0c = [(x, deepApplySubstTerm ρi' t) | (x, t) <- σ0']
-              in if applySubst σ0c li' == applySubst ρi' k'
+              let σ0c = [(x, deepApplySubstTerm ρi' t) | (x, t) <- σ0']
+                  -- Apply σ0c to ground any σ0-vars that appear in ρi' bindings.
+                  ρi  = [ (v, applySubstTerm σ0c (deepApplySubstTerm ρi' (Var (v ++ "_e")))) | v <- kVars ]
+              in if applySubst σ0c li' == applySubst ρi k
                  then Just (ρi, σ0c)
                  else Nothing
         _ -> Nothing
@@ -277,12 +278,18 @@ findElecIO li σ0 pos units = case li of
             addUnit ki
             return (Just (ki, [], σ0, []))
   Rel n as -> do
-    let liTerm   = if null as then Const n else App n as
-        isHHu u  = case ueProof u of { Just (HaveHence _) -> True; _ -> False }
-        srcElecs = [ u | u <- units
-                       , case ueUnit u of { Rel n' _ -> n' == n; _ -> False }
-                       , isJust (ueName u) || isHHu u ]
-        eqUnits  = filter (isEqLit . ueUnit) (tweableUnits units)
+    let liTerm     = if null as then Const n else App n as
+        isHHu u    = case ueProof u of { Just (HaveHence _) -> True; _ -> False }
+        isRelN u   = case ueUnit u of { Rel n' _ -> n' == n; _ -> False }
+        coreElecs  = [ u | u <- units, isRelN u, isJust (ueName u) || isHHu u ]
+        -- Ground (variable-free) derived electrons without proof: used as Twee source
+        -- literals for predicate rewriting (e.g. Twee "rewriting" inference steps).
+        -- Kept separate so coreElecs (which have proofs) are tried first.
+        groundElecs = [ u | u <- units, isRelN u
+                          , null (litVars (ueUnit u))
+                          , isNothing (ueName u), not (isHHu u) ]
+        srcElecs   = coreElecs ++ groundElecs
+        eqUnits    = filter (isEqLit . ueUnit) (tweableUnits units)
     mTweeRes <- firstJustM (tryRelElec eqUnits liTerm) srcElecs
     case mTweeRes of
       Just res -> return (Just res)
