@@ -1,0 +1,15 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~p(a), file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas_cnf.p', goal)).
+cnf(c2, axiom, s(a), file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas_cnf.p', ax4)).
+cnf(c3, axiom, g(X)=f(X), file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas_cnf.p', ax2)).
+cnf(c4, axiom, f(X2)=X2, file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas_cnf.p', ax1)).
+cnf(c5, plain, g(X2)=X2, inference(rewriting, [status(thm)], [c3, c4])).
+cnf(c6, axiom, q(X2) | g(X2)!=X2, file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas_cnf.p', ax3)).
+cnf(c7, plain, q(a), inference(resolution, [status(thm)], [c5, c6])).
+cnf(c8, axiom, p(X2) | ~s(X2) | ~q(X2), file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas_cnf.p', ax5)).
+cnf(c9, plain, ~s(a) | p(a), inference(resolution, [status(thm)], [c7, c8])).
+cnf(c10, plain, p(a), inference(resolution, [status(thm)], [c2, c9])).
+cnf(c11, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c10])).
+% SZS output end CNFRefutation

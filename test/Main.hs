@@ -27,6 +27,7 @@ tweeBenchmarkNames :: [String]
 tweeBenchmarkNames =
   [ "sam"
   , "ANA007-2"
+  , "thesis_example_both_lemmas_cnf"
   ]
 
 handcraftedNames :: [String]
