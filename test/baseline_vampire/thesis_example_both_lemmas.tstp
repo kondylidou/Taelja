@@ -1,0 +1,87 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Detected formulas, will run a generic FOF schedule.
+% WARNING: time unlimited strategy and instruction limiting not in place - attempting to translate instructions to time
+% % WARNING: option sil not known.
+% % WARNING: option i not known.
+% lrs+1011_32_tgt=full:alpa=true:random_seed=2556233407:st=5:sd=1:ss=included:er=filter_1 on thesis_example_both_lemmas for (1ds)
+% Solution written to "/var/folders/bk/v9p36c7s37g3tzfx5s_t9pkw0000gn/T/vampire-proof-32904"
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for thesis_example_both_lemmas
+% SZS output start Proof for thesis_example_both_lemmas
+fof(f1,axiom,(
+  ! [X0] : f(X0) = X0),
+  file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas.p',ax1)).
+fof(f2,axiom,(
+  ! [X0] : g(X0) = f(X0)),
+  file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas.p',ax2)).
+fof(f3,axiom,(
+  ! [X0] : (g(X0) = X0 => q(X0))),
+  file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas.p',ax3)).
+fof(f4,axiom,(
+  s(a)),
+  file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas.p',ax4)).
+fof(f5,axiom,(
+  ! [X0] : ((s(X0) & q(X0)) => p(X0))),
+  file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas.p',ax5)).
+fof(f6,conjecture,(
+  p(a)),
+  file('/Users/kondylidou/Developer/Taelja/test/input/thesis_example_both_lemmas.p',goal)).
+fof(f7,negated_conjecture,(
+  ~p(a)),
+  inference(negated_conjecture,[status(cth)],[f6])).
+fof(f8,plain,(
+  ~p(a)),
+  inference(flattening,[],[f7])).
+fof(f9,plain,(
+  ! [X0] : (q(X0) | g(X0) != X0)),
+  inference(ennf_transformation,[],[f3])).
+fof(f10,plain,(
+  ! [X0] : (p(X0) | (~s(X0) | ~q(X0)))),
+  inference(ennf_transformation,[],[f5])).
+fof(f11,plain,(
+  ! [X0] : (p(X0) | ~s(X0) | ~q(X0))),
+  inference(flattening,[],[f10])).
+fof(f12,plain,(
+  ( ! [X0] : (f(X0) = X0) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f13,plain,(
+  ( ! [X0] : (f(X0) = g(X0)) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f14,plain,(
+  ( ! [X0] : (q(X0) | g(X0) != X0) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f15,plain,(
+  s(a)),
+  inference(cnf_transformation,[],[f4])).
+fof(f16,plain,(
+  ( ! [X0] : (p(X0) | ~s(X0) | ~q(X0)) )),
+  inference(cnf_transformation,[],[f11])).
+fof(f17,plain,(
+  ~p(a)),
+  inference(cnf_transformation,[],[f8])).
+fof(f18,plain,(
+  ( ! [X0] : (g(X0) = X0) )),
+  inference(definition_unfolding,[],[f12,f13])).
+fof(f19,plain,(
+  ~s(a) | ~q(a)),
+  inference(resolution,[],[f16,f17])).
+fof(f20,plain,(
+  ~q(a)),
+  inference(forward_subsumption_resolution,[],[f19,f15])).
+fof(f21,plain,(
+  a != g(a)),
+  inference(resolution,[],[f20,f14])).
+fof(f22,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f21,f18])).
+% SZS output end Proof for thesis_example_both_lemmas
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.004 s
+% Peak memory usage: 5 MB
+% ------------------------------
+% ------------------------------
+% Success in time 0.012 s

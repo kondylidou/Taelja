@@ -673,12 +673,34 @@ processNonUnits debug θ nonUnits posToName goalLits simpl = go nonUnits
     nGoals = length goalLits
 
     go [] = return ()
-    go (entry : rest) = do
+    go pending = do
       nDone <- gets (length . stGoals)
-      if nDone >= nGoals then return ()
-      else do
-        done <- processOneNonUnit debug θ entry posToName goalLits simpl
-        if done then return () else go rest
+      when (nDone < nGoals) $ do
+        prevCount <- gets (length . stUnits)
+        failed    <- processPass pending
+        newCount  <- gets (length . stUnits)
+        nDone2    <- gets (length . stGoals)
+        -- Retry only if new units were derived and the goal is still unproved.
+        -- This handles Vampire FOF proofs where axiom leaves appear at deeper
+        -- positions than refutation-chain inner nodes (string-sort ordering
+        -- puts inner nodes first, but axioms may depend on each other).
+        when (newCount > prevCount && nDone2 < nGoals && not (null failed)) $
+          go failed
+
+    processPass [] = return []
+    processPass (entry : rest) = do
+      nDone <- gets (length . stGoals)
+      if nDone >= nGoals
+        then return []
+        else do
+          prevCount <- gets (length . stUnits)
+          done      <- processOneNonUnit debug θ entry posToName goalLits simpl
+          newCount  <- gets (length . stUnits)
+          if done
+            then return []
+            else do
+              restFailed <- processPass rest
+              return (if newCount > prevCount then restFailed else entry : restFailed)
 
 findUnitForGoal :: Literal -> [UnitEntry] -> Maybe (UnitEntry, Subst, Literal)
 findUnitForGoal goal units = listToMaybe $

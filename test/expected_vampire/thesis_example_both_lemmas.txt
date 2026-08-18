@@ -1,0 +1,29 @@
+Axiom 1: f(X) = X
+Axiom 2: g(X) = f(X)
+Axiom 3: s(a)
+Axiom 4: s(X) /\ q(X) => p(X)
+Axiom 5: g(X) = X => q(X)
+
+Lemma 6: g(X) = X
+Proof:
+  g(X)
+= { by axiom 2 }
+  f(X)
+= { by axiom 1 }
+  X
+
+Lemma 7: q(a)
+Proof:
+  have g(a) = a
+    by lemma 6
+  hence q(a)
+    by axiom 5
+
+Goal 1: p(a)
+Proof:
+  have s(a)
+    by axiom 3
+   and q(a)
+    by lemma 7
+  hence p(a)
+    by axiom 4

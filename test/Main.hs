@@ -68,6 +68,7 @@ benchmarkNames =
   , "resolution_example_shared_varname"
   , "superposition_example_clausal1"
   , "superposition_example_clausal2"
+  , "thesis_example_both_lemmas"
   ]
 
 -- Benchmarks for which an E prover output exists.
