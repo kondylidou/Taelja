@@ -1,0 +1,46 @@
+Axiom 1: c_lessequals(v_k(v_x),v_f(v_x),t_b)
+Axiom 2: class_Ring__and__Field_Oordered__idom(t_b)
+Axiom 3: class_Ring__and__Field_Oordered__idom(X) => class_Orderings_Olinorder(X)
+Axiom 4: class_Orderings_Olinorder(X) => class_Orderings_Oorder(X)
+Axiom 5: class_Ring__and__Field_Oordered__idom(X) => class_OrderedGroup_Ocomm__monoid__add(X)
+Axiom 6: class_OrderedGroup_Ocomm__monoid__add(X) => c_plus(c_0,Y,X) = Y
+Axiom 7: class_Ring__and__Field_Oordered__idom(X) => class_OrderedGroup_Opordered__ab__group__add(X)
+Axiom 8: c_lessequals(c_0,c_minus(v_k(v_x),v_g(v_x),t_b),t_b)
+Axiom 9: c_lessequals(Y,c_minus(Z,A,X),X) /\ class_OrderedGroup_Opordered__ab__group__add(X) => c_lessequals(c_plus(Y,A,X),Z,X)
+Axiom 10: c_lessequals(A,Y,X) /\ c_lessequals(Y,Z,X) /\ class_Orderings_Oorder(X) => c_lessequals(A,Z,X)
+Axiom 11: c_lessequals(c_plus(Y,Z,X),A,X) /\ class_OrderedGroup_Opordered__ab__group__add(X) => c_lessequals(Y,c_minus(A,Z,X),X)
+
+Lemma 12: class_OrderedGroup_Opordered__ab__group__add(t_b)
+Proof:
+  have class_Ring__and__Field_Oordered__idom(t_b)
+    by axiom 2
+  hence class_OrderedGroup_Opordered__ab__group__add(t_b)
+    by axiom 7
+
+Lemma 13: class_Orderings_Oorder(t_b)
+Proof:
+  have class_Ring__and__Field_Oordered__idom(t_b)
+    by axiom 2
+  hence class_Orderings_Olinorder(t_b)
+    by axiom 3
+  hence class_Orderings_Oorder(t_b)
+    by axiom 4
+
+Goal 1: c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b)
+Proof:
+  have c_lessequals(c_0,c_minus(v_k(v_x),v_g(v_x),t_b),t_b)
+    by axiom 8
+   and class_OrderedGroup_Opordered__ab__group__add(t_b)
+    by lemma 12
+  hence c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_k(v_x),t_b)
+    by axiom 9
+   and c_lessequals(v_k(v_x),v_f(v_x),t_b)
+    by axiom 1
+   and class_Orderings_Oorder(t_b)
+    by lemma 13
+  hence c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_f(v_x),t_b)
+    by axiom 10
+   and class_OrderedGroup_Opordered__ab__group__add(t_b)
+    by lemma 12
+  hence c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b)
+    by axiom 11

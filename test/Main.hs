@@ -47,7 +47,8 @@ handcraftedNames =
 
 benchmarkNames :: [String]
 benchmarkNames =
-  [ "LCL146-1"
+  [ "ANA023-2"
+  , "LCL146-1"
   , "horn_example_derived_rw"
   , "horn_example_elim_var_rw"
   , "horn_example_eq_head_inlined"

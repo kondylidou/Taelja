@@ -837,6 +837,33 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                   case blk of
                     EqChain {} -> void (ensureNamed headInst (return blk))
                     _          -> return ()
+                -- Extra goal-grounding attempt: the natural electron match may produce a
+                -- unit that shares the head shape with a goal but with different ground
+                -- terms (e.g. axiom 11 matches k≤f and emits 0≤f-k, while the goal is
+                -- 0≤f-g).  If the head also matches a goal literal under a *different*
+                -- grounding σ_gl, retry processBody with the goal-grounded body so that
+                -- the goal unit gets stored too.
+                when (isJust mAxName) $ do
+                  elecs2 <- getElectrons pos
+                  let altMatchings = [ σ | gl <- goalLits
+                                         , not (isEqLit gl)     -- equational goals recover via splitChain/Twee
+                                         , Just σ <- [matchLit headLit gl]
+                                         , applySubst σ headLit /= headInst ]
+                  case altMatchings of
+                    [] -> return ()
+                    (σ_gl : _) -> do
+                      let bodyLitsG = map (applySubst σ_gl) bodyLits
+                          headLitG  = applySubst σ_gl headLit
+                      mResult2 <- processBody bodyLitsG [] elecs2 simpl pos
+                      case mResult2 of
+                        Nothing -> return ()
+                        Just (σ0', matched') -> do
+                          blk2 <- buildProofBlock matched' mAxName σ0' headLitG
+                          let headInst2 = applySubst σ0' headLitG
+                          addUnit (UnitEntry Nothing headInst2 (Just blk2) (Just pos))
+                          case blk2 of
+                            EqChain {} -> void (ensureNamed headInst2 (return blk2))
+                            _          -> return ()
                 return False
 
 processNonUnits
