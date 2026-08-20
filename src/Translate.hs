@@ -2,7 +2,7 @@
 module Translate (translate) where
 
 import Control.Applicative ((<|>))
-import Control.Monad (foldM, forM_, unless, void, when)
+import Control.Monad (foldM, forM, forM_, unless, void, when)
 import Data.Bifunctor (second)
 import Control.Monad.State
 import Data.Char (toUpper)
@@ -22,15 +22,193 @@ import Helpers
 import ProofTree
   ( LeafRole(..), LeafEntry(..), ProofInfo(..)
   , buildProofInfo, headLitOf, unitNameStr
+  , isPositiveUnitFormula, resolveSourceName
   )
+
+-- ── Lemma introduction ────────────────────────────────────────────────────────
+
+-- Flatten a T.Parent into the TSTP unit names it references
+flattenParents :: T.Parent -> [String]
+flattenParents (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
+flattenParents (T.Parent (T.Inference _ _ ps) _) = concatMap flattenParents ps
+flattenParents _                                  = []
+
+-- All TSTP names reachable as ancestors of rootName (rootName itself excluded)
+ancestorNamesOf :: Map.Map String T.Unit -> String -> Set.Set String
+ancestorNamesOf unitMap rootName = go startFrontier Set.empty
+  where
+    parentsOf nm = case Map.lookup nm unitMap of
+      Just (T.Unit _ _ (Just (T.Inference _ _ ps, _))) ->
+        Set.fromList (concatMap flattenParents ps)
+      _ -> Set.empty
+
+    startFrontier = parentsOf rootName
+
+    go frontier seen = case Set.minView frontier of
+      Nothing -> seen
+      Just (nm, rest)
+        | Set.member nm seen -> go rest seen
+        | otherwise          ->
+            go (Set.union rest (parentsOf nm)) (Set.insert nm seen)
+
+-- A TPTP declaration is a pure positive-unit equation (no body, equality head)
+isPositiveUnitEquation :: T.Declaration -> Bool
+isPositiveUnitEquation decl =
+  isPositiveUnitFormula decl &&
+  case headLitOf decl of
+    Just (T.Equality _ T.Positive _) -> True
+    _                                 -> False
+
+-- Derived positive-unit equations used ≥ 2 times as parents in the DAG,
+-- returned in original topological order (parents before children).
+findLemmaCandidates :: [T.Unit] -> [(String, T.Declaration)]
+findLemmaCandidates units =
+  let parentCounts :: Map.Map String Int
+      parentCounts = Map.fromListWith (+)
+        [ (pname, 1)
+        | T.Unit _ _ (Just (T.Inference _ _ parents, _)) <- units
+        , pname <- concatMap flattenParents parents
+        ]
+      candidateSet = Set.fromList
+        [ unitNameStr n
+        | T.Unit n decl (Just (T.Inference _ _ _, _)) <- units
+        , isPositiveUnitEquation decl
+        , Map.findWithDefault 0 (unitNameStr n) parentCounts >= 2
+        ]
+  in [ (unitNameStr n, decl)
+     | T.Unit n decl _ <- units
+     , Set.member (unitNameStr n) candidateSet
+     ]
+
+-- Build a proof for candidate equation via direct Twee call.
+-- tstp2name: TSTP unit name → main-proof axiom name (from assignAxiomNames).
+-- Returns (original-var-form lit, proof block with undo-Skolem) or Nothing.
+buildCandidateLemma
+  :: Map.Map String T.Unit
+  -> Map.Map String String
+  -> (String, T.Declaration)
+  -> IO (Maybe (Literal, ProofBlock))
+buildCandidateLemma unitMap tstp2name (cname, cdecl) =
+  case headLitOf cdecl of
+    Nothing -> return Nothing
+    Just tlit ->
+      let lit = convertLit tlit
+      in case lit of
+           Eq l r -> do
+             let vs      = nub (litVars lit)
+                 skMap   = zip vs ["skc_" ++ show i | i <- [(0 :: Int) ..]]
+                 skSubst = [(v, Const sk) | (v, sk) <- skMap]
+                 l_sk    = applySubstTerm skSubst l
+                 r_sk    = applySubstTerm skSubst r
+
+             let ancNames  = ancestorNamesOf unitMap cname
+                 axEntries =
+                   [ UnitEntry (Map.lookup aname tstp2name) aeq Nothing Nothing
+                   | aname <- Set.toList ancNames
+                   , Just u@(T.Unit _ adecl _) <- [Map.lookup aname unitMap]
+                   , not (isDerivedUnit u)
+                   , isOrigAxiomDecl adecl
+                   , isPositiveUnitFormula adecl  -- exclude clauses with body literals
+                   , Just headL <- [headLitOf adecl]
+                   , let aeq = convertLit headL
+                   , isEqLit aeq
+                   ]
+
+             mRes <- callTwee axEntries (Eq l_sk r_sk)
+             case mRes of
+               Nothing       -> return Nothing
+               Just (_, [])  -> return Nothing
+               Just (start, chain) -> do
+                 let undoMap = [(sk, Var v) | (v, sk) <- skMap]
+                     steps   = [ ( RwStep nm eq dir
+                                 , applyConstSubstTerm undoMap cur )
+                               | (ue, dir, cur) <- chain
+                               , let nm = fromMaybe "?" (ueName ue)
+                               , let eq = case ueUnit ue of
+                                            Eq a b -> (a, b)
+                                            _      -> (Const "?", Const "?")
+                               ]
+                     blk = EqChain (applyConstSubstTerm undoMap start) steps
+                 -- Reject if any step references an ancestor not visible in the main proof
+                 if any (\(RwStep nm _ _, _) -> nm == "?") steps
+                   then return Nothing
+                   else return (Just (lit, blk))
+           _ -> return Nothing
+
+-- Replace a candidate unit's inference source with a synthetic file source so
+-- that buildProofInfo treats it as an OrigAxiom leaf (halts expansion there).
+makeFileSourced :: T.Unit -> T.Unit
+makeFileSourced (T.Unit n decl _) =
+  T.Unit n decl (Just (T.File (T.Atom (Text.pack "lemma")) Nothing, Nothing))
+makeFileSourced u = u
 
 translate :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translate debug (T.TSTP _ units) =
   case buildProofInfo units of
-    Nothing   -> do
+    Nothing -> do
       hPutStrLn stderr "translate: no refutation found (unsupported proof structure)"
       return Nothing
-    Just info -> Just <$> runAlgorithm debug info units
+    Just origInfo -> do
+      let unitMap0 = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- units]
+          origAxiomNames = Set.fromList
+            [ leName e | e <- piElectrons origInfo, leRole e == OrigAxiom ]
+          candidates = filter (\(cname, _) ->
+                          resolveSourceName unitMap0 cname `Set.notMember` origAxiomNames)
+                        (findLemmaCandidates units)
+      if null candidates
+        then Just <$> runAlgorithm debug origInfo units Map.empty
+        else do
+          let candNames = Set.fromList (map fst candidates)
+              modUnits  = map replace units
+              replace u@(T.Unit n _ _)
+                | Set.member (unitNameStr n) candNames = makeFileSourced u
+                | otherwise                            = u
+              replace u = u
+          -- First pass: make all candidates file-sourced to compute tstp2name
+          case buildProofInfo modUnits of
+            Nothing -> Just <$> runAlgorithm debug origInfo units Map.empty
+            Just tentativeInfo -> do
+              let tentativeUnitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- modUnits]
+                  (_, tentativePosToName, _) =
+                    assignAxiomNames (piElectrons tentativeInfo) (piNonUnits tentativeInfo) tentativeUnitMap
+                  tstp2name = Map.fromList
+                    [ (leName e, nm)
+                    | e <- piElectrons tentativeInfo
+                    , leRole e == OrigAxiom
+                    , Just nm <- [Map.lookup (lePos e) tentativePosToName]
+                    ]
+                  unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- units]
+              candResults <- forM candidates (buildCandidateLemma unitMap tstp2name)
+              let validNames = Set.fromList
+                    [ cname | ((cname, _), Just _) <- zip candidates candResults ]
+              if Set.null validNames
+                then Just <$> runAlgorithm debug origInfo units Map.empty
+                else do
+                  -- Second pass: only file-source the valid candidates, recompute
+                  let finalModUnits = map (replaceValid validNames) units
+                      replaceValid ns u@(T.Unit n _ _)
+                        | Set.member (unitNameStr n) ns = makeFileSourced u
+                        | otherwise                     = u
+                      replaceValid _ u = u
+                  case buildProofInfo finalModUnits of
+                    Nothing -> Just <$> runAlgorithm debug origInfo units Map.empty
+                    Just mainInfo -> do
+                      let finalUnitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- finalModUnits]
+                          (_, posToName, _) =
+                            assignAxiomNames (piElectrons mainInfo) (piNonUnits mainInfo) finalUnitMap
+                          finalTstp2name = Map.fromList
+                            [ (leName e, nm)
+                            | e <- piElectrons mainInfo
+                            , leRole e == OrigAxiom
+                            , Just nm <- [Map.lookup (lePos e) posToName]
+                            ]
+                          validCandList = filter ((`Set.member` validNames) . fst) candidates
+                      finalResults <- forM validCandList (buildCandidateLemma unitMap finalTstp2name)
+                      let validCands = Map.fromList
+                            [ (cname, (lit, blk))
+                            | ((cname, _), Just (lit, blk)) <- zip validCandList finalResults
+                            ]
+                      Just <$> runAlgorithm debug mainInfo finalModUnits validCands
 
 type AlgM a = StateT AlgState IO a
 
@@ -897,13 +1075,40 @@ dbg :: Bool -> String -> IO ()
 dbg True  msg = hPutStrLn stderr msg
 dbg False _   = return ()
 
-runAlgorithm :: Bool -> ProofInfo -> [T.Unit] -> IO StructuredProof
-runAlgorithm debug info allUnits = do
+runAlgorithm
+  :: Bool
+  -> ProofInfo
+  -> [T.Unit]
+  -> Map.Map String (Literal, ProofBlock)  -- tstp_name → pre-built lemma
+  -> IO StructuredProof
+runAlgorithm debug info allUnits candLemmaMap = do
   let unitMap    = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
       goalLits'  = map convertLit (piGoalLits info)
 
-      (axiomList, posToName, namedUnits) =
+      (rawAxiomList, posToName, namedUnits) =
         assignAxiomNames (piElectrons info) (piNonUnits info) unitMap
+
+      -- Axioms that are actually pre-built lemmas get their names here
+      candAxiomNames = Set.fromList
+        [ nm
+        | e <- piElectrons info
+        , leRole e == OrigAxiom
+        , Map.member (leName e) candLemmaMap
+        , Just nm <- [Map.lookup (lePos e) posToName]
+        ]
+      -- Real axioms (not candidates)
+      axiomList = filter (\ax -> case ax of
+          AUnit nm _    -> nm `Set.notMember` candAxiomNames
+          ANonUnit nm _ -> nm `Set.notMember` candAxiomNames
+        ) rawAxiomList
+      -- Pre-lemma entries in proof-tree order
+      preLemmaEntries =
+        [ (axNm, lit, blk)
+        | e <- piElectrons info
+        , leRole e == OrigAxiom
+        , Just (lit, blk) <- [Map.lookup (leName e) candLemmaMap]
+        , Just axNm <- [Map.lookup (lePos e) posToName]
+        ]
 
       nameToAxiom = Map.fromList
         [ (leName e, nm)
@@ -984,7 +1189,7 @@ runAlgorithm debug info allUnits = do
       nAll = length axiomList + length bgAxiomList
       initSt = AlgState
         { stUnits   = namedUnits ++ derivedUnits ++ bgNamedUnits
-        , stLemmas  = []
+        , stLemmas  = preLemmaEntries
         , stGoals   = []
         , stCounter = nAll + 1
         }
@@ -1219,7 +1424,7 @@ callTwee units (Eq l r) = do
       tmpFile = "/tmp/taelja_twee_input.p"
   writeFile tmpFile input
   (_, out, _) <- readProcessWithExitCode tweeBin
-                   ["--no-colour", "--formal-proof", "--no-lemmas", "--max-time", "15", tmpFile] ""
+                   ["--no-colour", "--formal-proof", "--no-lemmas", "--max-time", "60", tmpFile] ""
   return (parseTweeChain idToUe out l r)
 callTwee units (Rel name args) = do
   let goalTerm  = if null args then Const name else App name args
@@ -1235,7 +1440,7 @@ callTwee units (Rel name args) = do
       tmpFile = "/tmp/taelja_twee_horn_input.p"
   writeFile tmpFile input
   (_, out, _) <- readProcessWithExitCode tweeBin
-                   ["--no-colour", "--no-lemmas", "--max-time", "15", tmpFile] ""
+                   ["--no-colour", "--no-lemmas", "--max-time", "60", tmpFile] ""
   if "Unsatisfiable" `isInfixOf` out
     then return (Just (goalTerm, []))
     else return Nothing

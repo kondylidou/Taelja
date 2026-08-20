@@ -1,0 +1,21 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~fixed_point(apply(apply(b, apply(apply(b, apply(w, w)), apply(apply(b, w), b))), b)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/COL/COL003-4.p', prove_strong_fixed_point)).
+cnf(c2, axiom, apply(apply(apply(b, X), Y), Z)=apply(X, apply(Y, Z)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/COL/COL003-4.p', b_definition)).
+cnf(c3, plain, apply(X2, apply(apply(apply(b, apply(apply(b, apply(w, w)), apply(apply(b, w), b))), b), X2))=apply(X2, apply(apply(w, w), apply(apply(apply(b, w), b), apply(b, X2)))), inference(rewriting, [status(thm)], [c2, c2])).
+cnf(c4, axiom, apply(apply(w, X2), Y2)=apply(apply(X2, Y2), Y2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/COL/COL003-4.p', w_definition)).
+cnf(c5, plain, apply(apply(w, w), X2)=apply(apply(X2, X2), X2), inference(rewriting, [status(thm)], [c4, c4])).
+cnf(c6, plain, apply(X2, apply(apply(apply(apply(apply(b, w), b), apply(b, X2)), apply(apply(apply(b, w), b), apply(b, X2))), apply(apply(apply(b, w), b), apply(b, X2))))=apply(X2, apply(apply(apply(b, apply(apply(b, apply(w, w)), apply(apply(b, w), b))), b), X2)), inference(rewriting, [status(thm)], [c3, c5])).
+cnf(c7, plain, apply(apply(apply(apply(b, w), b), X2), X3)=apply(apply(apply(b, X2), X3), X3), inference(rewriting, [status(thm)], [c2, c4])).
+cnf(c8, plain, apply(apply(apply(apply(b, w), b), X3), X2)=apply(X3, apply(X2, X2)), inference(rewriting, [status(thm)], [c7, c2])).
+cnf(c9, plain, apply(apply(apply(apply(apply(b, w), b), apply(b, X3)), X2), X4)=apply(X3, apply(apply(X2, X2), X4)), inference(rewriting, [status(thm)], [c8, c2])).
+cnf(c10, plain, apply(apply(apply(apply(apply(b, w), b), apply(b, X2)), apply(apply(apply(b, w), b), apply(b, X2))), apply(apply(apply(b, w), b), apply(b, X2)))=apply(X2, apply(apply(apply(b, apply(apply(b, apply(w, w)), apply(apply(b, w), b))), b), X2)), inference(rewriting, [status(thm)], [c6, c9])).
+cnf(c11, plain, apply(X2, apply(apply(apply(b, apply(apply(b, apply(w, w)), apply(apply(b, w), b))), b), X2))=apply(apply(w, w), apply(apply(apply(b, w), b), apply(b, X2))), inference(rewriting, [status(thm)], [c10, c5])).
+cnf(c12, plain, apply(X2, apply(apply(apply(b, apply(apply(b, apply(w, w)), apply(apply(b, w), b))), b), X2))=apply(apply(apply(b, apply(w, w)), apply(apply(b, w), b)), apply(b, X2)), inference(rewriting, [status(thm)], [c11, c2])).
+cnf(c13, plain, apply(X2, apply(apply(apply(b, apply(apply(b, apply(w, w)), apply(apply(b, w), b))), b), X2))=apply(apply(apply(b, apply(apply(b, apply(w, w)), apply(apply(b, w), b))), b), X2), inference(rewriting, [status(thm)], [c12, c2])).
+cnf(c14, axiom, apply(Strong_fixed_point, fixed_pt)!=apply(fixed_pt, apply(Strong_fixed_point, fixed_pt)) | fixed_point(Strong_fixed_point), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/COL/COL003-4.p', strong_fixed_point)).
+cnf(c15, plain, fixed_point(apply(apply(b, apply(apply(b, apply(w, w)), apply(apply(b, w), b))), b)), inference(resolution, [status(thm)], [c13, c14])).
+cnf(c16, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c15])).
+% SZS output end CNFRefutation
+

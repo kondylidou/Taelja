@@ -1,0 +1,38 @@
+Axiom 1: apply(apply(w,X),Y) = apply(apply(X,Y),Y)
+Axiom 2: apply(apply(apply(b,X),Y),Z) = apply(X,apply(Y,Z))
+Axiom 3: apply(X,fixed_pt) = apply(fixed_pt,apply(X,fixed_pt)) => fixed_point(X)
+
+Lemma 4: apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt) = apply(fixed_pt,apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt))
+Proof:
+  apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt)
+= { by axiom 2 }
+  apply(apply(apply(b,apply(w,w)),apply(apply(b,w),b)),apply(b,fixed_pt))
+= { by axiom 2 }
+  apply(apply(w,w),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
+= { by axiom 1 }
+  apply(apply(w,apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
+= { by axiom 1 }
+  apply(apply(apply(apply(apply(b,w),b),apply(b,fixed_pt)),apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
+= { by axiom 2 }
+  apply(apply(apply(w,apply(b,apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
+= { by axiom 1 }
+  apply(apply(apply(apply(b,apply(b,fixed_pt)),apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
+= { by axiom 2 }
+  apply(apply(apply(b,fixed_pt),apply(apply(apply(apply(b,w),b),apply(b,fixed_pt)),apply(apply(apply(b,w),b),apply(b,fixed_pt)))),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
+= { by axiom 2 }
+  apply(fixed_pt,apply(apply(apply(apply(apply(b,w),b),apply(b,fixed_pt)),apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt))))
+= { by axiom 1 R->L }
+  apply(fixed_pt,apply(apply(w,apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt))))
+= { by axiom 1 R->L }
+  apply(fixed_pt,apply(apply(w,w),apply(apply(apply(b,w),b),apply(b,fixed_pt))))
+= { by axiom 2 R->L }
+  apply(fixed_pt,apply(apply(apply(b,apply(w,w)),apply(apply(b,w),b)),apply(b,fixed_pt)))
+= { by axiom 2 R->L }
+  apply(fixed_pt,apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt))
+
+Goal 1: fixed_point(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b))
+Proof:
+  have apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt) = apply(fixed_pt,apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt))
+    by lemma 4
+  hence fixed_point(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b))
+    by axiom 3

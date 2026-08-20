@@ -10,6 +10,8 @@ module ProofTree
   , headLitOf
   , unitNameStr
   , demodRuleNames
+  , isPositiveUnitFormula
+  , resolveSourceName
   ) where
 
 import qualified Data.TPTP as T

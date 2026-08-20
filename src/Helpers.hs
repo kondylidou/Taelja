@@ -54,6 +54,25 @@ applySubstBlock subst (EqChain s steps) =
     applyStep (RwStep nm (l, r) d, cur) =
       (RwStep nm (applySubstTerm subst l, applySubstTerm subst r) d, applySubstTerm subst cur)
 
+-- Replace constants (not variables) in a term; used to undo Skolemization.
+applyConstSubstTerm :: [(String, Term)] -> Term -> Term
+applyConstSubstTerm s (Const c)   = fromMaybe (Const c) (lookup c s)
+applyConstSubstTerm s (App f ts)  = App f (map (applyConstSubstTerm s) ts)
+applyConstSubstTerm _ t           = t
+
+applyConstSubstLit :: [(String, Term)] -> Literal -> Literal
+applyConstSubstLit s = mapLiteralTerms (applyConstSubstTerm s)
+
+applyConstSubstBlock :: [(String, Term)] -> ProofBlock -> ProofBlock
+applyConstSubstBlock s (HaveHence ls) = HaveHence (map go ls)
+  where
+    go (Have lit nm)  = Have  (applyConstSubstLit s lit) nm
+    go (And  lit nm)  = And   (applyConstSubstLit s lit) nm
+    go (Hence lit j)  = Hence (applyConstSubstLit s lit) j
+applyConstSubstBlock s (EqChain start steps) =
+  EqChain (applyConstSubstTerm s start)
+          [(rw, applyConstSubstTerm s cur) | (rw, cur) <- steps]
+
 -- fails if any shared variable has conflicting bindings
 extendSubst :: Subst -> Subst -> Maybe Subst
 extendSubst base []           = Just base

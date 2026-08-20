@@ -28,6 +28,8 @@ tweeBenchmarkNames =
   [ "sam"
   , "ANA007-2"
   , "thesis_example_both_lemmas_cnf"
+  , "COL003-4"
+  , "LCL146-1"
   ]
 
 handcraftedNames :: [String]
@@ -45,7 +47,8 @@ handcraftedNames =
 
 benchmarkNames :: [String]
 benchmarkNames =
-  [ "horn_example_derived_rw"
+  [ "LCL146-1"
+  , "horn_example_derived_rw"
   , "horn_example_elim_var_rw"
   , "horn_example_eq_head_inlined"
   , "horn_example_eq_rw_chain"
@@ -75,7 +78,9 @@ benchmarkNames =
 -- Benchmarks for which an E prover output exists.
 eBenchmarkNames :: [String]
 eBenchmarkNames =
-  [ "e_unit_source_axiom"
+  [ "COL003-4"
+  , "LCL146-1"
+  , "e_unit_source_axiom"
   , "horn_example_derived_rw"
   , "horn_example_elim_var_rw"
   , "horn_example_eq_head_inlined"

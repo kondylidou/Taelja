@@ -18,7 +18,20 @@ emit sp0 = unlines $ concat
   , concatMap lemmaLines (lemmas sp)
   , intercalate [""] (zipWith goalLines [1..] (goals sp))
   ]
-  where sp = pruneUnusedLemmas sp0
+  where sp = renumberAxioms (pruneUnusedLemmas sp0)
+
+-- Renumber axioms to fill any gaps left by candidate-lemma promotion.
+-- Updates all references in lemma/goal blocks accordingly.
+renumberAxioms :: StructuredProof -> StructuredProof
+renumberAxioms sp =
+  let oldNames = [ case ax of AUnit n _ -> n; ANonUnit n _ -> n
+                 | ax <- axioms sp ]
+      renaming  = Map.fromList (zip oldNames
+                    ["axiom " ++ show i | i <- [(1 :: Int) ..]])
+      newAxioms = zipWith setName [(1 :: Int) ..] (axioms sp)
+      setName i (AUnit    _ lit) = AUnit    ("axiom " ++ show i) lit
+      setName i (ANonUnit _ cls) = ANonUnit ("axiom " ++ show i) cls
+  in (applyRenaming renaming sp) { axioms = newAxioms }
 
 -- A single global renaming covers all axiom entries so that a variable shared
 -- across multiple axioms (including non-unit clauses) gets the same display name.
@@ -111,7 +124,22 @@ ppTerm (Var x)    = x
 ppTerm (Const c)  = c
 ppTerm (App f ts) = f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 
--- Remove lemmas unreferenced by any goal or other lemma, then renumber.
+-- Apply a name→name mapping throughout lemma and goal proof blocks.
+applyRenaming :: Map.Map String String -> StructuredProof -> StructuredProof
+applyRenaming mapping sp0 = sp0
+  { lemmas = [(ren n, lit, renBlock b) | (n, lit, b) <- lemmas sp0]
+  , goals  = [(lit, renBlock b)        | (lit, b)    <- goals sp0]
+  }
+  where
+    ren nm = Map.findWithDefault nm nm mapping
+    renBlock (HaveHence ls)    = HaveHence (map renLine ls)
+    renBlock (EqChain s steps) = EqChain s
+      [(rw { rwName = ren (rwName rw) }, t) | (rw, t) <- steps]
+    renLine (Have lit nm)            = Have lit (ren nm)
+    renLine (And lit nm)             = And lit (ren nm)
+    renLine (Hence lit (ByAxiom nm)) = Hence lit (ByAxiom (ren nm))
+    renLine (Hence lit (ByRw nm d))  = Hence lit (ByRw (ren nm) d)
+
 pruneUnusedLemmas :: StructuredProof -> StructuredProof
 pruneUnusedLemmas sp = renumber (fixpoint prune sp)
   where
@@ -141,17 +169,3 @@ pruneUnusedLemmas sp = renumber (fixpoint prune sp)
           axCount    = length (axioms sp0)
           mapping    = Map.fromList (zip lemmaNames ["lemma " ++ show k | k <- [axCount+1..]])
       in applyRenaming mapping sp0
-
-    applyRenaming mapping sp0 = sp0
-      { lemmas = [(ren n, lit, renBlock b) | (n, lit, b) <- lemmas sp0]
-      , goals  = [(lit, renBlock b)        | (lit, b)    <- goals sp0]
-      }
-      where
-        ren nm = Map.findWithDefault nm nm mapping
-        renBlock (HaveHence ls)    = HaveHence (map renLine ls)
-        renBlock (EqChain s steps) = EqChain s
-          [(rw { rwName = ren (rwName rw) }, t) | (rw, t) <- steps]
-        renLine (Have lit nm)            = Have lit (ren nm)
-        renLine (And lit nm)             = And lit (ren nm)
-        renLine (Hence lit (ByAxiom nm)) = Hence lit (ByAxiom (ren nm))
-        renLine (Hence lit (ByRw nm d))  = Hence lit (ByRw (ren nm) d)
