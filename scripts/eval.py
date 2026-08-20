@@ -13,7 +13,8 @@ Optional:
   --eprover PATH    Path to E prover binary
   --twee PATH       Path to Twee binary (auto-detected from bin/twee if omitted)
   --output-dir DIR  Output directory (default: eval_out)
-  --timeout SEC     Per-prover timeout in seconds (default: 30)
+  --timeout SEC     Per-prover timeout in seconds (default: 60)
+  --taelja-timeout SEC  Taelja timeout in seconds (default: 120)
   --jobs N          Parallel workers (default: min(32, cpu_count))
   --lean PATH       Path to lean binary; if given, verify each taelja proof
   --skip-done       Skip problems where proof.tstp and taelja.txt already exist
@@ -28,6 +29,9 @@ Output layout:
   <out>/<category>/<stem>/<prover>/lean.lean     (if --lean given and taelja ok)
   <out>/<category>/<stem>/<prover>/lean.err      (if lean check failed)
   <out>/results.csv
+
+prove field values:  ok | timeout | fail
+taelja field values: ok | timeout | fail | - (not attempted)
 """
 
 import argparse
@@ -150,8 +154,35 @@ def strip_twee_preamble(output):
     return output
 
 
+def _read_prove_status(out, prover_name):
+    """Re-derive prove/timeout status from cached files (used with --skip-done)."""
+    tstp = (out / 'proof.tstp').read_text()
+    if prover_succeeded(prover_name, tstp):
+        return 'ok', tstp
+    # Distinguish timeout from other failures
+    err_file = out / 'prover.err'
+    if err_file.exists() and 'TIMEOUT' in err_file.read_text():
+        return 'timeout', tstp
+    return 'fail', tstp
+
+
+def _read_taelja_status(out):
+    """Re-derive taelja status from cached files."""
+    txt_file = out / 'taelja.txt'
+    err_file = out / 'taelja.err'
+    if not txt_file.exists():
+        return '-'
+    txt = txt_file.read_text()
+    err = err_file.read_text() if err_file.exists() else ''
+    if 'TIMEOUT' in err:
+        return 'timeout'
+    if txt.strip() and not err.strip():
+        return 'ok'
+    return 'fail'
+
+
 def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp_dir, timeout,
-                skip_done=False, lean_bin=None, taelja_timeout=15):
+                skip_done=False, lean_bin=None, taelja_timeout=120):
     stem = p_file.stem
     out  = out_dir / category / stem / prover_name
     out.mkdir(parents=True, exist_ok=True)
@@ -163,14 +194,11 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
 
     # Skip if already fully processed (proof.tstp + taelja.txt both exist)
     if skip_done and (out / 'proof.tstp').exists() and (out / 'taelja.txt').exists():
-        tstp = (out / 'proof.tstp').read_text()
-        result['prove'] = 'ok' if prover_succeeded(prover_name, tstp) else 'fail'
-        if result['prove'] == 'ok':
-            proof = (out / 'taelja.txt').read_text()
-            err   = (out / 'taelja.err').read_text() if (out / 'taelja.err').exists() else ''
-            taelja_ok = bool(proof.strip() and not err.strip())
-            result['taelja'] = 'ok' if taelja_ok else 'fail'
-            if taelja_ok and lean_bin:
+        prove_status, tstp = _read_prove_status(out, prover_name)
+        result['prove'] = prove_status
+        if prove_status == 'ok':
+            result['taelja'] = _read_taelja_status(out)
+            if result['taelja'] == 'ok' and lean_bin:
                 lean_out = out / 'lean.lean'
                 lean_err = out / 'lean.err'
                 if lean_out.exists() and not lean_err.exists():
@@ -183,6 +211,7 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
     proof_tstp = out / 'proof.tstp'
     if proof_tstp.exists():
         tstp = proof_tstp.read_text()
+        prove_status = 'ok' if prover_succeeded(prover_name, tstp) else _check_cached_timeout(out)
     else:
         rc, tstp, err = run(prover_cmd(prover_name, prover_bin, p_file, tptp_dir),
                             timeout=timeout, cwd=str(tptp_dir),
@@ -192,20 +221,27 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
         proof_tstp.write_text(tstp)
         if err.strip():
             (out / 'prover.err').write_text(err)
+        if rc == -1:
+            prove_status = 'timeout'
+        elif prover_succeeded(prover_name, tstp):
+            prove_status = 'ok'
+        else:
+            prove_status = 'fail'
 
-    if not prover_succeeded(prover_name, tstp):
-        result['prove'] = 'fail'
+    result['prove'] = prove_status
+    if prove_status != 'ok':
         return result
-    result['prove'] = 'ok'
 
     # 2. Taelja (cwd=project root so bin/twee resolves correctly)
     tstp_path = out / 'proof.tstp'
     taelja_cwd = taelja_project_root()
+    twee_env = {'TAELJA_TWEE_TIMEOUT': '60'}
     if taelja:
-        rc, proof, err = run([taelja, str(tstp_path)], timeout=taelja_timeout, cwd=taelja_cwd)
+        rc, proof, err = run([taelja, str(tstp_path)], timeout=taelja_timeout,
+                             cwd=taelja_cwd, extra_env=twee_env)
     else:
         rc, proof, err = run(['cabal', 'run', 'taelja', '--', str(tstp_path)],
-                             timeout=120, cwd=taelja_cwd)
+                             timeout=taelja_timeout, cwd=taelja_cwd, extra_env=twee_env)
 
     (out / 'taelja.txt').write_text(proof)
     if err.strip():
@@ -213,14 +249,26 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
     elif (out / 'taelja.err').exists():
         (out / 'taelja.err').unlink()  # clear stale error from previous run
 
-    taelja_ok = rc == 0 and bool(proof.strip()) and not err.strip()
-    result['taelja'] = 'ok' if taelja_ok else 'fail'
+    if rc == -1:
+        result['taelja'] = 'timeout'
+    elif rc == 0 and proof.strip() and not err.strip():
+        result['taelja'] = 'ok'
+    else:
+        result['taelja'] = 'fail'
 
     # 3. Lean verification (optional)
-    if taelja_ok and lean_bin:
+    if result['taelja'] == 'ok' and lean_bin:
         result['lean'] = _run_lean(proof, out, lean_bin)
 
     return result
+
+
+def _check_cached_timeout(out):
+    """Check if a cached prover run timed out (from prover.err)."""
+    err_file = out / 'prover.err'
+    if err_file.exists() and 'TIMEOUT' in err_file.read_text():
+        return 'timeout'
+    return 'fail'
 
 
 def _run_lean(taelja_proof, out_dir, lean_bin):
@@ -254,10 +302,11 @@ def main():
     parser.add_argument('--twee',        default=None, metavar='PATH',
                         help='Path to Twee binary (Twee not used unless this is given)')
     parser.add_argument('--output-dir',  default='eval_out')
-    parser.add_argument('--timeout',     type=int, default=30)
+    parser.add_argument('--timeout',     type=int, default=60,
+                        help='Per-prover timeout in seconds (default: 60)')
     parser.add_argument('--jobs',        type=int, default=2)
-    parser.add_argument('--taelja-timeout', type=int, default=60, metavar='SEC',
-                        help='Taelja timeout in seconds (default: 60)')
+    parser.add_argument('--taelja-timeout', type=int, default=120, metavar='SEC',
+                        help='Taelja timeout in seconds (default: 120)')
     parser.add_argument('--skip-done',   action='store_true',
                         help='Skip problems where proof.tstp and taelja.txt already exist')
     parser.add_argument('--lean',        default=None, metavar='PATH',
@@ -285,6 +334,7 @@ def main():
     print(f"taelja:   {taelja or 'not found — using cabal run'}")
     if lean_bin:
         print(f"lean:     {lean_bin}")
+    print(f"timeouts: prover={args.timeout}s  taelja={taelja_timeout}s")
 
     tptp = Path(args.tptp_dir)
     out  = Path(args.output_dir)
@@ -317,7 +367,7 @@ def main():
             r = f.result()
             results.append(r)
             print(f"[{i:5d}/{total}] {r['category']}/{r['problem']} "
-                  f"[{r['prover']:7s}]: prove={r['prove']:4s} taelja={r['taelja']}")
+                  f"[{r['prover']:7s}]: prove={r['prove']:7s} taelja={r['taelja']}")
 
     csv_path = out / 'results.csv'
     fields = ['category', 'problem', 'prover', 'prove', 'taelja', 'lean']
@@ -327,53 +377,33 @@ def main():
         w.writerows(sorted(results, key=lambda r: (r['category'], r['problem'], r['prover'])))
 
     print()
-    lean_col = lean_bin is not None
-    header = (f"{'Category':8s}  {'Prover':7s}  {'Total':>6s}  {'Proved':>7s}  {'Taelja':>7s}"
-              + (f"  {'Lean':>7s}" if lean_col else ''))
-    print(header)
-    print('-' * len(header))
-    for cat in CATEGORIES + ['TOTAL']:
-        for prover in list(provers) + (['ALL'] if len(provers) > 1 else []):
-            sub = [r for r in results
-                   if (cat == 'TOTAL' or r['category'] == cat)
-                   and (prover == 'ALL' or r['prover'] == prover)]
-            if not sub:
-                continue
-            n = len(sub)
-            v = sum(1 for r in sub if r['prove']  == 'ok')
-            t = sum(1 for r in sub if r['taelja'] == 'ok')
-            l = sum(1 for r in sub if r.get('lean') == 'ok')
-            cat_col = cat if prover in (list(provers)[0], 'ALL') else ''
-            row = f"{cat_col:8s}  {prover:7s}  {n:6d}  {v:4d}/{n:<3d}  {t:4d}/{n}"
-            if lean_col:
-                row += f"  {l:4d}/{n}"
-            print(row)
-        if cat != 'TOTAL':
-            print()
+    _print_summary(results, provers, lean_bin is not None)
 
     print(f"\nDetailed results: {csv_path}")
 
     # --- Taelja failure breakdown ---
     proved_results = [r for r in results if r['prove'] == 'ok']
-    failed_taelja  = [r for r in proved_results if r['taelja'] != 'ok']
+    failed_taelja  = [r for r in proved_results if r['taelja'] not in ('ok', '-')]
     print(f"\nTaelja failure breakdown ({len(failed_taelja)} proved but not translated):")
     err_cats = {}
     for r in failed_taelja:
         p = out / r['category'] / r['problem'] / r['prover']
         err = (p / 'taelja.err').read_text().strip() if (p / 'taelja.err').exists() else ''
         txt = (p / 'taelja.txt').read_text().strip() if (p / 'taelja.txt').exists() else ''
-        if 'no unit found for goal' in err:
+        if r['taelja'] == 'timeout' or 'TIMEOUT' in err:
+            key = 'TIMEOUT (Taelja)'
+        elif 'no unit found for goal' in err:
             key = 'no unit found for goal'
         elif 'no proof found for goal' in err:
             key = 'no proof found for goal (Twee)'
         elif 'no refutation found' in err:
             key = 'no refutation found (unsupported structure)'
-        elif 'TIMEOUT' in err:
-            key = 'TIMEOUT (Taelja)'
         elif 'unnamed relational unit' in err:
             key = 'unnamed relational unit'
+        elif 'no goal proof produced' in err:
+            key = 'no goal proof produced'
         elif err:
-            key = f'other: {err[:50]}'
+            key = f'other: {err[:60]}'
         elif not txt:
             key = '(empty output, no error)'
         else:
@@ -398,6 +428,42 @@ def main():
             print(f"  {rule:<40s}  {count:>8d}")
     else:
         print("  (no inference rules found)")
+
+
+def _print_summary(results, provers, lean_col):
+    # Column widths
+    # Header: Category  Prover   Total  Proved  Timeout  Fail  Taelja[  Lean]
+    hdr = (f"{'Category':8s}  {'Prover':7s}  {'Total':>6s}  "
+           f"{'Proved':>7s}  {'Timeout':>7s}  {'Fail':>5s}  {'Taelja':>10s}"
+           + (f"  {'Lean':>7s}" if lean_col else ''))
+    print(hdr)
+    print('-' * len(hdr))
+
+    prover_list = list(provers)
+    for cat in CATEGORIES + ['TOTAL']:
+        for prover in prover_list + (['ALL'] if len(provers) > 1 else []):
+            sub = [r for r in results
+                   if (cat == 'TOTAL' or r['category'] == cat)
+                   and (prover == 'ALL' or r['prover'] == prover)]
+            if not sub:
+                continue
+            n       = len(sub)
+            proved  = sum(1 for r in sub if r['prove']   == 'ok')
+            timeout = sum(1 for r in sub if r['prove']   == 'timeout')
+            fail    = sum(1 for r in sub if r['prove']   == 'fail')
+            taelja  = sum(1 for r in sub if r['taelja']  == 'ok')
+            lean    = sum(1 for r in sub if r.get('lean') == 'ok')
+
+            cat_col = cat if prover in (prover_list[0], 'ALL') else ''
+            # Taelja shown as fraction of proved (not total)
+            taelja_str = f"{taelja:4d}/{proved}" if proved else '-'
+            row = (f"{cat_col:8s}  {prover:7s}  {n:6d}  "
+                   f"{proved:4d}/{n:<3d}  {timeout:7d}  {fail:5d}  {taelja_str:>10s}")
+            if lean_col:
+                row += f"  {lean:4d}/{n}"
+            print(row)
+        if cat != 'TOTAL':
+            print()
 
 
 if __name__ == '__main__':

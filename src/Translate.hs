@@ -14,6 +14,7 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
+import System.Environment (lookupEnv)
 import System.IO (hPutStrLn, stderr)
 import System.Process (readProcessWithExitCode)
 
@@ -1243,6 +1244,11 @@ runAlgorithm debug info allUnits candLemmaMap = do
 tweeBin :: FilePath
 tweeBin = "bin/twee"
 
+-- Read the per-call Twee time limit from the environment.
+-- Defaults to 15s; set TAELJA_TWEE_TIMEOUT=60 (or any integer) to override.
+tweemaxtime :: IO String
+tweemaxtime = maybe "15" id <$> lookupEnv "TAELJA_TWEE_TIMEOUT"
+
 toTptpTerm :: Term -> String
 toTptpTerm (Var [])       = []
 toTptpTerm (Var (c:cs))   = toUpper c : cs
@@ -1423,8 +1429,9 @@ callTwee units (Eq l r) = do
       input   = unlines (axioms ++ [negGoal])
       tmpFile = "/tmp/taelja_twee_input.p"
   writeFile tmpFile input
+  maxTime <- tweemaxtime
   (_, out, _) <- readProcessWithExitCode tweeBin
-                   ["--no-colour", "--formal-proof", "--no-lemmas", "--max-time", "60", tmpFile] ""
+                   ["--no-colour", "--formal-proof", "--no-lemmas", "--max-time", maxTime, tmpFile] ""
   return (parseTweeChain idToUe out l r)
 callTwee units (Rel name args) = do
   let goalTerm  = if null args then Const name else App name args
@@ -1439,8 +1446,9 @@ callTwee units (Rel name args) = do
       input   = unlines (axioms ++ [negGoal])
       tmpFile = "/tmp/taelja_twee_horn_input.p"
   writeFile tmpFile input
+  maxTime <- tweemaxtime
   (_, out, _) <- readProcessWithExitCode tweeBin
-                   ["--no-colour", "--no-lemmas", "--max-time", "60", tmpFile] ""
+                   ["--no-colour", "--no-lemmas", "--max-time", maxTime, tmpFile] ""
   if "Unsatisfiable" `isInfixOf` out
     then return (Just (goalTerm, []))
     else return Nothing
