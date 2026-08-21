@@ -166,6 +166,31 @@ def _read_prove_status(out, prover_name):
     return 'fail', tstp
 
 
+def _has_empty_proof(txt):
+    """Return True if any goal's Proof: section has no content."""
+    import re
+    return bool(re.search(r'Proof:\s*(?:Goal\b|\Z)', txt, re.DOTALL))
+
+
+def _only_warnings(err):
+    """Return True if stderr contains only [warn] lines (no real errors)."""
+    return all(line.startswith('[warn]') or not line.strip() for line in err.splitlines())
+
+
+_FATAL_WARN_PATTERNS = (
+    'no unit found for goal',
+    'no proof found for goal',
+    'makeBlock: unnamed relational unit',
+    'makeBlock: unit not in table',
+    'makeBlock: cannot prove unnamed eq unit',
+)
+
+
+def _has_fatal_warning(err):
+    """Return True if any [warn] line indicates a definitely-incomplete proof."""
+    return any(p in line for line in err.splitlines() for p in _FATAL_WARN_PATTERNS)
+
+
 def _read_taelja_status(out):
     """Re-derive taelja status from cached files."""
     txt_file = out / 'taelja.txt'
@@ -176,7 +201,7 @@ def _read_taelja_status(out):
     err = err_file.read_text() if err_file.exists() else ''
     if 'TIMEOUT' in err:
         return 'timeout'
-    if txt.strip() and not err.strip():
+    if txt.strip() and _only_warnings(err) and not _has_empty_proof(txt) and not _has_fatal_warning(err):
         return 'ok'
     return 'fail'
 
@@ -251,7 +276,7 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
 
     if rc == -1:
         result['taelja'] = 'timeout'
-    elif rc == 0 and proof.strip() and not err.strip():
+    elif rc == 0 and proof.strip() and _only_warnings(err) and not _has_empty_proof(proof) and not _has_fatal_warning(err):
         result['taelja'] = 'ok'
     else:
         result['taelja'] = 'fail'

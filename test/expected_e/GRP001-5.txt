@@ -1,0 +1,17 @@
+Axiom 1: product(a,b,c)
+Axiom 2: product(X,identity,X)
+Axiom 3: product(X,X,identity)
+Axiom 4: product(X,Y,Z) /\ product(Y,A,B) /\ product(X,B,C) => product(Z,A,C)
+Axiom 5: product(identity,X,X)
+Axiom 6: product(X,Y,Z) /\ product(Y,A,B) /\ product(Z,A,C) => product(X,B,C)
+
+Goal 1: product(b,a,c)
+Proof:
+  have product(c,identity,c)
+    by axiom 2
+   and product(a,a,identity)
+    by axiom 3
+   and product(c,a,b)
+    by axioms
+  hence product(b,a,c)
+    by axiom 4

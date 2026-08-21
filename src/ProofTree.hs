@@ -161,9 +161,16 @@ buildProofTree allUnits =
         in [expandMemo ln, expandMemo rn]
       (p0:p1:p2:rest) ->
         let eqs  = p1:p2:rest
-            inner = foldl (\r eq -> PTNode "?" decl rule [expandMemo eq, r])
-                          (expandMemo p0) (init eqs)
             lastIsProvider = isPositiveUnitFormula (declOf (last eqs))
+            -- When the outer node derives ⊥ and the final sibling is a
+            -- negative unit (~L), the synthetic intermediate derives L.
+            -- Without this, "?" inherits $false and never becomes an electron.
+            innerDecl
+              | declIsBottom decl, not lastIsProvider
+              = fromMaybe decl (posUnitOf (declOf (last eqs)))
+              | otherwise = decl
+            inner = foldl (\r eq -> PTNode "?" innerDecl rule [expandMemo eq, r])
+                          (expandMemo p0) (init eqs)
         in if lastIsProvider
            then [expandMemo (last eqs), inner]
            else [inner, expandMemo (last eqs)]
@@ -174,6 +181,16 @@ buildProofTree allUnits =
       _                   -> T.Formula (T.Standard T.Plain)
                                (T.CNF (T.Clause (pure (T.Positive,
                                  T.Predicate (T.Defined (T.Atom (Text.pack "unknown"))) []))))
+
+-- Flip a unit negation to its positive form, used to infer the declaration of
+-- a synthetic "?" intermediate node in inline refutation steps (e.g. E's sr(spm(A,B), ~L)).
+posUnitOf :: T.Declaration -> Maybe T.Declaration
+posUnitOf (T.Formula _ (T.CNF (T.Clause lits))) =
+  case toList lits of
+    [(T.Negative, lit)] ->
+      Just (T.Formula (T.Standard T.Plain) (T.CNF (T.Clause (pure (T.Positive, lit)))))
+    _ -> Nothing
+posUnitOf _ = Nothing
 
 -- Gather leaves with two-level deduplication to prevent exponential traversal
 -- of DAG-shared nodes in the memoised proof tree:
