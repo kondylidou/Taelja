@@ -14,8 +14,8 @@ import qualified Data.Set as Set
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
 
-import ProofTree (ProofInfo(..), LeafEntry(..), LeafRole(..), unitNameStr, demodRuleNames)
-import Types (Dir(..))
+import ProofTree (unitNameStr, demodRuleNames)
+import Types (ProofInfo(..), LeafEntry(..), LeafRole(..), Dir(..))
 
 ppTerm :: T.Term -> String
 ppTerm (T.Variable (T.Var v))                   = Text.unpack v

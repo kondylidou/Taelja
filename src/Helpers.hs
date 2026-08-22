@@ -1,7 +1,7 @@
 module Helpers where
 
 import Control.Applicative ((<|>))
-import Data.List (isSuffixOf, nub)
+import Data.List (intercalate, isSuffixOf, nub)
 import Data.Maybe (fromMaybe)
 import Types
 
@@ -264,3 +264,8 @@ litSize = sum . foldLiteralTerms (\t -> [termSize t])
 appendLine :: ProofBlock -> ProofLine -> ProofBlock
 appendLine (HaveHence ls) l = HaveHence (ls ++ [l])
 appendLine (EqChain {})   _ = error "appendLine: cannot extend EqChain"
+
+ppTerm :: Term -> String
+ppTerm (Var x)    = x
+ppTerm (Const c)  = c
+ppTerm (App f ts) = f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"

@@ -17,8 +17,7 @@ import System.IO (hPutStrLn, stderr)
 import Types
 import Helpers
 import ProofTree
-  ( LeafRole(..), LeafEntry(..), ProofInfo(..)
-  , buildProofInfo, headLitOf, unitNameStr
+  ( buildProofInfo, headLitOf, unitNameStr
   , resolveSourceName
   )
 import TptpConvert
@@ -107,7 +106,7 @@ nextCounter = do
 -- unnamed (locally-derived) electrons first; named axioms second
 getElectrons :: String -> AlgM [UnitEntry]
 getElectrons pos = gets $ \s ->
-  let avail   = filter (\u -> maybe False (< pos) (uePos u)) (stUnits s)
+  let avail   = filter (maybe False (< pos) . uePos) (stUnits s)
       unnamed = filter (isNothing . ueName) avail
       named   = filter (isJust   . ueName) avail
   in unnamed ++ named
@@ -1055,11 +1054,6 @@ buildGroundingSubst goalLits leafVars nonUnits =
       goalConsts    = nub $ concatMap litConsts goalLits
       groundTerm    = case goalConsts of { (c:_) -> Const c; [] -> Const "c_ground" }
   in [(v, groundTerm) | v <- trueFreeVars]
-
-ppTerm :: Term -> String
-ppTerm (Var x)    = x
-ppTerm (Const c)  = c
-ppTerm (App f ts) = f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 
 ppLitI :: Literal -> String
 ppLitI (Eq  a b)   = ppTerm a ++ " = " ++ ppTerm b

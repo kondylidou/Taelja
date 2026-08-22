@@ -1,5 +1,7 @@
 module Types where
 
+import qualified Data.TPTP as T
+
 data Term
   = Var   String
   | Const String
@@ -76,3 +78,25 @@ data AlgState = AlgState
   , stGoals   :: [(Literal, ProofBlock)]
   , stCounter :: Int
   }
+
+data LeafRole
+  = OrigAxiom     -- file-sourced clause (not the negated conjecture)
+  | NegConjecture -- the negated conjecture / goal
+  | Derived       -- derived via inference (includes Twee rewriting steps)
+  deriving (Show, Eq)
+
+data LeafEntry = LeafEntry
+  { lePos     :: String          -- bit-string position in the expanded tree
+  , leName    :: String          -- resolved source name
+  , leDecl    :: T.Declaration   -- raw TPTP declaration (for clause conversion)
+  , leSrcDecl :: T.Declaration   -- source (original axiom) declaration; equals leDecl for Derived/NegConj
+  , leRole    :: LeafRole
+  , leSimpl   :: [(String, Dir)] -- Simpl[pos]: demod/rewriting chain, outermost-first
+  } deriving (Show)
+
+-- Everything the algorithm needs, extracted once from the proof tree.
+data ProofInfo = ProofInfo
+  { piElectrons :: [LeafEntry]  -- positive unit nodes (leaf + inner), DFS position order
+  , piNonUnits  :: [LeafEntry]  -- non-positive-unit nodes (incl. NegConjecture), position order
+  , piGoalLits  :: [T.Literal]  -- goal literals from the negated conjecture
+  } deriving (Show)

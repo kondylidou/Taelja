@@ -1,8 +1,7 @@
-module Emitter where
+module Emitter (emit) where
 
 import Data.Char (toUpper)
 import Data.List (intercalate, nub, partition)
-import Data.Maybe (maybeToList)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import Types
@@ -53,13 +52,6 @@ ppClauseWith renaming (Clause bodyLits mHead) =
     ppBodies []  = "(empty)"
     ppBodies [l] = ppLiteral l
     ppBodies ls  = intercalate " /\\ " (map ppLiteral ls)
-
-ppClause :: Clause -> String
-ppClause c@(Clause bodyLits mHead) =
-  ppClauseWith localRenaming c
-  where
-    allLits       = bodyLits ++ maybeToList mHead
-    localRenaming = zip (nub (concatMap litVars allLits)) prettyVarNames
 
 prettyVarNames :: [String]
 prettyVarNames = ["X", "Y", "Z", "A", "B", "C", "U", "V", "W"]
@@ -118,11 +110,6 @@ ppLiteral (Rel n [])  = n
 ppLiteral (Rel n ts)  = n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 ppLiteral (NRel n []) = "~" ++ n
 ppLiteral (NRel n ts) = "~" ++ n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
-
-ppTerm :: Term -> String
-ppTerm (Var x)    = x
-ppTerm (Const c)  = c
-ppTerm (App f ts) = f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 
 -- Apply a name→name mapping throughout lemma and goal proof blocks.
 applyRenaming :: Map.Map String String -> StructuredProof -> StructuredProof

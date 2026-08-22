@@ -3,10 +3,7 @@
 -- "0", right child gets suffix "1".  Leaves at smaller positions are available
 -- as electrons for nuclei at larger positions.
 module ProofTree
-  ( LeafRole(..)
-  , LeafEntry(..)
-  , ProofInfo(..)
-  , buildProofInfo
+  ( buildProofInfo
   , headLitOf
   , unitNameStr
   , demodRuleNames
@@ -22,34 +19,12 @@ import Data.List (sortBy)
 import Data.List.NonEmpty (toList)
 import Data.Maybe (fromMaybe, listToMaybe)
 import Data.Ord (comparing)
-import Types (Dir(..))
+import Types
 
 data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
   deriving (Show)
-
-data LeafRole
-  = OrigAxiom     -- file-sourced clause (not the negated conjecture)
-  | NegConjecture -- the negated conjecture / goal
-  | Derived       -- derived via inference (includes Twee rewriting steps)
-  deriving (Show, Eq)
-
-data LeafEntry = LeafEntry
-  { lePos     :: String          -- bit-string position in the expanded tree
-  , leName    :: String          -- resolved source name
-  , leDecl    :: T.Declaration   -- raw TPTP declaration (for clause conversion)
-  , leSrcDecl :: T.Declaration   -- source (original axiom) declaration; equals leDecl for Derived/NegConj
-  , leRole    :: LeafRole
-  , leSimpl   :: [(String, Dir)] -- Simpl[pos]: demod/rewriting chain, outermost-first
-  } deriving (Show)
-
--- Everything the algorithm needs, extracted once from the proof tree.
-data ProofInfo = ProofInfo
-  { piElectrons :: [LeafEntry]  -- positive unit nodes (leaf + inner), DFS position order
-  , piNonUnits  :: [LeafEntry]  -- non-positive-unit nodes (incl. NegConjecture), position order
-  , piGoalLits  :: [T.Literal]  -- goal literals from the negated conjecture
-  } deriving (Show)
 
 maxProofUnits :: Int
 maxProofUnits = 2000
