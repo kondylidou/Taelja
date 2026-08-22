@@ -1,3 +1,6 @@
+# TODO: test disabled. "product(c,a,b)" has no reconstructable proof;
+# ensureNamed falls back to "by axioms". Fix: try callTweeRelLemma,
+# but ensureNamed does not have the premise context available at that point.
 Axiom 1: product(a,b,c)
 Axiom 2: product(X,identity,X)
 Axiom 3: product(X,X,identity)

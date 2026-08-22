@@ -339,13 +339,13 @@ ensureNamed lit buildBlk = do
             Nothing  -> do
               blk <- buildBlk
               case blk of
-                HaveHence []        -> return "axioms"
+                HaveHence []        -> error ("ensureNamed: no proof found for: " ++ show lit)
                 HaveHence [Have _ nm] -> return nm
                 _                   -> promoteToLemma lit blk
     Nothing -> do
       blk <- buildBlk
       case blk of
-        HaveHence [] -> return "axioms"
+        HaveHence [] -> error ("ensureNamed: no proof found for: " ++ show lit)
         -- Single "have lit by name" with no further steps: inline the name
         -- directly rather than wrapping in a trivial lemma.  This covers both
         -- ground axiom instances (e.g. product(a,a,identity) by axiom 3) and
@@ -1158,7 +1158,6 @@ proveGoal mChain goal = do
           blk <- makeBlock ue ρ0 []
           emitGoalProof instGoal blk
         Nothing -> do
-          void $ liftIO (callTwee (tweableUnits units) goal)
           liftIO $ hPutStrLn stderr $
             "[warn] no unit found for goal: " ++ ppLitI goal
           emitGoalProof goal (HaveHence [])
