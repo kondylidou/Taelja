@@ -1,0 +1,13 @@
+Axiom 1: p(c)
+Axiom 2: g(b) = c
+Axiom 3: f(a) = b
+
+Goal 1: p(g(f(a)))
+Proof:
+  p(g(f(a)))
+= { by axiom 3 }
+  p(g(b))
+= { by axiom 2 }
+  p(c)
+= { by axiom 1 }
+  true

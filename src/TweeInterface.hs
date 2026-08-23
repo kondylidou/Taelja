@@ -292,12 +292,14 @@ callTwee units (Rel name args) = do
       axioms  = mapMaybe toAxiom indexed
       negGoal = toCnfNegGoal "goal" goalTerm (Const "true")
       input   = unlines (axioms ++ [negGoal])
+      idToUe  = Map.fromList [(mkId i ue, ue) | (i, ue) <- indexed, isEqLit (ueUnit ue) || isRelLit (ueUnit ue)]
       tmpFile = "/tmp/taelja_twee_horn_input.p"
   writeFile tmpFile input
   maxTime <- tweemaxtime
   (_, out, _) <- readProcessWithExitCode tweeBin
-                   ["--no-colour", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile] ""
-  if "Unsatisfiable" `isInfixOf` out
-    then return (Just (goalTerm, []))
-    else return Nothing
+                   ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile] ""
+  return (parseTweeChain idToUe out goalTerm (Const "true"))
+  where
+    isRelLit (Rel _ _) = True
+    isRelLit _         = False
 callTwee _ _ = return Nothing

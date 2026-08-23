@@ -14,7 +14,7 @@ Optional:
   --twee PATH       Path to Twee binary (auto-detected from bin/twee if omitted)
   --output-dir DIR  Output directory (default: eval_out)
   --timeout SEC     Per-prover timeout in seconds (default: 60)
-  --taelja-timeout SEC  Taelja timeout in seconds (default: 120)
+  --taelja-timeout SEC  Taelja timeout in seconds (default: 60)
   --jobs N          Parallel workers (default: min(32, cpu_count))
   --lean PATH       Path to lean binary; if given, verify each taelja proof
   --skip-done       Skip problems where proof.tstp and taelja.txt already exist
@@ -330,8 +330,8 @@ def main():
     parser.add_argument('--timeout',     type=int, default=60,
                         help='Per-prover timeout in seconds (default: 60)')
     parser.add_argument('--jobs',        type=int, default=2)
-    parser.add_argument('--taelja-timeout', type=int, default=120, metavar='SEC',
-                        help='Taelja timeout in seconds (default: 120)')
+    parser.add_argument('--taelja-timeout', type=int, default=60, metavar='SEC',
+                        help='Taelja timeout in seconds (default: 60)')
     parser.add_argument('--skip-done',   action='store_true',
                         help='Skip problems where proof.tstp and taelja.txt already exist')
     parser.add_argument('--lean',        default=None, metavar='PATH',

@@ -1,0 +1,10 @@
+fof(ax1, axiom, f(a) = b, file('horn_rel_two_step_chain.p', ax1)).
+fof(ax2, axiom, g(b) = c, file('horn_rel_two_step_chain.p', ax2)).
+fof(ax3, axiom, p(c), file('horn_rel_two_step_chain.p', ax3)).
+fof(goal, conjecture, p(g(f(a))), file('horn_rel_two_step_chain.p', goal)).
+fof(c_0_neg, negated_conjecture, ~p(g(f(a))), inference(assume_negation,[status(cth)],[goal])).
+cnf(c_0_1, plain, (f(a)=b), inference(split_conjunct,[status(thm)],[ax1])).
+cnf(c_0_2, plain, (g(b)=c), inference(split_conjunct,[status(thm)],[ax2])).
+cnf(c_0_3, plain, (p(c)), inference(split_conjunct,[status(thm)],[ax3])).
+cnf(c_0_4, negated_conjecture, (~p(g(f(a)))), inference(split_conjunct,[status(thm)],[c_0_neg])).
+cnf(c_0_5, plain, ($false), inference(sr,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_4,c_0_1]),c_0_2]),c_0_3]), ['proof']).

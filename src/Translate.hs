@@ -355,78 +355,34 @@ findElecIO li σ0 pos units = case li of
                 ki  = UnitEntry Nothing li (Just blk) (Just pos)
             addUnit ki
             return (Just (ki, [], σ0, []))
-  Rel n as -> do
-    let liTerm     = if null as then Const n else App n as
-        isHHu u    = case ueProof u of { Just (HaveHence _) -> True; _ -> False }
-        isRelN u   = case ueUnit u of { Rel n' _ -> n' == n; _ -> False }
-        coreElecs  = [ u | u <- units, isRelN u, isJust (ueName u) || isHHu u ]
-        -- Ground (variable-free) derived electrons without proof: used as Twee source
-        -- literals for predicate rewriting (e.g. Twee "rewriting" inference steps).
-        -- Kept separate so coreElecs (which have proofs) are tried first.
-        groundElecs = [ u | u <- units, isRelN u
-                          , null (litVars (ueUnit u))
-                          , isNothing (ueName u), not (isHHu u) ]
-        srcElecs   = coreElecs ++ groundElecs
-        eqUnits    = filter (isEqLit . ueUnit) (tweableUnits units)
-    mTweeRes <- firstJustM (tryRelElec eqUnits liTerm) srcElecs
-    case mTweeRes of
+  _ -> do
+    let isHHu u    = case ueProof u of { Just (HaveHence _) -> True; _ -> False }
+        hhElecs    = [ u | u <- units, isNothing (ueName u), isHHu u ]
+        namedElecs = [ u | u <- units, isJust (ueName u) ]
+        srcElecs   = hhElecs ++ namedElecs
+        eqEntries  = filter (isEqLit . ueUnit) (tweableUnits units)
+    mRw <- matchViaRw li σ0 srcElecs eqEntries
+    case mRw of
       Just res -> return (Just res)
-      Nothing  -> matchViaRw li σ0 srcElecs eqUnits
-  _ -> return Nothing
+      Nothing  -> do
+        mRaw <- liftIO (callTwee (tweableUnits units) li)
+        case mRaw of
+          Nothing      -> return Nothing
+          Just (_, []) -> return Nothing
+          Just (start, chain) -> do
+            steps' <- mapM promoteStep chain
+            let blk = EqChain start steps'
+                ki  = UnitEntry Nothing li (Just blk) (Just pos)
+            addUnit ki
+            return (Just (ki, [], σ0, []))
   where
-    firstJustM _ [] = return Nothing
-    firstJustM f (x:xs) = f x >>= \case
-      Just r  -> return (Just r)
-      Nothing -> firstJustM f xs
-
     promoteStep (stepUe, dir, cur) = do
       nm <- ensureNamed (ueUnit stepUe) (makeBlock stepUe [] [])
       case ueUnit stepUe of
-        Eq a b -> return (RwStep nm (a, b) dir, cur)
-        _      -> error "findElecIO: non-eq unit in Twee chain"
-
-    tryRelElec eqUnits liTerm k = case ueUnit k of
-      Rel kn as' -> do
-        let kTerm = if null as' then Const kn else App kn as'
-        mRaw <- liftIO (callTwee eqUnits (Eq kTerm liTerm))
-        case mRaw of
-          Nothing       -> return Nothing
-          Just (_, [])  -> return Nothing
-          Just (_, chain) -> applyRelRwChain k chain
-      _ -> return Nothing
-
-    applyRelRwChain k chain = do
-      mResult <- buildRelSteps (ueUnit k) chain
-      case mResult of
-        Nothing -> return Nothing
-        Just (finalLit, rwSteps) ->
-          return $ case tryMatch li finalLit σ0 of
-            Just (σi, σ0') -> Just (k, σi, σ0', rwSteps)
-            Nothing        -> Nothing
-
-    buildRelSteps cur [] = return (Just (cur, []))
-    buildRelSteps cur ((eq_ue, dir, _) : rest) =
-      case ueUnit eq_ue of
-        Eq sa sb -> do
-          mnm <- getEqName eq_ue
-          case mnm of
-            Nothing -> return Nothing
-            Just nm ->
-              case rewriteLitAll cur (sa, sb) dir of
-                []         -> buildRelSteps cur rest
-                (newLit:_) -> do
-                  mRest <- buildRelSteps newLit rest
-                  case mRest of
-                    Nothing -> return Nothing
-                    Just (finalLit, tailSteps) ->
-                      return (Just (finalLit, (RwStep nm (sa, sb) dir, newLit) : tailSteps))
-        _ -> return Nothing
-
-    getEqName eq_ue = case ueName eq_ue of
-      Just n  -> return (Just n)
-      Nothing -> case ueProof eq_ue of
-        Just _  -> Just <$> ensureNamed (ueUnit eq_ue) (makeBlock eq_ue [] [])
-        Nothing -> return Nothing
+        Eq a b   -> return (RwStep nm (a, b) dir, cur)
+        Rel n as -> let relT = if null as then Const n else App n as
+                    in return (RwStep nm (relT, Const "true") dir, cur)
+        _        -> error "findElecIO: unexpected unit in Twee chain"
 
 -- Recover the electron from a Twee equational chain: find the HaveHence electron
 -- among the chain participants, then try single-step rewriting to match li.
@@ -531,7 +487,10 @@ makeBlock ki σi rwSteps = do
                   case genCands of
                     (genU : _) | Just σg <- matchLit (ueUnit genU) lit
                                 , Just stored <- ueProof genU ->
-                        return (applySubstBlock σg stored)
+                        if isEqChain stored
+                          then do nm <- ensureNamed (ueUnit genU) (return stored)
+                                  return (HaveHence [Have lit nm])
+                          else return (applySubstBlock σg stored)
                     _ -> namedCase units
         Nothing -> namedCase units
 
@@ -599,9 +558,15 @@ buildProofBlock ((k1, σ1, rw1) : rest) mAxName σ0 headLit = do
       nm   <- ensureNamed targ (return blki)
       return (appendLine blk (And targ nm))
 
--- equational goals use EqChain; relational goals use HaveHence
+-- equational goals use EqChain built from the electron or Twee;
+-- relational goals with a Twee chain also use EqChain (shows p(args) = ... = true);
+-- otherwise relational goals use HaveHence.
 -- rwi non-empty forces HaveHence so "hence … by rw" is preserved
 emitBlockForGoal :: Literal -> UnitEntry -> Subst -> [(RwStep, Literal)] -> AlgM ProofBlock
+emitBlockForGoal _gl ki _σi []
+  | isNothing (ueName ki)
+  , Just blk@(EqChain {}) <- ueProof ki
+  = return blk
 emitBlockForGoal gl@(Eq l r) ki σi rwi
   | not (null rwi) = makeBlock ki σi rwi
   | isNothing (ueName ki)

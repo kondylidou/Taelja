@@ -105,6 +105,7 @@ eBenchmarkNames =
   , "resolution_example_horn_reuse_inlined"
   , "superposition_example_clausal1"
   , "superposition_example_clausal2"
+  , "horn_rel_two_step_chain"
   ]
 
 mkTest :: String -> String -> String -> TestTree
