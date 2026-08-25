@@ -1,0 +1,12 @@
+% SZS status Theorem
+
+% SZS output start CNFRefutation
+cnf(c1, conjecture, g(g(a))=a, file('/Users/kondylidou/Developer/Taelja/test/input/paper_eq.p', goal)).
+cnf(c2, negated_conjecture, g(g(a))!=a, inference(negate_conjecture, [status(cth)], [c1])).
+cnf(c3, plain, g(g(a))!=a, inference(clausify, [status(esa)], [c2])).
+cnf(c4, axiom, g(X)=f(X), file('/Users/kondylidou/Developer/Taelja/test/input/paper_eq.p', ax2)).
+cnf(c5, axiom, f(X2)=X2, file('/Users/kondylidou/Developer/Taelja/test/input/paper_eq.p', ax1)).
+cnf(c6, plain, g(X2)=X2, inference(rewriting, [status(thm)], [c4, c5])).
+cnf(c7, plain, g(g(a))=a, inference(rewriting, [status(thm)], [c6, c6])).
+cnf(c8, plain, $false, inference(proved_conjecture, [status(thm)], [c3, c7])).
+% SZS output end CNFRefutation

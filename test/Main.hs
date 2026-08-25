@@ -30,6 +30,8 @@ tweeBenchmarkNames =
   , "thesis_example_both_lemmas_cnf"
   , "COL003-4"
   , "LCL146-1"
+  , "paper_eq"
+  , "paper_eq_cnf"
   ]
 
 handcraftedNames :: [String]

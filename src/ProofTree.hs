@@ -268,11 +268,16 @@ classifyRole unitMap name decl
   | isPositiveUnitFormula decl && isFileSrc unitMap resolvedNm = OrigAxiom
   | isNegConj decl                                           = NegConjecture
   | maybe False isNegConj (lookupDecl unitMap resolvedNm)    = NegConjecture
+  -- A clause whose source traces back to a file-sourced *conjecture* is part
+  -- of the negation chain (e.g. FOF clausification: plain → clausify → negate_conjecture → conjecture)
+  | maybe False isConjDecl (lookupDecl unitMap resolvedNm)   = NegConjecture
   | isFileSrc unitMap name                                    = OrigAxiom
   | isFileSrc unitMap resolvedNm                              = OrigAxiom
   | otherwise                                                 = Derived
   where
     resolvedNm = resolveSourceName unitMap name
+    isConjDecl (T.Formula (T.Standard T.Conjecture) _) = True
+    isConjDecl _                                        = False
 
 isNegConj :: T.Declaration -> Bool
 isNegConj (T.Formula (T.Standard T.NegatedConjecture) _) = True
@@ -353,6 +358,11 @@ extractConjectureGoals units = listToMaybe
     isConjDecl (T.Formula (T.Standard T.Conjecture) _) = True
     isConjDecl _                                        = False
 
+    -- Twee emits the conjecture as a CNF clause with a single positive literal
+    extractConjLits (T.Formula _ (T.CNF (T.Clause lits))) =
+      case toList lits of
+        [(T.Positive, lit)] -> Just [lit]
+        _                   -> Nothing
     extractConjLits (T.Formula _ (T.FOF f)) = extractFOFConj f
     extractConjLits _                        = Nothing
 

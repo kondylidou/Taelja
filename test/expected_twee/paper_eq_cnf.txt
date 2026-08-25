@@ -1,0 +1,18 @@
+Axiom 1: g(X) = f(X)
+Axiom 2: f(Y) = Y
+
+Lemma 3: g(X) = X
+Proof:
+  g(X)
+= { by axiom 1 }
+  f(X)
+= { by axiom 2 }
+  X
+
+Goal 1: g(g(a)) = a
+Proof:
+  g(g(a))
+= { by lemma 3 }
+  g(a)
+= { by lemma 3 }
+  a

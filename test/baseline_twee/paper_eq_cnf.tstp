@@ -1,0 +1,10 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, g(g(a))!=a, file('/Users/kondylidou/Developer/Taelja/test/input/paper_eq_cnf.p', goal)).
+cnf(c2, axiom, g(X)=f(X), file('/Users/kondylidou/Developer/Taelja/test/input/paper_eq_cnf.p', ax2)).
+cnf(c3, axiom, f(X2)=X2, file('/Users/kondylidou/Developer/Taelja/test/input/paper_eq_cnf.p', ax1)).
+cnf(c4, plain, g(X2)=X2, inference(rewriting, [status(thm)], [c2, c3])).
+cnf(c5, plain, g(g(a))=a, inference(rewriting, [status(thm)], [c4, c4])).
+cnf(c6, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c5])).
+% SZS output end CNFRefutation

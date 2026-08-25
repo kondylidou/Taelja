@@ -64,7 +64,25 @@ translate debug (T.TSTP _ units) =
               let validNames = Set.fromList
                     [ cname | ((cname, _), Just _) <- zip candidates candResults ]
               if Set.null validNames
-                then Just <$> runAlgorithm debug origInfo units Map.empty
+                then do
+                  -- The tentative (file-source) pass failed — typically because the
+                  -- candidate's ancestor axioms disappeared from the modified tree and
+                  -- have no entry in tstp2name.  Retry using the original proof tree's
+                  -- axiom names; if that works run with origInfo so the naming stays
+                  -- consistent (original axioms keep their "axiom N" names in the output).
+                  let (_, origPosToName, _) =
+                        assignAxiomNames (piElectrons origInfo) (piNonUnits origInfo) unitMap0
+                      origTstp2name = Map.fromList
+                        [ (leName e, nm)
+                        | e <- piElectrons origInfo
+                        , leRole e == OrigAxiom
+                        , Just nm <- [Map.lookup (lePos e) origPosToName]
+                        ]
+                  retryResults <- forM candidates (buildCandidateLemma unitMap0 origTstp2name)
+                  let retryValidCands = Map.fromList
+                        [ (cname, (lit, blk))
+                        | ((cname, _), Just (lit, blk)) <- zip candidates retryResults ]
+                  Just <$> runAlgorithm debug origInfo units retryValidCands
                 else do
                   -- Second pass: only file-source the valid candidates, recompute
                   let finalModUnits = map (replaceValid validNames) units
@@ -1097,9 +1115,10 @@ runAlgorithm debug info allUnits candLemmaMap = do
         _ -> Nothing
 
       derivedUnits =
-        [ UnitEntry Nothing (electronLit unitMap e) Nothing (Just (lePos e))
+        [ UnitEntry Nothing lit mProof (Just (lePos e))
         | e <- filter (\e -> leRole e == Derived) (piElectrons info)
-        , let lit = electronLit unitMap e
+        , let lit    = electronLit unitMap e
+              mProof = fmap snd (Map.lookup (leName e) candLemmaMap)
         , lit `notElem` goalLits' ]
 
       -- Equational axioms from the TSTP file not visible as proof-tree leaves.

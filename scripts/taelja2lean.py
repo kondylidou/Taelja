@@ -251,7 +251,7 @@ def parse_term_str(s: str) -> object:
 # ─── Taelja text parser ───────────────────────────────────────────────────────
 
 def parse_ref(s: str) -> Ref:
-    """Parse 'axiom N', 'lemma N', 'rw axiom N', 'rw axiom N R->L' etc."""
+    """Parse 'axiom N', 'lemma N', 'axioms', 'rw axiom N', 'rw axiom N R->L' etc."""
     s = s.strip()
     rw = False
     direction = 'LR'
@@ -261,6 +261,10 @@ def parse_ref(s: str) -> Ref:
     if 'R->L' in s:
         direction = 'RL'
         s = s.replace('R->L', '').strip()
+    # 'axioms' (plural, no number) is a fallback justification when no specific
+    # axiom name is tracked (e.g. derived inner nucleus or Twee-derived block).
+    if s == 'axioms':
+        return Ref('axioms', 0, rw, direction)
     m = re.match(r'(axiom|lemma)\s+(\d+)', s)
     if not m:
         raise ValueError(f'Cannot parse ref: {s!r}')
@@ -509,7 +513,39 @@ def collect_symbols(doc: Document) -> Tuple[Dict, Dict, Set]:
         if name in functions:
             del functions[name]
 
-    return functions, predicates, constants
+    # Detect "= true" encoding: predicates that appear as eq-chain starts whose
+    # head changes in an intermediate step are really α-valued functions.
+    # Reclassify them so their Lean type is α → ... → α (not → Prop).
+    func_preds: set = set()
+
+    def check_reclassify(proof):
+        if not isinstance(proof, EqChainProof) or not proof.steps:
+            return
+        if not isinstance(proof.start, App):
+            return
+        sh = proof.start.head
+        if sh not in predicates:
+            return
+        steps = proof.steps
+        # Exclude the terminal = true step from the head-change check
+        if isinstance(steps[-1].term, Const) and steps[-1].term.name == 'true':
+            steps = steps[:-1]
+        for step in steps:
+            t = step.term
+            if not (isinstance(t, App) and t.head == sh):
+                func_preds.add(sh)
+                return
+
+    for lem in doc.lemmas:
+        check_reclassify(lem.proof)
+    for g in doc.goals:
+        check_reclassify(g.proof)
+
+    for name in func_preds:
+        arity = predicates.pop(name)
+        functions[name] = max(functions.get(name, 0), arity)
+
+    return functions, predicates, constants, func_preds
 
 
 # ─── Formula → Lean type string ───────────────────────────────────────────────
@@ -541,16 +577,24 @@ def lean_name(name: str) -> str:
         'fun', 'let', 'in', 'do', 'return', 'if', 'then', 'else', 'match', 'with',
         'have', 'show', 'from', 'where', 'by', 'exact', 'apply', 'intro', 'calc',
         'rw', 'simp', 'type', 'sort', 'prop', 'extends',
+        # Lean 4 built-in values/functions that conflict when declared as axioms
+        'true', 'false', 'not', 'and', 'or', 'id',
     }
     if name.lower() in keywords:
         return name + '_'
     return name
+
+# Set by emit_lean before emitting: predicates reclassified as α-valued functions
+# (= true encoding). lean_lit appends "= true_" for these symbols.
+_func_predicates: set = frozenset()
 
 def lean_lit(f, var_map: dict) -> str:
     """Convert a literal/formula to Lean Prop string."""
     if isinstance(f, PredLit):
         head = lean_name(f.head)
         if not f.args:
+            if f.head in _func_predicates:
+                return f'{head} = true_'
             return head
         parts = []
         for a in f.args:
@@ -559,7 +603,10 @@ def lean_lit(f, var_map: dict) -> str:
             if isinstance(a, App) and a.args:
                 s = f'({s})'
             parts.append(s)
-        return f'{head} {" ".join(parts)}'
+        body = f'{head} {" ".join(parts)}'
+        if f.head in _func_predicates:
+            return f'{body} = true_'
+        return body
     if isinstance(f, EqLit):
         lhs = lean_term(f.lhs, var_map)
         rhs = lean_term(f.rhs, var_map)
@@ -747,7 +794,9 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
         lines.append(f'namespace {namespace}')
         lines.append('')
 
-    functions, predicates, constants = collect_symbols(doc)
+    global _func_predicates
+    functions, predicates, constants, func_preds = collect_symbols(doc)
+    _func_predicates = func_preds
 
     # Sort for determinism
     consts_sorted = sorted(constants)
@@ -923,6 +972,76 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
             inst = ref_name  # ground lemma (no vars)
 
         return f'by have h_rw := {inst}; rw [h_rw]'
+
+    # TPTP predicates are sometimes encoded as "f(args) = true" in the proof.
+    # When the last calc step lands on Const('true'), the chain ends with a
+    # predicate-holds step, not an equality.  Emit as rw + apply instead of a
+    # calc chain to avoid the Prop/α type mismatch.
+    if isinstance(proof.steps[-1].term, Const) and proof.steps[-1].term.name == 'true':
+        prev_t = proof.start
+        for step in proof.steps[:-1]:
+            rn = ref_lean_name(step.ref)
+            direction = step.ref.direction
+            ax_f = None
+            if step.ref.kind == 'axiom' and step.ref.num in axiom_types:
+                ax_f = axiom_types[step.ref.num][2]
+            elif step.ref.kind == 'lemma' and step.ref.num in lemma_types:
+                ax_f = lemma_types[step.ref.num][2]
+            if ax_f is not None and isinstance(ax_f, EqLit):
+                subst = find_rw_subst(prev_t, step.term, ax_f, direction)
+                if subst is not None:
+                    fv = sorted(vars_in_lit(ax_f))
+                    step_args = []
+                    for v in fv:
+                        if v in subst:
+                            t2 = subst[v]
+                            a = lean_term(t2, var_map)
+                            if isinstance(t2, App) and t2.args:
+                                a = f'({a})'
+                            step_args.append(a)
+                    inst_s = f'{rn} {" ".join(step_args)}' if step_args else rn
+                    arrow = '← ' if direction == 'RL' else ''
+                    lines.append(f'have h_rw := {inst_s}')
+                    lines.append(f'rw [{arrow}h_rw]')
+                else:
+                    arrow = '← ' if direction == 'RL' else ''
+                    lines.append(f'rw [{arrow}{rn}]')
+            else:
+                arrow = '← ' if direction == 'RL' else ''
+                lines.append(f'rw [{arrow}{rn}]')
+            prev_t = step.term
+        final = proof.steps[-1]
+        final_rn = ref_lean_name(final.ref)
+        if final.ref.direction == 'RL':
+            # RL: the ref (reversed) proves <prev_term> = true_.
+            # Instantiate with true_ and wrap in Eq.symm.
+            final_ax_f = None
+            if final.ref.kind == 'axiom' and final.ref.num in axiom_types:
+                final_ax_f = axiom_types[final.ref.num][2]
+            elif final.ref.kind == 'lemma' and final.ref.num in lemma_types:
+                final_ax_f = lemma_types[final.ref.num][2]
+            if final_ax_f is not None and isinstance(final_ax_f, EqLit):
+                subst = find_rw_subst(prev_t, Const('true'), final_ax_f, 'RL')
+                if subst is not None:
+                    fv = sorted(vars_in_lit(final_ax_f))
+                    fa = []
+                    for v in fv:
+                        if v in subst:
+                            t2 = subst[v]
+                            a = lean_term(t2, var_map)
+                            if isinstance(t2, App) and t2.args:
+                                a = f'({a})'
+                            fa.append(a)
+                    inst_f = f'{final_rn} {" ".join(fa)}' if fa else final_rn
+                    lines.append(f'exact Eq.symm ({inst_f})')
+                else:
+                    lines.append(f'exact Eq.symm ({final_rn} true_)')
+            else:
+                lines.append(f'exact Eq.symm ({final_rn} true_)')
+        else:
+            close_tac = 'first | assumption | exact Eq.symm (by assumption)'
+            lines.append(f'apply {final_rn} <;> ({close_tac})')
+        return lines
 
     # First calc line
     first = proof.steps[0]
@@ -1128,6 +1247,26 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                 close_parts = ['assumption', 'exact Eq.symm (by assumption)']
                 close_parts += [f'apply {h}' for h in univ_hyp_names]
                 close_tac = 'first | ' + ' | '.join(close_parts)
+
+                # 'axioms' (plural): no specific axiom named; try every axiom and
+                # lemma in scope so Lean can find the right one automatically.
+                if ref.kind == 'axioms':
+                    all_names = (
+                        [f'ax{n}' for n in sorted(axiom_types)]
+                        + [f'taelja_lemma{n}' for n in sorted(lemma_types)]
+                    )
+                    try_parts = [close_tac] + [f'apply {n} <;> ({close_tac})' for n in all_names] + ['sorry']
+                    fallback_tac = 'first | ' + ' | '.join(f'({p})' for p in try_parts)
+                    if lit_has_new_vars:
+                        fvars_str = ' '.join(svm[v] for v in new_vars)
+                        lines.append(f'have {hname} : {full_lit_str} := fun {fvars_str} => by {fallback_tac}')
+                    else:
+                        lines.append(f'have {hname} : {full_lit_str} := by {fallback_tac}')
+                    hyp_names[idx] = hname
+                    hyp_lits[idx] = step.lit
+                    current_idx = idx
+                    extras = []
+                    continue
 
                 if lit_has_new_vars:
                     # Wrap in lambda, instantiate any ∀-quantified previous hyps
