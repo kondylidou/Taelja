@@ -388,11 +388,19 @@ findElecIO li σ0 pos units = case li of
           Nothing      -> return Nothing
           Just (_, []) -> return Nothing
           Just (start, chain) -> do
-            steps' <- mapM promoteStep chain
-            let blk = EqChain start steps'
-                ki  = UnitEntry Nothing li (Just blk) (Just pos)
-            addUnit ki
-            return (Just (ki, [], σ0, []))
+            let goalFun = case li of { Rel n _ -> n; _ -> "" }
+                validInter (_, _, t) = case t of
+                  Const n -> n == goalFun || n == "true"
+                  App n _ -> n == goalFun
+                  _       -> False
+            if all validInter chain
+              then do
+                steps' <- mapM promoteStep chain
+                let blk = EqChain start steps'
+                    ki  = UnitEntry Nothing li (Just blk) (Just pos)
+                addUnit ki
+                return (Just (ki, [], σ0, []))
+              else return Nothing
   where
     promoteStep (stepUe, dir, cur) = do
       nm <- ensureNamed (ueUnit stepUe) (makeBlock stepUe [] [])
@@ -695,8 +703,11 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                         when (isJust mAxName) $ do
                           addUnit (UnitEntry Nothing headInst (Just blk) (Just pos))
                           case blk of
-                            EqChain {} -> void (ensureNamed headInst (return blk))
-                            _          -> return ()
+                            EqChain {} | Set.fromList (litVars headInst)
+                                            `Set.isSubsetOf`
+                                            Set.fromList (concatMap litVars goalLits) ->
+                              void (ensureNamed headInst (return blk))
+                            _ -> return ()
                         -- For derived inner nuclei (no axiom name): if the head is a
                         -- goal literal, emit the goal proof directly using "axioms"
                         -- as the fallback justification (e.g. E's inline spm steps).
@@ -743,8 +754,11 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                   addUnit (UnitEntry Nothing headInst (Just blk) (Just pos))
                   -- EqChains can't nest inside HaveHence, so promote immediately
                   case blk of
-                    EqChain {} -> void (ensureNamed headInst (return blk))
-                    _          -> return ()
+                    EqChain {} | Set.fromList (litVars headInst)
+                                    `Set.isSubsetOf`
+                                    Set.fromList (concatMap litVars goalLits) ->
+                      void (ensureNamed headInst (return blk))
+                    _ -> return ()
                 -- Extra goal-grounding attempt: the natural electron match may produce a
                 -- unit that shares the head shape with a goal but with different ground
                 -- terms (e.g. axiom 11 matches k≤f and emits 0≤f-k, while the goal is
@@ -779,8 +793,11 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                           let headInst2 = applySubst σ0' headLitG
                           addUnit (UnitEntry Nothing headInst2 (Just blk2) (Just pos))
                           case blk2 of
-                            EqChain {} -> void (ensureNamed headInst2 (return blk2))
-                            _          -> return ()
+                            EqChain {} | Set.fromList (litVars headInst2)
+                                            `Set.isSubsetOf`
+                                            Set.fromList (concatMap litVars goalLits) ->
+                              void (ensureNamed headInst2 (return blk2))
+                            _ -> return ()
                           -- If the grounded head matches the goal, emit the proof now
                           -- so pass-2 (innerNusNG) cannot overwrite it with "by axioms".
                           case listToMaybe [gl' | gl' <- goalLits
