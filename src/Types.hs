@@ -1,5 +1,6 @@
 module Types where
 
+import qualified Data.Set as Set
 import qualified Data.TPTP as T
 
 data Term
@@ -73,10 +74,11 @@ data StructuredProof = StructuredProof
   } deriving (Show)
 
 data AlgState = AlgState
-  { stUnits   :: [UnitEntry]
-  , stLemmas  :: [(String, Literal, ProofBlock)]
-  , stGoals   :: [(Literal, ProofBlock)]
-  , stCounter :: Int
+  { stUnits    :: [UnitEntry]
+  , stLemmas   :: [(String, Literal, ProofBlock)]
+  , stGoals    :: [(Literal, ProofBlock)]
+  , stCounter  :: Int
+  , stGoalVars :: Set.Set String  -- vars in goal lits; free vars in promoted lemmas must be ⊆ this
   }
 
 data LeafRole

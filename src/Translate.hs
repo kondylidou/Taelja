@@ -134,13 +134,32 @@ emitGoalProof lit blk = modify $ \s -> s { stGoals = stGoals s ++ [(lit, blk)] }
 
 promoteToLemma :: Literal -> ProofBlock -> AlgM String
 promoteToLemma lit blk = do
-  k <- nextCounter
-  let name = "lemma " ++ show k
-  modify $ \s -> s
-    { stLemmas = stLemmas s ++ [(name, lit, blk)]
-    , stUnits  = map (promote name) (stUnits s)
-    }
-  return name
+  goalVs <- gets stGoalVars
+  let freeVars = Set.fromList (litVars lit)
+      -- EqChains are always valid universally-quantified equational lemmas.
+      -- HaveHence with And steps comes from a multi-body nucleus application;
+      -- if the head has free variables not from the goal, the nucleus unification
+      -- was incomplete and the lemma statement is unsound.
+      -- HaveHence without And steps is a sequential horn derivation, which is
+      -- always valid even if non-ground.
+      hasAndStep (HaveHence steps) = any (\case And {} -> True; _ -> False) steps
+      hasAndStep _                 = False
+      shouldBlock = hasAndStep blk
+                 && not (freeVars `Set.isSubsetOf` goalVs)
+  if shouldBlock
+    then do
+      units <- gets stUnits
+      case find (\u -> ueUnit u == lit && isJust (ueName u)) units of
+        Just u  -> return (fromMaybe "axioms" (ueName u))
+        Nothing -> return "axioms"
+    else do
+      k <- nextCounter
+      let name = "lemma " ++ show k
+      modify $ \s -> s
+        { stLemmas = stLemmas s ++ [(name, lit, blk)]
+        , stUnits  = map (promote name) (stUnits s)
+        }
+      return name
   where
     promote nm u
       | ueUnit u == lit && isNothing (ueName u) =
@@ -703,10 +722,7 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                         when (isJust mAxName) $ do
                           addUnit (UnitEntry Nothing headInst (Just blk) (Just pos))
                           case blk of
-                            EqChain {} | Set.fromList (litVars headInst)
-                                            `Set.isSubsetOf`
-                                            Set.fromList (concatMap litVars goalLits) ->
-                              void (ensureNamed headInst (return blk))
+                            EqChain {} -> void (ensureNamed headInst (return blk))
                             _ -> return ()
                         -- For derived inner nuclei (no axiom name): if the head is a
                         -- goal literal, emit the goal proof directly using "axioms"
@@ -754,10 +770,7 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                   addUnit (UnitEntry Nothing headInst (Just blk) (Just pos))
                   -- EqChains can't nest inside HaveHence, so promote immediately
                   case blk of
-                    EqChain {} | Set.fromList (litVars headInst)
-                                    `Set.isSubsetOf`
-                                    Set.fromList (concatMap litVars goalLits) ->
-                      void (ensureNamed headInst (return blk))
+                    EqChain {} -> void (ensureNamed headInst (return blk))
                     _ -> return ()
                 -- Extra goal-grounding attempt: the natural electron match may produce a
                 -- unit that shares the head shape with a goal but with different ground
@@ -793,10 +806,7 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                           let headInst2 = applySubst σ0' headLitG
                           addUnit (UnitEntry Nothing headInst2 (Just blk2) (Just pos))
                           case blk2 of
-                            EqChain {} | Set.fromList (litVars headInst2)
-                                            `Set.isSubsetOf`
-                                            Set.fromList (concatMap litVars goalLits) ->
-                              void (ensureNamed headInst2 (return blk2))
+                            EqChain {} -> void (ensureNamed headInst2 (return blk2))
                             _ -> return ()
                           -- If the grounded head matches the goal, emit the proof now
                           -- so pass-2 (innerNusNG) cannot overwrite it with "by axioms".
@@ -1201,11 +1211,13 @@ runAlgorithm debug info allUnits candLemmaMap = do
       allNonUnits   = sortBy (comparing lePos) (leafNonUnits ++ innerNus)
 
       nAll = length axiomList + length bgAxiomList
+      goalVarSet = Set.fromList (concatMap litVars goalLits')
       initSt = AlgState
-        { stUnits   = namedUnits ++ derivedUnits ++ bgNamedUnits
-        , stLemmas  = preLemmaEntries
-        , stGoals   = []
-        , stCounter = nAll + 1
+        { stUnits    = namedUnits ++ derivedUnits ++ bgNamedUnits
+        , stLemmas   = preLemmaEntries
+        , stGoals    = []
+        , stCounter  = nAll + 1
+        , stGoalVars = goalVarSet
         }
 
   when debug $ do
