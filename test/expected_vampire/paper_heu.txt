@@ -1,0 +1,18 @@
+Axiom 1: f(X) = X
+Axiom 2: g(X) = f(X)
+Axiom 3: g(a) = a => p(g(a))
+
+Lemma 4: g(a) = a
+Proof:
+  g(a)
+= { by axiom 2 }
+  f(a)
+= { by axiom 1 }
+  a
+
+Goal 1: p(g(a))
+Proof:
+  have g(a) = a
+    by lemma 4
+  hence p(g(a))
+    by axiom 3
