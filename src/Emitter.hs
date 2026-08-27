@@ -23,13 +23,13 @@ emit sp0 = unlines $ concat
 -- Updates all references in lemma/goal blocks accordingly.
 renumberAxioms :: StructuredProof -> StructuredProof
 renumberAxioms sp =
-  let oldNames = [ case ax of AUnit n _ -> n; ANonUnit n _ -> n
+  let oldNames = [ case ax of AUnit n _ -> n; ANucleus n _ -> n
                  | ax <- axioms sp ]
       renaming  = Map.fromList (zip oldNames
                     ["axiom " ++ show i | i <- [(1 :: Int) ..]])
       newAxioms = zipWith setName [(1 :: Int) ..] (axioms sp)
       setName i (AUnit    _ lit) = AUnit    ("axiom " ++ show i) lit
-      setName i (ANonUnit _ cls) = ANonUnit ("axiom " ++ show i) cls
+      setName i (ANucleus _ cls) = ANucleus ("axiom " ++ show i) cls
   in (applyRenaming renaming sp) { axioms = newAxioms }
 
 -- A single global renaming covers all axiom entries so that a variable shared
@@ -39,9 +39,9 @@ axiomLines entries = map ppEntry entries
   where
     globalRenaming = zip (nub (concatMap entryVars entries)) prettyVarNames
     entryVars (AUnit _ l)                  = litVars l
-    entryVars (ANonUnit _ (Clause bs mh))  = concatMap litVars bs ++ maybe [] litVars mh
+    entryVars (ANucleus _ (Clause bs mh))  = concatMap litVars bs ++ maybe [] litVars mh
     ppEntry (AUnit n l)    = cap n ++ ": " ++ ppLiteral (renameLit globalRenaming l)
-    ppEntry (ANonUnit n c) = cap n ++ ": " ++ ppClauseWith globalRenaming c
+    ppEntry (ANucleus n c) = cap n ++ ": " ++ ppClauseWith globalRenaming c
 
 ppClauseWith :: [(String, String)] -> Clause -> String
 ppClauseWith renaming (Clause bodyLits mHead) =

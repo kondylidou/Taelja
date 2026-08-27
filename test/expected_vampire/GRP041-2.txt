@@ -1,0 +1,11 @@
+Axiom 1: product(identity,X,X)
+Axiom 2: product(X,Y,Z) /\ product(X,Y,A) => equalish(A,Z)
+
+Goal 1: equalish(a,a)
+Proof:
+  have product(identity,a,a)
+    by axiom 1
+   and product(identity,a,a)
+    by axiom 1
+  hence equalish(a,a)
+    by axiom 2

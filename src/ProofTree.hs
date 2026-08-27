@@ -70,7 +70,7 @@ buildProofInfo allUnits
       electrons = byPos $
                     [e | e <- lEs, isPositiveUnitFormula (leDecl e)] ++
                     [e | e <- iEs, isPositiveUnitFormula (leDecl e)]
-      nonUnits  = byPos $
+      nuclei    = byPos $
                     [e | e <- lEs, not (isPositiveUnitFormula (leDecl e))] ++
                     [e | e <- iEs, not (isPositiveUnitFormula (leDecl e))]
 
@@ -79,18 +79,18 @@ buildProofInfo allUnits
     Just lits -> Just lits
     Nothing   -> listToMaybe $
       [ lits
-      | e <- nonUnits, leRole e == NegConjecture
+      | e <- nuclei, leRole e == NegConjecture
       , let goalDecl = fromMaybe (leDecl e) (lookupDecl unitMap (leName e))
       , Just lits <- [extractGoalLits goalDecl]
       ] ++
       -- UEQ problems: the negated conjecture is a disequality axiom (no negated_conjecture role)
       [ lits
-      | e <- nonUnits, leRole e == OrigAxiom
+      | e <- nuclei, leRole e == OrigAxiom
       , Just lits <- [extractGoalLits (leDecl e)]
       ]
   return ProofInfo
     { piElectrons = electrons
-    , piNonUnits  = nonUnits
+    , piNuclei    = nuclei
     , piGoalLits  = goalLits
     }
 
@@ -210,10 +210,10 @@ gatherLeaves pos0 tree0 =
             Nothing ->
               let (se', si', res) = goKids pos kids seenElec seenInner
                   -- Store only non-unit leaves, using relative positions.
-                  nonUnitEntries =
+                  nucleiEntries =
                     [(drop (length pos) p, nm, d)
                     | (p, nm, d) <- res, not (isPositiveUnitFormula d)]
-                  si'' = Map.insert n nonUnitEntries si'
+                  si'' = Map.insert n nucleiEntries si'
               in (se', si'', res)
       | otherwise = goKids pos kids seenElec seenInner
 

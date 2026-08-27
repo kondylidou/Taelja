@@ -80,6 +80,7 @@ benchmarkNames =
   , "superposition_example_clausal2"
   , "thesis_example_both_lemmas"
   , "paper_heu"
+  , "GRP041-2"
   ]
 
 -- Benchmarks for which an E prover output exists.

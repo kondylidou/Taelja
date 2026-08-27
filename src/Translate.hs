@@ -52,7 +52,7 @@ translate debug (T.TSTP _ units) =
             Just tentativeInfo -> do
               let tentativeUnitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- modUnits]
                   (_, tentativePosToName, _) =
-                    assignAxiomNames (piElectrons tentativeInfo) (piNonUnits tentativeInfo) tentativeUnitMap
+                    assignAxiomNames (piElectrons tentativeInfo) (piNuclei tentativeInfo) tentativeUnitMap
                   tstp2name = Map.fromList
                     [ (leName e, nm)
                     | e <- piElectrons tentativeInfo
@@ -71,7 +71,7 @@ translate debug (T.TSTP _ units) =
                   -- axiom names; if that works run with origInfo so the naming stays
                   -- consistent (original axioms keep their "axiom N" names in the output).
                   let (_, origPosToName, _) =
-                        assignAxiomNames (piElectrons origInfo) (piNonUnits origInfo) unitMap0
+                        assignAxiomNames (piElectrons origInfo) (piNuclei origInfo) unitMap0
                       origTstp2name = Map.fromList
                         [ (leName e, nm)
                         | e <- piElectrons origInfo
@@ -95,7 +95,7 @@ translate debug (T.TSTP _ units) =
                     Just mainInfo -> do
                       let finalUnitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- finalModUnits]
                           (_, posToName, _) =
-                            assignAxiomNames (piElectrons mainInfo) (piNonUnits mainInfo) finalUnitMap
+                            assignAxiomNames (piElectrons mainInfo) (piNuclei mainInfo) finalUnitMap
                           finalTstp2name = Map.fromList
                             [ (leName e, nm)
                             | e <- piElectrons mainInfo
@@ -576,12 +576,36 @@ makeBlock ki σi rwSteps = do
                   case mNamed of
                     Just nm -> return (HaveHence [Have lit nm])
                     Nothing -> return (HaveHence [])
-        Nothing -> do
-          liftIO $ hPutStrLn stderr $
-            "[warn] makeBlock: unit not in table: " ++ ppLitI (ueUnit ki)
-          case ueUnit ki of
-            Eq l _ -> return (EqChain l [])
-            _      -> return (HaveHence [])
+        Nothing ->
+          -- ki may be a derived (instantiated) entry from deriveInst that was
+          -- never added to stUnits independently.  Search for an original entry
+          -- whose stored atom matches ueUnit ki under some substitution σg, then
+          -- instantiate its stored proof with σg.
+          case listToMaybe [ (u, σg)
+                           | u <- units
+                           , Just σg <- [matchLit (ueUnit u) (ueUnit ki)] ] of
+            Just (u, σg) ->
+              case ueName u of
+                Just nm -> return (HaveHence [Have lit nm])
+                Nothing ->
+                  case ueProof u of
+                    Just stored
+                      | isEqChain stored -> do
+                          nm <- ensureNamed (ueUnit u) (return stored)
+                          return (HaveHence [Have lit nm])
+                      | otherwise -> return (applySubstBlock σg stored)
+                    Nothing -> do
+                      liftIO $ hPutStrLn stderr $
+                        "[warn] makeBlock: unit not in table: " ++ ppLitI (ueUnit ki)
+                      case ueUnit ki of
+                        Eq l _ -> return (EqChain l [])
+                        _      -> return (HaveHence [])
+            Nothing -> do
+              liftIO $ hPutStrLn stderr $
+                "[warn] makeBlock: unit not in table: " ++ ppLitI (ueUnit ki)
+              case ueUnit ki of
+                Eq l _ -> return (EqChain l [])
+                _      -> return (HaveHence [])
 
 electronTarget :: UnitEntry -> Subst -> [(RwStep, Literal)] -> Literal
 electronTarget ki σi rw = case rw of
@@ -649,7 +673,7 @@ buildEqChainFromElectron (Eq l r) ki σi [] = do
   tryDir LR <|> tryDir RL
 buildEqChainFromElectron _ _ _ _ = Nothing
 
-processOneNonUnit
+processOneNucleus
   :: Bool
   -> Subst
   -> LeafEntry
@@ -657,7 +681,7 @@ processOneNonUnit
   -> [Literal]                       -- goal literals
   -> Map.Map String [(String, Dir)]  -- simpl chains
   -> AlgM Bool
-processOneNonUnit debug θ entry posToName goalLits simpl = do
+processOneNucleus debug θ entry posToName goalLits simpl = do
   let pos    = lePos entry
       mAxName = Map.lookup pos posToName
   case convertDeclToClause (leSrcDecl entry) of
@@ -767,13 +791,13 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                           emitGoalProof gl' blk
                         forM_ unmatched $ \gl -> do
                           liftIO $ hPutStrLn stderr $
-                            "[warn] processOneNonUnit: unmatched goal lit: " ++ ppLitI (applySubst τ gl)
+                            "[warn] processOneNucleus: unmatched goal lit: " ++ ppLitI (applySubst τ gl)
                           emitGoalProof (applySubst τ gl) (HaveHence [])
                         return True
               Just headLit -> do
                 blk <- buildProofBlock matched mAxName τ headLit
                 let headInst = applySubst τ headLit
-                -- inner non-units (mAxName=Nothing) produce no "hence L0 by axiom",
+                -- inner nuclei (mAxName=Nothing) produce no "hence L0 by axiom",
                 -- so skip storing them to avoid corrupting later proofs
                 when (isJust mAxName) $ do
                   addUnit (UnitEntry Nothing headInst (Just blk) (Just pos))
@@ -823,7 +847,7 @@ processOneNonUnit debug θ entry posToName goalLits simpl = do
                                                , isJust (matchLit headInst2 gl')] of
                             Just gl' -> emitGoalProof gl' blk2
                             Nothing  -> return ()
-                -- For derived inner non-units (mAxName=Nothing): if the head shape
+                -- For derived inner nuclei (mAxName=Nothing): if the head shape
                 -- matches a goal under a different grounding, retry processBody with
                 -- goal-grounded body so that step-2 findElecIO can find unnamed ground
                 -- electrons (e.g. E's inline spm steps like c_0_16 in GRP001-5).
@@ -860,7 +884,7 @@ processNuclei
   -> [Literal]
   -> Map.Map String [(String, Dir)]
   -> AlgM ()
-processNuclei debug warnOnFail θ nonUnits posToName goalLits simpl = go nonUnits
+processNuclei debug warnOnFail θ nuclei posToName goalLits simpl = go nuclei
   where
     nGoals = length goalLits
 
@@ -890,7 +914,7 @@ processNuclei debug warnOnFail θ nonUnits posToName goalLits simpl = go nonUnit
         then return []
         else do
           prevCount <- gets (length . stUnits)
-          done      <- processOneNonUnit debug θ entry posToName goalLits simpl
+          done      <- processOneNucleus debug θ entry posToName goalLits simpl
           newCount  <- gets (length . stUnits)
           if done
             then return []
@@ -1020,10 +1044,10 @@ assignAxiomNames
   -> [LeafEntry]
   -> Map.Map String T.Unit
   -> ([Axiom], Map.Map String String, [UnitEntry])
-assignAxiomNames electrons nonUnits unitMap =
+assignAxiomNames electrons nuclei unitMap =
   let unitTags    = [(lePos e, Left e)  | e <- electrons, leRole e == OrigAxiom]
-      nonUnitTags = [(lePos e, Right e) | e <- nonUnits,  leRole e == OrigAxiom]
-      allLeaves   = sortBy (comparing fst) (unitTags ++ nonUnitTags)
+      nucleiTags = [(lePos e, Right e) | e <- nuclei,    leRole e == OrigAxiom]
+      allLeaves   = sortBy (comparing fst) (unitTags ++ nucleiTags)
       (axiomList, posToName, _) = foldl step ([], Map.empty, Map.empty) allLeaves
       namedUnits =
         [ UnitEntry (Map.lookup (lePos e) posToName) (electronLit unitMap e) Nothing (Just (lePos e))
@@ -1054,7 +1078,7 @@ assignAxiomNames electrons nonUnits unitMap =
                Just cls@(Clause _ (Just _)) ->
                  let n  = length axAcc + 1
                      nm = "axiom " ++ show n
-                 in (axAcc ++ [ANonUnit nm cls],
+                 in (axAcc ++ [ANucleus nm cls],
                      Map.insert pos nm posMap,
                      Map.insert origKey nm seen)
                _ -> (axAcc, posMap, seen)
@@ -1064,9 +1088,9 @@ applyGroundingClause θ (Clause bs mh) =
   Clause (map (applySubst θ) bs) (fmap (applySubst θ) mh)
 
 buildGroundingSubst :: [Literal] -> Set.Set String -> [LeafEntry] -> Subst
-buildGroundingSubst goalLits leafVars nonUnits =
+buildGroundingSubst goalLits leafVars nuclei =
   let innerClauses  = mapMaybe (convertDeclToClause . leDecl)
-                        (filter (\e -> leRole e == Derived) nonUnits)
+                        (filter (\e -> leRole e == Derived) nuclei)
       innerLits     = concatMap (\(Clause bs mh) -> bs ++ catMaybes [mh]) innerClauses
       innerFreeVars = nub $ concatMap litVars innerLits
       trueFreeVars  = filter (`Set.notMember` leafVars) innerFreeVars
@@ -1111,7 +1135,7 @@ runAlgorithm debug info allUnits candLemmaMap = do
       goalLits'  = map convertLit (piGoalLits info)
 
       (rawAxiomList, posToName, namedUnits) =
-        assignAxiomNames (piElectrons info) (piNonUnits info) unitMap
+        assignAxiomNames (piElectrons info) (piNuclei info) unitMap
 
       -- Axioms that are actually pre-built lemmas get their names here
       candAxiomNames = Set.fromList
@@ -1124,7 +1148,7 @@ runAlgorithm debug info allUnits candLemmaMap = do
       -- Real axioms (not candidates)
       axiomList = filter (\case
           AUnit nm _    -> nm `Set.notMember` candAxiomNames
-          ANonUnit nm _ -> nm `Set.notMember` candAxiomNames
+          ANucleus nm _ -> nm `Set.notMember` candAxiomNames
         ) rawAxiomList
       -- Pre-lemma entries in proof-tree order
       preLemmaEntries =
@@ -1145,7 +1169,7 @@ runAlgorithm debug info allUnits candLemmaMap = do
         | e <- piElectrons info ]
 
       -- demod chain at the negated conjecture position; used by splitChain as fallback
-      pG1Chain = case find (\e -> leRole e == NegConjecture) (piNonUnits info) of
+      pG1Chain = case find (\e -> leRole e == NegConjecture) (piNuclei info) of
         Just e | not (null (leSimpl e)) ->
           Just [(resolveSimplName n, d) | (n, d) <- leSimpl e]
         _ -> Nothing
@@ -1169,7 +1193,7 @@ runAlgorithm debug info allUnits candLemmaMap = do
             rule `elem` map Text.pack ["rewriting", "proved_conjecture"]
           isTweeUnit _ = False
       proofTreeAxNames = Set.fromList
-        [ leName e | e <- piElectrons info ++ piNonUnits info
+        [ leName e | e <- piElectrons info ++ piNuclei info
                    , leRole e == OrigAxiom ]
       bgEqPairs = if not isTweeProof then [] else
         nubBy (\(_, l1) (_, l2) -> l1 == l2)
@@ -1199,25 +1223,25 @@ runAlgorithm debug info allUnits candLemmaMap = do
           (filter (\e -> leRole e == OrigAxiom) (piElectrons info))
         ++
         concatMap (maybe [] clauseVars . convertDeclToClause . leDecl)
-          (filter (\e -> leRole e `elem` [OrigAxiom, NegConjecture]) (piNonUnits info))
+          (filter (\e -> leRole e `elem` [OrigAxiom, NegConjecture]) (piNuclei info))
         where clauseVars (Clause bs mh) = concatMap litVars (bs ++ catMaybes [mh])
 
-      θ = buildGroundingSubst goalLits' leafVars (piNonUnits info)
+      θ = buildGroundingSubst goalLits' leafVars (piNuclei info)
 
       -- derived clauses with L0=⊥ are skipped: they'd intercept goal emission
       hasGroundHead e = case convertDeclToClause (leDecl e) of
         Just (Clause _ (Just hl)) -> null (litVars (applySubst θ hl))
         _                         -> False
-      -- inner non-units with positive heads but non-ground vars (e.g. derived Horn
+      -- inner nuclei with positive heads but non-ground vars (e.g. derived Horn
       -- clauses from E's inline inference steps like spm(A,B) inside sr(...))
       hasPositiveHead e = case convertDeclToClause (leDecl e) of
         Just (Clause _ (Just _)) -> True
         _                         -> False
-      leafNonUnits  = filter (\e -> leRole e `elem` [OrigAxiom, NegConjecture]) (piNonUnits info)
-      innerNus      = filter (\e -> leRole e == Derived && hasGroundHead e) (piNonUnits info)
+      leafNuclei  = filter (\e -> leRole e `elem` [OrigAxiom, NegConjecture]) (piNuclei info)
+      innerNus      = filter (\e -> leRole e == Derived && hasGroundHead e) (piNuclei info)
       innerNusNG    = filter (\e -> leRole e == Derived && hasPositiveHead e
-                                    && not (hasGroundHead e)) (piNonUnits info)
-      allNonUnits   = sortBy (comparing lePos) (leafNonUnits ++ innerNus)
+                                    && not (hasGroundHead e)) (piNuclei info)
+      allNuclei   = sortBy (comparing lePos) (leafNuclei ++ innerNus)
 
       nAll = length axiomList + length bgAxiomList
       goalVarSet = Set.fromList (concatMap litVars goalLits')
@@ -1233,7 +1257,7 @@ runAlgorithm debug info allUnits candLemmaMap = do
     dbg debug $ "goals: " ++ intercalate ", " (map ppLitI goalLits')
     dbg debug ""
     let tagged = map (True,)  (piElectrons info)
-              ++ map (False,) allNonUnits
+              ++ map (False,) allNuclei
         sorted  = sortBy (comparing (lePos . snd)) tagged
         showPos p = if null p then "ε" else p
         posWidth = maximum $ map (length . showPos . lePos . snd) sorted
@@ -1260,19 +1284,19 @@ runAlgorithm debug info allUnits candLemmaMap = do
       dbg debug $ "pG1: " ++ ppSimplChain chain
     dbg debug ""
 
-  finalSt <- execStateT (action θ allNonUnits innerNusNG posToName goalLits' simpl pG1Chain) initSt
+  finalSt <- execStateT (action θ allNuclei innerNusNG posToName goalLits' simpl pG1Chain) initSt
   if null (stGoals finalSt)
     then do
       hPutStrLn stderr "translate: no goal proof produced"
       return (StructuredProof (axiomList ++ bgAxiomList) (stLemmas finalSt) [])
     else return (StructuredProof (axiomList ++ bgAxiomList) (stLemmas finalSt) (stGoals finalSt))
   where
-    action θ allNonUnits innerNusNG posToName goalLits simpl pG1Chain = do
-      -- First pass: leaf axioms + ground-head derived non-units.
-      processNuclei debug False θ allNonUnits posToName goalLits simpl
+    action θ allNuclei innerNusNG posToName goalLits simpl pG1Chain = do
+      -- First pass: leaf axioms + ground-head derived nuclei.
+      processNuclei debug False θ allNuclei posToName goalLits simpl
       nDone <- gets (length . stGoals)
       -- Second pass: derived non-ground-head Horn nuclei (e.g. E's inline spm steps).
-      -- Only tried when the first pass (leaf + ground-head non-units) failed to prove
+      -- Only tried when the first pass (leaf + ground-head nuclei) failed to prove
       -- the goal, so named axiom paths always get priority.
       when (nDone < length goalLits) $
         processNuclei debug False θ innerNusNG posToName goalLits simpl

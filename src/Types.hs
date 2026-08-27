@@ -63,7 +63,7 @@ data Justification
 
 data Axiom
   = AUnit    String Literal
-  | ANonUnit String Clause
+  | ANucleus String Clause
   deriving (Show)
 
 -- The fully translated proof: axioms in input order, intermediate lemmas, goal proofs.
@@ -99,6 +99,6 @@ data LeafEntry = LeafEntry
 -- Everything the algorithm needs, extracted once from the proof tree.
 data ProofInfo = ProofInfo
   { piElectrons :: [LeafEntry]  -- positive unit nodes (leaf + inner), DFS position order
-  , piNonUnits  :: [LeafEntry]  -- non-positive-unit nodes (incl. NegConjecture), position order
+  , piNuclei    :: [LeafEntry]  -- non-positive-unit nodes (incl. NegConjecture), position order
   , piGoalLits  :: [T.Literal]  -- goal literals from the negated conjecture
   } deriving (Show)

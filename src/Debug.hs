@@ -108,7 +108,7 @@ dumpProofInfo info = do
   putStrLn ("Goal literals [" ++ show (length (piGoalLits info)) ++ "]:")
   mapM_ (\l -> putStrLn ("  " ++ ppLit l)) (piGoalLits info)
   putStrLn ""
-  let allEntries = piElectrons info ++ piNonUnits info
+  let allEntries = piElectrons info ++ piNuclei info
   putStrLn ("Nodes by position [" ++ show (length allEntries) ++ "]:")
   mapM_ ppEntry (sortBy (comparing lePos) allEntries)
   putStrLn ""
@@ -137,7 +137,7 @@ dumpProofInfo info = do
 dumpProofTree :: ProofInfo -> IO ()
 dumpProofTree info = do
   putStrLn "Proof tree (left=provider, right=consumer):"
-  let allEntries = piElectrons info ++ piNonUnits info
+  let allEntries = piElectrons info ++ piNuclei info
       byPos = Map.fromListWith (++) [(lePos e, [e]) | e <- allEntries]
   go byPos "" "" ""
   where
