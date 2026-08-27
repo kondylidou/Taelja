@@ -31,7 +31,7 @@ Output layout:
   <out>/results.csv
 
 prove field values:  ok | timeout | fail
-taelja field values: ok | timeout | fail | - (not attempted)
+taelja field values: ok | timeout | fail | unsupported | - (not attempted)
 """
 
 import argparse
@@ -201,6 +201,8 @@ def _read_taelja_status(out):
     err = err_file.read_text() if err_file.exists() else ''
     if 'TIMEOUT' in err:
         return 'timeout'
+    if 'no refutation found' in err:
+        return 'unsupported'
     if txt.strip() and _only_warnings(err) and not _has_empty_proof(txt) and not _has_fatal_warning(err):
         return 'ok'
     return 'fail'
@@ -276,6 +278,8 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
 
     if rc == -1:
         result['taelja'] = 'timeout'
+    elif 'no refutation found' in err:
+        result['taelja'] = 'unsupported'
     elif rc == 0 and proof.strip() and _only_warnings(err) and not _has_empty_proof(proof) and not _has_fatal_warning(err):
         result['taelja'] = 'ok'
     else:
@@ -409,7 +413,7 @@ def main():
     # --- Taelja failure breakdown ---
     proved_results = [r for r in results if r['prove'] == 'ok']
     failed_taelja  = [r for r in proved_results if r['taelja'] not in ('ok', '-')]
-    print(f"\nTaelja failure breakdown ({len(failed_taelja)} proved but not translated):")
+    print(f"\nTaelja failure breakdown ({len(failed_taelja)} prover-proved but not translated, including unsupported structure):")
     err_cats = {}
     for r in failed_taelja:
         p = out / r['category'] / r['problem'] / r['prover']
@@ -473,9 +477,9 @@ def _print_summary(results, provers, lean_col):
             if not sub:
                 continue
             n       = len(sub)
-            proved  = sum(1 for r in sub if r['prove']   == 'ok')
-            timeout = sum(1 for r in sub if r['prove']   == 'timeout')
-            fail    = sum(1 for r in sub if r['prove']   == 'fail')
+            proved  = sum(1 for r in sub if r['prove'] == 'ok' and r['taelja'] != 'unsupported')
+            timeout = sum(1 for r in sub if r['prove'] == 'timeout')
+            fail    = sum(1 for r in sub if r['prove'] == 'fail' or r['taelja'] == 'unsupported')
             taelja  = sum(1 for r in sub if r['taelja']  == 'ok')
             lean    = sum(1 for r in sub if r.get('lean') == 'ok')
 
