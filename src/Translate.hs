@@ -124,9 +124,9 @@ nextCounter = do
 -- unnamed (locally-derived) electrons first; named axioms second
 getElectrons :: String -> AlgM [UnitEntry]
 getElectrons pos = gets $ \s ->
-  let avail   = filter (maybe False (< pos) . uePos) (stUnits s)
-      unnamed = filter (isNothing . ueName) avail
-      named   = filter (isJust   . ueName) avail
+  let allUnits = stUnits s
+      named    = filter (isJust . ueName) allUnits
+      unnamed  = filter (\u -> isNothing (ueName u) && maybe True (< pos) (uePos u)) allUnits
   in unnamed ++ named
 
 emitGoalProof :: Literal -> ProofBlock -> AlgM ()
@@ -298,8 +298,9 @@ processBody
   -> [UnitEntry]
   -> Map.Map String [(String, Dir)]
   -> String
+  -> Bool     -- allowGroundUnnamed: include unnamed proof-less ground units in step1
   -> AlgM (Maybe (Subst, [(UnitEntry, Subst, [(RwStep, Literal)])]))
-processBody lits τ elecs simpl pos = go lits τ [] []
+processBody lits τ elecs simpl pos allowGroundUnnamed = go lits τ [] []
   where
     -- Three-tier ordering:
     --  1. Direct sibling at pos[:-1]+"0" (the proof-tree electron for the outermost body lit)
@@ -327,8 +328,15 @@ processBody lits τ elecs simpl pos = go lits τ [] []
       let liInst    = applySubst τ' li
           (unused, used') = partition (\e -> uePos e `notElem` usedPos) sortedElecs
           prioritized = unused ++ used'
-          -- Derived instances from earlier body literals take priority
-          step1Elecs  = filter (\ue -> isJust (ueName ue) || isJust (ueProof ue))
+          -- Derived instances from earlier body literals take priority.
+          -- For non-ground-head second-pass nuclei, also include ground unnamed
+          -- proof-less units: they are concrete facts from the refutation tree
+          -- that can ground body variables even without stored proofs.
+          step1Elecs  = filter (\ue -> isJust (ueName ue) || isJust (ueProof ue)
+                                    || (allowGroundUnnamed
+                                        && isNothing (ueName ue)
+                                        && isNothing (ueProof ue)
+                                        && null (litVars (ueUnit ue))))
                                (extraElecs ++ prioritized)
           -- All pure step-1 candidates (no IO)
           pureMatches = [ (ue, σi, τ'', [])
@@ -690,9 +698,13 @@ processOneNucleus debug θ entry posToName goalLits simpl = do
       return False
     Just cls ->
       let Clause bodyLits mHead = applyGroundingClause θ cls
+          -- True for non-ground-head derived nuclei (innerNusNG, second pass):
+          -- ground unnamed proof-less facts are valid electrons here.
+          allowGroundUnnamed = isNothing mAxName
+                            && maybe False (not . null . litVars) mHead
       in do
         elecs   <- getElectrons pos
-        mResult <- processBody bodyLits [] elecs simpl pos
+        mResult <- processBody bodyLits [] elecs simpl pos allowGroundUnnamed
         case mResult of
           Nothing -> do
             liftIO $ dbg debug $ "[skip] pos=" ++ pos ++ " (" ++ leName entry ++ ")"
@@ -718,7 +730,7 @@ processOneNucleus debug θ entry posToName goalLits simpl = do
                           Nothing    -> return False
                           Just σ_sib -> do
                             let bodyLitsG = [applySubst σ_sib singleLit]
-                            mResult2 <- processBody bodyLitsG [] elecs simpl pos
+                            mResult2 <- processBody bodyLitsG [] elecs simpl pos False
                             case mResult2 of
                               Nothing -> return False
                               Just (τ, matched) -> do
@@ -737,7 +749,7 @@ processOneNucleus debug θ entry posToName goalLits simpl = do
                   Just σ_gl -> do
                     let bodyLitsG = map (applySubst σ_gl) bodyLits
                         headLitG  = applySubst σ_gl hl
-                    mResult2 <- processBody bodyLitsG [] elecs simpl pos
+                    mResult2 <- processBody bodyLitsG [] elecs simpl pos False
                     -- processBody is greedy (no backtracking), so if the normal order
                     -- fails, retry with reversed body literals. This matters for
                     -- multi-body Horn clauses where the first literal's named-axiom
@@ -746,7 +758,7 @@ processOneNucleus debug θ entry posToName goalLits simpl = do
                     -- reversed order matches axiom 2 for lit 3 → axiom 3 → c_0_21).
                     mResult2R <- case mResult2 of
                       Just _  -> return mResult2
-                      Nothing -> processBody (reverse bodyLitsG) [] elecs simpl pos
+                      Nothing -> processBody (reverse bodyLitsG) [] elecs simpl pos False
                     case mResult2R of
                       Nothing -> return False
                       Just (τ, matched) -> do
@@ -822,7 +834,7 @@ processOneNucleus debug θ entry posToName goalLits simpl = do
                     ((σ_gl, _) : _) -> do
                       let bodyLitsG = map (applySubst σ_gl) bodyLits
                           headLitG  = applySubst σ_gl headLit
-                      mResult2 <- processBody bodyLitsG [] elecs2 simpl pos
+                      mResult2 <- processBody bodyLitsG [] elecs2 simpl pos False
                       -- processBody is greedy (no backtracking); if normal order fails,
                       -- retry with reversed body literals. This fixes cases where the
                       -- first body literal commits to a wrong grounding (e.g. axiom 4
@@ -831,7 +843,7 @@ processOneNucleus debug θ entry posToName goalLits simpl = do
                       -- axiom 2 for lit 3 giving X1=c, then axiom 3 and c_0_21 close).
                       mResult2R <- case mResult2 of
                         Just _  -> return mResult2
-                        Nothing -> processBody (reverse bodyLitsG) [] elecs2 simpl pos
+                        Nothing -> processBody (reverse bodyLitsG) [] elecs2 simpl pos False
                       case mResult2R of
                         Nothing -> return ()
                         Just (τ', matched') -> do
@@ -853,27 +865,55 @@ processOneNucleus debug θ entry posToName goalLits simpl = do
                 -- electrons (e.g. E's inline spm steps like c_0_16 in GRP001-5).
                 -- This only fires in the second pass (innerNusNG), so named axiom
                 -- paths always get priority.
-                if isNothing mAxName
-                  then do
-                    elecs3 <- getElectrons pos
-                    let altGoals = [ (σ_gl, gl)
-                                   | gl <- goalLits
-                                   , not (isEqLit gl)
-                                   , Just σ_gl <- [matchLit headLit gl]
-                                   , applySubst σ_gl headLit /= headInst ]
-                    case altGoals of
-                      [] -> return False
-                      ((σ_gl, gl) : _) -> do
-                        let bodyLitsG3 = map (applySubst σ_gl) bodyLits
-                            headLitG3  = applySubst σ_gl headLit
-                        mGoalResult <- processBody bodyLitsG3 [] elecs3 simpl pos
-                        case mGoalResult of
-                          Nothing -> return False
-                          Just (τ', matched2) -> do
-                            blkFull <- buildProofBlock matched2 (Just "axioms") τ' headLitG3
-                            emitGoalProof gl blkFull
-                            return True
-                  else return False
+                -- Fire when headInst exactly matches a goal and either:
+                --   (a) the goal is equational, or
+                --   (b) the head has free variables (non-ground head → innerNusNG
+                --       second pass, so named axiom paths have already been tried).
+                -- Ground-head derived nuclei (innerNus, first pass) are excluded by
+                -- the `not (null (litVars headLit))` guard so they cannot short-circuit
+                -- named axiom proofs for relational goals.
+                -- Orient headLit to match the goal literal's direction.
+                -- When headInst is a flipped equality of gl, swap headLit so
+                -- that applySubst τ headLitOriented == gl.
+                let orientedPair gl = case (headInst, gl) of
+                      (Eq a b, Eq c d)
+                        | a == c && b == d -> Just (gl, headLit)
+                        | a == d && b == c -> Just (gl, case headLit of
+                                                         Eq x y -> Eq y x
+                                                         other  -> other)
+                      _ | headInst == gl   -> Just (gl, headLit)
+                      _                    -> Nothing
+                    matchResult = listToMaybe
+                      [ p | gl <- goalLits
+                          , isEqLit gl || not (null (litVars headLit))
+                          , Just p <- [orientedPair gl] ]
+                case (mAxName, matchResult) of
+                  (Nothing, Just (gl, headLitOr)) | not (null matched) -> do
+                    blkFull <- buildProofBlock matched (Just "axioms") τ headLitOr
+                    emitGoalProof gl blkFull
+                    return True
+                  _ ->
+                    if isNothing mAxName
+                      then do
+                        elecs3 <- getElectrons pos
+                        let altGoals = [ (σ_gl, gl)
+                                       | gl <- goalLits
+                                       , not (isEqLit gl)
+                                       , Just σ_gl <- [matchLit headLit gl]
+                                       , applySubst σ_gl headLit /= headInst ]
+                        case altGoals of
+                          [] -> return False
+                          ((σ_gl, gl) : _) -> do
+                            let bodyLitsG3 = map (applySubst σ_gl) bodyLits
+                                headLitG3  = applySubst σ_gl headLit
+                            mGoalResult <- processBody bodyLitsG3 [] elecs3 simpl pos allowGroundUnnamed
+                            case mGoalResult of
+                              Nothing -> return False
+                              Just (τ', matched2) -> do
+                                blkFull <- buildProofBlock matched2 (Just "axioms") τ' headLitG3
+                                emitGoalProof gl blkFull
+                                return True
+                      else return False
 
 processNuclei
   :: Bool  -- debug

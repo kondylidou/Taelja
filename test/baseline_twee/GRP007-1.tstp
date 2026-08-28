@@ -1,0 +1,12 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, identity!=c, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP007-1.p', prove_identity_equals_c)).
+cnf(c2, axiom, product(identity, X, X), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP007-1.p', left_identity)).
+cnf(c3, hypothesis, product(A, c, A), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP007-1.p', another_right_identity)).
+cnf(c4, axiom, ~product(X2, Y, Z) | ~product(X2, Y, W) | Z=W, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP007-1.p', total_function2)).
+cnf(c5, plain, ~product(X3, c, X2) | X2=X3, inference(resolution, [status(thm)], [c3, c4])).
+cnf(c6, plain, c=identity, inference(resolution, [status(thm)], [c2, c5])).
+cnf(c7, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c6])).
+% SZS output end CNFRefutation
+

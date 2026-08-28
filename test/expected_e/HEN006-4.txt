@@ -1,0 +1,19 @@
+Axiom 1: less_equal(zero,X)
+Axiom 2: less_equal(divide(a,b),d)
+Axiom 3: less_equal(X,Y) => divide(X,Y) = zero
+Axiom 4: less_equal(divide(divide(X,Y),divide(Z,Y)),divide(divide(X,Z),Y))
+Axiom 5: less_equal(X,Y) /\ less_equal(Y,X) => X = Y
+Axiom 6: divide(X,Y) = zero => less_equal(X,Y)
+Axiom 7: less_equal(divide(X,Y),X)
+Axiom 8: less_equal(X,Y) /\ less_equal(Y,Z) => less_equal(X,Z)
+
+Goal 1: less_equal(divide(a,d),b)
+Proof:
+  have less_equal(zero,divide(divide(a,d),b))
+    by axiom 1
+   and less_equal(zero,zero)
+    by axiom 1
+  hence zero = divide(divide(a,d),b)
+    by axiom 5
+  hence less_equal(divide(a,d),b)
+    by axiom 6

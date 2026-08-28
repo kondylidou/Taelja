@@ -139,7 +139,15 @@ def prover_env(name, tptp_dir):
 def prover_succeeded(name, stdout):
     ok_markers = ['SZS status Theorem', 'SZS status Unsatisfiable',
                   'Refutation found', 'Proof found', 'RESULT: Unsatisfiable']
-    return any(m in stdout for m in ok_markers)
+    if not any(m in stdout for m in ok_markers):
+        return False
+    # Twee sometimes outputs just the SZS status with an empty CNFRefutation block
+    # (no actual proof clauses).  Without clauses Taelja has nothing to parse, so
+    # treat it as a prover failure.
+    if name == 'twee' and not any(l.startswith('cnf(') or l.startswith('fof(')
+                                  for l in stdout.splitlines()):
+        return False
+    return True
 
 
 def strip_twee_preamble(output):
@@ -412,8 +420,8 @@ def main():
 
     # --- Taelja failure breakdown ---
     proved_results = [r for r in results if r['prove'] == 'ok']
-    failed_taelja  = [r for r in proved_results if r['taelja'] not in ('ok', '-')]
-    print(f"\nTaelja failure breakdown ({len(failed_taelja)} prover-proved but not translated, including unsupported structure):")
+    failed_taelja  = [r for r in proved_results if r['taelja'] not in ('ok', 'unsupported', '-')]
+    print(f"\nTaelja failure breakdown ({len(failed_taelja)} prover-proved, supported but not translated):")
     err_cats = {}
     for r in failed_taelja:
         p = out / r['category'] / r['problem'] / r['prover']
@@ -460,11 +468,10 @@ def main():
 
 
 def _print_summary(results, provers, lean_col):
-    # Column widths
-    # Header: Category  Prover   Total  Proved  Timeout  Fail  Taelja[  Lean]
+    # Header: Category  Prover  Total  Proved  Unsupp  Transl  Fail[  Lean]
     hdr = (f"{'Category':8s}  {'Prover':7s}  {'Total':>6s}  "
-           f"{'Proved':>7s}  {'Timeout':>7s}  {'Fail':>5s}  {'Taelja':>10s}"
-           + (f"  {'Lean':>7s}" if lean_col else ''))
+           f"{'Proved':>6s}  {'Unsupp':>6s}  {'Transl':>6s}  {'Fail':>6s}"
+           + (f"  {'Lean':>6s}" if lean_col else ''))
     print(hdr)
     print('-' * len(hdr))
 
@@ -476,20 +483,19 @@ def _print_summary(results, provers, lean_col):
                    and (prover == 'ALL' or r['prover'] == prover)]
             if not sub:
                 continue
-            n       = len(sub)
-            proved  = sum(1 for r in sub if r['prove'] == 'ok' and r['taelja'] != 'unsupported')
-            timeout = sum(1 for r in sub if r['prove'] == 'timeout')
-            fail    = sum(1 for r in sub if r['prove'] == 'fail' or r['taelja'] == 'unsupported')
-            taelja  = sum(1 for r in sub if r['taelja']  == 'ok')
-            lean    = sum(1 for r in sub if r.get('lean') == 'ok')
+            n           = len(sub)
+            proved      = sum(1 for r in sub if r['prove'] == 'ok')
+            unsupported = sum(1 for r in sub if r['taelja'] == 'unsupported')
+            translated  = sum(1 for r in sub if r['taelja'] == 'ok')
+            failed      = sum(1 for r in sub if r['prove'] == 'ok'
+                              and r['taelja'] in ('fail', 'timeout'))
+            lean        = sum(1 for r in sub if r.get('lean') == 'ok')
 
             cat_col = cat if prover in (prover_list[0], 'ALL') else ''
-            # Taelja shown as fraction of proved (not total)
-            taelja_str = f"{taelja:4d}/{proved}" if proved else '-'
             row = (f"{cat_col:8s}  {prover:7s}  {n:6d}  "
-                   f"{proved:4d}/{n:<3d}  {timeout:7d}  {fail:5d}  {taelja_str:>10s}")
+                   f"{proved:6d}  {unsupported:6d}  {translated:6d}  {failed:6d}")
             if lean_col:
-                row += f"  {lean:4d}/{n}"
+                row += f"  {lean:6d}"
             print(row)
         if cat != 'TOTAL':
             print()

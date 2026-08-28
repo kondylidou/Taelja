@@ -1,0 +1,48 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FHUSM-FFSF21-SFFFFFNN
+# Configuration: G-E--_208_C18_F1_AE_CS_SP_PI_S0a
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_22, negated_conjecture, (c!=identity)).
+#
+#cnf(i_0_13, plain, (product(X1,identity,X1))).
+#
+#cnf(i_0_21, hypothesis, (product(X1,c,X1))).
+#
+#cnf(i_0_12, plain, (product(identity,X1,X1))).
+#
+#cnf(i_0_20, hypothesis, (product(c,X1,X1))).
+#
+#cnf(i_0_15, plain, (product(X1,inverse(X1),identity))).
+#
+#cnf(i_0_14, plain, (product(inverse(X1),X1,identity))).
+#
+#cnf(i_0_16, plain, (product(X1,X2,multiply(X1,X2)))).
+#
+#cnf(i_0_17, plain, (X3=X4|~product(X1,X2,X4)|~product(X1,X2,X3))).
+#
+#cnf(i_0_19, plain, (product(X3,X4,X6)|~product(X2,X4,X5)|~product(X1,X5,X6)|~product(X1,X2,X3))).
+#
+#cnf(i_0_18, plain, (product(X1,X5,X6)|~product(X3,X4,X6)|~product(X2,X4,X5)|~product(X1,X2,X3))).
+#
+#cnf(i_0_23, hypothesis, (X1=X2|~product(c,X1,X2))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(total_function2, axiom, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function2)).
+cnf(another_left_identity, hypothesis, (product(c,X1,X1)), file('Problems/GRP/GRP007-1.p', another_left_identity)).
+cnf(prove_identity_equals_c, negated_conjecture, (identity!=c), file('Problems/GRP/GRP007-1.p', prove_identity_equals_c)).
+cnf(right_identity, axiom, (product(X1,identity,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
+cnf(c_0_4, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), inference(fof_simplification,[status(thm)],[total_function2])).
+cnf(c_0_5, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), c_0_4).
+cnf(c_0_6, hypothesis, (product(c,X1,X1)), another_left_identity).
+cnf(c_0_7, negated_conjecture, (identity!=c), inference(fof_simplification,[status(thm)],[prove_identity_equals_c])).
+cnf(c_0_8, hypothesis, (X1=X2|~product(c,X1,X2)), inference(spm,[status(thm)],[c_0_5, c_0_6])).
+cnf(c_0_9, axiom, (product(X1,identity,X1)), right_identity).
+cnf(c_0_10, negated_conjecture, (identity!=c), c_0_7).
+cnf(c_0_11, hypothesis, ($false), inference(sr,[status(thm)],[inference(spm,[status(thm)],[c_0_8, c_0_9]), c_0_10]), ['proof']).
+# SZS output end CNFRefutation

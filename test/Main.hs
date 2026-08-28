@@ -32,6 +32,7 @@ tweeBenchmarkNames =
   , "LCL146-1"
   , "paper_eq"
   , "paper_eq_cnf"
+  , "GRP007-1"
   ]
 
 handcraftedNames :: [String]
@@ -81,6 +82,8 @@ benchmarkNames =
   , "thesis_example_both_lemmas"
   , "paper_heu"
   , "GRP041-2"
+  , "GRP007-1"
+  , "HEN006-4"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -110,6 +113,8 @@ eBenchmarkNames =
   , "superposition_example_clausal1"
   , "superposition_example_clausal2"
   , "horn_rel_two_step_chain"
+  , "HEN006-4"
+  , "GRP007-1"
   ]
 
 mkTest :: String -> String -> String -> TestTree

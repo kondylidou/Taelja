@@ -17,6 +17,7 @@ module TweeInterface
   , parseTweeChain
   , callTweeRelLemma
   , callTwee
+  , relevantUnits
   ) where
 
 import Control.Applicative ((<|>))
@@ -92,7 +93,7 @@ toFOFHornAxiom name decl = case headAndBodyLits decl of
 callTweeRelLemma :: [UnitEntry] -> [String] -> Literal -> IO Bool
 callTweeRelLemma units hornFOFs goalLit = do
   let goalTerm   = litToRelTerm goalLit
-      indexed    = zip [(0::Int)..] units
+      indexed    = zip [(0::Int)..] (relevantUnits goalLit units)
       mkId i ue  = maybe ("anon_" ++ show i) sanitizeId (ueName ue)
       toAxiom (i, ue) = case ueUnit ue of
         Eq a b   -> Just (toCnfAxiom (mkId i ue) a b)
@@ -115,6 +116,25 @@ callTweeRelLemma units hornFOFs goalLit = do
 
 sanitizeId :: String -> String
 sanitizeId = map (\c -> if c == ' ' then '_' else c)
+
+-- Transitive symbol-relevance filter: keep only units whose symbols are
+-- reachable from the goal's symbols via the axiom set.  Prevents passing
+-- unrelated equations to Twee, which inflates its critical-pair search.
+relevantUnits :: Literal -> [UnitEntry] -> [UnitEntry]
+relevantUnits goal units =
+    filter (any (`elem` finalSyms) . litSyms . ueUnit) units
+  where
+    litSyms (Eq l r)    = nub (termSyms l ++ termSyms r)
+    litSyms (Rel n as)  = n : concatMap termSyms as
+    litSyms _           = []
+    termSyms (Const c)  = [c]
+    termSyms (Var _)    = []
+    termSyms (App f ts) = f : concatMap termSyms ts
+    allUnitSyms = map (litSyms . ueUnit) units
+    expand syms =
+      let newSyms = nub (syms ++ concat (filter (any (`elem` syms)) allUnitSyms))
+      in if newSyms == syms then syms else expand newSyms
+    finalSyms = expand (litSyms goal)
 
 isEqLit :: Literal -> Bool
 isEqLit (Eq _ _) = True
@@ -262,8 +282,9 @@ parseTweeChain idToUe output l r =
              Just (dropWhile (== ' ') startLine, collectSteps rest)
 
 callTwee :: [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTwee units (Eq l r) = do
-  let rawEqUnits = [(i, ue) | (i, ue) <- zip [(0::Int)..] units, isEqLit (ueUnit ue)]
+callTwee units goal@(Eq l r) = do
+  let relUnits   = relevantUnits goal units
+      rawEqUnits = [(i, ue) | (i, ue) <- zip [(0::Int)..] relUnits, isEqLit (ueUnit ue)]
       -- Put general (variable-containing) equations before ground ones so Twee's
       -- proof strategy is consistent regardless of the prover's axiom ordering.
       eqUnits = sortBy (\(_, u1) (_, u2) ->
@@ -281,9 +302,9 @@ callTwee units (Eq l r) = do
   (_, out, _) <- readProcessWithExitCode tweeBin
                    ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile] ""
   return (parseTweeChain idToUe out l r)
-callTwee units (Rel name args) = do
+callTwee units goal@(Rel name args) = do
   let goalTerm  = if null args then Const name else App name args
-      indexed   = zip [(0::Int)..] units
+      indexed   = zip [(0::Int)..] (relevantUnits goal units)
       mkId i ue = maybe ("anon_" ++ show i) sanitizeId (ueName ue)
       toAxiom (i, ue) = case ueUnit ue of
         Eq a b   -> Just (toCnfAxiom (mkId i ue) a b)
