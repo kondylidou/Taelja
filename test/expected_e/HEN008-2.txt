@@ -1,0 +1,18 @@
+Axiom 1: quotient(X,Y,divide(X,Y))
+Axiom 2: quotient(X,Y,Z) => less_equal(Z,X)
+Axiom 3: quotient(X,zero,X)
+Axiom 4: quotient(a,c,aQc)
+Axiom 5: less_equal(X,Y) => quotient(X,Y,zero)
+Axiom 6: quotient(X,Y,Z) /\ quotient(Y,A,B) /\ quotient(X,A,C) /\ quotient(C,B,U) /\ quotient(Z,A,V) => less_equal(U,V)
+Axiom 7: less_equal(X,Y) /\ less_equal(Y,X) => X = Y
+Axiom 8: less_equal(zero,X)
+Axiom 9: quotient(b,c,bQc)
+Axiom 10: less_equal(X,Y) /\ less_equal(Y,Z) => less_equal(X,Z)
+Axiom 11: less_equal(a,b)
+Axiom 12: quotient(X,Y,Z) /\ less_equal(Z,A) /\ quotient(X,A,B) => less_equal(B,Y)
+Axiom 13: quotient(zero,X,zero)
+Axiom 14: quotient(X,Y,Z) /\ quotient(X,Y,A) => Z = A
+Axiom 15: less_equal(X,Y) /\ quotient(Z,Y,A) /\ quotient(Z,X,B) => less_equal(A,B)
+
+Goal 1: less_equal(aQc,bQc)
+Proof:

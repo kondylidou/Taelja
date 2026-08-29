@@ -6,5 +6,7 @@ Goal 1: identity = c
 Proof:
   have product(c,identity,c)
     by axiom 1
+   and product(c,identity,identity)
+    by axiom 2
   hence identity = c
-    by axioms
+    by axiom 3

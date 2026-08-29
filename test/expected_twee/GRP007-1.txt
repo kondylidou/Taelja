@@ -4,7 +4,9 @@ Axiom 3: product(Z,A,B) /\ product(Z,A,C) => B = C
 
 Goal 1: identity = c
 Proof:
-  have product(identity,c,c)
+  have product(identity,c,identity)
+    by axiom 2
+   and product(identity,c,c)
     by axiom 1
   hence identity = c
-    by axioms
+    by axiom 3

@@ -6,7 +6,7 @@ module LemmaBuilder
   , makeFileSourced
   ) where
 
-import Data.List (intercalate, nub)
+import Data.List (isPrefixOf, nub)
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -145,18 +145,25 @@ buildCandidateLemma unitMap tstp2name (cname, cdecl) =
                    , Just headL <- [headLitOf adecl]
                    , let aeq = convertLit headL
                    ]
-                 -- Horn clause ancestors: only include those where every body variable
-                 -- also appears in the head (safe ifeq encoding; multi-body ancestors
-                 -- with extra body-only variables cause two to over-generalise).
-                 hornFOFs =
-                   [ toFOFHornAxiom (aname ++ "_anc") adecl
+                 -- Original Horn-clause ancestors with relational heads and relational bodies only.
+                 -- Equality-headed Horn axioms (e.g. antisymmetry X<=Y /\ Y<=X => X=Y) cause the
+                 -- "= true" encoding to vanish in Twee's completion. Equality-bodied Horn axioms
+                 -- (e.g. quotient_less_equal2: divide(X,Y)=zero => less_equal(X,Y)) cause bodies
+                 -- to collapse to "true", making the axiom unconditional and producing wrong proofs.
+                 -- Only purely relational Horn axioms (e.g. transitivity) are safe.
+                 -- Encoded as ifeq+pair CNF (sound for multi-body clauses).
+                 hornAxioms =
+                   [ HornAxiomEntry
+                       { haCnfId    = aname ++ "_anc"
+                       , haDispName = Map.lookup aname tstp2name
+                       , haHead     = convertLit hl
+                       , haBodies   = map convertLit (bodyLitsOf adecl)
+                       }
                    | (aname, adecl) <- ancOrigUnits
                    , not (isPositiveUnitFormula adecl)
-                   , let hds  = map convertLit (bodyLitsOf adecl)
-                         hds' = maybe [] (pure . convertLit) (headLitOf adecl)
-                         hVs  = Set.fromList (concatMap litVars hds')
-                         bVs  = Set.fromList (concatMap litVars hds)
-                   , bVs `Set.isSubsetOf` hVs
+                   , Just hl <- [headLitOf adecl]
+                   , not (isEqLit (convertLit hl))
+                   , all (not . isEqLit . convertLit) (bodyLitsOf adecl)
                    ]
                  -- Skolemized body lits as ground premises in callTweeRelLemma
                  premEntries =
@@ -164,19 +171,37 @@ buildCandidateLemma unitMap tstp2name (cname, cdecl) =
                    | (i, bl) <- zip [(0::Int)..] bodyLits_sk
                    ]
 
-             ok <- callTweeRelLemma (unitAxEntries ++ premEntries) hornFOFs lit_sk
-             if not ok
-               then return Nothing
-               else do
+             mRes <- callTweeRelLemma (unitAxEntries ++ premEntries) hornAxioms lit_sk
+             case mRes of
+               Nothing -> return Nothing
+               Just (_, chain) -> do
                  let undoMap   = [(sk, Var v) | (v, sk) <- skMap]
                      headU     = applyConstSubstLit undoMap lit
                      bodyUs    = map (applyConstSubstLit undoMap) bodyLits
-                     ancNms    = nub [nm | ue <- unitAxEntries, Just nm <- [ueName ue]]
-                     justStr   = if null ancNms then "axioms" else intercalate ", " ancNms
-                     haveLines = [Have bl "assumption" | bl <- bodyUs]
-                     henceLine = Hence headU (ByAxiom justStr)
-                     blk       = HaveHence (haveLines ++ [henceLine])
-                 return (Just (lit, blk))
+                     -- Filter to non-prem, non-ifeq steps (the actual Horn axioms used).
+                     -- ifeq_axiom sentinel has ueName = Just "ifeq_axiom"; prem_N have
+                     -- ueName = Just "prem_N".  Both are excluded from the proof lines.
+                     isPrem ue = case ueName ue of
+                       Just nm -> isPrefixOf "prem_" nm || nm == "ifeq_axiom"
+                       Nothing -> True
+                     hornSteps = [ (ue, nm)
+                                 | (ue, _, _) <- chain
+                                 , not (isPrem ue)
+                                 , Just nm <- [ueName ue]
+                                 ]
+                 case hornSteps of
+                   [] -> return Nothing
+                   _ -> do
+                     let haveLines = [Have bl "assumption" | bl <- bodyUs]
+                         -- Intermediate "hence" lines for all but the last axiom step.
+                         -- ueUnit holds the abstract head literal (possibly with original
+                         -- Horn-axiom vars); applyConstSubstLit undoes Skolemization.
+                         intermediateLines =
+                           [ Hence (applyConstSubstLit undoMap (ueUnit ue)) (ByAxiom nm)
+                           | (ue, nm) <- init hornSteps ]
+                         finalLine = Hence headU (ByAxiom (snd (last hornSteps)))
+                         blk = HaveHence (haveLines ++ intermediateLines ++ [finalLine])
+                     return (Just (lit, blk))
 
            _ -> return Nothing
 

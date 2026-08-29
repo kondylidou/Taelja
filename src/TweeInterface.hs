@@ -5,6 +5,9 @@ module TweeInterface
   , toCnfAxiom
   , toCnfNegGoal
   , toFOFHornAxiom
+  , HornAxiomEntry (..)
+  , toIfeqCnfHorn
+  , ifeqSelectorAxiom
   , sanitizeId
   , isEqLit
   , isDerivedUnit
@@ -87,32 +90,74 @@ toFOFHornAxiom name decl = case headAndBodyLits decl of
       in if null heads then Nothing else Just (heads, bodies)
     headAndBodyLits _ = Nothing
 
--- Call twee to decide whether a Skolemized relational goal follows from
--- the given unit ancestors plus Horn-clause ancestors (pre-formatted as FOF).
--- Returns True iff twee finds "Unsatisfiable".
-callTweeRelLemma :: [UnitEntry] -> [String] -> Literal -> IO Bool
-callTweeRelLemma units hornFOFs goalLit = do
-  let goalTerm   = litToRelTerm goalLit
-      indexed    = zip [(0::Int)..] (relevantUnits goalLit units)
-      mkId i ue  = maybe ("anon_" ++ show i) sanitizeId (ueName ue)
+-- The ifeq selector axiom: ifeq(X,X,Y,Z) = Y.
+ifeqSelectorAxiom :: String
+ifeqSelectorAxiom = "cnf(ifeq_axiom, axiom, ifeq(X,X,Y,Z) = Y)."
+
+-- Convert a relational literal to a term (for ifeq/pair encoding).
+litRelTerm :: Literal -> Term
+litRelTerm (Rel n []) = Const n
+litRelTerm (Rel n as) = App n as
+litRelTerm _          = Const "true"
+
+-- Right-nested pair encoding of a non-empty list of terms.
+nestRightPair :: [Term] -> Term
+nestRightPair []     = Const "true"
+nestRightPair [t]    = t
+nestRightPair (t:ts) = App "pair" [t, nestRightPair ts]
+
+-- Encode a Horn clause with relational head as a CNF ifeq+pair axiom string.
+-- Unit clause (no body): cnf(name, axiom, head = true).
+-- Horn clause (n bodies): cnf(name, axiom, ifeq(pair(b1,..,bn), pair(true,..,true), head, true) = true).
+toIfeqCnfHorn :: String -> Literal -> [Literal] -> String
+toIfeqCnfHorn name headLit [] =
+  "cnf(" ++ sanitizeId name ++ ", axiom, " ++ toTptpTerm (litRelTerm headLit) ++ " = true)."
+toIfeqCnfHorn name headLit bodies =
+  let bodyTs  = map litRelTerm bodies
+      bodyEnc = nestRightPair bodyTs
+      trueEnc = nestRightPair (replicate (length bodies) (Const "true"))
+      headT   = litRelTerm headLit
+      ifeqT   = App "ifeq" [bodyEnc, trueEnc, headT, Const "true"]
+  in "cnf(" ++ sanitizeId name ++ ", axiom, " ++ toTptpTerm ifeqT ++ " = true)."
+
+-- Call Twee to prove a Skolemized relational goal from unit ancestors plus
+-- Horn axioms (given as HornAxiomEntry descriptors, encoded as ifeq+pair CNF).
+-- Returns the rewrite chain from goalTerm to "true", or Nothing if unprovable.
+callTweeRelLemma :: [UnitEntry] -> [HornAxiomEntry] -> Literal
+                 -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
+callTweeRelLemma units hornAxioms goalLit = do
+  let goalTerm  = litRelTerm goalLit
+      relUnits  = relevantUnits goalLit units
+      indexed   = zip [(0::Int)..] relUnits
+      mkId i ue = maybe ("anon_" ++ show i) sanitizeId (ueName ue)
       toAxiom (i, ue) = case ueUnit ue of
         Eq a b   -> Just (toCnfAxiom (mkId i ue) a b)
         Rel n as -> Just (toCnfAxiom (mkId i ue) (relTerm n as) (Const "true"))
         _        -> Nothing
       unitAxioms = mapMaybe toAxiom indexed
+      needIfeq   = any (not . null . haBodies) hornAxioms
+      ifeqAxioms = [ifeqSelectorAxiom | needIfeq]
+      hornCnfs   = [ toIfeqCnfHorn (haCnfId ha) (haHead ha) (haBodies ha)
+                   | ha <- hornAxioms ]
       negGoal    = toCnfNegGoal "goal" goalTerm (Const "true")
-      input      = unlines (unitAxioms ++ hornFOFs ++ [negGoal])
+      unitIdToUe = Map.fromList [(mkId i ue, ue) | (i, ue) <- indexed]
+      hornIdToUe = Map.fromList
+        [ (sanitizeId (haCnfId ha), UnitEntry (haDispName ha) (haHead ha) Nothing Nothing)
+        | ha <- hornAxioms ]
+      -- Sentinel for ifeq_axiom so parseTweeChain's directChain doesn't abort
+      -- when it encounters this step.  Filtered out downstream via isPrem check.
+      ifeqSentinelUe = UnitEntry (Just "ifeq_axiom") (Eq (Var "X") (Var "Y")) Nothing Nothing
+      idToUe     = Map.unions [unitIdToUe, hornIdToUe, Map.singleton "ifeq_axiom" ifeqSentinelUe]
+      input      = unlines (unitAxioms ++ ifeqAxioms ++ hornCnfs ++ [negGoal])
       tmpFile    = "/tmp/taelja_twee_rel_lemma.p"
   writeFile tmpFile input
   maxTime <- tweemaxtime
   (_, out, _) <- readProcessWithExitCode tweeBin
-                   ["--no-colour", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile] ""
-  return ("Unsatisfiable" `isInfixOf` out)
+                   ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile] ""
+  return (parseTweeChain idToUe out goalTerm (Const "true"))
   where
-    litToRelTerm (Rel n as) = relTerm n as
-    litToRelTerm _          = Const "?"
-    relTerm n []            = Const n
-    relTerm n as            = App n as
+    relTerm n [] = Const n
+    relTerm n as = App n as
 
 sanitizeId :: String -> String
 sanitizeId = map (\c -> if c == ' ' then '_' else c)

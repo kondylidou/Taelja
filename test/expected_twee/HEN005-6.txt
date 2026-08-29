@@ -1,0 +1,66 @@
+Axiom 1: less_equal(b,c)
+Axiom 2: less_equal(X,Y) => divide(X,Y) = zero
+Axiom 3: divide(zero,Z) = zero
+Axiom 4: less_equal(a,b)
+Axiom 5: less_equal(divide(divide(Z,A),divide(B,A)),divide(divide(Z,B),A))
+Axiom 6: less_equal(zero,Z)
+Axiom 7: less_equal(Z,B) /\ less_equal(B,Z) => Z = B
+Axiom 8: divide(Z,B) = zero => less_equal(Z,B)
+
+Lemma 9: divide(b,c) = zero
+Proof:
+  have less_equal(b,c)
+    by axiom 1
+  hence divide(b,c) = zero
+    by axiom 2
+
+Lemma 10: divide(a,b) = zero
+Proof:
+  have less_equal(a,b)
+    by axiom 4
+  hence divide(a,b) = zero
+    by axiom 2
+
+Lemma 11: less_equal(divide(divide(a,c),zero),zero)
+Proof:
+  less_equal(divide(divide(a,c),zero),zero)
+= { by lemma 9 R->L }
+  less_equal(divide(divide(a,c),divide(b,c)),zero)
+= { by axiom 3 R->L }
+  less_equal(divide(divide(a,c),divide(b,c)),divide(zero,c))
+= { by lemma 10 R->L }
+  less_equal(divide(divide(a,c),divide(b,c)),divide(divide(a,b),c))
+= { by axiom 5 }
+  true
+
+Lemma 12: divide(divide(a,c),zero) = zero
+Proof:
+  have less_equal(divide(divide(a,c),zero),zero)
+    by lemma 11
+   and less_equal(zero,divide(divide(a,c),zero))
+    by axiom 6
+  hence divide(divide(a,c),zero) = zero
+    by axiom 7
+
+Lemma 13: less_equal(divide(a,c),zero)
+Proof:
+  have divide(divide(a,c),zero) = zero
+    by lemma 12
+  hence less_equal(divide(a,c),zero)
+    by axiom 8
+
+Lemma 14: divide(a,c) = zero
+Proof:
+  have less_equal(divide(a,c),zero)
+    by lemma 13
+   and less_equal(zero,divide(a,c))
+    by axiom 6
+  hence divide(a,c) = zero
+    by axiom 7
+
+Goal 1: less_equal(a,c)
+Proof:
+  have divide(a,c) = zero
+    by lemma 14
+  hence less_equal(a,c)
+    by axiom 8

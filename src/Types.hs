@@ -44,6 +44,18 @@ data UnitEntry = UnitEntry
   , uePos   :: Maybe String
   } deriving (Show)
 
+-- A Horn axiom descriptor used for ifeq+pair Twee encoding.
+-- haCnfId: identifier in the CNF problem file sent to Twee.
+-- haDispName: human-readable axiom name for the emitted proof (from tstp2name).
+-- haHead: head literal (must be Rel).
+-- haBodies: body literals (empty for unit clauses).
+data HornAxiomEntry = HornAxiomEntry
+  { haCnfId    :: String
+  , haDispName :: Maybe String
+  , haHead     :: Literal
+  , haBodies   :: [Literal]
+  } deriving (Show)
+
 -- EqChain is only for pure equational goals. Everything else uses HaveHence.
 data ProofBlock
   = HaveHence [ProofLine]
@@ -74,11 +86,13 @@ data StructuredProof = StructuredProof
   } deriving (Show)
 
 data AlgState = AlgState
-  { stUnits    :: [UnitEntry]
-  , stLemmas   :: [(String, Literal, ProofBlock)]
-  , stGoals    :: [(Literal, ProofBlock)]
-  , stCounter  :: Int
-  , stGoalVars :: Set.Set String  -- vars in goal lits; free vars in promoted lemmas must be ⊆ this
+  { stUnits      :: [UnitEntry]
+  , stHornAxioms :: [HornAxiomEntry]  -- original Horn axioms for Twee fallback calls
+  , stLemmas     :: [(String, Literal, ProofBlock)]
+  , stGoals      :: [(Literal, ProofBlock)]
+  , stCounter    :: Int
+  , stGoalVars   :: Set.Set String  -- vars in goal lits; free vars in promoted lemmas must be ⊆ this
+  , stAxNuclei   :: [(String, Clause)] -- original axiom nuclei (name, clause) for goal justification search
   }
 
 data LeafRole

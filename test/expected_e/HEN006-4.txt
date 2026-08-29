@@ -7,13 +7,42 @@ Axiom 6: divide(X,Y) = zero => less_equal(X,Y)
 Axiom 7: less_equal(divide(X,Y),X)
 Axiom 8: less_equal(X,Y) /\ less_equal(Y,Z) => less_equal(X,Z)
 
+Lemma 9: divide(divide(a,b),d) = zero
+Proof:
+  have less_equal(divide(a,b),d)
+    by axiom 2
+  hence divide(divide(a,b),d) = zero
+    by axiom 3
+
+Lemma 10: less_equal(divide(divide(a,d),divide(b,d)),zero)
+Proof:
+  less_equal(divide(divide(a,d),divide(b,d)),zero)
+= { by lemma 9 R->L }
+  less_equal(divide(divide(a,d),divide(b,d)),divide(divide(a,b),d))
+= { by axiom 4 }
+  true
+
+Lemma 11: divide(divide(a,d),divide(b,d)) = zero
+Proof:
+  have less_equal(divide(divide(a,d),divide(b,d)),zero)
+    by lemma 10
+   and less_equal(zero,divide(divide(a,d),divide(b,d)))
+    by axiom 1
+  hence divide(divide(a,d),divide(b,d)) = zero
+    by axiom 5
+
+Lemma 12: less_equal(divide(a,d),divide(b,d))
+Proof:
+  have divide(divide(a,d),divide(b,d)) = zero
+    by lemma 11
+  hence less_equal(divide(a,d),divide(b,d))
+    by axiom 6
+
 Goal 1: less_equal(divide(a,d),b)
 Proof:
-  have less_equal(zero,divide(divide(a,d),b))
-    by axiom 1
-   and less_equal(zero,zero)
-    by axiom 1
-  hence zero = divide(divide(a,d),b)
-    by axiom 5
+  have less_equal(divide(b,X),b)
+    by axiom 7
+   and less_equal(divide(a,d),divide(b,d))
+    by lemma 12
   hence less_equal(divide(a,d),b)
-    by axiom 6
+    by axiom 8

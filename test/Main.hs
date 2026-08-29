@@ -27,6 +27,7 @@ tweeBenchmarkNames :: [String]
 tweeBenchmarkNames =
   [ "sam"
   , "ANA007-2"
+  , "HEN005-6"
   , "thesis_example_both_lemmas_cnf"
   , "COL003-4"
   , "LCL146-1"
