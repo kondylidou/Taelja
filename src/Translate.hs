@@ -52,12 +52,12 @@ translate :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translate debug tstp = do
   -- TAELJA_STRICT=1 forces the strict paper translation (experiments/evaluation)
   forceStrict <- maybe False (== "1") <$> lookupEnv "TAELJA_STRICT"
-  mHeur <- if forceStrict then return Nothing else translateHeuristic debug tstp
+  mHeur <- if forceStrict then return Nothing else translateMode False debug tstp
   case mHeur of
     Just sp | not (goalsEmpty sp) -> return (Just sp)
     _ -> do
       when debug $ hPutStrLn stderr "translate: heuristic translation found no goal proof; trying strict mode"
-      mStrict <- translateStrict debug tstp
+      mStrict <- translateMode True debug tstp
       case mStrict of
         Just sp | not (goalsEmpty sp) -> return (Just sp)
         _                            -> return mHeur
@@ -67,17 +67,24 @@ translate debug tstp = do
     emptyBlk (EqChain _ []) = True
     emptyBlk _              = False
 
-translateStrict :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
-translateStrict debug (T.TSTP _ units) =
+-- The translation pipeline shared by both stages.  Lemma introduction first:
+-- every derived clause used at least twice in the DAG (unless it is merely a
+-- renamed copy of an axiom) is re-proved and translated recursively; the
+-- successful candidates become file-sourced leaves named "lemma <tstp-name>"
+-- (the emitter renumbers all lemmas at the end).  One canonical axiom
+-- numbering, taken from the full original proof, is used by the main
+-- translation and by every recursive lemma translation, and the emitted axiom
+-- list is the original one, so an axiom used only inside a lemma's proof is
+-- still listed and every reference resolves.
+translateMode :: Bool -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
+translateMode strict debug (T.TSTP _ units) =
   case buildProofInfo units of
-    Nothing -> return Nothing
+    Nothing -> do
+      hPutStrLn stderr "translate: no refutation found (unsupported proof structure)"
+      return Nothing
     Just origInfo -> do
       let unitMap0 = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- units]
           origLeaves = piElectrons origInfo ++ piNuclei origInfo
-          -- One canonical axiom numbering, taken from the full original proof,
-          -- is used by the main translation and by every recursive lemma
-          -- translation; the emitted axiom list is the original one, so an
-          -- axiom used only inside a lemma's proof is still listed.
           (origAxioms, origPosToName, _) =
             assignAxiomNames Map.empty (piElectrons origInfo) (piNuclei origInfo) unitMap0
           origTstp2name = Map.fromList
@@ -85,17 +92,13 @@ translateStrict debug (T.TSTP _ units) =
             | e <- origLeaves, leRole e == OrigAxiom
             , Just nm <- [Map.lookup (lePos e) origPosToName] ]
           origAxiomNames = Set.fromList [ leName e | e <- origLeaves, leRole e == OrigAxiom ]
-          -- every derived clause used at least twice in the DAG, unless it is
-          -- merely a renamed copy of an axiom
           candidates = filter (\(cname, _) ->
                           resolveCopySource unitMap0 cname `Set.notMember` origAxiomNames)
                         (findLemmaCandidates units)
       candResults <- forM candidates $ \c ->
-        buildCandidateLemma (translateWith True) True unitMap0 origTstp2name debug c
+        buildCandidateLemma (translateWith strict) strict unitMap0 origTstp2name debug c
       let validCands = Map.fromList
             [ (cname, r) | ((cname, _), Just r) <- zip candidates candResults ]
-          -- candidates become file-sourced leaves named "lemma <tstp-name>";
-          -- the emitter renumbers all lemmas at the end
           candOverride = Map.fromList [ (c, "lemma " ++ c) | c <- Map.keys validCands ]
           nameOverride = Map.union candOverride origTstp2name
           modUnits = map replace units
@@ -105,100 +108,9 @@ translateStrict debug (T.TSTP _ units) =
           replace u = u
       case (Map.null validCands, buildProofInfo modUnits) of
         (False, Just mainInfo) ->
-          Just <$> runAlgorithm debug True mainInfo modUnits validCands nameOverride (Just origAxioms)
+          Just <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just origAxioms)
         _ ->
-          Just <$> runAlgorithm debug True origInfo units Map.empty origTstp2name (Just origAxioms)
-
-translateHeuristic :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
-translateHeuristic debug (T.TSTP _ units) =
-  case buildProofInfo units of
-    Nothing -> do
-      hPutStrLn stderr "translate: no refutation found (unsupported proof structure)"
-      return Nothing
-    Just origInfo -> do
-      let unitMap0 = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- units]
-          origAxiomNames = Set.fromList
-            [ leName e | e <- piElectrons origInfo, leRole e == OrigAxiom ]
-          -- Lemma introduction (paper, Section 4): every derived clause used at
-          -- least twice in the DAG, unless it is merely a renamed copy of an axiom.
-          candidates = filter (\(cname, _) ->
-                          resolveCopySource unitMap0 cname `Set.notMember` origAxiomNames)
-                        (findLemmaCandidates units)
-      if null candidates
-        then Just <$> runAlgorithm debug False origInfo units Map.empty Map.empty Nothing
-        else do
-          let candNames = Set.fromList (map fst candidates)
-              modUnits  = map replace units
-              replace u@(T.Unit n _ _)
-                | Set.member (unitNameStr n) candNames = makeFileSourced u
-                | otherwise                            = u
-              replace u = u
-          -- First pass: make all candidates file-sourced to compute tstp2name
-          case buildProofInfo modUnits of
-            Nothing -> Just <$> runAlgorithm debug False origInfo units Map.empty Map.empty Nothing
-            Just tentativeInfo -> do
-              let tentativeUnitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- modUnits]
-                  (_, tentativePosToName, _) =
-                    assignAxiomNames Map.empty (piElectrons tentativeInfo) (piNuclei tentativeInfo) tentativeUnitMap
-                  tstp2name = Map.fromList
-                    [ (leName e, nm)
-                    | e <- piElectrons tentativeInfo
-                    , leRole e == OrigAxiom
-                    , Just nm <- [Map.lookup (lePos e) tentativePosToName]
-                    ]
-                  unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- units]
-              candResults <- forM candidates $ \c ->
-                buildCandidateLemma (translateWith False) False unitMap tstp2name debug c
-              let validNames = Set.fromList
-                    [ cname | ((cname, _), Just _) <- zip candidates candResults ]
-              if Set.null validNames
-                then do
-                  -- The tentative (file-source) pass failed — typically because the
-                  -- candidate's ancestor axioms disappeared from the modified tree and
-                  -- have no entry in tstp2name.  Retry using the original proof tree's
-                  -- axiom names; if that works run with origInfo so the naming stays
-                  -- consistent (original axioms keep their "axiom N" names in the output).
-                  let (_, origPosToName, _) =
-                        assignAxiomNames Map.empty (piElectrons origInfo) (piNuclei origInfo) unitMap0
-                      origTstp2name = Map.fromList
-                        [ (leName e, nm)
-                        | e <- piElectrons origInfo
-                        , leRole e == OrigAxiom
-                        , Just nm <- [Map.lookup (lePos e) origPosToName]
-                        ]
-                  retryResults <- forM candidates $ \c ->
-                    buildCandidateLemma (translateWith False) False unitMap0 origTstp2name debug c
-                  let retryValidCands = Map.fromList
-                        [ (cname, r)
-                        | ((cname, _), Just r) <- zip candidates retryResults ]
-                  Just <$> runAlgorithm debug False origInfo units retryValidCands Map.empty Nothing
-                else do
-                  -- Second pass: only file-source the valid candidates, recompute
-                  let finalModUnits = map (replaceValid validNames) units
-                      replaceValid ns u@(T.Unit n _ _)
-                        | Set.member (unitNameStr n) ns = makeFileSourced u
-                        | otherwise                     = u
-                      replaceValid _ u = u
-                  case buildProofInfo finalModUnits of
-                    Nothing -> Just <$> runAlgorithm debug False origInfo units Map.empty Map.empty Nothing
-                    Just mainInfo -> do
-                      let finalUnitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- finalModUnits]
-                          (_, posToName, _) =
-                            assignAxiomNames Map.empty (piElectrons mainInfo) (piNuclei mainInfo) finalUnitMap
-                          finalTstp2name = Map.fromList
-                            [ (leName e, nm)
-                            | e <- piElectrons mainInfo
-                            , leRole e == OrigAxiom
-                            , Just nm <- [Map.lookup (lePos e) posToName]
-                            ]
-                          validCandList = filter ((`Set.member` validNames) . fst) candidates
-                      finalResults <- forM validCandList $ \c ->
-                        buildCandidateLemma (translateWith False) False unitMap finalTstp2name debug c
-                      let validCands = Map.fromList
-                            [ (cname, r)
-                            | ((cname, _), Just r) <- zip validCandList finalResults
-                            ]
-                      Just <$> runAlgorithm debug False mainInfo finalModUnits validCands Map.empty Nothing
+          Just <$> runAlgorithm debug strict origInfo units Map.empty origTstp2name (Just origAxioms)
 
 type AlgM a = StateT AlgState IO a
 
@@ -959,8 +871,18 @@ nodeTheta declAt leafDecl leafPos = go leafPos
              | otherwise    = Map.lookup p declAt
     polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
 
-    go "" = []
-    go p  = fromMaybe [] $ do
+    -- go p recurses into both the parent chain and each sibling's parent
+    -- chain; memoise per position or the sharing explodes exponentially in
+    -- the tree depth.  An association list keeps the thunks lazy: a strict
+    -- map would force every position eagerly and loop on the mutual
+    -- parent/sibling references (which are only demanded selectively).
+    memo :: [(String, Subst)]
+    memo = [ (p, compute p) | p <- leafPos : Map.keys declAt ]
+
+    go p = fromMaybe [] (lookup p memo)
+
+    compute "" = []
+    compute p  = fromMaybe [] $ do
       let pp = init p
           θP = go pp
           sp = pp ++ [if last p == '0' then '1' else '0']

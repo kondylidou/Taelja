@@ -45,45 +45,25 @@ theorem taelja_lemma11 : (meet b (join c d)) = zero := by
   have h2 : (meet b (join c d)) = zero := by apply ax8 <;> (first | assumption | exact Eq.symm (by assumption))
   exact h2
 
+-- Lemma 12
+theorem taelja_lemma12 : ∀ (x : α), (join (meet b c) x) = x := by
+  intro x
+  calc join (meet b c) x = join (meet b (meet c (join c d))) x := by have h_rw := ax5 d c; rw [h_rw]
+      _ = join (meet b (meet c (join d c))) x := by have h_rw := ax1 c d; rw [h_rw]
+      _ = join (meet b (meet (join d c) c)) x := by have h_rw := ax3 c (join d c); rw [h_rw]
+      _ = join (meet (meet b (join d c)) c) x := by have h_rw := ax6 (join d c) c b; rw [h_rw]
+      _ = join (meet (meet b (join c d)) c) x := by have h_rw := ax1 c d; rw [h_rw]
+      _ = join (meet zero c) x := by have h_rw := taelja_lemma11; rw [h_rw]
+      _ = join zero x := by have h_rw := ax9 c; rw [h_rw]
+      _ = x := by have h_rw := ax10 x; rw [h_rw]
+
 -- Goal 1
 theorem taelja_goal1 : (meet (join a (meet b c)) (join a (meet b d))) = a := by
-  calc meet (join a (meet b c)) (join a (meet b d)) = join zero (meet (join a (meet b c)) (join a (meet b d))) := by have h_rw := ax10 (meet (join a (meet b c)) (join a (meet b d))); rw [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) zero := by have h_rw := ax1 zero (meet (join a (meet b c)) (join a (meet b d))); rw [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet zero c) := by have h_rw := ax9 c; rw [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet c zero) := by have h_rw := ax3 c zero; rw [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet c (meet b (join c d))) := by have h_rw := taelja_lemma11; rw [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet (meet c b) (join c d)) := by have h_rw := ax6 b (join c d) c; rw [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet (meet b c) (join c d)) := by have h_rw := ax3 c b; rw (config := { occs := .pos [3] }) [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet (meet b c) (join (join c (meet c b)) d)) := by have h_rw := ax4 b c; rw [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet (meet b c) (join (join c (meet b c)) d)) := by have h_rw := ax3 c b; rw (config := { occs := .pos [5] }) [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet (meet b c) (join (join (meet b c) c) d)) := by have h_rw := ax1 c (meet b c); rw [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet (meet b c) (join (meet b c) (join c d))) := by have h_rw := ax2 c d (meet b c); rw [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet (meet b c) (join (meet b c) (join d c))) := by have h_rw := ax1 c d; rw [h_rw]
-      _ = join (meet (join a (meet b c)) (join a (meet b d))) (meet b c) := by have h_rw := ax5 (join d c) (meet b c); rw [h_rw]
-      _ = join (meet b c) (meet (join a (meet b c)) (join a (meet b d))) := by have h_rw := ax1 (meet b c) (meet (join a (meet b c)) (join a (meet b d))); rw [h_rw]
-      _ = join (meet b c) (join (meet (join a (meet b c)) (join a (meet b d))) (meet (meet (join a (meet b c)) (join a (meet b d))) a)) := by have h_rw := ax4 a (meet (join a (meet b c)) (join a (meet b d))); rw [h_rw]
-      _ = join (meet b c) (join (meet (join a (meet b c)) (join a (meet b d))) (meet (join a (meet b c)) (meet (join a (meet b d)) a))) := by have h_rw := ax6 (join a (meet b d)) a (join a (meet b c)); rw [h_rw]
-      _ = join (meet b c) (join (meet (join a (meet b c)) (join a (meet b d))) (meet (join a (meet b c)) (meet a (join a (meet b d))))) := by have h_rw := ax3 (join a (meet b d)) a; rw [h_rw]
-      _ = join (meet b c) (join (meet (join a (meet b c)) (join a (meet b d))) (meet (join a (meet b c)) a)) := by have h_rw := ax5 (meet b d) a; rw [h_rw]
-      _ = join (meet b c) (join (meet (join a (meet b c)) (join a (meet b d))) (meet a (join a (meet b c)))) := by have h_rw := ax3 (join a (meet b c)) a; rw [h_rw]
-      _ = join (meet b c) (join (meet (join a (meet b c)) (join a (meet b d))) a) := by have h_rw := ax5 (meet b c) a; rw [h_rw]
-      _ = join (meet b c) (join a (meet (join a (meet b c)) (join a (meet b d)))) := by have h_rw := ax1 a (meet (join a (meet b c)) (join a (meet b d))); rw [h_rw]
-      _ = join (join (meet b c) a) (meet (join a (meet b c)) (join a (meet b d))) := by have h_rw := ax2 a (meet (join a (meet b c)) (join a (meet b d))) (meet b c); rw [h_rw]
-      _ = join (join a (meet b c)) (meet (join a (meet b c)) (join a (meet b d))) := by have h_rw := ax1 a (meet b c); rw (config := { occs := .pos [2] }) [h_rw]
-      _ = join a (meet b c) := by have h_rw := ax4 (join a (meet b d)) (join a (meet b c)); rw [h_rw]
+  calc meet (join a (meet b c)) (join a (meet b d)) = meet (join a (meet b c)) (join (join (meet b c) a) (meet b d)) := by have h_rw := taelja_lemma12 a; rw [h_rw]
+      _ = meet (join a (meet b c)) (join (join a (meet b c)) (meet b d)) := by have h_rw := ax1 a (meet b c); rw (config := { occs := .pos [3] }) [h_rw]
+      _ = join a (meet b c) := by have h_rw := ax5 (meet b d) (join a (meet b c)); rw [h_rw]
       _ = join (meet b c) a := by have h_rw := ax1 a (meet b c); rw [h_rw]
-      _ = join (meet (meet b c) (join (meet b c) (join d c))) a := by have h_rw := ax5 (join d c) (meet b c); rw [h_rw]
-      _ = join (meet (meet b c) (join (meet b c) (join c d))) a := by have h_rw := ax1 c d; rw [h_rw]
-      _ = join (meet (meet b c) (join (join (meet b c) c) d)) a := by have h_rw := ax2 c d (meet b c); rw [h_rw]
-      _ = join (meet (meet b c) (join (join c (meet b c)) d)) a := by have h_rw := ax1 c (meet b c); rw [h_rw]
-      _ = join (meet (meet b c) (join (join c (meet c b)) d)) a := by have h_rw := ax3 c b; rw (config := { occs := .pos [2] }) [h_rw]
-      _ = join (meet (meet b c) (join c d)) a := by have h_rw := ax4 b c; rw [h_rw]
-      _ = join (meet (meet c b) (join c d)) a := by have h_rw := ax3 c b; rw [h_rw]
-      _ = join (meet c (meet b (join c d))) a := by have h_rw := ax6 b (join c d) c; rw [h_rw]
-      _ = join (meet c zero) a := by have h_rw := taelja_lemma11; rw [h_rw]
-      _ = join (meet zero c) a := by have h_rw := ax3 c zero; rw [h_rw]
-      _ = join zero a := by have h_rw := ax9 c; rw [h_rw]
-      _ = a := by have h_rw := ax10 a; rw [h_rw]
+      _ = a := by have h_rw := taelja_lemma12 a; rw [h_rw]
 
 end TweeSam
 

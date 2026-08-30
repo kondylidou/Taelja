@@ -6,6 +6,7 @@ import qualified Data.ByteString.Lazy.Char8 as LBS
 import qualified Data.Text.IO as TIO
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
+import System.Environment (setEnv)
 import Test.Tasty
 import Test.Tasty.Golden
 
@@ -13,7 +14,12 @@ import Translate (translate)
 import Emitter (emit)
 
 main :: IO ()
-main = defaultMain tests
+main = do
+  -- Successful Twee fallback calls in the suite finish in under 2 s; a failing
+  -- one burns the whole budget, so keep it small here.  The eval and normal
+  -- runs use the 15 s default (see TweeInterface.tweemaxtime).
+  setEnv "TAELJA_TWEE_TIMEOUT" "5"
+  defaultMain tests
 
 tests :: TestTree
 tests = testGroup "Taelja"

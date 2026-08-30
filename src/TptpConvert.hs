@@ -1,7 +1,6 @@
 module TptpConvert
   ( bodyLitsOf
   , bodyLitsOfFOF
-  , negLitsOfFOF
   , headLitsOfFOF
   , convertTerm
   , convertLit
@@ -29,23 +28,16 @@ bodyLitsOf (T.Formula _ (T.CNF (T.Clause lits))) =
 bodyLitsOf (T.Formula _ (T.FOF f)) = bodyLitsOfFOF f
 bodyLitsOf _ = []
 
+-- Body (negative) and head (positive) literals of a FOF Horn clause, in any of
+-- the forms provers use: quantified disjunctions, implications, negated
+-- equalities.  Both go through collectDisjuncts so that they agree with
+-- convertDeclToClause (a dropped body literal turns an axiom into a false
+-- unit, e.g. in a lemma subproblem sent to E).
 bodyLitsOfFOF :: T.UnsortedFirstOrder -> [T.Literal]
-bodyLitsOfFOF (T.Quantified T.Forall _ body) = bodyLitsOfFOF body
-bodyLitsOfFOF (T.Connected l T.Disjunction r) =
-  negLitsOfFOF l ++ negLitsOfFOF r
-bodyLitsOfFOF _ = []
+bodyLitsOfFOF f = [ l | Just pairs <- [collectDisjuncts f], (T.Negative, l) <- pairs ]
 
-negLitsOfFOF :: T.UnsortedFirstOrder -> [T.Literal]
-negLitsOfFOF (T.Negated (T.Atomic lit))       = [lit]
-negLitsOfFOF (T.Connected l T.Disjunction r)  = negLitsOfFOF l ++ negLitsOfFOF r
-negLitsOfFOF _                                = []
-
--- Collect positive literals from a FOF disjunction (ignores negated atoms).
 headLitsOfFOF :: T.UnsortedFirstOrder -> [T.Literal]
-headLitsOfFOF (T.Quantified T.Forall _ body) = headLitsOfFOF body
-headLitsOfFOF (T.Atomic lit)                 = [lit]
-headLitsOfFOF (T.Connected l T.Disjunction r) = headLitsOfFOF l ++ headLitsOfFOF r
-headLitsOfFOF _                              = []
+headLitsOfFOF f = [ l | Just pairs <- [collectDisjuncts f], (T.Positive, l) <- pairs ]
 
 convertTerm :: T.Term -> Term
 convertTerm (T.Variable (T.Var v))                   = Var (Text.unpack v)

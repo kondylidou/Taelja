@@ -26,7 +26,7 @@ import Helpers
   ( applySubst, applyConstSubstBlock, applyConstSubstLit, blockRefNames
   , litVars, renameRefsBlock
   )
-import ProofTree (headLitOf, unitNameStr)
+import ProofTree (headLitOf, isPositiveUnitFormula, unitNameStr)
 import TptpConvert
 import TweeInterface (callTwee, isDerivedUnit, isEqLit, isOrigAxiomDecl, runProverCapped, sanitizeId, toTptpTerm)
 
@@ -55,7 +55,7 @@ ancestorNamesOf unitMap rootName = go startFrontier Set.empty
             go (Set.union rest (parentsOf nm)) (Set.insert nm seen)
 
 -- A TPTP declaration is a pure positive-unit equation (no body, equality head)
--- Derived positive-unit clauses (equational, relational, or Horn) used ≥ 2 times
+-- Derived positive-unit clauses (equational or relational) used ≥ 2 times
 -- as parents in the DAG, returned in original topological order.
 findLemmaCandidates :: [T.Unit] -> [(String, T.Declaration)]
 findLemmaCandidates units =
@@ -68,7 +68,11 @@ findLemmaCandidates units =
       candidateSet = Set.fromList
         [ unitNameStr n
         | T.Unit n decl (Just (T.Inference {}, _)) <- units
-        , isJust (headLitOf decl)  -- exactly one positive literal (unit or Horn)
+        , isJust (headLitOf decl)  -- exactly one positive literal
+        -- Only unit clauses: the output format states a lemma as a single
+        -- literal, so a Horn candidate (with body atoms) has no representable
+        -- statement; such clauses are inlined at every use instead.
+        , null (bodyLitsOf decl)
         , Map.findWithDefault 0 (unitNameStr n) parentCounts >= 2
         ]
   in [ (unitNameStr n, decl)
@@ -225,11 +229,19 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
             "cnf(negconj, negated_conjecture, " ++ cnfLitStr (negLit lit_sk) ++ ")."
           content = unlines (ancLines ++ premLines ++ [negLine])
 
-      -- For purely equational, no-body goals, try Twee directly.
-      -- E's proof for such goals often references internal clauses with negative
-      -- IDs that the TSTP parser cannot reconstruct into a valid proof tree.
+      -- For purely equational, no-body goals whose entire ancestry consists of
+      -- unit equations, try Twee directly (that is all the information the
+      -- Twee call passes on, so with a Horn ancestor the attempt would only
+      -- burn the Twee time budget before falling through to E).
+      let ancestryAllUnitEqs = and
+            [ isPositiveUnitFormula adecl && maybe False (isEqLit . convertLit) (headLitOf adecl)
+            | aname <- Set.toList ancNames
+            , Just u@(T.Unit _ adecl _) <- [Map.lookup aname unitMap]
+            , not (isDerivedUnit u)
+            , isOrigAxiomDecl adecl
+            ]
       mTweeBlk <-
-        if null bodyLits_sk && isEqLit lit_sk
+        if null bodyLits_sk && isEqLit lit_sk && ancestryAllUnitEqs
           then do
             let ancUes = mapMaybe mkAncUe (Set.toList ancNames)
                 mkAncUe aname = do
@@ -265,10 +277,17 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
           (tmpFile, th) <- openTempFile tmpDir ("taelja_lemma_" ++ sanitizeId cname ++ ".p")
           hPutStr th content >> hClose th
           eBin <- fromMaybe "eprover" <$> lookupEnv "TAELJA_EPROVER"
-          -- hard wall-clock cap: --soft-cpu-limit is advisory only
-          eResult <- runProverCapped 45 eBin
-                       ["--auto", "--output-level=2", "--tptp3-format",
-                        "--soft-cpu-limit=30", tmpFile]
+          -- Per-candidate E budget (TAELJA_E_TIMEOUT, default 5 s soft CPU,
+          -- +5 s wall-clock kill): a lemma is only worth introducing if its
+          -- subproof is easy; an unprovable candidate would otherwise burn
+          -- the whole limit (e.g. 30 s of ResourceOut on HEN006-4/Twee).
+          -- --proof-object: the same proof format as the test baselines; the
+          -- full saturation trace of --output-level=2 is not parseable here
+          eSecsStr <- fromMaybe "5" <$> lookupEnv "TAELJA_E_TIMEOUT"
+          let eSecs = case reads eSecsStr of { [(n, "")] -> n; _ -> 5 :: Int }
+          eResult <- runProverCapped (eSecs + 5) eBin
+                       ["--auto", "--proof-object", "--tptp3-format",
+                        "--soft-cpu-limit=" ++ show eSecs, tmpFile]
           removeFile tmpFile
           case eResult of
             Nothing -> do

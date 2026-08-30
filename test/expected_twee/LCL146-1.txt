@@ -5,13 +5,175 @@ Axiom 4: implies(implies(Y,A),implies(implies(A,B),implies(Y,B))) = truth
 Axiom 5: implies(implies(not(Y),not(A)),implies(A,Y)) = truth
 Axiom 6: big_hat(Y,A) = not(big_V(not(Y),not(A)))
 
-Lemma 7: implies(implies(not(X),not(truth)),X) = truth
+Lemma 7: not(not(truth)) = truth
 Proof:
-  implies(implies(not(X),not(truth)),X)
+  not(not(truth))
 = { by axiom 1 R->L }
-  implies(implies(not(X),not(truth)),implies(truth,X))
+  implies(truth,not(not(truth)))
+= { by axiom 5 R->L }
+  implies(implies(implies(not(not(truth)),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(implies(truth,implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 4 R->L }
+  implies(implies(implies(implies(implies(not(not(truth)),truth),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 4 R->L }
+  implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,truth),implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),not(not(truth))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 2 R->L }
+  implies(implies(implies(implies(implies(not(not(truth)),implies(truth,big_V(truth,not(not(truth))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(implies(implies(implies(not(not(truth)),big_V(truth,not(not(truth)))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 2 }
+  implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,not(not(truth))),not(not(truth)))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 3 }
+  implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),truth)),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(implies(implies(implies(implies(truth,not(not(truth))),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 4 }
+  implies(implies(implies(implies(truth,implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(implies(implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(implies(implies(not(not(not(truth))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 3 R->L }
+  implies(implies(implies(implies(implies(not(not(truth)),not(not(not(truth)))),not(not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 3 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),not(not(truth))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(truth,not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 5 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(not(truth)),not(truth)),implies(truth,not(truth))),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(not(truth)),not(truth)),not(truth)),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 3 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),not(not(truth))),not(not(truth))),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 3 }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(not(not(truth)),implies(not(truth),not(not(truth)))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth)))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(truth,implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 4 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(implies(truth,not(truth)),implies(implies(not(truth),truth),implies(truth,truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(not(truth),truth),implies(truth,truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(not(truth),truth),truth)),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 3 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(truth,not(truth)),not(truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 2 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),big_V(truth,not(truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,big_V(truth,not(truth)))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 2 }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,implies(implies(truth,not(truth)),not(truth)))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,implies(implies(truth,not(truth)),implies(truth,not(truth))))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(truth,truth),implies(implies(truth,not(truth)),implies(truth,not(truth))))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 4 }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),truth),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 4 }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(truth,implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(not(truth),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 5 }
+  implies(implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(not(not(not(truth))),implies(not(not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(not(not(not(truth))),implies(truth,implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 4 R->L }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),truth),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 4 R->L }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(truth,truth),implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),not(not(truth))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 2 R->L }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,big_V(truth,not(not(truth))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),big_V(truth,not(not(truth)))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 2 }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(truth,not(not(truth))),not(not(truth)))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 3 }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),truth)),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(not(not(not(truth))),implies(implies(implies(implies(truth,not(not(truth))),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 4 }
+  implies(implies(not(not(not(truth))),implies(implies(truth,implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(not(not(not(truth))),implies(implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(not(not(not(truth))),implies(implies(not(truth),implies(not(not(truth)),not(truth))),implies(not(not(truth)),not(truth)))),not(not(truth)))
+= { by axiom 3 R->L }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),not(truth)),not(truth)),not(truth))),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),not(truth)),implies(truth,not(truth))),not(truth))),not(not(truth)))
+= { by axiom 5 }
+  implies(implies(not(not(not(truth))),implies(truth,not(truth))),not(not(truth)))
+= { by axiom 1 }
+  implies(implies(not(not(not(truth))),not(truth)),not(not(truth)))
+= { by axiom 1 R->L }
+  implies(implies(not(not(not(truth))),not(truth)),implies(truth,not(not(truth))))
 = { by axiom 5 }
   truth
+
+Lemma 8: big_V(X,Y) = big_V(Y,X)
+Proof:
+  big_V(X,Y)
+= { by axiom 2 }
+  implies(implies(X,Y),Y)
+= { by axiom 3 R->L }
+  implies(implies(Y,X),X)
+= { by axiom 2 R->L }
+  big_V(Y,X)
+
+Lemma 9: implies(X,truth) = truth
+Proof:
+  implies(X,truth)
+= { by axiom 4 R->L }
+  implies(X,implies(implies(truth,truth),implies(implies(truth,X),implies(truth,X))))
+= { by axiom 1 }
+  implies(X,implies(truth,implies(implies(truth,X),implies(truth,X))))
+= { by axiom 1 }
+  implies(X,implies(truth,implies(implies(truth,X),X)))
+= { by axiom 2 R->L }
+  implies(X,implies(truth,big_V(truth,X)))
+= { by axiom 1 }
+  implies(X,big_V(truth,X))
+= { by axiom 2 }
+  implies(X,implies(implies(truth,X),X))
+= { by axiom 3 }
+  implies(X,implies(implies(X,truth),truth))
+= { by axiom 1 R->L }
+  implies(X,implies(implies(X,truth),implies(truth,truth)))
+= { by axiom 1 R->L }
+  implies(implies(truth,X),implies(implies(X,truth),implies(truth,truth)))
+= { by axiom 4 }
+  truth
+
+Lemma 10: big_V(X,implies(not(X),not(truth))) = X
+Proof:
+  big_V(X,implies(not(X),not(truth)))
+= { by axiom 2 }
+  implies(implies(X,implies(not(X),not(truth))),implies(not(X),not(truth)))
+= { by axiom 3 }
+  implies(implies(implies(not(X),not(truth)),X),X)
+= { by axiom 1 R->L }
+  implies(implies(implies(not(X),not(truth)),implies(truth,X)),X)
+= { by axiom 5 }
+  implies(truth,X)
+= { by axiom 1 }
+  X
 
 Goal 1: not(big_hat(x,y)) = big_V(not(x),not(y))
 Proof:
@@ -19,542 +181,132 @@ Proof:
 = { by axiom 1 R->L }
   implies(truth,not(big_hat(x,y)))
 = { by axiom 5 R->L }
-  implies(implies(implies(not(not(big_hat(x,y))),not(big_V(not(x),not(y)))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(implies(not(implies(not(big_V(not(x),not(y))),not(truth))),not(big_V(not(x),not(y)))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by axiom 1 R->L }
+  implies(implies(implies(not(implies(not(big_V(not(x),not(y))),not(truth))),implies(truth,not(big_V(not(x),not(y))))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by axiom 5 R->L }
+  implies(implies(implies(not(implies(not(big_V(not(x),not(y))),not(truth))),implies(implies(implies(not(not(big_V(not(x),not(y)))),not(not(truth))),implies(not(truth),not(big_V(not(x),not(y))))),not(big_V(not(x),not(y))))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by lemma 7 }
+  implies(implies(implies(not(implies(not(big_V(not(x),not(y))),not(truth))),implies(implies(implies(not(not(big_V(not(x),not(y)))),truth),implies(not(truth),not(big_V(not(x),not(y))))),not(big_V(not(x),not(y))))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by lemma 9 }
+  implies(implies(implies(not(implies(not(big_V(not(x),not(y))),not(truth))),implies(implies(truth,implies(not(truth),not(big_V(not(x),not(y))))),not(big_V(not(x),not(y))))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by axiom 1 }
+  implies(implies(implies(not(implies(not(big_V(not(x),not(y))),not(truth))),implies(implies(not(truth),not(big_V(not(x),not(y)))),not(big_V(not(x),not(y))))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by axiom 2 R->L }
+  implies(implies(implies(not(implies(not(big_V(not(x),not(y))),not(truth))),big_V(not(truth),not(big_V(not(x),not(y))))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by lemma 8 }
+  implies(implies(implies(not(implies(not(big_V(not(x),not(y))),not(truth))),big_V(not(big_V(not(x),not(y))),not(truth))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by axiom 2 }
+  implies(implies(implies(not(implies(not(big_V(not(x),not(y))),not(truth))),implies(implies(not(big_V(not(x),not(y))),not(truth)),not(truth))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by axiom 1 R->L }
+  implies(implies(implies(implies(truth,not(implies(not(big_V(not(x),not(y))),not(truth)))),implies(implies(not(big_V(not(x),not(y))),not(truth)),not(truth))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by lemma 7 R->L }
+  implies(implies(implies(implies(not(not(truth)),not(implies(not(big_V(not(x),not(y))),not(truth)))),implies(implies(not(big_V(not(x),not(y))),not(truth)),not(truth))),implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by axiom 5 }
+  implies(implies(truth,implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),not(big_hat(x,y)))
+= { by axiom 1 }
+  implies(implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth))),not(big_hat(x,y)))
 = { by axiom 6 R->L }
-  implies(implies(implies(not(not(big_hat(x,y))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(truth,not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by lemma 7 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(truth)),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(truth,not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by lemma 7 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),not(truth)),not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(not(truth),implies(not(not(truth)),not(truth))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(truth,implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(implies(truth,not(not(truth))),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),truth)),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(truth,not(not(truth))),not(not(truth)))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),big_V(truth,not(not(truth)))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,big_V(truth,not(not(truth))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(big_hat(x,y),not(truth))),not(big_hat(x,y)))
+= { by lemma 10 R->L }
+  implies(implies(big_V(not(x),not(y)),implies(big_V(big_hat(x,y),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 2 }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),not(not(truth))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(truth,truth),implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),truth),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(truth,implies(not(not(truth)),not(truth)))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(truth,implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 5 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(not(truth),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(truth,implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),truth),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(truth,truth),implies(implies(truth,not(truth)),implies(truth,not(truth))))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,implies(implies(truth,not(truth)),implies(truth,not(truth))))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,implies(implies(truth,not(truth)),not(truth)))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,big_V(truth,not(truth)))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),big_V(truth,not(truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(truth,not(truth)),not(truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(not(truth),truth),truth)),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(not(truth),truth),implies(truth,truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(implies(truth,not(truth)),implies(implies(not(truth),truth),implies(truth,truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(truth,implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth)))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(not(not(truth)),implies(not(truth),not(not(truth)))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),not(not(truth))),not(not(truth))),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(not(truth)),not(truth)),not(truth)),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(implies(not(not(truth)),not(implies(not(big_hat(x,y)),not(truth)))),implies(implies(not(big_hat(x,y)),not(truth)),not(truth))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by lemma 7 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(truth,not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(implies(truth,not(implies(not(big_hat(x,y)),not(truth)))),implies(implies(not(big_hat(x,y)),not(truth)),not(truth))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),not(not(truth))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(truth)),not(not(not(truth)))),not(not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(implies(implies(implies(implies(not(not(not(truth))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(truth,implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(implies(truth,not(not(truth))),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),truth)),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,not(not(truth))),not(not(truth)))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(implies(not(big_hat(x,y)),not(truth)),not(truth))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 2 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(truth)),big_V(truth,not(not(truth)))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(truth)),implies(truth,big_V(truth,not(not(truth))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),big_V(not(big_hat(x,y)),not(truth))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
+= { by lemma 8 R->L }
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),big_V(not(truth),not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 2 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),not(not(truth))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(implies(not(truth),not(big_hat(x,y))),not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,truth),implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(implies(implies(implies(implies(implies(not(not(truth)),truth),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(implies(implies(implies(truth,implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(implies(implies(not(not(truth)),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 5 }
-  implies(implies(implies(implies(implies(truth,not(not(truth))),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),big_hat(x,y)),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(truth,big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 5 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),not(not(truth))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(truth,not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 5 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(not(not(truth)),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(truth,implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(truth)),truth),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,truth),implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),not(not(truth))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(truth)),implies(truth,big_V(truth,not(not(truth))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(truth)),big_V(truth,not(not(truth)))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,not(not(truth))),not(not(truth)))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),truth)),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(implies(truth,not(not(truth))),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(truth,implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(not(not(not(truth))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(truth)),not(not(not(truth)))),not(not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),not(not(truth))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(truth,not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(implies(truth,implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
+= { by lemma 9 R->L }
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(implies(implies(not(not(big_hat(x,y))),truth),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by lemma 7 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(not(truth)),not(truth)),not(truth)),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),not(not(truth))),not(not(truth))),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(not(not(truth)),implies(not(truth),not(not(truth)))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth)))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(truth,implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(implies(truth,not(truth)),implies(implies(not(truth),truth),implies(truth,truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(not(truth),truth),implies(truth,truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(not(truth),truth),truth)),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(truth,not(truth)),not(truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),big_V(truth,not(truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,big_V(truth,not(truth)))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,implies(implies(truth,not(truth)),not(truth)))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,implies(implies(truth,not(truth)),implies(truth,not(truth))))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(truth,truth),implies(implies(truth,not(truth)),implies(truth,not(truth))))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),truth),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(truth,implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(not(truth),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(implies(implies(not(not(big_hat(x,y))),not(not(truth))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 5 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(truth,not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(truth,implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),truth),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(truth,truth),implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),not(not(truth))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,big_V(truth,not(not(truth))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),big_V(truth,not(not(truth)))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(truth,not(not(truth))),not(not(truth)))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),truth)),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(implies(truth,not(not(truth))),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(truth,implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(not(truth),implies(not(not(truth)),not(truth))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),not(truth)),not(truth)),not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by lemma 7 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),implies(truth,not(truth))),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(not(not(truth))),not(truth)),not(not(truth)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by lemma 7 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),truth),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(truth,truth),implies(implies(truth,not(big_hat(x,y))),implies(truth,not(big_hat(x,y)))))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(truth,implies(implies(truth,not(big_hat(x,y))),implies(truth,not(big_hat(x,y)))))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(truth,implies(implies(truth,not(big_hat(x,y))),not(big_hat(x,y))))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(truth,big_V(truth,not(big_hat(x,y))))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),big_V(truth,not(big_hat(x,y)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(truth,not(big_hat(x,y))),not(big_hat(x,y)))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(big_hat(x,y)),truth),truth)),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(not(big_hat(x,y)),truth),implies(truth,truth))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(truth,not(big_hat(x,y))),implies(implies(not(big_hat(x,y)),truth),implies(truth,truth))),implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(truth,implies(not(truth),big_hat(x,y))),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(not(truth),big_hat(x,y)),big_hat(x,y))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(big_hat(x,y),not(truth)),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(truth,implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))),implies(big_hat(x,y),not(truth)))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))),implies(truth,implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(implies(implies(truth,implies(not(not(truth)),not(big_hat(x,y)))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))),implies(truth,implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(truth,implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y)))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(truth,implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(implies(truth,not(not(truth))),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),truth)),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,not(not(truth))),not(not(truth)))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(not(not(truth)),big_V(truth,not(not(truth)))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(not(not(truth)),implies(truth,big_V(truth,not(not(truth))))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),not(not(truth))))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,truth),implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(not(not(truth)),truth),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(truth,implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))),implies(big_hat(x,y),not(truth)))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),not(big_hat(x,y))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 5 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(truth,implies(big_hat(x,y),not(truth)))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(truth,implies(not(big_hat(x,y)),not(truth))),not(truth))),not(big_hat(x,y)))
 = { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(not(big_hat(x,y)),implies(big_hat(x,y),not(truth))),implies(big_hat(x,y),not(truth))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),not(big_hat(x,y))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(truth,not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 5 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),not(not(truth))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(truth,not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 5 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(not(not(truth)),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(truth,implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(truth)),truth),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,truth),implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),not(not(truth))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(not(big_hat(x,y)),not(truth)),not(truth))),not(big_hat(x,y)))
 = { by axiom 2 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(truth)),implies(truth,big_V(truth,not(not(truth))))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(truth)),big_V(truth,not(not(truth)))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),big_V(not(big_hat(x,y)),not(truth))),not(big_hat(x,y)))
+= { by lemma 8 R->L }
+  implies(implies(big_V(not(x),not(y)),big_V(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))
 = { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,not(not(truth))),not(not(truth)))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),truth)),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(not(truth),not(big_hat(x,y))),not(big_hat(x,y)))),not(big_hat(x,y)))
 = { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(implies(truth,not(not(truth))),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(truth,implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth)))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(not(not(not(truth))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(not(not(truth))))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(truth)),not(not(not(truth)))),not(not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),not(not(truth))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(truth,not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(truth,implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y)))
+= { by lemma 9 R->L }
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(not(not(big_hat(x,y))),truth),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y)))
 = { by lemma 7 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(not(truth)),not(truth)),not(truth)),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),not(not(truth))),not(not(truth))),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(not(not(truth)),implies(not(truth),not(not(truth)))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth)))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(truth,implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(implies(truth,not(truth)),implies(implies(not(truth),truth),implies(truth,truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(not(truth),truth),implies(truth,truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(not(truth),truth),truth)),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(truth,not(truth)),not(truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),big_V(truth,not(truth))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,big_V(truth,not(truth)))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,implies(implies(truth,not(truth)),not(truth)))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(truth,implies(implies(truth,not(truth)),implies(truth,not(truth))))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),implies(implies(truth,truth),implies(implies(truth,not(truth)),implies(truth,not(truth))))),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(implies(implies(not(truth),truth),implies(implies(truth,not(not(truth))),implies(not(truth),not(not(truth))))),implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(truth,implies(not(truth),not(not(truth))))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(implies(implies(not(not(not(truth))),not(not(truth))),implies(not(truth),not(not(truth)))),not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(implies(implies(not(not(big_hat(x,y))),not(not(truth))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y)))
 = { by axiom 5 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(implies(truth,not(not(not(truth)))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(not(not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(truth,implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),truth),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(truth,truth),implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),not(not(truth))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(truth,big_V(truth,not(not(truth))))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),big_V(truth,not(not(truth)))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(truth,not(not(truth))),not(not(truth)))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),truth)),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(implies(truth,not(not(truth))),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(truth,implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth)))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(truth,not(truth)),implies(not(not(truth)),not(truth))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(not(truth),implies(not(not(truth)),not(truth))),implies(not(not(truth)),not(truth)))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(implies(implies(not(not(truth)),not(truth)),not(truth)),not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by lemma 7 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),implies(truth,not(truth))),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(not(truth))),not(truth)),not(not(truth)))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by lemma 7 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),truth),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(truth,truth),implies(implies(truth,not(not(big_hat(x,y)))),implies(truth,not(not(big_hat(x,y))))))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(truth,implies(implies(truth,not(not(big_hat(x,y)))),implies(truth,not(not(big_hat(x,y))))))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(truth,implies(implies(truth,not(not(big_hat(x,y)))),not(not(big_hat(x,y)))))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(truth,big_V(truth,not(not(big_hat(x,y)))))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),big_V(truth,not(not(big_hat(x,y))))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(truth,not(not(big_hat(x,y)))),not(not(big_hat(x,y))))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(big_hat(x,y))),truth),truth)),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(not(not(big_hat(x,y))),implies(implies(not(not(big_hat(x,y))),truth),implies(truth,truth))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(implies(truth,not(not(big_hat(x,y)))),implies(implies(not(not(big_hat(x,y))),truth),implies(truth,truth))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(truth,implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(not(truth),not(big_hat(x,y))),not(big_hat(x,y)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 3 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(not(big_hat(x,y)),not(truth)),not(truth))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(truth,implies(implies(big_hat(x,y),not(truth)),implies(implies(not(big_hat(x,y)),not(truth)),not(truth)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by lemma 7 R->L }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(implies(implies(implies(not(big_hat(x,y)),not(truth)),big_hat(x,y)),implies(implies(big_hat(x,y),not(truth)),implies(implies(not(big_hat(x,y)),not(truth)),not(truth)))),not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(implies(truth,not(big_hat(x,y))),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(not(truth)),not(not(big_hat(x,y)))),implies(not(big_hat(x,y)),not(truth))),implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
-= { by axiom 5 }
-  implies(implies(truth,implies(big_V(not(x),not(y)),not(big_hat(x,y)))),not(big_hat(x,y)))
+  implies(implies(big_V(not(x),not(y)),implies(truth,not(big_hat(x,y)))),not(big_hat(x,y)))
 = { by axiom 1 }
   implies(implies(big_V(not(x),not(y)),not(big_hat(x,y))),not(big_hat(x,y)))
-= { by axiom 3 R->L }
-  implies(implies(not(big_hat(x,y)),big_V(not(x),not(y))),big_V(not(x),not(y)))
+= { by axiom 2 R->L }
+  big_V(big_V(not(x),not(y)),not(big_hat(x,y)))
 = { by axiom 1 R->L }
-  implies(implies(not(big_hat(x,y)),implies(truth,big_V(not(x),not(y)))),big_V(not(x),not(y)))
+  big_V(big_V(not(x),not(y)),implies(truth,not(big_hat(x,y))))
+= { by axiom 5 R->L }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(not(not(big_hat(x,y))),not(not(truth))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y))))
+= { by lemma 7 }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(not(not(big_hat(x,y))),truth),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y))))
+= { by lemma 9 }
+  big_V(big_V(not(x),not(y)),implies(implies(truth,implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y))))
+= { by axiom 1 }
+  big_V(big_V(not(x),not(y)),implies(implies(not(truth),not(big_hat(x,y))),not(big_hat(x,y))))
+= { by axiom 2 R->L }
+  big_V(big_V(not(x),not(y)),big_V(not(truth),not(big_hat(x,y))))
+= { by lemma 8 }
+  big_V(big_V(not(x),not(y)),big_V(not(big_hat(x,y)),not(truth)))
+= { by axiom 2 }
+  big_V(big_V(not(x),not(y)),implies(implies(not(big_hat(x,y)),not(truth)),not(truth)))
+= { by axiom 1 R->L }
+  big_V(big_V(not(x),not(y)),implies(implies(truth,implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by axiom 5 R->L }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),not(big_hat(x,y))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by axiom 1 R->L }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(truth,not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by axiom 5 R->L }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(implies(implies(not(not(big_hat(x,y))),not(not(truth))),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by lemma 7 }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(implies(implies(not(not(big_hat(x,y))),truth),implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by lemma 9 }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(implies(truth,implies(not(truth),not(big_hat(x,y)))),not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by axiom 1 }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(implies(not(truth),not(big_hat(x,y))),not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by axiom 2 R->L }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),big_V(not(truth),not(big_hat(x,y)))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by lemma 8 }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),big_V(not(big_hat(x,y)),not(truth))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by axiom 2 }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(not(implies(not(big_hat(x,y)),not(truth))),implies(implies(not(big_hat(x,y)),not(truth)),not(truth))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by axiom 1 R->L }
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(implies(truth,not(implies(not(big_hat(x,y)),not(truth)))),implies(implies(not(big_hat(x,y)),not(truth)),not(truth))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
 = { by lemma 7 R->L }
-  implies(implies(not(big_hat(x,y)),implies(implies(implies(not(big_V(not(x),not(y))),not(truth)),big_V(not(x),not(y))),big_V(not(x),not(y)))),big_V(not(x),not(y)))
-= { by axiom 3 }
-  implies(implies(not(big_hat(x,y)),implies(implies(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth))),implies(not(big_V(not(x),not(y))),not(truth)))),big_V(not(x),not(y)))
-= { by axiom 2 R->L }
-  implies(implies(not(big_hat(x,y)),big_V(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))),big_V(not(x),not(y)))
-= { by axiom 6 R->L }
-  implies(implies(not(big_hat(x,y)),big_V(big_V(not(x),not(y)),implies(big_hat(x,y),not(truth)))),big_V(not(x),not(y)))
-= { by axiom 2 }
-  implies(implies(not(big_hat(x,y)),implies(implies(big_V(not(x),not(y)),implies(big_hat(x,y),not(truth))),implies(big_hat(x,y),not(truth)))),big_V(not(x),not(y)))
-= { by axiom 3 R->L }
-  implies(implies(not(big_hat(x,y)),implies(implies(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))),big_V(not(x),not(y)))),big_V(not(x),not(y)))
-= { by axiom 2 R->L }
-  implies(implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y)))),big_V(not(x),not(y)))
-= { by axiom 1 R->L }
-  implies(implies(truth,implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))),implies(big_hat(x,y),not(truth)))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))),implies(truth,implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(implies(implies(truth,implies(not(not(truth)),not(big_hat(x,y)))),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))),implies(truth,implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(truth,implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(not(big_hat(x,y)),implies(not(not(truth)),not(big_hat(x,y)))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y)))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(truth,implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(implies(implies(implies(truth,not(not(truth))),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),implies(truth,truth))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 }
-  implies(implies(implies(implies(implies(not(not(truth)),implies(implies(not(not(truth)),truth),truth)),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 3 R->L }
-  implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,not(not(truth))),not(not(truth)))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 2 R->L }
-  implies(implies(implies(implies(implies(not(not(truth)),big_V(truth,not(not(truth)))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(not(not(truth)),implies(truth,big_V(truth,not(not(truth))))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 2 }
-  implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),not(not(truth))))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(not(not(truth)),implies(truth,implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(implies(implies(not(not(truth)),implies(implies(truth,truth),implies(implies(truth,not(not(truth))),implies(truth,not(not(truth)))))),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 4 }
-  implies(implies(implies(implies(implies(not(not(truth)),truth),implies(implies(truth,not(big_hat(x,y))),implies(not(not(truth)),not(big_hat(x,y))))),implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 4 }
-  implies(implies(implies(truth,implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 }
-  implies(implies(implies(not(big_hat(x,y)),big_V(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth)))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 2 }
-  implies(implies(implies(not(big_hat(x,y)),implies(implies(implies(not(not(truth)),not(big_hat(x,y))),implies(big_hat(x,y),not(truth))),implies(big_hat(x,y),not(truth)))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
+  big_V(big_V(not(x),not(y)),implies(implies(implies(implies(implies(not(not(truth)),not(implies(not(big_hat(x,y)),not(truth)))),implies(implies(not(big_hat(x,y)),not(truth)),not(truth))),implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
 = { by axiom 5 }
-  implies(implies(implies(not(big_hat(x,y)),implies(truth,implies(big_hat(x,y),not(truth)))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
+  big_V(big_V(not(x),not(y)),implies(implies(implies(truth,implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth)))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
 = { by axiom 1 }
-  implies(implies(implies(not(big_hat(x,y)),implies(big_hat(x,y),not(truth))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))))),big_V(not(x),not(y)))
-= { by axiom 1 R->L }
-  implies(implies(implies(not(big_hat(x,y)),implies(big_hat(x,y),not(truth))),implies(truth,implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y)))))),big_V(not(x),not(y)))
-= { by axiom 4 R->L }
-  implies(implies(implies(not(big_hat(x,y)),implies(big_hat(x,y),not(truth))),implies(implies(implies(truth,implies(big_hat(x,y),not(truth))),implies(implies(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))),implies(truth,big_V(not(x),not(y))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y)))))),big_V(not(x),not(y)))
-= { by axiom 1 }
-  implies(implies(implies(not(big_hat(x,y)),implies(big_hat(x,y),not(truth))),implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))),implies(truth,big_V(not(x),not(y))))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y)))))),big_V(not(x),not(y)))
-= { by axiom 1 }
-  implies(implies(implies(not(big_hat(x,y)),implies(big_hat(x,y),not(truth))),implies(implies(implies(big_hat(x,y),not(truth)),implies(implies(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y))),big_V(not(x),not(y)))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y)))))),big_V(not(x),not(y)))
+  big_V(big_V(not(x),not(y)),implies(implies(implies(big_hat(x,y),implies(not(big_hat(x,y)),not(truth))),implies(not(big_hat(x,y)),not(truth))),not(truth)))
 = { by axiom 2 R->L }
-  implies(implies(implies(not(big_hat(x,y)),implies(big_hat(x,y),not(truth))),implies(implies(implies(big_hat(x,y),not(truth)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y)))),implies(not(big_hat(x,y)),big_V(implies(big_hat(x,y),not(truth)),big_V(not(x),not(y)))))),big_V(not(x),not(y)))
-= { by axiom 4 }
-  implies(truth,big_V(not(x),not(y)))
-= { by axiom 1 }
+  big_V(big_V(not(x),not(y)),implies(big_V(big_hat(x,y),implies(not(big_hat(x,y)),not(truth))),not(truth)))
+= { by lemma 10 }
+  big_V(big_V(not(x),not(y)),implies(big_hat(x,y),not(truth)))
+= { by axiom 6 }
+  big_V(big_V(not(x),not(y)),implies(not(big_V(not(x),not(y))),not(truth)))
+= { by lemma 10 }
   big_V(not(x),not(y))
