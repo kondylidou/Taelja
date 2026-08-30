@@ -19,7 +19,7 @@ import Types
 import Helpers
 import ProofTree
   ( buildProofInfo, headLitOf, isPositiveUnitFormula, unitNameStr
-  , resolveSourceName, resolveCopySource
+  , resolveCopySource
   )
 import TptpConvert
 import TweeInterface
@@ -35,15 +35,19 @@ translateWith strict nameOverride debug (T.TSTP _ units) =
     Just origInfo ->
       Just <$> runAlgorithm debug strict origInfo units Map.empty nameOverride Nothing
 
--- Two translation strategies:
---   1. the heuristic translation (compact, readable proofs: electron
---      generality is kept, lemma candidates that trace back to an axiom are
---      inlined) and, when it produces no goal proof,
---   2. the strict paper translation (θ traced top-down from the root so that
---      every nucleus is processed under a grounding of its body atoms, full
---      lemma introduction for every derived clause used twice, leaf nuclei
---      strictly before derived ones).  Needed e.g. for Twee proofs whose
---      intermediate lemmas are non-ground.
+-- Two translation strategies, tried in this order:
+--   1. the heuristic translation: θ|pos is read off the conclusion directly
+--      above each nucleus (ground bindings only), so derived electrons keep
+--      the generality of the prover's derived clauses; ground-headed derived
+--      nuclei are processed alongside the leaf nuclei; lemma candidates are
+--      re-proved with Twee/E.  This gives the compact proofs of the test
+--      suite.  When it produces no goal proof,
+--   2. the strict paper translation (Algorithm 1 literally): θ traced
+--      top-down from the root so that every nucleus is processed under a
+--      grounding of its body atoms, leaf nuclei strictly before derived ones,
+--      lemma candidates proved by translating their own sub-DAG, one canonical
+--      axiom numbering.  Needed e.g. for Twee proofs whose intermediate lemmas
+--      are non-ground (HEN006-4).
 translate :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translate debug tstp = do
   -- TAELJA_STRICT=1 forces the strict paper translation (experiments/evaluation)
@@ -325,6 +329,11 @@ tryMatch li ki τ =
   <|> tryBothSides li ki
   <|> tryBothSides (flipEq li) ki
   where
+    -- Body literal as the pattern: the electron's variables are NOT renamed
+    -- apart here (only tryBothSides does), so a variable name shared between
+    -- the nucleus and the electron (both "X0") is bound as the same variable.
+    -- Known limitation; harmless on the current suite, but any composition of
+    -- τ in this branch must rename apart first (see tryBothSides).
     tryAsPattern li' k = case matchLit li' k of
       Just σn ->
         -- Remove self-bindings (x → Var x): these arise when body lit and electron

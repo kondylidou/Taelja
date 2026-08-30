@@ -7,7 +7,6 @@ module LemmaBuilder
   , makeFileSourced
   ) where
 
-import Control.Exception (SomeException, try)
 import Control.Monad (when)
 import Data.List (intercalate, nub)
 import Data.Maybe (fromJust, fromMaybe, isJust, listToMaybe, mapMaybe, maybeToList)
@@ -19,11 +18,8 @@ import qualified Data.Set as Set
 import qualified Data.TPTP as T
 import qualified Data.Text as Text
 import System.Environment (lookupEnv)
-import System.Exit (ExitCode)
 import System.Directory (getTemporaryDirectory, removeFile)
 import System.IO (hClose, hPutStr, hPutStrLn, openTempFile, stderr)
-import System.Process (readProcessWithExitCode)
-import System.Timeout (timeout)
 
 import Types
 import Helpers
@@ -32,7 +28,7 @@ import Helpers
   )
 import ProofTree (headLitOf, unitNameStr)
 import TptpConvert
-import TweeInterface (callTwee, isDerivedUnit, isEqLit, isOrigAxiomDecl, sanitizeId, toTptpTerm)
+import TweeInterface (callTwee, isDerivedUnit, isEqLit, isOrigAxiomDecl, runProverCapped, sanitizeId, toTptpTerm)
 
 -- Flatten a T.Parent into the TSTP unit names it references
 flattenParents :: T.Parent -> [String]
@@ -99,14 +95,15 @@ makeFileSourced (T.Unit n decl _) =
   T.Unit n decl (Just (T.File (T.Atom (Text.pack "lemma")) Nothing, Nothing))
 makeFileSourced u = u
 
--- Recursive lemma builder: writes a CNF TPTP subproblem, calls E prover,
--- parses the TSTP output, then calls the translator recursively and de-Skolemizes.
--- The translateFn parameter is Translate.translateWith (passed to avoid a circular import).
 -- A built lemma: its statement, its proof, and the sub-lemmas the recursive
 -- translation introduced (already renamed apart and de-Skolemized), which the
 -- caller must add to the outer proof before the lemma itself.
 type BuiltLemma = (Literal, ProofBlock, [(String, Literal, ProofBlock)])
 
+-- Lemma introduction (paper, Section 4): Skolemize the candidate's negation,
+-- obtain a refutation of {A_1..A_n, not B} from the axioms, translate it
+-- recursively, and de-Skolemize.  The translateFn parameter is
+-- Translate.translateWith (passed to avoid a circular import).
 buildCandidateLemma
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Bool                   -- strict mode: translate the candidate's own sub-DAG first
@@ -269,20 +266,15 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
           hPutStr th content >> hClose th
           eBin <- fromMaybe "eprover" <$> lookupEnv "TAELJA_EPROVER"
           -- hard wall-clock cap: --soft-cpu-limit is advisory only
-          eResult <- timeout (45 * 1000000)
-                       (try (readProcessWithExitCode eBin
-                              ["--auto", "--output-level=2", "--tptp3-format",
-                               "--soft-cpu-limit=30", tmpFile] "")
-                        :: IO (Either SomeException (ExitCode, String, String)))
+          eResult <- runProverCapped 45 eBin
+                       ["--auto", "--output-level=2", "--tptp3-format",
+                        "--soft-cpu-limit=30", tmpFile]
           removeFile tmpFile
           case eResult of
             Nothing -> do
-              when debug $ hPutStrLn stderr "buildCandidateLemma: E timed out (45s)"
+              when debug $ hPutStrLn stderr "buildCandidateLemma: E failed or timed out (45s)"
               return Nothing
-            Just (Left e) -> do
-              when debug $ hPutStrLn stderr ("buildCandidateLemma: E failed: " ++ show e)
-              return Nothing
-            Just (Right (_, eOut, _)) -> do
+            Just eOut -> do
               when debug $ hPutStrLn stderr
                 ("buildCandidateLemma: E output length=" ++ show (length eOut))
               case eitherResult (feed (parseTSTP (Text.pack eOut)) mempty) of

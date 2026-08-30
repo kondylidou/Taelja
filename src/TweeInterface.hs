@@ -21,6 +21,7 @@ module TweeInterface
   , callTweeRelLemma
   , callTwee
   , relevantUnits
+  , runProverCapped
   ) where
 
 import Control.Applicative ((<|>))
