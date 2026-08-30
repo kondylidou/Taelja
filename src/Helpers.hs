@@ -238,6 +238,12 @@ rewriteLitAll lit eq dir = case lit of
     rewriteListAll (t:ts) = [t' : ts | t' <- rewriteTermAll t eq dir]
                          ++ [t : ts' | ts' <- rewriteListAll ts]
 
+-- A proof block with no steps (nothing established).
+isEmptyBlock :: ProofBlock -> Bool
+isEmptyBlock (HaveHence []) = True
+isEmptyBlock (EqChain _ []) = True
+isEmptyBlock _              = False
+
 isEqChain :: ProofBlock -> Bool
 isEqChain (EqChain {}) = True
 isEqChain _            = False

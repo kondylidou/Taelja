@@ -9,7 +9,7 @@ module LemmaBuilder
 
 import Control.Monad (when)
 import Data.List (intercalate, nub)
-import Data.Maybe (fromJust, fromMaybe, isJust, listToMaybe, mapMaybe, maybeToList)
+import Data.Maybe (fromJust, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe, maybeToList)
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
 import Data.TPTP.Pretty (Pretty (..))
@@ -17,18 +17,18 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.TPTP as T
 import qualified Data.Text as Text
+import System.Directory (doesFileExist, findExecutable)
 import System.Environment (lookupEnv)
-import System.Directory (getTemporaryDirectory, removeFile)
-import System.IO (hClose, hPutStr, hPutStrLn, openTempFile, stderr)
+import System.IO (hPutStrLn, stderr)
 
 import Types
 import Helpers
   ( applySubst, applyConstSubstBlock, applyConstSubstLit, blockRefNames
-  , litVars, renameRefsBlock
+  , isEmptyBlock, litVars, renameRefsBlock
   )
 import ProofTree (headLitOf, isPositiveUnitFormula, unitNameStr)
 import TptpConvert
-import TweeInterface (callTwee, isDerivedUnit, isEqLit, isOrigAxiomDecl, runProverCapped, sanitizeId, toTptpTerm)
+import TweeInterface (callTwee, isDerivedUnit, isEqLit, isOrigAxiomDecl, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
 
 -- Flatten a T.Parent into the TSTP unit names it references
 flattenParents :: T.Parent -> [String]
@@ -54,9 +54,8 @@ ancestorNamesOf unitMap rootName = go startFrontier Set.empty
         | otherwise          ->
             go (Set.union rest (parentsOf nm)) (Set.insert nm seen)
 
--- A TPTP declaration is a pure positive-unit equation (no body, equality head)
--- Derived positive-unit clauses (equational or relational) used ≥ 2 times
--- as parents in the DAG, returned in original topological order.
+-- Lemma candidates: derived positive-unit clauses (equational or relational)
+-- cited at least twice as parents in the DAG, in original order.
 findLemmaCandidates :: [T.Unit] -> [(String, T.Declaration)]
 findLemmaCandidates units =
   let parentCounts :: Map.Map String Int
@@ -124,11 +123,20 @@ buildCandidateLemma translateFn strict unitMap tstp2name debug (cname, cdecl) =
           bodyLits = map convertLit (bodyLitsOf cdecl)
           (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
       mSub <- if strict
-                then buildFromSubDag translateFn unitMap tstp2name debug cname lit bodyLits
+                then buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
                 else return Nothing
       case mSub of
         Just r  -> return (Just r)
         Nothing -> buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+
+-- The synthetic unit names of a sub-problem must not collide with the names
+-- of the units that appear in it (the candidate's ancestry): a collision
+-- would let lemmaNameOverrides rename a real axiom to "assumption".
+syntheticCollision :: Map.Map String T.Unit -> String -> [Literal] -> Bool
+syntheticCollision unitMap cname bodyLits_sk =
+  let inProblem = Set.insert cname (ancestorNamesOf unitMap cname)
+      ids = Set.union inProblem (Set.map sanitizeId inProblem)
+  in any (`Set.member` ids) (syntheticNames bodyLits_sk)
 
 -- Strict mode (paper, Section 4): the translation is applied recursively to a
 -- refutation of {A_1..A_n, not B} from the axioms.  The candidate's own
@@ -142,40 +150,40 @@ buildFromSubDag
   -> Map.Map String T.Unit
   -> Map.Map String String
   -> Bool
-  -> String -> Literal -> [Literal]
+  -> String -> Literal -> Literal -> [Literal] -> [(String, Term)]
   -> IO (Maybe BuiltLemma)
-buildFromSubDag translateFn unitMap tstp2name debug cname lit bodyLits = do
-  let (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
-      ancNames  = ancestorNamesOf unitMap cname
-      ancUnits  = [ u | aname <- Set.toList ancNames, Just u <- [Map.lookup aname unitMap] ]
-      candUnit  = maybeToList (Map.lookup cname unitMap)
-      unitLines = map (show . pretty) (ancUnits ++ candUnit)
-      premLines =
-        [ "cnf(prem_" ++ show i ++ ", hypothesis, " ++ cnfLitStr bl ++ ")."
-        | (i, bl) <- zip [(0::Int)..] bodyLits_sk ]
-      negLine   = "cnf(negconj, negated_conjecture, " ++ cnfLitStr (negLit lit_sk) ++ ")."
-      -- resolve the body atoms away one by one, then the head against negconj
-      stepName i = "lemma_step_" ++ show i
-      stepClause rest = intercalate " | " (cnfLitStr lit_sk : map (cnfLitStr . negLit) rest)
-      stepLines =
-        [ "cnf(" ++ stepName i ++ ", plain, " ++ stepClause (drop (i + 1) bodyLits_sk)
-          ++ ", inference(resolution,[status(thm)],[" ++ prev ++ ", prem_" ++ show i ++ "]))."
-        | i <- [0 .. length bodyLits_sk - 1]
-        , let prev = if i == 0 then cname else stepName (i - 1) ]
-      lastName  = if null bodyLits_sk then cname else stepName (length bodyLits_sk - 1)
-      botLine   = "cnf(lemma_bot, plain, $false, inference(resolution,[status(thm)],["
-                  ++ lastName ++ ", negconj]))."
-      content   = unlines (unitLines ++ premLines ++ [negLine] ++ stepLines ++ [botLine])
-      premOvr   = Map.fromList [("prem_" ++ show i, "assumption") | i <- [0 .. length bodyLits_sk - 1]]
-      nameOvr   = Map.unions [premOvr, Map.singleton "negconj" "", tstp2name]
-  when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG for " ++ cname)
-  case eitherResult (feed (parseTSTP (Text.pack content)) mempty) of
-    Left err -> do
-      when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG parse error: " ++ err)
+buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+  | syntheticCollision unitMap cname bodyLits_sk = do
+      when debug $ hPutStrLn stderr
+        ("buildCandidateLemma: sub-DAG skipped for " ++ cname ++ " (synthetic name collision)")
       return Nothing
-    Right tstp -> do
-      msp <- translateFn nameOvr debug tstp
-      return (msp >>= liftSubProof cname lit undoMap)
+  | otherwise = do
+      let ancNames  = ancestorNamesOf unitMap cname
+          ancUnits  = [ u | aname <- Set.toList ancNames, Just u <- [Map.lookup aname unitMap] ]
+          candUnit  = maybeToList (Map.lookup cname unitMap)
+          unitLines = map (show . pretty) (ancUnits ++ candUnit)
+          premLines = premLinesFor bodyLits_sk
+          negLine   = "cnf(negconj, negated_conjecture, " ++ cnfLitStr (negLit lit_sk) ++ ")."
+          -- resolve the body atoms away one by one, then the head against negconj
+          stepClause rest = intercalate " | " (cnfLitStr lit_sk : map (cnfLitStr . negLit) rest)
+          stepLines =
+            [ "cnf(" ++ lemmaStepName i ++ ", plain, " ++ stepClause (drop (i + 1) bodyLits_sk)
+              ++ ", inference(resolution,[status(thm)],[" ++ prev ++ ", " ++ premName i ++ "]))."
+            | i <- [0 .. length bodyLits_sk - 1]
+            , let prev = if i == 0 then cname else lemmaStepName (i - 1) ]
+          lastName  = if null bodyLits_sk then cname else lemmaStepName (length bodyLits_sk - 1)
+          botLine   = "cnf(lemma_bot, plain, $false, inference(resolution,[status(thm)],["
+                      ++ lastName ++ ", negconj]))."
+          content   = unlines (unitLines ++ premLines ++ [negLine] ++ stepLines ++ [botLine])
+          nameOvr   = lemmaNameOverrides bodyLits_sk tstp2name
+      when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG for " ++ cname)
+      case eitherResult (feed (parseTSTP (Text.pack content)) mempty) of
+        Left err -> do
+          when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG parse error: " ++ err)
+          return Nothing
+        Right tstp -> do
+          msp <- translateFn nameOvr debug tstp
+          return (msp >>= liftSubProof cname lit undoMap)
 
 -- Turn the recursive translation of a candidate into an outer-proof lemma:
 -- the goal block becomes the lemma's proof; the sub-lemmas are renamed apart
@@ -194,10 +202,7 @@ liftSubProof cname lit undoMap sp = do
       lift blk  = applyConstSubstBlock undoMap (renameRefsBlock ren blk)
       lifted    = [ (newName n, applyConstSubstLit undoMap l, lift b) | (n, l, b) <- subLemmas ]
       blk'      = lift goalBlk
-      emptyBlk (HaveHence []) = True
-      emptyBlk (EqChain _ []) = True
-      emptyBlk _              = False
-  if emptyBlk blk' || any (\(_, _, b) -> "assumption" `elem` blockRefNames b) lifted
+  if isEmptyBlock blk' || any (\(_, _, b) -> "assumption" `elem` blockRefNames b) lifted
     then Nothing
     else Just (lit, blk', lifted)
 
@@ -210,8 +215,12 @@ buildWithProver
   -> Bool
   -> String -> Literal -> Literal -> [Literal] -> [(String, Term)]
   -> IO (Maybe BuiltLemma)
-buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap = do
-
+buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+  | syntheticCollision unitMap cname bodyLits_sk = do
+      when debug $ hPutStrLn stderr
+        ("buildCandidateLemma: prover path skipped for " ++ cname ++ " (synthetic name collision)")
+      return Nothing
+  | otherwise = do
       let ancNames = ancestorNamesOf unitMap cname
           ancLines = [ line
                      | aname <- Set.toList ancNames
@@ -221,10 +230,7 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                      , isJust (headLitOf adecl)
                      , Just line <- [toCNFAncAxiom (sanitizeId aname) adecl]
                      ]
-          premLines =
-            [ "cnf(prem_" ++ show i ++ ", hypothesis, " ++ cnfLitStr bl ++ ")."
-            | (i, bl) <- zip [(0::Int)..] bodyLits_sk
-            ]
+          premLines = premLinesFor bodyLits_sk
           negLine =
             "cnf(negconj, negated_conjecture, " ++ cnfLitStr (negLit lit_sk) ++ ")."
           content = unlines (ancLines ++ premLines ++ [negLine])
@@ -273,25 +279,30 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
         Nothing -> do
           when debug $ hPutStrLn stderr
             ("buildCandidateLemma: E subproblem for " ++ cname ++ ":\n" ++ content)
-          tmpDir <- getTemporaryDirectory
-          (tmpFile, th) <- openTempFile tmpDir ("taelja_lemma_" ++ sanitizeId cname ++ ".p")
-          hPutStr th content >> hClose th
-          eBin <- fromMaybe "eprover" <$> lookupEnv "TAELJA_EPROVER"
+          eBin  <- fromMaybe "eprover" <$> lookupEnv "TAELJA_EPROVER"
           -- Per-candidate E budget (TAELJA_E_TIMEOUT, default 5 s soft CPU,
           -- +5 s wall-clock kill): a lemma is only worth introducing if its
           -- subproof is easy; an unprovable candidate would otherwise burn
           -- the whole limit (e.g. 30 s of ResourceOut on HEN006-4/Twee).
           -- --proof-object: the same proof format as the test baselines; the
           -- full saturation trace of --output-level=2 is not parseable here
-          eSecsStr <- fromMaybe "5" <$> lookupEnv "TAELJA_E_TIMEOUT"
-          let eSecs = case reads eSecsStr of { [(n, "")] -> n; _ -> 5 :: Int }
-          eResult <- runProverCapped (eSecs + 5) eBin
-                       ["--auto", "--proof-object", "--tptp3-format",
-                        "--soft-cpu-limit=" ++ show eSecs, tmpFile]
-          removeFile tmpFile
+          eSecs <- timeoutSecsFromEnv "TAELJA_E_TIMEOUT" 5
+          eResult <- withTempInput ("lemma_" ++ sanitizeId cname) content $ \tmpFile ->
+            runProverCapped (eSecs + 5) eBin
+              ["--auto", "--proof-object", "--tptp3-format",
+               "--soft-cpu-limit=" ++ show eSecs, tmpFile]
           case eResult of
             Nothing -> do
-              when debug $ hPutStrLn stderr "buildCandidateLemma: E failed or timed out (45s)"
+              -- distinguish a missing binary (silently drops every candidate)
+              -- from an ordinary timeout; findExecutable only searches PATH,
+              -- so also accept a path-qualified binary that exists
+              mExe   <- findExecutable eBin
+              exists <- doesFileExist eBin
+              if isNothing mExe && not exists
+                then hPutStrLn stderr
+                  ("[warn] buildCandidateLemma: E prover not found (" ++ eBin
+                   ++ "); lemma candidate inlined")
+                else when debug $ hPutStrLn stderr "buildCandidateLemma: E failed or timed out"
               return Nothing
             Just eOut -> do
               when debug $ hPutStrLn stderr
@@ -302,10 +313,7 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                     ("buildCandidateLemma: parse error: " ++ err)
                   return Nothing
                 Right tstp -> do
-                  let premOvr = Map.fromList
-                                  [("prem_" ++ show i, "assumption")
-                                  | i <- [0 .. length bodyLits_sk - 1]]
-                      nameOvr = Map.unions [premOvr, Map.singleton "negconj" "", tstp2name]
+                  let nameOvr = lemmaNameOverrides bodyLits_sk tstp2name
                   msp <- translateFn nameOvr debug tstp
                   return (msp >>= liftSubProof cname lit undoMap)
   where
@@ -331,3 +339,31 @@ negLit (Rel n as)  = NRel n as
 negLit (Eq l r)    = NEq l r
 negLit (NRel n as) = Rel n as
 negLit (NEq l r)   = Eq l r
+
+-- Skolemized body atoms as TPTP hypothesis lines (prem_0, prem_1, ...).
+premLinesFor :: [Literal] -> [String]
+premLinesFor bodyLits_sk =
+  [ "cnf(" ++ premName i ++ ", hypothesis, " ++ cnfLitStr bl ++ ")."
+  | (i, bl) <- zip [(0::Int)..] bodyLits_sk ]
+
+-- Display-name overrides for a recursive lemma translation: body premises are
+-- cited as "assumption", the negated conjecture is suppressed, axioms keep
+-- their outer names.
+lemmaNameOverrides :: [Literal] -> Map.Map String String -> Map.Map String String
+lemmaNameOverrides bodyLits_sk tstp2name = Map.unions
+  [ Map.fromList [ (premName i, "assumption") | i <- [0 .. length bodyLits_sk - 1] ]
+  , Map.singleton "negconj" ""
+  , tstp2name
+    -- ancestor axioms reach the E subproblem under sanitized ids (quoted
+    -- TPTP names lose their spaces), so the overrides answer to those too
+  , Map.mapKeys sanitizeId tstp2name ]
+
+-- Names of the synthetic units a sub-DAG translation adds.
+syntheticNames :: [Literal] -> [String]
+syntheticNames bodyLits_sk =
+  "negconj" : "lemma_bot"
+    : [ f i | i <- [0 .. length bodyLits_sk - 1], f <- [premName, lemmaStepName] ]
+
+premName, lemmaStepName :: Int -> String
+premName i      = "prem_" ++ show i
+lemmaStepName i = "lemma_step_" ++ show i

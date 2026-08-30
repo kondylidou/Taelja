@@ -16,7 +16,7 @@ import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
-import Data.List (sortBy)
+import Data.List (inits, sortBy)
 import Data.List.NonEmpty (toList)
 import Data.Maybe (fromMaybe, listToMaybe)
 import Data.Ord (comparing)
@@ -94,8 +94,7 @@ buildProofInfo allUnits
       wanted = Set.toList $ Set.fromList $ concat
         [ p : [ init p ++ [sib] | not (null p), let sib = if last p == '0' then '1' else '0' ]
         | e <- electrons ++ nuclei
-        , p <- inits' (lePos e) ]
-      inits' str = [ take i str | i <- [0 .. length str] ]
+        , p <- inits (lePos e) ]
       declMap = Map.fromList [ (p, d) | p <- wanted, Just d <- [declAtPos p] ]
   return ProofInfo
     { piElectrons = electrons
@@ -322,8 +321,8 @@ lookupDecl unitMap name = case Map.lookup name unitMap of
 -- single-parent preprocessing inferences such as fof_simplification or
 -- cnf_transformation).  Unlike resolveSourceName, a genuine inference such as
 -- resolution is a stopping point: its conclusion is a new clause, not a copy
--- of its first parent.  Strict mode uses it to decide whether a derived
--- clause is merely a renamed axiom (and therefore not a lemma candidate).
+-- of its first parent.  Used to decide whether a derived clause is merely a
+-- renamed axiom (and therefore not a lemma candidate).
 resolveCopySource :: Map.Map String T.Unit -> String -> String
 resolveCopySource unitMap = go
   where

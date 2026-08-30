@@ -6,8 +6,9 @@ import Control.Monad (foldM, forM, forM_, void, when)
 import Data.Bifunctor (second)
 import Control.Monad.State
 import Data.List (find, intercalate, nub, nubBy, partition, sortBy)
-import Data.Maybe (catMaybes, fromJust, fromMaybe, isJust, isNothing, listToMaybe)
+import Data.Maybe (catMaybes, fromJust, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
 import Data.Ord (Down(..), comparing)
+import qualified Data.Map.Lazy as LMap
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
@@ -54,18 +55,27 @@ translate debug tstp = do
   forceStrict <- maybe False (== "1") <$> lookupEnv "TAELJA_STRICT"
   mHeur <- if forceStrict then return Nothing else translateMode False debug tstp
   case mHeur of
-    Just sp | not (goalsEmpty sp) -> return (Just sp)
+    Just sp | not (hasHole sp) -> return (Just sp)
     _ -> do
-      when debug $ hPutStrLn stderr "translate: heuristic translation found no goal proof; trying strict mode"
+      when debug $ hPutStrLn stderr "translate: heuristic translation left a goal unproved; trying strict mode"
       mStrict <- translateMode True debug tstp
-      case mStrict of
-        Just sp | not (goalsEmpty sp) -> return (Just sp)
-        _                            -> return mHeur
+      -- keep whichever result proves more goals (ties go to the heuristic:
+      -- its proofs are the compact ones)
+      let result = case (mHeur, mStrict) of
+            (Just h, Just st) | provenGoals st > provenGoals h -> Just st
+            (Nothing, Just st) | provenGoals st > 0            -> Just st
+            _                                                  -> mHeur
+      case result of
+        Just sp | hasHole sp -> hPutStrLn stderr $
+          "[warn] translate: " ++ show (length (goals sp) - provenGoals sp)
+          ++ " goal(s) unproved in the final proof"
+        _ -> return ()
+      return result
   where
-    goalsEmpty sp = null (goals sp) || all (emptyBlk . snd) (goals sp)
-    emptyBlk (HaveHence []) = True
-    emptyBlk (EqChain _ []) = True
-    emptyBlk _              = False
+    -- one unproved goal (empty block) is enough to try strict mode: a single
+    -- proven goal must not mask the hole in a multi-goal proof
+    hasHole sp = null (goals sp) || any (isEmptyBlock . snd) (goals sp)
+    provenGoals sp = length [ () | (_, b) <- goals sp, not (isEmptyBlock b) ]
 
 -- The translation pipeline shared by both stages.  Lemma introduction first:
 -- every derived clause used at least twice in the DAG (unless it is merely a
@@ -117,6 +127,13 @@ type AlgM a = StateT AlgState IO a
 addUnit :: UnitEntry -> AlgM ()
 addUnit ue = modify $ \s -> s { stUnits = stUnits s ++ [ue] }
 
+-- A per-goal warning inside a translation stage may be premature: the other
+-- stage can still prove the goal.  translate prints the authoritative summary.
+dbgWarn :: String -> AlgM ()
+dbgWarn msg = do
+  dbg' <- gets stDebug
+  when dbg' $ liftIO $ hPutStrLn stderr ("[warn] " ++ msg)
+
 nextCounter :: AlgM Int
 nextCounter = do
   k <- gets stCounter
@@ -160,8 +177,15 @@ promoteToLemma lit blk = do
         Just u  -> return (fromJust (ueName u))
         Nothing -> error ("promoteToLemma: shouldBlock and no named unit for: " ++ show lit)
     else do
-      k <- nextCounter
-      let name = "lemma " ++ show k
+      -- skip counter values whose name is already taken (a lemma candidate is
+      -- named "lemma <tstp-name>", and TSTP unit names may be numeric)
+      taken <- gets (\s -> Set.fromList (map (\(n, _, _) -> n) (stLemmas s))
+                          `Set.union` Set.fromList (mapMaybe ueName (stUnits s)))
+      let freshName = do
+            k <- nextCounter
+            let name = "lemma " ++ show k
+            if name `Set.member` taken then freshName else return name
+      name <- freshName
       modify $ \s -> s
         { stLemmas = stLemmas s ++ [(name, lit, blk)]
         , stUnits  = map (promote name) (stUnits s)
@@ -584,6 +608,10 @@ matchViaRw li τ srcElecs eqEntries = firstJustM tryElec srcElecs
           nm <- getEqName eq
           case nm of
             Nothing -> return Nothing
+            -- NOTE: res is returned σi-instantiated here, while the demod-chain
+            -- path (rwChain) returns uninstantiated literals; electronTarget and
+            -- makeBlock apply σi again, which is a no-op only while σi is
+            -- idempotent.  Normalizing this needs a golden decision.
             Just n  -> return $ Just (u, σi, τ', [(RwStep n (sa, sb) dir, applySubst σi res)])
       _ -> return Nothing
 
@@ -873,13 +901,14 @@ nodeTheta declAt leafDecl leafPos = go leafPos
 
     -- go p recurses into both the parent chain and each sibling's parent
     -- chain; memoise per position or the sharing explodes exponentially in
-    -- the tree depth.  An association list keeps the thunks lazy: a strict
+    -- the tree depth.  The map must be VALUE-LAZY (Data.Map.Lazy): a strict
     -- map would force every position eagerly and loop on the mutual
     -- parent/sibling references (which are only demanded selectively).
-    memo :: [(String, Subst)]
-    memo = [ (p, compute p) | p <- leafPos : Map.keys declAt ]
+    memo :: LMap.Map String Subst
+    memo = LMap.insert leafPos (compute leafPos)
+             (LMap.mapWithKey (\p _ -> compute p) (LMap.fromAscList (Map.toAscList declAt)))
 
-    go p = fromMaybe [] (lookup p memo)
+    go p = LMap.findWithDefault [] p memo
 
     compute "" = []
     compute p  = fromMaybe [] $ do
@@ -888,15 +917,10 @@ nodeTheta declAt leafDecl leafPos = go leafPos
           sp = pp ++ [if last p == '0' then '1' else '0']
       pc <- declOf pp >>= convertDeclToClause
       cc <- declOf p  >>= convertDeclToClause
-      let parentLits = [ (b, renameLit' "_p" (applySubst θP l)) | (b, l) <- polLits pc ]
+      let parentLits = [ (b, suffixVarsLit "_p" (applySubst θP l)) | (b, l) <- polLits pc ]
           childLits  = polLits cc
           mSib       = Map.lookup sp declAt >>= convertDeclToClause
       return (groundChild childLits parentLits mSib (go sp))
-
-    renameLit' suf = mapLiteralTerms ren
-      where ren (Var x)    = Var (x ++ suf)
-            ren (Const c)  = Const c
-            ren (App f ts) = App f (map ren ts)
 
     -- Match child literals into parent literals (each parent literal used at
     -- most once), allowing skips; prefer the fewest skips.
@@ -918,7 +942,8 @@ nodeTheta declAt leafDecl leafPos = go leafPos
     notVar _       = True
 
     groundChild childLits parentLits mSib θSib =
-      let cands = sortBy (comparing (\(_, sk, _) -> length sk)) (matchInto childLits parentLits [])
+      let cands = map snd $ sortBy (comparing fst)
+                    [ (length sk, c) | c@(_, sk, _) <- matchInto childLits parentLits [] ]
           childVars = concatMap (litVars . snd) childLits
           restrict = filter ((`elem` childVars) . fst)
       in case cands of
@@ -954,7 +979,7 @@ nodeTheta declAt leafDecl leafPos = go leafPos
                 ([(bS, lS)], [(bU, lU)], Just (Clause [] (Just (Eq a b))))
                   | bS == bU -> listToMaybe
                       [ s'
-                      | let a' = renameLit' "_r" (Eq a b)
+                      | let a' = suffixVarsLit "_r" (Eq a b)
                       , (lhs, rhs) <- case a' of { Eq x y -> [(x, y), (y, x)]; _ -> [] }
                       , let lSi = applySubst s lS
                       , (u, ctx) <- litSubtermCtxs lSi
@@ -968,7 +993,7 @@ nodeTheta declAt leafDecl leafPos = go leafPos
                 ([(True, Eq a b)], Just sibC)
                   | length childLits == 1 -> listToMaybe
                       [ [ (v, applySubstTerm s'' t) | (v, t) <- σC ]
-                      | (bS, lS) <- map (\(x, y) -> (x, renameLit' "_s" y)) (polLits sibC)
+                      | (bS, lS) <- map (\(x, y) -> (x, suffixVarsLit "_s" y)) (polLits sibC)
                       , (bP, lP) <- parentLits
                       , bS == bP
                       , (lhs, rhs) <- [(a, b), (b, a)]
@@ -981,7 +1006,7 @@ nodeTheta declAt leafDecl leafPos = go leafPos
               -- body literal resolved against the sibling unit: ground bindings only
               bodyVsSibUnit = case (skipped, mSib) of
                 ([(False, lS)], Just (Clause [] (Just sl))) ->
-                  let sl' = renameLit' "_s" sl
+                  let sl' = suffixVarsLit "_s" sl
                   in case matchLitWith lS sl' s <|> matchLitWith (flipLit lS) sl' s of
                        Just s' -> Just (s ++ filter (\(v, t) -> null (termVars t) && v `notElem` map fst s) s')
                        Nothing -> Nothing
@@ -996,7 +1021,7 @@ processOneNucleus
   -> [Literal]                       -- goal literals
   -> Map.Map String [(String, Dir)]  -- simpl chains
   -> AlgM Bool
-processOneNucleus debug piElecs entry posToName goalLits simpl = do
+processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
   let pos    = lePos entry
       mAxName = Map.lookup pos posToName
   case convertDeclToClause (leSrcDecl entry) of
@@ -1004,7 +1029,7 @@ processOneNucleus debug piElecs entry posToName goalLits simpl = do
       liftIO $ dbg debug $ "[skip] pos=" ++ pos ++ " (" ++ leName entry ++ ") — could not convert to clause"
       return False
     Just cls ->
-      let θ_local = computeNucleusTheta piElecs entry
+      let θ_local = computeNucleusTheta thetaCtx entry
           Clause bodyLitsAbs mHead = cls
           bodyLits = map (applySubst θ_local) bodyLitsAbs
           -- True for non-ground-head derived nuclei (innerNusNG, second pass):
@@ -1116,21 +1141,31 @@ processOneNucleus debug piElecs entry posToName goalLits simpl = do
                 blk <- buildProofBlock matched mAxName τ headLit
                 let headInst = applySubst τ headLit
                     electronTargets = map (\(ki,σi,_) -> applySubst σi (ueUnit ki)) matched
-                    -- Block storage for two categories of bad abstract proofs when headInst
-                    -- still has free variables (ground proofs are always safe to store):
-                    -- (1) Stale target: the Eq head has a free var V that also appears in
-                    --     a body literal after τ, but some electron target is missing V.
-                    --     This means greedy body matching grounded V in that target while
-                    --     leaving it free in the head — inconsistent under retrieval.
-                    --     Example: HEN006-4 axiom 5 (antisymmetry) body 2 gives target
-                    --     "less_equal(zero,zero)" while head still has X1 free.
-                    --     (Head-only vars like Y in "class_Ord(X) => Y = c_times(c_1,Y,X)"
-                    --     are excluded: Y is not in any body lit, so ground targets are fine.)
-                    -- (2) Circular: a body electron target equals the head, producing a
-                    --     degenerate proof. Example: transitivity matched against two abstract
-                    --     axiom-7 copies, each claiming the same "less_equal(div(X,Y),X)".
+                    -- Two kinds of degenerate blocks are never stored:
+                    -- (1) Stale target (non-ground Eq heads only): a free head var V
+                    --     also appears in a body literal after τ, but some electron
+                    --     target lacks V — greedy matching grounded V in that target
+                    --     while leaving it free in the head, so retrieval at another
+                    --     instance would be inconsistent.  Example: HEN006-4 axiom 5
+                    --     (antisymmetry), body 2 target "less_equal(zero,zero)" with
+                    --     X1 still free in the head.  Head-only vars (Y in
+                    --     "class_Ord(X) => Y = c_times(c_1,Y,X)") are exempt.
+                    -- (2) Circular (any head): a body electron target equals the head,
+                    --     so the block proves the literal from itself.  Example:
+                    --     transitivity matched against two abstract axiom-7 copies,
+                    --     each claiming the same "less_equal(div(X,Y),X)".
+                    headVars = Set.fromList (litVars headInst)
+                    bodyVarsAfterTau = Set.fromList
+                      (concatMap (litVars . applySubst τ) bodyLits)
+                    headBodyVars = headVars `Set.intersection` bodyVarsAfterTau
+                    hasStaleTarget = isEqLit headLit
+                                  && not (Set.null headBodyVars)
+                                  && any (\t -> not (headBodyVars `Set.isSubsetOf`
+                                                     Set.fromList (litVars t)))
+                                         electronTargets
                     isCircular = headInst `elem` electronTargets
-                    proofToStore = if isCircular then Nothing else Just blk
+                    proofToStore = if isCircular || (not (Set.null headVars) && hasStaleTarget)
+                                   then Nothing else Just blk
                 -- inner nuclei (mAxName=Nothing) produce no "hence L0 by axiom",
                 -- so skip storing them to avoid corrupting later proofs
                 when (isJust mAxName) $ do
@@ -1186,7 +1221,7 @@ processOneNucleus debug piElecs entry posToName goalLits simpl = do
                 --   (a) the goal is equational, or
                 --   (b) the head has free variables (non-ground head → innerNusNG
                 --       second pass, so named axiom paths have already been tried).
-                -- Ground-head derived nuclei (innerNus, first pass) are excluded by
+                -- Ground-head derived nuclei (heuristic first pass) are excluded by
                 -- the `not (null (litVars headLit))` guard so they cannot short-circuit
                 -- named axiom proofs for relational goals.
                 -- Orient headLit to match the goal literal's direction.
@@ -1246,7 +1281,7 @@ processNuclei
   -> [Literal]
   -> Map.Map String [(String, Dir)]
   -> AlgM ()
-processNuclei debug warnOnFail piElecs nuclei posToName goalLits simpl = go nuclei
+processNuclei debug warnOnFail thetaCtx nuclei posToName goalLits simpl = go nuclei
   where
     nGoals = length goalLits
 
@@ -1276,7 +1311,7 @@ processNuclei debug warnOnFail piElecs nuclei posToName goalLits simpl = go nucl
         then return []
         else do
           prevCount <- gets (length . stUnits)
-          done      <- processOneNucleus debug piElecs entry posToName goalLits simpl
+          done      <- processOneNucleus debug thetaCtx entry posToName goalLits simpl
           newCount  <- gets (length . stUnits)
           if done
             then return []
@@ -1363,8 +1398,7 @@ proveGoal mChain goal = do
                   steps' <- mapM promoteChainStep chain
                   emitGoalProof goal (EqChain start steps')
                 _ -> do
-                  liftIO $ hPutStrLn stderr $
-                    "[warn] no proof found for goal: " ++ ppLitI goal
+                  dbgWarn ("no proof found for goal: " ++ ppLitI goal)
                   emitGoalProof goal (EqChain l [])
     _ ->
       case findUnitForGoal goal units of
@@ -1440,8 +1474,7 @@ proveGoal mChain goal = do
                                                 , Just nm' <- [ueName ue] ]
                   case hornSteps of
                     []        -> do
-                      liftIO $ hPutStrLn stderr $
-                        "[warn] no unit found for goal: " ++ ppLitI goal
+                      dbgWarn ("no unit found for goal: " ++ ppLitI goal)
                       emitGoalProof goal (HaveHence [])
                     [(_, nm')] -> emitGoalProof goal (HaveHence [Hence goal (ByAxiom nm')])
                     _ ->
@@ -1451,8 +1484,7 @@ proveGoal mChain goal = do
                           finalLine = Hence goal (ByAxiom (snd (last hornSteps)))
                       in emitGoalProof goal (HaveHence (intermediateLines ++ [finalLine]))
                 _ -> do
-                  liftIO $ hPutStrLn stderr $
-                    "[warn] no unit found for goal: " ++ ppLitI goal
+                  dbgWarn ("no unit found for goal: " ++ ppLitI goal)
                   emitGoalProof goal (HaveHence [])
   where
     -- Try to prove a literal in ONE step via any axiom in axNuclei, using
@@ -1758,7 +1790,8 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , not (isEqLit (convertLit hl))
         ]
       initSt = AlgState
-        { stUnits      = namedUnits ++ derivedUnits ++ bgNamedUnits
+        { stDebug      = debug
+        , stUnits      = namedUnits ++ derivedUnits ++ bgNamedUnits
         , stHornAxioms = hornAxiomEntries
         , stLemmas     = preLemmaEntries
         , stGoals      = []
@@ -1802,15 +1835,15 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
       return (StructuredProof (axiomList ++ bgAxiomList) (stLemmas finalSt) [])
     else return (StructuredProof (axiomList ++ bgAxiomList) (stLemmas finalSt) (stGoals finalSt))
   where
-    action piElecs allNuclei innerNusNG posToName goalLits simpl pG1Chain = do
+    action thetaCtx' allNuclei innerNusNG posToName goalLits simpl pG1Chain = do
       -- First pass: leaf axioms + ground-head derived nuclei.
-      processNuclei debug False piElecs allNuclei posToName goalLits simpl
+      processNuclei debug False thetaCtx' allNuclei posToName goalLits simpl
       nDone <- gets (length . stGoals)
       -- Second pass: derived non-ground-head Horn nuclei (e.g. E's inline spm steps).
       -- Only tried when the first pass (leaf + ground-head nuclei) failed to prove
       -- the goal, so named axiom paths always get priority.
       when (nDone < length goalLits) $
-        processNuclei debug False piElecs innerNusNG posToName goalLits simpl
+        processNuclei debug False thetaCtx' innerNusNG posToName goalLits simpl
       nDone2 <- gets (length . stGoals)
       when (nDone2 < length goalLits) $ do
         proven <- gets (map fst . stGoals)

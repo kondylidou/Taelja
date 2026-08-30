@@ -1,6 +1,5 @@
 module TweeInterface
   ( tweeBin
-  , tweemaxtime
   , toTptpTerm
   , toCnfAxiom
   , toCnfNegGoal
@@ -22,6 +21,8 @@ module TweeInterface
   , callTwee
   , relevantUnits
   , runProverCapped
+  , withTempInput
+  , timeoutSecsFromEnv
   ) where
 
 import Control.Applicative ((<|>))
@@ -31,13 +32,14 @@ import Data.List.NonEmpty (toList)
 import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
 import qualified Data.TPTP as T
-import Control.Exception (SomeException, try)
+import Control.Exception (SomeException, bracket, try)
 import System.Directory (getTemporaryDirectory, removeFile)
 import System.Environment (lookupEnv)
 import System.Exit (ExitCode)
 import System.IO (hClose, hPutStr, openTempFile)
 import System.Process (readProcessWithExitCode)
 import System.Timeout (timeout)
+import Text.Read (readMaybe)
 
 import Types
 import Helpers (appendLine, litVars, rewriteTermAll)
@@ -45,11 +47,6 @@ import TptpConvert
 
 tweeBin :: FilePath
 tweeBin = "bin/twee"
-
--- Read the per-call Twee time limit from the environment.
--- Defaults to 15s; set TAELJA_TWEE_TIMEOUT=60 (or any integer) to override.
-tweemaxtime :: IO String
-tweemaxtime = fromMaybe "15" <$> lookupEnv "TAELJA_TWEE_TIMEOUT"
 
 -- Run a prover with a hard wall-clock cap.  Twee's --max-time and E's
 -- --soft-cpu-limit are not reliable stopping points (Twee has been observed
@@ -64,27 +61,35 @@ runProverCapped secs bin args = do
     Just (Right (_, out, _)) -> Just out
     _                        -> Nothing
 
+-- Seconds from an environment variable, with a default for unset/unparseable.
+-- Clamped to at least 1: zero or negative values would make System.Timeout
+-- fail immediately or, worse, disable the wall-clock kill entirely.
+timeoutSecsFromEnv :: String -> Int -> IO Int
+timeoutSecsFromEnv var def = max 1 . fromMaybe def . (>>= readMaybe) <$> lookupEnv var
+
 -- Twee call on a problem text, with the configured --max-time plus a
 -- wall-clock margin.  The input goes to a fresh temporary file so that
 -- concurrent Taelja processes (e.g. a test suite running in parallel) never
 -- overwrite each other's problems.
 runTwee :: String -> String -> IO String
 runTwee tag input = withTempInput tag input $ \tmpFile -> do
-  maxTime <- tweemaxtime
-  let secs = case reads maxTime of { [(n, "")] -> n; _ -> 15 :: Int }
+  secs <- timeoutSecsFromEnv "TAELJA_TWEE_TIMEOUT" 15
+  let maxTime = show secs
   fromMaybe "" <$> runProverCapped (secs + 5) tweeBin
     ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile]
 
--- Write a prover input to a fresh temp file, run the action, remove the file.
+-- Write a prover input to a fresh temp file, run the action, remove the file
+-- (also when the action throws, e.g. the wall-clock timeout).
 withTempInput :: String -> String -> (FilePath -> IO a) -> IO a
 withTempInput tag input act = do
   tmpDir <- getTemporaryDirectory
-  (path, h) <- openTempFile tmpDir ("taelja_" ++ tag ++ ".p")
-  hPutStr h input
-  hClose h
-  r <- act path
-  removeFile path
-  return r
+  bracket
+    (do (path, h) <- openTempFile tmpDir ("taelja_" ++ tag ++ ".p")
+        hPutStr h input
+        hClose h
+        return path)
+    removeFile
+    act
 
 toTptpTerm :: Term -> String
 toTptpTerm (Var [])       = []
@@ -196,8 +201,15 @@ callTweeRelLemma units hornAxioms goalLit = do
     relTerm n [] = Const n
     relTerm n as = App n as
 
+-- An unquoted TPTP atom: lowercase-letter head, then [a-zA-Z0-9_].  Anything
+-- else (spaces, ':', '-', quotes, ...) would make the generated prover input
+-- file unparseable, silently failing every call that includes the unit.
 sanitizeId :: String -> String
-sanitizeId = map (\c -> if c == ' ' then '_' else c)
+sanitizeId nm =
+  let body = map (\c -> if isAsciiLower c || isAsciiUpper c || isDigit c || c == '_' then c else '_') nm
+  in case body of
+       (c : _) | isAsciiLower c -> body
+       _                        -> 'x' : body
 
 -- Transitive symbol-relevance filter: keep only units whose symbols are
 -- reachable from the goal's symbols via the axiom set.  Prevents passing

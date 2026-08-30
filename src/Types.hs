@@ -87,7 +87,8 @@ data StructuredProof = StructuredProof
   } deriving (Show)
 
 data AlgState = AlgState
-  { stUnits      :: [UnitEntry]
+  { stDebug      :: Bool  -- gate for per-goal warnings (a stage's result may be superseded)
+  , stUnits      :: [UnitEntry]
   , stHornAxioms :: [HornAxiomEntry]  -- original Horn axioms for Twee fallback calls
   , stLemmas     :: [(String, Literal, ProofBlock)]
   , stGoals      :: [(Literal, ProofBlock)]

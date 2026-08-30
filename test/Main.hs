@@ -17,7 +17,7 @@ main :: IO ()
 main = do
   -- Successful Twee fallback calls in the suite finish in under 2 s; a failing
   -- one burns the whole budget, so keep it small here.  The eval and normal
-  -- runs use the 15 s default (see TweeInterface.tweemaxtime).
+  -- runs use the 15 s default (see TweeInterface.timeoutSecsFromEnv in runTwee).
   setEnv "TAELJA_TWEE_TIMEOUT" "5"
   defaultMain tests
 
