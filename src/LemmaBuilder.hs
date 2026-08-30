@@ -3,21 +3,36 @@ module LemmaBuilder
   , ancestorNamesOf
   , findLemmaCandidates
   , buildCandidateLemma
+  , BuiltLemma
   , makeFileSourced
   ) where
 
-import Data.List (isPrefixOf, nub)
-import Data.Maybe (fromMaybe, isJust)
+import Control.Exception (SomeException, try)
+import Control.Monad (when)
+import Data.List (intercalate, nub)
+import Data.Maybe (fromJust, fromMaybe, isJust, listToMaybe, mapMaybe, maybeToList)
+import Data.Attoparsec.Text (eitherResult, feed)
+import Data.TPTP.Parse.Text (parseTSTP)
+import Data.TPTP.Pretty (Pretty (..))
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.TPTP as T
 import qualified Data.Text as Text
+import System.Environment (lookupEnv)
+import System.Exit (ExitCode)
+import System.Directory (getTemporaryDirectory, removeFile)
+import System.IO (hClose, hPutStr, hPutStrLn, openTempFile, stderr)
+import System.Process (readProcessWithExitCode)
+import System.Timeout (timeout)
 
 import Types
-import Helpers (applySubst, applyConstSubstLit, applyConstSubstTerm, applySubstTerm, litVars)
-import ProofTree (headLitOf, unitNameStr, isPositiveUnitFormula)
+import Helpers
+  ( applySubst, applyConstSubstBlock, applyConstSubstLit, blockRefNames
+  , litVars, renameRefsBlock
+  )
+import ProofTree (headLitOf, unitNameStr)
 import TptpConvert
-import TweeInterface
+import TweeInterface (callTwee, isDerivedUnit, isEqLit, isOrigAxiomDecl, sanitizeId, toTptpTerm)
 
 -- Flatten a T.Parent into the TSTP unit names it references
 flattenParents :: T.Parent -> [String]
@@ -65,145 +80,17 @@ findLemmaCandidates units =
      , Set.member (unitNameStr n) candidateSet
      ]
 
--- Build a proof for candidate equation via direct Twee call.
--- tstp2name: TSTP unit name -> main-proof axiom name (from assignAxiomNames).
--- Returns (original-var-form lit, proof block with undo-Skolem) or Nothing.
-buildCandidateLemma
-  :: Map.Map String T.Unit
-  -> Map.Map String String
-  -> (String, T.Declaration)
-  -> IO (Maybe (Literal, ProofBlock))
-buildCandidateLemma unitMap tstp2name (cname, cdecl) =
-  case headLitOf cdecl of
-    Nothing -> return Nothing
-    Just tlit ->
-      let lit = convertLit tlit
-      in case lit of
-           Eq l r -> do
-             let vs      = nub (litVars lit)
-                 skMap   = zip vs ["skc_" ++ show i | i <- [(0 :: Int) ..]]
-                 skSubst = [(v, Const sk) | (v, sk) <- skMap]
-                 l_sk    = applySubstTerm skSubst l
-                 r_sk    = applySubstTerm skSubst r
-
-             let ancNames  = ancestorNamesOf unitMap cname
-                 axEntries =
-                   [ UnitEntry (Map.lookup aname tstp2name) aeq Nothing Nothing
-                   | aname <- Set.toList ancNames
-                   , Just u@(T.Unit _ adecl _) <- [Map.lookup aname unitMap]
-                   , not (isDerivedUnit u)
-                   , isOrigAxiomDecl adecl
-                   , isPositiveUnitFormula adecl  -- exclude clauses with body literals
-                   , Just headL <- [headLitOf adecl]
-                   , let aeq = convertLit headL
-                   , isEqLit aeq
-                   ]
-
-             mRes <- callTwee axEntries (Eq l_sk r_sk)
-             case mRes of
-               Nothing       -> return Nothing
-               Just (_, [])  -> return Nothing
-               Just (start, chain) -> do
-                 let undoMap = [(sk, Var v) | (v, sk) <- skMap]
-                     steps   = [ ( RwStep nm eq dir
-                                 , applyConstSubstTerm undoMap cur )
-                               | (ue, dir, cur) <- chain
-                               , let nm = fromMaybe "?" (ueName ue)
-                               , let eq = case ueUnit ue of
-                                            Eq a b -> (a, b)
-                                            _      -> (Const "?", Const "?")
-                               ]
-                     blk = EqChain (applyConstSubstTerm undoMap start) steps
-                 -- Reject if any step references an ancestor not visible in the main proof
-                 if any (\(RwStep nm _ _, _) -> nm == "?") steps
-                   then return Nothing
-                   else return (Just (lit, blk))
-
-           Rel _ _ -> do
-             let bodyTLits   = bodyLitsOf cdecl
-                 bodyLits    = map convertLit bodyTLits
-                 allVs       = nub (litVars lit ++ concatMap litVars bodyLits)
-                 skMap       = zip allVs ["skc_" ++ show i | i <- [(0::Int)..]]
-                 skSubst     = [(v, Const sk) | (v, sk) <- skMap]
-                 lit_sk      = applySubst skSubst lit
-                 bodyLits_sk = map (applySubst skSubst) bodyLits
-
-             let ancNames = ancestorNamesOf unitMap cname
-                 ancOrigUnits =
-                   [ (sanitizeId aname, adecl)
-                   | aname <- Set.toList ancNames
-                   , Just u@(T.Unit _ adecl _) <- [Map.lookup aname unitMap]
-                   , not (isDerivedUnit u)
-                   , isOrigAxiomDecl adecl
-                   , isJust (headLitOf adecl)
-                   ]
-                 -- Positive-unit ancestors (eq or rel) as UnitEntry background
-                 unitAxEntries =
-                   [ UnitEntry (Map.lookup aname tstp2name) aeq Nothing Nothing
-                   | (aname, adecl) <- ancOrigUnits
-                   , isPositiveUnitFormula adecl
-                   , Just headL <- [headLitOf adecl]
-                   , let aeq = convertLit headL
-                   ]
-                 -- Original Horn-clause ancestors with relational heads and relational bodies only.
-                 -- Equality-headed Horn axioms (e.g. antisymmetry X<=Y /\ Y<=X => X=Y) cause the
-                 -- "= true" encoding to vanish in Twee's completion. Equality-bodied Horn axioms
-                 -- (e.g. quotient_less_equal2: divide(X,Y)=zero => less_equal(X,Y)) cause bodies
-                 -- to collapse to "true", making the axiom unconditional and producing wrong proofs.
-                 -- Only purely relational Horn axioms (e.g. transitivity) are safe.
-                 -- Encoded as ifeq+pair CNF (sound for multi-body clauses).
-                 hornAxioms =
-                   [ HornAxiomEntry
-                       { haCnfId    = aname ++ "_anc"
-                       , haDispName = Map.lookup aname tstp2name
-                       , haHead     = convertLit hl
-                       , haBodies   = map convertLit (bodyLitsOf adecl)
-                       }
-                   | (aname, adecl) <- ancOrigUnits
-                   , not (isPositiveUnitFormula adecl)
-                   , Just hl <- [headLitOf adecl]
-                   , not (isEqLit (convertLit hl))
-                   , all (not . isEqLit . convertLit) (bodyLitsOf adecl)
-                   ]
-                 -- Skolemized body lits as ground premises in callTweeRelLemma
-                 premEntries =
-                   [ UnitEntry (Just ("prem_" ++ show i)) bl Nothing Nothing
-                   | (i, bl) <- zip [(0::Int)..] bodyLits_sk
-                   ]
-
-             mRes <- callTweeRelLemma (unitAxEntries ++ premEntries) hornAxioms lit_sk
-             case mRes of
-               Nothing -> return Nothing
-               Just (_, chain) -> do
-                 let undoMap   = [(sk, Var v) | (v, sk) <- skMap]
-                     headU     = applyConstSubstLit undoMap lit
-                     bodyUs    = map (applyConstSubstLit undoMap) bodyLits
-                     -- Filter to non-prem, non-ifeq steps (the actual Horn axioms used).
-                     -- ifeq_axiom sentinel has ueName = Just "ifeq_axiom"; prem_N have
-                     -- ueName = Just "prem_N".  Both are excluded from the proof lines.
-                     isPrem ue = case ueName ue of
-                       Just nm -> isPrefixOf "prem_" nm || nm == "ifeq_axiom"
-                       Nothing -> True
-                     hornSteps = [ (ue, nm)
-                                 | (ue, _, _) <- chain
-                                 , not (isPrem ue)
-                                 , Just nm <- [ueName ue]
-                                 ]
-                 case hornSteps of
-                   [] -> return Nothing
-                   _ -> do
-                     let haveLines = [Have bl "assumption" | bl <- bodyUs]
-                         -- Intermediate "hence" lines for all but the last axiom step.
-                         -- ueUnit holds the abstract head literal (possibly with original
-                         -- Horn-axiom vars); applyConstSubstLit undoes Skolemization.
-                         intermediateLines =
-                           [ Hence (applyConstSubstLit undoMap (ueUnit ue)) (ByAxiom nm)
-                           | (ue, nm) <- init hornSteps ]
-                         finalLine = Hence headU (ByAxiom (snd (last hornSteps)))
-                         blk = HaveHence (haveLines ++ intermediateLines ++ [finalLine])
-                     return (Just (lit, blk))
-
-           _ -> return Nothing
+-- Skolemize a head literal and its body literals together, replacing all
+-- variables with fresh Skolem constants skc_0, skc_1, …
+-- Returns the grounded head, grounded body, and an undo map for de-Skolemization.
+skolemizeAll :: Literal -> [Literal] -> (Literal, [Literal], [(String, Term)])
+skolemizeAll lit bodyLits =
+  let allVs   = nub (concatMap litVars (lit : bodyLits))
+      skMap   = zip allVs ["skc_" ++ show i | i <- [(0 :: Int) ..]]
+      skSubst = [(v, Const sk) | (v, sk) <- skMap]
+  in ( applySubst skSubst lit
+     , map (applySubst skSubst) bodyLits
+     , [(sk, Var v) | (v, sk) <- skMap] )
 
 -- Replace a candidate unit's inference source with a synthetic file source so
 -- that buildProofInfo treats it as an OrigAxiom leaf (halts expansion there).
@@ -211,3 +98,225 @@ makeFileSourced :: T.Unit -> T.Unit
 makeFileSourced (T.Unit n decl _) =
   T.Unit n decl (Just (T.File (T.Atom (Text.pack "lemma")) Nothing, Nothing))
 makeFileSourced u = u
+
+-- Recursive lemma builder: writes a CNF TPTP subproblem, calls E prover,
+-- parses the TSTP output, then calls the translator recursively and de-Skolemizes.
+-- The translateFn parameter is Translate.translateWith (passed to avoid a circular import).
+-- A built lemma: its statement, its proof, and the sub-lemmas the recursive
+-- translation introduced (already renamed apart and de-Skolemized), which the
+-- caller must add to the outer proof before the lemma itself.
+type BuiltLemma = (Literal, ProofBlock, [(String, Literal, ProofBlock)])
+
+buildCandidateLemma
+  :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
+  -> Bool                   -- strict mode: translate the candidate's own sub-DAG first
+  -> Map.Map String T.Unit
+  -> Map.Map String String  -- tstp2name: TSTP name -> display name in outer proof
+  -> Bool                   -- debug
+  -> (String, T.Declaration)
+  -> IO (Maybe BuiltLemma)
+buildCandidateLemma translateFn strict unitMap tstp2name debug (cname, cdecl) =
+  case headLitOf cdecl of
+    Nothing   -> return Nothing
+    Just tlit -> do
+      let lit     = convertLit tlit
+          bodyLits = map convertLit (bodyLitsOf cdecl)
+          (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
+      mSub <- if strict
+                then buildFromSubDag translateFn unitMap tstp2name debug cname lit bodyLits
+                else return Nothing
+      case mSub of
+        Just r  -> return (Just r)
+        Nothing -> buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+
+-- Strict mode (paper, Section 4): the translation is applied recursively to a
+-- refutation of {A_1..A_n, not B} from the axioms.  The candidate's own
+-- ancestry in the input proof already is such a refutation once the
+-- Skolemized negation is resolved against it, so no prover is needed: all
+-- ancestor units (verbatim), the candidate, the Skolemized body atoms as
+-- hypotheses, the Skolemized negated head, and synthetic resolution steps
+-- deriving bottom are translated as one proof.
+buildFromSubDag
+  :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
+  -> Map.Map String T.Unit
+  -> Map.Map String String
+  -> Bool
+  -> String -> Literal -> [Literal]
+  -> IO (Maybe BuiltLemma)
+buildFromSubDag translateFn unitMap tstp2name debug cname lit bodyLits = do
+  let (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
+      ancNames  = ancestorNamesOf unitMap cname
+      ancUnits  = [ u | aname <- Set.toList ancNames, Just u <- [Map.lookup aname unitMap] ]
+      candUnit  = maybeToList (Map.lookup cname unitMap)
+      unitLines = map (show . pretty) (ancUnits ++ candUnit)
+      premLines =
+        [ "cnf(prem_" ++ show i ++ ", hypothesis, " ++ cnfLitStr bl ++ ")."
+        | (i, bl) <- zip [(0::Int)..] bodyLits_sk ]
+      negLine   = "cnf(negconj, negated_conjecture, " ++ cnfLitStr (negLit lit_sk) ++ ")."
+      -- resolve the body atoms away one by one, then the head against negconj
+      stepName i = "lemma_step_" ++ show i
+      stepClause rest = intercalate " | " (cnfLitStr lit_sk : map (cnfLitStr . negLit) rest)
+      stepLines =
+        [ "cnf(" ++ stepName i ++ ", plain, " ++ stepClause (drop (i + 1) bodyLits_sk)
+          ++ ", inference(resolution,[status(thm)],[" ++ prev ++ ", prem_" ++ show i ++ "]))."
+        | i <- [0 .. length bodyLits_sk - 1]
+        , let prev = if i == 0 then cname else stepName (i - 1) ]
+      lastName  = if null bodyLits_sk then cname else stepName (length bodyLits_sk - 1)
+      botLine   = "cnf(lemma_bot, plain, $false, inference(resolution,[status(thm)],["
+                  ++ lastName ++ ", negconj]))."
+      content   = unlines (unitLines ++ premLines ++ [negLine] ++ stepLines ++ [botLine])
+      premOvr   = Map.fromList [("prem_" ++ show i, "assumption") | i <- [0 .. length bodyLits_sk - 1]]
+      nameOvr   = Map.unions [premOvr, Map.singleton "negconj" "", tstp2name]
+  when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG for " ++ cname)
+  case eitherResult (feed (parseTSTP (Text.pack content)) mempty) of
+    Left err -> do
+      when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG parse error: " ++ err)
+      return Nothing
+    Right tstp -> do
+      msp <- translateFn nameOvr debug tstp
+      return (msp >>= liftSubProof cname lit undoMap)
+
+-- Turn the recursive translation of a candidate into an outer-proof lemma:
+-- the goal block becomes the lemma's proof; the sub-lemmas are renamed apart
+-- (the outer emitter renumbers all lemmas at the end) and de-Skolemized
+-- together with the block.  Generalizing a sub-lemma over the Skolem
+-- constants is sound only if it was proved from the axioms alone, so a
+-- candidate whose sub-lemmas cite an assumption (a Skolemized body premise)
+-- is rejected.
+liftSubProof :: String -> Literal -> [(String, Term)] -> StructuredProof -> Maybe BuiltLemma
+liftSubProof cname lit undoMap sp = do
+  (_, goalBlk) <- listToMaybe (goals sp)
+  let subLemmas = lemmas sp
+      newName n = "lemma " ++ cname ++ "/" ++ n
+      renaming  = Map.fromList [ (n, newName n) | (n, _, _) <- subLemmas ]
+      ren nm    = Map.findWithDefault nm nm renaming
+      lift blk  = applyConstSubstBlock undoMap (renameRefsBlock ren blk)
+      lifted    = [ (newName n, applyConstSubstLit undoMap l, lift b) | (n, l, b) <- subLemmas ]
+      blk'      = lift goalBlk
+      emptyBlk (HaveHence []) = True
+      emptyBlk (EqChain _ []) = True
+      emptyBlk _              = False
+  if emptyBlk blk' || any (\(_, _, b) -> "assumption" `elem` blockRefNames b) lifted
+    then Nothing
+    else Just (lit, blk', lifted)
+
+-- Re-prove the candidate with Twee (pure equations) or E, then translate the
+-- prover's proof recursively (paper, Section 4).
+buildWithProver
+  :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
+  -> Map.Map String T.Unit
+  -> Map.Map String String
+  -> Bool
+  -> String -> Literal -> Literal -> [Literal] -> [(String, Term)]
+  -> IO (Maybe BuiltLemma)
+buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap = do
+
+      let ancNames = ancestorNamesOf unitMap cname
+          ancLines = [ line
+                     | aname <- Set.toList ancNames
+                     , Just u@(T.Unit _ adecl _) <- [Map.lookup aname unitMap]
+                     , not (isDerivedUnit u)
+                     , isOrigAxiomDecl adecl
+                     , isJust (headLitOf adecl)
+                     , Just line <- [toCNFAncAxiom (sanitizeId aname) adecl]
+                     ]
+          premLines =
+            [ "cnf(prem_" ++ show i ++ ", hypothesis, " ++ cnfLitStr bl ++ ")."
+            | (i, bl) <- zip [(0::Int)..] bodyLits_sk
+            ]
+          negLine =
+            "cnf(negconj, negated_conjecture, " ++ cnfLitStr (negLit lit_sk) ++ ")."
+          content = unlines (ancLines ++ premLines ++ [negLine])
+
+      -- For purely equational, no-body goals, try Twee directly.
+      -- E's proof for such goals often references internal clauses with negative
+      -- IDs that the TSTP parser cannot reconstruct into a valid proof tree.
+      mTweeBlk <-
+        if null bodyLits_sk && isEqLit lit_sk
+          then do
+            let ancUes = mapMaybe mkAncUe (Set.toList ancNames)
+                mkAncUe aname = do
+                  u@(T.Unit _ adecl _) <- Map.lookup aname unitMap
+                  if isDerivedUnit u || not (isOrigAxiomDecl adecl) || not (null (bodyLitsOf adecl))
+                    then Nothing
+                    else do
+                      headTlit <- headLitOf adecl
+                      let clit = convertLit headTlit
+                      if not (isEqLit clit) then Nothing
+                      else Just (UnitEntry (Map.lookup aname tstp2name) clit Nothing Nothing)
+            case lit_sk of
+              Eq l r -> do
+                mChain <- callTwee ancUes (Eq l r)
+                case mChain of
+                  Just (start, chain)
+                    | not (null chain)
+                    , all (isJust . ueName . (\(ue,_,_) -> ue)) chain ->
+                        let steps = [ (RwStep (fromJust (ueName ue)) (a, b) dir, cur)
+                                    | (ue, dir, cur) <- chain
+                                    , Eq a b <- [ueUnit ue] ]
+                            blk   = EqChain start steps
+                        in return (Just (lit, applyConstSubstBlock undoMap blk, []))
+                  _ -> return Nothing
+              _ -> return Nothing
+          else return Nothing
+      case mTweeBlk of
+        Just r  -> return (Just r)
+        Nothing -> do
+          when debug $ hPutStrLn stderr
+            ("buildCandidateLemma: E subproblem for " ++ cname ++ ":\n" ++ content)
+          tmpDir <- getTemporaryDirectory
+          (tmpFile, th) <- openTempFile tmpDir ("taelja_lemma_" ++ sanitizeId cname ++ ".p")
+          hPutStr th content >> hClose th
+          eBin <- fromMaybe "eprover" <$> lookupEnv "TAELJA_EPROVER"
+          -- hard wall-clock cap: --soft-cpu-limit is advisory only
+          eResult <- timeout (45 * 1000000)
+                       (try (readProcessWithExitCode eBin
+                              ["--auto", "--output-level=2", "--tptp3-format",
+                               "--soft-cpu-limit=30", tmpFile] "")
+                        :: IO (Either SomeException (ExitCode, String, String)))
+          removeFile tmpFile
+          case eResult of
+            Nothing -> do
+              when debug $ hPutStrLn stderr "buildCandidateLemma: E timed out (45s)"
+              return Nothing
+            Just (Left e) -> do
+              when debug $ hPutStrLn stderr ("buildCandidateLemma: E failed: " ++ show e)
+              return Nothing
+            Just (Right (_, eOut, _)) -> do
+              when debug $ hPutStrLn stderr
+                ("buildCandidateLemma: E output length=" ++ show (length eOut))
+              case eitherResult (feed (parseTSTP (Text.pack eOut)) mempty) of
+                Left err -> do
+                  when debug $ hPutStrLn stderr
+                    ("buildCandidateLemma: parse error: " ++ err)
+                  return Nothing
+                Right tstp -> do
+                  let premOvr = Map.fromList
+                                  [("prem_" ++ show i, "assumption")
+                                  | i <- [0 .. length bodyLits_sk - 1]]
+                      nameOvr = Map.unions [premOvr, Map.singleton "negconj" "", tstp2name]
+                  msp <- translateFn nameOvr debug tstp
+                  return (msp >>= liftSubProof cname lit undoMap)
+  where
+    toCNFAncAxiom :: String -> T.Declaration -> Maybe String
+    toCNFAncAxiom name decl =
+      let posLits = maybe [] (\tl -> [convertLit tl]) (headLitOf decl)
+          negLits = map (negLit . convertLit) (bodyLitsOf decl)
+          allLits = posLits ++ negLits
+      in if null allLits then Nothing
+         else Just ("cnf(" ++ name ++ ", axiom, "
+                    ++ intercalate " | " (map cnfLitStr allLits) ++ ").")
+
+cnfLitStr :: Literal -> String
+cnfLitStr (Eq l r)    = toTptpTerm l ++ " = "  ++ toTptpTerm r
+cnfLitStr (NEq l r)   = toTptpTerm l ++ " != " ++ toTptpTerm r
+cnfLitStr (Rel n [])  = n
+cnfLitStr (Rel n as)  = n ++ "(" ++ intercalate "," (map toTptpTerm as) ++ ")"
+cnfLitStr (NRel n []) = "~" ++ n
+cnfLitStr (NRel n as) = "~" ++ n ++ "(" ++ intercalate "," (map toTptpTerm as) ++ ")"
+
+negLit :: Literal -> Literal
+negLit (Rel n as)  = NRel n as
+negLit (Eq l r)    = NEq l r
+negLit (NRel n as) = Rel n as
+negLit (NEq l r)   = Eq l r

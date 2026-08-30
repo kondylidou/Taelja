@@ -47,8 +47,11 @@ import TaeljaVerify.Vampire.UnitsOnlyRelationalExample
 
 -- Twee prover test cases
 import TaeljaVerify.Twee.Ana0072
+import TaeljaVerify.Twee.Ana0232
 import TaeljaVerify.Twee.Col0034
 import TaeljaVerify.Twee.Grp0071
+import TaeljaVerify.Twee.Hen0056
+import TaeljaVerify.Twee.Hen0064
 import TaeljaVerify.Twee.Lcl1461
 import TaeljaVerify.Twee.PaperEq
 import TaeljaVerify.Twee.PaperEqCnf
@@ -56,9 +59,11 @@ import TaeljaVerify.Twee.Sam
 import TaeljaVerify.Twee.ThesisExampleBothLemmasCnf
 
 -- E prover test cases
+import TaeljaVerify.E.Ana0232
 import TaeljaVerify.E.Col0034
 import TaeljaVerify.E.EUnitSourceAxiom
 import TaeljaVerify.E.Grp0071
+import TaeljaVerify.E.Hen0064
 import TaeljaVerify.E.HornExampleDerivedRw
 import TaeljaVerify.E.HornExampleElimVarRw
 import TaeljaVerify.E.HornExampleEqHeadInlined

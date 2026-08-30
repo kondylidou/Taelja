@@ -2,13 +2,13 @@ Axiom 1: f(X) = X
 Axiom 2: g(X) = f(X)
 Axiom 3: g(a) = a => p(g(a))
 
-Lemma 4: g(a) = a
+Lemma 4: g(X) = X
 Proof:
-  g(a)
+  g(X)
 = { by axiom 2 }
-  f(a)
+  f(X)
 = { by axiom 1 }
-  a
+  X
 
 Goal 1: p(g(a))
 Proof:

@@ -22,7 +22,7 @@ Proof:
 = { by axiom 4 }
   true
 
-Lemma 11: divide(divide(a,d),divide(b,d)) = zero
+Goal 1: less_equal(divide(a,d),b)
 Proof:
   have less_equal(divide(divide(a,d),divide(b,d)),zero)
     by lemma 10
@@ -30,19 +30,9 @@ Proof:
     by axiom 1
   hence divide(divide(a,d),divide(b,d)) = zero
     by axiom 5
-
-Lemma 12: less_equal(divide(a,d),divide(b,d))
-Proof:
-  have divide(divide(a,d),divide(b,d)) = zero
-    by lemma 11
   hence less_equal(divide(a,d),divide(b,d))
     by axiom 6
-
-Goal 1: less_equal(divide(a,d),b)
-Proof:
-  have less_equal(divide(b,X),b)
+   and less_equal(divide(b,d),b)
     by axiom 7
-   and less_equal(divide(a,d),divide(b,d))
-    by lemma 12
   hence less_equal(divide(a,d),b)
     by axiom 8

@@ -17,7 +17,16 @@ Proof:
   hence class_OrderedGroup_Opordered__ab__group__add(t_b)
     by axiom 7
 
-Lemma 13: class_Orderings_Oorder(t_b)
+Lemma 13: c_plus(c_0,X,t_b) = X
+Proof:
+  have class_Ring__and__Field_Oordered__idom(t_b)
+    by axiom 2
+  hence class_OrderedGroup_Ocomm__monoid__add(t_b)
+    by axiom 5
+  hence c_plus(c_0,X,t_b) = X
+    by axiom 6
+
+Lemma 14: class_Orderings_Oorder(t_b)
 Proof:
   have class_Ring__and__Field_Oordered__idom(t_b)
     by axiom 2
@@ -34,12 +43,16 @@ Proof:
     by lemma 12
   hence c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_k(v_x),t_b)
     by axiom 9
+  hence c_lessequals(v_g(v_x),v_k(v_x),t_b)
+    by rw lemma 13
    and c_lessequals(v_k(v_x),v_f(v_x),t_b)
     by axiom 1
    and class_Orderings_Oorder(t_b)
-    by lemma 13
-  hence c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_f(v_x),t_b)
+    by lemma 14
+  hence c_lessequals(v_g(v_x),v_f(v_x),t_b)
     by axiom 10
+  hence c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_f(v_x),t_b)
+    by rw lemma 13 R->L
    and class_OrderedGroup_Opordered__ab__group__add(t_b)
     by lemma 12
   hence c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b)

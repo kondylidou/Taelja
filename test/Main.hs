@@ -34,6 +34,8 @@ tweeBenchmarkNames =
   , "paper_eq"
   , "paper_eq_cnf"
   , "GRP007-1"
+  , "ANA023-2"
+  , "HEN006-4"
   ]
 
 handcraftedNames :: [String]
@@ -116,6 +118,7 @@ eBenchmarkNames =
   , "horn_rel_two_step_chain"
   , "HEN006-4"
   , "GRP007-1"
+  , "ANA023-2"
   ]
 
 mkTest :: String -> String -> String -> TestTree

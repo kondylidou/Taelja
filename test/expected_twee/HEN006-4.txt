@@ -1,0 +1,111 @@
+Axiom 1: less_equal(divide(divide(X,Y),divide(Z,Y)),divide(divide(X,Z),Y))
+Axiom 2: less_equal(A,B) => divide(A,B) = zero
+Axiom 3: less_equal(divide(a,b),d)
+Axiom 4: less_equal(zero,A)
+Axiom 5: less_equal(A,B) /\ less_equal(B,A) => A = B
+Axiom 6: divide(zero,A) = zero
+Axiom 7: less_equal(divide(A,B),A)
+Axiom 8: divide(A,A) = zero
+Axiom 9: divide(A,B) = zero => less_equal(A,B)
+
+Lemma 10: less_equal(divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))),zero)
+Proof:
+  less_equal(divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))),zero)
+= { by axiom 8 R->L }
+  less_equal(divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))),divide(divide(X,zero),divide(X,zero)))
+= { by axiom 1 }
+  true
+
+Lemma 11: less_equal(divide(X,divide(X,zero)),zero)
+Proof:
+  have less_equal(zero,divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))))
+    by axiom 4
+   and less_equal(divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))),zero)
+    by lemma 10
+  hence zero = divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero)))
+    by axiom 5
+  hence zero = divide(divide(X,divide(X,zero)),zero)
+    by rw axiom 6
+  hence less_equal(divide(X,divide(X,zero)),zero)
+    by axiom 9
+
+Lemma 12: less_equal(X,divide(X,zero))
+Proof:
+  have less_equal(zero,divide(X,divide(X,zero)))
+    by axiom 4
+   and less_equal(divide(X,divide(X,zero)),zero)
+    by lemma 11
+  hence zero = divide(X,divide(X,zero))
+    by axiom 5
+  hence less_equal(X,divide(X,zero))
+    by axiom 9
+
+Lemma 13: divide(X,zero) = X
+Proof:
+  have less_equal(divide(X,zero),X)
+    by axiom 7
+   and less_equal(X,divide(X,zero))
+    by lemma 12
+  hence divide(X,zero) = X
+    by axiom 5
+
+Lemma 14: divide(divide(a,b),d) = zero
+Proof:
+  have less_equal(divide(a,b),d)
+    by axiom 3
+  hence divide(divide(a,b),d) = zero
+    by axiom 2
+
+Lemma 15: less_equal(divide(divide(a,d),divide(b,d)),zero)
+Proof:
+  less_equal(divide(divide(a,d),divide(b,d)),zero)
+= { by lemma 14 R->L }
+  less_equal(divide(divide(a,d),divide(b,d)),divide(divide(a,b),d))
+= { by axiom 1 }
+  true
+
+Lemma 16: divide(divide(a,d),divide(b,d)) = zero
+Proof:
+  have less_equal(divide(divide(a,d),divide(b,d)),zero)
+    by lemma 15
+   and less_equal(zero,divide(divide(a,d),divide(b,d)))
+    by axiom 4
+  hence divide(divide(a,d),divide(b,d)) = zero
+    by axiom 5
+
+Lemma 17: divide(divide(b,d),b) = zero
+Proof:
+  have less_equal(divide(b,d),b)
+    by axiom 7
+  hence divide(divide(b,d),b) = zero
+    by axiom 2
+
+Lemma 18: divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)) = zero
+Proof:
+  have less_equal(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b))
+    by axiom 1
+  hence divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)) = zero
+    by axiom 2
+
+Lemma 19: divide(divide(a,d),b) = zero
+Proof:
+  divide(divide(a,d),b)
+= { by lemma 13 R->L }
+  divide(divide(divide(a,d),b),zero)
+= { by axiom 6 R->L }
+  divide(divide(divide(a,d),b),divide(zero,b))
+= { by lemma 16 R->L }
+  divide(divide(divide(a,d),b),divide(divide(divide(a,d),divide(b,d)),b))
+= { by lemma 13 R->L }
+  divide(divide(divide(divide(a,d),b),zero),divide(divide(divide(a,d),divide(b,d)),b))
+= { by lemma 17 R->L }
+  divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b))
+= { by lemma 18 }
+  zero
+
+Goal 1: less_equal(divide(a,d),b)
+Proof:
+  have divide(divide(a,d),b) = zero
+    by lemma 19
+  hence less_equal(divide(a,d),b)
+    by axiom 9

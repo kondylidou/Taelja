@@ -1,5 +1,6 @@
 module Types where
 
+import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.TPTP as T
 
@@ -115,4 +116,8 @@ data ProofInfo = ProofInfo
   { piElectrons :: [LeafEntry]  -- positive unit nodes (leaf + inner), DFS position order
   , piNuclei    :: [LeafEntry]  -- non-positive-unit nodes (incl. NegConjecture), position order
   , piGoalLits  :: [T.Literal]  -- goal literals from the negated conjecture
+  , piDeclAt    :: Map.Map String T.Declaration
+      -- clause at every position on an entry's ancestor chain and their
+      -- siblings, read from the real (non-deduplicated) tree; used by the
+      -- strict-mode grounding substitution θ (traced top-down from the root)
   } deriving (Show)

@@ -1,7 +1,7 @@
 module Helpers where
 
 import Control.Applicative ((<|>))
-import Data.List (intercalate, isSuffixOf, nub)
+import Data.List (intercalate, isPrefixOf, isSuffixOf, nub)
 import Data.Maybe (fromMaybe)
 import Types
 
@@ -95,12 +95,36 @@ matchTerms :: Term -> Term -> Maybe Subst
 matchTerms pat tgt = matchTerm pat tgt []
 
 matchLit :: Literal -> Literal -> Maybe Subst
-matchLit (Eq  l1 r1) (Eq  l2 r2)
-  = matchTerm l1 l2 [] >>= matchTerm r1 r2
-matchLit (Rel n1 ts1) (Rel n2 ts2)
+matchLit pat tgt = matchLitWith pat tgt []
+
+-- matchLit threading an existing substitution
+matchLitWith :: Literal -> Literal -> Subst -> Maybe Subst
+matchLitWith (Eq  l1 r1) (Eq  l2 r2) s
+  = matchTerm l1 l2 s >>= matchTerm r1 r2
+matchLitWith (Rel n1 ts1) (Rel n2 ts2) s
   | n1 == n2, length ts1 == length ts2
-  = foldl (\ms (p, u) -> ms >>= matchTerm p u) (Just []) (zip ts1 ts2)
-matchLit _ _ = Nothing
+  = foldl (\ms (p, u) -> ms >>= matchTerm p u) (Just s) (zip ts1 ts2)
+matchLitWith _ _ _ = Nothing
+
+-- Every subterm of a literal together with a function that rebuilds the
+-- literal with that subterm replaced.
+litSubtermCtxs :: Literal -> [(Term, Term -> Literal)]
+litSubtermCtxs lit = case lit of
+  Eq  l r   -> [ (u, \x -> Eq  (c x) r) | (u, c) <- termCtxs l ]
+            ++ [ (u, \x -> Eq  l (c x)) | (u, c) <- termCtxs r ]
+  NEq l r   -> [ (u, \x -> NEq (c x) r) | (u, c) <- termCtxs l ]
+            ++ [ (u, \x -> NEq l (c x)) | (u, c) <- termCtxs r ]
+  Rel  n ts -> [ (u, \x -> Rel  n (c x)) | (u, c) <- argCtxs ts ]
+  NRel n ts -> [ (u, \x -> NRel n (c x)) | (u, c) <- argCtxs ts ]
+  where
+    argCtxs ts = [ (u, \x -> take i ts ++ [c x] ++ drop (i + 1) ts)
+                 | (i, t) <- zip [0 ..] ts, (u, c) <- termCtxs t ]
+
+termCtxs :: Term -> [(Term, Term -> Term)]
+termCtxs t = (t, id) : case t of
+  App f ts -> [ (u, \x -> App f (take i ts ++ [c x] ++ drop (i + 1) ts))
+              | (i, ti) <- zip [0 ..] ts, (u, c) <- termCtxs ti ]
+  _        -> []
 
 -- Apply σ until fixed point; resolves chained bindings (e.g. X→f(Y), Y→c becomes X→f(c)).
 deepApplySubstTerm :: Subst -> Term -> Term
@@ -261,6 +285,27 @@ termSize (App _ ts) = 1 + sum (map termSize ts)
 litSize :: Literal -> Int
 litSize = sum . foldLiteralTerms (\t -> [termSize t])
 
+-- Names (axioms, lemmas, "assumption", ...) cited anywhere in a block.
+blockRefNames :: ProofBlock -> [String]
+blockRefNames (HaveHence ls)    = concatMap lineRef ls
+  where
+    lineRef (Have _ nm)            = [nm]
+    lineRef (And _ nm)             = [nm]
+    lineRef (Hence _ (ByAxiom nm)) = [nm]
+    lineRef (Hence _ (ByRw nm _))  = [nm]
+blockRefNames (EqChain _ steps) = [ rwName rw | (rw, _) <- steps ]
+
+-- Rename cited names throughout a block.
+renameRefsBlock :: (String -> String) -> ProofBlock -> ProofBlock
+renameRefsBlock ren (HaveHence ls) = HaveHence (map go ls)
+  where
+    go (Have lit nm)            = Have lit (ren nm)
+    go (And lit nm)             = And lit (ren nm)
+    go (Hence lit (ByAxiom nm)) = Hence lit (ByAxiom (ren nm))
+    go (Hence lit (ByRw nm d))  = Hence lit (ByRw (ren nm) d)
+renameRefsBlock ren (EqChain s steps) =
+  EqChain s [ (rw { rwName = ren (rwName rw) }, t) | (rw, t) <- steps ]
+
 appendLine :: ProofBlock -> ProofLine -> ProofBlock
 appendLine (HaveHence ls) l = HaveHence (ls ++ [l])
 appendLine (EqChain {})   _ = error "appendLine: cannot extend EqChain"
@@ -269,3 +314,11 @@ ppTerm :: Term -> String
 ppTerm (Var x)    = x
 ppTerm (Const c)  = c
 ppTerm (App f ts) = f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+
+-- True for Twee-internal units that should not appear in human-readable proof steps:
+-- prem_N (Skolemized body premises) and ifeq_axiom (encoding sentinel).
+-- Unnamed units (no display name) are also internal.
+isInternalUnit :: UnitEntry -> Bool
+isInternalUnit ue = case ueName ue of
+  Just nm -> isPrefixOf "prem_" nm || nm == "ifeq_axiom"
+  Nothing -> True

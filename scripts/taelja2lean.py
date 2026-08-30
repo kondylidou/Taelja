@@ -777,6 +777,51 @@ def find_rw_subst(prev_term, new_term, ax_formula, direction):
     return result[0]
 
 
+
+def rewritten_occurrence(goal_term, pat_inst, rep_inst, target_term):
+    """
+    Lean's `rw` rewrites EVERY instance of the (instantiated) pattern in the goal.
+    Return (k, total): `total` instances of pat_inst occur in goal_term (pre-order,
+    left to right, the order Lean's kabstract numbers them), and rewriting only
+    the k-th one (1-based) turns goal_term into target_term; k is None if no single
+    occurrence does.  Callers pass `(config := { occs := .pos [k] })` when total > 1.
+    """
+    count = [0]
+    found = [None]
+
+    def replace_nth(t, n):
+        # returns (new_term, seen) replacing the n-th pre-order instance
+        if term_equal(t, pat_inst):
+            count[0] += 1
+            if count[0] == n:
+                return rep_inst
+            # an instance may contain further instances only if pat has subterms
+        if isinstance(t, App):
+            return App(t.head, [replace_nth(a, n) for a in t.args])
+        return t
+
+    def total_count(t):
+        c = 1 if term_equal(t, pat_inst) else 0
+        if isinstance(t, App):
+            c += sum(total_count(a) for a in t.args)
+        return c
+
+    total = total_count(goal_term)
+    for n in range(1, total + 1):
+        count[0] = 0
+        cand = replace_nth(goal_term, n)
+        if term_equal(cand, target_term):
+            found[0] = n
+            break
+    return found[0], total
+
+
+def rw_tactic(arrow, hyp, k, total):
+    if k is not None and total > 1:
+        return f'rw (config := {{ occs := .pos [{k}] }}) [{arrow}{hyp}]'
+    return f'rw [{arrow}{hyp}]'
+
+
 # ─── Lean 4 code emitter ─────────────────────────────────────────────────────
 
 def ref_lean_name(ref: Ref) -> str:
@@ -971,7 +1016,15 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
         else:
             inst = ref_name  # ground lemma (no vars)
 
-        return f'by have h_rw := {inst}; rw [h_rw]'
+        # the calc goal is `prev_term = step.term`; rw [h_rw] rewrites instances of
+        # h_rw's LHS anywhere in it (pre-order: prev_term first, then step.term) and
+        # must leave a reflexive equation.  Select that single occurrence.
+        lhs_i = apply_subst_obj(subst, ax_formula.lhs)
+        rhs_i = apply_subst_obj(subst, ax_formula.rhs)
+        goal_t = App('=', [prev_term, step.term])
+        target = App('=', [step.term, step.term]) if direction == 'LR' else App('=', [prev_term, prev_term])
+        k, total = rewritten_occurrence(goal_t, lhs_i, rhs_i, target)
+        return f'by have h_rw := {inst}; {rw_tactic("", "h_rw", k, total)}'
 
     # TPTP predicates are sometimes encoded as "f(args) = true" in the proof.
     # When the last calc step lands on Const('true'), the chain ends with a
@@ -1001,8 +1054,14 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
                             step_args.append(a)
                     inst_s = f'{rn} {" ".join(step_args)}' if step_args else rn
                     arrow = '← ' if direction == 'RL' else ''
+                    # rw [h] abstracts instances of h's LHS in the goal (RHS for ←);
+                    # pick the single occurrence whose rewrite yields the next term
+                    lhs_i = apply_subst_obj(subst, ax_f.lhs)
+                    rhs_i = apply_subst_obj(subst, ax_f.rhs)
+                    pat_g, rep_g = (rhs_i, lhs_i) if direction == 'RL' else (lhs_i, rhs_i)
+                    k, total = rewritten_occurrence(prev_t, pat_g, rep_g, step.term)
                     lines.append(f'have h_rw := {inst_s}')
-                    lines.append(f'rw [{arrow}h_rw]')
+                    lines.append(rw_tactic(arrow, 'h_rw', k, total))
                 else:
                     arrow = '← ' if direction == 'RL' else ''
                     lines.append(f'rw [{arrow}{rn}]')

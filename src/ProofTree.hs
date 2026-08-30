@@ -9,6 +9,7 @@ module ProofTree
   , demodRuleNames
   , isPositiveUnitFormula
   , resolveSourceName
+  , resolveCopySource
   ) where
 
 import qualified Data.TPTP as T
@@ -88,11 +89,35 @@ buildProofInfo allUnits
       | e <- nuclei, leRole e == OrigAxiom
       , Just lits <- [extractGoalLits (leDecl e)]
       ]
+  let declAtPos = declByPath tree
+      -- every prefix of an entry position, plus the sibling of each prefix
+      wanted = Set.toList $ Set.fromList $ concat
+        [ p : [ init p ++ [sib] | not (null p), let sib = if last p == '0' then '1' else '0' ]
+        | e <- electrons ++ nuclei
+        , p <- inits' (lePos e) ]
+      inits' str = [ take i str | i <- [0 .. length str] ]
+      declMap = Map.fromList [ (p, d) | p <- wanted, Just d <- [declAtPos p] ]
   return ProofInfo
     { piElectrons = electrons
     , piNuclei    = nuclei
     , piGoalLits  = goalLits
+    , piDeclAt    = declMap
     }
+
+-- Navigate the memoised tree along a position string; each character is the
+-- child index used by gatherLeaves/gatherInner ('0','1',... or '1' for unary).
+declByPath :: ProofTree -> String -> Maybe T.Declaration
+declByPath t [] = Just (ptDeclOf t)
+declByPath (PTLeaf _ _) _ = Nothing
+declByPath (PTNode _ _ _ kids) (c : rest) =
+  case kids of
+    [k]  | c == '1' -> declByPath k rest
+    _ -> let i = fromEnum c - fromEnum '0'
+         in if i >= 0 && i < length kids then declByPath (kids !! i) rest else Nothing
+
+ptDeclOf :: ProofTree -> T.Declaration
+ptDeclOf (PTLeaf _ d)     = d
+ptDeclOf (PTNode _ d _ _) = d
 
 buildProofTree :: [T.Unit] -> Maybe ProofTree
 buildProofTree allUnits =
@@ -292,6 +317,29 @@ lookupDecl :: Map.Map String T.Unit -> String -> Maybe T.Declaration
 lookupDecl unitMap name = case Map.lookup name unitMap of
   Just (T.Unit _ d _) -> Just d
   _                   -> Nothing
+
+-- Trace back only through copy-like steps (bare unit references and
+-- single-parent preprocessing inferences such as fof_simplification or
+-- cnf_transformation).  Unlike resolveSourceName, a genuine inference such as
+-- resolution is a stopping point: its conclusion is a new clause, not a copy
+-- of its first parent.  Strict mode uses it to decide whether a derived
+-- clause is merely a renamed axiom (and therefore not a lemma candidate).
+resolveCopySource :: Map.Map String T.Unit -> String -> String
+resolveCopySource unitMap = go
+  where
+    go name = case Map.lookup name unitMap of
+      Just (T.Unit _ _ (Just (T.UnitSource parentName, _))) ->
+        go (unitNameStr parentName)
+      Just (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ [p], _)))
+        | not (Set.member rule coreInferenceNames)
+        , rule /= Text.pack "negated_conjecture"
+        , [pn] <- flatParents p
+        -> go pn
+      _ -> name
+
+    flatParents (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
+    flatParents (T.Parent (T.Inference _ _ ps) _) = concatMap flatParents ps
+    flatParents _                                  = []
 
 -- trace back to the original file-sourced unit; stop at negated_conjecture inferences
 -- and at Twee's rewriting steps (which create new equations by completion, not demodulate existing ones)

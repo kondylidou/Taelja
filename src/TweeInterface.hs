@@ -30,8 +30,13 @@ import Data.List.NonEmpty (toList)
 import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
 import qualified Data.TPTP as T
+import Control.Exception (SomeException, try)
+import System.Directory (getTemporaryDirectory, removeFile)
 import System.Environment (lookupEnv)
+import System.Exit (ExitCode)
+import System.IO (hClose, hPutStr, openTempFile)
 import System.Process (readProcessWithExitCode)
+import System.Timeout (timeout)
 
 import Types
 import Helpers (appendLine, litVars, rewriteTermAll)
@@ -44,6 +49,41 @@ tweeBin = "bin/twee"
 -- Defaults to 15s; set TAELJA_TWEE_TIMEOUT=60 (or any integer) to override.
 tweemaxtime :: IO String
 tweemaxtime = fromMaybe "15" <$> lookupEnv "TAELJA_TWEE_TIMEOUT"
+
+-- Run a prover with a hard wall-clock cap.  Twee's --max-time and E's
+-- --soft-cpu-limit are not reliable stopping points (Twee has been observed
+-- running for many minutes past --max-time), so the child is terminated on
+-- timeout (readProcessWithExitCode's cleanup) and Nothing is returned.
+runProverCapped :: Int -> FilePath -> [String] -> IO (Maybe String)
+runProverCapped secs bin args = do
+  r <- timeout (secs * 1000000)
+         (try (readProcessWithExitCode bin args "")
+            :: IO (Either SomeException (ExitCode, String, String)))
+  return $ case r of
+    Just (Right (_, out, _)) -> Just out
+    _                        -> Nothing
+
+-- Twee call on a problem text, with the configured --max-time plus a
+-- wall-clock margin.  The input goes to a fresh temporary file so that
+-- concurrent Taelja processes (e.g. a test suite running in parallel) never
+-- overwrite each other's problems.
+runTwee :: String -> String -> IO String
+runTwee tag input = withTempInput tag input $ \tmpFile -> do
+  maxTime <- tweemaxtime
+  let secs = case reads maxTime of { [(n, "")] -> n; _ -> 15 :: Int }
+  fromMaybe "" <$> runProverCapped (secs + 5) tweeBin
+    ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile]
+
+-- Write a prover input to a fresh temp file, run the action, remove the file.
+withTempInput :: String -> String -> (FilePath -> IO a) -> IO a
+withTempInput tag input act = do
+  tmpDir <- getTemporaryDirectory
+  (path, h) <- openTempFile tmpDir ("taelja_" ++ tag ++ ".p")
+  hPutStr h input
+  hClose h
+  r <- act path
+  removeFile path
+  return r
 
 toTptpTerm :: Term -> String
 toTptpTerm (Var [])       = []
@@ -149,11 +189,7 @@ callTweeRelLemma units hornAxioms goalLit = do
       ifeqSentinelUe = UnitEntry (Just "ifeq_axiom") (Eq (Var "X") (Var "Y")) Nothing Nothing
       idToUe     = Map.unions [unitIdToUe, hornIdToUe, Map.singleton "ifeq_axiom" ifeqSentinelUe]
       input      = unlines (unitAxioms ++ ifeqAxioms ++ hornCnfs ++ [negGoal])
-      tmpFile    = "/tmp/taelja_twee_rel_lemma.p"
-  writeFile tmpFile input
-  maxTime <- tweemaxtime
-  (_, out, _) <- readProcessWithExitCode tweeBin
-                   ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile] ""
+  out <- runTwee "rel_lemma" input
   return (parseTweeChain idToUe out goalTerm (Const "true"))
   where
     relTerm n [] = Const n
@@ -341,11 +377,7 @@ callTwee units goal@(Eq l r) = do
                 | (i, ue) <- eqUnits, Eq a b <- [ueUnit ue] ]
       negGoal = toCnfNegGoal "goal" l r
       input   = unlines (axioms ++ [negGoal])
-      tmpFile = "/tmp/taelja_twee_input.p"
-  writeFile tmpFile input
-  maxTime <- tweemaxtime
-  (_, out, _) <- readProcessWithExitCode tweeBin
-                   ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile] ""
+  out <- runTwee "eq" input
   return (parseTweeChain idToUe out l r)
 callTwee units goal@(Rel name args) = do
   let goalTerm  = if null args then Const name else App name args
@@ -359,11 +391,7 @@ callTwee units goal@(Rel name args) = do
       negGoal = toCnfNegGoal "goal" goalTerm (Const "true")
       input   = unlines (axioms ++ [negGoal])
       idToUe  = Map.fromList [(mkId i ue, ue) | (i, ue) <- indexed, isEqLit (ueUnit ue) || isRelLit (ueUnit ue)]
-      tmpFile = "/tmp/taelja_twee_horn_input.p"
-  writeFile tmpFile input
-  maxTime <- tweemaxtime
-  (_, out, _) <- readProcessWithExitCode tweeBin
-                   ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile] ""
+  out <- runTwee "horn" input
   return (parseTweeChain idToUe out goalTerm (Const "true"))
   where
     isRelLit (Rel _ _) = True

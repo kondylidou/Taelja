@@ -1,0 +1,66 @@
+Axiom 1: class_Ring__and__Field_Oordered__idom(t_b)
+Axiom 2: class_Ring__and__Field_Oordered__idom(X) => class_OrderedGroup_Opordered__ab__group__add(X)
+Axiom 3: class_Ring__and__Field_Oordered__idom(Y) => class_OrderedGroup_Ocomm__monoid__add(Y)
+Axiom 4: class_OrderedGroup_Ocomm__monoid__add(Z) => c_plus(c_0,A,Z) = A
+Axiom 5: c_lessequals(v_k(v_x),v_f(v_x),t_b)
+Axiom 6: class_Ring__and__Field_Oordered__idom(Y) => class_Orderings_Olinorder(Y)
+Axiom 7: class_Orderings_Olinorder(Y) => class_Orderings_Oorder(Y)
+Axiom 8: c_lessequals(c_0,c_minus(v_k(v_x),v_g(v_x),t_b),t_b)
+Axiom 9: class_OrderedGroup_Opordered__ab__group__add(B) /\ c_lessequals(C,c_minus(U,V,B),B) => c_lessequals(c_plus(C,V,B),U,B)
+Axiom 10: class_Orderings_Oorder(Z) /\ c_lessequals(W,X1,Z) /\ c_lessequals(X2,W,Z) => c_lessequals(X2,X1,Z)
+Axiom 11: class_OrderedGroup_Opordered__ab__group__add(Z) /\ c_lessequals(c_plus(X3,X4,Z),X5,Z) => c_lessequals(X3,c_minus(X5,X4,Z),Z)
+
+Lemma 12: c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_k(v_x),t_b)
+Proof:
+  have class_Ring__and__Field_Oordered__idom(t_b)
+    by axiom 1
+  hence class_OrderedGroup_Opordered__ab__group__add(t_b)
+    by axiom 2
+   and c_lessequals(c_0,c_minus(v_k(v_x),v_g(v_x),t_b),t_b)
+    by axiom 8
+  hence c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_k(v_x),t_b)
+    by axiom 9
+
+Lemma 13: c_plus(c_0,X,t_b) = X
+Proof:
+  have class_Ring__and__Field_Oordered__idom(t_b)
+    by axiom 1
+  hence class_OrderedGroup_Ocomm__monoid__add(t_b)
+    by axiom 3
+  hence c_plus(c_0,X,t_b) = X
+    by axiom 4
+
+Lemma 14: c_lessequals(v_g(v_x),v_k(v_x),t_b)
+Proof:
+  have c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_k(v_x),t_b)
+    by lemma 12
+  hence c_lessequals(v_g(v_x),v_k(v_x),t_b)
+    by rw lemma 13
+
+Lemma 15: c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_f(v_x),t_b)
+Proof:
+  have class_Ring__and__Field_Oordered__idom(t_b)
+    by axiom 1
+  hence class_Orderings_Olinorder(t_b)
+    by axiom 6
+  hence class_Orderings_Oorder(t_b)
+    by axiom 7
+   and c_lessequals(v_k(v_x),v_f(v_x),t_b)
+    by axiom 5
+   and c_lessequals(v_g(v_x),v_k(v_x),t_b)
+    by lemma 14
+  hence c_lessequals(v_g(v_x),v_f(v_x),t_b)
+    by axiom 10
+  hence c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_f(v_x),t_b)
+    by rw lemma 13 R->L
+
+Goal 1: c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b)
+Proof:
+  have class_Ring__and__Field_Oordered__idom(t_b)
+    by axiom 1
+  hence class_OrderedGroup_Opordered__ab__group__add(t_b)
+    by axiom 2
+   and c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_f(v_x),t_b)
+    by lemma 15
+  hence c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b)
+    by axiom 11
