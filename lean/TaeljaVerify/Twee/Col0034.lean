@@ -44,7 +44,7 @@ theorem taelja_lemma5 : (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)
 -- Goal 1
 theorem taelja_goal1 : fixed_point (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) := by
   have h1 : (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) = (apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt)) := by apply taelja_lemma5
-  have h2 : fixed_point (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : fixed_point (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) := by first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h2
 
 end TweeCol0034

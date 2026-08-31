@@ -4,6 +4,7 @@ module Translate (translate, translateWith) where
 import Control.Applicative ((<|>))
 import Control.Monad (foldM, forM, forM_, void, when)
 import Data.Bifunctor (second)
+import Control.Exception (SomeException, try)
 import Control.Monad.State
 import Data.List (find, intercalate, nub, nubBy, partition, sortBy)
 import Data.Maybe (catMaybes, fromJust, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
@@ -53,12 +54,12 @@ translate :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translate debug tstp = do
   -- TAELJA_STRICT=1 forces the strict paper translation (experiments/evaluation)
   forceStrict <- maybe False (== "1") <$> lookupEnv "TAELJA_STRICT"
-  mHeur <- if forceStrict then return Nothing else translateMode False debug tstp
+  mHeur <- if forceStrict then return Nothing else tryStage False tstp debug
   case mHeur of
     Just sp | not (hasHole sp) -> return (Just sp)
     _ -> do
       when debug $ hPutStrLn stderr "translate: heuristic translation left a goal unproved; trying strict mode"
-      mStrict <- translateMode True debug tstp
+      mStrict <- tryStage True tstp debug
       -- keep whichever result proves more goals (ties go to the heuristic:
       -- its proofs are the compact ones)
       let result = case (mHeur, mStrict) of
@@ -76,6 +77,18 @@ translate debug tstp = do
     -- proven goal must not mask the hole in a multi-goal proof
     hasHole sp = null (goals sp) || any (isEmptyBlock . snd) (goals sp)
     provenGoals sp = length [ () | (_, b) <- goals sp, not (isEmptyBlock b) ]
+    -- a crash inside one stage (e.g. an unprovable unit hitting an error call
+    -- deep in the matcher) counts as that stage producing nothing, so the
+    -- other stage still gets its chance
+    tryStage strict t dbg' = do
+      r <- try (translateMode strict dbg' t) :: IO (Either SomeException (Maybe StructuredProof))
+      case r of
+        Right m -> return m
+        Left e  -> do
+          when dbg' $ hPutStrLn stderr
+            ("translate: " ++ (if strict then "strict" else "heuristic")
+             ++ " stage failed with: " ++ show e)
+          return Nothing
 
 -- The translation pipeline shared by both stages.  Lemma introduction first:
 -- every derived clause used at least twice in the DAG (unless it is merely a

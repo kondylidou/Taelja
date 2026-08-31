@@ -30,15 +30,15 @@ axiom ax5 : ∀ (x : α) (y : α), p x → q y → r x y
 -- Lemma 6
 theorem taelja_lemma6 : q b := by
   have h1 : t b := by apply ax1
-  have h2 : q b := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : q b := by first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : r a b := by
   have h1 : s a := by apply ax3
-  have h2 : p a := by apply ax4 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : p a := by first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | exact Eq.symm (by assumption)))
   have h3 : q b := by apply taelja_lemma6
-  have h4 : r a b := by apply ax5 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h4 : r a b := by first | (exact ax5 _ _ h2 h3) | (apply ax5 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h4
 
 end VampireResolutionExampleHornGeneral

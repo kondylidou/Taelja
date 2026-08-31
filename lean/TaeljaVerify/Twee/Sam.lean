@@ -42,7 +42,7 @@ axiom ax10 : ∀ (z : α), (join zero z) = z
 -- Lemma 11
 theorem taelja_lemma11 : (meet b (join c d)) = zero := by
   have h1 : comp b (join c d) := by apply ax7
-  have h2 : (meet b (join c d)) = zero := by apply ax8 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : (meet b (join c d)) = zero := by first | (exact ax8 _ _ h1) | (apply ax8 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h2
 
 -- Lemma 12

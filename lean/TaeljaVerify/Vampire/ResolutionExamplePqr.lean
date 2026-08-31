@@ -23,8 +23,8 @@ axiom ax3 : ∀ (x : α), q x → r x
 -- Goal 1
 theorem taelja_goal1 : r a := by
   have h1 : p a := by apply ax1
-  have h2 : q a := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
-  have h3 : r a := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : q a := by first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h3 : r a := by first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h3
 
 end VampireResolutionExamplePqr

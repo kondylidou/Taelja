@@ -29,8 +29,8 @@ axiom ax4 : ∀ (x : α), q (f b) x → r x
 theorem taelja_goal1 : r a := by
   have h1 : q b a := by apply ax2
   have h2 : p a := by apply ax1
-  have h3 : q (f b) a := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
-  have h4 : r a := by apply ax4 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h3 : q (f b) a := by first | (exact ax3 _ _ h1 h2) | (apply ax3 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h4 : r a := by first | (exact ax4 _ h3) | (apply ax4 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h4
 
 end VampireResolutionExampleHornReuseN1

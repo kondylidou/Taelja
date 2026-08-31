@@ -25,7 +25,7 @@ axiom ax3 : ∀ (x : α) (y : α), p x → q y → r x y
 theorem taelja_goal1 : r a b := by
   have h1 : p a := by apply ax1
   have h2 : q b := by apply ax2
-  have h3 : r a b := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h3 : r a b := by first | (exact ax3 _ _ h1 h2) | (apply ax3 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h3
 
 end EResolutionExampleHorn2unit

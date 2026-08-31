@@ -23,8 +23,8 @@ axiom ax3 : ∀ (x : α) (y : α), (f x) = (f y) → x = y
 -- Goal 1
 theorem taelja_goal1 : a = b := by
   have h1 : (g (f a)) = (g (f b)) := by apply ax1
-  have h2 : (f a) = (f b) := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
-  have h3 : a = b := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : (f a) = (f b) := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h3 : a = b := by first | (exact ax3 _ _ h2) | (apply ax3 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h3
 
 end ESuperpositionExampleClausal2

@@ -37,13 +37,13 @@ axiom ax8 : ∀ (b : α) (z : α), (divide z b) = zero → less_equal z b
 -- Lemma 9
 theorem taelja_lemma9 : (divide b c) = zero := by
   have h1 : less_equal b c := by apply ax1
-  have h2 : (divide b c) = zero := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : (divide b c) = zero := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h2
 
 -- Lemma 10
 theorem taelja_lemma10 : (divide a b) = zero := by
   have h1 : less_equal a b := by apply ax4
-  have h2 : (divide a b) = zero := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : (divide a b) = zero := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h2
 
 -- Lemma 11
@@ -60,26 +60,26 @@ theorem taelja_lemma11 : less_equal (divide (divide a c) zero) zero := by
 theorem taelja_lemma12 : (divide (divide a c) zero) = zero := by
   have h1 : less_equal (divide (divide a c) zero) zero := by apply taelja_lemma11
   have h2 : less_equal zero (divide (divide a c) zero) := by apply ax6
-  have h3 : (divide (divide a c) zero) = zero := by apply ax7 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h3 : (divide (divide a c) zero) = zero := by first | (exact ax7 _ _ h1 h2) | (apply ax7 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h3
 
 -- Lemma 13
 theorem taelja_lemma13 : less_equal (divide a c) zero := by
   have h1 : (divide (divide a c) zero) = zero := by apply taelja_lemma12
-  have h2 : less_equal (divide a c) zero := by apply ax8 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : less_equal (divide a c) zero := by first | (exact ax8 _ _ h1) | (apply ax8 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h2
 
 -- Lemma 14
 theorem taelja_lemma14 : (divide a c) = zero := by
   have h1 : less_equal (divide a c) zero := by apply taelja_lemma13
   have h2 : less_equal zero (divide a c) := by apply ax6
-  have h3 : (divide a c) = zero := by apply ax7 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h3 : (divide a c) = zero := by first | (exact ax7 _ _ h1 h2) | (apply ax7 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : less_equal a c := by
   have h1 : (divide a c) = zero := by apply taelja_lemma14
-  have h2 : less_equal a c := by apply ax8 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : less_equal a c := by first | (exact ax8 _ _ h1) | (apply ax8 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h2
 
 end TweeHen0056

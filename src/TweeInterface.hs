@@ -33,6 +33,8 @@ import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
 import qualified Data.TPTP as T
 import Control.Exception (SomeException, bracket, try)
+import Data.IORef (IORef, newIORef, readIORef, modifyIORef')
+import System.IO.Unsafe (unsafePerformIO)
 import System.Directory (getTemporaryDirectory, removeFile)
 import System.Environment (lookupEnv)
 import System.Exit (ExitCode)
@@ -72,11 +74,26 @@ timeoutSecsFromEnv var def = max 1 . fromMaybe def . (>>= readMaybe) <$> lookupE
 -- concurrent Taelja processes (e.g. a test suite running in parallel) never
 -- overwrite each other's problems.
 runTwee :: String -> String -> IO String
-runTwee tag input = withTempInput tag input $ \tmpFile -> do
+runTwee tag input = do
   secs <- timeoutSecsFromEnv "TAELJA_TWEE_TIMEOUT" 15
-  let maxTime = show secs
-  fromMaybe "" <$> runProverCapped (secs + 5) tweeBin
-    ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile]
+  cache <- readIORef tweeCache
+  case Map.lookup (input, secs) cache of
+    Just out -> return out
+    Nothing  -> do
+      out <- withTempInput tag input $ \tmpFile -> do
+        let maxTime = show secs
+        fromMaybe "" <$> runProverCapped (secs + 5) tweeBin
+          ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile]
+      modifyIORef' tweeCache (Map.insert (input, secs) out)
+      return out
+
+-- Process-wide result cache.  The translation retries the same sub-problems
+-- many times (a large proof can produce thousands of calls with only ~10%
+-- distinct inputs), and Twee is deterministic on a given input and time
+-- budget, so repeat calls are served from memory.
+{-# NOINLINE tweeCache #-}
+tweeCache :: IORef (Map.Map (String, Int) String)
+tweeCache = unsafePerformIO (newIORef Map.empty)
 
 -- Write a prover input to a fresh temp file, run the action, remove the file
 -- (also when the action throws, e.g. the wall-clock timeout).

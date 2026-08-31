@@ -1327,6 +1327,30 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     extras = []
                     continue
 
+                # Premises in written order (chain hyp, then pending and-items)
+                # mirror the referenced clause's body order, so try the direct
+                # term `exact ref h1 … hk` first. The `apply … <;> assumption`
+                # fallback binds each subgoal's metavariables greedily against
+                # the most recent hypothesis and cannot backtrack, which fails
+                # when several subgoals share variables (e.g. E HEN008-2 ax6).
+                prem_hyps = []
+                if current_idx is not None and current_idx in hyp_names:
+                    prem_hyps.append(hyp_names[current_idx])
+                prem_hyps += [hyp_names[e] for e in extras if e in hyp_names]
+                # The ref's ∀-binders are explicit arguments, so pass an
+                # inferred `_` for each before the premise hypotheses.
+                ref_var_map = None
+                if ref.kind == 'axiom' and ref.num in axiom_types:
+                    ref_var_map = axiom_types[ref.num][1]
+                elif ref.kind == 'lemma' and ref.num in lemma_types:
+                    ref_var_map = lemma_types[ref.num][1]
+                if prem_hyps and ref_var_map is not None:
+                    binder_us = ' _' * len(ref_var_map)
+                    apply_tac = (f'first | (exact {ref_name}{binder_us} {" ".join(prem_hyps)})'
+                                 f' | (apply {ref_name} <;> ({close_tac}))')
+                else:
+                    apply_tac = f'apply {ref_name} <;> ({close_tac})'
+
                 if lit_has_new_vars:
                     # Wrap in lambda, instantiate any ∀-quantified previous hyps
                     fvars_str = ' '.join(svm[v] for v in new_vars)
@@ -1341,10 +1365,10 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                             pname = hyp_names[pidx]
                             pvars_args = ' '.join(svm.get(v, '_') for v in p_new_vars)
                             inst_lines.append(f'have {pname}_i := {pname} {pvars_args}')
-                    inner = '; '.join(inst_lines + [f'apply {ref_name} <;> ({close_tac})'])
+                    inner = '; '.join(inst_lines + [apply_tac])
                     lines.append(f'have {hname} : {full_lit_str} := fun {fvars_str} => by {inner}')
                 else:
-                    lines.append(f'have {hname} : {full_lit_str} := by apply {ref_name} <;> ({close_tac})')
+                    lines.append(f'have {hname} : {full_lit_str} := by {apply_tac}')
 
             hyp_names[idx] = hname
             hyp_lits[idx] = step.lit

@@ -93,6 +93,7 @@ benchmarkNames =
   , "GRP041-2"
   , "GRP007-1"
   , "HEN006-4"
+  , "HEN008-2"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -125,6 +126,7 @@ eBenchmarkNames =
   , "HEN006-4"
   , "GRP007-1"
   , "ANA023-2"
+  , "HEN008-2"
   ]
 
 mkTest :: String -> String -> String -> TestTree

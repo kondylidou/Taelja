@@ -50,36 +50,36 @@ axiom ax11 : ∀ (a : α) (x : α) (y : α) (z : α), c_lessequals (c_plus y z x
 -- Lemma 12
 theorem taelja_lemma12 : class_OrderedGroup_Opordered__ab__group__add t_b := by
   have h1 : class_Ring__and__Field_Oordered__idom t_b := by apply ax2
-  have h2 : class_OrderedGroup_Opordered__ab__group__add t_b := by apply ax7 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : class_OrderedGroup_Opordered__ab__group__add t_b := by first | (exact ax7 _ h1) | (apply ax7 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h2
 
 -- Lemma 13
 theorem taelja_lemma13 : ∀ (x : α), (c_plus c_0 x t_b) = x := by
   intro x
   have h1 : class_Ring__and__Field_Oordered__idom t_b := by apply ax2
-  have h2 : class_OrderedGroup_Ocomm__monoid__add t_b := by apply ax5 <;> (first | assumption | exact Eq.symm (by assumption))
-  have h3 : (c_plus c_0 x t_b) = x := by apply ax6 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : class_OrderedGroup_Ocomm__monoid__add t_b := by first | (exact ax5 _ h1) | (apply ax5 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h3 : (c_plus c_0 x t_b) = x := by first | (exact ax6 _ _ h2) | (apply ax6 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h3
 
 -- Lemma 14
 theorem taelja_lemma14 : class_Orderings_Oorder t_b := by
   have h1 : class_Ring__and__Field_Oordered__idom t_b := by apply ax2
-  have h2 : class_Orderings_Olinorder t_b := by apply ax3 <;> (first | assumption | exact Eq.symm (by assumption))
-  have h3 : class_Orderings_Oorder t_b := by apply ax4 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : class_Orderings_Olinorder t_b := by first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h3 : class_Orderings_Oorder t_b := by first | (exact ax4 _ h2) | (apply ax4 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : c_lessequals c_0 (c_minus (v_f v_x) (v_g v_x) t_b) t_b := by
   have h1 : c_lessequals c_0 (c_minus (v_k v_x) (v_g v_x) t_b) t_b := by apply ax8
   have h2 : class_OrderedGroup_Opordered__ab__group__add t_b := by apply taelja_lemma12
-  have h3 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_k v_x) t_b := by apply ax9 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h3 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_k v_x) t_b := by first | (exact ax9 _ _ _ _ h1 h2) | (apply ax9 <;> (first | assumption | exact Eq.symm (by assumption)))
   have h4 : c_lessequals (v_g v_x) (v_k v_x) t_b := by have h_rw := h3; rw [taelja_lemma13] at h_rw; exact h_rw
   have h5 : c_lessequals (v_k v_x) (v_f v_x) t_b := by apply ax1
   have h6 : class_Orderings_Oorder t_b := by apply taelja_lemma14
-  have h7 : c_lessequals (v_g v_x) (v_f v_x) t_b := by apply ax10 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h7 : c_lessequals (v_g v_x) (v_f v_x) t_b := by first | (exact ax10 _ _ _ _ h4 h5 h6) | (apply ax10 <;> (first | assumption | exact Eq.symm (by assumption)))
   have h8 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_f v_x) t_b := by rw [taelja_lemma13]; exact h7
   have h9 : class_OrderedGroup_Opordered__ab__group__add t_b := by apply taelja_lemma12
-  have h10 : c_lessequals c_0 (c_minus (v_f v_x) (v_g v_x) t_b) t_b := by apply ax11 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h10 : c_lessequals c_0 (c_minus (v_f v_x) (v_g v_x) t_b) t_b := by first | (exact ax11 _ _ _ _ h8 h9) | (apply ax11 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h10
 
 end VampireAna0232

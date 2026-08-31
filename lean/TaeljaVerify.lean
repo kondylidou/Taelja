@@ -8,6 +8,7 @@ import TaeljaVerify.Vampire.ESimpleHne
 import TaeljaVerify.Vampire.Grp0071
 import TaeljaVerify.Vampire.Grp0412
 import TaeljaVerify.Vampire.Hen0064
+import TaeljaVerify.Vampire.Hen0082
 import TaeljaVerify.Vampire.HornExampleDerivedRw
 import TaeljaVerify.Vampire.HornExampleElimVarRw
 import TaeljaVerify.Vampire.HornExampleEqHeadInlined
@@ -64,6 +65,7 @@ import TaeljaVerify.E.Col0034
 import TaeljaVerify.E.EUnitSourceAxiom
 import TaeljaVerify.E.Grp0071
 import TaeljaVerify.E.Hen0064
+import TaeljaVerify.E.Hen0082
 import TaeljaVerify.E.HornExampleDerivedRw
 import TaeljaVerify.E.HornExampleElimVarRw
 import TaeljaVerify.E.HornExampleEqHeadInlined

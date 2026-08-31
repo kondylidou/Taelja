@@ -36,14 +36,14 @@ theorem taelja_lemma6 : ∀ (x : α), (g x) = x := by
 -- Lemma 7
 theorem taelja_lemma7 : q a := by
   have h1 : (g a) = a := by apply taelja_lemma6
-  have h2 : q a := by apply ax5 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h2 : q a := by first | (exact ax5 _ h1) | (apply ax5 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : p a := by
   have h1 : s a := by apply ax3
   have h2 : q a := by apply taelja_lemma7
-  have h3 : p a := by apply ax4 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h3 : p a := by first | (exact ax4 _ h1 h2) | (apply ax4 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h3
 
 end VampireThesisExampleBothLemmas

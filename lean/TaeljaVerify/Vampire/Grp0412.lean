@@ -22,7 +22,7 @@ axiom ax2 : ∀ (a : α) (x : α) (y : α) (z : α), product x y z → product x
 theorem taelja_goal1 : equalish a a := by
   have h1 : product identity a a := by apply ax1
   have h2 : product identity a a := by apply ax1
-  have h3 : equalish a a := by apply ax2 <;> (first | assumption | exact Eq.symm (by assumption))
+  have h3 : equalish a a := by first | (exact ax2 _ _ _ _ h1 h2) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
   exact h3
 
 end VampireGrp0412

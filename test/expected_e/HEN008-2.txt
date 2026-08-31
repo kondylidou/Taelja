@@ -14,5 +14,116 @@ Axiom 13: quotient(zero,X,zero)
 Axiom 14: quotient(X,Y,Z) /\ quotient(X,Y,A) => Z = A
 Axiom 15: less_equal(X,Y) /\ quotient(Z,Y,A) /\ quotient(Z,X,B) => less_equal(A,B)
 
+Lemma 16: quotient(c,c,zero)
+Proof:
+  have quotient(c,zero,c)
+    by axiom 3
+  hence less_equal(c,c)
+    by axiom 2
+  hence quotient(c,c,zero)
+    by axiom 5
+
+Lemma 17: less_equal(aQc,divide(aQc,c))
+Proof:
+  have quotient(a,c,aQc)
+    by axiom 4
+   and quotient(c,c,zero)
+    by lemma 16
+   and quotient(a,c,aQc)
+    by axiom 4
+   and quotient(aQc,zero,aQc)
+    by axiom 3
+   and quotient(aQc,c,divide(aQc,c))
+    by axiom 1
+  hence less_equal(aQc,divide(aQc,c))
+    by axiom 6
+
+Lemma 18: less_equal(aQc,a)
+Proof:
+  have quotient(a,c,aQc)
+    by axiom 4
+  hence less_equal(aQc,a)
+    by axiom 2
+
+Lemma 19: less_equal(divide(aQc,zero),b)
+Proof:
+  have quotient(aQc,zero,divide(aQc,zero))
+    by axiom 1
+  hence less_equal(divide(aQc,zero),aQc)
+    by axiom 2
+   and less_equal(aQc,a)
+    by lemma 18
+  hence less_equal(divide(aQc,zero),a)
+    by axiom 10
+   and less_equal(a,b)
+    by axiom 11
+  hence less_equal(divide(aQc,zero),b)
+    by axiom 10
+
+Lemma 20: divide(aQc,b) = zero
+Proof:
+  have quotient(aQc,zero,divide(aQc,zero))
+    by axiom 1
+   and less_equal(divide(aQc,zero),b)
+    by lemma 19
+   and quotient(aQc,b,divide(aQc,b))
+    by axiom 1
+  hence less_equal(divide(aQc,b),zero)
+    by axiom 12
+   and less_equal(zero,divide(aQc,b))
+    by axiom 8
+  hence divide(aQc,b) = zero
+    by axiom 7
+
+Lemma 21: divide(aQc,c) = aQc
+Proof:
+  have quotient(aQc,c,divide(aQc,c))
+    by axiom 1
+  hence less_equal(divide(aQc,c),aQc)
+    by axiom 2
+   and less_equal(aQc,divide(aQc,c))
+    by lemma 17
+  hence divide(aQc,c) = aQc
+    by axiom 7
+
+Lemma 22: quotient(aQc,b,zero)
+Proof:
+  quotient(aQc,b,zero)
+= { by lemma 20 R->L }
+  quotient(aQc,b,divide(aQc,b))
+= { by axiom 1 }
+  true
+
+Lemma 23: quotient(aQc,c,aQc)
+Proof:
+  quotient(aQc,c,aQc)
+= { by lemma 21 R->L }
+  quotient(aQc,c,divide(aQc,c))
+= { by axiom 1 }
+  true
+
+Lemma 24: less_equal(divide(aQc,bQc),zero)
+Proof:
+  have quotient(aQc,b,zero)
+    by lemma 22
+   and quotient(b,c,bQc)
+    by axiom 9
+   and quotient(aQc,c,aQc)
+    by lemma 23
+   and quotient(aQc,bQc,divide(aQc,bQc))
+    by axiom 1
+   and quotient(zero,c,zero)
+    by axiom 13
+  hence less_equal(divide(aQc,bQc),zero)
+    by axiom 6
+
 Goal 1: less_equal(aQc,bQc)
 Proof:
+  have quotient(X,bQc,divide(X,bQc))
+    by axiom 1
+   and less_equal(divide(aQc,bQc),zero)
+    by lemma 24
+   and quotient(aQc,zero,aQc)
+    by axiom 3
+  hence less_equal(aQc,bQc)
+    by axiom 12

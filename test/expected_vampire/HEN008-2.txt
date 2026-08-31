@@ -1,0 +1,43 @@
+Axiom 1: less_equal(a,b)
+Axiom 2: less_equal(X,Y) => quotient(X,Y,zero)
+Axiom 3: quotient(X,Y,divide(X,Y))
+Axiom 4: quotient(X,Y,Z) /\ quotient(X,Y,A) => A = Z
+Axiom 5: quotient(a,c,aQc)
+Axiom 6: quotient(b,c,bQc)
+Axiom 7: quotient(zero,X,zero)
+Axiom 8: quotient(B,C,U) /\ quotient(Y,Z,C) /\ quotient(X,Z,B) /\ quotient(X,Y,A) /\ quotient(A,Z,V) => less_equal(U,V)
+Axiom 9: quotient(X,zero,X)
+Axiom 10: quotient(X,Z,C) /\ less_equal(A,Z) /\ quotient(X,Y,A) => less_equal(C,Y)
+
+Lemma 11: quotient(a,b,zero)
+Proof:
+  have less_equal(a,b)
+    by axiom 1
+  hence quotient(a,b,zero)
+    by axiom 2
+
+Lemma 12: less_equal(divide(aQc,bQc),zero)
+Proof:
+  have quotient(aQc,bQc,divide(aQc,bQc))
+    by axiom 3
+   and quotient(b,c,bQc)
+    by axiom 6
+   and quotient(a,c,aQc)
+    by axiom 5
+   and quotient(a,b,zero)
+    by lemma 11
+   and quotient(zero,c,zero)
+    by axiom 7
+  hence less_equal(divide(aQc,bQc),zero)
+    by axiom 8
+
+Goal 1: less_equal(aQc,bQc)
+Proof:
+  have quotient(aQc,zero,aQc)
+    by axiom 9
+   and less_equal(divide(aQc,bQc),zero)
+    by lemma 12
+   and quotient(aQc,bQc,divide(aQc,bQc))
+    by axiom 3
+  hence less_equal(aQc,bQc)
+    by axiom 10
