@@ -21,7 +21,7 @@ axiom ax2 : r a b
 -- Goal 1
 theorem taelja_goal1 : s b a := by
   have h1 : r a b := by apply ax2
-  have h2 : s b a := by first | (exact ax1 _ _ h1) | (apply ax1 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h2 : s b a := by first | (exact ax1 _ _ h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h2
 
 end VampireESimpleHne

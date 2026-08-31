@@ -136,10 +136,12 @@ def prover_env(name, tptp_dir):
     return {}
 
 
+OK_MARKERS = ['SZS status Theorem', 'SZS status Unsatisfiable',
+              'Refutation found', 'Proof found', 'RESULT: Unsatisfiable']
+
+
 def prover_succeeded(name, stdout):
-    ok_markers = ['SZS status Theorem', 'SZS status Unsatisfiable',
-                  'Refutation found', 'Proof found', 'RESULT: Unsatisfiable']
-    if not any(m in stdout for m in ok_markers):
+    if not any(m in stdout for m in OK_MARKERS):
         return False
     # Twee sometimes outputs just the SZS status with an empty CNFRefutation block
     # (no actual proof clauses).  Without clauses Taelja has nothing to parse, so
@@ -162,15 +164,24 @@ def strip_twee_preamble(output):
     return output
 
 
+def prover_emit_failed(stdout):
+    """Prover reported a proof (status marker) but failed to emit usable
+    proof clauses, e.g. Twee crashing in its proof output component."""
+    return any(m in stdout for m in OK_MARKERS)
+
+
 def _read_prove_status(out, prover_name):
     """Re-derive prove/timeout status from cached files (used with --skip-done)."""
     tstp = (out / 'proof.tstp').read_text()
     if prover_succeeded(prover_name, tstp):
         return 'ok', tstp
-    # Distinguish timeout from other failures
+    # Distinguish timeout from other failures; a run killed mid-print may
+    # carry a status marker in partial output, so timeout evidence wins
     err_file = out / 'prover.err'
     if err_file.exists() and 'TIMEOUT' in err_file.read_text():
         return 'timeout', tstp
+    if prover_emit_failed(tstp):
+        return 'tfail', tstp
     return 'fail', tstp
 
 
@@ -246,7 +257,14 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
     proof_tstp = out / 'proof.tstp'
     if proof_tstp.exists():
         tstp = proof_tstp.read_text()
-        prove_status = 'ok' if prover_succeeded(prover_name, tstp) else _check_cached_timeout(out)
+        if prover_succeeded(prover_name, tstp):
+            prove_status = 'ok'
+        elif _check_cached_timeout(out) == 'timeout':
+            prove_status = 'timeout'
+        elif prover_emit_failed(tstp):
+            prove_status = 'tfail'
+        else:
+            prove_status = 'fail'
     else:
         rc, tstp, err = run(prover_cmd(prover_name, prover_bin, p_file, tptp_dir),
                             timeout=timeout, cwd=str(tptp_dir),
@@ -260,6 +278,8 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
             prove_status = 'timeout'
         elif prover_succeeded(prover_name, tstp):
             prove_status = 'ok'
+        elif prover_emit_failed(tstp):
+            prove_status = 'tfail'
         else:
             prove_status = 'fail'
 
@@ -355,6 +375,11 @@ def main():
     if args.eprover:
         provers['e'] = str(Path(args.eprover).resolve())
     twee_path = args.twee
+    if twee_path is None:
+        # auto-detect, as documented: bin/twee relative to this repo
+        candidate = Path(__file__).resolve().parent.parent / 'bin' / 'twee'
+        if candidate.exists():
+            twee_path = str(candidate)
     if twee_path:
         provers['twee'] = str(Path(twee_path).resolve())
 
@@ -470,7 +495,7 @@ def main():
 def _print_summary(results, provers, lean_col):
     # Header: Category  Prover  Total  Proved  Unsupp  Transl  Fail[  Lean]
     hdr = (f"{'Category':8s}  {'Prover':7s}  {'Total':>6s}  "
-           f"{'Proved':>6s}  {'Unsupp':>6s}  {'Transl':>6s}  {'Fail':>6s}"
+           f"{'Proved':>6s}  {'Unsupp':>6s}  {'Transl':>6s}  {'Fail':>6s}  {'TFail':>6s}"
            + (f"  {'Lean':>6s}" if lean_col else ''))
     print(hdr)
     print('-' * len(hdr))
@@ -484,16 +509,19 @@ def _print_summary(results, provers, lean_col):
             if not sub:
                 continue
             n           = len(sub)
-            proved      = sum(1 for r in sub if r['prove'] == 'ok')
+            # tfail counts as proved: the prover found a proof, only its
+            # TSTP output failed
+            proved      = sum(1 for r in sub if r['prove'] in ('ok', 'tfail'))
             unsupported = sum(1 for r in sub if r['taelja'] == 'unsupported')
             translated  = sum(1 for r in sub if r['taelja'] == 'ok')
             failed      = sum(1 for r in sub if r['prove'] == 'ok'
                               and r['taelja'] in ('fail', 'timeout'))
+            tfail       = sum(1 for r in sub if r['prove'] == 'tfail')
             lean        = sum(1 for r in sub if r.get('lean') == 'ok')
 
             cat_col = cat if prover in (prover_list[0], 'ALL') else ''
             row = (f"{cat_col:8s}  {prover:7s}  {n:6d}  "
-                   f"{proved:6d}  {unsupported:6d}  {translated:6d}  {failed:6d}")
+                   f"{proved:6d}  {unsupported:6d}  {translated:6d}  {failed:6d}  {tfail:6d}")
             if lean_col:
                 row += f"  {lean:6d}"
             print(row)

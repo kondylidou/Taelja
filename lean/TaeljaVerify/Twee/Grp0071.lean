@@ -23,7 +23,7 @@ axiom ax3 : ∀ (a : α) (b : α) (c : α) (z : α), product z a b → product z
 theorem taelja_goal1 : identity = c := by
   have h1 : product identity c identity := by apply ax2
   have h2 : product identity c c := by apply ax1
-  have h3 : identity = c := by first | (exact ax3 _ _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h3 : identity = c := by first | (exact ax3 _ _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h3
 
 end TweeGrp0071

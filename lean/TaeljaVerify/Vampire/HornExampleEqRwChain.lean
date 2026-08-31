@@ -27,9 +27,9 @@ axiom ax4 : (g a) = c → (h a) = c
 -- Goal 1
 theorem taelja_goal1 : (h a) = c := by
   have h1 : (f b) = c := by apply ax1
-  have h2 : (g b) = c := by first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h2 : (g b) = c := by first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   have h3 : (g a) = c := by rw [ax3]; exact h2
-  have h4 : (h a) = c := by first | (exact ax4 h3) | (apply ax4 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h4 : (h a) = c := by first | (exact ax4 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h4
 
 end VampireHornExampleEqRwChain

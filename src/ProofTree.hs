@@ -632,7 +632,26 @@ firstParentIsLeft _ _ d1 d2
            (True,  False) -> True
            (False, True ) -> False
            _              -> True
-firstParentIsLeft _ result d1 d2 = case (headLitOf d1, headLitOf d2) of
+firstParentIsLeft _ result d1 d2 = case (posHead d1, posHead d2) of
   (Just h1, _)       -> not (headInDecl h1 result)
   (Nothing, Just h2) -> headInDecl h2 result
   (Nothing, Nothing) -> True  -- both non-unit: keep original order
+  where
+    -- Like headLitOf, but a disequality atom (s != t) counts as a negative
+    -- literal.  headLitOf treats it as positive, which hid the true head of
+    -- clauses like g(X) != X | q(X): both heads came back Nothing, the
+    -- parent order was kept, and the resolved-positive premise could end up
+    -- right of its consumer, forcing a skip-and-retry during translation.
+    posHead (T.Formula _ (T.CNF (T.Clause lits))) =
+      single [ l | (T.Positive, l) <- toList lits, not (isNegEq l) ]
+    posHead (T.Formula _ (T.FOF f)) = fofHead (stripQ f)
+    posHead _ = Nothing
+    stripQ (T.Quantified T.Forall _ b) = stripQ b
+    stripQ f = f
+    fofHead (T.Connected _ T.Implication (T.Atomic l))
+      | not (isNegEq l) = Just l
+    fofHead f = single (filter (not . isNegEq) (posLitsOfDisjFOF f))
+    single [l] = Just l
+    single _   = Nothing
+    isNegEq (T.Equality _ T.Negative _) = True
+    isNegEq _ = False

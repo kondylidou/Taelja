@@ -54,12 +54,13 @@ translate :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translate debug tstp = do
   -- TAELJA_STRICT=1 forces the strict paper translation (experiments/evaluation)
   forceStrict <- maybe False (== "1") <$> lookupEnv "TAELJA_STRICT"
-  mHeur <- if forceStrict then return Nothing else tryStage False tstp debug
+  (mHeur, errHeur) <- if forceStrict then return (Nothing, Nothing)
+                      else tryStage False tstp debug
   case mHeur of
     Just sp | not (hasHole sp) -> return (Just sp)
     _ -> do
       when debug $ hPutStrLn stderr "translate: heuristic translation left a goal unproved; trying strict mode"
-      mStrict <- tryStage True tstp debug
+      (mStrict, errStrict) <- tryStage True tstp debug
       -- keep whichever result proves more goals (ties go to the heuristic:
       -- its proofs are the compact ones)
       let result = case (mHeur, mStrict) of
@@ -70,25 +71,37 @@ translate debug tstp = do
         Just sp | hasHole sp -> hPutStrLn stderr $
           "[warn] translate: " ++ show (length (goals sp) - provenGoals sp)
           ++ " goal(s) unproved in the final proof"
+        -- both stages produced nothing: name the crashes so a failed run is
+        -- diagnosable without --debug (the run fails either way, so this
+        -- cannot violate the eval warning contract for successful runs)
+        Nothing -> hPutStrLn stderr $ "translate: translation failed"
+          ++ maybe "" ("; heuristic stage: " ++) errHeur
+          ++ maybe "" ("; strict stage: " ++) errStrict
         _ -> return ()
       return result
   where
     -- one unproved goal (empty block) is enough to try strict mode: a single
     -- proven goal must not mask the hole in a multi-goal proof
-    hasHole sp = null (goals sp) || any (isEmptyBlock . snd) (goals sp)
-    provenGoals sp = length [ () | (_, b) <- goals sp, not (isEmptyBlock b) ]
+    hasHole sp = null (goals sp) || any (badGoalBlock . snd) (goals sp)
+    provenGoals sp = length [ () | (_, b) <- goals sp, not (badGoalBlock b) ]
+    -- a goal block that opens with "hence" has no premise line: the
+    -- fallback that assembles goal proofs from Twee chains can emit these,
+    -- and they are not valid proofs (nothing establishes the first step)
+    badGoalBlock b = isEmptyBlock b || case b of
+      HaveHence (Hence _ _ : _) -> True
+      _                         -> False
     -- a crash inside one stage (e.g. an unprovable unit hitting an error call
     -- deep in the matcher) counts as that stage producing nothing, so the
     -- other stage still gets its chance
     tryStage strict t dbg' = do
       r <- try (translateMode strict dbg' t) :: IO (Either SomeException (Maybe StructuredProof))
       case r of
-        Right m -> return m
+        Right m -> return (m, Nothing)
         Left e  -> do
           when dbg' $ hPutStrLn stderr
             ("translate: " ++ (if strict then "strict" else "heuristic")
              ++ " stage failed with: " ++ show e)
-          return Nothing
+          return (Nothing, Just (takeWhile (/= '\n') (show e)))
 
 -- The translation pipeline shared by both stages.  Lemma introduction first:
 -- every derived clause used at least twice in the DAG (unless it is merely a

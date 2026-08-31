@@ -21,7 +21,7 @@ axiom ax2 : ∀ (x : α) (y : α), less_equal x y → member x y
 -- Goal 1
 theorem taelja_goal1 : member a top := by
   have h1 : less_equal a top := by apply ax1
-  have h2 : member a top := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h2 : member a top := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h2
 
 end EEUnitSourceAxiom

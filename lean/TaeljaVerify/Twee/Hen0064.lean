@@ -41,16 +41,16 @@ theorem taelja_lemma10 : ∀ (x : α), less_equal (divide (divide x (divide x ze
   intro x
   have h_rw := ax8 (divide x zero)
   rw (config := { occs := .pos [4] }) [← h_rw]
-  apply ax1 <;> (first | assumption | exact Eq.symm (by assumption))
+  apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
 
 -- Lemma 11
 theorem taelja_lemma11 : ∀ (x : α), less_equal (divide x (divide x zero)) zero := by
   intro x
   have h1 : less_equal zero (divide (divide x (divide x zero)) (divide zero (divide x zero))) := by apply ax4
   have h2 : less_equal (divide (divide x (divide x zero)) (divide zero (divide x zero))) zero := by apply taelja_lemma10
-  have h3 : zero = (divide (divide x (divide x zero)) (divide zero (divide x zero))) := by first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h3 : zero = (divide (divide x (divide x zero)) (divide zero (divide x zero))) := by first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   have h4 : zero = (divide (divide x (divide x zero)) zero) := by have h_rw := h3; rw [ax6] at h_rw; exact h_rw
-  have h5 : less_equal (divide x (divide x zero)) zero := by first | (exact ax9 _ _ h4) | (apply ax9 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h5 : less_equal (divide x (divide x zero)) zero := by first | (exact ax9 _ _ h4) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h5
 
 -- Lemma 12
@@ -58,8 +58,8 @@ theorem taelja_lemma12 : ∀ (x : α), less_equal x (divide x zero) := by
   intro x
   have h1 : less_equal zero (divide x (divide x zero)) := by apply ax4
   have h2 : less_equal (divide x (divide x zero)) zero := by apply taelja_lemma11
-  have h3 : zero = (divide x (divide x zero)) := by first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | exact Eq.symm (by assumption)))
-  have h4 : less_equal x (divide x zero) := by first | (exact ax9 _ _ h3) | (apply ax9 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h3 : zero = (divide x (divide x zero)) := by first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h4 : less_equal x (divide x zero) := by first | (exact ax9 _ _ h3) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h4
 
 -- Lemma 13
@@ -67,38 +67,38 @@ theorem taelja_lemma13 : ∀ (x : α), (divide x zero) = x := by
   intro x
   have h1 : less_equal (divide x zero) x := by apply ax7
   have h2 : less_equal x (divide x zero) := by apply taelja_lemma12
-  have h3 : (divide x zero) = x := by first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h3 : (divide x zero) = x := by first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h3
 
 -- Lemma 14
 theorem taelja_lemma14 : (divide (divide a b) d) = zero := by
   have h1 : less_equal (divide a b) d := by apply ax3
-  have h2 : (divide (divide a b) d) = zero := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h2 : (divide (divide a b) d) = zero := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h2
 
 -- Lemma 15
 theorem taelja_lemma15 : less_equal (divide (divide a d) (divide b d)) zero := by
   have h_rw := taelja_lemma14
   rw [← h_rw]
-  apply ax1 <;> (first | assumption | exact Eq.symm (by assumption))
+  apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
 
 -- Lemma 16
 theorem taelja_lemma16 : (divide (divide a d) (divide b d)) = zero := by
   have h1 : less_equal (divide (divide a d) (divide b d)) zero := by apply taelja_lemma15
   have h2 : less_equal zero (divide (divide a d) (divide b d)) := by apply ax4
-  have h3 : (divide (divide a d) (divide b d)) = zero := by first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h3 : (divide (divide a d) (divide b d)) = zero := by first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h3
 
 -- Lemma 17
 theorem taelja_lemma17 : (divide (divide b d) b) = zero := by
   have h1 : less_equal (divide b d) b := by apply ax7
-  have h2 : (divide (divide b d) b) = zero := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h2 : (divide (divide b d) b) = zero := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h2
 
 -- Lemma 18
 theorem taelja_lemma18 : (divide (divide (divide (divide a d) b) (divide (divide b d) b)) (divide (divide (divide a d) (divide b d)) b)) = zero := by
   have h1 : less_equal (divide (divide (divide a d) b) (divide (divide b d) b)) (divide (divide (divide a d) (divide b d)) b) := by apply ax1
-  have h2 : (divide (divide (divide (divide a d) b) (divide (divide b d) b)) (divide (divide (divide a d) (divide b d)) b)) = zero := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h2 : (divide (divide (divide (divide a d) b) (divide (divide b d) b)) (divide (divide (divide a d) (divide b d)) b)) = zero := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h2
 
 -- Lemma 19
@@ -113,7 +113,7 @@ theorem taelja_lemma19 : (divide (divide a d) b) = zero := by
 -- Goal 1
 theorem taelja_goal1 : less_equal (divide a d) b := by
   have h1 : (divide (divide a d) b) = zero := by apply taelja_lemma19
-  have h2 : less_equal (divide a d) b := by first | (exact ax9 _ _ h1) | (apply ax9 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h2 : less_equal (divide a d) b := by first | (exact ax9 _ _ h1) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h2
 
 end TweeHen0064

@@ -31,17 +31,17 @@ axiom ax5 : ∀ (x : α), r1 x → r2 x → r0 x
 -- Lemma 6
 theorem taelja_lemma6 : r2 a := by
   have h1 : p a := by apply ax1
-  have h2 : q a c := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
-  have h3 : r2 a := by first | (exact ax4 _ h2) | (apply ax4 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h2 : q a c := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h3 : r2 a := by first | (exact ax4 _ h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : r0 a := by
   have h1 : p a := by apply ax1
-  have h2 : q a b := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | exact Eq.symm (by assumption)))
-  have h3 : r1 a := by first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h2 : q a b := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h3 : r1 a := by first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   have h4 : r2 a := by apply taelja_lemma6
-  have h5 : r0 a := by first | (exact ax5 _ h3 h4) | (apply ax5 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h5 : r0 a := by first | (exact ax5 _ h3 h4) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h5
 
 end VampireResolutionExampleHornDag

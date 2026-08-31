@@ -31,7 +31,7 @@ theorem taelja_lemma4 : ∀ (x : α), (f x) = (h x) := by
 -- Goal 1
 theorem taelja_goal1 : p a := by
   have h1 : (f a) = (h a) := by apply taelja_lemma4
-  have h2 : p a := by first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h2 : p a := by first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h2
 
 end VampireTestEqchainInHavehence

@@ -94,6 +94,8 @@ benchmarkNames =
   , "GRP007-1"
   , "HEN006-4"
   , "HEN008-2"
+  , "tau_shared"
+  , "tau_mixed"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -127,6 +129,8 @@ eBenchmarkNames =
   , "GRP007-1"
   , "ANA023-2"
   , "HEN008-2"
+  , "tau_shared"
+  , "tau_mixed"
   ]
 
 mkTest :: String -> String -> String -> TestTree

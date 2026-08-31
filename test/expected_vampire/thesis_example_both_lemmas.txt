@@ -1,8 +1,8 @@
 Axiom 1: f(X) = X
 Axiom 2: g(X) = f(X)
-Axiom 3: s(a)
-Axiom 4: s(X) /\ q(X) => p(X)
-Axiom 5: g(X) = X => q(X)
+Axiom 3: g(X) = X => q(X)
+Axiom 4: s(a)
+Axiom 5: s(X) /\ q(X) => p(X)
 
 Lemma 6: g(X) = X
 Proof:
@@ -17,13 +17,13 @@ Proof:
   have g(a) = a
     by lemma 6
   hence q(a)
-    by axiom 5
+    by axiom 3
 
 Goal 1: p(a)
 Proof:
   have s(a)
-    by axiom 3
+    by axiom 4
    and q(a)
     by lemma 7
   hence p(a)
-    by axiom 4
+    by axiom 5

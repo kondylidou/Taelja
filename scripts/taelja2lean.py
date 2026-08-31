@@ -1098,7 +1098,7 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
             else:
                 lines.append(f'exact Eq.symm ({final_rn} true_)')
         else:
-            close_tac = 'first | assumption | exact Eq.symm (by assumption)'
+            close_tac = 'first | assumption | rfl | exact Eq.symm (by assumption)'
             lines.append(f'apply {final_rn} <;> ({close_tac})')
         return lines
 
@@ -1303,7 +1303,7 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     and any(v not in var_map
                             for v in sorted(vars_in_lit(hyp_lits[pidx])))
                 ]
-                close_parts = ['assumption', 'exact Eq.symm (by assumption)']
+                close_parts = ['assumption', 'rfl', 'exact Eq.symm (by assumption)']
                 close_parts += [f'apply {h}' for h in univ_hyp_names]
                 close_tac = 'first | ' + ' | '.join(close_parts)
 

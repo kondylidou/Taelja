@@ -24,7 +24,7 @@ axiom ax3 : p b → q b
 theorem taelja_goal1 : q b := by
   have h1 : p a := by apply ax2
   have h2 : p b := by have h_rw := h1; rw [ax1] at h_rw; exact h_rw
-  have h3 : q b := by first | (exact ax3 h2) | (apply ax3 <;> (first | assumption | exact Eq.symm (by assumption)))
+  have h3 : q b := by first | (exact ax3 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
   exact h3
 
 end VampireHornExampleRelationalRw
