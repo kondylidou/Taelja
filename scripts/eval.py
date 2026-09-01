@@ -253,18 +253,23 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
                     result['lean'] = 'fail'
         return result
 
-    # 1. Run prover — skip if proof.tstp already exists (reuse cached proof)
+    # 1. Run prover — skip if proof.tstp already exists (reuse cached proof).
+    # A cached tfail (prover found a proof but its proof output crashed) is
+    # not a stable result: it depends on the prover binary, so re-run.
     proof_tstp = out / 'proof.tstp'
+    cached_status = None
     if proof_tstp.exists():
         tstp = proof_tstp.read_text()
         if prover_succeeded(prover_name, tstp):
-            prove_status = 'ok'
+            cached_status = 'ok'
         elif _check_cached_timeout(out) == 'timeout':
-            prove_status = 'timeout'
+            cached_status = 'timeout'
         elif prover_emit_failed(tstp):
-            prove_status = 'tfail'
+            cached_status = None  # re-run below
         else:
-            prove_status = 'fail'
+            cached_status = 'fail'
+    if cached_status is not None:
+        prove_status = cached_status
     else:
         rc, tstp, err = run(prover_cmd(prover_name, prover_bin, p_file, tptp_dir),
                             timeout=timeout, cwd=str(tptp_dir),
