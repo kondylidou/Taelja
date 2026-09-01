@@ -82,12 +82,14 @@ translate debug tstp = do
   where
     -- one unproved goal (empty block) is enough to try strict mode: a single
     -- proven goal must not mask the hole in a multi-goal proof
-    hasHole sp = null (goals sp) || any (badGoalBlock . snd) (goals sp)
-    provenGoals sp = length [ () | (_, b) <- goals sp, not (badGoalBlock b) ]
+    hasHole sp = null (goals sp) || any badGoal (goals sp)
+    provenGoals sp = length [ () | g <- goals sp, not (badGoal g) ]
     -- a goal block that opens with "hence" has no premise line: the
     -- fallback that assembles goal proofs from Twee chains can emit these,
-    -- and they are not valid proofs (nothing establishes the first step)
-    badGoalBlock b = isEmptyBlock b || case b of
+    -- and they are not valid proofs (nothing establishes the first step).
+    -- A zero-step chain is a hole unless the goal is reflexive (t = t).
+    badGoal (Eq a c, EqChain _ []) | a == c = False
+    badGoal (_, b) = isEmptyBlock b || case b of
       HaveHence (Hence _ _ : _) -> True
       _                         -> False
     -- a crash inside one stage (e.g. an unprovable unit hitting an error call
@@ -1417,6 +1419,13 @@ proveGoal mChain goal = do
             Just u  -> Just <$> makeBlock u [] []
           case mDerivedBlk of
             Just blk -> emitGoalProof goal blk
+            -- Reflexive goal: the goal's variables come from an existential
+            -- conjecture, so if the two sides unify the instantiated goal
+            -- l' = l' holds by reflexivity (Twee emits a `reflexivity` step,
+            -- Vampire an equality_resolution on the negated conjecture).
+            Nothing | Just ρ <- unifyTerms l r [] -> do
+              let l' = deepApplySubstTerm ρ l
+              emitGoalProof (Eq l' l') (EqChain l' [])
             Nothing  -> do
               mTwee <- liftIO (callTwee (tweableUnits units) goal)
               case mTwee of

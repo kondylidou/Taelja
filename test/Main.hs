@@ -12,6 +12,8 @@ import Test.Tasty.Golden
 
 import Translate (translate)
 import Emitter (emit)
+import Helpers (extractSzsBlock)
+import qualified Data.Text as Text
 
 main :: IO ()
 main = do
@@ -42,6 +44,7 @@ tweeBenchmarkNames =
   , "GRP007-1"
   , "ANA023-2"
   , "HEN006-4"
+  , "COL083-1"
   ]
 
 handcraftedNames :: [String]
@@ -96,6 +99,7 @@ benchmarkNames =
   , "HEN008-2"
   , "tau_shared"
   , "tau_mixed"
+  , "COL083-1"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -131,6 +135,7 @@ eBenchmarkNames =
   , "HEN008-2"
   , "tau_shared"
   , "tau_mixed"
+  , "COL083-1"
   ]
 
 mkTest :: String -> String -> String -> TestTree
@@ -140,7 +145,8 @@ mkTest expectedDir prover name = goldenVsString name
 
 run :: FilePath -> IO LBS.ByteString
 run path = do
-  contents <- TIO.readFile path
+  raw <- TIO.readFile path
+  let contents = Text.pack (extractSzsBlock (Text.unpack raw))
   case eitherResult (feed (parseTSTP contents) mempty) of
     Left err   -> fail ("Parse error in " ++ path ++ ": " ++ err)
     Right tstp -> do

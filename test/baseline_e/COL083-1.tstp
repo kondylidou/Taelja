@@ -1,0 +1,19 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FUUPS-FFSF22-SFFFFFNN
+# Configuration: G-E--_208_C18_F1_SE_CS_SP_PS_S5PRR_S0Y
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_6, negated_conjecture, (response(a,X1)!=X2)).
+# Presaturation interreduction done
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(prove_birds_are_compatible_1, negated_conjecture, (response(a,X1)!=X2), file('Problems/COL/COL083-1.p', prove_birds_are_compatible_1)).
+cnf(c_0_1, negated_conjecture, (response(a,X1)!=X2), inference(fof_simplification,[status(thm)],[prove_birds_are_compatible_1])).
+cnf(c_0_2, negated_conjecture, (response(a,X1)!=X2), c_0_1).
+cnf(c_0_3, negated_conjecture, ($false), inference(er,[status(thm)],[c_0_2]), ['proof']).
+# SZS output end CNFRefutation

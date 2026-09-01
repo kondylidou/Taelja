@@ -24,7 +24,7 @@ import System.IO (hPutStrLn, stderr)
 import Types
 import Helpers
   ( applySubst, applyConstSubstBlock, applyConstSubstLit, blockRefNames
-  , isEmptyBlock, litVars, renameRefsBlock
+  , extractSzsBlock, isEmptyBlock, litVars, renameRefsBlock
   )
 import ProofTree (headLitOf, isPositiveUnitFormula, unitNameStr)
 import TptpConvert
@@ -307,7 +307,7 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
             Just eOut -> do
               when debug $ hPutStrLn stderr
                 ("buildCandidateLemma: E output length=" ++ show (length eOut))
-              case eitherResult (feed (parseTSTP (Text.pack eOut)) mempty) of
+              case eitherResult (feed (parseTSTP (Text.pack (extractSzsBlock eOut))) mempty) of
                 Left err -> do
                   when debug $ hPutStrLn stderr
                     ("buildCandidateLemma: parse error: " ++ err)

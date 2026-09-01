@@ -1,0 +1,22 @@
+Here is the input problem:
+  Axiom 1 (mocking_bird_exists): response(mocking_bird, X) = response(X, X).
+  Axiom 2 (composer_exists): response(compose(X, Y), Z) = response(X, response(Y, Z)).
+  Axiom 3 (reflexivity): equals(X, X) = true.
+  Axiom 4 (prove_birds_are_compatible_1): equals(response(a, X), Y) = false.
+  Goal 1 (true_equals_false): true = false.
+
+1. response(mocking_bird, X) = response(X, X)
+2. response(compose(X, Y), Z) -> response(X, response(Y, Z))
+3. equals(X, X) -> true
+4. equals(response(a, X), Y) -> false
+5. false -> true
+
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, response(a, A)!=B, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/COL/COL083-1.p', prove_birds_are_compatible_1)).
+cnf(c2, plain, response(a, X)=response(a, X), inference(reflexivity, [status(thm)], [])).
+cnf(c3, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c2])).
+% SZS output end CNFRefutation
+
+RESULT: Unsatisfiable (the axioms are contradictory).

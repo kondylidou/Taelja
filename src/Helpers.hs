@@ -1,7 +1,7 @@
 module Helpers where
 
 import Control.Applicative ((<|>))
-import Data.List (intercalate, isPrefixOf, isSuffixOf, nub)
+import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub)
 import Data.Maybe (fromMaybe)
 import Types
 
@@ -328,3 +328,40 @@ isInternalUnit :: UnitEntry -> Bool
 isInternalUnit ue = case ueName ue of
   Just nm -> isPrefixOf "prem_" nm || nm == "ifeq_axiom"
   Nothing -> True
+
+-- | Restrict prover output to its SZS output block when one is present.
+-- Twee (since 2.7 with --formal-proof) prints a human-readable preamble
+-- ("Here is the input problem: ...") and a "RESULT:" trailer around the
+-- "% SZS output start/end CNFRefutation" block; these lines are not TSTP
+-- and make the whole file unparseable.  Without markers the text is
+-- returned unchanged.
+extractSzsBlock :: String -> String
+extractSzsBlock txt =
+  case break isStart (lines txt) of
+    (_, [])        -> txt
+    (_, startLine : rest) ->
+      let (body, restEnd) = break isEnd rest
+          endLine = take 1 restEnd
+      in unlines (startLine : body ++ endLine)
+  where
+    isStart l = "SZS output start" `isInfixOf` l
+    isEnd   l = "SZS output end"   `isInfixOf` l
+
+-- | Syntactic unification with occurs check.  Both terms share one variable
+-- space (used for the two sides of a goal equation, whose variables stem from
+-- an existential conjecture and may therefore be instantiated).
+unifyTerms :: Term -> Term -> Subst -> Maybe Subst
+unifyTerms s0 t0 = go [(s0, t0)]
+  where
+    go [] θ = Just θ
+    go ((s, t) : rest) θ =
+      let s' = deepApplySubstTerm θ s
+          t' = deepApplySubstTerm θ t
+      in if s' == t' then go rest θ else case (s', t') of
+        (Var x, _) -> bind x t' rest θ
+        (_, Var y) -> bind y s' rest θ
+        (App f as, App g bs) | f == g, length as == length bs -> go (zip as bs ++ rest) θ
+        _ -> Nothing
+    bind x t rest θ
+      | x `elem` termVars t = Nothing
+      | otherwise           = go rest ((x, t) : θ)
