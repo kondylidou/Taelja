@@ -26,9 +26,9 @@ import Helpers
   ( applySubst, applyConstSubstBlock, applyConstSubstLit, blockRefNames
   , extractSzsBlock, isEmptyBlock, litVars, renameRefsBlock
   )
-import ProofTree (headLitOf, isPositiveUnitFormula, unitNameStr)
+import ProofTree (headLitOf, isPositiveUnitFormula, resolveSourceName, unitNameStr)
 import TptpConvert
-import TweeInterface (callTwee, isDerivedUnit, isEqLit, isOrigAxiomDecl, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
+import TweeInterface (TweeBudget (..), callTwee, isDerivedUnit, isEqLit, isOrigAxiomDecl, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
 
 -- Flatten a T.Parent into the TSTP unit names it references
 flattenParents :: T.Parent -> [String]
@@ -228,7 +228,7 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                      , not (isDerivedUnit u)
                      , isOrigAxiomDecl adecl
                      , isJust (headLitOf adecl)
-                     , Just line <- [toCNFAncAxiom (sanitizeId aname) adecl]
+                     , Just line <- [toCNFAncAxiom (ancInputName aname) adecl]
                      ]
           premLines = premLinesFor bodyLits_sk
           negLine =
@@ -261,7 +261,7 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                       else Just (UnitEntry (Map.lookup aname tstp2name) clit Nothing Nothing)
             case lit_sk of
               Eq l r -> do
-                mChain <- callTwee ancUes (Eq l r)
+                mChain <- callTwee InternalBudget ancUes (Eq l r)
                 case mChain of
                   Just (start, chain)
                     | not (null chain)
@@ -313,7 +313,18 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                     ("buildCandidateLemma: parse error: " ++ err)
                   return Nothing
                 Right tstp -> do
-                  let nameOvr = lemmaNameOverrides bodyLits_sk tstp2name
+                  -- The sub-proof cites its inputs through E's file sources,
+                  -- i.e. under the anc_ names given above; those resolve to
+                  -- the outer display names here.  The outer map itself must
+                  -- not be consulted: E numbers the sub-run's own clauses
+                  -- c_0_N as well, and a raw outer key c_0_N would rename an
+                  -- unrelated sub-run clause (COL006-2/E cited the k axiom
+                  -- for the s step and vice versa).
+                  let ancOvr = Map.fromList
+                        [ (ancInputName aname, dn)
+                        | aname <- Set.toList ancNames
+                        , Just dn <- [Map.lookup (resolveSourceName unitMap aname) tstp2name] ]
+                      nameOvr = Map.union ancOvr (syntheticOverrides bodyLits_sk)
                   msp <- translateFn nameOvr debug tstp
                   return (msp >>= liftSubProof cname lit undoMap)
   where
@@ -351,12 +362,23 @@ premLinesFor bodyLits_sk =
 -- their outer names.
 lemmaNameOverrides :: [Literal] -> Map.Map String String -> Map.Map String String
 lemmaNameOverrides bodyLits_sk tstp2name = Map.unions
-  [ Map.fromList [ (premName i, "assumption") | i <- [0 .. length bodyLits_sk - 1] ]
-  , Map.singleton "negconj" ""
+  [ syntheticOverrides bodyLits_sk
   , tstp2name
     -- ancestor axioms reach the E subproblem under sanitized ids (quoted
     -- TPTP names lose their spaces), so the overrides answer to those too
   , Map.mapKeys sanitizeId tstp2name ]
+
+-- Overrides for the synthetic units alone (premises cited as "assumption",
+-- negated conjecture suppressed).
+syntheticOverrides :: [Literal] -> Map.Map String String
+syntheticOverrides bodyLits_sk = Map.union
+  (Map.fromList [ (premName i, "assumption") | i <- [0 .. length bodyLits_sk - 1] ])
+  (Map.singleton "negconj" "")
+
+-- Name of an ancestor axiom inside the E sub-problem.  The prefix keeps it
+-- apart from the c_0_N names E assigns to the sub-run's own clauses.
+ancInputName :: String -> String
+ancInputName aname = "anc_" ++ sanitizeId aname
 
 -- Names of the synthetic units a sub-DAG translation adds.
 syntheticNames :: [Literal] -> [String]

@@ -1,0 +1,57 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~m4(b, X), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', prove_this)).
+cnf(c2, axiom, p0(b, X2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', axiom_14)).
+cnf(c3, axiom, m0(X2, d, Y), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', axiom_19)).
+cnf(c4, axiom, q0(X2, d), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', axiom_17)).
+cnf(c5, axiom, s1(I) | ~p0(I, I), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_125)).
+cnf(c6, plain, s1(b), inference(resolution, [status(thm)], [c2, c5])).
+cnf(c7, axiom, s1(F) | ~q0(F, G) | ~s1(H), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_126)).
+cnf(c8, plain, ~q0(d, d) | s1(d), inference(resolution, [status(thm)], [c6, c7])).
+cnf(c9, plain, s1(d), inference(resolution, [status(thm)], [c4, c8])).
+cnf(c10, axiom, l2(J, J) | ~p0(A, A) | ~s1(B) | ~m0(C, B, J), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_133)).
+cnf(c11, plain, ~p0(b, b) | ~m0(X2, d, X3) | l2(X3, X3), inference(resolution, [status(thm)], [c9, c10])).
+cnf(c12, plain, ~p0(b, b) | l2(X2, X2), inference(resolution, [status(thm)], [c3, c11])).
+cnf(c13, plain, l2(X2, X2), inference(resolution, [status(thm)], [c2, c12])).
+cnf(c14, axiom, k0(b), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', axiom_32)).
+cnf(c15, axiom, p1(B2, B2, B2) | ~p0(C2, B2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_085)).
+cnf(c16, plain, p1(a, a, a), inference(resolution, [status(thm)], [c2, c15])).
+cnf(c17, axiom, q2(E, F2, F2) | ~k0(F2) | ~p1(E, E, E), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_177)).
+cnf(c18, plain, ~k0(b) | q2(a, b, b), inference(resolution, [status(thm)], [c16, c17])).
+cnf(c19, plain, q2(a, b, b), inference(resolution, [status(thm)], [c14, c18])).
+cnf(c20, plain, p1(b, b, b), inference(resolution, [status(thm)], [c2, c15])).
+cnf(c21, axiom, l0(a), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', axiom_20)).
+cnf(c22, axiom, n0(b, a), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', axiom_37)).
+cnf(c23, axiom, l1(G2, G2) | ~n0(H2, G2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_002)).
+cnf(c24, plain, l1(a, a), inference(resolution, [status(thm)], [c22, c23])).
+cnf(c25, axiom, s0(b), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', axiom_5)).
+cnf(c26, axiom, n1(D, E2, D) | ~s0(b) | ~l0(D) | ~p0(b, E2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_050)).
+cnf(c27, plain, ~l0(a) | ~p0(b, b) | n1(a, b, a), inference(resolution, [status(thm)], [c25, c26])).
+cnf(c28, plain, ~l0(a) | n1(a, b, a), inference(resolution, [status(thm)], [c2, c27])).
+cnf(c29, plain, n1(a, b, a), inference(resolution, [status(thm)], [c21, c28])).
+cnf(c30, axiom, n1(E2, F2, F2) | ~l0(G2) | ~l1(G2, E2) | ~n1(E2, F2, E2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_054)).
+cnf(c31, plain, ~l0(a) | ~l1(a, a) | n1(a, b, b), inference(resolution, [status(thm)], [c29, c30])).
+cnf(c32, plain, ~l0(a) | n1(a, b, b), inference(resolution, [status(thm)], [c24, c31])).
+cnf(c33, plain, n1(a, b, b), inference(resolution, [status(thm)], [c21, c32])).
+cnf(c34, axiom, q2(F2, G2, F2) | ~p1(F2, F2, H2) | ~n1(G2, F2, H2) | ~q2(G2, H2, F2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_182)).
+cnf(c35, plain, ~p1(b, b, b) | ~q2(a, b, b) | q2(b, a, b), inference(resolution, [status(thm)], [c33, c34])).
+cnf(c36, plain, ~q2(a, b, b) | q2(b, a, b), inference(resolution, [status(thm)], [c20, c35])).
+cnf(c37, plain, q2(b, a, b), inference(resolution, [status(thm)], [c19, c36])).
+cnf(c38, plain, s1(b), inference(resolution, [status(thm)], [c2, c5])).
+cnf(c39, axiom, s2(H2) | ~q2(b, H2, b) | ~s1(b), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_189)).
+cnf(c40, plain, ~q2(b, a, b) | s2(a), inference(resolution, [status(thm)], [c38, c39])).
+cnf(c41, plain, s2(a), inference(resolution, [status(thm)], [c37, c40])).
+cnf(c42, plain, p1(a, a, a), inference(resolution, [status(thm)], [c2, c15])).
+cnf(c43, axiom, q2(I2, I2, I2) | ~p1(I2, I2, I2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_181)).
+cnf(c44, plain, q2(a, a, a), inference(resolution, [status(thm)], [c42, c43])).
+cnf(c45, axiom, s3(I2, J2) | ~q2(A2, I2, A2) | ~s2(I2) | ~m0(A2, B2, J2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_273)).
+cnf(c46, plain, ~q2(a, a, a) | ~s2(a) | s3(a, b), inference(resolution, [status(thm)], [c3, c45])).
+cnf(c47, plain, ~s2(a) | s3(a, b), inference(resolution, [status(thm)], [c44, c46])).
+cnf(c48, plain, s3(a, b), inference(resolution, [status(thm)], [c41, c47])).
+cnf(c49, axiom, m4(E2, F2) | ~l2(G2, F2) | ~s3(a, E2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN140-1.p', rule_279)).
+cnf(c50, plain, ~l2(X2, X2) | m4(b, X2), inference(resolution, [status(thm)], [c48, c49])).
+cnf(c51, plain, m4(b, X2), inference(resolution, [status(thm)], [c13, c50])).
+cnf(c52, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c51])).
+% SZS output end CNFRefutation
+

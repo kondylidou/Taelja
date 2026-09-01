@@ -112,6 +112,18 @@ class Document:
 
 # ─── Tokenizer ───────────────────────────────────────────────────────────────
 
+_SYM_CHARS = '+*/^<>-%&|~'
+
+
+def _symbolic_ident_end(s: str, i: int):
+    """End index of a run of operator characters at s[i] if it is applied as a
+    function symbol, i.e. immediately followed by '('; else None."""
+    j = i
+    while j < len(s) and s[j] in _SYM_CHARS:
+        j += 1
+    return j if j > i and j < len(s) and s[j] == '(' else None
+
+
 def tokenize(s: str) -> list:
     tokens = []
     i = 0
@@ -128,6 +140,11 @@ def tokenize(s: str) -> list:
             # might be R->L direction indicator — handled at higher level
             tokens.append(('IDENT', 'R'))
             i += 1
+        elif s[i] in _SYM_CHARS and _symbolic_ident_end(s, i) is not None:
+            # symbolic function/predicate name such as +(X,Y) or >(X,Y)
+            j = _symbolic_ident_end(s, i)
+            tokens.append(('IDENT', s[i:j]))
+            i = j
         elif s[i] == '(':
             tokens.append(('LPAREN', '('))
             i += 1
@@ -579,9 +596,30 @@ def lean_name(name: str) -> str:
         'rw', 'simp', 'type', 'sort', 'prop', 'extends',
         # Lean 4 built-in values/functions that conflict when declared as axioms
         'true', 'false', 'not', 'and', 'or', 'id',
+        # further reserved words / tactic keywords seen as TPTP symbols
+        'at', 'only', 'using', 'to', 'as', 'deriving', 'inductive', 'mutual',
+        'private', 'protected', 'partial', 'unsafe', 'opaque', 'omit', 'include',
+        'notation', 'macro', 'syntax', 'elab', 'set_option', 'termination_by',
+        'decreasing_by', 'generalizing', 'suffices', 'obtain', 'rcases', 'cases',
+        'induction', 'constructor', 'left', 'right', 'exists', 'forall', 'nat',
+        'int', 'string', 'list', 'option', 'unit', 'prod', 'sum', 'eq', 'ne',
+        'iff', 'implies', 'xor', 'bool', 'decide', 'trivial', 'rfl', 'symm',
+        'trans', 'congr', 'funext', 'ext', 'simp_all', 'omega', 'norm_num',
+        'sorry', 'admit', 'done', 'skip', 'first', 'try', 'repeat', 'all_goals',
+        'any_goals', 'case', 'next', 'rename_i', 'intros', 'revert', 'clear',
+        'subst', 'exfalso', 'contradiction', 'absurd', 'assumption', 'refine',
+        'calc', 'show', 'change', 'unfold', 'delta', 'dsimp', 'field', 'ring',
     }
     if name.lower() in keywords:
         return name + '_'
+    if name and name[0].isdigit():
+        # numerals are not identifiers (SYO632-1 has a constant named 0)
+        return 'n_' + name
+    if name and not (name[0].isalnum() or name[0] == '_'):
+        # symbolic function symbols (e.g. "+", ">") are not Lean identifiers
+        words = {'+': 'plus', '-': 'minus', '*': 'times', '/': 'div', '^': 'pow',
+                 '<': 'lt', '>': 'gt', '%': 'mod', '&': 'and', '|': 'or', '~': 'tilde'}
+        return 'op_' + '_'.join(words.get(c, f'c{ord(c)}') for c in name)
     return name
 
 # Set by emit_lean before emitting: predicates reclassified as α-valued functions
@@ -643,13 +681,24 @@ def lean_type(formula, all_vars: list, extra_vars=None) -> Tuple[str, dict]:
 
     return type_str, var_map
 
+# Set by emit_lean: Lean names of all declared symbols, so that a variable's
+# lowercase name never shadows a constant/function (SYN339-1: function `y`
+# versus variable Y, which made `f x (y x) y` ill-typed).
+_symbol_names: set = frozenset()
+# Lean name of a declared constant, used as the value of a variable that a
+# proof step leaves unconstrained (a premise's ∀-variable the conclusion never
+# mentions, a chain-only lemma binder in a ground chain).  None if the problem
+# has no constants.
+_filler_const = None
+
 def lean_var_name(uppercase_name: str, idx: int) -> str:
     """Map Taelja variable name (e.g. X, Y, X0) to Lean lowercase name."""
     mapping = {'X': 'x', 'Y': 'y', 'Z': 'z', 'X0': 'x0', 'X1': 'x1',
                'Y0': 'y0', 'Y1': 'y1', 'Z0': 'z0'}
-    if uppercase_name in mapping:
-        return mapping[uppercase_name]
-    return uppercase_name.lower()
+    name = mapping.get(uppercase_name, uppercase_name.lower())
+    while name in _symbol_names:
+        name += '_'
+    return name
 
 
 # ─── Occurrence-based rewrite helpers ────────────────────────────────────────
@@ -744,7 +793,17 @@ def find_rw_subst(prev_term, new_term, ax_formula, direction):
     if not isinstance(ax_formula, EqLit):
         return None
 
-    ax_lhs, ax_rhs = ax_formula.lhs, ax_formula.rhs
+    # The rule's variables and the chain's variables share names (both X, Y, ...)
+    # but are different logical variables; matching them in one substitution
+    # conflated them (GRP445-1: rule var X bound to the chain's Y, then the
+    # chain's own X failed to match).  Rename the rule's variables apart.
+    def _mark(t):
+        if isinstance(t, Var):
+            return Var('$' + t.name)
+        if isinstance(t, App):
+            return App(t.head, [_mark(a) for a in t.args])
+        return t
+    ax_lhs, ax_rhs = _mark(ax_formula.lhs), _mark(ax_formula.rhs)
     pat, rep = ax_lhs, ax_rhs  # rw [axN] always uses lhs->rhs direction
 
     search_in = prev_term if direction == 'LR' else new_term
@@ -765,7 +824,11 @@ def find_rw_subst(prev_term, new_term, ax_formula, direction):
                 return
             # LHS vars are resolved in s; RHS may still have free vars (e.g. ax: X = f(Y)).
             # Match the candidate (with free RHS vars as patterns) against target to resolve them.
-            full_s = match_term_pat(candidate, target, dict(s))
+            # Only the rule's ($-marked) variables are wildcards here: the chain's own
+            # variables must match themselves, otherwise a wrong occurrence can be
+            # "matched" by binding a chain variable to a bigger term (ALG006-1).
+            fixed = {v: Var(v) for v in vars_in_term(candidate) if not v.startswith('$')}
+            full_s = match_term_pat(candidate, target, dict(s, **fixed))
             if full_s is not None:
                 result[0] = full_s
                 return
@@ -774,7 +837,9 @@ def find_rw_subst(prev_term, new_term, ax_formula, direction):
                 search(arg)
 
     search(search_in)
-    return result[0]
+    if result[0] is None:
+        return None
+    return {k[1:]: v for k, v in result[0].items() if k.startswith('$')}
 
 
 
@@ -822,6 +887,48 @@ def rw_tactic(arrow, hyp, k, total):
     return f'rw [{arrow}{hyp}]'
 
 
+def lit_as_term(lit):
+    """View a literal as a term so the rewrite helpers can walk it."""
+    if isinstance(lit, EqLit):
+        return App('=', [lit.lhs, lit.rhs])
+    if isinstance(lit, PredLit):
+        return App(lit.head, list(lit.args)) if lit.args else Const(lit.head)
+    return None
+
+
+def precise_hyp_rw(prev_lit, target_lit, rw_formula, direction, ref_name, var_map, prev_ref, binders=None):
+    """Tactic proving `target_lit` from hypothesis `prev_ref : prev_lit` by one
+    rewrite with `rw_formula` (an equation), instantiated explicitly and applied
+    to exactly the occurrence that turns the target into the hypothesis.  This
+    avoids both the metavariable-pattern failure (rules with a bare variable on
+    one side) and rewriting every occurrence.  Returns None when the step cannot
+    be reconstructed; callers then fall back to the plain `rw`."""
+    if not isinstance(rw_formula, EqLit):
+        return None
+    prev_t, tgt_t = lit_as_term(prev_lit), lit_as_term(target_lit)
+    if prev_t is None or tgt_t is None:
+        return None
+    subst = find_rw_subst(prev_t, tgt_t, rw_formula, direction)
+    if subst is None:
+        return None
+    if any(v not in subst for v in vars_in_lit(rw_formula)):
+        return None
+    args = inst_args(rw_formula, subst, var_map, binders)
+    inst = f'{ref_name} {" ".join(args)}' if args else ref_name
+    lhs_i = apply_subst_obj(subst, rw_formula.lhs)
+    rhs_i = apply_subst_obj(subst, rw_formula.rhs)
+    if direction == 'LR':
+        # target has rhs_i where the hypothesis has lhs_i: rewrite the goal backwards
+        k, total = rewritten_occurrence(tgt_t, rhs_i, lhs_i, prev_t)
+        arrow = '←'
+    else:
+        k, total = rewritten_occurrence(tgt_t, lhs_i, rhs_i, prev_t)
+        arrow = ''
+    if k is None:
+        return None
+    return f'by have h_rw := {inst}; {rw_tactic(arrow, "h_rw", k, total)}; exact {prev_ref}'
+
+
 # ─── Lean 4 code emitter ─────────────────────────────────────────────────────
 
 def ref_lean_name(ref: Ref) -> str:
@@ -839,9 +946,10 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
         lines.append(f'namespace {namespace}')
         lines.append('')
 
-    global _func_predicates
+    global _func_predicates, _symbol_names
     functions, predicates, constants, func_preds = collect_symbols(doc)
     _func_predicates = func_preds
+    _symbol_names = set(lean_name(n) for n in list(functions) + list(predicates) + list(constants))
 
     # Sort for determinism
     consts_sorted = sorted(constants)
@@ -861,6 +969,8 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
     lines.append('')
 
     # Declare constants (one per line — Lean 4 does not allow multi-binder axioms)
+    global _filler_const
+    _filler_const = lean_name(consts_sorted[0]) if consts_sorted else None
     if consts_sorted:
         lines.append('-- Constants')
         for c in consts_sorted:
@@ -947,7 +1057,27 @@ def emit_proof(proof, axiom_types, lemma_types, conclusion_formula, consts=None)
         return emit_eqchain(proof, axiom_types, lemma_types, conclusion_formula, consts)
     elif isinstance(proof, HaveHenceProof):
         return emit_havehence(proof, axiom_types, lemma_types, conclusion_formula, consts)
-    return ['sorry']
+    return ['exact taelja_hole_unproved']  # undefined on purpose: a hole must fail, not warn
+
+
+def inst_args(formula, subst, var_map, binders=None):
+    """Arguments for `refN a1 a2 ...` in the order of the reference's ∀-binders.
+    A lemma proved by a chain may be quantified over variables that occur only in
+    intermediate chain terms; such binders are absent from `subst` and any term
+    of the sort will do, so the first real argument is reused for them."""
+    stmt_vars = vars_in_lit(formula)
+    order = list(binders) if binders else sorted(stmt_vars)
+    args = []
+    for v in order:
+        if v in subst:
+            t = subst[v]
+            a = lean_term(t, var_map)
+            args.append(f'({a})' if isinstance(t, App) and t.args else a)
+        else:
+            args.append(None if v not in stmt_vars else '_')
+    filler = next((a for a in args if a not in (None, '_')),
+                  next(iter(var_map.values()), None) or _filler_const or '_')
+    return [filler if a is None else a for a in args]
 
 
 def get_formula_vars(num, kind, axiom_types, lemma_types):
@@ -1002,15 +1132,8 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
             return f'by rw [{ref_name}]'  # fallback
 
         # Build instantiated application: axN arg1 arg2 ...
-        fvars = sorted(vars_in_lit(ax_formula))
-        args  = []
-        for v in fvars:
-            if v in subst:
-                t       = subst[v]
-                a_str   = lean_term(t, var_map)
-                if isinstance(t, App) and t.args:
-                    a_str = f'({a_str})'
-                args.append(a_str)
+        args = inst_args(ax_formula, subst, var_map,
+                         get_formula_vars(step.ref.num, step.ref.kind, axiom_types, lemma_types)[0])
         if args:
             inst = f'{ref_name} {" ".join(args)}'
         else:
@@ -1043,15 +1166,8 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
             if ax_f is not None and isinstance(ax_f, EqLit):
                 subst = find_rw_subst(prev_t, step.term, ax_f, direction)
                 if subst is not None:
-                    fv = sorted(vars_in_lit(ax_f))
-                    step_args = []
-                    for v in fv:
-                        if v in subst:
-                            t2 = subst[v]
-                            a = lean_term(t2, var_map)
-                            if isinstance(t2, App) and t2.args:
-                                a = f'({a})'
-                            step_args.append(a)
+                    step_args = inst_args(ax_f, subst, var_map,
+                                          get_formula_vars(step.ref.num, step.ref.kind, axiom_types, lemma_types)[0])
                     inst_s = f'{rn} {" ".join(step_args)}' if step_args else rn
                     arrow = '← ' if direction == 'RL' else ''
                     # rw [h] abstracts instances of h's LHS in the goal (RHS for ←);
@@ -1082,15 +1198,8 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
             if final_ax_f is not None and isinstance(final_ax_f, EqLit):
                 subst = find_rw_subst(prev_t, Const('true'), final_ax_f, 'RL')
                 if subst is not None:
-                    fv = sorted(vars_in_lit(final_ax_f))
-                    fa = []
-                    for v in fv:
-                        if v in subst:
-                            t2 = subst[v]
-                            a = lean_term(t2, var_map)
-                            if isinstance(t2, App) and t2.args:
-                                a = f'({a})'
-                            fa.append(a)
+                    fa = inst_args(final_ax_f, subst, var_map,
+                                   get_formula_vars(final.ref.num, final.ref.kind, axiom_types, lemma_types)[0])
                     inst_f = f'{final_rn} {" ".join(fa)}' if fa else final_rn
                     lines.append(f'exact Eq.symm ({inst_f})')
                 else:
@@ -1115,6 +1224,165 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
     return lines
 
 
+# ─── Explicit instantiation of Horn steps ────────────────────────────────────
+# A "hence C by ref" line applies the rule ref to the premises written before
+# it.  Lean can often infer the rule's binders from `exact ref _ _ h1 h2`, but
+# not when a binder occurs only in a premise that is itself a ∀-hypothesis
+# instantiated with `_` (LCL126-1/Twee).  Matching the rule against the
+# printed conclusion and premises yields every argument explicitly.
+
+def _subst_lit(subst, lit):
+    if isinstance(lit, EqLit):
+        return EqLit(apply_subst_obj(subst, lit.lhs), apply_subst_obj(subst, lit.rhs))
+    if isinstance(lit, PredLit):
+        return PredLit(lit.head, [apply_subst_obj(subst, a) for a in lit.args])
+    return lit
+
+
+def _walk(t, s):
+    while isinstance(t, Var) and t.name in s:
+        t = s[t.name]
+    return t
+
+
+def _occurs(name, t, s):
+    t = _walk(t, s)
+    if isinstance(t, Var):
+        return t.name == name
+    if isinstance(t, App):
+        return any(_occurs(name, a, s) for a in t.args)
+    return False
+
+
+def _unify_wild(t1, t2, s, wild):
+    """Unify two terms whose only bindable variables are the rule's $-variables
+    and the premise-local variables in `wild`; every other variable is a fixed
+    Lean-bound name.  Bindings accumulate in s (a triangular substitution)."""
+    t1, t2 = _walk(t1, s), _walk(t2, s)
+    def is_wild(t):
+        return isinstance(t, Var) and (t.name.startswith('$') or t.name in wild)
+    if isinstance(t1, Var) and isinstance(t2, Var) and t1.name == t2.name:
+        return s
+    if is_wild(t1):
+        if _occurs(t1.name, t2, s):
+            return None
+        return dict(s, **{t1.name: t2})
+    if is_wild(t2):
+        if _occurs(t2.name, t1, s):
+            return None
+        return dict(s, **{t2.name: t1})
+    if isinstance(t1, Var) or isinstance(t2, Var):
+        return None
+    if isinstance(t1, Const) and isinstance(t2, Const):
+        return s if t1.name == t2.name else None
+    if isinstance(t1, App) and isinstance(t2, App):
+        if t1.head != t2.head or len(t1.args) != len(t2.args):
+            return None
+        for a, b in zip(t1.args, t2.args):
+            s = _unify_wild(a, b, s, wild)
+            if s is None:
+                return None
+        return s
+    return None
+
+
+def _unify_lits(l1, l2, s, wild):
+    a, b = lit_as_term(l1), lit_as_term(l2)
+    if a is None or b is None:
+        return None
+    r = _unify_wild(a, b, s, wild)
+    if r is None and isinstance(l1, EqLit) and isinstance(l2, EqLit):
+        r = _unify_wild(App('=', [l1.rhs, l1.lhs]), b, s, wild)
+    return r
+
+
+def _resolve(t, s):
+    t = _walk(t, s)
+    if isinstance(t, App):
+        return App(t.head, [_resolve(a, s) for a in t.args])
+    return t
+
+
+def _lean_arg(t, s, in_scope, var_map):
+    """Lean text for a resolved argument, or None if it still holds a variable
+    that is not bound at this point of the proof."""
+    t = _resolve(t, s)
+    if any(v.startswith('$') or v not in in_scope for v in vars_in_term(t)):
+        return None
+    a = lean_term(t, var_map)
+    return f'({a})' if isinstance(t, App) and t.args else a
+
+
+def horn_exact(ref_name, ref_formula, ref_binders, concl, prems, in_scope, var_map):
+    """`exact ref a1 .. ak (h1 b..) (h2 ..)` with every argument computed, or
+    None.  prems: [(hyp_name, hyp_lit, hyp_local_vars)] in the rule's body
+    order; in_scope: Taelja variables bound at this point (intro/fun)."""
+    if isinstance(ref_formula, Implies):
+        body, head = ref_formula.body, ref_formula.head
+    elif ref_formula is not None:
+        body, head = [], ref_formula
+    else:
+        return None
+    if len(body) != len(prems):
+        return None
+    ren = {v: Var('$' + v) for v in vars_in_lit(ref_formula)}
+    head = _subst_lit(ren, head)
+    body = [_subst_lit(ren, b) for b in body]
+    # A premise's ∀-variable is bindable only if the step does not bind a
+    # variable of that name itself: in the block, equal names denote the
+    # same variable, and one bound by this step's intro/fun is fixed.
+    wild = set()
+    for _, _, loc in prems:
+        wild |= set(v for v in loc if v not in in_scope)
+    import os
+    dbg = os.environ.get('TAELJA_HORN_DEBUG')
+    s = _unify_lits(head, concl, {}, wild)
+    if s is None:
+        if dbg: sys.stderr.write(f'[horn_exact] head {head} !~ {concl}\n')
+        return None
+    for b, (pname, plit, _) in zip(body, prems):
+        s = _unify_lits(b, plit, s, wild)
+        if s is None:
+            if dbg: sys.stderr.write(f'[horn_exact] body {b} !~ {pname}: {plit}\n')
+            return None
+    # Variables the conclusion leaves unconstrained (a premise's ∀-variable,
+    # a rule binder occurring only in such a premise) may take any value.
+    scope_var = next((v for v in in_scope if v in var_map), None)
+    filler_t = Var(scope_var) if scope_var is not None else (Const(_filler_const) if _filler_const else None)
+    if filler_t is not None:
+        pending = [Var('$' + v) for v in ref_binders] + [Var(v) for _, _, loc in prems for v in loc]
+        for _ in range(4):
+            loose = set()
+            for t in pending:
+                for v in vars_in_term(_resolve(t, s)):
+                    if v.startswith('$') or (v in wild and v not in in_scope):
+                        loose.add(v)
+            if not loose:
+                break
+            for v in loose:
+                s[v] = filler_t
+    args = []
+    for v in ref_binders:
+        a = _lean_arg(Var('$' + v), s, in_scope, var_map)
+        args.append(a if a is not None else '_')
+    parts = [ref_name] + args
+    for pname, _, loc in prems:
+        if loc:
+            largs = [_lean_arg(Var(v), s, in_scope, var_map) or '_' for v in loc]
+            parts.append(f'({pname} {" ".join(largs)})')
+        else:
+            parts.append(pname)
+    return 'exact ' + ' '.join(parts)
+
+
+def ref_formula_of(ref, axiom_types, lemma_types):
+    if ref.kind == 'axiom' and ref.num in axiom_types:
+        return axiom_types[ref.num][2], list(axiom_types[ref.num][1].keys())
+    if ref.kind == 'lemma' and ref.num in lemma_types:
+        return lemma_types[ref.num][2], list(lemma_types[ref.num][1].keys())
+    return None, []
+
+
 def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, consts=None) -> list:
     if consts is None:
         consts = []
@@ -1127,7 +1395,7 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
 
     steps = proof.steps
     if not steps:
-        lines.append('sorry')
+        lines.append('exact taelja_hole_unproved')  # undefined on purpose: a hole must fail, not warn
         return lines
 
     # Track: step_name[i] = lean hypothesis name for step i
@@ -1165,14 +1433,21 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
         if isinstance(step, HaveStep):
             # Prove step.lit from ref (unconditional use)
             lit_str = lean_lit(step.lit, svm)
+            unit_tac = f'apply {ref_name} <;> first | rfl | assumption'
+            u_formula, u_binders = ref_formula_of(ref, axiom_types, lemma_types)
+            if u_formula is not None and not isinstance(u_formula, Implies):
+                precise = horn_exact(ref_name, u_formula, u_binders, step.lit, [],
+                                     set(var_map) | set(new_vars), svm)
+                if precise is not None:
+                    unit_tac = f'first | ({precise}) | ({unit_tac})'
             if lit_has_new_vars:
                 forall_vars = ' '.join(f'({lean_var_name(v, i)} : α)'
                                         for i, v in enumerate(new_vars))
                 lit_str = f'∀ {forall_vars}, {lit_str}'
-                body = f'fun {" ".join(lean_var_name(v, i) for i, v in enumerate(new_vars))} => by apply {ref_name}'
+                body = f'fun {" ".join(lean_var_name(v, i) for i, v in enumerate(new_vars))} => by {unit_tac}'
                 lines.append(f'have {hname} : {lit_str} := {body}')
             else:
-                lines.append(f'have {hname} : {lit_str} := by apply {ref_name}')
+                lines.append(f'have {hname} : {lit_str} := by {unit_tac}')
             hyp_names[idx] = hname
             hyp_lits[idx] = step.lit
             current_idx = idx
@@ -1181,14 +1456,21 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
         elif isinstance(step, AndStep):
             # Prove independently, collect for next hence
             lit_str = lean_lit(step.lit, svm)
+            unit_tac = f'apply {ref_name} <;> first | rfl | assumption'
+            u_formula, u_binders = ref_formula_of(ref, axiom_types, lemma_types)
+            if u_formula is not None and not isinstance(u_formula, Implies):
+                precise = horn_exact(ref_name, u_formula, u_binders, step.lit, [],
+                                     set(var_map) | set(new_vars), svm)
+                if precise is not None:
+                    unit_tac = f'first | ({precise}) | ({unit_tac})'
             if lit_has_new_vars:
                 forall_vars = ' '.join(f'({lean_var_name(v, i)} : α)'
                                         for i, v in enumerate(new_vars))
                 lit_str = f'∀ {forall_vars}, {lit_str}'
-                body = f'fun {" ".join(lean_var_name(v, i) for i, v in enumerate(new_vars))} => by apply {ref_name}'
+                body = f'fun {" ".join(lean_var_name(v, i) for i, v in enumerate(new_vars))} => by {unit_tac}'
                 lines.append(f'have {hname} : {lit_str} := {body}')
             else:
-                lines.append(f'have {hname} : {lit_str} := by apply {ref_name}')
+                lines.append(f'have {hname} : {lit_str} := by {unit_tac}')
             hyp_names[idx] = hname
             hyp_lits[idx] = step.lit
             extras.append(idx)
@@ -1227,7 +1509,12 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     elif ref.kind == 'lemma' and ref.num in lemma_types:
                         rl_rw_formula = lemma_types[ref.num][2]
                     rl_lhs_is_var = isinstance(rl_rw_formula, EqLit) and isinstance(rl_rw_formula.lhs, Var)
-                    if rl_lhs_is_var and isinstance(step.lit, EqLit) and not prev_new_vars:
+                    precise = None if prev_new_vars or lit_has_new_vars else precise_hyp_rw(
+                        prev_lit, step.lit, rl_rw_formula, 'RL', ref_name, svm, prev_inst,
+                        get_formula_vars(ref.num, ref.kind, axiom_types, lemma_types)[0])
+                    if precise is not None:
+                        lines.append(f'have {hname} : {full_lit_str} := {precise}')
+                    elif rl_lhs_is_var and isinstance(step.lit, EqLit) and not prev_new_vars:
                         # Goal is an equation: bridge via Eq.trans so Lean unifies the middle term.
                         goal_lhs = lean_term(step.lit.lhs, svm)
                         lines.append(f'have {hname} : {full_lit_str} := Eq.trans ({ref_name} {goal_lhs} _) {prev_inst}')
@@ -1281,7 +1568,12 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                         elif ref.kind == 'lemma' and ref.num in lemma_types:
                             rw_formula = lemma_types[ref.num][2]
                         lhs_is_var = isinstance(rw_formula, EqLit) and isinstance(rw_formula.lhs, Var)
-                        if lhs_is_var:
+                        precise = None if prev_new_vars or lit_has_new_vars else precise_hyp_rw(
+                            prev_lit, step.lit, rw_formula, 'LR', ref_name, svm, prev_copy,
+                            get_formula_vars(ref.num, ref.kind, axiom_types, lemma_types)[0])
+                        if precise is not None:
+                            lines.append(f'have {hname} : {full_lit_str} := {precise}')
+                        elif lhs_is_var:
                             # LHS is a pure variable (e.g. x = f(x)): rw [ref] would use ?x as
                             # pattern and fail in Lean. rw [← ref] uses the compound RHS instead.
                             lines.append(f'have {hname} : {full_lit_str} := by rw [← {ref_name}]; exact {prev_copy}')
@@ -1303,7 +1595,13 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     and any(v not in var_map
                             for v in sorted(vars_in_lit(hyp_lits[pidx])))
                 ]
-                close_parts = ['assumption', 'rfl', 'exact Eq.symm (by assumption)']
+                close_parts = ['assumption', 'rfl', 'exact Eq.symm (by assumption)',
+                               # a premise that is the composition of two established
+                               # equations (possibly flipped), e.g. CAT001-4's ax3
+                               'exact Eq.trans (by assumption) (by assumption)',
+                               'exact Eq.trans (Eq.symm (by assumption)) (by assumption)',
+                               'exact Eq.trans (by assumption) (Eq.symm (by assumption))',
+                               'exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption))']
                 close_parts += [f'apply {h}' for h in univ_hyp_names]
                 close_tac = 'first | ' + ' | '.join(close_parts)
 
@@ -1333,10 +1631,23 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                 # fallback binds each subgoal's metavariables greedily against
                 # the most recent hypothesis and cannot backtrack, which fails
                 # when several subgoals share variables (e.g. E HEN008-2 ax6).
+                # A premise emitted as a ∀-statement (its literal has vars
+                # beyond the conclusion's) must be instantiated when passed to
+                # the exact term: pass `(hN _ …)` with one `_` per binder so
+                # elaboration unifies the instance from the ref's type.
+                def prem_term(pidx):
+                    pname = hyp_names[pidx]
+                    plit = hyp_lits.get(pidx)
+                    if plit is not None:
+                        p_new = [v for v in sorted(vars_in_lit(plit))
+                                 if v not in var_map]
+                        if p_new:
+                            return f'({pname}{" _" * len(p_new)})'
+                    return pname
                 prem_hyps = []
                 if current_idx is not None and current_idx in hyp_names:
-                    prem_hyps.append(hyp_names[current_idx])
-                prem_hyps += [hyp_names[e] for e in extras if e in hyp_names]
+                    prem_hyps.append(prem_term(current_idx))
+                prem_hyps += [prem_term(e) for e in extras if e in hyp_names]
                 # The ref's ∀-binders are explicit arguments, so pass an
                 # inferred `_` for each before the premise hypotheses.
                 ref_var_map = None
@@ -1350,6 +1661,32 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                                  f' | (apply {ref_name} <;> ({close_tac}))')
                 else:
                     apply_tac = f'apply {ref_name} <;> ({close_tac})'
+                # Fully explicit application, tried first: binders and the
+                # ∀-premises instantiated by matching the rule against the
+                # printed conclusion and premises (written order, then any
+                # order for small bodies).
+                r_formula, r_binders = ref_formula_of(ref, axiom_types, lemma_types)
+                prem_idxs = ([current_idx] if current_idx is not None and current_idx in hyp_names else []) \
+                            + [e for e in extras if e in hyp_names]
+                in_scope = set(var_map) | set(new_vars)
+                def _prem(pidx):
+                    plit = hyp_lits.get(pidx)
+                    loc = [v for v in sorted(vars_in_lit(plit)) if v not in var_map] if plit is not None else []
+                    return (hyp_names[pidx], plit, loc)
+                precise = None
+                if r_formula is not None and all(hyp_lits.get(i) is not None for i in prem_idxs):
+                    import itertools
+                    orders = [prem_idxs]
+                    if 1 < len(prem_idxs) <= 4:
+                        orders += [list(o) for o in itertools.permutations(prem_idxs) if list(o) != prem_idxs]
+                    for order in orders:
+                        precise = horn_exact(ref_name, r_formula, r_binders, step.lit,
+                                             [_prem(i) for i in order], in_scope, svm)
+                        if precise is not None:
+                            break
+                fallback_tac = apply_tac
+                if precise is not None:
+                    apply_tac = f'first | ({precise}) | ({apply_tac})'
 
                 if lit_has_new_vars:
                     # Wrap in lambda, instantiate any ∀-quantified previous hyps
@@ -1365,7 +1702,16 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                             pname = hyp_names[pidx]
                             pvars_args = ' '.join(svm.get(v, '_') for v in p_new_vars)
                             inst_lines.append(f'have {pname}_i := {pname} {pvars_args}')
-                    inner = '; '.join(inst_lines + [apply_tac])
+                    # The `_`-instantiated copies of ∀-premises can fail to
+                    # elaborate on their own, so they only accompany the
+                    # fallback tactics, never the explicit term.
+                    with_preludes = '; '.join(inst_lines + [fallback_tac])
+                    if precise is not None:
+                        inner = f'first | ({precise}) | ({with_preludes})'
+                    elif any('_' in l for l in inst_lines):
+                        inner = f'first | ({with_preludes}) | ({fallback_tac})'
+                    else:
+                        inner = with_preludes
                     lines.append(f'have {hname} : {full_lit_str} := fun {fvars_str} => by {inner}')
                 else:
                     lines.append(f'have {hname} : {full_lit_str} := by {apply_tac}')
@@ -1381,16 +1727,19 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
     if current_idx is not None:
         final_name = hyp_names[current_idx]
         final_lit = hyp_lits.get(current_idx)
+        # A ∀-quantified last step is instantiated by unification with the goal.
+        fin_loc = [v for v in sorted(vars_in_lit(final_lit)) if v not in var_map] if final_lit is not None else []
+        final_term = f'({final_name}{" _" * len(fin_loc)})' if fin_loc else final_name
         if (isinstance(conclusion, EqLit) and isinstance(final_lit, EqLit)):
             concl_str = lean_lit(conclusion, var_map)
             final_str = lean_lit(final_lit, var_map)
             flipped = lean_lit(EqLit(conclusion.rhs, conclusion.lhs), var_map)
             if final_str == flipped and final_str != concl_str:
-                lines.append(f'exact {final_name}.symm')
+                lines.append(f'exact {final_term}.symm')
             else:
-                lines.append(f'exact {final_name}')
+                lines.append(f'exact {final_term}')
         else:
-            lines.append(f'exact {final_name}')
+            lines.append(f'exact {final_term}')
     else:
         lines.append('assumption')
 

@@ -1,0 +1,2158 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FHUSS-FFSF22-DFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_6, plain, (apply(apply(k,X1),X2)=X1)).
+#
+#cnf(i_0_8, negated_conjecture, (~fixed_point(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k)))))).
+#
+#cnf(i_0_7, plain, (fixed_point(X1)|apply(fixed_pt,apply(X1,fixed_pt))!=apply(X1,fixed_pt))).
+#
+#cnf(i_0_5, plain, (apply(apply(apply(s,X1),X2),X3)=apply(apply(X1,X3),apply(X2,X3)))).
+# Presaturation interreduction done
+#
+#cnf(i_0_8, negated_conjecture, (~fixed_point(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k)))))).
+#
+#cnf(i_0_6, plain, (apply(apply(k,X1),X2)=X1)).
+#
+#cnf(i_0_7, plain, (fixed_point(X1)|apply(fixed_pt,apply(X1,fixed_pt))!=apply(X1,fixed_pt))).
+#
+#cnf(i_0_5, plain, (apply(apply(apply(s,X1),X2),X3)=apply(apply(X1,X3),apply(X2,X3)))).
+#
+#cnf(i_0_9, negated_conjecture, (apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))!=apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))).
+#
+#cnf(i_0_12, plain, (apply(apply(apply(s,k),X2),X1)=X1)).
+#
+#cnf(i_0_20, plain, (apply(apply(apply(s,apply(s,k)),X1),X2)=apply(X1,X2))).
+#
+#cnf(i_0_16, plain, (apply(apply(apply(s,X1),apply(k,X2)),X3)=apply(apply(X1,X3),X2))).
+#
+#cnf(i_0_26, plain, (apply(apply(apply(apply(s,s),X1),apply(s,k)),X2)=apply(apply(X1,apply(s,k)),X2))).
+#
+#cnf(i_0_36, plain, (apply(apply(apply(s,apply(apply(s,s),X1)),X2),apply(s,k))=apply(apply(apply(s,X1),X2),apply(s,k)))).
+#
+#cnf(i_0_17, plain, (apply(apply(apply(s,apply(k,X1)),X2),X3)=apply(X1,apply(X2,X3)))).
+#
+#cnf(i_0_33, plain, (apply(apply(apply(apply(s,s),k),X1),X2)=apply(apply(X1,X2),X1))).
+#
+#cnf(i_0_10, plain, (apply(apply(apply(apply(s,X1),X4),X2),apply(X3,apply(X4,X2)))=apply(apply(apply(s,apply(X1,X2)),X3),apply(X4,X2)))).
+#
+#cnf(i_0_55, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,k))),X1)=apply(X1,apply(s,apply(s,k))))).
+##
+#cnf(i_0_18, plain, (apply(apply(apply(s,apply(apply(s,k),X1)),X2),X3)=apply(X3,apply(X2,X3)))).
+#
+#cnf(i_0_118, plain, (apply(apply(apply(s,apply(apply(s,k),X3)),X2),apply(k,X1))=X1)).
+#
+#cnf(i_0_174, plain, (apply(apply(apply(s,apply(s,apply(apply(s,k),X1))),k),X2)=X2)).
+#
+#cnf(i_0_176, plain, (apply(apply(apply(apply(s,s),X2),apply(apply(s,k),X1)),apply(k,X3))=X3)).
+#
+#cnf(i_0_184, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(s,k),X1)))),k)=apply(s,apply(s,apply(apply(s,k),X1))))).
+#
+#cnf(i_0_115, plain, (apply(apply(apply(s,apply(apply(s,s),k)),X1),apply(s,apply(s,k)))=apply(apply(X1,apply(s,apply(s,k))),apply(s,apply(s,k))))).
+#
+#cnf(i_0_209, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),s),apply(s,k))=apply(s,apply(s,k)))).
+#
+#cnf(i_0_214, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),s)),apply(s,k))=apply(apply(s,apply(s,k)),apply(apply(s,apply(s,apply(apply(s,s),k))),s)))).
+#
+#cnf(i_0_11, plain, (apply(apply(X1,apply(X4,X3)),apply(apply(apply(s,X2),X4),X3))=apply(apply(apply(s,X1),apply(X2,X3)),apply(X4,X3)))).
+#
+#cnf(i_0_199, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,k)),X1),apply(k,X2))=X2)).
+#####
+#cnf(i_0_318, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k),X1)=X1)).
+#
+#cnf(i_0_333, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(apply(s,apply(s,s)),apply(s,k)))),k)=apply(s,apply(apply(s,apply(s,s)),apply(s,k))))).
+#
+#cnf(i_0_211, plain, (apply(apply(apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),s)),X1),apply(s,k))=apply(apply(apply(s,s),X1),apply(s,k)))).
+#
+#cnf(i_0_212, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(s,apply(apply(s,s),k))),s)),apply(s,k))=apply(apply(apply(s,X1),s),apply(s,k)))).
+##
+#cnf(i_0_13, plain, (apply(apply(apply(apply(s,s),X2),X1),X3)=apply(apply(X1,X3),apply(apply(X2,X1),X3)))).
+#####
+#cnf(i_0_19, plain, (apply(apply(apply(s,X1),apply(apply(s,k),X2)),X3)=apply(apply(X1,X3),X3))).
+#
+#cnf(i_0_65, plain, (apply(apply(apply(apply(s,s),k),apply(k,X1)),X2)=apply(X1,apply(k,X1)))).
+###
+#cnf(i_0_444, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(s,apply(apply(s,apply(s,s)),apply(s,k)))),k)=apply(s,apply(apply(s,apply(s,s)),apply(s,k))))).
+#
+#cnf(i_0_660, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(s,apply(apply(s,apply(s,s)),apply(s,k)))),k)=apply(s,apply(apply(s,apply(s,s)),apply(s,k))))).
+#
+#cnf(i_0_14, plain, (apply(apply(apply(s,apply(apply(s,X1),X2)),X3),X4)=apply(apply(apply(X1,X4),apply(X2,X4)),apply(X3,X4)))).
+#
+#cnf(i_0_594, plain, (apply(apply(apply(apply(s,s),k),apply(k,apply(k,X1))),X2)=X1)).
+###
+#cnf(i_0_539, plain, (apply(apply(apply(s,X1),apply(apply(s,k),X2)),X1)=apply(apply(apply(apply(s,s),k),X1),X1))).
+##
+#cnf(i_0_859, plain, (apply(apply(apply(s,apply(apply(s,s),k)),X1),apply(k,apply(k,X2)))=X2)).
+#
+#cnf(i_0_693, plain, (apply(apply(apply(s,apply(apply(s,apply(s,apply(s,s))),X1)),k),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_940, plain, (apply(apply(apply(s,apply(apply(apply(s,s),X1),apply(s,apply(s,s)))),k),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_959, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),s),apply(s,s))),k),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_15, plain, (apply(apply(apply(s,X1),apply(apply(s,X2),X3)),X4)=apply(apply(X1,X4),apply(apply(X2,X4),apply(X3,X4))))).
+#
+#cnf(i_0_919, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),k),apply(k,X1))=X1)).
+########
+#cnf(i_0_864, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(k,apply(k,X1)))=X1)).
+##
+#cnf(i_0_22, plain, (apply(apply(apply(s,apply(apply(s,apply(s,k)),X1)),X2),X3)=apply(apply(X1,X3),apply(X2,X3)))).
+#
+#cnf(i_0_1266, plain, (apply(apply(apply(s,apply(apply(s,apply(s,k)),k)),X2),X1)=X1)).
+##
+#cnf(i_0_24, plain, (apply(apply(apply(s,apply(s,apply(s,k))),X1),X2)=apply(X2,apply(X1,X2)))).
+#
+#cnf(i_0_1472, plain, (apply(apply(apply(s,apply(s,apply(s,k))),X2),apply(k,X1))=X1)).
+##
+#cnf(i_0_1644, plain, (apply(apply(apply(s,apply(s,apply(s,apply(s,k)))),k),X1)=X1)).
+##
+#cnf(i_0_1677, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(s,apply(s,k))))),k)=apply(s,apply(s,apply(s,apply(s,k)))))).
+#
+#cnf(i_0_1457, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,k)),k)),apply(apply(s,apply(s,k)),k))=apply(apply(s,apply(s,k)),k))).
+#
+#cnf(i_0_1687, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(s,apply(s,apply(s,apply(s,k))))),k)=apply(s,apply(s,apply(s,apply(s,k)))))).
+#
+#cnf(i_0_23, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(s,k)),X2)),X3)=apply(apply(X1,X3),apply(X2,X3)))).
+#
+#cnf(i_0_1470, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,k)),k)),X2)=X2)).
+#
+#cnf(i_0_465, plain, (apply(apply(apply(apply(s,s),apply(s,k)),X1),X2)=apply(apply(X1,X2),X2))).
+##
+#cnf(i_0_2085, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(k,X1)),X2)=apply(X1,X2))).
+##
+#cnf(i_0_2161, plain, (apply(apply(apply(apply(s,apply(s,s)),k),apply(s,k)),X1)=apply(apply(s,k),X1))).
+#
+#cnf(i_0_2195, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,s)),k),apply(s,k))=apply(apply(s,k),apply(apply(s,apply(s,s)),k)))).
+##
+#cnf(i_0_1648, plain, (apply(apply(apply(s,apply(apply(s,s),X1)),k),apply(s,apply(s,k)))=apply(s,apply(s,k)))).
+#
+#cnf(i_0_1502, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(s,apply(s,apply(apply(s,s),k))),k))=apply(apply(s,apply(s,apply(apply(s,s),k))),k))).
+#
+#cnf(i_0_27, plain, (apply(apply(apply(s,apply(apply(s,X1),apply(k,X2))),X3),X4)=apply(apply(apply(X1,X4),X2),apply(X3,X4)))).
+#
+#cnf(i_0_1651, plain, (apply(apply(apply(apply(s,s),X1),apply(s,apply(s,k))),apply(k,X2))=X2)).
+###
+#cnf(i_0_898, plain, (apply(apply(apply(apply(s,s),apply(s,k)),X1),X1)=apply(apply(apply(apply(s,s),k),X1),X1))).
+##
+#cnf(i_0_2570, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),s)),k),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_2309, plain, (apply(apply(apply(s,apply(apply(s,s),apply(k,k))),k),apply(s,apply(apply(s,s),k)))=apply(s,apply(apply(s,s),k)))).
+##
+#cnf(i_0_2203, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,s),s)),apply(s,s)),k),apply(s,k))=apply(apply(apply(apply(s,s),s),apply(s,s)),k))).
+#
+#cnf(i_0_28, plain, (apply(apply(apply(s,X1),apply(apply(s,X2),apply(k,X3))),X4)=apply(apply(X1,X4),apply(apply(X2,X4),X3)))).
+#
+#cnf(i_0_2574, plain, (apply(apply(apply(apply(s,apply(s,s)),s),apply(s,k)),apply(k,X1))=X1)).
+#######
+#cnf(i_0_2740, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(k,s))),apply(s,apply(apply(s,s),k))),apply(s,k))=apply(s,apply(s,k)))).
+#
+#cnf(i_0_3016, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(apply(s,apply(s,s)),s),apply(s,k)))=apply(apply(apply(s,apply(s,s)),s),apply(s,k)))).
+#
+#cnf(i_0_3041, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),apply(k,s)))),apply(s,apply(apply(s,s),k))),apply(s,k))=apply(s,apply(s,k)))).
+#
+#cnf(i_0_29, plain, (apply(apply(apply(s,apply(s,X1)),X2),apply(k,X3))=apply(apply(X1,apply(X2,apply(k,X3))),X3))).
+#
+#cnf(i_0_3174, plain, (apply(apply(apply(apply(s,apply(s,s)),k),apply(k,X1)),X2)=X1)).
+#
+#cnf(i_0_3285, plain, (apply(apply(apply(s,apply(s,apply(k,X1))),X2),apply(k,X3))=apply(X1,X3))).
+####
+#cnf(i_0_3394, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,s)),k),apply(k,X1))=X1)).
+#
+#cnf(i_0_3492, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(apply(apply(s,s),s),apply(s,s)),k))=apply(apply(apply(apply(s,s),s),apply(s,s)),k))).
+#
+#cnf(i_0_1709, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(s,apply(s,apply(s,apply(s,k))))),k)=apply(s,apply(s,apply(s,apply(s,k)))))).
+#
+#cnf(i_0_1987, plain, (apply(apply(apply(apply(s,s),apply(apply(s,k),s)),apply(apply(s,apply(s,apply(apply(s,s),k))),s)),apply(s,k))=apply(apply(apply(s,s),s),apply(s,k)))).
+##
+#cnf(i_0_34, plain, (apply(apply(apply(s,apply(apply(apply(s,s),X1),apply(s,k))),X2),X3)=apply(apply(apply(X1,apply(s,k)),X3),apply(X2,X3)))).
+#
+#cnf(i_0_3384, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),X1),apply(k,X2))=X2)).
+#
+#cnf(i_0_3443, plain, (apply(apply(apply(s,apply(s,apply(s,apply(k,X1)))),k),X2)=apply(X1,X2))).
+####
+#cnf(i_0_3861, plain, (apply(apply(apply(s,apply(s,apply(apply(s,apply(s,s)),k))),k),X1)=X1)).
+#
+#cnf(i_0_3955, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(s,apply(s,s)),k)))),k)=apply(s,apply(s,apply(apply(s,apply(s,s)),k))))).
+#
+#cnf(i_0_3967, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(s,apply(s,apply(apply(s,apply(s,s)),k)))),k)=apply(s,apply(s,apply(apply(s,apply(s,s)),k))))).
+#
+#cnf(i_0_3866, plain, (apply(apply(apply(s,apply(apply(s,s),X1)),k),apply(apply(s,apply(s,s)),k))=apply(apply(s,apply(s,s)),k))).
+#
+#cnf(i_0_2621, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,apply(s,s)),s)),k)),apply(s,k))=apply(apply(s,k),apply(apply(s,apply(apply(s,apply(s,s)),s)),k)))).
+#
+#cnf(i_0_35, plain, (apply(apply(apply(s,X1),apply(apply(apply(s,s),X2),apply(s,k))),X3)=apply(apply(X1,X3),apply(apply(X2,apply(s,k)),X3)))).
+#
+#cnf(i_0_3167, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),apply(s,k)))),k),apply(k,X1))=X1)).
+#####
+#cnf(i_0_321, plain, (apply(apply(apply(apply(s,apply(s,apply(s,s))),X1),apply(s,k)),apply(k,X2))=X2)).
+#
+#cnf(i_0_4371, plain, (apply(apply(apply(s,apply(apply(s,s),apply(k,k))),k),apply(s,apply(apply(s,s),apply(s,k))))=apply(s,apply(apply(s,s),apply(s,k))))).
+##
+#cnf(i_0_4364, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(s,apply(s,apply(apply(s,s),apply(s,k)))),k))=apply(apply(s,apply(s,apply(apply(s,s),apply(s,k)))),k))).
+#
+#cnf(i_0_1455, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(apply(s,apply(s,k)),k))),X1)=apply(s,apply(apply(s,apply(s,k)),k)))).
+#
+#cnf(i_0_38, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,s),X1)),X2)),X3),apply(s,k))=apply(apply(apply(s,apply(apply(s,X1),X2)),X3),apply(s,k)))).
+######
+#cnf(i_0_858, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,s),k)),apply(k,apply(k,X2)))=X2)).
+#
+#cnf(i_0_4540, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(s,apply(apply(s,apply(s,k)),k)))=apply(s,apply(apply(s,apply(s,k)),k)))).
+#
+#cnf(i_0_4542, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k)),apply(s,apply(apply(s,apply(s,k)),k)))=apply(s,apply(apply(s,apply(s,k)),k)))).
+#
+#cnf(i_0_4672, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,s),k)),apply(s,apply(apply(s,apply(s,k)),k)))=apply(s,apply(apply(s,apply(s,k)),k)))).
+##
+#cnf(i_0_39, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(apply(s,s),X2)),X3)),apply(s,k))=apply(apply(apply(s,X1),apply(apply(s,X2),X3)),apply(s,k)))).
+#
+#cnf(i_0_865, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(k,apply(k,X1))),X2)=X1)).
+####
+#cnf(i_0_1304, plain, (apply(apply(apply(s,apply(apply(s,apply(s,k)),X1)),X2),X3)=apply(apply(apply(s,X1),X2),X3))).
+#####
+#cnf(i_0_4702, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,k))),apply(apply(s,s),k)),apply(s,apply(apply(s,apply(s,k)),k)))=apply(s,apply(apply(s,apply(s,k)),k)))).
+#######
+#cnf(i_0_3179, plain, (apply(apply(apply(apply(s,apply(s,s)),s),apply(k,X1)),apply(k,X2))=apply(X1,X2))).
+###
+#cnf(i_0_4530, plain, (apply(apply(apply(s,apply(apply(s,s),k)),X1),apply(s,apply(apply(s,apply(s,k)),k)))=apply(s,apply(apply(s,apply(s,k)),k)))).
+#
+#cnf(i_0_5047, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),s),apply(apply(s,apply(s,k)),k))=apply(s,apply(apply(s,apply(s,k)),k)))).
+#
+#cnf(i_0_41, plain, (apply(apply(apply(apply(s,s),X2),apply(apply(s,s),X1)),apply(s,k))=apply(apply(apply(s,X1),apply(X2,apply(apply(s,s),X1))),apply(s,k)))).
+#
+#cnf(i_0_3383, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,s)),k)),apply(k,X2))=X2)).
+#
+#cnf(i_0_1774, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(s,k)),X2)),X3)=apply(apply(apply(s,X1),X2),X3))).
+#####
+#cnf(i_0_5108, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_5238, plain, (apply(apply(apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,k))),k),apply(apply(s,apply(s,s)),k))=apply(apply(s,apply(s,s)),k))).
+#
+#cnf(i_0_5042, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(s,apply(apply(s,s),k))),apply(s,apply(apply(s,apply(s,k)),k)))=apply(s,apply(apply(s,apply(s,k)),k)))).
+##
+#cnf(i_0_42, plain, (apply(apply(apply(s,apply(apply(s,apply(k,X1)),X2)),X3),X4)=apply(apply(X1,apply(X2,X4)),apply(X3,X4)))).
+#
+#cnf(i_0_5446, plain, (apply(apply(apply(s,apply(apply(s,apply(k,k)),X1)),X3),X2)=apply(X1,X2))).
+###
+#cnf(i_0_1532, plain, (apply(apply(apply(s,apply(apply(s,k),X1)),X2),X3)=apply(apply(apply(s,apply(s,apply(s,k))),X2),X3))).
+#
+#cnf(i_0_9, negated_conjecture, (apply(fixed_pt,apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))!=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))).
+#
+#cnf(i_0_3586, plain, (apply(apply(apply(s,apply(apply(apply(s,s),s),apply(s,k))),X2),apply(k,X1))=X1)).
+#
+#cnf(i_0_6070, plain, (apply(apply(apply(s,apply(s,apply(apply(apply(s,s),s),apply(s,k)))),k),X1)=X1)).
+#
+#cnf(i_0_6122, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(apply(s,s),s),apply(s,k))))),k)=apply(s,apply(s,apply(apply(apply(s,s),s),apply(s,k)))))).
+#
+#cnf(i_0_6134, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(s,apply(s,apply(apply(apply(s,s),s),apply(s,k))))),k)=apply(s,apply(s,apply(apply(apply(s,s),s),apply(s,k)))))).
+#
+#cnf(i_0_6073, plain, (apply(apply(apply(s,apply(apply(s,s),X1)),k),apply(apply(apply(s,s),s),apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+######
+#cnf(i_0_3457, plain, (apply(apply(apply(apply(s,s),X2),apply(s,apply(k,X1))),apply(k,X3))=apply(X1,X3))).
+##
+#cnf(i_0_3089, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),apply(k,s))))),apply(s,apply(apply(s,s),k))),apply(s,k))=apply(s,apply(s,k)))).
+#
+#cnf(i_0_3975, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(s,apply(s,apply(apply(s,apply(s,s)),k)))),k)=apply(s,apply(s,apply(apply(s,apply(s,s)),k))))).
+#
+#cnf(i_0_5350, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k))),apply(s,k))=apply(apply(s,k),apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k))))).
+##
+#cnf(i_0_43, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(k,X2)),X3)),X4)=apply(apply(X1,X4),apply(X2,apply(X3,X4))))).
+##
+#cnf(i_0_5451, plain, (apply(apply(apply(s,apply(apply(s,apply(k,apply(s,k))),X1)),X3),X2)=apply(X3,X2))).
+##
+#cnf(i_0_5935, plain, (apply(apply(apply(apply(s,s),X2),apply(apply(s,apply(k,k)),X1)),X3)=apply(X1,X3))).
+###
+#cnf(i_0_1984, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(s,apply(s,apply(s,k)))),apply(k,X1))=X1)).
+#
+#cnf(i_0_6957, plain, (apply(apply(apply(s,apply(apply(s,s),apply(s,k))),k),apply(s,apply(s,apply(s,k))))=apply(s,apply(s,apply(s,k))))).
+#
+#cnf(i_0_6961, plain, (apply(apply(apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,k))),k),apply(s,apply(s,apply(s,k))))=apply(s,apply(s,apply(s,k))))).
+##
+#cnf(i_0_44, plain, (apply(apply(apply(s,apply(s,apply(k,X1))),X2),X3)=apply(X1,apply(X3,apply(X2,X3))))).
+#
+#cnf(i_0_7056, plain, (apply(apply(apply(s,apply(s,apply(k,apply(k,X1)))),X3),X2)=X1)).
+#
+#cnf(i_0_7105, plain, (apply(apply(apply(apply(s,apply(s,apply(k,apply(s,k)))),X2),X1),X3)=X3)).
+#
+#cnf(i_0_7528, plain, (apply(apply(apply(s,apply(s,apply(s,apply(k,apply(k,X1))))),X2),X3)=X1)).
+#
+#cnf(i_0_7568, plain, (apply(apply(apply(apply(s,s),X2),apply(s,apply(k,apply(k,X1)))),X3)=X1)).
+#
+#cnf(i_0_7573, plain, (apply(apply(apply(apply(s,apply(s,s)),s),apply(k,apply(k,X1))),X2)=X1)).
+##
+#cnf(i_0_6960, plain, (apply(apply(apply(s,apply(s,apply(s,apply(s,apply(s,k))))),k),apply(apply(s,k),apply(s,apply(s,apply(s,k)))))=apply(apply(s,k),apply(s,apply(s,apply(s,k)))))).
+#
+#cnf(i_0_7904, plain, (apply(apply(apply(s,apply(s,apply(apply(s,apply(s,s)),s))),k),apply(k,X1))=X1)).
+#
+#cnf(i_0_7979, plain, (apply(apply(apply(s,apply(apply(s,s),apply(k,k))),k),apply(s,apply(apply(s,apply(s,s)),s)))=apply(s,apply(apply(s,apply(s,s)),s)))).
+#
+#cnf(i_0_7970, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(s,apply(s,apply(apply(s,apply(s,s)),s))),k))=apply(apply(s,apply(s,apply(apply(s,apply(s,s)),s))),k))).
+#
+#cnf(i_0_47, plain, (apply(apply(apply(apply(s,s),X2),apply(k,X1)),X3)=apply(X1,apply(apply(X2,apply(k,X1)),X3)))).
+#
+#cnf(i_0_8048, plain, (apply(apply(apply(apply(s,s),X2),apply(k,apply(k,X1))),X3)=X1)).
+##
+#cnf(i_0_8456, plain, (apply(apply(apply(s,apply(apply(s,s),X1)),X2),apply(k,apply(k,X3)))=X3)).
+#
+#cnf(i_0_8248, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),X1))),k),apply(k,X2))=X2)).
+###
+#cnf(i_0_7214, plain, (apply(apply(apply(apply(apply(s,apply(s,apply(k,s))),X1),apply(s,apply(s,apply(s,s)))),k),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_8639, plain, (apply(apply(apply(apply(apply(s,apply(s,apply(s,apply(k,s)))),s),apply(s,apply(s,s))),k),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_1999, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),X1)),apply(apply(s,apply(s,k)),k))=apply(apply(s,apply(s,k)),k))).
+#
+#cnf(i_0_48, plain, (apply(apply(apply(apply(apply(s,s),k),X1),X2),apply(X3,X1))=apply(apply(apply(s,apply(X1,X2)),X3),X1))).
+######
+#cnf(i_0_5940, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,apply(k,k))),apply(k,X1)),X2)=X1)).
+#
+#cnf(i_0_8691, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k)),apply(apply(s,apply(s,k)),k))=apply(apply(s,apply(s,k)),k))).
+##
+#cnf(i_0_9015, plain, (apply(apply(apply(apply(s,apply(s,apply(s,s))),k),apply(s,apply(k,k))),X1)=apply(s,apply(k,k)))).
+#
+#cnf(i_0_9098, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,s))),k)),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_49, plain, (apply(apply(X1,X2),apply(apply(apply(apply(s,s),k),X2),X3))=apply(apply(apply(s,X1),apply(X2,X3)),X2))).
+#####
+#cnf(i_0_9177, plain, (apply(apply(apply(s,apply(apply(s,s),k)),X1),apply(k,X1))=apply(X1,apply(k,X1)))).
+#
+#cnf(i_0_6206, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),X1))),s),apply(k,apply(k,X2)))=X2)).
+#
+#cnf(i_0_9118, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(s,s))),k)),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_8688, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),apply(s,k)))),apply(s,s)),apply(k,apply(apply(s,apply(s,k)),k)))=apply(apply(s,apply(s,k)),k))).
+###
+#cnf(i_0_50, plain, (apply(apply(apply(apply(apply(s,s),k),X1),X2),apply(X1,X2))=apply(apply(apply(apply(s,s),k),apply(X1,X2)),X1))).
+#
+#cnf(i_0_6916, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,apply(k,k))),X1),X2)=apply(X1,X2))).
+#####
+#cnf(i_0_7544, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(k,apply(k,X1))))),X2)=X1)).
+#
+#cnf(i_0_9740, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,apply(s,s)),s),apply(s,s))),k)),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_9093, plain, (apply(apply(apply(s,apply(apply(s,apply(s,apply(s,s))),k)),X1),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+##
+#cnf(i_0_10136, plain, (apply(apply(apply(apply(s,s),apply(apply(s,k),s)),apply(apply(s,apply(s,apply(s,s))),k)),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_51, plain, (apply(apply(apply(s,apply(X1,X2)),X1),X2)=apply(apply(apply(apply(s,s),k),apply(X1,X2)),X2))).
+######
+#cnf(i_0_7647, plain, (apply(apply(apply(apply(apply(s,apply(s,s)),s),apply(k,apply(s,k))),X1),X2)=X2)).
+#
+#cnf(i_0_10273, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(s,k))),apply(s,k))=apply(apply(s,s),apply(s,k)))).
+#
+#cnf(i_0_10577, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,s),apply(s,k))),apply(s,k))=apply(apply(s,s),apply(s,k)))).
+#
+#cnf(i_0_10215, plain, (apply(apply(apply(s,apply(s,apply(apply(s,apply(s,k)),k))),s),apply(apply(s,apply(s,k)),k))=apply(s,apply(apply(s,apply(s,k)),k)))).
+#
+#cnf(i_0_10604, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,s),apply(s,k))),apply(s,k))=apply(apply(s,s),apply(s,k)))).
+#
+#cnf(i_0_52, plain, (apply(apply(apply(apply(s,s),k),apply(s,X1)),apply(k,X2))=apply(apply(X1,apply(s,X1)),X2))).
+#
+#cnf(i_0_7825, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),s)),X1),apply(k,apply(k,X2)))=X2)).
+##
+#cnf(i_0_70, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,k),X1)),X2)=apply(X2,apply(apply(s,k),X1)))).
+####
+#cnf(i_0_10725, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(s,apply(s,apply(s,s))),k)))),apply(k,apply(s,apply(k,k))))=apply(s,apply(k,k)))).
+###
+#cnf(i_0_9619, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,apply(s,apply(s,s))),k)),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_53, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),X1)),apply(s,k))=apply(apply(X1,apply(s,k)),apply(apply(s,s),X1)))).
+##
+#cnf(i_0_2304, plain, (apply(apply(apply(s,apply(apply(s,X1),apply(k,X2))),X3),X2)=apply(apply(apply(s,apply(X1,X2)),X3),X2))).
+####
+#cnf(i_0_8468, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),X1)),apply(k,apply(k,X2)))=X2)).
+#
+#cnf(i_0_11165, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),apply(s,s)),apply(k,apply(s,k)))=apply(apply(s,k),apply(apply(s,s),apply(k,apply(s,k)))))).
+##
+#cnf(i_0_11135, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(s,apply(s,s)),k))),apply(s,k))=apply(apply(s,k),apply(apply(s,s),apply(apply(s,apply(s,s)),k))))).
+#
+#cnf(i_0_11139, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(s,k),apply(s,k)))),apply(s,k))=apply(apply(s,k),apply(apply(s,s),apply(apply(s,k),apply(s,k)))))).
+#
+#cnf(i_0_54, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(k,X1))),X2)=apply(X1,apply(X2,apply(s,apply(k,X1)))))).
+#
+#cnf(i_0_8492, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,apply(k,k)),k)),X1),X2)=X1)).
+####
+#cnf(i_0_2742, plain, (apply(apply(apply(s,X1),apply(apply(s,X2),apply(k,X3))),X3)=apply(apply(apply(s,X1),apply(X2,X3)),X3))).
+##
+#cnf(i_0_11876, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(s,apply(s,s)),apply(apply(s,apply(k,k)),k)))),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_10157, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,k),s))),apply(apply(s,apply(s,apply(s,s))),k)),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+###
+#cnf(i_0_56, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),X1)=apply(apply(X1,apply(apply(s,s),k)),X1))).
+#######
+#cnf(i_0_12172, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),apply(apply(s,apply(k,k)),k)))=apply(apply(s,s),k))).
+#
+#cnf(i_0_12252, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(s,apply(s,k))))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_12258, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(apply(apply(s,apply(s,s)),k),apply(s,k)))=apply(apply(apply(s,apply(s,s)),k),apply(s,k)))).
+#
+#cnf(i_0_10722, plain, (apply(apply(apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(s,apply(k,s))))),apply(k,apply(s,apply(s,apply(s,s))))),k),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_57, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),X1)),X2),X3)=apply(apply(apply(X1,X3),X1),apply(X2,X3)))).
+#########
+#cnf(i_0_10724, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(s,s),k)))),apply(k,apply(s,apply(apply(s,apply(s,k)),k))))=apply(s,apply(apply(s,apply(s,k)),k)))).
+#
+#cnf(i_0_11605, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(k,apply(apply(apply(apply(s,s),s),apply(s,s)),k)))),k)=apply(s,apply(k,apply(apply(apply(apply(s,s),s),apply(s,s)),k))))).
+#
+#cnf(i_0_58, plain, (apply(apply(apply(s,X1),apply(apply(apply(s,s),k),X2)),X3)=apply(apply(X1,X3),apply(apply(X2,X3),X2)))).
+#####
+#cnf(i_0_5754, plain, (apply(apply(apply(s,apply(apply(s,apply(k,apply(k,X1))),X2)),X3),X4)=apply(X1,apply(X3,X4)))).
+#
+#cnf(i_0_195, plain, (apply(apply(apply(s,apply(apply(s,s),X1)),k),apply(apply(s,k),X2))=apply(apply(s,k),X2))).
+#
+#cnf(i_0_11615, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(k,apply(apply(apply(s,apply(s,s)),s),apply(s,k))))),k)=apply(s,apply(k,apply(apply(apply(s,apply(s,s)),s),apply(s,k)))))).
+#
+#cnf(i_0_12077, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,s),apply(apply(s,apply(s,s)),apply(apply(s,apply(k,k)),k)))),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_9092, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,apply(s,s))),k)),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_14234, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(apply(s,apply(s,apply(s,s))),k)),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_59, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),X1)),X2)=apply(apply(apply(X1,X2),X1),apply(apply(apply(s,s),k),X1)))).
+####
+#cnf(i_0_6562, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(k,apply(k,X2))),X3)),X4)=apply(apply(X1,X4),X2))).
+###
+#cnf(i_0_14319, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(s,s))),k)=apply(apply(apply(s,s),apply(apply(s,s),apply(s,s))),apply(s,s)))).
+#
+#cnf(i_0_14323, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(s,apply(s,s)))),apply(apply(s,apply(k,k)),k))=apply(s,apply(s,s)))).
+##
+#cnf(i_0_11916, plain, (apply(apply(apply(apply(apply(s,s),k),apply(s,apply(s,s))),apply(apply(s,apply(k,k)),k)),X1)=apply(s,apply(s,s)))).
+#
+#cnf(i_0_60, plain, (apply(apply(apply(s,apply(apply(s,s),k)),X1),X2)=apply(apply(X2,apply(X1,X2)),X2))).
+#######
+#cnf(i_0_15085, plain, (apply(apply(apply(s,apply(apply(s,s),k)),k),apply(apply(s,s),k))=apply(apply(apply(s,s),k),apply(k,apply(apply(s,s),k))))).
+##
+#cnf(i_0_15087, plain, (apply(apply(apply(s,apply(apply(s,s),k)),k),apply(apply(s,s),apply(s,k)))=apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k)))).
+#
+#cnf(i_0_15086, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(s,k)),apply(apply(s,s),k))=apply(apply(apply(s,s),k),apply(apply(s,k),apply(apply(s,s),k))))).
+########
+#cnf(i_0_15484, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(apply(s,s),k)),k)),apply(apply(s,s),apply(s,k))),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_14998, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(apply(s,apply(k,k)),k))),apply(s,apply(s,s)))=apply(s,apply(s,s)))).
+#
+#cnf(i_0_15148, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,s),apply(apply(s,s),k))),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_15624, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(apply(s,s),k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_63, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),X1)),X2)),apply(s,k))=apply(apply(apply(apply(s,X1),X2),apply(s,k)),apply(apply(s,apply(apply(s,s),X1)),X2)))).
+#
+#cnf(i_0_2007, plain, (apply(apply(apply(apply(s,apply(s,s)),s),apply(s,k)),X1)=apply(X1,X1))).
+#####
+#cnf(i_0_9546, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),k),X1)=apply(X1,apply(k,X1)))).
+##
+#cnf(i_0_15618, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(apply(s,s),apply(apply(s,s),k))),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_16040, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),s)),apply(s,k))=apply(apply(apply(s,apply(s,s)),s),apply(apply(s,apply(s,s)),s)))).
+#
+#cnf(i_0_15701, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),apply(s,s))),apply(apply(s,apply(k,k)),k))),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_64, plain, (apply(apply(apply(apply(s,s),k),apply(X1,X2)),apply(X3,X2))=apply(apply(apply(apply(s,X1),X3),X2),apply(X1,X2)))).
+########
+#cnf(i_0_16430, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(s,apply(k,k)))),apply(k,apply(s,apply(k,k))))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_15006, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(s,s),k),apply(s,apply(s,s)))),apply(apply(s,apply(k,k)),k))=apply(s,apply(s,s)))).
+#
+#cnf(i_0_15845, plain, (apply(apply(apply(apply(s,apply(s,s)),s),apply(s,k)),apply(apply(s,apply(s,apply(s,apply(s,k)))),k))=apply(apply(s,apply(s,apply(s,apply(s,k)))),k))).
+#
+#cnf(i_0_66, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,X1),apply(k,X2))),X3)=apply(apply(apply(X1,X3),X2),apply(apply(s,X1),apply(k,X2))))).
+#######
+#cnf(i_0_17357, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,apply(s,s)))),apply(k,apply(s,apply(k,k))))),k)=apply(s,apply(k,k)))).
+#
+#cnf(i_0_15870, plain, (apply(apply(apply(apply(s,apply(s,s)),s),apply(s,k)),apply(apply(apply(s,apply(s,apply(s,s))),k),apply(s,apply(k,k))))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_16065, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),k),apply(apply(apply(s,s),k),apply(s,apply(s,k))))=apply(apply(apply(s,s),k),apply(s,apply(s,k))))).
+#
+#cnf(i_0_16077, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),k),apply(apply(apply(s,apply(s,apply(s,s))),k),apply(s,apply(k,k))))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_67, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),X1),apply(s,k))),X2)=apply(apply(apply(X1,apply(s,k)),X2),apply(apply(apply(s,s),X1),apply(s,k))))).
+#
+#cnf(i_0_2569, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),apply(k,apply(s,apply(s,k))))),k),X1)=X1)).
+######
+#cnf(i_0_18193, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,s)),apply(s,k))),apply(s,k))=apply(apply(apply(s,s),apply(s,s)),apply(s,k)))).
+#
+#cnf(i_0_16143, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),k),apply(apply(apply(apply(s,s),s),apply(s,s)),k))=apply(apply(apply(apply(s,s),s),apply(s,s)),k))).
+#
+#cnf(i_0_16152, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),k),apply(apply(apply(s,apply(s,s)),s),apply(s,k)))=apply(apply(apply(s,apply(s,s)),s),apply(s,k)))).
+#
+#cnf(i_0_15546, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,apply(apply(s,s),k)),k))),apply(apply(s,s),apply(s,k))),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_68, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,X1),X2)),X3)=apply(apply(apply(X1,X3),apply(X2,X3)),apply(apply(s,X1),X2)))).
+#
+#cnf(i_0_18839, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,s)),k),k)=apply(k,apply(k,k)))).
+#
+#cnf(i_0_18811, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),X1)),k)=apply(apply(s,s),X1))).
+####
+#cnf(i_0_18837, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),s)),k)=apply(s,k))).
+#
+#cnf(i_0_18832, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,s))),k)),k)=k)).
+#
+#cnf(i_0_19556, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,s),s)),apply(s,s)),k),k)=apply(k,k))).
+##
+#cnf(i_0_19619, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),s)),k)=apply(s,k))).
+#
+#cnf(i_0_69, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,X1)),X2)),X3)=apply(apply(X1,apply(X2,X3)),apply(apply(s,apply(k,X1)),X2)))).
+#######
+#cnf(i_0_18853, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(s,s),k))),s),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_19559, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),s))),apply(s,s)),k),k)=k)).
+##
+#cnf(i_0_71, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,k)),X1)),X2)=apply(apply(X1,X2),apply(apply(s,apply(s,k)),X1)))).
+#
+#cnf(i_0_3603, plain, (apply(apply(apply(s,apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,k))),k),X1)=X1)).
+#
+#cnf(i_0_5894, plain, (apply(apply(apply(s,apply(s,apply(apply(s,apply(k,k)),X1))),X2),X3)=apply(X1,apply(X2,X3)))).
+###
+#cnf(i_0_7020, plain, (apply(apply(apply(apply(s,apply(s,apply(k,k))),X2),X1),X3)=apply(X1,apply(X2,X1)))).
+##
+#cnf(i_0_19563, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,s),s),apply(s,s))),apply(k,k))),k)=apply(k,k))).
+#
+#cnf(i_0_19691, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,apply(s,s)),s)),k)=apply(s,k))).
+#
+#cnf(i_0_18843, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,s))),s)),k)=apply(apply(s,k),apply(apply(s,apply(s,apply(s,s))),s)))).
+#
+#cnf(i_0_18841, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(s,apply(s,k)))),k)=apply(apply(s,apply(s,s)),apply(s,apply(s,k))))).
+#####
+#cnf(i_0_13365, plain, (apply(apply(apply(s,X1),apply(apply(apply(s,s),k),X1)),X1)=apply(apply(apply(apply(s,s),X1),X1),X1))).
+##
+#cnf(i_0_7526, plain, (apply(apply(apply(apply(s,s),X1),apply(s,apply(s,apply(k,apply(k,X2))))),X3)=X2)).
+##
+#cnf(i_0_18840, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(s,k))),k)=apply(apply(apply(s,apply(s,s)),apply(s,k)),apply(apply(s,k),k)))).
+#
+#cnf(i_0_19526, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),s))),s)),k)=apply(s,k))).
+#
+#cnf(i_0_19610, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),s))),k),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_22127, plain, (apply(apply(apply(apply(s,apply(s,s)),s),apply(s,apply(k,apply(k,X1)))),X2)=X1)).
+###
+#cnf(i_0_14864, plain, (apply(apply(apply(apply(s,s),apply(s,apply(k,apply(k,X2)))),X1),X3)=apply(apply(X1,X3),X2))).
+##
+#cnf(i_0_7534, plain, (apply(apply(apply(s,apply(apply(s,s),X1)),X2),apply(s,apply(k,apply(k,X3))))=X3)).
+#
+#cnf(i_0_20752, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,k)),apply(apply(apply(apply(s,s),s),apply(s,s)),k))),k)=apply(k,k))).
+#
+#cnf(i_0_19668, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,s),apply(apply(s,s),s)),apply(s,s))),apply(k,k))),k)=k)).
+#
+#cnf(i_0_19795, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,apply(apply(s,apply(s,apply(s,s))),k))),s)),apply(k,k))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_21822, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(apply(apply(s,s),s),apply(s,s))),apply(k,k))),k)=apply(k,k))).
+#
+#cnf(i_0_75, plain, (apply(apply(apply(apply(s,X1),apply(apply(apply(s,X2),X3),X4)),apply(X5,apply(X3,X4))),apply(X6,apply(apply(apply(s,apply(X2,X4)),X5),apply(X3,X4))))=apply(apply(apply(s,apply(X1,apply(X5,apply(X3,X4)))),X6),apply(apply(apply(s,apply(X2,X4)),X5),apply(X3,X4))))).
+#####
+#cnf(i_0_649, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(X2,X1)),apply(k,X1))=apply(X1,apply(k,X1)))).
+######
+#cnf(i_0_76, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,X1),X2),X3)),apply(X4,apply(X2,X3)))=apply(apply(apply(s,apply(apply(s,apply(X1,X3)),X4)),apply(X1,X3)),apply(X2,X3)))).
+####
+#cnf(i_0_514, plain, (apply(apply(apply(apply(s,s),apply(apply(s,k),X3)),apply(k,X1)),X2)=apply(X1,X1))).
+##
+#cnf(i_0_26546, plain, (apply(apply(apply(apply(s,apply(s,s)),k),apply(apply(s,k),X1)),X2)=apply(apply(s,k),X1))).
+#
+#cnf(i_0_26645, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,s))),apply(s,k))),k)=apply(apply(s,k),k))).
+####
+#cnf(i_0_77, plain, (apply(apply(apply(s,apply(apply(s,X1),X2)),apply(apply(s,apply(X5,X4)),X2)),apply(X3,X4))=apply(apply(apply(s,apply(X1,apply(X3,X4))),apply(apply(apply(s,X5),X3),X4)),apply(X2,apply(X3,X4))))).
+#
+#cnf(i_0_7645, plain, (apply(apply(apply(apply(apply(s,s),X1),apply(s,apply(k,apply(s,k)))),X2),X3)=X3)).
+#
+#cnf(i_0_585, plain, (apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),X2)),X3)=apply(X3,X3))).
+####
+#cnf(i_0_7658, plain, (apply(apply(apply(apply(s,apply(s,apply(s,apply(k,apply(s,k))))),X2),X1),X3)=X3)).
+######
+#cnf(i_0_7727, plain, (apply(apply(apply(s,apply(s,apply(s,apply(s,apply(k,apply(k,X1)))))),X2),X3)=X1)).
+####
+#cnf(i_0_8454, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,s),X2)),apply(k,apply(k,X3)))=X3)).
+#
+#cnf(i_0_29626, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),apply(s,s))),k),apply(k,X1))=X1)).
+##
+#cnf(i_0_24427, plain, (apply(apply(apply(s,apply(apply(s,s),k)),k),apply(k,apply(apply(s,apply(s,k)),k)))=apply(k,apply(k,apply(apply(s,apply(s,k)),k))))).
+##
+#cnf(i_0_26657, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(s,k)),apply(apply(s,apply(s,s)),k))=apply(apply(s,k),apply(apply(s,apply(s,s)),k)))).
+##
+#cnf(i_0_29655, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,s)),X1),apply(k,apply(k,X2)))=X2)).
+#####
+#cnf(i_0_7901, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),s)),apply(k,apply(k,X1)))=X1)).
+#
+#cnf(i_0_24320, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,apply(apply(s,s),k))),apply(s,k))),apply(k,k))=apply(k,k))).
+##
+#cnf(i_0_29737, plain, (apply(apply(apply(s,apply(apply(s,s),apply(k,k))),k),apply(apply(s,apply(s,s)),apply(s,s)))=apply(apply(s,apply(s,s)),apply(s,s)))).
+#
+#cnf(i_0_29135, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),s)),apply(s,s)),apply(s,k))=apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k)))).
+#######
+#cnf(i_0_18190, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(s,k))),apply(k,X1))=X1)).
+#
+#cnf(i_0_30039, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(apply(s,apply(k,k)),k)),apply(apply(s,apply(s,s)),s))=apply(apply(s,apply(s,s)),s))).
+####
+#cnf(i_0_81, plain, (apply(apply(apply(apply(s,X1),apply(X2,X3)),apply(X4,X3)),apply(X5,apply(apply(apply(s,X2),X4),X3)))=apply(apply(apply(s,apply(X1,apply(X4,X3))),X5),apply(apply(apply(s,X2),X4),X3)))).
+###
+#cnf(i_0_238, plain, (apply(apply(apply(s,apply(s,X1)),apply(X3,X2)),apply(k,X2))=apply(apply(X1,apply(apply(apply(s,X3),k),X2)),X2))).
+####
+#cnf(i_0_21850, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k)))),apply(apply(s,apply(s,s)),s)),k)=apply(s,k))).
+#
+#cnf(i_0_29149, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(s,k)),apply(s,apply(s,apply(s,k))))=apply(apply(apply(s,s),s),apply(s,apply(s,k))))).
+#
+#cnf(i_0_29761, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,s),k)),k)),k),apply(k,apply(apply(s,apply(s,k)),k)))=apply(k,apply(apply(s,apply(s,k)),k)))).
+##
+#cnf(i_0_83, plain, (apply(apply(apply(apply(s,X1),apply(apply(s,X2),apply(k,X3))),X4),apply(X5,apply(apply(X2,X4),X3)))=apply(apply(apply(s,apply(X1,X4)),X5),apply(apply(X2,X4),X3)))).
+#######
+#cnf(i_0_24625, plain, (apply(apply(apply(apply(s,s),apply(X1,k)),apply(apply(s,s),k)),apply(k,k))=apply(k,apply(k,k)))).
+####
+#cnf(i_0_84, plain, (apply(apply(apply(apply(s,X1),apply(apply(apply(s,s),X2),apply(s,k))),X3),apply(X4,apply(apply(X2,apply(s,k)),X3)))=apply(apply(apply(s,apply(X1,X3)),X4),apply(apply(X2,apply(s,k)),X3)))).
+###
+#cnf(i_0_244, plain, (apply(apply(apply(apply(s,s),apply(X2,X1)),apply(k,X1)),X3)=apply(X1,apply(apply(apply(apply(s,X2),k),X1),X3)))).
+##
+#cnf(i_0_2428, plain, (apply(apply(apply(s,apply(apply(s,apply(k,X1)),apply(k,X2))),X3),X4)=apply(apply(X1,X2),apply(X3,X4)))).
+######
+#cnf(i_0_85, plain, (apply(apply(apply(apply(s,X1),apply(apply(s,X2),X3)),X4),apply(X5,apply(apply(X2,X4),apply(X3,X4))))=apply(apply(apply(s,apply(X1,X4)),X5),apply(apply(X2,X4),apply(X3,X4))))).
+###########
+#cnf(i_0_86, plain, (apply(apply(apply(apply(s,X1),apply(apply(s,apply(k,X2)),X3)),X4),apply(X5,apply(X2,apply(X3,X4))))=apply(apply(apply(s,apply(X1,X4)),X5),apply(X2,apply(X3,X4))))).
+###########
+#cnf(i_0_87, plain, (apply(apply(apply(apply(s,X1),apply(apply(s,k),X2)),X3),apply(X4,X3))=apply(apply(apply(s,apply(X1,X3)),X4),X3))).
+#
+#cnf(i_0_33095, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,s),k)),apply(k,k))=apply(k,apply(k,k)))).
+#######
+#cnf(i_0_37235, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+##
+#cnf(i_0_37276, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(k,k)))=k)).
+##
+#cnf(i_0_37387, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))),X1),k)=k)).
+#####
+#cnf(i_0_22322, plain, (apply(apply(apply(s,apply(s,apply(apply(s,apply(s,s)),s))),s),apply(k,apply(k,X1)))=X1)).
+##
+#cnf(i_0_37479, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k))),k)=k)).
+#
+#cnf(i_0_37328, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))=k)).
+#
+#cnf(i_0_37449, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))),apply(k,k))=k)).
+#
+#cnf(i_0_89, plain, (apply(apply(apply(apply(s,X1),apply(apply(apply(s,s),k),X2)),X3),apply(X4,apply(apply(X2,X3),X2)))=apply(apply(apply(s,apply(X1,X3)),X4),apply(apply(X2,X3),X2)))).
+#######
+#cnf(i_0_37473, plain, (apply(apply(apply(apply(apply(apply(s,s),s),apply(k,apply(apply(s,s),k))),apply(apply(s,s),k)),apply(k,k)),k)=k)).
+#
+#cnf(i_0_37475, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(k,apply(apply(apply(s,s),k),apply(k,k))))),k),k)=k)).
+#
+#cnf(i_0_19499, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,s),s),apply(s,s))),s)),k)=apply(apply(s,apply(apply(apply(s,s),s),apply(s,s))),s))).
+##
+#cnf(i_0_90, plain, (apply(apply(apply(apply(s,X1),apply(X2,X3)),X2),apply(X4,apply(apply(apply(apply(s,s),k),X2),X3)))=apply(apply(apply(s,apply(X1,X2)),X4),apply(apply(apply(apply(s,s),k),X2),X3)))).
+#
+#cnf(i_0_38749, plain, (apply(apply(apply(s,apply(s,apply(apply(s,apply(s,k)),k))),X2),X1)=apply(X2,X1))).
+######
+#cnf(i_0_19645, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(s,s))),k)),k)=k)).
+#
+#cnf(i_0_39668, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,apply(s,apply(s,s))),k)),k)=k)).
+#
+#cnf(i_0_19780, plain, (apply(apply(apply(apply(apply(s,s),s),apply(k,apply(apply(s,s),k))),s),apply(s,k))=apply(apply(apply(s,s),k),apply(s,apply(s,apply(s,k)))))).
+#
+#cnf(i_0_20753, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,k)),apply(apply(apply(apply(s,s),apply(apply(s,s),s)),apply(s,s)),k))),k)=k)).
+#
+#cnf(i_0_92, plain, (apply(apply(apply(apply(s,X1),X2),X3),apply(apply(X4,apply(X2,X3)),X5))=apply(apply(apply(s,apply(X1,X3)),apply(apply(s,X4),apply(k,X5))),apply(X2,X3)))).
+#
+#cnf(i_0_9919, plain, (apply(apply(apply(s,apply(apply(s,s),k)),k),apply(k,X1))=apply(X1,apply(k,X1)))).
+#####
+#cnf(i_0_41676, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),k)),k)=apply(k,k))).
+#
+#cnf(i_0_41703, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),k))),k)=k)).
+#
+#cnf(i_0_21811, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,s),s),apply(s,s))),apply(k,k)))),k)=k)).
+#
+#cnf(i_0_30058, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,apply(apply(s,s),k))),apply(s,k)))),k),apply(k,k))=k)).
+#
+#cnf(i_0_33900, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,s)),apply(s,k))),apply(k,k))=apply(k,apply(apply(apply(s,s),apply(s,s)),apply(s,k))))).
+#
+#cnf(i_0_93, plain, (apply(apply(apply(s,apply(X1,X3)),apply(apply(apply(s,s),X4),apply(s,k))),apply(X2,X3))=apply(apply(apply(s,apply(X1,X3)),apply(X4,apply(s,k))),apply(X2,X3)))).
+#
+#cnf(i_0_16535, plain, (apply(apply(apply(s,apply(apply(s,s),k)),s),apply(k,X1))=apply(X1,apply(k,X1)))).
+####
+#cnf(i_0_2828, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(k,X2)),apply(k,X3))),X4)=apply(apply(X1,X4),apply(X2,X3)))).
+##
+#cnf(i_0_37284, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(s,s),k),apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(k,k)))=k)).
+#
+#cnf(i_0_37456, plain, (apply(apply(apply(apply(s,apply(s,apply(apply(s,s),k))),k),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k)=k)).
+#
+#cnf(i_0_37462, plain, (apply(apply(apply(apply(apply(s,apply(s,s)),s),apply(s,k)),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k)=k)).
+#
+#cnf(i_0_39712, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k)))),apply(apply(s,apply(s,apply(s,s))),k)),k)=k)).
+#
+#cnf(i_0_94, plain, (apply(apply(apply(apply(s,X1),X2),X3),apply(X4,apply(X5,apply(X2,X3))))=apply(apply(apply(s,apply(X1,X3)),apply(apply(s,apply(k,X4)),X5)),apply(X2,X3)))).
+#######
+#cnf(i_0_41319, plain, (apply(apply(apply(apply(s,apply(apply(s,s),k)),k),apply(k,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))),k)=k)).
+#
+#cnf(i_0_41723, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),k)),apply(k,k))),apply(apply(s,apply(s,apply(apply(s,s),k))),k))=k)).
+##
+#cnf(i_0_41778, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),k))),k)=k)).
+#
+#cnf(i_0_95, plain, (apply(apply(apply(apply(s,X1),X2),X3),apply(X2,X3))=apply(apply(apply(s,apply(X1,X3)),apply(apply(s,k),X4)),apply(X2,X3)))).
+#######
+#cnf(i_0_42853, plain, (apply(apply(apply(apply(s,apply(apply(s,s),k)),s),apply(k,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))),k)=k)).
+#
+#cnf(i_0_19550, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(apply(apply(s,s),s),apply(s,s)),k)),k)=apply(k,k))).
+#
+#cnf(i_0_47098, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(apply(apply(apply(s,s),s),apply(s,s)),k)),k)=apply(k,k))).
+########
+#cnf(i_0_648, plain, (apply(apply(apply(s,apply(apply(s,s),k)),X1),apply(k,X2))=apply(X2,apply(k,X2)))).
+####
+#cnf(i_0_37194, plain, (apply(apply(apply(s,apply(apply(apply(s,s),X1),apply(apply(s,s),k))),k),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_97, plain, (apply(apply(apply(apply(s,X1),X2),X3),apply(apply(X4,apply(X2,X3)),X4))=apply(apply(apply(s,apply(X1,X3)),apply(apply(apply(s,s),k),X4)),apply(X2,X3)))).
+######
+#cnf(i_0_47687, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,s),k)),X1)),k),apply(k,k))=apply(k,k))).
+####
+#cnf(i_0_37234, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(k,k))),X1),apply(apply(s,s),k))=apply(k,k))).
+#
+#cnf(i_0_98, plain, (apply(apply(apply(apply(s,X1),X2),X3),apply(apply(apply(apply(s,s),k),apply(X2,X3)),X4))=apply(apply(apply(s,apply(X1,X3)),apply(apply(X2,X3),X4)),apply(X2,X3)))).
+#######
+#cnf(i_0_49551, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(apply(s,s),k),apply(k,k)))),apply(s,s))),k)=k)).
+#
+#cnf(i_0_49574, plain, (apply(apply(apply(apply(s,s),apply(apply(s,k),s)),apply(apply(apply(s,s),k),apply(k,k))),apply(apply(s,s),k))=apply(k,k))).
+#
+#cnf(i_0_49516, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(apply(s,s),k),apply(k,k))))),apply(k,apply(apply(s,s),k)))=apply(k,k))).
+####
+#cnf(i_0_590, plain, (apply(apply(apply(s,apply(X1,X2)),apply(apply(s,k),X3)),X1)=apply(apply(apply(apply(apply(s,s),k),X1),X2),X1))).
+######
+#cnf(i_0_49571, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,s)),apply(apply(s,s),k))),apply(k,k)),apply(apply(s,s),k))=apply(k,k))).
+#
+#cnf(i_0_19826, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,s)),apply(s,apply(s,apply(s,s))))),k),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_20591, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,k)),apply(apply(s,apply(s,apply(s,s))),k))),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_100, plain, (apply(apply(apply(apply(s,X1),X2),X3),apply(apply(apply(s,X4),X2),X3))=apply(apply(apply(s,apply(X1,X3)),apply(X4,X3)),apply(X2,X3)))).
+######
+#cnf(i_0_2102, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(apply(s,k),X1)),X2)=apply(X2,X2))).
+#
+#cnf(i_0_54247, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),apply(s,s)),apply(s,k))=apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k)))).
+###
+#cnf(i_0_37309, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))),X1),apply(k,k))=k)).
+#
+#cnf(i_0_101, plain, (apply(apply(apply(apply(apply(s,s),X2),X1),X3),apply(X4,apply(apply(X2,X1),X3)))=apply(apply(apply(s,apply(X1,X3)),X4),apply(apply(X2,X1),X3)))).
+###########
+#cnf(i_0_102, plain, (apply(apply(apply(apply(s,apply(s,X1)),X3),X2),apply(X4,apply(X2,apply(X3,X2))))=apply(apply(apply(s,apply(X1,apply(X3,X2))),X4),apply(X2,apply(X3,X2))))).
+#
+#cnf(i_0_54255, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,k)),apply(s,k)),X1)=apply(X1,X1))).
+#########
+#cnf(i_0_54445, plain, (apply(apply(apply(apply(apply(apply(s,s),s),apply(k,apply(apply(s,s),k))),apply(apply(s,s),k)),apply(k,k)),apply(k,k))=k)).
+#
+#cnf(i_0_103, plain, (apply(apply(apply(s,apply(apply(apply(s,s),X1),apply(s,k))),X3),apply(X2,apply(s,k)))=apply(apply(apply(s,apply(X1,apply(s,k))),X3),apply(X2,apply(s,k))))).
+#######
+#cnf(i_0_54452, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k))),apply(k,k))=k)).
+#
+#cnf(i_0_54415, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))),apply(k,apply(k,k)))=k)).
+#
+#cnf(i_0_54447, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(k,apply(apply(apply(s,s),k),apply(k,k))))),k),apply(k,k))=k)).
+#
+#cnf(i_0_57133, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(s,k))),apply(apply(s,k),apply(s,k)))=apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k)))).
+#
+#cnf(i_0_104, plain, (apply(apply(apply(apply(apply(s,s),k),apply(s,X1)),X2),apply(X3,apply(X2,apply(s,X1))))=apply(apply(apply(s,apply(X1,apply(s,X1))),X3),apply(X2,apply(s,X1))))).
+#########
+#cnf(i_0_55063, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(k,k))),X2),apply(k,apply(k,k)))=apply(k,k))).
+#########
+#cnf(i_0_59014, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(apply(s,s),k),apply(k,k)))),k)),apply(k,k))=k)).
+#
+#cnf(i_0_59047, plain, (apply(apply(apply(apply(s,s),apply(apply(s,k),s)),apply(apply(apply(s,s),k),apply(k,k))),apply(k,apply(k,k)))=apply(k,k))).
+##
+#cnf(i_0_58974, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(apply(s,s),k),apply(k,k))))),apply(k,apply(k,apply(k,k))))=apply(k,k))).
+#
+#cnf(i_0_110, plain, (apply(apply(apply(apply(s,X1),X2),X3),apply(apply(X2,X3),apply(s,apply(s,k))))=apply(apply(apply(s,apply(X1,X3)),apply(apply(apply(s,s),k),apply(s,apply(s,k)))),apply(X2,X3)))).
+######
+#cnf(i_0_8376, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(k,X1)),X2)=apply(X1,X1))).
+#
+#cnf(i_0_61182, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,s)),k),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_59044, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,apply(k,s)),apply(apply(s,s),k)))),k),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_59123, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(apply(apply(s,s),k),apply(k,k)))),k)),apply(k,k))=k)).
+#
+#cnf(i_0_61326, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,apply(k,s)),apply(apply(s,s),k)))),k)),k),apply(k,k))=k)).
+#
+#cnf(i_0_111, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(s,apply(s,k)))),X1),X2)=apply(apply(X2,apply(s,apply(s,k))),apply(X1,X2)))).
+##
+#cnf(i_0_2285, plain, (apply(apply(apply(s,apply(apply(s,X1),apply(k,X3))),X1),X2)=apply(apply(apply(apply(s,s),k),apply(X1,X2)),X3))).
+######
+#cnf(i_0_61211, plain, (apply(apply(apply(apply(s,apply(s,s)),k),apply(s,apply(s,k))),X1)=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_62662, plain, (apply(apply(apply(s,apply(apply(s,s),apply(s,k))),apply(apply(s,apply(s,s)),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_62721, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,apply(apply(s,apply(s,s)),k))),s)),apply(s,k))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_112, plain, (apply(apply(apply(s,X1),apply(apply(apply(s,s),k),apply(s,apply(s,k)))),X2)=apply(apply(X1,X2),apply(X2,apply(s,apply(s,k)))))).
+######
+#cnf(i_0_15882, plain, (apply(apply(apply(apply(s,apply(s,s)),s),apply(s,k)),apply(apply(s,k),X1))=apply(apply(s,k),X1))).
+#
+#cnf(i_0_63970, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),s)),apply(s,k)),apply(s,k))=apply(apply(s,k),apply(s,k)))).
+#
+#cnf(i_0_63976, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),apply(s,k)))),s),apply(s,k))=apply(apply(s,k),apply(s,apply(s,k))))).
+##
+#cnf(i_0_62723, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,s))),apply(k,apply(s,apply(s,k))))),k)=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_113, plain, (apply(apply(apply(apply(s,X1),apply(apply(apply(s,s),k),apply(s,apply(s,k)))),X2),apply(X3,apply(X2,apply(s,apply(s,k)))))=apply(apply(apply(s,apply(X1,X2)),X3),apply(X2,apply(s,apply(s,k)))))).
+######
+#cnf(i_0_16206, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),k),X1)=apply(apply(apply(s,apply(s,apply(s,k))),k),X1))).
+#
+#cnf(i_0_37456, plain, (apply(apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k)=k)).
+#
+#cnf(i_0_16077, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(apply(s,apply(s,apply(s,s))),k),apply(s,apply(k,k))))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_16065, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(apply(s,s),k),apply(s,apply(s,k))))=apply(apply(apply(s,s),k),apply(s,apply(s,k))))).
+########
+#cnf(i_0_19586, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,s),X1)),k)=apply(apply(s,s),X1))).
+#
+#cnf(i_0_65309, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(apply(s,s),k)),k)=apply(apply(s,s),apply(apply(s,s),k)))).
+#
+#cnf(i_0_65368, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(s,s)),apply(s,s))),apply(apply(s,s),k)),k)=apply(apply(s,s),apply(apply(s,s),k)))).
+#
+#cnf(i_0_65310, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(k,apply(apply(s,s),k)))),s),k)=apply(apply(s,s),apply(k,apply(apply(s,s),k))))).
+##
+#cnf(i_0_114, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(s,apply(s,k)))),X1)=apply(apply(apply(s,X1),apply(apply(s,s),k)),apply(s,apply(s,k))))).
+#
+#cnf(i_0_26515, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,s)),k),apply(apply(s,k),X1))=apply(apply(s,k),X1))).
+######
+#cnf(i_0_63948, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),apply(apply(s,apply(s,s)),s)),apply(s,k))=apply(apply(apply(s,apply(s,s)),s),apply(s,k)))).
+#
+#cnf(i_0_64875, plain, (apply(apply(apply(apply(s,apply(s,s)),s),apply(s,k)),apply(apply(s,apply(s,apply(apply(s,s),k))),k))=apply(apply(s,apply(s,apply(apply(s,s),k))),k))).
+#
+#cnf(i_0_64936, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(s,apply(s,apply(apply(s,s),k))))=apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(s,s),k)))),k))).
+#
+#cnf(i_0_65769, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(s,k)),apply(apply(apply(apply(s,s),s),apply(s,s)),k))=apply(apply(apply(apply(s,s),s),apply(s,s)),k))).
+#
+#cnf(i_0_116, plain, (apply(apply(apply(s,apply(s,apply(s,apply(s,k)))),X1),apply(k,apply(s,apply(s,k))))=apply(apply(X1,apply(k,apply(s,apply(s,k)))),apply(s,apply(s,k))))).
+####
+#cnf(i_0_1523, plain, (apply(apply(apply(apply(s,apply(s,apply(s,k))),X2),X1),X1)=apply(apply(apply(apply(s,s),k),X1),apply(X2,X1)))).
+###
+#cnf(i_0_66355, plain, (apply(apply(apply(s,apply(s,apply(s,apply(s,apply(s,k))))),k),apply(s,apply(s,k)))=apply(s,apply(s,k)))).
+##
+#cnf(i_0_37472, plain, (apply(apply(apply(apply(s,apply(apply(s,s),k)),X1),apply(apply(apply(s,s),k),apply(k,k))),k)=k)).
+#
+#cnf(i_0_66794, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(s,apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(k,k))),k)=k)).
+#
+#cnf(i_0_178, plain, (apply(apply(apply(apply(s,X1),X2),X3),apply(X2,X3))=apply(apply(apply(s,apply(X1,X3)),apply(apply(s,apply(s,apply(apply(s,k),X4))),k)),apply(X2,X3)))).
+#######
+#cnf(i_0_66792, plain, (apply(apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(s,s),k)))),apply(k,apply(apply(apply(s,s),k),apply(k,k)))),k)=k)).
+#
+#cnf(i_0_49384, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(apply(s,s),k)),X1)),k)),k),apply(k,k))=k)).
+##
+#cnf(i_0_15637, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(apply(s,s),k))),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_179, plain, (apply(apply(apply(s,apply(apply(s,apply(s,apply(apply(s,k),X1))),k)),X2),X3)=apply(X3,apply(X2,X3)))).
+#######
+#cnf(i_0_15703, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),apply(s,s))),k)),apply(s,k))=apply(apply(s,k),apply(apply(s,apply(apply(s,s),apply(s,s))),k)))).
+#
+#cnf(i_0_17344, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(k,apply(s,apply(s,k))))),k)=apply(apply(apply(s,s),apply(s,apply(s,k))),apply(s,apply(s,k))))).
+#
+#cnf(i_0_17349, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(k,apply(s,apply(apply(s,apply(s,k)),k))))),k)=apply(s,apply(apply(s,apply(s,k)),k)))).
+#
+#cnf(i_0_19482, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,s),s),apply(s,s))),k)),k)=apply(k,apply(apply(s,apply(apply(apply(s,s),s),apply(s,s))),k)))).
+#
+#cnf(i_0_180, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(s,apply(apply(s,k),X2))),k)),X3)=apply(apply(X1,X3),X3))).
+#######
+#cnf(i_0_19682, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),s))),k),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_19787, plain, (apply(apply(apply(apply(apply(s,s),s),apply(k,apply(apply(s,s),k))),s),apply(apply(s,apply(s,k)),k))=apply(s,apply(apply(s,apply(s,k)),k)))).
+#
+#cnf(i_0_20487, plain, (apply(apply(apply(s,s),apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(s,s),k))),s)),apply(s,k))=apply(apply(s,apply(s,k)),apply(s,k)))).
+##
+#cnf(i_0_181, plain, (apply(apply(apply(apply(s,X1),apply(apply(s,apply(s,apply(apply(s,k),X2))),k)),X3),apply(X4,X3))=apply(apply(apply(s,apply(X1,X3)),X4),X3))).
+#########
+#cnf(i_0_21987, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(s,apply(s,k))),apply(s,apply(s,k)))=apply(apply(apply(s,s),apply(apply(s,s),s)),apply(s,k)))).
+##
+#cnf(i_0_183, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,k),X1))),k)),X2)=apply(X2,apply(apply(s,apply(s,apply(apply(s,k),X1))),k)))).
+#
+#cnf(i_0_385, plain, (apply(apply(apply(apply(apply(s,s),X1),apply(s,apply(s,s))),apply(s,k)),apply(k,X2))=X2)).
+#####
+#cnf(i_0_72410, plain, (apply(apply(apply(apply(apply(s,apply(s,s)),s),apply(s,s)),apply(s,k)),apply(k,X1))=X1)).
+#
+#cnf(i_0_22608, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,k)),apply(apply(apply(apply(s,s),s),apply(s,s)),k))),k)=apply(k,k))).
+#
+#cnf(i_0_30087, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,s),apply(s,apply(apply(s,s),k))),apply(s,k))),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_37280, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+#
+#cnf(i_0_37605, plain, (apply(apply(apply(apply(s,s),apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(k,k))),k)=apply(k,k))).
+#
+#cnf(i_0_186, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,k),X1)),X2)),X3),apply(k,X2))=apply(X2,apply(X3,apply(k,X2))))).
+######
+#cnf(i_0_604, plain, (apply(apply(apply(apply(s,s),k),apply(k,apply(apply(s,k),X1))),X2)=apply(k,apply(apply(s,k),X1)))).
+##
+#cnf(i_0_51540, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,k),s))),apply(apply(apply(s,s),k),apply(k,k))),apply(apply(s,s),k))=apply(k,k))).
+#
+#cnf(i_0_59211, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,k),s))),apply(apply(apply(s,s),k),apply(k,k))),apply(k,apply(k,k)))=apply(k,k))).
+##
+#cnf(i_0_187, plain, (apply(apply(apply(s,apply(apply(apply(s,s),X1),apply(apply(s,k),X2))),X3),apply(k,X4))=apply(X4,apply(X3,apply(k,X4))))).
+######
+#cnf(i_0_1637, plain, (apply(apply(apply(s,apply(s,apply(s,apply(s,k)))),apply(apply(s,k),X1)),apply(k,X2))=X2)).
+##
+#cnf(i_0_61706, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(s,apply(s,k)))),k),apply(apply(s,apply(s,s)),apply(s,k)))=apply(apply(s,apply(s,s)),apply(s,k)))).
+#
+#cnf(i_0_61707, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(s,apply(s,k)))),k),apply(s,apply(apply(s,apply(s,s)),k)))=apply(s,apply(apply(s,apply(s,s)),k)))).
+#
+#cnf(i_0_62713, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,k)),apply(apply(s,apply(s,s)),k))),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_188, plain, (apply(apply(apply(s,X1),apply(apply(apply(s,s),X2),apply(apply(s,k),X3))),apply(k,X4))=apply(apply(X1,apply(k,X4)),X4))).
+########
+#cnf(i_0_64158, plain, (apply(apply(apply(s,s),apply(apply(s,apply(s,apply(apply(s,s),apply(s,k)))),s)),apply(s,k))=apply(apply(s,apply(s,k)),apply(apply(s,k),apply(s,apply(s,k)))))).
+#
+#cnf(i_0_65344, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(apply(s,s),apply(apply(s,s),k))),k)=apply(apply(s,s),apply(apply(s,s),k)))).
+#
+#cnf(i_0_65427, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,apply(s,s)),apply(s,s)))),apply(apply(s,s),k)),k)=apply(apply(s,s),apply(apply(s,s),k)))).
+#
+#cnf(i_0_189, plain, (apply(apply(apply(apply(s,X1),apply(apply(apply(s,s),X2),apply(apply(s,k),X3))),apply(k,X4)),apply(X5,X4))=apply(apply(apply(s,apply(X1,apply(k,X4))),X5),X4))).
+#######
+#cnf(i_0_66323, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(s,apply(s,apply(s,apply(s,k))))),apply(k,apply(s,apply(s,k))))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_37353, plain, (apply(k,apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))),X1))=apply(k,apply(k,k)))).
+#
+#cnf(i_0_76654, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))),X2)=apply(k,k))).
+#
+#cnf(i_0_77047, plain, (apply(apply(apply(apply(apply(s,s),s),apply(k,apply(apply(s,s),k))),apply(apply(s,s),k)),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_191, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),X1),apply(apply(s,k),X2))),apply(k,X3))=apply(X3,apply(apply(apply(s,s),X1),apply(apply(s,k),X2))))).
+#######
+#cnf(i_0_77065, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+#
+#cnf(i_0_77049, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(k,apply(apply(apply(s,s),k),apply(k,k))))),k)=apply(k,k))).
+#
+#cnf(i_0_77109, plain, (apply(apply(apply(s,apply(apply(apply(apply(s,s),s),apply(k,apply(apply(s,s),k))),apply(apply(s,s),k))),k),apply(k,k))=k)).
+#
+#cnf(i_0_76980, plain, (apply(apply(apply(apply(s,apply(s,s)),s),apply(s,k)),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))=apply(k,k))).
+#
+#cnf(i_0_193, plain, (apply(apply(apply(s,apply(X1,X2)),apply(apply(apply(s,s),X3),apply(apply(s,k),X4))),apply(k,X2))=apply(apply(apply(apply(s,X1),k),X2),X2))).
+#################
+#cnf(i_0_77042, plain, (apply(apply(apply(s,apply(apply(s,s),k)),X1),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+###
+#cnf(i_0_78040, plain, (apply(apply(apply(apply(s,apply(apply(apply(apply(s,s),s),apply(s,s)),k)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_78041, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),s)),k)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_201, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(s,k),X1))))),k)=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,s),k)),apply(s,apply(s,apply(apply(s,k),X1)))))).
+######
+#cnf(i_0_2167, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),k),apply(s,k))),X1),X2)=apply(X1,X2))).
+#
+#cnf(i_0_79015, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+###
+#cnf(i_0_78568, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),apply(apply(s,s),k))),apply(k,k))=k)).
+#
+#cnf(i_0_202, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,s),k)),X1)),X2),apply(s,apply(s,k)))=apply(apply(apply(s,apply(X1,apply(s,apply(s,k)))),X2),apply(s,apply(s,k))))).
+######
+#cnf(i_0_2310, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),apply(k,apply(apply(s,k),X2)))),k),X1)=X1)).
+##
+#cnf(i_0_78124, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),s)),apply(s,k))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_78125, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(s,apply(apply(s,s),apply(s,k)))),s)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_78143, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_203, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(apply(s,s),k)),X2)),apply(s,apply(s,k)))=apply(apply(apply(s,X1),apply(X2,apply(s,apply(s,k)))),apply(s,apply(s,k))))).
+#
+#cnf(i_0_3123, plain, (apply(apply(apply(s,apply(s,apply(s,apply(s,apply(s,k))))),X1),apply(k,apply(k,X2)))=X2)).
+#####
+#cnf(i_0_80319, plain, (apply(apply(apply(s,apply(s,apply(s,apply(s,apply(s,apply(s,k)))))),k),apply(k,X1))=X1)).
+#
+#cnf(i_0_80063, plain, (apply(apply(apply(apply(s,s),s),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+##
+#cnf(i_0_78534, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(s,apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+#
+#cnf(i_0_80579, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),s)),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+##
+#cnf(i_0_3133, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),X1))),apply(s,k)),apply(k,apply(k,X2)))=X2)).
+####
+#cnf(i_0_1607, plain, (apply(apply(apply(s,apply(s,apply(s,k))),apply(X1,X2)),X1)=apply(X1,apply(apply(apply(apply(s,s),k),X1),X2)))).
+##
+#cnf(i_0_81078, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(s,apply(s,k))))),apply(k,s))=apply(s,apply(apply(s,apply(s,apply(s,apply(s,k)))),s)))).
+#
+#cnf(i_0_77647, plain, (apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,apply(k,k)))).
+#
+#cnf(i_0_79102, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,s)),k),apply(s,k))),apply(s,k))=apply(apply(apply(s,apply(s,s)),k),apply(s,k)))).
+##
+#cnf(i_0_205, plain, (apply(apply(apply(X1,apply(s,apply(s,k))),apply(s,apply(s,k))),apply(apply(s,apply(apply(s,s),k)),X1))=apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),k)),X1)),apply(s,apply(s,k))))).
+#
+#cnf(i_0_3323, plain, (apply(apply(apply(s,apply(s,apply(apply(s,apply(s,apply(s,k))),X1))),k),apply(k,X2))=X2)).
+###
+#cnf(i_0_2111, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(X1,X2)),X1)=apply(apply(apply(apply(apply(s,s),k),X1),X2),X1))).
+###
+#cnf(i_0_82575, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(apply(s,s),apply(s,k)))),apply(k,s))=apply(apply(s,apply(s,s)),apply(s,s)))).
+#
+#cnf(i_0_77436, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,k))),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+#####
+#cnf(i_0_7253, plain, (apply(apply(apply(apply(s,apply(s,apply(k,X1))),k),X2),X2)=apply(apply(apply(s,apply(s,X1)),X2),apply(k,X2)))).
+##
+#cnf(i_0_7467, plain, (apply(X1,apply(apply(apply(s,apply(s,apply(s,k))),X2),X3))=apply(apply(apply(s,apply(s,apply(k,X1))),X2),X3))).
+#
+#cnf(i_0_9, negated_conjecture, (apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))!=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))).
+##
+#cnf(i_0_78036, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(apply(apply(s,apply(s,s)),s),apply(s,s))),k)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_78132, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(apply(s,s),k))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_78524, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(s,s),k)))),apply(k,apply(apply(apply(s,s),k),apply(k,k))))=apply(k,k))).
+#
+#cnf(i_0_84556, plain, (apply(apply(apply(apply(s,s),k),apply(k,apply(apply(apply(s,s),k),apply(k,k)))),s)=apply(k,apply(k,k)))).
+#######
+#cnf(i_0_5464, plain, (apply(apply(apply(s,apply(apply(s,apply(k,apply(apply(s,apply(s,s)),k))),k)),X2),X1)=X1)).
+#
+#cnf(i_0_84973, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,apply(apply(s,apply(s,s)),k))),k)),k)=k)).
+##
+#cnf(i_0_85073, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(k,apply(apply(s,apply(s,s)),k))),k)),k)=k)).
+#
+#cnf(i_0_84694, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(k,apply(apply(apply(s,s),k),apply(k,k)))),s)=apply(k,apply(k,k)))).
+#
+#cnf(i_0_210, plain, (apply(apply(apply(X1,apply(apply(s,s),k)),apply(s,apply(s,k))),apply(s,apply(s,k)))=apply(apply(apply(apply(s,s),X1),apply(apply(s,s),k)),apply(s,apply(s,k))))).
+#
+#cnf(i_0_5502, plain, (apply(apply(apply(s,apply(apply(s,apply(k,apply(s,apply(s,apply(s,k))))),X1)),k),X2)=X2)).
+#
+#cnf(i_0_9708, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),X1)),X1),X2)=apply(apply(apply(apply(s,s),k),apply(X1,X2)),X1))).
+####
+#cnf(i_0_5509, plain, (apply(apply(apply(s,apply(apply(s,apply(k,apply(apply(s,s),X1))),apply(s,k))),k),X2)=X2)).
+###
+#cnf(i_0_84661, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,apply(apply(apply(s,s),k),apply(k,k))))),s)=apply(k,k))).
+###
+#cnf(i_0_6081, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(apply(s,s),s),apply(s,k))),apply(k,X2))=X2)).
+#####
+#cnf(i_0_86452, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),apply(apply(s,s),s))),k),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_85490, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_85494, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+###
+#cnf(i_0_86470, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,s),s)),apply(s,k)),apply(k,X1))=X1)).
+#####
+#cnf(i_0_6900, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),X1))),apply(s,apply(k,k))),apply(k,X2))=X2)).
+#
+#cnf(i_0_85324, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,apply(k,apply(s,k))))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(s,apply(s,k)))).
+##
+#cnf(i_0_79172, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),k),apply(s,k))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_81807, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,apply(s,k)))),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+##
+#cnf(i_0_87057, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(apply(s,s),k),apply(k,k))),apply(k,k))=apply(k,k))).
+######
+#cnf(i_0_87462, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(apply(apply(s,s),k),apply(k,k))),apply(k,k))=apply(k,k))).
+####
+#cnf(i_0_217, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),s))),X1),apply(s,k))=apply(apply(apply(s,apply(s,apply(apply(s,s),k))),s),apply(X1,apply(s,k))))).
+#######
+#cnf(i_0_85321, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,apply(s,k)))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_85476, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,k))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+##
+#cnf(i_0_85513, plain, (apply(apply(apply(apply(s,s),apply(s,apply(apply(s,s),k))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_218, plain, (apply(apply(apply(s,X1),apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),s))),apply(s,k))=apply(apply(X1,apply(s,k)),apply(apply(s,apply(s,k)),apply(apply(s,apply(s,apply(apply(s,s),k))),s))))).
+#
+#cnf(i_0_7668, plain, (apply(apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(k,apply(s,k))))),X1),X2)=X2)).
+###
+#cnf(i_0_77833, plain, (apply(apply(apply(s,apply(apply(X1,X2),apply(k,X2))),X5),X2)=apply(apply(apply(apply(apply(s,X1),k),X2),X2),apply(X5,X2)))).
+###
+#cnf(i_0_86515, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),apply(apply(s,s),s))),k)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_76898, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))),apply(s,k))=k)).
+#
+#cnf(i_0_77110, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,s),s)),apply(k,apply(apply(s,s),k))),apply(apply(s,s),k)),apply(k,k))=k)).
+#
+#cnf(i_0_77374, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(k,k)))=k)).
+###########
+#cnf(i_0_79300, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,apply(s,apply(apply(s,s),k)))),apply(apply(s,s),k)),apply(k,k))=k)).
+#
+#cnf(i_0_220, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),s))),apply(s,k))=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(apply(s,s),k))),s)))).
+#######
+#cnf(i_0_85148, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,apply(k,apply(apply(s,apply(s,s)),k))),k)),k)=k)).
+##
+#cnf(i_0_87507, plain, (apply(apply(apply(s,apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(apply(apply(s,s),k),apply(k,k)))),k),apply(k,k))=k)).
+#
+#cnf(i_0_78044, plain, (apply(apply(apply(apply(s,apply(apply(apply(apply(s,s),s),apply(s,s)),k)),k),apply(s,apply(s,k))),apply(s,apply(s,k)))=apply(s,apply(s,k)))).
+#######
+#cnf(i_0_7742, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(s,apply(k,apply(k,X1)))))),X2)=X1)).
+#
+#cnf(i_0_80488, plain, (apply(apply(apply(s,apply(apply(s,s),apply(k,k))),k),apply(s,apply(s,apply(s,apply(s,apply(s,k))))))=apply(s,apply(s,apply(s,apply(s,apply(s,k))))))).
+#
+#cnf(i_0_80538, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),s),apply(apply(s,s),k))),k),apply(s,apply(s,k))),apply(s,apply(s,k)))=apply(s,apply(s,k)))).
+#
+#cnf(i_0_85218, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(k,apply(apply(apply(s,s),k),apply(k,k)))),s)=apply(k,apply(k,k)))).
+###
+#cnf(i_0_7829, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),X1)),apply(s,apply(k,apply(k,X2))))=X2)).
+#####
+#cnf(i_0_7845, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,apply(k,s)),k)),apply(k,X1)),X2)=X1)).
+##
+#cnf(i_0_91068, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,s))),k)),apply(apply(s,apply(k,s)),k))=apply(apply(s,apply(k,s)),k))).
+#
+#cnf(i_0_85320, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,apply(s,apply(k,apply(s,k)))))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(s,apply(s,k)))).
+#
+#cnf(i_0_85463, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(apply(s,s),k)),apply(s,k))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(s,apply(s,k)))).
+#
+#cnf(i_0_223, plain, (apply(apply(X1,apply(apply(apply(s,X5),X3),X4)),apply(apply(apply(s,X2),apply(X5,X4)),apply(X3,X4)))=apply(apply(apply(s,X1),apply(X2,apply(X3,X4))),apply(apply(apply(s,X5),X3),X4)))).
+#
+#cnf(i_0_7889, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,s)),s)),apply(k,apply(k,X2)))=X2)).
+#####
+#cnf(i_0_93500, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,s)),s),apply(k,apply(k,X1)))=X1)).
+##
+#cnf(i_0_76982, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,k)),apply(s,k)),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))=apply(k,k))).
+##
+#cnf(i_0_77502, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),apply(k,apply(apply(apply(s,s),k),apply(k,k))))),k)=apply(k,k))).
+#
+#cnf(i_0_224, plain, (apply(apply(apply(apply(s,X1),apply(X2,apply(X3,X4))),apply(apply(apply(s,X5),X3),X4)),apply(X6,apply(apply(apply(s,X2),apply(X5,X4)),apply(X3,X4))))=apply(apply(apply(s,apply(X1,apply(apply(apply(s,X5),X3),X4))),X6),apply(apply(apply(s,X2),apply(X5,X4)),apply(X3,X4))))).
+##
+#cnf(i_0_77869, plain, (apply(apply(apply(s,X1),apply(apply(X5,X4),apply(k,X4))),X4)=apply(apply(X1,X4),apply(apply(apply(apply(s,X5),k),X4),X4)))).
+#######
+#cnf(i_0_78135, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),apply(s,s))),k))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_78147, plain, (apply(apply(apply(apply(s,apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(s,s),k))),s)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_225, plain, (apply(apply(X1,apply(apply(apply(s,X2),apply(X5,X4)),apply(X3,X4))),apply(apply(apply(s,X6),apply(X2,apply(X3,X4))),apply(apply(apply(s,X5),X3),X4)))=apply(apply(apply(s,X1),apply(X6,apply(apply(apply(s,X5),X3),X4))),apply(apply(apply(s,X2),apply(X5,X4)),apply(X3,X4))))).
+#######
+#cnf(i_0_78153, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,apply(s,s)),s)),k))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_78156, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(s,apply(s,s)),k)))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_78157, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(s,k),apply(s,k))))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_227, plain, (apply(apply(apply(apply(s,s),k),apply(X1,apply(X2,X3))),apply(apply(apply(s,X4),X2),X3))=apply(apply(apply(s,apply(apply(s,X1),apply(X4,X3))),X1),apply(X2,X3)))).
+#######
+#cnf(i_0_79165, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),k),apply(s,k))),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_80779, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),s))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_81743, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,k))),apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+#
+#cnf(i_0_81865, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,s)),k),apply(s,k)))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_228, plain, (apply(apply(apply(apply(s,X1),apply(X4,X3)),apply(X2,X3)),apply(apply(apply(s,X5),apply(apply(s,X4),X2)),X3))=apply(apply(apply(s,apply(X1,apply(X2,X3))),apply(X5,X3)),apply(apply(apply(s,X4),X2),X3)))).
+#######
+#cnf(i_0_82213, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),k)),k)),apply(s,apply(s,k)))=apply(apply(s,apply(s,k)),apply(apply(s,apply(apply(s,s),k)),k)))).
+#
+#cnf(i_0_84689, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),k)),apply(k,s))),apply(k,apply(apply(apply(s,s),k),apply(k,k))))=apply(k,k))).
+#
+#cnf(i_0_85185, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(apply(s,s),k)),apply(k,apply(apply(apply(s,s),k),apply(k,k))))),s)=apply(k,k))).
+##
+#cnf(i_0_229, plain, (apply(apply(apply(apply(s,X1),apply(apply(s,X2),X3)),X4),apply(apply(apply(s,X5),apply(X2,X4)),apply(X3,X4)))=apply(apply(apply(s,apply(X1,X4)),apply(X5,apply(X3,X4))),apply(apply(apply(s,X2),X3),X4)))).
+######
+#cnf(i_0_101688, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(s,k),X1))=apply(k,apply(apply(s,k),X1)))).
+#
+#cnf(i_0_108048, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,apply(s,k)))),apply(s,k))),k)=apply(apply(s,k),k))).
+##
+#cnf(i_0_108016, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(s,k)),apply(apply(s,apply(s,apply(s,k))),k))=apply(apply(s,k),apply(apply(s,apply(s,apply(s,k))),k)))).
+#
+#cnf(i_0_86282, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,apply(apply(apply(s,s),k),apply(k,k))))),s)=apply(k,k))).
+#
+#cnf(i_0_231, plain, (apply(apply(apply(apply(s,apply(s,X1)),apply(X4,X3)),apply(X2,X3)),apply(X5,apply(apply(X2,X3),apply(apply(apply(s,X4),X2),X3))))=apply(apply(apply(s,apply(X1,apply(apply(apply(s,X4),X2),X3))),X5),apply(apply(X2,X3),apply(apply(apply(s,X4),X2),X3))))).
+#######
+#cnf(i_0_86508, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,apply(s,s)),apply(apply(s,s),s))),k)),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_86662, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,apply(s,k)))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+##
+#cnf(i_0_86757, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_232, plain, (apply(apply(apply(s,apply(s,apply(k,X1))),apply(X4,X3)),apply(X2,X3))=apply(X1,apply(apply(X2,X3),apply(apply(apply(s,X4),X2),X3))))).
+########
+#cnf(i_0_108015, plain, (apply(apply(apply(s,apply(s,apply(s,k))),apply(s,k)),apply(apply(s,apply(s,apply(s,k))),k))=apply(k,apply(apply(s,k),apply(apply(s,apply(s,apply(s,k))),k))))).
+##
+#cnf(i_0_87048, plain, (apply(apply(apply(s,apply(s,apply(s,apply(apply(s,s),X1)))),k),apply(s,apply(k,k)))=apply(s,apply(k,k)))).
+#
+#cnf(i_0_235, plain, (apply(apply(apply(s,apply(s,apply(s,k))),apply(X3,X2)),apply(X1,X2))=apply(apply(X1,X2),apply(apply(apply(s,X3),X1),X2)))).
+#########
+#cnf(i_0_18838, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(apply(s,s),k))),k)=apply(apply(apply(s,apply(s,s)),apply(apply(s,s),k)),apply(apply(s,k),apply(k,k))))).
+##
+#cnf(i_0_236, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(X3,X2)),apply(X1,X2))=apply(apply(apply(X1,X2),apply(apply(apply(s,X3),X1),X2)),apply(X1,X2)))).
+###########
+#cnf(i_0_237, plain, (apply(apply(X1,apply(apply(X2,X3),apply(apply(apply(s,X4),X2),X3))),apply(apply(apply(s,apply(s,X5)),apply(X4,X3)),apply(X2,X3)))=apply(apply(apply(s,apply(s,apply(apply(s,apply(k,apply(s,X1))),X5))),apply(X4,X3)),apply(X2,X3)))).
+#######
+#cnf(i_0_117315, plain, (apply(apply(apply(s,apply(s,apply(s,apply(apply(s,s),k)))),s),apply(s,k))=apply(apply(s,k),apply(s,apply(s,k))))).
+#
+#cnf(i_0_121113, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(s,apply(s,apply(apply(s,s),k)))),s)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+##############
+#cnf(i_0_241, plain, (apply(apply(apply(X1,X2),X4),apply(apply(apply(apply(s,X3),X1),X2),X4))=apply(apply(apply(apply(s,s),apply(X3,X2)),apply(X1,X2)),X4))).
+########
+#cnf(i_0_122124, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,k))),apply(apply(s,s),apply(s,k))),apply(s,k))=apply(s,k))).
+###
+#cnf(i_0_242, plain, (apply(apply(apply(apply(apply(s,s),apply(X3,X2)),apply(X1,X2)),X4),apply(X5,apply(apply(apply(apply(s,X3),X1),X2),X4)))=apply(apply(apply(s,apply(apply(X1,X2),X4)),X5),apply(apply(apply(apply(s,X3),X1),X2),X4)))).
+###########
+#cnf(i_0_243, plain, (apply(apply(X1,apply(apply(apply(apply(s,X2),X3),X4),X5)),apply(apply(apply(apply(s,s),apply(X2,X4)),apply(X3,X4)),X5))=apply(apply(apply(s,X1),apply(apply(X3,X4),X5)),apply(apply(apply(apply(s,X2),X3),X4),X5)))).
+########
+#cnf(i_0_123547, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),apply(s,k)))),apply(apply(s,s),apply(s,k))),apply(s,k))=apply(s,k))).
+###
+#cnf(i_0_248, plain, (apply(apply(apply(apply(s,s),apply(X2,X1)),apply(apply(s,s),X1)),apply(s,k))=apply(apply(apply(s,X1),apply(apply(apply(s,X2),apply(s,s)),X1)),apply(s,k)))).
+######################
+#cnf(i_0_250, plain, (apply(apply(apply(s,apply(apply(apply(s,X1),X2),X3)),apply(X1,X3)),apply(X2,X3))=apply(apply(apply(apply(s,s),k),apply(apply(apply(s,X1),X2),X3)),apply(X2,X3)))).
+###########
+#cnf(i_0_252, plain, (apply(apply(X1,apply(apply(X2,X3),X4)),apply(apply(apply(apply(s,s),X2),X3),X4))=apply(apply(apply(s,X1),apply(X3,X4)),apply(apply(X2,X3),X4)))).
+###########
+#cnf(i_0_254, plain, (apply(apply(X1,apply(X2,apply(X3,X2))),apply(apply(apply(s,apply(s,X4)),X3),X2))=apply(apply(apply(s,X1),apply(X4,apply(X3,X2))),apply(X2,apply(X3,X2))))).
+########
+#cnf(i_0_128775, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(s,apply(s,k)),k))),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_131312, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),k)),k)=apply(k,k))).
+############
+#cnf(i_0_257, plain, (apply(apply(apply(s,X1),apply(apply(apply(s,s),X3),apply(s,k))),apply(X2,apply(s,k)))=apply(apply(apply(s,X1),apply(X3,apply(s,k))),apply(X2,apply(s,k))))).
+####################
+#cnf(i_0_131267, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k))),k)),k),apply(k,k))=k)).
+#
+#cnf(i_0_131198, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(s,apply(s,s)))),k),apply(apply(s,apply(k,k)),k))=apply(s,apply(s,s)))).
+#
+#cnf(i_0_259, plain, (apply(apply(X1,apply(X2,apply(s,X3))),apply(apply(apply(apply(s,s),k),apply(s,X3)),X2))=apply(apply(apply(s,X1),apply(X3,apply(s,X3))),apply(X2,apply(s,X3))))).
+#######
+#cnf(i_0_136568, plain, (apply(apply(apply(s,apply(s,apply(s,apply(s,k)))),apply(apply(s,s),k)),apply(s,k))=apply(s,k))).
+####
+#cnf(i_0_260, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(apply(s,k),X3)),X2)),apply(k,X2))=apply(apply(X1,apply(k,X2)),X2))).
+##################
+#cnf(i_0_128695, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),s)),k)),apply(s,s)),apply(s,k)),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_134864, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,s),apply(apply(s,apply(s,k)),k))),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_134918, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,s)),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),k))),k)=k)).
+########
+#cnf(i_0_128770, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,s))),apply(apply(s,s),apply(apply(s,apply(k,k)),k))),apply(s,k))=apply(k,apply(s,k)))).
+##
+#cnf(i_0_134977, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(s,s)),apply(apply(s,s),k))),apply(apply(s,apply(s,s)),k)),k)=apply(k,apply(k,k)))).
+##
+#cnf(i_0_268, plain, (apply(apply(X1,X4),apply(apply(apply(s,X5),apply(apply(apply(s,s),X2),apply(apply(s,k),X3))),apply(k,X4)))=apply(apply(apply(s,X1),apply(X5,apply(k,X4))),X4))).
+##################
+#cnf(i_0_128847, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k))),apply(s,s)),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_133055, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,s),k)),apply(s,k))),apply(s,k)),apply(apply(s,s),k))=apply(apply(s,k),apply(apply(s,s),k)))).
+##
+#cnf(i_0_137540, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(s,apply(s,apply(s,k)))),apply(apply(s,s),k))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#########
+#cnf(i_0_130783, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,k))),apply(s,apply(s,k))),apply(apply(s,k),apply(s,k)))=apply(apply(s,k),apply(s,k)))).
+###########
+#cnf(i_0_130759, plain, (apply(apply(apply(s,apply(apply(s,s),k)),k),apply(s,apply(s,apply(s,k))))=apply(apply(apply(s,s),s),apply(s,apply(s,k))))).
+##########
+#cnf(i_0_117307, plain, (apply(apply(apply(s,apply(apply(s,s),apply(apply(s,s),k))),apply(s,k)),apply(apply(s,s),k))=apply(apply(s,k),apply(apply(s,s),k)))).
+#
+#cnf(i_0_121176, plain, (apply(apply(apply(s,s),apply(apply(s,apply(s,apply(s,apply(apply(s,s),k)))),s)),apply(s,k))=apply(apply(s,apply(s,k)),apply(apply(s,k),apply(s,apply(s,k)))))).
+###
+#cnf(i_0_274, plain, (apply(apply(X1,apply(apply(apply(s,apply(X2,X4)),X5),apply(X3,X4))),apply(apply(apply(s,X6),apply(apply(apply(s,X2),X3),X4)),apply(X5,apply(X3,X4))))=apply(apply(apply(s,X1),apply(X6,apply(X5,apply(X3,X4)))),apply(apply(apply(s,apply(X2,X4)),X5),apply(X3,X4))))).
+##########
+#cnf(i_0_128686, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),apply(apply(s,s),s))),k)),apply(s,s)),apply(s,k)),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_8483, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(k,apply(k,X1))),X2)=X1)).
+#####
+#cnf(i_0_8549, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),X1))),apply(apply(s,apply(k,k)),k)),X2)=X2)).
+#
+#cnf(i_0_128690, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(apply(apply(s,apply(s,s)),s),apply(s,s))),k)),apply(s,s)),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_128821, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),k),apply(s,k))),apply(s,s)),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_128836, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(apply(s,s),k))),apply(s,s)),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_134790, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(s,apply(s,k)),k)))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_277, plain, (apply(apply(X1,X3),apply(apply(apply(s,X4),apply(apply(s,apply(s,apply(apply(s,k),X2))),k)),X3))=apply(apply(apply(s,X1),apply(X4,X3)),X3))).
+#########
+#cnf(i_0_137533, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,apply(s,k)))),apply(apply(s,s),k))),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_137545, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(s,apply(s,apply(s,k)))),apply(apply(s,s),k))),apply(s,s)),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_278, plain, (apply(apply(X1,apply(apply(X2,X4),X3)),apply(apply(apply(s,X5),apply(apply(s,X2),apply(k,X3))),X4))=apply(apply(apply(s,X1),apply(X5,X4)),apply(apply(X2,X4),X3)))).
+#######
+#cnf(i_0_138259, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,s),apply(apply(s,apply(s,k)),k))),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_116745, plain, (apply(apply(apply(s,apply(s,apply(s,apply(apply(s,s),k)))),X1),apply(k,apply(k,k)))=apply(k,apply(k,k)))).
+##
+#cnf(i_0_149993, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,apply(s,apply(apply(s,s),k))))),k)),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_279, plain, (apply(apply(X1,apply(apply(X2,apply(s,k)),X3)),apply(apply(apply(s,X4),apply(apply(apply(s,s),X2),apply(s,k))),X3))=apply(apply(apply(s,X1),apply(X4,X3)),apply(apply(X2,apply(s,k)),X3)))).
+#######
+#cnf(i_0_150037, plain, (apply(apply(apply(apply(s,s),apply(apply(s,k),s)),apply(s,apply(s,apply(apply(s,s),k)))),apply(k,apply(k,k)))=apply(k,apply(k,k)))).
+#
+#cnf(i_0_150084, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,apply(s,apply(apply(s,s),k))))),k))),k),apply(k,k))=k)).
+#
+#cnf(i_0_149923, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(s,apply(s,apply(apply(s,s),k)))))),apply(k,apply(k,apply(k,k))))=apply(k,apply(k,k)))).
+#
+#cnf(i_0_150165, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(s,apply(s,apply(apply(s,s),k))))),k)),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_280, plain, (apply(apply(X1,apply(X2,apply(s,apply(s,k)))),apply(apply(apply(s,X3),apply(apply(apply(s,s),k),apply(s,apply(s,k)))),X2))=apply(apply(apply(s,X1),apply(X3,X2)),apply(X2,apply(s,apply(s,k)))))).
+###########
+#cnf(i_0_281, plain, (apply(apply(X1,apply(apply(X2,X4),apply(X3,X4))),apply(apply(apply(s,X5),apply(apply(s,X2),X3)),X4))=apply(apply(apply(s,X1),apply(X5,X4)),apply(apply(X2,X4),apply(X3,X4))))).
+###########
+#cnf(i_0_282, plain, (apply(apply(X1,apply(X2,apply(X3,X4))),apply(apply(apply(s,X5),apply(apply(s,apply(k,X2)),X3)),X4))=apply(apply(apply(s,X1),apply(X5,X4)),apply(X2,apply(X3,X4))))).
+###########
+#cnf(i_0_283, plain, (apply(apply(X1,X3),apply(apply(apply(s,X4),apply(apply(s,k),X2)),X3))=apply(apply(apply(s,X1),apply(X4,X3)),X3))).
+##########
+#cnf(i_0_22597, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,apply(s,k)),apply(apply(apply(apply(s,s),s),apply(s,s)),k)))),k)=k)).
+########
+#cnf(i_0_22636, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(apply(apply(s,s),apply(apply(s,s),s)),apply(s,s))),apply(k,k))),k)=k)).
+##
+#cnf(i_0_29717, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(s,apply(apply(s,apply(s,s)),apply(s,s))),k))=apply(apply(s,apply(apply(s,apply(s,s)),apply(s,s))),k))).
+#
+#cnf(i_0_29834, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,apply(apply(s,s),k))),apply(s,k)),apply(apply(s,apply(s,s)),k))=apply(apply(s,apply(s,s)),k))).
+#
+#cnf(i_0_286, plain, (apply(apply(X1,apply(apply(X2,X3),X2)),apply(apply(apply(s,X4),apply(apply(apply(s,s),k),X2)),X3))=apply(apply(apply(s,X1),apply(X4,X3)),apply(apply(X2,X3),X2)))).
+#
+#cnf(i_0_10549, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(s,s)),s)),X1),apply(k,apply(s,k))),X2)=X2)).
+#####
+#cnf(i_0_161598, plain, (apply(apply(apply(apply(s,apply(s,apply(apply(s,apply(s,s)),s))),k),apply(s,k)),X1)=X1)).
+#
+#cnf(i_0_159895, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),apply(X1,k)),apply(apply(s,k),s))=apply(apply(s,k),s))).
+#
+#cnf(i_0_162077, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),k),apply(apply(s,k),s))=apply(apply(s,k),s))).
+###
+#cnf(i_0_287, plain, (apply(apply(X1,apply(apply(apply(apply(s,s),k),X2),X3)),apply(apply(apply(s,X4),apply(X2,X3)),X2))=apply(apply(apply(s,X1),apply(X4,X2)),apply(apply(apply(apply(s,s),k),X2),X3)))).
+###########
+#cnf(i_0_290, plain, (apply(apply(X2,X3),apply(apply(apply(s,X4),X2),X3))=apply(apply(apply(s,apply(apply(s,apply(s,apply(apply(s,k),X1))),k)),apply(X4,X3)),apply(X2,X3)))).
+###########
+#cnf(i_0_291, plain, (apply(apply(apply(X1,apply(X3,X4)),X2),apply(apply(apply(s,X5),X3),X4))=apply(apply(apply(s,apply(apply(s,X1),apply(k,X2))),apply(X5,X4)),apply(X3,X4)))).
+###########
+#cnf(i_0_292, plain, (apply(apply(apply(s,apply(apply(apply(s,s),X1),apply(s,k))),apply(X4,X3)),apply(X2,X3))=apply(apply(apply(s,apply(X1,apply(s,k))),apply(X4,X3)),apply(X2,X3)))).
+###########
+#cnf(i_0_293, plain, (apply(apply(apply(X1,X2),apply(s,apply(s,k))),apply(apply(apply(s,X3),X1),X2))=apply(apply(apply(s,apply(apply(apply(s,s),k),apply(s,apply(s,k)))),apply(X3,X2)),apply(X1,X2)))).
+###########
+#cnf(i_0_294, plain, (apply(apply(X1,apply(X2,apply(X3,X4))),apply(apply(apply(s,X5),X3),X4))=apply(apply(apply(s,apply(apply(s,apply(k,X1)),X2)),apply(X5,X4)),apply(X3,X4)))).
+############################
+#cnf(i_0_162088, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),X1),apply(apply(s,k),s))=apply(apply(s,k),s))).
+#
+#cnf(i_0_177283, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),k)),apply(apply(s,k),s))=apply(apply(s,k),s))).
+###
+#cnf(i_0_177174, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(s,apply(s,s)),k)))),apply(k,apply(apply(s,k),s)))=apply(apply(s,k),s))).
+#
+#cnf(i_0_298, plain, (apply(apply(apply(X1,apply(X2,X3)),X1),apply(apply(apply(s,X4),X2),X3))=apply(apply(apply(s,apply(apply(apply(s,s),k),X1)),apply(X4,X3)),apply(X2,X3)))).
+######
+#cnf(i_0_11885, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),apply(apply(s,apply(k,k)),k))),X1),X2)=X2)).
+#
+#cnf(i_0_177281, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,s)),apply(s,apply(s,s)))),k),apply(apply(s,k),s))=apply(apply(s,k),s))).
+#
+#cnf(i_0_177436, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,apply(s,s)),k)),apply(apply(s,k),s))=apply(apply(s,k),s))).
+#
+#cnf(i_0_181047, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(apply(s,apply(s,apply(s,s))),k)),apply(apply(s,apply(k,k)),k))=apply(k,apply(apply(s,apply(k,k)),k)))).
+##
+#cnf(i_0_299, plain, (apply(apply(apply(apply(apply(s,s),k),apply(X1,X2)),X3),apply(apply(apply(s,X4),X1),X2))=apply(apply(apply(s,apply(apply(X1,X2),X3)),apply(X4,X2)),apply(X1,X2)))).
+###########
+#cnf(i_0_300, plain, (apply(apply(apply(s,apply(apply(apply(s,s),X1),apply(apply(s,k),X2))),apply(X4,X3)),apply(k,X3))=apply(X3,apply(apply(apply(s,X4),k),X3)))).
+#######
+#cnf(i_0_185584, plain, (apply(apply(s,k),apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),s)),apply(s,k))),k),apply(s,k)))=apply(apply(s,k),apply(k,apply(s,k))))).
+#
+#cnf(i_0_186049, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),s)),apply(s,k))),k),apply(s,k))=apply(k,apply(s,k)))).
+#########
+#cnf(i_0_15061, plain, (apply(apply(apply(s,apply(apply(s,s),k)),X2),apply(s,apply(s,apply(k,apply(k,X1)))))=X1)).
+#
+#cnf(i_0_186388, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),s)),apply(s,k))),k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_186516, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,apply(apply(s,apply(s,s)),s)),apply(s,k)))),s)),k)=apply(s,k))).
+####
+#cnf(i_0_186779, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),s),apply(s,apply(k,apply(k,X1))))=X1)).
+################
+#cnf(i_0_22096, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),s)),X1),apply(s,apply(k,apply(k,X2))))=X2)).
+########
+#cnf(i_0_629, plain, (apply(apply(apply(apply(apply(s,s),k),apply(k,X1)),X2),X1)=apply(apply(apply(apply(s,s),k),X1),apply(k,X1)))).
+########
+#cnf(i_0_306, plain, (apply(apply(apply(s,apply(apply(s,apply(X1,X3)),X4)),apply(apply(s,X5),X4)),apply(X2,X3))=apply(apply(apply(s,apply(apply(apply(s,X1),X2),X3)),apply(X5,apply(X2,X3))),apply(X4,apply(X2,X3))))).
+############
+#cnf(i_0_28831, plain, (apply(apply(apply(apply(s,apply(s,apply(apply(s,s),X1))),s),apply(k,apply(s,k))),X2)=X2)).
+#####
+#cnf(i_0_29656, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,s),X1)),s),apply(k,apply(k,X2)))=X2)).
+#
+#cnf(i_0_177279, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,s)),k)),apply(apply(s,k),s))=apply(apply(s,k),s))).
+#
+#cnf(i_0_30059, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,apply(apply(s,s),k))),apply(s,k)))),apply(k,k))=k)).
+#
+#cnf(i_0_32010, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(apply(s,s),k)),k)),k)),k),apply(k,apply(apply(s,apply(s,k)),k)))=apply(apply(s,apply(s,k)),k))).
+#
+#cnf(i_0_37315, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,apply(apply(apply(s,s),k),apply(apply(s,s),k)))),apply(apply(s,s),k))),apply(k,k))=k)).
+#
+#cnf(i_0_309, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,k)),X1)),X2),apply(k,X3))=apply(X3,apply(X2,apply(k,X3))))).
+######
+#cnf(i_0_29964, plain, (apply(apply(apply(apply(s,apply(s,apply(s,s))),X1),apply(s,s)),apply(k,apply(k,X2)))=X2)).
+#
+#cnf(i_0_37324, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(apply(s,apply(apply(s,s),k)),apply(k,apply(apply(apply(s,s),k),apply(k,k)))))=k)).
+#
+#cnf(i_0_37405, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,s),k)),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=k)).
+#
+#cnf(i_0_37741, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))),apply(k,k))=k)).
+#
+#cnf(i_0_41708, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,k)),apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),k)))),k)=k)).
+#
+#cnf(i_0_310, plain, (apply(apply(apply(s,X1),apply(apply(apply(s,apply(s,s)),apply(s,k)),X2)),apply(k,X3))=apply(apply(X1,apply(k,X3)),X3))).
+########
+#cnf(i_0_47131, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(apply(apply(apply(s,s),s),apply(s,s)),k))),k)=k)).
+#
+#cnf(i_0_49513, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(apply(apply(s,s),apply(s,apply(apply(apply(s,s),k),apply(k,k)))),apply(s,k)))=k)).
+#
+#cnf(i_0_51497, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(apply(apply(s,s),apply(apply(s,k),s)),apply(apply(apply(s,s),k),apply(k,k))))=k)).
+#
+#cnf(i_0_311, plain, (apply(apply(apply(apply(s,X1),apply(apply(apply(s,apply(s,s)),apply(s,k)),X2)),apply(k,X3)),apply(X4,X3))=apply(apply(apply(s,apply(X1,apply(k,X3))),X4),X3))).
+#########
+#cnf(i_0_54230, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(s,k))),apply(s,k))=apply(apply(apply(s,apply(s,apply(s,s))),apply(s,apply(s,s))),apply(s,k)))).
+##
+#cnf(i_0_312, plain, (apply(apply(X1,X3),apply(apply(apply(s,X4),apply(apply(apply(s,apply(s,s)),apply(s,k)),X2)),apply(k,X3)))=apply(apply(apply(s,X1),apply(X4,apply(k,X3))),X3))).
+########
+#cnf(i_0_58971, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,apply(apply(apply(s,s),k),apply(k,k)))),apply(s,k))),apply(k,apply(k,k)))=k)).
+#
+#cnf(i_0_59165, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(apply(s,k),s)),apply(apply(apply(s,s),k),apply(k,k)))),apply(k,apply(k,k)))=k)).
+#
+#cnf(i_0_59298, plain, (apply(apply(apply(s,apply(s,apply(apply(apply(s,s),k),apply(s,apply(s,apply(apply(apply(s,s),k),apply(k,k))))))),k),apply(k,apply(k,k)))=k)).
+#
+#cnf(i_0_314, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,s)),apply(s,k)),X1)),apply(k,X2))=apply(X2,apply(apply(apply(s,apply(s,s)),apply(s,k)),X1)))).
+#######
+#cnf(i_0_61201, plain, (apply(apply(apply(s,apply(apply(s,s),k)),k),apply(apply(s,s),apply(s,apply(s,k))))=apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,apply(s,k))))).
+#
+#cnf(i_0_61327, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,apply(k,s)),apply(apply(s,s),k)))),k)),apply(k,k))=k)).
+#
+#cnf(i_0_61377, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(apply(s,s),k),apply(apply(s,apply(k,s)),apply(apply(s,s),k))))),k)),k)=k)).
+#
+#cnf(i_0_63971, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,apply(s,s)),s)),apply(s,k))),apply(s,k))=apply(apply(s,apply(apply(s,apply(s,s)),s)),apply(s,k)))).
+#
+#cnf(i_0_315, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,k)),X1)),apply(X3,X2)),apply(k,X2))=apply(X2,apply(apply(apply(s,X3),k),X2)))).
+###########
+#cnf(i_0_317, plain, (apply(apply(apply(s,apply(X1,X2)),apply(apply(apply(s,apply(s,s)),apply(s,k)),X3)),apply(k,X2))=apply(apply(apply(apply(s,X1),k),X2),X2))).
+###########
+#cnf(i_0_324, plain, (apply(apply(X1,X2),apply(apply(apply(s,X3),X1),X2))=apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),apply(X3,X2)),apply(X1,X2)))).
+###########
+#cnf(i_0_326, plain, (apply(apply(apply(apply(s,X1),X2),X3),apply(X2,X3))=apply(apply(apply(s,apply(X1,X3)),apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),apply(X2,X3)))).
+###########
+#cnf(i_0_327, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),X1),X2)=apply(X2,apply(X1,X2)))).
+###########
+#cnf(i_0_328, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),X2)=apply(apply(X1,X2),X2))).
+######
+#cnf(i_0_61160, plain, (apply(apply(apply(s,apply(apply(s,s),apply(s,apply(s,k)))),X1),apply(k,X1))=apply(X1,X1))).
+####
+#cnf(i_0_210927, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),k)=apply(k,apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)))).
+#
+#cnf(i_0_329, plain, (apply(apply(apply(apply(s,X1),apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),X2),apply(X3,X2))=apply(apply(apply(s,apply(X1,X2)),X3),X2))).
+#########
+#cnf(i_0_63975, plain, (apply(apply(apply(s,apply(s,apply(s,apply(s,k)))),apply(s,k)),apply(apply(s,k),apply(s,apply(s,k))))=apply(apply(s,k),apply(apply(s,k),apply(s,apply(s,k)))))).
+##
+#cnf(i_0_330, plain, (apply(apply(X1,X2),apply(apply(apply(s,X3),apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),X2))=apply(apply(apply(s,X1),apply(X3,X2)),X2))).
+#######
+#cnf(i_0_64111, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),apply(s,k)))),s)),apply(s,k))=apply(apply(s,apply(s,apply(apply(s,s),apply(s,k)))),s))).
+#
+#cnf(i_0_65014, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(s,apply(s,k))),k)),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k)=k)).
+#
+#cnf(i_0_65308, plain, (apply(apply(apply(apply(s,apply(s,apply(s,k))),apply(s,s)),apply(apply(s,s),apply(apply(s,s),k))),k)=apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))))).
+##
+#cnf(i_0_332, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),X1)=apply(X1,apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)))).
+#######
+#cnf(i_0_71226, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(s,apply(s,k))),apply(s,k))=apply(apply(s,k),apply(apply(s,k),apply(s,apply(s,k)))))).
+#
+#cnf(i_0_217351, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),apply(apply(s,s),k)),apply(s,apply(s,k)))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_72737, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(k,k)))=k)).
+#########
+#cnf(i_0_77386, plain, (apply(apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(k,k)))=k)).
+#
+#cnf(i_0_77472, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(k,apply(apply(apply(s,s),k),apply(k,k)))))),k)=k)).
+##########
+#cnf(i_0_78519, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,apply(apply(s,s),k))),apply(s,k))),apply(apply(apply(s,s),k),apply(k,k)))=k)).
+####
+#cnf(i_0_128734, plain, (apply(apply(apply(apply(s,s),X2),apply(apply(s,s),apply(k,apply(k,X2)))),apply(s,k))=X2)).
+######
+#cnf(i_0_80624, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(apply(s,s),k)))),apply(apply(apply(s,s),k),apply(k,k)))=k)).
+###########
+#cnf(i_0_84664, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,apply(apply(apply(s,s),k),apply(k,k)))))),s)=k)).
+####
+#cnf(i_0_339, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(s,apply(apply(s,apply(s,s)),apply(s,k))))),k)=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,s),k)),apply(s,apply(apply(s,apply(s,s)),apply(s,k)))))).
+#######
+#cnf(i_0_87508, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(apply(apply(s,s),k),apply(k,k)))),apply(k,k))=k)).
+#
+#cnf(i_0_91088, plain, (apply(apply(apply(s,apply(apply(s,s),k)),k),apply(apply(s,apply(s,s)),apply(apply(s,apply(k,s)),k)))=apply(apply(s,apply(s,s)),apply(apply(s,apply(k,s)),k)))).
+#
+#cnf(i_0_117263, plain, (apply(apply(apply(s,apply(apply(s,s),apply(apply(s,s),k))),k),apply(apply(s,s),k))=apply(apply(apply(s,s),k),apply(k,apply(apply(s,s),k))))).
+##
+#cnf(i_0_340, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),s)),X1)),X2),apply(s,k))=apply(apply(apply(s,X1),X2),apply(s,k)))).
+###########
+#cnf(i_0_341, plain, (apply(apply(apply(s,X1),apply(apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),s)),X2)),apply(s,k))=apply(apply(apply(s,X1),apply(apply(s,s),X2)),apply(s,k)))).
+####
+#cnf(i_0_5926, plain, (apply(apply(apply(s,apply(apply(apply(s,s),X1),apply(k,k))),X2),X3)=apply(apply(X1,apply(k,k)),X3))).
+#####
+#cnf(i_0_117314, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(apply(apply(s,apply(s,s)),s),apply(s,k))),apply(apply(s,k),apply(s,k)))=apply(apply(s,k),apply(s,k)))).
+#
+#cnf(i_0_121105, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,apply(apply(s,s),k)))),s)),apply(s,k))=apply(apply(s,apply(s,apply(s,apply(apply(s,s),k)))),s))).
+########
+#cnf(i_0_122066, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,k))),apply(apply(s,s),apply(s,k))),apply(apply(s,apply(s,k)),k))=apply(apply(s,apply(s,k)),k))).
+#
+#cnf(i_0_129413, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,s)),k),apply(s,k))),apply(k,apply(s,k)))=apply(apply(apply(s,apply(s,s)),k),apply(s,k)))).
+#
+#cnf(i_0_133051, plain, (apply(apply(apply(s,apply(apply(apply(s,s),apply(apply(s,k),s)),apply(apply(apply(s,s),k),apply(k,k)))),apply(s,k)),apply(apply(s,s),k))=k)).
+#######
+#cnf(i_0_6828, plain, (apply(apply(apply(s,apply(apply(apply(s,s),X1),apply(k,apply(s,k)))),X2),X3)=apply(X2,X3))).
+##
+#cnf(i_0_134971, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,apply(s,s)),apply(apply(s,s),k))),apply(k,k))),apply(apply(s,apply(s,s)),k))=k)).
+####
+#cnf(i_0_344, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),s)),X1)),apply(s,k))=apply(apply(X1,apply(s,k)),apply(apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),s)),X1)))).
+########
+#cnf(i_0_138368, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,apply(s,s)),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),k))),k)=k)).
+##
+#cnf(i_0_150085, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,apply(s,apply(apply(s,s),k))))),k))),apply(k,k))=k)).
+######
+#cnf(i_0_7191, plain, (apply(apply(apply(s,apply(s,apply(k,apply(X1,apply(X3,X2))))),X3),X2)=apply(apply(apply(s,X1),X2),apply(X3,X2)))).
+##
+#cnf(i_0_225534, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(s,k)))),k),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_225332, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),s)),apply(s,k))),k)),k),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_225541, plain, (apply(apply(apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),apply(apply(s,apply(s,s)),s))),k),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_225341, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),s)),k)),k),apply(s,k))=apply(apply(s,k),apply(k,apply(s,k))))).
+#########
+#cnf(i_0_225449, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,s),k)),apply(s,k))),k),apply(apply(s,apply(s,s)),k))=apply(k,apply(apply(s,apply(s,s)),k)))).
+##
+#cnf(i_0_226474, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),s)),k)),k)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_351, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,apply(apply(s,s),k))),s)),apply(s,k))=apply(apply(apply(s,s),apply(X1,apply(apply(s,apply(s,apply(apply(s,s),k))),s))),apply(s,k)))).
+##########
+#cnf(i_0_225432, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,s),apply(apply(s,s),k))),apply(s,k))),k),apply(apply(s,s),k))=apply(k,apply(apply(s,s),k)))).
+######
+#cnf(i_0_7466, plain, (apply(X1,apply(apply(apply(apply(s,s),k),apply(k,X2)),X3))=apply(apply(apply(s,apply(s,apply(k,X1))),k),X2))).
+###
+#cnf(i_0_225442, plain, (apply(apply(apply(s,apply(apply(apply(s,s),apply(apply(s,k),s)),apply(apply(apply(s,s),k),apply(k,k)))),k),apply(apply(s,s),k))=k)).
+##
+#cnf(i_0_225559, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k))),k),apply(s,k))=apply(apply(s,k),apply(k,apply(s,k))))).
+#
+#cnf(i_0_353, plain, (apply(apply(apply(s,apply(apply(s,X1),apply(apply(s,apply(s,apply(apply(s,s),k))),s))),X2),apply(s,k))=apply(apply(apply(s,apply(apply(s,X1),s)),X2),apply(s,k)))).
+########
+#cnf(i_0_225500, plain, (apply(apply(apply(s,apply(apply(apply(s,s),apply(s,apply(s,s))),apply(apply(s,s),apply(apply(s,apply(k,k)),k)))),k),apply(s,k))=apply(s,k))).
+###
+#cnf(i_0_354, plain, (apply(apply(apply(s,X1),apply(apply(s,X2),apply(apply(s,apply(s,apply(apply(s,s),k))),s))),apply(s,k))=apply(apply(apply(s,X1),apply(apply(s,X2),s)),apply(s,k)))).
+#######
+#cnf(i_0_228945, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(s,k))),k)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_161537, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,apply(s,s)),s))),k)),apply(s,k))=apply(apply(s,apply(s,apply(apply(s,apply(s,s)),s))),k))).
+######
+#cnf(i_0_7621, plain, (apply(apply(apply(s,apply(apply(s,apply(s,apply(k,apply(s,k)))),X1)),X2),X3)=apply(X2,X3))).
+###
+#cnf(i_0_181178, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),apply(apply(s,apply(k,k)),k))),apply(apply(s,apply(k,k)),k))=apply(apply(s,apply(k,k)),k))).
+#
+#cnf(i_0_231018, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(apply(s,apply(k,k)),k)),apply(s,k))=apply(k,apply(s,k)))).
+#
+#cnf(i_0_231293, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(apply(s,apply(k,k)),k))),k),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_231202, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(apply(s,apply(k,k)),k))),apply(s,k))=apply(s,k))).
+############
+#cnf(i_0_357, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,X1),apply(apply(s,apply(s,apply(apply(s,s),k))),s))),apply(s,k))=apply(apply(apply(apply(s,X1),s),apply(s,k)),apply(apply(s,X1),apply(apply(s,apply(s,apply(apply(s,s),k))),s))))).
+#####
+#cnf(i_0_21459, plain, (apply(apply(apply(apply(s,apply(s,apply(k,k))),X1),X2),X3)=apply(apply(apply(s,apply(s,apply(s,k))),X1),X2))).
+########################
+#cnf(i_0_225331, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(s,s)),apply(apply(s,s),s))),k)),k),apply(s,k))=apply(apply(s,k),apply(k,apply(s,k))))).
+##
+#cnf(i_0_225336, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(apply(s,apply(s,s)),s),apply(s,s))),k)),k),apply(s,k))=apply(apply(s,k),apply(k,apply(s,k))))).
+#########
+#cnf(i_0_225434, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(apply(s,s),k)),apply(s,k))),apply(s,k))),k),apply(apply(s,s),k))=apply(k,apply(apply(s,s),k)))).
+#
+#cnf(i_0_225441, plain, (apply(apply(apply(s,apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,s)),apply(apply(s,s),k))),apply(k,k))),k),apply(apply(s,s),k))=k)).
+#
+#cnf(i_0_225495, plain, (apply(apply(apply(s,apply(apply(s,apply(s,apply(s,apply(s,k)))),apply(apply(s,s),k))),k),apply(s,k))=apply(apply(s,k),apply(k,apply(s,k))))).
+#######
+#cnf(i_0_26500, plain, (apply(apply(apply(s,apply(apply(s,s),apply(apply(s,k),X1))),X2),apply(k,X2))=apply(X2,X2))).
+##
+#cnf(i_0_225529, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),k),apply(s,k))),k),apply(s,k))=apply(apply(s,k),apply(k,apply(s,k))))).
+##
+#cnf(i_0_225547, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,s)),apply(apply(s,s),k))),k),apply(s,k))=apply(apply(s,k),apply(k,apply(s,k))))).
+#########
+#cnf(i_0_225656, plain, (apply(apply(apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),s)),k),apply(apply(s,apply(s,k)),k))=apply(apply(apply(s,s),k),apply(apply(s,apply(s,k)),k)))).
+#
+#cnf(i_0_226383, plain, (apply(apply(apply(s,apply(s,apply(apply(apply(s,apply(s,s)),s),apply(s,k)))),k),apply(s,k))=apply(apply(s,k),apply(apply(s,k),apply(k,apply(s,k)))))).
+##
+#cnf(i_0_234791, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(s,apply(apply(apply(s,apply(s,s)),s),apply(s,k)))),k)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_371, plain, (apply(apply(apply(apply(s,X1),apply(X2,X3)),apply(apply(X4,X2),X3)),apply(X5,apply(apply(apply(apply(s,s),X4),X2),X3)))=apply(apply(apply(s,apply(X1,apply(apply(X4,X2),X3))),X5),apply(apply(apply(apply(s,s),X4),X2),X3)))).
+########
+#cnf(i_0_226777, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(apply(s,s),k)),apply(s,k))),k)),k),apply(apply(s,apply(s,s)),k))=apply(apply(s,apply(s,s)),k))).
+###
+#cnf(i_0_372, plain, (apply(apply(X1,apply(apply(apply(apply(s,s),X4),X2),X3)),apply(apply(apply(s,X5),apply(X2,X3)),apply(apply(X4,X2),X3)))=apply(apply(apply(s,X1),apply(X5,apply(apply(X4,X2),X3))),apply(apply(apply(apply(s,s),X4),X2),X3)))).
+#####################
+#cnf(i_0_37195, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),X1),apply(apply(s,s),k))),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_375, plain, (apply(apply(apply(apply(X3,X1),X2),X4),apply(apply(apply(apply(apply(s,s),X3),X1),X2),X4))=apply(apply(apply(apply(s,s),apply(X1,X2)),apply(apply(X3,X1),X2)),X4))).
+#######
+#cnf(i_0_243387, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),k)),k)=apply(k,apply(k,k)))).
+#
+#cnf(i_0_242533, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),k)),apply(apply(s,s),k))),apply(k,k))=apply(k,k))).
+###
+#cnf(i_0_376, plain, (apply(apply(apply(apply(s,s),k),apply(X1,X2)),apply(apply(X3,X1),X2))=apply(apply(apply(apply(apply(s,s),X3),X1),X2),apply(X1,X2)))).
+###########
+#cnf(i_0_377, plain, (apply(apply(apply(apply(apply(s,s),X3),X1),X2),apply(apply(apply(s,X4),apply(X3,X1)),X2))=apply(apply(apply(s,apply(X1,X2)),apply(X4,X2)),apply(apply(X3,X1),X2)))).
+###########
+#cnf(i_0_378, plain, (apply(apply(apply(apply(s,X1),apply(X2,X3)),X4),apply(apply(apply(apply(s,s),X2),X3),X4))=apply(apply(apply(s,apply(X1,X4)),apply(X3,X4)),apply(apply(X2,X3),X4)))).
+#######
+#cnf(i_0_247306, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),apply(k,k))=k)).
+###
+#cnf(i_0_245949, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,apply(s,s)),k)),k)=apply(k,apply(k,k)))).
+#
+#cnf(i_0_380, plain, (apply(apply(apply(apply(s,s),X2),apply(s,apply(s,apply(apply(s,k),X1)))),k)=apply(apply(X2,apply(s,apply(s,apply(apply(s,k),X1)))),k))).
+#######
+#cnf(i_0_242543, plain, (apply(apply(apply(apply(apply(s,s),apply(s,s)),apply(k,apply(apply(s,s),k))),apply(apply(s,s),k)),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_245860, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),k))),k)=apply(k,k))).
+###
+#cnf(i_0_381, plain, (apply(apply(apply(apply(s,s),X1),apply(s,apply(apply(s,apply(s,s)),apply(s,k)))),k)=apply(apply(X1,apply(s,apply(apply(s,apply(s,s)),apply(s,k)))),k))).
+###########
+#cnf(i_0_382, plain, (apply(apply(X1,apply(apply(X3,apply(s,X1)),apply(k,X2))),X2)=apply(apply(apply(apply(s,s),X3),apply(s,X1)),apply(k,X2)))).
+########
+#cnf(i_0_243389, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(apply(s,s),apply(apply(s,s),s)),apply(s,s)),k)),k)=k)).
+##
+#cnf(i_0_246027, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),k)),apply(apply(s,s),k)))),k),apply(k,k))=k)).
+###########
+#cnf(i_0_247556, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),apply(k,apply(k,k)))=k)).
+##########
+#cnf(i_0_242788, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_246138, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,apply(apply(s,s),k))),apply(apply(s,s),k)),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_386, plain, (apply(apply(apply(s,apply(X1,apply(apply(X3,apply(s,X1)),X2))),X4),apply(X2,apply(apply(X3,apply(s,X1)),X2)))=apply(apply(apply(apply(apply(s,s),X3),apply(s,X1)),X2),apply(X4,apply(X2,apply(apply(X3,apply(s,X1)),X2)))))).
+#######
+#cnf(i_0_260767, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(s,apply(apply(s,s),k))),apply(apply(s,s),k))),k),apply(k,k))=k)).
+####
+#cnf(i_0_387, plain, (apply(apply(apply(apply(s,s),X3),apply(s,apply(k,X1))),X2)=apply(X1,apply(X2,apply(apply(X3,apply(s,apply(k,X1))),X2))))).
+########
+#cnf(i_0_246028, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),k)),apply(apply(s,s),k)))),apply(k,k))=k)).
+#
+#cnf(i_0_246369, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(s,k)))=apply(apply(s,k),apply(apply(apply(s,s),k),apply(s,k))))).
+#
+#cnf(i_0_247294, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(apply(s,s),k))),k)),k),apply(k,apply(k,k)))=k)).
+#
+#cnf(i_0_389, plain, (apply(apply(apply(apply(s,s),X2),apply(s,apply(s,k))),X1)=apply(X1,apply(apply(X2,apply(s,apply(s,k))),X1)))).
+#######
+#cnf(i_0_266424, plain, (apply(apply(apply(apply(apply(s,s),apply(s,s)),apply(s,apply(s,k))),apply(apply(s,s),k)),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_267484, plain, (apply(apply(apply(s,apply(apply(apply(apply(s,s),apply(s,s)),apply(s,apply(s,k))),apply(apply(s,s),k))),k),apply(k,k))=k)).
+##
+#cnf(i_0_267236, plain, (apply(apply(apply(apply(s,s),apply(s,apply(apply(s,apply(s,s)),k))),apply(s,apply(s,k))),apply(apply(s,k),s))=apply(apply(s,k),s))).
+#
+#cnf(i_0_81743, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,apply(s,k))),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+########
+#cnf(i_0_257540, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),apply(k,k))=k)).
+###
+#cnf(i_0_390, plain, (apply(apply(apply(apply(s,s),X2),apply(apply(s,s),k)),X1)=apply(apply(X1,apply(apply(X2,apply(apply(s,s),k)),X1)),X1))).
+########
+#cnf(i_0_269291, plain, (apply(apply(apply(apply(s,s),apply(s,apply(apply(s,apply(s,s)),k))),apply(apply(s,s),k)),apply(apply(s,k),s))=apply(apply(s,k),s))).
+#
+#cnf(i_0_269286, plain, (apply(apply(apply(apply(s,s),apply(s,apply(apply(s,s),k))),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+##
+#cnf(i_0_391, plain, (apply(apply(X1,apply(X2,apply(apply(X3,apply(s,X4)),X2))),apply(apply(apply(apply(s,s),X3),apply(s,X4)),X2))=apply(apply(apply(s,apply(apply(s,apply(k,apply(s,X1))),X4)),X2),apply(apply(X3,apply(s,X4)),X2)))).
+######
+#cnf(i_0_242532, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),k)),X1)),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_272141, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),k))),apply(s,apply(apply(s,s),k))),apply(k,apply(k,k)))=apply(k,k))).
+#
+#cnf(i_0_270559, plain, (apply(apply(apply(apply(s,apply(apply(s,apply(k,apply(s,apply(s,s)))),s)),k),apply(apply(s,apply(s,s)),k)),k)=apply(k,k))).
+#
+#cnf(i_0_258014, plain, (apply(apply(apply(s,apply(apply(apply(apply(s,s),apply(s,s)),apply(k,apply(apply(s,s),k))),apply(apply(s,s),k))),k),apply(k,k))=k)).
+###
+#cnf(i_0_272158, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,s),k)),X1)),X2),apply(k,k))=apply(k,k))).
+#######
+#cnf(i_0_260768, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,s)),apply(s,apply(apply(s,s),k))),apply(apply(s,s),k))),apply(k,k))=k)).
+#
+#cnf(i_0_267485, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,s))),apply(s,apply(s,k))),apply(apply(s,s),k)),apply(k,k))=k)).
+#
+#cnf(i_0_269355, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,k))),apply(apply(s,s),k)),apply(apply(s,apply(s,k)),k))=apply(apply(s,apply(s,k)),k))).
+########
+#cnf(i_0_272248, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),apply(s,apply(apply(s,s),k)))),apply(k,apply(k,k)))=k)).
+#
+#cnf(i_0_257715, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k)))),apply(apply(s,apply(s,s)),k)),k)=apply(k,apply(k,k)))).
+#
+#cnf(i_0_267231, plain, (apply(apply(apply(apply(s,s),apply(s,apply(apply(s,s),k))),apply(s,apply(s,k))),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,apply(k,k)))).
+#
+#cnf(i_0_272370, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,apply(apply(s,s),k)))),apply(s,apply(apply(s,s),k))),apply(k,apply(k,k)))=apply(k,apply(k,k)))).
+#######
+#cnf(i_0_259167, plain, (apply(apply(apply(apply(apply(s,s),apply(s,s)),apply(s,s)),apply(k,k)),X1)=apply(apply(s,X1),k))).
+#
+#cnf(i_0_274902, plain, (apply(apply(apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,s))),k),apply(k,k))=apply(apply(s,apply(k,apply(k,k))),k))).
+#
+#cnf(i_0_275011, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,s))),k)),k),apply(k,k))=k)).
+##
+#cnf(i_0_275012, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,s))),k)),apply(k,k))=k)).
+########
+#cnf(i_0_275152, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,s)))),k)),k)=k)).
+##
+#cnf(i_0_275138, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(apply(s,s),apply(s,s)),apply(s,s)),apply(k,k))),apply(k,apply(k,k)))=k)).
+###
+#cnf(i_0_2155, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),X1),apply(s,k))=apply(apply(s,k),apply(X1,apply(s,k))))).
+##################
+#cnf(i_0_275107, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,apply(apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,s))),k))),k)),k)=k)).
+#
+#cnf(i_0_275117, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,s)))),apply(k,apply(k,k)))),k)=k)).
+#########
+#cnf(i_0_275539, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,s))),k)),apply(k,k))=k)).
+#
+#cnf(i_0_276239, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,apply(s,s)),k))),s)),k)=apply(apply(s,apply(s,apply(apply(s,apply(s,s)),k))),s))).
+##############
+#cnf(i_0_404, plain, (apply(apply(apply(s,apply(apply(apply(s,s),X1),X2)),X3),X4)=apply(apply(apply(X2,X4),apply(apply(X1,X2),X4)),apply(X3,X4)))).
+########
+#cnf(i_0_257561, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k),X1)=k)).
+#
+#cnf(i_0_281634, plain, (apply(apply(apply(apply(s,s),k),apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))),k)=k)).
+#
+#cnf(i_0_281522, plain, (apply(apply(apply(s,apply(s,apply(s,k))),k),apply(apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k))=k)).
+#
+#cnf(i_0_405, plain, (apply(apply(apply(s,X1),apply(apply(apply(s,s),X2),X3)),X4)=apply(apply(X1,X4),apply(apply(X3,X4),apply(apply(X2,X3),X4))))).
+#######
+#cnf(i_0_282063, plain, (apply(apply(apply(apply(apply(s,s),s),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k),k)=apply(k,k))).
+#
+#cnf(i_0_282065, plain, (apply(k,apply(apply(apply(apply(s,s),s),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k))=apply(k,k))).
+#
+#cnf(i_0_286961, plain, (apply(apply(apply(apply(s,s),s),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k)=k)).
+#
+#cnf(i_0_287457, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),s)),apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k)=k)).
+#
+#cnf(i_0_406, plain, (apply(apply(apply(apply(s,X1),apply(apply(apply(s,s),X2),X3)),X4),apply(X5,apply(apply(X3,X4),apply(apply(X2,X3),X4))))=apply(apply(apply(s,apply(X1,X4)),X5),apply(apply(X3,X4),apply(apply(X2,X3),X4))))).
+#######
+#cnf(i_0_281833, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))),k)=k)).
+#
+#cnf(i_0_282080, plain, (apply(apply(apply(apply(s,s),k),apply(k,apply(apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k)))),k))),k)=k)).
+###
+#cnf(i_0_407, plain, (apply(apply(X1,apply(apply(X3,X4),apply(apply(X2,X3),X4))),apply(apply(apply(s,X5),apply(apply(apply(s,s),X2),X3)),X4))=apply(apply(apply(s,X1),apply(X5,X4)),apply(apply(X3,X4),apply(apply(X2,X3),X4))))).
+###########
+#cnf(i_0_408, plain, (apply(apply(apply(X3,X4),apply(apply(X2,X3),X4)),apply(apply(X1,apply(apply(apply(s,s),X2),X3)),X4))=apply(apply(apply(apply(s,s),X1),apply(apply(apply(s,s),X2),X3)),X4))).
+########
+#cnf(i_0_242827, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),k)),apply(s,k))=apply(apply(s,k),apply(apply(s,k),apply(apply(s,apply(s,s)),k))))).
+##
+#cnf(i_0_243445, plain, (apply(apply(apply(apply(s,apply(s,apply(s,apply(s,s)))),s),apply(k,apply(apply(s,s),k))),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_410, plain, (apply(apply(apply(apply(s,s),apply(apply(apply(s,s),X1),X2)),X3),X4)=apply(apply(X3,X4),apply(apply(apply(X2,X3),apply(apply(X1,X2),X3)),X4)))).
+#######
+#cnf(i_0_299383, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(s,apply(s,apply(s,s)))),s),apply(k,apply(apply(s,s),k)))),k),apply(k,k))=k)).
+##
+#cnf(i_0_299384, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,apply(s,apply(s,s)))),s),apply(k,apply(apply(s,s),k)))),apply(k,k))=k)).
+#
+#cnf(i_0_245941, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),apply(apply(s,s),k))),apply(k,k))),apply(apply(s,apply(s,s)),k))=apply(k,k))).
+#
+#cnf(i_0_411, plain, (apply(apply(apply(X2,X3),apply(apply(X1,X2),X3)),apply(apply(apply(s,s),X1),X2))=apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),X1),X2)),X3))).
+#######
+#cnf(i_0_306528, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(apply(s,s),k))),k))),k)=k)).
+#
+#cnf(i_0_245965, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,apply(apply(s,apply(s,s)),k))),apply(apply(apply(apply(s,s),s),apply(s,s)),k)),k)=apply(k,k))).
+#
+#cnf(i_0_246403, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,s),k))),apply(s,k))=apply(apply(s,k),apply(apply(apply(s,s),k),apply(apply(s,s),k))))).
+#
+#cnf(i_0_308877, plain, (apply(apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,s),k)),apply(apply(s,s),k)),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_412, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),X1)),X2),X3)=apply(apply(X2,X3),apply(apply(X2,X3),apply(apply(X1,X2),X3))))).
+###########
+#cnf(i_0_416, plain, (apply(apply(apply(apply(s,s),apply(apply(apply(s,s),X1),apply(apply(s,k),X2))),apply(k,X3)),X4)=apply(X3,apply(X3,X4)))).
+######
+#cnf(i_0_303208, plain, (apply(apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,s)),k)),apply(s,k)),X2)=X2)).
+##
+#cnf(i_0_310993, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,apply(s,apply(apply(s,s),k))),k)),k)=apply(k,k))).
+###
+#cnf(i_0_421, plain, (apply(apply(apply(apply(s,s),apply(apply(apply(s,apply(s,s)),apply(s,k)),X1)),apply(k,X2)),X3)=apply(X2,apply(X2,X3)))).
+################################
+#cnf(i_0_247636, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,k)),apply(s,k))),apply(s,k))=apply(apply(s,k),apply(apply(apply(s,s),apply(s,k)),apply(s,k))))).
+#
+#cnf(i_0_426, plain, (apply(apply(apply(apply(apply(s,X4),X2),X3),X5),apply(apply(apply(apply(s,X1),apply(X4,X3)),apply(X2,X3)),X5))=apply(apply(apply(apply(s,s),apply(X1,apply(X2,X3))),apply(apply(apply(s,X4),X2),X3)),X5))).
+#######
+#cnf(i_0_247667, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(apply(s,apply(s,s)),s)),k)),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_257623, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,apply(s,s)),k))),k)=apply(k,k))).
+#
+#cnf(i_0_258285, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),k))),k)=apply(k,k))).
+#
+#cnf(i_0_265659, plain, (apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(apply(s,s),k),apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(s,k)))=apply(s,k))).
+#########
+#cnf(i_0_267603, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(s,apply(apply(s,s),k))),apply(apply(s,apply(s,k)),apply(apply(s,s),k))),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_269366, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(apply(s,s),k))),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+#
+#cnf(i_0_274930, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,s)),apply(s,s))),apply(k,k))=apply(apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,s))),k))).
+#
+#cnf(i_0_429, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(s,apply(apply(s,k),X1))),k)),X2),X3)=apply(apply(X2,X3),apply(X2,X3)))).
+###########
+#cnf(i_0_430, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),X1),X2)=apply(apply(X1,X2),apply(X1,X2)))).
+#######
+#cnf(i_0_299165, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,s)),k))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+###
+#cnf(i_0_308734, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,s),k)))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_431, plain, (apply(apply(apply(apply(s,s),apply(apply(s,X1),apply(k,X2))),X3),X4)=apply(apply(X3,X4),apply(apply(apply(X1,X3),X2),X4)))).
+#######
+#cnf(i_0_332878, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(k,apply(s,k)))),apply(apply(s,apply(s,s)),s)),apply(s,k))=apply(apply(s,k),apply(s,k)))).
+####
+#cnf(i_0_432, plain, (apply(apply(apply(apply(s,s),apply(apply(apply(s,s),X1),apply(s,k))),X2),X3)=apply(apply(X2,X3),apply(apply(apply(X1,apply(s,k)),X2),X3)))).
+########
+#cnf(i_0_336294, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(apply(s,s),k),apply(s,k))),apply(s,k))=apply(apply(s,k),apply(s,k)))).
+#
+#cnf(i_0_337405, plain, (apply(apply(apply(s,apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(apply(s,s),k),apply(s,k)))),k),apply(s,k))=apply(k,apply(s,k)))).
+##
+#cnf(i_0_433, plain, (apply(apply(apply(apply(s,s),apply(apply(apply(s,s),k),apply(s,apply(s,k)))),X1),X2)=apply(apply(X1,X2),apply(apply(X1,apply(s,apply(s,k))),X2)))).
+########
+#cnf(i_0_318231, plain, (apply(apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,k)),apply(s,k)))),k),apply(s,k)),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_318376, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,k))),apply(s,k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_434, plain, (apply(apply(apply(apply(s,s),apply(apply(s,X1),X2)),X3),X4)=apply(apply(X3,X4),apply(apply(apply(X1,X3),apply(X2,X3)),X4)))).
+###########
+#cnf(i_0_435, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(k,X1)),X2)),X3),X4)=apply(apply(X3,X4),apply(apply(X1,apply(X2,X3)),X4)))).
+###########
+#cnf(i_0_436, plain, (apply(apply(apply(apply(s,s),apply(apply(s,k),X1)),X2),X3)=apply(apply(X2,X3),apply(X2,X3)))).
+#######
+#cnf(i_0_350032, plain, (apply(apply(apply(apply(s,s),s),apply(s,apply(s,apply(apply(s,s),k)))),apply(k,apply(k,k)))=apply(k,apply(k,k)))).
+##
+#cnf(i_0_352774, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),s)),apply(s,apply(s,apply(apply(s,s),k)))),apply(k,apply(k,k)))=apply(k,apply(k,k)))).
+###########
+#cnf(i_0_348400, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(k,apply(apply(s,s),k))),k)),apply(apply(apply(s,s),k),apply(k,k))),s)=apply(k,k))).
+#
+#cnf(i_0_352628, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(s,apply(s,apply(apply(s,s),k))))),apply(k,apply(k,k)))=apply(k,k))).
+#
+#cnf(i_0_439, plain, (apply(apply(apply(apply(s,s),apply(apply(apply(s,s),k),X1)),X2),X3)=apply(apply(X2,X3),apply(apply(apply(X1,X2),X1),X3)))).
+#########
+#cnf(i_0_352788, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(k,apply(apply(s,s),s))),s)),apply(s,apply(apply(s,s),k))),apply(k,apply(k,k)))=k)).
+#
+#cnf(i_0_350083, plain, (apply(apply(apply(apply(s,s),s),apply(apply(s,apply(apply(s,s),k)),X1)),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_440, plain, (apply(apply(X1,X3),apply(apply(apply(apply(apply(s,s),k),X1),X2),X3))=apply(apply(apply(apply(s,s),apply(X1,X2)),X1),X3))).
+#######
+#cnf(i_0_357611, plain, (apply(apply(apply(s,apply(s,apply(apply(s,s),s))),apply(s,apply(apply(s,s),k))),apply(k,apply(k,k)))=apply(k,k))).
+#
+#cnf(i_0_357653, plain, (apply(apply(apply(apply(s,s),s),apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k))),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_360306, plain, (apply(apply(apply(s,apply(apply(apply(s,s),s),apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k)))),k),apply(k,k))=k)).
+#########
+#cnf(i_0_357627, plain, (apply(apply(apply(s,s),apply(apply(apply(s,s),s),apply(apply(s,apply(apply(s,s),k)),s))),apply(k,k))=apply(apply(s,apply(k,k)),apply(k,k)))).
+###
+#cnf(i_0_360949, plain, (apply(apply(apply(apply(s,s),apply(s,s)),apply(apply(apply(s,s),s),apply(apply(s,apply(apply(s,s),k)),s))),apply(k,k))=k)).
+#
+#cnf(i_0_450, plain, (apply(apply(apply(apply(s,s),apply(apply(s,apply(s,s)),apply(s,k))),X1),apply(k,X2))=apply(apply(X1,apply(k,X2)),X2))).
+#######
+#cnf(i_0_360447, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),s)),apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k))),apply(k,k))=apply(k,k))).
+##
+#cnf(i_0_360808, plain, (apply(apply(apply(s,apply(apply(s,s),apply(apply(apply(s,s),s),apply(apply(s,apply(apply(s,s),k)),s)))),k),apply(k,k))=apply(k,k))).
+##
+#cnf(i_0_451, plain, (apply(apply(apply(apply(s,s),apply(s,apply(apply(s,s),X1))),X2),apply(s,k))=apply(apply(apply(s,X2),apply(apply(s,X1),X2)),apply(s,k)))).
+#######
+#cnf(i_0_360029, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),s))),apply(s,apply(apply(s,s),k)))),apply(k,apply(k,k)))=k)).
+#
+#cnf(i_0_360307, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(apply(apply(s,s),apply(s,k)),apply(apply(s,s),k)))),apply(k,k))=k)).
+#
+#cnf(i_0_356075, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(k,s))),apply(s,apply(s,apply(apply(s,s),k)))),apply(k,apply(k,k)))=apply(k,apply(k,k)))).
+#
+#cnf(i_0_360177, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,apply(apply(s,s),s)))),apply(s,apply(apply(s,s),k))),apply(k,apply(k,k)))=apply(k,apply(k,k)))).
+#
+#cnf(i_0_452, plain, (apply(apply(apply(apply(s,s),apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),s))),X1),apply(s,k))=apply(apply(apply(s,X1),apply(apply(s,s),X1)),apply(s,k)))).
+###########
+#cnf(i_0_453, plain, (apply(apply(apply(s,X1),apply(X1,apply(s,apply(s,k)))),apply(s,apply(s,k)))=apply(apply(apply(apply(s,s),apply(s,apply(apply(s,s),k))),X1),apply(s,apply(s,k))))).
+#######
+#cnf(i_0_366268, plain, (apply(apply(apply(apply(s,s),apply(s,apply(apply(s,s),k))),apply(s,apply(apply(s,apply(s,k)),k))),apply(s,apply(s,k)))=apply(s,apply(s,k)))).
+#
+#cnf(i_0_360966, plain, (apply(apply(apply(s,apply(apply(s,apply(s,apply(k,k))),X1)),apply(s,apply(k,k))),apply(k,k))=k)).
+###########
+#cnf(i_0_332819, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,apply(s,s))),apply(k,apply(apply(s,s),k))),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+#########################
+#cnf(i_0_460, plain, (apply(apply(apply(apply(s,s),apply(s,X1)),apply(k,X2)),X3)=apply(X2,apply(apply(X1,X3),X2)))).
+#########
+#cnf(i_0_360809, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(apply(s,s),s),apply(apply(s,apply(apply(s,s),k)),s)))),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_367790, plain, (apply(apply(apply(apply(s,s),apply(s,s)),apply(k,apply(apply(s,apply(s,apply(s,k))),k))),k)=apply(k,apply(apply(s,k),apply(apply(s,apply(s,apply(s,k))),k))))).
+#
+#cnf(i_0_462, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(s,apply(s,k))),X1)=apply(X1,apply(X1,apply(s,apply(s,k)))))).
+#########
+#cnf(i_0_371685, plain, (apply(apply(apply(apply(s,s),apply(s,s)),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),apply(apply(s,s),s)),apply(s,k)))).
+##
+#cnf(i_0_463, plain, (apply(apply(apply(apply(s,s),apply(s,X1)),X2),X3)=apply(apply(X2,X3),apply(apply(X1,X3),apply(X2,X3))))).
+######
+#cnf(i_0_372993, plain, (apply(apply(apply(apply(apply(s,s),apply(s,s)),apply(s,s)),k),apply(k,X1))=X1)).
+####
+#cnf(i_0_372989, plain, (apply(apply(apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s)),k),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_246403, plain, (apply(apply(apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s)),k),apply(s,k))=apply(apply(s,k),apply(apply(apply(s,s),k),apply(apply(s,s),k))))).
+########
+#cnf(i_0_376917, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,s),k)),apply(apply(s,s),k)),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_376769, plain, (apply(apply(apply(s,apply(apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s)),k)),k),apply(k,k))=k)).
+##
+#cnf(i_0_37276, plain, (apply(apply(apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s)),k),apply(apply(apply(s,s),k),apply(k,k)))=k)).
+######
+#cnf(i_0_373001, plain, (apply(apply(apply(apply(apply(s,s),apply(s,s)),apply(s,s)),s),apply(k,apply(k,X1)))=X1)).
+####
+#cnf(i_0_377773, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(apply(s,s),k),apply(k,k)))),apply(s,k))=apply(k,k))).
+#
+#cnf(i_0_15086, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(s,k)),apply(apply(s,s),k))=apply(apply(apply(apply(s,s),apply(s,s)),apply(s,s)),k))).
+#######
+#cnf(i_0_376770, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,apply(s,s)))),apply(s,s)),k),apply(k,k))=k)).
+#
+#cnf(i_0_376919, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s))),k)),k)=k)).
+#
+#cnf(i_0_377250, plain, (apply(apply(apply(s,apply(apply(apply(s,apply(s,s)),apply(apply(s,s),k)),apply(apply(s,s),k))),k),apply(k,k))=k)).
+##
+#cnf(i_0_464, plain, (apply(apply(apply(apply(s,s),apply(s,apply(k,X1))),X2),X3)=apply(apply(X2,X3),apply(X1,apply(X2,X3))))).
+#######
+#cnf(i_0_377405, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,apply(s,s))),apply(k,apply(apply(s,s),k))),apply(k,k))=apply(k,apply(k,k)))).
+#
+#cnf(i_0_372983, plain, (apply(apply(apply(apply(s,s),apply(s,s)),apply(s,apply(s,apply(s,k)))),k)=apply(k,apply(apply(s,k),apply(apply(s,apply(s,apply(s,k))),k))))).
+###
+#cnf(i_0_467, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),X1),X2)=apply(apply(X1,X2),apply(X1,X2)))).
+#######
+#cnf(i_0_383925, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(s,s),k)),apply(apply(apply(s,s),k),apply(k,k)))=apply(k,k))).
+#
+#cnf(i_0_377251, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,s)),apply(apply(s,s),k)),apply(apply(s,s),k))),apply(k,k))=k)).
+#
+#cnf(i_0_378418, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(apply(s,s),k),apply(k,k))))),k),apply(s,k))=k)).
+##
+#cnf(i_0_468, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),X1),X2)=apply(apply(X1,X2),apply(apply(X1,X2),X1)))).
+########
+#cnf(i_0_389706, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),k)),apply(s,apply(s,k))),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_384784, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(apply(apply(s,s),apply(apply(s,s),s)),apply(s,s)),k)),k)=k)).
+##
+#cnf(i_0_472, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(apply(s,s),X2),apply(apply(s,k),X3))),apply(k,X4))=apply(X4,apply(apply(X1,apply(apply(apply(s,s),X2),apply(apply(s,k),X3))),apply(k,X4))))).
+#######
+#cnf(i_0_378701, plain, (apply(apply(apply(apply(apply(apply(s,s),apply(s,s)),apply(s,s)),k),apply(s,apply(s,k))),apply(s,apply(s,k)))=apply(s,apply(s,k)))).
+#
+#cnf(i_0_380228, plain, (apply(apply(apply(apply(s,s),apply(s,apply(k,k))),apply(apply(apply(s,s),s),apply(s,s))),k)=apply(apply(apply(apply(s,s),s),apply(s,s)),k))).
+#
+#cnf(i_0_380254, plain, (apply(apply(apply(apply(s,s),apply(s,apply(k,k))),apply(apply(s,apply(s,s)),s)),apply(s,k))=apply(apply(apply(s,apply(s,s)),s),apply(s,k)))).
+#
+#cnf(i_0_393713, plain, (apply(apply(apply(s,apply(apply(apply(s,s),apply(s,apply(k,k))),apply(apply(s,apply(s,s)),s))),k),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_473, plain, (apply(apply(apply(s,apply(apply(s,X2),s)),apply(X1,apply(apply(s,X2),apply(apply(s,apply(s,apply(apply(s,s),k))),s)))),apply(s,k))=apply(apply(apply(apply(s,s),X1),apply(apply(s,X2),apply(apply(s,apply(s,apply(apply(s,s),k))),s))),apply(s,k)))).
+#######
+#cnf(i_0_383909, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(s,apply(s,apply(s,apply(s,k))))),k)=apply(apply(s,apply(s,apply(s,apply(s,k)))),k))).
+#
+#cnf(i_0_383910, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(s,apply(s,apply(apply(s,s),k)))),k)=apply(apply(s,apply(s,apply(apply(s,s),k))),k))).
+##
+#cnf(i_0_372199, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,s))),apply(apply(s,s),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+##########
+#cnf(i_0_372985, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,s),s)),apply(s,s)),k)=apply(apply(s,k),apply(apply(apply(apply(s,s),s),apply(s,s)),k)))).
+##
+#cnf(i_0_477, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(apply(s,apply(s,s)),apply(s,k)),X2)),apply(k,X3))=apply(X3,apply(apply(X1,apply(apply(apply(s,apply(s,s)),apply(s,k)),X2)),apply(k,X3))))).
+########
+#cnf(i_0_372988, plain, (apply(apply(apply(apply(s,apply(apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s)),k)),k),apply(s,k)),apply(s,k))=apply(s,k))).
+###
+#cnf(i_0_478, plain, (apply(apply(apply(s,apply(apply(s,X2),X3)),apply(X1,apply(apply(s,apply(apply(s,s),X2)),X3))),apply(s,k))=apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(apply(s,s),X2)),X3)),apply(s,k)))).
+###########
+#cnf(i_0_479, plain, (apply(apply(apply(s,X2),apply(X1,apply(apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),s)),X2))),apply(s,k))=apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(apply(s,apply(s,apply(apply(s,s),k))),s)),X2)),apply(s,k)))).
+#######
+#cnf(i_0_378698, plain, (apply(apply(apply(apply(apply(s,s),apply(s,s)),apply(s,s)),k),apply(apply(s,k),apply(apply(s,s),k)))=apply(apply(s,k),apply(apply(s,s),k)))).
+####
+#cnf(i_0_480, plain, (apply(apply(apply(s,apply(X2,apply(s,apply(s,k)))),apply(X1,apply(apply(s,apply(apply(s,s),k)),X2))),apply(s,apply(s,k)))=apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(apply(s,s),k)),X2)),apply(s,apply(s,k))))).
+######
+#cnf(i_0_397789, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(apply(s,s),s)),k)),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_400723, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(apply(s,apply(apply(s,s),s)),k)),apply(s,k))=apply(s,k))).
+#
+#cnf(i_0_383212, plain, (apply(apply(apply(s,apply(apply(apply(apply(s,s),s),apply(s,apply(s,s))),apply(k,apply(apply(s,s),k)))),k),apply(k,k))=apply(k,k))).
+##
+#cnf(i_0_481, plain, (apply(apply(apply(s,apply(apply(X2,X4),apply(X3,X4))),apply(X1,apply(apply(apply(s,X2),X3),X4))),apply(X5,apply(X3,X4)))=apply(apply(apply(apply(s,s),X1),apply(apply(apply(s,X2),X3),X4)),apply(X5,apply(X3,X4))))).
+#######
+#cnf(i_0_383922, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(s,apply(s,s)),k)),apply(s,apply(s,k)))=apply(apply(apply(s,s),s),apply(s,k)))).
+#
+#cnf(i_0_384845, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(s,s))),k))),k)=apply(k,k))).
+####################
+#cnf(i_0_350040, plain, (apply(apply(apply(apply(s,s),s),apply(s,apply(s,apply(s,apply(k,apply(k,X1)))))),X2)=X1)).
+####
+#cnf(i_0_376886, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,apply(apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s)),k))),k)),k)=k)).
+##
+#cnf(i_0_350042, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,apply(s,apply(k,apply(s,k))))),X1),X2)=X2)).
+#####
+#cnf(i_0_350063, plain, (apply(apply(apply(apply(s,s),s),apply(apply(s,s),X1)),apply(s,apply(k,apply(k,X2))))=X2)).
+#
+#cnf(i_0_376897, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s))),apply(k,apply(k,k)))),k)=k)).
+###
+#cnf(i_0_376918, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s)),k)),apply(k,k))=k)).
+#
+#cnf(i_0_485, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,apply(apply(s,k),X2))),k)),X3)=apply(X3,apply(apply(X1,apply(apply(s,apply(s,apply(apply(s,k),X2))),k)),X3)))).
+#######
+#cnf(i_0_378298, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(s,s),apply(apply(apply(s,s),k),apply(k,k))))),apply(s,k))=k)).
+##
+#cnf(i_0_383563, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),apply(s,s))),apply(s,apply(s,apply(s,k)))),k)=apply(apply(s,k),apply(apply(s,apply(s,apply(s,k))),k)))).
+##
+#cnf(i_0_486, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),X2)=apply(X2,apply(apply(X1,apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),k)),X2)))).
+#########
+#cnf(i_0_383902, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(k,k))))),k)=k)).
+#
+#cnf(i_0_384826, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),k))),k))),k)=k)).
+#
+#cnf(i_0_487, plain, (apply(apply(apply(X2,X4),X3),apply(apply(X1,apply(apply(s,X2),apply(k,X3))),X4))=apply(apply(apply(apply(s,s),X1),apply(apply(s,X2),apply(k,X3))),X4))).
+#######
+#cnf(i_0_384846, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(apply(s,s),k),apply(apply(s,apply(s,s)),s))),k)=apply(apply(s,k),apply(s,k)))).
+##
+#cnf(i_0_384885, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s)),k)),apply(k,k))=k)).
+#
+#cnf(i_0_384894, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,s))),k)),apply(k,k))=k)).
+#
+#cnf(i_0_488, plain, (apply(apply(apply(X2,apply(s,k)),X3),apply(apply(X1,apply(apply(apply(s,s),X2),apply(s,k))),X3))=apply(apply(apply(apply(s,s),X1),apply(apply(apply(s,s),X2),apply(s,k))),X3))).
+#######
+#cnf(i_0_384976, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(s,apply(apply(s,apply(s,s)),s)),k)),apply(s,k))=apply(apply(s,k),apply(s,k)))).
+#
+#cnf(i_0_385210, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(s,k),apply(apply(s,s),apply(s,k)))),apply(s,k))=apply(apply(s,k),apply(s,k)))).
+###
+#cnf(i_0_489, plain, (apply(apply(X2,apply(s,apply(s,k))),apply(apply(X1,apply(apply(apply(s,s),k),apply(s,apply(s,k)))),X2))=apply(apply(apply(apply(s,s),X1),apply(apply(apply(s,s),k),apply(s,apply(s,k)))),X2))).
+###########
+#cnf(i_0_490, plain, (apply(apply(apply(X2,X4),apply(X3,X4)),apply(apply(X1,apply(apply(s,X2),X3)),X4))=apply(apply(apply(apply(s,s),X1),apply(apply(s,X2),X3)),X4))).
+#
+#cnf(i_0_421461, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,s)),s)),k)=apply(s,k))).
+###
+#cnf(i_0_425156, plain, (apply(apply(apply(apply(apply(s,s),s),apply(s,s)),s),k)=apply(s,k))).
+##
+#cnf(i_0_421451, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,apply(s,s))),k)),k)=k)).
+#####
+#cnf(i_0_491, plain, (apply(apply(X2,apply(X3,X4)),apply(apply(X1,apply(apply(s,apply(k,X2)),X3)),X4))=apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(k,X2)),X3)),X4))).
+##########
+#cnf(i_0_425631, plain, (apply(apply(apply(apply(apply(s,s),apply(s,k)),apply(s,s)),apply(apply(s,apply(s,apply(s,s))),k)),k)=k)).
+#
+#cnf(i_0_492, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,k),X2)),X3)=apply(X3,apply(apply(X1,apply(apply(s,k),X2)),X3)))).
+#
+#cnf(i_0_421467, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,s)),k)),k)=apply(k,apply(k,k)))).
+##########
+#cnf(i_0_494, plain, (apply(apply(apply(apply(s,s),X1),apply(apply(s,apply(s,k)),X2)),X3)=apply(apply(X2,X3),apply(apply(X1,apply(apply(s,apply(s,k)),X2)),X3)))).
+##########
+#cnf(i_0_422044, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(apply(s,s),k))),k)),k)=apply(k,k))).
+#
+#cnf(i_0_495, plain, (apply(apply(apply(X2,X3),X2),apply(apply(X1,apply(apply(apply(s,s),k),X2)),X3))=apply(apply(apply(apply(s,s),X1),apply(apply(apply(s,s),k),X2)),X3))).
+########
+#cnf(i_0_425234, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(apply(apply(s,s),s),apply(s,s)),s)),k),apply(s,k))=apply(s,k))).
+##
+#cnf(i_0_422072, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(s,s))),apply(s,k))),k)=apply(apply(s,k),k))).
+##########
+#cnf(i_0_425272, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(apply(apply(s,s),s),apply(s,s)),s)),k)=apply(apply(s,k),apply(s,k)))).
+#
+#cnf(i_0_422035, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(s,apply(s,k)))),apply(s,k))),k)=apply(apply(s,k),k))).
+#
+#cnf(i_0_500, plain, (apply(apply(apply(s,apply(apply(s,X1),apply(apply(s,k),X5))),apply(X4,X3)),apply(X2,X3))=apply(apply(apply(s,apply(X1,apply(X2,X3))),apply(X4,X3)),apply(X2,X3)))).
+########
+#cnf(i_0_422256, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,s),apply(apply(apply(s,s),k),apply(k,k)))),apply(s,k))=apply(k,k))).
+#
+#cnf(i_0_425233, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(apply(s,s),s),apply(s,s)),s)),k)=apply(apply(s,k),apply(apply(apply(apply(s,s),s),apply(s,s)),s)))).
+##
+#cnf(i_0_501, plain, (apply(apply(apply(s,apply(X1,X3)),apply(apply(s,X4),apply(apply(s,k),X5))),apply(X2,X3))=apply(apply(apply(s,apply(X1,X3)),apply(X4,apply(X2,X3))),apply(X2,X3)))).
+########
+#cnf(i_0_444922, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(apply(s,s),s),apply(s,s)),s)),k),apply(s,k))=apply(s,k))).
+###
+#cnf(i_0_503, plain, (apply(apply(apply(s,apply(X1,X2)),apply(apply(s,k),X3)),X2)=apply(apply(apply(apply(s,X1),apply(apply(s,k),X4)),X2),X2))).
+#######
+#cnf(i_0_418543, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,s),apply(apply(s,s),k))),apply(s,k)),apply(s,k))=apply(apply(s,k),apply(s,k)))).
+#
+#cnf(i_0_422022, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(apply(apply(s,s),apply(s,apply(s,s))),apply(s,s))),k)),k)=k)).
+#
+#cnf(i_0_422025, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(apply(apply(s,s),apply(s,s)),apply(s,s)))),k)),k)=k)).
+#
+#cnf(i_0_422046, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(s,apply(apply(apply(s,s),k),apply(k,k)))),apply(s,s))),k)=k)).
+#
+#cnf(i_0_505, plain, (apply(apply(apply(apply(s,X1),apply(X2,X3)),X3),apply(X4,apply(apply(apply(s,X2),apply(apply(s,k),X5)),X3)))=apply(apply(apply(s,apply(X1,X3)),X4),apply(apply(apply(s,X2),apply(apply(s,k),X5)),X3)))).
+###########
+#cnf(i_0_506, plain, (apply(apply(X1,apply(apply(apply(s,X2),apply(apply(s,k),X5)),X3)),apply(apply(apply(s,X4),apply(X2,X3)),X3))=apply(apply(apply(s,X1),apply(X4,X3)),apply(apply(apply(s,X2),apply(apply(s,k),X5)),X3)))).
+#######
+#cnf(i_0_435510, plain, (apply(apply(apply(apply(s,s),apply(s,X1)),apply(apply(apply(s,s),k),apply(k,k))),k)=apply(k,k))).
+#
+#cnf(i_0_460255, plain, (apply(apply(apply(apply(s,apply(s,apply(s,s))),s),apply(k,apply(apply(apply(s,s),k),apply(k,k)))),k)=apply(k,k))).
+#
+#cnf(i_0_460244, plain, (apply(apply(apply(apply(s,s),apply(apply(apply(s,s),apply(s,s)),apply(s,k))),apply(apply(apply(s,s),k),apply(k,k))),k)=apply(k,k))).
+#
+#cnf(i_0_460338, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,apply(s,apply(s,s))),s),apply(k,apply(apply(apply(s,s),k),apply(k,k))))),k)=k)).
+#########
+#cnf(i_0_370594, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(s,apply(s,k))),apply(apply(s,apply(s,apply(s,apply(s,k)))),k))=apply(s,apply(s,k)))).
+##
+#cnf(i_0_375416, plain, (apply(apply(apply(s,s),apply(apply(s,apply(s,apply(apply(s,apply(s,apply(s,s))),k))),s)),apply(k,k))=apply(apply(apply(s,s),s),apply(k,k)))).
+#
+#cnf(i_0_509, plain, (apply(apply(X2,X3),apply(apply(apply(apply(s,X1),apply(apply(s,k),X4)),X2),X3))=apply(apply(apply(apply(s,s),apply(X1,X2)),X2),X3))).
+#######
+#cnf(i_0_461370, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(k,k))),apply(k,k))=apply(apply(s,apply(k,k)),apply(k,k)))).
+#
+#cnf(i_0_464209, plain, (apply(apply(apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(k,k)))),k),apply(k,k))=apply(k,k))).
+##
+#cnf(i_0_461543, plain, (apply(apply(apply(s,apply(apply(s,s),s)),s),apply(k,k))=apply(k,apply(apply(apply(s,s),s),apply(k,k))))).
+########
+#cnf(i_0_464768, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,s),s)),s)),k),apply(k,k))=apply(apply(apply(s,s),s),apply(k,k)))).
+###
+#cnf(i_0_464769, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(s,s),s)),s)),apply(k,k))=apply(apply(apply(s,s),s),apply(k,k)))).
+#
+#cnf(i_0_512, plain, (apply(apply(apply(s,apply(apply(s,apply(s,s)),apply(s,k))),apply(apply(s,k),X2)),apply(k,X1))=X1)).
+#######
+#cnf(i_0_464210, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(k,k)))),apply(k,k))=apply(k,k))).
+#
+#cnf(i_0_464943, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(k,k))),apply(s,apply(k,k)))=apply(apply(apply(s,s),s),apply(k,k)))).
+##
+#cnf(i_0_465932, plain, (apply(apply(apply(s,apply(apply(s,s),apply(s,k))),k),apply(apply(s,apply(s,s)),apply(s,k)))=apply(apply(s,apply(s,s)),apply(s,k)))).
+#
+#cnf(i_0_513, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,k),X3)),apply(apply(s,k),X1)),apply(k,X2))=X2)).
+#########
+#cnf(i_0_464485, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(k,k)))),k)),k),apply(k,k))=k)).
+#############
+#cnf(i_0_516, plain, (apply(apply(apply(apply(s,s),apply(apply(s,k),X3)),apply(apply(s,k),X1)),X2)=apply(X2,X2))).
+#######
+#cnf(i_0_464920, plain, (apply(apply(apply(s,s),apply(apply(s,apply(apply(s,s),s)),s)),apply(k,k))=apply(apply(s,apply(k,k)),apply(k,apply(apply(apply(s,s),s),apply(k,k)))))).
+#
+#cnf(i_0_469181, plain, (apply(apply(apply(apply(apply(s,s),s),apply(apply(s,s),s)),s),apply(k,k))=apply(apply(apply(s,s),s),apply(k,k)))).
+##
+#cnf(i_0_469026, plain, (apply(apply(apply(s,apply(apply(s,s),apply(apply(s,apply(apply(s,s),s)),s))),k),apply(k,k))=apply(k,apply(apply(apply(s,s),s),apply(k,k))))).
+#
+#cnf(i_0_518, plain, (apply(apply(apply(s,apply(s,X1)),apply(apply(s,k),X3)),apply(k,X2))=apply(apply(X1,apply(k,X2)),X2))).
+#########
+#cnf(i_0_464365, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,s),s),apply(k,k))),apply(k,k))=apply(apply(s,apply(k,k)),apply(k,k)))).
+##
+#cnf(i_0_519, plain, (apply(apply(apply(s,apply(s,X1)),apply(apply(s,k),X3)),apply(apply(s,k),X2))=apply(apply(X1,apply(apply(s,k),X2)),apply(apply(s,k),X2)))).
+##########
+#cnf(i_0_464810, plain, (apply(apply(apply(apply(s,s),apply(s,apply(s,k))),apply(apply(s,apply(apply(s,s),s)),s)),apply(k,k))=apply(apply(apply(s,s),s),apply(k,k)))).
+#
+#cnf(i_0_520, plain, (apply(apply(apply(s,apply(s,X1)),apply(apply(s,k),X3)),X2)=apply(apply(X1,X2),apply(X2,X2)))).
+#######
+#cnf(i_0_464811, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(s,apply(apply(s,s),s)),s)),apply(k,k))=apply(apply(apply(s,s),s),apply(k,k)))).
+##
+#cnf(i_0_464899, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(k,apply(apply(s,apply(apply(s,s),s)),s))),k)),k)=apply(apply(apply(s,s),s),apply(k,k)))).
+#
+#cnf(i_0_476136, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(k,k))),k)=apply(apply(s,apply(k,k)),k))).
+#
+#cnf(i_0_521, plain, (apply(apply(apply(apply(s,apply(s,X1)),apply(apply(s,k),X4)),X2),apply(X3,apply(X2,X2)))=apply(apply(apply(s,apply(X1,X2)),X3),apply(X2,X2)))).
+########
+#cnf(i_0_476514, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,s),s),apply(k,k))),k)=apply(apply(s,apply(k,k)),k))).
+###
+#cnf(i_0_522, plain, (apply(apply(apply(s,apply(s,apply(k,X1))),apply(apply(s,k),X3)),X2)=apply(X1,apply(X2,X2)))).
+########
+#cnf(i_0_464911, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(s,s),s))),apply(k,apply(k,k)))),s)=apply(apply(apply(s,s),s),apply(k,k)))).
+#
+#cnf(i_0_480678, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(k,k))),s)=apply(apply(s,apply(k,k)),s))).
+#
+#cnf(i_0_481067, plain, (apply(apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,s),s),apply(k,k))),s)=apply(apply(s,apply(k,k)),s))).
+#
+#cnf(i_0_526, plain, (apply(apply(apply(s,apply(apply(s,s),k)),apply(apply(s,k),X2)),X1)=apply(apply(X1,X1),X1))).
+###########
+#cnf(i_0_527, plain, (apply(apply(X1,apply(X2,X2)),apply(apply(apply(s,apply(s,X3)),apply(apply(s,k),X4)),X2))=apply(apply(apply(s,X1),apply(X3,X2)),apply(X2,X2)))).
+#######
+#cnf(i_0_471521, plain, (apply(apply(apply(s,apply(apply(apply(s,s),apply(apply(s,s),k)),apply(apply(apply(s,s),s),apply(k,k)))),k),apply(k,k))=apply(k,k))).
+####
+#cnf(i_0_528, plain, (apply(apply(apply(s,apply(apply(s,s),X1)),apply(apply(s,k),X3)),X2)=apply(apply(X2,X2),apply(apply(X1,X2),X2)))).
+#######
+#cnf(i_0_464486, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(k,k)))),k)),apply(k,k))=k)).
+#
+#cnf(i_0_464678, plain, (apply(apply(apply(apply(s,s),k),apply(apply(s,apply(s,apply(apply(apply(s,s),k),apply(apply(apply(s,s),s),apply(k,k))))),k)),k)=k)).
+#
+#cnf(i_0_465178, plain, (apply(apply(apply(s,apply(apply(s,apply(apply(s,apply(apply(s,s),s)),s)),k)),k),apply(k,k))=apply(apply(apply(s,apply(apply(s,s),s)),k),apply(k,k)))).
+##
+#cnf(i_0_529, plain, (apply(apply(apply(apply(s,apply(s,s)),apply(apply(s,k),X3)),X1),X2)=apply(apply(X1,X2),apply(apply(X1,X1),X2)))).
+#######
+#cnf(i_0_487930, plain, (apply(apply(apply(apply(s,s),apply(s,s)),apply(s,apply(s,apply(apply(s,s),k)))),apply(k,apply(k,k)))=apply(k,apply(k,k)))).
+##
+#cnf(i_0_487352, plain, (apply(apply(apply(s,apply(apply(s,s),apply(apply(s,s),s))),k),apply(k,k))=apply(k,apply(apply(apply(s,apply(apply(s,s),s)),k),apply(k,k))))).
+##
+#cnf(i_0_533, plain, (apply(apply(apply(apply(s,s),apply(apply(s,k),X2)),apply(apply(s,s),X1)),apply(s,k))=apply(apply(apply(s,X1),apply(apply(s,s),X1)),apply(s,k)))).
+#######
+#cnf(i_0_491602, plain, (apply(apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(s,k))),s),apply(s,k))=apply(apply(apply(s,s),apply(s,k)),apply(s,k)))).
+#
+#cnf(i_0_491823, plain, (apply(apply(apply(s,apply(apply(apply(apply(s,s),k),apply(apply(s,s),apply(s,k))),s)),k),apply(s,k))=apply(k,apply(s,k)))).
+#
+#cnf(i_0_492150, plain, (apply(apply(apply(apply(s,s),k),apply(apply(apply(s,s),apply(s,k)),apply(s,k))),apply(k,apply(s,k)))=apply(s,k))).
+##############
+#cnf(i_0_483050, plain, (apply(apply(apply(s,apply(apply(s,s),apply(s,apply(s,k)))),apply(X1,k)),apply(k,k))=apply(k,k))).
+##########
+#cnf(i_0_536, plain, (apply(apply(apply(apply(apply(s,s),apply(apply(s,k),X4)),X1),X2),apply(X3,apply(X1,X2)))=apply(apply(apply(s,apply(X1,X2)),X3),apply(X1,X2)))).
+###########
+#cnf(i_0_537, plain, (apply(apply(X1,apply(X2,X3)),apply(apply(apply(apply(s,s),apply(apply(s,k),X4)),X2),X3))=apply(apply(apply(s,X1),apply(X2,X3)),apply(X2,X3)))).
+###########
+#cnf(i_0_538, plain, (apply(apply(apply(s,X1),apply(apply(s,k),X2)),X3)=apply(apply(apply(s,X1),apply(apply(s,k),X4)),X3))).
+##
+#cnf(i_0_9, negated_conjecture, (apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))!=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))).
+#
+#cnf(i_0_501031, negated_conjecture, (apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),X1)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))!=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(k_definition, axiom, (apply(apply(k,X1),X2)=X1), file('Problems/COL/COL006-2.p', k_definition)).
+cnf(s_definition, axiom, (apply(apply(apply(s,X1),X2),X3)=apply(apply(X1,X3),apply(X2,X3))), file('Problems/COL/COL006-2.p', s_definition)).
+cnf(prove_strong_fixed_point, negated_conjecture, (~fixed_point(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))))), file('Problems/COL/COL006-2.p', prove_strong_fixed_point)).
+cnf(strong_fixed_point, axiom, (fixed_point(X1)|apply(X1,fixed_pt)!=apply(fixed_pt,apply(X1,fixed_pt))), file('Problems/COL/COL006-2.p', strong_fixed_point)).
+cnf(c_0_4, axiom, (apply(apply(k,X1),X2)=X1), k_definition).
+cnf(c_0_5, axiom, (apply(apply(apply(s,X1),X2),X3)=apply(apply(X1,X3),apply(X2,X3))), s_definition).
+cnf(c_0_6, plain, (apply(apply(apply(s,k),X1),X2)=X2), inference(spm,[status(thm)],[c_0_4, c_0_5])).
+cnf(c_0_7, negated_conjecture, (~fixed_point(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))))), inference(fof_simplification,[status(thm)],[prove_strong_fixed_point])).
+cnf(c_0_8, plain, (fixed_point(X1)|apply(X1,fixed_pt)!=apply(fixed_pt,apply(X1,fixed_pt))), inference(fof_simplification,[status(thm)],[strong_fixed_point])).
+cnf(c_0_9, plain, (apply(apply(apply(s,apply(s,k)),X1),X2)=apply(X1,X2)), inference(spm,[status(thm)],[c_0_5, c_0_6])).
+cnf(c_0_10, negated_conjecture, (~fixed_point(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))))), c_0_7).
+cnf(c_0_11, plain, (fixed_point(X1)|apply(X1,fixed_pt)!=apply(fixed_pt,apply(X1,fixed_pt))), c_0_8).
+cnf(c_0_12, plain, (apply(apply(apply(s,apply(apply(s,k),X1)),X2),X3)=apply(X3,apply(X2,X3))), inference(spm,[status(thm)],[c_0_5, c_0_6])).
+cnf(c_0_13, plain, (apply(apply(apply(s,apply(s,apply(s,k))),X1),X2)=apply(X2,apply(X1,X2))), inference(spm,[status(thm)],[c_0_5, c_0_9])).
+cnf(c_0_14, plain, (apply(apply(apply(s,apply(k,X1)),X2),X3)=apply(X1,apply(X2,X3))), inference(spm,[status(thm)],[c_0_5, c_0_4])).
+cnf(c_0_15, negated_conjecture, (apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))!=apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_10, c_0_11]), c_0_5]), c_0_4]), c_0_5]), c_0_4]), c_0_5]), c_0_4]), c_0_5]), c_0_4]), c_0_5]), c_0_4]), c_0_5]), c_0_4])).
+cnf(c_0_16, plain, (apply(apply(apply(s,apply(apply(s,k),X1)),X2),X3)=apply(apply(apply(s,apply(s,apply(s,k))),X2),X3)), inference(spm,[status(thm)],[c_0_12, c_0_13])).
+cnf(c_0_17, plain, (apply(apply(apply(s,apply(s,apply(k,X1))),X2),X3)=apply(X1,apply(X3,apply(X2,X3)))), inference(spm,[status(thm)],[c_0_5, c_0_14])).
+cnf(c_0_18, negated_conjecture, (apply(fixed_pt,apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))!=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_15, c_0_16]), c_0_16])).
+cnf(c_0_19, plain, (apply(X1,apply(apply(apply(s,apply(s,apply(s,k))),X2),X3))=apply(apply(apply(s,apply(s,apply(k,X1))),X2),X3)), inference(spm,[status(thm)],[c_0_17, c_0_13])).
+cnf(c_0_20, plain, (apply(apply(apply(s,X1),apply(apply(s,k),X2)),X3)=apply(apply(X1,X3),X3)), inference(spm,[status(thm)],[c_0_5, c_0_6])).
+cnf(c_0_21, negated_conjecture, (apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))!=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))), inference(rw,[status(thm)],[c_0_18, c_0_19])).
+cnf(c_0_22, plain, (apply(apply(apply(s,X1),apply(apply(s,k),X2)),X3)=apply(apply(apply(s,X1),apply(apply(s,k),X4)),X3)), inference(spm,[status(thm)],[c_0_20, c_0_20])).
+cnf(c_0_23, negated_conjecture, (apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))!=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_21, c_0_22]), c_0_22])).
+cnf(c_0_24, negated_conjecture, (apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),X1)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))!=apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))), inference(spm,[status(thm)],[c_0_23, c_0_22])).
+cnf(c_0_25, plain, (apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),X1)),X2)=apply(X2,X2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_20, c_0_6]), c_0_16])).
+cnf(c_0_26, negated_conjecture, ($false), inference(sr,[status(thm)],[inference(spm,[status(thm)],[c_0_24, c_0_5]), c_0_25]), ['proof']).
+# SZS output end CNFRefutation

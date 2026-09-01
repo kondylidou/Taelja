@@ -197,6 +197,9 @@ def _only_warnings(err):
 
 
 _FATAL_WARN_PATTERNS = (
+    # translate's authoritative verdict: the chosen result still has a hole
+    # (also covers single-term chains that _has_empty_proof cannot see)
+    'goal(s) unproved in the final proof',
     'no unit found for goal',
     'no proof found for goal',
     'makeBlock: unnamed relational unit',

@@ -1,0 +1,27 @@
+Axiom 1: mult(rd(X,Y),Y) = X
+Axiom 2: mult(unit,X) = X
+Axiom 3: op_e = mult(mult(rd(op_c,mult(X,Y)),Y),X)
+Axiom 4: mult(X,unit) = X
+Axiom 5: mult(op_c,mult(X,Y)) = mult(mult(op_c,X),Y)
+
+Lemma 6: op_e = op_c
+Proof:
+  op_e
+= { by axiom 3 }
+  mult(mult(rd(op_c,mult(unit,Z)),Z),unit)
+= { by axiom 4 }
+  mult(rd(op_c,mult(unit,Z)),Z)
+= { by axiom 2 }
+  mult(rd(op_c,Z),Z)
+= { by axiom 1 }
+  op_c
+
+Goal 1: mult(op_e,mult(x2,x3)) = mult(mult(op_e,x2),x3)
+Proof:
+  mult(op_e,mult(x2,x3))
+= { by lemma 6 }
+  mult(op_c,mult(x2,x3))
+= { by axiom 5 }
+  mult(mult(op_c,x2),x3)
+= { by lemma 6 R->L }
+  mult(mult(op_e,x2),x3)

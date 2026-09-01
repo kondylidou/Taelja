@@ -1,0 +1,128 @@
+Axiom 1: p0(b,X)
+Axiom 2: m0(X,d,Y)
+Axiom 3: q0(X,d)
+Axiom 4: p0(Z,Z) => s1(Z)
+Axiom 5: q0(A,B) /\ s1(C) => s1(A)
+Axiom 6: p0(U,U) /\ s1(V) /\ m0(W,V,X1) => l2(X1,X1)
+Axiom 7: k0(b)
+Axiom 8: p0(X2,X3) => p1(X3,X3,X3)
+Axiom 9: k0(X4) /\ p1(X5,X5,X5) => q2(X5,X4,X4)
+Axiom 10: l0(a)
+Axiom 11: n0(b,a)
+Axiom 12: n0(X6,X7) => l1(X7,X7)
+Axiom 13: s0(b)
+Axiom 14: s0(b) /\ l0(X8) /\ p0(b,X9) => n1(X8,X9,X8)
+Axiom 15: l0(X7) /\ l1(X7,X9) /\ n1(X9,X4,X9) => n1(X9,X4,X4)
+Axiom 16: p1(X4,X4,X6) /\ n1(X7,X4,X6) /\ q2(X7,X6,X4) => q2(X4,X7,X4)
+Axiom 17: q2(b,X6,b) /\ s1(b) => s2(X6)
+Axiom 18: p1(X10,X10,X10) => q2(X10,X10,X10)
+Axiom 19: q2(X11,X10,X11) /\ s2(X10) /\ m0(X11,X3,X12) => s3(X10,X12)
+Axiom 20: l2(X7,X4) /\ s3(a,X9) => m4(X9,X4)
+
+Lemma 21: s1(b)
+Proof:
+  have p0(b,b)
+    by axiom 1
+  hence s1(b)
+    by axiom 4
+
+Lemma 22: s1(d)
+Proof:
+  have q0(d,d)
+    by axiom 3
+   and s1(b)
+    by lemma 21
+  hence s1(d)
+    by axiom 5
+
+Lemma 23: p1(a,a,a)
+Proof:
+  have p0(b,a)
+    by axiom 1
+  hence p1(a,a,a)
+    by axiom 8
+
+Lemma 24: q2(a,b,b)
+Proof:
+  have k0(b)
+    by axiom 7
+   and p1(a,a,a)
+    by lemma 23
+  hence q2(a,b,b)
+    by axiom 9
+
+Lemma 25: l1(a,a)
+Proof:
+  have n0(b,a)
+    by axiom 11
+  hence l1(a,a)
+    by axiom 12
+
+Lemma 26: n1(a,b,a)
+Proof:
+  have s0(b)
+    by axiom 13
+   and l0(a)
+    by axiom 10
+   and p0(b,b)
+    by axiom 1
+  hence n1(a,b,a)
+    by axiom 14
+
+Lemma 27: n1(a,b,b)
+Proof:
+  have l0(a)
+    by axiom 10
+   and l1(a,a)
+    by lemma 25
+   and n1(a,b,a)
+    by lemma 26
+  hence n1(a,b,b)
+    by axiom 15
+
+Lemma 28: s2(a)
+Proof:
+  have p0(b,b)
+    by axiom 1
+  hence p1(b,b,b)
+    by axiom 8
+   and n1(a,b,b)
+    by lemma 27
+   and q2(a,b,b)
+    by lemma 24
+  hence q2(b,a,b)
+    by axiom 16
+   and s1(b)
+    by lemma 21
+  hence s2(a)
+    by axiom 17
+
+Lemma 29: s3(a,b)
+Proof:
+  have p0(b,a)
+    by axiom 1
+  hence p1(a,a,a)
+    by axiom 8
+  hence q2(a,a,a)
+    by axiom 18
+   and s2(a)
+    by lemma 28
+   and m0(a,d,b)
+    by axiom 2
+  hence s3(a,b)
+    by axiom 19
+
+Goal 1: m4(b,X)
+Proof:
+  have p0(b,b)
+    by axiom 1
+   and s1(d)
+    by lemma 22
+   and m0(Y,d,Z)
+    by axiom 2
+  hence l2(Z,Z)
+    by axiom 6
+   and s3(a,b)
+    by lemma 29
+  hence m4(b,Z)
+    by axiom 20

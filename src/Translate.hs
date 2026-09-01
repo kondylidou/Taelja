@@ -6,7 +6,7 @@ import Control.Monad (foldM, forM, forM_, void, when)
 import Data.Bifunctor (second)
 import Control.Exception (SomeException, try)
 import Control.Monad.State
-import Data.List (find, intercalate, nub, nubBy, partition, sortBy)
+import Data.List (find, intercalate, nub, nubBy, partition, sortBy, isSuffixOf)
 import Data.Maybe (catMaybes, fromJust, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
 import Data.Ord (Down(..), comparing)
 import qualified Data.Map.Lazy as LMap
@@ -15,6 +15,7 @@ import qualified Data.Set as Set
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
 import System.Environment (lookupEnv)
+import System.CPUTime (getCPUTime)
 import System.IO (hPutStrLn, stderr)
 
 import Types
@@ -96,6 +97,8 @@ translate debug tstp = do
     -- deep in the matcher) counts as that stage producing nothing, so the
     -- other stage still gets its chance
     tryStage strict t dbg' = do
+      tStage <- getCPUTime
+      when dbg' $ hPutStrLn stderr ("[time] stage " ++ (if strict then "strict" else "heuristic") ++ " start cpu=" ++ show (tStage `div` 1000000000) ++ " ms")
       r <- try (translateMode strict dbg' t) :: IO (Either SomeException (Maybe StructuredProof))
       case r of
         Right m -> return (m, Nothing)
@@ -181,30 +184,10 @@ emitGoalProof lit blk = modify $ \s -> s { stGoals = stGoals s ++ [(lit, blk)] }
 
 promoteToLemma :: Literal -> ProofBlock -> AlgM String
 promoteToLemma lit blk = do
-  goalVs <- gets stGoalVars
-  let freeVars = Set.fromList (litVars lit)
-      -- EqChains are always valid universally-quantified equational lemmas.
-      -- HaveHence with And steps comes from a multi-body nucleus application;
-      -- if the head has free variables not from the goal, the nucleus unification
-      -- was incomplete and the lemma statement is unsound.
-      -- HaveHence without And steps is a sequential horn derivation, which is
-      -- always valid even if non-ground.
-      hasAndStep (HaveHence steps) = any (\case And {} -> True; _ -> False) steps
-      hasAndStep _                 = False
-      shouldBlock = hasAndStep blk
-                 && not (freeVars `Set.isSubsetOf` goalVs)
-  if shouldBlock
-    then do
-      units <- gets stUnits
-      -- First try exact match, then fall back to pattern match (unit's general form
-      -- against the ground instance lit) — e.g. axiom 4 "less_equal(zero,X)" matches
-      -- the ground instance "less_equal(zero,divide(aQc,X2))" via matchLit.
-      let namedUnits = filter (isJust . ueName) units
-      case find (\u -> ueUnit u == lit) namedUnits <|>
-           find (\u -> isJust (matchLit (ueUnit u) lit)) namedUnits of
-        Just u  -> return (fromJust (ueName u))
-        Nothing -> error ("promoteToLemma: shouldBlock and no named unit for: " ++ show lit)
-    else do
+  -- Free variables of the head are universally quantified: every premise is
+  -- an instance of an axiom or lemma under the same (composed) bindings, so
+  -- the block proves the lemma for all values of them.
+  do
       -- skip counter values whose name is already taken (a lemma candidate is
       -- named "lemma <tstp-name>", and TSTP unit names may be numeric)
       taken <- gets (\s -> Set.fromList (map (\(n, _, _) -> n) (stLemmas s))
@@ -270,7 +253,7 @@ ensureNamed lit buildBlk = do
 tryRelLemma :: [UnitEntry] -> Literal -> AlgM String
 tryRelLemma units lit = do
   let relOrEqUnits = filter (\ue' -> isJust (ueName ue') || isEqLit (ueUnit ue')) units
-  mRes <- liftIO (callTwee relOrEqUnits lit)
+  mRes <- liftIO (callTwee InternalBudget relOrEqUnits lit)
   case mRes of
     Just (start, chain) | not (null chain) -> do
       steps <- mapM promoteChainStep chain
@@ -304,9 +287,20 @@ tryMatch li ki τ =
         -- share a variable name (e.g. both use "X0"). An identity binding would
         -- prevent a later body literal from properly grounding that variable.
         let σn' = filter (\(x, t) -> Var x /= t) σn
-        in case extendSubst τ σn' of
-          Just τ' -> Just ([], τ')
-          Nothing  -> Nothing
+            -- Only ground bindings are accepted here: a binding to a term with
+            -- variables captures the electron's un-renamed variables in τ,
+            -- which is neither renamed apart nor composed in this branch.  A
+            -- compound makes the stored head look more general than the
+            -- derivation supports (LCL006-1/E); even a bare variable can
+            -- make τ cyclic (X0 ↦ f(X0_e), X0_e ↦ X0 on the horn_example
+            -- test) so the head and the premises disagree.  Such matches
+            -- fall through to tryBothSides, which renames apart and composes.
+            nonGround (_, t) = not (null (termVars t))
+        in if any nonGround σn'
+             then Nothing
+             else case extendSubst τ σn' of
+               Just τ' -> Just ([], τ')
+               Nothing  -> Nothing
       Nothing -> Nothing
     tryKiPattern k = case matchLit k li of
       Just σi -> Just (σi, τ)
@@ -319,7 +313,14 @@ tryMatch li ki τ =
       -- Without this, shared var names (e.g. both using "X0") confuse matchBothLit
       -- into treating them as the same variable, producing incorrect bindings.
       let kVars = nub (litVars k)
-          k'    = suffixVarsLit "_e" k
+          -- The suffix must be one no variable of the body literal carries:
+          -- after an earlier open match against the same axiom the literal
+          -- already holds that electron's "_e" variables, and renaming this
+          -- electron with the same suffix would identify the two (LCL008-1/E).
+          liVars = litVars li'
+          suffix = head [ sfx | n <- [1 :: Int ..], let sfx = concat (replicate n "_e")
+                              , not (any (sfx `isSuffixOf`) liVars) ]
+          k'    = suffixVarsLit suffix k
       in case matchBothLit li' k' τ [] of
         Just (τ', σi') ->
           -- Occurs check: if any ki-var's binding contains itself, deepApplySubstTerm loops.
@@ -333,7 +334,7 @@ tryMatch li ki τ =
                   newB = [ (x, t) | (x, t) <- τ', x `notElem` map fst τ ]
                   τc = [(x, deepApplySubstTerm σi' (applySubstTerm newB t)) | (x, t) <- τ']
                   -- Apply τc to ground any τ-vars that appear in σi' bindings.
-                  σi  = [ (v, applySubstTerm τc (deepApplySubstTerm σi' (Var (v ++ "_e")))) | v <- kVars ]
+                  σi  = [ (v, applySubstTerm τc (deepApplySubstTerm σi' (Var (v ++ suffix)))) | v <- kVars ]
               in if applySubst τc li' == applySubst σi k
                  then Just (σi, τc)
                  else Nothing
@@ -374,9 +375,9 @@ promoteChainStep (stepUe, dir, cur) = do
                 in return (RwStep nm (relT, Const "true") dir, cur)
     _        -> error "promoteChainStep: unexpected unit in Twee chain"
 
-tweeChain :: Term -> Term -> [UnitEntry] -> AlgM (Maybe ProofBlock)
-tweeChain l r units = do
-  mRes <- liftIO (callTwee units (Eq l r))
+tweeChain :: TweeBudget -> Term -> Term -> [UnitEntry] -> AlgM (Maybe ProofBlock)
+tweeChain budget l r units = do
+  mRes <- liftIO (callTwee budget units (Eq l r))
   case mRes of
     Nothing              -> return Nothing
     Just (_, [])         -> return Nothing
@@ -510,7 +511,7 @@ findElecIO
   -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
 findElecIO li τ pos units = case li of
   Eq l r -> do
-    mRaw <- liftIO (callTwee (tweableUnits units) (Eq l r))
+    mRaw <- liftIO (callTwee InternalBudget (tweableUnits units) (Eq l r))
     case mRaw of
       Nothing       -> return Nothing
       Just (_, [])  -> return Nothing
@@ -551,7 +552,12 @@ findElecIO li τ pos units = case li of
       Just res -> return (Just res)
       Nothing  -> do
         -- First try the unit-only Twee call (fast, handles terminating rewrites).
-        mRaw <- liftIO (callTwee (tweableUnits units) li)
+        -- Without an equational unit Twee could only close P(t) ≈ true by the
+        -- direct instantiation already tried above, so the call is skipped:
+        -- in purely relational problems (LCL) it burned its whole budget
+        -- for every body atom whose match failed.
+        mRaw <- if null eqEntries then return Nothing
+                else liftIO (callTwee InternalBudget (tweableUnits units) li)
         case mRaw of
           Just (_, chain) | not (null chain) -> do
             let goalFun = case li of { Rel n _ -> n; _ -> "" }
@@ -570,12 +576,17 @@ findElecIO li τ pos units = case li of
           _ -> tryHornFallback
         where
           start = case li of { Rel n as -> if null as then Const n else App n as; _ -> Const "?" }
-          tryHornFallback = do
+          -- A Twee refutation of the negated goal shows an instance of a
+          -- non-ground atom, which cannot certify it as a general electron;
+          -- only ground atoms are worth the (budgeted) call.
+          tryHornFallback
+            | not (null (litVars li)) = return Nothing
+            | otherwise = do
             hornAxioms <- gets stHornAxioms
             -- Exclude Eq-headed/Eq-bodied axioms: ifeq encoding collapses them,
             -- making Eq-bodied axioms unconditional and Eq-headed ones vanish.
             let filteredHornAxioms = filter isRelHornAxiom hornAxioms
-            mRes <- liftIO $ callTweeRelLemma (tweableUnits units) filteredHornAxioms li
+            mRes <- liftIO $ callTweeRelLemma InternalBudget (tweableUnits units) filteredHornAxioms li
             case mRes of
               Just (_, chain) | not (null chain) -> do
                 let axiomNms = nub [ nm | (ue, _, _) <- chain
@@ -683,7 +694,7 @@ makeBlock ki σi rwSteps = do
               case ueUnit unnamed of
                 Eq l r -> do
                   let namedUs = filter (isJust . ueName) units
-                  mBlk <- tweeChain l r namedUs
+                  mBlk <- tweeChain InternalBudget l r namedUs
                   case mBlk of
                     Just blk -> do
                       nm <- ensureNamed (ueUnit unnamed) (return blk)
@@ -713,7 +724,7 @@ makeBlock ki σi rwSteps = do
               case ueUnit u of
                 Eq l r -> do
                   let namedUs = filter (isJust . ueName) units
-                  mBlk <- tweeChain l r namedUs
+                  mBlk <- tweeChain InternalBudget l r namedUs
                   case mBlk of
                     Just blk -> do
                       nm <- ensureNamed (ueUnit u) (return blk)
@@ -790,8 +801,19 @@ buildProofBlock ((k1, σ1, rw1) : rest) mAxName τ headLit = do
   where
     addAnd blk (ki, σi, rwi) = do
       let targ = electronTarget ki σi rwi
-      blki <- makeBlock ki σi rwi
-      nm   <- ensureNamed targ (return blki)
+      -- A non-ground premise instance of a derived electron with a stored
+      -- proof is cited by the name of the electron itself (make_block's
+      -- name_of(E)), so the lemma stays general and every instance can
+      -- reuse it (resolution_example_horn_reuse_forced: "Lemma 5: p(X)",
+      -- used as "and p(a) by lemma 5" in the goal).  Ground instances,
+      -- rewritten premises and electrons without a stored proof keep naming
+      -- the instance together with its proof (thesis_example_both_lemmas:
+      -- "Lemma 7: q(a)").
+      nm <- if null rwi && isJust (ueProof ki) && not (null (litVars targ))
+              then ensureNamed (ueUnit ki) (makeBlock ki [] [])
+              else do
+                blki <- makeBlock ki σi rwi
+                ensureNamed targ (return blki)
       return (appendLine blk (And targ nm))
 
 -- equational goals use EqChain built from the electron or Twee;
@@ -813,7 +835,7 @@ emitBlockForGoal gl@(Eq l r) ki σi rwi
         Just blk -> return blk
         Nothing  -> do
           units <- gets stUnits
-          mBlk  <- tweeChain l r (tweableUnits units)
+          mBlk  <- tweeChain GoalBudget l r (tweableUnits units)
           case mBlk of
             Just blk -> return blk
             Nothing  -> makeBlock ki σi []
@@ -1198,6 +1220,10 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                 -- so skip storing them to avoid corrupting later proofs
                 when (isJust mAxName) $ do
                   liftIO $ dbg debug $ "[store] pos=" ++ pos ++ " headInst=" ++ ppLitI headInst ++ " hasProof=" ++ show (isJust proofToStore) ++ " isCircular=" ++ show isCircular
+                    ++ (if isNothing proofToStore && not isCircular
+                          then " staleTarget: targets=" ++ show (map ppLitI electronTargets)
+                               ++ " headBodyVars=" ++ show (Set.toList headBodyVars)
+                          else "")
                   addUnit (UnitEntry Nothing headInst proofToStore (Just pos))
                   -- EqChains can't nest inside HaveHence, so promote immediately
                   case (proofToStore, blk) of
@@ -1339,7 +1365,10 @@ processNuclei debug warnOnFail thetaCtx nuclei posToName goalLits simpl = go nuc
         then return []
         else do
           prevCount <- gets (length . stUnits)
+          t0        <- liftIO getCPUTime
           done      <- processOneNucleus debug thetaCtx entry posToName goalLits simpl
+          t1        <- liftIO getCPUTime
+          liftIO $ dbg debug $ "[time] pos=" ++ lePos entry ++ " " ++ show ((t1 - t0) `div` 1000000000) ++ " ms"
           newCount  <- gets (length . stUnits)
           if done
             then return []
@@ -1393,6 +1422,14 @@ splitChain l r chain units =
     flipDir LR = RL
     flipDir RL = LR
 
+-- A substitution making both sides of l ≈ r syntactically equal, found by
+-- matching l onto r or r onto l (the goal's variables are existential).
+reflexiveInstance :: Term -> Term -> Maybe Subst
+reflexiveInstance l r = listToMaybe
+  [ ρ | (p, t) <- [(l, r), (r, l)]
+      , Just ρ <- [matchTerm p t []]
+      , applySubstTerm ρ l == applySubstTerm ρ r ]
+
 proveGoal :: Maybe [(String, Dir)] -> Literal -> AlgM ()
 proveGoal mChain goal = do
   units <- gets stUnits
@@ -1423,11 +1460,14 @@ proveGoal mChain goal = do
             -- conjecture, so if the two sides unify the instantiated goal
             -- l' = l' holds by reflexivity (Twee emits a `reflexivity` step,
             -- Vampire an equality_resolution on the negated conjecture).
-            Nothing | Just ρ <- unifyTerms l r [] -> do
+            -- reflexive existential goal (Twee `reflexivity`, Vampire
+            -- equality_resolution): one side matched onto the other and
+            -- checked to make both sides equal (matching, not unification)
+            Nothing | Just ρ <- reflexiveInstance l r -> do
               let l' = deepApplySubstTerm ρ l
               emitGoalProof (Eq l' l') (EqChain l' [])
             Nothing  -> do
-              mTwee <- liftIO (callTwee (tweableUnits units) goal)
+              mTwee <- liftIO (callTwee GoalBudget (tweableUnits units) goal)
               case mTwee of
                 Just (start, chain) | not (null chain) -> do
                   steps' <- mapM promoteChainStep chain
@@ -1500,7 +1540,10 @@ proveGoal mChain goal = do
                     | (nm, Clause bodyPats (Just hdPat)) <- axNuclei
                     , not (isEqLit hdPat)
                     , all (not . isEqLit) bodyPats ]
-              mRes <- liftIO $ callTweeRelLemma (tweableUnits units') (filteredHornAxioms ++ axHornAxioms) goal
+              -- a goal with variables is universal; a Twee refutation of its
+              -- negation only shows an instance, so the call is not made
+              mRes <- if not (null (litVars goal)) then return Nothing
+                      else liftIO $ callTweeRelLemma GoalBudget (tweableUnits units') (filteredHornAxioms ++ axHornAxioms) goal
               case mRes of
                 Just (_, chain) | not (null chain) -> do
                   let hornSteps = nubBy (\(_, n1) (_, n2) -> n1 == n2)
@@ -1554,7 +1597,8 @@ proveGoal mChain goal = do
             startTerm = case lit of
               Rel n as -> if null as then Const n else App n as
               _        -> Const "?"
-        mRes <- liftIO $ callTweeRelLemma (tweableUnits units') filteredHornAxioms lit
+        mRes <- if not (null (litVars lit)) then return Nothing   -- same: instance proofs cannot justify a general electron
+                else liftIO $ callTweeRelLemma InternalBudget (tweableUnits units') filteredHornAxioms lit
         case mRes of
           Just (_, chain) | not (null chain) -> do
             let steps = [ let nm  = fromJust (ueName u)

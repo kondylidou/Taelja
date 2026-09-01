@@ -19,6 +19,7 @@ module TweeInterface
   , parseTweeChain
   , callTweeRelLemma
   , callTwee
+  , TweeBudget (..)
   , relevantUnits
   , runProverCapped
   , withTempInput
@@ -34,11 +35,12 @@ import qualified Data.Map.Strict as Map
 import qualified Data.TPTP as T
 import Control.Exception (SomeException, bracket, try)
 import Data.IORef (IORef, newIORef, readIORef, modifyIORef')
+import Control.Monad (when)
 import System.IO.Unsafe (unsafePerformIO)
 import System.Directory (getTemporaryDirectory, removeFile)
 import System.Environment (lookupEnv)
 import System.Exit (ExitCode)
-import System.IO (hClose, hPutStr, openTempFile)
+import System.IO (hClose, hPutStr, hPutStrLn, openTempFile, stderr)
 import System.Process (readProcessWithExitCode)
 import System.Timeout (timeout)
 import Text.Read (readMaybe)
@@ -73,9 +75,18 @@ timeoutSecsFromEnv var def = max 1 . fromMaybe def . (>>= readMaybe) <$> lookupE
 -- wall-clock margin.  The input goes to a fresh temporary file so that
 -- concurrent Taelja processes (e.g. a test suite running in parallel) never
 -- overwrite each other's problems.
-runTwee :: String -> String -> IO String
-runTwee tag input = do
-  secs <- timeoutSecsFromEnv "TAELJA_TWEE_TIMEOUT" 15
+-- Goal-level calls (the chain for a goal) get the full budget; the
+-- speculative internal calls (electron recovery, unnamed units, lemma
+-- candidates) get a small one so that a failing call cannot eat the
+-- translation's time budget.  The internal budget never exceeds the goal one.
+data TweeBudget = GoalBudget | InternalBudget deriving (Eq, Show)
+
+runTwee :: TweeBudget -> String -> String -> IO String
+runTwee budget tag input = do
+  goalSecs <- timeoutSecsFromEnv "TAELJA_TWEE_TIMEOUT" 15
+  secs <- case budget of
+    GoalBudget     -> return goalSecs
+    InternalBudget -> min goalSecs <$> timeoutSecsFromEnv "TAELJA_TWEE_INTERNAL_TIMEOUT" 5
   cache <- readIORef tweeCache
   case Map.lookup (input, secs) cache of
     Just out -> return out
@@ -85,6 +96,10 @@ runTwee tag input = do
         fromMaybe "" <$> runProverCapped (secs + 5) tweeBin
           ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile]
       modifyIORef' tweeCache (Map.insert (input, secs) out)
+      -- TAELJA_TWEE_DEBUG=1 dumps every distinct call (input and output)
+      dumpEnv <- lookupEnv "TAELJA_TWEE_DEBUG"
+      when (dumpEnv == Just "1") $
+        hPutStrLn stderr ("[twee " ++ tag ++ "] input:\n" ++ input ++ "[twee " ++ tag ++ "] output:\n" ++ out)
       return out
 
 -- Process-wide result cache.  The translation retries the same sub-problems
@@ -186,9 +201,9 @@ toIfeqCnfHorn name headLit bodies =
 -- Call Twee to prove a Skolemized relational goal from unit ancestors plus
 -- Horn axioms (given as HornAxiomEntry descriptors, encoded as ifeq+pair CNF).
 -- Returns the rewrite chain from goalTerm to "true", or Nothing if unprovable.
-callTweeRelLemma :: [UnitEntry] -> [HornAxiomEntry] -> Literal
+callTweeRelLemma :: TweeBudget -> [UnitEntry] -> [HornAxiomEntry] -> Literal
                  -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTweeRelLemma units hornAxioms goalLit = do
+callTweeRelLemma budget units hornAxioms goalLit = do
   let goalTerm  = litRelTerm goalLit
       relUnits  = relevantUnits goalLit units
       indexed   = zip [(0::Int)..] relUnits
@@ -212,7 +227,7 @@ callTweeRelLemma units hornAxioms goalLit = do
       ifeqSentinelUe = UnitEntry (Just "ifeq_axiom") (Eq (Var "X") (Var "Y")) Nothing Nothing
       idToUe     = Map.unions [unitIdToUe, hornIdToUe, Map.singleton "ifeq_axiom" ifeqSentinelUe]
       input      = unlines (unitAxioms ++ ifeqAxioms ++ hornCnfs ++ [negGoal])
-  out <- runTwee "rel_lemma" input
+  out <- runTwee budget "rel_lemma" input
   return (parseTweeChain idToUe out goalTerm (Const "true"))
   where
     relTerm n [] = Const n
@@ -392,8 +407,8 @@ parseTweeChain idToUe output l r =
            (startLine:rest) ->
              Just (dropWhile (== ' ') startLine, collectSteps rest)
 
-callTwee :: [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTwee units goal@(Eq l r) = do
+callTwee :: TweeBudget -> [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
+callTwee budget units goal@(Eq l r) = do
   let relUnits   = relevantUnits goal units
       rawEqUnits = [(i, ue) | (i, ue) <- zip [(0::Int)..] relUnits, isEqLit (ueUnit ue)]
       -- Put general (variable-containing) equations before ground ones so Twee's
@@ -407,9 +422,9 @@ callTwee units goal@(Eq l r) = do
                 | (i, ue) <- eqUnits, Eq a b <- [ueUnit ue] ]
       negGoal = toCnfNegGoal "goal" l r
       input   = unlines (axioms ++ [negGoal])
-  out <- runTwee "eq" input
+  out <- runTwee budget "eq" input
   return (parseTweeChain idToUe out l r)
-callTwee units goal@(Rel name args) = do
+callTwee budget units goal@(Rel name args) = do
   let goalTerm  = if null args then Const name else App name args
       indexed   = zip [(0::Int)..] (relevantUnits goal units)
       mkId i ue = maybe ("anon_" ++ show i) sanitizeId (ueName ue)
@@ -421,9 +436,9 @@ callTwee units goal@(Rel name args) = do
       negGoal = toCnfNegGoal "goal" goalTerm (Const "true")
       input   = unlines (axioms ++ [negGoal])
       idToUe  = Map.fromList [(mkId i ue, ue) | (i, ue) <- indexed, isEqLit (ueUnit ue) || isRelLit (ueUnit ue)]
-  out <- runTwee "horn" input
+  out <- runTwee budget "horn" input
   return (parseTweeChain idToUe out goalTerm (Const "true"))
   where
     isRelLit (Rel _ _) = True
     isRelLit _         = False
-callTwee _ _ = return Nothing
+callTwee _ _ _ = return Nothing

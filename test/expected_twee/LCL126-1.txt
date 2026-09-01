@@ -1,0 +1,54 @@
+Axiom 1: is_a_theorem(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))))
+Axiom 2: is_a_theorem(equivalent(A,B)) /\ is_a_theorem(A) => is_a_theorem(B)
+
+Lemma 3: is_a_theorem(equivalent(equivalent(equivalent(X,Y),Z),equivalent(equivalent(equivalent(X,A),equivalent(Y,A)),Z)))
+Proof:
+  have is_a_theorem(equivalent(equivalent(B,C),equivalent(equivalent(B,Z),equivalent(C,Z))))
+    by axiom 1
+   and is_a_theorem(equivalent(equivalent(X,Y),equivalent(equivalent(X,A),equivalent(Y,A))))
+    by axiom 1
+  hence is_a_theorem(equivalent(equivalent(equivalent(X,Y),Z),equivalent(equivalent(equivalent(X,A),equivalent(Y,A)),Z)))
+    by axiom 2
+
+Lemma 4: is_a_theorem(equivalent(equivalent(equivalent(X,Y),Z),equivalent(equivalent(equivalent(X,A),equivalent(Y,A)),Z)))
+Proof:
+  have is_a_theorem(equivalent(equivalent(B,C),equivalent(equivalent(B,Z),equivalent(C,Z))))
+    by axiom 1
+   and is_a_theorem(equivalent(equivalent(X,Y),equivalent(equivalent(X,A),equivalent(Y,A))))
+    by axiom 1
+  hence is_a_theorem(equivalent(equivalent(equivalent(X,Y),Z),equivalent(equivalent(equivalent(X,A),equivalent(Y,A)),Z)))
+    by axiom 2
+
+Lemma 5: is_a_theorem(equivalent(equivalent(equivalent(X,Y),equivalent(Z,Y)),equivalent(equivalent(X,A),equivalent(Z,A))))
+Proof:
+  have is_a_theorem(equivalent(equivalent(B,C),equivalent(equivalent(B,U),equivalent(C,U))))
+    by axiom 1
+   and is_a_theorem(equivalent(equivalent(V,W),equivalent(equivalent(V,X1),equivalent(W,X1))))
+    by axiom 1
+  hence is_a_theorem(equivalent(equivalent(equivalent(V,W),U),equivalent(equivalent(equivalent(V,X1),equivalent(W,X1)),U)))
+    by axiom 2
+   and is_a_theorem(equivalent(equivalent(equivalent(X2,X3),X4),equivalent(equivalent(equivalent(X2,Y),equivalent(X3,Y)),X4)))
+    by lemma 3
+  hence is_a_theorem(equivalent(equivalent(equivalent(equivalent(X2,X3),X1),equivalent(X4,X1)),equivalent(equivalent(equivalent(X2,Y),equivalent(X3,Y)),X4)))
+    by axiom 2
+   and is_a_theorem(equivalent(equivalent(equivalent(X,Z),X5),equivalent(equivalent(equivalent(X,A),equivalent(Z,A)),X5)))
+    by lemma 4
+  hence is_a_theorem(equivalent(equivalent(equivalent(X,Y),equivalent(Z,Y)),equivalent(equivalent(X,A),equivalent(Z,A))))
+    by axiom 2
+
+Goal 1: is_a_theorem(equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c)))
+Proof:
+  have is_a_theorem(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))))
+    by axiom 1
+   and is_a_theorem(equivalent(equivalent(A,B),equivalent(equivalent(A,C),equivalent(B,C))))
+    by axiom 1
+  hence is_a_theorem(equivalent(equivalent(equivalent(A,B),Z),equivalent(equivalent(equivalent(A,C),equivalent(B,C)),Z)))
+    by axiom 2
+   and is_a_theorem(equivalent(equivalent(equivalent(a,c),equivalent(a,c)),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))))
+    by lemma 3
+  hence is_a_theorem(equivalent(equivalent(equivalent(equivalent(a,c),C),equivalent(equivalent(a,c),C)),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))))
+    by axiom 2
+   and is_a_theorem(equivalent(equivalent(equivalent(a,c),equivalent(U,c)),equivalent(equivalent(a,c),equivalent(U,c))))
+    by lemma 5
+  hence is_a_theorem(equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c)))
+    by axiom 2

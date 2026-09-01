@@ -45,6 +45,8 @@ tweeBenchmarkNames =
   , "ANA023-2"
   , "HEN006-4"
   , "COL083-1"
+  , "LCL126-1"
+  , "SYN140-1"
   ]
 
 handcraftedNames :: [String]
@@ -100,6 +102,7 @@ benchmarkNames =
   , "tau_shared"
   , "tau_mixed"
   , "COL083-1"
+  , "ANA009-2"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -136,6 +139,9 @@ eBenchmarkNames =
   , "tau_shared"
   , "tau_mixed"
   , "COL083-1"
+  , "ALG006-1"
+  , "COL006-2"
+  , "GRP703-10"
   ]
 
 mkTest :: String -> String -> String -> TestTree

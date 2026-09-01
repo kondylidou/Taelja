@@ -12,6 +12,7 @@ import TaeljaVerify.Vampire.Hen0082
 import TaeljaVerify.Vampire.TauShared
 import TaeljaVerify.Vampire.TauMixed
 import TaeljaVerify.Vampire.Col0831
+import TaeljaVerify.Vampire.Ana0092
 import TaeljaVerify.Vampire.HornExampleDerivedRw
 import TaeljaVerify.Vampire.HornExampleElimVarRw
 import TaeljaVerify.Vampire.HornExampleEqHeadInlined
@@ -62,6 +63,8 @@ import TaeljaVerify.Twee.PaperEqCnf
 import TaeljaVerify.Twee.Sam
 import TaeljaVerify.Twee.ThesisExampleBothLemmasCnf
 import TaeljaVerify.Twee.Col0831
+import TaeljaVerify.Twee.Syn1401
+import TaeljaVerify.Twee.Lcl1261
 
 -- E prover test cases
 import TaeljaVerify.E.Ana0232
@@ -73,6 +76,9 @@ import TaeljaVerify.E.Hen0082
 import TaeljaVerify.E.TauShared
 import TaeljaVerify.E.TauMixed
 import TaeljaVerify.E.Col0831
+import TaeljaVerify.E.Grp70310
+import TaeljaVerify.E.Col0062
+import TaeljaVerify.E.Alg0061
 import TaeljaVerify.E.HornExampleDerivedRw
 import TaeljaVerify.E.HornExampleElimVarRw
 import TaeljaVerify.E.HornExampleEqHeadInlined
@@ -412,6 +418,8 @@ import TaeljaVerify.HEQ.Twee.Lcl2583
 import TaeljaVerify.HEQ.Twee.Lcl3213
 import TaeljaVerify.HEQ.Twee.Lcl4312
 import TaeljaVerify.HEQ.Twee.Lda0031
+import TaeljaVerify.HEQ.Twee.Mgt0111
+import TaeljaVerify.HEQ.Twee.Mgt0121
 import TaeljaVerify.HEQ.Twee.Puz0161
 import TaeljaVerify.HEQ.Twee.Puz0632
 import TaeljaVerify.HEQ.Twee.Rng0021
@@ -549,6 +557,7 @@ import TaeljaVerify.HEQ.Vampire.Lcl1853
 import TaeljaVerify.HEQ.Vampire.Lcl1883
 import TaeljaVerify.HEQ.Vampire.Lcl1893
 import TaeljaVerify.HEQ.Vampire.Lcl1903
+import TaeljaVerify.HEQ.Vampire.Lcl1923
 import TaeljaVerify.HEQ.Vampire.Lcl1973
 import TaeljaVerify.HEQ.Vampire.Lcl2123
 import TaeljaVerify.HEQ.Vampire.Lcl2263
@@ -1161,6 +1170,7 @@ import TaeljaVerify.HNE.Twee.Num0191
 import TaeljaVerify.HNE.Twee.Num0201
 import TaeljaVerify.HNE.Twee.Num0231
 import TaeljaVerify.HNE.Twee.Num0241
+import TaeljaVerify.HNE.Twee.Num0251
 import TaeljaVerify.HNE.Twee.Pla0031
 import TaeljaVerify.HNE.Twee.Pla0201
 import TaeljaVerify.HNE.Twee.Puz0031
@@ -1968,6 +1978,7 @@ import TaeljaVerify.UEQ.E.Col0361
 import TaeljaVerify.UEQ.E.Col0371
 import TaeljaVerify.UEQ.E.Col0391
 import TaeljaVerify.UEQ.E.Col0426
+import TaeljaVerify.UEQ.E.Col0427
 import TaeljaVerify.UEQ.E.Col0428
 import TaeljaVerify.UEQ.E.Col0441
 import TaeljaVerify.UEQ.E.Col0451
@@ -2552,6 +2563,10 @@ import TaeljaVerify.UEQ.Twee.Col0662
 import TaeljaVerify.UEQ.Twee.Col0663
 import TaeljaVerify.UEQ.Twee.Col0701
 import TaeljaVerify.UEQ.Twee.Col0752
+import TaeljaVerify.UEQ.Twee.Col0831
+import TaeljaVerify.UEQ.Twee.Col0841
+import TaeljaVerify.UEQ.Twee.Col0851
+import TaeljaVerify.UEQ.Twee.Col0861
 import TaeljaVerify.UEQ.Twee.Com0102
 import TaeljaVerify.UEQ.Twee.Csr02710
 import TaeljaVerify.UEQ.Twee.Csr04110
@@ -2849,6 +2864,7 @@ import TaeljaVerify.UEQ.Twee.Kle08410
 import TaeljaVerify.UEQ.Twee.Kle09010
 import TaeljaVerify.UEQ.Twee.Kle16910
 import TaeljaVerify.UEQ.Twee.Lat00510
+import TaeljaVerify.UEQ.Twee.Lat0061
 import TaeljaVerify.UEQ.Twee.Lat0071
 import TaeljaVerify.UEQ.Twee.Lat0081
 import TaeljaVerify.UEQ.Twee.Lat0111

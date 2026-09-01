@@ -22,7 +22,7 @@ PROVER_DIR = {"vampire": "Vampire", "e": "E", "twee": "Twee"}
 
 def to_camel(name: str) -> str:
     """ANA009-2 → Ana0092,  ALG440-1 → Alg4401"""
-    parts = re.split(r'[-_]', name)
+    parts = re.split(r'[-_.]', name)  # MSC015-1.005 -> Msc0151005 (dots are not valid in Lean names)
     return ''.join(p.capitalize() for p in parts if p)
 
 
@@ -93,14 +93,27 @@ def main():
             break
         base_lines.append(line)
 
-    # Collect ALL eval imports already present plus newly generated
-    all_eval_imports = sorted(set(
-        line.strip().removeprefix("import ")
-        for line in existing
-        if line.startswith("import TaeljaVerify.HEQ.")
-        or line.startswith("import TaeljaVerify.HNE.")
-        or line.startswith("import TaeljaVerify.UEQ.")
-    ) | set(generated))
+    # The import list mirrors the current taelja=ok rows exactly: modules of
+    # results that are no longer ok (e.g. reclassified holes) are dropped and
+    # their stale .lean files deleted, so the Lean build is a faithful census.
+    if args.only_new:
+        kept = set(
+            line.strip().removeprefix("import ")
+            for line in existing
+            if line.startswith("import TaeljaVerify.HEQ.")
+            or line.startswith("import TaeljaVerify.HNE.")
+            or line.startswith("import TaeljaVerify.UEQ.")
+        )
+    else:
+        kept = set()
+    all_eval_imports = sorted(kept | set(generated))
+    if not args.only_new:
+        wanted = set(all_eval_imports)
+        for cat in ("HEQ", "HNE", "UEQ"):
+            for pdir in PROVER_DIR.values():
+                for f in (LEAN / cat / pdir).glob("*.lean"):
+                    if f"TaeljaVerify.{cat}.{pdir}.{f.stem}" not in wanted:
+                        f.unlink()
 
     new_content = "\n".join(base_lines).rstrip()
     new_content += f"\n\n{eval_marker}\n"
