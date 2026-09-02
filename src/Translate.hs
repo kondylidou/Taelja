@@ -180,7 +180,31 @@ getElectrons pos = gets $ \s ->
   in unnamed ++ named
 
 emitGoalProof :: Literal -> ProofBlock -> AlgM ()
-emitGoalProof lit blk = modify $ \s -> s { stGoals = stGoals s ++ [(lit, blk)] }
+emitGoalProof lit blk = do
+  -- A goal variable is existential (a universal conjecture Skolemizes to a
+  -- ground negation), and several emit paths reach here with names τ never
+  -- bound (clause copies rename apart).  When the block's own conclusion is
+  -- an instance of the goal, the goal is emitted at that instance.
+  let realBinding (_, t) = case t of { Var _ -> False; _ -> True }
+      lit' | not (null (litVars lit))
+           , Just c <- blockConcl blk
+           , Just ρ <- matchLit lit c
+           , any realBinding ρ = applySubst ρ lit
+           | otherwise = lit
+  dbgFlag <- gets stDebug
+  liftIO $ dbg dbgFlag $ "[goal-emit] " ++ ppLitI lit'
+  modify $ \s -> s { stGoals = stGoals s ++ [(lit', blk)] }
+
+-- The final conclusion a proof block establishes, when syntactically evident.
+blockConcl :: ProofBlock -> Maybe Literal
+blockConcl (HaveHence ls) = case reverse ls of
+  (Hence l _ : _) -> Just l
+  (And l _ : _)   -> Just l
+  (Have l _ : _)  -> Just l
+  []              -> Nothing
+blockConcl (EqChain start steps) = case reverse steps of
+  ((_, t) : _) -> Just (Eq start t)
+  []           -> Nothing
 
 promoteToLemma :: Literal -> ProofBlock -> AlgM String
 promoteToLemma lit blk = do
@@ -1187,7 +1211,17 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                       then return False
                       else do
                         forM_ pairs $ \(gl, (ki, σi, rwi)) -> do
-                          let gl' = applySubst τ gl
+                          -- τ binds the clause copy's variable names, which can
+                          -- differ from the goal literal's (each Vampire clause
+                          -- renames apart), so remaining goal variables are
+                          -- instantiated by matching on the proved electron
+                          -- instance; they are existential (NUM025-1: the goal
+                          -- is emitted as less(b,b), not less(X,Y))
+                          let gl0 = applySubst τ gl
+                              targ = electronTarget ki σi rwi
+                              gl' = case matchLit gl0 targ of
+                                      Just ρ | not (null (litVars gl0)) -> applySubst ρ gl0
+                                      _ -> gl0
                           blk <- emitBlockForGoal gl' ki σi rwi
                           emitGoalProof gl' blk
                         forM_ unmatched $ \gl -> do
