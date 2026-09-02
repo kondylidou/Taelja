@@ -1,0 +1,66 @@
+Axiom 1: r0(b)
+Axiom 2: p0(b,X)
+Axiom 3: m0(X,d,Y)
+Axiom 4: p0(Z,X) /\ r0(A) /\ m0(Y,X,Z) => l1(X,Y)
+Axiom 5: p0(X,X) => s1(X)
+Axiom 6: q0(a,b)
+Axiom 7: q0(X,Y) /\ s1(Z) => s1(X)
+Axiom 8: s0(d)
+Axiom 9: s1(a) /\ s0(d) => s2(d)
+Axiom 10: n0(e,e)
+Axiom 11: l1(Y,X) => q2(X,X,Y)
+Axiom 12: q2(Z,X,Y) /\ n0(Z,X) => q3(X,Y)
+Axiom 13: m0(Z,A,A) /\ m0(Y,Z,X) => n1(X,X,Y)
+Axiom 14: n1(Z,X,Y) /\ s2(X) /\ q3(Y,X) => q3(X,Y)
+
+Lemma 15: s1(b)
+Proof:
+  have p0(b,b)
+    by axiom 2
+  hence s1(b)
+    by axiom 5
+
+Lemma 16: s2(d)
+Proof:
+  have q0(a,b)
+    by axiom 6
+   and s1(b)
+    by lemma 15
+  hence s1(a)
+    by axiom 7
+   and s0(d)
+    by axiom 8
+  hence s2(d)
+    by axiom 9
+
+Lemma 17: q3(e,d)
+Proof:
+  have p0(b,d)
+    by axiom 2
+   and r0(b)
+    by axiom 1
+   and m0(X,d,b)
+    by axiom 3
+  hence l1(d,X)
+    by axiom 4
+  hence q2(X,X,d)
+    by axiom 11
+   and n0(e,e)
+    by axiom 10
+  hence q3(e,d)
+    by axiom 12
+
+Goal 1: q3(d,e)
+Proof:
+  have m0(X,d,d)
+    by axiom 3
+   and m0(Y,d,d)
+    by axiom 3
+  hence n1(d,d,Y)
+    by axiom 13
+   and s2(d)
+    by lemma 16
+   and q3(e,d)
+    by lemma 17
+  hence q3(d,e)
+    by axiom 14

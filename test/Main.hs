@@ -100,6 +100,7 @@ benchmarkNames =
   , "tau_shared"
   , "tau_mixed"
   , "COL083-1"
+  , "LAT005-2"
   , "ANA009-2"
   ]
 
@@ -137,6 +138,7 @@ eBenchmarkNames =
   , "tau_shared"
   , "tau_mixed"
   , "COL083-1"
+  , "SYN179-1"
   , "ALG006-1"
   , "COL006-2"
   , "GRP703-10"

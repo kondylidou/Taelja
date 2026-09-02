@@ -21,7 +21,11 @@ PROVER_DIR = {"vampire": "Vampire", "e": "E", "twee": "Twee"}
 
 
 def to_camel(prob):
-    return prob[:3].capitalize() + prob[3:].replace("-", "")
+    # mirror regen_lean_eval.make_module_name: dots and dashes are not valid in
+    # Lean module names (MSC015-1.005 -> Msc0151005)
+    import re
+    parts = re.split(r'[-_.]', prob)
+    return parts[0].capitalize() + "".join(parts[1:])
 
 
 def check(module_rel):

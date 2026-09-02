@@ -747,10 +747,18 @@ makeBlock ki σi rwSteps = do
           -- never added to stUnits independently.  Search for an original entry
           -- whose stored atom matches ueUnit ki under some substitution σg, then
           -- instantiate its stored proof with σg.
-          case listToMaybe [ (u, σg)
-                           | u <- units
-                           , Just σg <- [matchLit (ueUnit u) (ueUnit ki)] ] of
-            Just (u, σg) ->
+          -- Prefer a match that carries a name or a stored proof: a proofless
+          -- entry from the input tree can state the same fact (RNG008-5 has
+          -- sum(X1,X2,add(X2,X1)) at 00000) and would otherwise shadow the
+          -- derived unit whose proof exists.
+          let mbCands who =
+                [ (u, sg)
+                | u <- units
+                , who u
+                , Just sg <- [matchLit (ueUnit u) (ueUnit ki)] ]
+              hasNameOrProof u = isJust (ueName u) || isJust (ueProof u)
+          in case listToMaybe (mbCands hasNameOrProof ++ mbCands (not . hasNameOrProof)) of
+            Just (u, sg) ->
               case ueName u of
                 Just nm -> return (HaveHence [Have lit nm])
                 Nothing ->
@@ -759,7 +767,7 @@ makeBlock ki σi rwSteps = do
                       | isEqChain stored -> do
                           nm <- ensureNamed (ueUnit u) (return stored)
                           return (HaveHence [Have lit nm])
-                      | otherwise -> return (applySubstBlock σg stored)
+                      | otherwise -> return (applySubstBlock sg stored)
                     Nothing -> do
                       liftIO $ hPutStrLn stderr $
                         "[warn] makeBlock: unit not in table: " ++ ppLitI (ueUnit ki)

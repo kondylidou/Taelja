@@ -1,0 +1,177 @@
+Axiom 1: join(X,n0,X)
+Axiom 2: join(r1,e,a2)
+Axiom 3: join(r1,d,b2)
+Axiom 4: join(X,Y,Z) => meet(X,Z,X)
+Axiom 5: meet(r2,b,e)
+Axiom 6: meet(X,Y,Z) => meet(Y,X,Z)
+Axiom 7: join(a,b,c2)
+Axiom 8: join(X,Y,Z) => join(Y,X,Z)
+Axiom 9: meet(Z,A,B) /\ meet(Y,A,C) /\ meet(X,Y,Z) => meet(X,C,B)
+Axiom 10: meet(r2,a,d)
+Axiom 11: meet(c2,r1,n0)
+Axiom 12: meet(Z,Y,C) /\ join(X,Z,A) /\ meet(X,Y,X) /\ join(X,C,B) => meet(Y,A,B)
+Axiom 13: meet(X,Y,Z) => join(X,Z,X)
+Axiom 14: meet(c,r2,n0)
+Axiom 15: meet(a,b,c)
+Axiom 16: meet(Y,A,C) /\ meet(X,Y,Z) /\ meet(X,C,B) => meet(Z,A,B)
+Axiom 17: meet(n0,X,n0)
+
+Lemma 18: meet(b,r2,e)
+Proof:
+  have meet(r2,b,e)
+    by axiom 5
+  hence meet(b,r2,e)
+    by axiom 6
+
+Lemma 19: meet(c2,b,b)
+Proof:
+  have join(a,b,c2)
+    by axiom 7
+  hence join(b,a,c2)
+    by axiom 8
+  hence meet(b,c2,b)
+    by axiom 4
+  hence meet(c2,b,b)
+    by axiom 6
+
+Lemma 20: meet(a,r2,d)
+Proof:
+  have meet(r2,a,d)
+    by axiom 10
+  hence meet(a,r2,d)
+    by axiom 6
+
+Lemma 21: meet(c2,a,a)
+Proof:
+  have join(a,b,c2)
+    by axiom 7
+  hence meet(a,c2,a)
+    by axiom 4
+  hence meet(c2,a,a)
+    by axiom 6
+
+Lemma 22: join(d,r1,b2)
+Proof:
+  have join(r1,d,b2)
+    by axiom 3
+  hence join(d,r1,b2)
+    by axiom 8
+
+Lemma 23: meet(d,c2,d)
+Proof:
+  have meet(r2,a,d)
+    by axiom 10
+  hence meet(a,r2,d)
+    by axiom 6
+   and meet(a,r2,d)
+    by lemma 20
+   and meet(c2,a,a)
+    by lemma 21
+  hence meet(c2,d,d)
+    by axiom 9
+  hence meet(d,c2,d)
+    by axiom 6
+
+Lemma 24: meet(c2,e,e)
+Proof:
+  have meet(r2,b,e)
+    by axiom 5
+  hence meet(b,r2,e)
+    by axiom 6
+   and meet(b,r2,e)
+    by lemma 18
+   and meet(c2,b,b)
+    by lemma 19
+  hence meet(c2,e,e)
+    by axiom 9
+
+Lemma 25: meet(r1,b2,r1)
+Proof:
+  have join(r1,d,b2)
+    by axiom 3
+  hence meet(r1,b2,r1)
+    by axiom 4
+
+Lemma 26: meet(b2,c2,d)
+Proof:
+  have meet(c2,r1,n0)
+    by axiom 11
+  hence meet(r1,c2,n0)
+    by axiom 6
+   and join(d,r1,b2)
+    by lemma 22
+   and meet(d,c2,d)
+    by lemma 23
+   and join(d,n0,d)
+    by axiom 1
+  hence meet(c2,b2,d)
+    by axiom 12
+  hence meet(b2,c2,d)
+    by axiom 6
+
+Lemma 27: meet(r2,c,n0)
+Proof:
+  have meet(c,r2,n0)
+    by axiom 14
+  hence meet(r2,c,n0)
+    by axiom 6
+
+Lemma 28: meet(d,b,n0)
+Proof:
+  have meet(a,b,c)
+    by axiom 15
+   and meet(r2,a,d)
+    by axiom 10
+   and meet(r2,c,n0)
+    by lemma 27
+  hence meet(d,b,n0)
+    by axiom 16
+
+Lemma 29: meet(d,e,n0)
+Proof:
+  have meet(n0,X,n0)
+    by axiom 17
+   and meet(b,r2,e)
+    by lemma 18
+   and meet(d,b,n0)
+    by lemma 28
+  hence meet(d,e,n0)
+    by axiom 9
+
+Lemma 30: meet(b2,e,n0)
+Proof:
+  have meet(d,e,n0)
+    by lemma 29
+   and meet(c2,e,e)
+    by lemma 24
+   and meet(b2,c2,d)
+    by lemma 26
+  hence meet(b2,e,n0)
+    by axiom 9
+
+Lemma 31: meet(e,b2,n0)
+Proof:
+  have meet(b2,e,n0)
+    by lemma 30
+  hence meet(e,b2,n0)
+    by axiom 6
+
+Lemma 32: meet(b2,a2,r1)
+Proof:
+  have meet(e,b2,n0)
+    by lemma 31
+   and join(r1,e,a2)
+    by axiom 2
+   and meet(r1,b2,r1)
+    by lemma 25
+   and join(r1,n0,r1)
+    by axiom 1
+  hence meet(b2,a2,r1)
+    by axiom 12
+
+Goal 1: meet(a2,b2,r1)
+Proof:
+  have meet(b2,a2,r1)
+    by lemma 32
+  hence meet(a2,b2,r1)
+    by axiom 6
