@@ -36,22 +36,6 @@ jobs:
       - name: Golden suite
         run: cabal test --test-show-details=direct
 
-  lean:
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install elan (Lean toolchain manager)
-        run: |
-          curl -sSf https://elan.lean-lang.org/elan-init.sh | sh -s -- -y --default-toolchain none
-          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-
-      - name: Cache Lean build
-        uses: actions/cache@v4
-        with:
-          path: lean/.lake
-          key: lake-${{ runner.os }}-${{ hashFiles('lean/lean-toolchain', 'lean/lakefile.toml') }}
-
-      - name: Verify suite proof modules
-        working-directory: lean
-        run: lake build
+# A Lean job is not feasible here: lean/TaeljaVerify.lean imports the
+# generated evaluation modules, which are local artifacts and not tracked.
+# Suite proof modules are verified locally (lake env lean per module).
