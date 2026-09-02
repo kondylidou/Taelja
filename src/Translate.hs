@@ -1322,7 +1322,12 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                                 let goalInst3 = applySubst τ' headLitG3
                                 mBlk <- tryAxiomJustification goalInst3 simpl pos
                                 case mBlk of
-                                  Just blk' -> emitGoalProof gl blk' >> return True
+                                  -- τ' grounds the goal's variables: they are
+                                  -- existential (a universal conjecture
+                                  -- Skolemizes to a ground negation), so the
+                                  -- goal is emitted at the proved instance
+                                  -- (NUM025-1: "less(b,b)", not "less(X,Y)")
+                                  Just blk' -> emitGoalProof (applySubst τ' gl) blk' >> return True
                                   Nothing   -> return False
                       else return False
 

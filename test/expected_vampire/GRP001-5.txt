@@ -1,6 +1,3 @@
-# TODO: test disabled. "product(c,a,b)" has no reconstructable proof;
-# ensureNamed falls back to "by axioms". Fix: try callTweeRelLemma,
-# but ensureNamed does not have the premise context available at that point.
 Axiom 1: product(a,b,c)
 Axiom 2: product(X,identity,X)
 Axiom 3: product(X,X,identity)
@@ -8,13 +5,35 @@ Axiom 4: product(Y,Z,A) /\ product(X,Y,B) /\ product(X,A,C) => product(B,Z,C)
 Axiom 5: product(identity,X,X)
 Axiom 6: product(B,Z,C) /\ product(Y,Z,A) /\ product(X,Y,B) => product(X,A,C)
 
+Lemma 7: product(c,b,a)
+Proof:
+  have product(b,b,identity)
+    by axiom 3
+   and product(a,b,c)
+    by axiom 1
+   and product(a,identity,a)
+    by axiom 2
+  hence product(c,b,a)
+    by axiom 4
+
+Lemma 8: product(c,a,b)
+Proof:
+  have product(identity,b,b)
+    by axiom 5
+   and product(c,b,a)
+    by lemma 7
+   and product(c,c,identity)
+    by axiom 3
+  hence product(c,a,b)
+    by axiom 6
+
 Goal 1: product(b,a,c)
 Proof:
-  have product(a,a,identity)
-    by axiom 3
-   and product(c,a,b)
-    by axioms
-   and product(c,identity,c)
+  have product(c,identity,c)
     by axiom 2
+   and product(c,a,b)
+    by lemma 8
+   and product(a,a,identity)
+    by axiom 3
   hence product(b,a,c)
     by axiom 4

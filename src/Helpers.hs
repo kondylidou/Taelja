@@ -74,12 +74,18 @@ applyConstSubstBlock s (EqChain start steps) =
           [(rw, applyConstSubstTerm s cur) | (rw, cur) <- steps]
 
 -- fails if any shared variable has conflicting bindings
+-- Extends a substitution, composing as it goes: a new binding is applied
+-- inside the ranges of the existing entries (and the existing entries inside
+-- the new term), so a single-pass application of the result is complete.
+-- Without this, X ↦ X'_e followed by X'_e ↦ e left the head with a dangling
+-- X'_e, printing an instance-only fact as a general lemma (SYN179-1).
 extendSubst :: Subst -> Subst -> Maybe Subst
 extendSubst base []           = Just base
 extendSubst base ((x,t):rest) =
-  case lookup x base of
-    Nothing -> extendSubst ((x,t):base) rest
-    Just t' -> if t == t' then extendSubst base rest else Nothing
+  let t1 = applySubstTerm base t
+  in case lookup x base of
+    Nothing -> extendSubst ((x, t1) : [ (y, applySubstTerm [(x, t1)] u) | (y, u) <- base ]) rest
+    Just t' -> if t1 == t' then extendSubst base rest else Nothing
 
 -- threads an existing substitution so multiple patterns can share bindings
 matchTerm :: Term -> Term -> Subst -> Maybe Subst

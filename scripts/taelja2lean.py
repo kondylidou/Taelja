@@ -1612,7 +1612,9 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                         [f'ax{n}' for n in sorted(axiom_types)]
                         + [f'taelja_lemma{n}' for n in sorted(lemma_types)]
                     )
-                    try_parts = [close_tac] + [f'apply {n} <;> ({close_tac})' for n in all_names] + ['sorry']
+                    # the last arm must be a hard error, never `sorry`: a warning would
+                    # let an unproved step pass the census
+                    try_parts = [close_tac] + [f'apply {n} <;> ({close_tac})' for n in all_names] + ['exact taelja_hole_unproved']
                     fallback_tac = 'first | ' + ' | '.join(f'({p})' for p in try_parts)
                     if lit_has_new_vars:
                         fvars_str = ' '.join(svm[v] for v in new_vars)

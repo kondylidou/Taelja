@@ -5,3 +5,4 @@ dist-newstyle/
 benchmarking/
 eval_out/
 lean/
+__pycache__/
