@@ -8,6 +8,7 @@ module LemmaBuilder
   ) where
 
 import Control.Monad (when)
+import Control.Applicative ((<|>))
 import Data.List (intercalate, nub)
 import Data.Maybe (fromJust, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe, maybeToList)
 import Data.Attoparsec.Text (eitherResult, feed)
@@ -323,7 +324,11 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                   let ancOvr = Map.fromList
                         [ (ancInputName aname, dn)
                         | aname <- Set.toList ancNames
-                        , Just dn <- [Map.lookup (resolveSourceName unitMap aname) tstp2name] ]
+                        -- tstp2name may be keyed by the leaf name itself or by
+                        -- its resolved source (E copies axioms through bare
+                        -- unit references), so both are consulted
+                        , Just dn <- [ Map.lookup (resolveSourceName unitMap aname) tstp2name
+                                       <|> Map.lookup aname tstp2name ] ]
                       nameOvr = Map.union ancOvr (syntheticOverrides bodyLits_sk)
                   msp <- translateFn nameOvr debug tstp
                   return (msp >>= liftSubProof cname lit undoMap)

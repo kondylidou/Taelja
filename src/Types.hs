@@ -93,7 +93,6 @@ data AlgState = AlgState
   , stLemmas     :: [(String, Literal, ProofBlock)]
   , stGoals      :: [(Literal, ProofBlock)]
   , stCounter    :: Int
-  , stGoalVars   :: Set.Set String  -- vars in goal lits; free vars in promoted lemmas must be ⊆ this
   , stAxNuclei   :: [(String, Clause)] -- original axiom nuclei (name, clause) for goal justification search
   }
 

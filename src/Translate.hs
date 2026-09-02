@@ -212,6 +212,7 @@ promoteToLemma lit blk = do
   -- an instance of an axiom or lemma under the same (composed) bindings, so
   -- the block proves the lemma for all values of them.
   do
+      -- (kept as a nested block to preserve indentation of the long body)
       -- skip counter values whose name is already taken (a lemma candidate is
       -- named "lemma <tstp-name>", and TSTP unit names may be numeric)
       taken <- gets (\s -> Set.fromList (map (\(n, _, _) -> n) (stLemmas s))
@@ -1532,7 +1533,7 @@ proveGoal mChain goal = do
           axNuclei <- gets stAxNuclei
           let provableElecs = filter (\ue -> isJust (ueName ue) || isJust (ueProof ue)) allElecs
               -- Only ground proof-less electrons: non-ground literals cannot be
-              -- promoted as named lemmas (promoteToLemma crashes when shouldBlock=True).
+              -- promoted as named lemmas (conservative: only ground proofless electrons are promoted here).
               prooflessElecs = filter (\ue -> isNothing (ueName ue) && isNothing (ueProof ue)
                                            && ueUnit ue /= goal
                                            && null (litVars (ueUnit ue))) allElecs
@@ -1896,7 +1897,6 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
       allNuclei   = sortBy (comparing lePos) (leafNuclei ++ (if strict then [] else innerNus))
 
       nAll = length axiomList + length bgAxiomList
-      goalVarSet = Set.fromList (concatMap litVars goalLits')
       axNucleiList = [ (nm, cl) | e <- piNuclei info
                                  , leRole e == OrigAxiom
                                  , let nm = fromMaybe (leName e) (Map.lookup (lePos e) posToName)
@@ -1922,7 +1922,6 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , stLemmas     = preLemmaEntries
         , stGoals      = []
         , stCounter    = nAll + 1
-        , stGoalVars   = goalVarSet
         , stAxNuclei   = axNucleiList
         }
 
