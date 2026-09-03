@@ -1,0 +1,242 @@
+# Preprocessing class: FSMSSMSSSSSNFFN.
+# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+# No SInE strategy applied
+# Search class: FHUSM-FFSF21-SFFFFFNN
+# Configuration: G-E--_208_C18_F1_AE_CS_SP_PI_S0a
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_22, negated_conjecture, (inverse(c)!=d)).
+#
+#cnf(i_0_20, hypothesis, (product(a,b,c))).
+#
+#cnf(i_0_21, hypothesis, (product(inverse(b),inverse(a),d))).
+#
+#cnf(i_0_13, plain, (product(X1,identity,X1))).
+#
+#cnf(i_0_12, plain, (product(identity,X1,X1))).
+#
+#cnf(i_0_15, plain, (product(X1,inverse(X1),identity))).
+#
+#cnf(i_0_14, plain, (product(inverse(X1),X1,identity))).
+#
+#cnf(i_0_16, plain, (product(X1,X2,multiply(X1,X2)))).
+#
+#cnf(i_0_17, plain, (X3=X4|~product(X1,X2,X4)|~product(X1,X2,X3))).
+#
+#cnf(i_0_19, plain, (product(X3,X4,X6)|~product(X2,X4,X5)|~product(X1,X5,X6)|~product(X1,X2,X3))).
+#
+#cnf(i_0_18, plain, (product(X1,X5,X6)|~product(X3,X4,X6)|~product(X2,X4,X5)|~product(X1,X2,X3))).
+#
+#cnf(i_0_23, hypothesis, (c=X1|~product(a,b,X1))).
+#
+#cnf(i_0_77, hypothesis, (multiply(a,b)=c)).
+##
+#cnf(i_0_24, hypothesis, (d=X1|~product(inverse(b),inverse(a),X1))).
+#
+#cnf(i_0_79, hypothesis, (multiply(inverse(b),inverse(a))=d)).
+#
+#cnf(i_0_25, plain, (identity=X1|~product(inverse(X2),X2,X1))).
+#
+#cnf(i_0_81, plain, (inverse(identity)=identity)).
+#
+#cnf(i_0_26, plain, (X1=X2|~product(identity,X1,X2))).
+#
+#cnf(i_0_28, plain, (X1=X2|~product(X1,identity,X2))).
+###
+#cnf(i_0_87, plain, (multiply(identity,X1)=X1)).
+#
+#cnf(i_0_89, plain, (multiply(X1,identity)=X1)).
+#
+#cnf(i_0_82, plain, (multiply(inverse(X1),X1)=identity)).
+###
+#cnf(i_0_27, plain, (identity=X1|~product(X2,inverse(X2),X1))).
+#
+#cnf(i_0_97, plain, (multiply(X1,inverse(X1))=identity)).
+####
+#cnf(i_0_29, plain, (multiply(X1,X2)=X3|~product(X1,X2,X3))).
+##
+#cnf(i_0_43, hypothesis, (product(X1,X2,c)|~product(X3,X2,b)|~product(a,X3,X1))).
+#
+#cnf(i_0_107, hypothesis, (product(a,X1,c)|~product(identity,X1,b))).
+#
+#cnf(i_0_109, hypothesis, (product(X1,identity,c)|~product(a,b,X1))).
+#
+#cnf(i_0_108, hypothesis, (product(multiply(a,X1),X2,c)|~product(X1,X2,b))).
+#
+#cnf(i_0_37, hypothesis, (product(d,X1,X2)|~product(inverse(a),X1,X3)|~product(inverse(b),X3,X2))).
+#
+#cnf(i_0_119, hypothesis, (product(d,X1,identity)|~product(inverse(a),X1,b))).
+#
+#cnf(i_0_39, plain, (product(X1,X2,X3)|~product(identity,X4,X3)|~product(X1,X2,X4))).
+#
+#cnf(i_0_127, plain, (product(X1,identity,X2)|~product(identity,X1,X2))).
+#
+#cnf(i_0_122, hypothesis, (product(a,b,X1)|~product(identity,c,X1))).
+#
+#cnf(i_0_124, plain, (product(inverse(X1),X1,X2)|~product(identity,identity,X2))).
+#
+#cnf(i_0_123, hypothesis, (product(inverse(b),inverse(a),X1)|~product(identity,d,X1))).
+#
+#cnf(i_0_118, hypothesis, (product(d,X1,d)|~product(inverse(a),X1,inverse(a)))).
+#
+#cnf(i_0_116, hypothesis, (product(d,X1,inverse(b))|~product(inverse(a),X1,identity))).
+#
+#cnf(i_0_146, hypothesis, (product(d,a,inverse(b)))).
+#
+#cnf(i_0_147, hypothesis, (multiply(d,a)=inverse(b))).
+#
+#cnf(i_0_38, plain, (product(identity,X1,X2)|~product(inverse(X3),X4,X2)|~product(X3,X1,X4))).
+#
+#cnf(i_0_145, hypothesis, (product(d,inverse(inverse(a)),inverse(b)))).
+#
+#cnf(i_0_149, hypothesis, (X1=inverse(b)|~product(d,a,X1))).
+##
+#cnf(i_0_166, plain, (product(identity,X1,identity)|~product(X2,X1,X2))).
+#
+#cnf(i_0_126, plain, (product(X1,inverse(X1),X2)|~product(identity,identity,X2))).
+#
+#cnf(i_0_167, hypothesis, (multiply(d,inverse(inverse(a)))=inverse(b))).
+#
+#cnf(i_0_169, hypothesis, (X1=inverse(b)|~product(d,inverse(inverse(a)),X1))).
+##
+#cnf(i_0_148, hypothesis, (product(d,a,X1)|~product(identity,inverse(b),X1))).
+#
+#cnf(i_0_165, hypothesis, (product(identity,X1,d)|~product(b,X1,inverse(a)))).
+#
+#cnf(i_0_40, plain, (product(identity,X1,X2)|~product(inverse(X3),X1,X4)|~product(X3,X4,X2))).
+#
+#cnf(i_0_196, hypothesis, (product(identity,inverse(a),X1)|~product(b,d,X1))).
+#
+#cnf(i_0_197, plain, (product(identity,X1,X2)|~product(X1,identity,X2))).
+#
+#cnf(i_0_190, plain, (product(identity,X1,X2)|~product(inverse(X2),X1,identity))).
+#
+#cnf(i_0_194, plain, (product(identity,identity,X1)|~product(X2,inverse(X2),X1))).
+#
+#cnf(i_0_128, plain, (product(X1,X2,X3)|~product(identity,multiply(X1,X2),X3))).
+#
+#cnf(i_0_204, plain, (product(identity,inverse(inverse(X1)),X1))).
+#
+#cnf(i_0_220, plain, (inverse(inverse(X1))=X1)).
+####
+#cnf(i_0_41, plain, (product(X1,X2,X3)|~product(identity,X2,X4)|~product(X1,X4,X3))).
+#
+#cnf(i_0_198, hypothesis, (product(identity,inverse(a),multiply(b,d)))).
+#
+#cnf(i_0_257, plain, (product(X1,X2,X1)|~product(identity,X2,identity))).
+####
+#cnf(i_0_263, hypothesis, (multiply(b,d)=inverse(a))).
+#
+#cnf(i_0_282, hypothesis, (product(b,d,inverse(a)))).
+#
+#cnf(i_0_286, hypothesis, (X1=inverse(a)|~product(b,d,X1))).
+###
+#cnf(i_0_42, plain, (product(multiply(X1,X2),X3,X4)|~product(X2,X3,X5)|~product(X1,X5,X4))).
+#
+#cnf(i_0_291, hypothesis, (product(b,X1,inverse(a))|~product(identity,X1,d))).
+#
+#cnf(i_0_256, plain, (product(X1,X2,identity)|~product(identity,X2,inverse(X1)))).
+#
+#cnf(i_0_249, plain, (product(identity,identity,X1)|~product(inverse(X2),X2,X1))).
+###
+#cnf(i_0_251, hypothesis, (product(d,X1,inverse(b))|~product(identity,X1,a))).
+#
+#cnf(i_0_283, hypothesis, (product(b,d,X1)|~product(identity,inverse(a),X1))).
+###
+#cnf(i_0_253, hypothesis, (product(inverse(b),X1,d)|~product(identity,X1,inverse(a)))).
+#
+#cnf(i_0_44, hypothesis, (product(X1,X2,d)|~product(X3,X2,inverse(a))|~product(inverse(b),X3,X1))).
+###
+#cnf(i_0_163, plain, (product(identity,X1,inverse(X2))|~product(X2,X1,identity))).
+##
+#cnf(i_0_254, plain, (product(inverse(X1),X2,identity)|~product(identity,X2,X1))).
+####
+#cnf(i_0_332, hypothesis, (product(X1,inverse(a),d)|~product(inverse(b),identity,X1))).
+##
+#cnf(i_0_45, plain, (product(X1,X2,identity)|~product(inverse(X4),X3,X1)|~product(X3,X2,X4))).
+###
+#cnf(i_0_343, plain, (product(X1,X2,identity)|~product(identity,inverse(X2),X1))).
+#
+#cnf(i_0_355, plain, (product(X1,identity,identity)|~product(identity,identity,X1))).
+#
+#cnf(i_0_344, plain, (product(X1,X2,identity)|~product(inverse(X2),identity,X1))).
+###
+#cnf(i_0_120, hypothesis, (product(d,a,X1)|~product(inverse(b),identity,X1))).
+#
+#cnf(i_0_345, plain, (product(X1,inverse(X2),identity)|~product(identity,X2,X1))).
+##
+#cnf(i_0_46, plain, (product(X1,X2,X3)|~product(identity,X4,X1)|~product(X4,X2,X3))).
+#
+#cnf(i_0_375, hypothesis, (product(X1,b,c)|~product(identity,a,X1))).
+#
+#cnf(i_0_378, plain, (product(X1,X2,X2)|~product(identity,identity,X1))).
+#
+#cnf(i_0_380, plain, (product(X1,identity,X2)|~product(identity,X2,X1))).
+###
+#cnf(i_0_373, hypothesis, (product(X1,a,inverse(b))|~product(identity,d,X1))).
+#
+#cnf(i_0_374, hypothesis, (product(X1,d,inverse(a))|~product(identity,b,X1))).
+#
+#cnf(i_0_376, hypothesis, (product(X1,inverse(a),d)|~product(identity,inverse(b),X1))).
+#
+#cnf(i_0_362, plain, (product(X1,inverse(X2),identity)|~product(X2,identity,X1))).
+##
+#cnf(i_0_47, plain, (product(X1,X2,identity)|~product(X3,X2,inverse(X4))|~product(X4,X3,X1))).
+#
+#cnf(i_0_410, hypothesis, (product(X1,a,identity)|~product(b,d,X1))).
+#
+#cnf(i_0_411, hypothesis, (product(X1,d,identity)|~product(a,b,X1))).
+#
+#cnf(i_0_416, hypothesis, (product(c,d,identity))).
+#
+#cnf(i_0_420, hypothesis, (X1=identity|~product(c,d,X1))).
+##
+#cnf(i_0_418, hypothesis, (multiply(c,d)=identity)).
+###
+#cnf(i_0_430, hypothesis, (product(identity,d,inverse(c)))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(associativity2, axiom, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', associativity2)).
+cnf(right_inverse, axiom, (product(X1,inverse(X1),identity)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_inverse)).
+cnf(total_function2, axiom, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function2)).
+cnf(inverse_b_multiply_inverse_a_is_d, hypothesis, (product(inverse(b),inverse(a),d)), file('Problems/GRP/GRP012-2.p', inverse_b_multiply_inverse_a_is_d)).
+cnf(left_identity, axiom, (product(identity,X1,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', left_identity)).
+cnf(total_function1, axiom, (product(X1,X2,multiply(X1,X2))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function1)).
+cnf(a_multiply_b_is_c, hypothesis, (product(a,b,c)), file('Problems/GRP/GRP012-2.p', a_multiply_b_is_c)).
+cnf(left_inverse, axiom, (product(inverse(X1),X1,identity)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', left_inverse)).
+cnf(right_identity, axiom, (product(X1,identity,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
+cnf(prove_c_inverse_equals_d, negated_conjecture, (inverse(c)!=d), file('Problems/GRP/GRP012-2.p', prove_c_inverse_equals_d)).
+cnf(c_0_10, plain, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), inference(fof_simplification,[status(thm)],[associativity2])).
+cnf(c_0_11, plain, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), c_0_10).
+cnf(c_0_12, axiom, (product(X1,inverse(X1),identity)), right_inverse).
+cnf(c_0_13, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), inference(fof_simplification,[status(thm)],[total_function2])).
+cnf(c_0_14, plain, (product(identity,X1,X2)|~product(inverse(X3),X1,X4)|~product(X3,X4,X2)), inference(spm,[status(thm)],[c_0_11, c_0_12])).
+cnf(c_0_15, hypothesis, (product(inverse(b),inverse(a),d)), inverse_b_multiply_inverse_a_is_d).
+cnf(c_0_16, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), c_0_13).
+cnf(c_0_17, axiom, (product(identity,X1,X1)), left_identity).
+cnf(c_0_18, axiom, (product(X1,X2,multiply(X1,X2))), total_function1).
+cnf(c_0_19, hypothesis, (product(identity,inverse(a),X1)|~product(b,d,X1)), inference(spm,[status(thm)],[c_0_14, c_0_15])).
+cnf(c_0_20, plain, (X1=X2|~product(identity,X1,X2)), inference(spm,[status(thm)],[c_0_16, c_0_17])).
+cnf(c_0_21, plain, (multiply(X1,X2)=X3|~product(X1,X2,X3)), inference(spm,[status(thm)],[c_0_16, c_0_18])).
+cnf(c_0_22, hypothesis, (product(identity,inverse(a),multiply(b,d))), inference(spm,[status(thm)],[c_0_19, c_0_18])).
+cnf(c_0_23, plain, (multiply(identity,X1)=X1), inference(spm,[status(thm)],[c_0_20, c_0_18])).
+cnf(c_0_24, hypothesis, (multiply(b,d)=inverse(a)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_21, c_0_22]), c_0_23])).
+cnf(c_0_25, hypothesis, (product(a,b,c)), a_multiply_b_is_c).
+cnf(c_0_26, axiom, (product(inverse(X1),X1,identity)), left_inverse).
+cnf(c_0_27, plain, (product(X1,X2,identity)|~product(X3,X2,inverse(X4))|~product(X4,X3,X1)), inference(spm,[status(thm)],[c_0_11, c_0_12])).
+cnf(c_0_28, hypothesis, (product(b,d,inverse(a))), inference(spm,[status(thm)],[c_0_18, c_0_24])).
+cnf(c_0_29, hypothesis, (c=X1|~product(a,b,X1)), inference(spm,[status(thm)],[c_0_16, c_0_25])).
+cnf(c_0_30, plain, (product(identity,X1,X2)|~product(inverse(X3),X4,X2)|~product(X3,X1,X4)), inference(spm,[status(thm)],[c_0_11, c_0_26])).
+cnf(c_0_31, axiom, (product(X1,identity,X1)), right_identity).
+cnf(c_0_32, hypothesis, (product(X1,d,identity)|~product(a,b,X1)), inference(spm,[status(thm)],[c_0_27, c_0_28])).
+cnf(c_0_33, hypothesis, (multiply(a,b)=c), inference(spm,[status(thm)],[c_0_29, c_0_18])).
+cnf(c_0_34, plain, (product(identity,X1,inverse(X2))|~product(X2,X1,identity)), inference(spm,[status(thm)],[c_0_30, c_0_31])).
+cnf(c_0_35, hypothesis, (product(c,d,identity)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_32, c_0_18]), c_0_33])).
+cnf(c_0_36, negated_conjecture, (inverse(c)!=d), inference(fof_simplification,[status(thm)],[prove_c_inverse_equals_d])).
+cnf(c_0_37, hypothesis, (product(identity,d,inverse(c))), inference(spm,[status(thm)],[c_0_34, c_0_35])).
+cnf(c_0_38, negated_conjecture, (inverse(c)!=d), c_0_36).
+cnf(c_0_39, hypothesis, ($false), inference(sr,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_21, c_0_37]), c_0_23]), c_0_38]), ['proof']).
+# SZS output end CNFRefutation

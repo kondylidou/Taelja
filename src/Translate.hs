@@ -14,8 +14,11 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
+import Data.IORef (modifyIORef', newIORef, readIORef, writeIORef)
+import GHC.Clock (getMonotonicTime)
 import System.Environment (lookupEnv)
 import System.CPUTime (getCPUTime)
+import System.Timeout (timeout)
 import System.IO (hPutStrLn, stderr)
 
 import Types
@@ -38,6 +41,28 @@ translateWith strict nameOverride debug (T.TSTP _ units) =
     Just origInfo ->
       Just <$> runAlgorithm debug strict origInfo units Map.empty nameOverride Nothing
 
+-- Two-stage recursive entry point for re-proving derived units mid-run: the
+-- heuristic stage first, the strict stage when it errors or leaves the goal
+-- unproved, exactly like translate.  A sub-run started with a single fixed
+-- stage misses proofs the other stage finds (a rw-folded nucleus conclusion
+-- misleads the heuristic theta, non-ground intermediates defeat the strict
+-- one), and the re-proved unit only needs some complete sub-proof.
+translateWithBoth :: Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
+translateWithBoth nameOverride debug tstp = do
+  rH <- try (translateWith False nameOverride debug tstp)
+          :: IO (Either SomeException (Maybe StructuredProof))
+  let mH = either (const Nothing) id rH
+  case mH of
+    Just sp | not (hasHole sp) -> return (Just sp)
+    _ -> do
+      rS <- try (translateWith True nameOverride debug tstp)
+              :: IO (Either SomeException (Maybe StructuredProof))
+      let mS = either (const Nothing) id rS
+      return $ case (mH, mS) of
+        (Just h, Just st) | provenGoals st > provenGoals h -> Just st
+        (Nothing, Just st) | provenGoals st > 0            -> Just st
+        _                                                  -> mH
+
 -- Two translation strategies, tried in this order:
 --   1. the heuristic translation: θ|pos is read off the conclusion directly
 --      above each nucleus (ground bindings only), so derived electrons keep
@@ -51,48 +76,74 @@ translateWith strict nameOverride debug (T.TSTP _ units) =
 --      lemma candidates proved by translating their own sub-DAG, one canonical
 --      axiom numbering.  Needed e.g. for Twee proofs whose intermediate lemmas
 --      are non-ground (HEN006-4).
+-- one unproved goal (empty block) is enough to try strict mode: a single
+-- proven goal must not mask the hole in a multi-goal proof
+hasHole :: StructuredProof -> Bool
+hasHole sp = null (goals sp) || any badGoal (goals sp)
+
+provenGoals :: StructuredProof -> Int
+provenGoals sp = length [ () | g <- goals sp, not (badGoal g) ]
+
+-- a goal block that opens with "hence" has no premise line: the
+-- fallback that assembles goal proofs from Twee chains can emit these,
+-- and they are not valid proofs (nothing establishes the first step).
+-- A zero-step chain is a hole unless the goal is reflexive (t = t).
+badGoal :: (Literal, ProofBlock) -> Bool
+badGoal (Eq a c, EqChain _ []) | a == c = False
+badGoal (_, b) = isEmptyBlock b || case b of
+  HaveHence (Hence _ _ : _) -> True
+  _                         -> False
+
 translate :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translate debug tstp = do
   -- TAELJA_STRICT=1 forces the strict paper translation (experiments/evaluation)
   forceStrict <- maybe False (== "1") <$> lookupEnv "TAELJA_STRICT"
-  (mHeur, errHeur) <- if forceStrict then return (Nothing, Nothing)
-                      else tryStage False tstp debug
-  case mHeur of
-    Just sp | not (hasHole sp) -> return (Just sp)
+  writeIORef rescueEnabled False
+  r1@(mRes1, errH1, errS1) <- runStages forceStrict
+  (mRes, errH, errS) <- case mRes1 of
+    Just sp | not (hasHole sp) -> return r1
     _ -> do
-      when debug $ hPutStrLn stderr "translate: heuristic translation left a goal unproved; trying strict mode"
-      (mStrict, errStrict) <- tryStage True tstp debug
-      -- keep whichever result proves more goals (ties go to the heuristic:
-      -- its proofs are the compact ones)
-      let result = case (mHeur, mStrict) of
-            (Just h, Just st) | provenGoals st > provenGoals h -> Just st
-            (Nothing, Just st) | provenGoals st > 0            -> Just st
-            _                                                  -> mHeur
-      case result of
-        Just sp | hasHole sp -> hPutStrLn stderr $
-          "[warn] translate: " ++ show (length (goals sp) - provenGoals sp)
-          ++ " goal(s) unproved in the final proof"
-        -- both stages produced nothing: name the crashes so a failed run is
-        -- diagnosable without --debug (the run fails either way, so this
-        -- cannot violate the eval warning contract for successful runs)
-        Nothing -> hPutStrLn stderr $ "translate: translation failed"
-          ++ maybe "" ("; heuristic stage: " ++) errHeur
-          ++ maybe "" ("; strict stage: " ++) errStrict
-        _ -> return ()
-      return result
+      -- incomplete: one more full attempt with re-proving enabled, under a
+      -- wall-clock budget (TAELJA_RESCUE_TIMEOUT seconds, default 30)
+      budget <- timeoutSecsFromEnv "TAELJA_RESCUE_TIMEOUT" 30
+      now    <- getMonotonicTime
+      writeIORef rescueDeadline (now + fromIntegral budget)
+      writeIORef rescueEnabled True
+      when debug $ hPutStrLn stderr "translate: incomplete result; retrying with re-proving enabled"
+      r2@(mRes2, errH2, errS2) <- runStages forceStrict
+      return $ case (mRes1, mRes2) of
+        (Just a, Just b) | provenGoals b > provenGoals a -> r2
+        (Nothing, Just b) | provenGoals b > 0            -> r2
+        (Nothing, Nothing) -> (Nothing, errH2 <|> errH1, errS2 <|> errS1)
+        _                  -> r1
+  case mRes of
+    Just sp | hasHole sp -> hPutStrLn stderr $
+      "[warn] translate: " ++ show (length (goals sp) - provenGoals sp)
+      ++ " goal(s) unproved in the final proof"
+    -- both stages produced nothing: name the crashes so a failed run is
+    -- diagnosable without --debug (the run fails either way, so this
+    -- cannot violate the eval warning contract for successful runs)
+    Nothing -> hPutStrLn stderr $ "translate: translation failed"
+      ++ maybe "" ("; heuristic stage: " ++) errH
+      ++ maybe "" ("; strict stage: " ++) errS
+    _ -> return ()
+  return mRes
   where
-    -- one unproved goal (empty block) is enough to try strict mode: a single
-    -- proven goal must not mask the hole in a multi-goal proof
-    hasHole sp = null (goals sp) || any badGoal (goals sp)
-    provenGoals sp = length [ () | g <- goals sp, not (badGoal g) ]
-    -- a goal block that opens with "hence" has no premise line: the
-    -- fallback that assembles goal proofs from Twee chains can emit these,
-    -- and they are not valid proofs (nothing establishes the first step).
-    -- A zero-step chain is a hole unless the goal is reflexive (t = t).
-    badGoal (Eq a c, EqChain _ []) | a == c = False
-    badGoal (_, b) = isEmptyBlock b || case b of
-      HaveHence (Hence _ _ : _) -> True
-      _                         -> False
+    runStages forceStrict = do
+      (mHeur, errHeur) <- if forceStrict then return (Nothing, Nothing)
+                          else tryStage False tstp debug
+      case mHeur of
+        Just sp | not (hasHole sp) -> return (Just sp, errHeur, Nothing)
+        _ -> do
+          when debug $ hPutStrLn stderr "translate: heuristic translation left a goal unproved; trying strict mode"
+          (mStrict, errStrict) <- tryStage True tstp debug
+          -- keep whichever result proves more goals (ties go to the heuristic:
+          -- its proofs are the compact ones)
+          let result = case (mHeur, mStrict) of
+                (Just h, Just st) | provenGoals st > provenGoals h -> Just st
+                (Nothing, Just st) | provenGoals st > 0            -> Just st
+                _                                                  -> mHeur
+          return (result, errHeur, errStrict)
     -- a crash inside one stage (e.g. an unprovable unit hitting an error call
     -- deep in the matcher) counts as that stage producing nothing, so the
     -- other stage still gets its chance
@@ -252,13 +303,13 @@ ensureNamed lit buildBlk = do
             Nothing  -> do
               blk <- buildBlk
               case blk of
-                HaveHence [] -> tryRelLemma units lit
+                HaveHence [] -> tryRelLemma units lit (uePos ue)
                 HaveHence [Have _ nm] -> return nm
                 _                   -> promoteToLemma lit blk
     Nothing -> do
       blk <- buildBlk
       case blk of
-        HaveHence [] -> tryRelLemma units lit
+        HaveHence [] -> tryRelLemma units lit (uePos =<< find (\u -> isJust (matchLit (ueUnit u) lit)) units)
         -- Single "have lit by name" with no further steps: inline the name
         -- directly rather than wrapping in a trivial lemma.  This covers both
         -- ground axiom instances (e.g. product(a,a,identity) by axiom 3) and
@@ -275,16 +326,28 @@ ensureNamed lit buildBlk = do
 -- to a lemma, which then serves as the justification for the parent step.
 -- Per the paper, a non-equational atom proved by an equality chain rewrites
 -- subterms until the atom matches a proved unit, ending with ≈ true.
-tryRelLemma :: [UnitEntry] -> Literal -> AlgM String
-tryRelLemma units lit = do
+tryRelLemma :: [UnitEntry] -> Literal -> Maybe String -> AlgM String
+tryRelLemma units lit mPos = do
   let relOrEqUnits = filter (\ue' -> isJust (ueName ue') || isEqLit (ueUnit ue')) units
   mRes <- liftIO (callTwee InternalBudget relOrEqUnits lit)
   case mRes of
     Just (start, chain) | not (null chain) -> do
       steps <- mapM promoteChainStep chain
       promoteToLemma lit (EqChain start steps)
-    _ ->
-      error ("ensureNamed: no proof found for: " ++ show lit)
+    _ -> do
+      -- last resort: re-prove the unit from its ancestry (the same
+      -- machinery as lemma introduction), when its position is known
+      mRe <- case mPos of
+        Nothing  -> return Nothing
+        Just pos -> do
+          reprove <- gets stReprove
+          liftIO (reprove pos)
+      case mRe of
+        Just (glit, gblk, subs) -> do
+          modify $ \st -> st { stLemmas = stLemmas st ++ subs }
+          promoteToLemma glit gblk
+        Nothing ->
+          error ("ensureNamed: no proof found for: " ++ show lit)
 
 -- Length of common prefix of two strings.
 commonPrefixLen :: String -> String -> Int
@@ -603,13 +666,40 @@ findElecIO li τ pos units = case li of
                     ki  = UnitEntry Nothing li (Just blk) (Just pos)
                 addUnit ki
                 return (Just (ki, [], τ, []))
-              else tryHornFallback
-          _ -> tryHornFallback
+              else tryHornThenReprove
+          _ -> tryHornThenReprove
         where
           start = case li of { Rel n as -> if null as then Const n else App n as; _ -> Const "?" }
           -- A Twee refutation of the negated goal shows an instance of a
           -- non-ground atom, which cannot certify it as a general electron;
           -- only ground atoms are worth the (budgeted) call.
+          tryHornThenReprove = do
+            mH <- tryHornFallback
+            case mH of
+              Just r  -> return (Just r)
+              Nothing -> tryReproveElec
+          -- last resort: an unnamed proof-less derived unit matching the body
+          -- atom is re-proved from its own ancestry in the input proof and
+          -- promoted to a lemma (the unit's deriving nucleus may have been
+          -- processed and skipped before the units it depends on had proofs)
+          tryReproveElec = do
+            reprove <- gets stReprove
+            let cands = [ (u, σi, τ'')
+                        | u <- units
+                        , isNothing (ueName u), isNothing (ueProof u)
+                        , isJust (uePos u)
+                        , Just (σi, τ'') <- [tryMatch li (ueUnit u) τ] ]
+                tryOne (u, σi, τ'') = do
+                  mRe <- liftIO (reprove (fromJust (uePos u)))
+                  case mRe of
+                    Nothing -> return Nothing
+                    Just (glit, gblk, subs) -> do
+                      modify $ \st -> st { stLemmas = stLemmas st ++ subs }
+                      nm <- promoteToLemma glit gblk
+                      return (Just (u { ueName = Just nm }, σi, τ'', []))
+                goRe [] = return Nothing
+                goRe (c:cs) = tryOne c >>= maybe (goRe cs) (return . Just)
+            goRe cands
           tryHornFallback
             | not (null (litVars li)) = return Nothing
             | otherwise = do
@@ -761,9 +851,25 @@ makeBlock ki σi rwSteps = do
                       nm <- ensureNamed (ueUnit u) (return blk)
                       return (HaveHence [Have lit nm])
                     Nothing -> do
-                      liftIO $ hPutStrLn stderr $
-                        "[warn] makeBlock: cannot prove unnamed eq unit: " ++ ppLitI (ueUnit ki)
-                      return (EqChain l [])
+                      -- Twee cannot derive it from named units alone: re-prove
+                      -- it from its ancestry, as lemma introduction would
+                      mRe <- case uePos u of
+                        Nothing  -> return Nothing
+                        Just pos -> do
+                          reprove <- gets stReprove
+                          liftIO (reprove pos)
+                      case mRe of
+                        Just (glit, gblk, subs) -> do
+                          modify $ \st -> st { stLemmas = stLemmas st ++ subs }
+                          nm <- promoteToLemma glit gblk
+                          return (HaveHence [Have lit nm])
+                        Nothing -> do
+                          -- premature inside a stage: the rescue pass or the
+                          -- other stage can still complete the proof, and
+                          -- translate prints the authoritative summary
+                          dbgWarn $
+                            "makeBlock: cannot prove unnamed eq unit: " ++ ppLitI (ueUnit ki)
+                          return (EqChain l [])
                 _ -> do
                   let namedUnits = filter (isJust . ueName) units
                       mNamed = listToMaybe
@@ -1856,6 +1962,8 @@ runAlgorithm
   -> Maybe [Axiom]               -- emitted axiom list (canonical); Nothing: derive from this tree
   -> IO StructuredProof
 runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms = do
+  -- one re-proof attempt per tree position; repeated failures are free
+  reproveCache <- newIORef (Map.empty :: Map.Map String (Maybe BuiltLemma))
   let unitMap    = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
       thetaCtx   = ThetaCtx strict (piElectrons info ++ piNuclei info) (piDeclAt info)
       goalLits'  = map convertLit (piGoalLits info)
@@ -1988,6 +2096,41 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , Just hl <- [headLitOf (leDecl e)]
         , not (isEqLit (convertLit hl))
         ]
+      -- Re-prove the derived unit at a tree position from its ancestry via
+      -- the lemma builder (its own sub-DAG first, then a Twee or E sub-proof,
+      -- translated recursively).  mFixedAxioms is Nothing exactly for the
+      -- recursive translations the lemma builder itself starts; those only
+      -- get the sub-DAG route, whose ancestry strictly shrinks per nesting
+      -- level, so re-proving cannot recurse unboundedly.
+      reproveAt pos = do
+        active <- rescueActive
+        if not active
+          then return Nothing
+          else do
+            cached <- readIORef reproveCache
+            case Map.lookup pos cached of
+              Just r  -> return r
+              Nothing -> do
+                -- cap the attempt at the remaining rescue budget; the prover
+                -- children it spawned terminate on their own caps
+                dl  <- readIORef rescueDeadline
+                now <- getMonotonicTime
+                mr  <- timeout (max 0 (round ((dl - now) * 1e6))) (reproveAt' pos)
+                let r = fromMaybe Nothing mr
+                modifyIORef' reproveCache (Map.insert pos r)
+                return r
+      reproveAt' pos =
+        case find (\e -> lePos e == pos) (piElectrons info ++ piNuclei info) of
+          Just e | Just (T.Unit _ cdecl _) <- Map.lookup (leName e) unitMap -> do
+            r <- if isNothing mFixedAxioms
+                   then buildCandidateLemmaSubDagOnly translateWithBoth unitMap nameOverride debug (leName e, cdecl)
+                   else buildCandidateLemmaReprove translateWithBoth unitMap nameOverride debug (leName e, cdecl)
+            dbg debug ("[reprove] pos=" ++ pos ++ " name=" ++ leName e ++ " -> " ++ maybe "Nothing" (const "Just") r)
+            return r
+          _ -> do
+            dbg debug ("[reprove] pos=" ++ pos ++ " no entry/decl found")
+            return Nothing
+
       initSt = AlgState
         { stDebug      = debug
         , stUnits      = namedUnits ++ derivedUnits ++ bgNamedUnits
@@ -1996,6 +2139,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , stGoals      = []
         , stCounter    = nAll + 1
         , stAxNuclei   = axNucleiList
+        , stReprove    = reproveAt
         }
 
   when debug $ do

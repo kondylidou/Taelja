@@ -3,6 +3,8 @@ module LemmaBuilder
   , ancestorNamesOf
   , findLemmaCandidates
   , buildCandidateLemma
+  , buildCandidateLemmaSubDagOnly
+  , buildCandidateLemmaReprove
   , BuiltLemma
   , makeFileSourced
   ) where
@@ -25,9 +27,9 @@ import System.IO (hPutStrLn, stderr)
 import Types
 import Helpers
   ( applySubst, applyConstSubstBlock, applyConstSubstLit, blockRefNames
-  , extractSzsBlock, isEmptyBlock, litVars, renameRefsBlock
+  , extractSzsBlock, isEmptyBlock, litVars, renameRefsBlock, rescueActive
   )
-import ProofTree (headLitOf, isPositiveUnitFormula, resolveSourceName, unitNameStr)
+import ProofTree (headLitOf, isFileSrc, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
 import TptpConvert
 import TweeInterface (TweeBudget (..), callTwee, isDerivedUnit, isEqLit, isOrigAxiomDecl, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
 
@@ -124,11 +126,66 @@ buildCandidateLemma translateFn strict unitMap tstp2name debug (cname, cdecl) =
           bodyLits = map convertLit (bodyLitsOf cdecl)
           (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
       mSub <- if strict
-                then buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+                then buildFromSubDag False translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
                 else return Nothing
       case mSub of
         Just r  -> return (Just r)
-        Nothing -> buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+        Nothing -> do
+          -- narrow ancestry first (candidates that build from it are
+          -- untouched), then one broad retry: ancestors that are clausified
+          -- copies of file axioms are invisible to the narrow filter, and
+          -- without them the sub-problem can be satisfiable (BOO014-3)
+          mNarrow <- buildWithProver False translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+          case mNarrow of
+            Just r  -> return (Just r)
+            Nothing -> do
+              act <- rescueActive
+              if act
+                then buildWithProver True translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+                else return Nothing
+
+-- Sub-DAG route only, no prover fallback.  Safe inside recursive lemma
+-- sub-proofs: the candidate's ancestry strictly shrinks at each nesting
+-- level, so the recursion terminates, whereas a prover-produced sub-proof
+-- introduces fresh units and has no such measure.
+buildCandidateLemmaSubDagOnly
+  :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
+  -> Map.Map String T.Unit
+  -> Map.Map String String
+  -> Bool
+  -> (String, T.Declaration)
+  -> IO (Maybe BuiltLemma)
+buildCandidateLemmaSubDagOnly translateFn unitMap tstp2name debug (cname, cdecl) =
+  case headLitOf cdecl of
+    Nothing   -> return Nothing
+    Just tlit -> do
+      let lit      = convertLit tlit
+          bodyLits = map convertLit (bodyLitsOf cdecl)
+          (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
+      buildFromSubDag True translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+
+-- Re-proving a derived unit mid-translation (ensureNamed and makeBlock
+-- rescue): the sub-DAG route first, then the prover route, both with the
+-- broad ancestor treatment.  Kept separate from buildCandidateLemma so the
+-- prepass candidate builds stay byte-identical.
+buildCandidateLemmaReprove
+  :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
+  -> Map.Map String T.Unit
+  -> Map.Map String String
+  -> Bool
+  -> (String, T.Declaration)
+  -> IO (Maybe BuiltLemma)
+buildCandidateLemmaReprove translateFn unitMap tstp2name debug (cname, cdecl) =
+  case headLitOf cdecl of
+    Nothing   -> return Nothing
+    Just tlit -> do
+      let lit      = convertLit tlit
+          bodyLits = map convertLit (bodyLitsOf cdecl)
+          (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
+      mSub <- buildFromSubDag True translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+      case mSub of
+        Just r  -> return (Just r)
+        Nothing -> buildWithProver True translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
 
 -- The synthetic unit names of a sub-problem must not collide with the names
 -- of the units that appear in it (the candidate's ancestry): a collision
@@ -147,20 +204,35 @@ syntheticCollision unitMap cname bodyLits_sk =
 -- hypotheses, the Skolemized negated head, and synthetic resolution steps
 -- deriving bottom are translated as one proof.
 buildFromSubDag
-  :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
+  :: Bool                   -- broad: normalize copy-of-axiom ancestor sources
+  -> (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Map.Map String T.Unit
   -> Map.Map String String
   -> Bool
   -> String -> Literal -> Literal -> [Literal] -> [(String, Term)]
   -> IO (Maybe BuiltLemma)
-buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+buildFromSubDag broad translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
   | syntheticCollision unitMap cname bodyLits_sk = do
       when debug $ hPutStrLn stderr
         ("buildCandidateLemma: sub-DAG skipped for " ++ cname ++ " (synthetic name collision)")
       return Nothing
   | otherwise = do
       let ancNames  = ancestorNamesOf unitMap cname
-          ancUnits  = [ u | aname <- Set.toList ancNames, Just u <- [Map.lookup aname unitMap] ]
+          -- Ancestors that are effectively original axioms (an underived unit
+          -- with an axiom or hypothesis role, or a clausified copy of a file
+          -- axiom) get a file source: their own source references (bare axiom
+          -- names, fof parents) are not part of the sub-problem, so verbatim
+          -- sources would make the sub-run classify them as derived and
+          -- refuse to use them as electrons.
+          fileify u@(T.Unit n adeclU _)
+            | not broad = u
+            | not (isDerivedUnit u) && isOrigAxiomDecl adeclU = makeFileSourced u
+            | isFileSrc unitMap copySrc
+            , maybe False isOrigAxiomDecl (lookupDecl unitMap copySrc) = makeFileSourced u
+            | otherwise = u
+            where copySrc = resolveCopySource unitMap (unitNameStr n)
+          fileify u = u
+          ancUnits  = [ fileify u | aname <- Set.toList ancNames, Just u <- [Map.lookup aname unitMap] ]
           candUnit  = maybeToList (Map.lookup cname unitMap)
           unitLines = map (show . pretty) (ancUnits ++ candUnit)
           premLines = premLinesFor bodyLits_sk
@@ -176,8 +248,22 @@ buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
           botLine   = "cnf(lemma_bot, plain, $false, inference(resolution,[status(thm)],["
                       ++ lastName ++ ", negconj]))."
           content   = unlines (unitLines ++ premLines ++ [negLine] ++ stepLines ++ [botLine])
-          nameOvr   = lemmaNameOverrides bodyLits_sk tstp2name
-      when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG for " ++ cname)
+          -- An ancestor may be a different clausified copy of an original
+          -- axiom than the leaf the outer numbering named (E keeps several
+          -- copies).  Without a display name the sub-run would number it
+          -- freshly, and the lifted block would cite an outer axiom number
+          -- that means a different axiom.  Copies of the same source get the
+          -- outer display name.
+          bySource  = Map.fromList
+            [ (resolveCopySource unitMap k, dn) | (k, dn) <- Map.toList tstp2name ]
+          resolvedOvr = Map.fromList
+            [ (aname, dn)
+            | aname <- Set.toList ancNames
+            , not (Map.member aname tstp2name)
+            , Just dn <- [Map.lookup (resolveCopySource unitMap aname) bySource]
+            ]
+          nameOvr   = Map.union (lemmaNameOverrides bodyLits_sk tstp2name) resolvedOvr
+      when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG for " ++ cname ++ ":\n" ++ content)
       case eitherResult (feed (parseTSTP (Text.pack content)) mempty) of
         Left err -> do
           when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG parse error: " ++ err)
@@ -210,24 +296,40 @@ liftSubProof cname lit undoMap sp = do
 -- Re-prove the candidate with Twee (pure equations) or E, then translate the
 -- prover's proof recursively (paper, Section 4).
 buildWithProver
-  :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
+  :: Bool                   -- broad: also accept clausified copies of file axioms as ancestors
+  -> (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Map.Map String T.Unit
   -> Map.Map String String
   -> Bool
   -> String -> Literal -> Literal -> [Literal] -> [(String, Term)]
   -> IO (Maybe BuiltLemma)
-buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+buildWithProver broad translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
   | syntheticCollision unitMap cname bodyLits_sk = do
       when debug $ hPutStrLn stderr
         ("buildCandidateLemma: prover path skipped for " ++ cname ++ " (synthetic name collision)")
       return Nothing
   | otherwise = do
       let ancNames = ancestorNamesOf unitMap cname
+          dispNameOf aname =
+            Map.lookup (resolveSourceName unitMap aname) tstp2name
+              <|> Map.lookup aname tstp2name
+          -- an ancestor counts as an original axiom either directly (an
+          -- underived unit with an axiom or hypothesis role) or as a mere
+          -- clausified copy of a file axiom (E marks those plain, e.g. a
+          -- fof_simplification of a Horn axiom), provided its citation
+          -- resolves to a display name
+          effOrigAncestor aname u@(T.Unit _ adecl _) =
+            (not (isDerivedUnit u) && isOrigAxiomDecl adecl)
+              || (broad
+                  && isFileSrc unitMap copySrc
+                  && maybe False isOrigAxiomDecl (lookupDecl unitMap copySrc)
+                  && isJust (dispNameOf aname))
+            where copySrc = resolveCopySource unitMap aname
+          effOrigAncestor _ _ = False
           ancLines = [ line
                      | aname <- Set.toList ancNames
                      , Just u@(T.Unit _ adecl _) <- [Map.lookup aname unitMap]
-                     , not (isDerivedUnit u)
-                     , isOrigAxiomDecl adecl
+                     , effOrigAncestor aname u
                      , isJust (headLitOf adecl)
                      , Just line <- [toCNFAncAxiom (ancInputName aname) adecl]
                      ]
@@ -244,8 +346,7 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
             [ isPositiveUnitFormula adecl && maybe False (isEqLit . convertLit) (headLitOf adecl)
             | aname <- Set.toList ancNames
             , Just u@(T.Unit _ adecl _) <- [Map.lookup aname unitMap]
-            , not (isDerivedUnit u)
-            , isOrigAxiomDecl adecl
+            , effOrigAncestor aname u
             ]
       mTweeBlk <-
         if null bodyLits_sk && isEqLit lit_sk && ancestryAllUnitEqs
@@ -253,13 +354,14 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
             let ancUes = mapMaybe mkAncUe (Set.toList ancNames)
                 mkAncUe aname = do
                   u@(T.Unit _ adecl _) <- Map.lookup aname unitMap
-                  if isDerivedUnit u || not (isOrigAxiomDecl adecl) || not (null (bodyLitsOf adecl))
+                  if not (effOrigAncestor aname u) || not (null (bodyLitsOf adecl))
                     then Nothing
                     else do
                       headTlit <- headLitOf adecl
                       let clit = convertLit headTlit
                       if not (isEqLit clit) then Nothing
-                      else Just (UnitEntry (Map.lookup aname tstp2name) clit Nothing Nothing)
+                      else Just (UnitEntry (if broad then dispNameOf aname
+                                             else Map.lookup aname tstp2name) clit Nothing Nothing)
             case lit_sk of
               Eq l r -> do
                 mChain <- callTwee InternalBudget ancUes (Eq l r)

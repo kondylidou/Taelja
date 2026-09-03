@@ -140,6 +140,7 @@ eBenchmarkNames =
   , "tau_mixed"
   , "COL083-1"
   , "GRP009-1"
+  , "GRP012-2"
   , "LCL212-3"
   , "SYO632-1"
   , "COL099-1"

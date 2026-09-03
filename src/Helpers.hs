@@ -1,9 +1,36 @@
 module Helpers where
 
 import Control.Applicative ((<|>))
+import Data.IORef (IORef, newIORef, readIORef)
 import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub)
 import Data.Maybe (fromMaybe)
+import GHC.Clock (getMonotonicTime)
+import System.IO.Unsafe (unsafePerformIO)
 import Types
+
+-- Rescue mode (re-proving derived units mid-translation, broad ancestor
+-- retries).  Off for the first full translation attempt so successful
+-- translations are byte-identical to the rescue-free translator and pay no
+-- overhead; translate enables it, with a wall-clock budget, only for a
+-- second attempt after an incomplete result.  Process-global because the
+-- lemma builder and the algorithm state recurse into fresh runs that must
+-- share one budget.
+{-# NOINLINE rescueEnabled #-}
+rescueEnabled :: IORef Bool
+rescueEnabled = unsafePerformIO (newIORef False)
+
+{-# NOINLINE rescueDeadline #-}
+rescueDeadline :: IORef Double
+rescueDeadline = unsafePerformIO (newIORef 0)
+
+-- enabled and within the budget
+rescueActive :: IO Bool
+rescueActive = do
+  en <- readIORef rescueEnabled
+  if not en then return False else do
+    dl  <- readIORef rescueDeadline
+    now <- getMonotonicTime
+    return (now < dl)
 
 termVars :: Term -> [String]
 termVars (Var x)    = [x]

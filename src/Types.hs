@@ -94,6 +94,9 @@ data AlgState = AlgState
   , stGoals      :: [(Literal, ProofBlock)]
   , stCounter    :: Int
   , stAxNuclei   :: [(String, Clause)] -- original axiom nuclei (name, clause) for goal justification search
+  , stReprove    :: String -> IO (Maybe (Literal, ProofBlock, [(String, Literal, ProofBlock)]))
+      -- re-prove the derived unit at a tree position from its ancestry
+      -- (lemma-builder sub-proof); top-level runs only, Nothing elsewhere
   }
 
 data LeafRole

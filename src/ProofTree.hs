@@ -10,6 +10,8 @@ module ProofTree
   , isPositiveUnitFormula
   , resolveSourceName
   , resolveCopySource
+  , isFileSrc
+  , lookupDecl
   ) where
 
 import qualified Data.TPTP as T
