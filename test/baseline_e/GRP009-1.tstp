@@ -1,0 +1,151 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FHUSM-FFSF21-SFFFFFNN
+# Configuration: G-E--_208_C18_F1_AE_CS_SP_PI_S0a
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_22, negated_conjecture, (c!=a)).
+#
+#cnf(i_0_20, hypothesis, (product(a,b,identity))).
+#
+#cnf(i_0_21, hypothesis, (product(c,b,identity))).
+#
+#cnf(i_0_13, plain, (product(X1,identity,X1))).
+#
+#cnf(i_0_12, plain, (product(identity,X1,X1))).
+#
+#cnf(i_0_15, plain, (product(X1,inverse(X1),identity))).
+#
+#cnf(i_0_14, plain, (product(inverse(X1),X1,identity))).
+#
+#cnf(i_0_16, plain, (product(X1,X2,multiply(X1,X2)))).
+#
+#cnf(i_0_17, plain, (X3=X4|~product(X1,X2,X4)|~product(X1,X2,X3))).
+#
+#cnf(i_0_19, plain, (product(X3,X4,X6)|~product(X2,X4,X5)|~product(X1,X5,X6)|~product(X1,X2,X3))).
+#
+#cnf(i_0_18, plain, (product(X1,X5,X6)|~product(X3,X4,X6)|~product(X2,X4,X5)|~product(X1,X2,X3))).
+#
+#cnf(i_0_23, hypothesis, (identity=X1|~product(c,b,X1))).
+#
+#cnf(i_0_77, hypothesis, (multiply(c,b)=identity)).
+#
+#cnf(i_0_24, hypothesis, (identity=X1|~product(a,b,X1))).
+#
+#cnf(i_0_79, hypothesis, (multiply(a,b)=identity)).
+##
+#cnf(i_0_25, plain, (identity=X1|~product(inverse(X2),X2,X1))).
+#
+#cnf(i_0_81, plain, (inverse(identity)=identity)).
+#
+#cnf(i_0_26, plain, (X1=X2|~product(identity,X1,X2))).
+#
+#cnf(i_0_28, plain, (X1=X2|~product(X1,identity,X2))).
+###
+#cnf(i_0_87, plain, (multiply(identity,X1)=X1)).
+#
+#cnf(i_0_89, plain, (multiply(X1,identity)=X1)).
+###
+#cnf(i_0_82, plain, (multiply(inverse(X1),X1)=identity)).
+#
+#cnf(i_0_27, plain, (identity=X1|~product(X2,inverse(X2),X1))).
+#
+#cnf(i_0_97, plain, (multiply(X1,inverse(X1))=identity)).
+####
+#cnf(i_0_29, plain, (multiply(X1,X2)=X3|~product(X1,X2,X3))).
+##
+#cnf(i_0_37, hypothesis, (product(identity,X1,X2)|~product(b,X1,X3)|~product(c,X3,X2))).
+#
+#cnf(i_0_108, hypothesis, (product(identity,X1,c)|~product(b,X1,identity))).
+#
+#cnf(i_0_113, hypothesis, (product(identity,inverse(b),c))).
+#
+#cnf(i_0_114, hypothesis, (inverse(b)=c)).
+#
+#cnf(i_0_38, plain, (product(identity,X1,X2)|~product(inverse(X3),X4,X2)|~product(X3,X1,X4))).
+#
+#cnf(i_0_124, hypothesis, (multiply(b,c)=identity)).
+##
+#cnf(i_0_127, hypothesis, (identity=X1|~product(b,c,X1))).
+#
+#cnf(i_0_137, plain, (product(identity,X1,identity)|~product(X2,X1,X2))).
+#
+#cnf(i_0_122, hypothesis, (product(b,c,identity))).
+#####
+#cnf(i_0_107, hypothesis, (product(identity,X1,identity)|~product(b,X1,inverse(c)))).
+#
+#cnf(i_0_39, plain, (product(X1,X2,X3)|~product(identity,X4,X3)|~product(X1,X2,X4))).
+#
+#cnf(i_0_151, hypothesis, (product(c,b,X1)|~product(identity,identity,X1))).
+#
+#cnf(i_0_157, plain, (product(X1,identity,X2)|~product(identity,X1,X2))).
+#
+#cnf(i_0_152, hypothesis, (product(b,c,X1)|~product(identity,identity,X1))).
+#
+#cnf(i_0_153, hypothesis, (product(a,b,X1)|~product(identity,identity,X1))).
+#
+#cnf(i_0_154, plain, (product(inverse(X1),X1,X2)|~product(identity,identity,X2))).
+#
+#cnf(i_0_111, hypothesis, (product(identity,c,X1)|~product(c,identity,X1))).
+#
+#cnf(i_0_135, plain, (product(identity,X1,inverse(X2))|~product(X2,X1,identity))).
+#
+#cnf(i_0_181, hypothesis, (product(identity,b,inverse(c)))).
+#
+#cnf(i_0_188, hypothesis, (inverse(c)=b)).
+###
+#cnf(i_0_183, hypothesis, (product(identity,b,inverse(a)))).
+#
+#cnf(i_0_206, hypothesis, (inverse(a)=b)).
+##
+#cnf(i_0_222, hypothesis, (identity=X1|~product(b,a,X1))).
+##
+#cnf(i_0_220, hypothesis, (multiply(b,a)=identity)).
+##
+#cnf(i_0_218, hypothesis, (product(b,a,identity))).
+#
+#cnf(i_0_236, hypothesis, (product(identity,a,c))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(associativity2, axiom, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', associativity2)).
+cnf(left_inverse, axiom, (product(inverse(X1),X1,identity)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', left_inverse)).
+cnf(total_function2, axiom, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function2)).
+cnf(right_identity, axiom, (product(X1,identity,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
+cnf(left_identity, axiom, (product(identity,X1,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', left_identity)).
+cnf(c_is_an_inverse_of_b, hypothesis, (product(c,b,identity)), file('Problems/GRP/GRP009-1.p', c_is_an_inverse_of_b)).
+cnf(total_function1, axiom, (product(X1,X2,multiply(X1,X2))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function1)).
+cnf(a_is_an_inverse_of_b, hypothesis, (product(a,b,identity)), file('Problems/GRP/GRP009-1.p', a_is_an_inverse_of_b)).
+cnf(right_inverse, axiom, (product(X1,inverse(X1),identity)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_inverse)).
+cnf(prove_a_equals_c, negated_conjecture, (a!=c), file('Problems/GRP/GRP009-1.p', prove_a_equals_c)).
+cnf(c_0_10, plain, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), inference(fof_simplification,[status(thm)],[associativity2])).
+cnf(c_0_11, plain, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), c_0_10).
+cnf(c_0_12, axiom, (product(inverse(X1),X1,identity)), left_inverse).
+cnf(c_0_13, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), inference(fof_simplification,[status(thm)],[total_function2])).
+cnf(c_0_14, plain, (product(identity,X1,X2)|~product(inverse(X3),X4,X2)|~product(X3,X1,X4)), inference(spm,[status(thm)],[c_0_11, c_0_12])).
+cnf(c_0_15, axiom, (product(X1,identity,X1)), right_identity).
+cnf(c_0_16, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), c_0_13).
+cnf(c_0_17, axiom, (product(identity,X1,X1)), left_identity).
+cnf(c_0_18, hypothesis, (product(c,b,identity)), c_is_an_inverse_of_b).
+cnf(c_0_19, axiom, (product(X1,X2,multiply(X1,X2))), total_function1).
+cnf(c_0_20, plain, (product(identity,X1,inverse(X2))|~product(X2,X1,identity)), inference(spm,[status(thm)],[c_0_14, c_0_15])).
+cnf(c_0_21, hypothesis, (product(a,b,identity)), a_is_an_inverse_of_b).
+cnf(c_0_22, plain, (X1=X2|~product(identity,X1,X2)), inference(spm,[status(thm)],[c_0_16, c_0_17])).
+cnf(c_0_23, hypothesis, (product(identity,X1,X2)|~product(b,X1,X3)|~product(c,X3,X2)), inference(spm,[status(thm)],[c_0_11, c_0_18])).
+cnf(c_0_24, plain, (multiply(X1,X2)=X3|~product(X1,X2,X3)), inference(spm,[status(thm)],[c_0_16, c_0_19])).
+cnf(c_0_25, hypothesis, (product(identity,b,inverse(a))), inference(spm,[status(thm)],[c_0_20, c_0_21])).
+cnf(c_0_26, plain, (multiply(identity,X1)=X1), inference(spm,[status(thm)],[c_0_22, c_0_19])).
+cnf(c_0_27, hypothesis, (product(identity,X1,c)|~product(b,X1,identity)), inference(spm,[status(thm)],[c_0_23, c_0_15])).
+cnf(c_0_28, axiom, (product(X1,inverse(X1),identity)), right_inverse).
+cnf(c_0_29, hypothesis, (inverse(a)=b), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_24, c_0_25]), c_0_26])).
+cnf(c_0_30, hypothesis, (product(identity,inverse(b),c)), inference(spm,[status(thm)],[c_0_27, c_0_28])).
+cnf(c_0_31, hypothesis, (product(b,a,identity)), inference(spm,[status(thm)],[c_0_12, c_0_29])).
+cnf(c_0_32, hypothesis, (inverse(b)=c), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_24, c_0_30]), c_0_26])).
+cnf(c_0_33, negated_conjecture, (a!=c), inference(fof_simplification,[status(thm)],[prove_a_equals_c])).
+cnf(c_0_34, hypothesis, (product(identity,a,c)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_20, c_0_31]), c_0_32])).
+cnf(c_0_35, negated_conjecture, (a!=c), c_0_33).
+cnf(c_0_36, hypothesis, ($false), inference(sr,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_24, c_0_34]), c_0_26]), c_0_35]), ['proof']).
+# SZS output end CNFRefutation

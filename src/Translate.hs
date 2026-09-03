@@ -920,7 +920,14 @@ tryAxiomJustification goalLit simpl pos = do
               mResR <- processBodyBidir bodyG [] elecs simpl pos False
               case mResR of
                 Nothing            -> tryEach rest elecs
-                Just (τ', matched) -> Just <$> buildProofBlock matched (Just axName) τ' goalLit
+                Just (τ', matched)
+                  -- the same coherence judgement as processOneNucleus: the
+                  -- instantiated axiom must actually derive the claimed goal
+                  | resolutionCoherent bodyPats hdPat
+                      [ electronTarget ki σi rwi | (ki, σi, rwi) <- matched ]
+                      (applySubst τ' goalLit) ->
+                        Just <$> buildProofBlock matched (Just axName) τ' goalLit
+                  | otherwise -> tryEach rest elecs
 
 -- Compute per-nucleus θ|pos exactly as the paper prescribes (Algorithm 1):
 -- Trace backwards from the conclusion to the premises:
@@ -1532,8 +1539,8 @@ reflexiveInstance l r = listToMaybe
       , Just ρ <- [matchTerm p t []]
       , applySubstTerm ρ l == applySubstTerm ρ r ]
 
-proveGoal :: Maybe [(String, Dir)] -> Literal -> AlgM ()
-proveGoal mChain goal = do
+proveGoal :: Map.Map String [(String, Dir)] -> Maybe [(String, Dir)] -> Literal -> AlgM ()
+proveGoal simpl mChain goal = do
   units <- gets stUnits
   case goal of
     Eq l r -> do
@@ -1575,8 +1582,20 @@ proveGoal mChain goal = do
                   steps' <- mapM promoteChainStep chain
                   emitGoalProof goal (EqChain start steps')
                 _ -> do
-                  dbgWarn ("no proof found for goal: " ++ ppLitI goal)
-                  emitGoalProof goal (EqChain l [])
+                  -- an equational goal can be the head of a Horn axiom
+                  -- (antisymmetry: less_equal both ways gives the equation),
+                  -- so the axiom nuclei are searched before giving up
+                  -- (HEN010-3: divide(identity,a) = ... via axiom 5)
+                  mAx <- tryAxiomJustification goal simpl "z"
+                  case mAx of
+                    Just blk -> emitGoalProof goal blk
+                    Nothing -> do
+                      mAxF <- tryAxiomJustification (Eq r l) simpl "z"
+                      case mAxF of
+                        Just blk -> emitGoalProof (Eq r l) blk
+                        Nothing -> do
+                          dbgWarn ("no proof found for goal: " ++ ppLitI goal)
+                          emitGoalProof goal (EqChain l [])
     _ ->
       case findUnitForGoal goal units of
         Just (ue, ρ0, instGoal) -> do
@@ -2027,7 +2046,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
       when (nDone2 < length goalLits) $ do
         proven <- gets (map fst . stGoals)
         let unproven = filter (`notElem` proven) goalLits
-        mapM_ (proveGoal pG1Chain) unproven
+        mapM_ (proveGoal simpl pG1Chain) unproven
       nDone3 <- gets (length . stGoals)
       when (nDone3 < length goalLits) $
         liftIO $ hPutStrLn stderr "[warn] processNuclei: goal(s) could not be proved"
