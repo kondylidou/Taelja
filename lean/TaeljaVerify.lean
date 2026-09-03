@@ -79,6 +79,8 @@ import TaeljaVerify.E.Hen0082
 import TaeljaVerify.E.TauShared
 import TaeljaVerify.E.TauMixed
 import TaeljaVerify.E.Col0831
+import TaeljaVerify.E.Lcl2123
+import TaeljaVerify.E.Syo6321
 import TaeljaVerify.E.Col0991
 import TaeljaVerify.E.Syn1791
 import TaeljaVerify.E.Grp0015

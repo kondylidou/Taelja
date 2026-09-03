@@ -1,0 +1,43 @@
+Axiom 1: implies(X,Y) = or(not(X),Y)
+Axiom 2: axiom(implies(X,or(Y,X)))
+Axiom 3: axiom(X) => theorem(X)
+Axiom 4: theorem(implies(Y,X)) /\ theorem(Y) => theorem(X)
+
+Lemma 5: axiom(or(not(X),or(Y,X)))
+Proof:
+  have axiom(implies(X,or(Y,X)))
+    by axiom 2
+  hence axiom(or(not(X),or(Y,X)))
+    by rw axiom 1
+
+Lemma 6: theorem(or(not(X),or(Y,X)))
+Proof:
+  have axiom(or(not(X),or(Y,X)))
+    by lemma 5
+  hence theorem(or(not(X),or(Y,X)))
+    by axiom 3
+
+Lemma 7: theorem(or(X,or(not(Y),or(Z,Y))))
+Proof:
+  have axiom(or(not(A),or(X,A)))
+    by lemma 5
+  hence theorem(or(not(A),or(X,A)))
+    by axiom 3
+  hence theorem(implies(A,or(X,A)))
+    by rw axiom 1 R->L
+   and theorem(or(not(Y),or(Z,Y)))
+    by lemma 6
+  hence theorem(or(X,or(not(Y),or(Z,Y))))
+    by axiom 4
+
+Goal 1: theorem(implies(not(p),implies(q,implies(implies(p,q),q))))
+Proof:
+  theorem(implies(not(p),implies(q,implies(implies(p,q),q))))
+= { by axiom 1 }
+  theorem(or(not(not(p)),implies(q,implies(implies(p,q),q))))
+= { by axiom 1 }
+  theorem(or(not(not(p)),or(not(q),implies(implies(p,q),q))))
+= { by axiom 1 }
+  theorem(or(not(not(p)),or(not(q),or(not(implies(p,q)),q))))
+= { by lemma 7 }
+  true

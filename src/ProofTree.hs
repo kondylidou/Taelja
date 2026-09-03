@@ -43,7 +43,12 @@ buildProofInfo allUnits
       innerRows = gatherInner  "" tree
 
       mkLeaf (pos, name, decl) =
-        let srcName = if isNegConj decl then name else resolve name
+        let srcName = if isNegConj decl then name
+                      else let r = resolve name
+                           -- a definition-derived clause keeps its own (CNF)
+                           -- identity; the introduced FOF equivalence behind
+                           -- it is not a Horn clause
+                           in if isIntroducedSrc unitMap r && r /= name then name else r
             srcDecl = case Map.lookup srcName unitMap of
                         Just (T.Unit _ d _) -> d
                         _                   -> decl
@@ -297,6 +302,10 @@ classifyRole unitMap name decl
   | maybe False isConjDecl (lookupDecl unitMap resolvedNm)   = NegConjecture
   | isFileSrc unitMap name                                    = OrigAxiom
   | isFileSrc unitMap resolvedNm                              = OrigAxiom
+  -- clauses derived from prover-introduced definitions (E's epredN
+  -- equivalences, annotation "introduced(definition)") are axioms of the
+  -- clausified presentation; their own CNF is the axiom statement
+  | isIntroducedSrc unitMap resolvedNm                        = OrigAxiom
   | otherwise                                                 = Derived
   where
     resolvedNm = resolveSourceName unitMap name
@@ -306,6 +315,12 @@ classifyRole unitMap name decl
 isNegConj :: T.Declaration -> Bool
 isNegConj (T.Formula (T.Standard T.NegatedConjecture) _) = True
 isNegConj _                                              = False
+
+-- A unit the prover introduced itself (E: introduced(definition)).
+isIntroducedSrc :: Map.Map String T.Unit -> String -> Bool
+isIntroducedSrc unitMap name = case Map.lookup name unitMap of
+  Just (T.Unit _ _ (Just (T.Introduced _ _, _))) -> True
+  _                                              -> False
 
 isFileSrc :: Map.Map String T.Unit -> String -> Bool
 isFileSrc unitMap name = case Map.lookup name unitMap of

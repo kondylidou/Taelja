@@ -1509,11 +1509,17 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     elif ref.kind == 'lemma' and ref.num in lemma_types:
                         rl_rw_formula = lemma_types[ref.num][2]
                     rl_lhs_is_var = isinstance(rl_rw_formula, EqLit) and isinstance(rl_rw_formula.lhs, Var)
-                    precise = None if prev_new_vars or lit_has_new_vars else precise_hyp_rw(
+                    precise = precise_hyp_rw(
                         prev_lit, step.lit, rl_rw_formula, 'RL', ref_name, svm, prev_inst,
                         get_formula_vars(ref.num, ref.kind, axiom_types, lemma_types)[0])
                     if precise is not None:
-                        lines.append(f'have {hname} : {full_lit_str} := {precise}')
+                        if lit_has_new_vars:
+                            # a quantified target opens its binders first; rw
+                            # cannot rewrite under a ∀ (LCL212-3)
+                            fvs = ' '.join(svm[v] for v in new_vars)
+                            lines.append(f'have {hname} : {full_lit_str} := fun {fvs} => {precise}')
+                        else:
+                            lines.append(f'have {hname} : {full_lit_str} := {precise}')
                     elif rl_lhs_is_var and isinstance(step.lit, EqLit) and not prev_new_vars:
                         # Goal is an equation: bridge via Eq.trans so Lean unifies the middle term.
                         goal_lhs = lean_term(step.lit.lhs, svm)
@@ -1568,11 +1574,15 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                         elif ref.kind == 'lemma' and ref.num in lemma_types:
                             rw_formula = lemma_types[ref.num][2]
                         lhs_is_var = isinstance(rw_formula, EqLit) and isinstance(rw_formula.lhs, Var)
-                        precise = None if prev_new_vars or lit_has_new_vars else precise_hyp_rw(
+                        precise = precise_hyp_rw(
                             prev_lit, step.lit, rw_formula, 'LR', ref_name, svm, prev_copy,
                             get_formula_vars(ref.num, ref.kind, axiom_types, lemma_types)[0])
                         if precise is not None:
-                            lines.append(f'have {hname} : {full_lit_str} := {precise}')
+                            if lit_has_new_vars:
+                                fvs = ' '.join(svm[v] for v in new_vars)
+                                lines.append(f'have {hname} : {full_lit_str} := fun {fvs} => {precise}')
+                            else:
+                                lines.append(f'have {hname} : {full_lit_str} := {precise}')
                         elif lhs_is_var:
                             # LHS is a pure variable (e.g. x = f(x)): rw [ref] would use ?x as
                             # pattern and fail in Lean. rw [← ref] uses the compound RHS instead.

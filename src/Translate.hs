@@ -360,7 +360,13 @@ tryMatch li ki τ =
                   τc = [(x, deepApplySubstTerm σi' (applySubstTerm newB t)) | (x, t) <- τ']
                   -- Apply τc to ground any τ-vars that appear in σi' bindings.
                   σi  = [ (v, applySubstTerm τc (deepApplySubstTerm σi' (Var (v ++ suffix)))) | v <- kVars ]
-              in if applySubst τc li' == applySubst σi k
+              in if any (\(v, t) -> v `elem` termVars t) τc
+                 -- occurs check on the nucleus side: a cyclic binding
+                 -- (B ↦ equivalent(equivalent(C,B),A), LCL416-1) renders the
+                 -- shallow consistency check meaningless and lets a spurious
+                 -- premise justify a θ-derived head it cannot derive
+                 then Nothing
+                 else if applySubst τc li' == applySubst σi k
                  then Just (σi, τc)
                  else Nothing
         _ -> Nothing
@@ -1096,6 +1102,42 @@ nodeTheta declAt leafDecl leafPos = go leafPos
                 _ -> Nothing
           in asRewritten <|> asRule <|> bodyVsSibUnit <|> resolvedAgainstSib
 
+-- Validates one assembled hyperresolution step: the rule's body atoms are
+-- unified (shared rule variables, fresh-renamed) against the matched electron
+-- targets; the step is coherent when the unifier exists and the head it
+-- derives covers the head instance about to be stored.  This is the same
+-- judgement the Lean check makes, applied before anything is emitted, so a
+-- spurious premise match cannot justify a θ-derived head (LCL416-1).
+resolutionCoherent :: [Literal] -> Literal -> [Literal] -> Literal -> Bool
+resolutionCoherent bodyAbs headAbs targets headInst =
+  case foldM step [] (zip bodyAbs' targets) of
+    Nothing -> False
+    Just s  ->
+      let derived = mapLitTerms (deepApplySubstTerm s) headAbs'
+      in derived == headInst || isJust (matchLit derived headInst)
+         || (case (derived, headInst) of
+               (Eq l r, _) -> let d' = Eq r l
+                              in d' == headInst || isJust (matchLit d' headInst)
+               _           -> False)
+  where
+    ren = suffixVarsLit "_rc"
+    bodyAbs' = map ren bodyAbs
+    headAbs' = ren headAbs
+    -- equations may have been matched in flipped orientation
+    step s (b, t) = case (litTerm b, litTerm t) of
+      (Just tb, Just tt) -> case unifyTerms tb tt s of
+        Just s' -> Just s'
+        Nothing -> case t of
+          Eq l r -> litTerm (Eq r l) >>= \tt' -> unifyTerms tb tt' s
+          _      -> Nothing
+      _                  -> Nothing
+    litTerm (Rel n as) = Just (App n as)
+    litTerm (Eq l r)   = Just (App "=" [l, r])
+    litTerm _          = Nothing
+    mapLitTerms f (Rel n as) = Rel n (map f as)
+    mapLitTerms f (Eq l r)   = Eq (f l) (f r)
+    mapLitTerms _ l          = l
+
 processOneNucleus
   :: Bool
   -> ThetaCtx                        -- per-nucleus θ context
@@ -1206,22 +1248,29 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                     , Just chain@(EqChain {}) <- ueProof ki ->
                         emitGoalProof (applySubst τ gl) (applySubstBlock σi chain) >> return True
                   _ -> do
-                    let pairs     = zip goalLits matched
+                    let pairs     = zip3 goalLits bodyLits matched
                         unmatched = drop (length matched) goalLits
                     if null pairs
                       then return False
                       else do
-                        forM_ pairs $ \(gl, (ki, σi, rwi)) -> do
+                        forM_ pairs $ \(gl, bl, (ki, σi, rwi)) -> do
                           -- τ binds the clause copy's variable names, which can
                           -- differ from the goal literal's (each Vampire clause
                           -- renames apart), so remaining goal variables are
                           -- instantiated by matching on the proved electron
                           -- instance; they are existential (NUM025-1: the goal
-                          -- is emitted as less(b,b), not less(X,Y))
+                          -- is emitted as less(b,b), not less(X,Y)).
+                          -- The harvested goal literals can also disagree with
+                          -- the ⊥ nucleus's own body entirely (E's definitional
+                          -- detour prints epred atoms near ⊥ while the input
+                          -- goal clause holds the real atoms, SYO632-1): then
+                          -- the goal proved here is the body atom's instance.
                           let gl0 = applySubst τ gl
                               targ = electronTarget ki σi rwi
                               gl' = case matchLit gl0 targ of
                                       Just ρ | not (null (litVars gl0)) -> applySubst ρ gl0
+                                             | otherwise -> gl0
+                                      Nothing | gl0 /= targ -> applySubst τ bl
                                       _ -> gl0
                           blk <- emitBlockForGoal gl' ki σi rwi
                           emitGoalProof gl' blk
@@ -1230,6 +1279,11 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                             "[warn] processOneNucleus: unmatched goal lit: " ++ ppLitI (applySubst τ gl)
                           emitGoalProof (applySubst τ gl) (HaveHence [])
                         return True
+              Just headLit | not (resolutionCoherent bodyLitsAbs headLit
+                                     [ electronTarget ki σi rwi | (ki, σi, rwi) <- matched ]
+                                     (applySubst τ headLit)) -> do
+                liftIO $ dbg debug $ "[skip] pos=" ++ pos ++ " — incoherent resolution step"
+                return False
               Just headLit -> do
                 blk <- buildProofBlock matched mAxName τ headLit
                 let headInst = applySubst τ headLit
