@@ -1,0 +1,29 @@
+Axiom 1: p2(X,X)
+Axiom 2: p5(c7,c10,c8)
+Axiom 3: p2(Y,Z) /\ p2(Y,X) => p2(X,Z)
+Axiom 4: p6(c7,f3(X))
+Axiom 5: p5(c7,X,f3(X))
+Axiom 6: p5(X,A,Y) /\ p5(X,Z,A) => p5(X,Z,Y)
+Axiom 7: p5(c7,Y,Z) /\ p6(c7,Z) /\ p6(c7,X) /\ p5(c7,Y,X) => p2(X,Z)
+Axiom 8: p5(c7,c10,c9)
+Axiom 9: p4(X,X)
+Axiom 10: p5(B,A,C) /\ p2(A,Z) /\ p2(C,Y) /\ p4(B,X) => p5(X,Z,Y)
+
+Lemma 11: p5(c7,c8,f3(f3(c8)))
+Proof:
+  have p5(c7,X,f3(X))
+    by axiom 5
+   and p5(c7,c8,f3(c8))
+    by axiom 5
+  hence p5(c7,c8,f3(f3(c8)))
+    by axiom 6
+
+Goal 1: p5(c7,c8,f3(f3(c8)))
+Proof:
+  have p5(c7,c8,f3(f3(c8)))
+    by lemma 11
+
+Goal 2: p5(c7,c9,f3(c9))
+Proof:
+  have p5(c7,c9,f3(c9))
+    by axiom 5

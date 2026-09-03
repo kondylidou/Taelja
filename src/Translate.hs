@@ -4,7 +4,7 @@ module Translate (translate, translateWith) where
 import Control.Applicative ((<|>))
 import Control.Monad (foldM, forM, forM_, void, when)
 import Data.Bifunctor (second)
-import Control.Exception (SomeException, try)
+import Control.Exception (SomeException, finally, try)
 import Control.Monad.State
 import Data.List (find, intercalate, nub, nubBy, partition, sortBy, isSuffixOf)
 import Data.Maybe (catMaybes, fromJust, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
@@ -35,8 +35,9 @@ import LemmaBuilder
 -- Overridden names are used as-is (not re-numbered); used for lemma sub-proofs so
 -- that axiom references in the sub-proof match the outer proof's shared axiom list.
 translateWith :: Bool -> Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
-translateWith strict nameOverride debug (T.TSTP _ units) =
-  case buildProofInfo units of
+translateWith strict nameOverride debug (T.TSTP _ units) = do
+  axHyps <- readIORef rescueEnabled
+  case buildProofInfo axHyps units of
     Nothing -> return Nothing
     Just origInfo ->
       Just <$> runAlgorithm debug strict origInfo units Map.empty nameOverride Nothing
@@ -169,8 +170,9 @@ translate debug tstp = do
 -- list is the original one, so an axiom used only inside a lemma's proof is
 -- still listed and every reference resolves.
 translateMode :: Bool -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
-translateMode strict debug (T.TSTP _ units) =
-  case buildProofInfo units of
+translateMode strict debug (T.TSTP _ units) = do
+  axHyps <- readIORef rescueEnabled
+  case buildProofInfo axHyps units of
     Nothing -> do
       hPutStrLn stderr "translate: no refutation found (unsupported proof structure)"
       return Nothing
@@ -198,7 +200,7 @@ translateMode strict debug (T.TSTP _ units) =
             | Map.member (unitNameStr n) validCands = makeFileSourced u
             | otherwise                             = u
           replace u = u
-      case (Map.null validCands, buildProofInfo modUnits) of
+      case (Map.null validCands, buildProofInfo axHyps modUnits) of
         (False, Just mainInfo) ->
           Just <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just origAxioms)
         _ ->
@@ -2122,11 +2124,19 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
       reproveAt' pos =
         case find (\e -> lePos e == pos) (piElectrons info ++ piNuclei info) of
           Just e | Just (T.Unit _ cdecl _) <- Map.lookup (leName e) unitMap -> do
-            r <- if isNothing mFixedAxioms
-                   then buildCandidateLemmaSubDagOnly translateWithBoth unitMap nameOverride debug (leName e, cdecl)
-                   else buildCandidateLemmaReprove translateWithBoth unitMap nameOverride debug (leName e, cdecl)
-            dbg debug ("[reprove] pos=" ++ pos ++ " name=" ++ leName e ++ " -> " ++ maybe "Nothing" (const "Just") r)
-            return r
+            inProg <- readIORef reproveInProgress
+            if Set.member (leName e) inProg
+              then do
+                dbg debug ("[reprove] pos=" ++ pos ++ " name=" ++ leName e ++ " skipped (in progress)")
+                return Nothing
+              else do
+                modifyIORef' reproveInProgress (Set.insert (leName e))
+                r <- (if isNothing mFixedAxioms
+                        then buildCandidateLemmaSubDagOnly translateWithBoth unitMap nameOverride debug (leName e, cdecl)
+                        else buildCandidateLemmaReprove translateWithBoth unitMap nameOverride debug (leName e, cdecl))
+                       `finally` modifyIORef' reproveInProgress (Set.delete (leName e))
+                dbg debug ("[reprove] pos=" ++ pos ++ " name=" ++ leName e ++ " -> " ++ maybe "Nothing" (const "Just") r)
+                return r
           _ -> do
             dbg debug ("[reprove] pos=" ++ pos ++ " no entry/decl found")
             return Nothing

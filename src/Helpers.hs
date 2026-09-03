@@ -4,6 +4,7 @@ import Control.Applicative ((<|>))
 import Data.IORef (IORef, newIORef, readIORef)
 import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub)
 import Data.Maybe (fromMaybe)
+import qualified Data.Set as USet
 import GHC.Clock (getMonotonicTime)
 import System.IO.Unsafe (unsafePerformIO)
 import Types
@@ -22,6 +23,14 @@ rescueEnabled = unsafePerformIO (newIORef False)
 {-# NOINLINE rescueDeadline #-}
 rescueDeadline :: IORef Double
 rescueDeadline = unsafePerformIO (newIORef 0)
+
+-- Unit names whose re-proof is currently being built somewhere up the call
+-- stack.  A candidate's sub-problem contains the candidate itself as its
+-- root, so without this guard the recursive translation would re-prove its
+-- own root with the identical sub-problem, looping until the budget is gone.
+{-# NOINLINE reproveInProgress #-}
+reproveInProgress :: IORef (USet.Set String)
+reproveInProgress = unsafePerformIO (newIORef USet.empty)
 
 -- enabled and within the budget
 rescueActive :: IO Bool

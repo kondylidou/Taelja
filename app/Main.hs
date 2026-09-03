@@ -30,7 +30,7 @@ main = do
     Left err    -> hPutStrLn stderr ("Parse error: " ++ err) >> exitFailure
     Right tstp@(T.TSTP _ units) -> do
       when debug $ do
-        case buildProofInfo units of
+        case buildProofInfo False units of
           Nothing   -> putStrLn "No refutation proof tree found"
           Just info -> do
             putStrLn "-- Proof tree"

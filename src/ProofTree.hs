@@ -20,7 +20,7 @@ import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Data.List (inits, sortBy)
 import Data.List.NonEmpty (toList)
-import Data.Maybe (fromMaybe, listToMaybe)
+import Data.Maybe (fromMaybe, isJust, listToMaybe)
 import Data.Ord (comparing)
 import Types
 
@@ -32,8 +32,13 @@ data ProofTree
 maxProofUnits :: Int
 maxProofUnits = 2000
 
-buildProofInfo :: [T.Unit] -> Maybe ProofInfo
-buildProofInfo allUnits
+-- axHyps: treat a negated_conjecture clause that has a positive literal and
+-- is merely a copy of an external or file input as an original axiom.  An
+-- implication conjecture negates into its hypotheses plus the negated
+-- conclusion; only the all-negative clause is the goal.  Off by default so
+-- established outputs are unchanged; the rescue pass enables it.
+buildProofInfo :: Bool -> [T.Unit] -> Maybe ProofInfo
+buildProofInfo axHyps allUnits
   | length allUnits > maxProofUnits = Nothing
   | otherwise = do
   tree <- buildProofTree allUnits
@@ -59,7 +64,7 @@ buildProofInfo allUnits
         , leName    = srcName
         , leDecl    = decl
         , leSrcDecl = srcDecl
-        , leRole    = classifyRole unitMap name decl
+        , leRole    = classifyRole axHyps unitMap name decl
         , leSimpl   = fromMaybe [] (Map.lookup pos chains)
         }
       mkInner (pos, name, decl) = LeafEntry
@@ -291,12 +296,16 @@ gatherInner pos0 tree0 = snd (go pos0 tree0 Set.empty)
       | otherwise              = (Set.insert n seen, [(pos, n, d)])
 
 
-classifyRole :: Map.Map String T.Unit -> String -> T.Declaration -> LeafRole
-classifyRole unitMap name decl
+classifyRole :: Bool -> Map.Map String T.Unit -> String -> T.Declaration -> LeafRole
+classifyRole axHyps unitMap name decl
   -- positive-unit file clauses are axioms even if labeled negated_conjecture
   -- (Vampire's "prove the negation" mode does this for all input clauses)
   | isPositiveUnitFormula decl && isFileSrc unitMap name     = OrigAxiom
   | isPositiveUnitFormula decl && isFileSrc unitMap resolvedNm = OrigAxiom
+  -- hypothesis clause of a negated implication conjecture (see buildProofInfo)
+  | axHyps && isNegConj decl && isJust (headLitOf decl)
+  , let cs = resolveCopySource unitMap name
+  , Map.notMember cs unitMap || isFileSrc unitMap cs         = OrigAxiom
   | isNegConj decl                                           = NegConjecture
   | maybe False isNegConj (lookupDecl unitMap resolvedNm)    = NegConjecture
   -- A clause whose source traces back to a file-sourced *conjecture* is part

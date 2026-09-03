@@ -1,0 +1,20 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~p2(f8(f8(f9(c4), c4), f9(c3)), f8(f9(c4), f8(f9(c3), c4))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN553-1.p', not_p2_9)).
+cnf(c2, negated_conjecture, p2(X0, X0), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN553-1.p', p2_1)).
+cnf(c3, negated_conjecture, p2(f8(X11, X12), f8(X12, X11)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN553-1.p', p2_5)).
+cnf(c4, negated_conjecture, p2(f8(X4, X5), f8(X6, X7)) | ~p2(X4, X6) | ~p2(X5, X7), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN553-1.p', p2_8)).
+cnf(c5, plain, ~p2(f9(c3), f9(c3)) | p2(f8(f9(c3), f8(f9(c4), c4)), f8(f9(c3), f8(c4, f9(c4)))), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c6, plain, p2(f8(f9(c3), f8(f9(c4), c4)), f8(f9(c3), f8(c4, f9(c4)))), inference(resolution, [status(thm)], [c2, c5])).
+cnf(c7, negated_conjecture, p2(X1, X2) | ~p2(X1, X3) | ~p2(X3, X2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN553-1.p', p2_6)).
+cnf(c8, plain, ~p2(f8(f9(c3), f8(f9(c4), c4)), f8(f9(c3), f8(c4, f9(c4)))) | p2(f8(f8(f9(c4), c4), f9(c3)), f8(f9(c3), f8(c4, f9(c4)))), inference(resolution, [status(thm)], [c3, c7])).
+cnf(c9, plain, p2(f8(f8(f9(c4), c4), f9(c3)), f8(f9(c3), f8(c4, f9(c4)))), inference(resolution, [status(thm)], [c6, c8])).
+cnf(c10, negated_conjecture, p2(f8(X8, f8(X9, X10)), f8(f8(X8, X9), X10)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN553-1.p', p2_7)).
+cnf(c11, plain, ~p2(f8(f9(c3), f8(c4, f9(c4))), f8(f8(f9(c3), c4), f9(c4))) | p2(f8(f9(c3), f8(c4, f9(c4))), f8(f9(c4), f8(f9(c3), c4))), inference(resolution, [status(thm)], [c3, c7])).
+cnf(c12, plain, p2(f8(f9(c3), f8(c4, f9(c4))), f8(f9(c4), f8(f9(c3), c4))), inference(resolution, [status(thm)], [c10, c11])).
+cnf(c13, plain, ~p2(f8(f8(f9(c4), c4), f9(c3)), f8(f9(c3), f8(c4, f9(c4)))) | p2(f8(f8(f9(c4), c4), f9(c3)), f8(f9(c4), f8(f9(c3), c4))), inference(resolution, [status(thm)], [c12, c7])).
+cnf(c14, plain, p2(f8(f8(f9(c4), c4), f9(c3)), f8(f9(c4), f8(f9(c3), c4))), inference(resolution, [status(thm)], [c9, c13])).
+cnf(c15, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c14])).
+% SZS output end CNFRefutation
+

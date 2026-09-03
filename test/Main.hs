@@ -47,6 +47,7 @@ tweeBenchmarkNames =
   , "COL083-1"
   , "LCL126-1"
   , "SYN140-1"
+  , "SYN553-1"
   ]
 
 handcraftedNames :: [String]
@@ -103,6 +104,7 @@ benchmarkNames =
   , "NUM025-1"
   , "LAT005-2"
   , "ANA009-2"
+  , "SYN558-1"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -145,6 +147,7 @@ eBenchmarkNames =
   , "SYO632-1"
   , "COL099-1"
   , "SYN179-1"
+  , "SYN555-1"
   , "ALG006-1"
   , "COL006-2"
   , "GRP703-10"

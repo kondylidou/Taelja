@@ -50,6 +50,7 @@ import TaeljaVerify.Vampire.TestNonunitSingle
 import TaeljaVerify.Vampire.TestPrelemmatizeSymEq
 import TaeljaVerify.Vampire.TestRlSafety
 import TaeljaVerify.Vampire.TestSplitDerivedUnit
+import TaeljaVerify.Vampire.Syn5581
 import TaeljaVerify.Vampire.ThesisExampleBothLemmas
 import TaeljaVerify.Vampire.UnitsOnlyRelationalExample
 
@@ -67,6 +68,7 @@ import TaeljaVerify.Twee.Sam
 import TaeljaVerify.Twee.ThesisExampleBothLemmasCnf
 import TaeljaVerify.Twee.Col0831
 import TaeljaVerify.Twee.Syn1401
+import TaeljaVerify.Twee.Syn5531
 import TaeljaVerify.Twee.Lcl1261
 
 -- E prover test cases
@@ -85,6 +87,7 @@ import TaeljaVerify.E.Lcl2123
 import TaeljaVerify.E.Syo6321
 import TaeljaVerify.E.Col0991
 import TaeljaVerify.E.Syn1791
+import TaeljaVerify.E.Syn5551
 import TaeljaVerify.E.Grp0015
 import TaeljaVerify.E.Grp70310
 import TaeljaVerify.E.Col0062
