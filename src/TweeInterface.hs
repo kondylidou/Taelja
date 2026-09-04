@@ -3,17 +3,10 @@ module TweeInterface
   , toTptpTerm
   , toCnfAxiom
   , toCnfNegGoal
-  , toFOFHornAxiom
   , HornAxiomEntry (..)
   , toIfeqCnfHorn
   , ifeqSelectorAxiom
   , sanitizeId
-  , isEqLit
-  , isDerivedUnit
-  , isOrigAxiomDecl
-  , dirFlag
-  , findEqByName
-  , applyRwLine
   , parseTweeTerm
   , parseTweeArgList
   , parseTweeChain
@@ -29,10 +22,8 @@ module TweeInterface
 import Control.Applicative ((<|>))
 import Data.Char (isAsciiLower, isAsciiUpper, isDigit, toUpper)
 import Data.List (intercalate, isInfixOf, isPrefixOf, nub, sortBy)
-import Data.List.NonEmpty (toList)
 import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
-import qualified Data.TPTP as T
 import Control.Exception (SomeException, bracket, try)
 import Data.IORef (IORef, newIORef, readIORef, modifyIORef')
 import Control.Monad (when)
@@ -46,8 +37,7 @@ import System.Timeout (timeout)
 import Text.Read (readMaybe)
 
 import Types
-import Helpers (appendLine, litVars, rewriteTermAll)
-import TptpConvert
+import Helpers (isEqLit, litVars, rewriteTermAll)
 
 tweeBin :: FilePath
 tweeBin = "bin/twee"
@@ -137,50 +127,20 @@ toCnfNegGoal :: String -> Term -> Term -> String
 toCnfNegGoal name l r =
   "cnf(" ++ name ++ ", negated_conjecture, " ++ toTptpTerm l ++ " != " ++ toTptpTerm r ++ ")."
 
--- Serialise a Horn clause (or unit clause) ancestor as a TPTP FOF axiom.
--- All literals are encoded in the "rel(args) = true" style for consistency
--- with the relational goal encoding used by callTweeRelLemma.
-toFOFHornAxiom :: String -> T.Declaration -> String
-toFOFHornAxiom name decl = case headAndBodyLits decl of
-  Nothing           -> ""
-  Just (heads, bodies) ->
-    let allVs   = nub (concatMap litVars heads ++ concatMap litVars bodies)
-        qStr    = if null allVs then ""
-                  else "! [" ++ intercalate "," allVs ++ "] : "
-        toLitStr l = case l of
-          Eq a b   -> toTptpTerm a ++ " = " ++ toTptpTerm b
-          Rel n [] -> n ++ " = true"
-          Rel n as -> n ++ "(" ++ intercalate "," (map toTptpTerm as) ++ ") = true"
-          _        -> "true = true"
-        bodyStr = intercalate " & " (map toLitStr bodies)
-        headStr = intercalate " & " (map toLitStr heads)
-        fofBody = if null bodies then headStr
-                  else "(" ++ bodyStr ++ " => " ++ headStr ++ ")"
-    in "fof(" ++ sanitizeId name ++ ", axiom, " ++ qStr ++ fofBody ++ ")."
-  where
-    headAndBodyLits (T.Formula _ (T.CNF (T.Clause lits))) =
-      let ls = toList lits
-      in Just ( [convertLit l | (T.Positive, l) <- ls]
-               , [convertLit l | (T.Negative, l) <- ls] )
-    headAndBodyLits (T.Formula _ (T.FOF f)) =
-      let heads  = map convertLit (headLitsOfFOF f)
-          bodies = map convertLit (bodyLitsOfFOF f)
-      in if null heads then Nothing else Just (heads, bodies)
-    headAndBodyLits _ = Nothing
-
 -- The ifeq selector axiom: ifeq(X,X,Y,Z) = Y.
 ifeqSelectorAxiom :: String
 ifeqSelectorAxiom = "cnf(ifeq_axiom, axiom, ifeq(X,X,Y,Z) = Y)."
 
--- Convert a relational literal to a term (for ifeq/pair encoding).
+-- A relational literal as a term (for the ifeq/pair encoding); the Horn
+-- axioms passed here are filtered to relational ones by the caller.
 litRelTerm :: Literal -> Term
 litRelTerm (Rel n []) = Const n
 litRelTerm (Rel n as) = App n as
-litRelTerm _          = Const "true"
+litRelTerm l          = error ("litRelTerm: not a relational atom: " ++ show l)
 
 -- Right-nested pair encoding of a non-empty list of terms.
 nestRightPair :: [Term] -> Term
-nestRightPair []     = Const "true"
+nestRightPair []     = error "nestRightPair: empty list"
 nestRightPair [t]    = t
 nestRightPair (t:ts) = App "pair" [t, nestRightPair ts]
 
@@ -261,31 +221,6 @@ relevantUnits goal units =
       let newSyms = nub (syms ++ concat (filter (any (`elem` syms)) allUnitSyms))
       in if newSyms == syms then syms else expand newSyms
     finalSyms = expand (litSyms goal)
-
-isEqLit :: Literal -> Bool
-isEqLit (Eq _ _) = True
-isEqLit _        = False
-
-isDerivedUnit :: T.Unit -> Bool
-isDerivedUnit (T.Unit _ _ (Just (T.Inference {}, _))) = True
-isDerivedUnit _                                           = False
-
--- True only for TPTP roles that indicate an original problem axiom.
-isOrigAxiomDecl :: T.Declaration -> Bool
-isOrigAxiomDecl (T.Formula (T.Standard T.Axiom)      _) = True
-isOrigAxiomDecl (T.Formula (T.Standard T.Hypothesis) _) = True
-isOrigAxiomDecl _                                        = False
-
-dirFlag :: Dir -> Maybe Dir
-dirFlag LR = Nothing
-dirFlag RL = Just RL
-
-findEqByName :: String -> [UnitEntry] -> Maybe (Term, Term)
-findEqByName nm units = listToMaybe
-  [ (l, r) | ue <- units, ueName ue == Just nm, Eq l r <- [ueUnit ue] ]
-
-applyRwLine :: ProofBlock -> (RwStep, Literal) -> ProofBlock
-applyRwLine b (rw, c) = appendLine b (Hence c (ByRw (rwName rw) (dirFlag (rwDir rw))))
 
 -- Parse a TPTP-style term from a string (Twee human-readable proof format).
 -- Variables start uppercase; constants/functions start lowercase or '_'.

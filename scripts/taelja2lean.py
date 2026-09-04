@@ -282,6 +282,9 @@ def parse_ref(s: str) -> Ref:
     # axiom name is tracked (e.g. derived inner nucleus or Twee-derived block).
     if s == 'axioms':
         return Ref('axioms', 0, rw, direction)
+    # the conclusion follows from a derived $false (contradictory axioms)
+    if s == 'contradiction':
+        return Ref('contradiction', 0, rw, direction)
     m = re.match(r'(axiom|lemma)\s+(\d+)', s)
     if not m:
         raise ValueError(f'Cannot parse ref: {s!r}')
@@ -491,6 +494,8 @@ def collect_symbols(doc: Document) -> Tuple[Dict, Dict, Set]:
     def visit_atom(f, top_level=True):
         """Visit a formula atom."""
         if isinstance(f, PredLit):
+            if is_falsum(f):
+                return
             if top_level:
                 if f.head not in predicates or predicates[f.head] < len(f.args):
                     predicates[f.head] = len(f.args)
@@ -626,9 +631,16 @@ def lean_name(name: str) -> str:
 # (= true encoding). lean_lit appends "= true_" for these symbols.
 _func_predicates: set = frozenset()
 
+def is_falsum(f) -> bool:
+    """The reserved TPTP atom $false (the tokenizer may drop the '$')."""
+    return isinstance(f, PredLit) and not f.args and f.head.lstrip('$') == 'false'
+
+
 def lean_lit(f, var_map: dict) -> str:
     """Convert a literal/formula to Lean Prop string."""
     if isinstance(f, PredLit):
+        if is_falsum(f):
+            return 'False'
         head = lean_name(f.head)
         if not f.args:
             if f.head in _func_predicates:
@@ -1483,6 +1495,19 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                 full_lit_str = f'∀ {forall_vars}, {lit_str}'
             else:
                 full_lit_str = lit_str
+
+            if ref.kind == 'contradiction':
+                # the previous hypothesis is False; anything follows
+                prev_name = hyp_names.get(current_idx, 'sorry_no_prev')
+                if lit_has_new_vars:
+                    binders = ' '.join(lean_var_name(v, i) for i, v in enumerate(new_vars))
+                    lines.append(f'have {hname} : {full_lit_str} := fun {binders} => {prev_name}.elim')
+                else:
+                    lines.append(f'have {hname} : {full_lit_str} := {prev_name}.elim')
+                hyp_names[idx] = hname
+                hyp_lits[idx] = step.lit
+                current_idx = idx
+                continue
 
             if ref.rw:
                 # Rewrite step: transform current hypothesis into new literal.

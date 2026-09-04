@@ -18,8 +18,14 @@ Proof:
 
 Lemma 8: product(c,a,b)
 Proof:
-  have product(identity,b,b)
-    by axiom 5
+  have product(X,X,identity)
+    by axiom 3
+   and product(Y,Y,identity)
+    by axiom 3
+   and product(b,identity,b)
+    by axiom 2
+  hence product(identity,b,b)
+    by axiom 4
    and product(c,b,a)
     by lemma 7
    and product(c,c,identity)
@@ -27,13 +33,24 @@ Proof:
   hence product(c,a,b)
     by axiom 6
 
-Goal 1: product(b,a,c)
+Lemma 9: product(a,c,b)
 Proof:
-  have product(c,identity,c)
-    by axiom 2
-   and product(c,a,b)
-    by lemma 8
+  have product(identity,X,X)
+    by axiom 5
+   and product(a,b,c)
+    by axiom 1
    and product(a,a,identity)
     by axiom 3
+  hence product(a,c,b)
+    by axiom 6
+
+Goal 1: product(b,a,c)
+Proof:
+  have product(a,b,c)
+    by axiom 1
+   and product(a,c,b)
+    by lemma 9
+   and product(c,a,b)
+    by lemma 8
   hence product(b,a,c)
     by axiom 4

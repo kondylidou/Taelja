@@ -9,21 +9,103 @@ Axiom 8: p5(c7,c10,c9)
 Axiom 9: p4(X,X)
 Axiom 10: p5(B,A,C) /\ p2(A,Z) /\ p2(C,Y) /\ p4(B,X) => p5(X,Z,Y)
 
-Lemma 11: p5(c7,c8,f3(f3(c8)))
+Lemma 11: p5(c7,c10,f3(c8))
 Proof:
-  have p5(c7,X,f3(X))
+  have p5(c7,c8,f3(c8))
     by axiom 5
-   and p5(c7,c8,f3(c8))
-    by axiom 5
-  hence p5(c7,c8,f3(f3(c8)))
+   and p5(c7,c10,c8)
+    by axiom 2
+  hence p5(c7,c10,f3(c8))
     by axiom 6
 
-Goal 1: p5(c7,c8,f3(f3(c8)))
+Lemma 12: p2(f3(c8),f3(c10))
 Proof:
-  have p5(c7,c8,f3(f3(c8)))
+  have p5(c7,c10,f3(c10))
+    by axiom 5
+   and p6(c7,f3(c10))
+    by axiom 4
+   and p6(c7,f3(c8))
+    by axiom 4
+   and p5(c7,c10,f3(c8))
     by lemma 11
+  hence p2(f3(c8),f3(c10))
+    by axiom 7
 
-Goal 2: p5(c7,c9,f3(c9))
+Lemma 13: p5(c7,c10,f3(c9))
 Proof:
   have p5(c7,c9,f3(c9))
     by axiom 5
+   and p5(c7,c10,c9)
+    by axiom 8
+  hence p5(c7,c10,f3(c9))
+    by axiom 6
+
+Lemma 14: p2(f3(c9),f3(c10))
+Proof:
+  have p5(c7,c10,f3(c10))
+    by axiom 5
+   and p6(c7,f3(c10))
+    by axiom 4
+   and p6(c7,f3(c9))
+    by axiom 4
+   and p5(c7,c10,f3(c9))
+    by lemma 13
+  hence p2(f3(c9),f3(c10))
+    by axiom 7
+
+Lemma 15: p2(f3(c10),f3(c8))
+Proof:
+  have p2(f3(c8),f3(c8))
+    by axiom 1
+   and p2(f3(c8),f3(c10))
+    by lemma 12
+  hence p2(f3(c10),f3(c8))
+    by axiom 3
+
+Lemma 16: p2(f3(c8),f3(c9))
+Proof:
+  have p2(f3(c9),f3(c9))
+    by axiom 1
+   and p2(f3(c9),f3(c10))
+    by lemma 14
+  hence p2(f3(c10),f3(c9))
+    by axiom 3
+   and p2(f3(c10),f3(c8))
+    by lemma 15
+  hence p2(f3(c8),f3(c9))
+    by axiom 3
+
+Lemma 17: p2(f3(c9),f3(c8))
+Proof:
+  have p2(f3(c8),f3(c8))
+    by axiom 1
+   and p2(f3(c8),f3(c9))
+    by lemma 16
+  hence p2(f3(c9),f3(c8))
+    by axiom 3
+
+Goal 1: p5(c7,c8,f3(f3(c9)))
+Proof:
+  have p5(c7,f3(c9),f3(f3(c9)))
+    by axiom 5
+   and p2(f3(c9),f3(c8))
+    by lemma 17
+   and p2(f3(f3(c9)),f3(f3(c9)))
+    by axiom 1
+   and p4(c7,c7)
+    by axiom 9
+  hence p5(c7,f3(c8),f3(f3(c9)))
+    by axiom 10
+   and p5(c7,c8,f3(c8))
+    by axiom 5
+  hence p5(c7,c8,f3(f3(c9)))
+    by axiom 6
+
+Goal 2: p5(c7,c9,f3(f3(c9)))
+Proof:
+  have p5(c7,f3(c9),f3(f3(c9)))
+    by axiom 5
+   and p5(c7,c9,f3(c9))
+    by axiom 5
+  hence p5(c7,c9,f3(f3(c9)))
+    by axiom 6

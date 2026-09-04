@@ -1,0 +1,11 @@
+Axiom 1: p(a)
+Axiom 2: p(a) => $false
+
+Goal 1: q(b)
+Proof:
+  have p(a)
+    by axiom 1
+  hence $false
+    by axiom 2
+  hence q(b)
+    by contradiction

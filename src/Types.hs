@@ -1,7 +1,6 @@
 module Types where
 
 import qualified Data.Map.Strict as Map
-import qualified Data.Set as Set
 import qualified Data.TPTP as T
 
 data Term
@@ -72,6 +71,7 @@ data ProofLine
 data Justification
   = ByAxiom String
   | ByRw    String (Maybe Dir)
+  | ByContradiction         -- the conclusion follows from a derived $false
   deriving (Show)
 
 data Axiom
@@ -95,6 +95,8 @@ data AlgState = AlgState
   , stCounter    :: Int
   , stAxNuclei   :: [(String, Clause)] -- original axiom nuclei (name, clause) for goal justification search
   , stReprove    :: String -> IO (Maybe (Literal, ProofBlock, [(String, Literal, ProofBlock)]))
+  , stNameToPos  :: Map.Map String String        -- TSTP unit name -> tree position of its electron
+  , stEqByName   :: Map.Map String (Term, Term)  -- TSTP unit name -> its unit equation
       -- re-prove the derived unit at a tree position from its ancestry
       -- (lemma-builder sub-proof); top-level runs only, Nothing elsewhere
   }

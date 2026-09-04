@@ -208,6 +208,51 @@ _FATAL_WARN_PATTERNS = (
 )
 
 
+_GOAL_LINE = re.compile(r'^Goal\s+\d+:\s*(.+)$', re.M)
+_SYMBOL = re.compile(r'[A-Za-z_][A-Za-z0-9_]*')
+
+
+def _conjecture_symbols(problem_file):
+    """Predicate/function/constant symbols of the problem's conjecture, read
+    independently of the tool: fof conjecture units and cnf negated_conjecture
+    clauses (a clause with a positive literal is a hypothesis, not a goal).
+    None when the file has no conjecture."""
+    try:
+        txt = problem_file.read_text(errors='replace')
+    except OSError:
+        return None
+    txt = re.sub(r'%[^\n]*', '', txt)
+    units = re.findall(r'\b(fof|cnf)\s*\(\s*[^,]+,\s*(conjecture|negated_conjecture)\s*,(.*?)\)\s*\.', txt, re.S)
+    syms = set()
+    for kind, role, body in units:
+        if kind == 'cnf' and role == 'negated_conjecture':
+            lits = [l.strip() for l in body.split('|')]
+            if not all(l.startswith('~') for l in lits):
+                continue
+        for s in _SYMBOL.findall(body):
+            if s[0].islower():
+                syms.add(s)
+    return syms or None
+
+
+_GOAL_HEAD = re.compile(r'^\s*([a-z][A-Za-z0-9_]*)\s*(?:\(|$)')
+
+
+def _goal_matches_conjecture(proof_txt, problem_file):
+    """False when an emitted goal's predicate does not occur in the
+    conjecture (a proof of some other statement would still pass Lean).
+    Only the predicate is compared: the witness terms of an existential goal
+    may legitimately use any symbol of the axioms."""
+    conj = _conjecture_symbols(problem_file)
+    if conj is None:
+        return True
+    for goal in _GOAL_LINE.findall(proof_txt):
+        m = _GOAL_HEAD.match(goal)
+        if m and m.group(1) not in conj:
+            return False
+    return True
+
+
 def _has_fatal_warning(err):
     """Return True if any [warn] line indicates a definitely-incomplete proof."""
     return any(p in line for line in err.splitlines() for p in _FATAL_WARN_PATTERNS)
@@ -317,7 +362,11 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
     elif 'no refutation found' in err:
         result['taelja'] = 'unsupported'
     elif rc == 0 and proof.strip() and _only_warnings(err) and not _has_empty_proof(proof) and not _has_fatal_warning(err):
-        result['taelja'] = 'ok'
+        if _goal_matches_conjecture(proof, p_file):
+            result['taelja'] = 'ok'
+        else:
+            result['taelja'] = 'fail'
+            (out / 'taelja.err').write_text(err + '\n[eval] emitted goal uses a symbol the conjecture does not mention\n')
     else:
         result['taelja'] = 'fail'
 

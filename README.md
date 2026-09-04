@@ -80,6 +80,7 @@ Environment variables (all optional):
 | `TAELJA_TWEE_TIMEOUT` | 15 s | Budget for goal-level Twee calls |
 | `TAELJA_TWEE_INTERNAL_TIMEOUT` | 5 s | Budget for internal Twee calls; never exceeds the goal budget |
 | `TAELJA_E_TIMEOUT` | 5 s | Budget per E lemma sub-proof |
+| `TAELJA_RESCUE_TIMEOUT` | 30 s | Budget for the second attempt that re-proves derived units when the first translation is incomplete |
 | `TAELJA_EPROVER` | `eprover` | Path to the E binary |
 | `TAELJA_STRICT` | unset | `1` runs only the strict translation stage |
 

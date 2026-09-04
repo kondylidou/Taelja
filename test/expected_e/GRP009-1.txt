@@ -8,18 +8,31 @@ Axiom 7: product(X,Y,Z) /\ product(Y,A,B) /\ product(X,B,C) => product(Z,A,C)
 Axiom 8: product(a,b,identity)
 Axiom 9: product(inverse(X),X,identity)
 
-Lemma 10: product(identity,inverse(b),c)
+Lemma 10: multiply(identity,X) = X
+Proof:
+  have product(identity,X,multiply(identity,X))
+    by axiom 1
+   and product(identity,X,X)
+    by axiom 2
+  hence multiply(identity,X) = X
+    by axiom 3
+
+Lemma 11: product(identity,inverse(b),c)
 Proof:
   have product(c,b,identity)
     by axiom 6
+  hence product(c,b,multiply(identity,identity))
+    by rw lemma 10 R->L
    and product(b,inverse(b),identity)
     by axiom 4
    and product(c,identity,c)
     by axiom 5
-  hence product(identity,inverse(b),c)
+  hence product(multiply(identity,identity),inverse(b),c)
     by axiom 7
+  hence product(identity,inverse(b),c)
+    by rw lemma 10
 
-Lemma 11: product(identity,inverse(b),a)
+Goal 1: a = c
 Proof:
   have product(a,b,identity)
     by axiom 8
@@ -29,12 +42,7 @@ Proof:
     by axiom 5
   hence product(identity,inverse(b),a)
     by axiom 7
-
-Goal 1: a = c
-Proof:
-  have product(identity,inverse(b),a)
-    by lemma 11
    and product(identity,inverse(b),c)
-    by lemma 10
+    by lemma 11
   hence a = c
     by axiom 3

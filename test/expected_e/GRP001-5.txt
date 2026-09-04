@@ -5,41 +5,75 @@ Axiom 4: product(X,Y,Z) /\ product(Y,A,B) /\ product(X,B,C) => product(Z,A,C)
 Axiom 5: product(identity,X,X)
 Axiom 6: product(X,Y,Z) /\ product(Y,A,B) /\ product(Z,A,C) => product(X,B,C)
 
-Lemma 7: product(c,b,a)
+Lemma 7: product(a,identity,a)
+Proof:
+  have product(X,X,identity)
+    by axiom 3
+   and product(Y,Y,identity)
+    by axiom 3
+   and product(Z,identity,Z)
+    by axiom 2
+  hence product(identity,Z,Z)
+    by axiom 4
+   and product(A,identity,A)
+    by axiom 2
+   and product(identity,a,a)
+    by axiom 5
+  hence product(a,identity,a)
+    by axiom 4
+
+Lemma 8: product(c,b,a)
 Proof:
   have product(a,b,c)
     by axiom 1
    and product(b,b,identity)
     by axiom 3
    and product(a,identity,a)
-    by axiom 2
+    by lemma 7
   hence product(c,b,a)
     by axiom 4
 
-Lemma 8: product(c,a,b)
+Lemma 9: product(identity,b,b)
+Proof:
+  have product(X,X,identity)
+    by axiom 3
+   and product(Y,Y,identity)
+    by axiom 3
+   and product(b,identity,b)
+    by axiom 2
+  hence product(identity,b,b)
+    by axiom 4
+
+Lemma 10: product(c,a,b)
 Proof:
   have product(c,c,identity)
     by axiom 3
    and product(c,b,a)
-    by lemma 7
+    by lemma 8
    and product(identity,b,b)
-    by axiom 5
+    by lemma 9
   hence product(c,a,b)
     by axiom 6
 
 Goal 1: product(b,a,c)
 Proof:
-  have product(a,b,c)
-    by axiom 1
-   and product(b,identity,b)
+  have product(X,X,identity)
+    by axiom 3
+   and product(Y,Y,identity)
+    by axiom 3
+   and product(Z,identity,Z)
     by axiom 2
-   and product(a,b,c)
-    by axiom 1
+  hence product(identity,Z,Z)
+    by axiom 4
+   and product(A,identity,A)
+    by axiom 2
+   and product(identity,c,c)
+    by axiom 5
   hence product(c,identity,c)
     by axiom 4
    and product(a,a,identity)
     by axiom 3
    and product(c,a,b)
-    by lemma 8
+    by lemma 10
   hence product(b,a,c)
     by axiom 4

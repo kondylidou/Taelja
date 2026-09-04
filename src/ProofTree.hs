@@ -12,6 +12,8 @@ module ProofTree
   , resolveCopySource
   , isFileSrc
   , lookupDecl
+  , isDerivedUnit
+  , isOrigAxiomDecl
   ) where
 
 import qualified Data.TPTP as T
@@ -44,7 +46,9 @@ buildProofInfo axHyps allUnits
   tree <- buildProofTree allUnits
   let unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
       resolve = resolveSourceName unitMap
-      chains  = demodChainsForLeaves resolve tree
+      -- a chain names the unit that rewrote: a copy resolves to its axiom,
+      -- a derived equation keeps its own identity
+      chains  = demodChainsForLeaves (resolveCopySource unitMap) tree
 
       leafRows  = gatherLeaves "" tree
       innerRows = gatherInner  "" tree
@@ -88,11 +92,16 @@ buildProofInfo axHyps allUnits
                     [e | e <- iEs, not (isPositiveUnitFormula (leDecl e))]
 
   -- prefer the original Conjecture unit: provers may split/simplify before refutation
-  goalLits <- case extractConjectureGoals allUnits of
+  -- Without a conjecture unit the goal clause is the negated-conjecture
+  -- clause resolved closest to the root: a disjunctive conjecture negates
+  -- into several all-negative clauses, and the refutation's root step
+  -- determines which one it uses.
+  let byDepth = sortBy (comparing (\e -> (length (lePos e), lePos e)))
+  goalLits <- fmap (concatMap (unfoldDefinition unitMap)) $ case extractConjectureGoals allUnits of
     Just lits -> Just lits
     Nothing   -> listToMaybe $
       [ lits
-      | e <- nuclei, leRole e == NegConjecture
+      | e <- byDepth [ e' | e' <- nuclei, leRole e' == NegConjecture ]
       , let goalDecl = fromMaybe (leDecl e) (lookupDecl unitMap (leName e))
       , Just lits <- [extractGoalLits goalDecl]
       ] ++
@@ -402,14 +411,14 @@ extractGoalLits (T.Formula _ (T.FOF f)) = extractFOF f
     extractFOF (T.Quantified T.Forall _ body)          = extractFOF body
     extractFOF (T.Negated body)                        = extractConj body
     extractFOF (T.Atomic (T.Equality l T.Negative r)) = Just [T.Equality l T.Positive r]
+    -- A clause with a positive literal is a hypothesis (Vampire labels every
+    -- input clause negated_conjecture when it proves the negation), never a
+    -- goal source; only an all-negative clause states negated goals, as in
+    -- the CNF case above.
     extractFOF g =
       let posLits = posLitsOfDisjFOF g
           negLits = negLitsOfDisjFOF g
-      in case posLits of
-        [lit] -> Just [lit]   -- Horn clause A ∨ ¬B₁ ∨ … with single positive head
-        []    -> if null negLits then Nothing
-                 else Just negLits  -- all-negative clause: each negated atom is a goal
-        _     -> Nothing
+      in if null posLits && not (null negLits) then Just negLits else Nothing
 
     extractConj (T.Atomic lit)                   = Just [lit]
     extractConj (T.Connected l T.Conjunction r)  = do
@@ -418,6 +427,36 @@ extractGoalLits (T.Formula _ (T.FOF f)) = extractFOF f
       return (ls ++ rs)
     extractConj _                                = Nothing
 extractGoalLits _ = Nothing
+
+-- A goal atom that the prover introduced as an abbreviation (E's definitional
+-- predicates: "~epred <=> ! [X] : ~E(f(X),0)", introduced(definition)) stands
+-- for the atom it abbreviates; the reader's goal is that atom.  Atoms
+-- without such a definition are returned unchanged.
+unfoldDefinition :: Map.Map String T.Unit -> T.Literal -> [T.Literal]
+unfoldDefinition unitMap lit@(T.Predicate (T.Defined (T.Atom pname)) []) =
+  case [ body | T.Unit _ (T.Formula _ (T.FOF f)) (Just (T.Introduced _ _, _)) <- Map.elems unitMap
+              , Just body <- [definitionBody f] ] of
+    (body : _) -> body
+    []         -> [lit]
+  where
+    isAtom (T.Atomic (T.Predicate (T.Defined (T.Atom n)) [])) = n == pname
+    isAtom _ = False
+    -- "p <=> phi" or "~p <=> ~phi" (quantifiers stripped): the atoms of phi
+    definitionBody (T.Connected l T.Equivalence r)
+      | isAtom l = atomsOf r
+      | isAtom r = atomsOf l
+      | T.Negated l' <- l, isAtom l' = atomsOf (negatedOf r)
+      | T.Negated r' <- r, isAtom r' = atomsOf (negatedOf l)
+    definitionBody (T.Quantified _ _ body) = definitionBody body
+    definitionBody _ = Nothing
+    negatedOf (T.Quantified q vs body) = T.Quantified q vs (negatedOf body)
+    negatedOf (T.Negated body)         = body
+    negatedOf body                     = T.Negated body
+    atomsOf (T.Quantified _ _ body) = atomsOf body
+    atomsOf (T.Atomic a)            = Just [a]
+    atomsOf (T.Connected l T.Conjunction r) = (++) <$> atomsOf l <*> atomsOf r
+    atomsOf _ = Nothing
+unfoldDefinition _ lit = [lit]
 
 -- more reliable than NegConjecture entry: E may split/simplify before refutation
 extractConjectureGoals :: [T.Unit] -> Maybe [T.Literal]
@@ -681,3 +720,13 @@ firstParentIsLeft _ result d1 d2 = case (posHead d1, posHead d2) of
     single _   = Nothing
     isNegEq (T.Equality _ T.Negative _) = True
     isNegEq _ = False
+
+isDerivedUnit :: T.Unit -> Bool
+isDerivedUnit (T.Unit _ _ (Just (T.Inference {}, _))) = True
+isDerivedUnit _                                           = False
+
+-- True only for TPTP roles that indicate an original problem axiom.
+isOrigAxiomDecl :: T.Declaration -> Bool
+isOrigAxiomDecl (T.Formula (T.Standard T.Axiom)      _) = True
+isOrigAxiomDecl (T.Formula (T.Standard T.Hypothesis) _) = True
+isOrigAxiomDecl _                                        = False

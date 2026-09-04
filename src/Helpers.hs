@@ -1,45 +1,10 @@
 module Helpers where
 
 import Control.Applicative ((<|>))
-import Data.IORef (IORef, newIORef, readIORef)
 import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub)
-import Data.Maybe (fromMaybe)
-import qualified Data.Set as USet
-import GHC.Clock (getMonotonicTime)
-import System.IO.Unsafe (unsafePerformIO)
+import Data.Maybe (fromMaybe, listToMaybe)
+import Control.Monad (foldM)
 import Types
-
--- Rescue mode (re-proving derived units mid-translation, broad ancestor
--- retries).  Off for the first full translation attempt so successful
--- translations are byte-identical to the rescue-free translator and pay no
--- overhead; translate enables it, with a wall-clock budget, only for a
--- second attempt after an incomplete result.  Process-global because the
--- lemma builder and the algorithm state recurse into fresh runs that must
--- share one budget.
-{-# NOINLINE rescueEnabled #-}
-rescueEnabled :: IORef Bool
-rescueEnabled = unsafePerformIO (newIORef False)
-
-{-# NOINLINE rescueDeadline #-}
-rescueDeadline :: IORef Double
-rescueDeadline = unsafePerformIO (newIORef 0)
-
--- Unit names whose re-proof is currently being built somewhere up the call
--- stack.  A candidate's sub-problem contains the candidate itself as its
--- root, so without this guard the recursive translation would re-prove its
--- own root with the identical sub-problem, looping until the budget is gone.
-{-# NOINLINE reproveInProgress #-}
-reproveInProgress :: IORef (USet.Set String)
-reproveInProgress = unsafePerformIO (newIORef USet.empty)
-
--- enabled and within the budget
-rescueActive :: IO Bool
-rescueActive = do
-  en <- readIORef rescueEnabled
-  if not en then return False else do
-    dl  <- readIORef rescueDeadline
-    now <- getMonotonicTime
-    return (now < dl)
 
 termVars :: Term -> [String]
 termVars (Var x)    = [x]
@@ -281,6 +246,34 @@ rewriteLitAll lit eq dir = case lit of
                          ++ [t : ts' | ts' <- rewriteListAll ts]
 
 -- A proof block with no steps (nothing established).
+-- A positive atom as the term Twee rewrites (p(t) as a term, p as a constant).
+atomTerm :: Literal -> Term
+atomTerm (Rel n [])  = Const n
+atomTerm (Rel n as)  = App n as
+atomTerm l           = error ("atomTerm: not a positive atom: " ++ show l)
+
+-- The equation a chain step rewrites with: an equation itself, or the
+-- P = true encoding of a positive atom.
+unitEquation :: Literal -> (Term, Term)
+unitEquation (Eq a b) = (a, b)
+unitEquation l        = (atomTerm l, Const "true")
+
+-- Unification of two literals (see unifyTerms below).
+unifyLits :: Literal -> Literal -> Subst -> Maybe Subst
+unifyLits (Eq a b) (Eq c d) σ = unifyTerms a c σ >>= unifyTerms b d
+unifyLits (Rel n as) (Rel m bs) σ | n == m, length as == length bs =
+  foldr (\(a, b) acc -> acc >>= unifyTerms a b) (Just σ) (zip as bs)
+unifyLits _ _ _ = Nothing
+
+flipDir :: Dir -> Dir
+flipDir LR = RL
+flipDir RL = LR
+
+-- The contradiction a refutation derives when the axioms alone are
+-- inconsistent; every goal then follows from it.
+falsumLit :: Literal
+falsumLit = Rel "$false" []
+
 isEmptyBlock :: ProofBlock -> Bool
 isEmptyBlock (HaveHence []) = True
 isEmptyBlock (EqChain _ []) = True
@@ -341,6 +334,7 @@ blockRefNames (HaveHence ls)    = concatMap lineRef ls
     lineRef (And _ nm)             = [nm]
     lineRef (Hence _ (ByAxiom nm)) = [nm]
     lineRef (Hence _ (ByRw nm _))  = [nm]
+    lineRef (Hence _ ByContradiction) = []
 blockRefNames (EqChain _ steps) = [ rwName rw | (rw, _) <- steps ]
 
 -- Rename cited names throughout a block.
@@ -351,6 +345,7 @@ renameRefsBlock ren (HaveHence ls) = HaveHence (map go ls)
     go (And lit nm)             = And lit (ren nm)
     go (Hence lit (ByAxiom nm)) = Hence lit (ByAxiom (ren nm))
     go (Hence lit (ByRw nm d))  = Hence lit (ByRw (ren nm) d)
+    go l@(Hence _ ByContradiction) = l
 renameRefsBlock ren (EqChain s steps) =
   EqChain s [ (rw { rwName = ren (rwName rw) }, t) | (rw, t) <- steps ]
 
@@ -407,3 +402,44 @@ unifyTerms s0 t0 = go [(s0, t0)]
     bind x t rest θ
       | x `elem` termVars t = Nothing
       | otherwise           = go rest ((x, t) : θ)
+
+isEqLit :: Literal -> Bool
+isEqLit (Eq _ _) = True
+isEqLit _        = False
+
+dirFlag :: Dir -> Maybe Dir
+dirFlag LR = Nothing
+dirFlag RL = Just RL
+
+findEqByName :: String -> [UnitEntry] -> Maybe (Term, Term)
+findEqByName nm units = listToMaybe
+  [ (l, r) | ue <- units, ueName ue == Just nm, Eq l r <- [ueUnit ue] ]
+
+applyRwLine :: ProofBlock -> (RwStep, Literal) -> ProofBlock
+applyRwLine b (rw, c) = appendLine b (Hence c (ByRw (rwName rw) (dirFlag (rwDir rw))))
+
+-- Length of common prefix of two strings.
+commonPrefixLen :: String -> String -> Int
+commonPrefixLen s1 s2 = length $ takeWhile id $ zipWith (==) s1 s2
+
+-- Replay a demodulation chain (outermost step first on input, replayed
+-- innermost first).  Every step must name a known equation and apply;
+-- otherwise the replay does not reproduce the prover's rewriting and the
+-- chain is unusable (Nothing).
+rwChain :: (String -> Maybe (Term, Term)) -> Literal -> [(String, Dir)] -> Maybe (Literal, [(RwStep, Literal)])
+rwChain eqOf start chain = go start [] (reverse chain)
+  where
+    go cur acc [] = Just (cur, reverse acc)
+    go cur acc ((nm, dir) : rest) = do
+      (l, r) <- eqOf nm
+      cur'   <- rewriteLit cur (l, r) dir
+      go cur' ((RwStep nm (l, r) dir, cur') : acc) rest
+
+-- Undo a demodulation chain on a literal the prover shows after rewriting:
+-- the steps are applied in the opposite direction, outermost first.
+unrewriteLit :: (String -> Maybe (Term, Term)) -> Literal -> [(String, Dir)] -> Maybe Literal
+unrewriteLit eqOf = foldM step
+  where
+    step cur (nm, dir) = do
+      (l, r) <- eqOf nm
+      rewriteLit cur (l, r) (flipDir dir)

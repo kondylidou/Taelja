@@ -45,7 +45,7 @@ axiomLines entries = map ppEntry entries
 
 ppClauseWith :: [(String, String)] -> Clause -> String
 ppClauseWith renaming (Clause bodyLits mHead) =
-  ppBodies renamedBody ++ " => " ++ maybe "⊥" ppLiteral renamedHead
+  ppBodies renamedBody ++ " => " ++ maybe "$false" ppLiteral renamedHead
   where
     renamedBody  = map (renameLit renaming) bodyLits
     renamedHead  = fmap (renameLit renaming) mHead
@@ -91,6 +91,7 @@ ppJust (ByAxiom nm)        = "by " ++ nm
 ppJust (ByRw nm Nothing)   = "by rw " ++ nm
 ppJust (ByRw nm (Just RL)) = "by rw " ++ nm ++ " R->L"
 ppJust (ByRw nm (Just LR)) = "by rw " ++ nm
+ppJust ByContradiction     = "by contradiction"
 
 renderEqChain :: Term -> [(RwStep, Term)] -> [String]
 renderEqChain s steps =
@@ -118,14 +119,8 @@ applyRenaming mapping sp0 = sp0
   , goals  = [(lit, renBlock b)        | (lit, b)    <- goals sp0]
   }
   where
-    ren nm = Map.findWithDefault nm nm mapping
-    renBlock (HaveHence ls)    = HaveHence (map renLine ls)
-    renBlock (EqChain s steps) = EqChain s
-      [(rw { rwName = ren (rwName rw) }, t) | (rw, t) <- steps]
-    renLine (Have lit nm)            = Have lit (ren nm)
-    renLine (And lit nm)             = And lit (ren nm)
-    renLine (Hence lit (ByAxiom nm)) = Hence lit (ByAxiom (ren nm))
-    renLine (Hence lit (ByRw nm d))  = Hence lit (ByRw (ren nm) d)
+    ren nm   = Map.findWithDefault nm nm mapping
+    renBlock = renameRefsBlock ren
 
 pruneUnusedLemmas :: StructuredProof -> StructuredProof
 pruneUnusedLemmas sp = renumber (fixpoint prune sp)
@@ -136,16 +131,8 @@ pruneUnusedLemmas sp = renumber (fixpoint prune sp)
       in (sp0 { lemmas = kept }, not (null dropped))
 
     allRefs sp0 = Set.fromList $
-      concatMap (blockRefs . snd) (goals sp0) ++
-      concatMap (\(_, _, b) -> blockRefs b) (lemmas sp0)
-
-    blockRefs (HaveHence ls)    = concatMap lineRefs ls
-    blockRefs (EqChain _ steps) = map (rwName . fst) steps
-
-    lineRefs (Have _ nm)            = [nm]
-    lineRefs (And _ nm)             = [nm]
-    lineRefs (Hence _ (ByAxiom nm)) = [nm]
-    lineRefs (Hence _ (ByRw nm _))  = [nm]
+      concatMap (blockRefNames . snd) (goals sp0) ++
+      concatMap (\(_, _, b) -> blockRefNames b) (lemmas sp0)
 
     fixpoint f x =
       let (x', changed) = f x

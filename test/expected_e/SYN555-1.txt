@@ -16,20 +16,33 @@ Proof:
   hence p4(f5(c7,X,c9),f5(c7,X,c8))
     by axiom 4
 
-Lemma 10: p4(f5(c7,c10,c8),c8)
+Lemma 10: p4(f5(c7,X,c9),f5(c7,X,c8))
 Proof:
-  have p4(f5(c7,c10,c9),c9)
+  have p4(f5(c7,X,c8),f5(c7,X,c9))
+    by axiom 2
+   and p4(f5(c7,X,c8),f5(c7,X,c8))
+    by axiom 3
+  hence p4(f5(c7,X,c9),f5(c7,X,c8))
+    by axiom 4
+
+Lemma 11: p4(f5(c7,c10,c8),c9)
+Proof:
+  have p4(f5(c7,c10,c9),f5(c7,c10,c8))
+    by lemma 10
+   and p4(f5(c7,c10,c9),c9)
     by axiom 1
+  hence p4(f5(c7,c10,c8),c9)
+    by axiom 4
+
+Goal 1: p4(f5(c7,c10,c8),c8)
+Proof:
+  have p4(f5(c7,X,c8),f5(c7,X,c9))
+    by axiom 2
+   and p4(f5(c7,c10,c8),c9)
+    by lemma 11
+  hence p4(f5(c7,c10,c9),c9)
+    by axiom 4
    and p4(f5(c7,f6(c10,c9,c8),c9),f5(c7,f6(c10,c9,c8),c8))
     by lemma 9
   hence p4(f5(c7,c10,c8),c8)
     by axiom 5
-
-Goal 1: p4(f5(c7,c10,c8),c8)
-Proof:
-  have p4(f5(c7,c10,c8),f5(c7,c10,c8))
-    by axiom 3
-   and p4(f5(c7,c10,c8),c8)
-    by lemma 10
-  hence p4(f5(c7,c10,c8),c8)
-    by axiom 4

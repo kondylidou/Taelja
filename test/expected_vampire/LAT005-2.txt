@@ -72,7 +72,14 @@ Proof:
   hence meet(d,c2,d)
     by axiom 6
 
-Lemma 24: meet(c2,e,e)
+Lemma 24: meet(r2,c,n0)
+Proof:
+  have meet(c,r2,n0)
+    by axiom 14
+  hence meet(r2,c,n0)
+    by axiom 6
+
+Lemma 25: meet(c2,e,e)
 Proof:
   have meet(r2,b,e)
     by axiom 5
@@ -85,14 +92,14 @@ Proof:
   hence meet(c2,e,e)
     by axiom 9
 
-Lemma 25: meet(r1,b2,r1)
+Lemma 26: meet(r1,b2,r1)
 Proof:
   have join(r1,d,b2)
     by axiom 3
   hence meet(r1,b2,r1)
     by axiom 4
 
-Lemma 26: meet(b2,c2,d)
+Lemma 27: meet(b2,c2,d)
 Proof:
   have meet(c2,r1,n0)
     by axiom 11
@@ -109,61 +116,67 @@ Proof:
   hence meet(b2,c2,d)
     by axiom 6
 
-Lemma 27: meet(r2,c,n0)
+Lemma 28: meet(b,e,e)
 Proof:
-  have meet(c,r2,n0)
-    by axiom 14
-  hence meet(r2,c,n0)
+  have meet(b,r2,e)
+    by lemma 18
+  hence join(b,e,b)
+    by axiom 13
+  hence join(e,b,b)
+    by axiom 8
+  hence meet(e,b,e)
+    by axiom 4
+  hence meet(b,e,e)
     by axiom 6
 
-Lemma 28: meet(d,b,n0)
+Lemma 29: meet(d,b,n0)
 Proof:
   have meet(a,b,c)
     by axiom 15
    and meet(r2,a,d)
     by axiom 10
    and meet(r2,c,n0)
-    by lemma 27
+    by lemma 24
   hence meet(d,b,n0)
     by axiom 16
 
-Lemma 29: meet(d,e,n0)
+Lemma 30: meet(d,e,n0)
 Proof:
   have meet(n0,X,n0)
     by axiom 17
-   and meet(b,r2,e)
-    by lemma 18
-   and meet(d,b,n0)
+   and meet(b,e,e)
     by lemma 28
+   and meet(d,b,n0)
+    by lemma 29
   hence meet(d,e,n0)
     by axiom 9
 
-Lemma 30: meet(b2,e,n0)
+Lemma 31: meet(b2,e,n0)
 Proof:
   have meet(d,e,n0)
-    by lemma 29
+    by lemma 30
    and meet(c2,e,e)
-    by lemma 24
+    by lemma 25
    and meet(b2,c2,d)
-    by lemma 26
+    by lemma 27
   hence meet(b2,e,n0)
     by axiom 9
 
-Lemma 31: meet(e,b2,n0)
+Lemma 32: meet(e,b2,n0)
 Proof:
   have meet(b2,e,n0)
-    by lemma 30
+    by lemma 31
   hence meet(e,b2,n0)
     by axiom 6
 
-Lemma 32: meet(b2,a2,r1)
+Lemma 33: meet(b2,a2,r1)
 Proof:
   have meet(e,b2,n0)
-    by lemma 31
+    by lemma 32
    and join(r1,e,a2)
     by axiom 2
    and meet(r1,b2,r1)
-    by lemma 25
+    by lemma 26
    and join(r1,n0,r1)
     by axiom 1
   hence meet(b2,a2,r1)
@@ -172,6 +185,6 @@ Proof:
 Goal 1: meet(a2,b2,r1)
 Proof:
   have meet(b2,a2,r1)
-    by lemma 32
+    by lemma 33
   hence meet(a2,b2,r1)
     by axiom 6

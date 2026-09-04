@@ -61,6 +61,7 @@ handcraftedNames =
   , "test_prelemmatize_sym_eq"
   , "test_eqchain_in_havehence"
   , "test_havehence_in_eqchain"
+  , "test_axioms_contradictory"
   ]
 
 benchmarkNames :: [String]
@@ -105,6 +106,7 @@ benchmarkNames =
   , "LAT005-2"
   , "ANA009-2"
   , "SYN558-1"
+  , "SYN719-1"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -137,7 +139,6 @@ eBenchmarkNames =
   , "HEN006-4"
   , "GRP007-1"
   , "ANA023-2"
-  , "HEN008-2"
   , "tau_shared"
   , "tau_mixed"
   , "COL083-1"
@@ -165,6 +166,6 @@ run path = do
   case eitherResult (feed (parseTSTP contents) mempty) of
     Left err   -> fail ("Parse error in " ++ path ++ ": " ++ err)
     Right tstp -> do
-      result <- catch (translate False tstp >>= \msp -> evaluate (force (maybe "" emit msp)))
+      result <- catch (translate False tstp >>= \msp -> evaluate (force (maybe "translation failed\n" emit msp)))
                       (\e -> return (show (e :: SomeException)))
       return (LBS.pack result)

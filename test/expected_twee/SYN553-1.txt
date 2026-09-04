@@ -13,16 +13,7 @@ Proof:
   hence p2(f8(f9(c3),f8(f9(c4),c4)),f8(f9(c3),f8(c4,f9(c4))))
     by axiom 3
 
-Lemma 7: p2(f8(f8(f9(c4),c4),f9(c3)),f8(f9(c3),f8(c4,f9(c4))))
-Proof:
-  have p2(f8(f8(f9(c4),c4),f9(c3)),f8(f9(c3),f8(f9(c4),c4)))
-    by axiom 2
-   and p2(f8(f9(c3),f8(f9(c4),c4)),f8(f9(c3),f8(c4,f9(c4))))
-    by lemma 6
-  hence p2(f8(f8(f9(c4),c4),f9(c3)),f8(f9(c3),f8(c4,f9(c4))))
-    by axiom 4
-
-Lemma 8: p2(f8(f9(c3),f8(c4,f9(c4))),f8(f9(c4),f8(f9(c3),c4)))
+Lemma 7: p2(f8(f9(c3),f8(c4,f9(c4))),f8(f9(c4),f8(f9(c3),c4)))
 Proof:
   have p2(f8(f9(c3),f8(c4,f9(c4))),f8(f8(f9(c3),c4),f9(c4)))
     by axiom 5
@@ -33,9 +24,13 @@ Proof:
 
 Goal 1: p2(f8(f8(f9(c4),c4),f9(c3)),f8(f9(c4),f8(f9(c3),c4)))
 Proof:
-  have p2(f8(f8(f9(c4),c4),f9(c3)),f8(f9(c3),f8(c4,f9(c4))))
-    by lemma 7
+  have p2(f8(f8(f9(c4),c4),f9(c3)),f8(f9(c3),f8(f9(c4),c4)))
+    by axiom 2
+   and p2(f8(f9(c3),f8(f9(c4),c4)),f8(f9(c3),f8(c4,f9(c4))))
+    by lemma 6
+  hence p2(f8(f8(f9(c4),c4),f9(c3)),f8(f9(c3),f8(c4,f9(c4))))
+    by axiom 4
    and p2(f8(f9(c3),f8(c4,f9(c4))),f8(f9(c4),f8(f9(c3),c4)))
-    by lemma 8
+    by lemma 7
   hence p2(f8(f8(f9(c4),c4),f9(c3)),f8(f9(c4),f8(f9(c3),c4)))
     by axiom 4

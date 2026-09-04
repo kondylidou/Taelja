@@ -1,0 +1,83 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Unsatisfiable for SYN719-1
+% SZS output start Proof for SYN719-1
+fof(f22,negated_conjecture,(
+  ( ! [X0] : (p35(X0,X0)) )),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f27,negated_conjecture,(
+  ( ! [X0] : (p29(X0,X0)) )),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f38,negated_conjecture,(
+  ( ! [X0] : (p14(X0,X0)) )),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f41,negated_conjecture,(
+  p66(f12(c78,c77),c79)),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f42,negated_conjecture,(
+  p67(f16(c80,c81),c82)),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f43,negated_conjecture,(
+  ( ! [X0,X1] : (p70(f30(c88,X0),f38(c85,X1))) )),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f45,negated_conjecture,(
+  ( ! [X0] : (p14(f23(f26(c84,c85),X0),X0)) )),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f46,negated_conjecture,(
+  ~p68(f19(f21(c83,c77),c79),c81)),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f52,negated_conjecture,(
+  ( ! [X0,X1] : (p69(f36(c86,X0),X1) | ~p70(X1,X0)) )),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f90,negated_conjecture,(
+  ( ! [X2,X0,X1] : (~p14(X2,X1) | ~p14(X2,X0) | p14(X0,X1)) )),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f98,negated_conjecture,(
+  ( ! [X2,X3,X0,X1] : (~p69(X2,X3) | ~p35(X2,X0) | p69(X0,X1) | ~p29(X3,X1)) )),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f126,negated_conjecture,(
+  ( ! [X2,X3,X0,X1] : (~p69(f36(c86,f38(X3,f40(f42(f44(f46(c87,X0),X1),X3),X2))),f30(c88,f32(c89,f8(c75,c76)))) | ~p67(f16(c80,X2),c82) | ~p66(f12(c78,c77),X0) | ~p14(X1,f23(f26(c84,X3),X2)) | p68(f19(f21(c83,c77),X0),X1)) )),
+  file('Problems/SYN/SYN719-1.p',unknown)).
+fof(f205,plain,(
+  ( ! [X0,X1] : (~p14(X0,X1) | p14(X1,X0)) )),
+  inference(resolution,[],[f90,f38])).
+fof(f208,plain,(
+  ( ! [X0] : (p14(X0,f23(f26(c84,c85),X0))) )),
+  inference(resolution,[],[f205,f45])).
+fof(f232,plain,(
+  ( ! [X2,X3,X0,X1] : (~p35(f36(c86,X0),X1) | p69(X1,X2) | ~p29(X3,X2) | ~p70(X3,X0)) )),
+  inference(resolution,[],[f98,f52])).
+fof(f310,plain,(
+  ( ! [X2,X0,X1] : (~p70(X2,X0) | ~p29(X2,X1) | p69(f36(c86,X0),X1)) )),
+  inference(resolution,[],[f232,f22])).
+fof(f315,plain,(
+  ( ! [X2,X0,X1] : (~p29(f30(c88,X0),X1) | p69(f36(c86,f38(c85,X2)),X1)) )),
+  inference(resolution,[],[f310,f43])).
+fof(f321,plain,(
+  ( ! [X0,X1] : (p69(f36(c86,f38(c85,X0)),f30(c88,X1))) )),
+  inference(resolution,[],[f315,f27])).
+fof(f324,plain,(
+  ( ! [X2,X0,X1] : (~p14(X2,f23(f26(c84,c85),X0)) | ~p66(f12(c78,c77),X1) | ~p67(f16(c80,X0),c82) | p68(f19(f21(c83,c77),X1),X2)) )),
+  inference(resolution,[],[f321,f126])).
+fof(f69061,plain,(
+  ( ! [X0,X1] : (p68(f19(f21(c83,c77),X0),X1) | ~p67(f16(c80,X1),c82) | ~p66(f12(c78,c77),X0)) )),
+  inference(resolution,[],[f324,f208])).
+fof(f69689,plain,(
+  ~p67(f16(c80,c81),c82) | ~p66(f12(c78,c77),c79)),
+  inference(resolution,[],[f69061,f46])).
+fof(f69698,plain,(
+  ~p66(f12(c78,c77),c79)),
+  inference(forward_subsumption_resolution,[],[f69689,f42])).
+fof(f69699,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f69698,f41])).
+% SZS output end Proof for SYN719-1
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 2.272 s
+% Peak memory usage: 51 MB
+% ------------------------------
+% ------------------------------

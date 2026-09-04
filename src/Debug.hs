@@ -3,6 +3,11 @@ module Debug
   , dumpProofInfo
   , dumpProofTree
   , dumpInferenceRules
+  , ppLitI
+  , ppClauseI
+  , ppDir
+  , ppSimplChain
+  , dbg
   ) where
 
 import Data.List (intercalate, nub, sort, sortBy)
@@ -15,7 +20,9 @@ import qualified Data.Text as Text
 import qualified Data.TPTP as T
 
 import ProofTree (unitNameStr, demodRuleNames)
-import Types (ProofInfo(..), LeafEntry(..), LeafRole(..), Dir(..))
+import qualified Helpers as H
+import System.IO (hPutStrLn, stderr)
+import Types (ProofInfo(..), LeafEntry(..), LeafRole(..), Dir(..), Literal(..), Clause(..))
 
 ppTerm :: T.Term -> String
 ppTerm (T.Variable (T.Var v))                   = Text.unpack v
@@ -220,3 +227,29 @@ dumpInferenceRules units = do
       , "variable_rename", "definition_folding"
       , "pure_predicate_removal", "predicate_definition_introduction"
       , "unused_predicate_definition_removal" ]
+
+ppLitI :: Literal -> String
+ppLitI (Eq  a b)   = H.ppTerm a ++ " = " ++ H.ppTerm b
+ppLitI (NEq a b)   = H.ppTerm a ++ " ≠ " ++ H.ppTerm b
+ppLitI (Rel p [])  = p
+ppLitI (Rel p ts)  = p ++ "(" ++ intercalate "," (map H.ppTerm ts) ++ ")"
+ppLitI (NRel p []) = "¬" ++ p
+ppLitI (NRel p ts) = "¬" ++ p ++ "(" ++ intercalate "," (map H.ppTerm ts) ++ ")"
+
+ppClauseI :: Clause -> String
+ppClauseI (Clause [] Nothing)  = "⊥"
+ppClauseI (Clause bs Nothing)  = intercalate ", " (map ppLitI bs) ++ " → ⊥"
+ppClauseI (Clause [] (Just h)) = ppLitI h
+ppClauseI (Clause bs (Just h)) = intercalate ", " (map ppLitI bs) ++ " → " ++ ppLitI h
+
+ppDir :: Dir -> String
+ppDir LR = "L→R"
+ppDir RL = "R→L"
+
+ppSimplChain :: [(String, Dir)] -> String
+ppSimplChain [] = "(none)"
+ppSimplChain ss = intercalate ", " [n ++ "(" ++ ppDir d ++ ")" | (n, d) <- ss]
+
+dbg :: Bool -> String -> IO ()
+dbg True  msg = hPutStrLn stderr msg
+dbg False _   = return ()

@@ -33,11 +33,11 @@ Proof:
 
 Goal 1: less_equal(aQc,bQc)
 Proof:
-  have quotient(aQc,zero,aQc)
-    by axiom 9
+  have quotient(X,bQc,divide(X,bQc))
+    by axiom 3
    and less_equal(divide(aQc,bQc),zero)
     by lemma 12
-   and quotient(aQc,bQc,divide(aQc,bQc))
-    by axiom 3
+   and quotient(aQc,zero,aQc)
+    by axiom 9
   hence less_equal(aQc,bQc)
     by axiom 10

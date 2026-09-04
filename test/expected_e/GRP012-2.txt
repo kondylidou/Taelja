@@ -85,17 +85,9 @@ Proof:
   hence product(c,d,identity)
     by axiom 7
 
-Lemma 18: product(identity,d,d)
+Lemma 18: product(identity,d,inverse(c))
 Proof:
-  product(identity,d,d)
-= { by lemma 10 R->L }
-  product(identity,d,multiply(identity,d))
-= { by axiom 1 }
-  true
-
-Goal 1: inverse(c) = d
-Proof:
-  have product(inverse(c),c,identity)
+  have product(inverse(X),X,identity)
     by axiom 9
    and product(c,d,identity)
     by lemma 17
@@ -103,7 +95,12 @@ Proof:
     by axiom 8
   hence product(identity,d,inverse(c))
     by axiom 7
-   and product(identity,d,d)
+
+Goal 1: inverse(c) = d
+Proof:
+  have product(identity,d,d)
+    by axiom 2
+   and product(identity,d,inverse(c))
     by lemma 18
   hence inverse(c) = d
     by axiom 3

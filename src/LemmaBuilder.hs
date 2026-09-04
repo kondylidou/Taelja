@@ -12,7 +12,7 @@ module LemmaBuilder
 import Control.Monad (when)
 import Control.Applicative ((<|>))
 import Data.List (intercalate, nub)
-import Data.Maybe (fromJust, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe, maybeToList)
+import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe, maybeToList)
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
 import Data.TPTP.Pretty (Pretty (..))
@@ -27,11 +27,12 @@ import System.IO (hPutStrLn, stderr)
 import Types
 import Helpers
   ( applySubst, applyConstSubstBlock, applyConstSubstLit, blockRefNames
-  , extractSzsBlock, isEmptyBlock, litVars, renameRefsBlock, rescueActive
+  , extractSzsBlock, isEmptyBlock, isEqLit, litVars, renameRefsBlock
+  , unitEquation
   )
-import ProofTree (headLitOf, isFileSrc, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
+import ProofTree (headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
 import TptpConvert
-import TweeInterface (TweeBudget (..), callTwee, isDerivedUnit, isEqLit, isOrigAxiomDecl, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
+import TweeInterface (TweeBudget (..), callTwee, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
 
 -- Flatten a T.Parent into the TSTP unit names it references
 flattenParents :: T.Parent -> [String]
@@ -46,6 +47,9 @@ ancestorNamesOf unitMap rootName = go startFrontier Set.empty
     parentsOf nm = case Map.lookup nm unitMap of
       Just (T.Unit _ _ (Just (T.Inference _ _ ps, _))) ->
         Set.fromList (concatMap flattenParents ps)
+      -- a bare reference (E copies a unit this way) is a parent too
+      Just (T.Unit _ _ (Just (T.UnitSource p, _))) ->
+        Set.singleton (unitNameStr p)
       _ -> Set.empty
 
     startFrontier = parentsOf rootName
@@ -126,23 +130,11 @@ buildCandidateLemma translateFn strict unitMap tstp2name debug (cname, cdecl) =
           bodyLits = map convertLit (bodyLitsOf cdecl)
           (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
       mSub <- if strict
-                then buildFromSubDag False translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+                then buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
                 else return Nothing
       case mSub of
         Just r  -> return (Just r)
-        Nothing -> do
-          -- narrow ancestry first (candidates that build from it are
-          -- untouched), then one broad retry: ancestors that are clausified
-          -- copies of file axioms are invisible to the narrow filter, and
-          -- without them the sub-problem can be satisfiable (BOO014-3)
-          mNarrow <- buildWithProver False translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
-          case mNarrow of
-            Just r  -> return (Just r)
-            Nothing -> do
-              act <- rescueActive
-              if act
-                then buildWithProver True translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
-                else return Nothing
+        Nothing -> buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
 
 -- Sub-DAG route only, no prover fallback.  Safe inside recursive lemma
 -- sub-proofs: the candidate's ancestry strictly shrinks at each nesting
@@ -162,12 +154,10 @@ buildCandidateLemmaSubDagOnly translateFn unitMap tstp2name debug (cname, cdecl)
       let lit      = convertLit tlit
           bodyLits = map convertLit (bodyLitsOf cdecl)
           (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
-      buildFromSubDag True translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+      buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
 
--- Re-proving a derived unit mid-translation (ensureNamed and makeBlock
--- rescue): the sub-DAG route first, then the prover route, both with the
--- broad ancestor treatment.  Kept separate from buildCandidateLemma so the
--- prepass candidate builds stay byte-identical.
+-- Re-proving a derived unit mid-translation (lemma introduction on demand):
+-- the unit's own sub-DAG first, then the prover route.
 buildCandidateLemmaReprove
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Map.Map String T.Unit
@@ -182,10 +172,10 @@ buildCandidateLemmaReprove translateFn unitMap tstp2name debug (cname, cdecl) =
       let lit      = convertLit tlit
           bodyLits = map convertLit (bodyLitsOf cdecl)
           (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
-      mSub <- buildFromSubDag True translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+      mSub <- buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
       case mSub of
         Just r  -> return (Just r)
-        Nothing -> buildWithProver True translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+        Nothing -> buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
 
 -- The synthetic unit names of a sub-problem must not collide with the names
 -- of the units that appear in it (the candidate's ancestry): a collision
@@ -204,35 +194,20 @@ syntheticCollision unitMap cname bodyLits_sk =
 -- hypotheses, the Skolemized negated head, and synthetic resolution steps
 -- deriving bottom are translated as one proof.
 buildFromSubDag
-  :: Bool                   -- broad: normalize copy-of-axiom ancestor sources
-  -> (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
+  :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Map.Map String T.Unit
   -> Map.Map String String
   -> Bool
   -> String -> Literal -> Literal -> [Literal] -> [(String, Term)]
   -> IO (Maybe BuiltLemma)
-buildFromSubDag broad translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
   | syntheticCollision unitMap cname bodyLits_sk = do
       when debug $ hPutStrLn stderr
         ("buildCandidateLemma: sub-DAG skipped for " ++ cname ++ " (synthetic name collision)")
       return Nothing
   | otherwise = do
       let ancNames  = ancestorNamesOf unitMap cname
-          -- Ancestors that are effectively original axioms (an underived unit
-          -- with an axiom or hypothesis role, or a clausified copy of a file
-          -- axiom) get a file source: their own source references (bare axiom
-          -- names, fof parents) are not part of the sub-problem, so verbatim
-          -- sources would make the sub-run classify them as derived and
-          -- refuse to use them as electrons.
-          fileify u@(T.Unit n adeclU _)
-            | not broad = u
-            | not (isDerivedUnit u) && isOrigAxiomDecl adeclU = makeFileSourced u
-            | isFileSrc unitMap copySrc
-            , maybe False isOrigAxiomDecl (lookupDecl unitMap copySrc) = makeFileSourced u
-            | otherwise = u
-            where copySrc = resolveCopySource unitMap (unitNameStr n)
-          fileify u = u
-          ancUnits  = [ fileify u | aname <- Set.toList ancNames, Just u <- [Map.lookup aname unitMap] ]
+          ancUnits  = [ u | aname <- Set.toList ancNames, Just u <- [Map.lookup aname unitMap] ]
           candUnit  = maybeToList (Map.lookup cname unitMap)
           unitLines = map (show . pretty) (ancUnits ++ candUnit)
           premLines = premLinesFor bodyLits_sk
@@ -296,14 +271,13 @@ liftSubProof cname lit undoMap sp = do
 -- Re-prove the candidate with Twee (pure equations) or E, then translate the
 -- prover's proof recursively (paper, Section 4).
 buildWithProver
-  :: Bool                   -- broad: also accept clausified copies of file axioms as ancestors
-  -> (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
+  :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Map.Map String T.Unit
   -> Map.Map String String
   -> Bool
   -> String -> Literal -> Literal -> [Literal] -> [(String, Term)]
   -> IO (Maybe BuiltLemma)
-buildWithProver broad translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
   | syntheticCollision unitMap cname bodyLits_sk = do
       when debug $ hPutStrLn stderr
         ("buildCandidateLemma: prover path skipped for " ++ cname ++ " (synthetic name collision)")
@@ -320,8 +294,7 @@ buildWithProver broad translateFn unitMap tstp2name debug cname lit lit_sk bodyL
           -- resolves to a display name
           effOrigAncestor aname u@(T.Unit _ adecl _) =
             (not (isDerivedUnit u) && isOrigAxiomDecl adecl)
-              || (broad
-                  && isFileSrc unitMap copySrc
+              || (isFileSrc unitMap copySrc
                   && maybe False isOrigAxiomDecl (lookupDecl unitMap copySrc)
                   && isJust (dispNameOf aname))
             where copySrc = resolveCopySource unitMap aname
@@ -360,8 +333,7 @@ buildWithProver broad translateFn unitMap tstp2name debug cname lit lit_sk bodyL
                       headTlit <- headLitOf adecl
                       let clit = convertLit headTlit
                       if not (isEqLit clit) then Nothing
-                      else Just (UnitEntry (if broad then dispNameOf aname
-                                             else Map.lookup aname tstp2name) clit Nothing Nothing)
+                      else Just (UnitEntry (dispNameOf aname) clit Nothing Nothing)
             case lit_sk of
               Eq l r -> do
                 mChain <- callTwee InternalBudget ancUes (Eq l r)
@@ -369,9 +341,9 @@ buildWithProver broad translateFn unitMap tstp2name debug cname lit lit_sk bodyL
                   Just (start, chain)
                     | not (null chain)
                     , all (isJust . ueName . (\(ue,_,_) -> ue)) chain ->
-                        let steps = [ (RwStep (fromJust (ueName ue)) (a, b) dir, cur)
+                        let steps = [ (RwStep nm (unitEquation (ueUnit ue)) dir, cur)
                                     | (ue, dir, cur) <- chain
-                                    , Eq a b <- [ueUnit ue] ]
+                                    , Just nm <- [ueName ue] ]
                             blk   = EqChain start steps
                         in return (Just (lit, applyConstSubstBlock undoMap blk, []))
                   _ -> return Nothing

@@ -26,7 +26,7 @@ axiom ax2 : ∀ (x : α) (y : α), less_equal x y → quotient x y zero
 -- Axiom 3
 axiom ax3 : ∀ (x : α) (y : α), quotient x y (divide x y)
 -- Axiom 4
-axiom ax4 : ∀ (a : α) (x : α) (y : α) (z : α), quotient x y z → quotient x y a → a = z
+axiom ax4 : ∀ (a_ : α) (x : α) (y : α) (z : α), quotient x y z → quotient x y a_ → a_ = z
 -- Axiom 5
 axiom ax5 : quotient a c aQc
 -- Axiom 6
@@ -34,34 +34,34 @@ axiom ax6 : quotient b c bQc
 -- Axiom 7
 axiom ax7 : ∀ (x : α), quotient zero x zero
 -- Axiom 8
-axiom ax8 : ∀ (a : α) (b : α) (c : α) (u : α) (v : α) (x : α) (y : α) (z : α), quotient b c u → quotient y z c → quotient x z b → quotient x y a → quotient a z v → less_equal u v
+axiom ax8 : ∀ (a_ : α) (b_ : α) (c_ : α) (u : α) (v : α) (x : α) (y : α) (z : α), quotient b_ c_ u → quotient y z c_ → quotient x z b_ → quotient x y a_ → quotient a_ z v → less_equal u v
 -- Axiom 9
 axiom ax9 : ∀ (x : α), quotient x zero x
 -- Axiom 10
-axiom ax10 : ∀ (a : α) (c : α) (x : α) (y : α) (z : α), quotient x z c → less_equal a z → quotient x y a → less_equal c y
+axiom ax10 : ∀ (a_ : α) (c_ : α) (x : α) (y : α) (z : α), quotient x z c_ → less_equal a_ z → quotient x y a_ → less_equal c_ y
 
 -- Lemma 11
 theorem taelja_lemma11 : quotient a b zero := by
-  have h1 : less_equal a b := by apply ax1
-  have h2 : quotient a b zero := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : less_equal a b := by first | (exact ax1) | (apply ax1 <;> first | rfl | assumption)
+  have h2 : quotient a b zero := by first | (exact ax2 a b h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h2
 
 -- Lemma 12
 theorem taelja_lemma12 : less_equal (divide aQc bQc) zero := by
-  have h1 : quotient aQc bQc (divide aQc bQc) := by apply ax3
-  have h2 : quotient b c bQc := by apply ax6
-  have h3 : quotient a c aQc := by apply ax5
-  have h4 : quotient a b zero := by apply taelja_lemma11
-  have h5 : quotient zero c zero := by apply ax7
-  have h6 : less_equal (divide aQc bQc) zero := by first | (exact ax8 _ _ _ _ _ _ _ _ h1 h2 h3 h4 h5) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : quotient aQc bQc (divide aQc bQc) := by first | (exact ax3 aQc bQc) | (apply ax3 <;> first | rfl | assumption)
+  have h2 : quotient b c bQc := by first | (exact ax6) | (apply ax6 <;> first | rfl | assumption)
+  have h3 : quotient a c aQc := by first | (exact ax5) | (apply ax5 <;> first | rfl | assumption)
+  have h4 : quotient a b zero := by first | (exact taelja_lemma11) | (apply taelja_lemma11 <;> first | rfl | assumption)
+  have h5 : quotient zero c zero := by first | (exact ax7 c) | (apply ax7 <;> first | rfl | assumption)
+  have h6 : less_equal (divide aQc bQc) zero := by first | (exact ax8 zero aQc bQc (divide aQc bQc) zero a b c h1 h2 h3 h4 h5) | (first | (exact ax8 _ _ _ _ _ _ _ _ h1 h2 h3 h4 h5) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h6
 
 -- Goal 1
 theorem taelja_goal1 : less_equal aQc bQc := by
-  have h1 : quotient aQc zero aQc := by apply ax9
-  have h2 : less_equal (divide aQc bQc) zero := by apply taelja_lemma12
-  have h3 : quotient aQc bQc (divide aQc bQc) := by apply ax3
-  have h4 : less_equal aQc bQc := by first | (exact ax10 _ _ _ _ _ h1 h2 h3) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : ∀ (x : α), quotient x bQc (divide x bQc) := fun x => by first | (exact ax3 x bQc) | (apply ax3 <;> first | rfl | assumption)
+  have h2 : less_equal (divide aQc bQc) zero := by first | (exact taelja_lemma12) | (apply taelja_lemma12 <;> first | rfl | assumption)
+  have h3 : quotient aQc zero aQc := by first | (exact ax9 aQc) | (apply ax9 <;> first | rfl | assumption)
+  have h4 : less_equal aQc bQc := by first | (exact ax10 (divide aQc bQc) aQc aQc bQc zero h3 h2 (h1 aQc)) | (first | (exact ax10 _ _ _ _ _ (h1 _) h2 h3) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h1)))
   exact h4
 
 end VampireHen0082
