@@ -48,6 +48,7 @@ tweeBenchmarkNames =
   , "LCL126-1"
   , "SYN140-1"
   , "SYN553-1"
+  , "CAT019-1"
   ]
 
 handcraftedNames :: [String]

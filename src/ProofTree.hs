@@ -414,11 +414,29 @@ extractGoalLits (T.Formula _ (T.FOF f)) = extractFOF f
     -- A clause with a positive literal is a hypothesis (Vampire labels every
     -- input clause negated_conjecture when it proves the negation), never a
     -- goal source; only an all-negative clause states negated goals, as in
-    -- the CNF case above.
+    -- the CNF case above.  Uses its own local pos/neg scan (rather than the
+    -- shared posLitsOfDisjFOF/negLitsOfDisjFOF) because a disequality atom
+    -- (s != t) must count as negative here: those two are also relied on by
+    -- headLitOf's general Horn-clause path, and correcting their classification
+    -- of disequalities there changes which premise-matching path the search
+    -- takes elsewhere (verified by golden regression), which is out of scope
+    -- for a goal-clause check.
     extractFOF g =
-      let posLits = posLitsOfDisjFOF g
-          negLits = negLitsOfDisjFOF g
+      let posLits = goalPosLits g
+          negLits = goalNegLits g
       in if null posLits && not (null negLits) then Just negLits else Nothing
+
+    goalPosLits (T.Atomic (T.Equality _ T.Negative _)) = []
+    goalPosLits (T.Atomic lit)                         = [lit]
+    goalPosLits (T.Negated _)                          = []
+    goalPosLits (T.Connected l T.Disjunction r)        = goalPosLits l ++ goalPosLits r
+    goalPosLits _                                      = []
+
+    goalNegLits (T.Negated (T.Atomic lit))             = [lit]
+    goalNegLits (T.Atomic (T.Equality l T.Negative r)) = [T.Equality l T.Positive r]
+    goalNegLits (T.Atomic _)                           = []
+    goalNegLits (T.Connected l T.Disjunction r)        = goalNegLits l ++ goalNegLits r
+    goalNegLits _                                      = []
 
     extractConj (T.Atomic lit)                   = Just [lit]
     extractConj (T.Connected l T.Conjunction r)  = do
@@ -652,14 +670,6 @@ posLitsOfDisjFOF (T.Negated _)                    = []
 posLitsOfDisjFOF (T.Connected l T.Disjunction r)  =
   posLitsOfDisjFOF l ++ posLitsOfDisjFOF r
 posLitsOfDisjFOF _                                = []
-
--- atoms under negation in a disjunction (for all-negative clauses like ~P | ~Q)
-negLitsOfDisjFOF :: T.UnsortedFirstOrder -> [T.Literal]
-negLitsOfDisjFOF (T.Negated (T.Atomic lit))       = [lit]
-negLitsOfDisjFOF (T.Atomic _)                     = []
-negLitsOfDisjFOF (T.Connected l T.Disjunction r)  =
-  negLitsOfDisjFOF l ++ negLitsOfDisjFOF r
-negLitsOfDisjFOF _                                = []
 
 headInDecl :: T.Literal -> T.Declaration -> Bool
 headInDecl needle (T.Formula _ (T.CNF (T.Clause lits))) =

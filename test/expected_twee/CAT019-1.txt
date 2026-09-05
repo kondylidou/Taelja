@@ -1,0 +1,6 @@
+Axiom 1: c2 = X => c1 = X
+
+Goal 1: c1 = c2
+Proof:
+  have c1 = c2
+    by axiom 1

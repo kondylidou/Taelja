@@ -28,4 +28,3 @@ theorem taelja_goal1 : a = b := by
   exact h3
 
 end VampireSuperpositionExampleClausal2
-

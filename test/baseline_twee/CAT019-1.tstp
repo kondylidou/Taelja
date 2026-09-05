@@ -1,0 +1,8 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, c2!=c1, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CAT/CAT019-1.p', prove_c1_equals_c2)).
+cnf(c2, hypothesis, c2!=Z | c1=Z, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CAT/CAT019-1.p', equality_to_c1_and_c2_1)).
+cnf(c3, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c2])).
+% SZS output end CNFRefutation
+

@@ -259,8 +259,12 @@ unitEquation (Eq a b) = (a, b)
 unitEquation l        = (atomTerm l, Const "true")
 
 -- Unification of two literals (see unifyTerms below).
+-- Equality is symmetric, so "a = b" and "c = d" unify if either orientation
+-- does (an emitted goal "c1 = c2" must not be flagged inconsistent against a
+-- conjecture stated as "c2 = c1" — same fact, opposite written order).
 unifyLits :: Literal -> Literal -> Subst -> Maybe Subst
-unifyLits (Eq a b) (Eq c d) σ = unifyTerms a c σ >>= unifyTerms b d
+unifyLits (Eq a b) (Eq c d) σ =
+  (unifyTerms a c σ >>= unifyTerms b d) <|> (unifyTerms a d σ >>= unifyTerms b c)
 unifyLits (Rel n as) (Rel m bs) σ | n == m, length as == length bs =
   foldr (\(a, b) acc -> acc >>= unifyTerms a b) (Just σ) (zip as bs)
 unifyLits _ _ _ = Nothing

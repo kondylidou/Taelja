@@ -226,7 +226,14 @@ def _conjecture_symbols(problem_file):
     syms = set()
     for kind, role, body in units:
         if kind == 'cnf' and role == 'negated_conjecture':
-            lits = [l.strip() for l in body.split('|')]
+            # A multi-literal clause is written "( lit1 | lit2 | ... )": the
+            # wrapping parens must be stripped before splitting on '|', or the
+            # first literal keeps a leading '(' and wrongly fails the '~' check
+            # below even when every literal is genuinely negated.
+            stripped = body.strip()
+            if stripped.startswith('(') and stripped.endswith(')'):
+                stripped = stripped[1:-1]
+            lits = [l.strip() for l in stripped.split('|')]
             if not all(l.startswith('~') for l in lits):
                 continue
         for s in _SYMBOL.findall(body):
@@ -258,20 +265,37 @@ def _has_fatal_warning(err):
     return any(p in line for line in err.splitlines() for p in _FATAL_WARN_PATTERNS)
 
 
-def _read_taelja_status(out):
-    """Re-derive taelja status from cached files."""
+def _read_taelja_status(out, p_file):
+    """Re-derive taelja status from cached files.  Recomputes the
+    goal-matches-conjecture check fresh rather than trusting a possible
+    stale '[eval] ...' note left in taelja.err by an earlier run, so a fix
+    to _goal_matches_conjecture itself is picked up under --skip-done."""
     txt_file = out / 'taelja.txt'
     err_file = out / 'taelja.err'
     if not txt_file.exists():
         return '-'
     txt = txt_file.read_text()
-    err = err_file.read_text() if err_file.exists() else ''
+    raw_err = err_file.read_text() if err_file.exists() else ''
+    # A '[eval] ...' line is this check's own prior verdict, not a translation
+    # warning/error; exclude it here since the verdict is recomputed fresh
+    # below, or a stale one would wrongly fail _only_warnings on its own.
+    err = '\n'.join(line for line in raw_err.splitlines() if not line.startswith('[eval]'))
     if 'TIMEOUT' in err:
         return 'timeout'
     if 'no refutation found' in err:
         return 'unsupported'
     if txt.strip() and _only_warnings(err) and not _has_empty_proof(txt) and not _has_fatal_warning(err):
-        return 'ok'
+        if _goal_matches_conjecture(txt, p_file):
+            # Drop a stale '[eval] ...' note left by an earlier, buggier check.
+            if err.strip():
+                err_file.write_text(err + '\n')
+            elif err_file.exists():
+                err_file.unlink()
+            return 'ok'
+        if not raw_err.rstrip('\n').endswith('does not mention'):
+            err_file.write_text(raw_err.rstrip('\n') +
+                '\n[eval] emitted goal uses a symbol the conjecture does not mention\n')
+        return 'fail'
     return 'fail'
 
 
@@ -291,7 +315,7 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
         prove_status, tstp = _read_prove_status(out, prover_name)
         result['prove'] = prove_status
         if prove_status == 'ok':
-            result['taelja'] = _read_taelja_status(out)
+            result['taelja'] = _read_taelja_status(out, p_file)
             if result['taelja'] == 'ok' and lean_bin:
                 lean_out = out / 'lean.lean'
                 lean_err = out / 'lean.err'
