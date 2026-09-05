@@ -343,6 +343,7 @@ import TaeljaVerify.HEQ.Twee.Cat0164
 import TaeljaVerify.HEQ.Twee.Cat0174
 import TaeljaVerify.HEQ.Twee.Cat0181
 import TaeljaVerify.HEQ.Twee.Cat0184
+import TaeljaVerify.HEQ.Twee.Cat0191
 import TaeljaVerify.HEQ.Twee.Col0032
 import TaeljaVerify.HEQ.Twee.Col0033
 import TaeljaVerify.HEQ.Twee.Col0034
@@ -1056,6 +1057,7 @@ import TaeljaVerify.HNE.E.Syn5961
 import TaeljaVerify.HNE.E.Syn5981
 import TaeljaVerify.HNE.E.Syn5991
 import TaeljaVerify.HNE.E.Syn6001
+import TaeljaVerify.HNE.E.Syn6151
 import TaeljaVerify.HNE.E.Syn6311
 import TaeljaVerify.HNE.E.Syn6321
 import TaeljaVerify.HNE.E.Syn6391
@@ -3451,7 +3453,6 @@ import TaeljaVerify.UEQ.Vampire.Lat0131
 import TaeljaVerify.UEQ.Vampire.Lat0141
 import TaeljaVerify.UEQ.Vampire.Lat0191
 import TaeljaVerify.UEQ.Vampire.Lat0211
-import TaeljaVerify.UEQ.Vampire.Lat0231
 import TaeljaVerify.UEQ.Vampire.Lat0261
 import TaeljaVerify.UEQ.Vampire.Lat0271
 import TaeljaVerify.UEQ.Vampire.Lat0281

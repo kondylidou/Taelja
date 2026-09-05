@@ -97,6 +97,7 @@ data AlgState = AlgState
   , stReprove    :: String -> IO (Maybe (Literal, ProofBlock, [(String, Literal, ProofBlock)]))
   , stNameToPos  :: Map.Map String String        -- TSTP unit name -> tree position of its electron
   , stEqByName   :: Map.Map String (Term, Term)  -- TSTP unit name -> its unit equation
+  , stGoalTemplate :: [Literal]  -- the conjecture's own goal literals (shared free variables across conjuncts), consulted by emitGoalProof
       -- re-prove the derived unit at a tree position from its ancestry
       -- (lemma-builder sub-proof); top-level runs only, Nothing elsewhere
   }

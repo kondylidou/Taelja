@@ -240,6 +240,18 @@ getElectrons pos = gets $ \s ->
       unnamed  = filter (\u -> isNothing (ueName u) && maybe True (< pos) (uePos u)) allUnits
   in unnamed ++ named
 
+-- Whether a set of emitted goal literals could all be instances of the
+-- conjecture's own goal literals (the template) under one shared
+-- substitution.  Their free variables are existential (a universal
+-- conjecture Skolemizes to a ground negation), so this unifies rather than
+-- matches, exactly as the end-of-run invariant in runAlgorithm does.
+goalsConsistentWith :: [Literal] -> [Literal] -> Bool
+goalsConsistentWith template emitted =
+  let emittedTagged  = [ suffixVarsLit ("_g" ++ show i) g | (i, g) <- zip [1 :: Int ..] emitted ]
+      conjGoals      = map (suffixVarsLit "_c") template
+      unifiesWith σ g = listToMaybe [ σ' | l <- conjGoals, Just σ' <- [unifyLits l g σ] ]
+  in isJust (foldM unifiesWith [] emittedTagged)
+
 emitGoalProof :: Literal -> ProofBlock -> AlgM ()
 emitGoalProof lit blk = do
   -- A goal variable is existential (a universal conjecture Skolemizes to a
@@ -254,7 +266,19 @@ emitGoalProof lit blk = do
            | otherwise = lit
   dbgFlag <- gets stDebug
   liftIO $ dbg dbgFlag $ "[goal-emit] " ++ ppLitI lit' ++ " block=" ++ show blk
-  modify $ \s -> s { stGoals = stGoals s ++ [(lit', blk)] }
+  template <- gets stGoalTemplate
+  existing <- gets (map fst . stGoals)
+  -- Several independent code paths opportunistically match a nucleus's head
+  -- against the goal template and emit here; nothing else stops two of them
+  -- from grounding the same shared template variable differently and both
+  -- being recorded as if consistent (SYN602-1). Refusing here, rather than
+  -- only at the end-of-run invariant, means an inconsistent path is
+  -- abandoned (via throwError/attempt) instead of silently accepted,
+  -- letting the search try a different derivation for that goal.
+  if goalsConsistentWith template (existing ++ [lit'])
+    then modify $ \s -> s { stGoals = stGoals s ++ [(lit', blk)] }
+    else throwError ("emitGoalProof: " ++ ppLitI lit'
+                      ++ " is inconsistent with an already-proven goal")
 
 -- The final conclusion a proof block establishes, when syntactically evident.
 blockConcl :: ProofBlock -> Maybe Literal
@@ -2258,6 +2282,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , stReprove    = reproveAt
         , stNameToPos  = nameToPos
         , stEqByName   = eqByTstpName
+        , stGoalTemplate = goalLits'
         }
 
   when debug $ do
