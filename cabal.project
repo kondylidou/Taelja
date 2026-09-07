@@ -1,2 +1,2 @@
 packages: .
-allow-newer: tptp:attoparsec, tptp:prettyprinter, tptp:text
+allow-newer: tptp:attoparsec, tptp:prettyprinter, tptp:text, tptp:base, tptp:containers

@@ -20,13 +20,13 @@ library
     Translate
     Debug
   build-depends:
-    base        ^>=4.18,
+    base        >=4.18 && <4.22,
     attoparsec  ^>=0.14,
-    containers  ^>=0.6,
+    containers  >=0.6 && <0.8,
     directory   >=1.3,
     mtl         ^>=2.3,
     process     ^>=1.6,
-    text        ^>=2.0,
+    text        >=2.0 && <2.2,
     tptp        ^>=0.1
   default-language: GHC2021
 
@@ -36,10 +36,10 @@ test-suite taelja-tests
   main-is:          Main.hs
   hs-source-dirs:   test
   build-depends:
-    base          ^>=4.18,
-    bytestring    ^>=0.11,
-    deepseq       ^>=1.4,
-    text          ^>=2.0,
+    base          >=4.18 && <4.22,
+    bytestring    >=0.11 && <0.13,
+    deepseq       >=1.4 && <1.6,
+    text          >=2.0 && <2.2,
     attoparsec    ^>=0.14,
     tptp          ^>=0.1,
     tasty         >=1.4,
@@ -52,8 +52,8 @@ executable taelja
   main-is:        Main.hs
   hs-source-dirs: app
   build-depends:
-    base        ^>=4.18,
-    text        ^>=2.0,
+    base        >=4.18 && <4.22,
+    text        >=2.0 && <2.2,
     attoparsec  ^>=0.14,
     tptp        ^>=0.1,
     taelja
