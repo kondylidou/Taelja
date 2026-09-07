@@ -401,10 +401,16 @@ tryMatch li ki τ =
     -- τ in this branch must rename apart first (see tryBothSides).
     tryAsPattern li' k = case matchLit li' k of
       Just σn ->
-        -- Remove self-bindings (x → Var x): these arise when body lit and electron
-        -- share a variable name (e.g. both use "X0"). An identity binding would
-        -- prevent a later body literal from properly grounding that variable.
-        let σn' = filter (\(x, t) -> Var x /= t) σn
+        -- Self-bindings (x → Var x) arise when body lit and electron share a
+        -- variable name (e.g. both use "X0"): the electron is used at the
+        -- nucleus's variable.  They are not put into τ (an identity binding
+        -- would prevent a later body literal from grounding that variable)
+        -- but are kept in σi, so that the match records which electron
+        -- variables were identified with nucleus variables; see
+        -- processBodyWith's finish for the case where τ later grounds one.
+        let isSelf (x, t) = Var x == t
+            σn'   = filter (not . isSelf) σn
+            σiRen = filter isSelf σn
             -- Only ground bindings are accepted here: a binding to a term with
             -- variables captures the electron's un-renamed variables in τ,
             -- which is neither renamed apart nor composed in this branch.  A
@@ -417,7 +423,7 @@ tryMatch li ki τ =
         in if any nonGround σn'
              then Nothing
              else case extendSubst τ σn' of
-               Just τ' -> Just ([], τ')
+               Just τ' -> Just (σiRen, τ')
                Nothing  -> Nothing
       Nothing -> Nothing
     tryKiPattern k = case matchLit k li of
@@ -562,9 +568,41 @@ processBodyWith
   -> AlgM (Maybe (Subst, Matched))
 processBodyWith accept failedRef lits τ elecs simpl pos allowGroundUnnamed = goMemo lits τ [] [] []
   where
-    -- acc: the premises matched so far, innermost first
+    -- acc: the premises matched so far, innermost first.
+    -- A premise whose electron variable was identified with a nucleus
+    -- variable, by an identity binding (tryAsPattern, x ↦ x) or by binding
+    -- it to a nucleus variable (tryKiPattern, x ↦ w), is fine while that
+    -- nucleus variable stays free: the premise and the head share it.  When
+    -- a later body literal grounds it in τ' the two diverge: the electron
+    -- is a general unit used at that instance, the premise is emitted
+    -- general (its free variables are universal), and its variable must
+    -- then be a fresh one, or, inlined into a lemma over the same name, it
+    -- is read as the lemma's bound variable and the step from it is
+    -- unverifiable (SYN163-1, SYN159-1).
     finish τ' acc =
-      let matched = reverse acc
+      let matched = map freshenGrounded (reverse acc)
+          usedVars = concatMap litVars lits
+                  ++ concat [ litVars (ueUnit ki) ++ map fst σi ++ concatMap (termVars . snd) σi
+                            | (ki, σi, _) <- acc ]
+                  ++ concatMap (termVars . snd) τ'
+          suffix = head [ sfx | n <- [1 :: Int ..], let sfx = concat (replicate n "_e")
+                              , not (any (sfx `isSuffixOf`) usedVars) ]
+          -- A nucleus variable (a variable of the body literals) that an
+          -- electron binding mentions is an identification of an electron
+          -- variable with it; once a later match binds that nucleus variable
+          -- the premise must not keep its name, or the general premise would
+          -- share a letter with the instantiated conclusion.  The premise
+          -- stays general: the nucleus variable is renamed to a fresh
+          -- universal inside the binding, whether it is the whole binding
+          -- (SYN163-1/E: r1(X1) with X1 ↦ a) or nested in a term (LCL430-2/
+          -- Vampire: Oop(Y,false) with Y ↦ Ovar(Y')).  tryBothSides binds an
+          -- electron variable to its own renamed copy, which the premise's
+          -- rewrite literals also use; that copy is not a nucleus variable
+          -- and keeps its name.
+          nucleusVars = concatMap litVars lits
+          grounded    = [ (w, w ++ suffix) | w <- nub nucleusVars, isJust (lookup w τ') ]
+          freshenGrounded (ki, σi, rwi) =
+            (ki, [ (x, renameTerm grounded t) | (x, t) <- σi ], rwi)
       in return (if accept τ' matched then Just (τ', matched) else Nothing)
     searchKey τ' ls usedPos extra acc = do
       n <- gets (length . stUnits)
@@ -907,7 +945,7 @@ makeBlock ki σi rwSteps = do
                   nm <- ensureNamed (ueUnit ki) (return stored)
                   return (HaveHence [Have lit nm])
               | otherwise ->
-                  return (applySubstBlock σi stored)
+                  return (instantiateBlock (ueUnit unnamed) σi stored)
             Nothing ->
               -- named-only so Twee doesn't see circular unnamed units
               case ueUnit unnamed of
@@ -929,7 +967,7 @@ makeBlock ki σi rwSteps = do
                         if isEqChain stored
                           then do nm <- ensureNamed (ueUnit genU) (return stored)
                                   return (HaveHence [Have lit nm])
-                          else return (applySubstBlock σg stored)
+                          else return (instantiateBlock (ueUnit genU) σg stored)
                     _ -> namedCase units
         Nothing -> namedCase units
 
@@ -1001,7 +1039,7 @@ makeBlock ki σi rwSteps = do
                       | isEqChain stored -> do
                           nm <- ensureNamed (ueUnit u) (return stored)
                           return (HaveHence [Have lit nm])
-                      | otherwise -> return (applySubstBlock sg stored)
+                      | otherwise -> return (instantiateBlock (ueUnit u) sg stored)
                     Nothing ->
                       throwError ("makeBlock: unit not in table: " ++ ppLitI (ueUnit ki))
             Nothing ->
@@ -1487,7 +1525,7 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                   ([gl], [(ki, σi, _)])
                     | isNothing (ueName ki)
                     , Just chain@(EqChain {}) <- ueProof ki ->
-                        emitGoalProof (applySubst τ gl) (applySubstBlock σi chain) >> return True
+                        emitGoalProof (applySubst τ gl) (instantiateBlock (ueUnit ki) σi chain) >> return True
                   _ -> do
                     let pairs     = zip3 goalLits bodyLits matched
                         unmatched = drop (length matched) goalLits
@@ -1915,9 +1953,19 @@ proveGoal simpl mChain goal = do
                   -- The chain only shows that the goal follows from the
                   -- cited rules; it is not a hyperresolution derivation.  A
                   -- single unit rule the goal instantiates is a valid step,
-                  -- everything else has no representable proof here.
+                  -- everything else has no representable proof here.  "Unit"
+                  -- means the cited rule itself needs no premises: matching
+                  -- its head against the goal says nothing about whether a
+                  -- non-unit (Horn) axiom's own premises were ever
+                  -- established, so citing one directly here would print an
+                  -- unjustified "have GOAL by axiom N" (LCL359-1: a genuine
+                  -- 5-step modus-ponens chain collapsed into one bare
+                  -- citation of the 2-premise modus-ponens axiom itself).
+                  let isUnitRule nm =
+                        maybe True (\(Clause bs _) -> null bs) (lookup nm axNuclei)
+                        && not (any (\ha -> haDispName ha == Just nm && not (null (haBodies ha))) hornAxioms)
                   case hornSteps of
-                    [(ue', nm')] | isJust (matchLit (ueUnit ue') goal) ->
+                    [(ue', nm')] | isJust (matchLit (ueUnit ue') goal), isUnitRule nm' ->
                       emitGoalProof goal (HaveHence [Have goal nm'])
                     _ -> throwError ("no unit found for goal: " ++ ppLitI goal)
                 _ -> throwError ("no unit found for goal: " ++ ppLitI goal)

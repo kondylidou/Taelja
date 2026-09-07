@@ -55,6 +55,27 @@ applySubstBlock subst (EqChain s steps) =
     applyStep (RwStep nm (l, r) d, cur) =
       (RwStep nm (applySubstTerm subst l, applySubstTerm subst r) d, applySubstTerm subst cur)
 
+-- Instantiate a stored proof block under the substitution that matches its
+-- head literal onto the requested literal.  Variables of the block that do
+-- not occur in the head are local to the block (universally quantified
+-- inside it); a plain substitution would capture any of them that share a
+-- name with a variable in the substitution's range.  The k3 block of
+-- SYN163-1/E has the local X2_e next to head variable X2; instantiating it
+-- with X2 ↦ X2_e identified the two and turned p1(X2,X2_e,a) into the
+-- false universal p1(X2_e,X2_e,a).  Rename clashing locals apart first.
+instantiateBlock :: Literal -> Subst -> ProofBlock -> ProofBlock
+instantiateBlock hd σ block =
+  applySubstBlock σ (renameBlock renaming block)
+  where
+    headVars  = nub (litVars hd)
+    locals    = filter (`notElem` headVars) (blockVars block)
+    rangeVars = nub (concatMap (termVars . snd) σ)
+    clashing  = filter (`elem` rangeVars) locals
+    involved  = nub (blockVars block ++ rangeVars ++ map fst σ)
+    suffix    = head [ sfx | n <- [1 :: Int ..], let sfx = concat (replicate n "_e")
+                           , not (any (sfx `isSuffixOf`) involved) ]
+    renaming  = [ (v, v ++ suffix) | v <- clashing ]
+
 -- Replace constants (not variables) in a term; used to undo Skolemization.
 applyConstSubstTerm :: [(String, Term)] -> Term -> Term
 applyConstSubstTerm s (Const c)   = fromMaybe (Const c) (lookup c s)
@@ -383,10 +404,18 @@ extractSzsBlock txt =
     (_, startLine : rest) ->
       let (body, restEnd) = break isEnd rest
           endLine = take 1 restEnd
-      in unlines (startLine : body ++ endLine)
+      in if any isUnit body
+           then unlines (startLine : body ++ endLine)
+           -- A TSTP-library solution file (.s) lists the proof as clean
+           -- units at the top and repeats the prover's raw output below
+           -- with every line prefixed by "% <time>/<time>": the only SZS
+           -- marker sits in that commented copy, and cutting to it would
+           -- keep no unit at all.  The clean units are the proof.
+           else txt
   where
     isStart l = "SZS output start" `isInfixOf` l
     isEnd   l = "SZS output end"   `isInfixOf` l
+    isUnit  l = any (`isPrefixOf` dropWhile (== ' ') l) ["cnf(", "fof(", "tff(", "tcf("]
 
 -- | Syntactic unification with occurs check.  Both terms share one variable
 -- space (used for the two sides of a goal equation, whose variables stem from
