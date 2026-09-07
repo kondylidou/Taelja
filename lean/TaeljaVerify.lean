@@ -14,6 +14,7 @@ import TaeljaVerify.Vampire.TauMixed
 import TaeljaVerify.Vampire.Col0831
 import TaeljaVerify.Vampire.Num0251
 import TaeljaVerify.Vampire.Lat0052
+import TaeljaVerify.Vampire.Lcl4302
 import TaeljaVerify.Vampire.Grp0015
 import TaeljaVerify.Vampire.Ana0092
 import TaeljaVerify.Vampire.HornExampleDerivedRw
@@ -84,6 +85,8 @@ import TaeljaVerify.E.TauMixed
 import TaeljaVerify.E.Col0831
 import TaeljaVerify.E.Grp0091
 import TaeljaVerify.E.Grp0122
+import TaeljaVerify.E.Syn1631
+import TaeljaVerify.E.Syn1591
 import TaeljaVerify.E.Lcl2123
 import TaeljaVerify.E.Syo6321
 import TaeljaVerify.E.Col0991

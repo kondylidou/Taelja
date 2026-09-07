@@ -108,6 +108,7 @@ benchmarkNames =
   , "ANA009-2"
   , "SYN558-1"
   , "SYN719-1"
+  , "LCL430-2"        -- premise freshening of a tau-bound nucleus variable nested in a term (Oop(Y,false), Y -> Ovar(Y'))
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -153,6 +154,8 @@ eBenchmarkNames =
   , "ALG006-1"
   , "COL006-2"
   , "GRP703-10"
+  , "SYN163-1"        -- identity-binding freshening (Lemma 62) and capture-avoiding block instantiation (Goal 1)
+  , "SYN159-1"        -- identity-binding freshening of a tau-bound nucleus variable
   ]
 
 mkTest :: String -> String -> String -> TestTree
