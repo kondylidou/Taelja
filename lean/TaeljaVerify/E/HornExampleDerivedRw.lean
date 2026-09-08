@@ -27,15 +27,15 @@ axiom ax4 : ∀ (y : α), p y → (f y) = c
 
 -- Lemma 5
 theorem taelja_lemma5 : a = b := by
-  have h1 : q b := by apply ax1
-  have h2 : a = b := by first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : q b := by first | (exact ax1) | (apply ax1 <;> first | rfl | assumption)
+  have h2 : a = b := by first | (exact ax2 b h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : (f b) = c := by
-  have h1 : p a := by apply ax3
-  have h2 : (f a) = c := by first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : (f b) = c := by have h_rw := h2; rw [taelja_lemma5] at h_rw; exact h_rw
+  have h1 : p a := by first | (exact ax3) | (apply ax3 <;> first | rfl | assumption)
+  have h2 : p b := by have h_rw := taelja_lemma5; rw [←h_rw]; exact h1
+  have h3 : (f b) = c := by first | (exact ax4 b h2) | (first | (exact ax4 _ h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h3
 
 end EHornExampleDerivedRw

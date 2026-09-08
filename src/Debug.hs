@@ -8,9 +8,12 @@ module Debug
   , ppDir
   , ppSimplChain
   , dbg
+  , dbgScoped
   ) where
 
 import Data.List (intercalate, nub, sort, sortBy)
+import Data.IORef (IORef, newIORef, readIORef, modifyIORef')
+import System.IO.Unsafe (unsafePerformIO)
 import Data.List.NonEmpty (NonEmpty, toList)
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
@@ -250,6 +253,32 @@ ppSimplChain :: [(String, Dir)] -> String
 ppSimplChain [] = "(none)"
 ppSimplChain ss = intercalate ", " [n ++ "(" ++ ppDir d ++ ")" | (n, d) <- ss]
 
+-- Nesting depth of recursive sub-translations (buildCandidateLemma calls E
+-- again and recurses into translateFn for the sub-proof).  Debug lines for a
+-- sub-run reuse E's own "c_0_N"-style clause names and even the same
+-- position bit-strings as the outer run or a sibling sub-run, so a debug
+-- trace read as one flat stream cannot tell which clause table a name
+-- belongs to.  Every debug line is tagged with the current depth so a
+-- postprocessor can tell which run produced it; debug-only, no effect on
+-- translation.
+{-# NOINLINE debugDepthRef #-}
+debugDepthRef :: IORef Int
+debugDepthRef = unsafePerformIO (newIORef 0)
+
 dbg :: Bool -> String -> IO ()
-dbg True  msg = hPutStrLn stderr msg
+dbg True  msg = do
+  d <- readIORef debugDepthRef
+  hPutStrLn stderr ("[d" ++ show d ++ "] " ++ msg)
 dbg False _   = return ()
+
+-- Run an IO action with the debug depth incremented for its duration,
+-- printing enter/exit markers naming the sub-run so nested translateFn
+-- calls (one per lemma candidate) can be told apart in the debug trace.
+dbgScoped :: Bool -> String -> IO a -> IO a
+dbgScoped debug label act = do
+  modifyIORef' debugDepthRef (+ 1)
+  dbg debug ("[subrun-enter] " ++ label)
+  r <- act
+  dbg debug ("[subrun-exit] " ++ label)
+  modifyIORef' debugDepthRef (subtract 1)
+  return r

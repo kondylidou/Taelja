@@ -39,11 +39,11 @@ Proof:
     by axiom 2
    and r0(b)
     by axiom 1
-   and m0(X,d,b)
+   and m0(e,d,b)
     by axiom 3
-  hence l1(d,X)
+  hence l1(d,e)
     by axiom 4
-  hence q2(X,X,d)
+  hence q2(e,e,d)
     by axiom 11
    and n0(e,e)
     by axiom 10
@@ -54,9 +54,9 @@ Goal 1: q3(d,e)
 Proof:
   have m0(X,d,d)
     by axiom 3
-   and m0(Y,d,d)
+   and m0(e,d,d)
     by axiom 3
-  hence n1(d,d,Y)
+  hence n1(d,d,e)
     by axiom 13
    and s2(d)
     by lemma 16

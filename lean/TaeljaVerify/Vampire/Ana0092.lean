@@ -50,11 +50,11 @@ theorem taelja_lemma8 : ∀ (x : α), (c_plus x (c_uminus x t_b) t_b) = c_0 := b
   exact h3
 
 -- Lemma 9
-theorem taelja_lemma9 : ∀ (x : α) (y : α), c_lessequals (c_plus (v_lb x) y t_b) (c_plus (v_f x) y t_b) t_b := by
-  intro x y
-  have h1 : c_lessequals (v_lb x) (v_f x) t_b := by first | (exact ax1 x) | (apply ax1 <;> first | rfl | assumption)
+theorem taelja_lemma9 : ∀ (x : α), c_lessequals (c_plus (v_lb v_x) x t_b) (c_plus (v_f v_x) x t_b) t_b := by
+  intro x
+  have h1 : c_lessequals (v_lb v_x) (v_f v_x) t_b := by first | (exact ax1 v_x) | (apply ax1 <;> first | rfl | assumption)
   have h2 : class_OrderedGroup_Opordered__ab__semigroup__add__imp__le t_b := by first | (exact taelja_lemma7) | (apply taelja_lemma7 <;> first | rfl | assumption)
-  have h3 : c_lessequals (c_plus (v_lb x) y t_b) (c_plus (v_f x) y t_b) t_b := by first | (exact ax6 y t_b (v_lb x) (v_f x) h1 h2) | (first | (exact ax6 _ _ _ _ h1 h2) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : c_lessequals (c_plus (v_lb v_x) x t_b) (c_plus (v_f v_x) x t_b) t_b := by first | (exact ax6 x t_b (v_lb v_x) (v_f v_x) h1 h2) | (first | (exact ax6 _ _ _ _ h1 h2) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h3
 
 -- Goal 1

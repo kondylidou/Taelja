@@ -21,13 +21,13 @@ Proof:
   hence c_plus(X,c_uminus(X,t_b),t_b) = c_0
     by axiom 5
 
-Lemma 9: c_lessequals(c_plus(v_lb(X),Y,t_b),c_plus(v_f(X),Y,t_b),t_b)
+Lemma 9: c_lessequals(c_plus(v_lb(v_x),X,t_b),c_plus(v_f(v_x),X,t_b),t_b)
 Proof:
-  have c_lessequals(v_lb(X),v_f(X),t_b)
+  have c_lessequals(v_lb(v_x),v_f(v_x),t_b)
     by axiom 1
    and class_OrderedGroup_Opordered__ab__semigroup__add__imp__le(t_b)
     by lemma 7
-  hence c_lessequals(c_plus(v_lb(X),Y,t_b),c_plus(v_f(X),Y,t_b),t_b)
+  hence c_lessequals(c_plus(v_lb(v_x),X,t_b),c_plus(v_f(v_x),X,t_b),t_b)
     by axiom 6
 
 Goal 1: c_lessequals(c_0,c_plus(v_f(v_x),c_uminus(v_lb(v_x),t_b),t_b),t_b)

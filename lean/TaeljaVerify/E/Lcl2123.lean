@@ -35,20 +35,19 @@ theorem taelja_lemma5 : ∀ (x : α) (y : α), axiom_ (or_ (not_ x) (or_ y x)) :
   exact h2
 
 -- Lemma 6
-theorem taelja_lemma6 : ∀ (x : α) (y : α), theorem_ (or_ (not_ x) (or_ y x)) := by
-  intro x y
-  have h1 : axiom_ (or_ (not_ x) (or_ y x)) := by first | (exact taelja_lemma5 x y) | (apply taelja_lemma5 <;> first | rfl | assumption)
-  have h2 : theorem_ (or_ (not_ x) (or_ y x)) := by first | (exact ax3 (or_ (not_ x) (or_ y x)) h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+theorem taelja_lemma6 : theorem_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) := by
+  have h1 : axiom_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) := by first | (exact taelja_lemma5 q (not_ (or_ (not_ p) q))) | (apply taelja_lemma5 <;> first | rfl | assumption)
+  have h2 : theorem_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) := by first | (exact ax3 (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h2
 
 -- Lemma 7
-theorem taelja_lemma7 : ∀ (x : α) (y : α) (z : α), theorem_ (or_ x (or_ (not_ y) (or_ z y))) := by
-  intro x y z
-  have h1 : ∀ (a : α), axiom_ (or_ (not_ a) (or_ x a)) := fun a => by first | (exact taelja_lemma5 a x) | (apply taelja_lemma5 <;> first | rfl | assumption)
-  have h2 : ∀ (a : α), theorem_ (or_ (not_ a) (or_ x a)) := fun a => by first | (exact ax3 (or_ (not_ a) (or_ x a)) (h1 a)) | (have h1_i := h1 a; first | (exact ax3 _ (h1 _)) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h1)))
-  have h3 : ∀ (a : α), theorem_ (implies_ a (or_ x a)) := fun a => by have h_rw := ax1 a (or_ x a); rw [h_rw]; exact h2 _
-  have h4 : theorem_ (or_ (not_ y) (or_ z y)) := by first | (exact taelja_lemma6 y z) | (apply taelja_lemma6 <;> first | rfl | assumption)
-  have h5 : theorem_ (or_ x (or_ (not_ y) (or_ z y))) := by first | (exact ax4 (or_ x (or_ (not_ y) (or_ z y))) (or_ (not_ y) (or_ z y)) (h3 (or_ (not_ y) (or_ z y))) h4) | (first | (exact ax4 _ _ (h3 _) h4) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h1 | apply h2 | apply h3)))
+theorem taelja_lemma7 : ∀ (x : α), theorem_ (or_ x (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) := by
+  intro x
+  have h1 : axiom_ (or_ (not_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) (or_ x (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)))) := by first | (exact taelja_lemma5 (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) x) | (apply taelja_lemma5 <;> first | rfl | assumption)
+  have h2 : theorem_ (or_ (not_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) (or_ x (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)))) := by first | (exact ax3 (or_ (not_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) (or_ x (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)))) h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : theorem_ (implies_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) (or_ x (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)))) := by have h_rw := ax1 (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) (or_ x (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))); rw [h_rw]; exact h2
+  have h4 : theorem_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) := by first | (exact taelja_lemma6) | (apply taelja_lemma6 <;> first | rfl | assumption)
+  have h5 : theorem_ (or_ x (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) := by first | (exact ax4 (or_ x (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) h3 h4) | (first | (exact ax4 _ _ h3 h4) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h5
 
 -- Goal 1
@@ -58,6 +57,8 @@ theorem taelja_goal1 : theorem_ (implies_ (not_ p) (implies_ q (implies_ (implie
   have h_rw := ax1 q (implies_ (implies_ p q) q)
   rw [h_rw]
   have h_rw := ax1 (implies_ p q) q
+  rw [h_rw]
+  have h_rw := ax1 p q
   rw [h_rw]
   apply taelja_lemma7 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
 

@@ -7,41 +7,19 @@ Axiom 6: p2(X,X)
 Axiom 7: p3(X,X)
 Axiom 8: p3(Z,A) /\ p4(Y,B) /\ p2(X,C) => p4(f5(X,Z,Y),f5(C,A,B))
 
-Lemma 9: p4(f5(c7,X,c9),f5(c7,X,c8))
+Lemma 9: p4(f5(c7,f6(c10,c9,c8),c9),f5(c7,f6(c10,c9,c8),c8))
 Proof:
-  have p4(f5(c7,X,c8),f5(c7,X,c9))
+  have p4(f5(c7,f6(c10,c9,c8),c8),f5(c7,f6(c10,c9,c8),c9))
     by axiom 2
-   and p4(f5(c7,X,c8),f5(c7,X,c8))
+   and p4(f5(c7,f6(c10,c9,c8),c8),f5(c7,f6(c10,c9,c8),c8))
     by axiom 3
-  hence p4(f5(c7,X,c9),f5(c7,X,c8))
-    by axiom 4
-
-Lemma 10: p4(f5(c7,X,c9),f5(c7,X,c8))
-Proof:
-  have p4(f5(c7,X,c8),f5(c7,X,c9))
-    by axiom 2
-   and p4(f5(c7,X,c8),f5(c7,X,c8))
-    by axiom 3
-  hence p4(f5(c7,X,c9),f5(c7,X,c8))
-    by axiom 4
-
-Lemma 11: p4(f5(c7,c10,c8),c9)
-Proof:
-  have p4(f5(c7,c10,c9),f5(c7,c10,c8))
-    by lemma 10
-   and p4(f5(c7,c10,c9),c9)
-    by axiom 1
-  hence p4(f5(c7,c10,c8),c9)
+  hence p4(f5(c7,f6(c10,c9,c8),c9),f5(c7,f6(c10,c9,c8),c8))
     by axiom 4
 
 Goal 1: p4(f5(c7,c10,c8),c8)
 Proof:
-  have p4(f5(c7,X,c8),f5(c7,X,c9))
-    by axiom 2
-   and p4(f5(c7,c10,c8),c9)
-    by lemma 11
-  hence p4(f5(c7,c10,c9),c9)
-    by axiom 4
+  have p4(f5(c7,c10,c9),c9)
+    by axiom 1
    and p4(f5(c7,f6(c10,c9,c8),c9),f5(c7,f6(c10,c9,c8),c8))
     by lemma 9
   hence p4(f5(c7,c10,c8),c8)

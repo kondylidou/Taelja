@@ -109,6 +109,7 @@ benchmarkNames =
   , "SYN558-1"
   , "SYN719-1"
   , "LCL430-2"        -- premise freshening of a tau-bound nucleus variable nested in a term (Oop(Y,false), Y -> Ovar(Y'))
+  , "HEN003-3"        -- a nucleus's conclusion matches the cited axiom's head only flipped (Eq symmetry); the emitted Lean citation needs .symm (Vampire's own derived clause states "zero = divide(...)")
   ]
 
 -- Benchmarks for which an E prover output exists.

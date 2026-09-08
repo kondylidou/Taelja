@@ -908,13 +908,22 @@ def lit_as_term(lit):
     return None
 
 
-def precise_hyp_rw(prev_lit, target_lit, rw_formula, direction, ref_name, var_map, prev_ref, binders=None):
+def precise_hyp_rw(prev_lit, target_lit, rw_formula, direction, ref_name, var_map, prev_ref,
+                    binders=None, out_of_scope=()):
     """Tactic proving `target_lit` from hypothesis `prev_ref : prev_lit` by one
     rewrite with `rw_formula` (an equation), instantiated explicitly and applied
     to exactly the occurrence that turns the target into the hypothesis.  This
     avoids both the metavariable-pattern failure (rules with a bare variable on
     one side) and rewriting every occurrence.  Returns None when the step cannot
-    be reconstructed; callers then fall back to the plain `rw`."""
+    be reconstructed; callers then fall back to the plain `rw`.
+
+    `out_of_scope`: prev_lit's own variables that are not in var_map (locally
+    schematic to the hypothesis chain, e.g. a ∀-lemma consumed as `(prev _)`).
+    If the rewrite needs one of these as an explicit witness, this must refuse:
+    the name exists only inside the hypothesis's own (already-closed) binder,
+    so citing it here is a reference to nothing.  The caller's plain `rw ...
+    at h_rw` lets Lean unify the witness on `prev_ref`'s own metavariable
+    instead (LAT005-6/e: citing an eliminated ∀-variable by name)."""
     if not isinstance(rw_formula, EqLit):
         return None
     prev_t, tgt_t = lit_as_term(prev_lit), lit_as_term(target_lit)
@@ -924,6 +933,8 @@ def precise_hyp_rw(prev_lit, target_lit, rw_formula, direction, ref_name, var_ma
     if subst is None:
         return None
     if any(v not in subst for v in vars_in_lit(rw_formula)):
+        return None
+    if any(isinstance(t, Var) and t.name in out_of_scope for t in subst.values()):
         return None
     args = inst_args(rw_formula, subst, var_map, binders)
     inst = f'{ref_name} {" ".join(args)}' if args else ref_name
@@ -1299,13 +1310,21 @@ def _unify_wild(t1, t2, s, wild):
 
 
 def _unify_lits(l1, l2, s, wild):
+    """Unify l1 (a rule's literal) against l2 (the printed target), trying
+    l1's own orientation first and l1 flipped (equation symmetry) second.
+    Returns (subst, flipped) or None; flipped says whether the term proving
+    l1 needs `.symm` to prove l2."""
     a, b = lit_as_term(l1), lit_as_term(l2)
     if a is None or b is None:
         return None
     r = _unify_wild(a, b, s, wild)
-    if r is None and isinstance(l1, EqLit) and isinstance(l2, EqLit):
+    if r is not None:
+        return (r, False)
+    if isinstance(l1, EqLit) and isinstance(l2, EqLit):
         r = _unify_wild(App('=', [l1.rhs, l1.lhs]), b, s, wild)
-    return r
+        if r is not None:
+            return (r, True)
+    return None
 
 
 def _resolve(t, s):
@@ -1348,15 +1367,18 @@ def horn_exact(ref_name, ref_formula, ref_binders, concl, prems, in_scope, var_m
         wild |= set(v for v in loc if v not in in_scope)
     import os
     dbg = os.environ.get('TAELJA_HORN_DEBUG')
-    s = _unify_lits(head, concl, {}, wild)
-    if s is None:
+    r = _unify_lits(head, concl, {}, wild)
+    if r is None:
         if dbg: sys.stderr.write(f'[horn_exact] head {head} !~ {concl}\n')
         return None
+    s, head_flipped = r
+    prem_flipped = {}
     for b, (pname, plit, _) in zip(body, prems):
-        s = _unify_lits(b, plit, s, wild)
-        if s is None:
+        r = _unify_lits(b, plit, s, wild)
+        if r is None:
             if dbg: sys.stderr.write(f'[horn_exact] body {b} !~ {pname}: {plit}\n')
             return None
+        s, prem_flipped[pname] = r
     # Variables the conclusion leaves unconstrained (a premise's ∀-variable,
     # a rule binder occurring only in such a premise) may take any value.
     scope_var = next((v for v in in_scope if v in var_map), None)
@@ -1381,10 +1403,17 @@ def horn_exact(ref_name, ref_formula, ref_binders, concl, prems, in_scope, var_m
     for pname, _, loc in prems:
         if loc:
             largs = [_lean_arg(Var(v), s, in_scope, var_map) or '_' for v in loc]
-            parts.append(f'({pname} {" ".join(largs)})')
+            term = f'({pname} {" ".join(largs)})'
         else:
-            parts.append(pname)
-    return 'exact ' + ' '.join(parts)
+            term = pname
+        # A premise that only matched the rule's body atom flipped (equation
+        # symmetry) needs the hypothesis term itself flipped to fit the slot.
+        parts.append(f'({term}.symm)' if prem_flipped.get(pname) else term)
+    term = ' '.join(parts)
+    # A conclusion matched only by flipping the rule's own equation needs the
+    # whole application flipped: the term proves l1's orientation, l2 is its
+    # mirror (Eq is not definitionally symmetric for `exact`).
+    return 'exact ' + (f'Eq.symm ({term})' if head_flipped else term)
 
 
 def ref_formula_of(ref, axiom_types, lemma_types):
@@ -1445,7 +1474,10 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
         if isinstance(step, HaveStep):
             # Prove step.lit from ref (unconditional use)
             lit_str = lean_lit(step.lit, svm)
-            unit_tac = f'apply {ref_name} <;> first | rfl | assumption'
+            unit_tac = 'first | ' + ' | '.join(
+                ([f'apply {ref_name} <;> first | rfl | assumption']
+                 + ([f'(apply Eq.symm; apply {ref_name} <;> first | rfl | assumption)']
+                    if isinstance(step.lit, EqLit) else [])))
             u_formula, u_binders = ref_formula_of(ref, axiom_types, lemma_types)
             if u_formula is not None and not isinstance(u_formula, Implies):
                 precise = horn_exact(ref_name, u_formula, u_binders, step.lit, [],
@@ -1468,7 +1500,10 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
         elif isinstance(step, AndStep):
             # Prove independently, collect for next hence
             lit_str = lean_lit(step.lit, svm)
-            unit_tac = f'apply {ref_name} <;> first | rfl | assumption'
+            unit_tac = 'first | ' + ' | '.join(
+                ([f'apply {ref_name} <;> first | rfl | assumption']
+                 + ([f'(apply Eq.symm; apply {ref_name} <;> first | rfl | assumption)']
+                    if isinstance(step.lit, EqLit) else [])))
             u_formula, u_binders = ref_formula_of(ref, axiom_types, lemma_types)
             if u_formula is not None and not isinstance(u_formula, Implies):
                 precise = horn_exact(ref_name, u_formula, u_binders, step.lit, [],
@@ -1521,7 +1556,22 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     # The goal has 'a' where prev has 'b'; rw [ref_name] in goal uses LHS (a) as
                     # pattern and replaces with RHS (b), turning the goal into prev's form.
                     if prev_new_vars:
-                        inst = ' _' * len(prev_new_vars)
+                        if lit_has_new_vars and len(prev_new_vars) == len(new_vars):
+                            # The step's own literal is still ∀-quantified (Tälja
+                            # only renamed the schematic variable): apply prev at
+                            # the SAME just-introduced binder, position for
+                            # position, not an arbitrary witness (HEN011-2/vampire:
+                            # the result must hold for that bound variable, not
+                            # merely for one fixed constant).
+                            inst = ''.join(f' {svm[v]}' for v in new_vars)
+                        else:
+                            # A concrete problem constant, not `_`: the witness is
+                            # eliminated by the rewrite regardless of its value, but
+                            # an unresolved `_` here has nothing later to unify it
+                            # against and Lean cannot synthesize it on its own
+                            # (LAT005-6/e).
+                            witness_c = lean_name(consts[0]) if consts else 'a'
+                            inst = f' {witness_c}' * len(prev_new_vars)
                         prev_inst = f'{prev_name}{inst}'
                     else:
                         prev_inst = prev_name
@@ -1536,7 +1586,8 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     rl_lhs_is_var = isinstance(rl_rw_formula, EqLit) and isinstance(rl_rw_formula.lhs, Var)
                     precise = precise_hyp_rw(
                         prev_lit, step.lit, rl_rw_formula, 'RL', ref_name, svm, prev_inst,
-                        get_formula_vars(ref.num, ref.kind, axiom_types, lemma_types)[0])
+                        get_formula_vars(ref.num, ref.kind, axiom_types, lemma_types)[0],
+                        out_of_scope=prev_new_vars)
                     if precise is not None:
                         if lit_has_new_vars:
                             # a quantified target opens its binders first; rw
@@ -1569,9 +1620,9 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                                 y_str = f'({y_str})'
                             lines.append(f'have {hname} : {full_lit_str} := by have h_eq := {ref_name} {x_str} {y_str}; rw [h_eq]; exact {prev_inst}')
                         else:
-                            lines.append(f'have {hname} : {full_lit_str} := by rw [{ref_name}]; exact {prev_inst}')
+                            lines.append(f'have {hname} : {full_lit_str} := ' + (f'fun {" ".join(svm[v] for v in new_vars)} => by rw [{ref_name}]; exact {prev_inst}' if lit_has_new_vars else f'by rw [{ref_name}]; exact {prev_inst}'))
                     else:
-                        lines.append(f'have {hname} : {full_lit_str} := by rw [{ref_name}]; exact {prev_inst}')
+                        lines.append(f'have {hname} : {full_lit_str} := ' + (f'fun {" ".join(svm[v] for v in new_vars)} => by rw [{ref_name}]; exact {prev_inst}' if lit_has_new_vars else f'by rw [{ref_name}]; exact {prev_inst}'))
                 else:
                     # LR: rewrite the GOAL backward with axiom RL (brings goal back to prev's form).
                     # The goal has 'b' where prev has 'a'; rw [← ref_name] in goal uses RHS (b) as
@@ -1588,7 +1639,10 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                         # Ground (or relational) prev: choose rewrite strategy based on whether
                         # the referenced lemma's LHS is a plain Var or a compound term.
                         if prev_new_vars:
-                            inst = ' _' * len(prev_new_vars)
+                            # Same reasoning as the RL branch above: a concrete
+                            # witness, not `_` (LAT005-6/e).
+                            witness_c = lean_name(consts[0]) if consts else 'a'
+                            inst = f' {witness_c}' * len(prev_new_vars)
                             prev_copy = f'({prev_name}{inst})'
                         else:
                             prev_copy = prev_name
@@ -1601,16 +1655,23 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                         lhs_is_var = isinstance(rw_formula, EqLit) and isinstance(rw_formula.lhs, Var)
                         precise = precise_hyp_rw(
                             prev_lit, step.lit, rw_formula, 'LR', ref_name, svm, prev_copy,
-                            get_formula_vars(ref.num, ref.kind, axiom_types, lemma_types)[0])
+                            get_formula_vars(ref.num, ref.kind, axiom_types, lemma_types)[0],
+                            out_of_scope=prev_new_vars)
                         if precise is not None:
                             if lit_has_new_vars:
                                 fvs = ' '.join(svm[v] for v in new_vars)
                                 lines.append(f'have {hname} : {full_lit_str} := fun {fvs} => {precise}')
                             else:
                                 lines.append(f'have {hname} : {full_lit_str} := {precise}')
-                        elif lhs_is_var:
+                        elif lhs_is_var or prev_new_vars:
                             # LHS is a pure variable (e.g. x = f(x)): rw [ref] would use ?x as
                             # pattern and fail in Lean. rw [← ref] uses the compound RHS instead.
+                            # Also used whenever prev_copy applies a ∀-hypothesis at `_` (its
+                            # own witness was eliminated, precise_hyp_rw refused to name it):
+                            # rewriting the GOAL lets `exact prev_copy` unify prev_copy's `_`
+                            # against whatever the rewrite introduces, whereas a standalone
+                            # `have h_rw := prev_copy` gives Lean nothing to solve that
+                            # placeholder against on its own (LAT005-6/e).
                             lines.append(f'have {hname} : {full_lit_str} := by rw [← {ref_name}]; exact {prev_copy}')
                         else:
                             # LHS is compound (e.g. f(f(x)) = x, a = b): apply the rewrite forward
@@ -1692,12 +1753,21 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     ref_var_map = axiom_types[ref.num][1]
                 elif ref.kind == 'lemma' and ref.num in lemma_types:
                     ref_var_map = lemma_types[ref.num][1]
+                # `apply` unifies against the rule's OWN orientation only; a
+                # rule that derives the flipped equation (e.g. an axiom
+                # `f x = c` citing a goal stated `c = f x`) needs the goal
+                # flipped first (`apply Eq.symm` turns goal `a=b` into `b=a`)
+                # before `apply ref` can unify at all.
+                symm_first = f'apply Eq.symm; apply {ref_name} <;> ({close_tac})' \
+                    if isinstance(step.lit, EqLit) else None
                 if prem_hyps and ref_var_map is not None:
-                    binder_us = ' _' * len(ref_var_map)
-                    apply_tac = (f'first | (exact {ref_name}{binder_us} {" ".join(prem_hyps)})'
-                                 f' | (apply {ref_name} <;> ({close_tac}))')
+                    apply_alts = [f'(exact {ref_name}{" _" * len(ref_var_map)} {" ".join(prem_hyps)})',
+                                  f'(apply {ref_name} <;> ({close_tac}))']
                 else:
-                    apply_tac = f'apply {ref_name} <;> ({close_tac})'
+                    apply_alts = [f'apply {ref_name} <;> ({close_tac})']
+                if symm_first is not None:
+                    apply_alts.append(f'({symm_first})')
+                apply_tac = 'first | ' + ' | '.join(apply_alts)
                 # Fully explicit application, tried first: binders and the
                 # ∀-premises instantiated by matching the rule against the
                 # printed conclusion and premises (written order, then any

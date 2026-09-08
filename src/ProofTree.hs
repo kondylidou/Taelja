@@ -25,6 +25,8 @@ import Data.List.NonEmpty (toList)
 import Data.Maybe (fromMaybe, isJust, listToMaybe)
 import Data.Ord (comparing)
 import Types
+import Helpers (applySubst, mapLiteralTerms, matchLit, suffixVarsLit, unifyLits)
+import TptpConvert (convertDeclToClause)
 
 data ProofTree
   = PTLeaf String T.Declaration
@@ -707,10 +709,15 @@ firstParentIsLeft _ _ d1 d2
            (True,  False) -> True
            (False, True ) -> False
            _              -> True
-firstParentIsLeft _ result d1 d2 = case (posHead d1, posHead d2) of
-  (Just h1, _)       -> not (headInDecl h1 result)
-  (Nothing, Just h2) -> headInDecl h2 result
-  (Nothing, Nothing) -> True  -- both non-unit: keep original order
+firstParentIsLeft _ result d1 d2 = case consumerIsFirst result d1 d2 of
+  -- the paper's order: the premise whose atom is consumed (the provider)
+  -- goes to p0, the consumer to p1
+  Just True  -> False
+  Just False -> True
+  Nothing    -> case (posHead d1, posHead d2) of
+    (Just h1, _)       -> not (headInDecl h1 result)
+    (Nothing, Just h2) -> headInDecl h2 result
+    (Nothing, Nothing) -> True  -- both non-unit: keep original order
   where
     -- Like headLitOf, but a disequality atom (s != t) counts as a negative
     -- literal.  headLitOf treats it as positive, which hid the true head of
@@ -730,6 +737,44 @@ firstParentIsLeft _ result d1 d2 = case (posHead d1, posHead d2) of
     single _   = Nothing
     isNegEq (T.Equality _ T.Negative _) = True
     isNegEq _ = False
+
+-- Which premise of a binary resolution consumes: its head is what the
+-- resolvent's head instantiates, all but one of its body literals reappear
+-- in the resolvent, and the one that does not is what the other premise's
+-- head resolved against.  Nothing when the clauses are unavailable or when
+-- both or neither read as the consumer (the caller then falls back to the
+-- name-based guess).  This is the paper's tree order: the provider at p0.
+consumerIsFirst :: T.Declaration -> T.Declaration -> T.Declaration -> Maybe Bool
+consumerIsFirst result d1 d2 =
+  case (convertDeclToClause result, convertDeclToClause d1, convertDeclToClause d2) of
+    (Just r, Just c1, Just c2) ->
+      -- the resolvent's variables are rigid (frozen to constants) and the
+      -- premises' are renamed apart, so a premise variable never collides
+      -- with a resolvent variable of the same name
+      let r'  = onLits freeze r
+          c1' = onLits (suffixVarsLit "_c") c1
+          c2' = onLits (suffixVarsLit "_c") c2
+      in case (consumes r' c1' c2', consumes r' c2' c1') of
+           (True, False) -> Just True
+           (False, True) -> Just False
+           _             -> Nothing
+    _ -> Nothing
+  where
+    onLits f (Clause bs mh) = Clause (map f bs) (fmap f mh)
+    freeze = mapLiteralTerms fr
+      where fr (Var v)    = Const ("_rv_" ++ v)
+            fr (App f ts) = App f (map fr ts)
+            fr t          = t
+    consumes (Clause rb (Just rh)) (Clause cb (Just ch)) (Clause _ (Just ph)) =
+      case matchLit ch rh of
+        Nothing -> False
+        Just σ ->
+          let inResult l = any (isJust . matchLit l) rb
+              missing = [ l | l <- map (applySubst σ) cb, not (inResult l) ]
+          in case missing of
+               [m] -> isJust (unifyLits (suffixVarsLit "_q" ph) m [])
+               _   -> False
+    consumes _ _ _ = False
 
 isDerivedUnit :: T.Unit -> Bool
 isDerivedUnit (T.Unit _ _ (Just (T.Inference {}, _))) = True

@@ -1,57 +1,57 @@
 Axiom 1: p2(X,X)
 Axiom 2: p5(c7,c10,c8)
-Axiom 3: p2(Y,Z) /\ p2(Y,X) => p2(X,Z)
-Axiom 4: p6(c7,f3(X))
-Axiom 5: p5(c7,X,f3(X))
-Axiom 6: p5(X,A,Y) /\ p5(X,Z,A) => p5(X,Z,Y)
-Axiom 7: p5(c7,Y,Z) /\ p6(c7,Z) /\ p6(c7,X) /\ p5(c7,Y,X) => p2(X,Z)
+Axiom 3: p6(c7,f3(X))
+Axiom 4: p5(c7,X,f3(X))
+Axiom 5: p5(X,Y,Z) /\ p5(X,A,Y) => p5(X,A,Z)
+Axiom 6: p5(c7,Z,A) /\ p6(c7,A) /\ p6(c7,X) /\ p5(c7,Z,X) => p2(X,A)
+Axiom 7: p2(Z,A) /\ p2(Z,X) => p2(X,A)
 Axiom 8: p5(c7,c10,c9)
 Axiom 9: p4(X,X)
-Axiom 10: p5(B,A,C) /\ p2(A,Z) /\ p2(C,Y) /\ p4(B,X) => p5(X,Z,Y)
+Axiom 10: p5(B,Y,C) /\ p2(Y,A) /\ p2(C,Z) /\ p4(B,X) => p5(X,A,Z)
 
 Lemma 11: p5(c7,c10,f3(c8))
 Proof:
   have p5(c7,c8,f3(c8))
-    by axiom 5
+    by axiom 4
    and p5(c7,c10,c8)
     by axiom 2
   hence p5(c7,c10,f3(c8))
-    by axiom 6
+    by axiom 5
 
 Lemma 12: p2(f3(c8),f3(c10))
 Proof:
   have p5(c7,c10,f3(c10))
-    by axiom 5
+    by axiom 4
    and p6(c7,f3(c10))
-    by axiom 4
+    by axiom 3
    and p6(c7,f3(c8))
-    by axiom 4
+    by axiom 3
    and p5(c7,c10,f3(c8))
     by lemma 11
   hence p2(f3(c8),f3(c10))
-    by axiom 7
+    by axiom 6
 
 Lemma 13: p5(c7,c10,f3(c9))
 Proof:
   have p5(c7,c9,f3(c9))
-    by axiom 5
+    by axiom 4
    and p5(c7,c10,c9)
     by axiom 8
   hence p5(c7,c10,f3(c9))
-    by axiom 6
+    by axiom 5
 
 Lemma 14: p2(f3(c9),f3(c10))
 Proof:
   have p5(c7,c10,f3(c10))
-    by axiom 5
+    by axiom 4
    and p6(c7,f3(c10))
-    by axiom 4
+    by axiom 3
    and p6(c7,f3(c9))
-    by axiom 4
+    by axiom 3
    and p5(c7,c10,f3(c9))
     by lemma 13
   hence p2(f3(c9),f3(c10))
-    by axiom 7
+    by axiom 6
 
 Lemma 15: p2(f3(c10),f3(c8))
 Proof:
@@ -60,7 +60,7 @@ Proof:
    and p2(f3(c8),f3(c10))
     by lemma 12
   hence p2(f3(c10),f3(c8))
-    by axiom 3
+    by axiom 7
 
 Lemma 16: p2(f3(c8),f3(c9))
 Proof:
@@ -69,11 +69,11 @@ Proof:
    and p2(f3(c9),f3(c10))
     by lemma 14
   hence p2(f3(c10),f3(c9))
-    by axiom 3
+    by axiom 7
    and p2(f3(c10),f3(c8))
     by lemma 15
   hence p2(f3(c8),f3(c9))
-    by axiom 3
+    by axiom 7
 
 Lemma 17: p2(f3(c9),f3(c8))
 Proof:
@@ -82,12 +82,21 @@ Proof:
    and p2(f3(c8),f3(c9))
     by lemma 16
   hence p2(f3(c9),f3(c8))
-    by axiom 3
+    by axiom 7
 
-Goal 1: p5(c7,c8,f3(f3(c9)))
+Goal 1: p5(c7,c9,f3(f3(c9)))
 Proof:
   have p5(c7,f3(c9),f3(f3(c9)))
+    by axiom 4
+   and p5(c7,c9,f3(c9))
+    by axiom 4
+  hence p5(c7,c9,f3(f3(c9)))
     by axiom 5
+
+Goal 2: p5(c7,c8,f3(f3(c9)))
+Proof:
+  have p5(c7,f3(c9),f3(f3(c9)))
+    by axiom 4
    and p2(f3(c9),f3(c8))
     by lemma 17
    and p2(f3(f3(c9)),f3(f3(c9)))
@@ -97,15 +106,6 @@ Proof:
   hence p5(c7,f3(c8),f3(f3(c9)))
     by axiom 10
    and p5(c7,c8,f3(c8))
-    by axiom 5
+    by axiom 4
   hence p5(c7,c8,f3(f3(c9)))
-    by axiom 6
-
-Goal 2: p5(c7,c9,f3(f3(c9)))
-Proof:
-  have p5(c7,f3(c9),f3(f3(c9)))
     by axiom 5
-   and p5(c7,c9,f3(c9))
-    by axiom 5
-  hence p5(c7,c9,f3(f3(c9)))
-    by axiom 6

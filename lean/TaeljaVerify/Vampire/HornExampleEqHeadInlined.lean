@@ -25,12 +25,19 @@ axiom ax3 : ∀ (x : α), q (f x)
 -- Axiom 4
 axiom ax4 : ∀ (x : α), p x → q x → x = zero
 
+-- Lemma 5
+theorem taelja_lemma5 : ∀ (x : α), q (g x) := by
+  intro x
+  have h1 : q (f x) := by first | (exact ax3 x) | (apply ax3 <;> first | rfl | assumption)
+  have h2 : q (g x) := by have h_rw := ax1 x; rw [←h_rw]; exact h1
+  exact h2
+
 -- Goal 1
 theorem taelja_goal1 : (g a) = zero := by
-  have h1 : p (f a) := by apply ax2
-  have h2 : q (f a) := by apply ax3
-  have h3 : (f a) = zero := by first | (exact ax4 _ h1 h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h4 : (g a) = zero := by have h_rw := h3; rw [ax1] at h_rw; exact h_rw
+  have h1 : p (f a) := by first | (exact ax2 a) | (apply ax2 <;> first | rfl | assumption)
+  have h2 : p (g a) := by have h_rw := ax1 a; rw [←h_rw]; exact h1
+  have h3 : q (g a) := by first | (exact taelja_lemma5 a) | (apply taelja_lemma5 <;> first | rfl | assumption)
+  have h4 : (g a) = zero := by first | (exact ax4 (g a) h2 h3) | (first | (exact ax4 _ h2 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h4
 
 end VampireHornExampleEqHeadInlined

@@ -6,38 +6,28 @@ Axiom 5: c_in(X,c_PropLog_Othms(Y,Z),tc_PropLog_Opl(Z)) /\ c_lessequals(Y,A,tc_s
 Axiom 6: c_lessequals(c_minus(X,Y,tc_set(Z)),c_insert(A,c_minus(X,c_insert(A,Y,Z),tc_set(Z)),Z),tc_set(Z))
 Axiom 7: c_in(X,c_PropLog_Othms(c_insert(c_PropLog_Opl_Oop_A_N_62(Y,c_PropLog_Opl_Ofalse,A),Z,tc_PropLog_Opl(A)),A),tc_PropLog_Opl(A)) /\ c_in(X,c_PropLog_Othms(c_insert(Y,Z,tc_PropLog_Opl(A)),A),tc_PropLog_Opl(A)) => c_in(X,c_PropLog_Othms(Z,A),tc_PropLog_Opl(A))
 
-Lemma 8: c_in(v_p,c_PropLog_Othms(c_insert(X,c_minus(c_PropLog_Ohyps(v_p,Y,t_a),c_insert(X,v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),t_a),tc_PropLog_Opl(t_a))
-Proof:
-  have c_in(v_p,c_PropLog_Othms(c_minus(c_PropLog_Ohyps(v_p,Y,t_a),v_F,tc_set(tc_PropLog_Opl(t_a))),t_a),tc_PropLog_Opl(t_a))
-    by axiom 3
-   and c_lessequals(c_minus(c_PropLog_Ohyps(v_p,Y,t_a),v_F,tc_set(tc_PropLog_Opl(t_a))),c_insert(X,c_minus(c_PropLog_Ohyps(v_p,Y,t_a),c_insert(X,v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a)))
-    by axiom 6
-  hence c_in(v_p,c_PropLog_Othms(c_insert(X,c_minus(c_PropLog_Ohyps(v_p,Y,t_a),c_insert(X,v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),t_a),tc_PropLog_Opl(t_a))
-    by axiom 5
-
-Lemma 9: c_in(v_p,c_PropLog_Othms(c_insert(c_PropLog_Opl_Ovar(X,t_a),c_minus(c_PropLog_Ohyps(v_p,Y,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(X,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),t_a),tc_PropLog_Opl(t_a))
+Lemma 8: c_in(v_p,c_PropLog_Othms(c_insert(c_PropLog_Opl_Ovar(X,t_a),c_minus(c_PropLog_Ohyps(v_p,Y,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(X,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),t_a),tc_PropLog_Opl(t_a))
 Proof:
   have c_in(v_p,c_PropLog_Othms(c_minus(c_PropLog_Ohyps(v_p,Z,t_a),v_F,tc_set(tc_PropLog_Opl(t_a))),t_a),tc_PropLog_Opl(t_a))
     by axiom 3
-   and c_lessequals(c_PropLog_Ohyps(v_p,c_insert(X,Y,t_a),t_a),c_insert(c_PropLog_Opl_Ovar(X,t_a),c_minus(c_PropLog_Ohyps(v_p,Y,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(X,t_a),c_PropLog_Opl_Ofalse,t_a),c_emptyset,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a)))
+   and c_lessequals(c_PropLog_Ohyps(v_p,c_insert(A,B,t_a),t_a),c_insert(c_PropLog_Opl_Ovar(A,t_a),c_minus(c_PropLog_Ohyps(v_p,B,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(A,t_a),c_PropLog_Opl_Ofalse,t_a),c_emptyset,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a)))
     by axiom 2
-  hence c_in(v_p,c_PropLog_Othms(c_minus(c_insert(c_PropLog_Opl_Ovar(X,t_a),c_minus(c_PropLog_Ohyps(v_p,Y,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(X,t_a),c_PropLog_Opl_Ofalse,t_a),c_emptyset,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),v_F,tc_set(tc_PropLog_Opl(t_a))),t_a),tc_PropLog_Opl(t_a))
+  hence c_in(v_p,c_PropLog_Othms(c_minus(c_insert(c_PropLog_Opl_Ovar(A,t_a),c_minus(c_PropLog_Ohyps(v_p,B,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(A,t_a),c_PropLog_Opl_Ofalse,t_a),c_emptyset,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),v_F,tc_set(tc_PropLog_Opl(t_a))),t_a),tc_PropLog_Opl(t_a))
     by axiom 4
    and c_lessequals(c_minus(c_insert(c_PropLog_Opl_Ovar(X,t_a),c_minus(c_PropLog_Ohyps(v_p,Y,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(X,t_a),c_PropLog_Opl_Ofalse,t_a),c_emptyset,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),v_F,tc_set(tc_PropLog_Opl(t_a))),c_insert(c_PropLog_Opl_Ovar(X,t_a),c_minus(c_PropLog_Ohyps(v_p,Y,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(X,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a)))
     by axiom 1
   hence c_in(v_p,c_PropLog_Othms(c_insert(c_PropLog_Opl_Ovar(X,t_a),c_minus(c_PropLog_Ohyps(v_p,Y,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(X,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),t_a),tc_PropLog_Opl(t_a))
     by axiom 5
 
-Lemma 10: c_in(v_p,c_PropLog_Othms(c_minus(c_PropLog_Ohyps(v_p,X,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(Y,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),t_a),tc_PropLog_Opl(t_a))
-Proof:
-  have c_in(v_p,c_PropLog_Othms(c_insert(c_PropLog_Opl_Oop_A_N_62(Z,c_PropLog_Opl_Ofalse,t_a),c_minus(c_PropLog_Ohyps(v_p,A,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(Z,c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),t_a),tc_PropLog_Opl(t_a))
-    by lemma 8
-   and c_in(v_p,c_PropLog_Othms(c_insert(c_PropLog_Opl_Ovar(Y,t_a),c_minus(c_PropLog_Ohyps(v_p,X,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(Y,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),t_a),tc_PropLog_Opl(t_a))
-    by lemma 9
-  hence c_in(v_p,c_PropLog_Othms(c_minus(c_PropLog_Ohyps(v_p,X,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(Y,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),t_a),tc_PropLog_Opl(t_a))
-    by axiom 7
-
 Goal 1: c_in(v_p,c_PropLog_Othms(c_minus(c_PropLog_Ohyps(v_p,v_t,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(v_v,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),t_a),tc_PropLog_Opl(t_a))
 Proof:
-  have c_in(v_p,c_PropLog_Othms(c_minus(c_PropLog_Ohyps(v_p,v_t,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(v_v,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),t_a),tc_PropLog_Opl(t_a))
-    by lemma 10
+  have c_in(v_p,c_PropLog_Othms(c_minus(c_PropLog_Ohyps(v_p,X,t_a),v_F,tc_set(tc_PropLog_Opl(t_a))),t_a),tc_PropLog_Opl(t_a))
+    by axiom 3
+   and c_lessequals(c_minus(c_PropLog_Ohyps(v_p,v_t,t_a),v_F,tc_set(tc_PropLog_Opl(t_a))),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(v_v,t_a),c_PropLog_Opl_Ofalse,t_a),c_minus(c_PropLog_Ohyps(v_p,v_t,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(v_v,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a)))
+    by axiom 6
+  hence c_in(v_p,c_PropLog_Othms(c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(v_v,t_a),c_PropLog_Opl_Ofalse,t_a),c_minus(c_PropLog_Ohyps(v_p,v_t,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(v_v,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),t_a),tc_PropLog_Opl(t_a))
+    by axiom 5
+   and c_in(v_p,c_PropLog_Othms(c_insert(c_PropLog_Opl_Ovar(v_v,t_a),c_minus(c_PropLog_Ohyps(v_p,v_t,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(v_v,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),tc_PropLog_Opl(t_a)),t_a),tc_PropLog_Opl(t_a))
+    by lemma 8
+  hence c_in(v_p,c_PropLog_Othms(c_minus(c_PropLog_Ohyps(v_p,v_t,t_a),c_insert(c_PropLog_Opl_Oop_A_N_62(c_PropLog_Opl_Ovar(v_v,t_a),c_PropLog_Opl_Ofalse,t_a),v_F,tc_PropLog_Opl(t_a)),tc_set(tc_PropLog_Opl(t_a))),t_a),tc_PropLog_Opl(t_a))
+    by axiom 7

@@ -272,19 +272,6 @@ Proof:
   hence n5(X,X)
     by axiom 45
 
-Lemma 68: n4(a,e)
-Proof:
-  have m3(X,X,X)
-    by lemma 52
-   and p2(a,e,e)
-    by lemma 51
-  hence p3(a,e,e)
-    by axiom 27
-   and n4(a,a)
-    by lemma 62
-  hence n4(a,e)
-    by axiom 28
-
 Goal 1: n5(a,e)
 Proof:
   have m0(a,X,a)
@@ -305,8 +292,8 @@ Proof:
     by lemma 52
   hence q4(A,A)
     by axiom 36
-   and n4(a,e)
-    by lemma 68
+   and n4(a,a)
+    by lemma 62
    and p4(e,e,e)
     by lemma 66
    and n5(e,e)

@@ -17,9 +17,9 @@ Proof:
   hence multiply(identity,X) = X
     by axiom 3
 
-Lemma 11: product(identity,inverse(a),multiply(b,d))
+Lemma 11: multiply(b,d) = multiply(identity,inverse(a))
 Proof:
-  have product(X,inverse(X),identity)
+  have product(b,inverse(b),identity)
     by axiom 6
    and product(inverse(b),inverse(a),d)
     by axiom 5
@@ -27,80 +27,43 @@ Proof:
     by axiom 1
   hence product(identity,inverse(a),multiply(b,d))
     by axiom 7
-
-Lemma 12: product(identity,inverse(a),inverse(a))
-Proof:
-  product(identity,inverse(a),inverse(a))
-= { by lemma 10 R->L }
-  product(identity,inverse(a),multiply(identity,inverse(a)))
-= { by axiom 1 }
-  true
-
-Lemma 13: multiply(b,d) = inverse(a)
-Proof:
-  have product(identity,inverse(a),multiply(b,d))
-    by lemma 11
-   and product(identity,inverse(a),inverse(a))
-    by lemma 12
-  hence multiply(b,d) = inverse(a)
+   and product(identity,inverse(a),multiply(identity,inverse(a)))
+    by axiom 1
+  hence multiply(b,d) = multiply(identity,inverse(a))
     by axiom 3
 
-Lemma 14: product(b,d,inverse(a))
+Lemma 12: product(b,d,inverse(a))
 Proof:
   product(b,d,inverse(a))
-= { by lemma 13 R->L }
+= { by lemma 10 R->L }
+  product(b,d,multiply(identity,inverse(a)))
+= { by lemma 11 R->L }
   product(b,d,multiply(b,d))
 = { by axiom 1 }
   true
 
-Lemma 15: product(identity,b,b)
-Proof:
-  product(identity,b,b)
-= { by lemma 10 R->L }
-  product(identity,b,multiply(identity,b))
-= { by axiom 1 }
-  true
-
-Lemma 16: product(b,d,inverse(a))
-Proof:
-  have product(identity,inverse(a),multiply(b,d))
-    by lemma 11
-  hence product(identity,inverse(a),inverse(a))
-    by rw lemma 13
-   and product(b,d,inverse(a))
-    by lemma 14
-   and product(identity,b,b)
-    by lemma 15
-  hence product(b,d,inverse(a))
-    by axiom 7
-
-Lemma 17: product(c,d,identity)
+Lemma 13: product(c,d,identity)
 Proof:
   have product(a,b,c)
     by axiom 4
    and product(b,d,inverse(a))
-    by lemma 16
+    by lemma 12
    and product(a,inverse(a),identity)
     by axiom 6
   hence product(c,d,identity)
     by axiom 7
 
-Lemma 18: product(identity,d,inverse(c))
+Goal 1: inverse(c) = d
 Proof:
-  have product(inverse(X),X,identity)
+  have product(inverse(c),c,identity)
     by axiom 9
    and product(c,d,identity)
-    by lemma 17
+    by lemma 13
    and product(inverse(c),identity,inverse(c))
     by axiom 8
   hence product(identity,d,inverse(c))
     by axiom 7
-
-Goal 1: inverse(c) = d
-Proof:
-  have product(identity,d,d)
+   and product(identity,d,d)
     by axiom 2
-   and product(identity,d,inverse(c))
-    by lemma 18
   hence inverse(c) = d
     by axiom 3

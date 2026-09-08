@@ -1,5 +1,8 @@
 {-# LANGUAGE LambdaCase #-}
-module Translate (translate, translateWith) where
+module Translate (translate, translateWith
+  , translateStages
+  , StageMode (..)
+  ) where
 
 import Control.Applicative ((<|>))
 import Control.Monad (foldM, forM, forM_, void, when)
@@ -108,12 +111,22 @@ translateWithBoth nameOverride debug tstp = do
 --      lemma candidates proved by translating their own sub-DAG, one canonical
 --      axiom numbering.  Needed e.g. for Twee proofs whose intermediate lemmas
 --      are non-ground (HEN006-4).
+-- Which stages to run: both (the heuristic one first, the strict one when
+-- it produces no goal proof), or one of them alone (the command-line flags
+-- --heuristic-only / --strict-only; TAELJA_STRICT=1 is the older spelling
+-- of the strict-only mode).
+data StageMode = BothStages | HeuristicOnly | StrictOnly
+  deriving (Eq, Show)
+
 translate :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translate debug tstp = do
-  -- TAELJA_STRICT=1 forces the strict paper translation (experiments/evaluation)
   forceStrict <- maybe False (== "1") <$> lookupEnv "TAELJA_STRICT"
+  translateStages (if forceStrict then StrictOnly else BothStages) debug tstp
+
+translateStages :: StageMode -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
+translateStages mode debug tstp = do
   writeIORef rescueEnabled False
-  r1@(mRes1, errH1, errS1) <- runStages forceStrict
+  r1@(mRes1, errH1, errS1) <- runStages
   (mRes, errH, errS) <- case mRes1 of
     Just _  -> return r1
     Nothing -> do
@@ -124,7 +137,7 @@ translate debug tstp = do
       writeIORef rescueDeadline (now + fromIntegral budget)
       writeIORef rescueEnabled True
       when debug $ hPutStrLn stderr "translate: incomplete result; retrying with re-proving enabled"
-      (mRes2raw, errH2, errS2) <- runStages forceStrict
+      (mRes2raw, errH2, errS2) <- runStages
       return $ case mRes2raw of
         Just _  -> (mRes2raw, errH2, errS2)
         Nothing -> (Nothing, errH2 <|> errH1, errS2 <|> errS1)
@@ -135,15 +148,17 @@ translate debug tstp = do
     ++ maybe "" ("; strict stage: " ++) errS
   return mRes
   where
-    runStages forceStrict = do
-      (mHeur, errHeur) <- if forceStrict then return (Nothing, Nothing)
+    runStages = do
+      (mHeur, errHeur) <- if mode == StrictOnly then return (Nothing, Nothing)
                           else tryStage False tstp debug
       case mHeur of
         Just sp -> return (Just sp, errHeur, Nothing)
-        Nothing -> do
-          when debug $ hPutStrLn stderr "translate: heuristic stage failed; trying strict mode"
-          (mStrict, errStrict) <- tryStage True tstp debug
-          return (mStrict, errHeur, errStrict)
+        Nothing
+          | mode == HeuristicOnly -> return (Nothing, errHeur, Nothing)
+          | otherwise -> do
+              when (debug && mode /= StrictOnly) $ hPutStrLn stderr "translate: heuristic stage failed; trying strict mode"
+              (mStrict, errStrict) <- tryStage True tstp debug
+              return (mStrict, errHeur, errStrict)
     -- a crash inside one stage (e.g. an unprovable unit hitting an error call
     -- deep in the matcher) counts as that stage producing nothing, so the
     -- other stage still gets its chance
@@ -265,7 +280,7 @@ emitGoalProof lit blk = do
            , any realBinding ρ = applySubst ρ lit
            | otherwise = lit
   dbgFlag <- gets stDebug
-  liftIO $ dbg dbgFlag $ "[goal-emit] " ++ ppLitI lit' ++ " block=" ++ show blk
+  liftIO $ dbg dbgFlag $ "[goal-emit] " ++ ppLitI lit'
   template <- gets stGoalTemplate
   existing <- gets (map fst . stGoals)
   -- Several independent code paths opportunistically match a nucleus's head
@@ -275,10 +290,35 @@ emitGoalProof lit blk = do
   -- only at the end-of-run invariant, means an inconsistent path is
   -- abandoned (via throwError/attempt) instead of silently accepted,
   -- letting the search try a different derivation for that goal.
+  axNuclei <- gets stAxNuclei
+  let blk' = orientToGoal axNuclei lit' blk
   if goalsConsistentWith template (existing ++ [lit'])
-    then modify $ \s -> s { stGoals = stGoals s ++ [(lit', blk)] }
+    then modify $ \s -> s { stGoals = stGoals s ++ [(lit', blk')] }
     else throwError ("emitGoalProof: " ++ ppLitI lit'
                       ++ " is inconsistent with an already-proven goal")
+
+-- The goal block ends with the goal itself (Goal j: G_jθ).  An equational
+-- conclusion that is the goal read the other way round (the prover's own
+-- orientation, e.g. E's b = a for the goal a = b) is re-oriented when the
+-- cited axiom derives that orientation from the same printed premises too
+-- (an X = Y head does); otherwise the block is left as it is.
+orientToGoal :: [(String, Clause)] -> Literal -> ProofBlock -> ProofBlock
+orientToGoal axs goal@(Eq l r) blk@(HaveHence ls)
+  | (Hence (Eq l' r') (ByAxiom nm) : older) <- reverse ls
+  , l' == r, r' == l
+  , Just (Clause bodyAbs (Just headAbs)) <- lookup nm axs
+  , let (recent, rest) = span (not . isHence) older
+        prems = reverse (map lineLit recent) ++ take 1 (map lineLit rest)
+  , resolutionCoherent bodyAbs headAbs prems goal
+  = HaveHence (init ls ++ [Hence goal (ByAxiom nm)])
+  | otherwise = blk
+  where
+    isHence (Hence _ _) = True
+    isHence _           = False
+    lineLit (Have x _)  = x
+    lineLit (And x _)   = x
+    lineLit (Hence x _) = x
+orientToGoal _ _ blk = blk
 
 -- The final conclusion a proof block establishes, when syntactically evident.
 blockConcl :: ProofBlock -> Maybe Literal
@@ -382,6 +422,14 @@ tryRelLemma units lit mPos = do
           promoteToLemma glit gblk
         Nothing ->
           throwError ("ensureNamed: no proof found for: " ++ show lit)
+
+-- A non-ground atom's variables as fresh constants (for a prover call that
+-- reads goal variables existentially), with the map that lifts them back.
+skolemizeLitFresh :: Literal -> (Literal, [(String, Term)])
+skolemizeLitFresh li =
+  let pairs = [ (v, "skv_" ++ v) | v <- nub (litVars li) ]
+  in ( applySubst [ (v, Const c) | (v, c) <- pairs ] li
+     , [ (c, Var v) | (v, c) <- pairs ] )
 
 -- match body literal li against electron ki; returns (σi, τ') on success
 tryMatch :: Literal -> Literal -> Subst -> Maybe (Subst, Subst)
@@ -783,9 +831,15 @@ findElecIO li τ pos units = case li of
         -- direct instantiation already tried above, so the call is skipped:
         -- in purely relational problems (LCL) it burned its whole budget
         -- for every body atom whose match failed.
+        -- A non-ground atom is a universal claim (θ instantiates only as far
+        -- as the proof determines): its variables become fresh constants for
+        -- the call, since Twee reads goal variables existentially and a chain
+        -- for an instance cannot certify the general electron; the chain is
+        -- lifted back afterwards.
+        let (liSk, undoSk) = skolemizeLitFresh li
         mRaw <- if null eqEntries then return Nothing
-                else liftIO (callTwee InternalBudget (tweableUnits units) li)
-        case mRaw of
+                else liftIO (callTwee InternalBudget (tweableUnits units) liSk)
+        case fmap (second (map (\(u, d, t) -> (u, d, applyConstSubstTerm undoSk t)))) mRaw of
           Just (_, chain) | not (null chain) -> do
             let goalFun = case li of { Rel n _ -> n; _ -> "" }
                 validInter (_, _, t) = case t of
@@ -836,14 +890,14 @@ findElecIO li τ pos units = case li of
             liftIO $ dbg dbgFlag $ "[reprove-elec] " ++ ppLitI li ++ " candidates="
               ++ show [ pos' | (_, pos', _, _) <- cands ]
             goRe cands
-          tryHornFallback
-            | not (null (litVars li)) = return Nothing
-            | otherwise = do
+          tryHornFallback = do
             hornAxioms <- gets stHornAxioms
             -- Exclude Eq-headed/Eq-bodied axioms: ifeq encoding collapses them,
             -- making Eq-bodied axioms unconditional and Eq-headed ones vanish.
             let filteredHornAxioms = filter isRelHornAxiom hornAxioms
-            mRes <- liftIO $ callTweeRelLemma InternalBudget (tweableUnits units) filteredHornAxioms li
+                -- variables as fresh constants, as for callTwee above
+                (liSk, _) = skolemizeLitFresh li
+            mRes <- liftIO $ callTweeRelLemma InternalBudget (tweableUnits units) filteredHornAxioms liSk
             case mRes of
               Just (_, chain) | not (null chain) -> do
                 let axiomNms = nub [ nm | (ue, _, _) <- chain
@@ -1065,9 +1119,7 @@ buildProofBlock [] mAxName τ headLit = case mAxName of
   Just ax -> return (HaveHence [Have headLit ax])
   Nothing -> throwError ("buildProofBlock: unjustified unit " ++ ppLitI (applySubst τ headLit))
 buildProofBlock ((k1, σ1, rw1) : rest) mAxName τ headLit = do
-  dbgFlag <- gets stDebug
-  liftIO $ dbg dbgFlag $ "[block] axiom=" ++ show mAxName ++ " head=" ++ ppLitI (applySubst τ headLit)
-    ++ " premises=" ++ show (map ppLitI (targetsOf ((k1, σ1, rw1) : rest)))
+  return ()
   blk1 <- makeBlock k1 σ1 rw1
   blk  <- foldM addAnd blk1 rest
   return $ case mAxName of
@@ -1165,20 +1217,19 @@ tryAxiomJustification goalLit simpl pos = do
                     ++ " premises=" ++ show (map ppLitI (targetsOf matched))
                   Just <$> buildProofBlock matched (Just axName) τ' goalLit
 
--- Compute per-nucleus θ|pos exactly as the paper prescribes (Algorithm 1):
--- Trace backwards from the conclusion to the premises:
---   C₀σ  = abstract head of the nucleus (premise) clause, from leSrcDecl
---   C₀σθ = ground conclusion read from the input proof, at position init(pos)
---   θ     = matchLit C₀σ (C₀σθ)
--- Variables not in C₀σ (body-only, premise-internal) remain free, as the paper states.
--- Only ground bindings are kept; θ = [] when the conclusion is not a known electron.
--- What computeNucleusTheta needs: the mode, the proof entries (heuristic θ
--- reads the conclusion entry at init(pos)) and the clause at every tree
--- position (strict θ traces the grounding top-down from the root).
+-- θ as the paper defines it (Section 4, Algorithm 1): the one substitution
+-- derived from the input proof.  For the clause occurrence at pos it is
+-- traced from the root down: the occurrence's literals are matched into its
+-- parent's conclusion (itself already under the parent's θ), so a variable
+-- whose image occurs in C₀σ is instantiated by σθ while a variable of the
+-- resolved-away literal remains free (it is τ's, found by find_elec).
+-- Bindings may be non-ground: θ instantiates variables as far as the proof
+-- determines them and extends to a grounding.  Both stages use this θ, and
+-- the --debug "θ = {...}" line shows exactly it.
+-- What computeNucleusTheta needs: the proof entries and the clause at every
+-- tree position.
 data ThetaCtx = ThetaCtx
-  { tcStrict  :: Bool
-  , tcEntries :: [LeafEntry]
-  , tcDeclAt  :: Map.Map String T.Declaration
+  { tcDeclAt  :: Map.Map String T.Declaration
   , tcSimpl   :: Map.Map String [(String, Dir)]  -- demodulation chain folded into the inference at a position
   , tcEqOf    :: String -> Maybe (Term, Term)    -- the chain's equations by name
   }
@@ -1188,39 +1239,22 @@ data ThetaCtx = ThetaCtx
 -- rewriting.  The recorded chain is replayed on the abstract head, as
 -- rw_chain does for electrons, and the paper's match is applied to that.
 computeNucleusTheta :: ThetaCtx -> LeafEntry -> Subst
-computeNucleusTheta ctx entry
-  | tcStrict ctx =
-      let abstractDecl = if leRole entry == OrigAxiom then leSrcDecl entry else leDecl entry
-          leafClause = convertDeclToClause abstractDecl
-          θ = filter (\(_, t) -> null (termVars t))
-                (nodeTheta (tcDeclAt ctx) leafClause unrewritten (lePos entry))
-          -- Paper (Thm. 6, θ'_k): variables occurring in the head but in no body
-          -- literal stay free, so the derived electron is as general as the
-          -- proof allows (e.g. c_plus(c_0,Y,X) = Y keeps Y)
-          headOnly = case convertDeclToClause (leSrcDecl entry) of
-            Just (Clause bs (Just h)) -> filter (`notElem` concatMap litVars bs) (litVars h)
-            _                          -> []
-      in filter (\(v, _) -> v `notElem` headOnly) θ
-  | otherwise =
-      -- Heuristic θ|pos: match the abstract head against the conclusion read
-      -- off the proof at init(pos); only ground bindings are kept, the other
-      -- nucleus variables stay free (the derived electron keeps the generality
-      -- of the prover's derived clause).
-      let conclusionPos = if null pos then "" else init pos
-          mConclusion   = find (\e -> lePos e == conclusionPos) (tcEntries ctx)
-      in case (convertDeclToClause (leSrcDecl entry), mConclusion) of
-           (Just (Clause _ (Just abstractHead)), Just conclusion) ->
-             case headLitOf (leDecl conclusion) of
-               Just clit | not (isReservedTLit clit) ->
-                 let conclusionLit = convertLit clit
-                     conclusion'   = unrewritten conclusionLit
-                 in filter (\(_, t) -> null (termVars t))
-                      (fromMaybe [] (matchLit abstractHead conclusionLit
-                                  <|> matchLit (flipLit abstractHead) conclusionLit
-                                  <|> matchLit abstractHead conclusion'
-                                  <|> matchLit (flipLit abstractHead) conclusion'))
-               _ -> []
-           _ -> []
+computeNucleusTheta ctx entry =
+  let abstractDecl = if leRole entry == OrigAxiom then leSrcDecl entry else leDecl entry
+      leafClause = convertDeclToClause abstractDecl
+      θraw = nodeTheta (tcDeclAt ctx) leafClause unrewritten (lePos entry)
+      -- a variable the proof merely renames to a parent variable it never
+      -- instantiates (and links to nothing else) is one θ leaves free
+      loneRename (_, Var w) = length [ () | (_, t) <- θraw, w `elem` termVars t ] == 1
+      loneRename _          = False
+      θ = filter (not . loneRename) θraw
+      -- Paper (Thm. 6, θ'_k): variables occurring in the head but in no body
+      -- literal stay free, so the derived electron is as general as the
+      -- proof allows (e.g. c_plus(c_0,Y,X) = Y keeps Y)
+      headOnly = case convertDeclToClause (leSrcDecl entry) of
+        Just (Clause bs (Just h)) -> filter (`notElem` concatMap litVars bs) (litVars h)
+        _                          -> []
+  in filter (\(v, _) -> v `notElem` headOnly) θ
   where
     pos = lePos entry
     chain = Map.findWithDefault [] pos (tcSimpl ctx)
@@ -1228,15 +1262,16 @@ computeNucleusTheta ctx entry
     -- inference (the literal Algorithm 1 assumes to be there)
     unrewritten c = if null chain then c else fromMaybe c (unrewriteLit (tcEqOf ctx) c chain)
 
--- Strict θ|p for the clause at position p, traced top-down from the root
--- (which is ground): the node's literals are matched into its parent's
--- literals AFTER the parent's own θ|init(p) has been applied, so groundings
--- propagate through non-ground inner clauses (e.g. Twee's intermediate lemma
--- divide(X,zero)=X).  Exactly one literal may fail to match: the one resolved
--- away or rewritten at the parent inference; the sibling explains it (a unit
--- equation used as a rewrite rule, a unit resolved against a body atom, ...).
--- Bindings may be non-ground for inner nodes (needed to propagate); the leaf
--- caller keeps ground ones.
+-- θ|p for the clause occurrence at position p, traced top-down from the root:
+-- the node's literals are matched into its parent's literals AFTER the
+-- parent's own θ|init(p) has been applied, so instantiations propagate
+-- through non-ground inner clauses.  Exactly one literal may fail to match:
+-- the one resolved away or rewritten at the parent inference.  The sibling
+-- only decides WHICH literal that is when candidates tie; it contributes no
+-- bindings of its own.  A resolved-away literal's variables stay free (the
+-- paper's rule: they do not appear in C₀σ, so they are τ's); a rewritten
+-- literal survives into the conclusion, so its variables are instantiated
+-- through the rewrite.  Bindings may be non-ground.
 nodeTheta :: Map.Map String T.Declaration -> Maybe Clause -> (Literal -> Literal) -> String -> Subst
 nodeTheta declAt leafClause unrewriteParentHead leafPos = go leafPos
   where
@@ -1266,11 +1301,27 @@ nodeTheta declAt leafClause unrewriteParentHead leafPos = go leafPos
       cc <- clauseOf p
       -- the leaf's parent shows the conclusion after any demodulation folded
       -- into the inference; its head is taken as it was before
-      let parentLits = [ (b, suffixVarsLit "_p" (applySubst θP (if b && p == leafPos then unrewriteParentHead l else l)))
-                       | (b, l) <- polLits pc ]
+      let parentWith sub = [ (b, suffixVarsLit "_p" (applySubst sub (if b && p == leafPos then unrewriteParentHead l else l)))
+                           | (b, l) <- polLits pc ]
           childLits  = polLits cc
           mSib       = Map.lookup sp declAt >>= convertDeclToClause
-      return (groundChild childLits parentLits mSib (go sp))
+          isProv     = last p == '0' && isJust mSib
+          -- the parent's θ in the child's view of the parent's variables
+          θPs        = [ (v ++ "_p", sufT t) | (v, t) <- θP ]
+          sufT (Var x)    = Var (x ++ "_p")
+          sufT (App f ts) = App f (map sufT ts)
+          sufT t          = t
+      -- The paper's match is into C₀σ, the parent's clause as the prover
+      -- printed it, and θ is applied afterwards (σθ): matching the printed
+      -- clause keeps the orientation the inference used (an equation head
+      -- read the other way round is not the same instance) and the parent's
+      -- variables are then instantiated by the parent's own θ.  Only when
+      -- nothing matches the printed clause is the instantiated one tried.
+      -- The premise at p0 provides the literal the parent inference consumes
+      -- (the paper's tree order); the premise at p1 keeps its head.
+      return $ case groundChild isProv childLits (parentWith []) mSib (go sp) of
+        Just s  -> [ (v, applySubstTerm θPs t) | (v, t) <- s ]
+        Nothing -> fromMaybe [] (groundChild isProv childLits (parentWith θP) mSib (go sp))
 
     -- Match child literals into parent literals (each parent literal used at
     -- most once), allowing skips; prefer the fewest skips.
@@ -1278,37 +1329,53 @@ nodeTheta declAt leafClause unrewriteParentHead leafPos = go leafPos
     matchInto (c : cs) ps s =
       [ (s'', sk, un)
       | (m, rest) <- picks ps
-      , Just s' <- [matchPol c m s]
+      , s' <- matchPol c m s
       , (s'', sk, un) <- matchInto cs rest s' ]
       ++ [ (s'', c : sk, un) | (s'', sk, un) <- matchInto cs ps s ]
 
     picks xs = [ (x, take i xs ++ drop (i + 1) xs) | (i, x) <- zip [0 ..] xs ]
 
+    -- both orientations of an equation are candidates (as the inference
+    -- oriented it first); the sibling decides between them when they tie
     matchPol (b1, l1) (b2, l2) s
-      | b1 /= b2  = Nothing
-      | otherwise = matchLitWith l1 l2 s <|> matchLitWith (flipLit l1) l2 s
+      | b1 /= b2  = []
+      | otherwise = nub (catMaybes [matchLitWith l1 l2 s, matchLitWith (flipLit l1) l2 s])
 
     notVar (Var _) = False
     notVar _       = True
 
-    groundChild childLits parentLits mSib θSib =
-      let cands = map snd $ sortBy (comparing fst)
-                    [ (length sk, c) | c@(_, sk, _) <- matchInto childLits parentLits [] ]
+    groundChild isProvider childLits parentLits mSib θSib =
+      let (heads, bodies) = partition fst childLits
+          -- a provider's head is what the parent consumes; only its body
+          -- survives into the conclusion (it must not be matched, even if the
+          -- conclusion happens to be an instance of it).  A consumer keeps
+          -- its head and loses one body literal, so candidates that match
+          -- the head come first.
+          (lits, forced) = if isProvider then (bodies, heads) else (childLits, [])
+          key sk = (any fst sk, length sk)
+          cands = map snd $ sortBy (comparing fst)
+                    [ (key sk', (s, sk', un)) | (s, sk, un) <- matchInto lits parentLits []
+                                              , let sk' = forced ++ sk ]
           childVars = concatMap (litVars . snd) childLits
           restrict = filter ((`elem` childVars) . fst)
       in case cands of
-        [] -> []
+        [] -> Nothing
         ((s0, sk0, _) : _)
-          | null sk0  -> restrict s0        -- every literal accounted for
-          | otherwise ->
-              -- several candidates may tie on skip count (e.g. a symmetric
-              -- head); prefer one whose skipped literal the sibling explains
-              let minSk = length sk0
-                  tied  = takeWhile (\(_, sk, _) -> length sk == minSk) cands
+          | null sk0  -> Just (restrict s0)        -- every literal accounted for
+          | otherwise -> Just $
+              -- several candidates may tie (e.g. a symmetric head); the
+              -- sibling decides which literal the parent consumed
+              let tied  = takeWhile (\(_, sk, _) -> key sk == key sk0) cands
+              -- (an explanation that needs the literal flipped, e.g. a
+              -- symmetric equation, is taken only if no candidate is
+              -- explained as the inference oriented it)
               in restrict $ fromMaybe s0 $ listToMaybe
-                   [ s' | c <- tied, Just s' <- [explain c] ]
+                   ([ s' | c <- tied, Just s' <- [explain False c] ]
+                    ++ [ s' | c <- tied, Just s' <- [explain True c] ])
       where
-       explain (s, skipped, unused) =
+       matchOrFlipped allowFlip l1 l2 s =
+         matchLitWith l1 l2 s <|> (if allowFlip then matchLitWith (flipLit l1) l2 s else Nothing)
+       explain allowFlip (s, skipped, unused) =
           -- unit child resolved against a body literal of the sibling nucleus:
           -- its instance is that body literal under the sibling's θ (the body
           -- literal that does not survive into the parent is the resolved one)
@@ -1320,9 +1387,9 @@ nodeTheta declAt leafClause unrewriteParentHead leafPos = go leafPos
                                               (matchInto sibBody parentLits []) of
                             ((_, sk, _) : _) -> sk
                             []               -> []
-                      in listToMaybe
-                           [ s' | (_, lS) <- skippedSib
-                                , Just s' <- [matchLitWith lC lS s <|> matchLitWith (flipLit lC) lS s] ]
+                      in s <$ listToMaybe
+                           [ () | (_, lS) <- skippedSib
+                                , Just _ <- [matchOrFlipped allowFlip lC lS s] ]
                 _ -> Nothing
               -- child literal rewritten at the parent by the sibling unit equation
               asRewritten = case (skipped, unused, mSib) of
@@ -1338,11 +1405,12 @@ nodeTheta declAt leafClause unrewriteParentHead leafPos = go leafPos
                       , let lS' = applySubst ρC (ctx (applySubstTerm σR rhs))
                       , Just s' <- [matchLitWith lS' lU (s ++ ρC)] ]
                 _ -> Nothing
-              -- child IS the unit equation used as a rewrite rule at the parent
+              -- child IS the unit equation used as a rewrite rule at the parent:
+              -- only the variables of its rewriting side reach the conclusion
               asRule = case (skipped, mSib) of
                 ([(True, Eq a b)], Just sibC)
                   | length childLits == 1 -> listToMaybe
-                      [ [ (v, applySubstTerm s'' t) | (v, t) <- σC ]
+                      [ [ (v, applySubstTerm s'' t) | (v, t) <- σC, v `elem` termVars rhs ]
                       | (bS, lS) <- map (\(x, y) -> (x, suffixVarsLit "_s" y)) (polLits sibC)
                       , (bP, lP) <- parentLits
                       , bS == bP
@@ -1353,12 +1421,12 @@ nodeTheta declAt leafClause unrewriteParentHead leafPos = go leafPos
                       , let lS' = applySubst ρS (ctx (applySubstTerm σC rhs))
                       , Just s'' <- [matchLitWith lS' lP []] ]
                 _ -> Nothing
-              -- body literal resolved against the sibling unit: ground bindings only
+              -- body literal resolved against the sibling unit: its variables stay free
               bodyVsSibUnit = case (skipped, mSib) of
                 ([(False, lS)], Just (Clause [] (Just sl))) ->
                   let sl' = suffixVarsLit "_s" sl
-                  in case matchLitWith lS sl' s <|> matchLitWith (flipLit lS) sl' s of
-                       Just s' -> Just (s ++ filter (\(v, t) -> null (termVars t) && v `notElem` map fst s) s')
+                  in case matchOrFlipped allowFlip lS sl' s of
+                       Just _  -> Just s
                        Nothing -> Nothing
                 _ -> Nothing
           in asRewritten <|> asRule <|> bodyVsSibUnit <|> resolvedAgainstSib
@@ -1427,7 +1495,6 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
           allowGroundUnnamed = isNothing mAxName
                             && maybe False (not . null . litVars) mHead
       in do
-        liftIO $ dbg debug $ "θ|" ++ pos ++ " = [" ++ intercalate ", " [v ++ "→" ++ ppTerm t | (v, t) <- θ_local] ++ "]"
         elecs   <- getElectrons pos
         let coherentStep τ' matched = case mHead of
               Just headLit -> resolutionCoherent bodyLitsAbs headLit (targetsOf matched) (applySubst τ' headLit)
@@ -1598,12 +1665,8 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                 -- inner nuclei (mAxName=Nothing) produce no "hence L0 by axiom",
                 -- so skip storing them to avoid corrupting later proofs
                 when (isJust mAxName) $ do
-                  liftIO $ dbg debug $ "[store] pos=" ++ pos ++ " headInst=" ++ ppLitI headInst ++ " hasProof=" ++ show (isJust proofToStore) ++ " isCircular=" ++ show isCircular
-                    ++ " block=" ++ show proofToStore
-                    ++ (if isNothing proofToStore && not isCircular
-                          then " staleTarget: targets=" ++ show (map ppLitI electronTargets)
-                               ++ " headBodyVars=" ++ show (Set.toList headBodyVars)
-                          else "")
+                  liftIO $ dbg debug $ "[store] pos=" ++ pos ++ " head=" ++ ppLitI headInst
+                    ++ (if isJust proofToStore then "" else " (no proof)")
                   addUnit (UnitEntry Nothing headInst proofToStore (Just pos))
                   -- EqChains can't nest inside HaveHence, so promote immediately
                   case (proofToStore, blk) of
@@ -1721,7 +1784,14 @@ processNuclei
   -> [Literal]
   -> Map.Map String [(String, Dir)]
   -> AlgM ()
-processNuclei debug warnOnFail thetaCtx nuclei posToName goalLits simpl = go nuclei
+processNuclei debug warnOnFail thetaCtx nuclei posToName goalLits simpl = do
+  -- θ is one substitution over the whole tree; show it once, each binding
+  -- tagged with the position of the clause occurrence its variable belongs
+  -- to (X0@01 and X0@101 are different variables)
+  when debug $ liftIO $ dbg True $ "θ = {"
+    ++ intercalate ", " [ v ++ "@" ++ lePos e ++ "→" ++ ppTerm t
+                        | e <- nuclei, (v, t) <- computeNucleusTheta thetaCtx e ] ++ "}"
+  go nuclei
   where
     nGoals = length goalLits
 
@@ -1751,15 +1821,12 @@ processNuclei debug warnOnFail thetaCtx nuclei posToName goalLits simpl = go nuc
         then return []
         else do
           prevCount <- gets (length . stUnits)
-          t0        <- liftIO getCPUTime
           res       <- attempt (processOneNucleus debug thetaCtx entry posToName goalLits simpl)
           done      <- case res of
             Right d  -> return d
             Left msg -> do
               liftIO $ dbg debug $ "[skip] pos=" ++ lePos entry ++ " — " ++ msg
               return False
-          t1        <- liftIO getCPUTime
-          liftIO $ dbg debug $ "[time] pos=" ++ lePos entry ++ " " ++ show ((t1 - t0) `div` 1000000000) ++ " ms"
           newCount  <- gets (length . stUnits)
           if done
             then return []
@@ -2119,7 +2186,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
   -- one re-proof attempt per tree position; repeated failures are free
   reproveCache <- newIORef (Map.empty :: Map.Map String (Maybe BuiltLemma))
   let unitMap    = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
-      thetaCtx   = ThetaCtx strict (piElectrons info ++ piNuclei info) (piDeclAt info)
+      thetaCtx   = ThetaCtx (piDeclAt info)
                      simplAll (\nm -> findEqByName nm (namedUnits ++ listedAxiomUnits ++ bgNamedUnits)
                                      <|> Map.lookup nm eqByTstpName)
       nameToPos  = Map.fromList [ (leName e, lePos e) | e <- piElectrons info ]
@@ -2130,7 +2197,24 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , Just tl <- [headLitOf decl]
         , not (isReservedTLit tl)
         , Eq l r <- [convertLit tl] ]
-      goalLits'  = map convertLit (piGoalLits info)
+      -- Goal j is G_jθ (Algorithm 1): the conjecture's goal literals
+      -- instantiated as far as the proof determines them, read off the
+      -- negated-conjecture nucleus closest to the root through its θ
+      goalLits'  = instantiateGoals (map convertLit (piGoalLits info))
+      instantiateGoals gs
+        | all (null . litVars) gs = gs
+        | otherwise = map inst gs
+        where
+          goalNuclei = sortBy (comparing (\e -> (length (lePos e), lePos e)))
+                         [ e | e <- piNuclei info, leRole e == NegConjecture ]
+          instBodies = [ applySubst (computeNucleusTheta thetaCtx e) l
+                       | e <- goalNuclei
+                       , Just (Clause bs _) <- [convertDeclToClause (leDecl e)]
+                       , l <- bs ]
+          inst g = case [ g' | b <- instBodies, Just ρ <- [matchLit g b]
+                             , let g' = applySubst ρ g, g' == b ] of
+                     (g' : _) -> g'
+                     []       -> g
 
       (rawAxiomList, posToName, namedUnits) =
         assignAxiomNames nameOverride goalLits' (piElectrons info) (piNuclei info) unitMap

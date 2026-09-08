@@ -201,7 +201,16 @@ matchBothTerm l (Var y) σ0 ρi =
   in case lookup y ρi of
     Nothing -> Just (σ0, (y, l') : ρi)
     -- Apply σ0 to the stored binding: it may contain σ0-variables bound later.
-    Just t  -> if applySubstTerm σ0 t == l' then Just (σ0, ρi) else Nothing
+    -- Two body-side terms met through one electron variable (X in m0(X,X)
+    -- against m0(s,t)) are unified on the body side: the electron's variable
+    -- forces s and t to be the same instance.
+    Just t  -> let t' = applySubstTerm σ0 t
+               in if t' == l' then Just (σ0, ρi)
+                  -- symmetric to the σ0-side case above: recurse through the
+                  -- SAME bidirectional matcher (not a separate unifier), so
+                  -- this has no more search power than the pre-existing
+                  -- body-variable-repeat case already has
+                  else matchBothTerm t' l' σ0 ρi
 matchBothTerm (Const c) (Const d) σ0 ρi =
   if c == d then Just (σ0, ρi) else Nothing
 matchBothTerm (App f ts) (App g us) σ0 ρi
@@ -470,9 +479,14 @@ rwChain eqOf start chain = go start [] (reverse chain)
 
 -- Undo a demodulation chain on a literal the prover shows after rewriting:
 -- the steps are applied in the opposite direction, outermost first.
+-- The equation's variables are renamed apart: undoing g(X) = c on a literal
+-- that has its own X would otherwise identify the two.
 unrewriteLit :: (String -> Maybe (Term, Term)) -> Literal -> [(String, Dir)] -> Maybe Literal
 unrewriteLit eqOf = foldM step
   where
     step cur (nm, dir) = do
-      (l, r) <- eqOf nm
+      (l0, r0) <- eqOf nm
+      let (l, r) = case suffixVarsLit "_u" (Eq l0 r0) of
+                     Eq l' r' -> (l', r')
+                     _        -> (l0, r0)
       rewriteLit cur (l, r) (flipDir dir)

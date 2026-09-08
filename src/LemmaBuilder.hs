@@ -30,6 +30,7 @@ import Helpers
   , extractSzsBlock, isEmptyBlock, isEqLit, litVars, renameRefsBlock
   , unitEquation
   )
+import Debug (dbgScoped)
 import ProofTree (headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
 import TptpConvert
 import TweeInterface (TweeBudget (..), callTwee, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
@@ -244,7 +245,7 @@ buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
           when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG parse error: " ++ err)
           return Nothing
         Right tstp -> do
-          msp <- translateFn nameOvr debug tstp
+          msp <- dbgScoped debug ("sub-DAG for " ++ cname) (translateFn nameOvr debug tstp)
           return (msp >>= liftSubProof cname lit undoMap)
 
 -- Turn the recursive translation of a candidate into an outer-proof lemma:
@@ -381,7 +382,8 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
               return Nothing
             Just eOut -> do
               when debug $ hPutStrLn stderr
-                ("buildCandidateLemma: E output length=" ++ show (length eOut))
+                ("buildCandidateLemma: E output length=" ++ show (length eOut)
+                 ++ "\n" ++ eOut)
               case eitherResult (feed (parseTSTP (Text.pack (extractSzsBlock eOut))) mempty) of
                 Left err -> do
                   when debug $ hPutStrLn stderr
@@ -404,7 +406,7 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                         , Just dn <- [ Map.lookup (resolveSourceName unitMap aname) tstp2name
                                        <|> Map.lookup aname tstp2name ] ]
                       nameOvr = Map.union ancOvr (syntheticOverrides bodyLits_sk)
-                  msp <- translateFn nameOvr debug tstp
+                  msp <- dbgScoped debug ("E-reproved for " ++ cname) (translateFn nameOvr debug tstp)
                   return (msp >>= liftSubProof cname lit undoMap)
   where
     toCNFAncAxiom :: String -> T.Declaration -> Maybe String

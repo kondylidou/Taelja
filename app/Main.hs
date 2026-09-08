@@ -11,7 +11,7 @@ import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
 
 import ProofTree (buildProofInfo)
-import Translate (translate)
+import Translate (translateStages, StageMode (..))
 import Emitter (emit)
 import qualified Data.Text as Text
 import Helpers (extractSzsBlock)
@@ -20,10 +20,16 @@ import Debug (dumpProofTree, dumpInferenceRules)
 main :: IO ()
 main = do
   args <- getArgs
-  (debug, inputFile) <- case args of
-    ["--debug", f] -> return (True,  f)
-    [f]            -> return (False, f)
-    _              -> hPutStrLn stderr "Usage: taelja [--debug] <proof-file>" >> exitFailure
+  let flags = filter ((== "--") . take 2) args
+      files = filter ((/= "--") . take 2) args
+      debug = "--debug" `elem` flags
+      mode  | "--strict-only" `elem` flags    = StrictOnly
+            | "--heuristic-only" `elem` flags = HeuristicOnly
+            | otherwise                       = BothStages
+      known = ["--debug", "--strict-only", "--heuristic-only"]
+  inputFile <- case files of
+    [f] | all (`elem` known) flags -> return f
+    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--strict-only | --heuristic-only] <proof-file>" >> exitFailure
   raw <- TIO.readFile inputFile
   let contents = Text.pack (extractSzsBlock (Text.unpack raw))
   case eitherResult (feed (parseTSTP contents) mempty) of
@@ -39,7 +45,7 @@ main = do
             putStrLn "-- Inference rules"
             dumpInferenceRules units
             putStrLn ""
-      msp <- translate debug tstp
+      msp <- translateStages mode debug tstp
       case msp of
         Nothing -> exitFailure
         Just sp -> putStr (emit sp)

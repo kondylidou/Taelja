@@ -11,6 +11,7 @@ axiom a : α
 axiom b : α
 axiom c : α
 axiom identity : α
+axiom true_ : α
 
 axiom inverse : α → α
 axiom multiply : α → α → α
@@ -45,24 +46,54 @@ theorem taelja_lemma10 : ∀ (x : α), (multiply identity x) = x := by
   exact h3
 
 -- Lemma 11
-theorem taelja_lemma11 : product identity (inverse b) c := by
+theorem taelja_lemma11 : c = (multiply identity (inverse b)) := by
   have h1 : product c b identity := by first | (exact ax6) | (apply ax6 <;> first | rfl | assumption)
   have h2 : product c b (multiply identity identity) := by have h_rw := taelja_lemma10 identity; rw [h_rw]; exact h1
   have h3 : product b (inverse b) identity := by first | (exact ax4 b) | (apply ax4 <;> first | rfl | assumption)
   have h4 : product c identity c := by first | (exact ax5 c) | (apply ax5 <;> first | rfl | assumption)
   have h5 : product (multiply identity identity) (inverse b) c := by first | (exact ax7 (inverse b) identity c c b (multiply identity identity) h2 h3 h4) | (first | (exact ax7 _ _ _ _ _ _ h2 h3 h4) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   have h6 : product identity (inverse b) c := by have h_rw := taelja_lemma10 identity; rw [←h_rw]; exact h5
+  have h7 : product identity (inverse b) (multiply identity (inverse b)) := by first | (exact ax1 identity (inverse b)) | (apply ax1 <;> first | rfl | assumption)
+  have h8 : c = (multiply identity (inverse b)) := by first | (exact ax3 (multiply identity (inverse b)) identity (inverse b) c h6 h7) | (first | (exact ax3 _ _ _ _ h6 h7) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  exact h8
+
+-- Lemma 12
+theorem taelja_lemma12 : (inverse a) = (multiply identity b) := by
+  have h1 : product (inverse a) a identity := by first | (exact ax9 a) | (apply ax9 <;> first | rfl | assumption)
+  have h2 : product a b identity := by first | (exact ax8) | (apply ax8 <;> first | rfl | assumption)
+  have h3 : product (inverse a) identity (inverse a) := by first | (exact ax5 (inverse a)) | (apply ax5 <;> first | rfl | assumption)
+  have h4 : product identity b (inverse a) := by first | (exact ax7 b identity (inverse a) (inverse a) a identity h1 h2 h3) | (first | (exact ax7 _ _ _ _ _ _ h1 h2 h3) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : product identity b (multiply identity b) := by first | (exact ax1 identity b) | (apply ax1 <;> first | rfl | assumption)
+  have h6 : (inverse a) = (multiply identity b) := by first | (exact ax3 (multiply identity b) identity b (inverse a) h4 h5) | (first | (exact ax3 _ _ _ _ h4 h5) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h6
+
+-- Lemma 13
+theorem taelja_lemma13 : ∀ (x : α), product identity x (inverse (inverse x)) := by
+  intro x
+  have h1 : ∀ (y : α), product (inverse y) y identity := fun y => by first | (exact ax9 y) | (apply ax9 <;> first | rfl | assumption)
+  have h2 : product (inverse x) x identity := by first | (exact ax9 x) | (apply ax9 <;> first | rfl | assumption)
+  have h3 : product (inverse (inverse x)) identity (inverse (inverse x)) := by first | (exact ax5 (inverse (inverse x))) | (apply ax5 <;> first | rfl | assumption)
+  have h4 : product identity x (inverse (inverse x)) := by first | (exact ax7 x identity (inverse (inverse x)) (inverse (inverse x)) (inverse x) identity (h1 (inverse x)) h2 h3) | (first | (exact ax7 _ _ _ _ _ _ (h1 _) h2 h3) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h1)))
+  exact h4
+
+-- Lemma 14
+theorem taelja_lemma14 : product identity a c := by
+  have h_rw := taelja_lemma11
+  rw [h_rw]
+  have h_rw := taelja_lemma10 (inverse b)
+  rw [h_rw]
+  have h_rw := taelja_lemma10 b
+  rw [← h_rw]
+  have h_rw := taelja_lemma12
+  rw [← h_rw]
+  apply taelja_lemma13 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
 
 -- Goal 1
 theorem taelja_goal1 : a = c := by
-  have h1 : product a b identity := by first | (exact ax8) | (apply ax8 <;> first | rfl | assumption)
-  have h2 : product b (inverse b) identity := by first | (exact ax4 b) | (apply ax4 <;> first | rfl | assumption)
-  have h3 : product a identity a := by first | (exact ax5 a) | (apply ax5 <;> first | rfl | assumption)
-  have h4 : product identity (inverse b) a := by first | (exact ax7 (inverse b) identity a a b identity h1 h2 h3) | (first | (exact ax7 _ _ _ _ _ _ h1 h2 h3) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h5 : product identity (inverse b) c := by first | (exact taelja_lemma11) | (apply taelja_lemma11 <;> first | rfl | assumption)
-  have h6 : a = c := by first | (exact ax3 c identity (inverse b) a h4 h5) | (first | (exact ax3 _ _ _ _ h4 h5) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h6
+  have h1 : product identity a a := by first | (exact ax2 a) | (apply ax2 <;> first | rfl | assumption)
+  have h2 : product identity a c := by first | (exact taelja_lemma14) | (apply taelja_lemma14 <;> first | rfl | assumption)
+  have h3 : a = c := by first | (exact ax3 c identity a a h1 h2) | (first | (exact ax3 _ _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  exact h3
 
 end EGrp0091
 

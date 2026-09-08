@@ -32,13 +32,13 @@ axiom ax6 : ∀ (x : α), r1 x → l0 x → r2 x
 
 -- Goal 1
 theorem taelja_goal1 : r2 c := by
-  have h1 : s0 d := by apply ax3
-  have h2 : q1 d d d := by first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : ∀ (x : α), q0 x d := fun x => by apply ax2
-  have h4 : s0 d := by apply ax3
-  have h5 : ∀ (x : α), r1 x := fun x => by have h3_i := h3 x; first | (exact ax5 _ _ h2 h3 h4) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | apply h3))
-  have h6 : l0 c := by apply ax1
-  have h7 : r2 c := by first | (exact ax6 _ h5 h6) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | apply h3 | apply h5))
+  have h1 : s0 d := by first | (exact ax3) | (apply ax3 <;> first | rfl | assumption)
+  have h2 : q1 d d d := by first | (exact ax4 d h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : q0 c d := by first | (exact ax2 c) | (apply ax2 <;> first | rfl | assumption)
+  have h4 : s0 d := by first | (exact ax3) | (apply ax3 <;> first | rfl | assumption)
+  have h5 : r1 c := by first | (exact ax5 c d h2 h3 h4) | (first | (exact ax5 _ _ h2 h3 h4) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h6 : l0 c := by first | (exact ax1) | (apply ax1 <;> first | rfl | assumption)
+  have h7 : r2 c := by first | (exact ax6 c h5 h6) | (first | (exact ax6 _ h5 h6) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h7
 
 end VampireResolutionExampleSharedVarname

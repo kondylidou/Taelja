@@ -11,11 +11,11 @@ Proof:
     by axiom 3
   hence q1(d,d,d)
     by axiom 4
-   and q0(X,d)
+   and q0(c,d)
     by axiom 2
    and s0(d)
     by axiom 3
-  hence r1(X)
+  hence r1(c)
     by axiom 5
    and l0(c)
     by axiom 1
