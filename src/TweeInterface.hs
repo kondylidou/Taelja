@@ -62,13 +62,12 @@ timeoutSecsFromEnv :: String -> Int -> IO Int
 timeoutSecsFromEnv var def = max 1 . fromMaybe def . (>>= readMaybe) <$> lookupEnv var
 
 -- Twee call on a problem text, with the configured --max-time plus a
--- wall-clock margin.  The input goes to a fresh temporary file so that
--- concurrent Taelja processes (e.g. a test suite running in parallel) never
--- overwrite each other's problems.
--- Goal-level calls (the chain for a goal) get the full budget; the
+-- wall-clock margin. The input goes to a fresh temp file so concurrent
+-- Taelja processes (e.g. a parallel test run) never overwrite each other's
+-- problems. Goal-level calls (the chain for a goal) get the full budget;
 -- speculative internal calls (electron recovery, unnamed units, lemma
--- candidates) get a small one so that a failing call cannot eat the
--- translation's time budget.  The internal budget never exceeds the goal one.
+-- candidates) get a small one, capped at the goal budget, so a failing call
+-- can't eat the whole translation's time.
 data TweeBudget = GoalBudget | InternalBudget deriving (Eq, Show)
 
 runTwee :: TweeBudget -> String -> String -> IO String
@@ -173,7 +172,7 @@ callTweeRelLemma budget units hornAxioms goalLit = do
         Rel n as -> Just (toCnfAxiom (mkId i ue) (relTerm n as) (Const "true"))
         _        -> Nothing
       unitAxioms = mapMaybe toAxiom indexed
-      needIfeq   = any (not . null . haBodies) hornAxioms
+      needIfeq   = not (all (null . haBodies) hornAxioms)
       ifeqAxioms = [ifeqSelectorAxiom | needIfeq]
       hornCnfs   = [ toIfeqCnfHorn (haCnfId ha) (haHead ha) (haBodies ha)
                    | ha <- hornAxioms ]
@@ -257,16 +256,15 @@ parseTweeArgList s = go [] (dropWhile (== ' ') s)
           ')':more -> Just (acc ++ [t], more)
           _        -> Nothing
 
--- Parse Twee's --formal-proof output and build the rewrite chain.
---
--- Two strategies, tried in order:
---  1. Direct: parse intermediate terms from Twee's output and use them verbatim.
---     Works for ground proofs where Twee's output terms match exactly.
---  2. Guided replay: use the axiom IDs and directions from the proof but
---     re-derive intermediate terms via rewriteTermAll on the stored equations.
---     Needed when Twee renames variables (e.g. X0 → X in non-ground proofs).
---     Only tries the one direction Twee specified, avoiding direction backtracking
---     while remaining robust to position ambiguity in short chains.
+-- Parse Twee's --formal-proof output and build the rewrite chain. Two
+-- strategies, tried in order:
+--  1. Direct: use Twee's own intermediate terms verbatim. Works when Twee's
+--     output terms match exactly (ground proofs).
+--  2. Guided replay: keep Twee's axiom IDs and directions but re-derive each
+--     intermediate term via rewriteTermAll on the stored equations. Needed
+--     when Twee renames variables (e.g. X0 -> X in non-ground proofs); only
+--     tries the direction Twee specified, so it stays robust to position
+--     ambiguity in short chains without backtracking over direction too.
 parseTweeChain
   :: Map.Map String UnitEntry
   -> String        -- Twee's stdout

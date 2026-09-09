@@ -253,14 +253,12 @@ ppSimplChain :: [(String, Dir)] -> String
 ppSimplChain [] = "(none)"
 ppSimplChain ss = intercalate ", " [n ++ "(" ++ ppDir d ++ ")" | (n, d) <- ss]
 
--- Nesting depth of recursive sub-translations (buildCandidateLemma calls E
--- again and recurses into translateFn for the sub-proof).  Debug lines for a
--- sub-run reuse E's own "c_0_N"-style clause names and even the same
--- position bit-strings as the outer run or a sibling sub-run, so a debug
--- trace read as one flat stream cannot tell which clause table a name
--- belongs to.  Every debug line is tagged with the current depth so a
--- postprocessor can tell which run produced it; debug-only, no effect on
--- translation.
+-- Nesting depth of recursive sub-translations (buildCandidateLemma re-runs E
+-- and recurses into translateFn). A sub-run reuses E's own "c_0_N" clause
+-- names and even the same position bit-strings as the outer run or a
+-- sibling, so a flat debug stream can't tell which clause table a name
+-- belongs to; every line is tagged with its depth instead. Debug-only, no
+-- effect on translation.
 {-# NOINLINE debugDepthRef #-}
 debugDepthRef :: IORef Int
 debugDepthRef = unsafePerformIO (newIORef 0)

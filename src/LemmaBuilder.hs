@@ -187,13 +187,12 @@ syntheticCollision unitMap cname bodyLits_sk =
       ids = Set.union inProblem (Set.map sanitizeId inProblem)
   in any (`Set.member` ids) (syntheticNames bodyLits_sk)
 
--- Strict mode (paper, Section 4): the translation is applied recursively to a
--- refutation of {A_1..A_n, not B} from the axioms.  The candidate's own
--- ancestry in the input proof already is such a refutation once the
--- Skolemized negation is resolved against it, so no prover is needed: all
--- ancestor units (verbatim), the candidate, the Skolemized body atoms as
--- hypotheses, the Skolemized negated head, and synthetic resolution steps
--- deriving bottom are translated as one proof.
+-- Strict mode (paper, Section 4): translate a refutation of {A_1..A_n, not B}
+-- from the axioms. The candidate's own ancestry already is such a refutation
+-- once its Skolemized negation is resolved against it, so no prover is
+-- needed — assemble one proof from the ancestor units (verbatim), the
+-- candidate, the Skolemized body atoms as hypotheses, the Skolemized negated
+-- head, and synthetic resolution steps deriving bottom.
 buildFromSubDag
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Map.Map String T.Unit

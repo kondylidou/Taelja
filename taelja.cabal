@@ -17,6 +17,7 @@ library
     TptpConvert
     TweeInterface
     LemmaBuilder
+    Theta
     Translate
     Debug
   build-depends:

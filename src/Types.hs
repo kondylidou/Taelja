@@ -124,6 +124,6 @@ data ProofInfo = ProofInfo
   , piGoalLits  :: [T.Literal]  -- goal literals from the negated conjecture
   , piDeclAt    :: Map.Map String T.Declaration
       -- clause at every position on an entry's ancestor chain and their
-      -- siblings, read from the real (non-deduplicated) tree; used by the
-      -- strict-mode grounding substitution θ (traced top-down from the root)
+      -- siblings, read from the real (non-deduplicated) tree; used to trace
+      -- θ top-down from the root (Translate.nodeThetaMap)
   } deriving (Show)

@@ -214,24 +214,18 @@ posUnitOf (T.Formula _ (T.CNF (T.Clause lits))) =
     _ -> Nothing
 posUnitOf _ = Nothing
 
--- Gather leaves with two-level deduplication to prevent exponential traversal
--- of DAG-shared nodes in the memoised proof tree:
---
---  seenElec  – names of positive-unit (electron) leaves already recorded;
---              each such leaf is recorded at most once (first/shallowest DFS
---              position).
---
---  seenInner – Map from inner-node name → non-unit leaves collected during
---              that node's first traversal, stored as (relative_pos, name, decl).
---              On a second encounter of the same PTNode at a new absolute
---              position, those non-unit leaves are re-emitted at new absolute
---              positions (new_pos ++ relative_pos) rather than re-traversing
---              the whole subtree.  Positive-unit leaves are NOT re-emitted
---              (they are already in seenElec and deduplicated globally).
---
--- This gives O(N) traversal while allowing non-unit leaves (rule clauses) to
--- appear at every logically distinct position: each occurrence is a separate
--- rule application that may use different available electrons.
+-- Gather leaves with two-level deduplication, to keep traversal of the
+-- (DAG-shared, memoised) proof tree O(N):
+--  seenElec  – names of positive-unit (electron) leaves already recorded, so
+--              each is kept once, at its first/shallowest DFS position.
+--  seenInner – inner-node name -> its non-unit leaves from their first
+--              traversal, as (relative_pos, name, decl). A second encounter
+--              of the same PTNode re-emits them at new_pos ++ relative_pos
+--              instead of re-traversing the subtree. Electron leaves are
+--              never re-emitted (seenElec already dedups them globally);
+--              non-unit leaves (rule clauses) DO reappear at every distinct
+--              position, since each occurrence is a separate rule
+--              application that may see different available electrons.
 gatherLeaves :: String -> ProofTree -> [(String, String, T.Declaration)]
 gatherLeaves pos0 tree0 =
     let (_, _, res) = go pos0 tree0 Set.empty Map.empty in res

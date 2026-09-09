@@ -138,12 +138,12 @@ matchLitWith _ _ _ = Nothing
 -- literal with that subterm replaced.
 litSubtermCtxs :: Literal -> [(Term, Term -> Literal)]
 litSubtermCtxs lit = case lit of
-  Eq  l r   -> [ (u, \x -> Eq  (c x) r) | (u, c) <- termCtxs l ]
-            ++ [ (u, \x -> Eq  l (c x)) | (u, c) <- termCtxs r ]
-  NEq l r   -> [ (u, \x -> NEq (c x) r) | (u, c) <- termCtxs l ]
-            ++ [ (u, \x -> NEq l (c x)) | (u, c) <- termCtxs r ]
-  Rel  n ts -> [ (u, \x -> Rel  n (c x)) | (u, c) <- argCtxs ts ]
-  NRel n ts -> [ (u, \x -> NRel n (c x)) | (u, c) <- argCtxs ts ]
+  Eq  l r   -> [ (u, (`Eq` r) . c) | (u, c) <- termCtxs l ]
+            ++ [ (u, Eq l . c)     | (u, c) <- termCtxs r ]
+  NEq l r   -> [ (u, (`NEq` r) . c) | (u, c) <- termCtxs l ]
+            ++ [ (u, NEq l . c)     | (u, c) <- termCtxs r ]
+  Rel  n ts -> [ (u, Rel  n . c) | (u, c) <- argCtxs ts ]
+  NRel n ts -> [ (u, NRel n . c) | (u, c) <- argCtxs ts ]
   where
     argCtxs ts = [ (u, \x -> take i ts ++ [c x] ++ drop (i + 1) ts)
                  | (i, t) <- zip [0 ..] ts, (u, c) <- termCtxs t ]
