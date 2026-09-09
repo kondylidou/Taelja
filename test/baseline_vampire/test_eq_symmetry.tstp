@@ -4,10 +4,10 @@
 % SZS output start Proof for test_eq_symmetry
 fof(f1,axiom,(
   b = a),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_eq_symmetry.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_eq_symmetry.p',unknown)).
 fof(f2,conjecture,(
   a = b),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_eq_symmetry.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_eq_symmetry.p',unknown)).
 fof(f3,negated_conjecture,(
   ~a = b),
   inference(negated_conjecture,[status(cth)],[f2])).

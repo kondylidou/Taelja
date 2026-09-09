@@ -4,13 +4,13 @@
 % SZS output start Proof for krympa_example_hay
 fof(f1,axiom,(
   ! [X0] : h(a,X0) = c),
-  file('/Users/kondylidou/Developer/Taelja/test/input/krympa_example_hay.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/krympa_example_hay.p',unknown)).
 fof(f2,axiom,(
   ! [X0] : h(X0,b) = X0),
-  file('/Users/kondylidou/Developer/Taelja/test/input/krympa_example_hay.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/krympa_example_hay.p',unknown)).
 fof(f3,conjecture,(
   a = c),
-  file('/Users/kondylidou/Developer/Taelja/test/input/krympa_example_hay.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/krympa_example_hay.p',unknown)).
 fof(f4,negated_conjecture,(
   ~a = c),
   inference(negated_conjecture,[status(cth)],[f3])).

@@ -1,18 +1,18 @@
 % SZS status Unsatisfiable
 
 % SZS output start CNFRefutation
-cnf(c1, negated_conjecture, not(big_hat(x, y))!=big_V(not(x), not(y)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', prove_wajsberg_theorem)).
-cnf(c2, axiom, implies(truth, X)=X, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', wajsberg_1)).
+cnf(c1, negated_conjecture, not(big_hat(x, y))!=big_V(not(x), not(y)), file('/home/user/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', prove_wajsberg_theorem)).
+cnf(c2, axiom, implies(truth, X)=X, file('/home/user/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', wajsberg_1)).
 cnf(c3, plain, implies(truth, implies(truth, not(not(truth))))=not(not(truth)), inference(rewriting, [status(thm)], [c2, c2])).
-cnf(c4, axiom, big_V(X2, Y)=implies(implies(X2, Y), Y), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', big_V_definition)).
+cnf(c4, axiom, big_V(X2, Y)=implies(implies(X2, Y), Y), file('/home/user/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', big_V_definition)).
 cnf(c5, plain, implies(truth, implies(implies(truth, X3), implies(X2, X3)))=implies(X3, implies(X2, X3)), inference(rewriting, [status(thm)], [c2, c2])).
-cnf(c6, axiom, implies(implies(X2, Y2), Y2)=implies(implies(Y2, X2), X2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', wajsberg_3)).
+cnf(c6, axiom, implies(implies(X2, Y2), Y2)=implies(implies(Y2, X2), X2), file('/home/user/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', wajsberg_3)).
 cnf(c7, plain, implies(implies(X3, X2), X2)=big_V(X2, X3), inference(rewriting, [status(thm)], [c4, c6])).
 cnf(c8, plain, big_V(X2, X3)=big_V(X3, X2), inference(rewriting, [status(thm)], [c7, c4])).
 cnf(c9, plain, implies(truth, big_V(truth, X2))=big_V(X2, truth), inference(rewriting, [status(thm)], [c8, c2])).
 cnf(c10, plain, implies(X3, implies(implies(X3, X2), implies(truth, X2)))=implies(X3, big_V(X3, X2)), inference(rewriting, [status(thm)], [c4, c2])).
 cnf(c11, plain, implies(implies(truth, X3), implies(implies(X3, X2), implies(truth, X2)))=implies(X3, big_V(X3, X2)), inference(rewriting, [status(thm)], [c10, c2])).
-cnf(c12, axiom, implies(implies(X2, Y2), implies(implies(Y2, Z), implies(X2, Z)))=truth, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', wajsberg_2)).
+cnf(c12, axiom, implies(implies(X2, Y2), implies(implies(Y2, Z), implies(X2, Z)))=truth, file('/home/user/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', wajsberg_2)).
 cnf(c13, plain, implies(X3, big_V(X3, X2))=truth, inference(rewriting, [status(thm)], [c11, c12])).
 cnf(c14, plain, big_V(X2, truth)=truth, inference(rewriting, [status(thm)], [c9, c13])).
 cnf(c15, plain, implies(X2, truth)=truth, inference(rewriting, [status(thm)], [c14, c13])).
@@ -21,7 +21,7 @@ cnf(c17, plain, implies(X3, implies(X2, X3))=truth, inference(rewriting, [status
 cnf(c18, plain, big_V(X3, implies(X2, X3))=implies(truth, implies(X2, X3)), inference(rewriting, [status(thm)], [c4, c17])).
 cnf(c19, plain, big_V(X3, implies(X2, X3))=implies(X2, X3), inference(rewriting, [status(thm)], [c18, c2])).
 cnf(c20, plain, implies(implies(implies(not(X2), not(truth)), X2), X2)=big_V(X2, implies(not(X2), not(truth))), inference(rewriting, [status(thm)], [c8, c4])).
-cnf(c21, axiom, implies(implies(not(X2), not(Y2)), implies(Y2, X2))=truth, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', wajsberg_4)).
+cnf(c21, axiom, implies(implies(not(X2), not(Y2)), implies(Y2, X2))=truth, file('/home/user/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', wajsberg_4)).
 cnf(c22, plain, implies(implies(not(X2), not(truth)), X2)=truth, inference(rewriting, [status(thm)], [c2, c21])).
 cnf(c23, plain, big_V(X2, implies(not(X2), not(truth)))=implies(truth, X2), inference(rewriting, [status(thm)], [c20, c22])).
 cnf(c24, plain, big_V(X2, implies(not(X2), not(truth)))=X2, inference(rewriting, [status(thm)], [c23, c2])).
@@ -66,7 +66,7 @@ cnf(c62, plain, implies(not(X2), not(truth))=X2, inference(rewriting, [status(th
 cnf(c63, plain, implies(implies(not(not(truth)), not(not(X2))), implies(not(X2), not(truth)))=implies(not(not(X2)), X2), inference(rewriting, [status(thm)], [c45, c62])).
 cnf(c64, plain, implies(not(not(X2)), X2)=truth, inference(rewriting, [status(thm)], [c63, c21])).
 cnf(c65, plain, implies(implies(not(not(big_hat(X3, X2))), big_hat(X3, X2)), implies(big_V(not(X3), not(X2)), not(big_hat(X3, X2))))=implies(big_V(not(X3), not(X2)), not(big_hat(X3, X2))), inference(rewriting, [status(thm)], [c2, c64])).
-cnf(c66, axiom, big_hat(X2, Y2)=not(big_V(not(X2), not(Y2))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', big_hat_definition)).
+cnf(c66, axiom, big_hat(X2, Y2)=not(big_V(not(X2), not(Y2))), file('/home/user/Desktop/TPTP-v9.2.1/Problems/LCL/LCL146-1.p', big_hat_definition)).
 cnf(c67, plain, implies(implies(not(X3), big_hat(X2, X4)), implies(big_V(not(X2), not(X4)), X3))=truth, inference(rewriting, [status(thm)], [c66, c21])).
 cnf(c68, plain, implies(big_V(not(X3), not(X2)), not(big_hat(X3, X2)))=truth, inference(rewriting, [status(thm)], [c65, c67])).
 cnf(c69, plain, implies(implies(big_V(not(X3), not(X2)), not(big_hat(X3, X2))), not(big_hat(X3, X2)))=not(big_hat(X3, X2)), inference(rewriting, [status(thm)], [c2, c68])).

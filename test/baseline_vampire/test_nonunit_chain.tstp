@@ -4,16 +4,16 @@
 % SZS output start Proof for test_nonunit_chain
 fof(f1,axiom,(
   p(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_nonunit_chain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_nonunit_chain.p',unknown)).
 fof(f2,axiom,(
   p(a) => q(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_nonunit_chain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_nonunit_chain.p',unknown)).
 fof(f3,axiom,(
   (p(a) & q(a)) => r(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_nonunit_chain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_nonunit_chain.p',unknown)).
 fof(f4,conjecture,(
   r(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_nonunit_chain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_nonunit_chain.p',unknown)).
 fof(f5,negated_conjecture,(
   ~r(a)),
   inference(negated_conjecture,[status(cth)],[f4])).

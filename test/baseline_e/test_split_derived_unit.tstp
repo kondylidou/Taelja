@@ -28,10 +28,10 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(f4, conjecture, r(a), file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p', f4)).
-fof(f3, axiom, ![X1]:((q(X1,b)=>r(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p', f3)).
-fof(f2, axiom, ![X1, X2]:((p(X1)=>q(X1,X2))), file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p', f2)).
-fof(f1, axiom, p(a), file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p', f1)).
+fof(f4, conjecture, r(a), file('/home/user/Developer/Taelja/test/input/test_split_derived_unit.p', f4)).
+fof(f3, axiom, ![X1]:((q(X1,b)=>r(X1))), file('/home/user/Developer/Taelja/test/input/test_split_derived_unit.p', f3)).
+fof(f2, axiom, ![X1, X2]:((p(X1)=>q(X1,X2))), file('/home/user/Developer/Taelja/test/input/test_split_derived_unit.p', f2)).
+fof(f1, axiom, p(a), file('/home/user/Developer/Taelja/test/input/test_split_derived_unit.p', f1)).
 fof(c_0_4, negated_conjecture, ~r(a), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[f4])])).
 fof(c_0_5, plain, ![X5]:((~q(X5,b)|r(X5))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[f3])])])).
 fof(c_0_6, plain, ![X3, X4]:((~p(X3)|q(X3,X4))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[f2])])])).

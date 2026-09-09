@@ -22,10 +22,10 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(f2, axiom, ![X1, X2]:((q(X1,X2)=>f(X1)=g(X2))), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_elim_var_rw.p', f2)).
-fof(f3, axiom, ![X1]:(g(X1)=c), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_elim_var_rw.p', f3)).
-fof(f4, conjecture, f(a)=c, file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_elim_var_rw.p', f4)).
-fof(f1, axiom, ![X1]:(q(a,X1)), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_elim_var_rw.p', f1)).
+fof(f2, axiom, ![X1, X2]:((q(X1,X2)=>f(X1)=g(X2))), file('/home/user/Developer/Taelja/test/input/horn_example_elim_var_rw.p', f2)).
+fof(f3, axiom, ![X1]:(g(X1)=c), file('/home/user/Developer/Taelja/test/input/horn_example_elim_var_rw.p', f3)).
+fof(f4, conjecture, f(a)=c, file('/home/user/Developer/Taelja/test/input/horn_example_elim_var_rw.p', f4)).
+fof(f1, axiom, ![X1]:(q(a,X1)), file('/home/user/Developer/Taelja/test/input/horn_example_elim_var_rw.p', f1)).
 fof(c_0_4, plain, ![X4, X5]:((~q(X4,X5)|f(X4)=g(X5))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[f2])])])).
 fof(c_0_5, plain, ![X6]:(g(X6)=c), inference(variable_rename,[status(thm)],[f3])).
 fof(c_0_6, negated_conjecture, f(a)!=c, inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[f4])])).

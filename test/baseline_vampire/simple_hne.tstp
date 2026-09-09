@@ -4,13 +4,13 @@
 % SZS output start Proof for simple_hne
 fof(f1,axiom,(
   r(a,b)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/simple_hne.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/simple_hne.p',unknown)).
 fof(f2,axiom,(
   ( ! [X0,X1] : (~r(X1,X0) | s(X0,X1)) )),
-  file('/Users/kondylidou/Developer/Taelja/test/input/simple_hne.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/simple_hne.p',unknown)).
 fof(f3,negated_conjecture,(
   ~s(b,a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/simple_hne.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/simple_hne.p',unknown)).
 fof(f4,plain,(
   s(b,a)),
   inference(resolution,[],[f2,f1])).

@@ -29,11 +29,11 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(goal, conjecture, g(a)=zero, file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_head_inlined.p', goal)).
-fof(ax4, axiom, ![X1]:(f(X1)=g(X1)), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_head_inlined.p', ax4)).
-fof(ax1, axiom, ![X1]:(((p(X1)&q(X1))=>X1=zero)), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_head_inlined.p', ax1)).
-fof(ax2, axiom, ![X1]:(p(f(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_head_inlined.p', ax2)).
-fof(ax3, axiom, ![X1]:(q(f(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_head_inlined.p', ax3)).
+fof(goal, conjecture, g(a)=zero, file('/home/user/Developer/Taelja/test/input/horn_example_eq_head_inlined.p', goal)).
+fof(ax4, axiom, ![X1]:(f(X1)=g(X1)), file('/home/user/Developer/Taelja/test/input/horn_example_eq_head_inlined.p', ax4)).
+fof(ax1, axiom, ![X1]:(((p(X1)&q(X1))=>X1=zero)), file('/home/user/Developer/Taelja/test/input/horn_example_eq_head_inlined.p', ax1)).
+fof(ax2, axiom, ![X1]:(p(f(X1))), file('/home/user/Developer/Taelja/test/input/horn_example_eq_head_inlined.p', ax2)).
+fof(ax3, axiom, ![X1]:(q(f(X1))), file('/home/user/Developer/Taelja/test/input/horn_example_eq_head_inlined.p', ax3)).
 fof(c_0_5, negated_conjecture, g(a)!=zero, inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
 fof(c_0_6, negated_conjecture, g(a)!=zero, inference(fof_nnf,[status(thm)],[c_0_5])).
 fof(c_0_7, plain, ![X5]:(f(X5)=g(X5)), inference(variable_rename,[status(thm)],[ax4])).

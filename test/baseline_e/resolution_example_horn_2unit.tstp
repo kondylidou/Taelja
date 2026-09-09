@@ -26,10 +26,10 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(goal, conjecture, r(a,b), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_2unit.p', goal)).
-fof(ax3, axiom, ![X1, X2]:(((p(X1)&q(X2))=>r(X1,X2))), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_2unit.p', ax3)).
-fof(ax2, axiom, q(b), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_2unit.p', ax2)).
-fof(ax1, axiom, p(a), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_2unit.p', ax1)).
+fof(goal, conjecture, r(a,b), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_2unit.p', goal)).
+fof(ax3, axiom, ![X1, X2]:(((p(X1)&q(X2))=>r(X1,X2))), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_2unit.p', ax3)).
+fof(ax2, axiom, q(b), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_2unit.p', ax2)).
+fof(ax1, axiom, p(a), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_2unit.p', ax1)).
 fof(c_0_4, negated_conjecture, ~r(a,b), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
 fof(c_0_5, negated_conjecture, ~r(a,b), inference(fof_nnf,[status(thm)],[c_0_4])).
 fof(c_0_6, plain, ![X3, X4]:((~p(X3)|~q(X4)|r(X3,X4))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax3])])])).

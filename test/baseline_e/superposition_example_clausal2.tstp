@@ -33,10 +33,10 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(ax2, axiom, ![X1, X2]:((g(X1)=g(X2)=>X1=X2)), file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_clausal2.p', ax2)).
-fof(ax3, axiom, g(f(a))=g(f(b)), file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_clausal2.p', ax3)).
-fof(ax1, axiom, ![X1, X2]:((f(X1)=f(X2)=>X1=X2)), file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_clausal2.p', ax1)).
-fof(goal, conjecture, a=b, file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_clausal2.p', goal)).
+fof(ax2, axiom, ![X1, X2]:((g(X1)=g(X2)=>X1=X2)), file('/home/user/Developer/Taelja/test/input/superposition_example_clausal2.p', ax2)).
+fof(ax3, axiom, g(f(a))=g(f(b)), file('/home/user/Developer/Taelja/test/input/superposition_example_clausal2.p', ax3)).
+fof(ax1, axiom, ![X1, X2]:((f(X1)=f(X2)=>X1=X2)), file('/home/user/Developer/Taelja/test/input/superposition_example_clausal2.p', ax1)).
+fof(goal, conjecture, a=b, file('/home/user/Developer/Taelja/test/input/superposition_example_clausal2.p', goal)).
 fof(c_0_4, plain, ![X5, X6]:((g(X5)!=g(X6)|X5=X6)), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax2])])])).
 cnf(c_0_5, plain, (X1=X2|g(X1)!=g(X2)), inference(split_conjunct,[status(thm)],[c_0_4])).
 cnf(c_0_6, plain, (g(f(a))=g(f(b))), inference(split_conjunct,[status(thm)],[ax3])).

@@ -42,12 +42,12 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(goal, conjecture, r0(a), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_dag.p', goal)).
-fof(ax5, axiom, ![X1]:(((r1(X1)&r2(X1))=>r0(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_dag.p', ax5)).
-fof(ax4, axiom, ![X1]:((q(X1,c)=>r2(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_dag.p', ax4)).
-fof(ax3, axiom, ![X1]:((q(X1,b)=>r1(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_dag.p', ax3)).
-fof(ax2, axiom, ![X1, X2]:((p(X1)=>q(X1,X2))), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_dag.p', ax2)).
-fof(ax1, axiom, p(a), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_dag.p', ax1)).
+fof(goal, conjecture, r0(a), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_dag.p', goal)).
+fof(ax5, axiom, ![X1]:(((r1(X1)&r2(X1))=>r0(X1))), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_dag.p', ax5)).
+fof(ax4, axiom, ![X1]:((q(X1,c)=>r2(X1))), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_dag.p', ax4)).
+fof(ax3, axiom, ![X1]:((q(X1,b)=>r1(X1))), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_dag.p', ax3)).
+fof(ax2, axiom, ![X1, X2]:((p(X1)=>q(X1,X2))), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_dag.p', ax2)).
+fof(ax1, axiom, p(a), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_dag.p', ax1)).
 fof(c_0_6, negated_conjecture, ~r0(a), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
 fof(c_0_7, negated_conjecture, ~r0(a), inference(fof_nnf,[status(thm)],[c_0_6])).
 fof(c_0_8, plain, ![X7]:((~r1(X7)|~r2(X7)|r0(X7))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax5])])])).

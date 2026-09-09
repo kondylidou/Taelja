@@ -130,14 +130,14 @@
 # Proof found!
 # SZS status Unsatisfiable
 # SZS output start CNFRefutation
-cnf(quotient_less_equal1, axiom, (divide(X1,X2)=zero|~less_equal(X1,X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_less_equal1)).
+cnf(quotient_less_equal1, axiom, (divide(X1,X2)=zero|~less_equal(X1,X2)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_less_equal1)).
 cnf(a_divide_b_LE_d, hypothesis, (less_equal(divide(a,b),d)), file('Problems/HEN/HEN006-4.p', a_divide_b_LE_d)).
-cnf(less_equal_and_equal, axiom, (X1=X2|~less_equal(X1,X2)|~less_equal(X2,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', less_equal_and_equal)).
-cnf(quotient_property, axiom, (less_equal(divide(divide(X1,X2),divide(X3,X2)),divide(divide(X1,X3),X2))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_property)).
+cnf(less_equal_and_equal, axiom, (X1=X2|~less_equal(X1,X2)|~less_equal(X2,X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', less_equal_and_equal)).
+cnf(quotient_property, axiom, (less_equal(divide(divide(X1,X2),divide(X3,X2)),divide(divide(X1,X3),X2))), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_property)).
 cnf(transitivity_of_less_equal, axiom, (less_equal(X1,X3)|~less_equal(X1,X2)|~less_equal(X2,X3)), file('Problems/HEN/HEN006-4.p', transitivity_of_less_equal)).
-cnf(quotient_less_equal2, axiom, (less_equal(X1,X2)|divide(X1,X2)!=zero), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_less_equal2)).
-cnf(zero_is_smallest, axiom, (less_equal(zero,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', zero_is_smallest)).
-cnf(quotient_smaller_than_numerator, axiom, (less_equal(divide(X1,X2),X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_smaller_than_numerator)).
+cnf(quotient_less_equal2, axiom, (less_equal(X1,X2)|divide(X1,X2)!=zero), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_less_equal2)).
+cnf(zero_is_smallest, axiom, (less_equal(zero,X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', zero_is_smallest)).
+cnf(quotient_smaller_than_numerator, axiom, (less_equal(divide(X1,X2),X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_smaller_than_numerator)).
 cnf(prove_a_divide_d_LE_b, negated_conjecture, (~less_equal(divide(a,d),b)), file('Problems/HEN/HEN006-4.p', prove_a_divide_d_LE_b)).
 cnf(c_0_9, plain, (divide(X1,X2)=zero|~less_equal(X1,X2)), inference(fof_simplification,[status(thm)],[quotient_less_equal1])).
 cnf(c_0_10, plain, (divide(X1,X2)=zero|~less_equal(X1,X2)), c_0_9).

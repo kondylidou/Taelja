@@ -14,7 +14,7 @@ Here is the input problem:
 % SZS status Unsatisfiable
 
 % SZS output start CNFRefutation
-cnf(c1, negated_conjecture, response(a, A)!=B, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/COL/COL083-1.p', prove_birds_are_compatible_1)).
+cnf(c1, negated_conjecture, response(a, A)!=B, file('/home/user/Desktop/TPTP-v9.2.1/Problems/COL/COL083-1.p', prove_birds_are_compatible_1)).
 cnf(c2, plain, response(a, X)=response(a, X), inference(reflexivity, [status(thm)], [])).
 cnf(c3, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c2])).
 % SZS output end CNFRefutation

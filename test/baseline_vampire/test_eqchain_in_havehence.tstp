@@ -4,16 +4,16 @@
 % SZS output start Proof for test_eqchain_in_havehence
 fof(f1,axiom,(
   ! [X0] : f(X0) = g(X0)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_eqchain_in_havehence.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_eqchain_in_havehence.p',unknown)).
 fof(f2,axiom,(
   ! [X0] : g(X0) = h(X0)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_eqchain_in_havehence.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_eqchain_in_havehence.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (f(X0) = h(X0) => p(X0))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_eqchain_in_havehence.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_eqchain_in_havehence.p',unknown)).
 fof(f4,conjecture,(
   p(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_eqchain_in_havehence.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_eqchain_in_havehence.p',unknown)).
 fof(f5,negated_conjecture,(
   ~p(a)),
   inference(negated_conjecture,[status(cth)],[f4])).

@@ -34,11 +34,11 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(f5, conjecture, r(a), file('/Users/kondylidou/Developer/Taelja/test/input/test_prelemmatize_sym_eq.p', f5)).
-fof(f4, axiom, ![X1]:(((p(X1)&q(X1))=>r(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/test_prelemmatize_sym_eq.p', f4)).
-fof(f3, axiom, ![X1]:((k(X1)=h(X1)=>q(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/test_prelemmatize_sym_eq.p', f3)).
-fof(f1, axiom, h(a)=k(a), file('/Users/kondylidou/Developer/Taelja/test/input/test_prelemmatize_sym_eq.p', f1)).
-fof(f2, axiom, ![X1]:((h(X1)=k(X1)=>p(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/test_prelemmatize_sym_eq.p', f2)).
+fof(f5, conjecture, r(a), file('/home/user/Developer/Taelja/test/input/test_prelemmatize_sym_eq.p', f5)).
+fof(f4, axiom, ![X1]:(((p(X1)&q(X1))=>r(X1))), file('/home/user/Developer/Taelja/test/input/test_prelemmatize_sym_eq.p', f4)).
+fof(f3, axiom, ![X1]:((k(X1)=h(X1)=>q(X1))), file('/home/user/Developer/Taelja/test/input/test_prelemmatize_sym_eq.p', f3)).
+fof(f1, axiom, h(a)=k(a), file('/home/user/Developer/Taelja/test/input/test_prelemmatize_sym_eq.p', f1)).
+fof(f2, axiom, ![X1]:((h(X1)=k(X1)=>p(X1))), file('/home/user/Developer/Taelja/test/input/test_prelemmatize_sym_eq.p', f2)).
 fof(c_0_5, negated_conjecture, ~r(a), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[f5])])).
 fof(c_0_6, negated_conjecture, ~r(a), inference(fof_nnf,[status(thm)],[c_0_5])).
 fof(c_0_7, plain, ![X4]:((~p(X4)|~q(X4)|r(X4))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[f4])])])).

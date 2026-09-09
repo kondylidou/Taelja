@@ -4,19 +4,19 @@
 % SZS output start Proof for horn_example_derived_rw
 fof(f1,axiom,(
   p(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
 fof(f2,axiom,(
   q(b)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (p(X0) => f(X0) = c)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
 fof(f4,axiom,(
   ! [X0] : (q(X0) => a = X0)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
 fof(f5,conjecture,(
   f(b) = c),
-  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/horn_example_derived_rw.p',unknown)).
 fof(f6,negated_conjecture,(
   ~f(b) = c),
   inference(negated_conjecture,[status(cth)],[f5])).

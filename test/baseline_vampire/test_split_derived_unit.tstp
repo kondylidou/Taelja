@@ -4,16 +4,16 @@
 % SZS output start Proof for test_split_derived_unit
 fof(f1,axiom,(
   p(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
 fof(f2,axiom,(
   ! [X0,X1] : (p(X0) => q(X0,X1))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (q(X0,b) => r(X0))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
 fof(f4,conjecture,(
   r(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_split_derived_unit.p',unknown)).
 fof(f5,negated_conjecture,(
   ~r(a)),
   inference(negated_conjecture,[status(cth)],[f4])).

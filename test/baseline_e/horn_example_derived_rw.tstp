@@ -34,11 +34,11 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(goal, conjecture, f(b)=c, file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p', goal)).
-fof(ax4, axiom, ![X2]:((q(X2)=>a=X2)), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p', ax4)).
-fof(ax3, axiom, ![X1]:((p(X1)=>f(X1)=c)), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p', ax3)).
-fof(ax2, axiom, q(b), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p', ax2)).
-fof(ax1, axiom, p(a), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_derived_rw.p', ax1)).
+fof(goal, conjecture, f(b)=c, file('/home/user/Developer/Taelja/test/input/horn_example_derived_rw.p', goal)).
+fof(ax4, axiom, ![X2]:((q(X2)=>a=X2)), file('/home/user/Developer/Taelja/test/input/horn_example_derived_rw.p', ax4)).
+fof(ax3, axiom, ![X1]:((p(X1)=>f(X1)=c)), file('/home/user/Developer/Taelja/test/input/horn_example_derived_rw.p', ax3)).
+fof(ax2, axiom, q(b), file('/home/user/Developer/Taelja/test/input/horn_example_derived_rw.p', ax2)).
+fof(ax1, axiom, p(a), file('/home/user/Developer/Taelja/test/input/horn_example_derived_rw.p', ax1)).
 fof(c_0_5, negated_conjecture, f(b)!=c, inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
 fof(c_0_6, plain, ![X4]:((~q(X4)|a=X4)), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax4])])])).
 fof(c_0_7, negated_conjecture, f(b)!=c, inference(fof_nnf,[status(thm)],[c_0_5])).

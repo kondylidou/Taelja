@@ -32,11 +32,11 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(f5, conjecture, s(f(a))=s(h(a)), file('/Users/kondylidou/Developer/Taelja/test/input/test_havehence_in_eqchain.p', f5)).
-fof(f4, axiom, ![X1]:((q(X1)=>g(X1)=h(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/test_havehence_in_eqchain.p', f4)).
-fof(f2, axiom, q(a), file('/Users/kondylidou/Developer/Taelja/test/input/test_havehence_in_eqchain.p', f2)).
-fof(f3, axiom, ![X1]:((p(X1)=>f(X1)=g(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/test_havehence_in_eqchain.p', f3)).
-fof(f1, axiom, p(a), file('/Users/kondylidou/Developer/Taelja/test/input/test_havehence_in_eqchain.p', f1)).
+fof(f5, conjecture, s(f(a))=s(h(a)), file('/home/user/Developer/Taelja/test/input/test_havehence_in_eqchain.p', f5)).
+fof(f4, axiom, ![X1]:((q(X1)=>g(X1)=h(X1))), file('/home/user/Developer/Taelja/test/input/test_havehence_in_eqchain.p', f4)).
+fof(f2, axiom, q(a), file('/home/user/Developer/Taelja/test/input/test_havehence_in_eqchain.p', f2)).
+fof(f3, axiom, ![X1]:((p(X1)=>f(X1)=g(X1))), file('/home/user/Developer/Taelja/test/input/test_havehence_in_eqchain.p', f3)).
+fof(f1, axiom, p(a), file('/home/user/Developer/Taelja/test/input/test_havehence_in_eqchain.p', f1)).
 fof(c_0_5, negated_conjecture, s(f(a))!=s(h(a)), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[f5])])).
 fof(c_0_6, negated_conjecture, s(f(a))!=s(h(a)), inference(fof_nnf,[status(thm)],[c_0_5])).
 fof(c_0_7, plain, ![X3]:((~q(X3)|g(X3)=h(X3))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[f4])])])).

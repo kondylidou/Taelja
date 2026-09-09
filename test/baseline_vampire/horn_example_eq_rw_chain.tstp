@@ -4,19 +4,19 @@
 % SZS output start Proof for horn_example_eq_rw_chain
 fof(f1,axiom,(
   a = b),
-  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
 fof(f2,axiom,(
   f(b) = c),
-  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (f(X0) = c => g(X0) = c)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
 fof(f4,axiom,(
   g(a) = c => h(a) = c),
-  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
 fof(f5,conjecture,(
   h(a) = c),
-  file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/horn_example_eq_rw_chain.p',unknown)).
 fof(f6,negated_conjecture,(
   ~h(a) = c),
   inference(negated_conjecture,[status(cth)],[f5])).

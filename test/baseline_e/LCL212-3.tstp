@@ -41,11 +41,11 @@
 # Proof found!
 # SZS status Unsatisfiable
 # SZS output start CNFRefutation
-cnf(rule_2, axiom, (theorem(X1)|~theorem(implies(X2,X1))|~theorem(X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', rule_2)).
-cnf(implies_definition, axiom, (implies(X1,X2)=or(not(X1),X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', implies_definition)).
-cnf(rule_1, axiom, (theorem(X1)|~axiom(X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', rule_1)).
+cnf(rule_2, axiom, (theorem(X1)|~theorem(implies(X2,X1))|~theorem(X2)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', rule_2)).
+cnf(implies_definition, axiom, (implies(X1,X2)=or(not(X1),X2)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', implies_definition)).
+cnf(rule_1, axiom, (theorem(X1)|~axiom(X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', rule_1)).
 cnf(prove_this, negated_conjecture, (~theorem(implies(not(p),implies(q,implies(implies(p,q),q))))), file('Problems/LCL/LCL212-3.p', prove_this)).
-cnf(axiom_1_3, axiom, (axiom(implies(X1,or(X2,X1)))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', axiom_1_3)).
+cnf(axiom_1_3, axiom, (axiom(implies(X1,or(X2,X1)))), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', axiom_1_3)).
 cnf(c_0_5, plain, (theorem(X1)|~theorem(implies(X2,X1))|~theorem(X2)), inference(fof_simplification,[status(thm)],[rule_2])).
 cnf(c_0_6, plain, (theorem(X1)|~theorem(implies(X2,X1))|~theorem(X2)), c_0_5).
 cnf(c_0_7, axiom, (implies(X1,X2)=or(not(X1),X2)), implies_definition).

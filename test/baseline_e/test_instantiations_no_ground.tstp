@@ -28,12 +28,12 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(f2, axiom, ![X1, X2]:((top=>q(X1,X2))), file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p', f2)).
-fof(f3, axiom, ![X1]:((q(X1,b)=>r1(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p', f3)).
-fof(f1, axiom, top, file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p', f1)).
-fof(f5, axiom, ![X1]:(((r1(X1)&r2(X1))=>s(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p', f5)).
-fof(f4, axiom, ![X1]:((q(X1,X1)=>r2(X1))), file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p', f4)).
-fof(f6, conjecture, s(a), file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p', f6)).
+fof(f2, axiom, ![X1, X2]:((top=>q(X1,X2))), file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p', f2)).
+fof(f3, axiom, ![X1]:((q(X1,b)=>r1(X1))), file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p', f3)).
+fof(f1, axiom, top, file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p', f1)).
+fof(f5, axiom, ![X1]:(((r1(X1)&r2(X1))=>s(X1))), file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p', f5)).
+fof(f4, axiom, ![X1]:((q(X1,X1)=>r2(X1))), file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p', f4)).
+fof(f6, conjecture, s(a), file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p', f6)).
 fof(c_0_6, plain, ![X3, X4]:((~top|q(X3,X4))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[f2])])])).
 fof(c_0_7, plain, ![X5]:((~q(X5,b)|r1(X5))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[f3])])])).
 cnf(c_0_8, plain, (q(X1,X2)|~top), inference(split_conjunct,[status(thm)],[c_0_6])).

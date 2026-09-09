@@ -16,10 +16,10 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(goal, conjecture, q(b), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_relational_rw.p', goal)).
-fof(ax3, axiom, (p(b)=>q(b)), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_relational_rw.p', ax3)).
-fof(ax1, axiom, p(a), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_relational_rw.p', ax1)).
-fof(ax2, axiom, a=b, file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_relational_rw.p', ax2)).
+fof(goal, conjecture, q(b), file('/home/user/Developer/Taelja/test/input/horn_example_relational_rw.p', goal)).
+fof(ax3, axiom, (p(b)=>q(b)), file('/home/user/Developer/Taelja/test/input/horn_example_relational_rw.p', ax3)).
+fof(ax1, axiom, p(a), file('/home/user/Developer/Taelja/test/input/horn_example_relational_rw.p', ax1)).
+fof(ax2, axiom, a=b, file('/home/user/Developer/Taelja/test/input/horn_example_relational_rw.p', ax2)).
 fof(c_0_4, negated_conjecture, ~q(b), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
 fof(c_0_5, plain, (~p(b)|q(b)), inference(fof_nnf,[status(thm)],[inference(fof_nnf,[status(thm)],[ax3])])).
 fof(c_0_6, negated_conjecture, ~q(b), inference(fof_nnf,[status(thm)],[c_0_4])).

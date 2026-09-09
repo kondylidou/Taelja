@@ -4,16 +4,16 @@
 % SZS output start Proof for resolution_example_horn_2unit
 fof(f1,axiom,(
   p(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_2unit.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/resolution_example_horn_2unit.p',unknown)).
 fof(f2,axiom,(
   q(b)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_2unit.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/resolution_example_horn_2unit.p',unknown)).
 fof(f3,axiom,(
   ! [X0,X1] : ((p(X0) & q(X1)) => r(X0,X1))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_2unit.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/resolution_example_horn_2unit.p',unknown)).
 fof(f4,conjecture,(
   r(a,b)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_2unit.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/resolution_example_horn_2unit.p',unknown)).
 fof(f5,negated_conjecture,(
   ~r(a,b)),
   inference(negated_conjecture,[status(cth)],[f4])).

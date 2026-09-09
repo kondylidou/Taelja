@@ -4,10 +4,10 @@
 % SZS output start Proof for test_rl_safety
 fof(f1,axiom,(
   ! [X0] : f(X0) = c),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_rl_safety.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_rl_safety.p',unknown)).
 fof(f2,conjecture,(
   f(a) = c),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_rl_safety.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_rl_safety.p',unknown)).
 fof(f3,negated_conjecture,(
   ~f(a) = c),
   inference(negated_conjecture,[status(cth)],[f2])).

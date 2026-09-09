@@ -4,19 +4,19 @@
 % SZS output start Proof for test_havehence_in_eqchain
 fof(f1,axiom,(
   p(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_havehence_in_eqchain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_havehence_in_eqchain.p',unknown)).
 fof(f2,axiom,(
   q(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_havehence_in_eqchain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_havehence_in_eqchain.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (p(X0) => f(X0) = g(X0))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_havehence_in_eqchain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_havehence_in_eqchain.p',unknown)).
 fof(f4,axiom,(
   ! [X0] : (q(X0) => g(X0) = h(X0))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_havehence_in_eqchain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_havehence_in_eqchain.p',unknown)).
 fof(f5,conjecture,(
   s(f(a)) = s(h(a))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_havehence_in_eqchain.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_havehence_in_eqchain.p',unknown)).
 fof(f6,negated_conjecture,(
   ~s(f(a)) = s(h(a))),
   inference(negated_conjecture,[status(cth)],[f5])).

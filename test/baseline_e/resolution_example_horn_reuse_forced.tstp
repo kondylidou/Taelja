@@ -22,11 +22,11 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(ax3, axiom, ![X2]:((s(X2)=>p(X2))), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_reuse_forced.p', ax3)).
-fof(ax1, axiom, ![X1]:(s(X1)), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_reuse_forced.p', ax1)).
-fof(goal, conjecture, r(b,a), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_reuse_forced.p', goal)).
-fof(ax4, axiom, ![X2, X3]:(((q(X2,X3)&p(X3))=>r(X2,X3))), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_reuse_forced.p', ax4)).
-fof(ax2, axiom, ![X2]:((s(X2)=>q(b,X2))), file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_reuse_forced.p', ax2)).
+fof(ax3, axiom, ![X2]:((s(X2)=>p(X2))), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_reuse_forced.p', ax3)).
+fof(ax1, axiom, ![X1]:(s(X1)), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_reuse_forced.p', ax1)).
+fof(goal, conjecture, r(b,a), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_reuse_forced.p', goal)).
+fof(ax4, axiom, ![X2, X3]:(((q(X2,X3)&p(X3))=>r(X2,X3))), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_reuse_forced.p', ax4)).
+fof(ax2, axiom, ![X2]:((s(X2)=>q(b,X2))), file('/home/user/Developer/Taelja/test/input/resolution_example_horn_reuse_forced.p', ax2)).
 fof(c_0_5, plain, ![X6]:((~s(X6)|p(X6))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax3])])])).
 fof(c_0_6, plain, ![X4]:(s(X4)), inference(variable_rename,[status(thm)],[ax1])).
 fof(c_0_7, negated_conjecture, ~r(b,a), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).

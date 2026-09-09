@@ -4,22 +4,22 @@
 % SZS output start Proof for resolution_example_horn_general
 fof(f1,axiom,(
   s(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
 fof(f2,axiom,(
   ! [X0] : (s(X0) => p(X0))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
 fof(f3,axiom,(
   t(b)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
 fof(f4,axiom,(
   ! [X0] : (t(X0) => q(X0))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
 fof(f5,axiom,(
   ! [X0,X1] : ((p(X0) & q(X1)) => r(X0,X1))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
 fof(f6,conjecture,(
   r(a,b)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/resolution_example_horn_general.p',unknown)).
 fof(f7,negated_conjecture,(
   ~r(a,b)),
   inference(negated_conjecture,[status(cth)],[f6])).

@@ -10,8 +10,8 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(f2, conjecture, f(a)=c, file('/Users/kondylidou/Developer/Taelja/test/input/test_rl_safety.p', f2)).
-fof(f1, axiom, ![X1]:(f(X1)=c), file('/Users/kondylidou/Developer/Taelja/test/input/test_rl_safety.p', f1)).
+fof(f2, conjecture, f(a)=c, file('/home/user/Developer/Taelja/test/input/test_rl_safety.p', f2)).
+fof(f1, axiom, ![X1]:(f(X1)=c), file('/home/user/Developer/Taelja/test/input/test_rl_safety.p', f1)).
 fof(c_0_2, negated_conjecture, f(a)!=c, inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[f2])])).
 fof(c_0_3, negated_conjecture, f(a)!=c, inference(fof_nnf,[status(thm)],[c_0_2])).
 fof(c_0_4, plain, ![X2]:(f(X2)=c), inference(variable_rename,[status(thm)],[f1])).

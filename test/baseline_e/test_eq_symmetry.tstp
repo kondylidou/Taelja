@@ -12,8 +12,8 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(eq_goal, conjecture, a=b, file('/Users/kondylidou/Developer/Taelja/test/input/test_eq_symmetry.p', eq_goal)).
-fof(eq_axiom, axiom, b=a, file('/Users/kondylidou/Developer/Taelja/test/input/test_eq_symmetry.p', eq_axiom)).
+fof(eq_goal, conjecture, a=b, file('/home/user/Developer/Taelja/test/input/test_eq_symmetry.p', eq_goal)).
+fof(eq_axiom, axiom, b=a, file('/home/user/Developer/Taelja/test/input/test_eq_symmetry.p', eq_axiom)).
 fof(c_0_2, negated_conjecture, a!=b, inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[eq_goal])])).
 fof(c_0_3, negated_conjecture, a!=b, inference(fof_nnf,[status(thm)],[c_0_2])).
 cnf(c_0_4, negated_conjecture, (a!=b), inference(split_conjunct,[status(thm)],[c_0_3])).

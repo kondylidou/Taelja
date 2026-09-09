@@ -4,13 +4,13 @@
 % SZS output start Proof for pure_equational_example
 fof(f1,axiom,(
   a = b),
-  file('/Users/kondylidou/Developer/Taelja/test/input/pure_equational_example.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/pure_equational_example.p',unknown)).
 fof(f2,axiom,(
   b = c),
-  file('/Users/kondylidou/Developer/Taelja/test/input/pure_equational_example.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/pure_equational_example.p',unknown)).
 fof(f3,conjecture,(
   a = c),
-  file('/Users/kondylidou/Developer/Taelja/test/input/pure_equational_example.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/pure_equational_example.p',unknown)).
 fof(f4,negated_conjecture,(
   ~a = c),
   inference(negated_conjecture,[status(cth)],[f3])).

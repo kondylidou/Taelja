@@ -2212,21 +2212,21 @@
 # Proof found!
 # SZS status Unsatisfiable
 # SZS output start CNFRefutation
-cnf(rule_059, axiom, (n1(X1,X1,X2)|~m0(X3,X4,X4)|~m0(X2,X3,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_059)).
-cnf(axiom_19, axiom, (m0(X1,d,X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_19)).
-cnf(rule_255, axiom, (q3(X1,X2)|~q2(X3,X1,X2)|~n0(X3,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_255)).
-cnf(rule_186, axiom, (q2(X1,X1,X2)|~l1(X2,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_186)).
-cnf(rule_126, axiom, (s1(X1)|~q0(X1,X2)|~s1(X3)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_126)).
-cnf(rule_125, axiom, (s1(X1)|~p0(X1,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_125)).
-cnf(rule_003, axiom, (l1(X1,X2)|~p0(X3,X1)|~r0(X4)|~m0(X2,X1,X3)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_003)).
-cnf(rule_257, axiom, (q3(X1,X2)|~n1(X3,X1,X2)|~s2(X1)|~q3(X2,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_257)).
-cnf(rule_190, axiom, (s2(d)|~s1(a)|~s0(d)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_190)).
-cnf(axiom_36, axiom, (q0(a,b)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_36)).
-cnf(axiom_14, axiom, (p0(b,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_14)).
-cnf(axiom_30, axiom, (n0(e,e)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_30)).
-cnf(axiom_1, axiom, (s0(d)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_1)).
+cnf(rule_059, axiom, (n1(X1,X1,X2)|~m0(X3,X4,X4)|~m0(X2,X3,X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_059)).
+cnf(axiom_19, axiom, (m0(X1,d,X2)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_19)).
+cnf(rule_255, axiom, (q3(X1,X2)|~q2(X3,X1,X2)|~n0(X3,X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_255)).
+cnf(rule_186, axiom, (q2(X1,X1,X2)|~l1(X2,X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_186)).
+cnf(rule_126, axiom, (s1(X1)|~q0(X1,X2)|~s1(X3)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_126)).
+cnf(rule_125, axiom, (s1(X1)|~p0(X1,X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_125)).
+cnf(rule_003, axiom, (l1(X1,X2)|~p0(X3,X1)|~r0(X4)|~m0(X2,X1,X3)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_003)).
+cnf(rule_257, axiom, (q3(X1,X2)|~n1(X3,X1,X2)|~s2(X1)|~q3(X2,X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_257)).
+cnf(rule_190, axiom, (s2(d)|~s1(a)|~s0(d)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_190)).
+cnf(axiom_36, axiom, (q0(a,b)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_36)).
+cnf(axiom_14, axiom, (p0(b,X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_14)).
+cnf(axiom_30, axiom, (n0(e,e)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_30)).
+cnf(axiom_1, axiom, (s0(d)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_1)).
 cnf(prove_this, negated_conjecture, (~q3(d,X1)), file('Problems/SYN/SYN179-1.p', prove_this)).
-cnf(axiom_9, axiom, (r0(b)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_9)).
+cnf(axiom_9, axiom, (r0(b)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_9)).
 cnf(c_0_15, plain, (n1(X1,X1,X2)|~m0(X3,X4,X4)|~m0(X2,X3,X1)), inference(fof_simplification,[status(thm)],[rule_059])).
 cnf(c_0_16, plain, (n1(X1,X1,X2)|~m0(X3,X4,X4)|~m0(X2,X3,X1)), c_0_15).
 cnf(c_0_17, axiom, (m0(X1,d,X2)), axiom_19).

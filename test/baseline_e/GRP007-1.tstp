@@ -33,10 +33,10 @@
 # Proof found!
 # SZS status Unsatisfiable
 # SZS output start CNFRefutation
-cnf(total_function2, axiom, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function2)).
+cnf(total_function2, axiom, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function2)).
 cnf(another_left_identity, hypothesis, (product(c,X1,X1)), file('Problems/GRP/GRP007-1.p', another_left_identity)).
 cnf(prove_identity_equals_c, negated_conjecture, (identity!=c), file('Problems/GRP/GRP007-1.p', prove_identity_equals_c)).
-cnf(right_identity, axiom, (product(X1,identity,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
+cnf(right_identity, axiom, (product(X1,identity,X1)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
 cnf(c_0_4, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), inference(fof_simplification,[status(thm)],[total_function2])).
 cnf(c_0_5, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), c_0_4).
 cnf(c_0_6, hypothesis, (product(c,X1,X1)), another_left_identity).

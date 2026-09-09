@@ -31,11 +31,11 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(goal, conjecture, h(a)=c, file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p', goal)).
-fof(ax4, axiom, (g(a)=c=>h(a)=c), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p', ax4)).
-fof(ax3, axiom, ![X1]:((f(X1)=c=>g(X1)=c)), file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p', ax3)).
-fof(ax2, axiom, f(b)=c, file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p', ax2)).
-fof(ax1, axiom, a=b, file('/Users/kondylidou/Developer/Taelja/test/input/horn_example_eq_rw_chain.p', ax1)).
+fof(goal, conjecture, h(a)=c, file('/home/user/Developer/Taelja/test/input/horn_example_eq_rw_chain.p', goal)).
+fof(ax4, axiom, (g(a)=c=>h(a)=c), file('/home/user/Developer/Taelja/test/input/horn_example_eq_rw_chain.p', ax4)).
+fof(ax3, axiom, ![X1]:((f(X1)=c=>g(X1)=c)), file('/home/user/Developer/Taelja/test/input/horn_example_eq_rw_chain.p', ax3)).
+fof(ax2, axiom, f(b)=c, file('/home/user/Developer/Taelja/test/input/horn_example_eq_rw_chain.p', ax2)).
+fof(ax1, axiom, a=b, file('/home/user/Developer/Taelja/test/input/horn_example_eq_rw_chain.p', ax1)).
 fof(c_0_5, negated_conjecture, h(a)!=c, inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
 fof(c_0_6, plain, (g(a)!=c|h(a)=c), inference(fof_nnf,[status(thm)],[inference(fof_nnf,[status(thm)],[ax4])])).
 fof(c_0_7, negated_conjecture, h(a)!=c, inference(fof_nnf,[status(thm)],[c_0_5])).

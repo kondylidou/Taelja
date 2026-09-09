@@ -4,16 +4,16 @@
 % SZS output start Proof for paper_heu
 fof(f1,axiom,(
   ! [X0] : f(X0) = X0),
-  file('/Users/kondylidou/Developer/Taelja/test/input/paper_heu.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/paper_heu.p',unknown)).
 fof(f2,axiom,(
   ! [X0] : g(X0) = f(X0)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/paper_heu.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/paper_heu.p',unknown)).
 fof(f3,axiom,(
   g(a) = a => p(g(a))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/paper_heu.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/paper_heu.p',unknown)).
 fof(f4,conjecture,(
   p(g(a))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/paper_heu.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/paper_heu.p',unknown)).
 fof(f5,negated_conjecture,(
   ~p(g(a))),
   inference(negated_conjecture,[status(cth)],[f4])).

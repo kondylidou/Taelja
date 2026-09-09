@@ -16,10 +16,10 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(f4, conjecture, r(a), file('/Users/kondylidou/Developer/Taelja/test/input/test_nonunit_chain.p', f4)).
-fof(f3, axiom, ((p(a)&q(a))=>r(a)), file('/Users/kondylidou/Developer/Taelja/test/input/test_nonunit_chain.p', f3)).
-fof(f2, axiom, (p(a)=>q(a)), file('/Users/kondylidou/Developer/Taelja/test/input/test_nonunit_chain.p', f2)).
-fof(f1, axiom, p(a), file('/Users/kondylidou/Developer/Taelja/test/input/test_nonunit_chain.p', f1)).
+fof(f4, conjecture, r(a), file('/home/user/Developer/Taelja/test/input/test_nonunit_chain.p', f4)).
+fof(f3, axiom, ((p(a)&q(a))=>r(a)), file('/home/user/Developer/Taelja/test/input/test_nonunit_chain.p', f3)).
+fof(f2, axiom, (p(a)=>q(a)), file('/home/user/Developer/Taelja/test/input/test_nonunit_chain.p', f2)).
+fof(f1, axiom, p(a), file('/home/user/Developer/Taelja/test/input/test_nonunit_chain.p', f1)).
 fof(c_0_4, negated_conjecture, ~r(a), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[f4])])).
 fof(c_0_5, plain, (~p(a)|~q(a)|r(a)), inference(fof_nnf,[status(thm)],[inference(fof_nnf,[status(thm)],[f3])])).
 fof(c_0_6, negated_conjecture, ~r(a), inference(fof_nnf,[status(thm)],[c_0_4])).

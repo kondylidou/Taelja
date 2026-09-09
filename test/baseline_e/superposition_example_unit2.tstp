@@ -16,9 +16,9 @@
 # Proof found!
 # SZS status Theorem
 # SZS output start CNFRefutation
-fof(goal, conjecture, f(c)=f(b), file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_unit2.p', goal)).
-fof(ax2, axiom, b=a, file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_unit2.p', ax2)).
-fof(ax1, axiom, c=a, file('/Users/kondylidou/Developer/Taelja/test/input/superposition_example_unit2.p', ax1)).
+fof(goal, conjecture, f(c)=f(b), file('/home/user/Developer/Taelja/test/input/superposition_example_unit2.p', goal)).
+fof(ax2, axiom, b=a, file('/home/user/Developer/Taelja/test/input/superposition_example_unit2.p', ax2)).
+fof(ax1, axiom, c=a, file('/home/user/Developer/Taelja/test/input/superposition_example_unit2.p', ax1)).
 fof(c_0_3, negated_conjecture, f(c)!=f(b), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[goal])])).
 fof(c_0_4, negated_conjecture, f(c)!=f(b), inference(fof_nnf,[status(thm)],[c_0_3])).
 cnf(c_0_5, plain, (b=a), inference(split_conjunct,[status(thm)],[ax2])).

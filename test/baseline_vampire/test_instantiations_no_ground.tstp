@@ -4,22 +4,22 @@
 % SZS output start Proof for test_instantiations_no_ground
 fof(f1,axiom,(
   top),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f2,axiom,(
   ! [X0,X1] : (top => q(X0,X1))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f3,axiom,(
   ! [X0] : (q(X0,b) => r1(X0))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f4,axiom,(
   ! [X0] : (q(X0,X0) => r2(X0))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f5,axiom,(
   ! [X0] : ((r1(X0) & r2(X0)) => s(X0))),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f6,conjecture,(
   s(a)),
-  file('/Users/kondylidou/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
+  file('/home/user/Developer/Taelja/test/input/test_instantiations_no_ground.p',unknown)).
 fof(f7,negated_conjecture,(
   ~s(a)),
   inference(negated_conjecture,[status(cth)],[f6])).
