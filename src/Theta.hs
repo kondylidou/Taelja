@@ -18,6 +18,7 @@ module Theta
   , sharedNodeTheta
   , resolutionCoherent
   , derivedHead
+  , explainStatus
   ) where
 
 import Control.Monad (foldM)
@@ -37,6 +38,7 @@ data ThetaCtx = ThetaCtx
   , tcSimpl   :: Map.Map String [(String, Dir)]  -- demodulation chain folded into the inference at a position
   , tcEqOf    :: String -> Maybe (Term, Term)    -- the chain's equations by name
   , tcShared  :: Map.Map String Subst  -- θ|p for every position (see sharedNodeTheta)
+  , tcStatus  :: [(String, String)]     -- how well each inference replayed (see explainStatus)
   }
 
 -- θ restricted to one nucleus, in the variables of its abstract clause.
@@ -90,6 +92,34 @@ sharedNodeTheta declAt entries = Map.mapWithKey thetaAt clauses
     ground (Var x)    = Const (rigidPrefix ++ map (\ch -> if ch == '@' then '_' else ch) x)
     ground (Const c)  = Const c
     ground (App f ts) = App f (map ground ts)
+
+-- For each inference of the tree, how well it could be replayed:
+-- "strict" when the replayed conclusion matches the printed one exactly,
+-- "loose" when one literal on each side had to be left unaccounted for
+-- (a simplification the prover folded in), and "none" when no replay
+-- explains it at all.  Anything but "strict" is where theta can lose a
+-- binding, so this is the first thing to look at when a nucleus fails.
+explainStatus :: Map.Map String T.Declaration -> [LeafEntry] -> [(String, String)]
+explainStatus declAt entries =
+  [ (p, status (litsAt p, map litsAt kids)) | (p, kids) <- nodes ]
+  where
+    entryClauses = Map.fromList [ (lePos e, c) | e <- entries, Just c <- [convertDeclToClause (abstractDecl e)] ]
+    clauses = Map.union entryClauses (Map.mapMaybe convertDeclToClause declAt)
+    at p v = v ++ "@" ++ p
+    litsAt p = [ (b, mapLiteralTerms (apart p) l) | (b, l) <- polLits (clauses Map.! p) ]
+    apart p (Var v)    = Var (at p v)
+    apart _ (Const c)  = Const c
+    apart p (App f ts) = App f (map (apart p) ts)
+    nodes = sortBy (comparing (\(p, _) -> (length p, p)))
+              [ (p, kids) | p <- Map.keys clauses
+                          , let kids = filter (`Map.member` clauses) [p ++ "0", p ++ "1"]
+                          , not (null kids) ]
+    status (parent, kids)
+      | not (null [ () | (pairs, result) <- alternatives kids
+                       , Just s1 <- [foldM (\acc (a, b) -> unifyU a b acc) Map.empty pairs]
+                       , _ <- cover result parent s1 ]) = "strict"
+      | not (null (explain (parent, kids) Map.empty)) = "loose"
+      | otherwise = "none"
 
 polLits :: Clause -> [(Bool, Literal)]
 polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
@@ -193,10 +223,14 @@ heads, bodies :: [(Bool, Literal)] -> [Literal]
 heads x  = [ l | (True, l) <- x ]
 bodies x = [ l | (False, l) <- x ]
 
--- x's head against a body literal of y
+-- x's head against a body literal of y.  What survives is x's body, plus
+-- everything of y except the literal resolved away; picks already leaves y's
+-- head in rest, so it must not be appended again (a duplicated head cannot
+-- be covered when the conclusion has none, and the whole resolution is then
+-- rejected in favour of an explanation that binds nothing).
 resolve :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
 resolve x y =
-  [ ([(litTerm h, litTerm b')], [ (False, l) | l <- bodies x ] ++ rest ++ [ (True, l) | l <- heads y ])
+  [ ([(litTerm h, litTerm b')], [ (False, l) | l <- bodies x ] ++ rest)
   | h <- heads x
   , ((False, b), rest) <- picks y
   , b' <- orientations b ]

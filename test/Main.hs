@@ -166,6 +166,11 @@ eBenchmarkNames =
   -- (u(X,X,Y) = u(Y,X,X)) only permutes its arguments, so the replay
   -- must apply it as a single rewrite rather than normalise with it
   , "ALG442-1"
+  -- resolution against a clause whose conclusion keeps no head: the
+  -- replayed resolvent must not carry the consumer's head twice, or the
+  -- step is rejected and theta loses the binding for the transitivity
+  -- argument that only the resolution determines
+  , "ANA027-2"
   , "COL006-2"
   , "GRP703-10"
   , "SYN163-1"        -- identity-binding freshening (Lemma 62) and capture-avoiding block instantiation (Goal 1)

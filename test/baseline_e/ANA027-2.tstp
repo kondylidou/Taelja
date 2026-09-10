@@ -1,0 +1,49 @@
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(cls_OrderedGroup_Ocompare__rls__9_0, axiom, (c_lessequals(c_plus(X2,X4,X1),X3,X1)|~class_OrderedGroup_Opordered__ab__group__add(X1)|~c_lessequals(X2,c_minus(X3,X4,X1),X1)), file('Problems/ANA/ANA027-2.p', cls_OrderedGroup_Ocompare__rls__9_0)).
+cnf(cls_OrderedGroup_Ocomm__monoid__add__class_Oaxioms_0, axiom, (c_plus(c_0,X2,X1)=X2|~class_OrderedGroup_Ocomm__monoid__add(X1)), file('Problems/ANA/ANA027-2.p', cls_OrderedGroup_Ocomm__monoid__add__class_Oaxioms_0)).
+cnf(cls_OrderedGroup_Ocompare__rls__9_1, axiom, (c_lessequals(X2,c_minus(X4,X3,X1),X1)|~class_OrderedGroup_Opordered__ab__group__add(X1)|~c_lessequals(c_plus(X2,X3,X1),X4,X1)), file('Problems/ANA/ANA027-2.p', cls_OrderedGroup_Ocompare__rls__9_1)).
+cnf(cls_Orderings_Oorder__class_Oorder__trans_0, axiom, (c_lessequals(X4,X3,X1)|~class_Orderings_Oorder(X1)|~c_lessequals(X2,X3,X1)|~c_lessequals(X4,X2,X1)), file('Problems/ANA/ANA027-2.p', cls_Orderings_Oorder__class_Oorder__trans_0)).
+cnf(cls_conjecture_3, negated_conjecture, (~c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b)), file('Problems/ANA/ANA027-2.p', cls_conjecture_3)).
+cnf(cls_conjecture_2, negated_conjecture, (c_lessequals(v_g(v_x),v_k(v_x),t_b)), file('Problems/ANA/ANA027-2.p', cls_conjecture_2)).
+cnf(cls_conjecture_1, negated_conjecture, (c_lessequals(c_0,c_minus(v_f(v_x),v_k(v_x),t_b),t_b)), file('Problems/ANA/ANA027-2.p', cls_conjecture_1)).
+cnf(clsrel_LOrder_Ojoin__semilorder_1, axiom, (class_Orderings_Oorder(X1)|~class_LOrder_Ojoin__semilorder(X1)), file('Problems/ANA/ANA027-2.p', clsrel_LOrder_Ojoin__semilorder_1)).
+cnf(clsrel_OrderedGroup_Olordered__ab__group__abs_15, axiom, (class_LOrder_Ojoin__semilorder(X1)|~class_OrderedGroup_Olordered__ab__group__abs(X1)), file('Problems/ANA/ANA027-2.p', clsrel_OrderedGroup_Olordered__ab__group__abs_15)).
+cnf(clsrel_OrderedGroup_Olordered__ab__group__abs_1, axiom, (class_OrderedGroup_Opordered__ab__group__add(X1)|~class_OrderedGroup_Olordered__ab__group__abs(X1)), file('Problems/ANA/ANA027-2.p', clsrel_OrderedGroup_Olordered__ab__group__abs_1)).
+cnf(clsrel_Ring__and__Field_Oordered__idom_23, axiom, (class_OrderedGroup_Ocomm__monoid__add(X1)|~class_Ring__and__Field_Oordered__idom(X1)), file('Problems/ANA/ANA027-2.p', clsrel_Ring__and__Field_Oordered__idom_23)).
+cnf(tfree_tcs, negated_conjecture, (class_Ring__and__Field_Oordered__idom(t_b)), file('Problems/ANA/ANA027-2.p', tfree_tcs)).
+cnf(clsrel_Ring__and__Field_Oordered__idom_50, axiom, (class_OrderedGroup_Olordered__ab__group__abs(X1)|~class_Ring__and__Field_Oordered__idom(X1)), file('Problems/ANA/ANA027-2.p', clsrel_Ring__and__Field_Oordered__idom_50)).
+cnf(c_0_13, plain, (c_lessequals(c_plus(X2,X4,X1),X3,X1)|~class_OrderedGroup_Opordered__ab__group__add(X1)|~c_lessequals(X2,c_minus(X3,X4,X1),X1)), inference(fof_simplification,[status(thm)],[cls_OrderedGroup_Ocompare__rls__9_0])).
+cnf(c_0_14, plain, (c_plus(c_0,X2,X1)=X2|~class_OrderedGroup_Ocomm__monoid__add(X1)), inference(fof_simplification,[status(thm)],[cls_OrderedGroup_Ocomm__monoid__add__class_Oaxioms_0])).
+cnf(c_0_15, plain, (c_lessequals(X2,c_minus(X4,X3,X1),X1)|~class_OrderedGroup_Opordered__ab__group__add(X1)|~c_lessequals(c_plus(X2,X3,X1),X4,X1)), inference(fof_simplification,[status(thm)],[cls_OrderedGroup_Ocompare__rls__9_1])).
+cnf(c_0_16, plain, (c_lessequals(X4,X3,X1)|~class_Orderings_Oorder(X1)|~c_lessequals(X2,X3,X1)|~c_lessequals(X4,X2,X1)), inference(fof_simplification,[status(thm)],[cls_Orderings_Oorder__class_Oorder__trans_0])).
+cnf(c_0_17, plain, (c_lessequals(c_plus(X2,X4,X1),X3,X1)|~class_OrderedGroup_Opordered__ab__group__add(X1)|~c_lessequals(X2,c_minus(X3,X4,X1),X1)), c_0_13).
+cnf(c_0_18, plain, (c_plus(c_0,X2,X1)=X2|~class_OrderedGroup_Ocomm__monoid__add(X1)), c_0_14).
+cnf(c_0_19, negated_conjecture, (~c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b)), inference(fof_simplification,[status(thm)],[cls_conjecture_3])).
+cnf(c_0_20, plain, (c_lessequals(X2,c_minus(X4,X3,X1),X1)|~class_OrderedGroup_Opordered__ab__group__add(X1)|~c_lessequals(c_plus(X2,X3,X1),X4,X1)), c_0_15).
+cnf(c_0_21, plain, (c_lessequals(X4,X3,X1)|~class_Orderings_Oorder(X1)|~c_lessequals(X2,X3,X1)|~c_lessequals(X4,X2,X1)), c_0_16).
+cnf(c_0_22, negated_conjecture, (c_lessequals(v_g(v_x),v_k(v_x),t_b)), cls_conjecture_2).
+cnf(c_0_23, plain, (c_lessequals(X1,X2,X3)|~class_OrderedGroup_Opordered__ab__group__add(X3)|~class_OrderedGroup_Ocomm__monoid__add(X3)|~c_lessequals(c_0,c_minus(X2,X1,X3),X3)), inference(spm,[status(thm)],[c_0_17, c_0_18])).
+cnf(c_0_24, negated_conjecture, (c_lessequals(c_0,c_minus(v_f(v_x),v_k(v_x),t_b),t_b)), cls_conjecture_1).
+cnf(c_0_25, negated_conjecture, (~c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b)), c_0_19).
+cnf(c_0_26, plain, (c_lessequals(c_0,c_minus(X1,X2,X3),X3)|~class_OrderedGroup_Opordered__ab__group__add(X3)|~class_OrderedGroup_Ocomm__monoid__add(X3)|~c_lessequals(X2,X1,X3)), inference(spm,[status(thm)],[c_0_20, c_0_18])).
+cnf(c_0_27, plain, (class_Orderings_Oorder(X1)|~class_LOrder_Ojoin__semilorder(X1)), inference(fof_simplification,[status(thm)],[clsrel_LOrder_Ojoin__semilorder_1])).
+cnf(c_0_28, plain, (class_LOrder_Ojoin__semilorder(X1)|~class_OrderedGroup_Olordered__ab__group__abs(X1)), inference(fof_simplification,[status(thm)],[clsrel_OrderedGroup_Olordered__ab__group__abs_15])).
+cnf(c_0_29, negated_conjecture, (c_lessequals(v_g(v_x),X1,t_b)|~class_Orderings_Oorder(t_b)|~c_lessequals(v_k(v_x),X1,t_b)), inference(spm,[status(thm)],[c_0_21, c_0_22])).
+cnf(c_0_30, negated_conjecture, (c_lessequals(v_k(v_x),v_f(v_x),t_b)|~class_OrderedGroup_Opordered__ab__group__add(t_b)|~class_OrderedGroup_Ocomm__monoid__add(t_b)), inference(spm,[status(thm)],[c_0_23, c_0_24])).
+cnf(c_0_31, negated_conjecture, (~class_OrderedGroup_Opordered__ab__group__add(t_b)|~class_OrderedGroup_Ocomm__monoid__add(t_b)|~c_lessequals(v_g(v_x),v_f(v_x),t_b)), inference(spm,[status(thm)],[c_0_25, c_0_26])).
+cnf(c_0_32, plain, (class_Orderings_Oorder(X1)|~class_LOrder_Ojoin__semilorder(X1)), c_0_27).
+cnf(c_0_33, plain, (class_LOrder_Ojoin__semilorder(X1)|~class_OrderedGroup_Olordered__ab__group__abs(X1)), c_0_28).
+cnf(c_0_34, plain, (class_OrderedGroup_Opordered__ab__group__add(X1)|~class_OrderedGroup_Olordered__ab__group__abs(X1)), inference(fof_simplification,[status(thm)],[clsrel_OrderedGroup_Olordered__ab__group__abs_1])).
+cnf(c_0_35, negated_conjecture, (~class_Orderings_Oorder(t_b)|~class_OrderedGroup_Opordered__ab__group__add(t_b)|~class_OrderedGroup_Ocomm__monoid__add(t_b)), inference(csr,[status(thm)],[inference(spm,[status(thm)],[c_0_29, c_0_30]), c_0_31])).
+cnf(c_0_36, plain, (class_Orderings_Oorder(X1)|~class_OrderedGroup_Olordered__ab__group__abs(X1)), inference(spm,[status(thm)],[c_0_32, c_0_33])).
+cnf(c_0_37, plain, (class_OrderedGroup_Opordered__ab__group__add(X1)|~class_OrderedGroup_Olordered__ab__group__abs(X1)), c_0_34).
+cnf(c_0_38, plain, (class_OrderedGroup_Ocomm__monoid__add(X1)|~class_Ring__and__Field_Oordered__idom(X1)), inference(fof_simplification,[status(thm)],[clsrel_Ring__and__Field_Oordered__idom_23])).
+cnf(c_0_39, negated_conjecture, (~class_OrderedGroup_Olordered__ab__group__abs(t_b)|~class_OrderedGroup_Ocomm__monoid__add(t_b)), inference(csr,[status(thm)],[inference(spm,[status(thm)],[c_0_35, c_0_36]), c_0_37])).
+cnf(c_0_40, plain, (class_OrderedGroup_Ocomm__monoid__add(X1)|~class_Ring__and__Field_Oordered__idom(X1)), c_0_38).
+cnf(c_0_41, negated_conjecture, (class_Ring__and__Field_Oordered__idom(t_b)), tfree_tcs).
+cnf(c_0_42, plain, (class_OrderedGroup_Olordered__ab__group__abs(X1)|~class_Ring__and__Field_Oordered__idom(X1)), inference(fof_simplification,[status(thm)],[clsrel_Ring__and__Field_Oordered__idom_50])).
+cnf(c_0_43, negated_conjecture, (~class_OrderedGroup_Olordered__ab__group__abs(t_b)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_39, c_0_40]), c_0_41])])).
+cnf(c_0_44, plain, (class_OrderedGroup_Olordered__ab__group__abs(X1)|~class_Ring__and__Field_Oordered__idom(X1)), c_0_42).
+cnf(c_0_45, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_43, c_0_44]), c_0_41])]), ['proof']).
+# SZS output end CNFRefutation

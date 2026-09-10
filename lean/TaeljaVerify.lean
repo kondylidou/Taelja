@@ -104,6 +104,7 @@ import TaeljaVerify.E.Grp70310
 import TaeljaVerify.E.Col0062
 import TaeljaVerify.E.Alg0061
 import TaeljaVerify.E.Alg4421
+import TaeljaVerify.E.Ana0272
 import TaeljaVerify.E.HornExampleDerivedRw
 import TaeljaVerify.E.HornExampleElimVarRw
 import TaeljaVerify.E.HornExampleEqHeadInlined

@@ -35,7 +35,7 @@ import ProofTree
 import TptpConvert
 import TweeInterface
 import LemmaBuilder
-import Theta (ThetaCtx (..), computeNucleusTheta, sharedNodeTheta, resolutionCoherent, derivedHead)
+import Theta (ThetaCtx (..), computeNucleusTheta, sharedNodeTheta, resolutionCoherent, derivedHead, explainStatus)
 import Debug (dbg, ppLitI, ppClauseI, ppSimplChain)
 
 -- Rescue mode (re-proving derived units mid-translation, broad ancestor
@@ -1487,6 +1487,12 @@ processNuclei debug warnOnFail thetaCtx nuclei posToName goalLits simpl = do
   -- θ is one substitution over the whole tree; show it once, each binding
   -- tagged with the position of the clause occurrence its variable belongs
   -- to (X0@01 and X0@101 are different variables)
+  -- inferences the replay could not account for exactly; a nucleus that
+  -- fails almost always sits under one of these
+  when debug $ do
+    let st = tcStatus thetaCtx
+    liftIO $ dbg True $ "replay: " ++ show (length [ () | (_, k) <- st, k == "strict" ]) ++ " strict"
+      ++ concat [ ", " ++ p ++ "=" ++ k | (p, k) <- st, k /= "strict" ]
   when debug $ liftIO $ dbg True $ "θ = {"
     ++ intercalate ", " [ v ++ "@" ++ lePos e ++ "→" ++ ppTerm t
                         | e <- nuclei, (v, t) <- computeNucleusTheta thetaCtx e ] ++ "}"
@@ -1897,6 +1903,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
                      simplAll (\nm -> findEqByName nm (namedUnits ++ listedAxiomUnits ++ bgNamedUnits)
                                      <|> Map.lookup nm eqByTstpName)
                      (sharedNodeTheta (piDeclAt info) (piNuclei info ++ piElectrons info))
+                     (explainStatus (piDeclAt info) (piNuclei info ++ piElectrons info))
       nameToPos  = Map.fromList [ (leName e, lePos e) | e <- piElectrons info ]
       eqByTstpName = Map.fromList
         [ (unitNameStr n, (l, r))
