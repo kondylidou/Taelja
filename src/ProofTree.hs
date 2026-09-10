@@ -33,7 +33,7 @@ data ProofTree
   | PTNode String T.Declaration Text.Text [ProofTree]
   deriving (Show)
 maxProofUnits :: Int
-maxProofUnits = 2000
+maxProofUnits = 50000
 -- axHyps: treat a negated_conjecture clause that has a positive literal and
 -- is merely a copy of an external or file input as an original axiom.  An
 -- implication conjecture negates into its hypotheses plus the negated
