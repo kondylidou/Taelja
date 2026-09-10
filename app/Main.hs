@@ -1,6 +1,8 @@
 module Main where
 
 import Control.Monad (when)
+import Control.DeepSeq (force)
+import Control.Exception (SomeException, evaluate, try)
 import System.Environment (getArgs)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
@@ -48,4 +50,15 @@ main = do
       msp <- translateStages mode debug tstp
       case msp of
         Nothing -> exitFailure
-        Just sp -> putStr (emit sp)
+        -- The emitted text is forced before any of it is written.  Clause
+        -- conversion raises on constructs outside the Horn fragment (reserved
+        -- functions, rationals, distinct objects), and those are lazy, so
+        -- printing as we go would leave a truncated proof on stdout that a
+        -- downstream check could mistake for a complete one.
+        Just sp -> do
+          r <- try (evaluate (force (emit sp)))
+          case r of
+            Left e -> do
+              hPutStrLn stderr ("translate: " ++ show (e :: SomeException))
+              exitFailure
+            Right out -> putStr out

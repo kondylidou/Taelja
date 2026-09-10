@@ -54,6 +54,7 @@ executable taelja
   hs-source-dirs: app
   build-depends:
     base        >=4.18 && <4.22,
+    deepseq     >=1.4 && <1.6,
     text        >=2.0 && <2.2,
     attoparsec  ^>=0.14,
     tptp        ^>=0.1,

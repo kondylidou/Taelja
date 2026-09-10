@@ -112,6 +112,37 @@ withTempInput tag input act = do
     removeFile
     act
 
+-- A symbol the prover would read back as something other than what we wrote.
+-- An unquoted name starting uppercase comes back as a VARIABLE, and a
+-- negative integer does not parse at all, so a call containing one would
+-- either fail obscurely or return a wrong chain.  Such calls are refused.
+tptpSafeName :: String -> Bool
+tptpSafeName []         = False
+tptpSafeName nm@(c : cs)
+  -- an integer literal is a term in its own right and needs no quoting
+  | all isDigit nm                        = True
+  | c == '-', not (null cs), all isDigit cs = True
+  -- anything else must be an unquoted atom: lowercase initial, so the prover
+  -- does not read it back as a variable, and no character that would end the
+  -- token and make the generated file unparseable
+  | otherwise = isAsciiLower c
+                && all (\ch -> isAsciiLower ch || isAsciiUpper ch || isDigit ch || ch == '_') cs
+
+tptpSafeTerm :: Term -> Bool
+tptpSafeTerm (Var _)    = True
+tptpSafeTerm (Const f)  = tptpSafeName f
+tptpSafeTerm (App f ts) = tptpSafeName f && all tptpSafeTerm ts
+
+tptpSafeLit :: Literal -> Bool
+tptpSafeLit (Eq a b)    = tptpSafeTerm a && tptpSafeTerm b
+tptpSafeLit (NEq a b)   = tptpSafeTerm a && tptpSafeTerm b
+tptpSafeLit (Rel n as)  = tptpSafeName n && all tptpSafeTerm as
+tptpSafeLit (NRel n as) = tptpSafeName n && all tptpSafeTerm as
+
+notVarTerm :: Term -> Bool
+notVarTerm (Var _) = False
+notVarTerm _       = True
+
 toTptpTerm :: Term -> String
 toTptpTerm (Var [])       = []
 toTptpTerm (Var (c:cs))   = toUpper c : cs
@@ -162,11 +193,16 @@ toIfeqCnfHorn name headLit bodies =
 -- Returns the rewrite chain from goalTerm to "true", or Nothing if unprovable.
 callTweeRelLemma :: TweeBudget -> [UnitEntry] -> [HornAxiomEntry] -> Literal
                  -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTweeRelLemma budget units hornAxioms goalLit = do
+callTweeRelLemma budget units hornAxioms goalLit
+  | not (tptpSafeLit goalLit) = return Nothing
+  | otherwise = do
   let goalTerm  = litRelTerm goalLit
-      relUnits  = relevantUnits goalLit units
+      relUnits  = relevantUnits goalLit (filter (tptpSafeLit . ueUnit) units)
       indexed   = zip [(0::Int)..] relUnits
-      mkId i ue = maybe ("anon_" ++ show i) sanitizeId (ueName ue)
+      -- The index keeps ids apart: sanitizing alone maps "axiom 3" and
+      -- "axiom_3" to one id, and the later unit would silently win the
+      -- lookup, so a replayed step would cite the wrong axiom.
+      mkId i ue = maybe "anon" sanitizeId (ueName ue) ++ "_" ++ show i
       toAxiom (i, ue) = case ueUnit ue of
         Eq a b   -> Just (toCnfAxiom (mkId i ue) a b)
         Rel n as -> Just (toCnfAxiom (mkId i ue) (relTerm n as) (Const "true"))
@@ -302,7 +338,11 @@ parseTweeChain idToUe output l r =
               case Map.lookup tid idToUe of
                 Nothing -> go cur rest
                 Just ue -> case ueUnit ue of
-                  Eq a b ->
+                  -- The side used as the left-hand side must not be a bare
+                  -- variable.  The ifeq selector sentinel is X = Y, which
+                  -- would match every term and rewrite it to an unbound
+                  -- variable, inventing a step the proof never made.
+                  Eq a b | notVarTerm (if dir == LR then a else b) ->
                     listToMaybe
                       [ (ue, dir, t) : chain
                       | t <- rewriteTermAll cur (a, b) dir
@@ -341,15 +381,20 @@ parseTweeChain idToUe output l r =
              Just (dropWhile (== ' ') startLine, collectSteps rest)
 
 callTwee :: TweeBudget -> [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTwee budget units goal@(Eq l r) = do
-  let relUnits   = relevantUnits goal units
+callTwee budget units goal@(Eq l r)
+  | not (tptpSafeLit goal) = return Nothing
+  | otherwise = do
+  let relUnits   = relevantUnits goal (filter (tptpSafeLit . ueUnit) units)
       rawEqUnits = [(i, ue) | (i, ue) <- zip [(0::Int)..] relUnits, isEqLit (ueUnit ue)]
       -- Put general (variable-containing) equations before ground ones so Twee's
       -- proof strategy is consistent regardless of the prover's axiom ordering.
       eqUnits = sortBy (\(_, u1) (_, u2) ->
                   compare (null (litVars (ueUnit u1))) (null (litVars (ueUnit u2))))
                 rawEqUnits
-      mkId i ue = maybe ("anon_" ++ show i) sanitizeId (ueName ue)
+      -- The index keeps ids apart: sanitizing alone maps "axiom 3" and
+      -- "axiom_3" to one id, and the later unit would silently win the
+      -- lookup, so a replayed step would cite the wrong axiom.
+      mkId i ue = maybe "anon" sanitizeId (ueName ue) ++ "_" ++ show i
       idToUe  = Map.fromList [(mkId i ue, ue) | (i, ue) <- eqUnits]
       axioms  = [ toCnfAxiom (mkId i ue) a b
                 | (i, ue) <- eqUnits, Eq a b <- [ueUnit ue] ]
@@ -357,10 +402,15 @@ callTwee budget units goal@(Eq l r) = do
       input   = unlines (axioms ++ [negGoal])
   out <- runTwee budget "eq" input
   return (parseTweeChain idToUe out l r)
-callTwee budget units goal@(Rel name args) = do
+callTwee budget units goal@(Rel name args)
+  | not (tptpSafeLit goal) = return Nothing
+  | otherwise = do
   let goalTerm  = if null args then Const name else App name args
-      indexed   = zip [(0::Int)..] (relevantUnits goal units)
-      mkId i ue = maybe ("anon_" ++ show i) sanitizeId (ueName ue)
+      indexed   = zip [(0::Int)..] (relevantUnits goal (filter (tptpSafeLit . ueUnit) units))
+      -- The index keeps ids apart: sanitizing alone maps "axiom 3" and
+      -- "axiom_3" to one id, and the later unit would silently win the
+      -- lookup, so a replayed step would cite the wrong axiom.
+      mkId i ue = maybe "anon" sanitizeId (ueName ue) ++ "_" ++ show i
       toAxiom (i, ue) = case ueUnit ue of
         Eq a b   -> Just (toCnfAxiom (mkId i ue) a b)
         Rel n as -> Just (toCnfAxiom (mkId i ue) (if null as then Const n else App n as) (Const "true"))

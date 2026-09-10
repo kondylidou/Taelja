@@ -56,7 +56,10 @@ convertLit t = error ("convertLit: unsupported: " ++ show t)
 convertDeclToClause :: T.Declaration -> Maybe Clause
 convertDeclToClause (T.Formula _ (T.CNF (T.Clause lits))) =
   let ls       = toList lits
-      bodyLits = [convertLit l | (T.Negative, l) <- ls]
+      -- reserved literals ($true/$false) carry no content and convertLit
+      -- has no case for them; they are dropped on both sides, not just
+      -- the positive one
+      bodyLits = [convertLit l | (T.Negative, l) <- ls, not (isReservedTLit l)]
       headLits = [convertLit l | (T.Positive, l) <- ls, not (isReservedTLit l)]
   in mkClause bodyLits headLits
 convertDeclToClause (T.Formula _ (T.FOF f)) = convertFOFToClause f
@@ -98,7 +101,7 @@ convertFOFToClause :: T.UnsortedFirstOrder -> Maybe Clause
 convertFOFToClause fof = case collectDisjuncts fof of
   Nothing   -> Nothing
   Just pairs ->
-    let bodyLits = [convertLit l | (T.Negative, l) <- pairs]
+    let bodyLits = [convertLit l | (T.Negative, l) <- pairs, not (isReservedTLit l)]
         headLits = [convertLit l | (T.Positive, l) <- pairs, not (isReservedTLit l)]
     in mkClause bodyLits headLits
 
