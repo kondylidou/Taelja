@@ -162,6 +162,10 @@ eBenchmarkNames =
   , "SYN179-1"
   , "SYN555-1"
   , "ALG006-1"
+  -- E folds each demodulation into its own rw step; the equation here
+  -- (u(X,X,Y) = u(Y,X,X)) only permutes its arguments, so the replay
+  -- must apply it as a single rewrite rather than normalise with it
+  , "ALG442-1"
   , "COL006-2"
   , "GRP703-10"
   , "SYN163-1"        -- identity-binding freshening (Lemma 62) and capture-avoiding block instantiation (Goal 1)

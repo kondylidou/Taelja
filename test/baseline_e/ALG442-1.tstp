@@ -1,0 +1,108 @@
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(sos_011, axiom, (r(u(X1,X4,X7),u(X2,X5,X8),u(X3,X6,X9))|~r(X1,X2,X3)|~r(X4,X5,X6)|~r(X7,X8,X9)), file('Problems/ALG/ALG442-1.p', sos_011)).
+cnf(sos_015, axiom, (r(b,a,a)), file('Problems/ALG/ALG442-1.p', sos_015)).
+cnf(sos_012, axiom, (r(v(X1,X4,X7,X10),v(X2,X5,X8,X11),v(X3,X6,X9,X12))|~r(X1,X2,X3)|~r(X4,X5,X6)|~r(X7,X8,X9)|~r(X10,X11,X12)), file('Problems/ALG/ALG442-1.p', sos_012)).
+cnf(sos_010, axiom, (r(m(X1,X4,X7),m(X2,X5,X8),m(X3,X6,X9))|~r(X1,X2,X3)|~r(X4,X5,X6)|~r(X7,X8,X9)), file('Problems/ALG/ALG442-1.p', sos_010)).
+cnf(sos_014, axiom, (r(a,b,a)), file('Problems/ALG/ALG442-1.p', sos_014)).
+cnf(sos_002, axiom, (u(X1,X1,X1)=X1), file('Problems/ALG/ALG442-1.p', sos_002)).
+cnf(sos_005, axiom, (u(X1,X1,X2)=u(X2,X1,X1)), file('Problems/ALG/ALG442-1.p', sos_005)).
+cnf(sos_013, axiom, (r(a,a,b)), file('Problems/ALG/ALG442-1.p', sos_013)).
+cnf(sos_006, axiom, (v(X1,X1,X1,X2)=v(X1,X1,X2,X1)), file('Problems/ALG/ALG442-1.p', sos_006)).
+cnf(sos_009, axiom, (u(X1,X1,X2)=v(X1,X1,X1,X2)), file('Problems/ALG/ALG442-1.p', sos_009)).
+cnf(sos_004, axiom, (u(X1,X1,X2)=u(X1,X2,X1)), file('Problems/ALG/ALG442-1.p', sos_004)).
+cnf(sos_007, axiom, (v(X1,X1,X2,X1)=v(X1,X2,X1,X1)), file('Problems/ALG/ALG442-1.p', sos_007)).
+cnf(sos_001, axiom, (m(X1,X2,X2)=X1), file('Problems/ALG/ALG442-1.p', sos_001)).
+cnf(sos_008, axiom, (v(X1,X2,X1,X1)=v(X2,X1,X1,X1)), file('Problems/ALG/ALG442-1.p', sos_008)).
+cnf(sos, axiom, (m(X1,X1,X2)=X2), file('Problems/ALG/ALG442-1.p', sos)).
+cnf(goals, negated_conjecture, (~r(a,a,a)), file('Problems/ALG/ALG442-1.p', goals)).
+cnf(c_0_16, plain, (r(u(X1,X4,X7),u(X2,X5,X8),u(X3,X6,X9))|~r(X1,X2,X3)|~r(X4,X5,X6)|~r(X7,X8,X9)), inference(fof_simplification,[status(thm)],[sos_011])).
+cnf(c_0_17, plain, (r(u(X1,X4,X7),u(X2,X5,X8),u(X3,X6,X9))|~r(X1,X2,X3)|~r(X4,X5,X6)|~r(X7,X8,X9)), c_0_16).
+cnf(c_0_18, axiom, (r(b,a,a)), sos_015).
+cnf(c_0_19, plain, (r(v(X1,X4,X7,X10),v(X2,X5,X8,X11),v(X3,X6,X9,X12))|~r(X1,X2,X3)|~r(X4,X5,X6)|~r(X7,X8,X9)|~r(X10,X11,X12)), inference(fof_simplification,[status(thm)],[sos_012])).
+cnf(c_0_20, plain, (r(u(X1,X2,b),u(X3,X4,a),u(X5,X6,a))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_17, c_0_18])).
+cnf(c_0_21, plain, (r(v(X1,X4,X7,X10),v(X2,X5,X8,X11),v(X3,X6,X9,X12))|~r(X1,X2,X3)|~r(X4,X5,X6)|~r(X7,X8,X9)|~r(X10,X11,X12)), c_0_19).
+cnf(c_0_22, plain, (r(m(X1,X4,X7),m(X2,X5,X8),m(X3,X6,X9))|~r(X1,X2,X3)|~r(X4,X5,X6)|~r(X7,X8,X9)), inference(fof_simplification,[status(thm)],[sos_010])).
+cnf(c_0_23, plain, (r(u(X1,b,b),u(X2,a,a),u(X3,a,a))|~r(X1,X2,X3)), inference(spm,[status(thm)],[c_0_20, c_0_18])).
+cnf(c_0_24, axiom, (r(a,b,a)), sos_014).
+cnf(c_0_25, axiom, (u(X1,X1,X1)=X1), sos_002).
+cnf(c_0_26, axiom, (u(X1,X1,X2)=u(X2,X1,X1)), sos_005).
+cnf(c_0_27, plain, (r(v(X1,X2,X3,b),v(X4,X5,X6,a),v(X7,X8,X9,a))|~r(X3,X6,X9)|~r(X2,X5,X8)|~r(X1,X4,X7)), inference(spm,[status(thm)],[c_0_21, c_0_18])).
+cnf(c_0_28, axiom, (r(a,a,b)), sos_013).
+cnf(c_0_29, axiom, (v(X1,X1,X1,X2)=v(X1,X1,X2,X1)), sos_006).
+cnf(c_0_30, axiom, (u(X1,X1,X2)=v(X1,X1,X1,X2)), sos_009).
+cnf(c_0_31, plain, (r(m(X1,X4,X7),m(X2,X5,X8),m(X3,X6,X9))|~r(X1,X2,X3)|~r(X4,X5,X6)|~r(X7,X8,X9)), c_0_22).
+cnf(c_0_32, plain, (r(u(a,b,b),u(a,a,b),a)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_23, c_0_24]), c_0_25]), c_0_26])).
+cnf(c_0_33, plain, (r(u(X1,a,b),u(X2,b,a),u(X3,a,a))|~r(X1,X2,X3)), inference(spm,[status(thm)],[c_0_20, c_0_24])).
+cnf(c_0_34, axiom, (u(X1,X1,X2)=u(X1,X2,X1)), sos_004).
+cnf(c_0_35, plain, (r(v(X1,X2,a,b),v(X3,X4,a,a),v(X5,X6,b,a))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_27, c_0_28])).
+cnf(c_0_36, axiom, (v(X1,X1,X2,X1)=v(X1,X2,X1,X1)), sos_007).
+cnf(c_0_37, plain, (v(X1,X1,X2,X1)=u(X1,X1,X2)), inference(rw,[status(thm)],[c_0_29, c_0_30])).
+cnf(c_0_38, plain, (r(m(X1,X2,u(a,b,b)),m(X3,X4,u(a,a,b)),m(X5,X6,a))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_31, c_0_32])).
+cnf(c_0_39, plain, (r(u(a,a,b),u(a,a,b),u(a,a,b))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_33, c_0_28]), c_0_26]), c_0_34])).
+cnf(c_0_40, axiom, (m(X1,X2,X2)=X1), sos_001).
+cnf(c_0_41, plain, (r(v(X1,a,a,b),v(X2,b,a,a),v(X3,a,b,a))|~r(X1,X2,X3)), inference(spm,[status(thm)],[c_0_35, c_0_24])).
+cnf(c_0_42, axiom, (v(X1,X2,X1,X1)=v(X2,X1,X1,X1)), sos_008).
+cnf(c_0_43, plain, (v(X1,X2,X1,X1)=u(X1,X1,X2)), inference(rw,[status(thm)],[c_0_36, c_0_37])).
+cnf(c_0_44, plain, (r(v(X1,X2,X3,a),v(X4,X5,X6,b),v(X7,X8,X9,a))|~r(X3,X6,X9)|~r(X2,X5,X8)|~r(X1,X4,X7)), inference(spm,[status(thm)],[c_0_21, c_0_24])).
+cnf(c_0_45, plain, (r(m(X1,u(a,a,b),u(a,b,b)),X2,m(X3,u(a,a,b),a))|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_38, c_0_39]), c_0_40])).
+cnf(c_0_46, plain, (r(u(a,a,b),v(b,b,a,a),u(a,a,b))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_41, c_0_24]), c_0_30]), c_0_37])).
+cnf(c_0_47, axiom, (m(X1,X1,X2)=X2), sos).
+cnf(c_0_48, plain, (r(v(X1,X2,b,b),v(X3,X4,a,a),v(X5,X6,a,a))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_27, c_0_18])).
+cnf(c_0_49, plain, (v(X1,X2,X2,X2)=u(X2,X2,X1)), inference(rw,[status(thm)],[c_0_42, c_0_43])).
+cnf(c_0_50, plain, (r(v(X1,X2,X3,a),v(X4,X5,X6,a),v(X7,X8,X9,b))|~r(X3,X6,X9)|~r(X2,X5,X8)|~r(X1,X4,X7)), inference(spm,[status(thm)],[c_0_21, c_0_28])).
+cnf(c_0_51, plain, (r(v(X1,X2,a,a),v(X3,X4,b,b),v(X5,X6,a,a))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_44, c_0_24])).
+cnf(c_0_52, plain, (r(u(a,b,b),v(b,b,a,a),a)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_45, c_0_46]), c_0_47]), c_0_47])).
+cnf(c_0_53, plain, (r(v(X1,a,b,b),v(X2,b,a,a),u(a,a,X3))|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_48, c_0_24]), c_0_49])).
+cnf(c_0_54, plain, (r(u(X1,a,b),u(X2,a,a),u(X3,b,a))|~r(X1,X2,X3)), inference(spm,[status(thm)],[c_0_20, c_0_28])).
+cnf(c_0_55, plain, (r(u(X1,X2,a),u(X3,X4,b),u(X5,X6,a))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_17, c_0_24])).
+cnf(c_0_56, plain, (r(v(X1,X2,a,a),v(X3,X4,a,a),v(X5,X6,b,b))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_50, c_0_28])).
+cnf(c_0_57, plain, (r(v(X1,b,a,a),v(X2,a,b,b),u(a,a,X3))|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_51, c_0_18]), c_0_49])).
+cnf(c_0_58, plain, (r(X1,m(X2,v(b,b,a,a),u(a,a,b)),X3)|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_38, c_0_52]), c_0_40]), c_0_40])).
+cnf(c_0_59, plain, (r(v(a,a,b,b),v(b,b,a,a),a)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_53, c_0_24]), c_0_25])).
+cnf(c_0_60, plain, (r(u(a,a,b),a,u(a,b,b))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_54, c_0_28]), c_0_25]), c_0_26])).
+cnf(c_0_61, plain, (r(u(X1,a,a),u(X2,a,b),u(X3,b,a))|~r(X1,X2,X3)), inference(spm,[status(thm)],[c_0_55, c_0_28])).
+cnf(c_0_62, plain, (r(u(a,a,X1),v(X2,b,a,a),v(X3,a,b,b))|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_56, c_0_24]), c_0_49])).
+cnf(c_0_63, plain, (r(u(a,a,b),v(a,a,b,b),u(a,a,b))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_57, c_0_28]), c_0_43])).
+cnf(c_0_64, plain, (r(v(a,a,b,b),u(a,a,b),a)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_58, c_0_59]), c_0_47])).
+cnf(c_0_65, plain, (r(m(X1,X2,u(a,a,b)),m(X3,X4,a),m(X5,X6,u(a,b,b)))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_31, c_0_60])).
+cnf(c_0_66, plain, (r(a,u(a,a,b),u(a,b,b))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_61, c_0_28]), c_0_25]), c_0_26])).
+cnf(c_0_67, plain, (r(a,v(b,b,a,a),v(a,a,b,b))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_62, c_0_24]), c_0_25])).
+cnf(c_0_68, plain, (r(u(a,b,b),a,u(a,a,b))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_23, c_0_28]), c_0_25]), c_0_26])).
+cnf(c_0_69, plain, (r(u(a,b,b),v(a,a,b,b),a)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_45, c_0_63]), c_0_47]), c_0_47])).
+cnf(c_0_70, plain, (r(m(X1,v(a,a,b,b),u(a,b,b)),X2,X3)|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_38, c_0_64]), c_0_40]), c_0_40])).
+cnf(c_0_71, plain, (r(v(a,a,b,b),u(a,a,b),u(a,a,b))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_53, c_0_28]), c_0_43])).
+cnf(c_0_72, plain, (r(m(X1,a,u(a,a,b)),m(X2,u(a,a,b),a),X3)|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_65, c_0_66]), c_0_40])).
+cnf(c_0_73, plain, (r(a,u(a,a,b),v(a,a,b,b))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_58, c_0_67]), c_0_47])).
+cnf(c_0_74, plain, (r(m(X1,X2,u(a,b,b)),m(X3,X4,a),m(X5,X6,u(a,a,b)))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_31, c_0_68])).
+cnf(c_0_75, plain, (r(X1,m(X2,v(a,a,b,b),u(a,a,b)),X3)|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_38, c_0_69]), c_0_40]), c_0_40])).
+cnf(c_0_76, plain, (r(v(b,b,a,a),v(a,a,b,b),a)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_57, c_0_18]), c_0_25])).
+cnf(c_0_77, plain, (r(u(a,b,b),u(a,a,b),u(a,a,b))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_70, c_0_71]), c_0_47])).
+cnf(c_0_78, plain, (r(u(X1,a,a),u(X2,b,b),u(X3,a,a))|~r(X1,X2,X3)), inference(spm,[status(thm)],[c_0_55, c_0_24])).
+cnf(c_0_79, plain, (r(u(a,a,b),u(a,b,b),a)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_33, c_0_24]), c_0_25]), c_0_26])).
+cnf(c_0_80, plain, (r(u(a,a,b),a,v(a,a,b,b))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_72, c_0_73]), c_0_47]), c_0_47])).
+cnf(c_0_81, plain, (r(v(X1,b,a,a),u(a,a,X2),v(X3,a,b,b))|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_56, c_0_18]), c_0_49])).
+cnf(c_0_82, plain, (r(X1,m(X2,u(a,a,b),a),m(X3,a,u(a,a,b)))|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_74, c_0_32]), c_0_40])).
+cnf(c_0_83, plain, (r(v(b,b,a,a),u(a,a,b),a)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_75, c_0_76]), c_0_47])).
+cnf(c_0_84, plain, (r(X1,X2,m(X3,u(a,a,b),a))|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_38, c_0_77]), c_0_40]), c_0_40])).
+cnf(c_0_85, plain, (r(a,u(a,b,b),u(a,a,b))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_78, c_0_28]), c_0_25]), c_0_26])).
+cnf(c_0_86, plain, (r(m(X1,X2,u(a,a,b)),m(X3,X4,u(a,b,b)),m(X5,X6,a))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_31, c_0_79])).
+cnf(c_0_87, plain, (r(X1,X2,m(X3,v(a,a,b,b),u(a,b,b)))|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_65, c_0_80]), c_0_40]), c_0_40])).
+cnf(c_0_88, plain, (r(v(b,b,a,a),a,v(a,a,b,b))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_81, c_0_18]), c_0_25])).
+cnf(c_0_89, plain, (r(v(b,b,a,a),a,u(a,a,b))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_82, c_0_83]), c_0_47]), c_0_47])).
+cnf(c_0_90, plain, (r(m(X1,X2,a),m(X3,X4,b),m(X5,X6,a))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_31, c_0_24])).
+cnf(c_0_91, plain, (r(a,u(a,b,b),a)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_84, c_0_85]), c_0_47])).
+cnf(c_0_92, plain, (r(X1,m(X2,a,u(a,b,b)),m(X3,u(a,b,b),a))|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_86, c_0_60]), c_0_40])).
+cnf(c_0_93, plain, (r(v(b,b,a,a),a,u(a,b,b))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_87, c_0_88]), c_0_47])).
+cnf(c_0_94, plain, (r(m(X1,X2,b),m(X3,X4,a),m(X5,X6,a))|~r(X2,X4,X6)|~r(X1,X3,X5)), inference(spm,[status(thm)],[c_0_31, c_0_18])).
+cnf(c_0_95, plain, (r(v(b,b,a,a),a,a)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_84, c_0_89]), c_0_47])).
+cnf(c_0_96, plain, (r(X1,m(X2,u(a,b,b),b),X3)|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_90, c_0_91]), c_0_40]), c_0_40])).
+cnf(c_0_97, plain, (r(v(b,b,a,a),u(a,b,b),a)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_92, c_0_93]), c_0_47]), c_0_47])).
+cnf(c_0_98, plain, (r(m(X1,v(b,b,a,a),b),X2,X3)|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_94, c_0_95]), c_0_40]), c_0_40])).
+cnf(c_0_99, plain, (r(v(b,b,a,a),b,a)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_96, c_0_97]), c_0_47])).
+cnf(c_0_100, plain, (r(b,b,a)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_98, c_0_99]), c_0_47])).
+cnf(c_0_101, negated_conjecture, (~r(a,a,a)), inference(fof_simplification,[status(thm)],[goals])).
+cnf(c_0_102, plain, (r(m(X1,b,a),X2,X3)|~r(X1,X2,X3)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_90, c_0_100]), c_0_40]), c_0_40])).
+cnf(c_0_103, negated_conjecture, (~r(a,a,a)), c_0_101).
+cnf(c_0_104, plain, ($false), inference(sr,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_102, c_0_18]), c_0_47]), c_0_103]), ['proof']).
+# SZS output end CNFRefutation

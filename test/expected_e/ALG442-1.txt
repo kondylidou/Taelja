@@ -1,0 +1,690 @@
+Axiom 1: m(X,X,Y) = Y
+Axiom 2: r(b,a,a)
+Axiom 3: m(X,Y,Y) = X
+Axiom 4: u(X,X,X) = X
+Axiom 5: v(X,Y,X,X) = v(Y,X,X,X)
+Axiom 6: v(X,X,Y,X) = v(X,Y,X,X)
+Axiom 7: v(X,X,X,Y) = v(X,X,Y,X)
+Axiom 8: u(X,X,Y) = v(X,X,X,Y)
+Axiom 9: r(a,a,b)
+Axiom 10: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) /\ r(X1,X2,X3) => r(v(X,A,U,X1),v(Y,B,V,X2),v(Z,C,W,X3))
+Axiom 11: r(a,b,a)
+Axiom 12: u(X,X,Y) = u(X,Y,X)
+Axiom 13: u(X,X,Y) = u(Y,X,X)
+Axiom 14: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) => r(u(X,A,U),u(Y,B,V),u(Z,C,W))
+Axiom 15: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) => r(m(X,A,U),m(Y,B,V),m(Z,C,W))
+
+Lemma 16: r(u(b,b,a),u(a,a,b),u(a,a,a))
+Proof:
+  have r(b,a,a)
+    by axiom 2
+   and r(b,a,a)
+    by axiom 2
+   and r(a,b,a)
+    by axiom 11
+  hence r(u(b,b,a),u(a,a,b),u(a,a,a))
+    by axiom 14
+
+Lemma 17: r(u(a,b,b),u(a,a,b),a)
+Proof:
+  r(u(a,b,b),u(a,a,b),a)
+= { by axiom 4 R->L }
+  r(u(a,b,b),u(a,a,b),u(a,a,a))
+= { by axiom 13 R->L }
+  r(u(b,b,a),u(a,a,b),u(a,a,a))
+= { by lemma 16 }
+  true
+
+Lemma 18: r(u(b,a,a),u(a,a,a),u(a,b,b))
+Proof:
+  have r(b,a,a)
+    by axiom 2
+   and r(a,a,b)
+    by axiom 9
+   and r(a,a,b)
+    by axiom 9
+  hence r(u(b,a,a),u(a,a,a),u(a,b,b))
+    by axiom 14
+
+Lemma 19: r(u(a,a,b),a,u(a,b,b))
+Proof:
+  r(u(a,a,b),a,u(a,b,b))
+= { by axiom 4 R->L }
+  r(u(a,a,b),u(a,a,a),u(a,b,b))
+= { by axiom 13 }
+  r(u(b,a,a),u(a,a,a),u(a,b,b))
+= { by lemma 18 }
+  true
+
+Lemma 20: r(v(a,a,a,b),v(b,b,a,a),v(a,a,b,a))
+Proof:
+  have r(a,b,a)
+    by axiom 11
+   and r(a,b,a)
+    by axiom 11
+   and r(a,a,b)
+    by axiom 9
+   and r(b,a,a)
+    by axiom 2
+  hence r(v(a,a,a,b),v(b,b,a,a),v(a,a,b,a))
+    by axiom 10
+
+Lemma 21: r(u(a,a,b),u(a,b,a),u(b,a,a))
+Proof:
+  have r(a,a,b)
+    by axiom 9
+   and r(a,b,a)
+    by axiom 11
+   and r(b,a,a)
+    by axiom 2
+  hence r(u(a,a,b),u(a,b,a),u(b,a,a))
+    by axiom 14
+
+Lemma 22: r(u(a,a,b),v(b,b,a,a),u(a,a,b))
+Proof:
+  r(u(a,a,b),v(b,b,a,a),u(a,a,b))
+= { by axiom 8 }
+  r(u(a,a,b),v(b,b,a,a),v(a,a,a,b))
+= { by axiom 7 }
+  r(u(a,a,b),v(b,b,a,a),v(a,a,b,a))
+= { by axiom 8 }
+  r(v(a,a,a,b),v(b,b,a,a),v(a,a,b,a))
+= { by lemma 20 }
+  true
+
+Lemma 23: r(u(a,a,b),u(a,a,b),u(a,a,b))
+Proof:
+  r(u(a,a,b),u(a,a,b),u(a,a,b))
+= { by axiom 12 }
+  r(u(a,a,b),u(a,b,a),u(a,a,b))
+= { by axiom 13 }
+  r(u(a,a,b),u(a,b,a),u(b,a,a))
+= { by lemma 21 }
+  true
+
+Lemma 24: r(v(a,a,a,a),v(b,b,a,a),v(a,a,b,b))
+Proof:
+  have r(a,b,a)
+    by axiom 11
+   and r(a,b,a)
+    by axiom 11
+   and r(a,a,b)
+    by axiom 9
+   and r(a,a,b)
+    by axiom 9
+  hence r(v(a,a,a,a),v(b,b,a,a),v(a,a,b,b))
+    by axiom 10
+
+Lemma 25: r(m(u(a,a,b),u(a,a,b),u(a,b,b)),m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+Proof:
+  have r(u(a,a,b),v(b,b,a,a),u(a,a,b))
+    by lemma 22
+   and r(u(a,a,b),u(a,a,b),u(a,a,b))
+    by lemma 23
+   and r(u(a,b,b),u(a,a,b),a)
+    by lemma 17
+  hence r(m(u(a,a,b),u(a,a,b),u(a,b,b)),m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+    by axiom 15
+
+Lemma 26: r(a,v(b,b,a,a),v(a,a,b,b))
+Proof:
+  r(a,v(b,b,a,a),v(a,a,b,b))
+= { by axiom 4 R->L }
+  r(u(a,a,a),v(b,b,a,a),v(a,a,b,b))
+= { by axiom 8 }
+  r(v(a,a,a,a),v(b,b,a,a),v(a,a,b,b))
+= { by lemma 24 }
+  true
+
+Lemma 27: r(u(a,b,b),v(b,b,a,a),a)
+Proof:
+  r(u(a,b,b),v(b,b,a,a),a)
+= { by axiom 1 R->L }
+  r(u(a,b,b),v(b,b,a,a),m(u(a,a,b),u(a,a,b),a))
+= { by axiom 3 R->L }
+  r(u(a,b,b),m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+= { by axiom 1 R->L }
+  r(m(u(a,a,b),u(a,a,b),u(a,b,b)),m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+= { by lemma 25 }
+  true
+
+Lemma 28: r(m(a,u(a,b,b),u(a,b,b)),m(v(b,b,a,a),v(b,b,a,a),u(a,a,b)),m(v(a,a,b,b),a,a))
+Proof:
+  have r(a,v(b,b,a,a),v(a,a,b,b))
+    by lemma 26
+   and r(u(a,b,b),v(b,b,a,a),a)
+    by lemma 27
+   and r(u(a,b,b),u(a,a,b),a)
+    by lemma 17
+  hence r(m(a,u(a,b,b),u(a,b,b)),m(v(b,b,a,a),v(b,b,a,a),u(a,a,b)),m(v(a,a,b,b),a,a))
+    by axiom 15
+
+Lemma 29: r(u(a,a,a),u(a,a,b),u(b,b,a))
+Proof:
+  have r(a,a,b)
+    by axiom 9
+   and r(a,a,b)
+    by axiom 9
+   and r(a,b,a)
+    by axiom 11
+  hence r(u(a,a,a),u(a,a,b),u(b,b,a))
+    by axiom 14
+
+Lemma 30: r(a,u(a,a,b),v(a,a,b,b))
+Proof:
+  r(a,u(a,a,b),v(a,a,b,b))
+= { by axiom 3 R->L }
+  r(a,u(a,a,b),m(v(a,a,b,b),a,a))
+= { by axiom 1 R->L }
+  r(a,m(v(b,b,a,a),v(b,b,a,a),u(a,a,b)),m(v(a,a,b,b),a,a))
+= { by axiom 3 R->L }
+  r(m(a,u(a,b,b),u(a,b,b)),m(v(b,b,a,a),v(b,b,a,a),u(a,a,b)),m(v(a,a,b,b),a,a))
+= { by lemma 28 }
+  true
+
+Lemma 31: r(a,u(a,a,b),u(a,b,b))
+Proof:
+  r(a,u(a,a,b),u(a,b,b))
+= { by axiom 13 R->L }
+  r(a,u(a,a,b),u(b,b,a))
+= { by axiom 4 R->L }
+  r(u(a,a,a),u(a,a,b),u(b,b,a))
+= { by lemma 29 }
+  true
+
+Lemma 32: r(v(b,b,a,a),v(a,a,a,a),v(a,a,b,b))
+Proof:
+  have r(b,a,a)
+    by axiom 2
+   and r(b,a,a)
+    by axiom 2
+   and r(a,a,b)
+    by axiom 9
+   and r(a,a,b)
+    by axiom 9
+  hence r(v(b,b,a,a),v(a,a,a,a),v(a,a,b,b))
+    by axiom 10
+
+Lemma 33: r(m(a,a,u(a,a,b)),m(u(a,a,b),u(a,a,b),a),m(v(a,a,b,b),u(a,b,b),u(a,b,b)))
+Proof:
+  have r(a,u(a,a,b),v(a,a,b,b))
+    by lemma 30
+   and r(a,u(a,a,b),u(a,b,b))
+    by lemma 31
+   and r(u(a,a,b),a,u(a,b,b))
+    by lemma 19
+  hence r(m(a,a,u(a,a,b)),m(u(a,a,b),u(a,a,b),a),m(v(a,a,b,b),u(a,b,b),u(a,b,b)))
+    by axiom 15
+
+Lemma 34: r(v(b,b,a,a),a,v(a,a,b,b))
+Proof:
+  r(v(b,b,a,a),a,v(a,a,b,b))
+= { by axiom 4 R->L }
+  r(v(b,b,a,a),u(a,a,a),v(a,a,b,b))
+= { by axiom 8 }
+  r(v(b,b,a,a),v(a,a,a,a),v(a,a,b,b))
+= { by lemma 32 }
+  true
+
+Lemma 35: r(u(a,a,b),a,v(a,a,b,b))
+Proof:
+  r(u(a,a,b),a,v(a,a,b,b))
+= { by axiom 3 R->L }
+  r(u(a,a,b),a,m(v(a,a,b,b),u(a,b,b),u(a,b,b)))
+= { by axiom 1 R->L }
+  r(u(a,a,b),m(u(a,a,b),u(a,a,b),a),m(v(a,a,b,b),u(a,b,b),u(a,b,b)))
+= { by axiom 1 R->L }
+  r(m(a,a,u(a,a,b)),m(u(a,a,b),u(a,a,b),a),m(v(a,a,b,b),u(a,b,b),u(a,b,b)))
+= { by lemma 33 }
+  true
+
+Lemma 36: r(m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(a,a,a),m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)))
+Proof:
+  have r(v(b,b,a,a),a,v(a,a,b,b))
+    by lemma 34
+   and r(u(a,a,b),a,v(a,a,b,b))
+    by lemma 35
+   and r(u(a,a,b),a,u(a,b,b))
+    by lemma 19
+  hence r(m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(a,a,a),m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)))
+    by axiom 15
+
+Lemma 37: r(u(a,a,b),u(b,b,a),u(a,a,a))
+Proof:
+  have r(a,b,a)
+    by axiom 11
+   and r(a,b,a)
+    by axiom 11
+   and r(b,a,a)
+    by axiom 2
+  hence r(u(a,a,b),u(b,b,a),u(a,a,a))
+    by axiom 14
+
+Lemma 38: r(v(b,b,a,a),a,u(a,b,b))
+Proof:
+  r(v(b,b,a,a),a,u(a,b,b))
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),a,m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)))
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),m(a,a,a),m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)))
+= { by axiom 3 R->L }
+  r(m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(a,a,a),m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)))
+= { by lemma 36 }
+  true
+
+Lemma 39: r(u(a,a,b),u(a,b,b),a)
+Proof:
+  r(u(a,a,b),u(a,b,b),a)
+= { by axiom 4 R->L }
+  r(u(a,a,b),u(a,b,b),u(a,a,a))
+= { by axiom 13 R->L }
+  r(u(a,a,b),u(b,b,a),u(a,a,a))
+= { by lemma 37 }
+  true
+
+Lemma 40: r(v(a,a,b,b),v(b,b,a,a),v(a,a,a,a))
+Proof:
+  have r(a,b,a)
+    by axiom 11
+   and r(a,b,a)
+    by axiom 11
+   and r(b,a,a)
+    by axiom 2
+   and r(b,a,a)
+    by axiom 2
+  hence r(v(a,a,b,b),v(b,b,a,a),v(a,a,a,a))
+    by axiom 10
+
+Lemma 41: r(v(a,a,b,b),v(b,b,a,a),a)
+Proof:
+  r(v(a,a,b,b),v(b,b,a,a),a)
+= { by axiom 4 R->L }
+  r(v(a,a,b,b),v(b,b,a,a),u(a,a,a))
+= { by axiom 8 }
+  r(v(a,a,b,b),v(b,b,a,a),v(a,a,a,a))
+= { by lemma 40 }
+  true
+
+Lemma 42: r(v(a,a,b,b),v(a,b,a,a),v(b,a,a,a))
+Proof:
+  have r(a,a,b)
+    by axiom 9
+   and r(a,b,a)
+    by axiom 11
+   and r(b,a,a)
+    by axiom 2
+   and r(b,a,a)
+    by axiom 2
+  hence r(v(a,a,b,b),v(a,b,a,a),v(b,a,a,a))
+    by axiom 10
+
+Lemma 43: r(m(v(a,a,b,b),u(a,b,b),u(a,b,b)),m(v(b,b,a,a),v(b,b,a,a),u(a,a,b)),m(a,a,a))
+Proof:
+  have r(v(a,a,b,b),v(b,b,a,a),a)
+    by lemma 41
+   and r(u(a,b,b),v(b,b,a,a),a)
+    by lemma 27
+   and r(u(a,b,b),u(a,a,b),a)
+    by lemma 17
+  hence r(m(v(a,a,b,b),u(a,b,b),u(a,b,b)),m(v(b,b,a,a),v(b,b,a,a),u(a,a,b)),m(a,a,a))
+    by axiom 15
+
+Lemma 44: r(v(a,a,b,b),u(a,a,b),u(a,a,b))
+Proof:
+  r(v(a,a,b,b),u(a,a,b),u(a,a,b))
+= { by axiom 8 }
+  r(v(a,a,b,b),u(a,a,b),v(a,a,a,b))
+= { by axiom 7 }
+  r(v(a,a,b,b),u(a,a,b),v(a,a,b,a))
+= { by axiom 6 }
+  r(v(a,a,b,b),u(a,a,b),v(a,b,a,a))
+= { by axiom 5 }
+  r(v(a,a,b,b),u(a,a,b),v(b,a,a,a))
+= { by axiom 8 }
+  r(v(a,a,b,b),v(a,a,a,b),v(b,a,a,a))
+= { by axiom 7 }
+  r(v(a,a,b,b),v(a,a,b,a),v(b,a,a,a))
+= { by axiom 6 }
+  r(v(a,a,b,b),v(a,b,a,a),v(b,a,a,a))
+= { by lemma 42 }
+  true
+
+Lemma 45: r(v(a,a,b,b),u(a,a,b),a)
+Proof:
+  r(v(a,a,b,b),u(a,a,b),a)
+= { by axiom 1 R->L }
+  r(v(a,a,b,b),u(a,a,b),m(a,a,a))
+= { by axiom 1 R->L }
+  r(v(a,a,b,b),m(v(b,b,a,a),v(b,b,a,a),u(a,a,b)),m(a,a,a))
+= { by axiom 3 R->L }
+  r(m(v(a,a,b,b),u(a,b,b),u(a,b,b)),m(v(b,b,a,a),v(b,b,a,a),u(a,a,b)),m(a,a,a))
+= { by lemma 43 }
+  true
+
+Lemma 46: r(u(a,a,a),u(a,b,b),u(b,a,a))
+Proof:
+  have r(a,a,b)
+    by axiom 9
+   and r(a,b,a)
+    by axiom 11
+   and r(a,b,a)
+    by axiom 11
+  hence r(u(a,a,a),u(a,b,b),u(b,a,a))
+    by axiom 14
+
+Lemma 47: r(m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)),m(u(a,a,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),a,a))
+Proof:
+  have r(v(a,a,b,b),u(a,a,b),u(a,a,b))
+    by lemma 44
+   and r(v(a,a,b,b),u(a,a,b),a)
+    by lemma 45
+   and r(u(a,b,b),u(a,a,b),a)
+    by lemma 17
+  hence r(m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)),m(u(a,a,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),a,a))
+    by axiom 15
+
+Lemma 48: r(a,u(a,b,b),u(a,a,b))
+Proof:
+  r(a,u(a,b,b),u(a,a,b))
+= { by axiom 13 }
+  r(a,u(a,b,b),u(b,a,a))
+= { by axiom 4 R->L }
+  r(u(a,a,a),u(a,b,b),u(b,a,a))
+= { by lemma 46 }
+  true
+
+Lemma 49: r(u(a,b,b),u(a,a,b),u(a,a,b))
+Proof:
+  r(u(a,b,b),u(a,a,b),u(a,a,b))
+= { by axiom 3 R->L }
+  r(u(a,b,b),u(a,a,b),m(u(a,a,b),a,a))
+= { by axiom 1 R->L }
+  r(u(a,b,b),m(u(a,a,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),a,a))
+= { by axiom 1 R->L }
+  r(m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)),m(u(a,a,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),a,a))
+= { by lemma 47 }
+  true
+
+Lemma 50: r(m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(a,a,u(a,b,b)),m(u(a,b,b),u(a,b,b),a))
+Proof:
+  have r(v(b,b,a,a),a,u(a,b,b))
+    by lemma 38
+   and r(u(a,a,b),a,u(a,b,b))
+    by lemma 19
+   and r(u(a,a,b),u(a,b,b),a)
+    by lemma 39
+  hence r(m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(a,a,u(a,b,b)),m(u(a,b,b),u(a,b,b),a))
+    by axiom 15
+
+Lemma 51: r(m(a,u(a,b,b),u(a,b,b)),m(u(a,b,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+Proof:
+  have r(a,u(a,b,b),u(a,a,b))
+    by lemma 48
+   and r(u(a,b,b),u(a,a,b),u(a,a,b))
+    by lemma 49
+   and r(u(a,b,b),u(a,a,b),a)
+    by lemma 17
+  hence r(m(a,u(a,b,b),u(a,b,b)),m(u(a,b,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+    by axiom 15
+
+Lemma 52: r(v(b,b,a,a),u(a,b,b),a)
+Proof:
+  r(v(b,b,a,a),u(a,b,b),a)
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),u(a,b,b),m(u(a,b,b),u(a,b,b),a))
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),m(a,a,u(a,b,b)),m(u(a,b,b),u(a,b,b),a))
+= { by axiom 3 R->L }
+  r(m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(a,a,u(a,b,b)),m(u(a,b,b),u(a,b,b),a))
+= { by lemma 50 }
+  true
+
+Lemma 53: r(a,u(a,b,b),a)
+Proof:
+  r(a,u(a,b,b),a)
+= { by axiom 1 R->L }
+  r(a,u(a,b,b),m(u(a,a,b),u(a,a,b),a))
+= { by axiom 3 R->L }
+  r(a,m(u(a,b,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+= { by axiom 3 R->L }
+  r(m(a,u(a,b,b),u(a,b,b)),m(u(a,b,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+= { by lemma 51 }
+  true
+
+Lemma 54: r(v(a,b,a,a),v(a,a,b,b),v(b,a,a,a))
+Proof:
+  have r(a,a,b)
+    by axiom 9
+   and r(b,a,a)
+    by axiom 2
+   and r(a,b,a)
+    by axiom 11
+   and r(a,b,a)
+    by axiom 11
+  hence r(v(a,b,a,a),v(a,a,b,b),v(b,a,a,a))
+    by axiom 10
+
+Lemma 55: r(u(a,a,b),v(a,a,b,b),u(a,a,b))
+Proof:
+  r(u(a,a,b),v(a,a,b,b),u(a,a,b))
+= { by axiom 8 }
+  r(u(a,a,b),v(a,a,b,b),v(a,a,a,b))
+= { by axiom 7 }
+  r(u(a,a,b),v(a,a,b,b),v(a,a,b,a))
+= { by axiom 6 }
+  r(u(a,a,b),v(a,a,b,b),v(a,b,a,a))
+= { by axiom 5 }
+  r(u(a,a,b),v(a,a,b,b),v(b,a,a,a))
+= { by axiom 8 }
+  r(v(a,a,a,b),v(a,a,b,b),v(b,a,a,a))
+= { by axiom 7 }
+  r(v(a,a,b,a),v(a,a,b,b),v(b,a,a,a))
+= { by axiom 6 }
+  r(v(a,b,a,a),v(a,a,b,b),v(b,a,a,a))
+= { by lemma 54 }
+  true
+
+Lemma 56: r(v(b,b,a,a),v(a,a,b,b),v(a,a,a,a))
+Proof:
+  have r(b,a,a)
+    by axiom 2
+   and r(b,a,a)
+    by axiom 2
+   and r(a,b,a)
+    by axiom 11
+   and r(a,b,a)
+    by axiom 11
+  hence r(v(b,b,a,a),v(a,a,b,b),v(a,a,a,a))
+    by axiom 10
+
+Lemma 57: r(m(u(a,a,b),u(a,a,b),u(a,b,b)),m(v(a,a,b,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+Proof:
+  have r(u(a,a,b),v(a,a,b,b),u(a,a,b))
+    by lemma 55
+   and r(u(a,a,b),u(a,a,b),u(a,a,b))
+    by lemma 23
+   and r(u(a,b,b),u(a,a,b),a)
+    by lemma 17
+  hence r(m(u(a,a,b),u(a,a,b),u(a,b,b)),m(v(a,a,b,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+    by axiom 15
+
+Lemma 58: r(v(b,b,a,a),v(a,a,b,b),a)
+Proof:
+  r(v(b,b,a,a),v(a,a,b,b),a)
+= { by axiom 4 R->L }
+  r(v(b,b,a,a),v(a,a,b,b),u(a,a,a))
+= { by axiom 8 }
+  r(v(b,b,a,a),v(a,a,b,b),v(a,a,a,a))
+= { by lemma 56 }
+  true
+
+Lemma 59: r(u(a,b,b),v(a,a,b,b),a)
+Proof:
+  r(u(a,b,b),v(a,a,b,b),a)
+= { by axiom 1 R->L }
+  r(u(a,b,b),v(a,a,b,b),m(u(a,a,b),u(a,a,b),a))
+= { by axiom 3 R->L }
+  r(u(a,b,b),m(v(a,a,b,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+= { by axiom 1 R->L }
+  r(m(u(a,a,b),u(a,a,b),u(a,b,b)),m(v(a,a,b,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+= { by lemma 57 }
+  true
+
+Lemma 60: r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(v(a,a,b,b),v(a,a,b,b),u(a,a,b)),m(a,a,a))
+Proof:
+  have r(v(b,b,a,a),v(a,a,b,b),a)
+    by lemma 58
+   and r(u(a,b,b),v(a,a,b,b),a)
+    by lemma 59
+   and r(u(a,b,b),u(a,a,b),a)
+    by lemma 17
+  hence r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(v(a,a,b,b),v(a,a,b,b),u(a,a,b)),m(a,a,a))
+    by axiom 15
+
+Lemma 61: r(u(a,b,b),u(a,a,a),u(b,a,a))
+Proof:
+  have r(a,a,b)
+    by axiom 9
+   and r(b,a,a)
+    by axiom 2
+   and r(b,a,a)
+    by axiom 2
+  hence r(u(a,b,b),u(a,a,a),u(b,a,a))
+    by axiom 14
+
+Lemma 62: r(v(b,b,a,a),u(a,a,b),a)
+Proof:
+  r(v(b,b,a,a),u(a,a,b),a)
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),u(a,a,b),m(a,a,a))
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),m(v(a,a,b,b),v(a,a,b,b),u(a,a,b)),m(a,a,a))
+= { by axiom 3 R->L }
+  r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(v(a,a,b,b),v(a,a,b,b),u(a,a,b)),m(a,a,a))
+= { by lemma 60 }
+  true
+
+Lemma 63: r(u(a,b,b),a,u(a,a,b))
+Proof:
+  r(u(a,b,b),a,u(a,a,b))
+= { by axiom 13 }
+  r(u(a,b,b),a,u(b,a,a))
+= { by axiom 4 R->L }
+  r(u(a,b,b),u(a,a,a),u(b,a,a))
+= { by lemma 61 }
+  true
+
+Lemma 64: r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(u(a,a,b),u(a,a,b),a),m(a,a,u(a,a,b)))
+Proof:
+  have r(v(b,b,a,a),u(a,a,b),a)
+    by lemma 62
+   and r(u(a,b,b),u(a,a,b),a)
+    by lemma 17
+   and r(u(a,b,b),a,u(a,a,b))
+    by lemma 63
+  hence r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(u(a,a,b),u(a,a,b),a),m(a,a,u(a,a,b)))
+    by axiom 15
+
+Lemma 65: r(v(b,b,a,a),a,u(a,a,b))
+Proof:
+  r(v(b,b,a,a),a,u(a,a,b))
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),a,m(a,a,u(a,a,b)))
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),m(u(a,a,b),u(a,a,b),a),m(a,a,u(a,a,b)))
+= { by axiom 3 R->L }
+  r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(u(a,a,b),u(a,a,b),a),m(a,a,u(a,a,b)))
+= { by lemma 64 }
+  true
+
+Lemma 66: r(m(v(b,b,a,a),a,a),m(u(a,b,b),u(a,b,b),b),m(a,a,a))
+Proof:
+  have r(v(b,b,a,a),u(a,b,b),a)
+    by lemma 52
+   and r(a,u(a,b,b),a)
+    by lemma 53
+   and r(a,b,a)
+    by axiom 11
+  hence r(m(v(b,b,a,a),a,a),m(u(a,b,b),u(a,b,b),b),m(a,a,a))
+    by axiom 15
+
+Lemma 67: r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(a,u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+Proof:
+  have r(v(b,b,a,a),a,u(a,a,b))
+    by lemma 65
+   and r(u(a,b,b),u(a,a,b),u(a,a,b))
+    by lemma 49
+   and r(u(a,b,b),u(a,a,b),a)
+    by lemma 17
+  hence r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(a,u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+    by axiom 15
+
+Lemma 68: r(v(b,b,a,a),b,a)
+Proof:
+  r(v(b,b,a,a),b,a)
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),b,m(a,a,a))
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),m(u(a,b,b),u(a,b,b),b),m(a,a,a))
+= { by axiom 3 R->L }
+  r(m(v(b,b,a,a),a,a),m(u(a,b,b),u(a,b,b),b),m(a,a,a))
+= { by lemma 66 }
+  true
+
+Lemma 69: r(v(b,b,a,a),a,a)
+Proof:
+  r(v(b,b,a,a),a,a)
+= { by axiom 1 R->L }
+  r(v(b,b,a,a),a,m(u(a,a,b),u(a,a,b),a))
+= { by axiom 3 R->L }
+  r(v(b,b,a,a),m(a,u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+= { by axiom 3 R->L }
+  r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(a,u(a,a,b),u(a,a,b)),m(u(a,a,b),u(a,a,b),a))
+= { by lemma 67 }
+  true
+
+Lemma 70: r(m(v(b,b,a,a),v(b,b,a,a),b),m(b,a,a),m(a,a,a))
+Proof:
+  have r(v(b,b,a,a),b,a)
+    by lemma 68
+   and r(v(b,b,a,a),a,a)
+    by lemma 69
+   and r(b,a,a)
+    by axiom 2
+  hence r(m(v(b,b,a,a),v(b,b,a,a),b),m(b,a,a),m(a,a,a))
+    by axiom 15
+
+Lemma 71: r(b,b,a)
+Proof:
+  r(b,b,a)
+= { by axiom 1 R->L }
+  r(b,b,m(a,a,a))
+= { by axiom 3 R->L }
+  r(b,m(b,a,a),m(a,a,a))
+= { by axiom 1 R->L }
+  r(m(v(b,b,a,a),v(b,b,a,a),b),m(b,a,a),m(a,a,a))
+= { by lemma 70 }
+  true
+
+Lemma 72: r(m(b,b,a),m(a,b,b),m(a,a,a))
+Proof:
+  have r(b,a,a)
+    by axiom 2
+   and r(b,b,a)
+    by lemma 71
+   and r(a,b,a)
+    by axiom 11
+  hence r(m(b,b,a),m(a,b,b),m(a,a,a))
+    by axiom 15
+
+Goal 1: r(a,a,a)
+Proof:
+  r(a,a,a)
+= { by axiom 1 R->L }
+  r(a,a,m(a,a,a))
+= { by axiom 3 R->L }
+  r(a,m(a,b,b),m(a,a,a))
+= { by axiom 1 R->L }
+  r(m(b,b,a),m(a,b,b),m(a,a,a))
+= { by lemma 72 }
+  true
