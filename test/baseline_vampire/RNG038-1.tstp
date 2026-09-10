@@ -1,0 +1,77 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Unsatisfiable for RNG038-1
+% SZS output start Proof for RNG038-1
+fof(f2,axiom,(
+  ( ! [X0] : (sum(X0,additive_identity,X0)) )),
+  file('Problems/RNG/RNG038-1.p',unknown)).
+fof(f6,axiom,(
+  ( ! [X0] : (sum(X0,additive_inverse(X0),additive_identity)) )),
+  file('Problems/RNG/RNG038-1.p',unknown)).
+fof(f8,axiom,(
+  ( ! [X2,X3,X0,X1,X4,X5] : (~sum(X1,X3,X4) | ~sum(X0,X1,X2) | ~sum(X0,X4,X5) | sum(X2,X3,X5)) )),
+  file('Problems/RNG/RNG038-1.p',unknown)).
+fof(f14,axiom,(
+  ( ! [X2,X3,X0,X1,X6,X4,X5] : (~product(X5,X1,X6) | ~product(X3,X1,X4) | ~sum(X0,X3,X5) | ~product(X0,X1,X2) | sum(X2,X4,X6)) )),
+  file('Problems/RNG/RNG038-1.p',unknown)).
+fof(f16,axiom,(
+  ( ! [X2,X3,X0,X1] : (~sum(X0,X1,X3) | ~sum(X0,X1,X2) | X2 = X3) )),
+  file('Problems/RNG/RNG038-1.p',unknown)).
+fof(f18,axiom,(
+  ( ! [X0,X1] : (X0 != additive_identity | product(X0,h(X0,X1),X1)) )),
+  file('Problems/RNG/RNG038-1.p',unknown)).
+fof(f19,plain,(
+  ( ! [X0,X1] : (additive_identity != X0 | product(X0,h(X0,X1),X1)) )),
+  inference(reorient_equations,[],[f18])).
+fof(f23,negated_conjecture,(
+  b != additive_identity),
+  file('Problems/RNG/RNG038-1.p',unknown)).
+fof(f24,plain,(
+  additive_identity != b),
+  inference(reorient_equations,[],[f23])).
+fof(f25,plain,(
+  ( ! [X1] : (product(additive_identity,h(additive_identity,X1),X1)) )),
+  inference(equality_resolution,[],[f19])).
+fof(f34,plain,(
+  ( ! [X0,X1] : (~sum(X0,additive_inverse(X0),X1) | additive_identity = X1) )),
+  inference(resolution,[],[f16,f6])).
+fof(f53,plain,(
+  ( ! [X2,X3,X0,X1] : (~sum(X0,additive_identity,X3) | ~sum(X0,X1,X2) | sum(X2,additive_inverse(X1),X3)) )),
+  inference(resolution,[],[f8,f6])).
+fof(f85,plain,(
+  ( ! [X2,X3,X0,X1,X4] : (~product(X3,h(additive_identity,X1),X4) | ~sum(X3,X0,additive_identity) | ~product(X0,h(additive_identity,X1),X2) | sum(X4,X2,X1)) )),
+  inference(resolution,[],[f14,f25])).
+fof(f256,plain,(
+  ( ! [X2,X0,X1] : (sum(X2,additive_inverse(X1),X0) | ~sum(X0,X1,X2)) )),
+  inference(resolution,[],[f53,f2])).
+fof(f760,plain,(
+  ( ! [X2,X0,X1] : (~product(X0,h(additive_identity,X1),X2) | ~sum(additive_identity,X0,additive_identity) | sum(X1,X2,X1)) )),
+  inference(resolution,[],[f85,f25])).
+fof(f1124,plain,(
+  ( ! [X0,X1] : (~sum(X0,X1,X1) | additive_identity = X0) )),
+  inference(resolution,[],[f256,f34])).
+fof(f3558,plain,(
+  ( ! [X0] : (~sum(additive_identity,additive_identity,additive_identity) | sum(X0,X0,X0)) )),
+  inference(resolution,[],[f760,f25])).
+fof(f3564,plain,(
+  ( ! [X0] : (sum(X0,X0,X0)) )),
+  inference(forward_subsumption_resolution,[],[f3558,f2])).
+fof(f3578,plain,(
+  ( ! [X0] : (additive_identity = X0) )),
+  inference(resolution,[],[f3564,f1124])).
+fof(f3951,plain,(
+  additive_identity != additive_identity),
+  inference(superposition,[],[f24,f3578])).
+fof(f3966,plain,(
+  $false),
+  inference(trivial_inequality_removal,[],[f3951])).
+% SZS output end Proof for RNG038-1
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.043 s
+% Peak memory usage: 8 MB
+% ------------------------------
+% ------------------------------

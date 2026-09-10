@@ -58,6 +58,10 @@ tweeBenchmarkNames =
   , "COL017-1"
   , "COL021-1"
   , "COL022-1"
+  -- the conjecture's goal literals share their variables, so one substitution
+  -- has to instantiate all of them: read independently, borders(X0,X1) took
+  -- the value african(X1) rules out
+  , "PUZ011-1"
   ]
 
 handcraftedNames :: [String]
@@ -119,6 +123,16 @@ benchmarkNames =
   , "SYN719-1"
   , "LCL430-2"        -- premise freshening of a tau-bound nucleus variable nested in a term (Oop(Y,false), Y -> Ovar(Y'))
   , "HEN003-3"        -- a nucleus's conclusion matches the cited axiom's head only flipped (Eq symmetry); the emitted Lean citation needs .symm (Vampire's own derived clause states "zero = divide(...)")
+  -- a body-free block citing a conditional axiom must state its head under
+  -- theta, not the axiom's own general head: asserting product(X,h(X,b),b)
+  -- from "X = additive_identity => product(X,h(X,Y),Y)" drops the condition
+  , "RNG038-1"
+  -- rewriting a hypothesis whose own variable was eliminated at a concrete
+  -- witness: the rewrite must be instantiated at that same witness
+  , "RNG039-1"
+  , "PUZ011-1"        -- goal literals instantiated under one shared substitution
+  , "NLP258-1"
+  , "COL059-1"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -175,6 +189,11 @@ eBenchmarkNames =
   , "GRP703-10"
   , "SYN163-1"        -- identity-binding freshening (Lemma 62) and capture-avoiding block instantiation (Goal 1)
   , "SYN159-1"        -- identity-binding freshening of a tau-bound nucleus variable
+  , "LCL126-1"        -- goal cited from an axiom whose head is an instance of it, not a variant
+  , "PUZ011-1"        -- goal literals instantiated under one shared substitution
+  , "NLP258-1"
+  , "GRP192-1"
+  , "HEN011-2"
   ]
 
 mkTest :: String -> String -> String -> TestTree

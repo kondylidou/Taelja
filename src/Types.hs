@@ -94,7 +94,13 @@ data AlgState = AlgState
   , stGoals      :: [(Literal, ProofBlock)]
   , stCounter    :: Int
   , stAxNuclei   :: [(String, Clause)] -- original axiom nuclei (name, clause) for goal justification search
-  , stReprove    :: String -> IO (Maybe (Literal, ProofBlock, [(String, Literal, ProofBlock)]))
+  , stReprove    :: String -> IO (Maybe (Literal, ProofBlock, [(String, Literal, ProofBlock)], [Axiom]))
+    -- Axioms a re-proof had to state that the input tree never used, given
+    -- outer numbers as they arrive and appended to the emitted axiom list.
+  , stExtraAxioms :: [Axiom]
+    -- The emitted axiom list as fixed before the algorithm ran; consulted
+    -- when numbering the extras so the two never collide.
+  , stBaseAxioms  :: [Axiom]
   , stNameToPos  :: Map.Map String String        -- TSTP unit name -> tree position of its electron
   , stEqByName   :: Map.Map String (Term, Term)  -- TSTP unit name -> its unit equation
   , stGoalTemplate :: [Literal]  -- the conjecture's own goal literals (shared free variables across conjuncts), consulted by emitGoalProof

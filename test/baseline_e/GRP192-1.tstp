@@ -1,0 +1,156 @@
+# Preprocessing class: FSMSSMSSSSSNFFN.
+# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+# No SInE strategy applied
+# Search class: FUUPM-FFSF21-SFFFFFNN
+# Configuration: U----_102_C09_12_F1_SE_CS_SP_PS_S5PRR_RG_S04AN
+# Initializing proof state
+# Scanning for AC axioms
+# multiply is associative
+# greatest_lower_bound is AC
+# least_upper_bound is AC
+# AC handling enabled
+#
+#cnf(i_0_34, negated_conjecture, (multiply(a,b)!=multiply(b,a))).
+#
+#cnf(i_0_18, plain, (multiply(identity,X1)=X1)).
+#
+#cnf(i_0_33, hypothesis, (least_upper_bound(identity,X1)=X1)).
+#
+#cnf(i_0_26, plain, (greatest_lower_bound(X1,X1)=X1)).
+#
+#cnf(i_0_25, plain, (least_upper_bound(X1,X1)=X1)).
+#
+#cnf(i_0_19, plain, (multiply(inverse(X1),X1)=identity)).
+#
+#cnf(i_0_28, plain, (greatest_lower_bound(X1,least_upper_bound(X1,X2))=X1)).
+#
+#cnf(i_0_27, plain, (least_upper_bound(X1,greatest_lower_bound(X1,X2))=X1)).
+#
+#cnf(i_0_21, plain, (greatest_lower_bound(X1,X2)=greatest_lower_bound(X2,X1))).
+#
+#cnf(i_0_22, plain, (least_upper_bound(X1,X2)=least_upper_bound(X2,X1))).
+#
+#cnf(i_0_23, plain, (greatest_lower_bound(greatest_lower_bound(X1,X2),X3)=greatest_lower_bound(X1,greatest_lower_bound(X2,X3)))).
+#
+#cnf(i_0_24, plain, (least_upper_bound(least_upper_bound(X1,X2),X3)=least_upper_bound(X1,least_upper_bound(X2,X3)))).
+#
+#cnf(i_0_20, plain, (multiply(multiply(X1,X2),X3)=multiply(X1,multiply(X2,X3)))).
+#
+#cnf(i_0_30, plain, (greatest_lower_bound(multiply(X1,X2),multiply(X1,X3))=multiply(X1,greatest_lower_bound(X2,X3)))).
+#
+#cnf(i_0_29, plain, (least_upper_bound(multiply(X1,X2),multiply(X1,X3))=multiply(X1,least_upper_bound(X2,X3)))).
+#
+#cnf(i_0_32, plain, (greatest_lower_bound(multiply(X1,X3),multiply(X2,X3))=multiply(greatest_lower_bound(X1,X2),X3))).
+#
+#cnf(i_0_31, plain, (least_upper_bound(multiply(X1,X3),multiply(X2,X3))=multiply(least_upper_bound(X1,X2),X3))).
+# Presaturation interreduction done
+#
+#cnf(i_0_26, plain, (greatest_lower_bound(X1,X1)=X1)).
+#
+#cnf(i_0_25, plain, (least_upper_bound(X1,X1)=X1)).
+#
+#cnf(i_0_18, plain, (multiply(identity,X1)=X1)).
+#
+#cnf(i_0_34, negated_conjecture, (multiply(a,b)!=multiply(b,a))).
+#
+#cnf(i_0_33, hypothesis, (least_upper_bound(identity,X1)=X1)).
+#
+#cnf(i_0_19, plain, (multiply(inverse(X1),X1)=identity)).
+#
+#cnf(i_0_28, plain, (greatest_lower_bound(X1,least_upper_bound(X1,X2))=X1)).
+#
+#cnf(i_0_35, hypothesis, (greatest_lower_bound(identity,X1)=identity)).
+#
+#cnf(i_0_27, plain, (least_upper_bound(X1,greatest_lower_bound(X1,X2))=X1)).
+#
+#cnf(i_0_21, plain, (greatest_lower_bound(X1,X2)=greatest_lower_bound(X2,X1))).
+#
+#cnf(i_0_42, hypothesis, (greatest_lower_bound(X1,identity)=identity)).
+##
+#cnf(i_0_48, hypothesis, (least_upper_bound(X1,identity)=X1)).
+#
+#cnf(i_0_43, plain, (least_upper_bound(X1,greatest_lower_bound(X2,X1))=X1)).
+##
+#cnf(i_0_22, plain, (least_upper_bound(X1,X2)=least_upper_bound(X2,X1))).
+#
+#cnf(i_0_62, plain, (greatest_lower_bound(X1,least_upper_bound(X2,X1))=X1)).
+##
+#cnf(i_0_55, plain, (least_upper_bound(X1,least_upper_bound(X1,X2))=least_upper_bound(X1,X2))).
+#
+#cnf(i_0_69, plain, (least_upper_bound(X2,least_upper_bound(X1,X2))=least_upper_bound(X1,X2))).
+###
+#cnf(i_0_23, plain, (greatest_lower_bound(greatest_lower_bound(X1,X2),X3)=greatest_lower_bound(X1,greatest_lower_bound(X2,X3)))).
+#
+#cnf(i_0_24, plain, (least_upper_bound(least_upper_bound(X1,X2),X3)=least_upper_bound(X1,least_upper_bound(X2,X3)))).
+#
+#cnf(i_0_20, plain, (multiply(multiply(X1,X2),X3)=multiply(X1,multiply(X2,X3)))).
+#
+#cnf(i_0_71, plain, (greatest_lower_bound(X1,greatest_lower_bound(X2,X1))=greatest_lower_bound(X1,X2))).
+##
+#cnf(i_0_138, plain, (multiply(inverse(X1),multiply(X1,X2))=X2)).
+#
+#cnf(i_0_154, plain, (multiply(inverse(identity),X1)=X1)).
+#
+#cnf(i_0_152, plain, (multiply(inverse(inverse(X1)),identity)=X1)).
+#
+#cnf(i_0_156, plain, (multiply(inverse(inverse(identity)),X1)=X1)).
+#
+#cnf(i_0_163, plain, (inverse(identity)=identity)).
+###
+#cnf(i_0_114, plain, (greatest_lower_bound(X1,greatest_lower_bound(X1,X2))=greatest_lower_bound(X1,X2))).
+#####
+#cnf(i_0_151, plain, (multiply(inverse(inverse(X1)),X2)=multiply(X1,X2))).
+#
+#cnf(i_0_152, plain, (multiply(X1,identity)=X1)).
+#
+#cnf(i_0_189, plain, (inverse(inverse(X1))=X1)).
+#
+#cnf(i_0_194, plain, (multiply(X1,inverse(X1))=identity)).
+#
+#cnf(i_0_195, plain, (multiply(X1,multiply(inverse(X1),X2))=X2)).
+##
+#cnf(i_0_106, plain, (least_upper_bound(X1,greatest_lower_bound(X2,greatest_lower_bound(X3,X1)))=X1)).
+#
+#cnf(i_0_30, plain, (greatest_lower_bound(multiply(X1,X2),multiply(X1,X3))=multiply(X1,greatest_lower_bound(X2,X3)))).
+#
+#cnf(i_0_251, plain, (greatest_lower_bound(X1,multiply(X1,X2))=X1)).
+#
+#cnf(i_0_266, plain, (inverse(X1)=identity)).
+#
+#cnf(i_0_270, plain, (greatest_lower_bound(X1,X2)=X1)).
+#
+#cnf(i_0_21, plain, (X1=X2)).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(associativity, axiom, (multiply(multiply(X1,X2),X3)=multiply(X1,multiply(X2,X3))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-0.ax', associativity)).
+cnf(left_inverse, axiom, (multiply(inverse(X1),X1)=identity), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-0.ax', left_inverse)).
+cnf(left_identity, axiom, (multiply(identity,X1)=X1), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-0.ax', left_identity)).
+cnf(glb_absorbtion, axiom, (greatest_lower_bound(X1,least_upper_bound(X1,X2))=X1), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-2.ax', glb_absorbtion)).
+cnf(p40a_1, hypothesis, (least_upper_bound(identity,X1)=X1), file('Problems/GRP/GRP192-1.p', p40a_1)).
+cnf(symmetry_of_glb, axiom, (greatest_lower_bound(X1,X2)=greatest_lower_bound(X2,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-2.ax', symmetry_of_glb)).
+cnf(monotony_glb1, axiom, (multiply(X1,greatest_lower_bound(X2,X3))=greatest_lower_bound(multiply(X1,X2),multiply(X1,X3))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-2.ax', monotony_glb1)).
+cnf(prove_p40a, negated_conjecture, (multiply(a,b)!=multiply(b,a)), file('Problems/GRP/GRP192-1.p', prove_p40a)).
+cnf(c_0_8, axiom, (multiply(multiply(X1,X2),X3)=multiply(X1,multiply(X2,X3))), associativity).
+cnf(c_0_9, axiom, (multiply(inverse(X1),X1)=identity), left_inverse).
+cnf(c_0_10, axiom, (multiply(identity,X1)=X1), left_identity).
+cnf(c_0_11, plain, (multiply(inverse(X1),multiply(X1,X2))=X2), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_8, c_0_9]), c_0_10])).
+cnf(c_0_12, axiom, (greatest_lower_bound(X1,least_upper_bound(X1,X2))=X1), glb_absorbtion).
+cnf(c_0_13, hypothesis, (least_upper_bound(identity,X1)=X1), p40a_1).
+cnf(c_0_14, plain, (multiply(inverse(inverse(X1)),identity)=X1), inference(spm,[status(thm)],[c_0_11, c_0_9])).
+cnf(c_0_15, plain, (multiply(inverse(inverse(X1)),X2)=multiply(X1,X2)), inference(spm,[status(thm)],[c_0_11, c_0_11])).
+cnf(c_0_16, hypothesis, (greatest_lower_bound(identity,X1)=identity), inference(spm,[status(thm)],[c_0_12, c_0_13])).
+cnf(c_0_17, axiom, (greatest_lower_bound(X1,X2)=greatest_lower_bound(X2,X1)), symmetry_of_glb).
+cnf(c_0_18, plain, (multiply(X1,identity)=X1), inference(rw,[status(thm)],[c_0_14, c_0_15])).
+cnf(c_0_19, axiom, (multiply(X1,greatest_lower_bound(X2,X3))=greatest_lower_bound(multiply(X1,X2),multiply(X1,X3))), monotony_glb1).
+cnf(c_0_20, hypothesis, (greatest_lower_bound(X1,identity)=identity), inference(spm,[status(thm)],[c_0_16, c_0_17])).
+cnf(c_0_21, plain, (inverse(inverse(X1))=X1), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_15, c_0_18]), c_0_18])).
+cnf(c_0_22, plain, (greatest_lower_bound(X1,multiply(X1,X2))=X1), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_19, c_0_18]), c_0_20]), c_0_18]), c_0_17])).
+cnf(c_0_23, plain, (multiply(X1,multiply(inverse(X1),X2))=X2), inference(spm,[status(thm)],[c_0_11, c_0_21])).
+cnf(c_0_24, negated_conjecture, (multiply(a,b)!=multiply(b,a)), inference(fof_simplification,[status(thm)],[prove_p40a])).
+cnf(c_0_25, plain, (greatest_lower_bound(X1,X2)=X1), inference(spm,[status(thm)],[c_0_22, c_0_23])).
+cnf(c_0_26, negated_conjecture, (multiply(a,b)!=multiply(b,a)), c_0_24).
+cnf(c_0_27, plain, (X1=X2), inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_17, c_0_25]), c_0_25])).
+cnf(c_0_28, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_26, c_0_27]), c_0_27])]), ['proof']).
+# SZS output end CNFRefutation

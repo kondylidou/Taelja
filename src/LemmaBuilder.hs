@@ -106,10 +106,17 @@ makeFileSourced (T.Unit n decl _) =
   T.Unit n decl (Just (T.File (T.Atom (Text.pack "lemma")) Nothing, Nothing))
 makeFileSourced u = u
 
--- A built lemma: its statement, its proof, and the sub-lemmas the recursive
--- translation introduced (already renamed apart and de-Skolemized), which the
--- caller must add to the outer proof before the lemma itself.
-type BuiltLemma = (Literal, ProofBlock, [(String, Literal, ProofBlock)])
+-- A built lemma: its statement, its proof, the sub-lemmas the recursive
+-- translation introduced (already renamed apart and de-Skolemized, which the
+-- caller must add to the outer proof before the lemma itself), and the axioms
+-- that translation numbered itself.  The last
+-- component is normally empty: a sub-run cites the outer proof's axioms
+-- through its name override.  It is non-empty when the sub-problem needed a
+-- file axiom the outer proof never used (LCL126-1/E re-proves through q_3,
+-- which the outer refutation does not touch).  Those axioms have to be added
+-- to the outer axiom list, or the lifted block cites a name that means a
+-- different axiom outside.
+type BuiltLemma = (Literal, ProofBlock, [(String, Literal, ProofBlock)], [Axiom])
 
 -- Lemma introduction (paper, Section 4): Skolemize the candidate's negation,
 -- obtain a refutation of {A_1..A_n, not B} from the axioms, translate it
@@ -245,7 +252,7 @@ buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
           return Nothing
         Right tstp -> do
           msp <- dbgScoped debug ("sub-DAG for " ++ cname) (translateFn nameOvr debug tstp)
-          return (msp >>= liftSubProof cname lit undoMap)
+          return (msp >>= liftSubProof nameOvr cname lit undoMap)
 
 -- Turn the recursive translation of a candidate into an outer-proof lemma:
 -- the goal block becomes the lemma's proof; the sub-lemmas are renamed apart
@@ -254,8 +261,9 @@ buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
 -- constants is sound only if it was proved from the axioms alone, so a
 -- candidate whose sub-lemmas cite an assumption (a Skolemized body premise)
 -- is rejected.
-liftSubProof :: String -> Literal -> [(String, Term)] -> StructuredProof -> Maybe BuiltLemma
-liftSubProof cname lit undoMap sp = do
+liftSubProof :: Map.Map String String -> String -> Literal -> [(String, Term)]
+             -> StructuredProof -> Maybe BuiltLemma
+liftSubProof nameOvr cname lit undoMap sp = do
   (_, goalBlk) <- listToMaybe (goals sp)
   let subLemmas = lemmas sp
       newName n = "lemma " ++ cname ++ "/" ++ n
@@ -264,6 +272,11 @@ liftSubProof cname lit undoMap sp = do
       lift blk  = applyConstSubstBlock undoMap (renameRefsBlock ren blk)
       lifted    = [ (newName n, applyConstSubstLit undoMap l, lift b) | (n, l, b) <- subLemmas ]
       blk'      = lift goalBlk
+      -- Names the sub-run took from the outer proof; anything else in its
+      -- axiom list it numbered itself and the outer proof has never heard of.
+      outerNames = Set.fromList (filter (not . null) (Map.elems nameOvr))
+      axName a  = case a of { AUnit n _ -> n; ANucleus n _ -> n }
+      ownAxioms = [ a | a <- axioms sp, axName a `Set.notMember` outerNames ]
   -- The sub-proof may cite the candidate's own body atoms, which are stated
   -- as assumptions inside it.  The lemma lifted out states the head alone,
   -- so a block that rests on an assumption would claim the head outright.
@@ -274,7 +287,7 @@ liftSubProof cname lit undoMap sp = do
      || "assumption" `elem` blockRefNames blk'
      || any (\(_, _, b) -> "assumption" `elem` blockRefNames b) lifted
     then Nothing
-    else Just (lit, blk', lifted)
+    else Just (lit, blk', lifted, ownAxioms)
 
 -- Re-prove the candidate with Twee (pure equations) or E, then translate the
 -- prover's proof recursively (paper, Section 4).
@@ -353,7 +366,7 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                                     | (ue, dir, cur) <- chain
                                     , Just nm <- [ueName ue] ]
                             blk   = EqChain start steps
-                        in return (Just (lit, applyConstSubstBlock undoMap blk, []))
+                        in return (Just (lit, applyConstSubstBlock undoMap blk, [], []))
                   _ -> return Nothing
               _ -> return Nothing
           else return Nothing
@@ -414,7 +427,7 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                                        <|> Map.lookup aname tstp2name ] ]
                       nameOvr = Map.union ancOvr (syntheticOverrides bodyLits_sk)
                   msp <- dbgScoped debug ("E-reproved for " ++ cname) (translateFn nameOvr debug tstp)
-                  return (msp >>= liftSubProof cname lit undoMap)
+                  return (msp >>= liftSubProof nameOvr cname lit undoMap)
   where
     toCNFAncAxiom :: String -> T.Declaration -> Maybe String
     toCNFAncAxiom name decl =

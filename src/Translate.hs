@@ -198,10 +198,51 @@ translateMode strict debug (T.TSTP _ units) = do
           candidates = filter (\(cname, _) ->
                           resolveCopySource unitMap0 cname `Set.notMember` origAxiomNames)
                         (findLemmaCandidates units)
-      candResults <- forM candidates $ \c ->
-        buildCandidateLemma (translateWith strict) strict unitMap0 origTstp2name debug c
-      let validCands = Map.fromList
+      -- A candidate lemma is an optimisation: its sub-translation failing is a
+      -- reason to inline that step, not to abandon the whole proof.  Without
+      -- this catch the first candidate that throws short-circuits the loop and
+      -- takes the whole run with it.  The cost is that every candidate is now
+      -- tried to completion, so a proof with many of them gets slower;
+      -- HEN010-3/vampire goes from 13 s to 147 s and is recorded as a timeout.
+      candResults <- forM candidates $ \c -> do
+        r <- liftIO (try (buildCandidateLemma (translateWith strict) strict unitMap0 origTstp2name debug c))
+        case r of
+          Right v -> return v
+          Left e  -> do
+            when debug $ liftIO $ hPutStrLn stderr
+              ("buildCandidateLemma: " ++ fst c ++ " failed, inlining instead: " ++ show (e :: ErrorCall))
+            return Nothing
+      let builtCands =
             [ (cname, r) | ((cname, _), Just r) <- zip candidates candResults ]
+          -- A candidate's sub-proof may rest on a file axiom the outer
+          -- refutation never used, which it numbered in its own run.  Those
+          -- axioms are given outer numbers here and the lifted blocks are
+          -- renamed to match, so the emitted proof states every axiom it
+          -- cites (LCL126-1/E re-proves through q_3).  Identical axioms
+          -- introduced by several candidates share one outer number.
+          origNames = Set.fromList (map axiomDisplayName origAxioms)
+          mergeCands _    []                            = ([], [])
+          mergeCands accA ((cname, (l, blk, lifted, own)) : rest) =
+            let (accA', ren) = foldl addOne (accA, Map.empty) own
+                addOne (as, m) a =
+                  case find (sameAxiomStatement a) (origAxioms ++ as) of
+                    Just existing ->
+                      (as, Map.insert (axiomDisplayName a) (axiomDisplayName existing) m)
+                    Nothing ->
+                      let nm = nextOuterName (origAxioms ++ as)
+                      in (as ++ [renameAxiom nm a], Map.insert (axiomDisplayName a) nm m)
+                rn n         = Map.findWithDefault n n ren
+                blk'         = renameRefsBlock rn blk
+                lifted'      = [ (n, ll, renameRefsBlock rn bb) | (n, ll, bb) <- lifted ]
+                (restA, restC) = mergeCands accA' rest
+            in (restA, (cname, (l, blk', lifted', [])) : restC)
+          nextOuterName as =
+            head [ nm | i <- [1 :: Int ..], let nm = "axiom " ++ show i
+                 , nm `Set.notMember` origNames
+                 , nm `notElem` map axiomDisplayName as ]
+          (extraAxioms, mergedCands) = mergeCands [] builtCands
+          validCands   = Map.fromList mergedCands
+          allAxioms    = origAxioms ++ extraAxioms
           candOverride = Map.fromList [ (c, "lemma " ++ c) | c <- Map.keys validCands ]
           nameOverride = Map.union candOverride origTstp2name
           modUnits = map replace units
@@ -211,7 +252,7 @@ translateMode strict debug (T.TSTP _ units) = do
           replace u = u
       case (Map.null validCands, buildProofInfo axHyps modUnits) of
         (False, Just mainInfo) ->
-          Just <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just origAxioms)
+          Just <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just allAxioms)
         _ ->
           Just <$> runAlgorithm debug strict origInfo units Map.empty origTstp2name (Just origAxioms)
 
@@ -427,11 +468,37 @@ tryRelLemma units lit mPos = do
           reprove <- gets stReprove
           liftIO (reprove pos)
       case mRe of
-        Just (glit, gblk, subs) -> do
-          modify $ \st -> st { stLemmas = stLemmas st ++ subs }
+        Just bl -> do
+          (glit, gblk) <- absorbReprove bl
           promoteToLemma glit gblk
         Nothing ->
           throwError ("ensureNamed: no proof found for: " ++ show lit)
+
+-- Take over a re-proof's own axioms.  A sub-proof may rest on a file axiom
+-- the input refutation never used, which it numbered inside its own run; the
+-- number means something else out here.  Each such axiom is given an outer
+-- number (reusing one already emitted when the statement is the same) and the
+-- lifted block and sub-lemmas are renamed to match, so the emitted proof
+-- states every axiom it cites.  Returns the lemma's statement and its block.
+absorbReprove :: (Literal, ProofBlock, [(String, Literal, ProofBlock)], [Axiom])
+              -> AlgM (Literal, ProofBlock)
+absorbReprove (glit, gblk, subs, own) = do
+  base  <- gets stBaseAxioms
+  extra <- gets stExtraAxioms
+  let addOne (as, m) a =
+        case find (sameAxiomStatement a) (base ++ as) of
+          Just existing ->
+            (as, Map.insert (axiomDisplayName a) (axiomDisplayName existing) m)
+          Nothing ->
+            let nm = head [ n | i <- [1 :: Int ..], let n = "axiom " ++ show i
+                          , n `notElem` map axiomDisplayName (base ++ as) ]
+            in (as ++ [renameAxiom nm a], Map.insert (axiomDisplayName a) nm m)
+      (extra', ren) = foldl addOne (extra, Map.empty) own
+      rn n          = Map.findWithDefault n n ren
+      gblk'         = renameRefsBlock rn gblk
+      subs'         = [ (n, l, renameRefsBlock rn b) | (n, l, b) <- subs ]
+  modify $ \st -> st { stExtraAxioms = extra', stLemmas = stLemmas st ++ subs' }
+  return (glit, gblk')
 
 -- A non-ground atom's variables as fresh constants (for a prover call that
 -- reads goal variables existentially), with the map that lifts them back.
@@ -815,8 +882,8 @@ findElecIO li thn pos units = case li of
                   mRe <- liftIO (reprove pos')
                   case mRe of
                     Nothing -> return Nothing
-                    Just (glit, gblk, subs) -> do
-                      modify $ \st -> st { stLemmas = stLemmas st ++ subs }
+                    Just bl -> do
+                      (glit, gblk) <- absorbReprove bl
                       nm <- promoteToLemma glit gblk
                       return (Just (u { ueName = Just nm }, σi, thnU, []))
                 goRe [] = return Nothing
@@ -984,8 +1051,8 @@ makeBlock ki σi rwSteps = do
                           reprove <- gets stReprove
                           liftIO (reprove pos)
                       case mRe of
-                        Just (glit, gblk, subs) -> do
-                          modify $ \st -> st { stLemmas = stLemmas st ++ subs }
+                        Just bl -> do
+                          (glit, gblk) <- absorbReprove bl
                           nm <- promoteToLemma glit gblk
                           return (HaveHence [Have lit nm])
                         Nothing ->
@@ -1050,9 +1117,14 @@ buildProofBlock
   -> Literal       -- head literal L0
   -> AlgM ProofBlock
 -- unit clause with no body: a direct assertion of the named axiom; without
--- a name there is nothing that justifies the literal
+-- a name there is nothing that justifies the literal.
+-- thn must be applied here as it is on every other line of a block: the raw
+-- head still carries variables that θ binds, and asserting it uninstantiated
+-- states something stronger than the axiom gives (RNG038-1 asserted
+-- product(X,h(X,b),b) from the conditional X = additive_identity =>
+-- product(X,h(X,Y),Y), which Lean rightly rejects).
 buildProofBlock _ [] mAxName thn headLit = case mAxName of
-  Just ax -> return (HaveHence [Have headLit ax])
+  Just ax -> return (HaveHence [Have (applySubst thn headLit) ax])
   Nothing -> throwError ("buildProofBlock: unjustified unit " ++ ppLitI (applySubst thn headLit))
 buildProofBlock bodyAbs (m1@(k1, σ1, rw1) : rest) mAxName thn headLit = do
   blk1 <- makeBlock k1 σ1 rw1
@@ -1809,6 +1881,30 @@ electronLit unitMap e = case leRole e of
       Just lit -> convertLit lit
       Nothing  -> error ("electronLit: no head literal for " ++ leName e)
 
+axiomDisplayName :: Axiom -> String
+axiomDisplayName (AUnit n _)    = n
+axiomDisplayName (ANucleus n _) = n
+
+renameAxiom :: String -> Axiom -> Axiom
+renameAxiom n (AUnit _ l)    = AUnit n l
+renameAxiom n (ANucleus _ c) = ANucleus n c
+
+-- Two axioms state the same thing when their statements agree up to variable
+-- renaming, so a file axiom pulled in by two different candidate sub-proofs
+-- gets one outer number rather than two.
+sameAxiomStatement :: Axiom -> Axiom -> Bool
+sameAxiomStatement (AUnit _ a) (AUnit _ b) =
+  isJust (matchLit a b) && isJust (matchLit b a)
+sameAxiomStatement (ANucleus _ (Clause b1 h1)) (ANucleus _ (Clause b2 h2)) =
+  length b1 == length b2
+    && and (zipWith variantLit b1 b2)
+    && case (h1, h2) of
+         (Just x, Just y) -> variantLit x y
+         (Nothing, Nothing) -> True
+         _ -> False
+  where variantLit x y = isJust (matchLit x y) && isJust (matchLit y x)
+sameAxiomStatement _ _ = False
+
 -- nameOverride maps raw TSTP unit names to pre-assigned display names.
 -- Overridden axioms are NOT added to the axiom list (they belong to an outer proof).
 -- Names mapped to the empty string are silently skipped (used for internal Twee axioms).
@@ -1848,8 +1944,7 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
                  -- Empty-string sentinel: skip entirely (internal Twee axiom)
                  (axAcc, posMap, Map.insert origKey "" seen)
                Nothing ->
-                 let n  = length axAcc + 1
-                     nm = "axiom " ++ show n
+                 let nm = freshAxiomName axAcc
                  in (axAcc ++ [AUnit nm lit],
                      Map.insert pos nm posMap,
                      Map.insert origKey nm seen)
@@ -1878,13 +1973,27 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
                  case convertDeclToClause (leSrcDecl e) of
                    Just cls@(Clause bs mh)
                      | isJust mh || not (all isGoal bs) ->
-                     let n  = length axAcc + 1
-                         nm = "axiom " ++ show n
+                     let nm = freshAxiomName axAcc
                      in (axAcc ++ [ANucleus nm cls],
                          Map.insert pos nm posMap,
                          Map.insert origKey nm seen)
                    _ -> (axAcc, posMap, seen)
     isGoal l = any (\g -> isJust (matchLit g l) || isJust (matchLit l g)) goalLits
+
+    -- The next unused "axiom N".  Numbering cannot simply count axAcc: a leaf
+    -- that takes its name from nameOverride is deliberately left out of
+    -- axAcc, so counting would hand its number to a different axiom.  A
+    -- sub-run whose outer axioms are all overridden starts at 1 and collides
+    -- with "axiom 1" (LCL126-1/E cited q_3 as q_4's name).  Every name the
+    -- override can produce is reserved, whether or not this tree reaches it.
+    freshAxiomName axAcc =
+      head [ nm
+           | i <- [1 :: Int ..]
+           , let nm = "axiom " ++ show i
+           , nm `Set.notMember` takenNames
+           , nm `notElem` map axiomDisplayName axAcc ]
+    takenNames = Set.fromList (filter (not . null) (Map.elems nameOverride))
+
 
 runAlgorithm
   :: Bool
@@ -1918,7 +2027,9 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
       goalLits'  = instantiateGoals (map convertLit (piGoalLits info))
       instantiateGoals gs
         | all (null . litFree) gs = gs
-        | otherwise = map inst gs
+        | otherwise = case solve [] openGoals of
+            (σ : _) -> map (applySubst σ) gs
+            []      -> map inst gs
         where
           goalNuclei = sortBy (comparing (\e -> (length (lePos e), lePos e)))
                          [ e | e <- piNuclei info, leRole e == NegConjecture ]
@@ -1926,6 +2037,24 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
                        | e <- goalNuclei
                        , Just (Clause bs _) <- [convertDeclToClause (leDecl e)]
                        , l <- bs ]
+          -- The goal literals share their variables, so one substitution has
+          -- to satisfy all of them at once.  Instantiating each on its own
+          -- picks the first body atom that matches and can give one variable
+          -- two values: PUZ011-1 read borders(X0,X1) as borders(indian,india)
+          -- while african(X1) forces X1 = somalia, and the emitted goal was
+          -- then a different (still true) statement.  matchLitWith threads
+          -- the bindings made so far, so a choice that contradicts an earlier
+          -- one is rejected and the search backtracks.
+          openGoals = [ g | g <- gs, not (null (litFree g)) ]
+          solve σ []         = [σ]
+          solve σ (g : rest) =
+            concat [ solve σ' rest
+                   | b <- instBodies
+                   , Just σ' <- [matchLitWith g b σ]
+                   , applySubst σ' g == b ]
+          -- No assignment satisfies every open goal (a conjecture whose goal
+          -- atoms are not all body atoms of the nucleus); instantiate each on
+          -- its own, as before.
           inst g = case [ g' | b <- instBodies, Just ρ <- [matchLit g b]
                              , let g' = applySubst ρ g, g' == b ] of
                      (g' : _) -> g'
@@ -1955,7 +2084,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         [ lifted ++ [(axNm, lit, blk)]
         | e <- piElectrons info
         , leRole e == OrigAxiom
-        , Just (lit, blk, lifted) <- [Map.lookup (leName e) candLemmaMap]
+        , Just (lit, blk, lifted, _) <- [Map.lookup (leName e) candLemmaMap]
         , Just axNm <- [Map.lookup (lePos e) posToName]
         ]
 
@@ -1981,7 +2110,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         [ UnitEntry Nothing lit mProof (Just (lePos e))
         | e <- filter (\e -> leRole e == Derived) (piElectrons info)
         , let lit    = electronLit unitMap e
-              mProof = fmap (\(_, b, _) -> b) (Map.lookup (leName e) candLemmaMap)
+              mProof = fmap (\(_, b, _, _) -> b) (Map.lookup (leName e) candLemmaMap)
         , lit `notElem` goalLits' ]
 
       -- Equational axioms from the TSTP file not visible as proof-tree leaves.
@@ -2130,6 +2259,8 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , stNameToPos  = nameToPos
         , stEqByName   = eqByTstpName
         , stGoalTemplate = goalLits'
+        , stExtraAxioms = []
+        , stBaseAxioms  = axiomList ++ bgAxiomList
         }
 
   when debug $ do
@@ -2180,7 +2311,8 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
     Just _  -> return ()
     Nothing -> error ("emitted goals are not a consistent instance of the conjecture: "
                       ++ intercalate ", " (map (ppLitI . fst) (stGoals finalSt)))
-  return (StructuredProof (axiomList ++ bgAxiomList) (stLemmas finalSt) (stGoals finalSt))
+  return (StructuredProof (axiomList ++ bgAxiomList ++ stExtraAxioms finalSt)
+                          (stLemmas finalSt) (stGoals finalSt))
   where
     action thetaCtx' allNuclei innerNusNG posToName goalLits simpl pG1Chain = do
       -- First pass: leaf axioms + ground-head derived nuclei.

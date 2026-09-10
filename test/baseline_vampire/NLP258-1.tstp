@@ -1,0 +1,209 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Unsatisfiable for NLP258-1
+% SZS output start Proof for NLP258-1
+fof(f1,axiom,(
+  ( ! [X0,X1] : (~smoke(X0,X1) | event(X0,X1)) )),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f29,axiom,(
+  ( ! [X0,X1] : (~vincent_forename(X0,X1) | forename(X0,X1)) )),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f30,axiom,(
+  ( ! [X0,X1] : (~jules_forename(X0,X1) | forename(X0,X1)) )),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f52,axiom,(
+  ( ! [X2,X0,X1] : (~accessible_world(X0,X1) | ~man(X0,X2) | man(X1,X2)) )),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f73,negated_conjecture,(
+  actual_world(skc8)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f74,negated_conjecture,(
+  man(skc8,skc15)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f76,negated_conjecture,(
+  vincent_forename(skc8,skc14)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f77,negated_conjecture,(
+  event(skc8,skc13)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f78,negated_conjecture,(
+  present(skc8,skc13)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f79,negated_conjecture,(
+  think_believe_consider(skc8,skc13)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f80,negated_conjecture,(
+  jules_forename(skc8,skc11)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f82,negated_conjecture,(
+  man(skc8,skc10)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f83,negated_conjecture,(
+  state(skc8,skc9)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f84,negated_conjecture,(
+  accessible_world(skc8,skc12)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f85,negated_conjecture,(
+  proposition(skc8,skc12)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f86,negated_conjecture,(
+  of(skc8,skc14,skc15)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f87,negated_conjecture,(
+  agent(skc8,skc13,skc15)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f88,negated_conjecture,(
+  theme(skc8,skc13,skc12)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f89,negated_conjecture,(
+  of(skc8,skc11,skc10)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f90,negated_conjecture,(
+  be(skc8,skc9,skc10,skc10)),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f91,negated_conjecture,(
+  ( ! [X0,X1] : (~man(skc12,X0) | smoke(skc12,skf2(X1))) )),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f92,negated_conjecture,(
+  ( ! [X0,X1] : (~man(skc12,X0) | present(skc12,skf2(X1))) )),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f94,negated_conjecture,(
+  ( ! [X0] : (agent(skc12,skf2(X0),X0) | ~man(skc12,X0)) )),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f95,negated_conjecture,(
+  ( ! [X2,X3,X10,X0,X1,X8,X6,X9,X7,X4,X5] : (~be(X0,X1,X2,X2) | ~man(X0,X2) | ~state(X0,X1) | ~smoke(X3,X4) | ~present(X3,X4) | ~agent(X3,X4,X2) | ~event(X3,X4) | ~forename(X0,X5) | ~jules_forename(X0,X5) | ~of(X0,X5,X2) | ~accessible_world(X0,X3) | ~proposition(X0,X3) | ~proposition(X0,X6) | ~accessible_world(X0,X6) | ~think_believe_consider(X0,X7) | ~present(X0,X7) | ~event(X0,X7) | ~theme(X0,X7,X6) | ~agent(X0,X8,X9) | ~agent(X0,X7,X9) | ~man(X0,X9) | ~of(X0,X10,X9) | ~vincent_forename(X0,X10) | ~forename(X0,X10) | ~theme(X0,X8,X3) | ~event(X0,X8) | ~present(X0,X8) | ~think_believe_consider(X0,X8) | ~actual_world(X0) | man(X6,skf4(X6))) )),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f96,negated_conjecture,(
+  ( ! [X2,X3,X10,X0,X11,X1,X8,X6,X9,X7,X4,X5] : (~agent(X6,X7,skf4(X6)) | ~man(X0,X2) | ~be(X0,X1,X2,X2) | ~smoke(X3,X4) | ~present(X3,X4) | ~agent(X3,X4,X2) | ~event(X3,X4) | ~forename(X0,X5) | ~jules_forename(X0,X5) | ~of(X0,X5,X2) | ~accessible_world(X0,X3) | ~proposition(X0,X3) | ~proposition(X0,X6) | ~accessible_world(X0,X6) | ~smoke(X6,X7) | ~present(X6,X7) | ~state(X0,X1) | ~event(X6,X7) | ~think_believe_consider(X0,X8) | ~present(X0,X8) | ~event(X0,X8) | ~theme(X0,X8,X6) | ~agent(X0,X9,X10) | ~agent(X0,X8,X10) | ~man(X0,X10) | ~of(X0,X11,X10) | ~vincent_forename(X0,X11) | ~forename(X0,X11) | ~theme(X0,X9,X3) | ~event(X0,X9) | ~present(X0,X9) | ~think_believe_consider(X0,X9) | ~actual_world(X0)) )),
+  file('Problems/NLP/NLP258-1.p',unknown)).
+fof(f180,plain,(
+  ( ! [X0] : (~man(skc8,X0) | man(skc12,X0)) )),
+  inference(resolution,[],[f52,f84])).
+fof(f207,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (~man(X0,X1) | ~be(X0,X2,X1,X1) | ~smoke(X3,X4) | ~present(X3,X4) | ~agent(X3,X4,X1) | ~event(X3,X4) | ~forename(X0,X5) | ~jules_forename(X0,X5) | ~of(X0,X5,X1) | ~accessible_world(X0,X3) | ~proposition(X0,X3) | ~proposition(X0,skc12) | ~accessible_world(X0,skc12) | ~smoke(skc12,skf2(skf4(skc12))) | ~present(skc12,skf2(skf4(skc12))) | ~state(X0,X2) | ~event(skc12,skf2(skf4(skc12))) | ~think_believe_consider(X0,X6) | ~present(X0,X6) | ~event(X0,X6) | ~theme(X0,X6,skc12) | ~agent(X0,X7,X8) | ~agent(X0,X6,X8) | ~man(X0,X8) | ~of(X0,X9,X8) | ~vincent_forename(X0,X9) | ~forename(X0,X9) | ~theme(X0,X7,X3) | ~event(X0,X7) | ~present(X0,X7) | ~think_believe_consider(X0,X7) | ~actual_world(X0) | ~man(skc12,skf4(skc12))) )),
+  inference(resolution,[],[f96,f94])).
+fof(f208,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (~man(X0,X1) | ~be(X0,X2,X1,X1) | ~smoke(X3,X4) | ~present(X3,X4) | ~agent(X3,X4,X1) | ~event(X3,X4) | ~forename(X0,X5) | ~jules_forename(X0,X5) | ~of(X0,X5,X1) | ~accessible_world(X0,X3) | ~proposition(X0,X3) | ~proposition(X0,skc12) | ~accessible_world(X0,skc12) | ~smoke(skc12,skf2(skf4(skc12))) | ~present(skc12,skf2(skf4(skc12))) | ~state(X0,X2) | ~event(skc12,skf2(skf4(skc12))) | ~think_believe_consider(X0,X6) | ~present(X0,X6) | ~event(X0,X6) | ~theme(X0,X6,skc12) | ~agent(X0,X7,X8) | ~agent(X0,X6,X8) | ~man(X0,X8) | ~of(X0,X9,X8) | ~vincent_forename(X0,X9) | ~forename(X0,X9) | ~theme(X0,X7,X3) | ~event(X0,X7) | ~present(X0,X7) | ~think_believe_consider(X0,X7) | ~actual_world(X0)) )),
+  inference(forward_subsumption_resolution,[],[f207,f95])).
+fof(f209,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (~man(X0,X1) | ~be(X0,X2,X1,X1) | ~smoke(X3,X4) | ~present(X3,X4) | ~agent(X3,X4,X1) | ~event(X3,X4) | ~forename(X0,X5) | ~jules_forename(X0,X5) | ~of(X0,X5,X1) | ~accessible_world(X0,X3) | ~proposition(X0,X3) | ~proposition(X0,skc12) | ~accessible_world(X0,skc12) | ~smoke(skc12,skf2(skf4(skc12))) | ~present(skc12,skf2(skf4(skc12))) | ~state(X0,X2) | ~think_believe_consider(X0,X6) | ~present(X0,X6) | ~event(X0,X6) | ~theme(X0,X6,skc12) | ~agent(X0,X7,X8) | ~agent(X0,X6,X8) | ~man(X0,X8) | ~of(X0,X9,X8) | ~vincent_forename(X0,X9) | ~forename(X0,X9) | ~theme(X0,X7,X3) | ~event(X0,X7) | ~present(X0,X7) | ~think_believe_consider(X0,X7) | ~actual_world(X0)) )),
+  inference(forward_subsumption_resolution,[],[f208,f1])).
+fof(f210,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (~man(X0,X1) | ~be(X0,X2,X1,X1) | ~smoke(X3,X4) | ~present(X3,X4) | ~agent(X3,X4,X1) | ~forename(X0,X5) | ~jules_forename(X0,X5) | ~of(X0,X5,X1) | ~accessible_world(X0,X3) | ~proposition(X0,X3) | ~proposition(X0,skc12) | ~accessible_world(X0,skc12) | ~smoke(skc12,skf2(skf4(skc12))) | ~present(skc12,skf2(skf4(skc12))) | ~state(X0,X2) | ~think_believe_consider(X0,X6) | ~present(X0,X6) | ~event(X0,X6) | ~theme(X0,X6,skc12) | ~agent(X0,X7,X8) | ~agent(X0,X6,X8) | ~man(X0,X8) | ~of(X0,X9,X8) | ~vincent_forename(X0,X9) | ~forename(X0,X9) | ~theme(X0,X7,X3) | ~event(X0,X7) | ~present(X0,X7) | ~think_believe_consider(X0,X7) | ~actual_world(X0)) )),
+  inference(forward_subsumption_resolution,[],[f209,f1])).
+fof(f211,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (~man(X0,X1) | ~be(X0,X2,X1,X1) | ~smoke(X3,X4) | ~present(X3,X4) | ~agent(X3,X4,X1) | ~jules_forename(X0,X5) | ~of(X0,X5,X1) | ~accessible_world(X0,X3) | ~proposition(X0,X3) | ~proposition(X0,skc12) | ~accessible_world(X0,skc12) | ~smoke(skc12,skf2(skf4(skc12))) | ~present(skc12,skf2(skf4(skc12))) | ~state(X0,X2) | ~think_believe_consider(X0,X6) | ~present(X0,X6) | ~event(X0,X6) | ~theme(X0,X6,skc12) | ~agent(X0,X7,X8) | ~agent(X0,X6,X8) | ~man(X0,X8) | ~of(X0,X9,X8) | ~vincent_forename(X0,X9) | ~forename(X0,X9) | ~theme(X0,X7,X3) | ~event(X0,X7) | ~present(X0,X7) | ~think_believe_consider(X0,X7) | ~actual_world(X0)) )),
+  inference(forward_subsumption_resolution,[],[f210,f30])).
+fof(f212,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (~present(skc12,skf2(skf4(skc12))) | ~be(X0,X2,X1,X1) | ~smoke(X3,X4) | ~present(X3,X4) | ~agent(X3,X4,X1) | ~jules_forename(X0,X5) | ~of(X0,X5,X1) | ~accessible_world(X0,X3) | ~proposition(X0,X3) | ~proposition(X0,skc12) | ~accessible_world(X0,skc12) | ~smoke(skc12,skf2(skf4(skc12))) | ~man(X0,X1) | ~state(X0,X2) | ~think_believe_consider(X0,X6) | ~present(X0,X6) | ~event(X0,X6) | ~theme(X0,X6,skc12) | ~agent(X0,X7,X8) | ~agent(X0,X6,X8) | ~man(X0,X8) | ~of(X0,X9,X8) | ~vincent_forename(X0,X9) | ~theme(X0,X7,X3) | ~event(X0,X7) | ~present(X0,X7) | ~think_believe_consider(X0,X7) | ~actual_world(X0)) )),
+  inference(forward_subsumption_resolution,[],[f211,f29])).
+fof(f292,plain,(
+  man(skc12,skc15)),
+  inference(resolution,[],[f180,f74])).
+fof(f293,plain,(
+  man(skc12,skc10)),
+  inference(resolution,[],[f180,f82])).
+fof(f295,plain,(
+  ( ! [X0] : (present(skc12,skf2(X0))) )),
+  inference(resolution,[],[f292,f92])).
+fof(f296,plain,(
+  ( ! [X0] : (smoke(skc12,skf2(X0))) )),
+  inference(resolution,[],[f292,f91])).
+fof(f449,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (~be(X0,X1,X2,X2) | ~smoke(X3,X4) | ~present(X3,X4) | ~agent(X3,X4,X2) | ~jules_forename(X0,X5) | ~of(X0,X5,X2) | ~accessible_world(X0,X3) | ~proposition(X0,X3) | ~proposition(X0,skc12) | ~accessible_world(X0,skc12) | ~smoke(skc12,skf2(skf4(skc12))) | ~man(X0,X2) | ~state(X0,X1) | ~think_believe_consider(X0,X6) | ~present(X0,X6) | ~event(X0,X6) | ~theme(X0,X6,skc12) | ~agent(X0,X7,X8) | ~agent(X0,X6,X8) | ~man(X0,X8) | ~of(X0,X9,X8) | ~vincent_forename(X0,X9) | ~theme(X0,X7,X3) | ~event(X0,X7) | ~present(X0,X7) | ~think_believe_consider(X0,X7) | ~actual_world(X0)) )),
+  inference(resolution,[],[f295,f212])).
+fof(f453,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (~be(X0,X1,X2,X2) | ~smoke(X3,X4) | ~present(X3,X4) | ~agent(X3,X4,X2) | ~jules_forename(X0,X5) | ~of(X0,X5,X2) | ~accessible_world(X0,X3) | ~proposition(X0,X3) | ~proposition(X0,skc12) | ~accessible_world(X0,skc12) | ~man(X0,X2) | ~state(X0,X1) | ~think_believe_consider(X0,X6) | ~present(X0,X6) | ~event(X0,X6) | ~theme(X0,X6,skc12) | ~agent(X0,X7,X8) | ~agent(X0,X6,X8) | ~man(X0,X8) | ~of(X0,X9,X8) | ~vincent_forename(X0,X9) | ~theme(X0,X7,X3) | ~event(X0,X7) | ~present(X0,X7) | ~think_believe_consider(X0,X7) | ~actual_world(X0)) )),
+  inference(forward_subsumption_resolution,[],[f449,f296])).
+fof(f700,plain,(
+  ( ! [X2,X3,X0,X1,X6,X4,X5] : (~smoke(X0,X1) | ~present(X0,X1) | ~agent(X0,X1,skc10) | ~jules_forename(skc8,X2) | ~of(skc8,X2,skc10) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~proposition(skc8,skc12) | ~accessible_world(skc8,skc12) | ~man(skc8,skc10) | ~state(skc8,skc9) | ~think_believe_consider(skc8,X3) | ~present(skc8,X3) | ~event(skc8,X3) | ~theme(skc8,X3,skc12) | ~agent(skc8,X4,X5) | ~agent(skc8,X3,X5) | ~man(skc8,X5) | ~of(skc8,X6,X5) | ~vincent_forename(skc8,X6) | ~theme(skc8,X4,X0) | ~event(skc8,X4) | ~present(skc8,X4) | ~think_believe_consider(skc8,X4) | ~actual_world(skc8)) )),
+  inference(resolution,[],[f453,f90])).
+fof(f703,plain,(
+  ( ! [X2,X3,X0,X1,X6,X4,X5] : (~smoke(X0,X1) | ~present(X0,X1) | ~agent(X0,X1,skc10) | ~jules_forename(skc8,X2) | ~of(skc8,X2,skc10) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~accessible_world(skc8,skc12) | ~man(skc8,skc10) | ~state(skc8,skc9) | ~think_believe_consider(skc8,X3) | ~present(skc8,X3) | ~event(skc8,X3) | ~theme(skc8,X3,skc12) | ~agent(skc8,X4,X5) | ~agent(skc8,X3,X5) | ~man(skc8,X5) | ~of(skc8,X6,X5) | ~vincent_forename(skc8,X6) | ~theme(skc8,X4,X0) | ~event(skc8,X4) | ~present(skc8,X4) | ~think_believe_consider(skc8,X4) | ~actual_world(skc8)) )),
+  inference(forward_subsumption_resolution,[],[f700,f85])).
+fof(f704,plain,(
+  ( ! [X2,X3,X0,X1,X6,X4,X5] : (~smoke(X0,X1) | ~present(X0,X1) | ~agent(X0,X1,skc10) | ~jules_forename(skc8,X2) | ~of(skc8,X2,skc10) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~man(skc8,skc10) | ~state(skc8,skc9) | ~think_believe_consider(skc8,X3) | ~present(skc8,X3) | ~event(skc8,X3) | ~theme(skc8,X3,skc12) | ~agent(skc8,X4,X5) | ~agent(skc8,X3,X5) | ~man(skc8,X5) | ~of(skc8,X6,X5) | ~vincent_forename(skc8,X6) | ~theme(skc8,X4,X0) | ~event(skc8,X4) | ~present(skc8,X4) | ~think_believe_consider(skc8,X4) | ~actual_world(skc8)) )),
+  inference(forward_subsumption_resolution,[],[f703,f84])).
+fof(f705,plain,(
+  ( ! [X2,X3,X0,X1,X6,X4,X5] : (~smoke(X0,X1) | ~present(X0,X1) | ~agent(X0,X1,skc10) | ~jules_forename(skc8,X2) | ~of(skc8,X2,skc10) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~state(skc8,skc9) | ~think_believe_consider(skc8,X3) | ~present(skc8,X3) | ~event(skc8,X3) | ~theme(skc8,X3,skc12) | ~agent(skc8,X4,X5) | ~agent(skc8,X3,X5) | ~man(skc8,X5) | ~of(skc8,X6,X5) | ~vincent_forename(skc8,X6) | ~theme(skc8,X4,X0) | ~event(skc8,X4) | ~present(skc8,X4) | ~think_believe_consider(skc8,X4) | ~actual_world(skc8)) )),
+  inference(forward_subsumption_resolution,[],[f704,f82])).
+fof(f706,plain,(
+  ( ! [X2,X3,X0,X1,X6,X4,X5] : (~smoke(X0,X1) | ~present(X0,X1) | ~agent(X0,X1,skc10) | ~jules_forename(skc8,X2) | ~of(skc8,X2,skc10) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~think_believe_consider(skc8,X3) | ~present(skc8,X3) | ~event(skc8,X3) | ~theme(skc8,X3,skc12) | ~agent(skc8,X4,X5) | ~agent(skc8,X3,X5) | ~man(skc8,X5) | ~of(skc8,X6,X5) | ~vincent_forename(skc8,X6) | ~theme(skc8,X4,X0) | ~event(skc8,X4) | ~present(skc8,X4) | ~think_believe_consider(skc8,X4) | ~actual_world(skc8)) )),
+  inference(forward_subsumption_resolution,[],[f705,f83])).
+fof(f707,plain,(
+  ( ! [X2,X3,X0,X1,X6,X4,X5] : (~of(skc8,X6,X5) | ~present(X0,X1) | ~agent(X0,X1,skc10) | ~jules_forename(skc8,X2) | ~of(skc8,X2,skc10) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~think_believe_consider(skc8,X3) | ~present(skc8,X3) | ~event(skc8,X3) | ~theme(skc8,X3,skc12) | ~agent(skc8,X4,X5) | ~agent(skc8,X3,X5) | ~man(skc8,X5) | ~smoke(X0,X1) | ~vincent_forename(skc8,X6) | ~theme(skc8,X4,X0) | ~event(skc8,X4) | ~present(skc8,X4) | ~think_believe_consider(skc8,X4)) )),
+  inference(forward_subsumption_resolution,[],[f706,f73])).
+fof(f750,plain,(
+  ( ! [X2,X3,X0,X1,X4] : (~present(X0,X1) | ~agent(X0,X1,skc10) | ~jules_forename(skc8,X2) | ~of(skc8,X2,skc10) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~think_believe_consider(skc8,X3) | ~present(skc8,X3) | ~event(skc8,X3) | ~theme(skc8,X3,skc12) | ~agent(skc8,X4,skc15) | ~agent(skc8,X3,skc15) | ~man(skc8,skc15) | ~smoke(X0,X1) | ~vincent_forename(skc8,skc14) | ~theme(skc8,X4,X0) | ~event(skc8,X4) | ~present(skc8,X4) | ~think_believe_consider(skc8,X4)) )),
+  inference(resolution,[],[f707,f86])).
+fof(f761,plain,(
+  ( ! [X2,X3,X0,X1,X4] : (~present(X0,X1) | ~agent(X0,X1,skc10) | ~jules_forename(skc8,X2) | ~of(skc8,X2,skc10) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~think_believe_consider(skc8,X3) | ~present(skc8,X3) | ~event(skc8,X3) | ~theme(skc8,X3,skc12) | ~agent(skc8,X4,skc15) | ~agent(skc8,X3,skc15) | ~smoke(X0,X1) | ~vincent_forename(skc8,skc14) | ~theme(skc8,X4,X0) | ~event(skc8,X4) | ~present(skc8,X4) | ~think_believe_consider(skc8,X4)) )),
+  inference(forward_subsumption_resolution,[],[f750,f74])).
+fof(f764,plain,(
+  ( ! [X2,X3,X0,X1,X4] : (~of(skc8,X2,skc10) | ~agent(X0,X1,skc10) | ~jules_forename(skc8,X2) | ~present(X0,X1) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~think_believe_consider(skc8,X3) | ~present(skc8,X3) | ~event(skc8,X3) | ~theme(skc8,X3,skc12) | ~agent(skc8,X4,skc15) | ~agent(skc8,X3,skc15) | ~smoke(X0,X1) | ~theme(skc8,X4,X0) | ~event(skc8,X4) | ~present(skc8,X4) | ~think_believe_consider(skc8,X4)) )),
+  inference(forward_subsumption_resolution,[],[f761,f76])).
+fof(f809,plain,(
+  ( ! [X2,X3,X0,X1] : (~agent(X0,X1,skc10) | ~jules_forename(skc8,skc11) | ~present(X0,X1) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~think_believe_consider(skc8,X2) | ~present(skc8,X2) | ~event(skc8,X2) | ~theme(skc8,X2,skc12) | ~agent(skc8,X3,skc15) | ~agent(skc8,X2,skc15) | ~smoke(X0,X1) | ~theme(skc8,X3,X0) | ~event(skc8,X3) | ~present(skc8,X3) | ~think_believe_consider(skc8,X3)) )),
+  inference(resolution,[],[f764,f89])).
+fof(f814,plain,(
+  ( ! [X2,X3,X0,X1] : (~theme(skc8,X3,X0) | ~present(X0,X1) | ~accessible_world(skc8,X0) | ~proposition(skc8,X0) | ~think_believe_consider(skc8,X2) | ~present(skc8,X2) | ~event(skc8,X2) | ~theme(skc8,X2,skc12) | ~agent(skc8,X3,skc15) | ~agent(skc8,X2,skc15) | ~smoke(X0,X1) | ~agent(X0,X1,skc10) | ~event(skc8,X3) | ~present(skc8,X3) | ~think_believe_consider(skc8,X3)) )),
+  inference(forward_subsumption_resolution,[],[f809,f80])).
+fof(f815,plain,(
+  ( ! [X0,X1] : (~present(skc12,X0) | ~accessible_world(skc8,skc12) | ~proposition(skc8,skc12) | ~think_believe_consider(skc8,X1) | ~present(skc8,X1) | ~event(skc8,X1) | ~theme(skc8,X1,skc12) | ~agent(skc8,skc13,skc15) | ~agent(skc8,X1,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10) | ~event(skc8,skc13) | ~present(skc8,skc13) | ~think_believe_consider(skc8,skc13)) )),
+  inference(resolution,[],[f814,f88])).
+fof(f820,plain,(
+  ( ! [X0,X1] : (~present(skc12,X0) | ~proposition(skc8,skc12) | ~think_believe_consider(skc8,X1) | ~present(skc8,X1) | ~event(skc8,X1) | ~theme(skc8,X1,skc12) | ~agent(skc8,skc13,skc15) | ~agent(skc8,X1,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10) | ~event(skc8,skc13) | ~present(skc8,skc13) | ~think_believe_consider(skc8,skc13)) )),
+  inference(forward_subsumption_resolution,[],[f815,f84])).
+fof(f823,plain,(
+  ( ! [X0,X1] : (~present(skc12,X0) | ~think_believe_consider(skc8,X1) | ~present(skc8,X1) | ~event(skc8,X1) | ~theme(skc8,X1,skc12) | ~agent(skc8,skc13,skc15) | ~agent(skc8,X1,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10) | ~event(skc8,skc13) | ~present(skc8,skc13) | ~think_believe_consider(skc8,skc13)) )),
+  inference(forward_subsumption_resolution,[],[f820,f85])).
+fof(f826,plain,(
+  ( ! [X0,X1] : (~present(skc12,X0) | ~think_believe_consider(skc8,X1) | ~present(skc8,X1) | ~event(skc8,X1) | ~theme(skc8,X1,skc12) | ~agent(skc8,X1,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10) | ~event(skc8,skc13) | ~present(skc8,skc13) | ~think_believe_consider(skc8,skc13)) )),
+  inference(forward_subsumption_resolution,[],[f823,f87])).
+fof(f829,plain,(
+  ( ! [X0,X1] : (~present(skc12,X0) | ~think_believe_consider(skc8,X1) | ~present(skc8,X1) | ~event(skc8,X1) | ~theme(skc8,X1,skc12) | ~agent(skc8,X1,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10) | ~present(skc8,skc13) | ~think_believe_consider(skc8,skc13)) )),
+  inference(forward_subsumption_resolution,[],[f826,f77])).
+fof(f832,plain,(
+  ( ! [X0,X1] : (~present(skc12,X0) | ~think_believe_consider(skc8,X1) | ~present(skc8,X1) | ~event(skc8,X1) | ~theme(skc8,X1,skc12) | ~agent(skc8,X1,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10) | ~think_believe_consider(skc8,skc13)) )),
+  inference(forward_subsumption_resolution,[],[f829,f78])).
+fof(f835,plain,(
+  ( ! [X0,X1] : (~theme(skc8,X1,skc12) | ~think_believe_consider(skc8,X1) | ~present(skc8,X1) | ~event(skc8,X1) | ~present(skc12,X0) | ~agent(skc8,X1,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10)) )),
+  inference(forward_subsumption_resolution,[],[f832,f79])).
+fof(f842,plain,(
+  ( ! [X0] : (~think_believe_consider(skc8,skc13) | ~present(skc8,skc13) | ~event(skc8,skc13) | ~present(skc12,X0) | ~agent(skc8,skc13,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10)) )),
+  inference(resolution,[],[f835,f88])).
+fof(f847,plain,(
+  ( ! [X0] : (~present(skc8,skc13) | ~event(skc8,skc13) | ~present(skc12,X0) | ~agent(skc8,skc13,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10)) )),
+  inference(forward_subsumption_resolution,[],[f842,f79])).
+fof(f850,plain,(
+  ( ! [X0] : (~event(skc8,skc13) | ~present(skc12,X0) | ~agent(skc8,skc13,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10)) )),
+  inference(forward_subsumption_resolution,[],[f847,f78])).
+fof(f853,plain,(
+  ( ! [X0] : (~present(skc12,X0) | ~agent(skc8,skc13,skc15) | ~smoke(skc12,X0) | ~agent(skc12,X0,skc10)) )),
+  inference(forward_subsumption_resolution,[],[f850,f77])).
+fof(f856,plain,(
+  ( ! [X0] : (~agent(skc12,X0,skc10) | ~smoke(skc12,X0) | ~present(skc12,X0)) )),
+  inference(forward_subsumption_resolution,[],[f853,f87])).
+fof(f861,plain,(
+  ~smoke(skc12,skf2(skc10)) | ~present(skc12,skf2(skc10)) | ~man(skc12,skc10)),
+  inference(resolution,[],[f856,f94])).
+fof(f864,plain,(
+  ~present(skc12,skf2(skc10)) | ~man(skc12,skc10)),
+  inference(forward_subsumption_resolution,[],[f861,f296])).
+fof(f866,plain,(
+  ~man(skc12,skc10)),
+  inference(forward_subsumption_resolution,[],[f864,f295])).
+fof(f868,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f866,f293])).
+% SZS output end Proof for NLP258-1
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.016 s
+% Peak memory usage: 7 MB
+% ------------------------------
+% ------------------------------

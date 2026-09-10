@@ -1,0 +1,64 @@
+Axiom 1: response(response(lark,X),Y) = response(X,response(Y,Y))
+Axiom 2: response(l3,l3) = l3
+Axiom 3: response(lark,lark) = l2
+Axiom 4: response(response(response(lark,lark),X),Y) = response(response(X,X),response(Y,Y))
+Axiom 5: response(l2,lark) = l3
+Axiom 6: response(response(response(response(lark,lark),lark),X),Y) = response(response(response(X,X),response(X,X)),response(x2,x2))
+Axiom 7: response(response(kestrel,X),Y) = X
+Axiom 8: response(l2,l2) = l2 => $false
+
+Lemma 9: response(l3,X) = Y
+Proof:
+  response(l3,X)
+= { by axiom 7 R->L }
+  response(response(kestrel,response(l3,X)),response(kestrel,response(l3,X)))
+= { by axiom 7 R->L }
+  response(response(kestrel,response(response(kestrel,response(l3,X)),response(kestrel,response(l3,X)))),response(Z,Z))
+= { by axiom 1 R->L }
+  response(response(lark,response(kestrel,response(response(kestrel,response(l3,X)),response(kestrel,response(l3,X))))),Z)
+= { by axiom 1 R->L }
+  response(response(lark,response(response(lark,kestrel),response(kestrel,response(l3,X)))),Z)
+= { by axiom 7 R->L }
+  response(response(lark,response(response(lark,response(response(kestrel,kestrel),response(kestrel,kestrel))),response(kestrel,response(l3,X)))),Z)
+= { by axiom 1 R->L }
+  response(response(lark,response(response(response(lark,lark),response(kestrel,kestrel)),response(kestrel,response(l3,X)))),Z)
+= { by axiom 3 }
+  response(response(lark,response(response(l2,response(kestrel,kestrel)),response(kestrel,response(l3,X)))),Z)
+= { by axiom 1 R->L }
+  response(response(lark,response(response(response(lark,l2),kestrel),response(kestrel,response(l3,X)))),Z)
+= { by axiom 3 R->L }
+  response(response(lark,response(response(response(lark,response(lark,lark)),kestrel),response(kestrel,response(l3,X)))),Z)
+= { by axiom 1 R->L }
+  response(response(lark,response(response(response(response(lark,lark),lark),kestrel),response(kestrel,response(l3,X)))),Z)
+= { by axiom 6 }
+  response(response(lark,response(response(response(kestrel,kestrel),response(kestrel,kestrel)),response(x2,x2))),Z)
+= { by axiom 6 R->L }
+  response(response(lark,response(response(response(response(lark,lark),lark),kestrel),response(kestrel,Y))),Z)
+= { by axiom 1 }
+  response(response(lark,response(response(response(lark,response(lark,lark)),kestrel),response(kestrel,Y))),Z)
+= { by axiom 3 }
+  response(response(lark,response(response(response(lark,l2),kestrel),response(kestrel,Y))),Z)
+= { by axiom 1 }
+  response(response(lark,response(response(l2,response(kestrel,kestrel)),response(kestrel,Y))),Z)
+= { by axiom 3 R->L }
+  response(response(lark,response(response(response(lark,lark),response(kestrel,kestrel)),response(kestrel,Y))),Z)
+= { by axiom 1 }
+  response(response(lark,response(response(lark,response(response(kestrel,kestrel),response(kestrel,kestrel))),response(kestrel,Y))),Z)
+= { by axiom 7 }
+  response(response(lark,response(response(lark,kestrel),response(kestrel,Y))),Z)
+= { by axiom 1 }
+  response(response(lark,response(kestrel,response(response(kestrel,Y),response(kestrel,Y)))),Z)
+= { by axiom 1 }
+  response(response(kestrel,response(response(kestrel,Y),response(kestrel,Y))),response(Z,Z))
+= { by axiom 7 }
+  response(response(kestrel,Y),response(kestrel,Y))
+= { by axiom 7 }
+  Y
+
+Goal 1: l2 = response(l2,l2)
+Proof:
+  l2
+= { by lemma 9 R->L }
+  response(l3,Z)
+= { by lemma 9 }
+  response(l2,l2)

@@ -1,0 +1,153 @@
+Axiom 1: multiply(inverse(X),X) = identity
+Axiom 2: multiply(identity,X) = X
+Axiom 3: multiply(multiply(X,Y),Z) = multiply(X,multiply(Y,Z))
+Axiom 4: greatest_lower_bound(X,Y) = greatest_lower_bound(Y,X)
+Axiom 5: least_upper_bound(identity,X) = X
+Axiom 6: greatest_lower_bound(X,least_upper_bound(X,Y)) = X
+Axiom 7: multiply(X,greatest_lower_bound(Y,Z)) = greatest_lower_bound(multiply(X,Y),multiply(X,Z))
+
+Lemma 8: greatest_lower_bound(X,Y) = X
+Proof:
+  greatest_lower_bound(X,Y)
+= { by axiom 2 R->L }
+  multiply(identity,greatest_lower_bound(X,Y))
+= { by axiom 1 R->L }
+  multiply(multiply(inverse(inverse(greatest_lower_bound(X,Y))),inverse(greatest_lower_bound(X,Y))),greatest_lower_bound(X,Y))
+= { by axiom 3 }
+  multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(inverse(greatest_lower_bound(X,Y)),greatest_lower_bound(X,Y)))
+= { by axiom 1 }
+  multiply(inverse(inverse(greatest_lower_bound(X,Y))),identity)
+= { by axiom 2 R->L }
+  multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(identity,identity))
+= { by axiom 1 R->L }
+  multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(multiply(inverse(greatest_lower_bound(X,Y)),greatest_lower_bound(X,Y)),identity))
+= { by axiom 3 }
+  multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(inverse(greatest_lower_bound(X,Y)),multiply(greatest_lower_bound(X,Y),identity)))
+= { by axiom 3 R->L }
+  multiply(multiply(inverse(inverse(greatest_lower_bound(X,Y))),inverse(greatest_lower_bound(X,Y))),multiply(greatest_lower_bound(X,Y),identity))
+= { by axiom 1 }
+  multiply(identity,multiply(greatest_lower_bound(X,Y),identity))
+= { by axiom 2 }
+  multiply(greatest_lower_bound(X,Y),identity)
+= { by axiom 6 R->L }
+  multiply(greatest_lower_bound(X,Y),greatest_lower_bound(identity,least_upper_bound(identity,inverse(greatest_lower_bound(X,Y)))))
+= { by axiom 5 }
+  multiply(greatest_lower_bound(X,Y),greatest_lower_bound(identity,inverse(greatest_lower_bound(X,Y))))
+= { by axiom 7 }
+  greatest_lower_bound(multiply(greatest_lower_bound(X,Y),identity),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 2 R->L }
+  greatest_lower_bound(multiply(identity,multiply(greatest_lower_bound(X,Y),identity)),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 1 R->L }
+  greatest_lower_bound(multiply(multiply(inverse(inverse(greatest_lower_bound(X,Y))),inverse(greatest_lower_bound(X,Y))),multiply(greatest_lower_bound(X,Y),identity)),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 3 }
+  greatest_lower_bound(multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(inverse(greatest_lower_bound(X,Y)),multiply(greatest_lower_bound(X,Y),identity))),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 3 R->L }
+  greatest_lower_bound(multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(multiply(inverse(greatest_lower_bound(X,Y)),greatest_lower_bound(X,Y)),identity)),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 1 }
+  greatest_lower_bound(multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(identity,identity)),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 2 }
+  greatest_lower_bound(multiply(inverse(inverse(greatest_lower_bound(X,Y))),identity),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 1 R->L }
+  greatest_lower_bound(multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(inverse(greatest_lower_bound(X,Y)),greatest_lower_bound(X,Y))),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 3 R->L }
+  greatest_lower_bound(multiply(multiply(inverse(inverse(greatest_lower_bound(X,Y))),inverse(greatest_lower_bound(X,Y))),greatest_lower_bound(X,Y)),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 1 }
+  greatest_lower_bound(multiply(identity,greatest_lower_bound(X,Y)),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 2 }
+  greatest_lower_bound(greatest_lower_bound(X,Y),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 2 R->L }
+  greatest_lower_bound(greatest_lower_bound(X,Y),multiply(identity,multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y)))))
+= { by axiom 1 R->L }
+  greatest_lower_bound(greatest_lower_bound(X,Y),multiply(multiply(inverse(inverse(greatest_lower_bound(X,Y))),inverse(greatest_lower_bound(X,Y))),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y)))))
+= { by axiom 3 }
+  greatest_lower_bound(greatest_lower_bound(X,Y),multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(inverse(greatest_lower_bound(X,Y)),multiply(greatest_lower_bound(X,Y),inverse(greatest_lower_bound(X,Y))))))
+= { by axiom 3 R->L }
+  greatest_lower_bound(greatest_lower_bound(X,Y),multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(multiply(inverse(greatest_lower_bound(X,Y)),greatest_lower_bound(X,Y)),inverse(greatest_lower_bound(X,Y)))))
+= { by axiom 1 }
+  greatest_lower_bound(greatest_lower_bound(X,Y),multiply(inverse(inverse(greatest_lower_bound(X,Y))),multiply(identity,inverse(greatest_lower_bound(X,Y)))))
+= { by axiom 2 }
+  greatest_lower_bound(greatest_lower_bound(X,Y),multiply(inverse(inverse(greatest_lower_bound(X,Y))),inverse(greatest_lower_bound(X,Y))))
+= { by axiom 1 }
+  greatest_lower_bound(greatest_lower_bound(X,Y),identity)
+= { by axiom 4 R->L }
+  greatest_lower_bound(identity,greatest_lower_bound(X,Y))
+= { by axiom 5 R->L }
+  greatest_lower_bound(identity,least_upper_bound(identity,greatest_lower_bound(X,Y)))
+= { by axiom 6 }
+  identity
+= { by axiom 6 R->L }
+  greatest_lower_bound(identity,least_upper_bound(identity,X))
+= { by axiom 5 }
+  greatest_lower_bound(identity,X)
+= { by axiom 4 }
+  greatest_lower_bound(X,identity)
+= { by axiom 1 R->L }
+  greatest_lower_bound(X,multiply(inverse(inverse(X)),inverse(X)))
+= { by axiom 2 R->L }
+  greatest_lower_bound(X,multiply(inverse(inverse(X)),multiply(identity,inverse(X))))
+= { by axiom 1 R->L }
+  greatest_lower_bound(X,multiply(inverse(inverse(X)),multiply(multiply(inverse(X),X),inverse(X))))
+= { by axiom 3 }
+  greatest_lower_bound(X,multiply(inverse(inverse(X)),multiply(inverse(X),multiply(X,inverse(X)))))
+= { by axiom 3 R->L }
+  greatest_lower_bound(X,multiply(multiply(inverse(inverse(X)),inverse(X)),multiply(X,inverse(X))))
+= { by axiom 1 }
+  greatest_lower_bound(X,multiply(identity,multiply(X,inverse(X))))
+= { by axiom 2 }
+  greatest_lower_bound(X,multiply(X,inverse(X)))
+= { by axiom 2 R->L }
+  greatest_lower_bound(multiply(identity,X),multiply(X,inverse(X)))
+= { by axiom 1 R->L }
+  greatest_lower_bound(multiply(multiply(inverse(inverse(X)),inverse(X)),X),multiply(X,inverse(X)))
+= { by axiom 3 }
+  greatest_lower_bound(multiply(inverse(inverse(X)),multiply(inverse(X),X)),multiply(X,inverse(X)))
+= { by axiom 1 }
+  greatest_lower_bound(multiply(inverse(inverse(X)),identity),multiply(X,inverse(X)))
+= { by axiom 2 R->L }
+  greatest_lower_bound(multiply(inverse(inverse(X)),multiply(identity,identity)),multiply(X,inverse(X)))
+= { by axiom 1 R->L }
+  greatest_lower_bound(multiply(inverse(inverse(X)),multiply(multiply(inverse(X),X),identity)),multiply(X,inverse(X)))
+= { by axiom 3 }
+  greatest_lower_bound(multiply(inverse(inverse(X)),multiply(inverse(X),multiply(X,identity))),multiply(X,inverse(X)))
+= { by axiom 3 R->L }
+  greatest_lower_bound(multiply(multiply(inverse(inverse(X)),inverse(X)),multiply(X,identity)),multiply(X,inverse(X)))
+= { by axiom 1 }
+  greatest_lower_bound(multiply(identity,multiply(X,identity)),multiply(X,inverse(X)))
+= { by axiom 2 }
+  greatest_lower_bound(multiply(X,identity),multiply(X,inverse(X)))
+= { by axiom 7 R->L }
+  multiply(X,greatest_lower_bound(identity,inverse(X)))
+= { by axiom 5 R->L }
+  multiply(X,greatest_lower_bound(identity,least_upper_bound(identity,inverse(X))))
+= { by axiom 6 }
+  multiply(X,identity)
+= { by axiom 2 R->L }
+  multiply(identity,multiply(X,identity))
+= { by axiom 1 R->L }
+  multiply(multiply(inverse(inverse(X)),inverse(X)),multiply(X,identity))
+= { by axiom 3 }
+  multiply(inverse(inverse(X)),multiply(inverse(X),multiply(X,identity)))
+= { by axiom 3 R->L }
+  multiply(inverse(inverse(X)),multiply(multiply(inverse(X),X),identity))
+= { by axiom 1 }
+  multiply(inverse(inverse(X)),multiply(identity,identity))
+= { by axiom 2 }
+  multiply(inverse(inverse(X)),identity)
+= { by axiom 1 R->L }
+  multiply(inverse(inverse(X)),multiply(inverse(X),X))
+= { by axiom 3 R->L }
+  multiply(multiply(inverse(inverse(X)),inverse(X)),X)
+= { by axiom 1 }
+  multiply(identity,X)
+= { by axiom 2 }
+  X
+
+Goal 1: multiply(a,b) = multiply(b,a)
+Proof:
+  multiply(a,b)
+= { by lemma 8 R->L }
+  greatest_lower_bound(multiply(a,b),multiply(b,a))
+= { by axiom 4 R->L }
+  greatest_lower_bound(multiply(b,a),multiply(a,b))
+= { by lemma 8 }
+  multiply(b,a)

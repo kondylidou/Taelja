@@ -1,0 +1,138 @@
+# Preprocessing class: FSMSSMSMSSSNFFN.
+# Configuration: G-E--_207_C18_F1_SE_CS_SP_PI_PS_S2SI
+# No SInE strategy applied
+# Search class: FUHNF-FFSM00-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_28, hypothesis, (ocean(atlantic))).
+#
+#cnf(i_0_29, hypothesis, (ocean(indian))).
+#
+#cnf(i_0_45, hypothesis, (african(zaire))).
+#
+#cnf(i_0_46, hypothesis, (african(nigeria))).
+#
+#cnf(i_0_47, hypothesis, (african(angola))).
+#
+#cnf(i_0_42, hypothesis, (south_american(brazil))).
+#
+#cnf(i_0_48, hypothesis, (african(somalia))).
+#
+#cnf(i_0_43, hypothesis, (south_american(uruguay))).
+#
+#cnf(i_0_44, hypothesis, (south_american(venesuela))).
+#
+#cnf(i_0_49, hypothesis, (african(kenya))).
+#
+#cnf(i_0_50, hypothesis, (african(tanzania))).
+#
+#cnf(i_0_51, hypothesis, (asian(india))).
+#
+#cnf(i_0_52, hypothesis, (asian(pakistan))).
+#
+#cnf(i_0_53, hypothesis, (asian(iran))).
+#
+#cnf(i_0_30, hypothesis, (borders(atlantic,brazil))).
+#
+#cnf(i_0_31, hypothesis, (borders(atlantic,uruguay))).
+#
+#cnf(i_0_32, hypothesis, (borders(atlantic,venesuela))).
+#
+#cnf(i_0_33, hypothesis, (borders(atlantic,zaire))).
+#
+#cnf(i_0_34, hypothesis, (borders(atlantic,nigeria))).
+#
+#cnf(i_0_35, hypothesis, (borders(atlantic,angola))).
+#
+#cnf(i_0_36, hypothesis, (borders(indian,india))).
+#
+#cnf(i_0_37, hypothesis, (borders(indian,pakistan))).
+#
+#cnf(i_0_38, hypothesis, (borders(indian,iran))).
+#
+#cnf(i_0_39, hypothesis, (borders(indian,somalia))).
+#
+#cnf(i_0_40, hypothesis, (borders(indian,kenya))).
+#
+#cnf(i_0_41, hypothesis, (borders(indian,tanzania))).
+#
+#cnf(i_0_54, negated_conjecture, (~asian(X3)|~african(X2)|~borders(X1,X3)|~borders(X1,X2)|~ocean(X1))).
+# Presaturation interreduction done
+#
+#cnf(i_0_28, hypothesis, (ocean(atlantic))).
+#
+#cnf(i_0_29, hypothesis, (ocean(indian))).
+#
+#cnf(i_0_45, hypothesis, (african(zaire))).
+#
+#cnf(i_0_46, hypothesis, (african(nigeria))).
+#
+#cnf(i_0_47, hypothesis, (african(angola))).
+#
+#cnf(i_0_42, hypothesis, (south_american(brazil))).
+#
+#cnf(i_0_48, hypothesis, (african(somalia))).
+#
+#cnf(i_0_49, hypothesis, (african(kenya))).
+#
+#cnf(i_0_50, hypothesis, (african(tanzania))).
+#
+#cnf(i_0_51, hypothesis, (asian(india))).
+#
+#cnf(i_0_52, hypothesis, (asian(pakistan))).
+#
+#cnf(i_0_43, hypothesis, (south_american(uruguay))).
+#
+#cnf(i_0_53, hypothesis, (asian(iran))).
+#
+#cnf(i_0_44, hypothesis, (south_american(venesuela))).
+#
+#cnf(i_0_30, hypothesis, (borders(atlantic,brazil))).
+#
+#cnf(i_0_31, hypothesis, (borders(atlantic,uruguay))).
+#
+#cnf(i_0_32, hypothesis, (borders(atlantic,venesuela))).
+#
+#cnf(i_0_33, hypothesis, (borders(atlantic,zaire))).
+#
+#cnf(i_0_34, hypothesis, (borders(atlantic,nigeria))).
+#
+#cnf(i_0_35, hypothesis, (borders(atlantic,angola))).
+#
+#cnf(i_0_36, hypothesis, (borders(indian,india))).
+#
+#cnf(i_0_37, hypothesis, (borders(indian,pakistan))).
+#
+#cnf(i_0_38, hypothesis, (borders(indian,iran))).
+#
+#cnf(i_0_39, hypothesis, (borders(indian,somalia))).
+#
+#cnf(i_0_40, hypothesis, (borders(indian,kenya))).
+#
+#cnf(i_0_41, hypothesis, (borders(indian,tanzania))).
+#
+#cnf(i_0_54, negated_conjecture, (~asian(X1)|~african(X2)|~borders(X3,X1)|~borders(X3,X2)|~ocean(X3))).
+#
+#cnf(i_0_58, hypothesis, (~african(X1)|~borders(indian,X1))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(prove_there_is_a_common_ocean, negated_conjecture, (~ocean(X1)|~borders(X1,X2)|~african(X2)|~borders(X1,X3)|~asian(X3)), file('Problems/PUZ/PUZ011-1.p', prove_there_is_a_common_ocean)).
+cnf(indian_iran, hypothesis, (borders(indian,iran)), file('Problems/PUZ/PUZ011-1.p', indian_iran)).
+cnf(iran, hypothesis, (asian(iran)), file('Problems/PUZ/PUZ011-1.p', iran)).
+cnf(indian, hypothesis, (ocean(indian)), file('Problems/PUZ/PUZ011-1.p', indian)).
+cnf(tanzania, hypothesis, (african(tanzania)), file('Problems/PUZ/PUZ011-1.p', tanzania)).
+cnf(indian_tanzania, hypothesis, (borders(indian,tanzania)), file('Problems/PUZ/PUZ011-1.p', indian_tanzania)).
+cnf(c_0_6, negated_conjecture, (~ocean(X1)|~borders(X1,X2)|~african(X2)|~borders(X1,X3)|~asian(X3)), inference(fof_simplification,[status(thm)],[prove_there_is_a_common_ocean])).
+cnf(c_0_7, negated_conjecture, (~ocean(X1)|~borders(X1,X2)|~african(X2)|~borders(X1,X3)|~asian(X3)), c_0_6).
+cnf(c_0_8, hypothesis, (borders(indian,iran)), indian_iran).
+cnf(c_0_9, hypothesis, (asian(iran)), iran).
+cnf(c_0_10, hypothesis, (ocean(indian)), indian).
+cnf(c_0_11, hypothesis, (~african(X1)|~borders(indian,X1)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_7, c_0_8]), c_0_9]), c_0_10])])).
+cnf(c_0_12, hypothesis, (african(tanzania)), tanzania).
+cnf(c_0_13, hypothesis, (borders(indian,tanzania)), indian_tanzania).
+cnf(c_0_14, hypothesis, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_11, c_0_12]), c_0_13])]), ['proof']).
+# SZS output end CNFRefutation

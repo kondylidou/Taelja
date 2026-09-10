@@ -909,7 +909,7 @@ def lit_as_term(lit):
 
 
 def precise_hyp_rw(prev_lit, target_lit, rw_formula, direction, ref_name, var_map, prev_ref,
-                    binders=None, out_of_scope=()):
+                    binders=None, out_of_scope=(), witnesses=None):
     """Tactic proving `target_lit` from hypothesis `prev_ref : prev_lit` by one
     rewrite with `rw_formula` (an equation), instantiated explicitly and applied
     to exactly the occurrence that turns the target into the hypothesis.  This
@@ -923,7 +923,12 @@ def precise_hyp_rw(prev_lit, target_lit, rw_formula, direction, ref_name, var_ma
     the name exists only inside the hypothesis's own (already-closed) binder,
     so citing it here is a reference to nothing.  The caller's plain `rw ...
     at h_rw` lets Lean unify the witness on `prev_ref`'s own metavariable
-    instead (LAT005-6/e: citing an eliminated ∀-variable by name)."""
+    instead (LAT005-6/e: citing an eliminated ∀-variable by name).
+
+    `witnesses`: concrete terms the caller has already substituted for those
+    same out-of-scope variables when it instantiated `prev_ref`.  When one is
+    supplied the rewrite is instantiated at the very same term, so hypothesis
+    and rewrite agree and the step needs no metavariable (RNG039-1/vampire)."""
     if not isinstance(rw_formula, EqLit):
         return None
     prev_t, tgt_t = lit_as_term(prev_lit), lit_as_term(target_lit)
@@ -934,6 +939,14 @@ def precise_hyp_rw(prev_lit, target_lit, rw_formula, direction, ref_name, var_ma
         return None
     if any(v not in subst for v in vars_in_lit(rw_formula)):
         return None
+    witnesses = witnesses or {}
+    if witnesses:
+        subst = {k: (witnesses[t.name]
+                     if isinstance(t, Var) and t.name in witnesses else t)
+                 for k, t in subst.items()}
+        # prev_ref was instantiated at those witnesses, so the term the rewrite
+        # has to land on is prev_lit with the same substitution applied.
+        prev_t = apply_subst_obj(witnesses, prev_t)
     if any(isinstance(t, Var) and t.name in out_of_scope for t in subst.values()):
         return None
     args = inst_args(rw_formula, subst, var_map, binders)
@@ -1555,6 +1568,7 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     # RL: rewrite the GOAL forward with axiom LR (brings goal back to prev's form).
                     # The goal has 'a' where prev has 'b'; rw [ref_name] in goal uses LHS (a) as
                     # pattern and replaces with RHS (b), turning the goal into prev's form.
+                    rl_witnesses = {}
                     if prev_new_vars:
                         if lit_has_new_vars and len(prev_new_vars) == len(new_vars):
                             # The step's own literal is still ∀-quantified (Tälja
@@ -1572,6 +1586,8 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                             # (LAT005-6/e).
                             witness_c = lean_name(consts[0]) if consts else 'a'
                             inst = f' {witness_c}' * len(prev_new_vars)
+                            rl_witnesses = {v: Const(consts[0]) for v in prev_new_vars} \
+                                           if consts else {}
                         prev_inst = f'{prev_name}{inst}'
                     else:
                         prev_inst = prev_name
@@ -1587,7 +1603,7 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     precise = precise_hyp_rw(
                         prev_lit, step.lit, rl_rw_formula, 'RL', ref_name, svm, prev_inst,
                         get_formula_vars(ref.num, ref.kind, axiom_types, lemma_types)[0],
-                        out_of_scope=prev_new_vars)
+                        out_of_scope=prev_new_vars, witnesses=rl_witnesses)
                     if precise is not None:
                         if lit_has_new_vars:
                             # a quantified target opens its binders first; rw
@@ -1638,12 +1654,15 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     else:
                         # Ground (or relational) prev: choose rewrite strategy based on whether
                         # the referenced lemma's LHS is a plain Var or a compound term.
+                        lr_witnesses = {}
                         if prev_new_vars:
                             # Same reasoning as the RL branch above: a concrete
                             # witness, not `_` (LAT005-6/e).
                             witness_c = lean_name(consts[0]) if consts else 'a'
                             inst = f' {witness_c}' * len(prev_new_vars)
                             prev_copy = f'({prev_name}{inst})'
+                            if consts:
+                                lr_witnesses = {v: Const(consts[0]) for v in prev_new_vars}
                         else:
                             prev_copy = prev_name
                         # Look up the formula to decide which direction avoids a metavar pattern.
@@ -1656,7 +1675,7 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                         precise = precise_hyp_rw(
                             prev_lit, step.lit, rw_formula, 'LR', ref_name, svm, prev_copy,
                             get_formula_vars(ref.num, ref.kind, axiom_types, lemma_types)[0],
-                            out_of_scope=prev_new_vars)
+                            out_of_scope=prev_new_vars, witnesses=lr_witnesses)
                         if precise is not None:
                             if lit_has_new_vars:
                                 fvs = ' '.join(svm[v] for v in new_vars)

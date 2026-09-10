@@ -1,0 +1,384 @@
+Axiom 1: man(skc8,skc10)
+Axiom 2: accessible_world(skc8,skc12)
+Axiom 3: accessible_world(X,Y) /\ man(X,Z) => man(Y,Z)
+Axiom 4: man(skc8,skc15)
+Axiom 5: man(skc12,X) => present(skc12,skf2(Y))
+Axiom 6: man(skc12,X) => smoke(skc12,skf2(Y))
+Axiom 7: man(skc12,X) => agent(skc12,skf2(X),X)
+Axiom 8: agent(skc8,skc13,skc15)
+Axiom 9: event(skc8,skc13)
+Axiom 10: present(skc8,skc13)
+Axiom 11: think_believe_consider(skc8,skc13)
+Axiom 12: theme(skc8,skc13,skc12)
+Axiom 13: proposition(skc8,skc12)
+Axiom 14: jules_forename(skc8,skc11)
+Axiom 15: of(skc8,skc11,skc10)
+Axiom 16: vincent_forename(skc8,skc14)
+Axiom 17: of(skc8,skc14,skc15)
+Axiom 18: actual_world(skc8)
+Axiom 19: state(skc8,skc9)
+Axiom 20: be(skc8,skc9,skc10,skc10)
+Axiom 21: vincent_forename(X,Y) => forename(X,Y)
+Axiom 22: jules_forename(X,Y) => forename(X,Y)
+Axiom 23: smoke(X,Y) => event(X,Y)
+Axiom 24: be(X,Y,Z,Z) /\ man(X,Z) /\ state(X,Y) /\ smoke(A,B) /\ present(A,B) /\ agent(A,B,Z) /\ event(A,B) /\ forename(X,C) /\ jules_forename(X,C) /\ of(X,C,Z) /\ accessible_world(X,A) /\ proposition(X,A) /\ proposition(X,U) /\ accessible_world(X,U) /\ think_believe_consider(X,V) /\ present(X,V) /\ event(X,V) /\ theme(X,V,U) /\ agent(X,W,X1) /\ agent(X,V,X1) /\ man(X,X1) /\ of(X,X2,X1) /\ vincent_forename(X,X2) /\ forename(X,X2) /\ theme(X,W,A) /\ event(X,W) /\ present(X,W) /\ think_believe_consider(X,W) /\ actual_world(X) => man(U,skf4(U))
+
+Lemma 25: smoke(skc12,skf2(skc10))
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc15)
+    by axiom 4
+  hence man(skc12,skc15)
+    by axiom 3
+  hence smoke(skc12,skf2(skc10))
+    by axiom 6
+
+Lemma 26: present(skc12,skf2(skc10))
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc15)
+    by axiom 4
+  hence man(skc12,skc15)
+    by axiom 3
+  hence present(skc12,skf2(skc10))
+    by axiom 5
+
+Lemma 27: agent(skc12,skf2(skc10),skc10)
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc10)
+    by axiom 1
+  hence man(skc12,skc10)
+    by axiom 3
+  hence agent(skc12,skf2(skc10),skc10)
+    by axiom 7
+
+Lemma 28: event(skc12,skf2(skc10))
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc15)
+    by axiom 4
+  hence man(skc12,skc15)
+    by axiom 3
+  hence smoke(skc12,skf2(skc10))
+    by axiom 6
+  hence event(skc12,skf2(skc10))
+    by axiom 23
+
+Lemma 29: forename(skc8,skc11)
+Proof:
+  have jules_forename(skc8,skc11)
+    by axiom 14
+  hence forename(skc8,skc11)
+    by axiom 22
+
+Lemma 30: forename(skc8,skc14)
+Proof:
+  have vincent_forename(skc8,skc14)
+    by axiom 16
+  hence forename(skc8,skc14)
+    by axiom 21
+
+Goal 1: event(skc12,skf2(skf4(skc12)))
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc15)
+    by axiom 4
+  hence man(skc12,skc15)
+    by axiom 3
+  hence smoke(skc12,skf2(skf4(skc12)))
+    by axiom 6
+  hence event(skc12,skf2(skf4(skc12)))
+    by axiom 23
+
+Goal 2: event(skc12,skf2(skc10))
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc15)
+    by axiom 4
+  hence man(skc12,skc15)
+    by axiom 3
+  hence smoke(skc12,skf2(skc10))
+    by axiom 6
+  hence event(skc12,skf2(skc10))
+    by axiom 23
+
+Goal 3: agent(skc12,skf2(skc10),skc10)
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc10)
+    by axiom 1
+  hence man(skc12,skc10)
+    by axiom 3
+  hence agent(skc12,skf2(skc10),skc10)
+    by axiom 7
+
+Goal 4: agent(skc12,skf2(skf4(skc12)),skf4(skc12))
+Proof:
+  have be(skc8,skc9,skc10,skc10)
+    by axiom 20
+   and man(skc8,skc10)
+    by axiom 1
+   and state(skc8,skc9)
+    by axiom 19
+   and smoke(skc12,skf2(skc10))
+    by lemma 25
+   and present(skc12,skf2(skc10))
+    by lemma 26
+   and agent(skc12,skf2(skc10),skc10)
+    by lemma 27
+   and event(skc12,skf2(skc10))
+    by lemma 28
+   and forename(skc8,skc11)
+    by lemma 29
+   and jules_forename(skc8,skc11)
+    by axiom 14
+   and of(skc8,skc11,skc10)
+    by axiom 15
+   and accessible_world(skc8,skc12)
+    by axiom 2
+   and proposition(skc8,skc12)
+    by axiom 13
+   and proposition(skc8,skc12)
+    by axiom 13
+   and accessible_world(skc8,skc12)
+    by axiom 2
+   and think_believe_consider(skc8,skc13)
+    by axiom 11
+   and present(skc8,skc13)
+    by axiom 10
+   and event(skc8,skc13)
+    by axiom 9
+   and theme(skc8,skc13,skc12)
+    by axiom 12
+   and agent(skc8,skc13,skc15)
+    by axiom 8
+   and agent(skc8,skc13,skc15)
+    by axiom 8
+   and man(skc8,skc15)
+    by axiom 4
+   and of(skc8,skc14,skc15)
+    by axiom 17
+   and vincent_forename(skc8,skc14)
+    by axiom 16
+   and forename(skc8,skc14)
+    by lemma 30
+   and theme(skc8,skc13,skc12)
+    by axiom 12
+   and event(skc8,skc13)
+    by axiom 9
+   and present(skc8,skc13)
+    by axiom 10
+   and think_believe_consider(skc8,skc13)
+    by axiom 11
+   and actual_world(skc8)
+    by axiom 18
+  hence man(skc12,skf4(skc12))
+    by axiom 24
+  hence agent(skc12,skf2(skf4(skc12)),skf4(skc12))
+    by axiom 7
+
+Goal 5: man(skc8,skc10)
+Proof:
+  have man(skc8,skc10)
+    by axiom 1
+
+Goal 6: be(skc8,skc9,skc10,skc10)
+Proof:
+  have be(skc8,skc9,skc10,skc10)
+    by axiom 20
+
+Goal 7: smoke(skc12,skf2(skc10))
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc15)
+    by axiom 4
+  hence man(skc12,skc15)
+    by axiom 3
+  hence smoke(skc12,skf2(skc10))
+    by axiom 6
+
+Goal 8: present(skc12,skf2(skc10))
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc15)
+    by axiom 4
+  hence man(skc12,skc15)
+    by axiom 3
+  hence present(skc12,skf2(skc10))
+    by axiom 5
+
+Goal 9: agent(skc12,skf2(skc10),skc10)
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc10)
+    by axiom 1
+  hence man(skc12,skc10)
+    by axiom 3
+  hence agent(skc12,skf2(skc10),skc10)
+    by axiom 7
+
+Goal 10: event(skc12,skf2(skc10))
+Proof:
+  have event(skc12,skf2(skc10))
+    by lemma 28
+
+Goal 11: forename(skc8,skc11)
+Proof:
+  have forename(skc8,skc11)
+    by lemma 29
+
+Goal 12: jules_forename(skc8,skc11)
+Proof:
+  have jules_forename(skc8,skc11)
+    by axiom 14
+
+Goal 13: of(skc8,skc11,skc10)
+Proof:
+  have of(skc8,skc11,skc10)
+    by axiom 15
+
+Goal 14: accessible_world(skc8,skc12)
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+
+Goal 15: proposition(skc8,skc12)
+Proof:
+  have proposition(skc8,skc12)
+    by axiom 13
+
+Goal 16: proposition(skc8,skc12)
+Proof:
+  have proposition(skc8,skc12)
+    by axiom 13
+
+Goal 17: accessible_world(skc8,skc12)
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+
+Goal 18: smoke(skc12,skf2(skf4(skc12)))
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc15)
+    by axiom 4
+  hence man(skc12,skc15)
+    by axiom 3
+  hence smoke(skc12,skf2(skf4(skc12)))
+    by axiom 6
+
+Goal 19: present(skc12,skf2(skf4(skc12)))
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc15)
+    by axiom 4
+  hence man(skc12,skc15)
+    by axiom 3
+  hence present(skc12,skf2(skf4(skc12)))
+    by axiom 5
+
+Goal 20: state(skc8,skc9)
+Proof:
+  have state(skc8,skc9)
+    by axiom 19
+
+Goal 21: event(skc12,skf2(skf4(skc12)))
+Proof:
+  have accessible_world(skc8,skc12)
+    by axiom 2
+   and man(skc8,skc15)
+    by axiom 4
+  hence man(skc12,skc15)
+    by axiom 3
+  hence smoke(skc12,skf2(skf4(skc12)))
+    by axiom 6
+  hence event(skc12,skf2(skf4(skc12)))
+    by axiom 23
+
+Goal 22: think_believe_consider(skc8,skc13)
+Proof:
+  have think_believe_consider(skc8,skc13)
+    by axiom 11
+
+Goal 23: present(skc8,skc13)
+Proof:
+  have present(skc8,skc13)
+    by axiom 10
+
+Goal 24: event(skc8,skc13)
+Proof:
+  have event(skc8,skc13)
+    by axiom 9
+
+Goal 25: theme(skc8,skc13,skc12)
+Proof:
+  have theme(skc8,skc13,skc12)
+    by axiom 12
+
+Goal 26: agent(skc8,skc13,skc15)
+Proof:
+  have agent(skc8,skc13,skc15)
+    by axiom 8
+
+Goal 27: agent(skc8,skc13,skc15)
+Proof:
+  have agent(skc8,skc13,skc15)
+    by axiom 8
+
+Goal 28: man(skc8,skc15)
+Proof:
+  have man(skc8,skc15)
+    by axiom 4
+
+Goal 29: of(skc8,skc14,skc15)
+Proof:
+  have of(skc8,skc14,skc15)
+    by axiom 17
+
+Goal 30: vincent_forename(skc8,skc14)
+Proof:
+  have vincent_forename(skc8,skc14)
+    by axiom 16
+
+Goal 31: forename(skc8,skc14)
+Proof:
+  have forename(skc8,skc14)
+    by lemma 30
+
+Goal 32: theme(skc8,skc13,skc12)
+Proof:
+  have theme(skc8,skc13,skc12)
+    by axiom 12
+
+Goal 33: event(skc8,skc13)
+Proof:
+  have event(skc8,skc13)
+    by axiom 9
+
+Goal 34: present(skc8,skc13)
+Proof:
+  have present(skc8,skc13)
+    by axiom 10
+
+Goal 35: think_believe_consider(skc8,skc13)
+Proof:
+  have think_believe_consider(skc8,skc13)
+    by axiom 11
+
+Goal 36: actual_world(skc8)
+Proof:
+  have actual_world(skc8)
+    by axiom 18
