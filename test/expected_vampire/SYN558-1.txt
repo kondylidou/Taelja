@@ -84,7 +84,7 @@ Proof:
   hence p2(f3(c9),f3(c8))
     by axiom 7
 
-Goal 1: p5(c7,c9,f3(f3(c9)))
+Lemma 18: p5(c7,c9,f3(f3(c9)))
 Proof:
   have p5(c7,f3(c9),f3(f3(c9)))
     by axiom 4
@@ -93,7 +93,7 @@ Proof:
   hence p5(c7,c9,f3(f3(c9)))
     by axiom 5
 
-Goal 2: p5(c7,c8,f3(f3(c9)))
+Lemma 19: p5(c7,c8,f3(f3(c9)))
 Proof:
   have p5(c7,f3(c9),f3(f3(c9)))
     by axiom 4
@@ -108,4 +108,22 @@ Proof:
    and p5(c7,c8,f3(c8))
     by axiom 4
   hence p5(c7,c8,f3(f3(c9)))
+    by axiom 5
+
+Goal 1: p5(c7,c8,f3(f3(f3(c9))))
+Proof:
+  have p5(c7,f3(f3(c9)),f3(f3(f3(c9))))
+    by axiom 4
+   and p5(c7,c8,f3(f3(c9)))
+    by lemma 19
+  hence p5(c7,c8,f3(f3(f3(c9))))
+    by axiom 5
+
+Goal 2: p5(c7,c9,f3(f3(f3(c9))))
+Proof:
+  have p5(c7,f3(f3(c9)),f3(f3(f3(c9))))
+    by axiom 4
+   and p5(c7,c9,f3(f3(c9)))
+    by lemma 18
+  hence p5(c7,c9,f3(f3(f3(c9))))
     by axiom 5

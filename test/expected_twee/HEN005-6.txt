@@ -31,21 +31,26 @@ Proof:
   hence divide(b,c) = zero
     by axiom 2
 
-Goal 1: less_equal(a,c)
+Lemma 12: less_equal(divide(a,c),zero)
 Proof:
-  have less_equal(divide(divide(a,c),divide(b,c)),zero)
-    by lemma 10
-   and less_equal(zero,divide(divide(a,c),divide(b,c)))
+  have less_equal(zero,divide(divide(a,c),divide(b,c)))
     by axiom 6
-  hence divide(divide(a,c),divide(b,c)) = zero
+   and less_equal(divide(divide(a,c),divide(b,c)),zero)
+    by lemma 10
+  hence zero = divide(divide(a,c),divide(b,c))
     by axiom 7
-  hence divide(divide(a,c),zero) = zero
+  hence zero = divide(divide(a,c),zero)
     by rw lemma 11
   hence less_equal(divide(a,c),zero)
     by axiom 8
-   and less_equal(zero,divide(a,c))
+
+Goal 1: less_equal(a,c)
+Proof:
+  have less_equal(zero,divide(a,c))
     by axiom 6
-  hence divide(a,c) = zero
+   and less_equal(divide(a,c),zero)
+    by lemma 12
+  hence zero = divide(a,c)
     by axiom 7
   hence less_equal(a,c)
     by axiom 8

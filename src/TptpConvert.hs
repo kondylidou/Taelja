@@ -5,6 +5,7 @@ module TptpConvert
   , convertTerm
   , convertLit
   , convertDeclToClause
+  , clauseToDecl
   , mkClause
   , isNEq
   , isReservedTLit
@@ -14,7 +15,7 @@ module TptpConvert
   ) where
 
 import Data.List (partition)
-import Data.List.NonEmpty (toList)
+import Data.List.NonEmpty (NonEmpty (..), toList)
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
 
@@ -60,6 +61,21 @@ convertDeclToClause (T.Formula _ (T.CNF (T.Clause lits))) =
   in mkClause bodyLits headLits
 convertDeclToClause (T.Formula _ (T.FOF f)) = convertFOFToClause f
 convertDeclToClause _ = Nothing
+
+-- The converse, as a CNF declaration (an empty clause is $false).
+clauseToDecl :: Clause -> T.Declaration
+clauseToDecl (Clause bs mh) = T.Formula (T.Standard T.Plain) (T.CNF (T.Clause lits))
+  where
+    lits = case [ (T.Negative, toTLit l) | l <- bs ] ++ [ (T.Positive, toTLit h) | Just h <- [mh] ] of
+      []       -> pure (T.Positive, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])
+      (x : xs) -> x :| xs
+    toTLit (Rel n ts)  = T.Predicate (T.Defined (T.Atom (Text.pack n))) (map toTTerm ts)
+    toTLit (NRel n ts) = T.Predicate (T.Defined (T.Atom (Text.pack n))) (map toTTerm ts)
+    toTLit (Eq l r)    = T.Equality (toTTerm l) T.Positive (toTTerm r)
+    toTLit (NEq l r)   = T.Equality (toTTerm l) T.Negative (toTTerm r)
+    toTTerm (Var v)    = T.Variable (T.Var (Text.pack v))
+    toTTerm (Const c)  = T.Function (T.Defined (T.Atom (Text.pack c))) []
+    toTTerm (App f ts) = T.Function (T.Defined (T.Atom (Text.pack f))) (map toTTerm ts)
 
 mkClause :: [Literal] -> [Literal] -> Maybe Clause
 mkClause body hs =

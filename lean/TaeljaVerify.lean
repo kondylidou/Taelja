@@ -74,6 +74,12 @@ import TaeljaVerify.Twee.Col0831
 import TaeljaVerify.Twee.Syn1401
 import TaeljaVerify.Twee.Syn5531
 import TaeljaVerify.Twee.Lcl1261
+import TaeljaVerify.Twee.Col0081
+import TaeljaVerify.Twee.Col0101
+import TaeljaVerify.Twee.Col0151
+import TaeljaVerify.Twee.Col0171
+import TaeljaVerify.Twee.Col0211
+import TaeljaVerify.Twee.Col0221
 
 -- E prover test cases
 import TaeljaVerify.E.Ana0232

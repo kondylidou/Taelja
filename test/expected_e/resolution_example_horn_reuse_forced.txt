@@ -3,11 +3,11 @@ Axiom 2: s(Y) => q(b,Y)
 Axiom 3: s(Y) => p(Y)
 Axiom 4: q(Y,Z) /\ p(Z) => r(Y,Z)
 
-Lemma 5: p(X)
+Lemma 5: p(a)
 Proof:
-  have s(X)
+  have s(a)
     by axiom 1
-  hence p(X)
+  hence p(a)
     by axiom 3
 
 Goal 1: r(b,a)

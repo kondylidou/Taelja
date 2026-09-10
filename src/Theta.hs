@@ -1,270 +1,329 @@
--- Algorithm 1's θ (paper, Section 4): the one substitution derived from the
--- input proof, traced top-down from the root, and the coherence check that
--- validates an assembled hyperresolution step before it is emitted.
+-- Theorem 1's θ: the one grounding substitution under which the input proof
+-- tree T is a ground proof tree Tθ, and the coherence check that validates an
+-- assembled hyperresolution step before it is emitted.
+--
+-- Tθ is a proof tree only if every inference of T still applies after
+-- instantiation, so θ has to agree with the unifier of every step.  It is
+-- therefore computed as one unification problem over the whole tree: the
+-- variables of every clause are renamed apart by position, each inference is
+-- replayed from its premises (resolution, superposition or rewriting, a
+-- literal dropped by equality resolution or as a duplicate) and its result is
+-- unified with the clause the prover printed for it.  The most general
+-- solution is θ up to the variables no step ever binds; those are the
+-- theorem's fresh constants and stay as (rigid) variables, one per class of
+-- identified variables.
 module Theta
   ( ThetaCtx (..)
   , computeNucleusTheta
   , sharedNodeTheta
   , resolutionCoherent
+  , derivedHead
   ) where
 
-import Control.Applicative ((<|>))
 import Control.Monad (foldM)
-import Data.Bifunctor (second)
-import Data.List (nub, partition, sortBy)
-import Data.Maybe (catMaybes, fromMaybe, isJust, listToMaybe)
+import Data.List (nub, sortBy)
+import Data.Maybe (isJust)
 import Data.Ord (comparing)
-import qualified Data.Map.Lazy as LMap
 import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 import qualified Data.TPTP as T
 
 import Types
 import Helpers
 import TptpConvert (convertDeclToClause)
 
--- θ as the paper defines it (Section 4, Algorithm 1): the one substitution
--- derived from the input proof, shared by both stages (the --debug "θ = {...}"
--- line shows it). See nodeThetaMap for how a position's θ|p is traced.
--- What computeNucleusTheta needs: the proof entries and the clause at every
--- tree position.
 data ThetaCtx = ThetaCtx
   { tcDeclAt  :: Map.Map String T.Declaration
   , tcSimpl   :: Map.Map String [(String, Dir)]  -- demodulation chain folded into the inference at a position
   , tcEqOf    :: String -> Maybe (Term, Term)    -- the chain's equations by name
-  , tcShared  :: LMap.Map String Subst  -- θ|p for every position, computed once per run (see sharedNodeTheta)
+  , tcShared  :: Map.Map String Subst  -- θ|p for every position (see sharedNodeTheta)
   }
 
--- The prover may fold a demodulation into the inference (E's rw around an
--- spm step): the conclusion the proof shows is then the head instance after
--- rewriting.  The recorded chain is replayed on the abstract head, as
--- rw_chain does for electrons, and the paper's match is applied to that.
+-- θ restricted to one nucleus, in the variables of its abstract clause.
+-- Theorem 1's θ'_k: a variable occurring in the head but in no body literal
+-- stays free, so the derived electron is as general as the proof allows.
 computeNucleusTheta :: ThetaCtx -> LeafEntry -> Subst
 computeNucleusTheta ctx entry =
-  let abstractDecl = if leRole entry == OrigAxiom then leSrcDecl entry else leDecl entry
-      leafClause = convertDeclToClause abstractDecl
-      θraw = nodeTheta (tcDeclAt ctx) (tcShared ctx) leafClause unrewritten (lePos entry)
-      -- a variable the proof merely renames to a parent variable it never
-      -- instantiates (and links to nothing else) is one θ leaves free
-      loneRename (_, Var w) = length [ () | (_, t) <- θraw, w `elem` termVars t ] == 1
-      loneRename _          = False
-      θ = filter (not . loneRename) θraw
-      -- Paper (Thm. 6, θ'_k): variables occurring in the head but in no body
-      -- literal stay free, so the derived electron is as general as the
-      -- proof allows (e.g. c_plus(c_0,Y,X) = Y keeps Y)
+  let θ = Map.findWithDefault [] (lePos entry) (tcShared ctx)
       headOnly = case convertDeclToClause (leSrcDecl entry) of
         Just (Clause bs (Just h)) -> filter (`notElem` concatMap litVars bs) (litVars h)
         _                          -> []
   in filter (\(v, _) -> v `notElem` headOnly) θ
+
+-- The clause a position stands for in the unification problem: a leaf
+-- entry's abstract clause (the source axiom, whose variables the nucleus is
+-- processed with), otherwise the clause printed at that position.
+abstractDecl :: LeafEntry -> T.Declaration
+abstractDecl e = if leRole e == OrigAxiom then leSrcDecl e else leDecl e
+
+-- The global θ, computed once per run: θ|p for every position, in that
+-- position's own variable names.  A variable no inference binds is left out
+-- unless it was identified with another position's variable, in which case
+-- both map to one shared rigid variable.
+sharedNodeTheta :: Map.Map String T.Declaration -> [LeafEntry] -> Map.Map String Subst
+sharedNodeTheta declAt entries = Map.mapWithKey thetaAt clauses
   where
-    pos = lePos entry
-    chain = Map.findWithDefault [] pos (tcSimpl ctx)
-    -- the conclusion as it was before the demodulation folded into this
-    -- inference (the literal Algorithm 1 assumes to be there)
-    unrewritten c = if null chain then c else fromMaybe c (unrewriteLit (tcEqOf ctx) c chain)
+    entryClauses = Map.fromList [ (lePos e, c) | e <- entries, Just c <- [convertDeclToClause (abstractDecl e)] ]
+    clauses = Map.union entryClauses (Map.mapMaybe convertDeclToClause declAt)
 
--- θ|p for every position p in the tree, traced top-down from the root: a
--- node's literals are matched into its parent's literals after the parent's
--- own θ is applied, so instantiations propagate through non-ground inner
--- clauses. Exactly one literal may fail to match — the one resolved away or
--- rewritten at the parent inference — and the sibling only breaks a tie over
--- which one, contributing no bindings itself. A resolved-away literal's
--- variables stay free (the paper's τ); a rewritten literal's are instantiated
--- through the rewrite.
---
--- sharedBase already holds θ|p for most positions (computed once, shared
--- across every nucleus); only leafPos is recomputed here, with leafClause's
--- override applied on top. That's safe because the override only ever
--- touches leafPos itself, never an ancestor or sibling reached while
--- computing it — so the shared, generic value is exactly what this call
--- would derive for that position anyway.
-nodeThetaMap :: Map.Map String T.Declaration -> LMap.Map String Subst -> Maybe Clause -> (Literal -> Literal) -> String -> LMap.Map String Subst
-nodeThetaMap declAt sharedBase leafClause unrewriteParentHead leafPos = memo
+    -- variables renamed apart by position: v@p
+    at p v = v ++ "@" ++ p
+    litsAt p = [ (b, mapLiteralTerms (apart p) l) | (b, l) <- polLits (clauses Map.! p) ]
+    apart p (Var v)    = Var (at p v)
+    apart _ (Const c)  = Const c
+    apart p (App f ts) = App f (map (apart p) ts)
+
+    -- inferences, root first: a node's children are p0/p1 (binary) or p1 (unary)
+    nodes = sortBy (comparing (\(p, _) -> (length p, p)))
+              [ (p, kids) | p <- Map.keys clauses
+                          , let kids = filter (`Map.member` clauses) [p ++ "0", p ++ "1"]
+                          , not (null kids) ]
+
+    σ = solveAll [ (litsAt p, map litsAt kids) | (p, kids) <- nodes ]
+
+    -- θ is grounding: a variable no inference binds becomes a fresh
+    -- constant, one per class of identified variables (its representative
+    -- names it).  Head-only variables are exempted by computeNucleusTheta.
+    thetaAt p c =
+      [ (v, ground (walkDeep σ (Var (at p v))))
+      | v <- nub (concatMap (litVars . snd) (polLits c)) ]
+    ground (Var x)    = Const (rigidPrefix ++ map (\ch -> if ch == '@' then '_' else ch) x)
+    ground (Const c)  = Const c
+    ground (App f ts) = App f (map ground ts)
+
+polLits :: Clause -> [(Bool, Literal)]
+polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
+
+-- Solve the inferences in order, backtracking over the ways each can be
+-- explained, within a step budget; past the budget, or when no joint
+-- solution exists, every inference keeps its first explanation that is
+-- consistent with what was found so far.  An inference that has no
+-- explanation even on its own (a synthetic node whose replay failed) is
+-- left out up front rather than allowed to fail the whole search: its
+-- variables then stay free and the step fails honestly downstream.
+solveAll :: [([(Bool, Literal)], [[(Bool, Literal)]])] -> USubst
+solveAll infs0 = case search infs Map.empty budget of
+    (Just s, _) -> s
+    (Nothing, _) -> foldl greedy Map.empty infs
   where
-    -- the leaf itself uses its abstract (source) clause; ancestors and
-    -- siblings come from the real tree
-    clauseOf p | p == leafPos = leafClause
-               | otherwise    = Map.lookup p declAt >>= convertDeclToClause
-    polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
-
-    -- go p recurses into both the parent chain and each sibling's parent
-    -- chain; memoise per position or the sharing explodes exponentially in
-    -- the tree depth.  The map must be VALUE-LAZY (Data.Map.Lazy): a strict
-    -- map would force every position eagerly and loop on the mutual
-    -- parent/sibling references (which are only demanded selectively).
-    -- sharedBase is consulted first (left-biased union): when it already
-    -- covers every position (as sharedNodeTheta's result does), the
-    -- generic fallback on the right is never actually forced for anything
-    -- but leafPos, which is inserted on top regardless.
-    memo :: LMap.Map String Subst
-    memo = LMap.insert leafPos (compute leafPos)
-             (sharedBase `LMap.union`
-               LMap.mapWithKey (\p _ -> compute p) (LMap.fromAscList (Map.toAscList declAt)))
-
-    go p = LMap.findWithDefault [] p memo
-
-    compute "" = []
-    compute p  = fromMaybe [] $ do
-      let pp = init p
-          θP = go pp
-          sp = pp ++ [if last p == '0' then '1' else '0']
-      pc <- clauseOf pp
-      cc <- clauseOf p
-      -- the leaf's parent shows the conclusion after any demodulation folded
-      -- into the inference; its head is taken as it was before
-      let parentWith sub = [ (b, suffixVarsLit "_p" (applySubst sub (if b && p == leafPos then unrewriteParentHead l else l)))
-                           | (b, l) <- polLits pc ]
-          childLits  = polLits cc
-          mSib       = Map.lookup sp declAt >>= convertDeclToClause
-          isProv     = last p == '0' && isJust mSib
-          -- the parent's θ in the child's view of the parent's variables
-          θPs        = [ (v ++ "_p", sufT t) | (v, t) <- θP ]
-          sufT (Var x)    = Var (x ++ "_p")
-          sufT (App f ts) = App f (map sufT ts)
-          sufT t          = t
-      -- The paper's match is into C₀σ, the parent's clause as the prover
-      -- printed it, and θ is applied afterwards (σθ): matching the printed
-      -- clause keeps the orientation the inference used (an equation head
-      -- read the other way round is not the same instance) and the parent's
-      -- variables are then instantiated by the parent's own θ.  Only when
-      -- nothing matches the printed clause is the instantiated one tried.
-      -- The premise at p0 provides the literal the parent inference consumes
-      -- (the paper's tree order); the premise at p1 keeps its head.
-      return $ case groundChild isProv childLits (parentWith []) mSib (go sp) of
-        Just s  -> [ (v, applySubstTerm θPs t) | (v, t) <- s ]
-        Nothing -> fromMaybe [] (groundChild isProv childLits (parentWith θP) mSib (go sp))
-
-    -- Match child literals into parent literals (each parent literal used at
-    -- most once), allowing skips; prefer the fewest skips.
-    matchInto [] ps s = [(s, [], ps)]
-    matchInto (c : cs) ps s =
-      [ (s'', sk, un)
-      | (m, rest) <- picks ps
-      , s' <- matchPol c m s
-      , (s'', sk, un) <- matchInto cs rest s' ]
-      ++ [ (s'', c : sk, un) | (s'', sk, un) <- matchInto cs ps s ]
-
-    picks xs = [ (x, take i xs ++ drop (i + 1) xs) | (i, x) <- zip [0 ..] xs ]
-
-    -- both orientations of an equation are candidates (as the inference
-    -- oriented it first); the sibling decides between them when they tie
-    matchPol (b1, l1) (b2, l2) s
-      | b1 /= b2  = []
-      | otherwise = nub (catMaybes [matchLitWith l1 l2 s, matchLitWith (flipLit l1) l2 s])
-
-    notVar (Var _) = False
-    notVar _       = True
-
-    groundChild isProvider childLits parentLits mSib θSib =
-      let (heads, bodies) = partition fst childLits
-          -- a provider's head is what the parent consumes; only its body
-          -- survives into the conclusion (it must not be matched, even if the
-          -- conclusion happens to be an instance of it).  A consumer keeps
-          -- its head and loses one body literal, so candidates that match
-          -- the head come first.
-          (lits, forced) = if isProvider then (bodies, heads) else (childLits, [])
-          key sk = (any fst sk, length sk)
-          cands = map snd $ sortBy (comparing fst)
-                    [ (key sk', (s, sk', un)) | (s, sk, un) <- matchInto lits parentLits []
-                                              , let sk' = forced ++ sk ]
-          childVars = concatMap (litVars . snd) childLits
-          restrict = filter ((`elem` childVars) . fst)
-      in case cands of
-        [] -> Nothing
-        ((s0, sk0, _) : _)
-          | null sk0  -> Just (restrict s0)        -- every literal accounted for
-          | otherwise -> Just $
-              -- several candidates may tie (e.g. a symmetric head); the
-              -- sibling decides which literal the parent consumed
-              let tied  = takeWhile (\(_, sk, _) -> key sk == key sk0) cands
-              -- (an explanation that needs the literal flipped, e.g. a
-              -- symmetric equation, is taken only if no candidate is
-              -- explained as the inference oriented it)
-              in restrict $ fromMaybe s0 $ listToMaybe
-                   ([ s' | c <- tied, Just s' <- [explain False c] ]
-                    ++ [ s' | c <- tied, Just s' <- [explain True c] ])
+    infs = filter (not . null . (`explain` Map.empty)) infs0
+    budget = 2000 :: Int
+    search [] s b = (Just s, b)
+    search (inf : rest) s b = try (explain inf s) b
       where
-       matchOrFlipped allowFlip l1 l2 s =
-         matchLitWith l1 l2 s <|> (if allowFlip then matchLitWith (flipLit l1) l2 s else Nothing)
-       explain allowFlip (s, skipped, unused) =
-          -- unit child resolved against a body literal of the sibling nucleus:
-          -- its instance is that body literal under the sibling's θ (the body
-          -- literal that does not survive into the parent is the resolved one)
-          let resolvedAgainstSib = case (skipped, mSib) of
-                ([(True, lC)], Just (Clause sbs _))
-                  | length childLits == 1, not (null sbs) ->
-                      let sibBody = [ (False, applySubst θSib l) | l <- sbs ]
-                          skippedSib = case sortBy (comparing (\(_, sk, _) -> length sk))
-                                              (matchInto sibBody parentLits []) of
-                            ((_, sk, _) : _) -> sk
-                            []               -> []
-                      in s <$ listToMaybe
-                           [ () | (_, lS) <- skippedSib
-                                , Just _ <- [matchOrFlipped allowFlip lC lS s] ]
-                _ -> Nothing
-              -- child literal rewritten at the parent by the sibling unit equation
-              asRewritten = case (skipped, unused, mSib) of
-                ([(bS, lS)], [(bU, lU)], Just (Clause [] (Just (Eq a b))))
-                  | bS == bU -> listToMaybe
-                      [ s'
-                      | let lSi = applySubst s lS
-                      , (u, ctx) <- litSubtermCtxs lSi
-                      , notVar u   -- rewrite rules apply to non-variable subterms
-                      , let a' = suffixVarsLit "_r" (Eq a b)
-                      , (lhs, rhs) <- case a' of { Eq x y -> [(x, y), (y, x)]; _ -> [] }
-                      , Just (σR, ρC) <- [matchBothTerm lhs u [] []]
-                      , let lS' = applySubst ρC (ctx (applySubstTerm σR rhs))
-                      , Just s' <- [matchLitWith lS' lU (s ++ ρC)] ]
-                _ -> Nothing
-              -- child IS the unit equation used as a rewrite rule at the parent:
-              -- only the variables of its rewriting side reach the conclusion
-              asRule = case (skipped, mSib) of
-                ([(True, Eq a b)], Just sibC)
-                  | length childLits == 1 -> listToMaybe
-                      [ [ (v, applySubstTerm s'' t) | (v, t) <- σC, v `elem` termVars rhs ]
-                      | (bS, lS) <- map (second (suffixVarsLit "_s")) (polLits sibC)
-                      , (bP, lP) <- parentLits
-                      , bS == bP
-                      , (lhs, rhs) <- [(a, b), (b, a)]
-                      , (u, ctx) <- litSubtermCtxs lS
-                      , notVar u
-                      , Just (σC, ρS) <- [matchBothTerm lhs u [] []]
-                      , let lS' = applySubst ρS (ctx (applySubstTerm σC rhs))
-                      , Just s'' <- [matchLitWith lS' lP []] ]
-                _ -> Nothing
-              -- body literal resolved against the sibling unit: its variables stay
-              -- free.  The candidate is explained when the literal, under it,
-              -- still unifies with the unit (the inference's own criterion,
-              -- occurs check included).  A one-sided match in either direction
-              -- is wrong here: the literal may hold a constant where the unit
-              -- has a variable, and the unit a variable where the literal has
-              -- one (GRP012-3/E: product(identity,X1,X2) against
-              -- product(Y,Z,multiply(Y,Z)) explains only the orientation of
-              -- the head that binds X2 to multiply(identity,X1)).
-              bodyVsSibUnit = case (skipped, mSib) of
-                ([(False, lS)], Just (Clause [] (Just sl))) ->
-                  let sl' = suffixVarsLit "_s" sl
-                  in case unifyOrFlipped allowFlip (applySubst s lS) sl' of
-                       Just _  -> Just s
-                       Nothing -> Nothing
-                _ -> Nothing
-              unifyOrFlipped allowFlip' l1 l2 =
-                unifyOriented l1 l2 <|> (if allowFlip' then unifyOriented (flipLit l1) l2 else Nothing)
-              unifyOriented (Eq a b) (Eq c d) = unifyTerms a c [] >>= unifyTerms b d
-              unifyOriented l1 l2             = unifyLits l1 l2 []
-          in asRewritten <|> asRule <|> bodyVsSibUnit <|> resolvedAgainstSib
+        try [] b' = (Nothing, b')
+        try (s' : more) b'
+          | b' <= 0   = (Nothing, 0)
+          | otherwise = case search rest s' (b' - 1) of
+              (Just r, b'')  -> (Just r, b'')
+              (Nothing, b'') -> try more b''
+    greedy s inf = case explain inf s of
+      (s' : _) -> s'
+      []       -> s
 
--- One position's θ|p, per computeNucleusTheta's call.
-nodeTheta :: Map.Map String T.Declaration -> LMap.Map String Subst -> Maybe Clause -> (Literal -> Literal) -> String -> Subst
-nodeTheta declAt sharedBase leafClause unrewriteParentHead leafPos =
-  LMap.findWithDefault [] leafPos (nodeThetaMap declAt sharedBase leafClause unrewriteParentHead leafPos)
+-- The solver's own substitution.  It holds one binding per variable of the
+-- whole tree, so it must not be an association list applied to a fixed
+-- point on every unification step: a variable is dereferenced by walking
+-- the map instead (ALG006-1's nested terms otherwise make the solve
+-- quadratic in the number of bindings).
+type USubst = Map.Map String Term
 
--- Computed once per run, before any nucleus is processed: θ|p for every
--- position, generic throughout since "\0" can never equal a real position
--- (all real ones are '0'/'1' strings), so nodeThetaMap's override never
--- fires. Each nucleus's computeNucleusTheta call passes this as sharedBase,
--- adding only its own leaf's entry on top instead of re-tracing the tree.
-sharedNodeTheta :: Map.Map String T.Declaration -> LMap.Map String Subst
-sharedNodeTheta declAt = nodeThetaMap declAt LMap.empty Nothing id "\0"
+-- follow variable-to-variable chains one level deep
+walk :: USubst -> Term -> Term
+walk s t@(Var x) = maybe t (walk s) (Map.lookup x s)
+walk _ t         = t
+
+-- fully instantiate a term
+walkDeep :: USubst -> Term -> Term
+walkDeep s t = case walk s t of
+  App f ts -> App f (map (walkDeep s) ts)
+  t'       -> t'
+
+occursIn :: USubst -> String -> Term -> Bool
+occursIn s x t = case walk s t of
+  Var y    -> x == y
+  App _ ts -> any (occursIn s x) ts
+  _        -> False
+
+unifyU :: Term -> Term -> USubst -> Maybe USubst
+unifyU a b s = case (walk s a, walk s b) of
+  (Var x, Var y) | x == y -> Just s
+  (Var x, t)              -> bind x t
+  (t, Var y)              -> bind y t
+  (Const c, Const d) | c == d -> Just s
+  (App f as, App g bs) | f == g, length as == length bs ->
+    foldM (\acc (p, q) -> unifyU p q acc) s (zip as bs)
+  _ -> Nothing
+  where bind x t = if occursIn s x t then Nothing else Just (Map.insert x t s)
+
+-- Every substitution extending s under which the inference holds: the
+-- premises combine into a result clause, and that result is the printed
+-- conclusion up to instantiation and the dropping of trivial or duplicate
+-- literals.
+explain :: ([(Bool, Literal)], [[(Bool, Literal)]]) -> USubst -> [USubst]
+explain (parent, kids) s
+  | not (null strict) = strict
+  -- A prover may fold a rewriting into an inference and print one body
+  -- literal in its un-normalized form (Twee on ANA023-2 prints
+  -- c_plus(c_0,g,t_b) <= k where the step used g <= k).  Then no replay
+  -- reproduces the clause literally.  Rather than leave every variable of
+  -- the premise free, the remaining literals are allowed to determine them.
+  | otherwise = concat [ coverLoose result parent s1
+                       | (pairs, result) <- alternatives kids
+                       , Just s1 <- [foldM (\acc (a, b) -> unifyU a b acc) s pairs] ]
+  where
+    strict = [ s2 | (pairs, result) <- alternatives kids
+                  , Just s1 <- [foldM (\acc (a, b) -> unifyU a b acc) s pairs]
+                  , s2 <- cover result parent s1 ]
+
+-- The ways two premises (or one) combine, each as the term equations the
+-- step needs and the literals of its result.
+alternatives :: [[(Bool, Literal)]] -> [([(Term, Term)], [(Bool, Literal)])]
+alternatives [a]    = [([], a)]
+-- The last two are a fallback for a step that instantiates one premise and
+-- then rewrites it by the other: the rewritten position is still a variable
+-- before the conclusion is matched, so no superposition above reaches it.
+-- Taking the conclusion as an instance of that premise, with the rewritten
+-- literal left over for coverLoose, recovers the instantiation.
+alternatives [a, b] = resolve a b ++ resolve b a ++ superpose a b ++ superpose b a
+                      ++ [([], a), ([], b)]
+alternatives _      = []
+
+heads, bodies :: [(Bool, Literal)] -> [Literal]
+heads x  = [ l | (True, l) <- x ]
+bodies x = [ l | (False, l) <- x ]
+
+-- x's head against a body literal of y
+resolve :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
+resolve x y =
+  [ ([(litTerm h, litTerm b')], [ (False, l) | l <- bodies x ] ++ rest ++ [ (True, l) | l <- heads y ])
+  | h <- heads x
+  , ((False, b), rest) <- picks y
+  , b' <- orientations b ]
+
+-- x's equation head rewrites a non-variable subterm of a literal of y (that
+-- one occurrence, or every occurrence of the subterm in the clause)
+superpose :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
+superpose x y = nub
+  [ ([(l, u)], [ (False, m) | m <- bodies x ] ++ y')
+  | Eq s t <- heads x
+  , (l, r) <- [(s, t), (t, s)]
+  , notVar l   -- a rewrite rule's left-hand side is never a bare variable
+  , (i, (_, lit)) <- zip [0 :: Int ..] y
+  , (u, ctx) <- litSubtermCtxs lit
+  , notVar u
+  , y' <- [ [ (sign, if j == i then ctx r else m) | (j, (sign, m)) <- zip [0 :: Int ..] y ]
+          , [ (sign, mapLiteralTerms (replaceAll u r) m) | (sign, m) <- y ] ] ]
+  where
+    replaceAll u r t | t == u = r
+    replaceAll u r (App f ts) = App f (map (replaceAll u r) ts)
+    replaceAll _ _ t = t
+
+-- The printed conclusion is the replayed result up to renaming and the
+-- dropping of trivial or duplicate literals.  So every result literal is
+-- matched onto a conclusion literal of the same polarity (equations in
+-- either orientation), binding only the premises' variables, or is a body
+-- equation s ≈ t dropped with s and t unified (equality resolution, trivial
+-- inequality removal); every conclusion literal is hit at least once.
+cover :: [(Bool, Literal)] -> [(Bool, Literal)] -> USubst -> [USubst]
+cover result parent s0 = go result [] s0
+  where
+    idxParent = zip [0 :: Int ..] parent
+    -- the conclusion's variables (as instantiated so far) are never bound here
+    rigid = Set.fromList
+              (concatMap (litVars . mapLiteralTerms (walkDeep s0) . snd) parent)
+    go [] hit s
+      | all ((`elem` hit) . fst) idxParent = [s]
+      | otherwise = []
+    go ((sign, l) : ls) hit s =
+      [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
+            , l' <- orientations l
+            , Just s' <- [matchModulo rigid (litTerm l') (litTerm p) s]
+            , s'' <- go ls (i : hit) s' ]
+      ++ [ s'' | not sign, Eq a b <- [l], Just s' <- [unifyU a b s], s'' <- go ls hit s' ]
+
+-- Matching under a substitution: variables of the pattern that are still
+-- unbound and not rigid may be bound; the target is never instantiated.
+matchModulo :: Set.Set String -> Term -> Term -> USubst -> Maybe USubst
+matchModulo rigid = go
+  where
+    go pat tgt s = case (walk s pat, walk s tgt) of
+      (Var x, Var y) | x == y -> Just s
+      (Var x, t) | not (Set.member x rigid), not (occursIn s x t) -> Just (Map.insert x t s)
+      (Const c, Const d) | c == d -> Just s
+      (App f as, App g bs) | f == g, length as == length bs ->
+        foldM (\acc (a, b) -> go a b acc) s (zip as bs)
+      _ -> Nothing
+
+-- cover, but one literal on each side may go unaccounted for: the one the
+-- prover rewrote when it folded a simplification into the inference.  Twee
+-- on ANA023-2 instantiates transitivity at c_plus(c_0,g,t_b) <= k and then
+-- rewrites its conclusion to g <= f, and no replay reproduces that, because
+-- the rewritten position is still a variable before the conclusion is
+-- matched.  Leaving every variable of the premise free instead would lose
+-- the whole step.  This only widens θ, which is an input to the search: the
+-- assembled step is still checked by resolutionCoherent and by Lean, so a
+-- premise that does not in fact follow fails honestly.
+coverLoose :: [(Bool, Literal)] -> [(Bool, Literal)] -> USubst -> [USubst]
+coverLoose result parent s0 = go result [] False s0
+  where
+    idxParent = zip [0 :: Int ..] parent
+    rigid = Set.fromList
+              (concatMap (litVars . mapLiteralTerms (walkDeep s0) . snd) parent)
+    go [] hit _ s
+      | length [ () | (i, _) <- idxParent, i `notElem` hit ] <= 1 = [s]
+      | otherwise = []
+    go ((sign, l) : ls) hit skipped s =
+      [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
+            , l' <- orientations l
+            , Just s' <- [matchModulo rigid (litTerm l') (litTerm p) s]
+            , s'' <- go ls (i : hit) skipped s' ]
+      ++ [ s'' | not skipped, s'' <- go ls hit True s ]
+
+orientations :: Literal -> [Literal]
+orientations (Eq l r) = [Eq l r, Eq r l]
+orientations l        = [l]
+
+litTerm :: Literal -> Term
+litTerm (Rel n as)  = App n as
+litTerm (NRel n as) = App n as
+litTerm (Eq l r)    = App "=" [l, r]
+litTerm (NEq l r)   = App "=" [l, r]
+
+notVar :: Term -> Bool
+notVar (Var _) = False
+notVar _       = True
+
+picks :: [a] -> [(a, [a])]
+picks xs = [ (x, take i xs ++ drop (i + 1) xs) | (i, x) <- zip [0 ..] xs ]
+
+-- The conclusion the rule draws from exactly these premise instances, when
+-- its body atoms unify with them.  This is what a reader (and the Lean
+-- check) derives from the emitted block, so an equation is printed in this
+-- orientation.
+derivedHead :: [Literal] -> Literal -> [Literal] -> Maybe Literal
+derivedHead bodyAbs headAbs targets
+  | length bodyAbs /= length targets = Nothing
+  | otherwise = case foldM stepU Map.empty (zip bodyAbs' targets) of
+      Nothing -> Nothing
+      Just s  -> Just (mapLitTerms (walkDeep s) headAbs')
+  where
+    ren = suffixVarsLit "_dh"
+    bodyAbs' = map ren bodyAbs
+    headAbs' = ren headAbs
+    stepU s (b, t) = case (litTermM b, litTermM t) of
+      (Just tb, Just tt) -> case unifyU tb tt s of
+        Just s' -> Just s'
+        Nothing -> case t of
+          Eq l r -> litTermM (Eq r l) >>= \tt' -> unifyU tb tt' s
+          _      -> Nothing
+      _ -> Nothing
+    litTermM (Rel n as) = Just (App n as)
+    litTermM (Eq l r)   = Just (App "=" [l, r])
+    litTermM _          = Nothing
+    mapLitTerms f (Rel n as) = Rel n (map f as)
+    mapLitTerms f (Eq l r)   = Eq (f l) (f r)
+    mapLitTerms _ l          = l
 
 -- Validates one assembled hyperresolution step: the rule's body atoms are
 -- unified (shared rule variables, fresh-renamed) against the matched electron
@@ -292,16 +351,16 @@ resolutionCoherent bodyAbs headAbs targets headInst
     bodyAbs' = map ren bodyAbs
     headAbs' = ren headAbs
     -- equations may have been matched in flipped orientation
-    step s (b, t) = case (litTerm b, litTerm t) of
+    step s (b, t) = case (litTermM b, litTermM t) of
       (Just tb, Just tt) -> case unifyTerms tb tt s of
         Just s' -> Just s'
         Nothing -> case t of
-          Eq l r -> litTerm (Eq r l) >>= \tt' -> unifyTerms tb tt' s
+          Eq l r -> litTermM (Eq r l) >>= \tt' -> unifyTerms tb tt' s
           _      -> Nothing
       _                  -> Nothing
-    litTerm (Rel n as) = Just (App n as)
-    litTerm (Eq l r)   = Just (App "=" [l, r])
-    litTerm _          = Nothing
+    litTermM (Rel n as) = Just (App n as)
+    litTermM (Eq l r)   = Just (App "=" [l, r])
+    litTermM _          = Nothing
     mapLitTerms f (Rel n as) = Rel n (map f as)
     mapLitTerms f (Eq l r)   = Eq (f l) (f r)
     mapLitTerms _ l          = l

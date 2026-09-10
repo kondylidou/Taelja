@@ -20,7 +20,18 @@ Proof:
   hence s1(b)
     by axiom 5
 
-Lemma 16: s2(d)
+Lemma 16: l1(d,e)
+Proof:
+  have p0(b,d)
+    by axiom 2
+   and r0(b)
+    by axiom 1
+   and m0(e,d,b)
+    by axiom 3
+  hence l1(d,e)
+    by axiom 4
+
+Lemma 17: s2(d)
 Proof:
   have q0(a,b)
     by axiom 6
@@ -33,16 +44,10 @@ Proof:
   hence s2(d)
     by axiom 9
 
-Lemma 17: q3(e,d)
+Lemma 18: q3(e,d)
 Proof:
-  have p0(b,d)
-    by axiom 2
-   and r0(b)
-    by axiom 1
-   and m0(e,d,b)
-    by axiom 3
-  hence l1(d,e)
-    by axiom 4
+  have l1(d,e)
+    by lemma 16
   hence q2(e,e,d)
     by axiom 11
    and n0(e,e)
@@ -52,15 +57,15 @@ Proof:
 
 Goal 1: q3(d,e)
 Proof:
-  have m0(X,d,d)
+  have m0(d,d,d)
     by axiom 3
    and m0(e,d,d)
     by axiom 3
   hence n1(d,d,e)
     by axiom 13
    and s2(d)
-    by lemma 16
-   and q3(e,d)
     by lemma 17
+   and q3(e,d)
+    by lemma 18
   hence q3(d,e)
     by axiom 14

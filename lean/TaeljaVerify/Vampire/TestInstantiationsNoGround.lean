@@ -28,20 +28,19 @@ axiom ax4 : ∀ (x : α), q x x → r2 x
 axiom ax5 : ∀ (x : α), r1 x → r2 x → s x
 
 -- Lemma 6
-theorem taelja_lemma6 : ∀ (x : α), r2 x := by
-  intro x
-  have h1 : top := by apply ax1
-  have h2 : q x x := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : r2 x := by first | (exact ax4 _ h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+theorem taelja_lemma6 : r2 a := by
+  have h1 : top := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : q a a := by first | (exact ax2 a a h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : r2 a := by first | (exact ax4 a h2) | (first | (exact ax4 _ h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : s a := by
-  have h1 : top := by apply ax1
-  have h2 : q a b := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : r1 a := by first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h4 : r2 a := by apply taelja_lemma6
-  have h5 : s a := by first | (exact ax5 _ h3 h4) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : top := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : q a b := by first | (exact ax2 a b h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : r1 a := by first | (exact ax3 a h2) | (first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r2 a := by first | (exact taelja_lemma6) | (first | apply taelja_lemma6 <;> first | rfl | assumption)
+  have h5 : s a := by first | (exact ax5 a h3 h4) | (first | (exact ax5 _ h3 h4) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h5
 
 end VampireTestInstantiationsNoGround

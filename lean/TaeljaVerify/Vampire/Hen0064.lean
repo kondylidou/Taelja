@@ -36,8 +36,8 @@ axiom ax8 : ∀ (x : α) (y : α) (z : α), less_equal y z → less_equal x y �
 
 -- Lemma 9
 theorem taelja_lemma9 : (divide (divide a b) d) = zero := by
-  have h1 : less_equal (divide a b) d := by first | (exact ax1) | (apply ax1 <;> first | rfl | assumption)
-  have h2 : (divide (divide a b) d) = zero := by first | (exact ax2 (divide a b) d h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : less_equal (divide a b) d := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : (divide (divide a b) d) = zero := by first | (exact ax2 (divide a b) d h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h2
 
 -- Lemma 10
@@ -48,17 +48,17 @@ theorem taelja_lemma10 : less_equal (divide (divide a d) (divide b d)) zero := b
 
 -- Lemma 11
 theorem taelja_lemma11 : less_equal (divide a d) (divide b d) := by
-  have h1 : less_equal (divide (divide a d) (divide b d)) zero := by first | (exact taelja_lemma10) | (apply taelja_lemma10 <;> first | rfl | assumption)
-  have h2 : less_equal zero (divide (divide a d) (divide b d)) := by first | (exact ax4 (divide (divide a d) (divide b d))) | (apply ax4 <;> first | rfl | assumption)
-  have h3 : zero = (divide (divide a d) (divide b d)) := by first | (exact ax5 zero (divide (divide a d) (divide b d)) h1 h2) | (first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : less_equal zero (divide (divide a d) (divide b d)) := by first | (exact ax4 (divide (divide a d) (divide b d))) | (first | apply ax4 <;> first | rfl | assumption)
+  have h2 : less_equal (divide (divide a d) (divide b d)) zero := by first | (exact taelja_lemma10) | (first | apply taelja_lemma10 <;> first | rfl | assumption)
+  have h3 : (divide (divide a d) (divide b d)) = zero := by first | (exact ax5 (divide (divide a d) (divide b d)) zero h1 h2) | (first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   have h4 : less_equal (divide a d) (divide b d) := by first | (exact ax6 (divide a d) (divide b d) h3) | (first | (exact ax6 _ _ h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h4
 
 -- Goal 1
 theorem taelja_goal1 : less_equal (divide a d) b := by
-  have h1 : ∀ (x : α), less_equal (divide b x) b := fun x => by first | (exact ax7 b x) | (apply ax7 <;> first | rfl | assumption)
-  have h2 : less_equal (divide a d) (divide b d) := by first | (exact taelja_lemma11) | (apply taelja_lemma11 <;> first | rfl | assumption)
-  have h3 : less_equal (divide a d) b := by first | (exact ax8 (divide a d) (divide b d) b (h1 d) h2) | (first | (exact ax8 _ _ _ (h1 _) h2) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h1)))
+  have h1 : less_equal (divide b d) b := by first | (exact ax7 b d) | (first | apply ax7 <;> first | rfl | assumption)
+  have h2 : less_equal (divide a d) (divide b d) := by first | (exact taelja_lemma11) | (first | apply taelja_lemma11 <;> first | rfl | assumption)
+  have h3 : less_equal (divide a d) b := by first | (exact ax8 (divide a d) (divide b d) b h1 h2) | (first | (exact ax8 _ _ _ h1 h2) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h3
 
 end VampireHen0064

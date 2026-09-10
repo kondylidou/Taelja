@@ -20,13 +20,16 @@ import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
-import Data.List (inits, sortBy)
+import Data.List (inits, nub, sortBy)
 import Data.List.NonEmpty (toList)
-import Data.Maybe (fromMaybe, isJust, listToMaybe)
+import Data.Maybe (catMaybes, fromMaybe, isJust, listToMaybe)
 import Data.Ord (comparing)
 import Types
-import Helpers (applySubst, mapLiteralTerms, matchLit, suffixVarsLit, unifyLits)
-import TptpConvert (convertDeclToClause)
+import Helpers (applySubst, applySubstTerm, deepApplySubstTerm, flipLit, litSubtermCtxs,
+                termSize, termVars,
+                mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
+                unifyLits, unifyTerms)
+import TptpConvert (clauseToDecl, convertDeclToClause)
 
 data ProofTree
   = PTLeaf String T.Declaration
@@ -133,7 +136,7 @@ declByPath t [] = Just (ptDeclOf t)
 declByPath (PTLeaf _ _) _ = Nothing
 declByPath (PTNode _ _ _ kids) (c : rest) =
   case kids of
-    [k]  | c == '1' -> declByPath k rest
+    [k]  -> if c == '1' then declByPath k rest else Nothing
     _ -> let i = fromEnum c - fromEnum '0'
          in if i >= 0 && i < length kids then declByPath (kids !! i) rest else Nothing
 
@@ -182,17 +185,30 @@ buildProofTree allUnits =
                        then (p1n, p2n) else (p2n, p1n)
         in [expandMemo ln, expandMemo rn]
       (p0:p1:p2:rest) ->
+        -- A nested inference (E's cn(rw(spm(A,B),L)), sr(rw(..),..)): the
+        -- innermost step resolves p0 with p1, each further parent simplifies
+        -- the result by a unit, and the outer node is the last such step.
+        -- The intermediate clauses are not printed; they are recomputed here
+        -- (synthetic "?" nodes) so that θ is traced through them like
+        -- through any other node.  When no replay reproduces the outer
+        -- clause the intermediates fall back to the complement of the last
+        -- unit for a ⊥ outer node (or the outer clause itself).
         let eqs  = p1:p2:rest
             lastIsProvider = isPositiveUnitFormula (declOf (last eqs))
-            -- When the outer node derives ⊥ and the final sibling is a
-            -- negative unit (~L), the synthetic intermediate derives L.
-            -- Without this, "?" inherits $false and never becomes an electron.
-            innerDecl
+            fallbackDecl
               | declIsBottom decl, not lastIsProvider
               = fromMaybe decl (posUnitOf (declOf (last eqs)))
+              | declIsBottom decl
+              = fromMaybe decl (negUnitOf (declOf (last eqs)))
               | otherwise = decl
-            inner = foldl (\r eq -> PTNode "?" innerDecl rule [expandMemo eq, r])
-                          (expandMemo p0) (init eqs)
+            replayed = replayNested decl (declOf p0) (map declOf eqs)
+            innerDecls = maybe (replicate (length eqs - 1) fallbackDecl) snd replayed
+            p0Provides = maybe False fst replayed
+            first = PTNode "?" (head innerDecls) rule
+                      (if p0Provides then [expandMemo p0, expandMemo p1]
+                                     else [expandMemo p1, expandMemo p0])
+            inner = foldl (\r (eq, d) -> PTNode "?" d rule [expandMemo eq, r])
+                          first (zip (drop 1 (init eqs)) (drop 1 innerDecls))
         in if lastIsProvider
            then [expandMemo (last eqs), inner]
            else [inner, expandMemo (last eqs)]
@@ -213,6 +229,158 @@ posUnitOf (T.Formula _ (T.CNF (T.Clause lits))) =
       Just (T.Formula (T.Standard T.Plain) (T.CNF (T.Clause (pure (T.Positive, lit)))))
     _ -> Nothing
 posUnitOf _ = Nothing
+
+-- Replay a nested inference: resolve (or superpose) c0 with c1, simplify
+-- the result by each further unit in turn, and accept the replay whose
+-- final clause is a variant of the outer clause.  Returns whether c0 is the
+-- provider of the first step (its head was consumed) and the intermediate
+-- clauses, innermost first, as declarations.
+replayNested :: T.Declaration -> T.Declaration -> [T.Declaration] -> Maybe (Bool, [T.Declaration])
+replayNested outerD d0 ds = do
+  outer <- convertDeclToClause outerD
+  c0    <- convertDeclToClause d0
+  cs    <- mapM convertDeclToClause ds
+  (c1, units) <- case cs of { (x : xs) -> Just (x, xs); [] -> Nothing }
+  listToMaybe
+    [ (prov, map (clauseToDecl . instC σ) chain)
+    | (prov, r) <- resolvents c0 c1
+    , chain <- chains r (init units)
+    , final <- simplifyBy (last chain) (last units)
+    , Just σ <- [matchClause final outer] ]
+  where
+    chains r []       = [[r]]
+    chains r (u : us) = [ r : rest | r' <- simplifyBy r u, rest <- chains r' us ]
+    instC σ (Clause bs mh) = Clause (map (inst σ) bs) (fmap (inst σ) mh)
+    inst σ = mapLiteralTerms (deepApplySubstTerm σ)
+
+-- Every resolvent and superposition of two clauses (variables renamed
+-- apart), tagged with whether the first clause's head was the one used.
+resolvents :: Clause -> Clause -> [(Bool, Clause)]
+resolvents a b =
+  [ (True, r) | r <- headInto a b' ] ++ [ (False, r) | r <- headInto b' a ]
+  where
+    b' = Clause (map (suffixVarsLit "_q") (body b)) (fmap (suffixVarsLit "_q") (hd b))
+    headInto x y = case hd x of
+      Nothing -> []
+      Just h  ->
+        -- resolution: the head against a body literal
+        [ mk σ (body x ++ rest) (hd y)
+        | (l, rest) <- picks (body y), Just σ <- [unifyLits h l []] ]
+        -- superposition: an equation head into a subterm of any literal
+        ++ [ mk σ (body x ++ bodyY') hdY'
+           | Eq s t <- [h], (lhs, rhs) <- [(s, t), (t, s)], notVar lhs
+           , (i, lit) <- zip [0 :: Int ..] (polLits y)
+           , (u, ctx) <- litSubtermCtxs (snd lit), notVar u
+           , Just σ <- [unifyTerms lhs u []]
+           , let lit' = ctx rhs
+                 ys   = [ if j == i then (fst l, lit') else l | (j, l) <- zip [0 ..] (polLits y) ]
+                 bodyY' = [ l | (False, l) <- ys ]
+                 hdY'   = listToMaybe [ l | (True, l) <- ys ] ]
+    mk σ bs mh = Clause (map (deep σ) bs) (fmap (deep σ) mh)
+    deep σ = mapLiteralTerms (deepApplySubstTerm σ)
+    polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
+    notVar (Var _) = False
+    notVar _       = True
+
+-- One simplification step, as E's rw/sr/csr/cn perform it: a clause with a
+-- head resolves away a body literal (contextual simplify-reflect brings its
+-- own conditions along, which then merge with the clause's) or, as a unit
+-- equation, rewrites in either orientation; a negative unit ~L removes a
+-- head that is an instance of L.  Trivial body equations and duplicate
+-- literals are dropped afterwards.
+simplifyBy :: Clause -> Clause -> [Clause]
+simplifyBy c u@(Clause _ (Just _)) =
+  map cn $
+    [ Clause (map (deep σ) (body u' ++ rest)) (fmap (deep σ) (hd c))
+    | Just h <- [hd u'], (l, rest) <- picks (body c), Just σ <- [unifyLits h l []] ]
+    ++ [ rewriteBy lr c | Clause [] (Just (Eq s t)) <- [u'], lr <- demodRules s t ]
+  where
+    u' = Clause (map (suffixVarsLit "_u") (body u)) (fmap (suffixVarsLit "_u") (hd u))
+    deep σ = mapLiteralTerms (deepApplySubstTerm σ)
+simplifyBy c (Clause [l] Nothing) =
+  [ Clause (body c) Nothing
+  | Just h <- [hd c], isJust (matchLit l h) || isJust (matchLit (flipLit l) h) ]
+simplifyBy _ _ = []
+
+-- The directions in which an equation may be used as a demodulator.  A
+-- simplification step has to terminate, so the right-hand side may not
+-- introduce a variable and may not be larger than the left.  Reading an
+-- equation the other way would make the term grow at every application:
+-- ALG006-1 has difference(X,difference(X,difference(X,Y))) = difference(X,Y),
+-- whose reverse triples the term each time it fires.
+demodRules :: Term -> Term -> [(Term, Term)]
+demodRules s t =
+  [ (l, r)
+  | (l, r) <- [(s, t), (t, s)]
+  , notVarTerm l
+  -- Every instance of the rule must shrink, not just the rule itself, so no
+  -- variable may occur more often on the right than on the left; otherwise
+  -- a substitution duplicates the term it stands for.  With that, a strictly
+  -- smaller right-hand side gives a strictly smaller instance, and rewriting
+  -- terminates.  A rule of equal size only permutes its arguments and has no
+  -- normal form, so it is not a demodulator at all.
+  , all (\v -> count v r <= count v l) (nub (termVars r))
+  , termSize r < termSize l ]
+  where count v u = length (filter (== v) (termVars u))
+
+notVarTerm :: Term -> Bool
+notVarTerm (Var _) = False
+notVarTerm _       = True
+
+-- Normalise every literal by the rewrite rule lhs → rhs.  Each step replaces
+-- a subterm by a strictly smaller one (see demodRules) and leaves its context
+-- alone, so the literal strictly decreases in the same order and the
+-- normalisation terminates.
+rewriteBy :: (Term, Term) -> Clause -> Clause
+rewriteBy (lhs, rhs) (Clause bs mh) = Clause (map norm bs) (fmap norm mh)
+  where
+    norm l =
+      case [ ctx (applySubstTerm σ rhs) | (u, ctx) <- litSubtermCtxs l, Just σ <- [matchTerms lhs u] ] of
+        (l' : _) -> norm l'
+        []       -> l
+
+cn :: Clause -> Clause
+cn (Clause bs mh) = Clause (nub [ l | l <- bs, not (trivial l) ]) mh
+  where
+    trivial (Eq s t) = s == t
+    trivial _        = False
+
+-- The substitution under which the replayed clause becomes the clause the
+-- prover printed: every replayed literal is matched onto a printed literal
+-- of the same polarity (equations in either orientation) and every printed
+-- literal is hit.  Two replayed literals may land on the same printed one,
+-- which is how a duplicate condition merges (E's csr brings the
+-- simplifier's own conditions along, and they merge with conditions the
+-- clause already carries).  Only the replayed clause is instantiated.
+matchClause :: Clause -> Clause -> Maybe Subst
+matchClause final outer
+  | isJust (hd final) /= isJust (hd outer) = Nothing
+  | otherwise = listToMaybe (go (polLits final') [] [])
+  where
+    ren = suffixVarsLit "_f"
+    final' = Clause (map ren (body final)) (fmap ren (hd final))
+    polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
+    idxOuter = zip [0 :: Int ..] (polLits outer)
+    go [] hit s
+      | all ((`elem` hit) . fst) idxOuter = [s]
+      | otherwise = []
+    go ((b, l) : ls) hit s =
+      [ s'' | (i, (b', p)) <- idxOuter, b == b'
+            , s' <- catMaybes [matchLitWith l p s, matchLitWith (flipLit l) p s]
+            , s'' <- go ls (i : hit) s' ]
+
+picks :: [a] -> [(a, [a])]
+picks xs = [ (x, take i xs ++ drop (i + 1) xs) | (i, x) <- zip [0 ..] xs ]
+
+-- The converse for a positive non-equational unit (an equation closed by
+-- rewriting leaves the intermediate's shape open, so it stays as is).
+negUnitOf :: T.Declaration -> Maybe T.Declaration
+negUnitOf (T.Formula _ (T.CNF (T.Clause lits))) =
+  case toList lits of
+    [(T.Positive, lit@(T.Predicate (T.Defined _) _))] ->
+      Just (T.Formula (T.Standard T.Plain) (T.CNF (T.Clause (pure (T.Negative, lit)))))
+    _ -> Nothing
+negUnitOf _ = Nothing
 
 -- Gather leaves with two-level deduplication, to keep traversal of the
 -- (DAG-shared, memoised) proof tree O(N):

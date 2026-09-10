@@ -118,11 +118,11 @@ Proof:
     by axiom 1
    and s1(d)
     by lemma 22
-   and m0(Y,d,Z)
+   and m0(Y,d,X)
     by axiom 2
-  hence l2(Z,Z)
+  hence l2(X,X)
     by axiom 6
    and s3(a,b)
     by lemma 29
-  hence m4(b,Z)
+  hence m4(b,X)
     by axiom 20

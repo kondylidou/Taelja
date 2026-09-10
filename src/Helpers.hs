@@ -22,6 +22,50 @@ termConsts (App _ ts) = concatMap termConsts ts
 litConsts :: Literal -> [String]
 litConsts = foldLiteralTerms termConsts
 
+-- Theorem 1's fresh constants.  θ grounds every variable the proof leaves
+-- unbound to one of these, so a body atom is ground when its nucleus is
+-- processed and no match can instantiate it.  When the derived head is
+-- stored (or a goal emitted) they become variables again: they occur in no
+-- axiom, so the derived fact holds for every value.
+-- The prefix must not start any symbol a problem can contain: a constant of
+-- the problem carrying it would be turned into a variable when a derived
+-- fact is stored, stating it for every value instead of that one constant.
+-- TPTP names in the benchmarks are short or carry the Isabelle prefixes
+-- c_, v_, t_, tc_, so this one is out of reach of them.
+rigidPrefix :: String
+rigidPrefix = "taelja_rigid_"
+
+isRigidConst :: String -> Bool
+isRigidConst = (rigidPrefix `isPrefixOf`)
+
+-- What a groundness test must count as open: variables and fresh constants.
+termFree :: Term -> [String]
+termFree (Var x)    = [x]
+termFree (Const c)  = [c | isRigidConst c]
+termFree (App _ ts) = concatMap termFree ts
+
+litFree :: Literal -> [String]
+litFree = foldLiteralTerms termFree
+
+unrigidTerm :: Term -> Term
+unrigidTerm (Const c) | isRigidConst c = Var (drop (length rigidPrefix) c)
+unrigidTerm (App f ts) = App f (map unrigidTerm ts)
+unrigidTerm t = t
+
+unrigidLit :: Literal -> Literal
+unrigidLit = mapLiteralTerms unrigidTerm
+
+unrigidBlock :: ProofBlock -> ProofBlock
+unrigidBlock (HaveHence ls) = HaveHence (map go ls)
+  where
+    go (Have lit nm) = Have  (unrigidLit lit) nm
+    go (And  lit nm) = And   (unrigidLit lit) nm
+    go (Hence lit j) = Hence (unrigidLit lit) j
+unrigidBlock (EqChain start steps) =
+  EqChain (unrigidTerm start)
+          [ (RwStep nm (unrigidTerm l, unrigidTerm r) d, unrigidTerm cur)
+          | (RwStep nm (l, r) d, cur) <- steps ]
+
 foldLiteralTerms :: (Term -> [a]) -> Literal -> [a]
 foldLiteralTerms f (Eq l r)    = f l ++ f r
 foldLiteralTerms f (NEq l r)   = f l ++ f r

@@ -24,18 +24,18 @@ Proof:
 
 Lemma 11: less_equal(divide(a,d),divide(b,d))
 Proof:
-  have less_equal(divide(divide(a,d),divide(b,d)),zero)
-    by lemma 10
-   and less_equal(zero,divide(divide(a,d),divide(b,d)))
+  have less_equal(zero,divide(divide(a,d),divide(b,d)))
     by axiom 4
-  hence zero = divide(divide(a,d),divide(b,d))
+   and less_equal(divide(divide(a,d),divide(b,d)),zero)
+    by lemma 10
+  hence divide(divide(a,d),divide(b,d)) = zero
     by axiom 5
   hence less_equal(divide(a,d),divide(b,d))
     by axiom 6
 
 Goal 1: less_equal(divide(a,d),b)
 Proof:
-  have less_equal(divide(b,X),b)
+  have less_equal(divide(b,d),b)
     by axiom 7
    and less_equal(divide(a,d),divide(b,d))
     by lemma 11

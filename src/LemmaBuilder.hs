@@ -264,7 +264,15 @@ liftSubProof cname lit undoMap sp = do
       lift blk  = applyConstSubstBlock undoMap (renameRefsBlock ren blk)
       lifted    = [ (newName n, applyConstSubstLit undoMap l, lift b) | (n, l, b) <- subLemmas ]
       blk'      = lift goalBlk
-  if isEmptyBlock blk' || any (\(_, _, b) -> "assumption" `elem` blockRefNames b) lifted
+  -- The sub-proof may cite the candidate's own body atoms, which are stated
+  -- as assumptions inside it.  The lemma lifted out states the head alone,
+  -- so a block that rests on an assumption would claim the head outright.
+  -- The candidate's own block has to be checked as well as its sub-lemmas:
+  -- the reprove path (Translate.reproveAt') hands in whatever clause sits at
+  -- a tree position, including a Horn nucleus with body atoms.
+  if isEmptyBlock blk'
+     || "assumption" `elem` blockRefNames blk'
+     || any (\(_, _, b) -> "assumption" `elem` blockRefNames b) lifted
     then Nothing
     else Just (lit, blk', lifted)
 

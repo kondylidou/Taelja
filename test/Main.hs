@@ -49,6 +49,15 @@ tweeBenchmarkNames =
   , "SYN140-1"
   , "SYN553-1"
   , "CAT019-1"
+  -- existential goal Y = apply(combinator,Y): the witness is bound only at the
+  -- root resolution, which θ must keep (Theorem 1's grounding θ); with it the
+  -- goal is ground and closes by a two-step chain
+  , "COL008-1"
+  , "COL010-1"
+  , "COL015-1"
+  , "COL017-1"
+  , "COL021-1"
+  , "COL022-1"
   ]
 
 handcraftedNames :: [String]

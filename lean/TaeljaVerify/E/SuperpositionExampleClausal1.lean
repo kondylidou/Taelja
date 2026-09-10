@@ -15,16 +15,16 @@ axiom d : α
 axiom f : α → α
 
 -- Axiom 1
-axiom ax1 : a = b
+axiom ax1 : b = c
 -- Axiom 2
-axiom ax2 : b = c
+axiom ax2 : a = b
 -- Axiom 3
 axiom ax3 : ∀ (x : α), (f x) = x
 
 -- Goal 1
 theorem taelja_goal1 : c = a := by
-  calc c = b := by have h_rw := ax2; rw [h_rw]
-      _ = a := by have h_rw := ax1; rw [h_rw]
+  calc c = b := by have h_rw := ax1; rw [h_rw]
+      _ = a := by have h_rw := ax2; rw [h_rw]
 
 -- Goal 2
 theorem taelja_goal2 : (f d) = d := by

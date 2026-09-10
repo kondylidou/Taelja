@@ -25,18 +25,17 @@ axiom ax3 : ∀ (y : α), s y → p y
 axiom ax4 : ∀ (y : α) (z : α), q y z → p z → r y z
 
 -- Lemma 5
-theorem taelja_lemma5 : ∀ (x : α), p x := by
-  intro x
-  have h1 : s x := by apply ax1
-  have h2 : p x := by first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+theorem taelja_lemma5 : p a := by
+  have h1 : s a := by first | (exact ax1 a) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : p a := by first | (exact ax3 a h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : r b a := by
-  have h1 : s a := by apply ax1
-  have h2 : q b a := by first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : p a := by apply taelja_lemma5
-  have h4 : r b a := by first | (exact ax4 _ _ h2 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : s a := by first | (exact ax1 a) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : q b a := by first | (exact ax2 a h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : p a := by first | (exact taelja_lemma5) | (first | apply taelja_lemma5 <;> first | rfl | assumption)
+  have h4 : r b a := by first | (exact ax4 b a h2 h3) | (first | (exact ax4 _ _ h2 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h4
 
 end EResolutionExampleHornReuseForced

@@ -12,14 +12,14 @@ axiom b : α
 axiom c : α
 
 -- Axiom 1
-axiom ax1 : a = b
+axiom ax1 : b = c
 -- Axiom 2
-axiom ax2 : b = c
+axiom ax2 : a = b
 
 -- Goal 1
 theorem taelja_goal1 : a = c := by
-  calc a = b := by have h_rw := ax1; rw [h_rw]
-      _ = c := by have h_rw := ax2; rw [h_rw]
+  calc a = b := by have h_rw := ax2; rw [h_rw]
+      _ = c := by have h_rw := ax1; rw [h_rw]
 
 end EPureEquationalExample
 

@@ -1,0 +1,10 @@
+Axiom 1: apply(apply(apply(s2,X),Y),Z) = apply(apply(X,Z),apply(Y,Y))
+Axiom 2: apply(apply(apply(b,A),Y),B) = apply(A,apply(Y,B))
+
+Goal 1: apply(apply(apply(s2,apply(b,combinator)),apply(s2,apply(b,combinator))),apply(apply(s2,apply(b,combinator)),apply(s2,apply(b,combinator)))) = apply(combinator,apply(apply(apply(s2,apply(b,combinator)),apply(s2,apply(b,combinator))),apply(apply(s2,apply(b,combinator)),apply(s2,apply(b,combinator)))))
+Proof:
+  apply(apply(apply(s2,apply(b,combinator)),apply(s2,apply(b,combinator))),apply(apply(s2,apply(b,combinator)),apply(s2,apply(b,combinator))))
+= { by axiom 1 }
+  apply(apply(apply(b,combinator),apply(apply(s2,apply(b,combinator)),apply(s2,apply(b,combinator)))),apply(apply(s2,apply(b,combinator)),apply(s2,apply(b,combinator))))
+= { by axiom 2 }
+  apply(combinator,apply(apply(apply(s2,apply(b,combinator)),apply(s2,apply(b,combinator))),apply(apply(s2,apply(b,combinator)),apply(s2,apply(b,combinator)))))

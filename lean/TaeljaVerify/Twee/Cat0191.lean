@@ -14,9 +14,9 @@ axiom c2 : α
 axiom ax1 : ∀ (x : α), c2 = x → c1 = x
 
 -- Goal 1
-theorem taelja_goal1 : c1 = c2 := by
-  have h1 : c1 = c2 := by apply ax1 <;> first | rfl | assumption
-  exact h1
+theorem taelja_goal1 : c2 = c1 := by
+  have h1 : c1 = c2 := by first | apply ax1 <;> first | rfl | assumption | (apply Eq.symm; apply ax1 <;> first | rfl | assumption)
+  exact h1.symm
 
 end TweeCat0191
 

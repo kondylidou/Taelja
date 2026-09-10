@@ -1,0 +1,10 @@
+Axiom 1: apply(m,X) = apply(X,X)
+Axiom 2: apply(apply(apply(q,Y),Z),A) = apply(Z,apply(Y,A))
+
+Goal 1: apply(m,apply(apply(q,m),combinator)) = apply(combinator,apply(m,apply(apply(q,m),combinator)))
+Proof:
+  apply(m,apply(apply(q,m),combinator))
+= { by axiom 1 }
+  apply(apply(apply(q,m),combinator),apply(apply(q,m),combinator))
+= { by axiom 2 }
+  apply(combinator,apply(m,apply(apply(q,m),combinator)))

@@ -35,7 +35,7 @@ import ProofTree
 import TptpConvert
 import TweeInterface
 import LemmaBuilder
-import Theta (ThetaCtx (..), computeNucleusTheta, sharedNodeTheta, resolutionCoherent)
+import Theta (ThetaCtx (..), computeNucleusTheta, sharedNodeTheta, resolutionCoherent, derivedHead)
 import Debug (dbg, ppLitI, ppClauseI, ppSimplChain)
 
 -- Rescue mode (re-proving derived units mid-translation, broad ancestor
@@ -225,8 +225,16 @@ type AlgM a = ExceptT String (StateT AlgState IO) a
 -- The unit table holds each fact once: a variant of an existing entry with
 -- the same name and proof status is not added again (duplicates multiply
 -- the branching of every later premise search).
+-- Theorem 1's fresh constants stand for the variables the derivation never
+-- determines.  They are rigid only while the nucleus that introduced them is
+-- being justified; the fact that comes out holds for every value of them, so
+-- anything entering the unit table is stated with variables again.  Doing it
+-- here, rather than at each caller, keeps the table free of them by
+-- construction (a constant that reached it would be printed as "rc_...").
 addUnit :: UnitEntry -> AlgM ()
-addUnit ue = modify $ \s ->
+addUnit ue0 = modify $ \s ->
+  let ue = ue0 { ueUnit = unrigidLit (ueUnit ue0)
+               , ueProof = fmap unrigidBlock (ueProof ue0) } in
   let same u = ueName u == ueName ue && isJust (ueProof u) == isJust (ueProof ue)
                && isJust (matchLit (ueUnit u) (ueUnit ue)) && isJust (matchLit (ueUnit ue) (ueUnit u))
   in if any same (stUnits s) then s else s { stUnits = stUnits s ++ [ue] }
@@ -265,11 +273,11 @@ goalsConsistentWith template emitted =
 emitGoalProof :: Literal -> ProofBlock -> AlgM ()
 emitGoalProof lit blk = do
   -- A goal variable is existential (a universal conjecture Skolemizes to a
-  -- ground negation), and several emit paths reach here with names τ never
+  -- ground negation), and several emit paths reach here with names thn never
   -- bound (clause copies rename apart).  When the block's own conclusion is
   -- an instance of the goal, the goal is emitted at that instance.
   let realBinding (_, t) = case t of { Var _ -> False; _ -> True }
-      lit' | not (null (litVars lit))
+      lit' | not (null (litFree lit))
            , Just c <- blockConcl blk
            , Just ρ <- matchLit lit c
            , any realBinding ρ = applySubst ρ lit
@@ -286,10 +294,12 @@ emitGoalProof lit blk = do
   -- abandoned (via throwError/attempt) instead of silently accepted,
   -- letting the search try a different derivation for that goal.
   axNuclei <- gets stAxNuclei
-  let blk' = orientToGoal axNuclei lit' blk
-  if goalsConsistentWith template (existing ++ [lit'])
-    then modify $ \s -> s { stGoals = stGoals s ++ [(lit', blk')] }
-    else throwError ("emitGoalProof: " ++ ppLitI lit'
+  -- a goal proved at a fresh constant holds for every value of it
+  let litG = unrigidLit lit'
+      blk' = orientToGoal axNuclei litG (unrigidBlock blk)
+  if goalsConsistentWith template (existing ++ [litG])
+    then modify $ \s -> s { stGoals = stGoals s ++ [(litG, blk')] }
+    else throwError ("emitGoalProof: " ++ ppLitI litG
                       ++ " is inconsistent with an already-proven goal")
 
 -- The goal block ends with the goal itself (Goal j: G_jθ).  An equational
@@ -359,8 +369,13 @@ promoteToLemma lit blk
 -- An empty HaveHence [] block (returned when twee cannot prove a derived
 -- relational unit) is never promoted to a named lemma — we fall back to the
 -- generic justification "axioms" so the parent proof step is still emitted.
+-- A named fact is stated with variables, not with the fresh constants that
+-- were rigid while it was derived (see addUnit); the lookup below compares
+-- against the unit table, which holds the same form.
 ensureNamed :: Literal -> AlgM ProofBlock -> AlgM String
-ensureNamed lit buildBlk = do
+ensureNamed lit0 buildBlk0 = do
+  let lit = unrigidLit lit0
+      buildBlk = unrigidBlock <$> buildBlk0
   units    <- gets stUnits
   case find (\u -> ueUnit u == lit) units of
     Just ue ->
@@ -426,92 +441,16 @@ skolemizeLitFresh li =
   in ( applySubst [ (v, Const c) | (v, c) <- pairs ] li
      , [ (c, Var v) | (v, c) <- pairs ] )
 
--- match body literal li against electron ki; returns (σi, τ') on success
-tryMatch :: Literal -> Literal -> Subst -> Maybe (Subst, Subst)
-tryMatch li ki τ =
-  tryAsPattern li ki
-  <|> tryAsPattern (flipEq li) ki
-  <|> tryKiPattern ki
-  <|> tryKiPattern (flipEq ki)
-  <|> tryKiFlip ki
-  <|> tryBothSides li ki
-  <|> tryBothSides (flipEq li) ki
+-- Match body atom li against electron ki, giving σi.
+-- Only the electron's variables may be bound.  Under Theorem 1's θ the body
+-- atom is ground, its remaining symbols being the fresh constants the proof
+-- never determines, which a match may not instantiate.  So the electron is
+-- the pattern and the body atom the target, in either orientation of an
+-- equation.  There is no second substitution: the paper's τ was needed only
+-- while θ left body variables free.
+tryMatch :: Literal -> Literal -> Maybe Subst
+tryMatch li ki = matchLit ki li <|> matchLit (flipEq ki) li
   where
-    -- Body literal as the pattern: the electron's variables are NOT renamed
-    -- apart here (only tryBothSides does), so a variable name shared between
-    -- the nucleus and the electron (both "X0") is bound as the same variable.
-    -- Known limitation; harmless on the current suite, but any composition of
-    -- τ in this branch must rename apart first (see tryBothSides).
-    tryAsPattern li' k = case matchLit li' k of
-      Just σn ->
-        -- Self-bindings (x → Var x) arise when body lit and electron share a
-        -- variable name (e.g. both use "X0"): the electron is used at the
-        -- nucleus's variable.  They are not put into τ (an identity binding
-        -- would prevent a later body literal from grounding that variable)
-        -- but are kept in σi, so that the match records which electron
-        -- variables were identified with nucleus variables; see
-        -- processBodyWith's finish for the case where τ later grounds one.
-        let isSelf (x, t) = Var x == t
-            σn'   = filter (not . isSelf) σn
-            σiRen = filter isSelf σn
-            -- Only ground bindings are accepted here: a binding to a term with
-            -- variables captures the electron's un-renamed variables in τ,
-            -- which is neither renamed apart nor composed in this branch.  A
-            -- compound makes the stored head look more general than the
-            -- derivation supports (LCL006-1/E); even a bare variable can
-            -- make τ cyclic (X0 ↦ f(X0_e), X0_e ↦ X0 on the horn_example
-            -- test) so the head and the premises disagree.  Such matches
-            -- fall through to tryBothSides, which renames apart and composes.
-            nonGround (_, t) = not (null (termVars t))
-        in if any nonGround σn'
-             then Nothing
-             else case extendSubst τ σn' of
-               Just τ' -> Just (σiRen, τ')
-               Nothing  -> Nothing
-      Nothing -> Nothing
-    tryKiPattern k = case matchLit k li of
-      Just σi -> Just (σi, τ)
-      Nothing -> Nothing
-    tryKiFlip k = case matchLit k (flipEq li) of
-      Just σi -> Just (σi, τ)
-      Nothing -> Nothing
-    tryBothSides li' k =
-      -- Rename ki's vars to avoid clashes with li's vars in matchBothLit.
-      -- Without this, shared var names (e.g. both using "X0") confuse matchBothLit
-      -- into treating them as the same variable, producing incorrect bindings.
-      let kVars = nub (litVars k)
-          -- The suffix must be one no variable of the body literal carries:
-          -- after an earlier open match against the same axiom the literal
-          -- already holds that electron's "_e" variables, and renaming this
-          -- electron with the same suffix would identify the two (LCL008-1/E).
-          liVars = litVars li'
-          suffix = head [ sfx | n <- [1 :: Int ..], let sfx = concat (replicate n "_e")
-                              , not (any (sfx `isSuffixOf`) liVars) ]
-          k'    = suffixVarsLit suffix k
-      in case matchBothLit li' k' τ [] of
-        Just (τ', σi') ->
-          -- Occurs check: if any ki-var's binding contains itself, deepApplySubstTerm loops.
-          if any (\(v, t) -> v `elem` termVars t) σi'
-            then Nothing
-            else
-              let -- Compose: this match may constrain a variable that an earlier
-                  -- match put into τ's range (τ: Y→X0, now X0→zero).  Without
-                  -- composition Bτ_m is applied shallowly and the stored head keeps
-                  -- a dangling variable (zero = X0), a false universal fact.
-                  newB = [ (x, t) | (x, t) <- τ', x `notElem` map fst τ ]
-                  τc = [(x, deepApplySubstTerm σi' (applySubstTerm newB t)) | (x, t) <- τ']
-                  -- Apply τc to ground any τ-vars that appear in σi' bindings.
-                  σi  = [ (v, applySubstTerm τc (deepApplySubstTerm σi' (Var (v ++ suffix)))) | v <- kVars ]
-              in if any (\(v, t) -> v `elem` termVars t) τc
-                 -- occurs check on the nucleus side: a cyclic binding
-                 -- (B ↦ equivalent(equivalent(C,B),A), LCL416-1) renders the
-                 -- shallow consistency check meaningless and lets a spurious
-                 -- premise justify a θ-derived head it cannot derive
-                 then Nothing
-                 else if applySubst τc li' == applySubst σi k
-                 then Just (σi, τc)
-                 else Nothing
-        _ -> Nothing
     flipEq (Eq l r) = Eq r l
     flipEq x        = x
 
@@ -598,9 +537,9 @@ processBodyAccept
   :: (Subst -> Matched -> Bool)
   -> [Literal] -> Subst -> [UnitEntry] -> Map.Map String [(String, Dir)] -> String -> Bool
   -> AlgM (Maybe (Subst, Matched))
-processBodyAccept accept lits τ elecs simpl pos allowGroundUnnamed = do
+processBodyAccept accept lits thn elecs simpl pos allowGroundUnnamed = do
   failedRef <- liftIO (newIORef Set.empty)
-  processBodyWith accept failedRef lits τ elecs simpl pos allowGroundUnnamed
+  processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed
 
 -- processBody with its memo of failed sub-searches: a search for the same
 -- remaining literals (instantiated), the same premises matched so far and
@@ -610,25 +549,25 @@ processBodyWith
   -> IORef (Set.Set (String, Int))
   -> [Literal] -> Subst -> [UnitEntry] -> Map.Map String [(String, Dir)] -> String -> Bool
   -> AlgM (Maybe (Subst, Matched))
-processBodyWith accept failedRef lits τ elecs simpl pos allowGroundUnnamed = goMemo lits τ [] [] []
+processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed = goMemo lits thn [] [] []
   where
     -- acc: the premises matched so far, innermost first.
     -- A premise whose electron variable was identified with a nucleus
     -- variable, by an identity binding (tryAsPattern, x ↦ x) or by binding
     -- it to a nucleus variable (tryKiPattern, x ↦ w), is fine while that
     -- nucleus variable stays free: the premise and the head share it.  When
-    -- a later body literal grounds it in τ' the two diverge: the electron
+    -- a later body literal grounds it in thn' the two diverge: the electron
     -- is a general unit used at that instance, the premise is emitted
     -- general (its free variables are universal), and its variable must
     -- then be a fresh one, or, inlined into a lemma over the same name, it
     -- is read as the lemma's bound variable and the step from it is
     -- unverifiable (SYN163-1, SYN159-1).
-    finish τ' acc =
+    finish thn' acc =
       let matched = map freshenGrounded (reverse acc)
           usedVars = concatMap litVars lits
                   ++ concat [ litVars (ueUnit ki) ++ map fst σi ++ concatMap (termVars . snd) σi
                             | (ki, σi, _) <- acc ]
-                  ++ concatMap (termVars . snd) τ'
+                  ++ concatMap (termVars . snd) thn'
           suffix = head [ sfx | n <- [1 :: Int ..], let sfx = concat (replicate n "_e")
                               , not (any (sfx `isSuffixOf`) usedVars) ]
           -- A nucleus variable (a variable of the body literals) that an
@@ -644,21 +583,21 @@ processBodyWith accept failedRef lits τ elecs simpl pos allowGroundUnnamed = go
           -- rewrite literals also use; that copy is not a nucleus variable
           -- and keeps its name.
           nucleusVars = concatMap litVars lits
-          grounded    = [ (w, w ++ suffix) | w <- nub nucleusVars, isJust (lookup w τ') ]
+          grounded    = [ (w, w ++ suffix) | w <- nub nucleusVars, isJust (lookup w thn') ]
           freshenGrounded (ki, σi, rwi) =
             (ki, [ (x, renameTerm grounded t) | (x, t) <- σi ], rwi)
-      in return (if accept τ' matched then Just (τ', matched) else Nothing)
-    searchKey τ' ls usedPos extra acc = do
+      in return (if accept thn' matched then Just (thn', matched) else Nothing)
+    searchKey thn' ls usedPos extra acc = do
       n <- gets (length . stUnits)
-      return (show (map (applySubst τ') ls, map ueUnit extra, usedPos, targetsOf (reverse acc)), n)
-    goMemo [] τ' _ _ acc = finish τ' acc
-    goMemo ls τ' usedPos extra acc = do
-      key    <- searchKey τ' ls usedPos extra acc
+      return (show (map (applySubst thn') ls, map ueUnit extra, usedPos, targetsOf (reverse acc)), n)
+    goMemo [] thn' _ _ acc = finish thn' acc
+    goMemo ls thn' usedPos extra acc = do
+      key    <- searchKey thn' ls usedPos extra acc
       failed <- liftIO (readIORef failedRef)
       if Set.member key failed
         then return Nothing
         else do
-          r <- go ls τ' usedPos extra acc
+          r <- go ls thn' usedPos extra acc
           when (isNothing r) $ liftIO (modifyIORef' failedRef (Set.insert key))
           return r
 
@@ -683,17 +622,17 @@ processBodyWith accept failedRef lits τ elecs simpl pos allowGroundUnnamed = go
     -- within the same nucleus as a step-1 candidate.
     deriveInst ki σi = ki { ueUnit = applySubst σi (ueUnit ki) }
 
-    go [] τ' _ _ acc = finish τ' acc
-    go (li : rest) τ' usedPos extraElecs acc = do
-      let liInst    = applySubst τ' li
+    go [] thn' _ _ acc = finish thn' acc
+    go (li : rest) thn' usedPos extraElecs acc = do
+      let liInst    = applySubst thn' li
       -- Trivially true literals (t=t) need no electron; they arise from
       -- Vampire's trivial_inequality_removal preprocessing step.
       if isTriviallyTrue liInst
-        then go rest τ' usedPos extraElecs acc
-        else doMatch liInst rest τ' usedPos extraElecs acc
+        then go rest thn' usedPos extraElecs acc
+        else doMatch liInst rest thn' usedPos extraElecs acc
     isTriviallyTrue (Eq a b) = a == b
     isTriviallyTrue _        = False
-    doMatch liInst restLits τ' usedPos extraElecs acc = do
+    doMatch liInst restLits thn' usedPos extraElecs acc = do
       let
           (unused, used') = partition (\e -> uePos e `notElem` usedPos) sortedElecs
           prioritized = unused ++ used'
@@ -705,12 +644,12 @@ processBodyWith accept failedRef lits τ elecs simpl pos allowGroundUnnamed = go
                                     || (allowGroundUnnamed
                                         && isNothing (ueName ue)
                                         && isNothing (ueProof ue)
-                                        && null (litVars (ueUnit ue))))
+                                        && null (litFree (ueUnit ue))))
                                (extraElecs ++ prioritized)
           -- All pure step-1 candidates (no IO)
-          pureMatches = [ (ue, σi, τ'', [])
+          pureMatches = [ (ue, σi, thn', [])
                         | ue <- step1Elecs
-                        , Just (σi, τ'') <- [tryMatch liInst (ueUnit ue) τ'] ]
+                        , Just σi <- [tryMatch liInst (ueUnit ue)] ]
       dbgFlag <- gets stDebug
       liftIO $ dbg dbgFlag $ "[match] " ++ ppLitI liInst ++ " step1="
         ++ show [ fromMaybe (fromMaybe "" (uePos ue)) (ueName ue) ++ ":" ++ ppLitI (ueUnit ue) | (ue, _, _, _) <- pureMatches ]
@@ -721,37 +660,37 @@ processBodyWith accept failedRef lits τ elecs simpl pos allowGroundUnnamed = go
         Nothing  -> do
           units <- gets stUnits
           -- Step 2: rw_chain — demod chain if available, Twee when absent or no steps
-          tryRwChain liInst τ' units prioritized restLits usedPos extraElecs acc
+          tryRwChain liInst thn' units prioritized restLits usedPos extraElecs acc
 
     tryAll [] _ _ _ _ = return Nothing
-    tryAll ((ki, σi, τ'', rwi) : rest_cands) restLits usedPos extraElecs acc = do
-      mResult <- complete ki σi τ'' rwi restLits usedPos extraElecs acc
+    tryAll ((ki, σi, thn'', rwi) : rest_cands) restLits usedPos extraElecs acc = do
+      mResult <- complete ki σi thn'' rwi restLits usedPos extraElecs acc
       case mResult of
         Just res -> return (Just res)
         Nothing  -> tryAll rest_cands restLits usedPos extraElecs acc
 
-    complete ki σi τ'' rwi restLits usedPos extraElecs acc =
+    complete ki σi thn'' rwi restLits usedPos extraElecs acc =
       let newExtra = deriveInst ki σi : extraElecs
-      in goMemo restLits τ'' (uePos ki : usedPos) newExtra ((ki, σi, rwi) : acc)
+      in goMemo restLits thn'' (uePos ki : usedPos) newExtra ((ki, σi, rwi) : acc)
 
     -- rw_chain: try demod chain for each candidate; Twee when chain is absent or gives no steps.
-    tryRwChain liInst τ' units candidates restLits usedPos extraElecs acc = do
+    tryRwChain liInst thn' units candidates restLits usedPos extraElecs acc = do
       eqOf <- chainEqLookup
       let demodMatches =
-            [ (ue, σi, τ'', rw)
+            [ (ue, σi, thn', rw)
             | ue <- candidates
             , let chain = maybe [] (\p -> Map.findWithDefault [] p simpl) (uePos ue)
             , not (null chain)
             , Just (kstar, rw) <- [rwChain eqOf (ueUnit ue) chain]
-            , Just (σi, τ'') <- [tryMatch liInst kstar τ'] ]
+            , Just σi <- [tryMatch liInst kstar] ]
       mBT <- tryAll demodMatches restLits usedPos extraElecs acc
       case mBT of
         Just res -> return (Just res)
         Nothing  -> do
-          mRes <- findElecIO liInst τ' pos units
+          mRes <- findElecIO liInst thn' pos units
           case mRes of
             Nothing              -> return Nothing
-            Just (ki, σi, τ'', rwi) -> complete ki σi τ'' rwi restLits usedPos extraElecs acc
+            Just (ki, σi, thn'', rwi) -> complete ki σi thn'' rwi restLits usedPos extraElecs acc
 
 -- processBody with greedy-retry: tries lits in order, then reversed if that fails.
 -- The reversed retry handles Horn clauses where the first literal's named-axiom
@@ -765,11 +704,11 @@ processBodyBidirAccept
   :: (Subst -> Matched -> Bool)
   -> [Literal] -> Subst -> [UnitEntry] -> Map.Map String [(String, Dir)] -> String -> Bool
   -> AlgM (Maybe (Subst, Matched))
-processBodyBidirAccept accept lits τ elecs simpl pos allow = do
-  mRes <- processBodyAccept accept lits τ elecs simpl pos allow
+processBodyBidirAccept accept lits thn elecs simpl pos allow = do
+  mRes <- processBodyAccept accept lits thn elecs simpl pos allow
   case mRes of
     Just _  -> return mRes
-    Nothing -> processBodyAccept accept (reverse lits) τ elecs simpl pos allow
+    Nothing -> processBodyAccept accept (reverse lits) thn elecs simpl pos allow
 
 -- Twee rw_chain fallback: called from tryRwChain when the demod chain is absent or gives no steps.
 -- For equational literals, calls Twee on the body literal, then recovers the HaveHence
@@ -780,14 +719,14 @@ findElecIO
   :: Literal -> Subst -> String
   -> [UnitEntry]
   -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
-findElecIO li τ pos units = case li of
+findElecIO li thn pos units = case li of
   Eq l r -> do
     mRaw <- liftIO (callTwee InternalBudget (tweableUnits units) (Eq l r))
     case mRaw of
       Nothing       -> return Nothing
       Just (_, [])  -> return Nothing
       Just (_, chain) -> do
-        mRes <- recoverElecFromTweeChain li τ chain
+        mRes <- recoverElecFromTweeChain li thn chain
         case mRes of
           Just res -> return (Just res)
           Nothing  -> do
@@ -800,25 +739,25 @@ findElecIO li τ pos units = case li of
                   [ (u, σg)
                   | u  <- allUnits
                   , isNothing (ueName u)
-                  , not (null (litVars (ueUnit u)))
+                  , not (null (litFree (ueUnit u)))
                   , maybe True isEqChain (ueProof u)  -- skip HaveHence-proved units
                   , Just σg <- [matchLit (ueUnit u) li]
                   ]
             case mGenMatch of
-              Just (genU, σg) -> return (Just (genU, σg, τ, []))
+              Just (genU, σg) -> return (Just (genU, σg, thn, []))
               Nothing -> do
                 steps' <- mapM promoteChainStep chain
                 let blk = EqChain l steps'
                     ki  = UnitEntry Nothing li (Just blk) (Just pos)
                 addUnit ki
-                return (Just (ki, [], τ, []))
+                return (Just (ki, [], thn, []))
   _ -> do
     let isHHu u    = case ueProof u of { Just (HaveHence _) -> True; _ -> False }
         hhElecs    = [ u | u <- units, isNothing (ueName u), isHHu u ]
         namedElecs = [ u | u <- units, isJust (ueName u) ]
         srcElecs   = hhElecs ++ namedElecs
         eqEntries  = filter (isEqLit . ueUnit) (tweableUnits units)
-    mRw <- matchViaRw li τ srcElecs eqEntries
+    mRw <- matchViaRw li thn srcElecs eqEntries
     case mRw of
       Just res -> return (Just res)
       Nothing  -> do
@@ -848,7 +787,7 @@ findElecIO li τ pos units = case li of
                 let blk = EqChain start steps'
                     ki  = UnitEntry Nothing li (Just blk) (Just pos)
                 addUnit ki
-                return (Just (ki, [], τ, []))
+                return (Just (ki, [], thn, []))
               else tryHornThenReprove
           _ -> tryHornThenReprove
         where
@@ -867,19 +806,19 @@ findElecIO li τ pos units = case li of
           -- processed and skipped before the units it depends on had proofs)
           tryReproveElec = do
             reprove <- gets stReprove
-            let cands = [ (u, pos', σi, τ'')
+            let cands = [ (u, pos', σi, thn)
                         | u <- units
                         , isNothing (ueName u), isNothing (ueProof u)
                         , Just pos' <- [uePos u]
-                        , Just (σi, τ'') <- [tryMatch li (ueUnit u) τ] ]
-                tryOne (u, pos', σi, τ'') = do
+                        , Just σi <- [tryMatch li (ueUnit u)] ]
+                tryOne (u, pos', σi, thnU) = do
                   mRe <- liftIO (reprove pos')
                   case mRe of
                     Nothing -> return Nothing
                     Just (glit, gblk, subs) -> do
                       modify $ \st -> st { stLemmas = stLemmas st ++ subs }
                       nm <- promoteToLemma glit gblk
-                      return (Just (u { ueName = Just nm }, σi, τ'', []))
+                      return (Just (u { ueName = Just nm }, σi, thnU, []))
                 goRe [] = return Nothing
                 goRe (c:cs) = tryOne c >>= maybe (goRe cs) (return . Just)
             dbgFlag <- gets stDebug
@@ -904,7 +843,7 @@ findElecIO li τ pos units = case li of
                     let blk = HaveHence [Hence li (ByAxiom nm)]
                         ki  = UnitEntry Nothing li (Just blk) (Just pos)
                     addUnit ki
-                    return (Just (ki, [], τ, []))
+                    return (Just (ki, [], thn, []))
                   _ -> return Nothing
               _ -> return Nothing
 -- Recover the electron from a Twee equational chain: find the HaveHence electron
@@ -913,11 +852,11 @@ recoverElecFromTweeChain
   :: Literal -> Subst
   -> [(UnitEntry, Dir, Term)]
   -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
-recoverElecFromTweeChain li τ chain = do
+recoverElecFromTweeChain li thn chain = do
   let chainUes  = map (\(ue, _, _) -> ue) chain
       hhElecs   = filter isHH chainUes
       eqEntries = filter isEq chainUes
-  matchViaRw li τ hhElecs eqEntries
+  matchViaRw li thn hhElecs eqEntries
   where
     isHH ue = case ueProof ue of { Just (HaveHence _) -> True; _ -> False }
     isEq ue = case ueUnit ue of { Eq _ _ -> True; _ -> False }
@@ -930,27 +869,27 @@ matchViaRw
   -> [UnitEntry]  -- candidate electrons (HaveHence or named)
   -> [UnitEntry]  -- candidate equation units
   -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
-matchViaRw li τ srcElecs eqEntries = firstJustM tryElec srcElecs
+matchViaRw li thn srcElecs eqEntries = firstJustM tryElec srcElecs
   where
     firstJustM _ [] = return Nothing
     firstJustM f (x:xs) = f x >>= \case
       Just r  -> return (Just r)
       Nothing -> firstJustM f xs
 
-    tryElec u = case tryMatch li (ueUnit u) τ of
-      Just (σi, τ') -> return (Just (u, σi, τ', []))
+    tryElec u = case tryMatch li (ueUnit u) of
+      Just σi -> return (Just (u, σi, thn, []))
       Nothing        -> firstJustM (tryRw u) eqEntries
 
     tryRw u eq
       | ueUnit u == ueUnit eq = return Nothing
     tryRw u eq = case ueUnit eq of
       Eq sa sb -> case listToMaybe
-                    [ (dir, res, σi, τ')
+                    [ (dir, res, σi, thn)
                     | dir <- [LR, RL]
                     , res <- rewriteLitAll (ueUnit u) (sa, sb) dir
-                    , Just (σi, τ') <- [tryMatch li res τ] ] of
+                    , Just σi <- [tryMatch li res] ] of
         Nothing -> return Nothing
-        Just (dir, res, σi, τ') -> do
+        Just (dir, res, σi, thnR) -> do
           nm <- getEqName eq
           case nm of
             Nothing -> return Nothing
@@ -958,7 +897,7 @@ matchViaRw li τ srcElecs eqEntries = firstJustM tryElec srcElecs
             -- path (rwChain) returns uninstantiated literals; electronTarget and
             -- makeBlock apply σi again, which is a no-op only while σi is
             -- idempotent.  Normalizing this needs a golden decision.
-            Just n  -> return $ Just (u, σi, τ', [(RwStep n (sa, sb) dir, applySubst σi res)])
+            Just n  -> return $ Just (u, σi, thnR, [(RwStep n (sa, sb) dir, applySubst σi res)])
       _ -> return Nothing
 
     getEqName eq = case ueName eq of
@@ -1104,23 +1043,34 @@ electronTarget ki σi rw = case rw of
   _  -> applySubst σi (snd (last rw))
 
 buildProofBlock
-  :: [(UnitEntry, Subst, [(RwStep, Literal)])]
+  :: [Literal]     -- the rule's body atoms, as the axiom states them
+  -> [(UnitEntry, Subst, [(RwStep, Literal)])]
   -> Maybe String  -- axiom name for "hence L0 by name" (Nothing for inner nodes)
-  -> Subst         -- τ
+  -> Subst         -- thn
   -> Literal       -- head literal L0
   -> AlgM ProofBlock
 -- unit clause with no body: a direct assertion of the named axiom; without
 -- a name there is nothing that justifies the literal
-buildProofBlock [] mAxName τ headLit = case mAxName of
+buildProofBlock _ [] mAxName thn headLit = case mAxName of
   Just ax -> return (HaveHence [Have headLit ax])
-  Nothing -> throwError ("buildProofBlock: unjustified unit " ++ ppLitI (applySubst τ headLit))
-buildProofBlock ((k1, σ1, rw1) : rest) mAxName τ headLit = do
+  Nothing -> throwError ("buildProofBlock: unjustified unit " ++ ppLitI (applySubst thn headLit))
+buildProofBlock bodyAbs (m1@(k1, σ1, rw1) : rest) mAxName thn headLit = do
   blk1 <- makeBlock k1 σ1 rw1
   blk  <- foldM addAnd blk1 rest
   return $ case mAxName of
-    Just ax -> appendLine blk (Hence (applySubst τ headLit) (ByAxiom ax))
+    Just ax -> appendLine blk (Hence concl (ByAxiom ax))
     Nothing -> blk
   where
+    -- An equation holds up to symmetry, so θ may orient the head either way
+    -- (axiom "g(X) = g(Y) => X = Y" read off the prover's own flipped body).
+    -- The conclusion is printed as it follows from the premises this block
+    -- cites, so that applying the named axiom to the lines above reproduces
+    -- it; that is also what the Lean check does.
+    concl = case derivedHead bodyAbs headLit
+                   [ electronTarget ki σi rwi | (ki, σi, rwi) <- m1 : rest ] of
+      Just d | d == flipLit headInst -> d
+      _                              -> headInst
+      where headInst = applySubst thn headLit
     addAnd blk (ki, σi, rwi) = do
       let targ = electronTarget ki σi rwi
       -- A non-ground premise instance of a derived electron with a stored
@@ -1131,7 +1081,7 @@ buildProofBlock ((k1, σ1, rw1) : rest) mAxName τ headLit = do
       -- rewritten premises and electrons without a stored proof keep naming
       -- the instance together with its proof (thesis_example_both_lemmas:
       -- "Lemma 7: q(a)").
-      nm <- if null rwi && isJust (ueProof ki) && not (null (litVars targ))
+      nm <- if null rwi && isJust (ueProof ki) && not (null (litFree targ))
               then ensureNamed (ueUnit ki) (makeBlock ki [] [])
               else do
                 blki <- makeBlock ki σi rwi
@@ -1202,15 +1152,15 @@ tryAxiomJustification goalLit simpl pos = do
               let bodyG = map (applySubst σh) bodyPats
               -- the same coherence judgement as processOneNucleus: the
               -- instantiated axiom must actually derive the claimed goal
-              let coherentA τ' m = resolutionCoherent bodyPats hdPat (targetsOf m) (applySubst τ' goalLit)
+              let coherentA thn' m = resolutionCoherent bodyPats hdPat (targetsOf m) (applySubst thn' goalLit)
               mResR <- processBodyBidirAccept coherentA bodyG [] elecs simpl pos False
               dbgFlag <- gets stDebug
               case mResR of
                 Nothing            -> tryEach rest elecs
-                Just (τ', matched) -> do
+                Just (thn', matched) -> do
                   liftIO $ dbg dbgFlag $ "[axjust] " ++ axName ++ " for " ++ ppLitI goalLit
                     ++ " premises=" ++ show (map ppLitI (targetsOf matched))
-                  Just <$> buildProofBlock matched (Just axName) τ' goalLit
+                  Just <$> buildProofBlock bodyPats matched (Just axName) thn' goalLit
 
 processOneNucleus
   :: Bool
@@ -1234,15 +1184,15 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
           -- True for non-ground-head derived nuclei (innerNusNG, second pass):
           -- ground unnamed proof-less facts are valid electrons here.
           allowGroundUnnamed = isNothing mAxName
-                            && maybe False (not . null . litVars) mHead
+                            && maybe False (not . null . litFree) mHead
       in do
         elecs   <- getElectrons pos
-        let coherentStep τ' matched = case mHead of
-              Just headLit -> resolutionCoherent bodyLitsAbs headLit (targetsOf matched) (applySubst τ' headLit)
+        let coherentStep thn' matched = case mHead of
+              Just headLit -> resolutionCoherent bodyLitsAbs headLit (targetsOf matched) (applySubst thn' headLit)
               Nothing      -> True
         mResult <- processBodyAccept coherentStep bodyLits θ_local elecs simpl pos allowGroundUnnamed
-        forM_ mResult $ \(τ'', m) -> liftIO $ dbg debug $ "[matched] pos=" ++ pos ++ " premises="
-          ++ show (map ppLitI (targetsOf m)) ++ " head=" ++ maybe "-" (ppLitI . applySubst τ'') mHead
+        forM_ mResult $ \(thn'', m) -> liftIO $ dbg debug $ "[matched] pos=" ++ pos ++ " premises="
+          ++ show (map ppLitI (targetsOf m)) ++ " head=" ++ maybe "-" (ppLitI . applySubst thn'') mHead
         case mResult of
           Nothing -> do
             liftIO $ dbg debug $ "[skip] pos=" ++ pos ++ " (" ++ leName entry ++ ")"
@@ -1271,12 +1221,12 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                             mResult2 <- processBody bodyLitsG [] elecs simpl pos False
                             case mResult2 of
                               Nothing -> return False
-                              Just (τ, matched) -> do
+                              Just (thn, matched) -> do
                                 let pairs = zip goalLits matched
                                 if null pairs then return False
                                 else do
                                   forM_ pairs $ \(gl, (ki, σi, rwi)) -> do
-                                    let gl' = applySubst σ_sib (applySubst τ gl)
+                                    let gl' = applySubst σ_sib (applySubst thn gl)
                                     blk <- emitBlockForGoal gl' ki σi rwi
                                     emitGoalProof gl' blk
                                   return True
@@ -1289,20 +1239,20 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                     -- σ_gl over it is a no-op and would mismatch the claimed head).
                     let bodyLitsG = map (applySubst σ_gl) bodyLitsAbs
                         headLitG  = applySubst σ_gl hl
-                    let coherentG τ' m = resolutionCoherent bodyLitsAbs hl (targetsOf m) (applySubst τ' headLitG)
+                    let coherentG thn' m = resolutionCoherent bodyLitsAbs hl (targetsOf m) (applySubst thn' headLitG)
                     mResult2R <- processBodyBidirAccept coherentG bodyLitsG [] elecs simpl pos False
                     case mResult2R of
                       Nothing -> return False
-                      Just (τ, matched) -> do
-                        blk <- buildProofBlock matched mAxName τ headLitG
-                        let headInst = applySubst τ headLitG
+                      Just (thn, matched) -> do
+                        blk <- buildProofBlock bodyLitsAbs matched mAxName thn headLitG
+                        let headInst = applySubst thn headLitG
                             -- Only store ground proofs from this extra goal-grounding attempt;
                             -- abstract proofs here are redundant (the main path handles them).
-                            proofToStore = if null (litVars headInst) then Just blk else Nothing
+                            proofToStore = if null (litFree headInst) then Just blk else Nothing
                         when (isJust mAxName) $ do
-                          addUnit (UnitEntry Nothing headInst proofToStore (Just pos))
+                          addUnit (UnitEntry Nothing (unrigidLit headInst) (fmap unrigidBlock proofToStore) (Just pos))
                           case (proofToStore, blk) of
-                            (Just _, EqChain {}) -> void (ensureNamed headInst (return blk))
+                            (Just _, EqChain {}) -> void (ensureNamed (unrigidLit headInst) (return (unrigidBlock blk)))
                             _ -> return ()
                         -- For named axioms: emit the goal proof with the proper axiom name.
                         -- For derived inner nuclei (no axiom name): search original axiom
@@ -1317,23 +1267,23 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                             emitGoalProof gl blk
                             return True
                           _ -> return False
-          Just (τ, matched)  ->
+          Just (thn, matched)  ->
             case mHead of
               -- L0 = ⊥ from a clause that is not the negated conjecture: the
               -- axioms alone are contradictory, and every goal follows from the
               -- derived $false (the conjecture holds vacuously)
               Nothing | leRole entry /= NegConjecture, Just _ <- mAxName -> do
-                blk <- buildProofBlock matched mAxName τ falsumLit
+                blk <- buildProofBlock bodyLitsAbs matched mAxName thn falsumLit
                 forM_ goalLits $ \gl ->
                   emitGoalProof gl (appendLine blk (Hence gl ByContradiction))
                 return True
               Nothing ->
-                -- L0 = ⊥: emit goal proofs; τ instantiates any remaining variables
+                -- L0 = ⊥: emit goal proofs; thn instantiates any remaining variables
                 case (goalLits, matched) of
                   ([gl], [(ki, σi, _)])
                     | isNothing (ueName ki)
                     , Just chain@(EqChain {}) <- ueProof ki ->
-                        emitGoalProof (applySubst τ gl) (instantiateBlock (ueUnit ki) σi chain) >> return True
+                        emitGoalProof (applySubst thn gl) (instantiateBlock (ueUnit ki) σi chain) >> return True
                   _ -> do
                     let pairs     = zip3 goalLits bodyLits matched
                         unmatched = drop (length matched) goalLits
@@ -1341,7 +1291,7 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                       then return False
                       else do
                         forM_ pairs $ \(gl, bl, (ki, σi, rwi)) -> do
-                          -- τ binds the clause copy's variable names, which can
+                          -- thn binds the clause copy's variable names, which can
                           -- differ from the goal literal's (each Vampire clause
                           -- renames apart), so remaining goal variables are
                           -- instantiated by matching on the proved electron
@@ -1352,35 +1302,43 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                           -- detour prints epred atoms near ⊥ while the input
                           -- goal clause holds the real atoms, SYO632-1): then
                           -- the goal proved here is the body atom's instance.
-                          let gl0 = applySubst τ gl
+                          let gl0 = applySubst thn gl
                               targ = electronTarget ki σi rwi
                               gl' = case matchLit gl0 targ of
-                                      Just ρ | not (null (litVars gl0)) -> applySubst ρ gl0
+                                      Just ρ | not (null (litFree gl0)) -> applySubst ρ gl0
                                              | otherwise -> gl0
-                                      Nothing | gl0 /= targ -> applySubst τ bl
+                                      Nothing | gl0 /= targ -> applySubst thn bl
                                       _ -> gl0
                           blk <- emitBlockForGoal gl' ki σi rwi
                           emitGoalProof gl' blk
                         forM_ unmatched $ \gl ->
-                          throwError ("processOneNucleus: unmatched goal lit: " ++ ppLitI (applySubst τ gl))
+                          throwError ("processOneNucleus: unmatched goal lit: " ++ ppLitI (applySubst thn gl))
                         return True
               Just headLit -> do
-                blk0 <- buildProofBlock matched mAxName τ headLit
-                let headInst0 = applySubst τ headLit
+                blk0 <- buildProofBlock bodyLitsAbs matched mAxName thn headLit
+                let headInst0 = applySubst thn headLit
                     nucChain  = Map.findWithDefault [] pos (tcSimpl thetaCtx)
                 -- a demodulation the prover folded into this inference becomes
                 -- explicit rewrite steps; the derived unit is the conclusion the
                 -- proof shows
                 eqOf <- chainEqLookup
-                (headInst, blk) <- case rwChain eqOf headInst0 nucChain of
+                (headInstA, blk) <- case rwChain eqOf headInst0 nucChain of
                   Just (h', steps) | not (null nucChain) -> do
                     steps' <- citeChainSteps steps
                     return (h', foldl applyRwLine blk0 steps')
                   _ -> return (headInst0, blk0)
                 let electronTargets = map (\(ki,σi,_) -> applySubst σi (ueUnit ki)) matched
+                    -- An equation head holds up to symmetry, and θ may orient
+                    -- it either way (axiom "g(X) = g(Y) => X = Y" read off the
+                    -- prover's own flipped body).  The block cites its premises
+                    -- in one orientation, so the head is printed as it follows
+                    -- from exactly those, and the step reads correctly.
+                    headInst = case derivedHead bodyLitsAbs headLit electronTargets of
+                      Just d | d == flipLit headInstA -> d
+                      _                               -> headInstA
                     -- Two kinds of degenerate blocks are never stored:
                     -- (1) Stale target (non-ground Eq heads only): a free head var V
-                    --     also appears in a body literal after τ, but some electron
+                    --     also appears in a body literal after thn, but some electron
                     --     target lacks V — greedy matching grounded V in that target
                     --     while leaving it free in the head, so retrieval at another
                     --     instance would be inconsistent.  Example: HEN006-4 axiom 5
@@ -1391,14 +1349,14 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                     --     so the block proves the literal from itself.  Example:
                     --     transitivity matched against two abstract axiom-7 copies,
                     --     each claiming the same "less_equal(div(X,Y),X)".
-                    headVars = Set.fromList (litVars headInst)
+                    headVars = Set.fromList (litFree headInst)
                     bodyVarsAfterTau = Set.fromList
-                      (concatMap (litVars . applySubst τ) bodyLits)
+                      (concatMap (litFree . applySubst thn) bodyLits)
                     headBodyVars = headVars `Set.intersection` bodyVarsAfterTau
                     hasStaleTarget = isEqLit headLit
                                   && not (Set.null headBodyVars)
                                   && any (\t -> not (headBodyVars `Set.isSubsetOf`
-                                                     Set.fromList (litVars t)))
+                                                     Set.fromList (litFree t)))
                                          electronTargets
                     isCircular = headInst `elem` electronTargets
                     proofToStore = if isCircular || (not (Set.null headVars) && hasStaleTarget)
@@ -1408,10 +1366,10 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                 when (isJust mAxName) $ do
                   liftIO $ dbg debug $ "[store] pos=" ++ pos ++ " head=" ++ ppLitI headInst
                     ++ (if isJust proofToStore then "" else " (no proof)")
-                  addUnit (UnitEntry Nothing headInst proofToStore (Just pos))
+                  addUnit (UnitEntry Nothing (unrigidLit headInst) (fmap unrigidBlock proofToStore) (Just pos))
                   -- EqChains can't nest inside HaveHence, so promote immediately
                   case (proofToStore, blk) of
-                    (Just _, EqChain {}) -> void (ensureNamed headInst (return blk))
+                    (Just _, EqChain {}) -> void (ensureNamed (unrigidLit headInst) (return (unrigidBlock blk)))
                     _ -> return ()
                 -- Extra goal-grounding attempt: the natural electron match may produce a
                 -- unit that shares the head shape with a goal but with different ground
@@ -1433,14 +1391,14 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                       -- the θ-instance body while claiming the goal-instance head.
                       let bodyLitsG = map (applySubst σ_gl) bodyLitsAbs
                           headLitG  = applySubst σ_gl headLit
-                          coherentG τ' m = resolutionCoherent bodyLitsAbs headLit (targetsOf m) (applySubst τ' headLitG)
+                          coherentG thn' m = resolutionCoherent bodyLitsAbs headLit (targetsOf m) (applySubst thn' headLitG)
                       mResult2R <- processBodyBidirAccept coherentG bodyLitsG [] elecs2 simpl pos False
                       case mResult2R of
                         Nothing -> return ()
-                        Just (τ', matched') -> do
-                          blk2 <- buildProofBlock matched' mAxName τ' headLitG
-                          let headInst2 = applySubst τ' headLitG
-                          addUnit (UnitEntry Nothing headInst2 (Just blk2) (Just pos))
+                        Just (thn', matched') -> do
+                          blk2 <- buildProofBlock bodyLitsAbs matched' mAxName thn' headLitG
+                          let headInst2 = applySubst thn' headLitG
+                          addUnit (UnitEntry Nothing (unrigidLit headInst2) (Just (unrigidBlock blk2)) (Just pos))
                           case blk2 of
                             EqChain {} -> void (ensureNamed headInst2 (return blk2))
                             _ -> return ()
@@ -1465,7 +1423,7 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                 -- named axiom proofs for relational goals.
                 -- Orient headLit to match the goal literal's direction.
                 -- When headInst is a flipped equality of gl, swap headLit so
-                -- that applySubst τ headLitOriented == gl.
+                -- that applySubst thn headLitOriented == gl.
                 let orientedPair gl = case (headInst, gl) of
                       (Eq a b, Eq c d)
                         | a == c && b == d -> Just (gl, headLit)
@@ -1476,11 +1434,11 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                       _                    -> Nothing
                     matchResult = listToMaybe
                       [ p | gl <- goalLits
-                          , isEqLit gl || not (null (litVars headLit))
+                          , isEqLit gl || not (null (litFree headLit))
                           , Just p <- [orientedPair gl] ]
                 case (mAxName, matchResult) of
                   (Nothing, Just (gl, headLitOr)) | not (null matched) -> do
-                    let goalInst = applySubst τ headLitOr
+                    let goalInst = applySubst thn headLitOr
                     mBlk <- tryAxiomJustification goalInst simpl pos
                     case mBlk of
                       Just blk' -> emitGoalProof gl blk' >> return True
@@ -1503,16 +1461,16 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                             mGoalResult <- processBody bodyLitsG3 [] elecs3 simpl pos allowGroundUnnamed
                             case mGoalResult of
                               Nothing -> return False
-                              Just (τ', _) -> do
-                                let goalInst3 = applySubst τ' headLitG3
+                              Just (thn', _) -> do
+                                let goalInst3 = applySubst thn' headLitG3
                                 mBlk <- tryAxiomJustification goalInst3 simpl pos
                                 case mBlk of
-                                  -- τ' grounds the goal's variables: they are
+                                  -- thn' grounds the goal's variables: they are
                                   -- existential (a universal conjecture
                                   -- Skolemizes to a ground negation), so the
                                   -- goal is emitted at the proved instance
                                   -- (NUM025-1: "less(b,b)", not "less(X,Y)")
-                                  Just blk' -> emitGoalProof (applySubst τ' gl) blk' >> return True
+                                  Just blk' -> emitGoalProof (applySubst thn' gl) blk' >> return True
                                   Nothing   -> return False
                       else return False
 
@@ -1585,11 +1543,11 @@ findUnitForGoal goal units = listToMaybe $
   ++
   -- bidirectional via tryMatch: handles free goal variables (e.g. from negated conjecture)
   -- Only tried when one-way matching in both directions has already failed.
-  [ (ue, σi, applySubst τ goal)
+  [ (ue, σi, goal)
   | ue <- units
   , isNothing (matchLit (ueUnit ue) goal)
   , isNothing (matchLit goal (ueUnit ue))
-  , Just (σi, τ) <- [tryMatch goal (ueUnit ue) []]
+  , Just σi <- [tryMatch goal (ueUnit ue)]
   ]
 
 -- reconstruct an equational proof from the demod chain at p_{G₁}
@@ -1646,7 +1604,7 @@ proveGoal simpl mChain goal = do
           let mDerivedUnit = listToMaybe
                 [ u | u <- us
                     , isNothing (ueName u)
-                    , isJust (tryMatch goal (ueUnit u) [])
+                    , isJust (tryMatch goal (ueUnit u))
                     , Just (HaveHence {}) <- [ueProof u] ]
           mDerivedBlk <- case mDerivedUnit of
             Nothing -> return Nothing
@@ -1696,7 +1654,7 @@ proveGoal simpl mChain goal = do
               -- promoted as named lemmas (conservative: only ground proofless electrons are promoted here).
               prooflessElecs = filter (\ue -> isNothing (ueName ue) && isNothing (ueProof ue)
                                            && ueUnit ue /= goal
-                                           && null (litVars (ueUnit ue))) allElecs
+                                           && null (litFree (ueUnit ue))) allElecs
           -- Iterative enrichment: repeat until fixed point so multi-step dependency chains
           -- (enriching A requires enriched B which requires enriched C, etc.) are resolved.
           -- Each round tries both one-step axiom matching and EqChain via Twee.
@@ -1727,8 +1685,8 @@ proveGoal simpl mChain goal = do
                         mRes <- processBodyBidir (reverse bodyG) [] elecs Map.empty "" False
                         case mRes of
                           Nothing            -> tryAxNuclei elecs rest
-                          Just (τ', matched) ->
-                            Just <$> buildProofBlock matched (Just axName) τ' goal
+                          Just (thn', matched) ->
+                            Just <$> buildProofBlock bodyPats matched (Just axName) thn' goal
           -- Use the full enriched set: the enriched lemmas are needed in step1
           -- so that the reversed body order finds them before falling back to step2 Twee.
           mAxBlk <- tryAxNuclei (provableElecs ++ enriched) axNuclei
@@ -1750,7 +1708,7 @@ proveGoal simpl mChain goal = do
                     , not (any isEqLit bodyPats) ]
               -- a goal with variables is universal; a Twee refutation of its
               -- negation only shows an instance, so the call is not made
-              mRes <- if not (null (litVars goal)) then return Nothing
+              mRes <- if not (null (litFree goal)) then return Nothing
                       else liftIO $ callTweeRelLemma GoalBudget (tweableUnits units') (filteredHornAxioms ++ axHornAxioms) goal
               case mRes of
                 Just (_, chain) | not (null chain) -> do
@@ -1791,12 +1749,12 @@ proveGoal simpl mChain goal = do
                 Nothing -> tryEach rest
                 Just σh -> do
                   let bodyG = map (applySubst σh) bodyPats
-                  let coherentO τ' m = resolutionCoherent bodyPats hdPat (targetsOf m) (applySubst τ' litToProve)
+                  let coherentO thn' m = resolutionCoherent bodyPats hdPat (targetsOf m) (applySubst thn' litToProve)
                   mRes <- processBodyBidirAccept coherentO bodyG [] elecs Map.empty "" False
                   case mRes of
                     Nothing            -> tryEach rest
-                    Just (τ', matched) -> do
-                      blk <- buildProofBlock matched (Just axName) τ' litToProve
+                    Just (thn', matched) -> do
+                      blk <- buildProofBlock bodyPats matched (Just axName) thn' litToProve
                       nm  <- promoteToLemma litToProve blk
                       return (Just (UnitEntry (Just nm) litToProve (Just blk) Nothing))
 
@@ -1809,7 +1767,7 @@ proveGoal simpl mChain goal = do
         let lit = ueUnit ue
             filteredHornAxioms = filter isRelHornAxiom hornAxioms
             startTerm = atomTerm lit
-        mRes <- if not (null (litVars lit)) then return Nothing   -- same: instance proofs cannot justify a general electron
+        mRes <- if not (null (litFree lit)) then return Nothing   -- same: instance proofs cannot justify a general electron
                 else liftIO $ callTweeRelLemma InternalBudget (tweableUnits units') filteredHornAxioms lit
         case mRes of
           Just (_, chain) | not (null chain) -> do
@@ -1869,8 +1827,12 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
       let origKey = leName e
           lit     = electronLit unitMap e
       in case Map.lookup origKey seen of
-           Just existingName ->
+           -- An internal unit is recorded under the empty-string sentinel;
+           -- a later occurrence must be skipped just like the first, or the
+           -- position gets a nameless citation and the step prints "by".
+           Just existingName | not (null existingName) ->
              (axAcc, Map.insert pos existingName posMap, seen)
+           Just _ -> (axAcc, posMap, seen)
            Nothing ->
              case Map.lookup origKey nameOverride of
                Just nm | not (null nm) ->
@@ -1890,8 +1852,12 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
       -- leSrcDecl preserves the original body-literal order and equation direction
       let origKey = leName e
       in case Map.lookup origKey seen of
-           Just existingName ->
+           -- An internal unit is recorded under the empty-string sentinel;
+           -- a later occurrence must be skipped just like the first, or the
+           -- position gets a nameless citation and the step prints "by".
+           Just existingName | not (null existingName) ->
              (axAcc, Map.insert pos existingName posMap, seen)
+           Just _ -> (axAcc, posMap, seen)
            Nothing ->
              case Map.lookup origKey nameOverride of
                Just nm | not (null nm) ->
@@ -1930,7 +1896,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
       thetaCtx   = ThetaCtx (piDeclAt info)
                      simplAll (\nm -> findEqByName nm (namedUnits ++ listedAxiomUnits ++ bgNamedUnits)
                                      <|> Map.lookup nm eqByTstpName)
-                     (sharedNodeTheta (piDeclAt info))
+                     (sharedNodeTheta (piDeclAt info) (piNuclei info ++ piElectrons info))
       nameToPos  = Map.fromList [ (leName e, lePos e) | e <- piElectrons info ]
       eqByTstpName = Map.fromList
         [ (unitNameStr n, (l, r))
@@ -1944,7 +1910,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
       -- negated-conjecture nucleus closest to the root through its θ
       goalLits'  = instantiateGoals (map convertLit (piGoalLits info))
       instantiateGoals gs
-        | all (null . litVars) gs = gs
+        | all (null . litFree) gs = gs
         | otherwise = map inst gs
         where
           goalNuclei = sortBy (comparing (\e -> (length (lePos e), lePos e)))
@@ -2061,7 +2027,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
       hasGroundHead e =
         let θ_e = computeNucleusTheta thetaCtx e
         in case convertDeclToClause (leDecl e) of
-          Just (Clause _ (Just hl)) -> null (litVars (applySubst θ_e hl))
+          Just (Clause _ (Just hl)) -> null (litFree (applySubst θ_e hl))
           _                         -> False
       -- inner nuclei with positive heads but non-ground vars (e.g. derived Horn
       -- clauses from E's inline inference steps like spm(A,B) inside sr(...))

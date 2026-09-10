@@ -10,24 +10,29 @@ Proof:
   hence axiom(or(not(X),or(Y,X)))
     by rw axiom 1
 
-Lemma 6: theorem(or(not(q),or(not(or(not(p),q)),q)))
+Lemma 6: theorem(or(not(or(not(q),or(not(or(not(p),q)),q))),or(not(not(p)),or(not(q),or(not(or(not(p),q)),q)))))
+Proof:
+  have axiom(or(not(or(not(q),or(not(or(not(p),q)),q))),or(not(not(p)),or(not(q),or(not(or(not(p),q)),q)))))
+    by lemma 5
+  hence theorem(or(not(or(not(q),or(not(or(not(p),q)),q))),or(not(not(p)),or(not(q),or(not(or(not(p),q)),q)))))
+    by axiom 3
+
+Lemma 7: theorem(or(not(q),or(not(or(not(p),q)),q)))
 Proof:
   have axiom(or(not(q),or(not(or(not(p),q)),q)))
     by lemma 5
   hence theorem(or(not(q),or(not(or(not(p),q)),q)))
     by axiom 3
 
-Lemma 7: theorem(or(X,or(not(q),or(not(or(not(p),q)),q))))
+Lemma 8: theorem(or(not(not(p)),or(not(q),or(not(or(not(p),q)),q))))
 Proof:
-  have axiom(or(not(or(not(q),or(not(or(not(p),q)),q))),or(X,or(not(q),or(not(or(not(p),q)),q)))))
-    by lemma 5
-  hence theorem(or(not(or(not(q),or(not(or(not(p),q)),q))),or(X,or(not(q),or(not(or(not(p),q)),q)))))
-    by axiom 3
-  hence theorem(implies(or(not(q),or(not(or(not(p),q)),q)),or(X,or(not(q),or(not(or(not(p),q)),q)))))
+  have theorem(or(not(or(not(q),or(not(or(not(p),q)),q))),or(not(not(p)),or(not(q),or(not(or(not(p),q)),q)))))
+    by lemma 6
+  hence theorem(implies(or(not(q),or(not(or(not(p),q)),q)),or(not(not(p)),or(not(q),or(not(or(not(p),q)),q)))))
     by rw axiom 1 R->L
    and theorem(or(not(q),or(not(or(not(p),q)),q)))
-    by lemma 6
-  hence theorem(or(X,or(not(q),or(not(or(not(p),q)),q))))
+    by lemma 7
+  hence theorem(or(not(not(p)),or(not(q),or(not(or(not(p),q)),q))))
     by axiom 4
 
 Goal 1: theorem(implies(not(p),implies(q,implies(implies(p,q),q))))
@@ -41,5 +46,5 @@ Proof:
   theorem(or(not(not(p)),or(not(q),or(not(implies(p,q)),q))))
 = { by axiom 1 }
   theorem(or(not(not(p)),or(not(q),or(not(or(not(p),q)),q))))
-= { by lemma 7 }
+= { by lemma 8 }
   true

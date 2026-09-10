@@ -23,84 +23,161 @@ Proof:
 = { by axiom 1 }
   true
 
-Lemma 12: divide(divide(a,d),divide(b,d)) = zero
-Proof:
-  have less_equal(divide(divide(a,d),divide(b,d)),zero)
-    by lemma 11
-   and less_equal(zero,divide(divide(a,d),divide(b,d)))
-    by axiom 4
-  hence divide(divide(a,d),divide(b,d)) = zero
-    by axiom 5
-
-Lemma 13: divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)) = zero
+Lemma 12: divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)) = zero
 Proof:
   have less_equal(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b))
     by axiom 1
   hence divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)) = zero
     by axiom 2
 
-Lemma 14: less_equal(divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))),zero)
+Lemma 13: zero = divide(divide(a,d),divide(b,d))
 Proof:
-  less_equal(divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))),zero)
-= { by axiom 8 R->L }
-  less_equal(divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))),divide(divide(X,zero),divide(X,zero)))
-= { by axiom 1 }
+  have less_equal(zero,divide(divide(a,d),divide(b,d)))
+    by axiom 4
+   and less_equal(divide(divide(a,d),divide(b,d)),zero)
+    by lemma 11
+  hence zero = divide(divide(a,d),divide(b,d))
+    by axiom 5
+
+Lemma 14: less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(zero,divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))),zero)
+Proof:
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(zero,divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))),zero)
+= { by lemma 12 R->L }
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(zero,divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)))
+= { by lemma 13 R->L }
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(zero,divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(zero,b)))
+= { by axiom 6 }
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(zero,divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+= { by axiom 6 }
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),zero),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+= { by lemma 12 R->L }
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b))),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+= { by lemma 13 R->L }
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(zero,b))),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+= { by axiom 6 }
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+= { by lemma 12 R->L }
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)))),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+= { by lemma 13 R->L }
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(zero,b)))),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+= { by axiom 6 }
+  less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+= { by axiom 8 }
+  less_equal(zero,divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+= { by axiom 4 }
   true
 
-Lemma 15: less_equal(divide(X,divide(X,zero)),zero)
-Proof:
-  have less_equal(zero,divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))))
-    by axiom 4
-   and less_equal(divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))),zero)
-    by lemma 14
-  hence zero = divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero)))
-    by axiom 5
-  hence zero = divide(divide(X,divide(X,zero)),zero)
-    by rw axiom 6
-  hence less_equal(divide(X,divide(X,zero)),zero)
-    by axiom 9
-
-Lemma 16: less_equal(X,divide(X,zero))
-Proof:
-  have less_equal(zero,divide(X,divide(X,zero)))
-    by axiom 4
-   and less_equal(divide(X,divide(X,zero)),zero)
-    by lemma 15
-  hence zero = divide(X,divide(X,zero))
-    by axiom 5
-  hence less_equal(X,divide(X,zero))
-    by axiom 9
-
-Lemma 17: divide(divide(divide(a,d),b),zero) = divide(divide(a,d),b)
-Proof:
-  have less_equal(divide(divide(divide(a,d),b),zero),divide(divide(a,d),b))
-    by axiom 7
-   and less_equal(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero))
-    by lemma 16
-  hence divide(divide(divide(a,d),b),zero) = divide(divide(a,d),b)
-    by axiom 5
-
-Lemma 18: divide(divide(b,d),b) = zero
+Lemma 15: divide(divide(b,d),b) = zero
 Proof:
   have less_equal(divide(b,d),b)
     by axiom 7
   hence divide(divide(b,d),b) = zero
     by axiom 2
 
+Lemma 16: divide(divide(divide(a,d),b),divide(divide(b,d),b)) = divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)
+Proof:
+  have less_equal(zero,divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(zero,divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))))
+    by axiom 4
+   and less_equal(divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(zero,divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))),zero)
+    by lemma 14
+  hence zero = divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(zero,divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)))
+    by axiom 5
+  hence zero = divide(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),zero)
+    by rw axiom 6
+  hence less_equal(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),zero)
+    by axiom 9
+   and less_equal(zero,divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)))
+    by axiom 4
+  hence divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)) = zero
+    by axiom 5
+  hence less_equal(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+    by axiom 9
+   and less_equal(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero),divide(divide(divide(a,d),b),divide(divide(b,d),b)))
+    by axiom 7
+  hence divide(divide(divide(a,d),b),divide(divide(b,d),b)) = divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)
+    by axiom 5
+
+Lemma 17: less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),zero)
+Proof:
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),zero)
+= { by lemma 12 R->L }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)))
+= { by lemma 15 }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(divide(a,d),b),zero),divide(divide(divide(a,d),divide(b,d)),b)))
+= { by lemma 13 R->L }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(divide(a,d),b),zero),divide(zero,b)))
+= { by axiom 6 }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(divide(a,d),b),zero),zero))
+= { by lemma 15 R->L }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero))
+= { by lemma 16 R->L }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(a,d),b),divide(divide(b,d),b)))
+= { by lemma 15 }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(a,d),b),zero))
+= { by lemma 15 R->L }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),divide(divide(b,d),b))),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(a,d),b),zero))
+= { by lemma 16 }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(a,d),b),zero))
+= { by lemma 15 }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(divide(a,d),b),zero),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(a,d),b),zero))
+= { by axiom 6 R->L }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(divide(a,d),b),zero),divide(zero,b))),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(a,d),b),zero))
+= { by lemma 13 }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(divide(a,d),b),zero),divide(divide(divide(a,d),divide(b,d)),b))),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(a,d),b),zero))
+= { by lemma 15 R->L }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b))),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(a,d),b),zero))
+= { by lemma 12 }
+  less_equal(divide(divide(divide(divide(a,d),b),zero),divide(zero,divide(divide(divide(a,d),b),zero))),divide(divide(divide(a,d),b),zero))
+= { by axiom 6 }
+  less_equal(divide(divide(divide(divide(a,d),b),zero),zero),divide(divide(divide(a,d),b),zero))
+= { by axiom 6 R->L }
+  less_equal(divide(divide(divide(divide(a,d),b),zero),divide(zero,b)),divide(divide(divide(a,d),b),zero))
+= { by lemma 13 }
+  less_equal(divide(divide(divide(divide(a,d),b),zero),divide(divide(divide(a,d),divide(b,d)),b)),divide(divide(divide(a,d),b),zero))
+= { by lemma 15 R->L }
+  less_equal(divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)),divide(divide(divide(a,d),b),zero))
+= { by lemma 12 }
+  less_equal(zero,divide(divide(divide(a,d),b),zero))
+= { by axiom 4 }
+  true
+
+Lemma 18: divide(divide(a,d),b) = divide(divide(divide(a,d),b),zero)
+Proof:
+  have less_equal(zero,divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))))
+    by axiom 4
+   and less_equal(divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero))),zero)
+    by lemma 17
+  hence zero = divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),divide(zero,divide(divide(divide(a,d),b),zero)))
+    by axiom 5
+  hence zero = divide(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),zero)
+    by rw axiom 6
+  hence less_equal(divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)),zero)
+    by axiom 9
+   and less_equal(zero,divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)))
+    by axiom 4
+  hence divide(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero)) = zero
+    by axiom 5
+  hence less_equal(divide(divide(a,d),b),divide(divide(divide(a,d),b),zero))
+    by axiom 9
+   and less_equal(divide(divide(divide(a,d),b),zero),divide(divide(a,d),b))
+    by axiom 7
+  hence divide(divide(a,d),b) = divide(divide(divide(a,d),b),zero)
+    by axiom 5
+
 Lemma 19: divide(divide(a,d),b) = zero
 Proof:
   divide(divide(a,d),b)
-= { by lemma 17 R->L }
+= { by lemma 18 }
   divide(divide(divide(a,d),b),zero)
 = { by axiom 6 R->L }
   divide(divide(divide(a,d),b),divide(zero,b))
-= { by lemma 12 R->L }
-  divide(divide(divide(a,d),b),divide(divide(divide(a,d),divide(b,d)),b))
-= { by lemma 17 R->L }
-  divide(divide(divide(divide(a,d),b),zero),divide(divide(divide(a,d),divide(b,d)),b))
-= { by lemma 18 R->L }
-  divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b))
 = { by lemma 13 }
+  divide(divide(divide(a,d),b),divide(divide(divide(a,d),divide(b,d)),b))
+= { by lemma 18 }
+  divide(divide(divide(divide(a,d),b),zero),divide(divide(divide(a,d),divide(b,d)),b))
+= { by lemma 15 R->L }
+  divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b))
+= { by lemma 12 }
   zero
 
 Goal 1: less_equal(divide(a,d),b)

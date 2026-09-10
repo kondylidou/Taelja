@@ -1,0 +1,10 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, Y!=apply(combinator, Y), file('/home/user/Desktop/TPTP-v9.2.1/Problems/COL/COL021-1.p', prove_fixed_point)).
+cnf(c2, axiom, apply(m, X)=apply(X, X), file('/home/user/Desktop/TPTP-v9.2.1/Problems/COL/COL021-1.p', m_definition)).
+cnf(c3, axiom, apply(apply(apply(b, X2), Y2), Z)=apply(X2, apply(Y2, Z)), file('/home/user/Desktop/TPTP-v9.2.1/Problems/COL/COL021-1.p', b_definition)).
+cnf(c4, plain, apply(combinator, apply(m, apply(apply(b, combinator), m)))=apply(m, apply(apply(b, combinator), m)), inference(rewriting, [status(thm)], [c2, c3])).
+cnf(c5, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c4])).
+% SZS output end CNFRefutation
+

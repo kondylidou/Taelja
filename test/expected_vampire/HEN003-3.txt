@@ -12,27 +12,32 @@ Proof:
   hence zero = divide(divide(X,Y),X)
     by axiom 2
 
-Lemma 8: less_equal(divide(divide(X,X),zero),zero)
+Lemma 8: less_equal(divide(divide(a,a),zero),zero)
 Proof:
-  less_equal(divide(divide(X,X),zero),zero)
+  less_equal(divide(divide(a,a),zero),zero)
 = { by lemma 7 }
-  less_equal(divide(divide(X,X),divide(divide(X,A),X)),zero)
+  less_equal(divide(divide(a,a),divide(divide(a,Z),a)),zero)
 = { by lemma 7 }
-  less_equal(divide(divide(X,X),divide(divide(X,A),X)),divide(divide(X,divide(X,A)),X))
+  less_equal(divide(divide(a,a),divide(divide(a,Z),a)),divide(divide(a,divide(a,Z)),a))
 = { by axiom 3 }
   true
 
-Goal 1: divide(a,a) = zero
+Lemma 9: less_equal(divide(a,a),zero)
 Proof:
-  have less_equal(divide(divide(a,a),zero),zero)
-    by lemma 8
-   and less_equal(zero,divide(divide(a,a),zero))
+  have less_equal(zero,divide(divide(a,a),zero))
     by axiom 4
-  hence zero = divide(divide(a,a),zero)
+   and less_equal(divide(divide(a,a),zero),zero)
+    by lemma 8
+  hence divide(divide(a,a),zero) = zero
     by axiom 5
   hence less_equal(divide(a,a),zero)
     by axiom 6
-   and less_equal(zero,divide(a,a))
+
+Goal 1: divide(a,a) = zero
+Proof:
+  have less_equal(zero,divide(a,a))
     by axiom 4
+   and less_equal(divide(a,a),zero)
+    by lemma 9
   hence divide(a,a) = zero
     by axiom 5

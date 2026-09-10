@@ -14,14 +14,14 @@ axiom c : α
 axiom h : α → α → α
 
 -- Axiom 1
-axiom ax1 : ∀ (x : α), (h x b) = x
+axiom ax1 : ∀ (x : α), (h a x) = c
 -- Axiom 2
-axiom ax2 : ∀ (y : α), (h a y) = c
+axiom ax2 : ∀ (y : α), (h y b) = y
 
 -- Goal 1
 theorem taelja_goal1 : a = c := by
-  calc a = h a b := by have h_rw := ax1 a; rw [h_rw]
-      _ = c := by have h_rw := ax2 b; rw [h_rw]
+  calc a = h a b := by have h_rw := ax2 a; rw [h_rw]
+      _ = c := by have h_rw := ax1 b; rw [h_rw]
 
 end EKrympaExampleHay
 

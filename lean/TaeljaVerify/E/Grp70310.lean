@@ -21,17 +21,17 @@ axiom ax1 : ∀ (x : α) (y : α), (mult (rd x y) y) = x
 -- Axiom 2
 axiom ax2 : ∀ (x : α), (mult unit_ x) = x
 -- Axiom 3
-axiom ax3 : ∀ (x : α) (y : α), op_e = (mult (mult (rd op_c (mult x y)) y) x)
+axiom ax3 : ∀ (x : α), (mult x unit_) = x
 -- Axiom 4
-axiom ax4 : ∀ (x : α), (mult x unit_) = x
+axiom ax4 : ∀ (x : α) (y : α), op_e = (mult (mult (rd op_c (mult x y)) y) x)
 -- Axiom 5
 axiom ax5 : ∀ (x : α) (y : α), (mult op_c (mult x y)) = (mult (mult op_c x) y)
 
 -- Lemma 6
 theorem taelja_lemma6 : ∀ (z : α), op_e = op_c := by
   intro z
-  calc op_e = mult (mult (rd op_c (mult unit_ z)) z) unit_ := by have h_rw := ax3 unit_ z; rw [h_rw]
-      _ = mult (rd op_c (mult unit_ z)) z := by have h_rw := ax4 (mult (rd op_c (mult unit_ z)) z); rw [h_rw]
+  calc op_e = mult (mult (rd op_c (mult unit_ z)) z) unit_ := by have h_rw := ax4 unit_ z; rw [h_rw]
+      _ = mult (rd op_c (mult unit_ z)) z := by have h_rw := ax3 (mult (rd op_c (mult unit_ z)) z); rw [h_rw]
       _ = mult (rd op_c z) z := by have h_rw := ax2 z; rw [h_rw]
       _ = op_c := by have h_rw := ax1 op_c z; rw [h_rw]
 
