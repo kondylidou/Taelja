@@ -130,11 +130,8 @@ import TaeljaVerify.E.SuperpositionExampleNongroundLemma
 import TaeljaVerify.Twee.Puz0111
 import TaeljaVerify.Vampire.Puz0111
 import TaeljaVerify.Vampire.Nlp2581
-import TaeljaVerify.Vampire.Col0591
 import TaeljaVerify.E.Puz0111
-import TaeljaVerify.E.Nlp2581
 import TaeljaVerify.E.Grp1921
-import TaeljaVerify.E.Hen0112
 import TaeljaVerify.E.Lcl1261
 import TaeljaVerify.Vampire.Rng0381
 import TaeljaVerify.Vampire.Rng0391

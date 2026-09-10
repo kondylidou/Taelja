@@ -132,7 +132,6 @@ benchmarkNames =
   , "RNG039-1"
   , "PUZ011-1"        -- goal literals instantiated under one shared substitution
   , "NLP258-1"
-  , "COL059-1"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -191,9 +190,7 @@ eBenchmarkNames =
   , "SYN159-1"        -- identity-binding freshening of a tau-bound nucleus variable
   , "LCL126-1"        -- goal cited from an axiom whose head is an instance of it, not a variant
   , "PUZ011-1"        -- goal literals instantiated under one shared substitution
-  , "NLP258-1"
   , "GRP192-1"
-  , "HEN011-2"
   ]
 
 mkTest :: String -> String -> String -> TestTree
