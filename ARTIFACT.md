@@ -94,6 +94,10 @@ parallelism (default: 2 — raise this for a full run, e.g. `--jobs 8`); a
 full run is 2413 problems × 3 provers. Omit `--skip-done` to re-run
 everything, or keep it to resume an interrupted run.
 
+A cached `proof.tstp` is reused even without `--skip-done`, and an empty one
+left by an interrupted run reads back as a failure rather than being retried.
+Delete `eval_out/` before a fresh run.
+
 The printed summary table (Category/Prover/Total/Proved/Unsupp/Transl/
 Fail/TFail) corresponds directly to Table 1's Problems/Proved/Translated
 columns (`Unsupp` + `Fail` + `TFail` = Proved − Translated).
