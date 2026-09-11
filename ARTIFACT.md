@@ -11,10 +11,10 @@ format); this file covers reproducing the evaluation.
 
 ## What's included
 
-- `src/`, `app/` — Tälja (Haskell), built with `cabal build`.
-- `bin/` — where the two prover binaries must be placed. They are not
-  distributed with this artifact and have to be built from source, see
-  Requirements below.
+- `src/`, `app/` — Tälja (Haskell).
+- `bin/` — where the prover binaries must be placed. Taelja uses three
+  provers, E, Twee and Vampire, none of them distributed with this artifact;
+  see Requirements below.
 - `scripts/eval.py` — runs E/Twee/Vampire over a TPTP directory and Tälja
   over each resulting proof; writes `eval_out/`.
 - `scripts/taelja2lean.py`, `scripts/regen_lean_eval.py`,
@@ -29,14 +29,22 @@ format); this file covers reproducing the evaluation.
 - Cabal 3 and GHC 9.6 or newer. The package accepts base 4.18 to 4.21,
   which covers GHC 9.6 through 9.12. Built and golden-tested with both
   GHC 9.6.7 and GHC 9.10.3, with cabal-install 3.14.2.0.
-- [E](https://www.eprover.org/) on `PATH` or via `--eprover PATH` (tested
-  with E 3.2.5).
+- E, installed from <https://www.eprover.org/> (tested with E 3.2.5).
+  `eval.py` needs its path via `--eprover`, and resolves that path against
+  the current directory rather than searching `PATH`, so give an absolute one.
+  Without the flag E is skipped and only the other two provers run.
 - Twee, from the `horn` branch,
   <https://codeberg.org/nick8325/twee/src/branch/horn>. A released Twee will
-  not work. Build it as that repository describes, then copy the executable it
-  produces into this project's `bin/` folder, the one next to `src/` and
-  `test/`, renaming it to `twee`. It has to end up at `./bin/twee`, relative
-  to the directory holding this file.
+  not work. It is a Haskell package, so (tested with twee 2.7):
+
+  ```
+  git clone https://codeberg.org/nick8325/twee
+  cd twee && git checkout horn && cabal build
+  cp "$(cabal list-bin twee)" /path/to/taelja/bin/twee
+  ```
+
+  where `/path/to/taelja` is the directory holding this file, so the binary
+  ends up in the `bin/` folder next to `src/` and `test/`.
 - Vampire, from <https://github.com/vprover/vampire>. Build it as that
   repository describes, then copy the executable into the same `bin/` folder,
   renaming it to `vampire`, so that it ends up at `./bin/vampire`. Any recent
@@ -45,8 +53,9 @@ format); this file covers reproducing the evaluation.
   `lean/lean-toolchain` — `elan` will fetch the pinned toolchain
   automatically).
 - Python 3 — only for the scripts in `scripts/`, no third-party packages.
-- The [TPTP problem library](https://www.tptp.org) — needed to reproduce the
-  evaluation from scratch (§2 below). The paper's numbers use TPTP v9.2.1.
+- The TPTP problem library — needed to reproduce the evaluation from scratch
+  (§2 below). The paper's numbers use v9.2.1,
+  <https://tptp.org/TPTP/Archive/TPTP-v9.2.1.tgz>.
 
 ## 1. Build and smoke-test
 
@@ -68,7 +77,7 @@ for one proof.
 
 ```
 python3 scripts/eval.py bin/vampire /path/to/TPTP-v9.2.1 \
-  --eprover eprover --twee bin/twee --jobs 8
+  --eprover "$(which eprover)" --twee bin/twee --jobs 8
 ```
 
 This classifies every TPTP problem into HNE/HEQ/UEQ by its SPC field (821 /

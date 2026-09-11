@@ -11,6 +11,9 @@ hyperresolution step) and equality chains
 concrete axiom or lemma. Derived clauses that the input proof uses more than
 once are introduced as named lemmas with their own proofs.
 
+**This file covers the tool itself. See `ARTIFACT.md` for reproducing the
+paper's evaluation.**
+
 ## Example
 
 Input (`resolution_example_horn_general.tstp`, Vampire output):
@@ -58,40 +61,35 @@ Proof:
 Requires Cabal 3 and GHC 9.6 or newer. The package accepts base 4.18 to
 4.21, which covers GHC 9.6 through 9.12. Tested with GHC 9.6.7 and 9.10.3.
 
-Two prover binaries are not distributed with the source. Build each one in its
-own repository, then copy the executable into this project's `bin/` directory,
-under exactly these names. Below, `TAELJA` is the directory holding this
-README.
+Taelja calls three provers, none of them bundled: E, Twee and Vampire.
 
-**Twee** must come from the `horn` branch, which proves Horn problems via an
-encoding. A released version of Twee will not work in its place.
+Twee and Vampire have to be built from source:
+
+- Twee, from the `horn` branch,
+  <https://codeberg.org/nick8325/twee/src/branch/horn>. A released Twee will
+  not work. It is a Haskell package, so (tested with twee 2.7):
+
+  ```
+  git clone https://codeberg.org/nick8325/twee
+  cd twee && git checkout horn && cabal build
+  cp "$(cabal list-bin twee)" /path/to/taelja/bin/twee
+  ```
+
+  where `/path/to/taelja` is the directory holding this file, so the binary
+  ends up in the `bin/` folder next to `src/` and `test/`.
+- Vampire, from <https://github.com/vprover/vampire>. Build it as that
+  repository describes, then copy the executable into the same `bin/` folder,
+  renaming it to `vampire`, so that it ends up at `./bin/vampire`. Any recent
+  build works (tested at 5.0.1).
+
+E comes from <https://www.eprover.org/>. Either put `eprover` on the PATH, or
+set `TAELJA_EPROVER` to its full path, for example
 
 ```
-git clone https://codeberg.org/nick8325/twee
-cd twee
-git checkout horn
-cabal build
-cp "$(cabal list-bin twee)" "$TAELJA/bin/twee"
+export TAELJA_EPROVER="$(which eprover)"
 ```
 
-Taelja looks for `bin/twee` relative to the directory it runs in, so the file
-has to sit exactly at `$TAELJA/bin/twee`. Without it the golden tests and any
-translation needing an equational chain will fail.
-
-**Vampire** is only needed to produce input proofs, not to translate them, and
-any recent build works. Follow its own README if the build layout differs; all
-that matters here is where the executable ends up.
-
-```
-git clone https://github.com/vprover/vampire
-cd vampire
-cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build
-cp build/vampire "$TAELJA/bin/vampire"
-```
-
-The E prover (`eprover`) should be on the PATH, or set `TAELJA_EPROVER` to
-its path.
+Tested with E 3.2.5.
 
 With those in place, build Taelja itself:
 
@@ -108,17 +106,6 @@ cabal run taelja -- --debug <proof-file.tstp>
 
 `--debug` additionally prints the parsed units, the refutation proof tree,
 and per-step matching traces.
-
-Environment variables (all optional):
-
-| Variable | Default | Meaning |
-|----------|---------|---------|
-| `TAELJA_TWEE_TIMEOUT` | 15 s | Budget for goal-level Twee calls |
-| `TAELJA_TWEE_INTERNAL_TIMEOUT` | 5 s | Budget for internal Twee calls; never exceeds the goal budget |
-| `TAELJA_E_TIMEOUT` | 5 s | Budget per E lemma sub-proof |
-| `TAELJA_RESCUE_TIMEOUT` | 30 s | Budget for the second attempt that re-proves derived units when the first translation is incomplete |
-| `TAELJA_EPROVER` | `eprover` | Path to the E binary |
-| `TAELJA_STRICT` | unset | `1` runs only the strict translation stage |
 
 ## Checking a proof with Lean
 
