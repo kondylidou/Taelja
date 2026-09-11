@@ -55,9 +55,21 @@ Proof:
 
 ## Building
 
-Requires GHC 9.6 and Cabal 3. Twee is bundled (`bin/twee`); the E prover
-(`eprover`) should be on the PATH for full functionality. Vampire is only
-needed to produce input proofs, not to translate them.
+Requires GHC 9.6 and Cabal 3.
+
+Two prover binaries are not distributed with the source and have to be built
+and placed in `bin/`:
+
+- `bin/twee` — build from the `horn` branch of
+  <https://codeberg.org/nick8325/twee/src/branch/horn>. This branch extends Twee to prove Horn
+  problems via an encoding, so a standard Twee release will not work. The path `bin/twee` is fixed, relative to the directory Taelja
+  runs in, so the binary has to sit exactly there.
+- `bin/vampire` — build from <https://github.com/vprover/vampire>. Only
+  needed to produce input proofs, not to translate them, and any recent
+  build works.
+
+The E prover (`eprover`) should be on the PATH, or set `TAELJA_EPROVER` to
+its path.
 
 ```
 cabal build

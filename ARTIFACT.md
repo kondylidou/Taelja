@@ -12,9 +12,9 @@ format); this file covers reproducing the evaluation.
 ## What's included
 
 - `src/`, `app/` — Tälja (Haskell), built with `cabal build`.
-- `bin/twee` — the extended Twee build used for Horn-via-encoding proofs
-  (macOS arm64). `bin/vampire` — a prebuilt Vampire 5.0.1 (macOS arm64), for
-  convenience; any Vampire build works.
+- `bin/` — where the two prover binaries must be placed. They are not
+  distributed with this artifact and have to be built from source, see
+  Requirements below.
 - `scripts/eval.py` — runs E/Twee/Vampire over a TPTP directory and Tälja
   over each resulting proof; writes `eval_out/`.
 - `scripts/taelja2lean.py`, `scripts/regen_lean_eval.py`,
@@ -30,8 +30,16 @@ format); this file covers reproducing the evaluation.
 
 - GHC 9.6 and Cabal 3 (tested with GHC 9.6.7 / cabal-install 3.14.2.0).
 - [E](https://www.eprover.org/) on `PATH` or via `--eprover PATH` (tested
-  with E 3.2.5). Twee is bundled (`bin/twee`); Vampire is bundled
-  (`bin/vampire`, tested at 5.0.1) but any build works.
+  with E 3.2.5).
+- Twee, built from the `horn` branch of
+  <https://codeberg.org/nick8325/twee/src/branch/horn> and placed at
+  `bin/twee`. This branch extends Twee to prove Horn problems via an
+  encoding, so a standard Twee release will not work. Taelja resolves `bin/twee` relative to its working
+  directory, so the binary has to sit exactly there. Without it the golden
+  suite and any translation that needs an equational chain will fail.
+- Vampire, built from <https://github.com/vprover/vampire> and placed at
+  `bin/vampire` (tested at 5.0.1, any recent build works). Only needed to
+  produce input proofs for the evaluation, not to translate them.
 - Lean 4 + Lake (tested with Lean 4.33.1 / Lake 5.0.0; see
   `lean/lean-toolchain` — `elan` will fetch the pinned toolchain
   automatically) — only needed to re-verify proofs, not to translate them.

@@ -10,3 +10,6 @@ lean/TaeljaVerify/HEQ/
 lean/TaeljaVerify/HNE/
 lean/TaeljaVerify/UEQ/
 __pycache__/
+# prover binaries: build from source, see ARTIFACT.md
+bin/twee
+bin/vampire
