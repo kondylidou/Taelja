@@ -55,21 +55,45 @@ Proof:
 
 ## Building
 
-Requires GHC 9.6 and Cabal 3.
+Requires Cabal 3 and GHC 9.6 or newer. The package accepts base 4.18 to
+4.21, which covers GHC 9.6 through 9.12. Tested with GHC 9.6.7 and 9.10.3.
 
-Two prover binaries are not distributed with the source and have to be built
-and placed in `bin/`:
+Two prover binaries are not distributed with the source. Build each one in its
+own repository, then copy the executable into this project's `bin/` directory,
+under exactly these names. Below, `TAELJA` is the directory holding this
+README.
 
-- `bin/twee` — build from the `horn` branch of
-  <https://codeberg.org/nick8325/twee/src/branch/horn>. This branch extends Twee to prove Horn
-  problems via an encoding, so a standard Twee release will not work. The path `bin/twee` is fixed, relative to the directory Taelja
-  runs in, so the binary has to sit exactly there.
-- `bin/vampire` — build from <https://github.com/vprover/vampire>. Only
-  needed to produce input proofs, not to translate them, and any recent
-  build works.
+**Twee** must come from the `horn` branch, which proves Horn problems via an
+encoding. A released version of Twee will not work in its place.
+
+```
+git clone https://codeberg.org/nick8325/twee
+cd twee
+git checkout horn
+cabal build
+cp "$(cabal list-bin twee)" "$TAELJA/bin/twee"
+```
+
+Taelja looks for `bin/twee` relative to the directory it runs in, so the file
+has to sit exactly at `$TAELJA/bin/twee`. Without it the golden tests and any
+translation needing an equational chain will fail.
+
+**Vampire** is only needed to produce input proofs, not to translate them, and
+any recent build works. Follow its own README if the build layout differs; all
+that matters here is where the executable ends up.
+
+```
+git clone https://github.com/vprover/vampire
+cd vampire
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+cp build/vampire "$TAELJA/bin/vampire"
+```
 
 The E prover (`eprover`) should be on the PATH, or set `TAELJA_EPROVER` to
 its path.
+
+With those in place, build Taelja itself:
 
 ```
 cabal build

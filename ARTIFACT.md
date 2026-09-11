@@ -28,16 +28,19 @@ format); this file covers reproducing the evaluation.
 
 ## Requirements
 
-- GHC 9.6 and Cabal 3 (tested with GHC 9.6.7 / cabal-install 3.14.2.0).
+- Cabal 3 and GHC 9.6 or newer. The package accepts base 4.18 to 4.21,
+  which covers GHC 9.6 through 9.12. Built and golden-tested with both
+  GHC 9.6.7 and GHC 9.10.3, with cabal-install 3.14.2.0.
 - [E](https://www.eprover.org/) on `PATH` or via `--eprover PATH` (tested
   with E 3.2.5).
 - Twee, built from the `horn` branch of
-  <https://codeberg.org/nick8325/twee/src/branch/horn> and placed at
-  `bin/twee`. This branch extends Twee to prove Horn problems via an
-  encoding, so a standard Twee release will not work. Taelja resolves `bin/twee` relative to its working
-  directory, so the binary has to sit exactly there. Without it the golden
-  suite and any translation that needs an equational chain will fail.
-- Vampire, built from <https://github.com/vprover/vampire> and placed at
+  <https://codeberg.org/nick8325/twee> and copied to this project's
+  `bin/twee`. That branch extends Twee to prove Horn problems via an
+  encoding, so a released version of Twee will not work. Taelja resolves
+  `bin/twee` relative to its working directory, so the file has to sit exactly
+  there. Without it the golden suite and any translation that needs an
+  equational chain will fail.
+- Vampire, built from <https://github.com/vprover/vampire> and copied to
   `bin/vampire` (tested at 5.0.1, any recent build works). Only needed to
   produce input proofs for the evaluation, not to translate them.
 - Lean 4 + Lake (tested with Lean 4.33.1 / Lake 5.0.0; see
