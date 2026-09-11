@@ -124,13 +124,13 @@
 # Proof found!
 # SZS status Unsatisfiable
 # SZS output start CNFRefutation
-cnf(associativity, axiom, (multiply(multiply(X1,X2),X3)=multiply(X1,multiply(X2,X3))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-0.ax', associativity)).
-cnf(left_inverse, axiom, (multiply(inverse(X1),X1)=identity), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-0.ax', left_inverse)).
-cnf(left_identity, axiom, (multiply(identity,X1)=X1), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-0.ax', left_identity)).
-cnf(glb_absorbtion, axiom, (greatest_lower_bound(X1,least_upper_bound(X1,X2))=X1), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-2.ax', glb_absorbtion)).
+cnf(associativity, axiom, (multiply(multiply(X1,X2),X3)=multiply(X1,multiply(X2,X3))), file('TPTP/Axioms/GRP004-0.ax', associativity)).
+cnf(left_inverse, axiom, (multiply(inverse(X1),X1)=identity), file('TPTP/Axioms/GRP004-0.ax', left_inverse)).
+cnf(left_identity, axiom, (multiply(identity,X1)=X1), file('TPTP/Axioms/GRP004-0.ax', left_identity)).
+cnf(glb_absorbtion, axiom, (greatest_lower_bound(X1,least_upper_bound(X1,X2))=X1), file('TPTP/Axioms/GRP004-2.ax', glb_absorbtion)).
 cnf(p40a_1, hypothesis, (least_upper_bound(identity,X1)=X1), file('Problems/GRP/GRP192-1.p', p40a_1)).
-cnf(symmetry_of_glb, axiom, (greatest_lower_bound(X1,X2)=greatest_lower_bound(X2,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-2.ax', symmetry_of_glb)).
-cnf(monotony_glb1, axiom, (multiply(X1,greatest_lower_bound(X2,X3))=greatest_lower_bound(multiply(X1,X2),multiply(X1,X3))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-2.ax', monotony_glb1)).
+cnf(symmetry_of_glb, axiom, (greatest_lower_bound(X1,X2)=greatest_lower_bound(X2,X1)), file('TPTP/Axioms/GRP004-2.ax', symmetry_of_glb)).
+cnf(monotony_glb1, axiom, (multiply(X1,greatest_lower_bound(X2,X3))=greatest_lower_bound(multiply(X1,X2),multiply(X1,X3))), file('TPTP/Axioms/GRP004-2.ax', monotony_glb1)).
 cnf(prove_p40a, negated_conjecture, (multiply(a,b)!=multiply(b,a)), file('Problems/GRP/GRP192-1.p', prove_p40a)).
 cnf(c_0_8, axiom, (multiply(multiply(X1,X2),X3)=multiply(X1,multiply(X2,X3))), associativity).
 cnf(c_0_9, axiom, (multiply(inverse(X1),X1)=identity), left_inverse).

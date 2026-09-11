@@ -1,12 +1,12 @@
 % SZS status Unsatisfiable
 
 % SZS output start CNFRefutation
-cnf(c1, negated_conjecture, ~ocean(Ocean) | ~borders(Ocean, African) | ~african(African) | ~borders(Ocean, Asian) | ~asian(Asian), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/PUZ/PUZ011-1.p', prove_there_is_a_common_ocean)).
-cnf(c2, hypothesis, ocean(indian), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/PUZ/PUZ011-1.p', indian)).
-cnf(c3, hypothesis, borders(indian, somalia), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/PUZ/PUZ011-1.p', indian_somalia)).
-cnf(c4, hypothesis, african(somalia), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/PUZ/PUZ011-1.p', somalia)).
-cnf(c5, hypothesis, borders(indian, india), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/PUZ/PUZ011-1.p', indian_india)).
-cnf(c6, hypothesis, asian(india), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/PUZ/PUZ011-1.p', india)).
+cnf(c1, negated_conjecture, ~ocean(Ocean) | ~borders(Ocean, African) | ~african(African) | ~borders(Ocean, Asian) | ~asian(Asian), file('TPTP/Problems/PUZ/PUZ011-1.p', prove_there_is_a_common_ocean)).
+cnf(c2, hypothesis, ocean(indian), file('TPTP/Problems/PUZ/PUZ011-1.p', indian)).
+cnf(c3, hypothesis, borders(indian, somalia), file('TPTP/Problems/PUZ/PUZ011-1.p', indian_somalia)).
+cnf(c4, hypothesis, african(somalia), file('TPTP/Problems/PUZ/PUZ011-1.p', somalia)).
+cnf(c5, hypothesis, borders(indian, india), file('TPTP/Problems/PUZ/PUZ011-1.p', indian_india)).
+cnf(c6, hypothesis, asian(india), file('TPTP/Problems/PUZ/PUZ011-1.p', india)).
 cnf(c7, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c2, c3, c4, c5, c6])).
 % SZS output end CNFRefutation
 
