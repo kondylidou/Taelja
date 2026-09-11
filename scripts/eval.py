@@ -15,7 +15,7 @@ Optional:
   --output-dir DIR  Output directory (default: eval_out)
   --timeout SEC     Per-prover timeout in seconds (default: 60)
   --taelja-timeout SEC  Taelja timeout in seconds (default: 60)
-  --jobs N          Parallel workers (default: min(32, cpu_count))
+  --jobs N          Parallel workers (default: 2)
   --lean PATH       Path to lean binary; if given, verify each taelja proof
   --skip-done       Skip problems where proof.tstp and taelja.txt already exist
 

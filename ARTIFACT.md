@@ -20,8 +20,6 @@ format); this file covers reproducing the evaluation.
 - `scripts/taelja2lean.py`, `scripts/regen_lean_eval.py`,
   `scripts/check_lean_eval.py` — the Lean-verification pipeline used for the
   paper's "accepted by the Lean kernel" claim.
-- `scripts/check_chains.py` — an independent sanity check of equality-chain
-  steps, without going through Lean.
 - `lean/` — the Lean 4 project (`TaeljaVerify`) that both the golden tests
   and the evaluation's Lean-verification step check proofs against.
 - `test/` — the golden test suite (`cabal test`).
@@ -33,23 +31,22 @@ format); this file covers reproducing the evaluation.
   GHC 9.6.7 and GHC 9.10.3, with cabal-install 3.14.2.0.
 - [E](https://www.eprover.org/) on `PATH` or via `--eprover PATH` (tested
   with E 3.2.5).
-- Twee, built from the `horn` branch of
-  <https://codeberg.org/nick8325/twee> and copied to this project's
-  `bin/twee`. That branch extends Twee to prove Horn problems via an
-  encoding, so a released version of Twee will not work. Taelja resolves
-  `bin/twee` relative to its working directory, so the file has to sit exactly
-  there. Without it the golden suite and any translation that needs an
-  equational chain will fail.
-- Vampire, built from <https://github.com/vprover/vampire> and copied to
-  `bin/vampire` (tested at 5.0.1, any recent build works). Only needed to
-  produce input proofs for the evaluation, not to translate them.
+- Twee, from the `horn` branch,
+  <https://codeberg.org/nick8325/twee/src/branch/horn>. A released Twee will
+  not work. Build it as that repository describes, then copy the executable it
+  produces into this project's `bin/` folder, the one next to `src/` and
+  `test/`, renaming it to `twee`. It has to end up at `./bin/twee`, relative
+  to the directory holding this file.
+- Vampire, from <https://github.com/vprover/vampire>. Build it as that
+  repository describes, then copy the executable into the same `bin/` folder,
+  renaming it to `vampire`, so that it ends up at `./bin/vampire`. Any recent
+  build works (tested at 5.0.1).
 - Lean 4 + Lake (tested with Lean 4.33.1 / Lake 5.0.0; see
   `lean/lean-toolchain` — `elan` will fetch the pinned toolchain
-  automatically) — only needed to re-verify proofs, not to translate them.
+  automatically).
 - Python 3 — only for the scripts in `scripts/`, no third-party packages.
 - The [TPTP problem library](https://www.tptp.org) — needed to reproduce the
-  evaluation from scratch (§2 below); not bundled, for size. The paper's
-  numbers use TPTP v9.2.1.
+  evaluation from scratch (§2 below). The paper's numbers use TPTP v9.2.1.
 
 ## 1. Build and smoke-test
 
@@ -94,9 +91,9 @@ is checked in two steps, separate from `eval.py` (whose own `--lean` flag
 does a simpler, less complete check — see note below):
 
 ```
-python3 scripts/regen_lean_eval.py          # emit lean/TaeljaVerify/**/*.lean
+python3 scripts/regen_lean_eval.py           # emit lean/TaeljaVerify/**/*.lean
                                              # for every taelja=ok row
-python3 scripts/check_lean_eval.py --jobs 8 # `lake env lean` each module
+python3 scripts/check_lean_eval.py --jobs 8  # `lake env lean` each module
                                              # individually; writes eval_out/
                                              # results.csv's `lean` column
                                              # and eval_out/lean_failing.txt
@@ -108,11 +105,6 @@ build` stops scheduling modules once some fail and so under-reports
 failures. `regen_lean_eval.py` regenerates every `taelja=ok` row
 and deletes modules whose row is no longer `ok`, so the generated module set
 always matches the current evaluation data.
-
-As an independent cross-check that doesn't go through Lean at all,
-`scripts/check_chains.py [LIMIT]` re-verifies every equality-chain step in
-`eval_out` by replaying the cited rewrite directly, and reports the share of
-unjustifiable steps per prover.
 
 ## Notes
 
