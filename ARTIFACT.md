@@ -44,13 +44,13 @@ format); this file covers reproducing the evaluation.
 
 ```
 cabal build
-cabal test          # golden suite: 111 stored proofs, all three provers
+cabal test          # golden suite: 127 stored proofs, all three provers
 ```
 
 A minimal end-to-end check on one proof:
 
 ```
-cabal run taelja -- test/baseline_vampire/GEO002-4.tstp
+cabal run taelja -- test/baseline_vampire/resolution_example_horn_general.tstp
 ```
 
 See `README.md` for the single-proof workflow and the Lean-checking recipe
@@ -94,8 +94,9 @@ python3 scripts/check_lean_eval.py --jobs 8 # `lake env lean` each module
 `check_lean_eval.py` checks each generated module with its own `lake env
 lean` invocation rather than one aggregate `lake build`, because `lake
 build` stops scheduling modules once some fail and so under-reports
-failures. `--only-new` on `regen_lean_eval.py` skips modules that already
-exist, for incremental re-runs after a Tälja/emitter change.
+failures. `regen_lean_eval.py` regenerates every `taelja=ok` row
+and deletes modules whose row is no longer `ok`, so the generated module set
+always matches the current evaluation data.
 
 As an independent cross-check that doesn't go through Lean at all,
 `scripts/check_chains.py [LIMIT]` re-verifies every equality-chain step in
@@ -111,6 +112,6 @@ unjustifiable steps per prover.
 - All scripts are read-only with respect to the prover/Tälja binaries and
   only write under `eval_out/` and `lean/TaeljaVerify/`; re-running them is
   safe to interrupt and resume.
-- Problem counts, timeouts, and the translation-failure breakdown (1341
-  timeouts, 1 prover proof-output failure, 8 non-Horn, 478 known
-  limitations) are discussed in the paper's Evaluation section (§7).
+- Problem counts, timeouts, and the translation-failure breakdown (1101
+  timeouts, 1 prover proof-output failure, 33 known limitations) are
+  discussed in the paper's Evaluation section (§7).

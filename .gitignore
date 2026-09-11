@@ -4,5 +4,9 @@ dist-newstyle/
 *.o
 benchmarking/
 eval_out/
-lean/
+lean/.lake/
+# generated from eval_out by scripts/regen_lean_eval.py, not shipped
+lean/TaeljaVerify/HEQ/
+lean/TaeljaVerify/HNE/
+lean/TaeljaVerify/UEQ/
 __pycache__/
