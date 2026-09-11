@@ -75,9 +75,14 @@ for one proof.
 
 ## 2. Reproducing the evaluation from scratch
 
+Run this from the directory holding this file, replacing
+`/path/to/TPTP-v9.2.1` with the path to the unpacked TPTP library and
+`/path/to/eprover` with the path to the E binary (`which eprover` prints it
+if E is on your PATH):
+
 ```
 python3 scripts/eval.py bin/vampire /path/to/TPTP-v9.2.1 \
-  --eprover "$(which eprover)" --twee bin/twee --jobs 8
+  --eprover /path/to/eprover --twee bin/twee --jobs 8
 ```
 
 This classifies every TPTP problem into HNE/HEQ/UEQ by its SPC field (821 /

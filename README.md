@@ -86,7 +86,7 @@ E comes from <https://www.eprover.org/>. Either put `eprover` on the PATH, or
 set `TAELJA_EPROVER` to its full path, for example
 
 ```
-export TAELJA_EPROVER="$(which eprover)"
+export TAELJA_EPROVER=/path/to/eprover
 ```
 
 Tested with E 3.2.5.
