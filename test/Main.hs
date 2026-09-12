@@ -200,7 +200,6 @@ eBenchmarkNames =
   , "SWV819-1"
   -- superposition with an equation that the prover used as a demodulator,
   -- replacing every occurrence of the redex rather than just one
-  , "HEN010-1"
   , "LAT263-2"
   -- a Horn premise brings its own body literals along; when one is already
   -- present the duplicates must be condensed before the unit removes it
