@@ -303,7 +303,6 @@ simplifyBy c (Clause ls Nothing) =
     , (l, rest) <- picks (map (suffixVarsLit "_u") ls)
     , l' <- [l, flipLit l]
     , Just σ <- [matchLit l' h] ]
-simplifyBy _ _ = []
 -- One demodulation step: the equation is applied to a single redex, either at
 -- that one occurrence or at every occurrence of the same subterm.  A prover
 -- records each application as its own rw inference, so a step is never a
