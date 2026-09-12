@@ -1,0 +1,490 @@
+# Preprocessing class: FSMSSMSSSSSNFFN.
+# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+# No SInE strategy applied
+# Search class: FHHNS-FFSS11-SFFFFFNN
+# partial match(1): FHHNF-FFSS11-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_28, negated_conjecture, (p11(c14))).
+#
+#cnf(i_0_29, negated_conjecture, (p11(c17))).
+#
+#cnf(i_0_30, negated_conjecture, (p11(c16))).
+#
+#cnf(i_0_34, negated_conjecture, (p3(f4(c17),f6(c18)))).
+#
+#cnf(i_0_35, negated_conjecture, (p3(f4(c16),f6(c15)))).
+#
+#cnf(i_0_31, negated_conjecture, (p5(X1,X1))).
+#
+#cnf(i_0_32, negated_conjecture, (p2(X1,X1))).
+#
+#cnf(i_0_33, negated_conjecture, (p3(X1,X1))).
+#
+#cnf(i_0_37, negated_conjecture, (p11(X1)|~p2(X2,X1)|~p11(X2))).
+#
+#cnf(i_0_36, negated_conjecture, (p11(f9(X1))|~p11(X1))).
+#
+#cnf(i_0_38, negated_conjecture, (p12(X1,X2)|~p10(f6(X1),f6(X2)))).
+#
+#cnf(i_0_47, negated_conjecture, (p10(f6(f7(c13)),f4(X1))|~p11(X1))).
+##
+#cnf(i_0_52, negated_conjecture, (~p12(X2,c15)|~p3(f4(X1),f6(X2))|~p11(X1))).
+#
+#cnf(i_0_45, negated_conjecture, (p3(f4(X1),f6(f8(X1)))|~p11(X1))).
+#
+#cnf(i_0_46, negated_conjecture, (p10(f4(f9(X1)),f4(X1))|~p11(X1))).
+#
+#cnf(i_0_39, negated_conjecture, (p5(f8(X1),f8(X2))|~p2(X1,X2))).
+#
+#cnf(i_0_44, negated_conjecture, (p5(f7(X1),f7(X2))|~p5(X1,X2))).
+#
+#cnf(i_0_49, negated_conjecture, (p5(X1,X2)|~p5(X3,X2)|~p5(X3,X1))).
+#
+#cnf(i_0_50, negated_conjecture, (p2(X1,X2)|~p2(X3,X2)|~p2(X3,X1))).
+#
+#cnf(i_0_51, negated_conjecture, (p3(X1,X2)|~p3(X3,X2)|~p3(X3,X1))).
+#
+#cnf(i_0_41, negated_conjecture, (p2(f9(X1),f9(X2))|~p2(X1,X2))).
+#
+#cnf(i_0_42, negated_conjecture, (p3(f4(X1),f4(X2))|~p2(X1,X2))).
+#
+#cnf(i_0_43, negated_conjecture, (p3(f6(X1),f6(X2))|~p5(X1,X2))).
+#
+#cnf(i_0_40, negated_conjecture, (p10(f6(X1),f6(X2))|~p12(X1,X2))).
+#
+#cnf(i_0_54, negated_conjecture, (p12(X1,X2)|~p12(X3,X4)|~p5(X4,X2)|~p5(X3,X1))).
+#
+#cnf(i_0_53, negated_conjecture, (p10(X1,X2)|~p10(X3,X4)|~p3(X4,X2)|~p3(X3,X1))).
+# Presaturation interreduction done
+#
+#cnf(i_0_28, negated_conjecture, (p11(c14))).
+#
+#cnf(i_0_29, negated_conjecture, (p11(c17))).
+#
+#cnf(i_0_30, negated_conjecture, (p11(c16))).
+#
+#cnf(i_0_31, negated_conjecture, (p5(X1,X1))).
+#
+#cnf(i_0_32, negated_conjecture, (p2(X1,X1))).
+#
+#cnf(i_0_33, negated_conjecture, (p3(X1,X1))).
+#
+#cnf(i_0_34, negated_conjecture, (p3(f4(c17),f6(c18)))).
+#
+#cnf(i_0_35, negated_conjecture, (p3(f4(c16),f6(c15)))).
+#
+#cnf(i_0_36, negated_conjecture, (p11(f9(X1))|~p11(X1))).
+#
+#cnf(i_0_47, negated_conjecture, (p10(f6(f7(c13)),f4(X1))|~p11(X1))).
+#
+#cnf(i_0_37, negated_conjecture, (p11(X1)|~p2(X2,X1)|~p11(X2))).
+#
+#cnf(i_0_38, negated_conjecture, (p12(X1,X2)|~p10(f6(X1),f6(X2)))).
+#
+#cnf(i_0_45, negated_conjecture, (p3(f4(X1),f6(f8(X1)))|~p11(X1))).
+#
+#cnf(i_0_52, negated_conjecture, (~p12(X1,c15)|~p3(f4(X2),f6(X1))|~p11(X2))).
+#
+#cnf(i_0_56, negated_conjecture, (~p12(c15,c15))).
+#
+#cnf(i_0_57, negated_conjecture, (~p12(c18,c15))).
+#
+#cnf(i_0_58, negated_conjecture, (~p12(f8(X1),c15)|~p11(X1))).
+#
+#cnf(i_0_46, negated_conjecture, (p10(f4(f9(X1)),f4(X1))|~p11(X1))).
+#
+#cnf(i_0_39, negated_conjecture, (p5(f8(X1),f8(X2))|~p2(X1,X2))).
+#
+#cnf(i_0_44, negated_conjecture, (p5(f7(X1),f7(X2))|~p5(X1,X2))).
+#
+#cnf(i_0_41, negated_conjecture, (p2(f9(X1),f9(X2))|~p2(X1,X2))).
+#
+#cnf(i_0_59, negated_conjecture, (p11(f9(X1))|~p2(X2,X1)|~p11(f9(X2)))).
+#
+#cnf(i_0_49, negated_conjecture, (p5(X1,X2)|~p5(X3,X2)|~p5(X3,X1))).
+#
+#cnf(i_0_63, negated_conjecture, (p5(X1,X2)|~p5(X2,X1))).
+#
+#cnf(i_0_50, negated_conjecture, (p2(X1,X2)|~p2(X3,X2)|~p2(X3,X1))).
+#
+#cnf(i_0_51, negated_conjecture, (p3(X1,X2)|~p3(X3,X2)|~p3(X3,X1))).
+#
+#cnf(i_0_42, negated_conjecture, (p3(f4(X1),f4(X2))|~p2(X1,X2))).
+#
+#cnf(i_0_43, negated_conjecture, (p3(f6(X1),f6(X2))|~p5(X1,X2))).
+#
+#cnf(i_0_40, negated_conjecture, (p10(f6(X1),f6(X2))|~p12(X1,X2))).
+#
+#cnf(i_0_69, negated_conjecture, (p3(X1,f6(c15))|~p3(f4(c16),X1))).
+#
+#cnf(i_0_77, negated_conjecture, (p3(f6(f8(c16)),f6(c15)))).
+#
+#cnf(i_0_70, negated_conjecture, (p3(X1,f6(c18))|~p3(f4(c17),X1))).
+#
+#cnf(i_0_82, negated_conjecture, (p3(f6(f8(c17)),f6(c18)))).
+#
+#cnf(i_0_54, negated_conjecture, (p12(X1,X2)|~p12(X3,X4)|~p5(X4,X2)|~p5(X3,X1))).
+#
+#cnf(i_0_68, negated_conjecture, (p2(X1,X2)|~p2(X2,X1))).
+#
+#cnf(i_0_53, negated_conjecture, (p10(X1,X2)|~p10(X3,X4)|~p3(X4,X2)|~p3(X3,X1))).
+#
+#cnf(i_0_72, negated_conjecture, (p3(X1,X2)|~p3(X2,X1))).
+#
+#cnf(i_0_60, negated_conjecture, (p11(f9(X1))|~p2(X2,X1)|~p11(X2))).
+##
+#cnf(i_0_102, negated_conjecture, (p3(f6(c15),f4(c16)))).
+#
+#cnf(i_0_103, negated_conjecture, (p3(f6(c18),f4(c17)))).
+#
+#cnf(i_0_99, negated_conjecture, (p3(f6(c15),f6(f8(c16))))).
+#
+#cnf(i_0_100, negated_conjecture, (p3(f6(c18),f6(f8(c17))))).
+#
+#cnf(i_0_80, negated_conjecture, (p3(X1,f6(c15))|~p3(f6(f8(c16)),X1))).
+#
+#cnf(i_0_61, negated_conjecture, (p5(X1,f7(X2))|~p5(f7(X3),X1)|~p5(X3,X2))).
+#
+#cnf(i_0_109, negated_conjecture, (p3(X1,f4(c16))|~p3(f6(c15),X1))).
+#
+#cnf(i_0_88, negated_conjecture, (p12(X1,X2)|~p12(X3,X2)|~p5(X3,X1))).
+#
+#cnf(i_0_98, negated_conjecture, (p10(X1,X2)|~p10(X3,X2)|~p3(X3,X1))).
+#
+#cnf(i_0_142, negated_conjecture, (p10(f6(c15),X1)|~p10(f4(c16),X1))).
+#
+#cnf(i_0_143, negated_conjecture, (p10(f6(c18),X1)|~p10(f4(c17),X1))).
+#
+#cnf(i_0_112, negated_conjecture, (p3(X1,f4(c17))|~p3(f6(c18),X1))).
+#
+#cnf(i_0_128, negated_conjecture, (p3(f4(c16),f6(c18))|~p3(f6(c15),f4(c17)))).
+##
+#cnf(i_0_159, negated_conjecture, (p3(f6(c18),f6(c15))|~p3(f6(c15),f4(c17)))).
+#
+#cnf(i_0_149, negated_conjecture, (p3(f4(c17),f6(c15))|~p3(f6(c18),f4(c16)))).
+#
+#cnf(i_0_62, negated_conjecture, (p5(X1,f8(X2))|~p2(X3,X2)|~p5(f8(X3),X1))).
+#
+#cnf(i_0_131, negated_conjecture, (p3(f4(c16),X1)|~p3(f6(c15),X1))).
+#
+#cnf(i_0_174, negated_conjecture, (~p12(X1,c15)|~p3(f6(c15),f6(X1)))).
+###
+#cnf(i_0_107, negated_conjecture, (p11(f9(f9(X1)))|~p2(X2,X1)|~p11(f9(X2)))).
+#
+#cnf(i_0_140, negated_conjecture, (p10(f4(c16),X1)|~p10(f6(c15),X1))).
+#
+#cnf(i_0_165, negated_conjecture, (p3(f6(c15),f4(c17))|~p3(f6(c18),f4(c16)))).
+#
+#cnf(i_0_166, negated_conjecture, (p3(f6(c15),f6(c18))|~p3(f6(c18),f4(c16)))).
+#
+#cnf(i_0_158, negated_conjecture, (p3(f6(c18),f4(c16))|~p3(f6(c15),f4(c17)))).
+#
+#cnf(i_0_185, negated_conjecture, (p3(f6(c15),f6(c18))|~p3(f6(c15),f4(c17)))).
+#
+#cnf(i_0_64, negated_conjecture, (p5(f7(X1),f7(X2))|~p5(X2,X1))).
+#
+#cnf(i_0_141, negated_conjecture, (p10(f4(c17),X1)|~p10(f6(c18),X1))).
+#
+#cnf(i_0_176, negated_conjecture, (p11(f9(f9(X1)))|~p2(X2,X1)|~p11(X2))).
+#
+#cnf(i_0_194, negated_conjecture, (p11(f9(f9(X1)))|~p11(X1))).
+#
+#cnf(i_0_195, negated_conjecture, (p11(f9(X1))|~p2(f9(X2),X1)|~p11(X2))).
+####
+#cnf(i_0_178, negated_conjecture, (p3(f6(c15),f4(c17))|~p3(f6(c15),f6(c18)))).
+##
+#cnf(i_0_202, negated_conjecture, (p3(f4(c17),f6(c15))|~p3(f6(c15),f6(c18)))).
+#
+#cnf(i_0_65, negated_conjecture, (p5(f8(X1),f8(X2))|~p2(X2,X1))).
+#
+#cnf(i_0_154, negated_conjecture, (p3(f4(c17),X1)|~p3(f6(c18),X1))).
+#
+#cnf(i_0_220, negated_conjecture, (~p12(X1,c15)|~p3(f6(c18),f6(X1)))).
+###
+#cnf(i_0_170, negated_conjecture, (p10(X1,X2)|~p10(f4(c16),X2)|~p3(f6(c15),X1))).
+####
+#cnf(i_0_148, negated_conjecture, (p3(f4(c17),f6(c15))|~p3(f6(c18),f6(f8(c16))))).
+#
+#cnf(i_0_223, negated_conjecture, (p3(f4(c17),f6(c15))|~p5(c18,f8(c16)))).
+#
+#cnf(i_0_67, negated_conjecture, (p2(X1,f9(X2))|~p2(f9(X3),X1)|~p2(X3,X2))).
+##
+#cnf(i_0_171, negated_conjecture, (p3(X1,X2)|~p3(f4(c16),X1)|~p3(f6(c15),X2))).
+#
+#cnf(i_0_216, negated_conjecture, (p10(X1,X2)|~p10(f4(c17),X2)|~p3(f6(c18),X1))).
+#
+#cnf(i_0_217, negated_conjecture, (p3(X1,X2)|~p3(f4(c17),X1)|~p3(f6(c18),X2))).
+###
+#cnf(i_0_85, negated_conjecture, (p3(X1,f6(c18))|~p3(f6(f8(c17)),X1))).
+#
+#cnf(i_0_244, negated_conjecture, (p3(f4(c16),f6(c18))|~p3(f6(c15),f6(f8(c17))))).
+#
+#cnf(i_0_249, negated_conjecture, (p3(f4(c16),f6(c18))|~p5(c15,f8(c17)))).
+#
+#cnf(i_0_122, negated_conjecture, (p3(f6(X1),f6(c15))|~p5(f8(c16),X1))).
+#
+#cnf(i_0_71, negated_conjecture, (p3(X1,f6(f8(X2)))|~p3(f4(X2),X1)|~p11(X2))).
+#######
+#cnf(i_0_256, negated_conjecture, (p3(f4(c17),f6(c15))|~p3(f4(c16),f6(c18)))).
+#
+#cnf(i_0_255, negated_conjecture, (p3(f4(c16),f6(c18))|~p3(f4(c17),f6(c15)))).
+##
+#cnf(i_0_271, negated_conjecture, (p3(f6(c18),f4(c16))|~p3(f4(c17),f6(c15)))).
+#
+#cnf(i_0_73, negated_conjecture, (p3(X1,f4(X2))|~p3(f4(X3),X1)|~p2(X3,X2))).
+##
+#cnf(i_0_74, negated_conjecture, (p3(X1,f6(X2))|~p3(f6(X3),X1)|~p5(X3,X2))).
+#
+#cnf(i_0_132, negated_conjecture, (p12(f7(X1),X2)|~p12(f7(X3),X2)|~p5(X3,X1))).
+#
+#cnf(i_0_133, negated_conjecture, (p12(f8(X1),X2)|~p12(f8(X3),X2)|~p2(X3,X1))).
+#
+#cnf(i_0_139, negated_conjecture, (p10(f6(X1),X2)|~p10(f6(X3),X2)|~p5(X3,X1))).
+##
+#cnf(i_0_272, negated_conjecture, (p3(f6(c18),f6(c15))|~p3(f4(c17),f6(c15)))).
+#
+#cnf(i_0_309, negated_conjecture, (p3(f6(c18),f6(c15))|~p3(f6(c18),f4(c16)))).
+###
+#cnf(i_0_79, negated_conjecture, (p3(f4(X1),f6(c15))|~p2(c16,X1))).
+#
+#cnf(i_0_319, negated_conjecture, (p3(f6(c15),f6(c18))|~p2(c16,c17))).
+##
+#cnf(i_0_145, negated_conjecture, (p10(f4(X1),X2)|~p10(f4(X3),X2)|~p2(X3,X1))).
+#
+#cnf(i_0_187, negated_conjecture, (p12(f7(X1),X2)|~p12(f7(X3),X2)|~p5(X1,X3))).
+#
+#cnf(i_0_188, negated_conjecture, (p5(X1,f7(X2))|~p5(f7(X3),X1)|~p5(X2,X3))).
+#
+#cnf(i_0_323, negated_conjecture, (p3(f6(c18),f6(c15))|~p2(c16,c17))).
+#
+#cnf(i_0_322, negated_conjecture, (p3(f6(c18),f4(c16))|~p2(c16,c17))).
+###
+#cnf(i_0_334, negated_conjecture, (p3(f4(c16),f6(c18))|~p2(c16,c17))).
+#
+#cnf(i_0_84, negated_conjecture, (p3(f4(X1),f6(c18))|~p2(c17,X1))).
+####
+#cnf(i_0_196, negated_conjecture, (p11(f9(f9(X1)))|~p2(f9(X2),X1)|~p11(X2))).
+#
+#cnf(i_0_211, negated_conjecture, (p12(f8(X1),X2)|~p12(f8(X3),X2)|~p2(X1,X3))).
+#
+#cnf(i_0_352, negated_conjecture, (p3(f6(c18),f6(c15))|~p2(c17,c16))).
+#
+#cnf(i_0_336, negated_conjecture, (p3(f6(c15),f4(c17))|~p2(c16,c17))).
+####
+#cnf(i_0_86, negated_conjecture, (p12(X1,f7(X2))|~p12(X3,f7(X4))|~p5(X3,X1)|~p5(X4,X2))).
+##
+#cnf(i_0_212, negated_conjecture, (p5(X1,f8(X2))|~p2(X2,X3)|~p5(f8(X3),X1))).
+#
+#cnf(i_0_135, negated_conjecture, (p10(f6(c15),X1)|~p10(f6(f8(c16)),X1))).
+#
+#cnf(i_0_136, negated_conjecture, (p10(f6(c18),X1)|~p10(f6(f8(c17)),X1))).
+#
+#cnf(i_0_232, negated_conjecture, (p3(f4(X1),X2)|~p3(f6(c15),X2)|~p2(c16,X1))).
+#
+#cnf(i_0_357, negated_conjecture, (p3(f4(c17),f6(c15))|~p2(c17,c16))).
+##
+#cnf(i_0_379, negated_conjecture, (p3(f6(c15),f6(c18))|~p2(c17,c16))).
+###
+#cnf(i_0_87, negated_conjecture, (p12(X1,f8(X2))|~p12(X3,f8(X4))|~p2(X4,X2)|~p5(X3,X1))).
+#
+#cnf(i_0_377, negated_conjecture, (p3(f6(c15),f4(c17))|~p2(c17,c16))).
+#
+#cnf(i_0_242, negated_conjecture, (p3(f4(X1),X2)|~p3(f6(c18),X2)|~p2(c17,X1))).
+#
+#cnf(i_0_291, negated_conjecture, (p3(X1,f4(X2))|~p3(f6(c15),X1)|~p2(c16,X2))).
+#
+#cnf(i_0_292, negated_conjecture, (p3(X1,f4(X2))|~p3(f6(c18),X1)|~p2(c17,X2))).
+#
+#cnf(i_0_125, negated_conjecture, (p5(f7(X1),f7(X2))|~p5(X3,X2)|~p5(X3,X1))).
+###
+#cnf(i_0_382, negated_conjecture, (p3(f6(c18),f4(c16))|~p2(c17,c16))).
+###
+#cnf(i_0_89, negated_conjecture, (p2(f9(X1),f9(X2))|~p2(X2,X1))).
+##
+#cnf(i_0_407, negated_conjecture, (p11(f9(X1))|~p2(X1,X2)|~p11(f9(X2)))).
+#
+#cnf(i_0_416, negated_conjecture, (p11(f9(X1))|~p2(X1,X2)|~p11(X2))).
+##
+#cnf(i_0_415, negated_conjecture, (p11(f9(X1))|~p2(X1,f9(X2))|~p11(X2))).
+###
+#cnf(i_0_276, negated_conjecture, (p3(f6(c18),f4(c16))|~p3(f6(c18),f6(c15)))).
+###
+#cnf(i_0_91, negated_conjecture, (p10(X1,f6(c15))|~p10(X2,f6(f8(c16)))|~p3(X2,X1))).
+##
+#cnf(i_0_413, negated_conjecture, (p11(f9(f9(X1)))|~p2(X1,X2)|~p11(X2))).
+####
+#cnf(i_0_359, negated_conjecture, (p11(f9(f9(f9(X1))))|~p11(X1))).
+###
+#cnf(i_0_426, negated_conjecture, (p3(f4(c16),f6(c18))|~p3(f6(c18),f6(c15)))).
+##
+#cnf(i_0_92, negated_conjecture, (p10(X1,f6(c18))|~p10(X2,f6(f8(c17)))|~p3(X2,X1))).
+##
+#cnf(i_0_437, negated_conjecture, (p11(f9(X1))|~p2(f9(f9(X2)),X1)|~p11(X2))).
+#
+#cnf(i_0_439, negated_conjecture, (p11(f9(X1))|~p2(X1,f9(f9(X2)))|~p11(X2))).
+#
+#cnf(i_0_408, negated_conjecture, (p11(f9(f9(X1)))|~p2(X1,X2)|~p11(f9(X2)))).
+######
+#cnf(i_0_320, negated_conjecture, (p3(f6(c15),X1)|~p3(f6(c18),X1)|~p2(c16,c17))).
+#
+#cnf(i_0_93, negated_conjecture, (p10(X1,f6(X2))|~p10(X3,f6(X4))|~p3(X3,X1)|~p5(X4,X2))).
+####
+#cnf(i_0_411, negated_conjecture, (p2(X1,f9(X2))|~p2(f9(X3),X1)|~p2(X2,X3))).
+###
+#cnf(i_0_332, negated_conjecture, (p3(X1,f4(c16))|~p3(f6(c18),X1)|~p2(c16,c17))).
+#
+#cnf(i_0_340, negated_conjecture, (p3(X1,f6(c18))|~p3(f4(c16),X1)|~p2(c16,c17))).
+#
+#cnf(i_0_345, negated_conjecture, (p3(f6(c18),X1)|~p3(f6(c15),X1)|~p2(c16,c17))).
+#
+#cnf(i_0_353, negated_conjecture, (p3(f6(c18),X1)|~p3(f6(c15),X1)|~p2(c17,c16))).
+#
+#cnf(i_0_94, negated_conjecture, (p10(X1,f6(c15))|~p10(X2,f4(c16))|~p3(X2,X1))).
+##
+#cnf(i_0_454, negated_conjecture, (p11(f9(f9(X1)))|~p2(X1,f9(X2))|~p11(X2))).
+######
+#cnf(i_0_375, negated_conjecture, (p3(X1,f6(c15))|~p3(f4(c17),X1)|~p2(c17,c16))).
+#
+#cnf(i_0_380, negated_conjecture, (p3(f6(c15),X1)|~p3(f6(c18),X1)|~p2(c17,c16))).
+#
+#cnf(i_0_385, negated_conjecture, (p3(X1,f4(c17))|~p3(f6(c15),X1)|~p2(c17,c16))).
+#
+#cnf(i_0_95, negated_conjecture, (p10(X1,f6(c18))|~p10(X2,f4(c17))|~p3(X2,X1))).
+##
+#cnf(i_0_467, negated_conjecture, (p10(X1,f6(c15))|~p3(f6(f7(c13)),X1))).
+#
+#cnf(i_0_470, negated_conjecture, (p10(X1,f6(c15))|~p3(f4(f9(c16)),X1))).
+#
+#cnf(i_0_474, negated_conjecture, (p10(X1,f6(c18))|~p3(f6(f7(c13)),X1))).
+#
+#cnf(i_0_477, negated_conjecture, (p10(X1,f6(c18))|~p3(f4(f9(c17)),X1))).
+#
+#cnf(i_0_481, negated_conjecture, (p10(f6(f7(c13)),f6(c15)))).
+#
+#cnf(i_0_506, negated_conjecture, (p12(f7(c13),c15))).
+#
+#cnf(i_0_507, negated_conjecture, (~p3(f6(c15),f6(f7(c13))))).
+#
+#cnf(i_0_511, negated_conjecture, (~p5(c15,f7(c13)))).
+#
+#cnf(i_0_508, negated_conjecture, (~p3(f6(c18),f6(f7(c13))))).
+#
+#cnf(i_0_96, negated_conjecture, (p10(X1,f6(f8(X2)))|~p10(X3,f4(X2))|~p3(X3,X1)|~p11(X2))).
+#
+#cnf(i_0_486, negated_conjecture, (p10(f4(f9(c16)),f6(c15)))).
+#
+#cnf(i_0_512, negated_conjecture, (~p5(c18,f7(c13)))).
+#
+#cnf(i_0_509, negated_conjecture, (p12(f7(X1),c15)|~p5(c13,X1))).
+#
+#cnf(i_0_519, negated_conjecture, (~p3(f6(c15),f6(f7(X1)))|~p5(c13,X1))).
+#
+#cnf(i_0_523, negated_conjecture, (~p5(c15,f7(X1))|~p5(c13,X1))).
+#
+#cnf(i_0_520, negated_conjecture, (~p3(f6(c18),f6(f7(X1)))|~p5(c13,X1))).
+#
+#cnf(i_0_494, negated_conjecture, (p10(f6(f7(c13)),f6(c18)))).
+#
+#cnf(i_0_527, negated_conjecture, (p12(f7(c13),c18))).
+#
+#cnf(i_0_499, negated_conjecture, (p10(f4(f9(c17)),f6(c18)))).
+#
+#cnf(i_0_488, negated_conjecture, (p10(f6(c15),f6(c15))|~p2(c16,f9(c16)))).
+#
+#cnf(i_0_97, negated_conjecture, (p10(X1,f4(X2))|~p10(X3,f4(X4))|~p3(X3,X1)|~p2(X4,X2))).
+#
+#cnf(i_0_489, negated_conjecture, (p10(f6(c18),f6(c15))|~p2(c17,f9(c16)))).
+#
+#cnf(i_0_524, negated_conjecture, (~p5(c18,f7(X1))|~p5(c13,X1))).
+#
+#cnf(i_0_510, negated_conjecture, (p12(f7(X1),c15)|~p5(X1,c13))).
+#
+#cnf(i_0_536, negated_conjecture, (~p3(f6(c15),f6(f7(X1)))|~p5(X1,c13))).
+#
+#cnf(i_0_540, negated_conjecture, (~p5(c15,f7(X1))|~p5(X1,c13))).
+#
+#cnf(i_0_537, negated_conjecture, (~p3(f6(c18),f6(f7(X1)))|~p5(X1,c13))).
+#
+#cnf(i_0_501, negated_conjecture, (p10(f6(c15),f6(c18))|~p2(c16,f9(c17)))).
+#
+#cnf(i_0_502, negated_conjecture, (p10(f6(c18),f6(c18))|~p2(c17,f9(c17)))).
+###
+#cnf(i_0_101, negated_conjecture, (p3(f6(X1),f6(X2))|~p5(X2,X1))).
+#
+#cnf(i_0_554, negated_conjecture, (p3(f4(c16),f6(c18))|~p5(f8(c17),c15))).
+#
+#cnf(i_0_551, negated_conjecture, (~p5(f7(c13),c15))).
+#
+#cnf(i_0_555, negated_conjecture, (~p5(f7(c13),c18))).
+#
+#cnf(i_0_541, negated_conjecture, (~p5(c18,f7(X1))|~p5(X1,c13))).
+#
+#cnf(i_0_552, negated_conjecture, (~p5(f7(X1),c15)|~p5(c13,X1))).
+#
+#cnf(i_0_553, negated_conjecture, (~p5(f7(X1),c15)|~p5(X1,c13))).
+#
+#cnf(i_0_558, negated_conjecture, (p3(f4(c17),f6(c15))|~p5(f8(c16),c18))).
+#
+#cnf(i_0_484, negated_conjecture, (p10(f4(c16),f6(c15))|~p3(f6(c15),f4(f9(c16))))).
+#
+#cnf(i_0_485, negated_conjecture, (p10(f4(c17),f6(c15))|~p3(f6(c18),f4(f9(c16))))).
+##
+#cnf(i_0_104, negated_conjecture, (p3(f6(f8(X1)),f4(X1))|~p11(X1))).
+#
+#cnf(i_0_528, negated_conjecture, (p12(f7(X1),c18)|~p5(c13,X1))).
+#
+#cnf(i_0_556, negated_conjecture, (~p5(f7(X1),c18)|~p5(c13,X1))).
+#
+#cnf(i_0_557, negated_conjecture, (~p5(f7(X1),c18)|~p5(X1,c13))).
+#
+#cnf(i_0_521, negated_conjecture, (p12(f7(X1),c15)|~p5(c13,X2)|~p5(X2,X1))).
+#
+#cnf(i_0_522, negated_conjecture, (p12(f7(X1),c15)|~p5(c13,X2)|~p5(X1,X2))).
+#
+#cnf(i_0_529, negated_conjecture, (p12(f7(X1),c18)|~p5(X1,c13))).
+##
+#cnf(i_0_497, negated_conjecture, (p10(f4(c16),f6(c18))|~p3(f6(c15),f4(f9(c17))))).
+#
+#cnf(i_0_498, negated_conjecture, (p10(f4(c17),f6(c18))|~p3(f6(c18),f4(f9(c17))))).
+#
+#cnf(i_0_487, negated_conjecture, (p10(f6(f8(f9(c16))),f6(c15))|~p11(f9(c16)))).
+#
+#cnf(i_0_105, negated_conjecture, (p3(f4(X1),f4(X2))|~p2(X2,X1))).
+#
+#cnf(i_0_574, negated_conjecture, (~p11(f9(c16)))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(p10_26, negated_conjecture, (p10(X1,X2)|~p3(X3,X1)|~p3(X4,X2)|~p10(X3,X4)), file('Problems/SYN/SYN590-1.p', p10_26)).
+cnf(p3_8, negated_conjecture, (p3(f4(c16),f6(c15))), file('Problems/SYN/SYN590-1.p', p3_8)).
+cnf(p10_19, negated_conjecture, (p10(f4(f9(X1)),f4(X1))|~p11(X1)), file('Problems/SYN/SYN590-1.p', p10_19)).
+cnf(c16_is_p11_3, negated_conjecture, (p11(c16)), file('Problems/SYN/SYN590-1.p', c16_is_p11_3)).
+cnf(p3_18, negated_conjecture, (p3(f4(X1),f6(f8(X1)))|~p11(X1)), file('Problems/SYN/SYN590-1.p', p3_18)).
+cnf(not_p11_25, negated_conjecture, (~p11(X1)|~p12(X2,c15)|~p3(f4(X1),f6(X2))), file('Problems/SYN/SYN590-1.p', not_p11_25)).
+cnf(p12_11, negated_conjecture, (p12(X1,X2)|~p10(f6(X1),f6(X2))), file('Problems/SYN/SYN590-1.p', p12_11)).
+cnf(p11_9, negated_conjecture, (p11(f9(X1))|~p11(X1)), file('Problems/SYN/SYN590-1.p', p11_9)).
+cnf(c_0_8, negated_conjecture, (p10(X1,X2)|~p3(X3,X1)|~p3(X4,X2)|~p10(X3,X4)), inference(fof_simplification,[status(thm)],[p10_26])).
+cnf(c_0_9, negated_conjecture, (p10(X1,X2)|~p3(X3,X1)|~p3(X4,X2)|~p10(X3,X4)), c_0_8).
+cnf(c_0_10, negated_conjecture, (p3(f4(c16),f6(c15))), p3_8).
+cnf(c_0_11, negated_conjecture, (p10(f4(f9(X1)),f4(X1))|~p11(X1)), inference(fof_simplification,[status(thm)],[p10_19])).
+cnf(c_0_12, negated_conjecture, (p10(X1,f6(c15))|~p10(X2,f4(c16))|~p3(X2,X1)), inference(spm,[status(thm)],[c_0_9, c_0_10])).
+cnf(c_0_13, negated_conjecture, (p10(f4(f9(X1)),f4(X1))|~p11(X1)), c_0_11).
+cnf(c_0_14, negated_conjecture, (p11(c16)), c16_is_p11_3).
+cnf(c_0_15, negated_conjecture, (p3(f4(X1),f6(f8(X1)))|~p11(X1)), inference(fof_simplification,[status(thm)],[p3_18])).
+cnf(c_0_16, negated_conjecture, (~p11(X1)|~p12(X2,c15)|~p3(f4(X1),f6(X2))), inference(fof_simplification,[status(thm)],[not_p11_25])).
+cnf(c_0_17, negated_conjecture, (p12(X1,X2)|~p10(f6(X1),f6(X2))), inference(fof_simplification,[status(thm)],[p12_11])).
+cnf(c_0_18, negated_conjecture, (p10(X1,f6(c15))|~p3(f4(f9(c16)),X1)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_12, c_0_13]), c_0_14])])).
+cnf(c_0_19, negated_conjecture, (p3(f4(X1),f6(f8(X1)))|~p11(X1)), c_0_15).
+cnf(c_0_20, negated_conjecture, (~p11(X1)|~p12(X2,c15)|~p3(f4(X1),f6(X2))), c_0_16).
+cnf(c_0_21, negated_conjecture, (p12(X1,X2)|~p10(f6(X1),f6(X2))), c_0_17).
+cnf(c_0_22, negated_conjecture, (p10(f6(f8(f9(c16))),f6(c15))|~p11(f9(c16))), inference(spm,[status(thm)],[c_0_18, c_0_19])).
+cnf(c_0_23, negated_conjecture, (~p12(f8(X1),c15)|~p11(X1)), inference(spm,[status(thm)],[c_0_20, c_0_19])).
+cnf(c_0_24, negated_conjecture, (p11(f9(X1))|~p11(X1)), inference(fof_simplification,[status(thm)],[p11_9])).
+cnf(c_0_25, negated_conjecture, (~p11(f9(c16))), inference(csr,[status(thm)],[inference(spm,[status(thm)],[c_0_21, c_0_22]), c_0_23])).
+cnf(c_0_26, negated_conjecture, (p11(f9(X1))|~p11(X1)), c_0_24).
+cnf(c_0_27, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_25, c_0_26]), c_0_14])]), ['proof']).
+# SZS output end CNFRefutation

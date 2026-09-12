@@ -223,7 +223,13 @@ replayNested outerD d0 ds = do
   (c1, units) <- case cs of { (x : xs) -> Just (x, xs); [] -> Nothing }
   listToMaybe
     [ (prov, map (clauseToDecl . instC σ) chain)
-    | (prov, r) <- resolvents c0 c1
+    -- Condense the resolvent before simplifying it.  A Horn premise brings its
+    -- own body literals along, and one of them may already be present in the
+    -- other clause; the prover merges the duplicates (E's cn) and then removes
+    -- the single survivor with a unit.  Resolving one copy away first leaves
+    -- the other behind (MGT006-1: ~organization(sk2,sk7) arrives twice).
+    | (prov, r0) <- resolvents c0 c1
+    , let r = cn r0
     , chain <- chains r (init units)
     , final <- simplifyBy (last chain) (last units)
     , Just σ <- [matchClause final outer] ]
@@ -246,14 +252,21 @@ resolvents a b =
         [ mk σ (body x ++ rest) (hd y)
         | (l, rest) <- picks (body y), Just σ <- [unifyLits h l []] ]
         -- superposition: an equation head into a subterm of any literal
+        -- As in rewriteOnce, the equation is applied either at the one redex
+        -- or at every occurrence of that same subterm.  A prover that uses the
+        -- equation as a demodulator replaces them all, and a clause mentioning
+        -- the term twice (LAT263-2: pset(v_cl,t_a,unit) in both the head and a
+        -- body literal) is otherwise never reproduced.
         ++ [ mk σ (body x ++ bodyY') hdY'
            | Eq s t <- [h], (lhs, rhs) <- [(s, t), (t, s)], notVar lhs
            , (i, lit) <- zip [0 :: Int ..] (polLits y)
            , (u, ctx) <- litSubtermCtxs (snd lit), notVar u
            , Just σ <- [unifyTerms lhs u []]
-           , let lit' = ctx rhs
-                 ys   = [ if j == i then (fst l, lit') else l | (j, l) <- zip [0 ..] (polLits y) ]
-                 bodyY' = [ l | (False, l) <- ys ]
+           , ys <- [ [ if j == i then (fst l, ctx rhs) else l
+                     | (j, l) <- zip [0 :: Int ..] (polLits y) ]
+                   , [ (sg, mapLiteralTerms (replaceAll u rhs) m)
+                     | (sg, m) <- polLits y ] ]
+           , let bodyY' = [ l | (False, l) <- ys ]
                  hdY'   = listToMaybe [ l | (True, l) <- ys ] ]
     mk σ bs mh = Clause (map (deep σ) bs) (fmap (deep σ) mh)
     deep σ = mapLiteralTerms (deepApplySubstTerm σ)
@@ -277,9 +290,19 @@ simplifyBy c u@(Clause _ (Just _)) =
   where
     u' = Clause (map (suffixVarsLit "_u") (body u)) (fmap (suffixVarsLit "_u") (hd u))
     deep σ = mapLiteralTerms (deepApplySubstTerm σ)
-simplifyBy c (Clause [l] Nothing) =
-  [ Clause (body c) Nothing
-  | Just h <- [hd c], isJust (matchLit l h) || isJust (matchLit (flipLit l) h) ]
+-- An all-negative simplifier cancels the clause's head against one of its
+-- literals and brings its remaining conditions along, instantiated (E's csr,
+-- contextual simplify-reflect).  With a single literal this is plain
+-- simplify-reflect and leaves the body unchanged; SYN590-1 needs the general
+-- form, where ~p12(f8(X1),c15) | ~p11(X1) cancels p12(f8(f9(c16)),c15) and
+-- contributes ~p11(f9(c16)).
+simplifyBy c (Clause ls Nothing) =
+  map cn
+    [ Clause (body c ++ map (applySubst σ) rest) Nothing
+    | Just h <- [hd c]
+    , (l, rest) <- picks (map (suffixVarsLit "_u") ls)
+    , l' <- [l, flipLit l]
+    , Just σ <- [matchLit l' h] ]
 simplifyBy _ _ = []
 -- One demodulation step: the equation is applied to a single redex, either at
 -- that one occurrence or at every occurrence of the same subterm.  A prover
@@ -298,10 +321,12 @@ rewriteOnce (lhs, rhs) (Clause bs mh) =
   , let r = applySubstTerm s rhs
   , ls' <- [ [ if j == i then (sg, ctx r) else (sg, m) | (j, (sg, m)) <- zip [0 :: Int ..] ls ]
            , [ (sg, mapLiteralTerms (replaceAll u r) m) | (sg, m) <- ls ] ] ]
-  where
-    replaceAll u r t | t == u = r
-    replaceAll u r (App f ts) = App f (map (replaceAll u r) ts)
-    replaceAll _ _ t          = t
+
+-- Replace every occurrence of one subterm by another.
+replaceAll :: Term -> Term -> Term -> Term
+replaceAll u r t | t == u = r
+replaceAll u r (App f ts) = App f (map (replaceAll u r) ts)
+replaceAll _ _ t          = t
 notVarTerm :: Term -> Bool
 notVarTerm (Var _) = False
 notVarTerm _       = True

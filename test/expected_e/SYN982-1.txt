@@ -1,0 +1,110 @@
+Axiom 1: ssM(sent(a,b,pair(a,na)))
+Axiom 2: ssM(sent(X,Y,Z)) => ssIm(Z)
+Axiom 3: ssIm(pair(X,Y)) => ssIm(Y)
+Axiom 4: ssBf(na)
+Axiom 5: ssM(sent(X,b,pair(X,Y))) /\ ssBf(Y) => ssM(sent(b,t,triple(b,nb(Y),encr(triple(X,Y,tb(Y)),bt))))
+Axiom 6: ssIm(triple(X,Y,Z)) => ssIm(Z)
+Axiom 7: ssIm(triple(X,Y,Z)) => ssIm(Y)
+Axiom 8: ssP(a)
+Axiom 9: ssIm(X) /\ ssP(Y) => ssIk(key(X,Y))
+Axiom 10: ssIm(X) /\ ssIk(key(Y,Z)) /\ ssP(Z) => ssIm(encr(X,Y))
+Axiom 11: ssIm(X) /\ ssIm(Y) => ssIm(pair(X,Y))
+Axiom 12: ssP(b)
+Axiom 13: ssIm(X) /\ ssP(Y) /\ ssP(Z) => ssM(sent(Y,Z,X))
+Axiom 14: ssM(sent(X,b,pair(X,Y))) /\ ssBf(Y) => ssSb(pair(X,Y))
+Axiom 15: ssM(sent(X,b,pair(encr(triple(X,Y,tb(Z)),bt),encr(nb(Z),Y)))) /\ ssSb(pair(X,Z)) => ssBk(key(Y,X))
+
+Lemma 16: ssIm(triple(b,nb(na),encr(triple(a,na,tb(na)),bt)))
+Proof:
+  have ssM(sent(a,b,pair(a,na)))
+    by axiom 1
+   and ssBf(na)
+    by axiom 4
+  hence ssM(sent(b,t,triple(b,nb(na),encr(triple(a,na,tb(na)),bt))))
+    by axiom 5
+  hence ssIm(triple(b,nb(na),encr(triple(a,na,tb(na)),bt)))
+    by axiom 2
+
+Lemma 17: ssIm(na)
+Proof:
+  have ssM(sent(a,b,pair(a,na)))
+    by axiom 1
+  hence ssIm(pair(a,na))
+    by axiom 2
+  hence ssIm(na)
+    by axiom 3
+
+Lemma 18: ssIm(encr(triple(a,na,tb(na)),bt))
+Proof:
+  have ssIm(triple(b,nb(na),encr(triple(a,na,tb(na)),bt)))
+    by lemma 16
+  hence ssIm(encr(triple(a,na,tb(na)),bt))
+    by axiom 6
+
+Lemma 19: ssIk(key(na,a))
+Proof:
+  have ssIm(na)
+    by lemma 17
+   and ssP(a)
+    by axiom 8
+  hence ssIk(key(na,a))
+    by axiom 9
+
+Lemma 20: ssIm(encr(nb(na),na))
+Proof:
+  have ssIm(triple(b,nb(na),encr(triple(a,na,tb(na)),bt)))
+    by lemma 16
+  hence ssIm(nb(na))
+    by axiom 7
+   and ssIk(key(na,a))
+    by lemma 19
+   and ssP(a)
+    by axiom 8
+  hence ssIm(encr(nb(na),na))
+    by axiom 10
+
+Lemma 21: ssSb(pair(a,na))
+Proof:
+  have ssM(sent(a,b,pair(a,na)))
+    by axiom 1
+   and ssBf(na)
+    by axiom 4
+  hence ssSb(pair(a,na))
+    by axiom 14
+
+Goal 1: ssIk(key(na,b))
+Proof:
+  have ssIm(na)
+    by lemma 17
+   and ssP(b)
+    by axiom 12
+  hence ssIk(key(na,b))
+    by axiom 9
+
+Goal 2: ssIk(key(na,b))
+Proof:
+  have ssIm(na)
+    by lemma 17
+   and ssP(b)
+    by axiom 12
+  hence ssIk(key(na,b))
+    by axiom 9
+
+Goal 3: ssBk(key(na,a))
+Proof:
+  have ssIm(encr(triple(a,na,tb(na)),bt))
+    by lemma 18
+   and ssIm(encr(nb(na),na))
+    by lemma 20
+  hence ssIm(pair(encr(triple(a,na,tb(na)),bt),encr(nb(na),na)))
+    by axiom 11
+   and ssP(a)
+    by axiom 8
+   and ssP(b)
+    by axiom 12
+  hence ssM(sent(a,b,pair(encr(triple(a,na,tb(na)),bt),encr(nb(na),na))))
+    by axiom 13
+   and ssSb(pair(a,na))
+    by lemma 21
+  hence ssBk(key(na,a))
+    by axiom 15

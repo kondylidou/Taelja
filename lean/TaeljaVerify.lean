@@ -136,4 +136,18 @@ import TaeljaVerify.E.Lcl1261
 import TaeljaVerify.Vampire.Rng0381
 import TaeljaVerify.Vampire.Rng0391
 
+import TaeljaVerify.E.Swv8181
+import TaeljaVerify.E.Swv8191
+import TaeljaVerify.Twee.Swv8181
+import TaeljaVerify.Twee.Swv8191
+import TaeljaVerify.Vampire.Swv8181
+import TaeljaVerify.E.Hen0091
+import TaeljaVerify.E.Hen0101
+import TaeljaVerify.E.Lat2632
+import TaeljaVerify.E.Mgt0061
+import TaeljaVerify.E.Mgt0101
+import TaeljaVerify.E.Mgt0011
+import TaeljaVerify.E.Mgt0322
+import TaeljaVerify.E.Syn5901
+import TaeljaVerify.E.Syn9821
 -- Eval benchmark imports

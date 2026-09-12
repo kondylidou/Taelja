@@ -1,0 +1,784 @@
+Axiom 1: quotient(identity,idQ_idQa,idQ__idQ_idQa)
+Axiom 2: quotient(identity,a,idQa)
+Axiom 3: less_equal(zero,X)
+Axiom 4: less_equal(X,Y) => quotient(X,Y,zero)
+Axiom 5: quotient(X,Y,divide(X,Y))
+Axiom 6: less_equal(X,identity)
+Axiom 7: quotient(X,Y,Z) /\ quotient(Y,A,B) /\ quotient(X,A,C) /\ quotient(C,B,U) /\ quotient(Z,A,V) => less_equal(U,V)
+Axiom 8: quotient(X,Y,zero) => less_equal(X,Y)
+Axiom 9: less_equal(X,Y) /\ less_equal(Y,X) => X = Y
+Axiom 10: quotient(X,Y,Z) => less_equal(Z,X)
+Axiom 11: quotient(identity,idQa,idQ_idQa)
+Axiom 12: quotient(X,Y,Z) /\ quotient(X,Y,A) => Z = A
+
+Lemma 13: quotient(X,identity,zero)
+Proof:
+  have less_equal(X,identity)
+    by axiom 6
+  hence quotient(X,identity,zero)
+    by axiom 4
+
+Lemma 14: quotient(zero,a,zero)
+Proof:
+  have less_equal(zero,a)
+    by axiom 3
+  hence quotient(zero,a,zero)
+    by axiom 4
+
+Lemma 15: divide(divide(X,a),idQa) = zero
+Proof:
+  have quotient(X,identity,zero)
+    by lemma 13
+   and quotient(identity,a,idQa)
+    by axiom 2
+   and quotient(X,a,divide(X,a))
+    by axiom 5
+   and quotient(divide(X,a),idQa,divide(divide(X,a),idQa))
+    by axiom 5
+   and quotient(zero,a,zero)
+    by lemma 14
+  hence less_equal(divide(divide(X,a),idQa),zero)
+    by axiom 7
+   and less_equal(zero,divide(divide(X,a),idQa))
+    by axiom 3
+  hence divide(divide(X,a),idQa) = zero
+    by axiom 9
+
+Lemma 16: quotient(divide(X,a),idQa,zero)
+Proof:
+  quotient(divide(X,a),idQa,zero)
+= { by lemma 15 R->L }
+  quotient(divide(X,a),idQa,divide(divide(X,a),idQa))
+= { by axiom 5 }
+  true
+
+Lemma 17: quotient(divide(divide(X,zero),Y),divide(X,zero),zero)
+Proof:
+  have quotient(divide(X,zero),Y,divide(divide(X,zero),Y))
+    by axiom 5
+  hence less_equal(divide(divide(X,zero),Y),divide(X,zero))
+    by axiom 10
+  hence quotient(divide(divide(X,zero),Y),divide(X,zero),zero)
+    by axiom 4
+
+Lemma 18: quotient(zero,divide(X,zero),zero)
+Proof:
+  have less_equal(zero,divide(X,zero))
+    by axiom 3
+  hence quotient(zero,divide(X,zero),zero)
+    by axiom 4
+
+Lemma 19: divide(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero) = zero
+Proof:
+  have quotient(divide(divide(X,zero),Y),Z,divide(divide(divide(X,zero),Y),Z))
+    by axiom 5
+  hence less_equal(divide(divide(divide(X,zero),Y),Z),divide(divide(X,zero),Y))
+    by axiom 10
+  hence quotient(divide(divide(divide(X,zero),Y),Z),divide(divide(X,zero),Y),zero)
+    by axiom 4
+   and quotient(divide(divide(X,zero),Y),divide(X,zero),zero)
+    by lemma 17
+   and quotient(divide(divide(divide(X,zero),Y),Z),divide(X,zero),divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)))
+    by axiom 5
+   and quotient(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero,divide(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero))
+    by axiom 5
+   and quotient(zero,divide(X,zero),zero)
+    by lemma 18
+  hence less_equal(divide(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero),zero)
+    by axiom 7
+   and less_equal(zero,divide(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero))
+    by axiom 3
+  hence divide(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero) = zero
+    by axiom 9
+
+Lemma 20: quotient(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero,zero)
+Proof:
+  quotient(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero,zero)
+= { by lemma 19 R->L }
+  quotient(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero,divide(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero))
+= { by axiom 5 }
+  true
+
+Lemma 21: divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)) = zero
+Proof:
+  have quotient(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero,zero)
+    by lemma 20
+  hence less_equal(divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)),zero)
+    by axiom 8
+   and less_equal(zero,divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)))
+    by axiom 3
+  hence divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)) = zero
+    by axiom 9
+
+Lemma 22: quotient(divide(divide(divide(X,zero),Y),Z),divide(X,zero),zero)
+Proof:
+  quotient(divide(divide(divide(X,zero),Y),Z),divide(X,zero),zero)
+= { by lemma 21 R->L }
+  quotient(divide(divide(divide(X,zero),Y),Z),divide(X,zero),divide(divide(divide(divide(X,zero),Y),Z),divide(X,zero)))
+= { by axiom 5 }
+  true
+
+Lemma 23: quotient(divide(divide(X,zero),divide(divide(divide(X,zero),Y),Z)),divide(X,zero),zero)
+Proof:
+  have quotient(divide(X,zero),divide(divide(divide(X,zero),Y),Z),divide(divide(X,zero),divide(divide(divide(X,zero),Y),Z)))
+    by axiom 5
+  hence less_equal(divide(divide(X,zero),divide(divide(divide(X,zero),Y),Z)),divide(X,zero))
+    by axiom 10
+  hence quotient(divide(divide(X,zero),divide(divide(divide(X,zero),Y),Z)),divide(X,zero),zero)
+    by axiom 4
+
+Lemma 24: divide(divide(divide(X,zero),divide(X,zero)),zero) = zero
+Proof:
+  have quotient(divide(X,zero),divide(divide(divide(X,zero),Y),Z),divide(divide(X,zero),divide(divide(divide(X,zero),Y),Z)))
+    by axiom 5
+   and quotient(divide(divide(divide(X,zero),Y),Z),divide(X,zero),zero)
+    by lemma 22
+   and quotient(divide(X,zero),divide(X,zero),divide(divide(X,zero),divide(X,zero)))
+    by axiom 5
+   and quotient(divide(divide(X,zero),divide(X,zero)),zero,divide(divide(divide(X,zero),divide(X,zero)),zero))
+    by axiom 5
+   and quotient(divide(divide(X,zero),divide(divide(divide(X,zero),Y),Z)),divide(X,zero),zero)
+    by lemma 23
+  hence less_equal(divide(divide(divide(X,zero),divide(X,zero)),zero),zero)
+    by axiom 7
+   and less_equal(zero,divide(divide(divide(X,zero),divide(X,zero)),zero))
+    by axiom 3
+  hence divide(divide(divide(X,zero),divide(X,zero)),zero) = zero
+    by axiom 9
+
+Lemma 25: quotient(divide(divide(X,zero),divide(X,zero)),zero,zero)
+Proof:
+  quotient(divide(divide(X,zero),divide(X,zero)),zero,zero)
+= { by lemma 24 R->L }
+  quotient(divide(divide(X,zero),divide(X,zero)),zero,divide(divide(divide(X,zero),divide(X,zero)),zero))
+= { by axiom 5 }
+  true
+
+Lemma 26: divide(divide(X,zero),divide(X,zero)) = zero
+Proof:
+  have quotient(divide(divide(X,zero),divide(X,zero)),zero,zero)
+    by lemma 25
+  hence less_equal(divide(divide(X,zero),divide(X,zero)),zero)
+    by axiom 8
+   and less_equal(zero,divide(divide(X,zero),divide(X,zero)))
+    by axiom 3
+  hence divide(divide(X,zero),divide(X,zero)) = zero
+    by axiom 9
+
+Lemma 27: divide(divide(X,divide(X,zero)),zero) = zero
+Proof:
+  have quotient(X,zero,divide(X,zero))
+    by axiom 5
+   and quotient(zero,divide(X,zero),zero)
+    by lemma 18
+   and quotient(X,divide(X,zero),divide(X,divide(X,zero)))
+    by axiom 5
+   and quotient(divide(X,divide(X,zero)),zero,divide(divide(X,divide(X,zero)),zero))
+    by axiom 5
+   and quotient(divide(X,zero),divide(X,zero),divide(divide(X,zero),divide(X,zero)))
+    by axiom 5
+  hence less_equal(divide(divide(X,divide(X,zero)),zero),divide(divide(X,zero),divide(X,zero)))
+    by axiom 7
+  hence less_equal(divide(divide(X,divide(X,zero)),zero),zero)
+    by rw lemma 26
+   and less_equal(zero,divide(divide(X,divide(X,zero)),zero))
+    by axiom 3
+  hence divide(divide(X,divide(X,zero)),zero) = zero
+    by axiom 9
+
+Lemma 28: quotient(divide(X,divide(X,zero)),zero,zero)
+Proof:
+  quotient(divide(X,divide(X,zero)),zero,zero)
+= { by lemma 27 R->L }
+  quotient(divide(X,divide(X,zero)),zero,divide(divide(X,divide(X,zero)),zero))
+= { by axiom 5 }
+  true
+
+Lemma 29: divide(X,divide(X,zero)) = zero
+Proof:
+  have quotient(divide(X,divide(X,zero)),zero,zero)
+    by lemma 28
+  hence less_equal(divide(X,divide(X,zero)),zero)
+    by axiom 8
+   and less_equal(zero,divide(X,divide(X,zero)))
+    by axiom 3
+  hence divide(X,divide(X,zero)) = zero
+    by axiom 9
+
+Lemma 30: quotient(X,divide(X,zero),zero)
+Proof:
+  quotient(X,divide(X,zero),zero)
+= { by lemma 29 R->L }
+  quotient(X,divide(X,zero),divide(X,divide(X,zero)))
+= { by axiom 5 }
+  true
+
+Lemma 31: less_equal(divide(X,zero),X)
+Proof:
+  have quotient(X,zero,divide(X,zero))
+    by axiom 5
+  hence less_equal(divide(X,zero),X)
+    by axiom 10
+
+Lemma 32: divide(X,zero) = X
+Proof:
+  have quotient(X,divide(X,zero),zero)
+    by lemma 30
+  hence less_equal(X,divide(X,zero))
+    by axiom 8
+   and less_equal(divide(X,zero),X)
+    by lemma 31
+  hence divide(X,zero) = X
+    by axiom 9
+
+Lemma 33: quotient(X,identity,zero)
+Proof:
+  have less_equal(X,identity)
+    by axiom 6
+  hence quotient(X,identity,zero)
+    by axiom 4
+
+Lemma 34: quotient(zero,idQa,zero)
+Proof:
+  have less_equal(zero,idQa)
+    by axiom 3
+  hence quotient(zero,idQa,zero)
+    by axiom 4
+
+Lemma 35: divide(divide(X,idQa),idQ_idQa) = zero
+Proof:
+  have quotient(X,identity,zero)
+    by lemma 33
+   and quotient(identity,idQa,idQ_idQa)
+    by axiom 11
+   and quotient(X,idQa,divide(X,idQa))
+    by axiom 5
+   and quotient(divide(X,idQa),idQ_idQa,divide(divide(X,idQa),idQ_idQa))
+    by axiom 5
+   and quotient(zero,idQa,zero)
+    by lemma 34
+  hence less_equal(divide(divide(X,idQa),idQ_idQa),zero)
+    by axiom 7
+   and less_equal(zero,divide(divide(X,idQa),idQ_idQa))
+    by axiom 3
+  hence divide(divide(X,idQa),idQ_idQa) = zero
+    by axiom 9
+
+Lemma 36: quotient(divide(X,idQa),idQ_idQa,zero)
+Proof:
+  quotient(divide(X,idQa),idQ_idQa,zero)
+= { by lemma 35 R->L }
+  quotient(divide(X,idQa),idQ_idQa,divide(divide(X,idQa),idQ_idQa))
+= { by axiom 5 }
+  true
+
+Lemma 37: quotient(zero,X,zero)
+Proof:
+  have less_equal(zero,X)
+    by axiom 3
+  hence quotient(zero,X,zero)
+    by axiom 4
+
+Lemma 38: quotient(X,identity,zero)
+Proof:
+  have less_equal(X,identity)
+    by axiom 6
+  hence quotient(X,identity,zero)
+    by axiom 4
+
+Lemma 39: quotient(zero,a,zero)
+Proof:
+  have less_equal(zero,a)
+    by axiom 3
+  hence quotient(zero,a,zero)
+    by axiom 4
+
+Lemma 40: divide(divide(X,a),idQa) = zero
+Proof:
+  have quotient(X,identity,zero)
+    by lemma 38
+   and quotient(identity,a,idQa)
+    by axiom 2
+   and quotient(X,a,divide(X,a))
+    by axiom 5
+   and quotient(divide(X,a),idQa,divide(divide(X,a),idQa))
+    by axiom 5
+   and quotient(zero,a,zero)
+    by lemma 39
+  hence less_equal(divide(divide(X,a),idQa),zero)
+    by axiom 7
+   and less_equal(zero,divide(divide(X,a),idQa))
+    by axiom 3
+  hence divide(divide(X,a),idQa) = zero
+    by axiom 9
+
+Lemma 41: quotient(divide(X,Y),X,zero)
+Proof:
+  have quotient(X,Y,divide(X,Y))
+    by axiom 5
+  hence less_equal(divide(X,Y),X)
+    by axiom 10
+  hence quotient(divide(X,Y),X,zero)
+    by axiom 4
+
+Lemma 42: quotient(divide(X,Y),X,zero)
+Proof:
+  have quotient(X,Y,divide(X,Y))
+    by axiom 5
+  hence less_equal(divide(X,Y),X)
+    by axiom 10
+  hence quotient(divide(X,Y),X,zero)
+    by axiom 4
+
+Lemma 43: quotient(zero,X,zero)
+Proof:
+  have less_equal(zero,X)
+    by axiom 3
+  hence quotient(zero,X,zero)
+    by axiom 4
+
+Lemma 44: divide(divide(divide(divide(X,Y),Z),X),zero) = zero
+Proof:
+  have quotient(divide(X,Y),Z,divide(divide(X,Y),Z))
+    by axiom 5
+  hence less_equal(divide(divide(X,Y),Z),divide(X,Y))
+    by axiom 10
+  hence quotient(divide(divide(X,Y),Z),divide(X,Y),zero)
+    by axiom 4
+   and quotient(divide(X,Y),X,zero)
+    by lemma 42
+   and quotient(divide(divide(X,Y),Z),X,divide(divide(divide(X,Y),Z),X))
+    by axiom 5
+   and quotient(divide(divide(divide(X,Y),Z),X),zero,divide(divide(divide(divide(X,Y),Z),X),zero))
+    by axiom 5
+   and quotient(zero,X,zero)
+    by lemma 43
+  hence less_equal(divide(divide(divide(divide(X,Y),Z),X),zero),zero)
+    by axiom 7
+   and less_equal(zero,divide(divide(divide(divide(X,Y),Z),X),zero))
+    by axiom 3
+  hence divide(divide(divide(divide(X,Y),Z),X),zero) = zero
+    by axiom 9
+
+Lemma 45: quotient(divide(divide(divide(X,Y),Z),X),zero,zero)
+Proof:
+  quotient(divide(divide(divide(X,Y),Z),X),zero,zero)
+= { by lemma 44 R->L }
+  quotient(divide(divide(divide(X,Y),Z),X),zero,divide(divide(divide(divide(X,Y),Z),X),zero))
+= { by axiom 5 }
+  true
+
+Lemma 46: divide(divide(divide(X,Y),Z),X) = zero
+Proof:
+  have quotient(divide(divide(divide(X,Y),Z),X),zero,zero)
+    by lemma 45
+  hence less_equal(divide(divide(divide(X,Y),Z),X),zero)
+    by axiom 8
+   and less_equal(zero,divide(divide(divide(X,Y),Z),X))
+    by axiom 3
+  hence divide(divide(divide(X,Y),Z),X) = zero
+    by axiom 9
+
+Lemma 47: quotient(divide(divide(X,Y),Z),X,zero)
+Proof:
+  quotient(divide(divide(X,Y),Z),X,zero)
+= { by lemma 46 R->L }
+  quotient(divide(divide(X,Y),Z),X,divide(divide(divide(X,Y),Z),X))
+= { by axiom 5 }
+  true
+
+Lemma 48: quotient(divide(X,divide(divide(X,Y),Z)),X,zero)
+Proof:
+  have quotient(X,divide(divide(X,Y),Z),divide(X,divide(divide(X,Y),Z)))
+    by axiom 5
+  hence less_equal(divide(X,divide(divide(X,Y),Z)),X)
+    by axiom 10
+  hence quotient(divide(X,divide(divide(X,Y),Z)),X,zero)
+    by axiom 4
+
+Lemma 49: divide(divide(X,X),zero) = zero
+Proof:
+  have quotient(X,divide(divide(X,Y),Z),divide(X,divide(divide(X,Y),Z)))
+    by axiom 5
+   and quotient(divide(divide(X,Y),Z),X,zero)
+    by lemma 47
+   and quotient(X,X,divide(X,X))
+    by axiom 5
+   and quotient(divide(X,X),zero,divide(divide(X,X),zero))
+    by axiom 5
+   and quotient(divide(X,divide(divide(X,Y),Z)),X,zero)
+    by lemma 48
+  hence less_equal(divide(divide(X,X),zero),zero)
+    by axiom 7
+   and less_equal(zero,divide(divide(X,X),zero))
+    by axiom 3
+  hence divide(divide(X,X),zero) = zero
+    by axiom 9
+
+Lemma 50: quotient(divide(X,X),zero,zero)
+Proof:
+  quotient(divide(X,X),zero,zero)
+= { by lemma 49 R->L }
+  quotient(divide(X,X),zero,divide(divide(X,X),zero))
+= { by axiom 5 }
+  true
+
+Lemma 51: divide(X,X) = zero
+Proof:
+  have quotient(divide(X,X),zero,zero)
+    by lemma 50
+  hence less_equal(divide(X,X),zero)
+    by axiom 8
+   and less_equal(zero,divide(X,X))
+    by axiom 3
+  hence divide(X,X) = zero
+    by axiom 9
+
+Lemma 52: quotient(X,X,zero)
+Proof:
+  quotient(X,X,zero)
+= { by lemma 51 R->L }
+  quotient(X,X,divide(X,X))
+= { by axiom 5 }
+  true
+
+Lemma 53: less_equal(divide(X,Y),X)
+Proof:
+  have quotient(X,Y,divide(X,Y))
+    by axiom 5
+  hence less_equal(divide(X,Y),X)
+    by axiom 10
+
+Lemma 54: less_equal(divide(idQ_idQa,divide(a,idQa)),zero)
+Proof:
+  have quotient(identity,a,divide(identity,a))
+    by axiom 5
+   and quotient(a,idQa,divide(a,idQa))
+    by axiom 5
+   and quotient(identity,idQa,idQ_idQa)
+    by axiom 11
+   and quotient(idQ_idQa,divide(a,idQa),divide(idQ_idQa,divide(a,idQa)))
+    by axiom 5
+   and quotient(divide(identity,a),idQa,divide(divide(identity,a),idQa))
+    by axiom 5
+  hence less_equal(divide(idQ_idQa,divide(a,idQa)),divide(divide(identity,a),idQa))
+    by axiom 7
+  hence less_equal(divide(idQ_idQa,divide(a,idQa)),zero)
+    by rw lemma 40
+
+Lemma 55: zero = divide(idQ_idQa,divide(a,idQa))
+Proof:
+  have quotient(zero,divide(idQ_idQa,divide(a,idQa)),zero)
+    by lemma 37
+  hence less_equal(zero,divide(idQ_idQa,divide(a,idQa)))
+    by axiom 8
+   and less_equal(divide(idQ_idQa,divide(a,idQa)),zero)
+    by lemma 54
+  hence zero = divide(idQ_idQa,divide(a,idQa))
+    by axiom 9
+
+Lemma 56: quotient(idQ_idQa,divide(a,idQa),zero)
+Proof:
+  quotient(idQ_idQa,divide(a,idQa),zero)
+= { by lemma 55 }
+  quotient(idQ_idQa,divide(a,idQa),divide(idQ_idQa,divide(a,idQa)))
+= { by axiom 5 }
+  true
+
+Lemma 57: less_equal(idQ_idQa,divide(a,idQa))
+Proof:
+  have quotient(idQ_idQa,divide(a,idQa),zero)
+    by lemma 56
+  hence less_equal(idQ_idQa,divide(a,idQa))
+    by axiom 8
+
+Lemma 58: divide(divide(a,idQa),a) = zero
+Proof:
+  have quotient(divide(a,idQa),a,divide(divide(a,idQa),a))
+    by axiom 5
+   and quotient(divide(a,idQa),a,zero)
+    by lemma 41
+  hence divide(divide(a,idQa),a) = zero
+    by axiom 12
+
+Lemma 59: divide(a,idQa) = idQ_idQa
+Proof:
+  have quotient(divide(a,idQa),idQ_idQa,zero)
+    by lemma 36
+  hence less_equal(divide(a,idQa),idQ_idQa)
+    by axiom 8
+   and less_equal(idQ_idQa,divide(a,idQa))
+    by lemma 57
+  hence divide(a,idQa) = idQ_idQa
+    by axiom 9
+
+Lemma 60: quotient(divide(idQ__idQ_idQa,a),divide(idQa,divide(idQ_idQa,a)),zero)
+Proof:
+  quotient(divide(idQ__idQ_idQa,a),divide(idQa,divide(idQ_idQa,a)),zero)
+= { by lemma 40 R->L }
+  quotient(divide(idQ__idQ_idQa,a),divide(idQa,divide(idQ_idQa,a)),divide(divide(idQ__idQ_idQa,a),idQa))
+= { by lemma 32 R->L }
+  quotient(divide(idQ__idQ_idQa,a),divide(idQa,divide(idQ_idQa,a)),divide(divide(idQ__idQ_idQa,a),divide(idQa,zero)))
+= { by lemma 58 R->L }
+  quotient(divide(idQ__idQ_idQa,a),divide(idQa,divide(idQ_idQa,a)),divide(divide(idQ__idQ_idQa,a),divide(idQa,divide(divide(a,idQa),a))))
+= { by lemma 59 }
+  quotient(divide(idQ__idQ_idQa,a),divide(idQa,divide(idQ_idQa,a)),divide(divide(idQ__idQ_idQa,a),divide(idQa,divide(idQ_idQa,a))))
+= { by axiom 5 }
+  true
+
+Lemma 61: less_equal(divide(idQa,divide(idQ_idQa,a)),divide(idQ__idQ_idQa,a))
+Proof:
+  have quotient(identity,idQ_idQa,idQ__idQ_idQa)
+    by axiom 1
+   and quotient(idQ_idQa,a,divide(idQ_idQa,a))
+    by axiom 5
+   and quotient(identity,a,idQa)
+    by axiom 2
+   and quotient(idQa,divide(idQ_idQa,a),divide(idQa,divide(idQ_idQa,a)))
+    by axiom 5
+   and quotient(idQ__idQ_idQa,a,divide(idQ__idQ_idQa,a))
+    by axiom 5
+  hence less_equal(divide(idQa,divide(idQ_idQa,a)),divide(idQ__idQ_idQa,a))
+    by axiom 7
+
+Lemma 62: divide(idQ__idQ_idQa,a) = divide(idQa,divide(idQ_idQa,a))
+Proof:
+  have quotient(divide(idQ__idQ_idQa,a),divide(idQa,divide(idQ_idQa,a)),zero)
+    by lemma 60
+  hence less_equal(divide(idQ__idQ_idQa,a),divide(idQa,divide(idQ_idQa,a)))
+    by axiom 8
+   and less_equal(divide(idQa,divide(idQ_idQa,a)),divide(idQ__idQ_idQa,a))
+    by lemma 61
+  hence divide(idQ__idQ_idQa,a) = divide(idQa,divide(idQ_idQa,a))
+    by axiom 9
+
+Lemma 63: quotient(identity,a,divide(idQ__idQ_idQa,a))
+Proof:
+  quotient(identity,a,divide(idQ__idQ_idQa,a))
+= { by lemma 62 }
+  quotient(identity,a,divide(idQa,divide(idQ_idQa,a)))
+= { by lemma 59 R->L }
+  quotient(identity,a,divide(idQa,divide(divide(a,idQa),a)))
+= { by lemma 58 }
+  quotient(identity,a,divide(idQa,zero))
+= { by lemma 32 }
+  quotient(identity,a,idQa)
+= { by axiom 2 }
+  true
+
+Lemma 64: less_equal(idQa,divide(divide(idQ__idQ_idQa,a),a))
+Proof:
+  have quotient(identity,a,divide(idQ__idQ_idQa,a))
+    by lemma 63
+   and quotient(a,a,zero)
+    by lemma 52
+   and quotient(identity,a,idQa)
+    by axiom 2
+   and quotient(idQa,zero,divide(idQa,zero))
+    by axiom 5
+   and quotient(divide(idQ__idQ_idQa,a),a,divide(divide(idQ__idQ_idQa,a),a))
+    by axiom 5
+  hence less_equal(divide(idQa,zero),divide(divide(idQ__idQ_idQa,a),a))
+    by axiom 7
+  hence less_equal(idQa,divide(divide(idQ__idQ_idQa,a),a))
+    by rw lemma 32
+
+Lemma 65: divide(divide(idQ__idQ_idQa,a),a) = idQa
+Proof:
+  have quotient(divide(divide(idQ__idQ_idQa,a),a),idQa,zero)
+    by lemma 16
+  hence less_equal(divide(divide(idQ__idQ_idQa,a),a),idQa)
+    by axiom 8
+   and less_equal(idQa,divide(divide(idQ__idQ_idQa,a),a))
+    by lemma 64
+  hence divide(divide(idQ__idQ_idQa,a),a) = idQa
+    by axiom 9
+
+Lemma 66: quotient(idQa,divide(idQ__idQ_idQa,a),zero)
+Proof:
+  quotient(idQa,divide(idQ__idQ_idQa,a),zero)
+= { by lemma 65 R->L }
+  quotient(divide(divide(idQ__idQ_idQa,a),a),divide(idQ__idQ_idQa,a),zero)
+= { by lemma 41 }
+  true
+
+Lemma 67: less_equal(idQ__idQ_idQa,divide(idQ__idQ_idQa,idQ_idQa))
+Proof:
+  have quotient(identity,idQ_idQa,idQ__idQ_idQa)
+    by axiom 1
+   and quotient(idQ_idQa,idQ_idQa,zero)
+    by lemma 52
+   and quotient(identity,idQ_idQa,idQ__idQ_idQa)
+    by axiom 1
+   and quotient(idQ__idQ_idQa,zero,divide(idQ__idQ_idQa,zero))
+    by axiom 5
+   and quotient(idQ__idQ_idQa,idQ_idQa,divide(idQ__idQ_idQa,idQ_idQa))
+    by axiom 5
+  hence less_equal(divide(idQ__idQ_idQa,zero),divide(idQ__idQ_idQa,idQ_idQa))
+    by axiom 7
+  hence less_equal(idQ__idQ_idQa,divide(idQ__idQ_idQa,idQ_idQa))
+    by rw lemma 32
+
+Lemma 68: divide(idQ__idQ_idQa,idQ_idQa) = idQ__idQ_idQa
+Proof:
+  have less_equal(divide(idQ__idQ_idQa,idQ_idQa),idQ__idQ_idQa)
+    by lemma 53
+   and less_equal(idQ__idQ_idQa,divide(idQ__idQ_idQa,idQ_idQa))
+    by lemma 67
+  hence divide(idQ__idQ_idQa,idQ_idQa) = idQ__idQ_idQa
+    by axiom 9
+
+Lemma 69: quotient(idQ__idQ_idQa,idQ_idQa,idQ__idQ_idQa)
+Proof:
+  quotient(idQ__idQ_idQa,idQ_idQa,idQ__idQ_idQa)
+= { by lemma 68 R->L }
+  quotient(idQ__idQ_idQa,idQ_idQa,divide(idQ__idQ_idQa,idQ_idQa))
+= { by axiom 5 }
+  true
+
+Lemma 70: less_equal(divide(idQ__idQ_idQa,divide(idQa,idQ_idQa)),zero)
+Proof:
+  have quotient(idQ__idQ_idQa,idQa,divide(idQ__idQ_idQa,idQa))
+    by axiom 5
+   and quotient(idQa,idQ_idQa,divide(idQa,idQ_idQa))
+    by axiom 5
+   and quotient(idQ__idQ_idQa,idQ_idQa,idQ__idQ_idQa)
+    by lemma 69
+   and quotient(idQ__idQ_idQa,divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,divide(idQa,idQ_idQa)))
+    by axiom 5
+   and quotient(divide(idQ__idQ_idQa,idQa),idQ_idQa,zero)
+    by lemma 36
+  hence less_equal(divide(idQ__idQ_idQa,divide(idQa,idQ_idQa)),zero)
+    by axiom 7
+
+Lemma 71: zero = divide(idQ__idQ_idQa,divide(idQa,idQ_idQa))
+Proof:
+  have quotient(zero,divide(idQ__idQ_idQa,divide(idQa,idQ_idQa)),zero)
+    by lemma 37
+  hence less_equal(zero,divide(idQ__idQ_idQa,divide(idQa,idQ_idQa)))
+    by axiom 8
+   and less_equal(divide(idQ__idQ_idQa,divide(idQa,idQ_idQa)),zero)
+    by lemma 70
+  hence zero = divide(idQ__idQ_idQa,divide(idQa,idQ_idQa))
+    by axiom 9
+
+Lemma 72: quotient(idQ__idQ_idQa,divide(idQa,idQ_idQa),zero)
+Proof:
+  quotient(idQ__idQ_idQa,divide(idQa,idQ_idQa),zero)
+= { by lemma 71 }
+  quotient(idQ__idQ_idQa,divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,divide(idQa,idQ_idQa)))
+= { by axiom 5 }
+  true
+
+Lemma 73: less_equal(divide(divide(idQa,idQ_idQa),idQ__idQ_idQa),zero)
+Proof:
+  have less_equal(idQa,identity)
+    by axiom 6
+  hence quotient(idQa,identity,zero)
+    by axiom 4
+   and quotient(identity,idQ_idQa,idQ__idQ_idQa)
+    by axiom 1
+   and quotient(idQa,idQ_idQa,divide(idQa,idQ_idQa))
+    by axiom 5
+   and quotient(divide(idQa,idQ_idQa),idQ__idQ_idQa,divide(divide(idQa,idQ_idQa),idQ__idQ_idQa))
+    by axiom 5
+   and quotient(zero,idQ_idQa,zero)
+    by lemma 37
+  hence less_equal(divide(divide(idQa,idQ_idQa),idQ__idQ_idQa),zero)
+    by axiom 7
+
+Lemma 74: zero = divide(divide(idQa,idQ_idQa),idQ__idQ_idQa)
+Proof:
+  have quotient(zero,divide(divide(idQa,idQ_idQa),idQ__idQ_idQa),zero)
+    by lemma 37
+  hence less_equal(zero,divide(divide(idQa,idQ_idQa),idQ__idQ_idQa))
+    by axiom 8
+   and less_equal(divide(divide(idQa,idQ_idQa),idQ__idQ_idQa),zero)
+    by lemma 73
+  hence zero = divide(divide(idQa,idQ_idQa),idQ__idQ_idQa)
+    by axiom 9
+
+Lemma 75: quotient(divide(idQa,idQ_idQa),idQ__idQ_idQa,zero)
+Proof:
+  quotient(divide(idQa,idQ_idQa),idQ__idQ_idQa,zero)
+= { by lemma 74 }
+  quotient(divide(idQa,idQ_idQa),idQ__idQ_idQa,divide(divide(idQa,idQ_idQa),idQ__idQ_idQa))
+= { by axiom 5 }
+  true
+
+Lemma 76: less_equal(divide(idQa,idQ_idQa),idQ__idQ_idQa)
+Proof:
+  have quotient(divide(idQa,idQ_idQa),idQ__idQ_idQa,zero)
+    by lemma 75
+  hence less_equal(divide(idQa,idQ_idQa),idQ__idQ_idQa)
+    by axiom 8
+
+Lemma 77: less_equal(divide(divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)),zero),zero)
+Proof:
+  have quotient(divide(idQa,idQ_idQa),idQa,zero)
+    by lemma 41
+   and quotient(idQa,divide(idQ__idQ_idQa,a),zero)
+    by lemma 66
+   and quotient(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a),divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)))
+    by axiom 5
+   and quotient(divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)),zero,divide(divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)),zero))
+    by axiom 5
+   and quotient(zero,divide(idQ__idQ_idQa,a),zero)
+    by lemma 37
+  hence less_equal(divide(divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)),zero),zero)
+    by axiom 7
+
+Lemma 78: zero = divide(divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)),zero)
+Proof:
+  have quotient(zero,divide(divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)),zero),zero)
+    by lemma 37
+  hence less_equal(zero,divide(divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)),zero))
+    by axiom 8
+   and less_equal(divide(divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)),zero),zero)
+    by lemma 77
+  hence zero = divide(divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)),zero)
+    by axiom 9
+
+Lemma 79: idQ__idQ_idQa = divide(idQa,idQ_idQa)
+Proof:
+  have quotient(idQ__idQ_idQa,divide(idQa,idQ_idQa),zero)
+    by lemma 72
+  hence less_equal(idQ__idQ_idQa,divide(idQa,idQ_idQa))
+    by axiom 8
+   and less_equal(divide(idQa,idQ_idQa),idQ__idQ_idQa)
+    by lemma 76
+  hence idQ__idQ_idQa = divide(idQa,idQ_idQa)
+    by axiom 9
+
+Lemma 80: quotient(idQ__idQ_idQa,divide(idQ__idQ_idQa,a),zero)
+Proof:
+  quotient(idQ__idQ_idQa,divide(idQ__idQ_idQa,a),zero)
+= { by lemma 78 }
+  quotient(idQ__idQ_idQa,divide(idQ__idQ_idQa,a),divide(divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)),zero))
+= { by lemma 32 }
+  quotient(idQ__idQ_idQa,divide(idQ__idQ_idQa,a),divide(divide(idQa,idQ_idQa),divide(idQ__idQ_idQa,a)))
+= { by lemma 79 R->L }
+  quotient(idQ__idQ_idQa,divide(idQ__idQ_idQa,a),divide(idQ__idQ_idQa,divide(idQ__idQ_idQa,a)))
+= { by axiom 5 }
+  true
+
+Lemma 81: idQ__idQ_idQa = divide(idQ__idQ_idQa,a)
+Proof:
+  have quotient(idQ__idQ_idQa,divide(idQ__idQ_idQa,a),zero)
+    by lemma 80
+  hence less_equal(idQ__idQ_idQa,divide(idQ__idQ_idQa,a))
+    by axiom 8
+   and less_equal(divide(idQ__idQ_idQa,a),idQ__idQ_idQa)
+    by lemma 53
+  hence idQ__idQ_idQa = divide(idQ__idQ_idQa,a)
+    by axiom 9
+
+Goal 1: idQa = idQ__idQ_idQa
+Proof:
+  idQa
+= { by lemma 65 R->L }
+  divide(divide(idQ__idQ_idQa,a),a)
+= { by lemma 81 R->L }
+  divide(idQ__idQ_idQa,a)
+= { by lemma 81 R->L }
+  idQ__idQ_idQa

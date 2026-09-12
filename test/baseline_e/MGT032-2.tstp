@@ -1,0 +1,80 @@
+# Preprocessing class: FSMSSMSSSSSNFFN.
+# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+# No SInE strategy applied
+# Search class: FHHNF-FFSF21-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_12, negated_conjecture, (environment(sk2))).
+#
+#cnf(i_0_13, negated_conjecture, (stable(sk2))).
+#
+#cnf(i_0_16, negated_conjecture, (~in_environment(sk2,X1)|~selection_favors(efficient_producers,first_movers,sk3(X1)))).
+#
+#cnf(i_0_14, negated_conjecture, (subpopulations(first_movers,efficient_producers,sk2,sk3(X1))|~in_environment(sk2,X1))).
+#
+#cnf(i_0_15, negated_conjecture, (greater_or_equal(sk3(X1),X1)|~in_environment(sk2,X1))).
+#
+#cnf(i_0_10, hypothesis, (in_environment(X1,sk1(X1))|~stable(X1)|~environment(X1))).
+#
+#cnf(i_0_11, hypothesis, (greater(growth_rate(efficient_producers,X2),growth_rate(first_movers,X2))|~greater_or_equal(X2,sk1(X1))|~stable(X1)|~subpopulations(first_movers,efficient_producers,X1,X2)|~environment(X1))).
+#
+#cnf(i_0_9, plain, (selection_favors(X3,X2,X4)|~greater(growth_rate(X3,X4),growth_rate(X2,X4))|~subpopulations(X2,X3,X1,X4)|~environment(X1))).
+# Presaturation interreduction done
+#
+#cnf(i_0_12, negated_conjecture, (environment(sk2))).
+#
+#cnf(i_0_13, negated_conjecture, (stable(sk2))).
+#
+#cnf(i_0_16, negated_conjecture, (~in_environment(sk2,X1)|~selection_favors(efficient_producers,first_movers,sk3(X1)))).
+#
+#cnf(i_0_15, negated_conjecture, (greater_or_equal(sk3(X1),X1)|~in_environment(sk2,X1))).
+#
+#cnf(i_0_14, negated_conjecture, (subpopulations(first_movers,efficient_producers,sk2,sk3(X1))|~in_environment(sk2,X1))).
+#
+#cnf(i_0_10, hypothesis, (in_environment(X1,sk1(X1))|~stable(X1)|~environment(X1))).
+#
+#cnf(i_0_11, hypothesis, (greater(growth_rate(efficient_producers,X1),growth_rate(first_movers,X1))|~greater_or_equal(X1,sk1(X2))|~stable(X2)|~subpopulations(first_movers,efficient_producers,X2,X1)|~environment(X2))).
+#
+#cnf(i_0_9, plain, (selection_favors(X1,X2,X3)|~greater(growth_rate(X1,X3),growth_rate(X2,X3))|~subpopulations(X2,X1,X4,X3)|~environment(X4))).
+#
+#cnf(i_0_17, negated_conjecture, (greater(growth_rate(efficient_producers,sk3(sk1(X1))),growth_rate(first_movers,sk3(sk1(X1))))|~in_environment(sk2,sk1(X1))|~stable(X1)|~subpopulations(first_movers,efficient_producers,X1,sk3(sk1(X1)))|~environment(X1))).
+#
+#cnf(i_0_18, negated_conjecture, (~in_environment(sk2,sk1(X1))|~stable(X1)|~subpopulations(first_movers,efficient_producers,X2,sk3(sk1(X1)))|~subpopulations(first_movers,efficient_producers,X1,sk3(sk1(X1)))|~environment(X2)|~environment(X1))).
+#
+#cnf(i_0_19, negated_conjecture, (~in_environment(sk2,sk1(X1))|~stable(X1)|~subpopulations(first_movers,efficient_producers,X1,sk3(sk1(X1)))|~environment(X1))).
+#
+#cnf(i_0_20, negated_conjecture, (~in_environment(sk2,sk1(sk2)))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(l1_3, hypothesis, (greater(growth_rate(efficient_producers,X2),growth_rate(first_movers,X2))|~environment(X1)|~stable(X1)|~subpopulations(first_movers,efficient_producers,X1,X2)|~greater_or_equal(X2,sk1(X1))), file('Problems/MGT/MGT032-2.p', l1_3)).
+cnf(prove_t1_7, negated_conjecture, (greater_or_equal(sk3(X1),X1)|~in_environment(sk2,X1)), file('Problems/MGT/MGT032-2.p', prove_t1_7)).
+cnf(mp1_high_growth_rates_1, axiom, (selection_favors(X3,X2,X4)|~environment(X1)|~subpopulations(X2,X3,X1,X4)|~greater(growth_rate(X3,X4),growth_rate(X2,X4))), file('Problems/MGT/MGT032-2.p', mp1_high_growth_rates_1)).
+cnf(prove_t1_8, negated_conjecture, (~in_environment(sk2,X1)|~selection_favors(efficient_producers,first_movers,sk3(X1))), file('Problems/MGT/MGT032-2.p', prove_t1_8)).
+cnf(prove_t1_6, negated_conjecture, (subpopulations(first_movers,efficient_producers,sk2,sk3(X1))|~in_environment(sk2,X1)), file('Problems/MGT/MGT032-2.p', prove_t1_6)).
+cnf(prove_t1_4, negated_conjecture, (environment(sk2)), file('Problems/MGT/MGT032-2.p', prove_t1_4)).
+cnf(prove_t1_5, negated_conjecture, (stable(sk2)), file('Problems/MGT/MGT032-2.p', prove_t1_5)).
+cnf(l1_2, hypothesis, (in_environment(X1,sk1(X1))|~environment(X1)|~stable(X1)), file('Problems/MGT/MGT032-2.p', l1_2)).
+cnf(c_0_8, hypothesis, (greater(growth_rate(efficient_producers,X2),growth_rate(first_movers,X2))|~environment(X1)|~stable(X1)|~subpopulations(first_movers,efficient_producers,X1,X2)|~greater_or_equal(X2,sk1(X1))), inference(fof_simplification,[status(thm)],[l1_3])).
+cnf(c_0_9, negated_conjecture, (greater_or_equal(sk3(X1),X1)|~in_environment(sk2,X1)), inference(fof_simplification,[status(thm)],[prove_t1_7])).
+cnf(c_0_10, plain, (selection_favors(X3,X2,X4)|~environment(X1)|~subpopulations(X2,X3,X1,X4)|~greater(growth_rate(X3,X4),growth_rate(X2,X4))), inference(fof_simplification,[status(thm)],[mp1_high_growth_rates_1])).
+cnf(c_0_11, hypothesis, (greater(growth_rate(efficient_producers,X2),growth_rate(first_movers,X2))|~environment(X1)|~stable(X1)|~subpopulations(first_movers,efficient_producers,X1,X2)|~greater_or_equal(X2,sk1(X1))), c_0_8).
+cnf(c_0_12, negated_conjecture, (greater_or_equal(sk3(X1),X1)|~in_environment(sk2,X1)), c_0_9).
+cnf(c_0_13, negated_conjecture, (~in_environment(sk2,X1)|~selection_favors(efficient_producers,first_movers,sk3(X1))), inference(fof_simplification,[status(thm)],[prove_t1_8])).
+cnf(c_0_14, plain, (selection_favors(X3,X2,X4)|~environment(X1)|~subpopulations(X2,X3,X1,X4)|~greater(growth_rate(X3,X4),growth_rate(X2,X4))), c_0_10).
+cnf(c_0_15, negated_conjecture, (greater(growth_rate(efficient_producers,sk3(sk1(X1))),growth_rate(first_movers,sk3(sk1(X1))))|~in_environment(sk2,sk1(X1))|~stable(X1)|~subpopulations(first_movers,efficient_producers,X1,sk3(sk1(X1)))|~environment(X1)), inference(spm,[status(thm)],[c_0_11, c_0_12])).
+cnf(c_0_16, negated_conjecture, (~in_environment(sk2,X1)|~selection_favors(efficient_producers,first_movers,sk3(X1))), c_0_13).
+cnf(c_0_17, negated_conjecture, (subpopulations(first_movers,efficient_producers,sk2,sk3(X1))|~in_environment(sk2,X1)), inference(fof_simplification,[status(thm)],[prove_t1_6])).
+cnf(c_0_18, negated_conjecture, (~in_environment(sk2,sk1(X1))|~stable(X1)|~subpopulations(first_movers,efficient_producers,X2,sk3(sk1(X1)))|~subpopulations(first_movers,efficient_producers,X1,sk3(sk1(X1)))|~environment(X2)|~environment(X1)), inference(csr,[status(thm)],[inference(spm,[status(thm)],[c_0_14, c_0_15]), c_0_16])).
+cnf(c_0_19, negated_conjecture, (subpopulations(first_movers,efficient_producers,sk2,sk3(X1))|~in_environment(sk2,X1)), c_0_17).
+cnf(c_0_20, negated_conjecture, (environment(sk2)), prove_t1_4).
+cnf(c_0_21, negated_conjecture, (~in_environment(sk2,sk1(X1))|~stable(X1)|~subpopulations(first_movers,efficient_producers,X1,sk3(sk1(X1)))|~environment(X1)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_18, c_0_19]), c_0_20])])).
+cnf(c_0_22, negated_conjecture, (stable(sk2)), prove_t1_5).
+cnf(c_0_23, hypothesis, (in_environment(X1,sk1(X1))|~environment(X1)|~stable(X1)), inference(fof_simplification,[status(thm)],[l1_2])).
+cnf(c_0_24, negated_conjecture, (~in_environment(sk2,sk1(sk2))), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_21, c_0_19]), c_0_22]), c_0_20])])).
+cnf(c_0_25, hypothesis, (in_environment(X1,sk1(X1))|~environment(X1)|~stable(X1)), c_0_23).
+cnf(c_0_26, hypothesis, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_24, c_0_25]), c_0_22]), c_0_20])]), ['proof']).
+# SZS output end CNFRefutation

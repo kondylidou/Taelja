@@ -243,8 +243,17 @@ sanitizeId nm =
 -- unrelated equations to Twee, which inflates its critical-pair search.
 relevantUnits :: Literal -> [UnitEntry] -> [UnitEntry]
 relevantUnits goal units =
-    filter (any (`elem` finalSyms) . litSyms . ueUnit) units
+    filter keep units
   where
+    -- An equation with a bare variable on one side rewrites every term, so it
+    -- bears on any goal even when it shares no symbol with one.  Judging it by
+    -- shared symbols alone drops it: SWV818-1 proves v_s = v_t from X = v_ta,
+    -- whose only symbol is v_ta.
+    keep u = universal (ueUnit u)
+             || any (`elem` finalSyms) (litSyms (ueUnit u))
+    universal (Eq (Var _) _) = True
+    universal (Eq _ (Var _)) = True
+    universal _              = False
     litSyms (Eq l r)    = nub (termSyms l ++ termSyms r)
     litSyms (Rel n as)  = n : concatMap termSyms as
     litSyms _           = []

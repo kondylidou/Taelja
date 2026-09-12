@@ -62,6 +62,10 @@ tweeBenchmarkNames =
   -- has to instantiate all of them: read independently, borders(X0,X1) took
   -- the value african(X1) rules out
   , "PUZ011-1"
+  -- an equation with a bare variable on one side rewrites any term, so it
+  -- is relevant to every goal even when it shares no symbol with one
+  , "SWV818-1"
+  , "SWV819-1"
   ]
 
 handcraftedNames :: [String]
@@ -132,6 +136,7 @@ benchmarkNames =
   , "RNG039-1"
   , "PUZ011-1"        -- goal literals instantiated under one shared substitution
   , "NLP258-1"
+  , "SWV818-1"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -191,6 +196,23 @@ eBenchmarkNames =
   , "LCL126-1"        -- goal cited from an axiom whose head is an instance of it, not a variant
   , "PUZ011-1"        -- goal literals instantiated under one shared substitution
   , "GRP192-1"
+  , "SWV818-1"
+  , "SWV819-1"
+  -- superposition with an equation that the prover used as a demodulator,
+  -- replacing every occurrence of the redex rather than just one
+  , "HEN009-1"
+  , "HEN010-1"
+  , "LAT263-2"
+  -- a Horn premise brings its own body literals along; when one is already
+  -- present the duplicates must be condensed before the unit removes it
+  , "MGT006-1"
+  , "MGT010-1"
+  -- contextual simplify-reflect with an all-negative clause of several
+  -- literals: it cancels the head and brings its other conditions along
+  , "MGT001-1"
+  , "MGT032-2"
+  , "SYN590-1"
+  , "SYN982-1"
   ]
 
 mkTest :: String -> String -> String -> TestTree

@@ -1,0 +1,52 @@
+Axiom 1: p11(c16)
+Axiom 2: p11(X) => p11(f9(X))
+Axiom 3: p11(X) => p3(f4(X),f6(f8(X)))
+Axiom 4: p11(X) => p10(f4(f9(X)),f4(X))
+Axiom 5: p3(f4(c16),f6(c15))
+Axiom 6: p3(Y,X) /\ p3(Z,A) /\ p10(Y,Z) => p10(X,A)
+Axiom 7: p10(f6(X),f6(A)) => p12(X,A)
+
+Lemma 8: p3(f4(f9(c16)),f6(f8(f9(c16))))
+Proof:
+  have p11(c16)
+    by axiom 1
+  hence p11(f9(c16))
+    by axiom 2
+  hence p3(f4(f9(c16)),f6(f8(f9(c16))))
+    by axiom 3
+
+Lemma 9: p10(f4(f9(c16)),f4(c16))
+Proof:
+  have p11(c16)
+    by axiom 1
+  hence p10(f4(f9(c16)),f4(c16))
+    by axiom 4
+
+Goal 1: p11(f9(c16))
+Proof:
+  have p11(c16)
+    by axiom 1
+  hence p11(f9(c16))
+    by axiom 2
+
+Goal 2: p12(f8(f9(c16)),c15)
+Proof:
+  have p3(f4(f9(c16)),f6(f8(f9(c16))))
+    by lemma 8
+   and p3(f4(c16),f6(c15))
+    by axiom 5
+   and p10(f4(f9(c16)),f4(c16))
+    by lemma 9
+  hence p10(f6(f8(f9(c16))),f6(c15))
+    by axiom 6
+  hence p12(f8(f9(c16)),c15)
+    by axiom 7
+
+Goal 3: p3(f4(f9(c16)),f6(f8(f9(c16))))
+Proof:
+  have p11(c16)
+    by axiom 1
+  hence p11(f9(c16))
+    by axiom 2
+  hence p3(f4(f9(c16)),f6(f8(f9(c16))))
+    by axiom 3

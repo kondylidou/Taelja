@@ -1,0 +1,11 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, v_ta!=v_t, file('TPTP/Problems/SWV/SWV819-1.p', cls_conjecture_2)).
+cnf(c2, negated_conjecture, V_s=v_ta, file('TPTP/Problems/SWV/SWV819-1.p', cls_conjecture_1)).
+cnf(c3, plain, X=X2, inference(rewriting, [status(thm)], [c2, c2])).
+cnf(c4, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c3])).
+cnf(c5, negated_conjecture, v_s!=v_t, file('TPTP/Problems/SWV/SWV819-1.p', cls_conjecture_0)).
+cnf(c6, plain, $false, inference(proved_conjecture, [status(thm)], [c5, c3])).
+% SZS output end CNFRefutation
+

@@ -1,0 +1,161 @@
+# Preprocessing class: FSMSSMSSSSSNFFN.
+# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+# No SInE strategy applied
+# Search class: FHHNF-FFSM22-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_20, negated_conjecture, (organization(sk2,sk7))).
+#
+#cnf(i_0_21, negated_conjecture, (organization(sk2,sk8))).
+#
+#cnf(i_0_27, negated_conjecture, (greater(sk8,sk7))).
+#
+#cnf(i_0_28, negated_conjecture, (~greater(sk4,sk3)|~greater(sk6,sk5))).
+#
+#cnf(i_0_23, negated_conjecture, (reliability(sk2,sk3,sk7))).
+#
+#cnf(i_0_24, negated_conjecture, (reliability(sk2,sk4,sk8))).
+#
+#cnf(i_0_25, negated_conjecture, (accountability(sk2,sk5,sk7))).
+#
+#cnf(i_0_26, negated_conjecture, (accountability(sk2,sk6,sk8))).
+#
+#cnf(i_0_22, negated_conjecture, (reorganization_free(sk2,sk7,sk8))).
+#
+#cnf(i_0_15, plain, (reproducibility(X1,sk1(X2,X1),X2)|~organization(X1,X2))).
+#
+#cnf(i_0_19, hypothesis, (greater(X5,X4)|~reorganization_free(X1,X2,X3)|~greater(X3,X2)|~reproducibility(X1,X5,X3)|~reproducibility(X1,X4,X2)|~organization(X1,X3)|~organization(X1,X2))).
+#
+#cnf(i_0_17, hypothesis, (greater(X8,X7)|~greater(X10,X9)|~accountability(X3,X8,X4)|~accountability(X1,X7,X2)|~reliability(X3,X6,X4)|~reliability(X1,X5,X2)|~reproducibility(X3,X10,X4)|~reproducibility(X1,X9,X2)|~organization(X3,X4)|~organization(X1,X2))).
+#
+#cnf(i_0_16, hypothesis, (greater(X6,X5)|~greater(X10,X9)|~accountability(X3,X8,X4)|~accountability(X1,X7,X2)|~reliability(X3,X6,X4)|~reliability(X1,X5,X2)|~reproducibility(X3,X10,X4)|~reproducibility(X1,X9,X2)|~organization(X3,X4)|~organization(X1,X2))).
+#
+#cnf(i_0_18, hypothesis, (greater(X10,X9)|~greater(X8,X7)|~greater(X6,X5)|~accountability(X3,X8,X4)|~accountability(X1,X7,X2)|~reliability(X3,X6,X4)|~reliability(X1,X5,X2)|~reproducibility(X3,X10,X4)|~reproducibility(X1,X9,X2)|~organization(X3,X4)|~organization(X1,X2))).
+# Presaturation interreduction done
+#
+#cnf(i_0_20, negated_conjecture, (organization(sk2,sk7))).
+#
+#cnf(i_0_21, negated_conjecture, (organization(sk2,sk8))).
+#
+#cnf(i_0_27, negated_conjecture, (greater(sk8,sk7))).
+#
+#cnf(i_0_23, negated_conjecture, (reliability(sk2,sk3,sk7))).
+#
+#cnf(i_0_28, negated_conjecture, (~greater(sk4,sk3)|~greater(sk6,sk5))).
+#
+#cnf(i_0_24, negated_conjecture, (reliability(sk2,sk4,sk8))).
+#
+#cnf(i_0_25, negated_conjecture, (accountability(sk2,sk5,sk7))).
+#
+#cnf(i_0_26, negated_conjecture, (accountability(sk2,sk6,sk8))).
+#
+#cnf(i_0_22, negated_conjecture, (reorganization_free(sk2,sk7,sk8))).
+#
+#cnf(i_0_15, plain, (reproducibility(X1,sk1(X2,X1),X2)|~organization(X1,X2))).
+#
+#cnf(i_0_19, hypothesis, (greater(X1,X2)|~reorganization_free(X3,X4,X5)|~greater(X5,X4)|~reproducibility(X3,X1,X5)|~reproducibility(X3,X2,X4)|~organization(X3,X5)|~organization(X3,X4))).
+#
+#cnf(i_0_29, negated_conjecture, (greater(X1,X2)|~reproducibility(sk2,X1,sk8)|~reproducibility(sk2,X2,sk7))).
+#
+#cnf(i_0_30, negated_conjecture, (greater(sk1(sk8,sk2),X1)|~reproducibility(sk2,X1,sk7))).
+#
+#cnf(i_0_17, hypothesis, (greater(X1,X2)|~greater(X3,X4)|~accountability(X5,X1,X6)|~accountability(X7,X2,X8)|~reliability(X5,X9,X6)|~reliability(X7,X10,X8)|~reproducibility(X5,X3,X6)|~reproducibility(X7,X4,X8)|~organization(X5,X6)|~organization(X7,X8))).
+#
+#cnf(i_0_31, negated_conjecture, (greater(sk6,X1)|~greater(X2,X3)|~accountability(X4,X1,X5)|~reliability(sk2,X6,sk8)|~reliability(X4,X7,X5)|~reproducibility(sk2,X2,sk8)|~reproducibility(X4,X3,X5)|~organization(X4,X5))).
+#
+#cnf(i_0_16, hypothesis, (greater(X1,X2)|~greater(X3,X4)|~accountability(X5,X6,X7)|~accountability(X8,X9,X10)|~reliability(X5,X1,X7)|~reliability(X8,X2,X10)|~reproducibility(X5,X3,X7)|~reproducibility(X8,X4,X10)|~organization(X5,X7)|~organization(X8,X10))).
+#
+#cnf(i_0_18, hypothesis, (greater(X1,X2)|~greater(X3,X4)|~greater(X5,X6)|~accountability(X7,X3,X8)|~accountability(X9,X4,X10)|~reliability(X7,X5,X8)|~reliability(X9,X6,X10)|~reproducibility(X7,X1,X8)|~reproducibility(X9,X2,X10)|~organization(X7,X8)|~organization(X9,X10))).
+#
+#cnf(i_0_33, negated_conjecture, (greater(sk6,X1)|~greater(X2,X3)|~accountability(X4,X1,X5)|~reliability(X4,X6,X5)|~reproducibility(sk2,X2,sk8)|~reproducibility(X4,X3,X5)|~organization(X4,X5))).
+#
+#cnf(i_0_38, negated_conjecture, (greater(sk6,X1)|~greater(sk1(sk8,sk2),X2)|~accountability(X3,X1,X4)|~reliability(X3,X5,X4)|~reproducibility(X3,X2,X4)|~organization(X3,X4))).
+#
+#cnf(i_0_39, negated_conjecture, (greater(sk6,X1)|~accountability(X3,X1,X4)|~reliability(X3,X5,X4)|~reproducibility(sk2,X2,sk7)|~reproducibility(X3,X2,X4)|~organization(X3,X4))).
+#
+#cnf(i_0_40, negated_conjecture, (greater(sk6,X1)|~accountability(X2,X1,X3)|~reliability(X2,X4,X3)|~reproducibility(X2,sk1(sk7,sk2),X3)|~organization(X2,X3))).
+#
+#cnf(i_0_41, negated_conjecture, (greater(sk6,X1)|~accountability(sk2,X1,sk7)|~reliability(sk2,X2,sk7))).
+#
+#cnf(i_0_42, negated_conjecture, (greater(sk6,sk5)|~reliability(sk2,X1,sk7))).
+#
+#cnf(i_0_43, negated_conjecture, (greater(sk6,sk5))).
+#
+#cnf(i_0_28, negated_conjecture, (~greater(sk4,sk3))).
+#
+#cnf(i_0_32, negated_conjecture, (greater(sk5,X1)|~greater(X2,X3)|~accountability(X4,X1,X5)|~reliability(sk2,X6,sk7)|~reliability(X4,X7,X5)|~reproducibility(sk2,X2,sk7)|~reproducibility(X4,X3,X5)|~organization(X4,X5))).
+#
+#cnf(i_0_44, negated_conjecture, (greater(sk5,X1)|~greater(X2,X3)|~accountability(X4,X1,X5)|~reliability(X4,X6,X5)|~reproducibility(sk2,X2,sk7)|~reproducibility(X4,X3,X5)|~organization(X4,X5))).
+#
+#cnf(i_0_45, negated_conjecture, (greater(sk5,X1)|~greater(sk1(sk7,sk2),X2)|~accountability(X3,X1,X4)|~reliability(X3,X5,X4)|~reproducibility(X3,X2,X4)|~organization(X3,X4))).
+#
+#cnf(i_0_34, negated_conjecture, (greater(X1,X2)|~greater(X3,X4)|~accountability(X5,X6,X7)|~reliability(sk2,X1,sk8)|~reliability(X5,X2,X7)|~reproducibility(sk2,X3,sk8)|~reproducibility(X5,X4,X7)|~organization(X5,X7))).
+#
+#cnf(i_0_46, negated_conjecture, (greater(sk4,X1)|~greater(X2,X3)|~accountability(X4,X5,X6)|~reliability(X4,X1,X6)|~reproducibility(sk2,X2,sk8)|~reproducibility(X4,X3,X6)|~organization(X4,X6))).
+#
+#cnf(i_0_47, negated_conjecture, (greater(sk4,X1)|~greater(sk1(sk8,sk2),X2)|~accountability(X3,X4,X5)|~reliability(X3,X1,X5)|~reproducibility(X3,X2,X5)|~organization(X3,X5))).
+#
+#cnf(i_0_48, negated_conjecture, (greater(sk4,X1)|~accountability(X3,X4,X5)|~reliability(X3,X1,X5)|~reproducibility(sk2,X2,sk7)|~reproducibility(X3,X2,X5)|~organization(X3,X5))).
+#
+#cnf(i_0_49, negated_conjecture, (greater(sk4,X1)|~accountability(X2,X3,X4)|~reliability(X2,X1,X4)|~reproducibility(X2,sk1(sk7,sk2),X4)|~organization(X2,X4))).
+#
+#cnf(i_0_50, negated_conjecture, (greater(sk4,X1)|~accountability(sk2,X2,sk7)|~reliability(sk2,X1,sk7))).
+#
+#cnf(i_0_51, negated_conjecture, (greater(sk4,X1)|~reliability(sk2,X1,sk7))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(a2_FOL_3, hypothesis, (greater(X8,X7)|~organization(X1,X2)|~organization(X3,X4)|~reliability(X1,X5,X2)|~reliability(X3,X6,X4)|~accountability(X1,X7,X2)|~accountability(X3,X8,X4)|~reproducibility(X1,X9,X2)|~reproducibility(X3,X10,X4)|~greater(X10,X9)), file('Problems/MGT/MGT006-1.p', a2_FOL_3)).
+cnf(t6_FOL_12, negated_conjecture, (accountability(sk2,sk6,sk8)), file('Problems/MGT/MGT006-1.p', t6_FOL_12)).
+cnf(t6_FOL_7, negated_conjecture, (organization(sk2,sk8)), file('Problems/MGT/MGT006-1.p', t6_FOL_7)).
+cnf(a4_FOL_5, hypothesis, (greater(X5,X4)|~organization(X1,X2)|~organization(X1,X3)|~reorganization_free(X1,X2,X3)|~reproducibility(X1,X4,X2)|~reproducibility(X1,X5,X3)|~greater(X3,X2)), file('Problems/MGT/MGT006-1.p', a4_FOL_5)).
+cnf(a2_FOL_2, hypothesis, (greater(X6,X5)|~organization(X1,X2)|~organization(X3,X4)|~reliability(X1,X5,X2)|~reliability(X3,X6,X4)|~accountability(X1,X7,X2)|~accountability(X3,X8,X4)|~reproducibility(X1,X9,X2)|~reproducibility(X3,X10,X4)|~greater(X10,X9)), file('Problems/MGT/MGT006-1.p', a2_FOL_2)).
+cnf(t6_FOL_10, negated_conjecture, (reliability(sk2,sk4,sk8)), file('Problems/MGT/MGT006-1.p', t6_FOL_10)).
+cnf(mp3_1, axiom, (reproducibility(X1,sk1(X2,X1),X2)|~organization(X1,X2)), file('Problems/MGT/MGT006-1.p', mp3_1)).
+cnf(t6_FOL_8, negated_conjecture, (reorganization_free(sk2,sk7,sk8)), file('Problems/MGT/MGT006-1.p', t6_FOL_8)).
+cnf(t6_FOL_13, negated_conjecture, (greater(sk8,sk7)), file('Problems/MGT/MGT006-1.p', t6_FOL_13)).
+cnf(t6_FOL_6, negated_conjecture, (organization(sk2,sk7)), file('Problems/MGT/MGT006-1.p', t6_FOL_6)).
+cnf(t6_FOL_11, negated_conjecture, (accountability(sk2,sk5,sk7)), file('Problems/MGT/MGT006-1.p', t6_FOL_11)).
+cnf(t6_FOL_14, negated_conjecture, (~greater(sk4,sk3)|~greater(sk6,sk5)), file('Problems/MGT/MGT006-1.p', t6_FOL_14)).
+cnf(t6_FOL_9, negated_conjecture, (reliability(sk2,sk3,sk7)), file('Problems/MGT/MGT006-1.p', t6_FOL_9)).
+cnf(c_0_13, hypothesis, (greater(X8,X7)|~organization(X1,X2)|~organization(X3,X4)|~reliability(X1,X5,X2)|~reliability(X3,X6,X4)|~accountability(X1,X7,X2)|~accountability(X3,X8,X4)|~reproducibility(X1,X9,X2)|~reproducibility(X3,X10,X4)|~greater(X10,X9)), inference(fof_simplification,[status(thm)],[a2_FOL_3])).
+cnf(c_0_14, hypothesis, (greater(X8,X7)|~organization(X1,X2)|~organization(X3,X4)|~reliability(X1,X5,X2)|~reliability(X3,X6,X4)|~accountability(X1,X7,X2)|~accountability(X3,X8,X4)|~reproducibility(X1,X9,X2)|~reproducibility(X3,X10,X4)|~greater(X10,X9)), c_0_13).
+cnf(c_0_15, negated_conjecture, (accountability(sk2,sk6,sk8)), t6_FOL_12).
+cnf(c_0_16, negated_conjecture, (organization(sk2,sk8)), t6_FOL_7).
+cnf(c_0_17, hypothesis, (greater(X5,X4)|~organization(X1,X2)|~organization(X1,X3)|~reorganization_free(X1,X2,X3)|~reproducibility(X1,X4,X2)|~reproducibility(X1,X5,X3)|~greater(X3,X2)), inference(fof_simplification,[status(thm)],[a4_FOL_5])).
+cnf(c_0_18, hypothesis, (greater(X6,X5)|~organization(X1,X2)|~organization(X3,X4)|~reliability(X1,X5,X2)|~reliability(X3,X6,X4)|~accountability(X1,X7,X2)|~accountability(X3,X8,X4)|~reproducibility(X1,X9,X2)|~reproducibility(X3,X10,X4)|~greater(X10,X9)), inference(fof_simplification,[status(thm)],[a2_FOL_2])).
+cnf(c_0_19, negated_conjecture, (greater(sk6,X1)|~greater(X2,X3)|~accountability(X4,X1,X5)|~reliability(sk2,X6,sk8)|~reliability(X4,X7,X5)|~reproducibility(sk2,X2,sk8)|~reproducibility(X4,X3,X5)|~organization(X4,X5)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_14, c_0_15]), c_0_16])])).
+cnf(c_0_20, negated_conjecture, (reliability(sk2,sk4,sk8)), t6_FOL_10).
+cnf(c_0_21, plain, (reproducibility(X1,sk1(X2,X1),X2)|~organization(X1,X2)), inference(fof_simplification,[status(thm)],[mp3_1])).
+cnf(c_0_22, hypothesis, (greater(X5,X4)|~organization(X1,X2)|~organization(X1,X3)|~reorganization_free(X1,X2,X3)|~reproducibility(X1,X4,X2)|~reproducibility(X1,X5,X3)|~greater(X3,X2)), c_0_17).
+cnf(c_0_23, negated_conjecture, (reorganization_free(sk2,sk7,sk8)), t6_FOL_8).
+cnf(c_0_24, negated_conjecture, (greater(sk8,sk7)), t6_FOL_13).
+cnf(c_0_25, negated_conjecture, (organization(sk2,sk7)), t6_FOL_6).
+cnf(c_0_26, hypothesis, (greater(X6,X5)|~organization(X1,X2)|~organization(X3,X4)|~reliability(X1,X5,X2)|~reliability(X3,X6,X4)|~accountability(X1,X7,X2)|~accountability(X3,X8,X4)|~reproducibility(X1,X9,X2)|~reproducibility(X3,X10,X4)|~greater(X10,X9)), c_0_18).
+cnf(c_0_27, negated_conjecture, (greater(sk6,X1)|~greater(X2,X3)|~accountability(X4,X1,X5)|~reliability(X4,X6,X5)|~reproducibility(sk2,X2,sk8)|~reproducibility(X4,X3,X5)|~organization(X4,X5)), inference(spm,[status(thm)],[c_0_19, c_0_20])).
+cnf(c_0_28, plain, (reproducibility(X1,sk1(X2,X1),X2)|~organization(X1,X2)), c_0_21).
+cnf(c_0_29, negated_conjecture, (greater(X1,X2)|~reproducibility(sk2,X1,sk8)|~reproducibility(sk2,X2,sk7)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_22, c_0_23]), c_0_24]), c_0_16]), c_0_25])])).
+cnf(c_0_30, negated_conjecture, (greater(X1,X2)|~greater(X3,X4)|~accountability(X5,X6,X7)|~reliability(sk2,X1,sk8)|~reliability(X5,X2,X7)|~reproducibility(sk2,X3,sk8)|~reproducibility(X5,X4,X7)|~organization(X5,X7)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_26, c_0_15]), c_0_16])])).
+cnf(c_0_31, negated_conjecture, (greater(sk6,X1)|~greater(sk1(sk8,sk2),X2)|~accountability(X3,X1,X4)|~reliability(X3,X5,X4)|~reproducibility(X3,X2,X4)|~organization(X3,X4)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_27, c_0_28]), c_0_16])])).
+cnf(c_0_32, negated_conjecture, (greater(sk1(sk8,sk2),X1)|~reproducibility(sk2,X1,sk7)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_29, c_0_28]), c_0_16])])).
+cnf(c_0_33, negated_conjecture, (greater(sk4,X1)|~greater(X2,X3)|~accountability(X4,X5,X6)|~reliability(X4,X1,X6)|~reproducibility(sk2,X2,sk8)|~reproducibility(X4,X3,X6)|~organization(X4,X6)), inference(spm,[status(thm)],[c_0_30, c_0_20])).
+cnf(c_0_34, negated_conjecture, (greater(sk6,X1)|~accountability(X2,X1,X3)|~reliability(X2,X4,X3)|~reproducibility(sk2,X5,sk7)|~reproducibility(X2,X5,X3)|~organization(X2,X3)), inference(spm,[status(thm)],[c_0_31, c_0_32])).
+cnf(c_0_35, negated_conjecture, (greater(sk4,X1)|~greater(sk1(sk8,sk2),X2)|~accountability(X3,X4,X5)|~reliability(X3,X1,X5)|~reproducibility(X3,X2,X5)|~organization(X3,X5)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_33, c_0_28]), c_0_16])])).
+cnf(c_0_36, negated_conjecture, (greater(sk6,X1)|~accountability(X2,X1,X3)|~reliability(X2,X4,X3)|~reproducibility(X2,sk1(sk7,sk2),X3)|~organization(X2,X3)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_34, c_0_28]), c_0_25])])).
+cnf(c_0_37, negated_conjecture, (greater(sk4,X1)|~accountability(X2,X3,X4)|~reliability(X2,X1,X4)|~reproducibility(sk2,X5,sk7)|~reproducibility(X2,X5,X4)|~organization(X2,X4)), inference(spm,[status(thm)],[c_0_35, c_0_32])).
+cnf(c_0_38, negated_conjecture, (greater(sk6,X1)|~accountability(sk2,X1,sk7)|~reliability(sk2,X2,sk7)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_36, c_0_28]), c_0_25])])).
+cnf(c_0_39, negated_conjecture, (accountability(sk2,sk5,sk7)), t6_FOL_11).
+cnf(c_0_40, negated_conjecture, (greater(sk4,X1)|~accountability(X2,X3,X4)|~reliability(X2,X1,X4)|~reproducibility(X2,sk1(sk7,sk2),X4)|~organization(X2,X4)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_37, c_0_28]), c_0_25])])).
+cnf(c_0_41, negated_conjecture, (~greater(sk4,sk3)|~greater(sk6,sk5)), inference(fof_simplification,[status(thm)],[t6_FOL_14])).
+cnf(c_0_42, negated_conjecture, (greater(sk6,sk5)|~reliability(sk2,X1,sk7)), inference(spm,[status(thm)],[c_0_38, c_0_39])).
+cnf(c_0_43, negated_conjecture, (reliability(sk2,sk3,sk7)), t6_FOL_9).
+cnf(c_0_44, negated_conjecture, (greater(sk4,X1)|~accountability(sk2,X2,sk7)|~reliability(sk2,X1,sk7)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_40, c_0_28]), c_0_25])])).
+cnf(c_0_45, negated_conjecture, (~greater(sk4,sk3)|~greater(sk6,sk5)), c_0_41).
+cnf(c_0_46, negated_conjecture, (greater(sk6,sk5)), inference(spm,[status(thm)],[c_0_42, c_0_43])).
+cnf(c_0_47, negated_conjecture, (greater(sk4,X1)|~reliability(sk2,X1,sk7)), inference(spm,[status(thm)],[c_0_44, c_0_39])).
+cnf(c_0_48, negated_conjecture, (~greater(sk4,sk3)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_45, c_0_46])])).
+cnf(c_0_49, negated_conjecture, ($false), inference(sr,[status(thm)],[inference(spm,[status(thm)],[c_0_47, c_0_43]), c_0_48]), ['proof']).
+# SZS output end CNFRefutation

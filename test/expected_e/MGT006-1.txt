@@ -1,0 +1,89 @@
+Axiom 1: reliability(sk2,sk3,sk7)
+Axiom 2: accountability(sk2,sk5,sk7)
+Axiom 3: organization(sk2,sk7)
+Axiom 4: organization(X,Y) => reproducibility(X,sk1(Y,X),Y)
+Axiom 5: organization(sk2,sk8)
+Axiom 6: greater(sk8,sk7)
+Axiom 7: reorganization_free(sk2,sk7,sk8)
+Axiom 8: organization(X,Y) /\ organization(X,Z) /\ reorganization_free(X,Y,Z) /\ reproducibility(X,A,Y) /\ reproducibility(X,B,Z) /\ greater(Z,Y) => greater(B,A)
+Axiom 9: reliability(sk2,sk4,sk8)
+Axiom 10: accountability(sk2,sk6,sk8)
+Axiom 11: organization(X,Y) /\ organization(Z,A) /\ reliability(X,B,Y) /\ reliability(Z,C,A) /\ accountability(X,U,Y) /\ accountability(Z,V,A) /\ reproducibility(X,W,Y) /\ reproducibility(Z,X1,A) /\ greater(X1,W) => greater(C,B)
+Axiom 12: organization(X,Y) /\ organization(Z,A) /\ reliability(X,B,Y) /\ reliability(Z,C,A) /\ accountability(X,U,Y) /\ accountability(Z,V,A) /\ reproducibility(X,W,Y) /\ reproducibility(Z,X1,A) /\ greater(X1,W) => greater(V,U)
+
+Lemma 13: reproducibility(sk2,sk1(sk7,sk2),sk7)
+Proof:
+  have organization(sk2,sk7)
+    by axiom 3
+  hence reproducibility(sk2,sk1(sk7,sk2),sk7)
+    by axiom 4
+
+Lemma 14: reproducibility(sk2,sk1(sk8,sk2),sk8)
+Proof:
+  have organization(sk2,sk8)
+    by axiom 5
+  hence reproducibility(sk2,sk1(sk8,sk2),sk8)
+    by axiom 4
+
+Lemma 15: greater(sk1(sk8,sk2),sk1(sk7,sk2))
+Proof:
+  have organization(sk2,sk7)
+    by axiom 3
+   and organization(sk2,sk8)
+    by axiom 5
+   and reorganization_free(sk2,sk7,sk8)
+    by axiom 7
+   and reproducibility(sk2,sk1(sk7,sk2),sk7)
+    by lemma 13
+   and reproducibility(sk2,sk1(sk8,sk2),sk8)
+    by lemma 14
+   and greater(sk8,sk7)
+    by axiom 6
+  hence greater(sk1(sk8,sk2),sk1(sk7,sk2))
+    by axiom 8
+
+Goal 1: greater(sk4,sk3)
+Proof:
+  have organization(sk2,sk7)
+    by axiom 3
+   and organization(sk2,sk8)
+    by axiom 5
+   and reliability(sk2,sk3,sk7)
+    by axiom 1
+   and reliability(sk2,sk4,sk8)
+    by axiom 9
+   and accountability(sk2,sk5,sk7)
+    by axiom 2
+   and accountability(sk2,sk6,sk8)
+    by axiom 10
+   and reproducibility(sk2,sk1(sk7,sk2),sk7)
+    by lemma 13
+   and reproducibility(sk2,sk1(sk8,sk2),sk8)
+    by lemma 14
+   and greater(sk1(sk8,sk2),sk1(sk7,sk2))
+    by lemma 15
+  hence greater(sk4,sk3)
+    by axiom 11
+
+Goal 2: greater(sk6,sk5)
+Proof:
+  have organization(sk2,sk7)
+    by axiom 3
+   and organization(sk2,sk8)
+    by axiom 5
+   and reliability(sk2,sk3,sk7)
+    by axiom 1
+   and reliability(sk2,sk4,sk8)
+    by axiom 9
+   and accountability(sk2,sk5,sk7)
+    by axiom 2
+   and accountability(sk2,sk6,sk8)
+    by axiom 10
+   and reproducibility(sk2,sk1(sk7,sk2),sk7)
+    by lemma 13
+   and reproducibility(sk2,sk1(sk8,sk2),sk8)
+    by lemma 14
+   and greater(sk1(sk8,sk2),sk1(sk7,sk2))
+    by lemma 15
+  hence greater(sk6,sk5)
+    by axiom 12

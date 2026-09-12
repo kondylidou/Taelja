@@ -1,0 +1,271 @@
+# Preprocessing class: FSMSSMSSSSSNFFN.
+# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+# No SInE strategy applied
+# Search class: FHHNS-FFMM32-MFFFFFNN
+# Configuration: G-E--_208_C18_F1_SE_CS_SP_PS_S5PRR_S4d
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_41, plain, (ssP(b))).
+#
+#cnf(i_0_42, plain, (ssP(a))).
+#
+#cnf(i_0_74, negated_conjecture, (~ssIk(key(X1,b))|~ssBk(key(X1,a)))).
+#
+#cnf(i_0_45, plain, (~ssNonce(kt(X1)))).
+#
+#cnf(i_0_38, plain, (ssNonce(na))).
+#
+#cnf(i_0_39, plain, (ssP(t))).
+#
+#cnf(i_0_40, plain, (ssBf(na))).
+#
+#cnf(i_0_43, plain, (ssNonce(nb(X1)))).
+#
+#cnf(i_0_44, plain, (ssNonce(tb(X1)))).
+#
+#cnf(i_0_51, plain, (ssIm(X2)|~ssIm(pair(X1,X2)))).
+#
+#cnf(i_0_52, plain, (ssIm(X1)|~ssIm(pair(X1,X2)))).
+#
+#cnf(i_0_46, plain, (ssTk(key(bt,b)))).
+#
+#cnf(i_0_47, plain, (ssTk(key(at,a)))).
+#
+#cnf(i_0_48, plain, (ssBk(key(bt,t)))).
+#
+#cnf(i_0_49, plain, (ssSa(pair(b,na)))).
+#
+#cnf(i_0_50, plain, (ssAk(key(at,t)))).
+#
+#cnf(i_0_63, plain, (ssIm(pair(X1,X2))|~ssIm(X2)|~ssIm(X1))).
+#
+#cnf(i_0_53, plain, (ssM(sent(a,b,pair(a,na))))).
+#
+#cnf(i_0_54, plain, (ssIm(X3)|~ssIm(triple(X1,X2,X3)))).
+#
+#cnf(i_0_57, plain, (ssIm(X3)|~ssM(sent(X1,X2,X3)))).
+#
+#cnf(i_0_55, plain, (ssIm(X2)|~ssIm(triple(X1,X2,X3)))).
+#
+#cnf(i_0_56, plain, (ssIm(X1)|~ssIm(triple(X1,X2,X3)))).
+#
+#cnf(i_0_62, plain, (ssIk(key(X1,X2))|~ssIm(X1)|~ssP(X2))).
+#
+#cnf(i_0_58, plain, (ssIm(X4)|~ssIm(quadr(X1,X2,X3,X4)))).
+#
+#cnf(i_0_59, plain, (ssIm(X3)|~ssIm(quadr(X1,X2,X3,X4)))).
+#
+#cnf(i_0_60, plain, (ssIm(X2)|~ssIm(quadr(X1,X2,X3,X4)))).
+#
+#cnf(i_0_61, plain, (ssIm(X1)|~ssIm(quadr(X1,X2,X3,X4)))).
+#
+#cnf(i_0_66, plain, (ssIm(encr(X1,X2))|~ssIk(key(X2,X3))|~ssIm(X1)|~ssP(X3))).
+#
+#cnf(i_0_65, plain, (ssIm(triple(X1,X2,X3))|~ssIm(X3)|~ssIm(X2)|~ssIm(X1))).
+#
+#cnf(i_0_64, plain, (ssM(sent(X2,X3,X1))|~ssIm(X1)|~ssP(X3)|~ssP(X2))).
+#
+#cnf(i_0_67, plain, (ssSb(pair(X1,X2))|~ssM(sent(X1,b,pair(X1,X2)))|~ssBf(X2))).
+#
+#cnf(i_0_68, plain, (ssIm(quadr(X1,X2,X3,X4))|~ssIm(X4)|~ssIm(X3)|~ssIm(X2)|~ssIm(X1))).
+#
+#cnf(i_0_69, plain, (ssAk(key(X3,X1))|~ssM(sent(t,a,triple(encr(quadr(X1,X2,X3,X4),at),X5,X6)))|~ssSa(pair(X1,X2)))).
+#
+#cnf(i_0_71, plain, (ssBk(key(X2,X1))|~ssSb(pair(X1,X3))|~ssM(sent(X1,b,pair(encr(triple(X1,X2,tb(X3)),bt),encr(nb(X3),X2)))))).
+#
+#cnf(i_0_72, plain, (ssM(sent(a,X1,pair(X5,encr(X6,X3))))|~ssM(sent(t,a,triple(encr(quadr(X1,X2,X3,X4),at),X5,X6)))|~ssSa(pair(X1,X2)))).
+#
+#cnf(i_0_70, plain, (ssM(sent(b,t,triple(b,nb(X2),encr(triple(X1,X2,tb(X2)),bt))))|~ssM(sent(X1,b,pair(X1,X2)))|~ssBf(X2))).
+#
+#cnf(i_0_73, plain, (ssM(sent(t,X3,triple(encr(quadr(X1,X4,kt(X4),X5),X7),encr(triple(X3,kt(X4),X5),X6),X2)))|~ssM(sent(X1,t,triple(X1,X2,encr(triple(X3,X4,X5),X6))))|~ssTk(key(X7,X3))|~ssTk(key(X6,X1))|~ssNonce(X4))).
+# Presaturation interreduction done
+#
+#cnf(i_0_41, plain, (ssP(b))).
+#
+#cnf(i_0_42, plain, (ssP(a))).
+#
+#cnf(i_0_38, plain, (ssNonce(na))).
+#
+#cnf(i_0_45, plain, (~ssNonce(kt(X1)))).
+#
+#cnf(i_0_39, plain, (ssP(t))).
+#
+#cnf(i_0_40, plain, (ssBf(na))).
+#
+#cnf(i_0_43, plain, (ssNonce(nb(X1)))).
+#
+#cnf(i_0_44, plain, (ssNonce(tb(X1)))).
+#
+#cnf(i_0_74, negated_conjecture, (~ssIk(key(X1,b))|~ssBk(key(X1,a)))).
+#
+#cnf(i_0_46, plain, (ssTk(key(bt,b)))).
+#
+#cnf(i_0_47, plain, (ssTk(key(at,a)))).
+#
+#cnf(i_0_48, plain, (ssBk(key(bt,t)))).
+#
+#cnf(i_0_49, plain, (ssSa(pair(b,na)))).
+#
+#cnf(i_0_50, plain, (ssAk(key(at,t)))).
+#
+#cnf(i_0_51, plain, (ssIm(X1)|~ssIm(pair(X2,X1)))).
+#
+#cnf(i_0_52, plain, (ssIm(X1)|~ssIm(pair(X1,X2)))).
+#
+#cnf(i_0_54, plain, (ssIm(X1)|~ssIm(triple(X2,X3,X1)))).
+#
+#cnf(i_0_57, plain, (ssIm(X1)|~ssM(sent(X2,X3,X1)))).
+#
+#cnf(i_0_53, plain, (ssM(sent(a,b,pair(a,na))))).
+#
+#cnf(i_0_75, plain, (ssIm(pair(a,na)))).
+#
+#cnf(i_0_76, plain, (ssIm(a))).
+#
+#cnf(i_0_77, plain, (ssIm(na))).
+#
+#cnf(i_0_62, plain, (ssIk(key(X1,X2))|~ssIm(X1)|~ssP(X2))).
+#
+#cnf(i_0_63, plain, (ssIm(pair(X1,X2))|~ssIm(X2)|~ssIm(X1))).
+#
+#cnf(i_0_55, plain, (ssIm(X1)|~ssIm(triple(X2,X1,X3)))).
+#
+#cnf(i_0_78, negated_conjecture, (~ssIm(X1)|~ssBk(key(X1,a)))).
+#
+#cnf(i_0_56, plain, (ssIm(X1)|~ssIm(triple(X1,X2,X3)))).
+#
+#cnf(i_0_58, plain, (ssIm(X1)|~ssIm(quadr(X2,X3,X4,X1)))).
+#
+#cnf(i_0_59, plain, (ssIm(X1)|~ssIm(quadr(X2,X3,X1,X4)))).
+#
+#cnf(i_0_60, plain, (ssIm(X1)|~ssIm(quadr(X2,X1,X3,X4)))).
+#
+#cnf(i_0_61, plain, (ssIm(X1)|~ssIm(quadr(X1,X2,X3,X4)))).
+#
+#cnf(i_0_66, plain, (ssIm(encr(X1,X2))|~ssIk(key(X2,X3))|~ssIm(X1)|~ssP(X3))).
+#
+#cnf(i_0_81, plain, (ssIm(encr(X1,X2))|~ssIm(X1)|~ssIm(X2)|~ssP(X3))).
+#
+#cnf(i_0_82, plain, (ssIm(encr(X1,X2))|~ssIm(X1)|~ssIm(X2))).
+#
+#cnf(i_0_65, plain, (ssIm(triple(X1,X2,X3))|~ssIm(X3)|~ssIm(X2)|~ssIm(X1))).
+#
+#cnf(i_0_64, plain, (ssM(sent(X1,X2,X3))|~ssIm(X3)|~ssP(X2)|~ssP(X1))).
+#
+#cnf(i_0_67, plain, (ssSb(pair(X1,X2))|~ssM(sent(X1,b,pair(X1,X2)))|~ssBf(X2))).
+#
+#cnf(i_0_68, plain, (ssIm(quadr(X1,X2,X3,X4))|~ssIm(X4)|~ssIm(X3)|~ssIm(X2)|~ssIm(X1))).
+#
+#cnf(i_0_69, plain, (ssAk(key(X1,X2))|~ssM(sent(t,a,triple(encr(quadr(X2,X3,X1,X4),at),X5,X6)))|~ssSa(pair(X2,X3)))).
+#
+#cnf(i_0_71, plain, (ssBk(key(X1,X2))|~ssSb(pair(X2,X3))|~ssM(sent(X2,b,pair(encr(triple(X2,X1,tb(X3)),bt),encr(nb(X3),X1)))))).
+#
+#cnf(i_0_72, plain, (ssM(sent(a,X1,pair(X2,encr(X3,X4))))|~ssM(sent(t,a,triple(encr(quadr(X1,X5,X4,X6),at),X2,X3)))|~ssSa(pair(X1,X5)))).
+#
+#cnf(i_0_89, plain, (ssSb(pair(a,na)))).
+#
+#cnf(i_0_90, plain, (ssSb(pair(X1,X2))|~ssIm(pair(X1,X2))|~ssBf(X2)|~ssP(X1))).
+#
+#cnf(i_0_99, plain, (ssSb(pair(X1,X2))|~ssIm(X2)|~ssIm(X1)|~ssBf(X2)|~ssP(X1))).
+#
+#cnf(i_0_95, plain, (ssAk(key(X1,b))|~ssM(sent(t,a,triple(encr(quadr(b,na,X1,X2),at),X3,X4))))).
+#
+#cnf(i_0_70, plain, (ssM(sent(b,t,triple(b,nb(X1),encr(triple(X2,X1,tb(X1)),bt))))|~ssM(sent(X2,b,pair(X2,X1)))|~ssBf(X1))).
+#
+#cnf(i_0_101, plain, (ssAk(key(X1,b))|~ssIm(triple(encr(quadr(b,na,X1,X2),at),X3,X4)))).
+#
+#cnf(i_0_73, plain, (ssM(sent(t,X1,triple(encr(quadr(X2,X3,kt(X3),X4),X5),encr(triple(X1,kt(X3),X4),X6),X7)))|~ssM(sent(X2,t,triple(X2,X7,encr(triple(X1,X3,X4),X6))))|~ssTk(key(X5,X1))|~ssTk(key(X6,X2))|~ssNonce(X3))).
+#
+#cnf(i_0_104, plain, (ssAk(key(X1,b))|~ssIm(encr(quadr(b,na,X1,X2),at))|~ssIm(X4)|~ssIm(X3))).
+#
+#cnf(i_0_107, plain, (ssAk(key(X1,b))|~ssIm(quadr(b,na,X1,X2))|~ssIm(at)|~ssIm(X3)|~ssIm(X4))).
+#
+#cnf(i_0_97, plain, (ssBk(key(X1,a))|~ssM(sent(a,b,pair(encr(triple(a,X1,tb(na)),bt),encr(nb(na),X1)))))).
+#
+#cnf(i_0_102, plain, (ssM(sent(b,t,triple(b,nb(na),encr(triple(a,na,tb(na)),bt)))))).
+#
+#cnf(i_0_108, plain, (ssBk(key(X1,a))|~ssIm(pair(encr(triple(a,X1,tb(na)),bt),encr(nb(na),X1))))).
+#
+#cnf(i_0_110, plain, (ssBk(key(X1,a))|~ssIm(encr(triple(a,X1,tb(na)),bt))|~ssIm(encr(nb(na),X1)))).
+#
+#cnf(i_0_111, plain, (~ssIm(encr(triple(a,X1,tb(na)),bt))|~ssIm(nb(na))|~ssIm(X1))).
+#
+#cnf(i_0_109, plain, (ssIm(triple(b,nb(na),encr(triple(a,na,tb(na)),bt))))).
+#
+#cnf(i_0_96, plain, (ssM(sent(a,b,pair(X1,encr(X2,X3))))|~ssM(sent(t,a,triple(encr(quadr(b,na,X3,X4),at),X1,X2))))).
+#
+#cnf(i_0_112, plain, (ssIm(b))).
+#
+#cnf(i_0_114, plain, (ssIm(nb(na)))).
+#
+#cnf(i_0_111, plain, (~ssIm(encr(triple(a,X1,tb(na)),bt))|~ssIm(X1))).
+#
+#cnf(i_0_116, plain, (~ssIm(triple(a,X1,tb(na)))|~ssIm(bt))).
+#
+#cnf(i_0_113, plain, (ssIm(encr(triple(a,na,tb(na)),bt)))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(clause30, axiom, (ssSb(pair(X1,X2))|~ssM(sent(X1,b,pair(X1,X2)))|~ssBf(X2)), file('Problems/SYN/SYN982-1.p', clause30)).
+cnf(clause34, axiom, (ssBk(key(X2,X1))|~ssM(sent(X1,b,pair(encr(triple(X1,X2,tb(X3)),bt),encr(nb(X3),X2))))|~ssSb(pair(X1,X3))), file('Problems/SYN/SYN982-1.p', clause34)).
+cnf(clause16, axiom, (ssM(sent(a,b,pair(a,na)))), file('Problems/SYN/SYN982-1.p', clause16)).
+cnf(clause3, axiom, (ssBf(na)), file('Problems/SYN/SYN982-1.p', clause3)).
+cnf(clause27, axiom, (ssM(sent(X2,X3,X1))|~ssIm(X1)|~ssP(X2)|~ssP(X3)), file('Problems/SYN/SYN982-1.p', clause27)).
+cnf(clause29, axiom, (ssIm(encr(X1,X2))|~ssIm(X1)|~ssIk(key(X2,X3))|~ssP(X3)), file('Problems/SYN/SYN982-1.p', clause29)).
+cnf(clause25, axiom, (ssIk(key(X1,X2))|~ssIm(X1)|~ssP(X2)), file('Problems/SYN/SYN982-1.p', clause25)).
+cnf(clause33, axiom, (ssM(sent(b,t,triple(b,nb(X2),encr(triple(X1,X2,tb(X2)),bt))))|~ssM(sent(X1,b,pair(X1,X2)))|~ssBf(X2)), file('Problems/SYN/SYN982-1.p', clause33)).
+cnf(clause4, axiom, (ssP(b)), file('Problems/SYN/SYN982-1.p', clause4)).
+cnf(clause5, axiom, (ssP(a)), file('Problems/SYN/SYN982-1.p', clause5)).
+cnf(clause26, axiom, (ssIm(pair(X1,X2))|~ssIm(X1)|~ssIm(X2)), file('Problems/SYN/SYN982-1.p', clause26)).
+cnf(clause37, negated_conjecture, (~ssIk(key(X1,b))|~ssBk(key(X1,a))), file('Problems/SYN/SYN982-1.p', clause37)).
+cnf(clause20, axiom, (ssIm(X3)|~ssM(sent(X1,X2,X3))), file('Problems/SYN/SYN982-1.p', clause20)).
+cnf(clause18, axiom, (ssIm(X2)|~ssIm(triple(X1,X2,X3))), file('Problems/SYN/SYN982-1.p', clause18)).
+cnf(clause17, axiom, (ssIm(X3)|~ssIm(triple(X1,X2,X3))), file('Problems/SYN/SYN982-1.p', clause17)).
+cnf(clause14, axiom, (ssIm(X2)|~ssIm(pair(X1,X2))), file('Problems/SYN/SYN982-1.p', clause14)).
+cnf(c_0_16, plain, (ssSb(pair(X1,X2))|~ssM(sent(X1,b,pair(X1,X2)))|~ssBf(X2)), inference(fof_simplification,[status(thm)],[clause30])).
+cnf(c_0_17, plain, (ssBk(key(X2,X1))|~ssM(sent(X1,b,pair(encr(triple(X1,X2,tb(X3)),bt),encr(nb(X3),X2))))|~ssSb(pair(X1,X3))), inference(fof_simplification,[status(thm)],[clause34])).
+cnf(c_0_18, plain, (ssSb(pair(X1,X2))|~ssM(sent(X1,b,pair(X1,X2)))|~ssBf(X2)), c_0_16).
+cnf(c_0_19, axiom, (ssM(sent(a,b,pair(a,na)))), clause16).
+cnf(c_0_20, axiom, (ssBf(na)), clause3).
+cnf(c_0_21, plain, (ssBk(key(X2,X1))|~ssM(sent(X1,b,pair(encr(triple(X1,X2,tb(X3)),bt),encr(nb(X3),X2))))|~ssSb(pair(X1,X3))), c_0_17).
+cnf(c_0_22, plain, (ssSb(pair(a,na))), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_18, c_0_19]), c_0_20])])).
+cnf(c_0_23, plain, (ssM(sent(X2,X3,X1))|~ssIm(X1)|~ssP(X2)|~ssP(X3)), inference(fof_simplification,[status(thm)],[clause27])).
+cnf(c_0_24, plain, (ssIm(encr(X1,X2))|~ssIm(X1)|~ssIk(key(X2,X3))|~ssP(X3)), inference(fof_simplification,[status(thm)],[clause29])).
+cnf(c_0_25, plain, (ssIk(key(X1,X2))|~ssIm(X1)|~ssP(X2)), inference(fof_simplification,[status(thm)],[clause25])).
+cnf(c_0_26, plain, (ssM(sent(b,t,triple(b,nb(X2),encr(triple(X1,X2,tb(X2)),bt))))|~ssM(sent(X1,b,pair(X1,X2)))|~ssBf(X2)), inference(fof_simplification,[status(thm)],[clause33])).
+cnf(c_0_27, plain, (ssBk(key(X1,a))|~ssM(sent(a,b,pair(encr(triple(a,X1,tb(na)),bt),encr(nb(na),X1))))), inference(spm,[status(thm)],[c_0_21, c_0_22])).
+cnf(c_0_28, plain, (ssM(sent(X2,X3,X1))|~ssIm(X1)|~ssP(X2)|~ssP(X3)), c_0_23).
+cnf(c_0_29, axiom, (ssP(b)), clause4).
+cnf(c_0_30, axiom, (ssP(a)), clause5).
+cnf(c_0_31, plain, (ssIm(pair(X1,X2))|~ssIm(X1)|~ssIm(X2)), inference(fof_simplification,[status(thm)],[clause26])).
+cnf(c_0_32, plain, (ssIm(encr(X1,X2))|~ssIm(X1)|~ssIk(key(X2,X3))|~ssP(X3)), c_0_24).
+cnf(c_0_33, plain, (ssIk(key(X1,X2))|~ssIm(X1)|~ssP(X2)), c_0_25).
+cnf(c_0_34, negated_conjecture, (~ssIk(key(X1,b))|~ssBk(key(X1,a))), inference(fof_simplification,[status(thm)],[clause37])).
+cnf(c_0_35, plain, (ssIm(X3)|~ssM(sent(X1,X2,X3))), inference(fof_simplification,[status(thm)],[clause20])).
+cnf(c_0_36, plain, (ssM(sent(b,t,triple(b,nb(X2),encr(triple(X1,X2,tb(X2)),bt))))|~ssM(sent(X1,b,pair(X1,X2)))|~ssBf(X2)), c_0_26).
+cnf(c_0_37, plain, (ssBk(key(X1,a))|~ssIm(pair(encr(triple(a,X1,tb(na)),bt),encr(nb(na),X1)))), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_27, c_0_28]), c_0_29]), c_0_30])])).
+cnf(c_0_38, plain, (ssIm(pair(X1,X2))|~ssIm(X1)|~ssIm(X2)), c_0_31).
+cnf(c_0_39, plain, (ssIm(encr(X1,X2))|~ssIm(X1)|~ssIm(X2)|~ssP(X3)), inference(spm,[status(thm)],[c_0_32, c_0_33])).
+cnf(c_0_40, negated_conjecture, (~ssIk(key(X1,b))|~ssBk(key(X1,a))), c_0_34).
+cnf(c_0_41, plain, (ssIm(X2)|~ssIm(triple(X1,X2,X3))), inference(fof_simplification,[status(thm)],[clause18])).
+cnf(c_0_42, plain, (ssIm(X3)|~ssM(sent(X1,X2,X3))), c_0_35).
+cnf(c_0_43, plain, (ssM(sent(b,t,triple(b,nb(na),encr(triple(a,na,tb(na)),bt))))), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_36, c_0_19]), c_0_20])])).
+cnf(c_0_44, plain, (ssBk(key(X1,a))|~ssIm(encr(triple(a,X1,tb(na)),bt))|~ssIm(encr(nb(na),X1))), inference(spm,[status(thm)],[c_0_37, c_0_38])).
+cnf(c_0_45, plain, (ssIm(encr(X1,X2))|~ssIm(X1)|~ssIm(X2)), inference(spm,[status(thm)],[c_0_39, c_0_30])).
+cnf(c_0_46, negated_conjecture, (~ssIm(X1)|~ssBk(key(X1,a))), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_40, c_0_33]), c_0_29])])).
+cnf(c_0_47, plain, (ssIm(X2)|~ssIm(triple(X1,X2,X3))), c_0_41).
+cnf(c_0_48, plain, (ssIm(triple(b,nb(na),encr(triple(a,na,tb(na)),bt)))), inference(spm,[status(thm)],[c_0_42, c_0_43])).
+cnf(c_0_49, plain, (ssIm(X3)|~ssIm(triple(X1,X2,X3))), inference(fof_simplification,[status(thm)],[clause17])).
+cnf(c_0_50, plain, (ssIm(X2)|~ssIm(pair(X1,X2))), inference(fof_simplification,[status(thm)],[clause14])).
+cnf(c_0_51, plain, (~ssIm(encr(triple(a,X1,tb(na)),bt))|~ssIm(nb(na))|~ssIm(X1)), inference(csr,[status(thm)],[inference(spm,[status(thm)],[c_0_44, c_0_45]), c_0_46])).
+cnf(c_0_52, plain, (ssIm(nb(na))), inference(spm,[status(thm)],[c_0_47, c_0_48])).
+cnf(c_0_53, plain, (ssIm(X3)|~ssIm(triple(X1,X2,X3))), c_0_49).
+cnf(c_0_54, plain, (ssIm(X2)|~ssIm(pair(X1,X2))), c_0_50).
+cnf(c_0_55, plain, (ssIm(pair(a,na))), inference(spm,[status(thm)],[c_0_42, c_0_19])).
+cnf(c_0_56, plain, (~ssIm(encr(triple(a,X1,tb(na)),bt))|~ssIm(X1)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_51, c_0_52])])).
+cnf(c_0_57, plain, (ssIm(encr(triple(a,na,tb(na)),bt))), inference(spm,[status(thm)],[c_0_53, c_0_48])).
+cnf(c_0_58, plain, (ssIm(na)), inference(spm,[status(thm)],[c_0_54, c_0_55])).
+cnf(c_0_59, plain, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_56, c_0_57]), c_0_58])]), ['proof']).
+# SZS output end CNFRefutation

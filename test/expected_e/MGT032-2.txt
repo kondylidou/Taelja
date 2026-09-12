@@ -1,0 +1,62 @@
+Axiom 1: environment(sk2)
+Axiom 2: stable(sk2)
+Axiom 3: environment(X) /\ stable(X) => in_environment(X,sk1(X))
+Axiom 4: in_environment(sk2,X) => subpopulations(first_movers,efficient_producers,sk2,sk3(X))
+Axiom 5: in_environment(sk2,X) => greater_or_equal(sk3(X),X)
+Axiom 6: environment(X) /\ stable(X) /\ subpopulations(first_movers,efficient_producers,X,Y) /\ greater_or_equal(Y,sk1(X)) => greater(growth_rate(efficient_producers,Y),growth_rate(first_movers,Y))
+Axiom 7: environment(X) /\ subpopulations(Y,Z,X,A) /\ greater(growth_rate(Z,A),growth_rate(Y,A)) => selection_favors(Z,Y,A)
+
+Lemma 8: subpopulations(first_movers,efficient_producers,sk2,sk3(sk1(sk2)))
+Proof:
+  have environment(sk2)
+    by axiom 1
+   and stable(sk2)
+    by axiom 2
+  hence in_environment(sk2,sk1(sk2))
+    by axiom 3
+  hence subpopulations(first_movers,efficient_producers,sk2,sk3(sk1(sk2)))
+    by axiom 4
+
+Lemma 9: greater_or_equal(sk3(sk1(sk2)),sk1(sk2))
+Proof:
+  have environment(sk2)
+    by axiom 1
+   and stable(sk2)
+    by axiom 2
+  hence in_environment(sk2,sk1(sk2))
+    by axiom 3
+  hence greater_or_equal(sk3(sk1(sk2)),sk1(sk2))
+    by axiom 5
+
+Lemma 10: greater(growth_rate(efficient_producers,sk3(sk1(sk2))),growth_rate(first_movers,sk3(sk1(sk2))))
+Proof:
+  have environment(sk2)
+    by axiom 1
+   and stable(sk2)
+    by axiom 2
+   and subpopulations(first_movers,efficient_producers,sk2,sk3(sk1(sk2)))
+    by lemma 8
+   and greater_or_equal(sk3(sk1(sk2)),sk1(sk2))
+    by lemma 9
+  hence greater(growth_rate(efficient_producers,sk3(sk1(sk2))),growth_rate(first_movers,sk3(sk1(sk2))))
+    by axiom 6
+
+Goal 1: in_environment(sk2,sk1(sk2))
+Proof:
+  have environment(sk2)
+    by axiom 1
+   and stable(sk2)
+    by axiom 2
+  hence in_environment(sk2,sk1(sk2))
+    by axiom 3
+
+Goal 2: selection_favors(efficient_producers,first_movers,sk3(sk1(sk2)))
+Proof:
+  have environment(sk2)
+    by axiom 1
+   and subpopulations(first_movers,efficient_producers,sk2,sk3(sk1(sk2)))
+    by lemma 8
+   and greater(growth_rate(efficient_producers,sk3(sk1(sk2))),growth_rate(first_movers,sk3(sk1(sk2))))
+    by lemma 10
+  hence selection_favors(efficient_producers,first_movers,sk3(sk1(sk2)))
+    by axiom 7

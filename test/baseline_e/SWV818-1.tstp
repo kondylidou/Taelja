@@ -1,0 +1,23 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FUUPF-FFSF00-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_7, negated_conjecture, (v_s!=v_t)).
+#
+#cnf(i_0_8, negated_conjecture, (X1=v_ta)).
+# Presaturation interreduction done
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(cls_conjecture_0, negated_conjecture, (v_s!=v_t), file('Problems/SWV/SWV818-1.p', cls_conjecture_0)).
+cnf(cls_conjecture_1, negated_conjecture, (X1=v_ta), file('Problems/SWV/SWV818-1.p', cls_conjecture_1)).
+cnf(c_0_2, negated_conjecture, (v_s!=v_t), inference(fof_simplification,[status(thm)],[cls_conjecture_0])).
+cnf(c_0_3, negated_conjecture, (v_s!=v_t), c_0_2).
+cnf(c_0_4, negated_conjecture, (X1=v_ta), cls_conjecture_1).
+cnf(c_0_5, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_3, c_0_4]), c_0_4])]), ['proof']).
+# SZS output end CNFRefutation
