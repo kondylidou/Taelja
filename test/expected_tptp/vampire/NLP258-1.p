@@ -1,28 +1,28 @@
 % SZS output start Proof
-fof(f82, negated_conjecture, man(skc8, skc10), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f84, negated_conjecture, accessible_world(skc8, skc12), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f52, axiom, ! [X2, X0, X1]: (~ accessible_world(X0, X1) | ~ man(X0, X2) | man(X1, X2)), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f74, negated_conjecture, man(skc8, skc15), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f92, negated_conjecture, ! [X0, X1]: (~ man(skc12, X0) | present(skc12, skf2(X1))), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f91, negated_conjecture, ! [X0, X1]: (~ man(skc12, X0) | smoke(skc12, skf2(X1))), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f94, negated_conjecture, ! [X0]: (agent(skc12, skf2(X0), X0) | ~ man(skc12, X0)), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f87, negated_conjecture, agent(skc8, skc13, skc15), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f77, negated_conjecture, event(skc8, skc13), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f78, negated_conjecture, present(skc8, skc13), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f79, negated_conjecture, think_believe_consider(skc8, skc13), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f88, negated_conjecture, theme(skc8, skc13, skc12), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f85, negated_conjecture, proposition(skc8, skc12), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f80, negated_conjecture, jules_forename(skc8, skc11), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f89, negated_conjecture, of(skc8, skc11, skc10), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f76, negated_conjecture, vincent_forename(skc8, skc14), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f86, negated_conjecture, of(skc8, skc14, skc15), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f73, negated_conjecture, actual_world(skc8), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f83, negated_conjecture, state(skc8, skc9), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f90, negated_conjecture, be(skc8, skc9, skc10, skc10), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f29, axiom, ! [X0, X1]: (~ vincent_forename(X0, X1) | forename(X0, X1)), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f30, axiom, ! [X0, X1]: (~ jules_forename(X0, X1) | forename(X0, X1)), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f1, axiom, ! [X0, X1]: (~ smoke(X0, X1) | event(X0, X1)), file('Problems/NLP/NLP258-1.p', unknown)).
-fof(f95, negated_conjecture, ! [X2, X3, X10, X0, X1, X8, X6, X9, X7, X4, X5]: (~ be(X0, X1, X2, X2) | ~ man(X0, X2) | ~ state(X0, X1) | ~ smoke(X3, X4) | ~ present(X3, X4) | ~ agent(X3, X4, X2) | ~ event(X3, X4) | ~ forename(X0, X5) | ~ jules_forename(X0, X5) | ~ of(X0, X5, X2) | ~ accessible_world(X0, X3) | ~ proposition(X0, X3) | ~ proposition(X0, X6) | ~ accessible_world(X0, X6) | ~ think_believe_consider(X0, X7) | ~ present(X0, X7) | ~ event(X0, X7) | ~ theme(X0, X7, X6) | ~ agent(X0, X8, X9) | ~ agent(X0, X7, X9) | ~ man(X0, X9) | ~ of(X0, X10, X9) | ~ vincent_forename(X0, X10) | ~ forename(X0, X10) | ~ theme(X0, X8, X3) | ~ event(X0, X8) | ~ present(X0, X8) | ~ think_believe_consider(X0, X8) | ~ actual_world(X0) | man(X6, skf4(X6))), file('Problems/NLP/NLP258-1.p', unknown)).
+fof(f82, negated_conjecture, man(skc8, skc10), file('Problems/NLP/NLP258-1.p')).
+fof(f84, negated_conjecture, accessible_world(skc8, skc12), file('Problems/NLP/NLP258-1.p')).
+fof(f52, axiom, ! [X2, X0, X1]: (~ accessible_world(X0, X1) | ~ man(X0, X2) | man(X1, X2)), file('Problems/NLP/NLP258-1.p')).
+fof(f74, negated_conjecture, man(skc8, skc15), file('Problems/NLP/NLP258-1.p')).
+fof(f92, negated_conjecture, ! [X0, X1]: (~ man(skc12, X0) | present(skc12, skf2(X1))), file('Problems/NLP/NLP258-1.p')).
+fof(f91, negated_conjecture, ! [X0, X1]: (~ man(skc12, X0) | smoke(skc12, skf2(X1))), file('Problems/NLP/NLP258-1.p')).
+fof(f94, negated_conjecture, ! [X0]: (agent(skc12, skf2(X0), X0) | ~ man(skc12, X0)), file('Problems/NLP/NLP258-1.p')).
+fof(f87, negated_conjecture, agent(skc8, skc13, skc15), file('Problems/NLP/NLP258-1.p')).
+fof(f77, negated_conjecture, event(skc8, skc13), file('Problems/NLP/NLP258-1.p')).
+fof(f78, negated_conjecture, present(skc8, skc13), file('Problems/NLP/NLP258-1.p')).
+fof(f79, negated_conjecture, think_believe_consider(skc8, skc13), file('Problems/NLP/NLP258-1.p')).
+fof(f88, negated_conjecture, theme(skc8, skc13, skc12), file('Problems/NLP/NLP258-1.p')).
+fof(f85, negated_conjecture, proposition(skc8, skc12), file('Problems/NLP/NLP258-1.p')).
+fof(f80, negated_conjecture, jules_forename(skc8, skc11), file('Problems/NLP/NLP258-1.p')).
+fof(f89, negated_conjecture, of(skc8, skc11, skc10), file('Problems/NLP/NLP258-1.p')).
+fof(f76, negated_conjecture, vincent_forename(skc8, skc14), file('Problems/NLP/NLP258-1.p')).
+fof(f86, negated_conjecture, of(skc8, skc14, skc15), file('Problems/NLP/NLP258-1.p')).
+fof(f73, negated_conjecture, actual_world(skc8), file('Problems/NLP/NLP258-1.p')).
+fof(f83, negated_conjecture, state(skc8, skc9), file('Problems/NLP/NLP258-1.p')).
+fof(f90, negated_conjecture, be(skc8, skc9, skc10, skc10), file('Problems/NLP/NLP258-1.p')).
+fof(f29, axiom, ! [X0, X1]: (~ vincent_forename(X0, X1) | forename(X0, X1)), file('Problems/NLP/NLP258-1.p')).
+fof(f30, axiom, ! [X0, X1]: (~ jules_forename(X0, X1) | forename(X0, X1)), file('Problems/NLP/NLP258-1.p')).
+fof(f1, axiom, ! [X0, X1]: (~ smoke(X0, X1) | event(X0, X1)), file('Problems/NLP/NLP258-1.p')).
+fof(f95, negated_conjecture, ! [X2, X3, X10, X0, X1, X8, X6, X9, X7, X4, X5]: (~ be(X0, X1, X2, X2) | ~ man(X0, X2) | ~ state(X0, X1) | ~ smoke(X3, X4) | ~ present(X3, X4) | ~ agent(X3, X4, X2) | ~ event(X3, X4) | ~ forename(X0, X5) | ~ jules_forename(X0, X5) | ~ of(X0, X5, X2) | ~ accessible_world(X0, X3) | ~ proposition(X0, X3) | ~ proposition(X0, X6) | ~ accessible_world(X0, X6) | ~ think_believe_consider(X0, X7) | ~ present(X0, X7) | ~ event(X0, X7) | ~ theme(X0, X7, X6) | ~ agent(X0, X8, X9) | ~ agent(X0, X7, X9) | ~ man(X0, X9) | ~ of(X0, X10, X9) | ~ vincent_forename(X0, X10) | ~ forename(X0, X10) | ~ theme(X0, X8, X3) | ~ event(X0, X8) | ~ present(X0, X8) | ~ think_believe_consider(X0, X8) | ~ actual_world(X0) | man(X6, skf4(X6))), file('Problems/NLP/NLP258-1.p')).
 fof(s1, plain, man(skc12,skc15), inference(mp, [status(thm)], [f52, f84, f74])).
 fof(lemma_25, lemma, smoke(skc12,skf2(skc10)), inference(mp, [status(thm)], [f91, s1])).
 fof(s2, plain, man(skc12,skc15), inference(mp, [status(thm)], [f52, f84, f74])).

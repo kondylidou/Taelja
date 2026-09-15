@@ -1,10 +1,10 @@
 % SZS output start Proof
-fof(f6, axiom, product(a, b, c), file('Problems/GRP/GRP001-5.p', unknown)).
-fof(f2, axiom, ! [X0]: product(X0, identity, X0), file('Problems/GRP/GRP001-5.p', unknown)).
-fof(f5, axiom, ! [X0]: product(X0, X0, identity), file('Problems/GRP/GRP001-5.p', unknown)).
-fof(f4, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ product(X1, X3, X4) | ~ product(X0, X1, X2) | ~ product(X0, X4, X5) | product(X2, X3, X5)), file('Problems/GRP/GRP001-5.p', unknown)).
-fof(f1, axiom, ! [X0]: product(identity, X0, X0), file('Problems/GRP/GRP001-5.p', unknown)).
-fof(f3, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ product(X2, X3, X5) | ~ product(X1, X3, X4) | ~ product(X0, X1, X2) | product(X0, X4, X5)), file('Problems/GRP/GRP001-5.p', unknown)).
+fof(f6, axiom, product(a, b, c), file('Problems/GRP/GRP001-5.p')).
+fof(f2, axiom, ! [X0]: product(X0, identity, X0), file('Problems/GRP/GRP001-5.p')).
+fof(f5, axiom, ! [X0]: product(X0, X0, identity), file('Problems/GRP/GRP001-5.p')).
+fof(f4, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ product(X1, X3, X4) | ~ product(X0, X1, X2) | ~ product(X0, X4, X5) | product(X2, X3, X5)), file('Problems/GRP/GRP001-5.p')).
+fof(f1, axiom, ! [X0]: product(identity, X0, X0), file('Problems/GRP/GRP001-5.p')).
+fof(f3, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ product(X2, X3, X5) | ~ product(X1, X3, X4) | ~ product(X0, X1, X2) | product(X0, X4, X5)), file('Problems/GRP/GRP001-5.p')).
 fof(s1, plain, product(b,b,identity), inference(instantiate, [status(thm)], [f5])).
 fof(s2, plain, product(a,identity,a), inference(instantiate, [status(thm)], [f2])).
 fof(lemma_7, lemma, product(c,b,a), inference(mp, [status(thm)], [f4, s1, f6, s2])).

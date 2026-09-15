@@ -1,10 +1,10 @@
 % SZS output start Proof
-fof(f1, axiom, ! [X0]: implies(truth, X0) = X0, file('Problems/LCL/LCL146-1.p', unknown)).
-fof(f2, axiom, ! [X2, X0, X1]: implies(implies(X0, X1), implies(implies(X1, X2), implies(X0, X2))) = truth, file('Problems/LCL/LCL146-1.p', unknown)).
-fof(f4, axiom, ! [X0, X1]: implies(implies(X0, X1), X1) = implies(implies(X1, X0), X0), file('Problems/LCL/LCL146-1.p', unknown)).
-fof(f5, axiom, ! [X0, X1]: implies(implies(not(X0), not(X1)), implies(X1, X0)) = truth, file('Problems/LCL/LCL146-1.p', unknown)).
-fof(f7, axiom, ! [X0, X1]: big_V(X0, X1) = implies(implies(X0, X1), X1), file('Problems/LCL/LCL146-1.p', unknown)).
-fof(f9, axiom, ! [X0, X1]: big_hat(X0, X1) = not(big_V(not(X0), not(X1))), file('Problems/LCL/LCL146-1.p', unknown)).
+fof(f1, axiom, ! [X0]: implies(truth, X0) = X0, file('Problems/LCL/LCL146-1.p')).
+fof(f2, axiom, ! [X2, X0, X1]: implies(implies(X0, X1), implies(implies(X1, X2), implies(X0, X2))) = truth, file('Problems/LCL/LCL146-1.p')).
+fof(f4, axiom, ! [X0, X1]: implies(implies(X0, X1), X1) = implies(implies(X1, X0), X0), file('Problems/LCL/LCL146-1.p')).
+fof(f5, axiom, ! [X0, X1]: implies(implies(not(X0), not(X1)), implies(X1, X0)) = truth, file('Problems/LCL/LCL146-1.p')).
+fof(f7, axiom, ! [X0, X1]: big_V(X0, X1) = implies(implies(X0, X1), X1), file('Problems/LCL/LCL146-1.p')).
+fof(f9, axiom, ! [X0, X1]: big_hat(X0, X1) = not(big_V(not(X0), not(X1))), file('Problems/LCL/LCL146-1.p')).
 fof(s1, plain, ! [X] : truth = implies(implies(not(not(X)),implies(not(X),not(truth))),implies(implies(implies(not(X),not(truth)),X),implies(not(not(X)),X))), inference(instantiate, [status(thm)], [f2])).
 fof(s2, plain, ! [X] : truth = implies(implies(implies(truth,not(not(X))),implies(not(X),not(truth))),implies(implies(implies(not(X),not(truth)),X),implies(not(not(X)),X))), inference(rewrite, [status(thm)], [f1, s1])).
 fof(s3, plain, ! [X] : truth = implies(implies(implies(implies(implies(not(not(not(truth))),not(truth)),implies(truth,not(not(truth)))),not(not(X))),implies(not(X),not(truth))),implies(implies(implies(not(X),not(truth)),X),implies(not(not(X)),X))), inference(rewrite, [status(thm)], [f5, s2])).

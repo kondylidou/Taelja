@@ -8,10 +8,11 @@
 module TptpEmitter (emitTptp) where
 
 import Data.Char (isAlphaNum, isAsciiLower, isDigit)
-import Data.List (intercalate, nub, nubBy, union)
+import Data.List (intercalate, isPrefixOf, nub, nubBy, tails, union)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe, isJust, listToMaybe, mapMaybe, maybeToList)
 import qualified Data.Set as Set
+import qualified Data.Text as Text
 import qualified Data.TPTP as T
 import Data.TPTP.Pretty ()
 import Prettyprinter (pretty)
@@ -151,7 +152,7 @@ assumptionDeps = foldl add Map.empty
     add m (Input _)         = m
 
 ppLine :: Map.Map String [String] -> Line -> String
-ppLine _ (Input u) = show (pretty u)
+ppLine _ (Input u) = currentIntro (show (pretty (dropUnknownInfo u)))
 ppLine _ (Assume n lit) =
   "fof(" ++ n ++ ", assumption, " ++ ppLit lit ++ ", introduced(assumption, [], []))."
 ppLine deps (Step n role f rule ps) =
@@ -265,6 +266,26 @@ conjLiteral (T.Formula _ (T.FOF f)) = go f
     go (T.Atomic l)                   = Just (convertLit l)
     go _                              = Nothing
 conjLiteral _ = Nothing
+
+-- E writes introduced(definition) in the old syntax, and the current one
+-- wants the info and parent lists as well.
+currentIntro :: String -> String
+currentIntro s = case breakOnLast ", introduced(" s of
+  Just (before, rest) | ',' `notElem` rest ->
+    before ++ ", introduced(" ++ takeWhile (/= ')') rest ++ ", [], []))."
+  _ -> s
+  where
+    breakOnLast pat str =
+      case [ i | (i, t) <- zip [0 ..] (tails str), pat `isPrefixOf` t ] of
+        [] -> Nothing
+        is -> let i = last is in Just (take i str, drop (i + length pat) str)
+
+-- Vampire writes file(path, unknown) when the problem names no unit, and
+-- the TPTP syntax has no such name, so the info is dropped.
+dropUnknownInfo :: T.Unit -> T.Unit
+dropUnknownInfo (T.Unit n d (Just (T.File f (Just (Left (T.Atom i))), info)))
+  | i == Text.pack "unknown" = T.Unit n d (Just (T.File f Nothing, info))
+dropUnknownInfo u = u
 
 -- A unit read from the file, stated bare, or introduced by the prover.
 isInputUnit :: T.Unit -> Bool
