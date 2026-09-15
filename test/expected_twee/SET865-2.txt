@@ -1,0 +1,50 @@
+Axiom 1: c_in(c_Zorn_OHausdorff__1(X,Y),c_Zorn_Omaxchain(X,Y),tc_set(tc_set(Y)))
+Axiom 2: c_lessequals(c_Zorn_Omaxchain(Z,A),c_Zorn_Ochain(Z,A),tc_set(tc_set(tc_set(A))))
+Axiom 3: c_in(B,C,A) /\ c_lessequals(C,U,tc_set(A)) => c_in(B,U,A)
+Axiom 4: c_in(V,c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(t_a))) => c_in(c_Union(V,t_a),v_S,tc_set(t_a))
+Axiom 5: c_in(V,v_S,tc_set(t_a)) => c_in(v_x(V),v_S,tc_set(t_a))
+Axiom 6: c_in(V,v_S,tc_set(t_a)) => c_lessequals(V,v_x(V),tc_set(t_a))
+Axiom 7: c_in(W,Z,tc_set(A)) /\ c_in(X1,c_Zorn_Omaxchain(Z,A),tc_set(tc_set(A))) /\ c_lessequals(c_Union(X1,A),W,tc_set(A)) => c_Union(X1,A) = W
+
+Lemma 8: c_lessequals(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_x(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a)),tc_set(t_a))
+Proof:
+  have c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a)))
+    by axiom 1
+   and c_lessequals(c_Zorn_Omaxchain(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(tc_set(t_a))))
+    by axiom 2
+  hence c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(t_a)))
+    by axiom 3
+  hence c_in(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_S,tc_set(t_a))
+    by axiom 4
+  hence c_lessequals(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_x(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a)),tc_set(t_a))
+    by axiom 6
+
+Goal 1: c_in(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_S,tc_set(t_a))
+Proof:
+  have c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a)))
+    by axiom 1
+   and c_lessequals(c_Zorn_Omaxchain(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(tc_set(t_a))))
+    by axiom 2
+  hence c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(t_a)))
+    by axiom 3
+  hence c_in(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_S,tc_set(t_a))
+    by axiom 4
+
+Goal 2: c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a) = v_x(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a))
+Proof:
+  have c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a)))
+    by axiom 1
+   and c_lessequals(c_Zorn_Omaxchain(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(tc_set(t_a))))
+    by axiom 2
+  hence c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(t_a)))
+    by axiom 3
+  hence c_in(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_S,tc_set(t_a))
+    by axiom 4
+  hence c_in(v_x(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a)),v_S,tc_set(t_a))
+    by axiom 5
+   and c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a)))
+    by axiom 1
+   and c_lessequals(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_x(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a)),tc_set(t_a))
+    by lemma 8
+  hence c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a) = v_x(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a))
+    by axiom 7

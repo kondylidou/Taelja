@@ -59,6 +59,7 @@ import TaeljaVerify.Vampire.UnitsOnlyRelationalExample
 
 -- Twee prover test cases
 import TaeljaVerify.Twee.Cat0191
+import TaeljaVerify.Twee.Set8652
 import TaeljaVerify.Twee.Ana0072
 import TaeljaVerify.Twee.Ana0232
 import TaeljaVerify.Twee.Col0034
@@ -104,6 +105,7 @@ import TaeljaVerify.E.Grp70310
 import TaeljaVerify.E.Col0062
 import TaeljaVerify.E.Alg0061
 import TaeljaVerify.E.Alg4421
+import TaeljaVerify.E.Set8642
 import TaeljaVerify.E.Ana0272
 import TaeljaVerify.E.HornExampleDerivedRw
 import TaeljaVerify.E.HornExampleElimVarRw

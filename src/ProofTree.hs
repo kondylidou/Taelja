@@ -574,11 +574,13 @@ resolveSourceName unitMap = go
     flatParents (T.Parent (T.Inference _ _ ps) _) = concatMap flatParents ps
     flatParents _                                  = []
 extractGoalLits :: T.Declaration -> Maybe [T.Literal]
-extractGoalLits (T.Formula _ (T.CNF (T.Clause lits))) = case toList lits of
-  [(T.Negative, lit)]                       -> Just [lit]
-  [(T.Positive, T.Equality l T.Negative r)] -> Just [T.Equality l T.Positive r]
-  ls | all ((== T.Negative) . fst) ls      -> Just (map snd ls)
-  _                                         -> Nothing
+-- A goal clause is all negative, where a disequality counts as a negative
+-- equation, so s != t | ~p(s) states the goals s = t and p(s).
+extractGoalLits (T.Formula _ (T.CNF (T.Clause lits))) = mapM goalOf (toList lits)
+  where
+    goalOf (T.Negative, lit)                       = Just lit
+    goalOf (T.Positive, T.Equality l T.Negative r) = Just (T.Equality l T.Positive r)
+    goalOf _                                       = Nothing
 extractGoalLits (T.Formula _ (T.FOF f)) = extractFOF f
   where
     extractFOF (T.Quantified T.Forall _ body)          = extractFOF body

@@ -75,6 +75,7 @@ tweeBenchmarkNames =
   -- is relevant to every goal even when it shares no symbol with one
   , "SWV818-1"
   , "SWV819-1"
+  , "SET865-2"        -- goal clause mixing a disequality with a negative atom
   ]
 
 handcraftedNames :: [String]
@@ -221,6 +222,9 @@ eBenchmarkNames =
   , "MGT032-2"
   , "SYN590-1"
   , "SYN982-1"
+  -- a goal clause whose literals mix a disequality with negative atoms,
+  -- X1 != v_x(X1) | ~c_in(X1,v_S,tc_set(t_a)), states two goals
+  , "SET864-2"
   ]
 
 mkTest :: String -> String -> String -> TestTree

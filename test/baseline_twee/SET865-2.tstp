@@ -1,0 +1,28 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, V_U!=v_x(V_U) | ~c_in(V_U, v_S, tc_set(t_a)), file('TPTP/Problems/SET/SET865-2.p', cls_conjecture_3)).
+cnf(c2, axiom, c_in(c_Zorn_OHausdorff__1(V_S, T_a), c_Zorn_Omaxchain(V_S, T_a), tc_set(tc_set(T_a))), file('TPTP/Problems/SET/SET865-2.p', cls_Zorn_OHausdorff_0)).
+cnf(c3, axiom, c_lessequals(c_Zorn_Omaxchain(V_S2, T_a2), c_Zorn_Ochain(V_S2, T_a2), tc_set(tc_set(tc_set(T_a2)))), file('TPTP/Problems/SET/SET865-2.p', cls_Zorn_Omaxchain__subset__chain_0)).
+cnf(c4, axiom, ~c_in(V_c, V_A, T_a2) | ~c_lessequals(V_A, V_B, tc_set(T_a2)) | c_in(V_c, V_B, T_a2), file('TPTP/Problems/SET/SET865-2.p', cls_Set_OsubsetD_0)).
+cnf(c5, plain, ~c_in(c_Zorn_OHausdorff__1(v_S, t_a), c_Zorn_Omaxchain(v_S, t_a), tc_set(tc_set(t_a))) | c_in(c_Zorn_OHausdorff__1(v_S, t_a), c_Zorn_Ochain(v_S, t_a), tc_set(tc_set(t_a))), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c6, plain, c_in(c_Zorn_OHausdorff__1(v_S, t_a), c_Zorn_Ochain(v_S, t_a), tc_set(tc_set(t_a))), inference(resolution, [status(thm)], [c2, c5])).
+cnf(c7, negated_conjecture, c_in(c_Union(V_U2, t_a), v_S, tc_set(t_a)) | ~c_in(V_U2, c_Zorn_Ochain(v_S, t_a), tc_set(tc_set(t_a))), file('TPTP/Problems/SET/SET865-2.p', cls_conjecture_0)).
+cnf(c8, plain, c_in(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a), v_S, tc_set(t_a)), inference(resolution, [status(thm)], [c6, c7])).
+cnf(c9, negated_conjecture, c_in(v_x(V_U2), v_S, tc_set(t_a)) | ~c_in(V_U2, v_S, tc_set(t_a)), file('TPTP/Problems/SET/SET865-2.p', cls_conjecture_1)).
+cnf(c10, plain, c_in(v_x(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a)), v_S, tc_set(t_a)), inference(resolution, [status(thm)], [c8, c9])).
+cnf(c11, plain, ~c_in(c_Zorn_OHausdorff__1(v_S, t_a), c_Zorn_Omaxchain(v_S, t_a), tc_set(tc_set(t_a))) | c_in(c_Zorn_OHausdorff__1(v_S, t_a), c_Zorn_Ochain(v_S, t_a), tc_set(tc_set(t_a))), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c12, plain, c_in(c_Zorn_OHausdorff__1(v_S, t_a), c_Zorn_Ochain(v_S, t_a), tc_set(tc_set(t_a))), inference(resolution, [status(thm)], [c2, c11])).
+cnf(c13, plain, c_in(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a), v_S, tc_set(t_a)), inference(resolution, [status(thm)], [c12, c7])).
+cnf(c14, negated_conjecture, c_lessequals(V_U2, v_x(V_U2), tc_set(t_a)) | ~c_in(V_U2, v_S, tc_set(t_a)), file('TPTP/Problems/SET/SET865-2.p', cls_conjecture_2)).
+cnf(c15, plain, c_lessequals(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a), v_x(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a)), tc_set(t_a)), inference(resolution, [status(thm)], [c13, c14])).
+cnf(c16, axiom, ~c_in(V_u, V_S2, tc_set(T_a2)) | ~c_in(V_c2, c_Zorn_Omaxchain(V_S2, T_a2), tc_set(tc_set(T_a2))) | ~c_lessequals(c_Union(V_c2, T_a2), V_u, tc_set(T_a2)) | c_Union(V_c2, T_a2)=V_u, file('TPTP/Problems/SET/SET865-2.p', cls_Zorn_Omaxchain__Zorn_0)).
+cnf(c17, plain, ~c_in(v_x(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a)), v_S, tc_set(t_a)) | ~c_in(c_Zorn_OHausdorff__1(v_S, t_a), c_Zorn_Omaxchain(v_S, t_a), tc_set(tc_set(t_a))) | v_x(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a))=c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a), inference(resolution, [status(thm)], [c15, c16])).
+cnf(c18, plain, ~c_in(v_x(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a)), v_S, tc_set(t_a)) | v_x(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a))=c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a), inference(resolution, [status(thm)], [c2, c17])).
+cnf(c19, plain, v_x(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a))=c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a), inference(resolution, [status(thm)], [c10, c18])).
+cnf(c20, plain, ~c_in(c_Zorn_OHausdorff__1(v_S, t_a), c_Zorn_Omaxchain(v_S, t_a), tc_set(tc_set(t_a))) | c_in(c_Zorn_OHausdorff__1(v_S, t_a), c_Zorn_Ochain(v_S, t_a), tc_set(tc_set(t_a))), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c21, plain, c_in(c_Zorn_OHausdorff__1(v_S, t_a), c_Zorn_Ochain(v_S, t_a), tc_set(tc_set(t_a))), inference(resolution, [status(thm)], [c2, c20])).
+cnf(c22, plain, c_in(c_Union(c_Zorn_OHausdorff__1(v_S, t_a), t_a), v_S, tc_set(t_a)), inference(resolution, [status(thm)], [c21, c7])).
+cnf(c23, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c19, c22])).
+% SZS output end CNFRefutation
+
