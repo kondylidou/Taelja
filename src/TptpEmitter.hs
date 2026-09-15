@@ -323,16 +323,18 @@ axiomClause :: Axiom -> Clause
 axiomClause (AUnit _ l)    = Clause [] (Just l)
 axiomClause (ANucleus _ c) = c
 
--- A display name such as "axiom 3" as a TPTP name.
+-- A display name such as "axiom 3" as a TPTP name.  A name may also be an
+-- integer.
 tptpName :: String -> String
-tptpName = symbol . map (\c -> if c == ' ' then '_' else c)
+tptpName s | all isDigit s = s
+           | otherwise     = symbol (map (\c -> if c == ' ' then '_' else c) s)
 
--- A lower word or an integer is printed as it is, and anything else
--- single-quoted.
+-- A lower word is printed as it is, and anything else single-quoted.  A
+-- string of digits is quoted too, since a constant such as E's '0' is an
+-- atom and not a number.
 symbol :: String -> String
 symbol s@(c : cs)
   | c == '$' = s
-  | all isDigit s = s
   | isAsciiLower c && all (\x -> isAlphaNum x || x == '_') cs = s
 symbol s = "'" ++ concatMap esc s ++ "'"
   where
