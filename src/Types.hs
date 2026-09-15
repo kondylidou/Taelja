@@ -16,9 +16,8 @@ data Literal
   | NRel String [Term]   -- ¬P(t̄)
   deriving (Eq, Ord, Show)
 
--- Non-unit Horn clause C = ¬L1 ∨ ... ∨ ¬Ln ∨ L0.
--- body = [L1,...,Ln]: the POSITIVE contents of the negative literals (sign stripped).
--- hd   = Just L0 (unique positive head), or Nothing (⊥, goal clause).
+-- A Horn clause ¬L1 ∨ ... ∨ ¬Ln ∨ L0.  The body holds L1 to Ln with their signs
+-- stripped, and the head is Just L0, or Nothing for a goal clause.
 data Clause = Clause
   { body :: [Literal]
   , hd   :: Maybe Literal
@@ -29,14 +28,14 @@ type Subst = [(String, Term)]
 -- Direction of an equation used as a rewrite rule.
 data Dir = LR | RL deriving (Eq, Show)
 
--- One step in a rewrite sequence: the equation used, which direction, and the result.
+-- One rewrite step, with the equation used, its direction and the result.
 data RwStep = RwStep
   { rwName :: String
   , rwEq   :: (Term, Term)
   , rwDir  :: Dir
   } deriving (Show)
 
--- Entry in the working unit set: name (if assigned), unit literal, stored proof, position.
+-- An entry in the working unit set, with its name if assigned, literal, stored proof and position.
 data UnitEntry = UnitEntry
   { ueName  :: Maybe String
   , ueUnit  :: Literal
@@ -44,11 +43,9 @@ data UnitEntry = UnitEntry
   , uePos   :: Maybe String
   } deriving (Show)
 
--- A Horn axiom descriptor used for ifeq+pair Twee encoding.
--- haCnfId: identifier in the CNF problem file sent to Twee.
--- haDispName: human-readable axiom name for the emitted proof (from tstp2name).
--- haHead: head literal (must be Rel).
--- haBodies: body literals (empty for unit clauses).
+-- A Horn axiom as encoded for Twee with ifeq and pair.  haCnfId is its name in
+-- the CNF file sent to Twee, haDispName its name in the emitted proof, haHead
+-- its relational head and haBodies its body, empty for a unit.
 data HornAxiomEntry = HornAxiomEntry
   { haCnfId    :: String
   , haDispName :: Maybe String
@@ -79,7 +76,7 @@ data Axiom
   | ANucleus String Clause
   deriving (Show)
 
--- The fully translated proof: axioms in input order, intermediate lemmas, goal proofs.
+-- The translated proof, with axioms in input order, lemmas and goal proofs.
 data StructuredProof = StructuredProof
   { axioms :: [Axiom]
   , lemmas :: [(String, Literal, ProofBlock)]
@@ -98,14 +95,14 @@ data AlgState = AlgState
     -- Axioms a re-proof had to state that the input tree never used, given
     -- outer numbers as they arrive and appended to the emitted axiom list.
   , stExtraAxioms :: [Axiom]
-    -- The emitted axiom list as fixed before the algorithm ran; consulted
-    -- when numbering the extras so the two never collide.
+    -- The emitted axiom list as fixed before the algorithm ran.  Numbering the
+    -- extras consults it so the two never collide.
   , stBaseAxioms  :: [Axiom]
   , stNameToPos  :: Map.Map String String        -- TSTP unit name -> tree position of its electron
   , stEqByName   :: Map.Map String (Term, Term)  -- TSTP unit name -> its unit equation
   , stGoalTemplate :: [Literal]  -- the conjecture's own goal literals (shared free variables across conjuncts), consulted by emitGoalProof
-      -- re-prove the derived unit at a tree position from its ancestry
-      -- (lemma-builder sub-proof); top-level runs only, Nothing elsewhere
+      -- stReprove re-proves the derived unit at a tree position from its
+      -- ancestry.  Only top-level runs use it, and it returns Nothing elsewhere.
   }
 
 data LeafRole
@@ -118,9 +115,9 @@ data LeafEntry = LeafEntry
   { lePos     :: String          -- bit-string position in the expanded tree
   , leName    :: String          -- resolved source name
   , leDecl    :: T.Declaration   -- raw TPTP declaration (for clause conversion)
-  , leSrcDecl :: T.Declaration   -- source (original axiom) declaration; equals leDecl for Derived/NegConj
+  , leSrcDecl :: T.Declaration   -- source declaration, the same as leDecl for Derived and NegConjecture
   , leRole    :: LeafRole
-  , leSimpl   :: [(String, Dir)] -- Simpl[pos]: demod/rewriting chain, outermost-first
+  , leSimpl   :: [(String, Dir)] -- the demodulation chain at this position, outermost first
   } deriving (Show)
 
 -- Everything the algorithm needs, extracted once from the proof tree.
@@ -129,7 +126,6 @@ data ProofInfo = ProofInfo
   , piNuclei    :: [LeafEntry]  -- non-positive-unit nodes (incl. NegConjecture), position order
   , piGoalLits  :: [T.Literal]  -- goal literals from the negated conjecture
   , piDeclAt    :: Map.Map String T.Declaration
-      -- clause at every position on an entry's ancestor chain and their
-      -- siblings, read from the real (non-deduplicated) tree; used to trace
-      -- θ top-down from the root (Translate.nodeThetaMap)
+      -- the clause at each position on an entry's ancestor chain and at their
+      -- siblings, read from the full tree and used to trace θ from the root
   } deriving (Show)

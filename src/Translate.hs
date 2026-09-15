@@ -38,13 +38,11 @@ import LemmaBuilder
 import Theta (ThetaCtx (..), computeNucleusTheta, sharedNodeTheta, resolutionCoherent, derivedHead, explainStatus)
 import Debug (dbg, ppLitI, ppClauseI, ppSimplChain)
 
--- Rescue mode (re-proving derived units mid-translation, broad ancestor
--- retries).  Off for the first full translation attempt so successful
--- translations are byte-identical to the rescue-free translator and pay no
--- overhead; translate enables it, with a wall-clock budget, only for a
--- second attempt after an incomplete result.  Process-global because the
--- lemma builder and the algorithm state recurse into fresh runs that must
--- share one budget.
+-- Rescue mode re-proves derived units mid-translation and retries ancestors
+-- broadly.  It is off for the first attempt, so successful translations are
+-- unchanged and pay nothing.  translate turns it on under a wall-clock budget
+-- only for a second attempt after an incomplete result.  It is process-global
+-- because nested runs must share one budget.
 {-# NOINLINE rescueEnabled #-}
 rescueEnabled :: IORef Bool
 rescueEnabled = unsafePerformIO (newIORef False)
@@ -70,23 +68,21 @@ rescueActive = do
     now <- getMonotonicTime
     return (now < dl)
 
--- Recursive-call entry point: like translate but with a pre-built name override map.
--- Overridden names are used as-is (not re-numbered); used for lemma sub-proofs so
--- that axiom references in the sub-proof match the outer proof's shared axiom list.
+-- Recursive entry point, like translate but with a prebuilt name override map.
+-- Overridden names are used as they are, so a lemma sub-proof cites the outer
+-- proof's axiom list.
 translateWith :: Bool -> Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translateWith strict nameOverride debug (T.TSTP _ units) = do
   axHyps <- readIORef rescueEnabled
   case buildProofInfo axHyps units of
-    Nothing -> return Nothing
-    Just origInfo ->
+    Left _         -> return Nothing
+    Right origInfo ->
       Just <$> runAlgorithm debug strict origInfo units Map.empty nameOverride Nothing
 
--- Two-stage recursive entry point for re-proving derived units mid-run: the
--- heuristic stage first, the strict stage when it errors or leaves the goal
--- unproved, exactly like translate.  A sub-run started with a single fixed
--- stage misses proofs the other stage finds (a rw-folded nucleus conclusion
--- misleads the heuristic theta, non-ground intermediates defeat the strict
--- one), and the re-proved unit only needs some complete sub-proof.
+-- Two-stage recursive entry point for re-proving derived units mid-run, with
+-- the heuristic stage first and the strict stage when it fails, like translate.
+-- A single stage misses proofs the other finds, and the re-proved unit only
+-- needs some complete sub-proof.
 translateWithBoth :: Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translateWithBoth nameOverride debug tstp = do
   rH <- try (translateWith False nameOverride debug tstp)
@@ -99,18 +95,14 @@ translateWithBoth nameOverride debug tstp = do
               :: IO (Either ErrorCall (Maybe StructuredProof))
       return (fromRight Nothing rS)
 
--- Two translation strategies, tried in this order. Both compute θ the same
--- way (traced top-down from the root, per Algorithm 1); they differ in which
--- nuclei get processed and how lemma candidates are proved:
---   1. heuristic: also processes non-ground-head derived nuclei alongside
---      leaf nuclei, and proves lemma candidates with Twee/E directly. Gives
---      the compact proofs of the test suite. When it produces no goal proof,
---   2. strict: leaf nuclei only, and lemma candidates are proved by first
---      translating their own sub-DAG (falling back to Twee/E). Needed e.g.
---      for Twee proofs whose intermediate lemmas are non-ground (HEN006-4).
--- Which stages to run: both (heuristic first, strict only if it fails), or
--- one alone (--heuristic-only / --strict-only; TAELJA_STRICT=1 is the older
--- spelling of strict-only).
+-- Two translation strategies, tried in order.  Both compute θ the same way and
+-- differ in which nuclei are processed and how lemma candidates are proved.
+-- The heuristic stage also processes derived nuclei with non-ground heads and
+-- proves lemma candidates with Twee or E directly, which gives the compact
+-- proofs of the suite.  When it proves no goal, the strict stage uses leaf
+-- nuclei only and proves candidates by translating their own sub-DAG first.
+-- Twee proofs with non-ground intermediate lemmas like HEN006-4 need it.
+-- Either stage can also run alone with --heuristic-only or --strict-only.
 data StageMode = BothStages | HeuristicOnly | StrictOnly
   deriving (Eq, Show)
 
@@ -126,8 +118,8 @@ translateStages mode debug tstp = do
   (mRes, errH, errS) <- case mRes1 of
     Just _  -> return r1
     Nothing -> do
-      -- incomplete: one more full attempt with re-proving enabled, under a
-      -- wall-clock budget (TAELJA_RESCUE_TIMEOUT seconds, default 30)
+      -- incomplete, so make one more attempt with re-proving on, within
+      -- TAELJA_RESCUE_TIMEOUT seconds (30 by default)
       budget <- timeoutSecsFromEnv "TAELJA_RESCUE_TIMEOUT" 30
       now    <- getMonotonicTime
       writeIORef rescueDeadline (now + fromIntegral budget)
@@ -137,7 +129,7 @@ translateStages mode debug tstp = do
       return $ case mRes2raw of
         Just _  -> (mRes2raw, errH2, errS2)
         Nothing -> (Nothing, errH2 <|> errH1, errS2 <|> errS1)
-  -- both attempts produced nothing: name the failures so a failed run is
+  -- both attempts produced nothing, so name the failures to make the run
   -- diagnosable without --debug
   when (isNothing mRes) $ hPutStrLn stderr $ "translate: translation failed"
     ++ maybe "" ("; heuristic stage: " ++) errH
@@ -170,22 +162,20 @@ translateStages mode debug tstp = do
              ++ " stage failed with: " ++ show e)
           return (Nothing, Just (takeWhile (/= '\n') (show e)))
 
--- The translation pipeline shared by both stages. Lemma introduction first:
--- every derived clause used at least twice in the DAG (unless it's merely a
--- renamed copy of an axiom) is re-proved and translated recursively, becoming
--- a file-sourced leaf named "lemma <tstp-name>" (the emitter renumbers all
--- lemmas at the end). One canonical axiom numbering, taken from the full
--- original proof, is shared by the main translation and every recursive
--- lemma translation, and the emitted axiom list is the original one — so an
--- axiom used only inside a lemma's proof is still listed and resolves.
+-- The pipeline shared by both stages.  Lemma introduction comes first.  Every
+-- derived clause used at least twice, unless it only copies an axiom, is
+-- re-proved and translated recursively into a leaf named "lemma <tstp-name>".
+-- The main translation and every lemma share one axiom numbering from the full
+-- proof, and the emitted axiom list is the original one, so an axiom used only
+-- inside a lemma is still listed.
 translateMode :: Bool -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translateMode strict debug (T.TSTP _ units) = do
   axHyps <- readIORef rescueEnabled
   case buildProofInfo axHyps units of
-    Nothing -> do
-      hPutStrLn stderr "translate: no refutation found (unsupported proof structure)"
+    Left reason -> do
+      hPutStrLn stderr ("translate: " ++ reason)
       return Nothing
-    Just origInfo -> do
+    Right origInfo -> do
       let unitMap0 = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- units]
           origLeaves = piElectrons origInfo ++ piNuclei origInfo
           (origAxioms, origPosToName, _) =
@@ -198,12 +188,10 @@ translateMode strict debug (T.TSTP _ units) = do
           candidates = filter (\(cname, _) ->
                           resolveCopySource unitMap0 cname `Set.notMember` origAxiomNames)
                         (findLemmaCandidates units)
-      -- A candidate lemma is an optimisation: its sub-translation failing is a
-      -- reason to inline that step, not to abandon the whole proof.  Without
-      -- this catch the first candidate that throws short-circuits the loop and
-      -- takes the whole run with it.  The cost is that every candidate is now
-      -- tried to completion, so a proof with many of them gets slower;
-      -- HEN010-3/vampire goes from 13 s to 147 s and is recorded as a timeout.
+      -- A candidate lemma is an optimisation, so a failing sub-translation inlines
+      -- that step instead of abandoning the proof.  Without this catch the first
+      -- throwing candidate ends the whole run.  The cost is that every candidate
+      -- runs to completion, and HEN010-3/vampire goes from 13 s to 147 s.
       candResults <- forM candidates $ \c -> do
         r <- liftIO (try (buildCandidateLemma (translateWith strict) strict unitMap0 origTstp2name debug c))
         case r of
@@ -251,27 +239,23 @@ translateMode strict debug (T.TSTP _ units) = do
             | otherwise                             = u
           replace u = u
       case (Map.null validCands, buildProofInfo axHyps modUnits) of
-        (False, Just mainInfo) ->
+        (False, Right mainInfo) ->
           Just <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just allAxioms)
         _ ->
           Just <$> runAlgorithm debug strict origInfo units Map.empty origTstp2name (Just origAxioms)
 
--- The step layer: a justification that cannot be established (no electron,
--- no chain, no re-proof) fails with throwError; the state underneath keeps
--- every sound fact established before the failure (re-proved lemmas, named
--- units), and the enclosing nucleus or goal route simply emits nothing.
--- Plain error is reserved for invariant violations.
+-- The step layer.  A justification that cannot be established fails with
+-- throwError, the state keeps every sound fact found before the failure, and
+-- the enclosing nucleus or goal route emits nothing.  Plain error is reserved
+-- for invariant violations.
 type AlgM a = ExceptT String (StateT AlgState IO) a
 
--- The unit table holds each fact once: a variant of an existing entry with
--- the same name and proof status is not added again (duplicates multiply
--- the branching of every later premise search).
--- Theorem 1's fresh constants stand for the variables the derivation never
--- determines.  They are rigid only while the nucleus that introduced them is
--- being justified; the fact that comes out holds for every value of them, so
--- anything entering the unit table is stated with variables again.  Doing it
--- here, rather than at each caller, keeps the table free of them by
--- construction (a constant that reached it would be printed as "rc_...").
+-- The unit table holds each fact once, since duplicates multiply the
+-- branching of every later premise search.
+-- Theorem 1's fresh constants stand for variables the derivation never
+-- determines.  They are rigid only while their nucleus is justified, and the
+-- resulting fact holds for every value, so entries are stated with variables
+-- again.  Doing it here keeps rc_ constants out of the table by construction.
 addUnit :: UnitEntry -> AlgM ()
 addUnit ue0 = modify $ \s ->
   let ue = ue0 { ueUnit = unrigidLit (ueUnit ue0)
@@ -280,8 +264,8 @@ addUnit ue0 = modify $ \s ->
                && isJust (matchLit (ueUnit u) (ueUnit ue)) && isJust (matchLit (ueUnit ue) (ueUnit u))
   in if any same (stUnits s) then s else s { stUnits = stUnits s ++ [ue] }
 
--- Run a step of the translation and report its failure instead of
--- propagating it; the state changes the step made before failing are kept.
+-- Run a translation step and report its failure instead of propagating it.
+-- State changes made before the failure are kept.
 attempt :: AlgM a -> AlgM (Either String a)
 attempt = lift . runExceptT
 
@@ -291,7 +275,7 @@ nextCounter = do
   modify $ \s -> s { stCounter = k + 1 }
   return k
 
--- unnamed (locally-derived) electrons first; named axioms second
+-- unnamed locally derived electrons first, then named axioms
 getElectrons :: String -> AlgM [UnitEntry]
 getElectrons pos = gets $ \s ->
   let allUnits = stUnits s
@@ -327,13 +311,10 @@ emitGoalProof lit blk = do
   liftIO $ dbg dbgFlag $ "[goal-emit] " ++ ppLitI lit'
   template <- gets stGoalTemplate
   existing <- gets (map fst . stGoals)
-  -- Several independent code paths opportunistically match a nucleus's head
-  -- against the goal template and emit here; nothing else stops two of them
-  -- from grounding the same shared template variable differently and both
-  -- being recorded as if consistent (SYN602-1). Refusing here, rather than
-  -- only at the end-of-run invariant, means an inconsistent path is
-  -- abandoned (via throwError/attempt) instead of silently accepted,
-  -- letting the search try a different derivation for that goal.
+  -- Several code paths match a nucleus head against the goal template and emit
+  -- here, and nothing else stops two of them grounding a shared template
+  -- variable differently, as on SYN602-1.  Refusing here abandons the
+  -- inconsistent path, so the search tries another derivation for that goal.
   axNuclei <- gets stAxNuclei
   -- a goal proved at a fresh constant holds for every value of it
   let litG = unrigidLit lit'
@@ -343,11 +324,10 @@ emitGoalProof lit blk = do
     else throwError ("emitGoalProof: " ++ ppLitI litG
                       ++ " is inconsistent with an already-proven goal")
 
--- The goal block ends with the goal itself (Goal j: G_jθ).  An equational
--- conclusion that is the goal read the other way round (the prover's own
--- orientation, e.g. E's b = a for the goal a = b) is re-oriented when the
--- cited axiom derives that orientation from the same printed premises too
--- (an X = Y head does); otherwise the block is left as it is.
+-- The goal block ends with the goal itself.  A conclusion that is the goal
+-- equation read the other way round, as E prints b = a for a = b, is
+-- re-oriented when the cited axiom derives that orientation from the same
+-- premises too.  Otherwise the block is left as it is.
 orientToGoal :: [(String, Clause)] -> Literal -> ProofBlock -> ProofBlock
 orientToGoal axs goal@(Eq l r) blk@(HaveHence ls)
   | (Hence (Eq l' r') (ByAxiom nm) : older) <- reverse ls
@@ -381,9 +361,9 @@ promoteToLemma :: Literal -> ProofBlock -> AlgM String
 promoteToLemma lit blk
   | isEmptyBlock blk = error ("promoteToLemma: no proof for " ++ ppLitI lit)
   | otherwise = do
-  -- Free variables of the head are universally quantified: every premise is
-  -- an instance of an axiom or lemma under the same (composed) bindings, so
-  -- the block proves the lemma for all values of them.
+  -- Free head variables are universal.  Every premise is an axiom or lemma
+  -- instance under the same bindings, so the block proves the lemma for all
+  -- values.
   do
       -- (kept as a nested block to preserve indentation of the long body)
       -- skip counter values whose name is already taken (a lemma candidate is
@@ -406,13 +386,11 @@ promoteToLemma lit blk
           u { ueName = Just nm, ueProof = Nothing }
       | otherwise = u
 
--- promotes to a lemma if unnamed; runs buildBlk to get a proof when needed.
--- An empty HaveHence [] block (returned when twee cannot prove a derived
--- relational unit) is never promoted to a named lemma — we fall back to the
--- generic justification "axioms" so the parent proof step is still emitted.
--- A named fact is stated with variables, not with the fresh constants that
--- were rigid while it was derived (see addUnit); the lookup below compares
--- against the unit table, which holds the same form.
+-- promotes to a lemma if unnamed and runs buildBlk for a proof when needed.
+-- An empty HaveHence block, returned when Twee cannot prove a derived relational
+-- unit, is never promoted to a named lemma.  A named fact is stated with
+-- variables rather than the fresh constants rigid while it was derived, which
+-- matches the unit table the lookup below compares against.
 ensureNamed :: Literal -> AlgM ProofBlock -> AlgM String
 ensureNamed lit0 buildBlk0 = do
   let lit = unrigidLit lit0
@@ -435,10 +413,9 @@ ensureNamed lit0 buildBlk0 = do
     Nothing -> do
       blk <- buildBlk
       case blk of
-        -- Single "have lit by name" with no further steps: inline the name
-        -- directly rather than wrapping in a trivial lemma.  This covers both
-        -- ground axiom instances (e.g. product(a,a,identity) by axiom 3) and
-        -- ground instances of non-ground lemmas (e.g. p(a) by lemma 5).
+        -- A single "have lit by name" is cited by name directly rather than wrapped
+        -- in a trivial lemma.  This covers ground axiom instances and ground instances
+        -- of non-ground lemmas.
         HaveHence [Have _ nm] -> return nm
         _ -> do
           nm <- promoteToLemma lit blk
@@ -460,8 +437,8 @@ tryRelLemma units lit mPos = do
       steps <- mapM promoteChainStep chain
       promoteToLemma lit (EqChain start steps)
     _ -> do
-      -- last resort: re-prove the unit from its ancestry (the same
-      -- machinery as lemma introduction), when its position is known
+      -- last resort, re-prove the unit from its ancestry like lemma introduction
+      -- does, when its position is known
       mRe <- case mPos of
         Nothing  -> return Nothing
         Just pos -> do
@@ -474,12 +451,11 @@ tryRelLemma units lit mPos = do
         Nothing ->
           throwError ("ensureNamed: no proof found for: " ++ show lit)
 
--- Take over a re-proof's own axioms.  A sub-proof may rest on a file axiom
--- the input refutation never used, which it numbered inside its own run; the
--- number means something else out here.  Each such axiom is given an outer
--- number (reusing one already emitted when the statement is the same) and the
--- lifted block and sub-lemmas are renamed to match, so the emitted proof
--- states every axiom it cites.  Returns the lemma's statement and its block.
+-- Take over a re-proof's own axioms.  A sub-proof may rest on a file axiom the
+-- input refutation never used, numbered inside its own run, and that number
+-- means something else out here.  Each such axiom gets an outer number, reusing
+-- one for the same statement, and the block and sub-lemmas are renamed to match.
+-- Returns the lemma's statement and its block.
 absorbReprove :: (Literal, ProofBlock, [(String, Literal, ProofBlock)], [Axiom])
               -> AlgM (Literal, ProofBlock)
 absorbReprove (glit, gblk, subs, own) = do
@@ -509,29 +485,26 @@ skolemizeLitFresh li =
      , [ (c, Var v) | (v, c) <- pairs ] )
 
 -- Match body atom li against electron ki, giving σi.
--- Only the electron's variables may be bound.  Under Theorem 1's θ the body
--- atom is ground, its remaining symbols being the fresh constants the proof
--- never determines, which a match may not instantiate.  So the electron is
--- the pattern and the body atom the target, in either orientation of an
--- equation.  There is no second substitution: the paper's τ was needed only
--- while θ left body variables free.
+-- Only the electron's variables may be bound.  Under θ the body atom is ground
+-- up to fresh constants a match may not instantiate, so the electron is the
+-- pattern and the body atom the target, in either equation orientation.  The
+-- paper's τ was needed only while θ left body variables free.
 tryMatch :: Literal -> Literal -> Maybe Subst
 tryMatch li ki = matchLit ki li <|> matchLit (flipEq ki) li
   where
     flipEq (Eq l r) = Eq r l
     flipEq x        = x
 
--- The equation a chain step names: a display name of a named unit, or the
--- TSTP name of a derived unit equation.
+-- The equation a chain step names, either a display name or the TSTP name of a
+-- derived unit equation.
 chainEqLookup :: AlgM (String -> Maybe (Term, Term))
 chainEqLookup = do
   units <- gets stUnits
   eqs   <- gets stEqByName
   return (\nm -> findEqByName nm units <|> Map.lookup nm eqs)
 
--- The citation of a chain step: a display name stays; a derived unit named
--- by its TSTP name is justified and named here (its proof, or a re-proof),
--- so no rewrite step is ever cited by an internal name.
+-- The citation of a chain step.  A display name stays, and a derived unit is
+-- justified and named here, so no rewrite step cites an internal name.
 citeChainSteps :: [(RwStep, a)] -> AlgM [(RwStep, a)]
 citeChainSteps = mapM cite
   where
@@ -554,7 +527,7 @@ citeChainSteps = mapM cite
               nm <- ensureNamed (ueUnit u) (makeBlock u [] [])
               return (rw { rwName = nm }, c)
 
--- raw derived electrons with no proof excluded: Twee can't justify them later
+-- raw derived electrons with no proof are excluded since Twee cannot justify them later
 tweableUnits :: [UnitEntry] -> [UnitEntry]
 tweableUnits = filter (\u -> isJust (ueName u) || isJust (ueProof u))
 
@@ -579,15 +552,15 @@ tweeChain budget l r units = do
       steps <- mapM promoteChainStep chain
       return (Just (EqChain start steps))
 
--- Algorithm 3 find_elec: step 1 is a pure match; step 2 is rw_chain (demod chain,
--- with Twee as fallback when the chain is absent or produces no steps), then tryMatch.
+-- Algorithm 3 find_elec.  Step 1 is a pure match, and step 2 is rw_chain with
+-- Twee as fallback when the demodulation chain is absent or empty, then tryMatch.
 processBody
   :: [Literal]
   -> Subst
   -> [UnitEntry]
   -> Map.Map String [(String, Dir)]
   -> String
-  -> Bool     -- allowGroundUnnamed: include unnamed proof-less ground units in step1
+  -> Bool     -- include unnamed proof-less ground units in step 1
   -> AlgM (Maybe (Subst, [(UnitEntry, Subst, [(RwStep, Literal)])]))
 processBody = processBodyAccept (\_ _ -> True)
 
@@ -597,9 +570,9 @@ type Matched = [(UnitEntry, Subst, [(RwStep, Literal)])]
 targetsOf :: Matched -> [Literal]
 targetsOf matched = [ electronTarget ki σi rwi | (ki, σi, rwi) <- matched ]
 
--- processBody whose solutions must satisfy a predicate on the complete
--- match (the coherence of the hyperresolution step); a rejected solution
--- makes the search backtrack to the next candidate.
+-- processBody whose solutions must pass a predicate on the complete match,
+-- the coherence of the hyperresolution step.  A rejected solution backtracks
+-- to the next candidate.
 processBodyAccept
   :: (Subst -> Matched -> Bool)
   -> [Literal] -> Subst -> [UnitEntry] -> Map.Map String [(String, Dir)] -> String -> Bool
@@ -608,9 +581,9 @@ processBodyAccept accept lits thn elecs simpl pos allowGroundUnnamed = do
   failedRef <- liftIO (newIORef Set.empty)
   processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed
 
--- processBody with its memo of failed sub-searches: a search for the same
--- remaining literals (instantiated), the same premises matched so far and
--- the same unit table fails again.
+-- processBody with a memo of failed sub-searches.  A search with the same
+-- remaining literals, the same premises so far and the same unit table fails
+-- again.
 processBodyWith
   :: (Subst -> Matched -> Bool)
   -> IORef (Set.Set (String, Int))
@@ -618,17 +591,12 @@ processBodyWith
   -> AlgM (Maybe (Subst, Matched))
 processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed = goMemo lits thn [] [] []
   where
-    -- acc: the premises matched so far, innermost first.
-    -- A premise whose electron variable was identified with a nucleus
-    -- variable, by an identity binding (tryAsPattern, x ↦ x) or by binding
-    -- it to a nucleus variable (tryKiPattern, x ↦ w), is fine while that
-    -- nucleus variable stays free: the premise and the head share it.  When
-    -- a later body literal grounds it in thn' the two diverge: the electron
-    -- is a general unit used at that instance, the premise is emitted
-    -- general (its free variables are universal), and its variable must
-    -- then be a fresh one, or, inlined into a lemma over the same name, it
-    -- is read as the lemma's bound variable and the step from it is
-    -- unverifiable (SYN163-1, SYN159-1).
+    -- acc holds the premises matched so far, innermost first.
+    -- A premise whose electron variable was identified with a nucleus variable is
+    -- fine while that variable stays free, since premise and head share it.  When a
+    -- later body literal grounds it the two diverge.  The premise is emitted general
+    -- and its variable must then be fresh, or inlined into a lemma it reads as the
+    -- lemma's bound variable and the step is unverifiable, as on SYN163-1.
     finish thn' acc =
       let matched = map freshenGrounded (reverse acc)
           usedVars = concatMap litVars lits
@@ -637,18 +605,13 @@ processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed = g
                   ++ concatMap (termVars . snd) thn'
           suffix = head [ sfx | n <- [1 :: Int ..], let sfx = concat (replicate n "_e")
                               , not (any (sfx `isSuffixOf`) usedVars) ]
-          -- A nucleus variable (a variable of the body literals) that an
-          -- electron binding mentions is an identification of an electron
-          -- variable with it; once a later match binds that nucleus variable
-          -- the premise must not keep its name, or the general premise would
-          -- share a letter with the instantiated conclusion.  The premise
-          -- stays general: the nucleus variable is renamed to a fresh
-          -- universal inside the binding, whether it is the whole binding
-          -- (SYN163-1/E: r1(X1) with X1 ↦ a) or nested in a term (LCL430-2/
-          -- Vampire: Oop(Y,false) with Y ↦ Ovar(Y')).  tryBothSides binds an
-          -- electron variable to its own renamed copy, which the premise's
-          -- rewrite literals also use; that copy is not a nucleus variable
-          -- and keeps its name.
+          -- A nucleus variable mentioned in an electron binding identifies an electron
+          -- variable with it.  Once a later match binds that nucleus variable, the
+          -- general premise must not share its letter with the instantiated conclusion.
+          -- So the nucleus variable is renamed to a fresh universal inside the binding,
+          -- whether it is the whole binding (SYN163-1/E) or nested in a term
+          -- (LCL430-2/Vampire).  tryBothSides binds an electron variable to its own
+          -- renamed copy, which is not a nucleus variable and keeps its name.
           nucleusVars = concatMap litVars lits
           grounded    = [ (w, w ++ suffix) | w <- nub nucleusVars, isJust (lookup w thn') ]
           freshenGrounded (ki, σi, rwi) =
@@ -668,10 +631,9 @@ processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed = g
           when (isNothing r) $ liftIO (modifyIORef' failedRef (Set.insert key))
           return r
 
-    -- Three-tier ordering:
-    --  1. Direct sibling at pos[:-1]+"0" (the proof-tree electron for the outermost body lit)
-    --  2. Unnamed derived electrons, sorted by proximity (nearest first)
-    --  3. Named (axiom) electrons, sorted by proximity
+    -- Three tiers.  First the direct sibling electron for the outermost body
+    -- literal, then unnamed derived electrons nearest first, then named axiom
+    -- electrons nearest first.
     sortedElecs =
       let siblingPos = if not (null pos) && last pos == '1'
                        then Just (init pos ++ "0") else Nothing
@@ -692,8 +654,8 @@ processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed = g
     go [] thn' _ _ acc = finish thn' acc
     go (li : rest) thn' usedPos extraElecs acc = do
       let liInst    = applySubst thn' li
-      -- Trivially true literals (t=t) need no electron; they arise from
-      -- Vampire's trivial_inequality_removal preprocessing step.
+      -- Trivially true literals t = t need no electron.  They come from Vampire's
+      -- trivial_inequality_removal.
       if isTriviallyTrue liInst
         then go rest thn' usedPos extraElecs acc
         else doMatch liInst rest thn' usedPos extraElecs acc
@@ -703,10 +665,9 @@ processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed = g
       let
           (unused, used') = partition (\e -> uePos e `notElem` usedPos) sortedElecs
           prioritized = unused ++ used'
-          -- Derived instances from earlier body literals take priority.
-          -- For non-ground-head second-pass nuclei, also include ground unnamed
-          -- proof-less units: they are concrete facts from the refutation tree
-          -- that can ground body variables even without stored proofs.
+          -- Instances derived from earlier body literals come first.  Second-pass
+          -- nuclei with non-ground heads also take ground unnamed proof-less units, as
+          -- concrete facts of the refutation that can ground body variables.
           step1Elecs  = filter (\ue -> isJust (ueName ue) || isJust (ueProof ue)
                                     || (allowGroundUnnamed
                                         && isNothing (ueName ue)
@@ -726,7 +687,7 @@ processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed = g
         Just res -> return (Just res)
         Nothing  -> do
           units <- gets stUnits
-          -- Step 2: rw_chain — demod chain if available, Twee when absent or no steps
+          -- Step 2 is rw_chain, the demodulation chain if present and Twee otherwise
           tryRwChain liInst thn' units prioritized restLits usedPos extraElecs acc
 
     tryAll [] _ _ _ _ = return Nothing
@@ -740,7 +701,7 @@ processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed = g
       let newExtra = deriveInst ki σi : extraElecs
       in goMemo restLits thn'' (uePos ki : usedPos) newExtra ((ki, σi, rwi) : acc)
 
-    -- rw_chain: try demod chain for each candidate; Twee when chain is absent or gives no steps.
+    -- rw_chain tries the demodulation chain for each candidate and Twee when it is absent or empty.
     tryRwChain liInst thn' units candidates restLits usedPos extraElecs acc = do
       eqOf <- chainEqLookup
       let demodMatches =
@@ -759,9 +720,9 @@ processBodyWith accept failedRef lits thn elecs simpl pos allowGroundUnnamed = g
             Nothing              -> return Nothing
             Just (ki, σi, thn'', rwi) -> complete ki σi thn'' rwi restLits usedPos extraElecs acc
 
--- processBody with greedy-retry: tries lits in order, then reversed if that fails.
--- The reversed retry handles Horn clauses where the first literal's named-axiom
--- match commits to the wrong grounding (e.g. axiom 4 in GRP001-5/E).
+-- processBody with a greedy retry that tries literals in order, then reversed.
+-- The reversed retry handles Horn clauses where the first literal's axiom match
+-- commits to the wrong grounding, as axiom 4 in GRP001-5/E.
 processBodyBidir
   :: [Literal] -> Subst -> [UnitEntry] -> Map.Map String [(String, Dir)] -> String -> Bool
   -> AlgM (Maybe (Subst, Matched))
@@ -777,11 +738,11 @@ processBodyBidirAccept accept lits thn elecs simpl pos allow = do
     Just _  -> return mRes
     Nothing -> processBodyAccept accept (reverse lits) thn elecs simpl pos allow
 
--- Twee rw_chain fallback: called from tryRwChain when the demod chain is absent or gives no steps.
--- For equational literals, calls Twee on the body literal, then recovers the HaveHence
--- electron from the chain; falls back to a synthetic EqChain unit when recovery fails.
--- For relational literals, calls equational Twee treating the predicate as a function
--- (handles terminating rewrites); falls back to single-step rewriting for non-terminating cases.
+-- Twee rw_chain fallback, used when the demodulation chain is absent or empty.
+-- An equational literal calls Twee on the literal and recovers the electron
+-- from the chain, falling back to a synthetic EqChain unit.  A relational
+-- literal calls Twee with the predicate read as a function, falling back to
+-- single-step rewriting when rewriting does not terminate.
 findElecIO
   :: Literal -> Subst -> String
   -> [UnitEntry]
@@ -828,16 +789,12 @@ findElecIO li thn pos units = case li of
     case mRw of
       Just res -> return (Just res)
       Nothing  -> do
-        -- First try the unit-only Twee call (fast, handles terminating rewrites).
-        -- Without an equational unit Twee could only close P(t) ≈ true by the
-        -- direct instantiation already tried above, so the call is skipped:
-        -- in purely relational problems (LCL) it burned its whole budget
-        -- for every body atom whose match failed.
-        -- A non-ground atom is a universal claim (θ instantiates only as far
-        -- as the proof determines): its variables become fresh constants for
-        -- the call, since Twee reads goal variables existentially and a chain
-        -- for an instance cannot certify the general electron; the chain is
-        -- lifted back afterwards.
+        -- First try the fast unit-only Twee call.  Without an equational unit Twee
+        -- could only close P(t) ≈ true by the instantiation already tried, so the call
+        -- is skipped, since in relational problems like LCL it burned its budget for
+        -- every failed body atom.  A non-ground atom is a universal claim, so its
+        -- variables become fresh constants for the call.  Twee reads goal variables
+        -- existentially, and the chain is lifted back afterwards.
         let (liSk, undoSk) = skolemizeLitFresh li
         mRaw <- if null eqEntries then return Nothing
                 else liftIO (callTwee InternalBudget (tweableUnits units) liSk)
@@ -859,18 +816,16 @@ findElecIO li thn pos units = case li of
           _ -> tryHornThenReprove
         where
           start = atomTerm li
-          -- A Twee refutation of the negated goal shows an instance of a
-          -- non-ground atom, which cannot certify it as a general electron;
-          -- only ground atoms are worth the (budgeted) call.
+          -- A Twee refutation shows only an instance of a non-ground atom, which cannot
+          -- certify a general electron, so only ground atoms get the budgeted call.
           tryHornThenReprove = do
             mH <- tryHornFallback
             case mH of
               Just r  -> return (Just r)
               Nothing -> tryReproveElec
-          -- last resort: an unnamed proof-less derived unit matching the body
-          -- atom is re-proved from its own ancestry in the input proof and
-          -- promoted to a lemma (the unit's deriving nucleus may have been
-          -- processed and skipped before the units it depends on had proofs)
+          -- last resort, an unnamed proof-less derived unit matching the body atom is
+          -- re-proved from its ancestry and promoted to a lemma, since its nucleus may
+          -- have been skipped before its own premises had proofs
           tryReproveElec = do
             reprove <- gets stReprove
             let cands = [ (u, pos', σi, thn)
@@ -894,8 +849,8 @@ findElecIO li thn pos units = case li of
             goRe cands
           tryHornFallback = do
             hornAxioms <- gets stHornAxioms
-            -- Exclude Eq-headed/Eq-bodied axioms: ifeq encoding collapses them,
-            -- making Eq-bodied axioms unconditional and Eq-headed ones vanish.
+            -- Exclude axioms with equational heads or bodies.  The ifeq encoding makes
+            -- equational bodies unconditional and equational heads vanish.
             let filteredHornAxioms = filter isRelHornAxiom hornAxioms
                 -- variables as fresh constants, as for callTwee above
                 (liSk, _) = skolemizeLitFresh li
@@ -913,8 +868,8 @@ findElecIO li thn pos units = case li of
                     return (Just (ki, [], thn, []))
                   _ -> return Nothing
               _ -> return Nothing
--- Recover the electron from a Twee equational chain: find the HaveHence electron
--- among the chain participants, then try single-step rewriting to match li.
+-- Recover the electron from a Twee equational chain by finding the HaveHence
+-- electron among its participants, then try single-step rewriting to match li.
 recoverElecFromTweeChain
   :: Literal -> Subst
   -> [(UnitEntry, Dir, Term)]
@@ -960,10 +915,9 @@ matchViaRw li thn srcElecs eqEntries = firstJustM tryElec srcElecs
           nm <- getEqName eq
           case nm of
             Nothing -> return Nothing
-            -- NOTE: res is returned σi-instantiated here, while the demod-chain
-            -- path (rwChain) returns uninstantiated literals; electronTarget and
-            -- makeBlock apply σi again, which is a no-op only while σi is
-            -- idempotent.  Normalizing this needs a golden decision.
+            -- res is σi-instantiated here while the rwChain path returns uninstantiated
+            -- literals.  electronTarget and makeBlock apply σi again, a no-op only while σi
+            -- is idempotent.  Normalizing this needs a golden decision.
             Just n  -> return $ Just (u, σi, thnR, [(RwStep n (sa, sb) dir, applySubst σi res)])
       _ -> return Nothing
 
@@ -973,8 +927,8 @@ matchViaRw li thn srcElecs eqEntries = firstJustM tryElec srcElecs
         Just _  -> Just <$> ensureNamed (ueUnit eq) (makeBlock eq [] [])
         Nothing -> return Nothing
 
--- rwSteps come from rwChain on the uninstantiated electron; σi applied to literals
--- so "hence p(a)" appears instead of "hence p(X)"
+-- rwSteps come from rwChain on the uninstantiated electron, and σi is applied
+-- so the output reads "hence p(a)" rather than "hence p(X)"
 makeBlock :: UnitEntry -> Subst -> [(RwStep, Literal)] -> AlgM ProofBlock
 makeBlock ki σi rwSteps = do
   units <- gets stUnits
@@ -1033,7 +987,7 @@ makeBlock ki σi rwSteps = do
           case ueName u of
             Just nm -> return (HaveHence [Have lit nm])
             Nothing -> do
-              -- unnamed unit with no stored proof: try to give it a name via Twee
+              -- unnamed unit with no stored proof, so try to name it via Twee
               case ueUnit u of
                 Eq l r -> do
                   let namedUs = filter (isJust . ueName) units
@@ -1043,8 +997,8 @@ makeBlock ki σi rwSteps = do
                       nm <- ensureNamed (ueUnit u) (return blk)
                       return (HaveHence [Have lit nm])
                     Nothing -> do
-                      -- Twee cannot derive it from named units alone: re-prove
-                      -- it from its ancestry, as lemma introduction would
+                      -- Twee cannot derive it from named units alone, so re-prove it from its
+                      -- ancestry as lemma introduction would
                       mRe <- case uePos u of
                         Nothing  -> return Nothing
                         Just pos -> do
@@ -1056,8 +1010,8 @@ makeBlock ki σi rwSteps = do
                           nm <- promoteToLemma glit gblk
                           return (HaveHence [Have lit nm])
                         Nothing ->
-                          -- no justification: the step fails (the other
-                          -- stage or the rescue pass gets its chance)
+                          -- no justification, so the step fails and the other stage or the rescue
+                          -- pass gets its chance
                           throwError ("makeBlock: cannot prove unnamed eq unit: " ++ ppLitI (ueUnit ki))
                 _ -> do
                   let namedUnits = filter (isJust . ueName) units
@@ -1071,14 +1025,11 @@ makeBlock ki σi rwSteps = do
                       nm <- tryRelLemma units lit (uePos u)
                       return (HaveHence [Have lit nm])
         Nothing ->
-          -- ki may be a derived (instantiated) entry from deriveInst that was
-          -- never added to stUnits independently.  Search for an original entry
-          -- whose stored atom matches ueUnit ki under some substitution σg, then
-          -- instantiate its stored proof with σg.
-          -- Prefer a match that carries a name or a stored proof: a proofless
-          -- entry from the input tree can state the same fact (RNG008-5 has
-          -- sum(X1,X2,add(X2,X1)) at 00000) and would otherwise shadow the
-          -- derived unit whose proof exists.
+          -- ki may be an instance from deriveInst never added to stUnits on its own.
+          -- Search for an original entry whose atom matches it under some σg and
+          -- instantiate its stored proof with σg.  Prefer an entry with a name or proof,
+          -- since a proofless entry can state the same fact and shadow the derived unit
+          -- whose proof exists, as on RNG008-5.
           let mbCands who =
                 [ (u, sg)
                 | u <- units
@@ -1104,9 +1055,9 @@ makeBlock ki σi rwSteps = do
 electronTarget :: UnitEntry -> Subst -> [(RwStep, Literal)] -> Literal
 electronTarget ki σi rw = case rw of
   [] -> applySubst σi (ueUnit ki)
-  -- rw is computed on the uninstantiated electron; σi comes from matching
-  -- its rewritten form, so it must be applied here too (else a lemma gets
-  -- stated as q(g(X)) while its proof establishes q(g(a))).
+  -- rw is computed on the uninstantiated electron and σi comes from its
+  -- rewritten form, so σi is applied here too.  Otherwise a lemma is stated as
+  -- q(g(X)) while its proof shows q(g(a)).
   _  -> applySubst σi (snd (last rw))
 
 buildProofBlock
@@ -1116,13 +1067,11 @@ buildProofBlock
   -> Subst         -- thn
   -> Literal       -- head literal L0
   -> AlgM ProofBlock
--- unit clause with no body: a direct assertion of the named axiom; without
--- a name there is nothing that justifies the literal.
--- thn must be applied here as it is on every other line of a block: the raw
--- head still carries variables that θ binds, and asserting it uninstantiated
--- states something stronger than the axiom gives (RNG038-1 asserted
--- product(X,h(X,b),b) from the conditional X = additive_identity =>
--- product(X,h(X,Y),Y), which Lean rightly rejects).
+-- unit clause with no body, asserted directly by the named axiom.  Without a
+-- name nothing justifies the literal.
+-- thn is applied here as on every other line of a block.  The raw head still
+-- has variables θ binds, and asserting it uninstantiated claims more than the
+-- axiom gives, as on RNG038-1 which Lean rightly rejects.
 buildProofBlock _ [] mAxName thn headLit = case mAxName of
   Just ax -> return (HaveHence [Have (applySubst thn headLit) ax])
   Nothing -> throwError ("buildProofBlock: unjustified unit " ++ ppLitI (applySubst thn headLit))
@@ -1133,11 +1082,9 @@ buildProofBlock bodyAbs (m1@(k1, σ1, rw1) : rest) mAxName thn headLit = do
     Just ax -> appendLine blk (Hence concl (ByAxiom ax))
     Nothing -> blk
   where
-    -- An equation holds up to symmetry, so θ may orient the head either way
-    -- (axiom "g(X) = g(Y) => X = Y" read off the prover's own flipped body).
-    -- The conclusion is printed as it follows from the premises this block
-    -- cites, so that applying the named axiom to the lines above reproduces
-    -- it; that is also what the Lean check does.
+    -- An equation holds up to symmetry, so θ may orient the head either way.  The
+    -- conclusion is printed as it follows from the premises this block cites, so
+    -- applying the named axiom reproduces it, as the Lean check does.
     concl = case derivedHead bodyAbs headLit
                    [ electronTarget ki σi rwi | (ki, σi, rwi) <- m1 : rest ] of
       Just d | d == flipLit headInst -> d
@@ -1145,14 +1092,11 @@ buildProofBlock bodyAbs (m1@(k1, σ1, rw1) : rest) mAxName thn headLit = do
       where headInst = applySubst thn headLit
     addAnd blk (ki, σi, rwi) = do
       let targ = electronTarget ki σi rwi
-      -- A non-ground premise instance of a derived electron with a stored
-      -- proof is cited by the name of the electron itself (make_block's
-      -- name_of(E)), so the lemma stays general and every instance can
-      -- reuse it (resolution_example_horn_reuse_forced: "Lemma 5: p(X)",
-      -- used as "and p(a) by lemma 5" in the goal).  Ground instances,
-      -- rewritten premises and electrons without a stored proof keep naming
-      -- the instance together with its proof (thesis_example_both_lemmas:
-      -- "Lemma 7: q(a)").
+      -- A non-ground premise instance of a derived electron with a stored proof is
+      -- cited by the electron's own name, so the lemma stays general and every
+      -- instance reuses it, as "p(a) by lemma 5" for "Lemma 5 p(X)".  Ground
+      -- instances, rewritten premises and electrons without a stored proof name the
+      -- instance with its proof.
       nm <- if null rwi && isJust (ueProof ki) && not (null (litFree targ))
               then ensureNamed (ueUnit ki) (makeBlock ki [] [])
               else do
@@ -1160,10 +1104,9 @@ buildProofBlock bodyAbs (m1@(k1, σ1, rw1) : rest) mAxName thn headLit = do
                 ensureNamed targ (return blki)
       return (appendLine blk (And targ nm))
 
--- equational goals use EqChain built from the electron or Twee;
--- relational goals with a Twee chain also use EqChain (shows p(args) = ... = true);
--- otherwise relational goals use HaveHence.
--- rwi non-empty forces HaveHence so "hence … by rw" is preserved
+-- Equational goals use an EqChain from the electron or Twee, and so do
+-- relational goals with a Twee chain.  Other relational goals use HaveHence.
+-- A non-empty rwi forces HaveHence so "hence … by rw" is preserved.
 emitBlockForGoal :: Literal -> UnitEntry -> Subst -> [(RwStep, Literal)] -> AlgM ProofBlock
 emitBlockForGoal _gl ki _σi []
   | isNothing (ueName ki)
@@ -1222,8 +1165,8 @@ tryAxiomJustification goalLit simpl pos = do
             Nothing -> tryEach rest elecs
             Just σh -> do
               let bodyG = map (applySubst σh) bodyPats
-              -- the same coherence judgement as processOneNucleus: the
-              -- instantiated axiom must actually derive the claimed goal
+              -- the coherence judgement of processOneNucleus, so the instantiated axiom
+              -- must derive the claimed goal
               let coherentA thn' m = resolutionCoherent bodyPats hdPat (targetsOf m) (applySubst thn' goalLit)
               mResR <- processBodyBidirAccept coherentA bodyG [] elecs simpl pos False
               dbgFlag <- gets stDebug
@@ -1253,8 +1196,8 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
       let θ_local = computeNucleusTheta thetaCtx entry
           Clause bodyLitsAbs mHead = cls
           bodyLits = map (applySubst θ_local) bodyLitsAbs
-          -- True for non-ground-head derived nuclei (innerNusNG, second pass):
-          -- ground unnamed proof-less facts are valid electrons here.
+          -- True for second-pass derived nuclei with non-ground heads, where ground
+          -- unnamed proof-less facts are valid electrons
           allowGroundUnnamed = isNothing mAxName
                             && maybe False (not . null . litFree) mHead
       in do
@@ -1269,13 +1212,12 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
           Nothing -> do
             liftIO $ dbg debug $ "[skip] pos=" ++ pos ++ " (" ++ leName entry ++ ")"
                 ++ "  body=[" ++ intercalate ", " (map ppLitI bodyLits) ++ "] — no matching electron found"
-            -- Goal-grounding fallback: if the head matches a goal lit,
-            -- instantiate free variables and retry processBody.
+            -- If the head matches a goal literal, instantiate its free variables and
+            -- retry processBody.
             case mHead of
-              -- Sibling-grounding fallback for NegConjecture: when the body lit
-              -- has free variables, match against the sibling derived electron to
-              -- ground them (e.g. V_U → c_1), then retry so that step-2.5 can
-              -- find a rewriting match.
+              -- For a negated conjecture whose body literal has free variables, match the
+              -- sibling derived electron to ground them, then retry so a rewriting match can
+              -- be found.
               Nothing -> case bodyLits of
                 [singleLit] -> do
                   let sibPos = if not (null pos) && last pos == '1'
@@ -1307,8 +1249,8 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                 case listToMaybe [σ | gl <- goalLits, Just σ <- [matchLit hl gl]] of
                   Nothing   -> return False
                   Just σ_gl -> do
-                    -- Ground the ABSTRACT body (bodyLits already carries θ_local;
-                    -- σ_gl over it is a no-op and would mismatch the claimed head).
+                    -- Ground the abstract body.  bodyLits already carries θ_local, so σ_gl over
+                    -- it is a no-op and would mismatch the claimed head.
                     let bodyLitsG = map (applySubst σ_gl) bodyLitsAbs
                         headLitG  = applySubst σ_gl hl
                     let coherentG thn' m = resolutionCoherent bodyLitsAbs hl (targetsOf m) (applySubst thn' headLitG)
@@ -1318,17 +1260,17 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                       Just (thn, matched) -> do
                         blk <- buildProofBlock bodyLitsAbs matched mAxName thn headLitG
                         let headInst = applySubst thn headLitG
-                            -- Only store ground proofs from this extra goal-grounding attempt;
-                            -- abstract proofs here are redundant (the main path handles them).
+                            -- Only store ground proofs from this extra goal-grounding attempt, since
+                            -- the main path handles the abstract ones.
                             proofToStore = if null (litFree headInst) then Just blk else Nothing
                         when (isJust mAxName) $ do
                           addUnit (UnitEntry Nothing (unrigidLit headInst) (fmap unrigidBlock proofToStore) (Just pos))
                           case (proofToStore, blk) of
                             (Just _, EqChain {}) -> void (ensureNamed (unrigidLit headInst) (return (unrigidBlock blk)))
                             _ -> return ()
-                        -- For named axioms: emit the goal proof with the proper axiom name.
-                        -- For derived inner nuclei (no axiom name): search original axiom
-                        -- nuclei for a proper justification; return False if none found.
+                        -- A named axiom emits the goal proof under its name.  A derived inner
+                        -- nucleus searches the original axiom nuclei for a justification and
+                        -- returns False if none is found.
                         case (mAxName, listToMaybe [gl | gl <- goalLits, isJust (matchLit headInst gl)]) of
                           (Nothing, Just gl) -> do
                             mBlk <- tryAxiomJustification headInst simpl pos
@@ -1341,16 +1283,15 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                           _ -> return False
           Just (thn, matched)  ->
             case mHead of
-              -- L0 = ⊥ from a clause that is not the negated conjecture: the
-              -- axioms alone are contradictory, and every goal follows from the
-              -- derived $false (the conjecture holds vacuously)
+              -- ⊥ from a clause other than the negated conjecture means the axioms are
+              -- contradictory, and every goal follows vacuously from $false
               Nothing | leRole entry /= NegConjecture, Just _ <- mAxName -> do
                 blk <- buildProofBlock bodyLitsAbs matched mAxName thn falsumLit
                 forM_ goalLits $ \gl ->
                   emitGoalProof gl (appendLine blk (Hence gl ByContradiction))
                 return True
               Nothing ->
-                -- L0 = ⊥: emit goal proofs; thn instantiates any remaining variables
+                -- ⊥, so emit goal proofs with thn instantiating any remaining variables
                 case (goalLits, matched) of
                   ([gl], [(ki, σi, _)])
                     | isNothing (ueName ki)
@@ -1363,17 +1304,12 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                       then return False
                       else do
                         forM_ pairs $ \(gl, bl, (ki, σi, rwi)) -> do
-                          -- thn binds the clause copy's variable names, which can
-                          -- differ from the goal literal's (each Vampire clause
-                          -- renames apart), so remaining goal variables are
-                          -- instantiated by matching on the proved electron
-                          -- instance; they are existential (NUM025-1: the goal
-                          -- is emitted as less(b,b), not less(X,Y)).
-                          -- The harvested goal literals can also disagree with
-                          -- the ⊥ nucleus's own body entirely (E's definitional
-                          -- detour prints epred atoms near ⊥ while the input
-                          -- goal clause holds the real atoms, SYO632-1): then
-                          -- the goal proved here is the body atom's instance.
+                          -- thn binds the clause copy's variable names, which can differ from the
+                          -- goal literal's, so remaining goal variables are instantiated by matching
+                          -- the proved electron.  They are existential, so NUM025-1 emits less(b,b).
+                          -- The goal literals can also disagree with the ⊥ nucleus's body entirely, as
+                          -- when E prints epred atoms near ⊥ on SYO632-1.  Then the goal proved here is
+                          -- the body atom's instance.
                           let gl0 = applySubst thn gl
                               targ = electronTarget ki σi rwi
                               gl' = case matchLit gl0 targ of
@@ -1390,9 +1326,8 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                 blk0 <- buildProofBlock bodyLitsAbs matched mAxName thn headLit
                 let headInst0 = applySubst thn headLit
                     nucChain  = Map.findWithDefault [] pos (tcSimpl thetaCtx)
-                -- a demodulation the prover folded into this inference becomes
-                -- explicit rewrite steps; the derived unit is the conclusion the
-                -- proof shows
+                -- a demodulation the prover folded into this inference becomes explicit
+                -- rewrite steps, and the derived unit is the conclusion the proof shows
                 eqOf <- chainEqLookup
                 (headInstA, blk) <- case rwChain eqOf headInst0 nucChain of
                   Just (h', steps) | not (null nucChain) -> do
@@ -1408,19 +1343,13 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                     headInst = case derivedHead bodyLitsAbs headLit electronTargets of
                       Just d | d == flipLit headInstA -> d
                       _                               -> headInstA
-                    -- Two kinds of degenerate blocks are never stored:
-                    -- (1) Stale target (non-ground Eq heads only): a free head var V
-                    --     also appears in a body literal after thn, but some electron
-                    --     target lacks V — greedy matching grounded V in that target
-                    --     while leaving it free in the head, so retrieval at another
-                    --     instance would be inconsistent.  Example: HEN006-4 axiom 5
-                    --     (antisymmetry), body 2 target "less_equal(zero,zero)" with
-                    --     X1 still free in the head.  Head-only vars (Y in
-                    --     "class_Ord(X) => Y = c_times(c_1,Y,X)") are exempt.
-                    -- (2) Circular (any head): a body electron target equals the head,
-                    --     so the block proves the literal from itself.  Example:
-                    --     transitivity matched against two abstract axiom-7 copies,
-                    --     each claiming the same "less_equal(div(X,Y),X)".
+                    -- Two kinds of degenerate block are never stored.
+                    -- A stale target, only for non-ground equational heads, has a free head
+                    -- variable in a body literal that some electron target lacks, so greedy
+                    -- matching grounded it there and retrieval elsewhere would be inconsistent.
+                    -- HEN006-4 axiom 5 is an example.  Head-only variables are exempt.
+                    -- A circular block has a body target equal to the head, so it proves the
+                    -- literal from itself, as transitivity over two copies of axiom 7 did.
                     headVars = Set.fromList (litFree headInst)
                     bodyVarsAfterTau = Set.fromList
                       (concatMap (litFree . applySubst thn) bodyLits)
@@ -1443,12 +1372,11 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                   case (proofToStore, blk) of
                     (Just _, EqChain {}) -> void (ensureNamed (unrigidLit headInst) (return (unrigidBlock blk)))
                     _ -> return ()
-                -- Extra goal-grounding attempt: the natural electron match may produce a
-                -- unit that shares the head shape with a goal but with different ground
-                -- terms (e.g. axiom 11 matches k≤f and emits 0≤f-k, while the goal is
-                -- 0≤f-g).  If the head also matches a goal literal under a *different*
-                -- grounding σ_gl, retry processBody with the goal-grounded body so that
-                -- the goal unit gets stored too.
+                -- Extra goal-grounding attempt.  The natural match may store a unit with a
+                -- goal's head shape but other ground terms, as axiom 11 emits 0≤f-k while the
+                -- goal is 0≤f-g.  If the head also matches a goal literal under another
+                -- grounding σ_gl, retry processBody with the goal-grounded body so the goal
+                -- unit is stored too.
                 when (isJust mAxName) $ do
                   elecs2 <- getElectrons pos
                   let altGoalPairs = [ (σ, gl) | gl <- goalLits
@@ -1458,9 +1386,9 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                   case altGoalPairs of
                     [] -> return ()
                     ((σ_gl, _) : _) -> do
-                      -- Ground the ABSTRACT body: bodyLits already carries θ_local,
-                      -- so applying σ_gl to it is a no-op and the retry would prove
-                      -- the θ-instance body while claiming the goal-instance head.
+                      -- Ground the abstract body.  bodyLits already carries θ_local, so σ_gl over
+                      -- it is a no-op and the retry would prove the θ instance while claiming the
+                      -- goal instance.
                       let bodyLitsG = map (applySubst σ_gl) bodyLitsAbs
                           headLitG  = applySubst σ_gl headLit
                           coherentG thn' m = resolutionCoherent bodyLitsAbs headLit (targetsOf m) (applySubst thn' headLitG)
@@ -1480,22 +1408,14 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                                                , isJust (matchLit headInst2 gl')] of
                             Just gl' -> emitGoalProof gl' blk2
                             Nothing  -> return ()
-                -- For derived inner nuclei (mAxName=Nothing): if the head shape
-                -- matches a goal under a different grounding, retry processBody with
-                -- goal-grounded body so that step-2 findElecIO can find unnamed ground
-                -- electrons (e.g. E's inline spm steps like c_0_16 in GRP001-5).
-                -- This only fires in the second pass (innerNusNG), so named axiom
-                -- paths always get priority.
-                -- Fire when headInst exactly matches a goal and either:
-                --   (a) the goal is equational, or
-                --   (b) the head has free variables (non-ground head → innerNusNG
-                --       second pass, so named axiom paths have already been tried).
-                -- Ground-head derived nuclei (heuristic first pass) are excluded by
-                -- the `not (null (litVars headLit))` guard so they cannot short-circuit
-                -- named axiom proofs for relational goals.
-                -- Orient headLit to match the goal literal's direction.
-                -- When headInst is a flipped equality of gl, swap headLit so
-                -- that applySubst thn headLitOriented == gl.
+                -- A derived inner nucleus whose head matches a goal under another grounding
+                -- retries processBody with the goal-grounded body, so findElecIO can find
+                -- unnamed ground electrons like E's inline spm steps in GRP001-5.  It fires
+                -- only in the second pass, so named axiom paths keep priority, and only when
+                -- the head instance matches a goal that is equational or the head has free
+                -- variables.  The guard on litVars keeps ground-head nuclei of the first pass
+                -- from short-circuiting named axiom proofs of relational goals.
+                -- headLit is flipped when needed so applySubst thn of it equals the goal.
                 let orientedPair gl = case (headInst, gl) of
                       (Eq a b, Eq c d)
                         | a == c && b == d -> Just (gl, headLit)
@@ -1537,18 +1457,16 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                                 let goalInst3 = applySubst thn' headLitG3
                                 mBlk <- tryAxiomJustification goalInst3 simpl pos
                                 case mBlk of
-                                  -- thn' grounds the goal's variables: they are
-                                  -- existential (a universal conjecture
-                                  -- Skolemizes to a ground negation), so the
-                                  -- goal is emitted at the proved instance
-                                  -- (NUM025-1: "less(b,b)", not "less(X,Y)")
+                                  -- thn' grounds the goal's variables.  They are existential, since a
+                                  -- universal conjecture Skolemizes to a ground negation, so the goal is
+                                  -- emitted at the proved instance, as less(b,b) on NUM025-1
                                   Just blk' -> emitGoalProof (applySubst thn' gl) blk' >> return True
                                   Nothing   -> return False
                       else return False
 
 processNuclei
   :: Bool  -- debug
-  -> Bool  -- warnOnFail: emit warning if nuclei remain unprocessed after all retries
+  -> Bool  -- warn if nuclei remain unprocessed after all retries
   -> ThetaCtx     -- per-nucleus θ context
   -> [LeafEntry]
   -> Map.Map String String
@@ -1556,11 +1474,10 @@ processNuclei
   -> Map.Map String [(String, Dir)]
   -> AlgM ()
 processNuclei debug warnOnFail thetaCtx nuclei posToName goalLits simpl = do
-  -- θ is one substitution over the whole tree; show it once, each binding
-  -- tagged with the position of the clause occurrence its variable belongs
-  -- to (X0@01 and X0@101 are different variables)
-  -- inferences the replay could not account for exactly; a nucleus that
-  -- fails almost always sits under one of these
+  -- θ is one substitution over the whole tree, shown once with each binding
+  -- tagged by the position its variable belongs to.
+  -- inferences the replay could not account for exactly.  A failing nucleus
+  -- almost always sits under one of these
   when debug $ do
     let st = tcStatus thetaCtx
     liftIO $ dbg True $ "replay: " ++ show (length [ () | (_, k) <- st, k == "strict" ]) ++ " strict"
@@ -1619,8 +1536,8 @@ findUnitForGoal goal units = listToMaybe $
   [ (ue, [], applySubst ρ0 goal)
   | ue <- units, Just ρ0 <- [matchLit goal (ueUnit ue)] ]
   ++
-  -- bidirectional via tryMatch: handles free goal variables (e.g. from negated conjecture)
-  -- Only tried when one-way matching in both directions has already failed.
+  -- bidirectional tryMatch handles free goal variables, and is only tried when
+  -- one-way matching in both directions failed
   [ (ue, σi, goal)
   | ue <- units
   , isNothing (matchLit (ueUnit ue) goal)
@@ -1689,13 +1606,9 @@ proveGoal simpl mChain goal = do
             Just u  -> Just <$> makeBlock u [] []
           case mDerivedBlk of
             Just blk -> emitGoalProof goal blk
-            -- Reflexive goal: the goal's variables come from an existential
-            -- conjecture, so if the two sides unify the instantiated goal
-            -- l' = l' holds by reflexivity (Twee emits a `reflexivity` step,
-            -- Vampire an equality_resolution on the negated conjecture).
-            -- reflexive existential goal (Twee `reflexivity`, Vampire
-            -- equality_resolution): one side matched onto the other and
-            -- checked to make both sides equal (matching, not unification)
+            -- A reflexive goal comes from an existential conjecture, so if one side
+            -- matches onto the other the instantiated goal holds by reflexivity.  Twee
+            -- emits a reflexivity step and Vampire an equality_resolution here.
             Nothing | Just ρ <- reflexiveInstance l r -> do
               let l' = deepApplySubstTerm ρ l
               emitGoalProof (Eq l' l') (EqChain l' [])
@@ -1706,10 +1619,8 @@ proveGoal simpl mChain goal = do
                   steps' <- mapM promoteChainStep chain
                   emitGoalProof goal (EqChain start steps')
                 _ -> do
-                  -- an equational goal can be the head of a Horn axiom
-                  -- (antisymmetry: less_equal both ways gives the equation),
-                  -- so the axiom nuclei are searched before giving up
-                  -- (HEN010-3: divide(identity,a) = ... via axiom 5)
+                  -- an equational goal can be the head of a Horn axiom such as antisymmetry,
+                  -- so the axiom nuclei are searched before giving up, as on HEN010-3
                   mAx <- tryAxiomJustification goal simpl "z"
                   case mAx of
                     Just blk -> emitGoalProof goal blk
@@ -1728,14 +1639,13 @@ proveGoal simpl mChain goal = do
           allElecs <- gets stUnits
           axNuclei <- gets stAxNuclei
           let provableElecs = filter (\ue -> isJust (ueName ue) || isJust (ueProof ue)) allElecs
-              -- Only ground proof-less electrons: non-ground literals cannot be
-              -- promoted as named lemmas (conservative: only ground proofless electrons are promoted here).
+              -- Only ground proof-less electrons, since non-ground literals cannot be
+              -- promoted as named lemmas.
               prooflessElecs = filter (\ue -> isNothing (ueName ue) && isNothing (ueProof ue)
                                            && ueUnit ue /= goal
                                            && null (litFree (ueUnit ue))) allElecs
-          -- Iterative enrichment: repeat until fixed point so multi-step dependency chains
-          -- (enriching A requires enriched B which requires enriched C, etc.) are resolved.
-          -- Each round tries both one-step axiom matching and EqChain via Twee.
+          -- Enrich to a fixed point so multi-step dependency chains are resolved.
+          -- Each round tries one-step axiom matching and an EqChain via Twee.
           let enrichLoop allProv pending = do
                 newly <- fmap catMaybes $ forM pending $ \ue -> do
                   mStep <- tryOneStepAxiom axNuclei allProv (ueUnit ue)
@@ -1759,20 +1669,20 @@ proveGoal simpl mChain goal = do
                       Nothing -> tryAxNuclei elecs rest
                       Just σh -> do
                         let bodyG = map (applySubst σh) bodyPats
-                        -- Prefer reversed order: grounds free variables before matching forward.
+                        -- Prefer reversed order, which grounds free variables before matching forward.
                         mRes <- processBodyBidir (reverse bodyG) [] elecs Map.empty "" False
                         case mRes of
                           Nothing            -> tryAxNuclei elecs rest
                           Just (thn', matched) ->
                             Just <$> buildProofBlock bodyPats matched (Just axName) thn' goal
-          -- Use the full enriched set: the enriched lemmas are needed in step1
-          -- so that the reversed body order finds them before falling back to step2 Twee.
+          -- Use the full enriched set, so the reversed body order finds enriched lemmas
+          -- in step 1 before falling back to Twee in step 2.
           mAxBlk <- tryAxNuclei (provableElecs ++ enriched) axNuclei
           case mAxBlk of
             Just blk -> emitGoalProof goal blk
             Nothing  -> do
-              -- Fallback: Twee-based proof using relational Horn axioms from stAxNuclei.
-              -- Re-read stUnits so enriched lemmas are available as Twee background.
+              -- Fall back to Twee with the relational Horn axioms of stAxNuclei, re-reading
+              -- stUnits so enriched lemmas serve as background.
               units' <- gets stUnits
               hornAxioms <- gets stHornAxioms
               let filteredHornAxioms = filter isRelHornAxiom hornAxioms
@@ -1784,8 +1694,8 @@ proveGoal simpl mChain goal = do
                     | (nm, Clause bodyPats (Just hdPat)) <- axNuclei
                     , not (isEqLit hdPat)
                     , not (any isEqLit bodyPats) ]
-              -- a goal with variables is universal; a Twee refutation of its
-              -- negation only shows an instance, so the call is not made
+              -- a goal with variables is universal and a Twee refutation shows only an
+              -- instance, so the call is not made
               mRes <- if not (null (litFree goal)) then return Nothing
                       else liftIO $ callTweeRelLemma GoalBudget (tweableUnits units') (filteredHornAxioms ++ axHornAxioms) goal
               case mRes of
@@ -1794,17 +1704,11 @@ proveGoal simpl mChain goal = do
                                     [ (ue, nm') | (ue, _, _) <- chain
                                                 , not (isInternalUnit ue)
                                                 , Just nm' <- [ueName ue] ]
-                  -- The chain only shows that the goal follows from the
-                  -- cited rules; it is not a hyperresolution derivation.  A
-                  -- single unit rule the goal instantiates is a valid step,
-                  -- everything else has no representable proof here.  "Unit"
-                  -- means the cited rule itself needs no premises: matching
-                  -- its head against the goal says nothing about whether a
-                  -- non-unit (Horn) axiom's own premises were ever
-                  -- established, so citing one directly here would print an
-                  -- unjustified "have GOAL by axiom N" (LCL359-1: a genuine
-                  -- 5-step modus-ponens chain collapsed into one bare
-                  -- citation of the 2-premise modus-ponens axiom itself).
+                  -- The chain shows only that the goal follows from the cited rules, not a
+                  -- hyperresolution derivation.  A single unit rule the goal instantiates is a
+                  -- valid step and nothing else is.  A Horn axiom matched by its head alone says
+                  -- nothing about its premises, so citing it would print an unjustified "have
+                  -- GOAL by axiom N".  LCL359-1 collapsed a 5-step modus ponens chain that way.
                   let isUnitRule nm =
                         maybe True (\(Clause bs _) -> null bs) (lookup nm axNuclei)
                         && not (any (\ha -> haDispName ha == Just nm && not (null (haBodies ha))) hornAxioms)
@@ -1845,7 +1749,7 @@ proveGoal simpl mChain goal = do
         let lit = ueUnit ue
             filteredHornAxioms = filter isRelHornAxiom hornAxioms
             startTerm = atomTerm lit
-        mRes <- if not (null (litFree lit)) then return Nothing   -- same: instance proofs cannot justify a general electron
+        mRes <- if not (null (litFree lit)) then return Nothing   -- instance proofs cannot justify a general electron
                 else liftIO $ callTweeRelLemma InternalBudget (tweableUnits units') filteredHornAxioms lit
         case mRes of
           Just (_, chain) | not (null chain) -> do
@@ -1862,8 +1766,8 @@ proveGoal simpl mChain goal = do
           _ -> return Nothing
       _ -> return Nothing
 
--- use source formula (general form) for OrigAxiom; fall back to derived literal
--- when resolveSourceName traced through rewriting and the source is unrelated
+-- use the general source formula for OrigAxiom, falling back to the derived
+-- literal when resolveSourceName traced through rewriting to an unrelated source
 electronLit :: Map.Map String T.Unit -> LeafEntry -> Literal
 electronLit unitMap e = case leRole e of
   OrigAxiom ->
@@ -1873,7 +1777,7 @@ electronLit unitMap e = case leRole e of
             flipped   = flipLit converted
         in case matchLit converted derivedLit <|> matchLit flipped derivedLit of
              Just _ -> converted  -- derived is an instance (possibly flipped) of source
-             Nothing -> derivedLit  -- unrelated: resolveSourceName traced through rewriting
+             Nothing -> derivedLit  -- unrelated, since resolveSourceName traced through rewriting
       _ -> derivedLit
   _ -> derivedLit
   where
@@ -1909,8 +1813,8 @@ sameAxiomStatement _ _ = False
 -- Overridden axioms are NOT added to the axiom list (they belong to an outer proof).
 -- Names mapped to the empty string are silently skipped (used for internal Twee axioms).
 assignAxiomNames
-  :: Map.Map String String  -- name override: tstp-name -> display name (or "" to skip)
-  -> [Literal]              -- goal literals: a headless nucleus stating them is the goal clause
+  :: Map.Map String String  -- TSTP name to display name, or empty to skip
+  -> [Literal]              -- goal literals, and a headless nucleus stating them is the goal clause
   -> [LeafEntry]
   -> [LeafEntry]
   -> Map.Map String T.Unit
@@ -1929,19 +1833,18 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
       let origKey = leName e
           lit     = electronLit unitMap e
       in case Map.lookup origKey seen of
-           -- An internal unit is recorded under the empty-string sentinel;
-           -- a later occurrence must be skipped just like the first, or the
-           -- position gets a nameless citation and the step prints "by".
+           -- An internal unit is recorded under the empty sentinel.  A later occurrence
+           -- is skipped like the first, or the step prints a nameless "by".
            Just existingName | not (null existingName) ->
              (axAcc, Map.insert pos existingName posMap, seen)
            Just _ -> (axAcc, posMap, seen)
            Nothing ->
              case Map.lookup origKey nameOverride of
                Just nm | not (null nm) ->
-                 -- Use main-proof display name; don't add to axiomList (already in outer proof)
+                 -- Use the main proof's display name, which is already in the outer axiom list
                  (axAcc, Map.insert pos nm posMap, Map.insert origKey nm seen)
                Just _ ->
-                 -- Empty-string sentinel: skip entirely (internal Twee axiom)
+                 -- The empty sentinel marks an internal Twee axiom, which is skipped
                  (axAcc, posMap, Map.insert origKey "" seen)
                Nothing ->
                  let nm = freshAxiomName axAcc
@@ -1953,9 +1856,8 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
       -- leSrcDecl preserves the original body-literal order and equation direction
       let origKey = leName e
       in case Map.lookup origKey seen of
-           -- An internal unit is recorded under the empty-string sentinel;
-           -- a later occurrence must be skipped just like the first, or the
-           -- position gets a nameless citation and the step prints "by".
+           -- An internal unit is recorded under the empty sentinel.  A later occurrence
+           -- is skipped like the first, or the step prints a nameless "by".
            Just existingName | not (null existingName) ->
              (axAcc, Map.insert pos existingName posMap, seen)
            Just _ -> (axAcc, posMap, seen)
@@ -1966,10 +1868,9 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
                Just _ ->
                  (axAcc, posMap, Map.insert origKey "" seen)
                Nothing ->
-                 -- a headless clause stating the goals is the (negated)
-                 -- conjecture and gets no axiom name; any other headless
-                 -- clause is a genuine axiom (a negative fact) and is named
-                 -- like every other one
+                 -- a headless clause stating the goals is the negated conjecture and gets
+                 -- no axiom name, while any other headless clause is a negative fact and is
+                 -- named like every other axiom
                  case convertDeclToClause (leSrcDecl e) of
                    Just cls@(Clause bs mh)
                      | isJust mh || not (all isGoal bs) ->
@@ -1980,12 +1881,10 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
                    _ -> (axAcc, posMap, seen)
     isGoal l = any (\g -> isJust (matchLit g l) || isJust (matchLit l g)) goalLits
 
-    -- The next unused "axiom N".  Numbering cannot simply count axAcc: a leaf
-    -- that takes its name from nameOverride is deliberately left out of
-    -- axAcc, so counting would hand its number to a different axiom.  A
-    -- sub-run whose outer axioms are all overridden starts at 1 and collides
-    -- with "axiom 1" (LCL126-1/E cited q_3 as q_4's name).  Every name the
-    -- override can produce is reserved, whether or not this tree reaches it.
+    -- The next unused "axiom N".  Counting axAcc is wrong because leaves named
+    -- by nameOverride are left out of it, so a sub-run with all outer axioms
+    -- overridden would reuse "axiom 1", as LCL126-1/E did.  Every name the
+    -- override can produce is reserved.
     freshAxiomName axAcc =
       head [ nm
            | i <- [1 :: Int ..]
@@ -2001,11 +1900,11 @@ runAlgorithm
   -> ProofInfo
   -> [T.Unit]
   -> Map.Map String BuiltLemma   -- tstp_name → pre-built lemma (with lifted sub-lemmas)
-  -> Map.Map String String       -- name override: tstp-name → display name
-  -> Maybe [Axiom]               -- emitted axiom list (canonical); Nothing: derive from this tree
+  -> Map.Map String String       -- TSTP name to display name
+  -> Maybe [Axiom]               -- canonical emitted axiom list, or Nothing to derive it from this tree
   -> IO StructuredProof
 runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms = do
-  -- one re-proof attempt per tree position; repeated failures are free
+  -- one re-proof attempt per tree position, so repeated failures are free
   reproveCache <- newIORef (Map.empty :: Map.Map String (Maybe BuiltLemma))
   let unitMap    = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
       thetaCtx   = ThetaCtx (piDeclAt info)
@@ -2021,9 +1920,9 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , Just tl <- [headLitOf decl]
         , not (isReservedTLit tl)
         , Eq l r <- [convertLit tl] ]
-      -- Goal j is G_jθ (Algorithm 1): the conjecture's goal literals
-      -- instantiated as far as the proof determines them, read off the
-      -- negated-conjecture nucleus closest to the root through its θ
+      -- Goal j is G_jθ, the conjecture's goal literals instantiated as far as the
+      -- proof determines, read off the negated conjecture nucleus closest to the
+      -- root
       goalLits'  = instantiateGoals (map convertLit (piGoalLits info))
       instantiateGoals gs
         | all (null . litFree) gs = gs
@@ -2037,14 +1936,11 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
                        | e <- goalNuclei
                        , Just (Clause bs _) <- [convertDeclToClause (leDecl e)]
                        , l <- bs ]
-          -- The goal literals share their variables, so one substitution has
-          -- to satisfy all of them at once.  Instantiating each on its own
-          -- picks the first body atom that matches and can give one variable
-          -- two values: PUZ011-1 read borders(X0,X1) as borders(indian,india)
-          -- while african(X1) forces X1 = somalia, and the emitted goal was
-          -- then a different (still true) statement.  matchLitWith threads
-          -- the bindings made so far, so a choice that contradicts an earlier
-          -- one is rejected and the search backtracks.
+          -- The goal literals share their variables, so one substitution must satisfy
+          -- them all.  Instantiating each alone can give a variable two values, as
+          -- PUZ011-1 read borders(X0,X1) as borders(indian,india) while african(X1)
+          -- forces somalia.  matchLitWith threads the bindings so a contradicting choice
+          -- is rejected and the search backtracks.
           openGoals = [ g | g <- gs, not (null (litFree g)) ]
           solve σ []         = [σ]
           solve σ (g : rest) =
@@ -2052,9 +1948,8 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
                    | b <- instBodies
                    , Just σ' <- [matchLitWith g b σ]
                    , applySubst σ' g == b ]
-          -- No assignment satisfies every open goal (a conjecture whose goal
-          -- atoms are not all body atoms of the nucleus); instantiate each on
-          -- its own, as before.
+          -- No assignment satisfies every open goal, when some goal atoms are not body
+          -- atoms of the nucleus, so instantiate each alone as before.
           inst g = case [ g' | b <- instBodies, Just ρ <- [matchLit g b]
                              , let g' = applySubst ρ g, g' == b ] of
                      (g' : _) -> g'
@@ -2100,7 +1995,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         [ (lePos e, [(resolveSimplName n, d) | (n, d) <- leSimpl e])
         | e <- piElectrons info ++ piNuclei info, not (null (leSimpl e)) ]
 
-      -- demod chain at the negated conjecture position; used by splitChain as fallback
+      -- demodulation chain at the negated conjecture position, a fallback for splitChain
       pG1Chain = case find (\e -> leRole e == NegConjecture) (piNuclei info) of
         Just e | not (null (leSimpl e)) ->
           Just [(resolveSimplName n, d) | (n, d) <- leSimpl e]
@@ -2136,8 +2031,8 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , unitNameStr n `Set.notMember` proofTreeAxNames
         -- already listed under its canonical name (e.g. used only inside a lemma)
         , unitNameStr n `Map.notMember` nameOverride
-        -- only pure positive-unit clauses: nuclei like (comp(X,Y) → meet(X,Y)=zero)
-        -- must be excluded because headLitOf strips the body, creating unsound axioms
+        -- only positive unit clauses, since headLitOf strips the body of nuclei like
+        -- comp(X,Y) → meet(X,Y) = zero and would create unsound axioms
         , case convertDeclToClause decl of
             Just (Clause [] (Just _)) -> True
             _                         -> False
@@ -2150,16 +2045,15 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
                      | (i, (_, lit)) <- zip [1..] bgEqPairs ]
       bgNamedUnits = [ UnitEntry (Just ("axiom " ++ show (nBgBase + i))) lit Nothing Nothing
                      | (i, (_, lit)) <- zip [1..] bgEqPairs ]
-      -- Unit axioms of the canonical list that are not leaves of this tree
-      -- (an axiom used only inside a pre-built lemma's derivation, whose
-      -- subtree is cut off): they are displayed under their names, so they
-      -- are electrons here like every other axiom.
+      -- Unit axioms of the canonical list that are not leaves of this tree, used
+      -- only inside a prebuilt lemma's cut-off derivation.  They are displayed under
+      -- their names, so they are electrons here like every other axiom.
       listedAxiomUnits =
         [ UnitEntry (Just nm) lit Nothing Nothing
         | AUnit nm lit <- axiomList
         , nm `notElem` mapMaybe ueName namedUnits ]
 
-      -- derived clauses with L0=⊥ are skipped: they'd intercept goal emission
+      -- derived clauses with ⊥ are skipped since they would intercept goal emission
       hasGroundHead e =
         let θ_e = computeNucleusTheta thetaCtx e
         in case convertDeclToClause (leDecl e) of
@@ -2172,9 +2066,9 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         _                         -> False
       leafNuclei  = filter (\e -> leRole e `elem` [OrigAxiom, NegConjecture]) (piNuclei info)
       innerNus      = filter (\e -> leRole e == Derived && hasGroundHead e) (piNuclei info)
-      -- Strict mode: the paper's nuclei are the non-unit LEAF clauses; derived
-      -- inner nuclei are only a second-pass fallback, so that they never
-      -- pre-empt a leaf nucleus processed later in position order.
+      -- In strict mode the nuclei are the non-unit leaf clauses.  Derived inner
+      -- nuclei are only a second-pass fallback, so they never pre-empt a leaf
+      -- nucleus processed later.
       innerNusNG    = sortBy (comparing lePos) $
                       filter (\e -> leRole e == Derived && hasPositiveHead e
                                     && (strict || not (hasGroundHead e))) (piNuclei info)
@@ -2200,12 +2094,10 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , Just hl <- [headLitOf (leDecl e)]
         , not (isEqLit (convertLit hl))
         ]
-      -- Re-prove the derived unit at a tree position from its ancestry via
-      -- the lemma builder (its own sub-DAG first, then a Twee or E sub-proof,
-      -- translated recursively).  mFixedAxioms is Nothing exactly for the
-      -- recursive translations the lemma builder itself starts; those only
-      -- get the sub-DAG route, whose ancestry strictly shrinks per nesting
-      -- level, so re-proving cannot recurse unboundedly.
+      -- Re-prove the derived unit at a tree position from its ancestry via the
+      -- lemma builder.  mFixedAxioms is Nothing exactly for the lemma builder's own
+      -- recursive translations, which only get the sub-DAG route.  Its ancestry
+      -- shrinks per level, so re-proving terminates.
       reproveAt pos = do
         active <- rescueActive
         if not active
@@ -2219,8 +2111,8 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
                 dbg debug ("[reprove] pos=" ++ pos ++ " cached -> " ++ maybe "Nothing" (const "Just") r)
                 return r
               Nothing -> do
-                -- cap the attempt at the remaining rescue budget; the prover
-                -- children it spawned terminate on their own caps
+                -- cap the attempt at the remaining rescue budget, and the prover children it
+                -- spawned stop at their own caps
                 dl  <- readIORef rescueDeadline
                 now <- getMonotonicTime
                 mr  <- timeout (max 0 (round ((dl - now) * 1e6))) (reproveAt' pos)
@@ -2296,14 +2188,10 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
   -- A refutation that never resolves the negated conjecture (the axioms
   -- alone are contradictory) has no goal proof to show.
   when (null (stGoals finalSt)) $ error "no goal proof produced: the refutation does not use the conjecture"
-  -- The emitted goals must be one consistent instance of the conjecture
-  -- goals (a single theta over their shared variables): a proof of some
-  -- other true statement would still pass the Lean check, so this is
-  -- guarded here rather than downstream.
-  -- Free variables of an emitted goal are universal (its block proves the
-  -- statement for all of them), so the check unifies rather than matches;
-  -- the emitted goals are renamed apart from each other and from the
-  -- conjecture.
+  -- The emitted goals must be one consistent instance of the conjecture goals.
+  -- A proof of some other true statement would pass Lean, so it is guarded here.
+  -- Free variables of an emitted goal are universal, so the check unifies rather
+  -- than matches, with goals renamed apart from each other and the conjecture.
   let emittedGoals = [ suffixVarsLit ("_g" ++ show i) g | (i, (g, _)) <- zip [1 :: Int ..] (stGoals finalSt) ]
       conjGoals    = map (suffixVarsLit "_c") goalLits'
       unifiesWith σ g = listToMaybe [ σ' | l <- conjGoals, Just σ' <- [unifyLits l g σ] ]
@@ -2315,21 +2203,21 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
                           (stLemmas finalSt) (stGoals finalSt))
   where
     action thetaCtx' allNuclei innerNusNG posToName goalLits simpl pG1Chain = do
-      -- First pass: leaf axioms + ground-head derived nuclei.
+      -- First pass over leaf axioms and derived nuclei with ground heads.
       processNuclei debug False thetaCtx' allNuclei posToName goalLits simpl
       nDone <- gets (length . stGoals)
-      -- Second pass: derived non-ground-head Horn nuclei (e.g. E's inline spm steps).
-      -- Only tried when the first pass (leaf + ground-head nuclei) failed to prove
-      -- the goal, so named axiom paths always get priority.
+      -- Second pass over derived Horn nuclei with non-ground heads, like E's inline
+      -- spm steps.  It runs only when the first pass failed, so named axiom paths
+      -- keep priority.
       when (nDone < length goalLits) $
         processNuclei debug False thetaCtx' innerNusNG posToName goalLits simpl
       nDone2 <- gets (length . stGoals)
       when (nDone2 < length goalLits) $ do
         proven <- gets (map fst . stGoals)
         let unproven = filter (`notElem` proven) goalLits
-        -- The goal literals share their (existential) variables: the instance
-        -- one goal is proved at instantiates the remaining ones (Algorithm 1
-        -- emits every G_j under the same theta).
+        -- The goal literals share their existential variables, so the instance one
+        -- goal is proved at instantiates the rest, as Algorithm 1 emits every G_j
+        -- under the same θ.
         let proveAll _ [] = return ()
             proveAll θ (g : rest) = do
               let g' = applySubst θ g

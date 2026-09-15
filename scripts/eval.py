@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
 """
-Taelja evaluation pipeline — Vampire, E, and Twee.
+Taelja evaluation pipeline for Vampire, E and Twee.
 
-Usage:
+Usage
   python eval.py <vampire> <tptp_dir> [options]
 
-Required:
+Required
   vampire     Path to Vampire binary
   tptp_dir    Path to TPTP directory (contains Problems/)
 
-Optional:
+Optional
   --eprover PATH    Path to E prover binary
-  --twee PATH       Path to Twee binary (auto-detected from bin/twee if omitted)
-  --output-dir DIR  Output directory (default: eval_out)
-  --timeout SEC     Per-prover timeout in seconds (default: 60)
-  --taelja-timeout SEC  Taelja timeout in seconds (default: 60)
-  --jobs N          Parallel workers (default: 2)
-  --lean PATH       Path to lean binary; if given, verify each taelja proof
+  --twee PATH       Path to Twee binary (bin/twee if omitted)
+  --output-dir DIR  Output directory (default eval_out)
+  --timeout SEC     Per-prover timeout in seconds (default 60)
+  --taelja-timeout SEC  Taelja timeout in seconds (default 60)
+  --jobs N          Parallel workers (default 2)
+  --lean PATH       Path to lean binary, to verify each taelja proof
   --skip-done       Skip problems where proof.tstp and taelja.txt already exist
 
-For each .p file classified as HNE/HEQ/UEQ by its SPC field, each available
-prover is run and its TSTP output is fed to Taelja.
+For each .p file classified as HNE, HEQ or UEQ by its SPC field, each
+available prover is run and its TSTP output is fed to Taelja.
 
-Output layout:
+Output layout
   <out>/<category>/<stem>/<prover>/proof.tstp
   <out>/<category>/<stem>/<prover>/taelja.txt
   <out>/<category>/<stem>/<prover>/taelja.err   (if any)
@@ -30,8 +30,8 @@ Output layout:
   <out>/<category>/<stem>/<prover>/lean.err      (if lean check failed)
   <out>/results.csv
 
-prove field values:  ok | timeout | fail
-taelja field values: ok | timeout | fail | unsupported | - (not attempted)
+prove is ok, timeout or fail.
+taelja is ok, timeout, fail, unsupported, or - when not attempted.
 """
 
 import argparse
@@ -153,11 +153,11 @@ def prover_succeeded(name, stdout):
 
 
 def strip_twee_preamble(output):
-    """Remove Twee's human-readable preamble; keep only the TSTP block."""
+    """Remove Twee's human-readable preamble and keep only the TSTP block."""
     lines = output.splitlines(keepends=True)
     for i, line in enumerate(lines):
         if line.startswith('%') or line.startswith('cnf(') or line.startswith('fof('):
-            # Drop trailing non-TSTP line ("RESULT: ..." at the end)
+            # Drop the trailing non-TSTP RESULT line
             tstp_lines = [l for l in lines[i:]
                           if not l.startswith('RESULT:')]
             return ''.join(tstp_lines)
@@ -175,8 +175,8 @@ def _read_prove_status(out, prover_name):
     tstp = (out / 'proof.tstp').read_text()
     if prover_succeeded(prover_name, tstp):
         return 'ok', tstp
-    # Distinguish timeout from other failures; a run killed mid-print may
-    # carry a status marker in partial output, so timeout evidence wins
+    # Tell a timeout from other failures.  A run killed mid-print may carry a
+    # status marker in partial output, so timeout evidence wins
     err_file = out / 'prover.err'
     if err_file.exists() and 'TIMEOUT' in err_file.read_text():
         return 'timeout', tstp
@@ -186,7 +186,7 @@ def _read_prove_status(out, prover_name):
 
 
 def _has_empty_proof(txt):
-    """Return True if any goal's Proof: section has no content."""
+    """True if any goal's proof section is empty."""
     import re
     return bool(re.search(r'Proof:\s*(?:Goal\b|\Z)', txt, re.DOTALL))
 
@@ -197,8 +197,8 @@ def _only_warnings(err):
 
 
 _FATAL_WARN_PATTERNS = (
-    # translate's authoritative verdict: the chosen result still has a hole
-    # (also covers single-term chains that _has_empty_proof cannot see)
+    # translate's verdict that the chosen result still has a hole, which also
+    # covers single-term chains _has_empty_proof cannot see
     'goal(s) unproved in the final proof',
     'no unit found for goal',
     'no proof found for goal',
@@ -213,10 +213,10 @@ _SYMBOL = re.compile(r'[A-Za-z_][A-Za-z0-9_]*')
 
 
 def _conjecture_symbols(problem_file):
-    """Predicate/function/constant symbols of the problem's conjecture, read
-    independently of the tool: fof conjecture units and cnf negated_conjecture
-    clauses (a clause with a positive literal is a hypothesis, not a goal).
-    None when the file has no conjecture."""
+    """Symbols of the problem's conjecture, read independently of the tool from
+    fof conjecture units and all-negative cnf negated_conjecture clauses.  A
+    clause with a positive literal is a hypothesis.  None when the file has no
+    conjecture."""
     try:
         txt = problem_file.read_text(errors='replace')
     except OSError:
@@ -226,10 +226,9 @@ def _conjecture_symbols(problem_file):
     syms = set()
     for kind, role, body in units:
         if kind == 'cnf' and role == 'negated_conjecture':
-            # A multi-literal clause is written "( lit1 | lit2 | ... )": the
-            # wrapping parens must be stripped before splitting on '|', or the
-            # first literal keeps a leading '(' and wrongly fails the '~' check
-            # below even when every literal is genuinely negated.
+            # A multi-literal clause is written "( lit1 | lit2 | ... )".  The parens
+            # are stripped before splitting on '|', or the first literal keeps a '(' and
+            # fails the '~' check below.
             stripped = body.strip()
             if stripped.startswith('(') and stripped.endswith(')'):
                 stripped = stripped[1:-1]
@@ -246,10 +245,9 @@ _GOAL_HEAD = re.compile(r'^\s*([a-z][A-Za-z0-9_]*)\s*(?:\(|$)')
 
 
 def _goal_matches_conjecture(proof_txt, problem_file):
-    """False when an emitted goal's predicate does not occur in the
-    conjecture (a proof of some other statement would still pass Lean).
-    Only the predicate is compared: the witness terms of an existential goal
-    may legitimately use any symbol of the axioms."""
+    """False when an emitted goal's predicate does not occur in the conjecture,
+    since a proof of another statement would still pass Lean.  Only the
+    predicate is compared, as existential witnesses may use any axiom symbol."""
     conj = _conjecture_symbols(problem_file)
     if conj is None:
         return True
@@ -276,13 +274,13 @@ def _read_taelja_status(out, p_file):
         return '-'
     txt = txt_file.read_text()
     raw_err = err_file.read_text() if err_file.exists() else ''
-    # A '[eval] ...' line is this check's own prior verdict, not a translation
-    # warning/error; exclude it here since the verdict is recomputed fresh
-    # below, or a stale one would wrongly fail _only_warnings on its own.
+    # An '[eval] ...' line is this check's own earlier verdict, not a warning.
+    # It is excluded since the verdict is recomputed below, or a stale one would
+    # fail _only_warnings on its own.
     err = '\n'.join(line for line in raw_err.splitlines() if not line.startswith('[eval]'))
     if 'TIMEOUT' in err:
         return 'timeout'
-    if 'no refutation found' in err:
+    if 'unsupported proof' in err:
         return 'unsupported'
     if txt.strip() and _only_warnings(err) and not _has_empty_proof(txt) and not _has_fatal_warning(err):
         if _goal_matches_conjecture(txt, p_file):
@@ -325,9 +323,8 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
                     result['lean'] = 'fail'
         return result
 
-    # 1. Run prover — skip if proof.tstp already exists (reuse cached proof).
-    # A cached tfail (prover found a proof but its proof output crashed) is
-    # not a stable result: it depends on the prover binary, so re-run.
+    # 1. Run the prover unless proof.tstp is cached.  A cached tfail depends on
+    # the prover binary, so it is re-run.
     proof_tstp = out / 'proof.tstp'
     cached_status = None
     if proof_tstp.exists():
@@ -383,7 +380,7 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
 
     if rc == -1:
         result['taelja'] = 'timeout'
-    elif 'no refutation found' in err:
+    elif 'unsupported proof' in err:
         result['taelja'] = 'unsupported'
     elif rc == 0 and proof.strip() and _only_warnings(err) and not _has_empty_proof(proof) and not _has_fatal_warning(err):
         if _goal_matches_conjecture(proof, p_file):
@@ -457,7 +454,7 @@ def main():
         provers['e'] = str(Path(args.eprover).resolve())
     twee_path = args.twee
     if twee_path is None:
-        # auto-detect, as documented: bin/twee relative to this repo
+        # auto-detect bin/twee relative to this repo, as documented
         candidate = Path(__file__).resolve().parent.parent / 'bin' / 'twee'
         if candidate.exists():
             twee_path = str(candidate)
@@ -539,8 +536,14 @@ def main():
             key = 'no unit found for goal'
         elif 'no proof found for goal' in err:
             key = 'no proof found for goal (Twee)'
-        elif 'no refutation found' in err:
-            key = 'no refutation found (unsupported structure)'
+        elif 'unsupported proof' in err:
+            key = 'unsupported proof (not Horn)'
+        elif 'never derives $false' in err:
+            key = 'proof never derives $false'
+        elif 'states the goal' in err:
+            key = 'no clause states the goal'
+        elif 'more than the limit' in err:
+            key = 'proof above the clause limit'
         elif 'unnamed relational unit' in err:
             key = 'unnamed relational unit'
         elif 'no goal proof produced' in err:
@@ -574,7 +577,7 @@ def main():
 
 
 def _print_summary(results, provers, lean_col):
-    # Header: Category  Prover  Total  Proved  Unsupp  Transl  Fail[  Lean]
+    # Header columns Category Prover Total Proved Unsupp Transl Fail and Lean
     hdr = (f"{'Category':8s}  {'Prover':7s}  {'Total':>6s}  "
            f"{'Proved':>6s}  {'Unsupp':>6s}  {'Transl':>6s}  {'Fail':>6s}  {'TFail':>6s}"
            + (f"  {'Lean':>6s}" if lean_col else ''))
@@ -590,8 +593,8 @@ def _print_summary(results, provers, lean_col):
             if not sub:
                 continue
             n           = len(sub)
-            # tfail counts as proved: the prover found a proof, only its
-            # TSTP output failed
+            # tfail counts as proved since the prover found a proof and only its TSTP
+            # output failed
             proved      = sum(1 for r in sub if r['prove'] in ('ok', 'tfail'))
             unsupported = sum(1 for r in sub if r['taelja'] == 'unsupported')
             translated  = sum(1 for r in sub if r['taelja'] == 'ok')

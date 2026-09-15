@@ -62,8 +62,8 @@ ancestorNamesOf unitMap rootName = go startFrontier Set.empty
         | otherwise          ->
             go (Set.union rest (parentsOf nm)) (Set.insert nm seen)
 
--- Lemma candidates: derived positive-unit clauses (equational or relational)
--- cited at least twice as parents in the DAG, in original order.
+-- Lemma candidates are derived positive unit clauses cited at least twice as
+-- parents in the DAG, in original order.
 findLemmaCandidates :: [T.Unit] -> [(String, T.Declaration)]
 findLemmaCandidates units =
   let parentCounts :: Map.Map String Int
@@ -76,9 +76,8 @@ findLemmaCandidates units =
         [ unitNameStr n
         | T.Unit n decl (Just (T.Inference {}, _)) <- units
         , isJust (headLitOf decl)  -- exactly one positive literal
-        -- Only unit clauses: the output format states a lemma as a single
-        -- literal, so a Horn candidate (with body atoms) has no representable
-        -- statement; such clauses are inlined at every use instead.
+        -- Only unit clauses.  A lemma is stated as a single literal, so a Horn
+        -- candidate with body atoms is inlined at every use instead.
         , null (bodyLitsOf decl)
         , Map.findWithDefault 0 (unitNameStr n) parentCounts >= 2
         ]
@@ -106,27 +105,25 @@ makeFileSourced (T.Unit n decl _) =
   T.Unit n decl (Just (T.File (T.Atom (Text.pack "lemma")) Nothing, Nothing))
 makeFileSourced u = u
 
--- A built lemma: its statement, its proof, the sub-lemmas the recursive
--- translation introduced (already renamed apart and de-Skolemized, which the
--- caller must add to the outer proof before the lemma itself), and the axioms
--- that translation numbered itself.  The last
--- component is normally empty: a sub-run cites the outer proof's axioms
--- through its name override.  It is non-empty when the sub-problem needed a
--- file axiom the outer proof never used (LCL126-1/E re-proves through q_3,
--- which the outer refutation does not touch).  Those axioms have to be added
--- to the outer axiom list, or the lifted block cites a name that means a
--- different axiom outside.
+-- A built lemma with its statement, its proof, the sub-lemmas the recursive
+-- translation introduced, and the axioms that translation numbered itself.
+-- The sub-lemmas are already renamed apart and de-Skolemized, and the caller
+-- adds them before the lemma.  The axiom list is normally empty since a sub-run
+-- cites outer axioms through its name override.  It is not when the sub-problem
+-- needs a file axiom the outer proof never used, as LCL126-1/E does with q_3.
+-- Those axioms go into the outer axiom list, or the lifted block would cite a
+-- name that means a different axiom outside.
 type BuiltLemma = (Literal, ProofBlock, [(String, Literal, ProofBlock)], [Axiom])
 
--- Lemma introduction (paper, Section 4): Skolemize the candidate's negation,
--- obtain a refutation of {A_1..A_n, not B} from the axioms, translate it
--- recursively, and de-Skolemize.  The translateFn parameter is
--- Translate.translateWith (passed to avoid a circular import).
+-- Lemma introduction as in Section 4 of the paper.  Skolemize the candidate's
+-- negation, refute {A_1..A_n, not B} from the axioms, translate recursively,
+-- and de-Skolemize.  translateFn is Translate.translateWith, passed in to avoid
+-- a circular import.
 buildCandidateLemma
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
-  -> Bool                   -- strict mode: translate the candidate's own sub-DAG first
+  -> Bool                   -- strict mode translates the candidate's own sub-DAG first
   -> Map.Map String T.Unit
-  -> Map.Map String String  -- tstp2name: TSTP name -> display name in outer proof
+  -> Map.Map String String  -- TSTP name to display name in the outer proof
   -> Bool                   -- debug
   -> (String, T.Declaration)
   -> IO (Maybe BuiltLemma)
@@ -144,10 +141,9 @@ buildCandidateLemma translateFn strict unitMap tstp2name debug (cname, cdecl) =
         Just r  -> return (Just r)
         Nothing -> buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
 
--- Sub-DAG route only, no prover fallback.  Safe inside recursive lemma
--- sub-proofs: the candidate's ancestry strictly shrinks at each nesting
--- level, so the recursion terminates, whereas a prover-produced sub-proof
--- introduces fresh units and has no such measure.
+-- Sub-DAG route only, with no prover fallback.  This is safe inside recursive
+-- lemma sub-proofs because the candidate's ancestry shrinks at each level.  A
+-- prover sub-proof introduces fresh units and has no such measure.
 buildCandidateLemmaSubDagOnly
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Map.Map String T.Unit
@@ -164,8 +160,8 @@ buildCandidateLemmaSubDagOnly translateFn unitMap tstp2name debug (cname, cdecl)
           (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
       buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
 
--- Re-proving a derived unit mid-translation (lemma introduction on demand):
--- the unit's own sub-DAG first, then the prover route.
+-- Re-prove a derived unit mid-translation, first by its own sub-DAG and then
+-- by the prover.
 buildCandidateLemmaReprove
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Map.Map String T.Unit
@@ -185,21 +181,19 @@ buildCandidateLemmaReprove translateFn unitMap tstp2name debug (cname, cdecl) =
         Just r  -> return (Just r)
         Nothing -> buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
 
--- The synthetic unit names of a sub-problem must not collide with the names
--- of the units that appear in it (the candidate's ancestry): a collision
--- would let lemmaNameOverrides rename a real axiom to "assumption".
+-- Synthetic unit names of a sub-problem must not collide with the candidate's
+-- ancestry, or lemmaNameOverrides would rename a real axiom to "assumption".
 syntheticCollision :: Map.Map String T.Unit -> String -> [Literal] -> Bool
 syntheticCollision unitMap cname bodyLits_sk =
   let inProblem = Set.insert cname (ancestorNamesOf unitMap cname)
       ids = Set.union inProblem (Set.map sanitizeId inProblem)
   in any (`Set.member` ids) (syntheticNames bodyLits_sk)
 
--- Strict mode (paper, Section 4): translate a refutation of {A_1..A_n, not B}
--- from the axioms. The candidate's own ancestry already is such a refutation
--- once its Skolemized negation is resolved against it, so no prover is
--- needed — assemble one proof from the ancestor units (verbatim), the
--- candidate, the Skolemized body atoms as hypotheses, the Skolemized negated
--- head, and synthetic resolution steps deriving bottom.
+-- Strict mode translates a refutation of {A_1..A_n, not B} from the axioms.
+-- The candidate's ancestry is already one once its Skolemized negation is
+-- resolved against it, so no prover is needed.  The proof is assembled from
+-- the ancestor units, the candidate, the Skolemized body atoms as hypotheses,
+-- the Skolemized negated head, and synthetic resolution steps to bottom.
 buildFromSubDag
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Map.Map String T.Unit
@@ -254,13 +248,11 @@ buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
           msp <- dbgScoped debug ("sub-DAG for " ++ cname) (translateFn nameOvr debug tstp)
           return (msp >>= liftSubProof nameOvr cname lit undoMap)
 
--- Turn the recursive translation of a candidate into an outer-proof lemma:
--- the goal block becomes the lemma's proof; the sub-lemmas are renamed apart
--- (the outer emitter renumbers all lemmas at the end) and de-Skolemized
--- together with the block.  Generalizing a sub-lemma over the Skolem
--- constants is sound only if it was proved from the axioms alone, so a
--- candidate whose sub-lemmas cite an assumption (a Skolemized body premise)
--- is rejected.
+-- Turn the recursive translation of a candidate into an outer lemma.  The goal
+-- block becomes the lemma's proof, and the sub-lemmas are renamed apart and
+-- de-Skolemized with it.  Generalizing a sub-lemma over the Skolem constants
+-- is sound only if the axioms alone prove it, so a candidate whose sub-lemmas
+-- cite an assumption is rejected.
 liftSubProof :: Map.Map String String -> String -> Literal -> [(String, Term)]
              -> StructuredProof -> Maybe BuiltLemma
 liftSubProof nameOvr cname lit undoMap sp = do
@@ -272,17 +264,16 @@ liftSubProof nameOvr cname lit undoMap sp = do
       lift blk  = applyConstSubstBlock undoMap (renameRefsBlock ren blk)
       lifted    = [ (newName n, applyConstSubstLit undoMap l, lift b) | (n, l, b) <- subLemmas ]
       blk'      = lift goalBlk
-      -- Names the sub-run took from the outer proof; anything else in its
-      -- axiom list it numbered itself and the outer proof has never heard of.
+      -- Names the sub-run took from the outer proof.  Anything else in its
+      -- axiom list it numbered itself, unknown to the outer proof.
       outerNames = Set.fromList (filter (not . null) (Map.elems nameOvr))
       axName a  = case a of { AUnit n _ -> n; ANucleus n _ -> n }
       ownAxioms = [ a | a <- axioms sp, axName a `Set.notMember` outerNames ]
-  -- The sub-proof may cite the candidate's own body atoms, which are stated
-  -- as assumptions inside it.  The lemma lifted out states the head alone,
-  -- so a block that rests on an assumption would claim the head outright.
-  -- The candidate's own block has to be checked as well as its sub-lemmas:
-  -- the reprove path (Translate.reproveAt') hands in whatever clause sits at
-  -- a tree position, including a Horn nucleus with body atoms.
+  -- The sub-proof may cite the candidate's body atoms as assumptions.  The
+  -- lifted lemma states the head alone, so a block resting on an assumption
+  -- would claim the head outright.  The candidate's own block is checked too,
+  -- since Translate.reproveAt' hands in any clause at a tree position,
+  -- including a Horn nucleus with body atoms.
   if isEmptyBlock blk'
      || "assumption" `elem` blockRefNames blk'
      || any (\(_, _, b) -> "assumption" `elem` blockRefNames b) lifted
@@ -376,12 +367,11 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
           when debug $ hPutStrLn stderr
             ("buildCandidateLemma: E subproblem for " ++ cname ++ ":\n" ++ content)
           eBin  <- fromMaybe "eprover" <$> lookupEnv "TAELJA_EPROVER"
-          -- Per-candidate E budget (TAELJA_E_TIMEOUT, default 5 s soft CPU,
-          -- +5 s wall-clock kill): a lemma is only worth introducing if its
-          -- subproof is easy; an unprovable candidate would otherwise burn
-          -- the whole limit (e.g. 30 s of ResourceOut on HEN006-4/Twee).
-          -- --proof-object: the same proof format as the test baselines; the
-          -- full saturation trace of --output-level=2 is not parseable here
+          -- Per-candidate E budget from TAELJA_E_TIMEOUT, 5 s soft CPU by
+          -- default plus a 5 s wall-clock kill.  A lemma is only worth it if
+          -- its subproof is easy, and an unprovable candidate would burn the
+          -- whole limit, as HEN006-4/Twee did.  --proof-object gives the
+          -- baseline format, since the --output-level=2 trace is not parseable
           eSecs <- timeoutSecsFromEnv "TAELJA_E_TIMEOUT" 5
           eResult <- withTempInput ("lemma_" ++ sanitizeId cname) content $ \tmpFile ->
             runProverCapped (eSecs + 5) eBin
@@ -389,9 +379,9 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                "--soft-cpu-limit=" ++ show eSecs, tmpFile]
           case eResult of
             Nothing -> do
-              -- distinguish a missing binary (silently drops every candidate)
-              -- from an ordinary timeout; findExecutable only searches PATH,
-              -- so also accept a path-qualified binary that exists
+              -- tell a missing binary, which drops every candidate, from a
+              -- timeout.  findExecutable only searches PATH, so also accept a
+              -- path-qualified binary that exists
               mExe   <- findExecutable eBin
               exists <- doesFileExist eBin
               if isNothing mExe && not exists
@@ -410,13 +400,11 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                     ("buildCandidateLemma: parse error: " ++ err)
                   return Nothing
                 Right tstp -> do
-                  -- The sub-proof cites its inputs through E's file sources,
-                  -- i.e. under the anc_ names given above; those resolve to
-                  -- the outer display names here.  The outer map itself must
-                  -- not be consulted: E numbers the sub-run's own clauses
-                  -- c_0_N as well, and a raw outer key c_0_N would rename an
-                  -- unrelated sub-run clause (COL006-2/E cited the k axiom
-                  -- for the s step and vice versa).
+                  -- The sub-proof cites its inputs under the anc_ names given
+                  -- above, which resolve to outer display names here.  The
+                  -- outer map is not consulted since E also numbers the
+                  -- sub-run's clauses c_0_N, and an outer key would rename an
+                  -- unrelated clause, as happened on COL006-2/E.
                   let ancOvr = Map.fromList
                         [ (ancInputName aname, dn)
                         | aname <- Set.toList ancNames
@@ -458,8 +446,8 @@ premLinesFor bodyLits_sk =
   [ "cnf(" ++ premName i ++ ", hypothesis, " ++ cnfLitStr bl ++ ")."
   | (i, bl) <- zip [(0::Int)..] bodyLits_sk ]
 
--- Display-name overrides for a recursive lemma translation: body premises are
--- cited as "assumption", the negated conjecture is suppressed, axioms keep
+-- Display-name overrides for a recursive lemma translation.  Body premises are
+-- cited as "assumption", the negated conjecture is suppressed, and axioms keep
 -- their outer names.
 lemmaNameOverrides :: [Literal] -> Map.Map String String -> Map.Map String String
 lemmaNameOverrides bodyLits_sk tstp2name = Map.unions

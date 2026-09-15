@@ -111,8 +111,8 @@ dumpTSTP units = do
       putStrLn ""
     go (T.Include path _) = putStrLn ("include(" ++ show path ++ ")")
 
--- Raw TPTP view (goal literals, all nodes by position, simpl chains).
--- Algorithm-level trace goes to stderr from translate when debug=True.
+-- Raw TPTP view with goal literals, nodes by position and simplification chains.
+-- The algorithm trace goes to stderr from translate under debug.
 dumpProofInfo :: ProofInfo -> IO ()
 dumpProofInfo info = do
   putStrLn ("Goal literals [" ++ show (length (piGoalLits info)) ++ "]:")
@@ -253,12 +253,10 @@ ppSimplChain :: [(String, Dir)] -> String
 ppSimplChain [] = "(none)"
 ppSimplChain ss = intercalate ", " [n ++ "(" ++ ppDir d ++ ")" | (n, d) <- ss]
 
--- Nesting depth of recursive sub-translations (buildCandidateLemma re-runs E
--- and recurses into translateFn). A sub-run reuses E's own "c_0_N" clause
--- names and even the same position bit-strings as the outer run or a
--- sibling, so a flat debug stream can't tell which clause table a name
--- belongs to; every line is tagged with its depth instead. Debug-only, no
--- effect on translation.
+-- Nesting depth of recursive sub-translations.  A sub-run reuses E's clause
+-- names and position strings, so a flat trace cannot tell which run a name
+-- belongs to.  Every debug line is tagged with its depth instead.  This
+-- affects only debug output.
 {-# NOINLINE debugDepthRef #-}
 debugDepthRef :: IORef Int
 debugDepthRef = unsafePerformIO (newIORef 0)
@@ -269,9 +267,8 @@ dbg True  msg = do
   hPutStrLn stderr ("[d" ++ show d ++ "] " ++ msg)
 dbg False _   = return ()
 
--- Run an IO action with the debug depth incremented for its duration,
--- printing enter/exit markers naming the sub-run so nested translateFn
--- calls (one per lemma candidate) can be told apart in the debug trace.
+-- Run an action one debug level deeper, with enter and exit markers naming
+-- the sub-run so nested lemma translations can be told apart.
 dbgScoped :: Bool -> String -> IO a -> IO a
 dbgScoped debug label act = do
   modifyIORef' debugDepthRef (+ 1)

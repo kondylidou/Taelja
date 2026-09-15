@@ -1,7 +1,6 @@
--- Extract all information needed by the algorithm from a flat TSTP unit list.
--- Nodes are assigned bit-string positions: root ⊥ is ε, left child gets suffix
--- "0", right child gets suffix "1".  Leaves at smaller positions are available
--- as electrons for nuclei at larger positions.
+-- Extract everything the algorithm needs from a flat TSTP unit list.  Nodes get
+-- bit-string positions, with root ⊥ at ε and children at suffixes 0 and 1.
+-- Leaves at smaller positions are electrons for nuclei at larger positions.
 module ProofTree
   ( buildProofInfo
   , headLitOf
@@ -27,36 +26,37 @@ import Types
 import Helpers (applySubst, applySubstTerm, deepApplySubstTerm, flipLit, litSubtermCtxs,
                 mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
                 unifyLits, unifyTerms)
-import TptpConvert (clauseToDecl, convertDeclToClause)
+import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, isReservedTLit)
 data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
   deriving (Show)
 maxProofUnits :: Int
 maxProofUnits = 50000
--- axHyps: treat a negated_conjecture clause that has a positive literal and
--- is merely a copy of an external or file input as an original axiom.  An
--- implication conjecture negates into its hypotheses plus the negated
--- conclusion; only the all-negative clause is the goal.  Off by default so
--- established outputs are unchanged; the rescue pass enables it.
-buildProofInfo :: Bool -> [T.Unit] -> Maybe ProofInfo
+-- With axHyps a negated_conjecture clause that has a positive literal and only
+-- copies an input counts as an original axiom.  An implication conjecture
+-- negates into its hypotheses plus the negated conclusion, and only the
+-- all-negative clause is the goal.  The rescue pass turns this on.
+buildProofInfo :: Bool -> [T.Unit] -> Either String ProofInfo
 buildProofInfo axHyps allUnits
-  | length allUnits > maxProofUnits = Nothing
+  | length allUnits > maxProofUnits =
+      Left ("the proof has " ++ show (length allUnits)
+            ++ " clauses, more than the limit of " ++ show maxProofUnits)
   | otherwise = do
-  tree <- buildProofTree allUnits
+  tree <- maybe (Left "the proof never derives $false") Right (buildProofTree allUnits)
   let unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
       resolve = resolveSourceName unitMap
-      -- a chain names the unit that rewrote: a copy resolves to its axiom,
-      -- a derived equation keeps its own identity
+      -- a chain names the unit that rewrote.  A copy resolves to its axiom
+      -- and a derived equation keeps its own identity
       chains  = demodChainsForLeaves (resolveCopySource unitMap) tree
       leafRows  = gatherLeaves "" tree
       innerRows = gatherInner  "" tree
       mkLeaf (pos, name, decl) =
         let srcName = if isNegConj decl then name
                       else let r = resolve name
-                           -- a definition-derived clause keeps its own (CNF)
-                           -- identity; the introduced FOF equivalence behind
-                           -- it is not a Horn clause
+                           -- a definition-derived clause keeps its own CNF
+                           -- identity, since the FOF equivalence behind it
+                           -- is not a Horn clause
                            in if isIntroducedSrc unitMap r && r /= name then name else r
             srcDecl = case Map.lookup srcName unitMap of
                         Just (T.Unit _ d _) -> d
@@ -86,13 +86,17 @@ buildProofInfo axHyps allUnits
       nuclei    = byPos $
                     [e | e <- lEs, not (isPositiveUnitFormula (leDecl e))] ++
                     [e | e <- iEs, not (isPositiveUnitFormula (leDecl e))]
-  -- prefer the original Conjecture unit: provers may split/simplify before refutation
-  -- Without a conjecture unit the goal clause is the negated-conjecture
-  -- clause resolved closest to the root: a disjunctive conjecture negates
-  -- into several all-negative clauses, and the refutation's root step
-  -- determines which one it uses.
+  -- Unsupported means one thing only, that the refutation uses a clause with
+  -- more than one positive literal.  Every other failure has its own message.
+  mapM_ (\n -> Left ("unsupported proof, clause " ++ n ++ " is not Horn"))
+        (take 1 [ n | (_, n, d) <- leafRows ++ innerRows, isNonHorn d ])
+  -- prefer the original conjecture unit since provers may split or simplify
+  -- it.  Without one the goal clause is the negated conjecture clause resolved
+  -- closest to the root.  A disjunctive conjecture negates into several
+  -- all-negative clauses, and the root step decides which one is used.
   let byDepth = sortBy (comparing (\e -> (length (lePos e), lePos e)))
-  goalLits <- fmap (concatMap (unfoldDefinition unitMap)) $ case extractConjectureGoals allUnits of
+  goalLits <- maybe (Left "no clause of the proof states the goal") Right
+            $ fmap (concatMap (unfoldDefinition unitMap)) $ case extractConjectureGoals allUnits of
     Just lits -> Just lits
     Nothing   -> listToMaybe $
       [ lits
@@ -100,7 +104,7 @@ buildProofInfo axHyps allUnits
       , let goalDecl = fromMaybe (leDecl e) (lookupDecl unitMap (leName e))
       , Just lits <- [extractGoalLits goalDecl]
       ] ++
-      -- UEQ problems: the negated conjecture is a disequality axiom (no negated_conjecture role)
+      -- in UEQ problems the negated conjecture is a disequality axiom with no negated_conjecture role
       [ lits
       | e <- nuclei, leRole e == OrigAxiom
       , Just lits <- [extractGoalLits (leDecl e)]
@@ -118,8 +122,8 @@ buildProofInfo axHyps allUnits
     , piGoalLits  = goalLits
     , piDeclAt    = declMap
     }
--- Navigate the memoised tree along a position string; each character is the
--- child index used by gatherLeaves/gatherInner ('0','1',... or '1' for unary).
+-- Navigate the memoised tree along a position string.  Each character is the
+-- child index used by gatherLeaves and gatherInner, and unary nodes use 1.
 declByPath :: ProofTree -> String -> Maybe T.Declaration
 declByPath t [] = Just (ptDeclOf t)
 declByPath (PTLeaf _ _) _ = Nothing
@@ -138,11 +142,10 @@ buildProofTree allUnits =
     Just root -> Just (expandMemo root)
   where
     unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
-    -- Memoised node table: each TSTP clause is built at most once.
-    -- Data.Map.Strict forces each value to WHNF (the outer constructor),
-    -- but the children field of PTNode is a lazy thunk — it is not forced
-    -- during Map.fromList.  Because TSTP proofs are acyclic DAGs, the
-    -- thunks are safe to force later and are evaluated at most once.
+    -- Memoised node table, so each TSTP clause is built at most once.
+    -- Data.Map.Strict forces values to WHNF only, and PTNode's children stay
+    -- a lazy thunk.  TSTP proofs are acyclic, so the thunks are safe to force
+    -- later and are evaluated at most once.
     expandedNodes :: Map.Map String ProofTree
     expandedNodes = Map.fromList
       [ (name, buildNode name u)
@@ -168,14 +171,12 @@ buildProofTree allUnits =
                        then (p1n, p2n) else (p2n, p1n)
         in [expandMemo ln, expandMemo rn]
       (p0:p1:p2:rest) ->
-        -- A nested inference (E's cn(rw(spm(A,B),L)), sr(rw(..),..)): the
-        -- innermost step resolves p0 with p1, each further parent simplifies
-        -- the result by a unit, and the outer node is the last such step.
-        -- The intermediate clauses are not printed; they are recomputed here
-        -- (synthetic "?" nodes) so that θ is traced through them like
-        -- through any other node.  When no replay reproduces the outer
-        -- clause the intermediates fall back to the complement of the last
-        -- unit for a ⊥ outer node (or the outer clause itself).
+        -- A nested inference such as E's cn(rw(spm(A,B),L)).  The innermost
+        -- step resolves p0 with p1, each further parent simplifies by a unit,
+        -- and the outer node is the last step.  The unprinted intermediates
+        -- are recomputed as synthetic "?" nodes so θ is traced through them.
+        -- Without a replay they fall back to the complement of the last unit
+        -- for a ⊥ outer node, or else the outer clause.
         let eqs  = p1:p2:rest
             lastIsProvider = isPositiveUnitFormula (declOf (last eqs))
             fallbackDecl
@@ -210,11 +211,10 @@ posUnitOf (T.Formula _ (T.CNF (T.Clause lits))) =
       Just (T.Formula (T.Standard T.Plain) (T.CNF (T.Clause (pure (T.Positive, lit)))))
     _ -> Nothing
 posUnitOf _ = Nothing
--- Replay a nested inference: resolve (or superpose) c0 with c1, simplify
--- the result by each further unit in turn, and accept the replay whose
--- final clause is a variant of the outer clause.  Returns whether c0 is the
--- provider of the first step (its head was consumed) and the intermediate
--- clauses, innermost first, as declarations.
+-- Replay a nested inference.  Resolve or superpose c0 with c1, simplify by
+-- each further unit, and accept a replay whose final clause is a variant of
+-- the outer clause.  Returns whether c0 provides the first step and the
+-- intermediate clauses innermost first.
 replayNested :: T.Declaration -> T.Declaration -> [T.Declaration] -> Maybe (Bool, [T.Declaration])
 replayNested outerD d0 ds = do
   outer <- convertDeclToClause outerD
@@ -225,9 +225,9 @@ replayNested outerD d0 ds = do
     [ (prov, map (clauseToDecl . instC σ) chain)
     -- Condense the resolvent before simplifying it.  A Horn premise brings its
     -- own body literals along, and one of them may already be present in the
-    -- other clause; the prover merges the duplicates (E's cn) and then removes
-    -- the single survivor with a unit.  Resolving one copy away first leaves
-    -- the other behind (MGT006-1: ~organization(sk2,sk7) arrives twice).
+    -- other clause.  The prover merges the duplicates with E's cn and removes
+    -- the survivor with a unit.  Resolving one copy first leaves the other
+    -- behind, as on MGT006-1.
     | (prov, r0) <- resolvents c0 c1
     , let r = cn r0
     , chain <- chains r (init units)
@@ -248,15 +248,14 @@ resolvents a b =
     headInto x y = case hd x of
       Nothing -> []
       Just h  ->
-        -- resolution: the head against a body literal
+        -- resolution of the head against a body literal
         [ mk σ (body x ++ rest) (hd y)
         | (l, rest) <- picks (body y), Just σ <- [unifyLits h l []] ]
-        -- superposition: an equation head into a subterm of any literal
-        -- As in rewriteOnce, the equation is applied either at the one redex
-        -- or at every occurrence of that same subterm.  A prover that uses the
-        -- equation as a demodulator replaces them all, and a clause mentioning
-        -- the term twice (LAT263-2: pset(v_cl,t_a,unit) in both the head and a
-        -- body literal) is otherwise never reproduced.
+        -- superposition of an equation head into a subterm of any literal.
+        -- As in rewriteOnce it applies at the one redex or at every occurrence.
+        -- A prover using the equation as a demodulator replaces them all, and
+        -- a clause with the term twice is otherwise never reproduced, as on
+        -- LAT263-2.
         ++ [ mk σ (body x ++ bodyY') hdY'
            | Eq s t <- [h], (lhs, rhs) <- [(s, t), (t, s)], notVar lhs
            , (i, lit) <- zip [0 :: Int ..] (polLits y)
@@ -273,12 +272,11 @@ resolvents a b =
     polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
     notVar (Var _) = False
     notVar _       = True
--- One simplification step, as E's rw/sr/csr/cn perform it: a clause with a
--- head resolves away a body literal (contextual simplify-reflect brings its
--- own conditions along, which then merge with the clause's) or, as a unit
--- equation, rewrites in either orientation; a negative unit ~L removes a
--- head that is an instance of L.  Trivial body equations and duplicate
--- literals are dropped afterwards.
+-- One simplification step as E's rw, sr, csr and cn perform it.  A clause with
+-- a head resolves away a body literal, bringing its own conditions along, or
+-- as a unit equation rewrites in either orientation.  A negative unit ~L
+-- removes a head that is an instance of L.  Trivial body equations and
+-- duplicate literals are dropped afterwards.
 simplifyBy :: Clause -> Clause -> [Clause]
 simplifyBy c u@(Clause _ (Just _)) =
   map cn $
@@ -291,11 +289,10 @@ simplifyBy c u@(Clause _ (Just _)) =
     u' = Clause (map (suffixVarsLit "_u") (body u)) (fmap (suffixVarsLit "_u") (hd u))
     deep σ = mapLiteralTerms (deepApplySubstTerm σ)
 -- An all-negative simplifier cancels the clause's head against one of its
--- literals and brings its remaining conditions along, instantiated (E's csr,
--- contextual simplify-reflect).  With a single literal this is plain
--- simplify-reflect and leaves the body unchanged; SYN590-1 needs the general
--- form, where ~p12(f8(X1),c15) | ~p11(X1) cancels p12(f8(f9(c16)),c15) and
--- contributes ~p11(f9(c16)).
+-- literals and brings its other conditions along instantiated, as E's csr
+-- does.  With one literal this is plain simplify-reflect.  SYN590-1 needs the
+-- general form, where ~p12(f8(X1),c15) | ~p11(X1) cancels p12(f8(f9(c16)),c15)
+-- and contributes ~p11(f9(c16)).
 simplifyBy c (Clause ls Nothing) =
   map cn
     [ Clause (body c ++ map (applySubst σ) rest) Nothing
@@ -303,7 +300,7 @@ simplifyBy c (Clause ls Nothing) =
     , (l, rest) <- picks (map (suffixVarsLit "_u") ls)
     , l' <- [l, flipLit l]
     , Just σ <- [matchLit l' h] ]
--- One demodulation step: the equation is applied to a single redex, either at
+-- One demodulation step.  The equation is applied to a single redex, either at
 -- that one occurrence or at every occurrence of the same subterm.  A prover
 -- records each application as its own rw inference, so a step is never a
 -- normalisation to a fixed point.  Modelling it this way needs no orientation
@@ -334,13 +331,11 @@ cn (Clause bs mh) = Clause (nub [ l | l <- bs, not (trivial l) ]) mh
   where
     trivial (Eq s t) = s == t
     trivial _        = False
--- The substitution under which the replayed clause becomes the clause the
--- prover printed: every replayed literal is matched onto a printed literal
--- of the same polarity (equations in either orientation) and every printed
--- literal is hit.  Two replayed literals may land on the same printed one,
--- which is how a duplicate condition merges (E's csr brings the
--- simplifier's own conditions along, and they merge with conditions the
--- clause already carries).  Only the replayed clause is instantiated.
+-- The substitution under which the replayed clause becomes the printed one.
+-- Every replayed literal matches a printed literal of the same polarity and
+-- every printed literal is hit.  Two replayed literals may land on the same
+-- printed one, which is how a condition brought along by E's csr merges with
+-- one the clause already carries.  Only the replayed clause is instantiated.
 matchClause :: Clause -> Clause -> Maybe Subst
 matchClause final outer
   | isJust (hd final) /= isJust (hd outer) = Nothing
@@ -368,25 +363,19 @@ negUnitOf (T.Formula _ (T.CNF (T.Clause lits))) =
       Just (T.Formula (T.Standard T.Plain) (T.CNF (T.Clause (pure (T.Negative, lit)))))
     _ -> Nothing
 negUnitOf _ = Nothing
--- Gather leaves with two-level deduplication, to keep traversal of the
--- (DAG-shared, memoised) proof tree O(N):
---  seenElec  – names of positive-unit (electron) leaves already recorded, so
---              each is kept once, at its first/shallowest DFS position.
---  seenInner – inner-node name -> its non-unit leaves from their first
---              traversal, as (relative_pos, name, decl). A second encounter
---              of the same PTNode re-emits them at new_pos ++ relative_pos
---              instead of re-traversing the subtree. Electron leaves are
---              never re-emitted (seenElec already dedups them globally);
---              non-unit leaves (rule clauses) DO reappear at every distinct
---              position, since each occurrence is a separate rule
---              application that may see different available electrons.
+-- Gather leaves with two levels of deduplication, keeping traversal of the
+-- shared memoised tree O(N).  seenElec records electron leaves, each kept once
+-- at its first DFS position.  seenInner maps an inner node to its non-unit
+-- leaves with relative positions, so a second encounter re-emits them at the
+-- new position without re-traversing.  Electrons are never re-emitted, but
+-- rule clauses reappear at every position since each occurrence is a separate
+-- rule application that may see different electrons.
 gatherLeaves :: String -> ProofTree -> [(String, String, T.Declaration)]
 gatherLeaves pos0 tree0 =
     let (_, _, res) = go pos0 tree0 Set.empty Map.empty in res
   where
-    -- seenElec  :: Set String
-    -- seenInner :: Map String [(String, String, T.Declaration)]
-    --              inner-name → [(rel_pos, leaf_name, leaf_decl)]  (non-unit only)
+    -- seenElec is a set of names, and seenInner maps an inner name to its
+    -- non-unit leaves as (relative position, name, declaration)
     go pos (PTLeaf n d) seenElec seenInner
       | isPositiveUnitFormula d =
           if Set.member n seenElec
@@ -445,7 +434,7 @@ gatherInner pos0 tree0 = snd (go pos0 tree0 Set.empty)
       in  (seen'', kidsRes ++ inner)
     addNode pos n d rule seen
       | rule == Text.pack "proved_conjecture" = (seen, [])
-      | n == "?"               = (seen, [(pos, n, d)])   -- synthetic: always include
+      | n == "?"               = (seen, [(pos, n, d)])   -- synthetic nodes are always included
       | Set.member n seen      = (seen, [])
       | otherwise              = (Set.insert n seen, [(pos, n, d)])
 classifyRole :: Bool -> Map.Map String T.Unit -> String -> T.Declaration -> LeafRole
@@ -455,19 +444,24 @@ classifyRole axHyps unitMap name decl
   | isPositiveUnitFormula decl && isFileSrc unitMap name     = OrigAxiom
   | isPositiveUnitFormula decl && isFileSrc unitMap resolvedNm = OrigAxiom
   -- hypothesis clause of a negated implication conjecture (see buildProofInfo)
-  | axHyps && isNegConj decl && isJust (headLitOf decl)
-  , let cs = resolveCopySource unitMap name
-  , Map.notMember cs unitMap || isFileSrc unitMap cs         = OrigAxiom
+  -- A positive clause of the negated conjecture is a hypothesis.  It may carry
+  -- the negated_conjecture role itself, as with E and Vampire, or be a plain
+  -- clausified copy of the negated formula, as TPTP's own tools write it.
+  | axHyps && isJust (headLitOf decl)
+  , let cs    = resolveCopySource unitMap name
+        csNeg = maybe False isNegConj (lookupDecl unitMap cs)
+  , isNegConj decl || csNeg
+  , Map.notMember cs unitMap || isFileSrc unitMap cs || csNeg = OrigAxiom
   | isNegConj decl                                           = NegConjecture
   | maybe False isNegConj (lookupDecl unitMap resolvedNm)    = NegConjecture
-  -- A clause whose source traces back to a file-sourced *conjecture* is part
-  -- of the negation chain (e.g. FOF clausification: plain → clausify → negate_conjecture → conjecture)
+  -- A clause whose source traces back to a file conjecture is part of the
+  -- negation chain, as in FOF clausification
   | maybe False isConjDecl (lookupDecl unitMap resolvedNm)   = NegConjecture
   | isFileSrc unitMap name                                    = OrigAxiom
   | isFileSrc unitMap resolvedNm                              = OrigAxiom
-  -- clauses derived from prover-introduced definitions (E's epredN
-  -- equivalences, annotation "introduced(definition)") are axioms of the
-  -- clausified presentation; their own CNF is the axiom statement
+  -- clauses derived from definitions the prover introduced, like E's epredN
+  -- equivalences, are axioms of the clausified presentation and their own CNF
+  -- is the axiom statement
   | isIntroducedSrc unitMap resolvedNm                        = OrigAxiom
   | otherwise                                                 = Derived
   where
@@ -477,25 +471,35 @@ classifyRole axHyps unitMap name decl
 isNegConj :: T.Declaration -> Bool
 isNegConj (T.Formula (T.Standard T.NegatedConjecture) _) = True
 isNegConj _                                              = False
--- A unit the prover introduced itself (E: introduced(definition)).
+-- A unit the prover introduced itself, like E's introduced(definition).
 isIntroducedSrc :: Map.Map String T.Unit -> String -> Bool
 isIntroducedSrc unitMap name = case Map.lookup name unitMap of
   Just (T.Unit _ _ (Just (T.Introduced _ _, _))) -> True
   _                                              -> False
+-- An input formula, either sourced from a file or carrying no source at all.
+-- E and Vampire always annotate, but a hand-written or TPTP-tool proof may
+-- state its axioms bare, and a unit that was not derived is an input.
 isFileSrc :: Map.Map String T.Unit -> String -> Bool
 isFileSrc unitMap name = case Map.lookup name unitMap of
   Just (T.Unit _ _ (Just (T.File _ _, _))) -> True
+  Just (T.Unit _ _ Nothing)                -> True
   _                                         -> False
 lookupDecl :: Map.Map String T.Unit -> String -> Maybe T.Declaration
 lookupDecl unitMap name = case Map.lookup name unitMap of
   Just (T.Unit _ d _) -> Just d
   _                   -> Nothing
--- Trace back only through copy-like steps (bare unit references and
--- single-parent preprocessing inferences such as fof_simplification or
--- cnf_transformation).  Unlike resolveSourceName, a genuine inference such as
--- resolution is a stopping point: its conclusion is a new clause, not a copy
--- of its first parent.  Used to decide whether a derived clause is merely a
--- renamed axiom (and therefore not a lemma candidate).
+
+-- The step that negates the conjecture.  Vampire and E call it
+-- negated_conjecture, and TPTP's own tools call it negate.  Source tracing
+-- stops there, or a negated goal clause resolves to the conjecture itself.
+isNegationRule :: Text.Text -> Bool
+isNegationRule r = r `elem` map Text.pack ["negated_conjecture", "negate"]
+
+-- Trace back only through copy steps, meaning bare unit references and
+-- single-parent preprocessing such as cnf_transformation.  Unlike
+-- resolveSourceName a genuine inference stops the trace, since its conclusion
+-- is a new clause.  Decides whether a derived clause is only a renamed axiom
+-- and so not a lemma candidate.
 resolveCopySource :: Map.Map String T.Unit -> String -> String
 resolveCopySource unitMap = go
   where
@@ -504,15 +508,16 @@ resolveCopySource unitMap = go
         go (unitNameStr parentName)
       Just (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ [p], _)))
         | not (Set.member rule coreInferenceNames)
-        , rule /= Text.pack "negated_conjecture"
+        , not (isNegationRule rule)
         , [pn] <- flatParents p
         -> go pn
       _ -> name
     flatParents (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
     flatParents (T.Parent (T.Inference _ _ ps) _) = concatMap flatParents ps
     flatParents _                                  = []
--- trace back to the original file-sourced unit; stop at negated_conjecture inferences
--- and at Twee's rewriting steps (which create new equations by completion, not demodulate existing ones)
+
+-- Trace back to the original file unit.  Stop at the negation step and at
+-- Twee's rewriting steps, which create new equations by completion
 resolveSourceName :: Map.Map String T.Unit -> String -> String
 resolveSourceName unitMap = go
   where
@@ -521,9 +526,9 @@ resolveSourceName unitMap = go
       Just (T.Unit _ _ (Just (T.UnitSource parentName, _))) ->
         go (unitNameStr parentName)
       Just (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ parents, _)))
-        | rule /= Text.pack "negated_conjecture"
-        , rule /= Text.pack "rewriting"        -- Twee: creates new eqs, don't trace back
-        , rule /= Text.pack "proved_conjecture" -- Twee: terminal step
+        | not (isNegationRule rule)
+        , rule /= Text.pack "rewriting"        -- Twee creates new equations here
+        , rule /= Text.pack "proved_conjecture" -- Twee's terminal step
         ->
             case concatMap flatParents parents of
               (p:_) -> go p
@@ -545,16 +550,12 @@ extractGoalLits (T.Formula _ (T.FOF f)) = extractFOF f
     extractFOF (T.Quantified T.Forall _ body)          = extractFOF body
     extractFOF (T.Negated body)                        = extractConj body
     extractFOF (T.Atomic (T.Equality l T.Negative r)) = Just [T.Equality l T.Positive r]
-    -- A clause with a positive literal is a hypothesis (Vampire labels every
-    -- input clause negated_conjecture when it proves the negation), never a
-    -- goal source; only an all-negative clause states negated goals, as in
-    -- the CNF case above.  Uses its own local pos/neg scan (rather than the
-    -- shared posLitsOfDisjFOF/negLitsOfDisjFOF) because a disequality atom
-    -- (s != t) must count as negative here: those two are also relied on by
-    -- headLitOf's general Horn-clause path, and correcting their classification
-    -- of disequalities there changes which premise-matching path the search
-    -- takes elsewhere (verified by golden regression), which is out of scope
-    -- for a goal-clause check.
+    -- A clause with a positive literal is a hypothesis and never a goal
+    -- source, since Vampire labels every input negated_conjecture when proving
+    -- the negation.  Only an all-negative clause states negated goals.  The
+    -- scan is local because a disequality must count as negative here, and
+    -- changing posLitsOfDisjFOF for headLitOf alters premise matching
+    -- elsewhere, as the goldens show.
     extractFOF g =
       let posLits = goalPosLits g
           negLits = goalNegLits g
@@ -576,10 +577,10 @@ extractGoalLits (T.Formula _ (T.FOF f)) = extractFOF f
       return (ls ++ rs)
     extractConj _                                = Nothing
 extractGoalLits _ = Nothing
--- A goal atom that the prover introduced as an abbreviation (E's definitional
--- predicates: "~epred <=> ! [X] : ~E(f(X),0)", introduced(definition)) stands
--- for the atom it abbreviates; the reader's goal is that atom.  Atoms
--- without such a definition are returned unchanged.
+-- A goal atom the prover introduced as an abbreviation, like E's definitional
+-- predicate in "~epred <=> ! [X] ~E(f(X),0)", stands for the atom it
+-- abbreviates, and that atom is the reader's goal.  Other atoms are returned
+-- unchanged.
 unfoldDefinition :: Map.Map String T.Unit -> T.Literal -> [T.Literal]
 unfoldDefinition unitMap lit@(T.Predicate (T.Defined (T.Atom pname)) []) =
   case [ body | T.Unit _ (T.Formula _ (T.FOF f)) (Just (T.Introduced _ _, _)) <- Map.elems unitMap
@@ -589,7 +590,7 @@ unfoldDefinition unitMap lit@(T.Predicate (T.Defined (T.Atom pname)) []) =
   where
     isAtom (T.Atomic (T.Predicate (T.Defined (T.Atom n)) [])) = n == pname
     isAtom _ = False
-    -- "p <=> phi" or "~p <=> ~phi" (quantifiers stripped): the atoms of phi
+    -- the atoms of phi in "p <=> phi" or "~p <=> ~phi" with quantifiers stripped
     definitionBody (T.Connected l T.Equivalence r)
       | isAtom l = atomsOf r
       | isAtom r = atomsOf l
@@ -605,7 +606,7 @@ unfoldDefinition unitMap lit@(T.Predicate (T.Defined (T.Atom pname)) []) =
     atomsOf (T.Connected l T.Conjunction r) = (++) <$> atomsOf l <*> atomsOf r
     atomsOf _ = Nothing
 unfoldDefinition _ lit = [lit]
--- more reliable than NegConjecture entry: E may split/simplify before refutation
+-- more reliable than the negated conjecture since E may split or simplify it
 extractConjectureGoals :: [T.Unit] -> Maybe [T.Literal]
 extractConjectureGoals units = listToMaybe
   [ lits
@@ -629,9 +630,12 @@ extractConjectureGoals units = listToMaybe
       ls <- extractFOFConj l
       rs <- extractFOFConj r
       return (ls ++ rs)
+    -- For H => G the goal is G.  H is assumed, and after negation it becomes a
+    -- hypothesis clause of the refutation rather than part of the goal.
+    extractFOFConj (T.Connected _ T.Implication r) = extractFOFConj r
     extractFOFConj _                               = Nothing
--- for each PTLeaf position, the chain of demod steps before it was consumed;
--- outermost step listed first
+-- for each PTLeaf position, the chain of demodulation steps before it was
+-- consumed, outermost first
 demodChainsForLeaves
   :: (String -> String)
   -> ProofTree
@@ -677,7 +681,7 @@ demodChainsForLeaves resolveName tree0 =
                       (seenElec, seenInner, Map.empty) (zip ['0'..] kids)
               si'' = if n /= "?" then Set.insert n si' else si'
           in (se', si'', m)
-    -- definition_unfolding has three uses; only track it when rewriting a predicate unit.
+    -- definition_unfolding has three uses, so track it only when rewriting a predicate unit.
     isDemodApplicationTo rule r
       | rule == Text.pack "definition_unfolding" =
           case headLitOf (ptDecl r) of
@@ -694,13 +698,13 @@ demodRuleNames :: Set.Set Text.Text
 demodRuleNames = Set.fromList $ map Text.pack
   [ "forward_demodulation", "backward_demodulation"
   , "rw", "definition_unfolding" ]
-  -- Note: Twee's "rewriting" is NOT here — it creates new equations (not demodulation)
+  -- Twee's "rewriting" is not here because it creates new equations
 unitNameStr :: T.UnitName -> String
 unitNameStr (Left (T.Atom t)) = Text.unpack t
 unitNameStr (Right n)         = show n
 coreInferenceNames :: Set.Set Text.Text
 coreInferenceNames = Set.fromList $ map Text.pack
-  [ "resolution", "superposition", "paramodulation"
+  [ "resolution", "resolve", "superposition", "paramodulation"
   , "equality_resolution", "equality_factoring"
   , "forward_subsumption_resolution", "backward_subsumption_resolution"
   , "factoring", "condensation"
@@ -709,7 +713,7 @@ coreInferenceNames = Set.fromList $ map Text.pack
   , "duplicate_literal_removal", "subsumption_resolution"
   , "spm", "sr", "csr", "er", "ef", "rw", "cn", "pm"
   , "proved_conjecture"
-  , "rewriting" ]  -- Twee: creates new equations by rewriting; expands into proof tree
+  , "rewriting" ]  -- Twee's rewriting creates new equations and expands into the tree
 coreParentNames :: T.Unit -> Maybe [String]
 coreParentNames (T.Unit _ decl (Just (T.Inference (T.Atom rule) _ parents, _)))
   | Set.member rule coreInferenceNames = Just (concatMap extractName parents)
@@ -717,7 +721,7 @@ coreParentNames (T.Unit _ decl (Just (T.Inference (T.Atom rule) _ parents, _)))
   where
     extractName (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
     extractName (T.Parent (T.Inference _ _ ps) _) = concatMap extractName ps
-    extractName (T.Parent _ _)                    = []  -- unknown source: skip
+    extractName (T.Parent _ _)                    = []  -- unknown source is skipped
     isPredicateRewriting r d
       | r == Text.pack "rewriting" = case headLitOf d of
           Just (T.Equality {}) -> False
@@ -744,6 +748,17 @@ findRoot units =
   case [unitNameStr n | T.Unit n decl _ <- units, declIsBottom decl] of
     [] -> Nothing
     rs -> Just (last rs)
+-- A clause with more than one positive literal.  A disequality counts as
+-- negative, and a formula that is not a clause at all is not reported here.
+isNonHorn :: T.Declaration -> Bool
+isNonHorn d = case d of
+  T.Formula _ (T.CNF (T.Clause lits)) -> heads (toList lits) > 1
+  T.Formula _ (T.FOF f)               -> maybe False ((> 1) . heads) (collectDisjuncts f)
+  _                                   -> False
+  where
+    heads ls = length [ () | (T.Positive, l) <- ls, not (isReservedTLit l), not (negEq l) ]
+    negEq (T.Equality _ T.Negative _) = True
+    negEq _                           = False
 isPositiveUnitFormula :: T.Declaration -> Bool
 isPositiveUnitFormula (T.Formula _ (T.FOF f))  = isPosAtomFOF f
 isPositiveUnitFormula (T.Formula _ (T.CNF cl)) = isPosAtomCNF cl
@@ -811,20 +826,20 @@ firstParentIsLeft _ _ d1 d2
            (False, True ) -> False
            _              -> True
 firstParentIsLeft _ result d1 d2 = case consumerIsFirst result d1 d2 of
-  -- the paper's order: the premise whose atom is consumed (the provider)
-  -- goes to p0, the consumer to p1
+  -- the paper's order puts the provider, whose atom is consumed, at p0 and
+  -- the consumer at p1
   Just True  -> False
   Just False -> True
   Nothing    -> case (posHead d1, posHead d2) of
     (Just h1, _)       -> not (headInDecl h1 result)
     (Nothing, Just h2) -> headInDecl h2 result
-    (Nothing, Nothing) -> True  -- both non-unit: keep original order
+    (Nothing, Nothing) -> True  -- both non-unit, keep the original order
   where
     -- Like headLitOf, but a disequality atom (s != t) counts as a negative
     -- literal.  headLitOf treats it as positive, which hid the true head of
-    -- clauses like g(X) != X | q(X): both heads came back Nothing, the
-    -- parent order was kept, and the resolved-positive premise could end up
-    -- right of its consumer, forcing a skip-and-retry during translation.
+    -- clauses like g(X) != X | q(X).  Both heads came back Nothing, the order
+    -- was kept, and the provider could land right of its consumer, forcing a
+    -- skip and retry during translation.
     posHead (T.Formula _ (T.CNF (T.Clause lits))) =
       single [ l | (T.Positive, l) <- toList lits, not (isNegEq l) ]
     posHead (T.Formula _ (T.FOF f)) = fofHead (stripQ f)
@@ -838,12 +853,11 @@ firstParentIsLeft _ result d1 d2 = case consumerIsFirst result d1 d2 of
     single _   = Nothing
     isNegEq (T.Equality _ T.Negative _) = True
     isNegEq _ = False
--- Which premise of a binary resolution consumes: its head is what the
--- resolvent's head instantiates, all but one of its body literals reappear
--- in the resolvent, and the one that does not is what the other premise's
--- head resolved against.  Nothing when the clauses are unavailable or when
--- both or neither read as the consumer (the caller then falls back to the
--- name-based guess).  This is the paper's tree order: the provider at p0.
+-- Which premise of a binary resolution consumes.  Its head is what the
+-- resolvent's head instantiates, and all but one of its body literals reappear,
+-- the missing one resolved against the other head.  Nothing when a clause is
+-- unavailable or both or neither qualify, and the caller then guesses by name.
+-- This gives the paper's tree order with the provider at p0.
 consumerIsFirst :: T.Declaration -> T.Declaration -> T.Declaration -> Maybe Bool
 consumerIsFirst result d1 d2 =
   case (convertDeclToClause result, convertDeclToClause d1, convertDeclToClause d2) of

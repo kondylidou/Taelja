@@ -7,7 +7,7 @@ on:
 
 jobs:
   goldens:
-    # macOS arm64: the committed bin/twee is a Mach-O arm64 binary
+    # macOS arm64, since the committed bin/twee is a Mach-O arm64 binary
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4

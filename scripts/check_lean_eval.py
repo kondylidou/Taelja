@@ -4,9 +4,10 @@
 `lake build` of the aggregate target stops scheduling modules once some fail,
 so its failure list is incomplete.  This checks each module of the current
 taelja=ok rows on its own, records the verdict in results.csv's `lean` column
-and prints per-category/prover counts.
+and prints per-category and prover counts.
 
-Usage: python3 scripts/check_lean_eval.py [--jobs N] [--limit N]
+Usage
+  python3 scripts/check_lean_eval.py [--jobs N] [--limit N]
 """
 import argparse, csv, subprocess, sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -21,8 +22,8 @@ PROVER_DIR = {"vampire": "Vampire", "e": "E", "twee": "Twee"}
 
 
 def to_camel(prob):
-    # mirror regen_lean_eval.make_module_name: dots and dashes are not valid in
-    # Lean module names (MSC015-1.005 -> Msc0151005)
+    # mirror regen_lean_eval.make_module_name, since dots and dashes are not
+    # valid in Lean module names (MSC015-1.005 -> Msc0151005)
     import re
     parts = re.split(r'[-_.]', prob)
     return parts[0].capitalize() + "".join(parts[1:])

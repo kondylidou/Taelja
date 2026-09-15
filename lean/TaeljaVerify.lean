@@ -148,4 +148,5 @@ import TaeljaVerify.E.Mgt0011
 import TaeljaVerify.E.Mgt0322
 import TaeljaVerify.E.Syn5901
 import TaeljaVerify.E.Syn9821
+import TaeljaVerify.Vampire.TptpImplicationConjecture
 -- Eval benchmark imports

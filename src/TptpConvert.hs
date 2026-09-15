@@ -21,19 +21,18 @@ import qualified Data.TPTP as T
 
 import Types
 
--- Negative literals in a Horn clause (CNF or FOF) — the body of the implication.
--- E.g. for ~p(X) \/ q(X), returns [p(X)] (positive form of the body literal).
+-- The body of a Horn clause, its negative literals in positive form.  For
+-- ~p(X) \/ q(X) this is [p(X)].
 bodyLitsOf :: T.Declaration -> [T.Literal]
 bodyLitsOf (T.Formula _ (T.CNF (T.Clause lits))) =
   [l | (T.Negative, l) <- toList lits]
 bodyLitsOf (T.Formula _ (T.FOF f)) = bodyLitsOfFOF f
 bodyLitsOf _ = []
 
--- Body (negative) and head (positive) literals of a FOF Horn clause, in any of
--- the forms provers use: quantified disjunctions, implications, negated
--- equalities.  Both go through collectDisjuncts so that they agree with
--- convertDeclToClause (a dropped body literal turns an axiom into a false
--- unit, e.g. in a lemma subproblem sent to E).
+-- Body and head literals of an FOF Horn clause, written as a quantified
+-- disjunction, an implication or with negated equalities.  Both go through
+-- collectDisjuncts so they agree with convertDeclToClause.  A dropped body
+-- literal would turn an axiom into a false unit.
 bodyLitsOfFOF :: T.UnsortedFirstOrder -> [T.Literal]
 bodyLitsOfFOF f = [ l | Just pairs <- [collectDisjuncts f], (T.Negative, l) <- pairs ]
 
@@ -56,9 +55,8 @@ convertLit t = error ("convertLit: unsupported: " ++ show t)
 convertDeclToClause :: T.Declaration -> Maybe Clause
 convertDeclToClause (T.Formula _ (T.CNF (T.Clause lits))) =
   let ls       = toList lits
-      -- reserved literals ($true/$false) carry no content and convertLit
-      -- has no case for them; they are dropped on both sides, not just
-      -- the positive one
+      -- Reserved literals $true and $false carry no content and convertLit has
+      -- no case for them, so they are dropped from both sides.
       bodyLits = [convertLit l | (T.Negative, l) <- ls, not (isReservedTLit l)]
       headLits = [convertLit l | (T.Positive, l) <- ls, not (isReservedTLit l)]
   in mkClause bodyLits headLits

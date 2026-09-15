@@ -1,17 +1,14 @@
--- Theorem 1's θ: the one grounding substitution under which the input proof
--- tree T is a ground proof tree Tθ, and the coherence check that validates an
--- assembled hyperresolution step before it is emitted.
+-- Theorem 1's θ, the grounding substitution under which the input proof tree
+-- T becomes a ground proof tree Tθ, and the check that validates an assembled
+-- hyperresolution step before it is emitted.
 --
--- Tθ is a proof tree only if every inference of T still applies after
--- instantiation, so θ has to agree with the unifier of every step.  It is
--- therefore computed as one unification problem over the whole tree: the
--- variables of every clause are renamed apart by position, each inference is
--- replayed from its premises (resolution, superposition or rewriting, a
--- literal dropped by equality resolution or as a duplicate) and its result is
--- unified with the clause the prover printed for it.  The most general
--- solution is θ up to the variables no step ever binds; those are the
--- theorem's fresh constants and stay as (rigid) variables, one per class of
--- identified variables.
+-- Tθ is a proof tree only if every inference still applies after
+-- instantiation, so θ must agree with the unifier of every step.  It is found
+-- as one unification problem over the whole tree.  Each clause's variables are
+-- renamed apart by position, each inference is replayed from its premises, and
+-- the result is unified with the clause the prover printed.  The most general
+-- solution is θ up to the variables no step binds.  Those are the theorem's
+-- fresh constants, one per class of identified variables.
 module Theta
   ( ThetaCtx (..)
   , computeNucleusTheta
@@ -41,8 +38,8 @@ data ThetaCtx = ThetaCtx
   , tcStatus  :: [(String, String)]     -- how well each inference replayed (see explainStatus)
   }
 
--- θ restricted to one nucleus, in the variables of its abstract clause.
--- Theorem 1's θ'_k: a variable occurring in the head but in no body literal
+-- θ restricted to one nucleus, in the variables of its abstract clause.  This
+-- is Theorem 1's θ'_k, where a variable in the head but in no body literal
 -- stays free, so the derived electron is as general as the proof allows.
 computeNucleusTheta :: ThetaCtx -> LeafEntry -> Subst
 computeNucleusTheta ctx entry =
@@ -52,30 +49,30 @@ computeNucleusTheta ctx entry =
         _                          -> []
   in filter (\(v, _) -> v `notElem` headOnly) θ
 
--- The clause a position stands for in the unification problem: a leaf
--- entry's abstract clause (the source axiom, whose variables the nucleus is
--- processed with), otherwise the clause printed at that position.
+-- The clause a position stands for.  A leaf uses its source axiom, whose
+-- variables the nucleus is processed with, and anything else uses the clause
+-- printed there.
 abstractDecl :: LeafEntry -> T.Declaration
 abstractDecl e = if leRole e == OrigAxiom then leSrcDecl e else leDecl e
 
--- The global θ, computed once per run: θ|p for every position, in that
--- position's own variable names.  A variable no inference binds is left out
--- unless it was identified with another position's variable, in which case
--- both map to one shared rigid variable.
+-- The global θ, computed once per run as θ|p for every position in its own
+-- variable names.  A variable no inference binds is left out, unless it was
+-- identified with another position's variable, and then both map to one
+-- shared rigid variable.
 sharedNodeTheta :: Map.Map String T.Declaration -> [LeafEntry] -> Map.Map String Subst
 sharedNodeTheta declAt entries = Map.mapWithKey thetaAt clauses
   where
     entryClauses = Map.fromList [ (lePos e, c) | e <- entries, Just c <- [convertDeclToClause (abstractDecl e)] ]
     clauses = Map.union entryClauses (Map.mapMaybe convertDeclToClause declAt)
 
-    -- variables renamed apart by position: v@p
+    -- variables renamed apart by position as v@p
     at p v = v ++ "@" ++ p
     litsAt p = [ (b, mapLiteralTerms (apart p) l) | (b, l) <- polLits (clauses Map.! p) ]
     apart p (Var v)    = Var (at p v)
     apart _ (Const c)  = Const c
     apart p (App f ts) = App f (map (apart p) ts)
 
-    -- inferences, root first: a node's children are p0/p1 (binary) or p1 (unary)
+    -- inferences root first, where a node's children are p0 and p1, or p1 alone
     nodes = sortBy (comparing (\(p, _) -> (length p, p)))
               [ (p, kids) | p <- Map.keys clauses
                           , let kids = filter (`Map.member` clauses) [p ++ "0", p ++ "1"]
@@ -83,9 +80,9 @@ sharedNodeTheta declAt entries = Map.mapWithKey thetaAt clauses
 
     σ = solveAll [ (litsAt p, map litsAt kids) | (p, kids) <- nodes ]
 
-    -- θ is grounding: a variable no inference binds becomes a fresh
-    -- constant, one per class of identified variables (its representative
-    -- names it).  Head-only variables are exempted by computeNucleusTheta.
+    -- θ is grounding, so a variable no inference binds becomes a fresh
+    -- constant named after its class representative.  computeNucleusTheta
+    -- exempts head-only variables.
     thetaAt p c =
       [ (v, ground (walkDeep σ (Var (at p v))))
       | v <- nub (concatMap (litVars . snd) (polLits c)) ]
@@ -93,12 +90,11 @@ sharedNodeTheta declAt entries = Map.mapWithKey thetaAt clauses
     ground (Const c)  = Const c
     ground (App f ts) = App f (map ground ts)
 
--- For each inference of the tree, how well it could be replayed:
--- "strict" when the replayed conclusion matches the printed one exactly,
--- "loose" when one literal on each side had to be left unaccounted for
--- (a simplification the prover folded in), and "none" when no replay
--- explains it at all.  Anything but "strict" is where theta can lose a
--- binding, so this is the first thing to look at when a nucleus fails.
+-- How well each inference could be replayed.  It is strict when the replay
+-- matches the printed conclusion exactly, loose when one literal on each side
+-- is left over from a simplification the prover folded in, and none when
+-- nothing explains it.  Anything but strict is where θ can lose a binding, so
+-- check this first when a nucleus fails.
 explainStatus :: Map.Map String T.Declaration -> [LeafEntry] -> [(String, String)]
 explainStatus declAt entries =
   [ (p, status (litsAt p, map litsAt kids)) | (p, kids) <- nodes ]
@@ -124,13 +120,11 @@ explainStatus declAt entries =
 polLits :: Clause -> [(Bool, Literal)]
 polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
 
--- Solve the inferences in order, backtracking over the ways each can be
--- explained, within a step budget; past the budget, or when no joint
--- solution exists, every inference keeps its first explanation that is
--- consistent with what was found so far.  An inference that has no
--- explanation even on its own (a synthetic node whose replay failed) is
--- left out up front rather than allowed to fail the whole search: its
--- variables then stay free and the step fails honestly downstream.
+-- Solve the inferences in order, backtracking over the ways to explain each
+-- within a step budget.  Past the budget, or with no joint solution, each keeps
+-- its first explanation consistent with the rest.  An inference with no
+-- explanation at all is left out up front, so its variables stay free and the
+-- step fails honestly later rather than failing the whole search.
 solveAll :: [([(Bool, Literal)], [[(Bool, Literal)]])] -> USubst
 solveAll infs0 = case search infs Map.empty budget of
     (Just s, _) -> s
@@ -151,11 +145,9 @@ solveAll infs0 = case search infs Map.empty budget of
       (s' : _) -> s'
       []       -> s
 
--- The solver's own substitution.  It holds one binding per variable of the
--- whole tree, so it must not be an association list applied to a fixed
--- point on every unification step: a variable is dereferenced by walking
--- the map instead (ALG006-1's nested terms otherwise make the solve
--- quadratic in the number of bindings).
+-- The solver's substitution, with one binding per variable of the whole tree.
+-- A variable is dereferenced by walking the map, since applying an
+-- association list to a fixed point at every step makes ALG006-1 quadratic.
 type USubst = Map.Map String Term
 
 -- follow variable-to-variable chains one level deep
@@ -186,10 +178,9 @@ unifyU a b s = case (walk s a, walk s b) of
   _ -> Nothing
   where bind x t = if occursIn s x t then Nothing else Just (Map.insert x t s)
 
--- Every substitution extending s under which the inference holds: the
--- premises combine into a result clause, and that result is the printed
--- conclusion up to instantiation and the dropping of trivial or duplicate
--- literals.
+-- Every substitution extending s under which the inference holds, so the
+-- premises combine into the printed conclusion up to instantiation and the
+-- dropping of trivial or duplicate literals.
 explain :: ([(Bool, Literal)], [[(Bool, Literal)]]) -> USubst -> [USubst]
 explain (parent, kids) s
   | not (null strict) = strict
@@ -210,11 +201,10 @@ explain (parent, kids) s
 -- step needs and the literals of its result.
 alternatives :: [[(Bool, Literal)]] -> [([(Term, Term)], [(Bool, Literal)])]
 alternatives [a]    = [([], a)]
--- The last two are a fallback for a step that instantiates one premise and
--- then rewrites it by the other: the rewritten position is still a variable
--- before the conclusion is matched, so no superposition above reaches it.
--- Taking the conclusion as an instance of that premise, with the rewritten
--- literal left over for coverLoose, recovers the instantiation.
+-- The last two cover a step that instantiates one premise and then rewrites it
+-- by the other.  The rewritten position is still a variable when the
+-- conclusion is matched, so no superposition reaches it.  Treating the
+-- conclusion as an instance of that premise recovers the instantiation.
 alternatives [a, b] = resolve a b ++ resolve b a ++ superpose a b ++ superpose b a
                       ++ [([], a), ([], b)]
 alternatives _      = []
@@ -223,11 +213,10 @@ heads, bodies :: [(Bool, Literal)] -> [Literal]
 heads x  = [ l | (True, l) <- x ]
 bodies x = [ l | (False, l) <- x ]
 
--- x's head against a body literal of y.  What survives is x's body, plus
--- everything of y except the literal resolved away; picks already leaves y's
--- head in rest, so it must not be appended again (a duplicated head cannot
--- be covered when the conclusion has none, and the whole resolution is then
--- rejected in favour of an explanation that binds nothing).
+-- x's head against a body literal of y.  What survives is x's body and all of
+-- y except the literal resolved away.  picks already keeps y's head in rest,
+-- and appending it again would leave a duplicate head the conclusion cannot
+-- cover.
 resolve :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
 resolve x y =
   [ ([(litTerm h, litTerm b')], [ (False, l) | l <- bodies x ] ++ rest)
@@ -253,12 +242,11 @@ superpose x y = nub
     replaceAll u r (App f ts) = App f (map (replaceAll u r) ts)
     replaceAll _ _ t = t
 
--- The printed conclusion is the replayed result up to renaming and the
--- dropping of trivial or duplicate literals.  So every result literal is
--- matched onto a conclusion literal of the same polarity (equations in
--- either orientation), binding only the premises' variables, or is a body
--- equation s ≈ t dropped with s and t unified (equality resolution, trivial
--- inequality removal); every conclusion literal is hit at least once.
+-- The printed conclusion is the replayed result up to renaming and dropped
+-- trivial or duplicate literals.  Each result literal matches a conclusion
+-- literal of the same polarity, binding only premise variables, or is a body
+-- equation s ≈ t dropped with s and t unified.  Every conclusion literal is
+-- hit at least once.
 cover :: [(Bool, Literal)] -> [(Bool, Literal)] -> USubst -> [USubst]
 cover result parent s0 = go result [] s0
   where
@@ -276,8 +264,8 @@ cover result parent s0 = go result [] s0
             , s'' <- go ls (i : hit) s' ]
       ++ [ s'' | not sign, Eq a b <- [l], Just s' <- [unifyU a b s], s'' <- go ls hit s' ]
 
--- Matching under a substitution: variables of the pattern that are still
--- unbound and not rigid may be bound; the target is never instantiated.
+-- Matching under a substitution.  Unbound, non-rigid pattern variables may be
+-- bound, and the target is never instantiated.
 matchModulo :: Set.Set String -> Term -> Term -> USubst -> Maybe USubst
 matchModulo rigid = go
   where
@@ -289,15 +277,11 @@ matchModulo rigid = go
         foldM (\acc (a, b) -> go a b acc) s (zip as bs)
       _ -> Nothing
 
--- cover, but one literal on each side may go unaccounted for: the one the
--- prover rewrote when it folded a simplification into the inference.  Twee
--- on ANA023-2 instantiates transitivity at c_plus(c_0,g,t_b) <= k and then
--- rewrites its conclusion to g <= f, and no replay reproduces that, because
--- the rewritten position is still a variable before the conclusion is
--- matched.  Leaving every variable of the premise free instead would lose
--- the whole step.  This only widens θ, which is an input to the search: the
--- assembled step is still checked by resolutionCoherent and by Lean, so a
--- premise that does not in fact follow fails honestly.
+-- Like cover, but one literal on each side may go unaccounted for, namely the
+-- one the prover rewrote when it folded a simplification in.  In ANA023-2 no
+-- replay reproduces such a step, and freeing every premise variable would lose
+-- it entirely.  This only widens θ, and the assembled step is still checked by
+-- resolutionCoherent and by Lean, so a premise that does not follow fails.
 coverLoose :: [(Bool, Literal)] -> [(Bool, Literal)] -> USubst -> [USubst]
 coverLoose result parent s0 = go result [] False s0
   where
@@ -359,12 +343,11 @@ derivedHead bodyAbs headAbs targets
     mapLitTerms f (Eq l r)   = Eq (f l) (f r)
     mapLitTerms _ l          = l
 
--- Validates one assembled hyperresolution step: the rule's body atoms are
--- unified (shared rule variables, fresh-renamed) against the matched electron
--- targets; the step is coherent when the unifier exists and the head it
--- derives covers the head instance about to be stored.  This is the same
--- judgement the Lean check makes, applied before anything is emitted, so a
--- spurious premise match cannot justify a θ-derived head (LCL416-1).
+-- Validate one assembled hyperresolution step.  The rule's body atoms are
+-- unified against the matched electrons, and the step is coherent when that
+-- unifier exists and its head covers the instance about to be stored.  This is
+-- the judgement the Lean check makes, applied before emitting, so a spurious
+-- premise match cannot justify a head.
 resolutionCoherent :: [Literal] -> Literal -> [Literal] -> Literal -> Bool
 resolutionCoherent bodyAbs headAbs targets headInst
   -- a step whose conclusion is one of its own premises is vacuous

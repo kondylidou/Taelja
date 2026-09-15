@@ -17,9 +17,9 @@ import qualified Data.Text as Text
 
 main :: IO ()
 main = do
-  -- Successful Twee fallback calls in the suite finish in under 2 s; a failing
-  -- one burns the whole budget, so keep it small here.  The eval and normal
-  -- runs use the 15 s default (see TweeInterface.timeoutSecsFromEnv in runTwee).
+  -- A successful Twee fallback here finishes in under 2 s and a failing one
+  -- burns the whole budget, so the suite keeps it small.  Normal runs and the
+  -- eval use the 15 s default.
   setEnv "TAELJA_TWEE_TIMEOUT" "5"
   defaultMain tests
 
@@ -49,18 +49,17 @@ tweeBenchmarkNames =
   , "SYN140-1"
   , "SYN553-1"
   , "CAT019-1"
-  -- existential goal Y = apply(combinator,Y): the witness is bound only at the
-  -- root resolution, which θ must keep (Theorem 1's grounding θ); with it the
-  -- goal is ground and closes by a two-step chain
+  -- the existential goal Y = apply(combinator,Y) gets its witness only at the
+  -- root resolution, which θ must keep, and then closes by a two-step chain
   , "COL008-1"
   , "COL010-1"
   , "COL015-1"
   , "COL017-1"
   , "COL021-1"
   , "COL022-1"
-  -- the conjecture's goal literals share their variables, so one substitution
-  -- has to instantiate all of them: read independently, borders(X0,X1) took
-  -- the value african(X1) rules out
+  -- the goal literals share their variables, so one substitution must
+  -- instantiate them all.  Read independently, borders(X0,X1) took a value
+  -- that african(X1) rules out
   , "PUZ011-1"
   -- an equation with a bare variable on one side rewrites any term, so it
   -- is relevant to every goal even when it shares no symbol with one
@@ -80,6 +79,9 @@ handcraftedNames =
   , "test_eqchain_in_havehence"
   , "test_havehence_in_eqchain"
   , "test_axioms_contradictory"
+  -- a proof in plain TPTP style, with bare axioms, clausification by cnf, the
+  -- negation step named negate, and an implication conjecture p => r
+  , "tptp_implication_conjecture"
   ]
 
 benchmarkNames :: [String]
@@ -125,14 +127,13 @@ benchmarkNames =
   , "ANA009-2"
   , "SYN558-1"
   , "SYN719-1"
-  , "LCL430-2"        -- premise freshening of a tau-bound nucleus variable nested in a term (Oop(Y,false), Y -> Ovar(Y'))
-  , "HEN003-3"        -- a nucleus's conclusion matches the cited axiom's head only flipped (Eq symmetry); the emitted Lean citation needs .symm (Vampire's own derived clause states "zero = divide(...)")
-  -- a body-free block citing a conditional axiom must state its head under
-  -- theta, not the axiom's own general head: asserting product(X,h(X,b),b)
-  -- from "X = additive_identity => product(X,h(X,Y),Y)" drops the condition
+  , "LCL430-2"        -- premise freshening of a tau-bound nucleus variable nested in a term
+  , "HEN003-3"        -- a conclusion matches the cited axiom's head only when flipped, so Lean needs .symm
+  -- a block with no premises that cites a conditional axiom must state its
+  -- head under theta.  The general head would drop the axiom's condition
   , "RNG038-1"
-  -- rewriting a hypothesis whose own variable was eliminated at a concrete
-  -- witness: the rewrite must be instantiated at that same witness
+  -- a hypothesis whose variable was eliminated at a witness must be rewritten
+  -- at that same witness
   , "RNG039-1"
   , "PUZ011-1"        -- goal literals instantiated under one shared substitution
   , "NLP258-1"
@@ -180,14 +181,13 @@ eBenchmarkNames =
   , "SYN179-1"
   , "SYN555-1"
   , "ALG006-1"
-  -- E folds each demodulation into its own rw step; the equation here
-  -- (u(X,X,Y) = u(Y,X,X)) only permutes its arguments, so the replay
-  -- must apply it as a single rewrite rather than normalise with it
+  -- E records each demodulation as its own rw step, and this equation only
+  -- permutes its arguments, so the replay applies it once rather than
+  -- normalising with it
   , "ALG442-1"
-  -- resolution against a clause whose conclusion keeps no head: the
-  -- replayed resolvent must not carry the consumer's head twice, or the
-  -- step is rejected and theta loses the binding for the transitivity
-  -- argument that only the resolution determines
+  -- resolution against a clause with no head.  The replayed resolvent must
+  -- not carry the consumer's head twice, or theta loses the binding that only
+  -- this resolution determines
   , "ANA027-2"
   , "COL006-2"
   , "GRP703-10"
@@ -201,12 +201,12 @@ eBenchmarkNames =
   -- superposition with an equation that the prover used as a demodulator,
   -- replacing every occurrence of the redex rather than just one
   , "LAT263-2"
-  -- a Horn premise brings its own body literals along; when one is already
-  -- present the duplicates must be condensed before the unit removes it
+  -- a Horn premise brings its body literals along, and a duplicate must be
+  -- condensed before the unit removes it
   , "MGT006-1"
   , "MGT010-1"
   -- contextual simplify-reflect with an all-negative clause of several
-  -- literals: it cancels the head and brings its other conditions along
+  -- literals cancels the head and brings the other conditions along
   , "MGT001-1"
   , "MGT032-2"
   , "SYN590-1"

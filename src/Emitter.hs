@@ -19,8 +19,8 @@ emit sp0 = unlines $ concat
   ]
   where sp = renumberAxioms (pruneUnusedLemmas sp0)
 
--- Renumber axioms to fill any gaps left by candidate-lemma promotion.
--- Updates all references in lemma/goal blocks accordingly.
+-- Renumber axioms to close the gaps left by lemma promotion, and update every
+-- reference in lemma and goal blocks.
 renumberAxioms :: StructuredProof -> StructuredProof
 renumberAxioms sp =
   let oldNames = [ case ax of AUnit n _ -> n; ANucleus n _ -> n
@@ -57,8 +57,8 @@ prettyVarNames :: [String]
 prettyVarNames = ["X", "Y", "Z", "A", "B", "C", "U", "V", "W"]
               ++ ["X" ++ show n | n <- [(1 :: Int)..]]
 
--- Variable names are local to each block — the same display name can mean
--- different things in different lemmas, which is standard mathematical style.
+-- Variable names are local to each block.  The same name may mean different
+-- things in different lemmas, as is usual in mathematics.
 blockRenaming :: Literal -> ProofBlock -> [(String, String)]
 blockRenaming lit block = zip (nub (litVars lit ++ blockVars block)) prettyVarNames
 

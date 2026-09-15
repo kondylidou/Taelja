@@ -39,8 +39,8 @@ main = do
     Right tstp@(T.TSTP _ units) -> do
       when debug $ do
         case buildProofInfo False units of
-          Nothing   -> putStrLn "No refutation proof tree found"
-          Just info -> do
+          Left reason -> putStrLn ("No proof tree, " ++ reason)
+          Right info  -> do
             putStrLn "-- Proof tree"
             dumpProofTree info
             putStrLn ""
@@ -50,11 +50,9 @@ main = do
       msp <- translateStages mode debug tstp
       case msp of
         Nothing -> exitFailure
-        -- The emitted text is forced before any of it is written.  Clause
-        -- conversion raises on constructs outside the Horn fragment (reserved
-        -- functions, rationals, distinct objects), and those are lazy, so
-        -- printing as we go would leave a truncated proof on stdout that a
-        -- downstream check could mistake for a complete one.
+        -- Force the whole output before printing any of it.  Clause conversion
+        -- fails lazily on constructs outside the Horn fragment, so printing as
+        -- we go could leave a truncated proof that looks complete.
         Just sp -> do
           r <- try (evaluate (force (emit sp)))
           case r of

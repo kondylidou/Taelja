@@ -1,0 +1,46 @@
+fof(1,axiom,
+    ( p
+   => q ) ).
+
+fof(2,axiom,
+    ( q
+   => r ) ).
+
+fof(3,conjecture,
+    ( p
+   => r ) ).
+
+fof(4,negated_conjecture,
+    ~ ( p
+     => r ),
+    inference(negate,[status(cth)],[3]) ).
+
+cnf(c1,plain,
+    ( ~ p
+    | q ),
+    inference(cnf,[status(thm)],[1]) ).
+
+cnf(c2,plain,
+    ( ~ q
+    | r ),
+    inference(cnf,[status(thm)],[2]) ).
+
+cnf(c4a,plain,
+    p,
+    inference(cnf,[status(thm)],[4]) ).
+
+cnf(c4b,plain,
+    ~ r,
+    inference(cnf,[status(thm)],[4]) ).
+
+cnf(i1,plain,
+    q,
+    inference(resolve,[status(thm)],[c1,c4a]) ).
+
+cnf(i2,plain,
+    ~ q,
+    inference(resolve,[status(thm)],[c2,c4b]) ).
+
+cnf(i3,plain,
+    $false,
+    inference(resolve,[status(thm)],[i1,i2]) ).

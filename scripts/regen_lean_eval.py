@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate Lean verification files for all taelja=ok entries in eval_out.
 
-Usage:
+Usage
   python3 scripts/regen_lean_eval.py [--only-new] [--limit N]
 
   --only-new   skip files that already exist
@@ -93,9 +93,9 @@ def main():
             break
         base_lines.append(line)
 
-    # The import list mirrors the current taelja=ok rows exactly: modules of
-    # results that are no longer ok (e.g. reclassified holes) are dropped and
-    # their stale .lean files deleted, so the Lean build is a faithful census.
+    # The import list mirrors the current taelja=ok rows exactly.  Modules of
+    # results no longer ok are dropped and their stale .lean files deleted, so the
+    # Lean build is a faithful census.
     if args.only_new:
         kept = set(
             line.strip().removeprefix("import ")

@@ -24,21 +24,19 @@ litConsts = foldLiteralTerms termConsts
 
 -- Theorem 1's fresh constants.  θ grounds every variable the proof leaves
 -- unbound to one of these, so a body atom is ground when its nucleus is
--- processed and no match can instantiate it.  When the derived head is
--- stored (or a goal emitted) they become variables again: they occur in no
--- axiom, so the derived fact holds for every value.
--- The prefix must not start any symbol a problem can contain: a constant of
--- the problem carrying it would be turned into a variable when a derived
--- fact is stored, stating it for every value instead of that one constant.
--- TPTP names in the benchmarks are short or carry the Isabelle prefixes
--- c_, v_, t_, tc_, so this one is out of reach of them.
+-- processed and no match can instantiate it.  When the derived head is stored
+-- or a goal emitted they become variables again, and since they occur in no
+-- axiom the fact holds for every value.
+-- The prefix must not begin any symbol of a problem, or a real constant would
+-- be turned into a variable when a derived fact is stored.  Benchmark names are
+-- short or use the Isabelle prefixes c_, v_, t_ and tc_, so this one is safe.
 rigidPrefix :: String
 rigidPrefix = "taelja_rigid_"
 
 isRigidConst :: String -> Bool
 isRigidConst = (rigidPrefix `isPrefixOf`)
 
--- What a groundness test must count as open: variables and fresh constants.
+-- A groundness test counts both variables and fresh constants as open.
 termFree :: Term -> [String]
 termFree (Var x)    = [x]
 termFree (Const c)  = [c | isRigidConst c]
@@ -99,14 +97,11 @@ applySubstBlock subst (EqChain s steps) =
     applyStep (RwStep nm (l, r) d, cur) =
       (RwStep nm (applySubstTerm subst l, applySubstTerm subst r) d, applySubstTerm subst cur)
 
--- Instantiate a stored proof block under the substitution that matches its
--- head literal onto the requested literal.  Variables of the block that do
--- not occur in the head are local to the block (universally quantified
--- inside it); a plain substitution would capture any of them that share a
--- name with a variable in the substitution's range.  The k3 block of
--- SYN163-1/E has the local X2_e next to head variable X2; instantiating it
--- with X2 ↦ X2_e identified the two and turned p1(X2,X2_e,a) into the
--- false universal p1(X2_e,X2_e,a).  Rename clashing locals apart first.
+-- Instantiate a stored proof block under the substitution matching its head
+-- onto the requested literal.  Block variables absent from the head are local
+-- to the block, and a plain substitution would capture any that share a name
+-- with its range.  In SYN163-1 this turned p1(X2,X2_e,a) into the false
+-- p1(X2_e,X2_e,a).  Clashing locals are renamed apart first.
 instantiateBlock :: Literal -> Subst -> ProofBlock -> ProofBlock
 instantiateBlock hd σ block =
   applySubstBlock σ (renameBlock renaming block)
@@ -120,7 +115,7 @@ instantiateBlock hd σ block =
                            , not (any (sfx `isSuffixOf`) involved) ]
     renaming  = [ (v, v ++ suffix) | v <- clashing ]
 
--- Replace constants (not variables) in a term; used to undo Skolemization.
+-- Replace constants in a term, leaving variables alone, to undo Skolemization.
 applyConstSubstTerm :: [(String, Term)] -> Term -> Term
 applyConstSubstTerm s (Const c)   = fromMaybe (Const c) (lookup c s)
 applyConstSubstTerm s (App f ts)  = App f (map (applyConstSubstTerm s) ts)
@@ -139,12 +134,11 @@ applyConstSubstBlock s (EqChain start steps) =
   EqChain (applyConstSubstTerm s start)
           [(rw, applyConstSubstTerm s cur) | (rw, cur) <- steps]
 
--- fails if any shared variable has conflicting bindings
--- Extends a substitution, composing as it goes: a new binding is applied
--- inside the ranges of the existing entries (and the existing entries inside
--- the new term), so a single-pass application of the result is complete.
--- Without this, X ↦ X'_e followed by X'_e ↦ e left the head with a dangling
--- X'_e, printing an instance-only fact as a general lemma (SYN179-1).
+-- Fails if a shared variable has conflicting bindings.
+-- Extends a substitution and composes as it goes, applying each new binding
+-- inside the existing ranges and those inside the new term, so one pass of
+-- the result is complete.  Otherwise X ↦ X'_e then X'_e ↦ e left a dangling
+-- X'_e and printed an instance as a general lemma, as in SYN179-1.
 extendSubst :: Subst -> Subst -> Maybe Subst
 extendSubst base []           = Just base
 extendSubst base ((x,t):rest) =
@@ -198,14 +192,14 @@ termCtxs t = (t, id) : case t of
               | (i, ti) <- zip [0 ..] ts, (u, c) <- termCtxs ti ]
   _        -> []
 
--- Apply σ until fixed point; resolves chained bindings (e.g. X→f(Y), Y→c becomes X→f(c)).
+-- Apply σ to a fixed point, so X→f(Y) with Y→c resolves to X→f(c).
 deepApplySubstTerm :: Subst -> Term -> Term
 deepApplySubstTerm s t =
   let t' = applySubstTerm s t
   in if t' == t then t else deepApplySubstTerm s t'
 
--- Rename all variables in a literal by appending a suffix; used to
--- avoid name clashes when unifying a unit with a goal literal.
+-- Rename every variable of a literal by appending a suffix, so a unit and a
+-- goal literal do not clash when unified.
 suffixVarsLit :: String -> Literal -> Literal
 suffixVarsLit suf = mapLiteralTerms go
   where
@@ -213,7 +207,7 @@ suffixVarsLit suf = mapLiteralTerms go
     go (Const c)  = Const c
     go (App f ts) = App f (map go ts)
 
--- bidirectional: body-side vars bind σ0, electron-side vars bind ρi
+-- Bidirectional matching, where body variables bind σ0 and electron variables bind ρi.
 matchBothLit :: Literal -> Literal -> Subst -> Subst -> Maybe (Subst, Subst)
 matchBothLit (Rel n1 ts1) (Rel n2 ts2) σ0 ρi
   | n1 == n2, length ts1 == length ts2 =
@@ -229,10 +223,9 @@ matchBothTerm (Var x) k σ0 ρi =
   let k' = applySubstTerm ρi k
   in case lookup x σ0 of
     Nothing -> Just ((x, k') : σ0, ρi)
-    -- x already bound to t; propagate by matching t against k'.
-    -- If t is an electron var (suffix "_e"), further constrain it on the
-    -- electron side (ρi) — not σ0 — so repeated body vars like m0(X,X,Y)
-    -- correctly ground the electron var on both occurrences.
+    -- x is already bound to t, so match t against k'.  An electron variable
+    -- with suffix _e is constrained on the electron side ρi rather than σ0,
+    -- so a repeated body variable as in m0(X,X,Y) grounds it at both places.
     Just t  -> if t == k' then Just (σ0, ρi)
                else case t of
                  Var y | "_e" `isSuffixOf` y ->
@@ -244,16 +237,15 @@ matchBothTerm l (Var y) σ0 ρi =
   let l' = applySubstTerm σ0 l
   in case lookup y ρi of
     Nothing -> Just (σ0, (y, l') : ρi)
-    -- Apply σ0 to the stored binding: it may contain σ0-variables bound later.
-    -- Two body-side terms met through one electron variable (X in m0(X,X)
-    -- against m0(s,t)) are unified on the body side: the electron's variable
+    -- Apply σ0 to the stored binding, which may hold σ0 variables bound later.
+    -- Two body terms met through one electron variable, as X in m0(X,X)
+    -- against m0(s,t), are unified on the body side, since that variable
     -- forces s and t to be the same instance.
     Just t  -> let t' = applySubstTerm σ0 t
                in if t' == l' then Just (σ0, ρi)
-                  -- symmetric to the σ0-side case above: recurse through the
-                  -- SAME bidirectional matcher (not a separate unifier), so
-                  -- this has no more search power than the pre-existing
-                  -- body-variable-repeat case already has
+                  -- Symmetric to the σ0 case above.  It recurses through the
+                  -- same bidirectional matcher rather than a separate unifier,
+                  -- so it searches no further than the repeated-variable case.
                   else matchBothTerm t' l' σ0 ρi
 matchBothTerm (Const c) (Const d) σ0 ρi =
   if c == d then Just (σ0, ρi) else Nothing
@@ -326,16 +318,15 @@ atomTerm (Rel n [])  = Const n
 atomTerm (Rel n as)  = App n as
 atomTerm l           = error ("atomTerm: not a positive atom: " ++ show l)
 
--- The equation a chain step rewrites with: an equation itself, or the
--- P = true encoding of a positive atom.
+-- The equation a chain step rewrites with, either an equation or the P = true
+-- encoding of a positive atom.
 unitEquation :: Literal -> (Term, Term)
 unitEquation (Eq a b) = (a, b)
 unitEquation l        = (atomTerm l, Const "true")
 
--- Unification of two literals (see unifyTerms below).
--- Equality is symmetric, so "a = b" and "c = d" unify if either orientation
--- does (an emitted goal "c1 = c2" must not be flagged inconsistent against a
--- conjecture stated as "c2 = c1" — same fact, opposite written order).
+-- Unification of two literals.  Equality is symmetric, so two equations unify
+-- if either orientation does, and a goal c1 = c2 is not flagged against a
+-- conjecture written c2 = c1.
 unifyLits :: Literal -> Literal -> Subst -> Maybe Subst
 unifyLits (Eq a b) (Eq c d) σ =
   (unifyTerms a c σ >>= unifyTerms b d) <|> (unifyTerms a d σ >>= unifyTerms b c)
@@ -347,8 +338,8 @@ flipDir :: Dir -> Dir
 flipDir LR = RL
 flipDir RL = LR
 
--- The contradiction a refutation derives when the axioms alone are
--- inconsistent; every goal then follows from it.
+-- The contradiction derived when the axioms alone are inconsistent, from which
+-- every goal follows.
 falsumLit :: Literal
 falsumLit = Rel "$false" []
 
@@ -361,7 +352,7 @@ isEqChain :: ProofBlock -> Bool
 isEqChain (EqChain {}) = True
 isEqChain _            = False
 
--- Eq is symmetric; used when trying both orientations during matching.
+-- Flip an equation, used to try both orientations while matching.
 flipLit :: Literal -> Literal
 flipLit (Eq l r) = Eq r l
 flipLit x        = x
@@ -395,7 +386,7 @@ blockVars (HaveHence ls)    = nub (concatMap lineVars ls)
 blockVars (EqChain s steps) = nub (termVars s ++ concatMap stepVars steps)
   where stepVars (RwStep _ (l, r) _, cur) = termVars l ++ termVars r ++ termVars cur
 
--- node count; smaller = simpler rw candidate
+-- Node count, where smaller means a simpler rewrite candidate.
 termSize :: Term -> Int
 termSize (Var _)    = 1
 termSize (Const _)  = 1
@@ -436,20 +427,18 @@ ppTerm (Var x)    = x
 ppTerm (Const c)  = c
 ppTerm (App f ts) = f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 
--- True for Twee-internal units that should not appear in human-readable proof steps:
--- prem_N (Skolemized body premises) and ifeq_axiom (encoding sentinel).
--- Unnamed units (no display name) are also internal.
+-- True for units internal to the Twee encoding that must not appear in a proof,
+-- namely the Skolemized premises prem_N, the ifeq_axiom sentinel and any unit
+-- without a display name.
 isInternalUnit :: UnitEntry -> Bool
 isInternalUnit ue = case ueName ue of
   Just nm -> isPrefixOf "prem_" nm || nm == "ifeq_axiom"
   Nothing -> True
 
--- | Restrict prover output to its SZS output block when one is present.
--- Twee (since 2.7 with --formal-proof) prints a human-readable preamble
--- ("Here is the input problem: ...") and a "RESULT:" trailer around the
--- "% SZS output start/end CNFRefutation" block; these lines are not TSTP
--- and make the whole file unparseable.  Without markers the text is
--- returned unchanged.
+-- | Restrict prover output to its SZS output block when there is one.  Twee
+-- 2.7 with --formal-proof wraps the block in a readable preamble and trailer
+-- that are not TSTP and make the file unparseable.  Without markers the text
+-- is returned unchanged.
 extractSzsBlock :: String -> String
 extractSzsBlock txt =
   case break isStart (lines txt) of
@@ -459,11 +448,10 @@ extractSzsBlock txt =
           endLine = take 1 restEnd
       in if any isUnit body
            then unlines (startLine : body ++ endLine)
-           -- A TSTP-library solution file (.s) lists the proof as clean
-           -- units at the top and repeats the prover's raw output below
-           -- with every line prefixed by "% <time>/<time>": the only SZS
-           -- marker sits in that commented copy, and cutting to it would
-           -- keep no unit at all.  The clean units are the proof.
+           -- A TPTP solution file lists the proof as clean units at the top
+           -- and repeats the raw output below as comments.  Its only SZS
+           -- marker is in that commented copy, so cutting to it would keep no
+           -- unit at all.  The clean units are the proof.
            else txt
   where
     isStart l = "SZS output start" `isInfixOf` l
@@ -508,10 +496,9 @@ applyRwLine b (rw, c) = appendLine b (Hence c (ByRw (rwName rw) (dirFlag (rwDir 
 commonPrefixLen :: String -> String -> Int
 commonPrefixLen s1 s2 = length $ takeWhile id $ zipWith (==) s1 s2
 
--- Replay a demodulation chain (outermost step first on input, replayed
--- innermost first).  Every step must name a known equation and apply;
--- otherwise the replay does not reproduce the prover's rewriting and the
--- chain is unusable (Nothing).
+-- Replay a demodulation chain, given outermost first and replayed innermost
+-- first.  Every step must name a known equation and apply, or the replay
+-- does not reproduce the prover's rewriting and the result is Nothing.
 rwChain :: (String -> Maybe (Term, Term)) -> Literal -> [(String, Dir)] -> Maybe (Literal, [(RwStep, Literal)])
 rwChain eqOf start chain = go start [] (reverse chain)
   where
@@ -521,10 +508,9 @@ rwChain eqOf start chain = go start [] (reverse chain)
       cur'   <- rewriteLit cur (l, r) dir
       go cur' ((RwStep nm (l, r) dir, cur') : acc) rest
 
--- Undo a demodulation chain on a literal the prover shows after rewriting:
--- the steps are applied in the opposite direction, outermost first.
--- The equation's variables are renamed apart: undoing g(X) = c on a literal
--- that has its own X would otherwise identify the two.
+-- Undo a demodulation chain on a literal shown after rewriting, applying the
+-- steps backwards and outermost first.  The equation's variables are renamed
+-- apart, or undoing g(X) = c on a literal with its own X would identify them.
 unrewriteLit :: (String -> Maybe (Term, Term)) -> Literal -> [(String, Dir)] -> Maybe Literal
 unrewriteLit eqOf = foldM step
   where

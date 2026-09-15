@@ -55,19 +55,16 @@ runProverCapped secs bin args = do
     Just (Right (_, out, _)) -> Just out
     _                        -> Nothing
 
--- Seconds from an environment variable, with a default for unset/unparseable.
--- Clamped to at least 1: zero or negative values would make System.Timeout
--- fail immediately or, worse, disable the wall-clock kill entirely.
+-- Seconds from an environment variable, with a default when it is unset or
+-- unreadable.  Clamped to at least 1, since zero or less would fail at once or
+-- disable the wall-clock kill.
 timeoutSecsFromEnv :: String -> Int -> IO Int
 timeoutSecsFromEnv var def = max 1 . fromMaybe def . (>>= readMaybe) <$> lookupEnv var
 
--- Twee call on a problem text, with the configured --max-time plus a
--- wall-clock margin. The input goes to a fresh temp file so concurrent
--- Taelja processes (e.g. a parallel test run) never overwrite each other's
--- problems. Goal-level calls (the chain for a goal) get the full budget;
--- speculative internal calls (electron recovery, unnamed units, lemma
--- candidates) get a small one, capped at the goal budget, so a failing call
--- can't eat the whole translation's time.
+-- Call Twee on a problem, with the configured --max-time plus a wall-clock
+-- margin.  Each input gets a fresh temp file so concurrent runs never collide.
+-- A goal's own chain gets the full budget, and speculative internal calls get
+-- a small one capped at it, so a failing call cannot eat the whole run.
 data TweeBudget = GoalBudget | InternalBudget deriving (Eq, Show)
 
 runTwee :: TweeBudget -> String -> String -> IO String
@@ -116,15 +113,21 @@ withTempInput tag input act = do
 -- An unquoted name starting uppercase comes back as a VARIABLE, and a
 -- negative integer does not parse at all, so a call containing one would
 -- either fail obscurely or return a wrong chain.  Such calls are refused.
+-- Quoting cannot rescue a name containing a quote or a backslash, since that
+-- would need escaping that the prover's own reader may not round-trip.
 tptpSafeName :: String -> Bool
-tptpSafeName []         = False
-tptpSafeName nm@(c : cs)
+tptpSafeName [] = False
+tptpSafeName nm = bareName nm || not (any (`elem` "'\\") nm)
+
+-- Names that need no quotes.
+bareName :: String -> Bool
+bareName []         = False
+bareName nm@(c : cs)
   -- an integer literal is a term in its own right and needs no quoting
   | all isDigit nm                        = True
   | c == '-', not (null cs), all isDigit cs = True
-  -- anything else must be an unquoted atom: lowercase initial, so the prover
-  -- does not read it back as a variable, and no character that would end the
-  -- token and make the generated file unparseable
+  -- Anything else must be an unquoted atom with a lowercase initial, so it is
+  -- not read back as a variable, and no character that would end the token.
   | otherwise = isAsciiLower c
                 && all (\ch -> isAsciiLower ch || isAsciiUpper ch || isDigit ch || ch == '_') cs
 
@@ -143,11 +146,17 @@ notVarTerm :: Term -> Bool
 notVarTerm (Var _) = False
 notVarTerm _       = True
 
+-- A functor that cannot be written bare is emitted as a TPTP quoted atom,
+-- which is how the input proofs themselves write '+' and friends.
+tptpAtom :: String -> String
+tptpAtom nm | bareName nm = nm
+            | otherwise   = "'" ++ nm ++ "'"
+
 toTptpTerm :: Term -> String
 toTptpTerm (Var [])       = []
 toTptpTerm (Var (c:cs))   = toUpper c : cs
-toTptpTerm (Const f)      = f
-toTptpTerm (App f ts)     = f ++ "(" ++ intercalate "," (map toTptpTerm ts) ++ ")"
+toTptpTerm (Const f)      = tptpAtom f
+toTptpTerm (App f ts)     = tptpAtom f ++ "(" ++ intercalate "," (map toTptpTerm ts) ++ ")"
 
 toCnfAxiom :: String -> Term -> Term -> String
 toCnfAxiom name l r =
@@ -157,12 +166,12 @@ toCnfNegGoal :: String -> Term -> Term -> String
 toCnfNegGoal name l r =
   "cnf(" ++ name ++ ", negated_conjecture, " ++ toTptpTerm l ++ " != " ++ toTptpTerm r ++ ")."
 
--- The ifeq selector axiom: ifeq(X,X,Y,Z) = Y.
+-- The ifeq selector axiom ifeq(X,X,Y,Z) = Y.
 ifeqSelectorAxiom :: String
 ifeqSelectorAxiom = "cnf(ifeq_axiom, axiom, ifeq(X,X,Y,Z) = Y)."
 
--- A relational literal as a term (for the ifeq/pair encoding); the Horn
--- axioms passed here are filtered to relational ones by the caller.
+-- A relational literal as a term for the ifeq and pair encoding.  The caller
+-- passes only relational Horn axioms.
 litRelTerm :: Literal -> Term
 litRelTerm (Rel n []) = Const n
 litRelTerm (Rel n as) = App n as
@@ -174,9 +183,9 @@ nestRightPair []     = error "nestRightPair: empty list"
 nestRightPair [t]    = t
 nestRightPair (t:ts) = App "pair" [t, nestRightPair ts]
 
--- Encode a Horn clause with relational head as a CNF ifeq+pair axiom string.
--- Unit clause (no body): cnf(name, axiom, head = true).
--- Horn clause (n bodies): cnf(name, axiom, ifeq(pair(b1,..,bn), pair(true,..,true), head, true) = true).
+-- Encode a Horn clause with a relational head as a CNF axiom.  A unit becomes
+-- head = true, and a clause with bodies b1 to bn becomes
+-- ifeq(pair(b1,..,bn), pair(true,..,true), head, true) = true.
 toIfeqCnfHorn :: String -> Literal -> [Literal] -> String
 toIfeqCnfHorn name headLit [] =
   "cnf(" ++ sanitizeId name ++ ", axiom, " ++ toTptpTerm (litRelTerm headLit) ++ " = true)."
@@ -199,9 +208,8 @@ callTweeRelLemma budget units hornAxioms goalLit
   let goalTerm  = litRelTerm goalLit
       relUnits  = relevantUnits goalLit (filter (tptpSafeLit . ueUnit) units)
       indexed   = zip [(0::Int)..] relUnits
-      -- The index keeps ids apart: sanitizing alone maps "axiom 3" and
-      -- "axiom_3" to one id, and the later unit would silently win the
-      -- lookup, so a replayed step would cite the wrong axiom.
+      -- The index keeps ids apart.  Sanitizing alone maps "axiom 3" and
+      -- "axiom_3" to one id, and a replayed step would cite the wrong axiom.
       mkId i ue = maybe "anon" sanitizeId (ueName ue) ++ "_" ++ show i
       toAxiom (i, ue) = case ueUnit ue of
         Eq a b   -> Just (toCnfAxiom (mkId i ue) a b)
@@ -228,9 +236,9 @@ callTweeRelLemma budget units hornAxioms goalLit
     relTerm n [] = Const n
     relTerm n as = App n as
 
--- An unquoted TPTP atom: lowercase-letter head, then [a-zA-Z0-9_].  Anything
--- else (spaces, ':', '-', quotes, ...) would make the generated prover input
--- file unparseable, silently failing every call that includes the unit.
+-- An unquoted TPTP atom, a lowercase letter followed by letters, digits or
+-- underscores.  Anything else would make the generated input unparseable and
+-- silently fail every call that includes it.
 sanitizeId :: String -> String
 sanitizeId nm =
   let body = map (\c -> if isAsciiLower c || isAsciiUpper c || isDigit c || c == '_' then c else '_') nm
@@ -238,17 +246,15 @@ sanitizeId nm =
        (c : _) | isAsciiLower c -> body
        _                        -> 'x' : body
 
--- Transitive symbol-relevance filter: keep only units whose symbols are
--- reachable from the goal's symbols via the axiom set.  Prevents passing
--- unrelated equations to Twee, which inflates its critical-pair search.
+-- Keep only units whose symbols are reachable from the goal's symbols through
+-- the axioms.  Unrelated equations would inflate Twee's critical-pair search.
 relevantUnits :: Literal -> [UnitEntry] -> [UnitEntry]
 relevantUnits goal units =
     filter keep units
   where
     -- An equation with a bare variable on one side rewrites every term, so it
-    -- bears on any goal even when it shares no symbol with one.  Judging it by
-    -- shared symbols alone drops it: SWV818-1 proves v_s = v_t from X = v_ta,
-    -- whose only symbol is v_ta.
+    -- bears on any goal even when it shares no symbol with one.  SWV818-1
+    -- proves v_s = v_t from X = v_ta, whose only symbol is v_ta.
     keep u = universal (ueUnit u)
              || any (`elem` finalSyms) (litSyms (ueUnit u))
     universal (Eq (Var _) _) = True
@@ -266,14 +272,25 @@ relevantUnits goal units =
       in if newSyms == syms then syms else expand newSyms
     finalSyms = expand (litSyms goal)
 
--- Parse a TPTP-style term from a string (Twee human-readable proof format).
--- Variables start uppercase; constants/functions start lowercase or '_'.
+-- Parse a term from Twee's readable proof format.  Variables start uppercase,
+-- and constants and functions start lowercase or with an underscore.
 parseTweeTerm :: String -> Maybe (Term, String)
 parseTweeTerm [] = Nothing
 parseTweeTerm s  =
   let s' = dropWhile (== ' ') s
   in case s' of
        [] -> Nothing
+       -- a quoted atom, as emitted by tptpAtom and echoed back by the prover
+       ('\'':more) ->
+         case break (== '\'') more of
+           (nm, '\'':rest) | not (null nm) ->
+             case rest of
+               '(':args ->
+                 case parseTweeArgList args of
+                   Just (as, rest') -> Just (App nm as, rest')
+                   Nothing          -> Nothing
+               _ -> Just (Const nm, rest)
+           _ -> Nothing
        (c:_)
          | isAsciiUpper c ->
              let (nm, rest) = span isTweeIdChar s'
@@ -301,15 +318,11 @@ parseTweeArgList s = go [] (dropWhile (== ' ') s)
           ')':more -> Just (acc ++ [t], more)
           _        -> Nothing
 
--- Parse Twee's --formal-proof output and build the rewrite chain. Two
--- strategies, tried in order:
---  1. Direct: use Twee's own intermediate terms verbatim. Works when Twee's
---     output terms match exactly (ground proofs).
---  2. Guided replay: keep Twee's axiom IDs and directions but re-derive each
---     intermediate term via rewriteTermAll on the stored equations. Needed
---     when Twee renames variables (e.g. X0 -> X in non-ground proofs); only
---     tries the direction Twee specified, so it stays robust to position
---     ambiguity in short chains without backtracking over direction too.
+-- Parse Twee's --formal-proof output into a rewrite chain, trying two ways in
+-- order.  The first uses Twee's intermediate terms verbatim, which works for
+-- ground proofs.  The second keeps Twee's axioms and directions but re-derives
+-- each term from the stored equations, which handles renamed variables in
+-- non-ground proofs.  It follows only Twee's stated direction.
 parseTweeChain
   :: Map.Map String UnitEntry
   -> String        -- Twee's stdout
@@ -321,7 +334,7 @@ parseTweeChain idToUe output l r =
     Just (startStr, rawSteps) ->
       directChain startStr rawSteps <|> guidedChain rawSteps
   where
-    -- Strategy 1: parse intermediate terms verbatim from Twee's output.
+    -- First, read Twee's intermediate terms verbatim.
     directChain startStr rawSteps =
       let mStart = fst <$> parseTweeTerm startStr
           mChain = sequence
@@ -335,7 +348,7 @@ parseTweeChain idToUe output l r =
              | start == r && (null chain || lastTerm chain == l) -> Just (r, chain)
            _ -> Nothing
 
-    -- Strategy 2: guided replay using stored equations (handles variable renaming).
+    -- Second, replay guided by the stored equations, which handles renaming.
     guidedChain rawSteps =
       let steps = [(nm, dir) | (nm, dir, _) <- rawSteps]
       in replayGuided steps l r <|> replayGuided steps r l
@@ -400,9 +413,8 @@ callTwee budget units goal@(Eq l r)
       eqUnits = sortBy (\(_, u1) (_, u2) ->
                   compare (null (litVars (ueUnit u1))) (null (litVars (ueUnit u2))))
                 rawEqUnits
-      -- The index keeps ids apart: sanitizing alone maps "axiom 3" and
-      -- "axiom_3" to one id, and the later unit would silently win the
-      -- lookup, so a replayed step would cite the wrong axiom.
+      -- The index keeps ids apart.  Sanitizing alone maps "axiom 3" and
+      -- "axiom_3" to one id, and a replayed step would cite the wrong axiom.
       mkId i ue = maybe "anon" sanitizeId (ueName ue) ++ "_" ++ show i
       idToUe  = Map.fromList [(mkId i ue, ue) | (i, ue) <- eqUnits]
       axioms  = [ toCnfAxiom (mkId i ue) a b
@@ -416,9 +428,8 @@ callTwee budget units goal@(Rel name args)
   | otherwise = do
   let goalTerm  = if null args then Const name else App name args
       indexed   = zip [(0::Int)..] (relevantUnits goal (filter (tptpSafeLit . ueUnit) units))
-      -- The index keeps ids apart: sanitizing alone maps "axiom 3" and
-      -- "axiom_3" to one id, and the later unit would silently win the
-      -- lookup, so a replayed step would cite the wrong axiom.
+      -- The index keeps ids apart.  Sanitizing alone maps "axiom 3" and
+      -- "axiom_3" to one id, and a replayed step would cite the wrong axiom.
       mkId i ue = maybe "anon" sanitizeId (ueName ue) ++ "_" ++ show i
       toAxiom (i, ue) = case ueUnit ue of
         Eq a b   -> Just (toCnfAxiom (mkId i ue) a b)
