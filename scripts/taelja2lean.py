@@ -288,6 +288,9 @@ def parse_ref(s: str) -> Ref:
     # a hypothesis of the goal, assumed at the start of its proof
     if s == 'assumption':
         return Ref('assumption', 0, rw, direction)
+    # the goal's hypotheses discharged, which the intro at the start already did
+    if s == 'discharge':
+        return Ref('discharge', 0, rw, direction)
     m = re.match(r'(axiom|lemma)\s+(\d+)', s)
     if not m:
         raise ValueError(f'Cannot parse ref: {s!r}')
@@ -1495,6 +1498,11 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
         ref = step.ref
         ref_name = ref_lean_name(ref)
         hname = fresh_hyp()
+
+        if ref.kind == 'discharge':
+            # the hypotheses were introduced at the start, so the previous
+            # step already proves the conclusion
+            continue
 
         if ref.kind == 'assumption':
             # an assumed hypothesis, introduced at the start of the proof

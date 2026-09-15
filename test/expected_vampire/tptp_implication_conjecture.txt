@@ -8,3 +8,5 @@ Proof:
     by axiom 1
   hence r
     by axiom 2
+  hence p => r
+    by discharge

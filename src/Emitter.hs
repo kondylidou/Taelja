@@ -89,13 +89,16 @@ lemmaLines (name, lit, block) =
   [""]
   where renaming = blockRenaming lit block
 
--- A goal under hypotheses is stated as the conjecture was, H1 /\ H2 => G.
+-- A goal under hypotheses is stated as the conjecture was, H1 /\ H2 => G, and
+-- its proof ends by discharging them.
 goalLines :: [Axiom] -> Int -> (Literal, ProofBlock) -> [String]
 goalLines hyps n (lit, block) =
-  ("Goal " ++ show n ++ ": " ++ ppHyps ++ ppLiteral (renameLit renaming lit)) :
+  ("Goal " ++ show n ++ ": " ++ stated) :
   "Proof:" :
-  blockLines (renameBlock renaming block)
+  blockLines (renameBlock renaming block) ++
+  [ l | not (null hyps), l <- ["  hence " ++ stated, "    by discharge"] ]
   where
+    stated   = ppHyps ++ ppLiteral (renameLit renaming lit)
     renaming = zip (nub (litVars lit ++ concatMap axiomVars hyps ++ blockVars block)) prettyVarNames
     ppHyps | null hyps = ""
            | otherwise = intercalate " /\\ " (map ppHyp hyps) ++ " => "
