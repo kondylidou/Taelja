@@ -252,7 +252,8 @@ def _goal_matches_conjecture(proof_txt, problem_file):
     if conj is None:
         return True
     for goal in _GOAL_LINE.findall(proof_txt):
-        m = _GOAL_HEAD.match(goal)
+        # a goal under hypotheses is stated H => G, and G is what is proved
+        m = _GOAL_HEAD.match(goal.rsplit(' => ', 1)[-1])
         if m and m.group(1) not in conj:
             return False
     return True

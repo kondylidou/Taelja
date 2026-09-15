@@ -2,7 +2,7 @@ module Helpers where
 
 import Control.Applicative ((<|>))
 import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub)
-import Data.Maybe (fromMaybe, listToMaybe)
+import Data.Maybe (fromMaybe, isJust, listToMaybe)
 import Control.Monad (foldM)
 import Types
 
@@ -351,6 +351,16 @@ isEmptyBlock _              = False
 isEqChain :: ProofBlock -> Bool
 isEqChain (EqChain {}) = True
 isEqChain _            = False
+
+-- The second clause is an instance of the first, literal by literal.
+clauseInstance :: Clause -> Clause -> Bool
+clauseInstance (Clause bs1 h1) (Clause bs2 h2) =
+  length bs1 == length bs2 && isJust (do
+    σ <- foldM (\s (a, b) -> matchLitWith a b s) [] (zip bs1 bs2)
+    case (h1, h2) of
+      (Just a, Just b)   -> matchLitWith a b σ
+      (Nothing, Nothing) -> Just σ
+      _                  -> Nothing)
 
 -- Flip an equation, used to try both orientations while matching.
 flipLit :: Literal -> Literal

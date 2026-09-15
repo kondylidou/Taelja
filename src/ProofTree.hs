@@ -3,6 +3,7 @@
 -- Leaves at smaller positions are electrons for nuclei at larger positions.
 module ProofTree
   ( buildProofInfo
+  , conjectureHypotheses
   , headLitOf
   , unitNameStr
   , demodRuleNames
@@ -10,6 +11,7 @@ module ProofTree
   , resolveSourceName
   , resolveCopySource
   , isFileSrc
+  , isIntroducedSrc
   , lookupDecl
   , isDerivedUnit
   , isOrigAxiomDecl
@@ -26,7 +28,7 @@ import Types
 import Helpers (applySubst, applySubstTerm, deepApplySubstTerm, flipLit, litSubtermCtxs,
                 mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
                 unifyLits, unifyTerms)
-import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, isReservedTLit)
+import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertFOFToClause, isReservedTLit)
 data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
@@ -63,18 +65,22 @@ buildProofInfo axHyps allUnits
                         _                   -> decl
         in LeafEntry
         { lePos     = pos
+        , leUnit    = name
         , leName    = srcName
         , leDecl    = decl
         , leSrcDecl = srcDecl
         , leRole    = classifyRole axHyps unitMap name decl
+        , leHyp     = axHyps && isHypothesisOfConjecture unitMap name decl
         , leSimpl   = fromMaybe [] (Map.lookup pos chains)
         }
       mkInner (pos, name, decl) = LeafEntry
         { lePos     = pos
+        , leUnit    = name
         , leName    = name
         , leDecl    = decl
         , leSrcDecl = decl   -- inner nodes are already the derived form
         , leRole    = Derived
+        , leHyp     = False
         , leSimpl   = []
         }
       byPos  = sortBy (comparing lePos)
@@ -443,15 +449,7 @@ classifyRole axHyps unitMap name decl
   -- (Vampire's "prove the negation" mode does this for all input clauses)
   | isPositiveUnitFormula decl && isFileSrc unitMap name     = OrigAxiom
   | isPositiveUnitFormula decl && isFileSrc unitMap resolvedNm = OrigAxiom
-  -- hypothesis clause of a negated implication conjecture (see buildProofInfo)
-  -- A positive clause of the negated conjecture is a hypothesis.  It may carry
-  -- the negated_conjecture role itself, as with E and Vampire, or be a plain
-  -- clausified copy of the negated formula, as TPTP's own tools write it.
-  | axHyps && isJust (headLitOf decl)
-  , let cs    = resolveCopySource unitMap name
-        csNeg = maybe False isNegConj (lookupDecl unitMap cs)
-  , isNegConj decl || csNeg
-  , Map.notMember cs unitMap || isFileSrc unitMap cs || csNeg = OrigAxiom
+  | axHyps && isConjHypothesis unitMap name decl              = OrigAxiom
   | isNegConj decl                                           = NegConjecture
   | maybe False isNegConj (lookupDecl unitMap resolvedNm)    = NegConjecture
   -- A clause whose source traces back to a file conjecture is part of the
@@ -471,6 +469,42 @@ classifyRole axHyps unitMap name decl
 isNegConj :: T.Declaration -> Bool
 isNegConj (T.Formula (T.Standard T.NegatedConjecture) _) = True
 isNegConj _                                              = False
+
+-- A positive clause of the negated conjecture is a hypothesis of an
+-- implication conjecture.  It may carry the negated_conjecture role itself,
+-- as with E and Vampire, or be a plain clausified copy of the negated
+-- formula, as TPTP's own tools write it.
+isConjHypothesis :: Map.Map String T.Unit -> String -> T.Declaration -> Bool
+isConjHypothesis unitMap name decl =
+  isJust (headLitOf decl)
+  && (isNegConj decl || csNeg)
+  && (Map.notMember cs unitMap || isFileSrc unitMap cs || csNeg)
+  where
+    cs    = resolveCopySource unitMap name
+    csNeg = maybe False isNegConj (lookupDecl unitMap cs)
+
+-- Such a clause was assumed by an implication conjecture only when the
+-- negated conjecture it copies was derived by negating one.  A problem that
+-- states its negated conjecture as clauses has stated inputs instead.
+isHypothesisOfConjecture :: Map.Map String T.Unit -> String -> T.Declaration -> Bool
+isHypothesisOfConjecture unitMap name decl =
+  isConjHypothesis unitMap name decl
+  && maybe False isNegConj (lookupDecl unitMap cs)
+  && not (isFileSrc unitMap cs)
+  where cs = resolveCopySource unitMap name
+
+-- The antecedent of an implication conjecture as one clause per conjunct.
+-- Nothing when there is no FOF conjecture or a conjunct is not a clause.
+conjectureHypotheses :: [T.Unit] -> Maybe [Clause]
+conjectureHypotheses units = listToMaybe
+  [ cs | T.Unit _ (T.Formula (T.Standard T.Conjecture) (T.FOF f)) _ <- units
+       , Just cs <- [antecedent f] ]
+  where
+    antecedent (T.Quantified T.Forall _ b)     = antecedent b
+    antecedent (T.Connected l T.Implication _) = mapM convertFOFToClause (conjuncts l)
+    antecedent _                               = Just []
+    conjuncts (T.Connected l T.Conjunction r) = conjuncts l ++ conjuncts r
+    conjuncts f                               = [f]
 -- A unit the prover introduced itself, like E's introduced(definition).
 isIntroducedSrc :: Map.Map String T.Unit -> String -> Bool
 isIntroducedSrc unitMap name = case Map.lookup name unitMap of
@@ -489,11 +523,11 @@ lookupDecl unitMap name = case Map.lookup name unitMap of
   Just (T.Unit _ d _) -> Just d
   _                   -> Nothing
 
--- The step that negates the conjecture.  Vampire and E call it
--- negated_conjecture, and TPTP's own tools call it negate.  Source tracing
--- stops there, or a negated goal clause resolves to the conjecture itself.
+-- The step that negates the conjecture.  Vampire calls it negated_conjecture,
+-- E assume_negation, and TPTP's own tools negate.  Source tracing stops
+-- there, or a negated goal clause resolves to the conjecture itself.
 isNegationRule :: Text.Text -> Bool
-isNegationRule r = r `elem` map Text.pack ["negated_conjecture", "negate"]
+isNegationRule r = r `elem` map Text.pack ["negated_conjecture", "negate", "assume_negation"]
 
 -- Trace back only through copy steps, meaning bare unit references and
 -- single-parent preprocessing such as cnf_transformation.  Unlike

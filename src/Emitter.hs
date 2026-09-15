@@ -1,4 +1,4 @@
-module Emitter (emit) where
+module Emitter (emit, applyRenaming, pruneUnusedLemmas, axiomRenaming, blockRenaming) where
 
 import Data.Char (toUpper)
 import Data.List (intercalate, nub, partition)
@@ -15,9 +15,27 @@ emit sp0 = unlines $ concat
   [ axiomLines (axioms sp)
   , [ "" | not (null (axioms sp)) ]
   , concatMap lemmaLines (lemmas sp)
-  , intercalate [""] (zipWith goalLines [1..] (goals sp))
+  , intercalate [""] (zipWith (goalLines hyps) [1..] (goals sp))
   ]
-  where sp = renumberAxioms (pruneUnusedLemmas sp0)
+  where
+    hypNames = Map.keysSet (inHypotheses (spInput sp0))
+    hyps     = [ ax | ax <- axioms sp0, Set.member (axiomName ax) hypNames ]
+    sp       = renumberAxioms (pruneUnusedLemmas (dropHypotheses hypNames sp0))
+
+axiomName :: Axiom -> String
+axiomName (AUnit n _)    = n
+axiomName (ANucleus n _) = n
+
+axiomVars :: Axiom -> [String]
+axiomVars (AUnit _ l)                 = litVars l
+axiomVars (ANucleus _ (Clause bs mh)) = concatMap litVars bs ++ maybe [] litVars mh
+
+-- The hypotheses of an implication conjecture are assumed in the goal's proof
+-- rather than listed as axioms, and a step citing one says so.
+dropHypotheses :: Set.Set String -> StructuredProof -> StructuredProof
+dropHypotheses names sp =
+  (applyRenaming (Map.fromSet (const "assumption") names) sp)
+    { axioms = [ ax | ax <- axioms sp, Set.notMember (axiomName ax) names ] }
 
 -- Renumber axioms to close the gaps left by lemma promotion, and update every
 -- reference in lemma and goal blocks.
@@ -37,11 +55,12 @@ renumberAxioms sp =
 axiomLines :: [Axiom] -> [String]
 axiomLines entries = map ppEntry entries
   where
-    globalRenaming = zip (nub (concatMap entryVars entries)) prettyVarNames
-    entryVars (AUnit _ l)                  = litVars l
-    entryVars (ANucleus _ (Clause bs mh))  = concatMap litVars bs ++ maybe [] litVars mh
+    globalRenaming = axiomRenaming entries
     ppEntry (AUnit n l)    = cap n ++ ": " ++ ppLiteral (renameLit globalRenaming l)
     ppEntry (ANucleus n c) = cap n ++ ": " ++ ppClauseWith globalRenaming c
+
+axiomRenaming :: [Axiom] -> [(String, String)]
+axiomRenaming entries = zip (nub (concatMap axiomVars entries)) prettyVarNames
 
 ppClauseWith :: [(String, String)] -> Clause -> String
 ppClauseWith renaming (Clause bodyLits mHead) =
@@ -70,18 +89,25 @@ lemmaLines (name, lit, block) =
   [""]
   where renaming = blockRenaming lit block
 
-goalLines :: Int -> (Literal, ProofBlock) -> [String]
-goalLines n (lit, block) =
-  ("Goal " ++ show n ++ ": " ++ ppLiteral (renameLit renaming lit)) :
+-- A goal under hypotheses is stated as the conjecture was, H1 /\ H2 => G.
+goalLines :: [Axiom] -> Int -> (Literal, ProofBlock) -> [String]
+goalLines hyps n (lit, block) =
+  ("Goal " ++ show n ++ ": " ++ ppHyps ++ ppLiteral (renameLit renaming lit)) :
   "Proof:" :
   blockLines (renameBlock renaming block)
-  where renaming = blockRenaming lit block
+  where
+    renaming = zip (nub (litVars lit ++ concatMap axiomVars hyps ++ blockVars block)) prettyVarNames
+    ppHyps | null hyps = ""
+           | otherwise = intercalate " /\\ " (map ppHyp hyps) ++ " => "
+    ppHyp (AUnit _ l)    = ppLiteral (renameLit renaming l)
+    ppHyp (ANucleus _ c) = "(" ++ ppClauseWith renaming c ++ ")"
 
 blockLines :: ProofBlock -> [String]
 blockLines (HaveHence ls)    = concatMap renderLine ls
 blockLines (EqChain s steps) = renderEqChain s steps
 
 renderLine :: ProofLine -> [String]
+renderLine (Have lit "assumption") = ["  assume " ++ ppLiteral lit]
 renderLine (Have  lit nm) = ["  have "  ++ ppLiteral lit, "    by " ++ nm]
 renderLine (And   lit nm) = ["   and "  ++ ppLiteral lit, "    by " ++ nm]
 renderLine (Hence lit j)  = ["  hence " ++ ppLiteral lit, "    " ++ ppJust j]

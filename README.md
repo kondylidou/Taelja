@@ -9,7 +9,8 @@ two forms: `have … and … hence … by axiom N` blocks (one block per
 hyperresolution step) and equality chains
 (`t1 = { by axiom 1 } t2 = { by lemma 3 R->L } t3`). Every step cites a
 concrete axiom or lemma. Derived clauses that the input proof uses more than
-once are introduced as named lemmas with their own proofs.
+once are introduced as named lemmas with their own proofs. A conjecture of the
+form `H => G` is stated as such, and its proof begins with `assume H`.
 
 **This file covers the tool itself. See `ARTIFACT.md` for reproducing the
 paper's evaluation.**
@@ -102,10 +103,15 @@ cabal build
 ```
 cabal run taelja -- <proof-file.tstp>
 cabal run taelja -- --debug <proof-file.tstp>
+cabal run taelja -- --tptp <proof-file.tstp>
 ```
 
 `--debug` additionally prints the parsed units, the refutation proof tree,
 and per-step matching traces.
+
+`--tptp` prints the same proof as a TPTP derivation, one fof formula per
+line with an inference record naming its parents.  Each lemma and goal is
+the last step of its block, and no step derives $false.
 
 ## Checking a proof with Lean
 

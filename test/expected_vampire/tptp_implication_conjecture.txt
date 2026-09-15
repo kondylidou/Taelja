@@ -1,12 +1,10 @@
-Axiom 1: p
-Axiom 2: p => q
-Axiom 3: q => r
+Axiom 1: p => q
+Axiom 2: q => r
 
-Goal 1: r
+Goal 1: p => r
 Proof:
-  have p
-    by axiom 1
+  assume p
   hence q
-    by axiom 2
+    by axiom 1
   hence r
-    by axiom 3
+    by axiom 2

@@ -11,17 +11,16 @@ axiom q : Prop
 axiom r : Prop
 
 -- Axiom 1
-axiom ax1 : p
+axiom ax1 : p → q
 -- Axiom 2
-axiom ax2 : p → q
--- Axiom 3
-axiom ax3 : q → r
+axiom ax2 : q → r
 
 -- Goal 1
-theorem taelja_goal1 : r := by
-  have h1 : p := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : q := by first | (exact ax2 h1) | (first | (exact ax2 h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h3 : r := by first | (exact ax3 h2) | (first | (exact ax3 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+theorem taelja_goal1 : p → r := by
+  intro hyp1
+  have h1 : p := by assumption
+  have h2 : q := by first | (exact ax1 h1) | (first | (exact ax1 h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : r := by first | (exact ax2 h2) | (first | (exact ax2 h2) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h3
 
 end VampireTptpImplicationConjecture

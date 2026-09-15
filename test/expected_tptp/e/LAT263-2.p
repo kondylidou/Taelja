@@ -1,0 +1,15 @@
+% SZS output start Proof
+cnf(cls_conjecture_0, negated_conjecture, c_lessequals(v_S, v_A, tc_set(t_a)), file('Problems/LAT/LAT263-2.p', cls_conjecture_0)).
+cnf(cls_Tarski_Odual_Acl_A_58_APartialOrder_0, axiom, c_in(c_Tarski_Odual(v_cl, t_a), c_Tarski_OPartialOrder, tc_Tarski_Opotype_Opotype__ext__type(t_a, tc_Product__Type_Ounit)), file('Problems/LAT/LAT263-2.p', cls_Tarski_Odual_Acl_A_58_APartialOrder_0)).
+cnf(cls_Tarski_Odual_Acl_A_58_ACompleteLattice_0, axiom, c_in(c_Tarski_Odual(v_cl, t_a), c_Tarski_OCompleteLattice, tc_Tarski_Opotype_Opotype__ext__type(t_a, tc_Product__Type_Ounit)), file('Problems/LAT/LAT263-2.p', cls_Tarski_Odual_Acl_A_58_ACompleteLattice_0)).
+cnf(cls_Tarski_OA_A_61_61_Apset_Acl_0, axiom, v_A = c_Tarski_Opotype_Opset(v_cl, t_a, tc_Product__Type_Ounit), file('Problems/LAT/LAT263-2.p', cls_Tarski_OA_A_61_61_Apset_Acl_0)).
+cnf(cls_Tarski_Opset_A_Idual_Acl_J_A_61_61_Apset_Acl_0, axiom, c_Tarski_Opotype_Opset(c_Tarski_Odual(X1, X2), X2, tc_Product__Type_Ounit) = c_Tarski_Opotype_Opset(X1, X2, tc_Product__Type_Ounit), file('Problems/LAT/LAT263-2.p', cls_Tarski_Opset_A_Idual_Acl_J_A_61_61_Apset_Acl_0)).
+cnf(cls_Tarski_OCL_Olub__in__lattice_0, axiom, c_in(c_Tarski_Olub(X3, X1, X2), c_Tarski_Opotype_Opset(X1, X2, tc_Product__Type_Ounit), X2) | ~ c_in(X1, c_Tarski_OCompleteLattice, tc_Tarski_Opotype_Opotype__ext__type(X2, tc_Product__Type_Ounit)) | ~ c_in(X1, c_Tarski_OPartialOrder, tc_Tarski_Opotype_Opotype__ext__type(X2, tc_Product__Type_Ounit)) | ~ c_lessequals(X3, c_Tarski_Opotype_Opset(X1, X2, tc_Product__Type_Ounit), tc_set(X2)), file('Problems/LAT/LAT263-2.p', cls_Tarski_OCL_Olub__in__lattice_0)).
+cnf(cls_Tarski_Oglb__dual__lub_0, axiom, c_Tarski_Oglb(X1, X2, X3) = c_Tarski_Olub(X1, c_Tarski_Odual(X2, X3), X3), file('Problems/LAT/LAT263-2.p', cls_Tarski_Oglb__dual__lub_0)).
+fof(lemma_8, lemma, c_lessequals(v_S,c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),tc_set(t_a)), inference(rewrite, [status(thm)], [cls_Tarski_OA_A_61_61_Apset_Acl_0, cls_conjecture_0])).
+fof(lemma_9, lemma, c_lessequals(v_S,c_Tarski_Opotype_Opset(c_Tarski_Odual(v_cl,t_a),t_a,tc_Product__Type_Ounit),tc_set(t_a)), inference(rewrite, [status(thm)], [cls_Tarski_Opset_A_Idual_Acl_J_A_61_61_Apset_Acl_0, lemma_8])).
+fof(lemma_10, lemma, c_in(c_Tarski_Olub(v_S,c_Tarski_Odual(v_cl,t_a),t_a),c_Tarski_Opotype_Opset(c_Tarski_Odual(v_cl,t_a),t_a,tc_Product__Type_Ounit),t_a), inference(mp, [status(thm)], [cls_Tarski_OCL_Olub__in__lattice_0, cls_Tarski_Odual_Acl_A_58_ACompleteLattice_0, cls_Tarski_Odual_Acl_A_58_APartialOrder_0, lemma_9])).
+fof(s1, plain, c_in(c_Tarski_Oglb(v_S,v_cl,t_a),c_Tarski_Opotype_Opset(c_Tarski_Odual(v_cl,t_a),t_a,tc_Product__Type_Ounit),t_a), inference(rewrite, [status(thm)], [cls_Tarski_Oglb__dual__lub_0, lemma_10])).
+fof(s2, plain, c_in(c_Tarski_Oglb(v_S,v_cl,t_a),c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),t_a), inference(rewrite, [status(thm)], [cls_Tarski_Opset_A_Idual_Acl_J_A_61_61_Apset_Acl_0, s1])).
+fof(goal_1, theorem, c_in(c_Tarski_Oglb(v_S,v_cl,t_a),v_A,t_a), inference(rewrite, [status(thm)], [cls_Tarski_OA_A_61_61_Apset_Acl_0, s2])).
+% SZS output end Proof

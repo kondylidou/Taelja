@@ -12,7 +12,9 @@ import Test.Tasty.Golden
 
 import Translate (translate)
 import Emitter (emit)
+import TptpEmitter (emitTptp)
 import Helpers (extractSzsBlock)
+import Types (StructuredProof)
 import qualified Data.Text as Text
 
 main :: IO ()
@@ -29,7 +31,15 @@ tests = testGroup "Taelja"
   , testGroup "Vampire"     (map (mkTest "expected_vampire" "baseline_vampire") benchmarkNames)
   , testGroup "E"           (map (mkTest "expected_e"       "baseline_e")       eBenchmarkNames)
   , testGroup "Twee"        (map (mkTest "expected_twee"    "baseline_twee")    tweeBenchmarkNames)
+  , testGroup "TPTP"        (map mkTptpTest tptpNames)
   ]
+
+-- Every proof of the suite printed as a TPTP derivation by --tptp.
+tptpNames :: [(String, String)]
+tptpNames =
+  [ ("vampire", n) | n <- handcraftedNames ++ benchmarkNames ] ++
+  [ ("e",       n) | n <- eBenchmarkNames ] ++
+  [ ("twee",    n) | n <- tweeBenchmarkNames ]
 
 tweeBenchmarkNames :: [String]
 tweeBenchmarkNames =
@@ -216,15 +226,20 @@ eBenchmarkNames =
 mkTest :: String -> String -> String -> TestTree
 mkTest expectedDir prover name = goldenVsString name
   ("test/" ++ expectedDir ++ "/" ++ name ++ ".txt")
-  (run ("test/" ++ prover ++ "/" ++ name ++ ".tstp"))
+  (run emit ("test/" ++ prover ++ "/" ++ name ++ ".tstp"))
 
-run :: FilePath -> IO LBS.ByteString
-run path = do
+mkTptpTest :: (String, String) -> TestTree
+mkTptpTest (prover, name) = goldenVsString (prover ++ "/" ++ name)
+  ("test/expected_tptp/" ++ prover ++ "/" ++ name ++ ".p")
+  (run emitTptp ("test/baseline_" ++ prover ++ "/" ++ name ++ ".tstp"))
+
+run :: (StructuredProof -> String) -> FilePath -> IO LBS.ByteString
+run render path = do
   raw <- TIO.readFile path
   let contents = Text.pack (extractSzsBlock (Text.unpack raw))
   case eitherResult (feed (parseTSTP contents) mempty) of
     Left err   -> fail ("Parse error in " ++ path ++ ": " ++ err)
     Right tstp -> do
-      result <- catch (translate False tstp >>= \msp -> evaluate (force (maybe "translation failed\n" emit msp)))
+      result <- catch (translate False tstp >>= \msp -> evaluate (force (maybe "translation failed\n" render msp)))
                       (\e -> return (show (e :: SomeException)))
       return (LBS.pack result)

@@ -285,6 +285,9 @@ def parse_ref(s: str) -> Ref:
     # the conclusion follows from a derived $false (contradictory axioms)
     if s == 'contradiction':
         return Ref('contradiction', 0, rw, direction)
+    # a hypothesis of the goal, assumed at the start of its proof
+    if s == 'assumption':
+        return Ref('assumption', 0, rw, direction)
     m = re.match(r'(axiom|lemma)\s+(\d+)', s)
     if not m:
         raise ValueError(f'Cannot parse ref: {s!r}')
@@ -301,7 +304,8 @@ def parse_proof_block(lines: list) -> object:
     # Detect an EqChain, whose first line is a bare term rather than have, and or hence
     first = lines[0].strip()
     if not (first.startswith('have ') or first.startswith('hence ') or
-            first.startswith('and ') or first.startswith('by ')):
+            first.startswith('and ') or first.startswith('by ') or
+            first.startswith('assume ')):
         return parse_eqchain(lines)
     return parse_havehence(lines)
 
@@ -345,7 +349,10 @@ def parse_havehence(lines: list) -> HaveHenceProof:
         if not line or line.startswith('by '):
             continue
 
-        if line.startswith('have '):
+        if line.startswith('assume '):
+            steps.append(HaveStep(parse_formula_str(line[7:].strip()), Ref('assumption', 0)))
+
+        elif line.startswith('have '):
             lit_str = line[5:].strip()
             # next non-empty line should be 'by ...'
             while i < len(lines) and not lines[i].strip():
@@ -1136,6 +1143,7 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
     var_map = {v: lean_var_name(v, i) for i, v in enumerate(fvars)}
     if fvars:
         lines.append(f'intro {" ".join(var_map[v] for v in fvars)}')
+    conclusion = intro_hypotheses(conclusion, lines)
 
     if not proof.steps:
         lines.append('rfl')
@@ -1431,6 +1439,15 @@ def ref_formula_of(ref, axiom_types, lemma_types):
     return None, []
 
 
+def intro_hypotheses(conclusion, lines):
+    """A goal stated as H1 /\\ H2 => G introduces its hypotheses after its
+    variables and is then proved as G.  Returns the conclusion to prove."""
+    if isinstance(conclusion, Implies):
+        lines.append('intro ' + ' '.join(f'hyp{i + 1}' for i in range(len(conclusion.body))))
+        return conclusion.head
+    return conclusion
+
+
 def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, consts=None) -> list:
     if consts is None:
         consts = []
@@ -1440,6 +1457,7 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
     var_map = {v: lean_var_name(v, i) for i, v in enumerate(fvars)}
     if fvars:
         lines.append(f'intro {" ".join(var_map[v] for v in fvars)}')
+    conclusion = intro_hypotheses(conclusion, lines)
 
     steps = proof.steps
     if not steps:
@@ -1477,6 +1495,19 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
         ref = step.ref
         ref_name = ref_lean_name(ref)
         hname = fresh_hyp()
+
+        if ref.kind == 'assumption':
+            # an assumed hypothesis, introduced at the start of the proof
+            lit_str = lean_lit(step.lit, svm)
+            lines.append(f'have {hname} : {lit_str} := by assumption')
+            hyp_names[idx] = hname
+            hyp_lits[idx] = step.lit
+            if isinstance(step, AndStep):
+                extras.append(idx)
+            else:
+                current_idx = idx
+                extras = []
+            continue
 
         if isinstance(step, HaveStep):
             # Prove step.lit from ref (unconditional use)

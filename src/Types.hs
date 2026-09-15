@@ -78,10 +78,25 @@ data Axiom
 
 -- The translated proof, with axioms in input order, lemmas and goal proofs.
 data StructuredProof = StructuredProof
-  { axioms :: [Axiom]
-  , lemmas :: [(String, Literal, ProofBlock)]
-  , goals  :: [(Literal, ProofBlock)]
+  { axioms  :: [Axiom]
+  , lemmas  :: [(String, Literal, ProofBlock)]
+  , goals   :: [(Literal, ProofBlock)]
+  , spInput :: ProofInput
   } deriving (Show)
+
+-- The input problem behind a proof, kept for the TPTP output.  Axiom display
+-- names map to the input units they came from, the hypotheses an implication
+-- conjecture assumed map to the clause that states them, and the conjecture
+-- is its input unit.
+data ProofInput = ProofInput
+  { inAxiomUnits :: Map.Map String T.Unit
+  , inHypotheses :: Map.Map String String
+  , inConjecture :: Maybe T.Unit
+  , inUnits      :: [T.Unit]  -- every unit of the input proof
+  } deriving (Show)
+
+emptyInput :: ProofInput
+emptyInput = ProofInput Map.empty Map.empty Nothing []
 
 data AlgState = AlgState
   { stDebug      :: Bool  -- gate for per-goal warnings (a stage's result may be superseded)
@@ -113,10 +128,12 @@ data LeafRole
 
 data LeafEntry = LeafEntry
   { lePos     :: String          -- bit-string position in the expanded tree
+  , leUnit    :: String          -- the unit's own name
   , leName    :: String          -- resolved source name
   , leDecl    :: T.Declaration   -- raw TPTP declaration (for clause conversion)
   , leSrcDecl :: T.Declaration   -- source declaration, the same as leDecl for Derived and NegConjecture
   , leRole    :: LeafRole
+  , leHyp     :: Bool            -- an axiom that an implication conjecture assumed
   , leSimpl   :: [(String, Dir)] -- the demodulation chain at this position, outermost first
   } deriving (Show)
 

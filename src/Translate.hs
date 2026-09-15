@@ -29,7 +29,7 @@ import System.IO (hPutStrLn, stderr)
 import Types
 import Helpers
 import ProofTree
-  ( buildProofInfo, headLitOf, isDerivedUnit, isOrigAxiomDecl, isPositiveUnitFormula, unitNameStr
+  ( buildProofInfo, conjectureHypotheses, headLitOf, isDerivedUnit, isOrigAxiomDecl, isPositiveUnitFormula, unitNameStr
   , resolveCopySource
   )
 import TptpConvert
@@ -238,11 +238,34 @@ translateMode strict debug (T.TSTP _ units) = do
             | Map.member (unitNameStr n) validCands = makeFileSourced u
             | otherwise                             = u
           replace u = u
+          -- the input units behind the axioms, for the TPTP output
+          input = ProofInput
+            { inAxiomUnits = Map.fromList
+                [ (nm, u) | (src, nm) <- Map.toList origTstp2name
+                          , Just u <- [Map.lookup src unitMap0] ]
+            , inHypotheses = Map.fromList
+                [ (nm, leUnit e) | e <- origLeaves, leHyp e
+                                 , Just nm <- [Map.lookup (lePos e) origPosToName] ]
+            , inConjecture = listToMaybe
+                [ u | u@(T.Unit _ (T.Formula (T.Standard T.Conjecture) _) _) <- units ]
+            , inUnits = units
+            }
+          withInput sp = sp { spInput = input }
+      -- A hypothesis the proof assumed must be granted by the conjecture, or
+      -- the emitted theorem would be stronger than the conjecture states.
+      case conjectureHypotheses units of
+        Just granted ->
+          forM_ [ e | e <- origLeaves, leHyp e ] $ \e ->
+            case convertDeclToClause (leDecl e) of
+              Just c | not (any (`clauseInstance` c) granted) ->
+                error ("hypothesis " ++ leUnit e ++ " is not granted by the conjecture")
+              _ -> return ()
+        Nothing -> return ()
       case (Map.null validCands, buildProofInfo axHyps modUnits) of
         (False, Right mainInfo) ->
-          Just <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just allAxioms)
+          Just . withInput <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just allAxioms)
         _ ->
-          Just <$> runAlgorithm debug strict origInfo units Map.empty origTstp2name (Just origAxioms)
+          Just . withInput <$> runAlgorithm debug strict origInfo units Map.empty origTstp2name (Just origAxioms)
 
 -- The step layer.  A justification that cannot be established fails with
 -- throwError, the state keeps every sound fact found before the failure, and
@@ -2200,7 +2223,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
     Nothing -> error ("emitted goals are not a consistent instance of the conjecture: "
                       ++ intercalate ", " (map (ppLitI . fst) (stGoals finalSt)))
   return (StructuredProof (axiomList ++ bgAxiomList ++ stExtraAxioms finalSt)
-                          (stLemmas finalSt) (stGoals finalSt))
+                          (stLemmas finalSt) (stGoals finalSt) emptyInput)
   where
     action thetaCtx' allNuclei innerNusNG posToName goalLits simpl pG1Chain = do
       -- First pass over leaf axioms and derived nuclei with ground heads.

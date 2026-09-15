@@ -13,6 +13,7 @@ library
     Types
     Helpers
     Emitter
+    TptpEmitter
     ProofTree
     TptpConvert
     TweeInterface
@@ -28,7 +29,8 @@ library
     mtl         ^>=2.3,
     process     ^>=1.6,
     text        >=2.0 && <2.2,
-    tptp        ^>=0.1
+    tptp        ^>=0.1,
+    prettyprinter >=1.7 && <1.8
   default-language: GHC2021
 
 test-suite taelja-tests

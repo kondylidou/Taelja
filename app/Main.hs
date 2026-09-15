@@ -15,6 +15,7 @@ import Data.TPTP.Parse.Text (parseTSTP)
 import ProofTree (buildProofInfo)
 import Translate (translateStages, StageMode (..))
 import Emitter (emit)
+import TptpEmitter (emitTptp)
 import qualified Data.Text as Text
 import Helpers (extractSzsBlock)
 import Debug (dumpProofTree, dumpInferenceRules)
@@ -25,13 +26,14 @@ main = do
   let flags = filter ((== "--") . take 2) args
       files = filter ((/= "--") . take 2) args
       debug = "--debug" `elem` flags
+      render = if "--tptp" `elem` flags then emitTptp else emit
       mode  | "--strict-only" `elem` flags    = StrictOnly
             | "--heuristic-only" `elem` flags = HeuristicOnly
             | otherwise                       = BothStages
-      known = ["--debug", "--strict-only", "--heuristic-only"]
+      known = ["--debug", "--tptp", "--strict-only", "--heuristic-only"]
   inputFile <- case files of
     [f] | all (`elem` known) flags -> return f
-    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--strict-only | --heuristic-only] <proof-file>" >> exitFailure
+    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--tptp] [--strict-only | --heuristic-only] <proof-file>" >> exitFailure
   raw <- TIO.readFile inputFile
   let contents = Text.pack (extractSzsBlock (Text.unpack raw))
   case eitherResult (feed (parseTSTP contents) mempty) of
@@ -54,7 +56,7 @@ main = do
         -- fails lazily on constructs outside the Horn fragment, so printing as
         -- we go could leave a truncated proof that looks complete.
         Just sp -> do
-          r <- try (evaluate (force (emit sp)))
+          r <- try (evaluate (force (render sp)))
           case r of
             Left e -> do
               hPutStrLn stderr ("translate: " ++ show (e :: SomeException))
