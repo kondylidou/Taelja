@@ -1,0 +1,15 @@
+Axiom 1: nato_member(sweden)
+Axiom 2: nato_member(germany)
+Axiom 3: attacked(russia,germany)
+Axiom 4: nato_member(X) /\ nato_member(Y) /\ attacked(Z,Y) => protects(X,Y)
+
+Goal 1: protects(sweden,germany)
+Proof:
+  have nato_member(sweden)
+    by axiom 1
+   and nato_member(germany)
+    by axiom 2
+   and attacked(russia,germany)
+    by axiom 3
+  hence protects(sweden,germany)
+    by axiom 4

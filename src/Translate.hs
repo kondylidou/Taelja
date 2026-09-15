@@ -112,7 +112,17 @@ translate debug tstp = do
   translateStages (if forceStrict then StrictOnly else BothStages) debug tstp
 
 translateStages :: StageMode -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
-translateStages mode debug tstp = do
+translateStages mode debug tstp@(T.TSTP _ units) =
+  fmap withTypes <$> translateUntyped mode debug (eraseSorts tstp)
+  where
+    -- a typed proof keeps its units as read, so the TPTP output can be typed too
+    typed = [ () | T.Unit _ (T.Typing _ _) _ <- units ]
+    withTypes sp
+      | null typed = sp
+      | otherwise  = sp { spInput = (spInput sp) { inTyped = units } }
+
+translateUntyped :: StageMode -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
+translateUntyped mode debug tstp = do
   writeIORef rescueEnabled False
   r1@(mRes1, errH1, errS1) <- runStages
   (mRes, errH, errS) <- case mRes1 of
@@ -249,6 +259,7 @@ translateMode strict debug (T.TSTP _ units) = do
             , inConjecture = listToMaybe
                 [ u | u@(T.Unit _ (T.Formula (T.Standard T.Conjecture) _) _) <- units ]
             , inUnits = units
+            , inTyped = []
             }
           withInput sp = sp { spInput = input }
       -- A hypothesis the proof assumed must be granted by the conjecture, or

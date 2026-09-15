@@ -12,7 +12,7 @@ module LemmaBuilder
 import Control.Monad (when)
 import Control.Applicative ((<|>))
 import Data.List (intercalate, nub)
-import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe, maybeToList)
+import Data.Maybe (isJust, listToMaybe, mapMaybe, maybeToList)
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
 import Data.TPTP.Pretty (Pretty (..))
@@ -20,8 +20,6 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.TPTP as T
 import qualified Data.Text as Text
-import System.Directory (doesFileExist, findExecutable)
-import System.Environment (lookupEnv)
 import System.IO (hPutStrLn, stderr)
 
 import Types
@@ -33,7 +31,7 @@ import Helpers
 import Debug (dbgScoped)
 import ProofTree (headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
 import TptpConvert
-import TweeInterface (TweeBudget (..), callTwee, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
+import TweeInterface (TweeBudget (..), callTwee, findProver, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
 
 -- Flatten a T.Parent into the TSTP unit names it references
 flattenParents :: T.Parent -> [String]
@@ -366,29 +364,23 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
         Nothing -> do
           when debug $ hPutStrLn stderr
             ("buildCandidateLemma: E subproblem for " ++ cname ++ ":\n" ++ content)
-          eBin  <- fromMaybe "eprover" <$> lookupEnv "TAELJA_EPROVER"
+          mEBin <- findProver "TAELJA_EPROVER" "eprover" "lemma re-proofs"
           -- Per-candidate E budget from TAELJA_E_TIMEOUT, 5 s soft CPU by
           -- default plus a 5 s wall-clock kill.  A lemma is only worth it if
           -- its subproof is easy, and an unprovable candidate would burn the
           -- whole limit, as HEN006-4/Twee did.  --proof-object gives the
           -- baseline format, since the --output-level=2 trace is not parseable
           eSecs <- timeoutSecsFromEnv "TAELJA_E_TIMEOUT" 5
-          eResult <- withTempInput ("lemma_" ++ sanitizeId cname) content $ \tmpFile ->
-            runProverCapped (eSecs + 5) eBin
-              ["--auto", "--proof-object", "--tptp3-format",
-               "--soft-cpu-limit=" ++ show eSecs, tmpFile]
+          eResult <- case mEBin of
+            Nothing   -> return Nothing
+            Just eBin -> withTempInput ("lemma_" ++ sanitizeId cname) content $ \tmpFile ->
+              runProverCapped (eSecs + 5) eBin
+                ["--auto", "--proof-object", "--tptp3-format",
+                 "--soft-cpu-limit=" ++ show eSecs, tmpFile]
           case eResult of
             Nothing -> do
-              -- tell a missing binary, which drops every candidate, from a
-              -- timeout.  findExecutable only searches PATH, so also accept a
-              -- path-qualified binary that exists
-              mExe   <- findExecutable eBin
-              exists <- doesFileExist eBin
-              if isNothing mExe && not exists
-                then hPutStrLn stderr
-                  ("[warn] buildCandidateLemma: E prover not found (" ++ eBin
-                   ++ "); lemma candidate inlined")
-                else when debug $ hPutStrLn stderr "buildCandidateLemma: E failed or timed out"
+              -- a missing binary was reported once by findProver
+              when (debug && isJust mEBin) $ hPutStrLn stderr "buildCandidateLemma: E failed or timed out"
               return Nothing
             Just eOut -> do
               when debug $ hPutStrLn stderr

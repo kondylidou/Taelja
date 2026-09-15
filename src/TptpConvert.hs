@@ -12,6 +12,7 @@ module TptpConvert
   , convertFOFToClause
   , collectDisjuncts
   , collectDisjunct
+  , eraseSorts
   ) where
 
 import Data.List (partition)
@@ -20,6 +21,22 @@ import qualified Data.Text as Text
 import qualified Data.TPTP as T
 
 import Types
+
+-- A monomorphic typed proof read as an untyped one.  The sorts only restrict
+-- which terms a variable ranges over, and every step of the proof already
+-- respects them, so dropping the quantifier sorts and the type declarations
+-- leaves the same derivation.  Polymorphic formulae are kept as they are.
+eraseSorts :: T.TSTP -> T.TSTP
+eraseSorts (T.TSTP szs units) = T.TSTP szs (concatMap erase units)
+  where
+    erase (T.Unit _ (T.Typing _ _) _) = []
+    erase (T.Unit _ (T.Sort _ _) _)   = []
+    erase (T.Unit n (T.Formula r (T.TFF0 f)) a) = [T.Unit n (T.Formula r (T.FOF (untyped f))) a]
+    erase u = [u]
+    untyped (T.Atomic l)            = T.Atomic l
+    untyped (T.Negated f)           = T.Negated (untyped f)
+    untyped (T.Connected l c r)     = T.Connected (untyped l) c (untyped r)
+    untyped (T.Quantified q vs f)   = T.Quantified q (fmap (\(v, _) -> (v, T.Unsorted ())) vs) (untyped f)
 
 -- The body of a Horn clause, its negative literals in positive form.  For
 -- ~p(X) \/ q(X) this is [p(X)].

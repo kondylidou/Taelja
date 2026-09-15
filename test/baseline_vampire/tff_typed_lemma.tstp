@@ -1,0 +1,83 @@
+% SZS output start Proof for typed3
+tff(type_def_5, type, person: $tType).
+tff(type_def_6, type, city: $tType).
+tff(func_def_0, type, a: person).
+tff(func_def_1, type, f: person > person).
+tff(func_def_2, type, g: person > person).
+tff(func_def_3, type, home: person > city).
+tff(pred_def_1, type, q: person > $o).
+tff(pred_def_2, type, s: person > $o).
+tff(pred_def_3, type, p: (person * city) > $o).
+tff(f1,axiom,(
+  ! [X0 : person] : f(X0) = X0),
+  file('/private/tmp/claude-501/-Users-kondylidou-Developer-Taelja/86a13e38-6767-4fc5-ad36-f71491dfe6c5/scratchpad/nato/typed3.p',unknown)).
+tff(f2,axiom,(
+  ! [X0 : person] : g(X0) = f(X0)),
+  file('/private/tmp/claude-501/-Users-kondylidou-Developer-Taelja/86a13e38-6767-4fc5-ad36-f71491dfe6c5/scratchpad/nato/typed3.p',unknown)).
+tff(f3,axiom,(
+  ! [X0 : person] : (g(X0) = X0 => q(X0))),
+  file('/private/tmp/claude-501/-Users-kondylidou-Developer-Taelja/86a13e38-6767-4fc5-ad36-f71491dfe6c5/scratchpad/nato/typed3.p',unknown)).
+tff(f4,axiom,(
+  s(a)),
+  file('/private/tmp/claude-501/-Users-kondylidou-Developer-Taelja/86a13e38-6767-4fc5-ad36-f71491dfe6c5/scratchpad/nato/typed3.p',unknown)).
+tff(f5,axiom,(
+  ! [X0 : person,X1 : city] : ((s(X0) & q(X0) & X1 = home(X0)) => p(X0,X1))),
+  file('/private/tmp/claude-501/-Users-kondylidou-Developer-Taelja/86a13e38-6767-4fc5-ad36-f71491dfe6c5/scratchpad/nato/typed3.p',unknown)).
+tff(f6,conjecture,(
+  p(a,home(a))),
+  file('/private/tmp/claude-501/-Users-kondylidou-Developer-Taelja/86a13e38-6767-4fc5-ad36-f71491dfe6c5/scratchpad/nato/typed3.p',unknown)).
+tff(f7,negated_conjecture,(
+  ~p(a,home(a))),
+  inference(negated_conjecture,[status(cth)],[f6])).
+tff(f8,plain,(
+  ~p(a,home(a))),
+  inference(flattening,[],[f7])).
+tff(f9,plain,(
+  ! [X0 : person] : (q(X0) | g(X0) != X0)),
+  inference(ennf_transformation,[],[f3])).
+tff(f10,plain,(
+  ! [X0 : person,X1 : city] : (p(X0,X1) | (~s(X0) | ~q(X0) | home(X0) != X1))),
+  inference(ennf_transformation,[],[f5])).
+tff(f11,plain,(
+  ! [X0 : person,X1 : city] : (p(X0,X1) | ~s(X0) | ~q(X0) | home(X0) != X1)),
+  inference(flattening,[],[f10])).
+tff(f12,plain,(
+  ( ! [X0 : person] : (f(X0) = X0) )),
+  inference(cnf_transformation,[],[f1])).
+tff(f13,plain,(
+  ( ! [X0 : person] : (f(X0) = g(X0)) )),
+  inference(cnf_transformation,[],[f2])).
+tff(f14,plain,(
+  ( ! [X0 : person] : (g(X0) != X0 | q(X0)) )),
+  inference(cnf_transformation,[],[f9])).
+tff(f15,plain,(
+  s(a)),
+  inference(cnf_transformation,[],[f4])).
+tff(f16,plain,(
+  ( ! [X0 : person,X1 : city] : (p(X0,X1) | ~s(X0) | ~q(X0) | home(X0) != X1) )),
+  inference(cnf_transformation,[],[f11])).
+tff(f17,plain,(
+  ~p(a,home(a))),
+  inference(cnf_transformation,[],[f8])).
+tff(f18,plain,(
+  ( ! [X0 : person] : (g(X0) = X0) )),
+  inference(definition_unfolding,[],[f12,f13])).
+tff(f19,plain,(
+  ( ! [X0 : person] : (p(X0,home(X0)) | ~s(X0) | ~q(X0)) )),
+  inference(equality_resolution,[],[f16])).
+tff(f20,plain,(
+  ( ! [X0 : person] : (X0 != X0 | q(X0)) )),
+  inference(superposition,[],[f14,f18])).
+tff(f21,plain,(
+  ( ! [X0 : person] : (q(X0)) )),
+  inference(trivial_inequality_removal,[],[f20])).
+tff(f22,plain,(
+  ~s(a) | ~q(a)),
+  inference(resolution,[],[f19,f17])).
+tff(f23,plain,(
+  ~q(a)),
+  inference(forward_subsumption_resolution,[],[f22,f15])).
+tff(f24,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f23,f21])).
+% SZS output end Proof for typed3

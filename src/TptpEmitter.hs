@@ -36,11 +36,25 @@ data Formula = Ours Literal | OursClause Clause | Verbatim T.Formula
 emitTptp :: StructuredProof -> String
 emitTptp sp0 = unlines $
      ["% SZS output start Proof"]
-  ++ map (ppLine deps) allLines
+  ++ typeLines
+  ++ map (ppLine env deps) allLines
   ++ ["% SZS output end Proof"]
   where
     sp1   = pruneUnusedLemmas sp0
     input = spInput sp1
+    -- A typed proof is printed typed.  Its type declarations come first, the
+    -- input units are the typed ones as read, and a variable of a derived
+    -- formula gets the sort of the argument position it occurs in.
+    typing    = inTyped input
+    env       | null typing = Nothing
+              | otherwise   = Just (Map.fromList [ (Text.unpack a, (map sortName as, sortName r))
+                                                 | T.Unit _ (T.Typing (T.Atom a) (T.Type as r)) _ <- typing ])
+    typeLines = [ show (pretty u) | u@(T.Unit _ d _) <- typing, isTypeDecl d ]
+    isTypeDecl (T.Typing _ _) = True
+    isTypeDecl (T.Sort _ _)   = True
+    isTypeDecl _              = False
+    typedUnit u = fromMaybe u (Map.lookup (unitNameStr (unitName u)) typedByName)
+    typedByName = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n (T.Formula _ _) _) <- typing ]
     used  = Set.fromList (map (unitNameStr . unitName) (Map.elems (inAxiomUnits input))
                           ++ Map.elems (inHypotheses input)
                           ++ maybeToList (fmap (unitNameStr . unitName) (inConjecture input)))
@@ -81,7 +95,7 @@ emitTptp sp0 = unlines $
 
     -- an input unit that E derived from an introduced definition cites it,
     -- so such parents are printed first
-    inputLines = map (Input . snd) $ nubBy (\a b -> fst a == fst b) $ concat
+    inputLines = map (Input . typedUnit . snd) $ nubBy (\a b -> fst a == fst b) $ concat
       [ withParents u | n <- axNames, not (Set.member n hyps), Just u <- [inputOf n] ]
     byName = Map.fromList [ (unitNameStr (unitName u), u) | u <- inUnits input ]
     withParents u = concat [ withParents p | n <- unitParents u, Just p <- [Map.lookup n byName] ]
@@ -128,9 +142,9 @@ emitTptp sp0 = unlines $
     stepLines  = concatMap fst blockResults
     goalFinals = map snd (drop (length (lemmas sp)) blockResults)
     theoremLine = case conj of
-      Just u | merged -> [ asTheorem (Verbatim (unitFormula u)) conjName (last stepLines) ]
+      Just u | merged -> [ asTheorem (Verbatim (unitFormula (typedUnit u))) conjName (last stepLines) ]
       Just u ->
-        [ Step conjName "theorem" (Verbatim (unitFormula u))
+        [ Step conjName "theorem" (Verbatim (unitFormula (typedUnit u)))
                (if null assumed then "conclude" else "implies")
                (goalFinals ++ map snd assumed) ]
       Nothing -> []
@@ -151,12 +165,24 @@ assumptionDeps = foldl add Map.empty
     add m (Step n _ _ _ ps) = Map.insert n (foldl union [] (mapMaybe (`Map.lookup` m) ps)) m
     add m (Input _)         = m
 
-ppLine :: Map.Map String [String] -> Line -> String
-ppLine _ (Input u) = currentIntro (show (pretty (dropUnknownInfo u)))
-ppLine _ (Assume n lit) =
-  "fof(" ++ n ++ ", assumption, " ++ ppLit lit ++ ", introduced(assumption, [], []))."
-ppLine deps (Step n role f rule ps) =
-  "fof(" ++ n ++ ", " ++ role ++ ", " ++ ppFormula f ++ ann ++ ")."
+-- The symbol types of a typed proof, as argument sorts and result sort.
+type SortEnv = Maybe (Map.Map String ([String], String))
+
+sortName :: T.Name T.Sort -> String
+sortName (T.Defined (T.Atom a))           = Text.unpack a
+sortName (T.Reserved (T.Standard T.I))    = "$i"
+sortName (T.Reserved (T.Standard T.O))    = "$o"
+sortName (T.Reserved (T.Standard T.Int))  = "$int"
+sortName (T.Reserved (T.Standard T.Real)) = "$real"
+sortName (T.Reserved (T.Standard T.Rat))  = "$rat"
+sortName (T.Reserved (T.Extended e))      = Text.unpack e
+
+ppLine :: SortEnv -> Map.Map String [String] -> Line -> String
+ppLine _ _ (Input u) = currentIntro (show (pretty (dropUnknownInfo u)))
+ppLine env _ (Assume n lit) =
+  keyword env ++ "(" ++ n ++ ", assumption, " ++ ppLit env lit ++ ", introduced(assumption, [], []))."
+ppLine env deps (Step n role f rule ps) =
+  keyword env ++ "(" ++ n ++ ", " ++ role ++ ", " ++ ppFormula env f ++ ann ++ ")."
   where
     ann | null rule = ""
         | otherwise = ", inference(" ++ rule ++ ", [" ++ intercalate ", " info ++ "], ["
@@ -168,10 +194,13 @@ ppLine deps (Step n role f rule ps) =
       | otherwise         = ["status(thm)", "assumptions([" ++ intercalate ", " assumed ++ "])"]
     onParents = [ p | p <- ps, Map.lookup p deps == Just [p] ]
 
-ppFormula :: Formula -> String
-ppFormula (Ours lit)      = ppLit lit
-ppFormula (OursClause c)  = ppClause c
-ppFormula (Verbatim f)    = show (pretty f)
+keyword :: SortEnv -> String
+keyword = maybe "fof" (const "tff")
+
+ppFormula :: SortEnv -> Formula -> String
+ppFormula env (Ours lit)     = ppLit env lit
+ppFormula env (OursClause c) = ppClause env c
+ppFormula _   (Verbatim f)   = show (pretty f)
 
 -- The steps of one block, numbered from k, and the name of the one stating
 -- the lemma or goal.  A have or and line that restates the fact it cites word
@@ -342,20 +371,47 @@ symbol s = "'" ++ concatMap esc s ++ "'"
     esc '\\' = "\\\\"
     esc c    = [c]
 
-ppLit :: Literal -> String
-ppLit lit = quantify (nub (litVars lit)) (ppAtom lit)
+ppLit :: SortEnv -> Literal -> String
+ppLit env lit = quantify env [lit] (ppAtom lit)
 
-ppClause :: Clause -> String
-ppClause (Clause bs mh) =
-  quantify (nub (concatMap litVars bs ++ maybe [] litVars mh)) $
+ppClause :: SortEnv -> Clause -> String
+ppClause env (Clause bs mh) =
+  quantify env (bs ++ maybeToList mh) $
     "(" ++ ppBody bs ++ " => " ++ maybe "$false" ppAtom mh ++ ")"
   where
     ppBody [b] = ppAtom b
     ppBody bs' = "(" ++ intercalate " & " (map ppAtom bs') ++ ")"
 
-quantify :: [String] -> String -> String
-quantify [] f = f
-quantify vs f = "! [" ++ intercalate "," vs ++ "] : " ++ f
+-- The universal closure over the literals' variables, each with its sort when
+-- the proof is typed.
+quantify :: SortEnv -> [Literal] -> String -> String
+quantify env lits f = case nub (concatMap litVars lits) of
+  [] -> f
+  vs -> "! [" ++ intercalate "," (map bind vs) ++ "] : " ++ f
+  where
+    bind v = case env of
+      Nothing -> v
+      Just m  -> v ++ ": " ++ fromMaybe "$i" (lookup v (concatMap (litSorts m) lits))
+
+-- The sort of each variable of a literal, read off the argument positions it
+-- fills.  A variable on one side of an equation takes the other side's sort.
+litSorts :: Map.Map String ([String], String) -> Literal -> [(String, String)]
+litSorts m lit = case lit of
+  Rel p ts   -> args p ts
+  NRel p ts  -> args p ts
+  Eq l r     -> eqn l r
+  NEq l r    -> eqn l r
+  where
+    args f ts = concat (zipWith term (map Just (maybe [] fst (Map.lookup f m)) ++ repeat Nothing) ts)
+    term (Just s) (Var v) = [(v, s)]
+    term _ (Var _)        = []
+    term _ (Const _)      = []
+    term _ (App f ts)     = args f ts
+    eqn l r = let s = listToMaybe (mapMaybe resultSort [l, r])
+              in term s l ++ term s r
+    resultSort (App f _) = snd <$> Map.lookup f m
+    resultSort (Const c) = snd <$> Map.lookup c m
+    resultSort (Var _)   = Nothing
 
 ppAtom :: Literal -> String
 ppAtom (Eq l r)    = ppT l ++ " = " ++ ppT r

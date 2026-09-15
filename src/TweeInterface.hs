@@ -1,5 +1,5 @@
 module TweeInterface
-  ( findTwee
+  ( findProver
   , toTptpTerm
   , toCnfAxiom
   , toCnfNegGoal
@@ -25,7 +25,7 @@ import Data.List (intercalate, isInfixOf, isPrefixOf, nub, sortBy)
 import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
 import Control.Exception (SomeException, bracket, try)
-import Data.IORef (IORef, newIORef, readIORef, modifyIORef', writeIORef)
+import Data.IORef (IORef, newIORef, readIORef, modifyIORef')
 import Control.Monad (when)
 import System.IO.Unsafe (unsafePerformIO)
 import System.Directory (doesFileExist, findExecutable, getTemporaryDirectory, removeFile)
@@ -39,29 +39,30 @@ import Text.Read (readMaybe)
 import Types
 import Helpers (isEqLit, litVars, rewriteTermAll)
 
--- The Twee binary, looked up once.  TAELJA_TWEE names it outright, otherwise
--- bin/twee in the current directory, otherwise twee on the PATH.  Without
--- one every call answers nothing, and a warning says so once.
-{-# NOINLINE tweeBinRef #-}
-tweeBinRef :: IORef (Maybe (Maybe FilePath))
-tweeBinRef = unsafePerformIO (newIORef Nothing)
+-- A prover binary, looked up once per run.  The variable names it outright,
+-- otherwise bin/<name> in the current directory, otherwise <name> on the
+-- PATH.  Without one its calls answer nothing, and a warning says so once.
+{-# NOINLINE proverBinRef #-}
+proverBinRef :: IORef (Map.Map String (Maybe FilePath))
+proverBinRef = unsafePerformIO (newIORef Map.empty)
 
-findTwee :: IO (Maybe FilePath)
-findTwee = do
-  cached <- readIORef tweeBinRef
+findProver :: String -> String -> String -> IO (Maybe FilePath)
+findProver var exe what = do
+  cached <- Map.lookup exe <$> readIORef proverBinRef
   case cached of
     Just found -> return found
     Nothing -> do
-      env    <- lookupEnv "TAELJA_TWEE"
+      env    <- lookupEnv var
       envOk  <- maybe (return False) doesFileExist env
-      local  <- doesFileExist "bin/twee"
-      onPath <- findExecutable "twee"
+      local  <- doesFileExist ("bin/" ++ exe)
+      onPath <- findExecutable exe
       let found = (if envOk then env else Nothing)
-                  <|> (if local then Just "bin/twee" else Nothing) <|> onPath
+                  <|> (if local then Just ("bin/" ++ exe) else Nothing) <|> onPath
       when (found == Nothing) $ hPutStrLn stderr $
-        "taelja: no Twee found, so rewrite fallbacks are off.  Set TAELJA_TWEE, put it at bin/twee or on the PATH"
-        ++ maybe "" (\p -> " (TAELJA_TWEE is " ++ p ++ ", which does not exist)") env
-      writeIORef tweeBinRef (Just found)
+        "taelja: no " ++ exe ++ " found, so " ++ what ++ " are off.  Set " ++ var
+        ++ ", put it at bin/" ++ exe ++ " or on the PATH"
+        ++ maybe "" (\p -> " (" ++ var ++ " is " ++ p ++ ", which does not exist)") env
+      modifyIORef' proverBinRef (Map.insert exe found)
       return found
 
 -- Run a prover with a hard wall-clock cap.  Twee's --max-time and E's
@@ -99,7 +100,7 @@ runTwee budget tag input = do
   case Map.lookup (input, secs) cache of
     Just out -> return out
     Nothing  -> do
-      mBin <- findTwee
+      mBin <- findProver "TAELJA_TWEE" "twee" "rewrite fallbacks"
       out <- case mBin of
         Nothing  -> return ""
         Just bin -> withTempInput tag input $ \tmpFile -> do

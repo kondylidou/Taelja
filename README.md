@@ -77,22 +77,20 @@ Twee and Vampire have to be built from source:
   ```
 
   where `/path/to/taelja` is the directory holding this file, so the binary
-  ends up in the `bin/` folder next to `src/` and `test/`. Taelja looks for
-  Twee at `TAELJA_TWEE` if that is set, then at `bin/twee` under the current
-  directory, then as `twee` on the PATH, and warns once on stderr when it
-  finds none. Without Twee the rewrite steps that the input refutation does
-  not justify itself are left unproved.
+  ends up in the `bin/` folder next to `src/` and `test/`.
 - Vampire, from <https://github.com/vprover/vampire>. Build it as that
   repository describes, then copy the executable into the same `bin/` folder,
   renaming it to `vampire`, so that it ends up at `./bin/vampire`. Any recent
   build works (tested at 5.0.1).
 
-E comes from <https://www.eprover.org/>. Either put `eprover` on the PATH, or
-set `TAELJA_EPROVER` to its full path, for example
+E comes from <https://www.eprover.org/>.
 
-```
-export TAELJA_EPROVER=/path/to/eprover
-```
+Taelja looks for each prover at its variable if set (`TAELJA_TWEE`,
+`TAELJA_EPROVER`), then at `bin/twee` or `bin/eprover` under the current
+directory, then on the PATH, and says once on stderr when one is missing.
+Without Twee the rewrite steps the refutation does not justify itself are left
+unproved, and without E derived clauses used more than once are inlined rather
+than proved as lemmas.
 
 Tested with E 3.2.5.
 

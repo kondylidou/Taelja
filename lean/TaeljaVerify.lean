@@ -151,4 +151,6 @@ import TaeljaVerify.E.Mgt0322
 import TaeljaVerify.E.Syn5901
 import TaeljaVerify.E.Syn9821
 import TaeljaVerify.Vampire.TptpImplicationConjecture
+import TaeljaVerify.Vampire.TffNato
+import TaeljaVerify.Vampire.TffTypedLemma
 -- Eval benchmark imports

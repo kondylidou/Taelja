@@ -93,6 +93,11 @@ handcraftedNames =
   -- a proof in plain TPTP style, with bare axioms, clausification by cnf, the
   -- negation step named negate, and an implication conjecture p => r
   , "tptp_implication_conjecture"
+  -- typed proofs, read with their sorts erased and printed typed by --tptp.
+  -- The second has a lemma over a variable of sort person and a premise over
+  -- one of sort city
+  , "tff_nato"
+  , "tff_typed_lemma"
   ]
 
 benchmarkNames :: [String]

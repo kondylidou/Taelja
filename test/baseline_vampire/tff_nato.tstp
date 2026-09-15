@@ -1,0 +1,113 @@
+tff(type_def_5,type,
+    country: $tType ).
+
+tff(func_def_0,type,
+    sweden: country ).
+
+tff(func_def_1,type,
+    germany: country ).
+
+tff(func_def_2,type,
+    russia: country ).
+
+tff(pred_def_1,type,
+    nato_member: country > $o ).
+
+tff(pred_def_2,type,
+    attacked: ( country * country ) > $o ).
+
+tff(pred_def_3,type,
+    protects: ( country * country ) > $o ).
+
+tff(f1,axiom,
+    ! [X0: country,X1: country,X2: country] :
+      ( ( nato_member(X0)
+        & nato_member(X1)
+        & attacked(X2,X1) )
+     => protects(X0,X1) ),
+    file('/tmp/pc7C9zx0G4/SOT_Yknvq2',unknown) ).
+
+tff(f2,axiom,
+    nato_member(sweden),
+    file('/tmp/pc7C9zx0G4/SOT_Yknvq2',unknown) ).
+
+tff(f3,axiom,
+    nato_member(germany),
+    file('/tmp/pc7C9zx0G4/SOT_Yknvq2',unknown) ).
+
+tff(f4,axiom,
+    attacked(russia,germany),
+    file('/tmp/pc7C9zx0G4/SOT_Yknvq2',unknown) ).
+
+tff(f5,conjecture,
+    protects(sweden,germany),
+    file('/tmp/pc7C9zx0G4/SOT_Yknvq2',unknown) ).
+
+tff(f6,negated_conjecture,
+    ~ protects(sweden,germany),
+    inference(negated_conjecture,[status(cth)],[f5]) ).
+
+tff(f7,plain,
+    ~ protects(sweden,germany),
+    inference(flattening,[],[f6]) ).
+
+tff(f8,plain,
+    ! [X0: country,X1: country,X2: country] :
+      ( protects(X0,X1)
+      | ~ nato_member(X0)
+      | ~ nato_member(X1)
+      | ~ attacked(X2,X1) ),
+    inference(ennf_transformation,[],[f1]) ).
+
+tff(f9,plain,
+    ! [X0: country,X1: country,X2: country] :
+      ( protects(X0,X1)
+      | ~ nato_member(X0)
+      | ~ nato_member(X1)
+      | ~ attacked(X2,X1) ),
+    inference(flattening,[],[f8]) ).
+
+tff(f10,plain,
+    ! [X2: country,X0: country,X1: country] :
+      ( ~ attacked(X2,X1)
+      | ~ nato_member(X0)
+      | ~ nato_member(X1)
+      | protects(X0,X1) ),
+    inference(cnf_transformation,[],[f9]) ).
+
+tff(f11,plain,
+    nato_member(sweden),
+    inference(cnf_transformation,[],[f2]) ).
+
+tff(f12,plain,
+    nato_member(germany),
+    inference(cnf_transformation,[],[f3]) ).
+
+tff(f13,plain,
+    attacked(russia,germany),
+    inference(cnf_transformation,[],[f4]) ).
+
+tff(f14,plain,
+    ~ protects(sweden,germany),
+    inference(cnf_transformation,[],[f7]) ).
+
+tff(f15,plain,
+    ! [X0: country] :
+      ( ~ nato_member(X0)
+      | ~ nato_member(germany)
+      | protects(X0,germany) ),
+    inference(resolution,[],[f10,f13]) ).
+
+tff(f16,plain,
+    ! [X0: country] :
+      ( protects(X0,germany)
+      | ~ nato_member(X0) ),
+    inference(forward_subsumption_resolution,[],[f15,f12]) ).
+
+tff(f17,plain,
+    ~ nato_member(sweden),
+    inference(resolution,[],[f16,f14]) ).
+
+tff(f18,plain,
+    $false,
+    inference(forward_subsumption_resolution,[],[f17,f11]) ).

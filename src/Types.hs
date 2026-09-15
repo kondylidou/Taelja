@@ -93,10 +93,11 @@ data ProofInput = ProofInput
   , inHypotheses :: Map.Map String String
   , inConjecture :: Maybe T.Unit
   , inUnits      :: [T.Unit]  -- every unit of the input proof
+  , inTyped      :: [T.Unit]  -- the units as read when the proof is typed, else empty
   } deriving (Show)
 
 emptyInput :: ProofInput
-emptyInput = ProofInput Map.empty Map.empty Nothing []
+emptyInput = ProofInput Map.empty Map.empty Nothing [] []
 
 data AlgState = AlgState
   { stDebug      :: Bool  -- gate for per-goal warnings (a stage's result may be superseded)
