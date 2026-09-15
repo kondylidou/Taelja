@@ -1,5 +1,5 @@
 module TweeInterface
-  ( tweeBin
+  ( findTwee
   , toTptpTerm
   , toCnfAxiom
   , toCnfNegGoal
@@ -25,10 +25,10 @@ import Data.List (intercalate, isInfixOf, isPrefixOf, nub, sortBy)
 import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
 import Control.Exception (SomeException, bracket, try)
-import Data.IORef (IORef, newIORef, readIORef, modifyIORef')
+import Data.IORef (IORef, newIORef, readIORef, modifyIORef', writeIORef)
 import Control.Monad (when)
 import System.IO.Unsafe (unsafePerformIO)
-import System.Directory (getTemporaryDirectory, removeFile)
+import System.Directory (doesFileExist, findExecutable, getTemporaryDirectory, removeFile)
 import System.Environment (lookupEnv)
 import System.Exit (ExitCode)
 import System.IO (hClose, hPutStr, hPutStrLn, openTempFile, stderr)
@@ -39,8 +39,30 @@ import Text.Read (readMaybe)
 import Types
 import Helpers (isEqLit, litVars, rewriteTermAll)
 
-tweeBin :: FilePath
-tweeBin = "bin/twee"
+-- The Twee binary, looked up once.  TAELJA_TWEE names it outright, otherwise
+-- bin/twee in the current directory, otherwise twee on the PATH.  Without
+-- one every call answers nothing, and a warning says so once.
+{-# NOINLINE tweeBinRef #-}
+tweeBinRef :: IORef (Maybe (Maybe FilePath))
+tweeBinRef = unsafePerformIO (newIORef Nothing)
+
+findTwee :: IO (Maybe FilePath)
+findTwee = do
+  cached <- readIORef tweeBinRef
+  case cached of
+    Just found -> return found
+    Nothing -> do
+      env    <- lookupEnv "TAELJA_TWEE"
+      envOk  <- maybe (return False) doesFileExist env
+      local  <- doesFileExist "bin/twee"
+      onPath <- findExecutable "twee"
+      let found = (if envOk then env else Nothing)
+                  <|> (if local then Just "bin/twee" else Nothing) <|> onPath
+      when (found == Nothing) $ hPutStrLn stderr $
+        "taelja: no Twee found, so rewrite fallbacks are off.  Set TAELJA_TWEE, put it at bin/twee or on the PATH"
+        ++ maybe "" (\p -> " (TAELJA_TWEE is " ++ p ++ ", which does not exist)") env
+      writeIORef tweeBinRef (Just found)
+      return found
 
 -- Run a prover with a hard wall-clock cap.  Twee's --max-time and E's
 -- --soft-cpu-limit are not reliable stopping points (Twee has been observed
@@ -77,10 +99,13 @@ runTwee budget tag input = do
   case Map.lookup (input, secs) cache of
     Just out -> return out
     Nothing  -> do
-      out <- withTempInput tag input $ \tmpFile -> do
-        let maxTime = show secs
-        fromMaybe "" <$> runProverCapped (secs + 5) tweeBin
-          ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile]
+      mBin <- findTwee
+      out <- case mBin of
+        Nothing  -> return ""
+        Just bin -> withTempInput tag input $ \tmpFile -> do
+          let maxTime = show secs
+          fromMaybe "" <$> runProverCapped (secs + 5) bin
+            ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile]
       modifyIORef' tweeCache (Map.insert (input, secs) out)
       -- TAELJA_TWEE_DEBUG=1 dumps every distinct call (input and output)
       dumpEnv <- lookupEnv "TAELJA_TWEE_DEBUG"

@@ -77,7 +77,11 @@ Twee and Vampire have to be built from source:
   ```
 
   where `/path/to/taelja` is the directory holding this file, so the binary
-  ends up in the `bin/` folder next to `src/` and `test/`.
+  ends up in the `bin/` folder next to `src/` and `test/`. Taelja looks for
+  Twee at `TAELJA_TWEE` if that is set, then at `bin/twee` under the current
+  directory, then as `twee` on the PATH, and warns once on stderr when it
+  finds none. Without Twee the rewrite steps that the input refutation does
+  not justify itself are left unproved.
 - Vampire, from <https://github.com/vprover/vampire>. Build it as that
   repository describes, then copy the executable into the same `bin/` folder,
   renaming it to `vampire`, so that it ends up at `./bin/vampire`. Any recent
