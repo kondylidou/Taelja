@@ -94,12 +94,13 @@ data ProofInput = ProofInput
   , inConjecture :: Maybe T.Unit
   , inAxiomLeaves :: Map.Map String String  -- axiom display name to its clause's unit
   , inGeneralized :: [(String, String)]     -- goal variable to the Skolem constant it replaced
+  , inNegated     :: [String]  -- hypotheses from a negated conclusion, so the goal is their negation
   , inUnits      :: [T.Unit]  -- every unit of the input proof
   , inTyped      :: [T.Unit]  -- the units as read when the proof is typed, else empty
   } deriving (Show)
 
 emptyInput :: ProofInput
-emptyInput = ProofInput Map.empty Map.empty Nothing Map.empty [] [] []
+emptyInput = ProofInput Map.empty Map.empty Nothing Map.empty [] [] [] []
 
 data AlgState = AlgState
   { stDebug      :: Bool  -- gate for per-goal warnings (a stage's result may be superseded)

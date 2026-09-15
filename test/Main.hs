@@ -102,6 +102,9 @@ handcraftedNames =
   -- a Skolem definition that the TPTP output cites, and the conjecture is
   -- existential
   , "fof_skolem_definition"
+  -- a conjecture concluding a negation, proved by assuming the negated
+  -- conjuncts and deriving $false from an axiom with head $false
+  , "ALG018+1"
   ]
 
 benchmarkNames :: [String]
@@ -240,6 +243,10 @@ eBenchmarkNames =
   -- an implication conjecture whose hypothesis is an equation, used as a
   -- rewrite in the goal chain
   , "fof_equational_hypothesis"
+  , "ALG018+1"        -- a conjecture concluding a negation, see the Vampire list
+  -- E abbreviates the negated conjecture's conjuncts as ~epred <=> ! [X] (~a | ~b),
+  -- which unfolds to the existential goals a and b
+  , "SYN577-1"
   ]
 
 mkTest :: String -> String -> String -> TestTree

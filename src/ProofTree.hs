@@ -20,6 +20,8 @@ import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
+import Control.Applicative ((<|>))
+import Control.Monad (forM)
 import Data.List (inits, nub, sortBy)
 import Data.List.NonEmpty (toList)
 import Data.Maybe (catMaybes, fromMaybe, isJust, listToMaybe)
@@ -106,8 +108,8 @@ buildProofInfo axHyps allUnits
   -- closest to the root.  A disjunctive conjecture negates into several
   -- all-negative clauses, and the root step decides which one is used.
   let byDepth = sortBy (comparing (\e -> (length (lePos e), lePos e)))
-  goalLits <- maybe (Left "no clause of the proof states the goal") Right
-            $ fmap (concatMap (unfoldDefinition unitMap)) $ case extractConjectureGoals allUnits of
+  rawGoalLits <- maybe (Left "no clause of the proof states the goal") Right
+            $ case extractConjectureGoals allUnits of
     Just lits -> Just lits
     Nothing   -> listToMaybe $
       [ lits
@@ -120,6 +122,22 @@ buildProofInfo axHyps allUnits
       | e <- nuclei, leRole e == OrigAxiom
       , Just lits <- [extractGoalLits (leDecl e)]
       ]
+  -- A goal atom that abbreviates a formula the prover introduced is that
+  -- formula's atoms, and when the formula is not a conjunction of atoms, as a
+  -- disjunction of cases is not, the reader's goal has no Horn statement.
+  let definedSymbols = Set.fromList [ n | T.Unit _ (T.Formula _ (T.FOF f)) (Just (T.Introduced _ _, _)) <- allUnits
+                                        , Just n <- [definedAtom f] ]
+      definedAtom (T.Connected l T.Equivalence r) = atomName l <|> atomName r
+      definedAtom (T.Quantified _ _ body)          = definedAtom body
+      definedAtom _                                 = Nothing
+      atomName (T.Atomic (T.Predicate (T.Defined (T.Atom n)) [])) = Just n
+      atomName (T.Negated f)                                       = atomName f
+      atomName _                                                   = Nothing
+  goalLits <- fmap concat $ forM rawGoalLits $ \lit -> case unfoldDefinition unitMap lit of
+    [same] | same == lit, T.Predicate (T.Defined (T.Atom n)) [] <- lit, Set.member n definedSymbols ->
+      Left ("unsupported conjecture, " ++ Text.unpack n
+            ++ " abbreviates a formula the prover introduced that is not a conjunction of atoms, so its proof is a case split")
+    lits -> Right lits
   let declAtPos = declByPath tree
       -- every prefix of an entry position, plus the sibling of each prefix
       wanted = Set.toList $ Set.fromList $ concat
@@ -501,16 +519,21 @@ isHypothesisOfConjecture unitMap name decl =
   && not (isFileSrc unitMap cs)
   where cs = resolveCopySource unitMap name
 
--- The antecedent of an implication conjecture as one clause per conjunct.
+-- The clauses a conjecture grants as hypotheses, one per conjunct of the
+-- antecedent of an implication and, when the conclusion is a negation, one
+-- per conjunct of the negated formula, since ~G is proved by assuming G.
 -- Nothing when there is no FOF conjecture or a conjunct is not a clause.
-conjectureHypotheses :: [T.Unit] -> Maybe [Clause]
+conjectureHypotheses :: [T.Unit] -> Maybe ([Clause], [Clause])
 conjectureHypotheses units = listToMaybe
   [ cs | T.Unit _ (T.Formula (T.Standard T.Conjecture) (T.FOF f)) _ <- units
-       , Just cs <- [antecedent f] ]
+       , Just cs <- [parts f] ]
   where
-    antecedent (T.Quantified T.Forall _ b)     = antecedent b
-    antecedent (T.Connected l T.Implication _) = mapM convertFOFToClause (conjuncts l)
-    antecedent _                               = Just []
+    parts (T.Quantified T.Forall _ b)     = parts b
+    parts (T.Connected l T.Implication r) = (,) <$> clauses l <*> negated r
+    parts f                               = ([],) <$> negated f
+    negated (T.Negated g)                 = clauses g
+    negated _                             = Just []
+    clauses f = mapM convertFOFToClause (conjuncts f)
     conjuncts (T.Connected l T.Conjunction r) = conjuncts l ++ conjuncts r
     conjuncts f                               = [f]
 -- A unit the prover introduced itself, like E's introduced(definition).
@@ -642,9 +665,11 @@ unfoldDefinition unitMap lit@(T.Predicate (T.Defined (T.Atom pname)) []) =
       | T.Negated r' <- r, isAtom r' = atomsOf (negatedOf l)
     definitionBody (T.Quantified _ _ body) = definitionBody body
     definitionBody _ = Nothing
-    negatedOf (T.Quantified q vs body) = T.Quantified q vs (negatedOf body)
-    negatedOf (T.Negated body)         = body
-    negatedOf body                     = T.Negated body
+    -- the negation pushed inward, so ~(~a | ~b) is the conjunction a & b
+    negatedOf (T.Quantified q vs body)          = T.Quantified q vs (negatedOf body)
+    negatedOf (T.Negated body)                  = body
+    negatedOf (T.Connected l T.Disjunction r)   = T.Connected (negatedOf l) T.Conjunction (negatedOf r)
+    negatedOf body                              = T.Negated body
     atomsOf (T.Quantified _ _ body) = atomsOf body
     atomsOf (T.Atomic a)            = Just [a]
     atomsOf (T.Connected l T.Conjunction r) = (++) <$> atomsOf l <*> atomsOf r

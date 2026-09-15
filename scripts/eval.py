@@ -284,7 +284,7 @@ def _read_taelja_status(out, p_file):
     err = '\n'.join(line for line in raw_err.splitlines() if not line.startswith('[eval]'))
     if 'TIMEOUT' in err:
         return 'timeout'
-    if 'unsupported proof' in err:
+    if 'unsupported proof' in err or 'unsupported conjecture' in err:
         return 'unsupported'
     if txt.strip() and _only_warnings(err) and not _has_empty_proof(txt) and not _has_fatal_warning(err):
         if _goal_matches_conjecture(txt, p_file):
@@ -384,7 +384,7 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
 
     if rc == -1:
         result['taelja'] = 'timeout'
-    elif 'unsupported proof' in err:
+    elif 'unsupported proof' in err or 'unsupported conjecture' in err:
         result['taelja'] = 'unsupported'
     elif rc == 0 and proof.strip() and _only_warnings(err) and not _has_empty_proof(proof) and not _has_fatal_warning(err):
         if _goal_matches_conjecture(proof, p_file):
@@ -553,7 +553,9 @@ def main():
             key = 'no unit found for goal'
         elif 'no proof found for goal' in err:
             key = 'no proof found for goal (Twee)'
-        elif 'unsupported proof' in err:
+        elif 'case split' in err:
+            key = 'unsupported conjecture (case split)'
+        elif 'unsupported proof' in err or 'unsupported conjecture' in err:
             key = 'unsupported proof (not Horn)'
         elif 'never derives $false' in err:
             key = 'proof never derives $false'

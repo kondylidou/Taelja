@@ -1,0 +1,80 @@
+Axiom 1: sorti1(esk1_0)
+Axiom 2: sorti1(X) => op1(X,X) = esk1_0
+Axiom 3: sorti2(X) /\ sorti2(Y) => sorti2(op2(X,Y))
+Axiom 4: sorti2(X) => sorti2(esk2_1(X))
+Axiom 5: sorti2(X) /\ op2(esk2_1(X),esk2_1(X)) = X => $false
+
+Lemma 6: (sorti1(X) => sorti2(h(X))) => sorti2(esk2_1(h(esk1_0)))
+Proof:
+  have sorti1(esk1_0)
+    by axiom 1
+  hence sorti2(h(esk1_0))
+    by assumption 1
+  hence sorti2(esk2_1(h(esk1_0)))
+    by axiom 4
+  hence (sorti1(X) => sorti2(h(X))) => sorti2(esk2_1(h(esk1_0)))
+    by discharge
+
+Lemma 7: (sorti1(X) => sorti2(h(X))) /\ (sorti2(X) => h(j(X)) = X) => h(j(op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0))))) = op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0)))
+Proof:
+  have sorti1(esk1_0)
+    by axiom 1
+  hence sorti2(h(esk1_0))
+    by assumption 1
+  hence sorti2(esk2_1(h(esk1_0)))
+    by axiom 4
+   and sorti2(esk2_1(h(esk1_0)))
+    by lemma 6
+  hence sorti2(op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0))))
+    by axiom 3
+  hence h(j(op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0))))) = op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0)))
+    by assumption 5
+  hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(X) => h(j(X)) = X) => h(j(op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0))))) = op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0)))
+    by discharge
+
+Lemma 8: (sorti1(X) => sorti2(h(X))) /\ (sorti2(X) /\ sorti2(Y) => j(op2(X,Y)) = op1(j(X),j(Y))) => j(op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0)))) = op1(j(esk2_1(h(esk1_0))),j(esk2_1(h(esk1_0))))
+Proof:
+  have sorti2(esk2_1(h(esk1_0)))
+    by lemma 6
+   and sorti2(esk2_1(h(esk1_0)))
+    by lemma 6
+  hence j(op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0)))) = op1(j(esk2_1(h(esk1_0))),j(esk2_1(h(esk1_0))))
+    by assumption 4
+  hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(X) /\ sorti2(Y) => j(op2(X,Y)) = op1(j(X),j(Y))) => j(op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0)))) = op1(j(esk2_1(h(esk1_0))),j(esk2_1(h(esk1_0))))
+    by discharge
+
+Lemma 9: (sorti1(X) => sorti2(h(X))) /\ (sorti2(X) => sorti1(j(X))) => op1(j(esk2_1(h(esk1_0))),j(esk2_1(h(esk1_0)))) = esk1_0
+Proof:
+  have sorti2(esk2_1(h(esk1_0)))
+    by lemma 6
+  hence sorti1(j(esk2_1(h(esk1_0))))
+    by assumption 2
+  hence op1(j(esk2_1(h(esk1_0))),j(esk2_1(h(esk1_0)))) = esk1_0
+    by axiom 2
+  hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(X) => sorti1(j(X))) => op1(j(esk2_1(h(esk1_0))),j(esk2_1(h(esk1_0)))) = esk1_0
+    by discharge
+
+Lemma 10: (sorti1(X) => sorti2(h(X))) /\ (sorti2(X) => sorti1(j(X))) /\ (sorti2(X) /\ sorti2(Y) => j(op2(X,Y)) = op1(j(X),j(Y))) /\ (sorti2(X) => h(j(X)) = X) => op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0))) = h(esk1_0)
+Proof:
+  op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0)))
+= { by lemma 7 R->L }
+  h(j(op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0)))))
+= { by lemma 8 }
+  h(op1(j(esk2_1(h(esk1_0))),j(esk2_1(h(esk1_0)))))
+= { by lemma 9 }
+  h(esk1_0)
+  hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(X) => sorti1(j(X))) /\ (sorti2(X) /\ sorti2(Y) => j(op2(X,Y)) = op1(j(X),j(Y))) /\ (sorti2(X) => h(j(X)) = X) => op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0))) = h(esk1_0)
+    by discharge
+
+Goal 1: (sorti1(X) => sorti2(h(X))) /\ (sorti2(X) => sorti1(j(X))) /\ (sorti1(X) /\ sorti1(Y) => h(op1(X,Y)) = op2(h(X),h(Y))) /\ (sorti2(X) /\ sorti2(Y) => j(op2(X,Y)) = op1(j(X),j(Y))) /\ (sorti2(X) => h(j(X)) = X) => $false
+Proof:
+  have sorti1(esk1_0)
+    by axiom 1
+  hence sorti2(h(esk1_0))
+    by assumption 1
+   and op2(esk2_1(h(esk1_0)),esk2_1(h(esk1_0))) = h(esk1_0)
+    by lemma 10
+  hence $false
+    by axiom 5
+  hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(X) => sorti1(j(X))) /\ (sorti1(X) /\ sorti1(Y) => h(op1(X,Y)) = op2(h(X),h(Y))) /\ (sorti2(X) /\ sorti2(Y) => j(op2(X,Y)) = op1(j(X),j(Y))) /\ (sorti2(X) => h(j(X)) = X) => $false
+    by discharge

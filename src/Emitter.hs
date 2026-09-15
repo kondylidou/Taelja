@@ -1,7 +1,7 @@
 module Emitter (emit, applyRenaming, pruneUnusedLemmas, axiomRenaming, blockRenaming) where
 
 import Data.Char (toUpper)
-import Data.List (intercalate, nub, partition)
+import Data.List (intercalate, isPrefixOf, nub, partition)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import Types
@@ -14,13 +14,33 @@ emit :: StructuredProof -> String
 emit sp0 = unlines $ concat
   [ axiomLines (axioms sp)
   , [ "" | not (null (axioms sp)) ]
-  , concatMap lemmaLines (lemmas sp)
-  , intercalate [""] (zipWith (goalLines hyps) [1..] (goals sp))
+  , concatMap (lemmaLines hyps (lemmaDeps (lemmas sp))) (lemmas sp)
+  , intercalate [""] (zipWith (goalLines hyps negated) [1..] (goals sp))
   ]
   where
     hypNames = Map.keysSet (inHypotheses (spInput sp0))
-    hyps     = [ ax | ax <- axioms sp0, Set.member (axiomName ax) hypNames ]
-    sp       = renumberAxioms (pruneUnusedLemmas (dropHypotheses hypNames sp0))
+    negated  = inNegated (spInput sp0)
+    -- the hypotheses in the order the goal states them, the antecedent's
+    -- first, named assumption 1, 2, ... in that order
+    hyps0    = [ ax | ax <- axioms sp0, Set.member (axiomName ax) hypNames ]
+    (negHyps0, anteHyps0) = partition ((`elem` negated) . axiomName) hyps0
+    hyps     = [ setAxName ("assumption " ++ show i) ax | (i, ax) <- zip [1 :: Int ..] (anteHyps0 ++ negHyps0) ]
+    assumptionNames = Map.fromList (zip (map axiomName (anteHyps0 ++ negHyps0)) (map axiomName hyps))
+    sp       = renumberAxioms (pruneUnusedLemmas (dropHypotheses assumptionNames sp0))
+
+setAxName :: String -> Axiom -> Axiom
+setAxName n (AUnit _ l)    = AUnit n l
+setAxName n (ANucleus _ c) = ANucleus n c
+
+-- The assumptions each lemma rests on, through the lemmas it cites.
+lemmaDeps :: [(String, Literal, ProofBlock)] -> Map.Map String [String]
+lemmaDeps ls = fixpoint (Map.fromList [ (n, direct b) | (n, _, b) <- ls ])
+  where
+    direct b = nub [ r | r <- blockRefNames b, "assumption " `isPrefixOf` r ]
+    fixpoint m =
+      let m' = Map.fromList [ (n, nub (direct b ++ concat [ Map.findWithDefault [] r m | r <- blockRefNames b ]))
+                            | (n, _, b) <- ls ]
+      in if m' == m then m else fixpoint m'
 
 axiomName :: Axiom -> String
 axiomName (AUnit n _)    = n
@@ -31,11 +51,11 @@ axiomVars (AUnit _ l)                 = litVars l
 axiomVars (ANucleus _ (Clause bs mh)) = concatMap litVars bs ++ maybe [] litVars mh
 
 -- The hypotheses of an implication conjecture are assumed in the goal's proof
--- rather than listed as axioms, and a step citing one says so.
-dropHypotheses :: Set.Set String -> StructuredProof -> StructuredProof
+-- rather than listed as axioms, and a step citing one names the assumption.
+dropHypotheses :: Map.Map String String -> StructuredProof -> StructuredProof
 dropHypotheses names sp =
-  (applyRenaming (Map.fromSet (const "assumption") names) sp)
-    { axioms = [ ax | ax <- axioms sp, Set.notMember (axiomName ax) names ] }
+  (applyRenaming names sp)
+    { axioms = [ ax | ax <- axioms sp, Map.notMember (axiomName ax) names ] }
 
 -- Renumber axioms to close the gaps left by lemma promotion, and update every
 -- reference in lemma and goal blocks.
@@ -81,27 +101,40 @@ prettyVarNames = ["X", "Y", "Z", "A", "B", "C", "U", "V", "W"]
 blockRenaming :: Literal -> ProofBlock -> [(String, String)]
 blockRenaming lit block = zip (nub (litVars lit ++ blockVars block)) prettyVarNames
 
-lemmaLines :: (String, Literal, ProofBlock) -> [String]
-lemmaLines (name, lit, block) =
-  (cap name ++ ": " ++ ppLiteral (renameLit renaming lit)) :
+-- A lemma that rests on assumptions of the goal states them, as the goal
+-- does, and discharges them.
+lemmaLines :: [Axiom] -> Map.Map String [String] -> (String, Literal, ProofBlock) -> [String]
+lemmaLines hyps deps (name, lit, block) =
+  (cap name ++ ": " ++ stated) :
   "Proof:" :
   blockLines (renameBlock renaming block) ++
+  [ l | not (null used), l <- ["  hence " ++ stated, "    by discharge"] ] ++
   [""]
-  where renaming = blockRenaming lit block
+  where
+    used     = [ ax | ax <- hyps, axiomName ax `elem` Map.findWithDefault [] name deps ]
+    renaming = zip (nub (litVars lit ++ concatMap axiomVars used ++ blockVars block)) prettyVarNames
+    stated   = (if null used then "" else intercalate " /\\ " (map ppHyp used) ++ " => ")
+               ++ ppLiteral (renameLit renaming lit)
+    ppHyp (AUnit _ l)    = ppLiteral (renameLit renaming l)
+    ppHyp (ANucleus _ c) = "(" ++ ppClauseWith renaming c ++ ")"
 
 -- A goal under hypotheses is stated as the conjecture was, H1 /\ H2 => G, and
--- its proof ends by discharging them.
-goalLines :: [Axiom] -> Int -> (Literal, ProofBlock) -> [String]
-goalLines hyps n (lit, block) =
+-- its proof ends by discharging them.  When the conclusion is a negation the
+-- hypotheses it supplied are the negated conjuncts and the block derives
+-- $false.
+goalLines :: [Axiom] -> [String] -> Int -> (Literal, ProofBlock) -> [String]
+goalLines hyps negated n (lit, block) =
   ("Goal " ++ show n ++ ": " ++ stated) :
   "Proof:" :
   blockLines (renameBlock renaming block) ++
   [ l | not (null hyps), l <- ["  hence " ++ stated, "    by discharge"] ]
   where
-    stated   = ppHyps ++ ppLiteral (renameLit renaming lit)
+    (negHyps, anteHyps) = partition ((`elem` negated) . axiomName) hyps
+    stated | null negHyps = ppHyps anteHyps ++ ppLiteral (renameLit renaming lit)
+           | otherwise    = ppHyps anteHyps ++ "~(" ++ intercalate " /\\ " (map ppHyp negHyps) ++ ")"
     renaming = zip (nub (litVars lit ++ concatMap axiomVars hyps ++ blockVars block)) prettyVarNames
-    ppHyps | null hyps = ""
-           | otherwise = intercalate " /\\ " (map ppHyp hyps) ++ " => "
+    ppHyps hs | null hs   = ""
+              | otherwise = intercalate " /\\ " (map ppHyp hs) ++ " => "
     ppHyp (AUnit _ l)    = ppLiteral (renameLit renaming l)
     ppHyp (ANucleus _ c) = "(" ++ ppClauseWith renaming c ++ ")"
 
@@ -110,7 +143,8 @@ blockLines (HaveHence ls)    = concatMap renderLine ls
 blockLines (EqChain s steps) = renderEqChain s steps
 
 renderLine :: ProofLine -> [String]
-renderLine (Have lit "assumption") = ["  assume " ++ ppLiteral lit]
+renderLine (Have lit nm)
+  | "assumption " `isPrefixOf` nm = ["  assume " ++ ppLiteral lit]
 renderLine (Have  lit nm) = ["  have "  ++ ppLiteral lit, "    by " ++ nm]
 renderLine (And   lit nm) = ["   and "  ++ ppLiteral lit, "    by " ++ nm]
 renderLine (Hence lit j)  = ["  hence " ++ ppLiteral lit, "    " ++ ppJust j]

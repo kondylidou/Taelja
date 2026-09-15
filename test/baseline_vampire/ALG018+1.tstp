@@ -1,0 +1,143 @@
+% SZS output start Proof for ALG018+1
+fof(f2,axiom,(
+  ! [X0] : (sorti2(X0) => ! [X1] : (sorti2(X1) => sorti2(op2(X0,X1))))),
+  file('Problems/ALG/ALG018+1.p',unknown)).
+fof(f3,axiom,(
+  ? [X0] : (sorti1(X0) & ! [X1] : (sorti1(X1) => op1(X1,X1) = X0))),
+  file('Problems/ALG/ALG018+1.p',unknown)).
+fof(f4,axiom,(
+  ~? [X0] : (sorti2(X0) & ! [X1] : (sorti2(X1) => op2(X1,X1) = X0))),
+  file('Problems/ALG/ALG018+1.p',unknown)).
+fof(f5,conjecture,(
+  (! [X0] : (sorti1(X0) => sorti2(h(X0))) & ! [X1] : (sorti2(X1) => sorti1(j(X1)))) => ~(! [X2] : (sorti1(X2) => ! [X3] : (sorti1(X3) => h(op1(X2,X3)) = op2(h(X2),h(X3)))) & ! [X4] : (sorti2(X4) => ! [X5] : (sorti2(X5) => j(op2(X4,X5)) = op1(j(X4),j(X5)))) & ! [X6] : (sorti2(X6) => h(j(X6)) = X6) & ! [X7] : (sorti1(X7) => j(h(X7)) = X7))),
+  file('Problems/ALG/ALG018+1.p',unknown)).
+fof(f6,negated_conjecture,(
+  ~((! [X0] : (sorti1(X0) => sorti2(h(X0))) & ! [X1] : (sorti2(X1) => sorti1(j(X1)))) => ~(! [X2] : (sorti1(X2) => ! [X3] : (sorti1(X3) => h(op1(X2,X3)) = op2(h(X2),h(X3)))) & ! [X4] : (sorti2(X4) => ! [X5] : (sorti2(X5) => j(op2(X4,X5)) = op1(j(X4),j(X5)))) & ! [X6] : (sorti2(X6) => h(j(X6)) = X6) & ! [X7] : (sorti1(X7) => j(h(X7)) = X7)))),
+  inference(negated_conjecture,[status(cth)],[f5])).
+fof(f8,plain,(
+  ! [X0] : (! [X1] : (sorti2(op2(X0,X1)) | ~sorti2(X1)) | ~sorti2(X0))),
+  inference(ennf_transformation,[],[f2])).
+fof(f9,plain,(
+  ? [X0] : (sorti1(X0) & ! [X1] : (op1(X1,X1) = X0 | ~sorti1(X1)))),
+  inference(ennf_transformation,[],[f3])).
+fof(f10,plain,(
+  ! [X0] : (~sorti2(X0) | ? [X1] : (op2(X1,X1) != X0 & sorti2(X1)))),
+  inference(ennf_transformation,[],[f4])).
+fof(f11,plain,(
+  (! [X2] : (! [X3] : (h(op1(X2,X3)) = op2(h(X2),h(X3)) | ~sorti1(X3)) | ~sorti1(X2)) & ! [X4] : (! [X5] : (j(op2(X4,X5)) = op1(j(X4),j(X5)) | ~sorti2(X5)) | ~sorti2(X4)) & ! [X6] : (h(j(X6)) = X6 | ~sorti2(X6)) & ! [X7] : (j(h(X7)) = X7 | ~sorti1(X7))) & (! [X0] : (sorti2(h(X0)) | ~sorti1(X0)) & ! [X1] : (sorti1(j(X1)) | ~sorti2(X1)))),
+  inference(ennf_transformation,[],[f6])).
+fof(f12,plain,(
+  ! [X2] : (! [X3] : (h(op1(X2,X3)) = op2(h(X2),h(X3)) | ~sorti1(X3)) | ~sorti1(X2)) & ! [X4] : (! [X5] : (j(op2(X4,X5)) = op1(j(X4),j(X5)) | ~sorti2(X5)) | ~sorti2(X4)) & ! [X6] : (h(j(X6)) = X6 | ~sorti2(X6)) & ! [X7] : (j(h(X7)) = X7 | ~sorti1(X7)) & ! [X0] : (sorti2(h(X0)) | ~sorti1(X0)) & ! [X1] : (sorti1(j(X1)) | ~sorti2(X1))),
+  inference(flattening,[],[f11])).
+fof(f13,plain,(
+  ? [X0] : (sorti1(X0) & ! [X1] : (op1(X1,X1) = X0 | ~sorti1(X1))) => (sorti1(sK0) & ! [X1] : (op1(X1,X1) = sK0 | ~sorti1(X1)))),
+  introduced(definition,[],[skolem_symbol_introduction])).
+fof(f14,plain,(
+  sorti1(sK0) & ! [X1] : (op1(X1,X1) = sK0 | ~sorti1(X1))),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK0])],[f9,f13])).
+fof(f15,plain,(
+  ! [X0] : (? [X1] : (op2(X1,X1) != X0 & sorti2(X1)) => (op2(sK1(X0),sK1(X0)) != X0 & sorti2(sK1(X0))))),
+  introduced(definition,[],[skolem_symbol_introduction])).
+fof(f16,plain,(
+  ! [X0] : (~sorti2(X0) | (op2(sK1(X0),sK1(X0)) != X0 & sorti2(sK1(X0))))),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK1])],[f10,f15])).
+fof(f17,plain,(
+  ! [X0] : (! [X1] : (h(op1(X0,X1)) = op2(h(X0),h(X1)) | ~sorti1(X1)) | ~sorti1(X0)) & ! [X2] : (! [X3] : (j(op2(X2,X3)) = op1(j(X2),j(X3)) | ~sorti2(X3)) | ~sorti2(X2)) & ! [X4] : (h(j(X4)) = X4 | ~sorti2(X4)) & ! [X5] : (j(h(X5)) = X5 | ~sorti1(X5)) & ! [X6] : (sorti2(h(X6)) | ~sorti1(X6)) & ! [X7] : (sorti1(j(X7)) | ~sorti2(X7))),
+  inference(rectify,[],[f12])).
+fof(f19,plain,(
+  ( ! [X0,X1] : (sorti2(op2(X0,X1)) | ~sorti2(X1) | ~sorti2(X0)) )),
+  inference(cnf_transformation,[],[f8])).
+fof(f20,plain,(
+  ( ! [X1] : (~sorti1(X1) | op1(X1,X1) = sK0) )),
+  inference(cnf_transformation,[],[f14])).
+fof(f21,plain,(
+  sorti1(sK0)),
+  inference(cnf_transformation,[],[f14])).
+fof(f22,plain,(
+  ( ! [X0] : (sorti2(sK1(X0)) | ~sorti2(X0)) )),
+  inference(cnf_transformation,[],[f16])).
+fof(f23,plain,(
+  ( ! [X0] : (op2(sK1(X0),sK1(X0)) != X0 | ~sorti2(X0)) )),
+  inference(cnf_transformation,[],[f16])).
+fof(f24,plain,(
+  ( ! [X7] : (sorti1(j(X7)) | ~sorti2(X7)) )),
+  inference(cnf_transformation,[],[f17])).
+fof(f25,plain,(
+  ( ! [X6] : (sorti2(h(X6)) | ~sorti1(X6)) )),
+  inference(cnf_transformation,[],[f17])).
+fof(f27,plain,(
+  ( ! [X4] : (~sorti2(X4) | h(j(X4)) = X4) )),
+  inference(cnf_transformation,[],[f17])).
+fof(f28,plain,(
+  ( ! [X2,X3] : (~sorti2(X3) | j(op2(X2,X3)) = op1(j(X2),j(X3)) | ~sorti2(X2)) )),
+  inference(cnf_transformation,[],[f17])).
+fof(f43,plain,(
+  ( ! [X0,X1] : (~sorti2(X1) | j(op2(X1,sK1(X0))) = op1(j(X1),j(sK1(X0))) | ~sorti2(X0)) )),
+  inference(resolution,[],[f22,f28])).
+fof(f48,plain,(
+  ( ! [X0] : (~sorti2(X0) | sK0 = op1(j(X0),j(X0))) )),
+  inference(resolution,[],[f20,f24])).
+fof(f51,plain,(
+  ( ! [X0] : (~sorti2(X0) | sK0 = op1(j(sK1(X0)),j(sK1(X0)))) )),
+  inference(resolution,[],[f48,f22])).
+fof(f64,plain,(
+  ( ! [X0,X1] : (~sorti2(X1) | ~sorti2(X0) | op2(X1,X0) = h(j(op2(X1,X0)))) )),
+  inference(resolution,[],[f19,f27])).
+fof(f82,plain,(
+  ( ! [X0,X1] : (~sorti2(X1) | op2(sK1(X1),X0) = h(j(op2(sK1(X1),X0))) | ~sorti2(X0)) )),
+  inference(resolution,[],[f64,f22])).
+fof(f99,plain,(
+  ( ! [X0,X1] : (~sorti2(X1) | j(op2(sK1(X0),sK1(X1))) = op1(j(sK1(X0)),j(sK1(X1))) | ~sorti2(X0)) )),
+  inference(resolution,[],[f43,f22])).
+fof(f101,plain,(
+  ( ! [X0] : (~sorti1(X0) | sK0 = op1(j(sK1(h(X0))),j(sK1(h(X0))))) )),
+  inference(resolution,[],[f51,f25])).
+fof(f167,plain,(
+  ( ! [X0,X1] : (~sorti2(X1) | op2(sK1(h(X0)),X1) = h(j(op2(sK1(h(X0)),X1))) | ~sorti1(X0)) )),
+  inference(resolution,[],[f82,f25])).
+fof(f177,plain,(
+  sK0 = op1(j(sK1(h(sK0))),j(sK1(h(sK0))))),
+  inference(resolution,[],[f101,f21])).
+fof(f221,plain,(
+  ( ! [X0,X1] : (~sorti2(X0) | j(op2(sK1(X0),sK1(h(X1)))) = op1(j(sK1(X0)),j(sK1(h(X1)))) | ~sorti1(X1)) )),
+  inference(resolution,[],[f99,f25])).
+fof(f452,plain,(
+  ( ! [X0,X1] : (~sorti2(X1) | ~sorti1(X0) | op2(sK1(h(X0)),sK1(X1)) = h(j(op2(sK1(h(X0)),sK1(X1))))) )),
+  inference(resolution,[],[f167,f22])).
+fof(f616,plain,(
+  ( ! [X0,X1] : (~sorti1(X1) | j(op2(sK1(h(X0)),sK1(h(X1)))) = op1(j(sK1(h(X0))),j(sK1(h(X1)))) | ~sorti1(X0)) )),
+  inference(resolution,[],[f221,f25])).
+fof(f2881,plain,(
+  ( ! [X0,X1] : (~sorti1(X1) | op2(sK1(h(X0)),sK1(h(X1))) = h(j(op2(sK1(h(X0)),sK1(h(X1))))) | ~sorti1(X0)) )),
+  inference(resolution,[],[f452,f25])).
+fof(f3776,plain,(
+  ( ! [X0] : (~sorti1(X0) | j(op2(sK1(h(X0)),sK1(h(sK0)))) = op1(j(sK1(h(X0))),j(sK1(h(sK0))))) )),
+  inference(resolution,[],[f616,f21])).
+fof(f7539,plain,(
+  op1(j(sK1(h(sK0))),j(sK1(h(sK0)))) = j(op2(sK1(h(sK0)),sK1(h(sK0))))),
+  inference(resolution,[],[f3776,f21])).
+fof(f7557,plain,(
+  sK0 = j(op2(sK1(h(sK0)),sK1(h(sK0))))),
+  inference(forward_demodulation,[],[f7539,f177])).
+fof(f10517,plain,(
+  ( ! [X0] : (~sorti1(X0) | op2(sK1(h(X0)),sK1(h(sK0))) = h(j(op2(sK1(h(X0)),sK1(h(sK0)))))) )),
+  inference(resolution,[],[f2881,f21])).
+fof(f10545,plain,(
+  op2(sK1(h(sK0)),sK1(h(sK0))) = h(j(op2(sK1(h(sK0)),sK1(h(sK0)))))),
+  inference(resolution,[],[f10517,f21])).
+fof(f10563,plain,(
+  h(sK0) = op2(sK1(h(sK0)),sK1(h(sK0)))),
+  inference(forward_demodulation,[],[f10545,f7557])).
+fof(f10584,plain,(
+  h(sK0) != h(sK0) | ~sorti2(h(sK0))),
+  inference(superposition,[],[f23,f10563])).
+fof(f10587,plain,(
+  ~sorti2(h(sK0))),
+  inference(trivial_inequality_removal,[],[f10584])).
+fof(f10597,plain,(
+  ~sorti1(sK0)),
+  inference(resolution,[],[f10587,f25])).
+fof(f10598,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f10597,f21])).
+% SZS output end Proof for ALG018+1

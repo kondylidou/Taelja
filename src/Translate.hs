@@ -189,7 +189,10 @@ translateMode strict debug (T.TSTP _ units) = do
       let unitMap0 = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- units]
           origLeaves = piElectrons origInfo ++ piNuclei origInfo
           (origAxioms, origPosToName, _) =
-            assignAxiomNames Map.empty (map convertLit (piGoalLits origInfo)) (piElectrons origInfo) (piNuclei origInfo) unitMap0
+            assignAxiomNames Map.empty negationConj (map convertLit (piGoalLits origInfo)) (piElectrons origInfo) (piNuclei origInfo) unitMap0
+          negationConj = case conjectureHypotheses units of
+            Just (_, cons) -> not (null cons)
+            Nothing        -> False
           -- a source unit that gave several axioms names none of them, so a
           -- sub-run numbers those itself and they are merged by statement
           sourceNames = Map.fromListWith Set.union
@@ -269,16 +272,29 @@ translateMode strict debug (T.TSTP _ units) = do
                 [ u | u@(T.Unit _ (T.Formula (T.Standard T.Conjecture) _) _) <- units ]
             , inUnits = units
             , inTyped = []
+            , inNegated = negatedHyps
             }
-          withInput sp = generalizeGoals (sp { spInput = input })
+          -- the hypotheses that the conjecture's negated conclusion supplied
+          negatedHyps = case conjectureHypotheses units of
+            Just (_, cons) | not (null cons) ->
+              [ nm | e <- origLeaves, leHyp e
+                   , Just nm <- [Map.lookup (lePos e) origPosToName]
+                   , Just c <- [convertDeclToClause (leDecl e)]
+                   , any (`clauseInstance` c) cons ]
+            _ -> []
+          withInput sp = generalizeGoals (negationGoal (sp { spInput = input }))
       -- A hypothesis the proof assumed must be granted by the conjecture, or
-      -- the emitted theorem would be stronger than the conjecture states.
+      -- the emitted theorem would be stronger than the conjecture states.  A
+      -- positive clause from a negative position of the conjecture, as
+      -- ? [Y] : ! [X] : (p(Y) => p(X)) yields, makes the refutation a case
+      -- split, which no direct Horn proof presents.
       case conjectureHypotheses units of
-        Just granted ->
+        Just (ante, cons) -> let granted = ante ++ cons in
           forM_ [ e | e <- origLeaves, leHyp e ] $ \e ->
             case convertDeclToClause (leDecl e) of
               Just c | not (any (`clauseInstance` c) granted) ->
-                error ("hypothesis " ++ leUnit e ++ " is not granted by the conjecture")
+                error ("unsupported conjecture, its negation yields the positive clause "
+                       ++ leUnit e ++ " from a negative position, so its proof is a case split")
               _ -> return ()
         Nothing -> return ()
       case (Map.null validCands, buildProofInfo axHyps modUnits) of
@@ -286,6 +302,23 @@ translateMode strict debug (T.TSTP _ units) = do
           Just . withInput <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just allAxioms)
         _ ->
           Just . withInput <$> runAlgorithm debug strict origInfo units Map.empty origTstp2name (Just origAxioms)
+
+-- A conjecture whose conclusion is a negation is proved by assuming the
+-- negated formula and deriving $false, so the goal is that one derivation.
+-- The refutation's goal atoms are the body of the axiom that closed it, and
+-- each got a block ending in the derivation of $false and a contradiction
+-- line, of which the first block up to $false is kept.
+negationGoal :: StructuredProof -> StructuredProof
+negationGoal sp
+  | null (inNegated (spInput sp)) = sp
+  | otherwise = case goals sp of
+      (_, blk) : _ -> sp { goals = [(falsumLit, dropContradiction blk)] }
+      []           -> sp
+  where
+    dropContradiction (HaveHence ls) = HaveHence (reverse (dropWhile isContra (reverse ls)))
+    dropContradiction b              = b
+    isContra (Hence _ ByContradiction) = True
+    isContra _                         = False
 
 -- The Skolem constants of a negated conjecture stand for its universal
 -- variables.  A constant of a hypothesis or goal that occurs in no input unit
@@ -1887,12 +1920,13 @@ sameAxiomStatement _ _ = False
 -- Names mapped to the empty string are silently skipped (used for internal Twee axioms).
 assignAxiomNames
   :: Map.Map String String  -- TSTP name to display name, or empty to skip
+  -> Bool                   -- the conjecture's conclusion is a negation, so a headless axiom stating the goals is listed
   -> [Literal]              -- goal literals, and a headless nucleus stating them is the goal clause
   -> [LeafEntry]
   -> [LeafEntry]
   -> Map.Map String T.Unit
   -> ([Axiom], Map.Map String String, [UnitEntry])
-assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
+assignAxiomNames nameOverride negationConj goalLits0 electrons nuclei unitMap =
   let unitTags    = [(lePos e, Left e)  | e <- electrons, leRole e == OrigAxiom]
       nucleiTags = [(lePos e, Right e) | e <- nuclei,    leRole e == OrigAxiom]
       allLeaves   = sortBy (comparing fst) (unitTags ++ nucleiTags)
@@ -1957,6 +1991,11 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
                          Map.insert seenKey nm seen)
                    _ -> (axAcc, posMap, seen)
     isGoal l = any (\g -> isJust (matchLit g l) || isJust (matchLit l g)) goalLits
+    -- A headless file clause stating the goals is normally the negated
+    -- conjecture, as in UEQ problems.  When the conjecture concludes a
+    -- negation it is the axiom the proof closes with, listed like any other.
+    goalLits | negationConj = []
+             | otherwise    = goalLits0
 
     -- The next unused "axiom N".  Counting axAcc is wrong because leaves named
     -- by nameOverride are left out of it, so a sub-run with all outer axioms
@@ -2033,7 +2072,10 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
                      []       -> g
 
       (rawAxiomList, posToName, namedUnits) =
-        assignAxiomNames nameOverride goalLits' (piElectrons info) (piNuclei info) unitMap
+        assignAxiomNames nameOverride negationConj goalLits' (piElectrons info) (piNuclei info) unitMap
+      negationConj = case conjectureHypotheses allUnits of
+        Just (_, cons) -> not (null cons)
+        Nothing        -> False
 
       -- Axioms that are actually pre-built lemmas get their names here
       candAxiomNames = Set.fromList
@@ -2311,5 +2353,6 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
       when (nDone3 < length goalLits) $ do
         proven3 <- gets (map fst . stGoals)
         error ("goal(s) could not be proved: "
-               ++ intercalate ", " (map ppLitI (filter (`notElem` proven3) goalLits)))
+               ++ intercalate ", " (map ppLitI (filter (`notElem` proven3) goalLits))
+               ++ " (no step of the input proof establishes it under theta, and the rewrite search found no chain)")
 

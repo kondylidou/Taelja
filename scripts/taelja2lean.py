@@ -41,6 +41,10 @@ class EqLit:
     rhs: object  # Term
 
 @dataclass
+class Not:
+    items: list  # the conjuncts of the negated formula
+
+@dataclass
 class Implies:
     body: list   # list of PredLit | EqLit
     head: object # PredLit | EqLit
@@ -140,6 +144,10 @@ def tokenize(s: str) -> list:
             # might be an R->L direction marker, handled at a higher level
             tokens.append(('IDENT', 'R'))
             i += 1
+        elif s[i] == '~':
+            # negation, which TPTP names never contain
+            tokens.append(('NOT', '~'))
+            i += 1
         elif s[i] in _SYM_CHARS and _symbolic_ident_end(s, i) is not None:
             # symbolic function/predicate name such as +(X,Y) or >(X,Y)
             j = _symbolic_ident_end(s, i)
@@ -214,7 +222,16 @@ class Parser:
         return atoms[0]
 
     def parse_unit(self):
-        """An atom, or a formula in parentheses."""
+        """An atom, a formula in parentheses, or a negated conjunction."""
+        if self.peek()[0] == 'NOT':
+            self.consume('NOT')
+            self.consume('LPAREN')
+            items = [self.parse_unit()]
+            while self.peek()[0] == 'AND':
+                self.consume('AND')
+                items.append(self.parse_unit())
+            self.consume('RPAREN')
+            return Not(items)
         if self.peek()[0] == 'LPAREN':
             self.consume('LPAREN')
             f = self.parse_formula()
@@ -295,9 +312,11 @@ def parse_ref(s: str) -> Ref:
     # the conclusion follows from a derived $false (contradictory axioms)
     if s == 'contradiction':
         return Ref('contradiction', 0, rw, direction)
-    # a hypothesis of the goal, assumed at the start of its proof
-    if s == 'assumption':
-        return Ref('assumption', 0, rw, direction)
+    # a hypothesis of the goal, assumed at the start of its proof, numbered
+    # as the goal states them
+    m = re.match(r'assumption(?:\s+(\d+))?$', s)
+    if m:
+        return Ref('assumption', int(m.group(1) or 0), rw, direction)
     # the goal's hypotheses discharged, which the intro at the start already did
     if s == 'discharge':
         return Ref('discharge', 0, rw, direction)
@@ -485,6 +504,11 @@ def vars_in_lit(f) -> Set[str]:
         for b in f.body:
             s |= vars_in_lit(b)
         s |= vars_in_lit(f.head)
+        return s
+    if isinstance(f, Not):
+        s = set()
+        for b in f.items:
+            s |= vars_in_lit(b)
         return s
     return set()
 
@@ -688,13 +712,16 @@ def lean_lit(f, var_map: dict) -> str:
         parts = [nested_lit(b, var_map) for b in f.body]
         head = lean_lit(f.head, var_map)
         return ' → '.join(parts + [head])
+    if isinstance(f, Not):
+        return '¬(' + ' ∧ '.join(nested_lit(b, var_map) for b in f.items) + ')'
     return str(f)
 
 
 def nested_lit(b, var_map):
-    """A body item.  A Horn hypothesis of a goal is a formula of its own, bound
-    over the variables that are its alone."""
-    if not isinstance(b, Implies):
+    """A body item.  A Horn hypothesis of a goal, or a conjunct of its negated
+    conclusion, is a formula of its own, bound over the variables that are its
+    alone.  A plain atom shares the clause's variables."""
+    if not isinstance(b, (Implies, Not)):
         return lean_lit(b, var_map)
     own = [v for v in sorted(vars_in_lit(b)) if v not in var_map]
     vm = dict(var_map)
@@ -707,14 +734,17 @@ def nested_lit(b, var_map):
 
 
 def nested_only_vars(formula):
-    """Variables that occur only inside a goal's Horn hypotheses, which those
-    hypotheses bind themselves."""
+    """Variables that occur only inside a goal's hypotheses or negated
+    conjuncts, which those formulas bind themselves.  A variable the
+    conclusion shares is the goal's own."""
+    if isinstance(formula, Not):
+        return set(vars_in_lit(formula))
     if not isinstance(formula, Implies):
         return set()
-    outer = set(vars_in_lit(formula.head))
-    inner = set()
+    outer = set() if isinstance(formula.head, Not) else set(vars_in_lit(formula.head))
+    inner = set(vars_in_lit(formula.head)) if isinstance(formula.head, Not) else set()
     for b in formula.body:
-        (inner if isinstance(b, Implies) else outer).update(vars_in_lit(b))
+        (inner if isinstance(b, (Implies, Not)) else outer).update(vars_in_lit(b))
     return inner - outer
 
 def lean_type(formula, all_vars: list, extra_vars=None) -> Tuple[str, dict]:
@@ -1017,8 +1047,10 @@ def ref_lean_name(ref: Ref) -> str:
         return f'ax{ref.num}'
     if ref.kind == 'hyp':
         return f'hyp{ref.num}'
-    else:
-        return f'taelja_lemma{ref.num}'
+    if ref.num in _lemma_hyps:
+        # a lemma under hypotheses, applied to the goal's
+        return '(taelja_lemma' + str(ref.num) + ''.join(f' hyp{i}' for i in _lemma_hyps[ref.num]) + ')'
+    return f'taelja_lemma{ref.num}'
 
 def emit_lean(doc: Document, namespace: str = '') -> str:
     lines = []
@@ -1098,18 +1130,37 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
             cvars |= vars_in_term(step.term)
         return cvars - vars_in_lit(formula)
 
+    global _hyps_before_vars
+    _goal_hyps.clear()
+    _lemma_hyps.clear()
+    if doc.goals:
+        _goal_hyps.extend(repr(b) for b in goal_hypotheses(doc.goals[0].formula)[0])
+
     lemma_types = {}   # num -> (type_str, var_map, formula)
     for lem in doc.lemmas:
         extra = chain_only_vars(lem.formula, lem.proof)
-        type_str, var_map = lean_type(lem.formula, [], extra_vars=extra)
-        lemma_types[lem.num] = (type_str, var_map, lem.formula)
+        hyps, head = goal_hypotheses(lem.formula)
+        if hyps and all(repr(b) in _goal_hyps for b in hyps):
+            # a lemma under hypotheses of the goal takes them first, then its
+            # own variables, so a citation applies it to the goal's hypotheses
+            _lemma_hyps[lem.num] = [_goal_hyps.index(repr(b)) + 1 for b in hyps]
+            head_str, var_map = lean_type(head, [], extra_vars=extra)
+            type_str = ' → '.join(nested_lit(b, {}) for b in hyps) + ' → ' + \
+                       (f'({head_str})' if head_str.startswith('∀') else head_str)
+            lemma_types[lem.num] = (type_str, var_map, head)
+        else:
+            type_str, var_map = lean_type(lem.formula, [], extra_vars=extra)
+            lemma_types[lem.num] = (type_str, var_map, lem.formula)
 
     # Emit lemmas
     for lem in doc.lemmas:
         type_str, var_map, formula = lemma_types[lem.num]
         lines.append(f'-- Lemma {lem.num}')
         lines.append(f'theorem taelja_lemma{lem.num} : {type_str} := by')
-        proof_lines = emit_proof(lem.proof, axiom_types, lemma_types, formula, consts_sorted)
+        _hyps_before_vars = lem.num in _lemma_hyps
+        proof_lines = emit_proof(lem.proof, axiom_types, lemma_types,
+                                 lem.formula if _hyps_before_vars else formula, consts_sorted)
+        _hyps_before_vars = False
         for pl in proof_lines:
             lines.append(f'  {pl}')
         lines.append('')
@@ -1186,11 +1237,15 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
     for step in proof.steps:
         chain_vars |= vars_in_term(step.term)
 
+    if _hyps_before_vars:
+        conclusion = intro_hypotheses(conclusion, lines, {})
+        conclusion_vars = vars_in_lit(conclusion)
     fvars = sorted((chain_vars | conclusion_vars) - nested_only_vars(conclusion))
     var_map = {v: lean_var_name(v, i) for i, v in enumerate(fvars)}
     if fvars:
         lines.append(f'intro {" ".join(var_map[v] for v in fvars)}')
-    conclusion = intro_hypotheses(conclusion, lines, var_map)
+    if not _hyps_before_vars:
+        conclusion = intro_hypotheses(conclusion, lines, var_map)
     for step in proof.steps:
         step.ref = resolve_assumption(step.ref, None, want_eq=True)
 
@@ -1492,24 +1547,55 @@ def ref_formula_of(ref, axiom_types, lemma_types):
     return None, []
 
 
-# The hypotheses of the goal being proved, numbered from 1, each with its
-# Lean type, the map of its own variables and its formula, so a step citing
-# an assumption can use them like an axiom.
+# The hypotheses of the goal being proved, numbered as the goal states them,
+# each with its Lean type, the map of its own variables and its formula, so a
+# step citing an assumption can use them like an axiom.
 _hyp_types: dict = {}
+# The goal's hypotheses in statement order, as repr strings, so a lemma
+# stated under some of them numbers them the same way.
+_goal_hyps: list = []
+# The lemmas stated under hypotheses, each with the goal indices of the
+# hypotheses it takes, which a citation applies it to.
+_lemma_hyps: dict = {}
+# Whether hypotheses are introduced before the statement's variables, as a
+# lemma under hypotheses is typed.
+_hyps_before_vars = False
+
+
+def goal_hypotheses(formula):
+    """The hypotheses a goal or lemma statement assumes, in order: the
+    antecedent's conjuncts, then the conjuncts of a negated conclusion."""
+    hyps, head = [], formula
+    if isinstance(formula, Implies):
+        hyps, head = list(formula.body), formula.head
+    if isinstance(head, Not):
+        return hyps + list(head.items), PredLit('$false', [])
+    return hyps, head
 
 
 def intro_hypotheses(conclusion, lines, var_map=None):
-    """A goal stated as H1 /\\ H2 => G introduces its hypotheses after its
-    variables and is then proved as G.  Returns the conclusion to prove."""
+    """A goal stated as H1 /\\ H2 => G introduces its hypotheses and is then
+    proved as G.  A negated conclusion ~(C /\\ D) is proved by introducing C
+    and D as hypotheses too and deriving False.  Returns the conclusion to
+    prove."""
     _hyp_types.clear()
-    if isinstance(conclusion, Implies):
-        lines.append('intro ' + ' '.join(f'hyp{i + 1}' for i in range(len(conclusion.body))))
-        for i, b in enumerate(conclusion.body):
-            own = [v for v in sorted(vars_in_lit(b)) if v not in (var_map or {})]
-            vm = {v: lean_var_name(v, len(var_map or {}) + j) for j, v in enumerate(own)}
-            _hyp_types[i + 1] = (nested_lit(b, var_map or {}), vm, b)
-        return conclusion.head
-    return conclusion
+    hyps, head = goal_hypotheses(conclusion)
+    negated = hyps[len(conclusion.body):] if isinstance(conclusion, Implies) else hyps
+    plain = hyps[:len(hyps) - len(negated)]
+    def name_of(i, b):
+        return f'hyp{_goal_hyps.index(repr(b)) + 1}' if repr(b) in _goal_hyps else f'hyp{i + 1}'
+    names = [name_of(i, b) for i, b in enumerate(hyps)]
+    if plain:
+        lines.append('intro ' + ' '.join(names[:len(plain)]))
+    if negated:
+        neg_names = names[len(plain):]
+        lines.append('intro hneg')
+        lines.append('obtain ⟨' + ', '.join(neg_names) + '⟩ := hneg' if len(neg_names) > 1 else f'have {neg_names[0]} := hneg')
+    for name, b in zip(names, hyps):
+        own = [v for v in sorted(vars_in_lit(b)) if v not in (var_map or {})]
+        vm = {v: lean_var_name(v, len(var_map or {}) + j) for j, v in enumerate(own)}
+        _hyp_types[int(name[3:])] = (nested_lit(b, var_map or {}), vm, b)
+    return head
 
 
 def resolve_assumption(ref, lit, want_eq=False):
@@ -1517,6 +1603,8 @@ def resolve_assumption(ref, lit, want_eq=False):
     of kind hyp, or the reference unchanged when none fits."""
     if ref.kind != 'assumption':
         return ref
+    if ref.num and ref.num in _hyp_types:
+        return Ref('hyp', ref.num, ref.rw, ref.direction)
     for k, (_, _, f) in _hyp_types.items():
         if want_eq:
             if isinstance(f, EqLit):
@@ -1534,12 +1622,15 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
     if consts is None:
         consts = []
     lines = []
+    if _hyps_before_vars:
+        conclusion = intro_hypotheses(conclusion, lines, {})
     conclusion_vars = vars_in_lit(conclusion) - nested_only_vars(conclusion)
     fvars = sorted(conclusion_vars)
     var_map = {v: lean_var_name(v, i) for i, v in enumerate(fvars)}
     if fvars:
         lines.append(f'intro {" ".join(var_map[v] for v in fvars)}')
-    conclusion = intro_hypotheses(conclusion, lines, var_map)
+    if not _hyps_before_vars:
+        conclusion = intro_hypotheses(conclusion, lines, var_map)
 
     steps = proof.steps
     if not steps:

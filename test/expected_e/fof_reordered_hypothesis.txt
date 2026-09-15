@@ -9,7 +9,7 @@ Proof:
    and r(a)
     by axiom 1
   hence t(a)
-    by assumption
+    by assumption 1
   hence u(a)
     by axiom 3
   hence (s(X) /\ r(X) => t(X)) => u(a)

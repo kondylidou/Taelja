@@ -14,7 +14,9 @@ Usage
                                  [--output-dir eval_out]
 
 Writes <output-dir>/horn_fof.txt and <output-dir>/horn_tff.txt, one problem
-per line as CATEGORY<TAB>Problems/DOM/NAME.p, for eval.py --list.
+per line as CATEGORY<TAB>Problems/DOM/NAME.p, for eval.py --list, and
+<output-dir>/horn_cnf.txt with the HNE, HEQ and UEQ problems read off the
+SPC tag, so one eval run can take all of them.
 """
 import argparse
 import os
@@ -32,9 +34,16 @@ FORMS = {
 
 CLAUSE = re.compile(r'^(?:cnf|tcf)\([^,]*,[^,]*,\s*(.*)\)\.\s*$', re.M)
 
+CNF_CATEGORIES = {
+    'HNE': re.compile(r'^% SPC\s*:\s*\w+_UNS_\w+_NEQ_HRN'),
+    'HEQ': re.compile(r'^% SPC\s*:\s*\w+_UNS_\w+_[SP]EQ_HRN'),
+    'UEQ': re.compile(r'^% SPC\s*:\s*\w+_UNS_\w+_PEQ_UEQ'),
+}
+
 
 def form_of(p_file):
-    """FOF or TFF when the file is a theorem problem of that form, else None."""
+    """FOF or TFF when the file is a theorem problem of that form, a CNF
+    category when its SPC tag says Horn, else None."""
     try:
         with open(p_file, errors='ignore') as f:
             for line in f:
@@ -42,6 +51,9 @@ def form_of(p_file):
                     for form, pat in FORMS.items():
                         if pat.match(line):
                             return form
+                    for cat, pat in CNF_CATEGORIES.items():
+                        if pat.match(line):
+                            return cat
                     return None
                 if not line.startswith('%') and line.strip():
                     return None
@@ -93,10 +105,17 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
 
     candidates = []
+    cnf = []
     for p in sorted((tptp / 'Problems').glob('*/*.p')):
         form = form_of(p)
-        if form:
+        if form in ('FOF', 'TFF'):
             candidates.append((form, p))
+        elif form:
+            cnf.append((form, p))
+    with open(out / 'horn_cnf.txt', 'w') as f:
+        for cat, p in cnf:
+            f.write(f'{cat}\t{p.relative_to(tptp)}\n')
+    print(f'{len(cnf)} CNF Horn problems written to {out / "horn_cnf.txt"}')
     if args.limit:
         candidates = candidates[:args.limit]
     print(f'{len(candidates)} theorem problems to clausify '

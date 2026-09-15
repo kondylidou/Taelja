@@ -6,7 +6,7 @@ Proof:
   g(h(f(X)))
 = { by axiom 2 }
   g(f(X))
-= { by assumption }
+= { by assumption 1 }
   g(a)
 = { by axiom 1 }
   b
