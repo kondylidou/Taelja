@@ -60,16 +60,21 @@ buildProofInfo axHyps allUnits
                            -- identity, since the FOF equivalence behind it
                            -- is not a Horn clause
                            in if isIntroducedSrc unitMap r && r /= name then name else r
+            -- a FOF axiom that clausifies to several clauses is not this
+            -- leaf's statement, which then keeps its own clause.  The negated
+            -- conjecture keeps its source, which the goal reading expects
+            role    = classifyRole axHyps unitMap name decl
             srcDecl = case Map.lookup srcName unitMap of
-                        Just (T.Unit _ d _) -> d
-                        _                   -> decl
+                        Just (T.Unit _ d _)
+                          | role == NegConjecture || isJust (convertDeclToClause d) -> d
+                        _ -> decl
         in LeafEntry
         { lePos     = pos
         , leUnit    = name
         , leName    = srcName
         , leDecl    = decl
         , leSrcDecl = srcDecl
-        , leRole    = classifyRole axHyps unitMap name decl
+        , leRole    = role
         , leHyp     = axHyps && isHypothesisOfConjecture unitMap name decl
         , leSimpl   = fromMaybe [] (Map.lookup pos chains)
         }
@@ -476,12 +481,15 @@ isNegConj _                                              = False
 -- formula, as TPTP's own tools write it.
 isConjHypothesis :: Map.Map String T.Unit -> String -> T.Declaration -> Bool
 isConjHypothesis unitMap name decl =
-  isJust (headLitOf decl)
+  hasHead (headLitOf decl)
   && (isNegConj decl || csNeg)
   && (Map.notMember cs unitMap || isFileSrc unitMap cs || csNeg)
   where
     cs    = resolveCopySource unitMap name
     csNeg = maybe False isNegConj (lookupDecl unitMap cs)
+    -- a disequality is a negated goal, not a head
+    hasHead (Just (T.Equality _ T.Negative _)) = False
+    hasHead h                                  = isJust h
 
 -- Such a clause was assumed by an implication conjecture only when the
 -- negated conjecture it copies was derived by negating one.  A problem that
@@ -660,7 +668,8 @@ extractConjectureGoals units = listToMaybe
         _                   -> Nothing
     extractConjLits (T.Formula _ (T.FOF f)) = extractFOFConj f
     extractConjLits _                        = Nothing
-    extractFOFConj (T.Quantified T.Forall _ body) = extractFOFConj body
+    -- an existential goal's variables are instantiated by θ, as in CNF
+    extractFOFConj (T.Quantified _ _ body)         = extractFOFConj body
     extractFOFConj (T.Atomic lit)                  = Just [lit]
     extractFOFConj (T.Connected l T.Conjunction r) = do
       ls <- extractFOFConj l

@@ -98,6 +98,10 @@ handcraftedNames =
   -- one of sort city
   , "tff_nato"
   , "tff_typed_lemma"
+  -- a FOF axiom ? [X] : (p(X) & r(X)) gives two clauses, so two axioms, through
+  -- a Skolem definition that the TPTP output cites, and the conjecture is
+  -- existential
+  , "fof_skolem_definition"
   ]
 
 benchmarkNames :: [String]
@@ -230,6 +234,12 @@ eBenchmarkNames =
   -- a goal clause whose literals mix a disequality with negative atoms,
   -- X1 != v_x(X1) | ~c_in(X1,v_S,tc_set(t_a)), states two goals
   , "SET864-2"
+  -- an implication conjecture whose hypothesis is a Horn clause, which E
+  -- prints with its literals reordered
+  , "fof_reordered_hypothesis"
+  -- an implication conjecture whose hypothesis is an equation, used as a
+  -- rewrite in the goal chain
+  , "fof_equational_hypothesis"
   ]
 
 mkTest :: String -> String -> String -> TestTree

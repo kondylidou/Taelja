@@ -1,0 +1,16 @@
+Axiom 1: r(a)
+Axiom 2: s(a)
+Axiom 3: t(X) => u(X)
+
+Goal 1: (s(X) /\ r(X) => t(X)) => u(a)
+Proof:
+  have s(a)
+    by axiom 2
+   and r(a)
+    by axiom 1
+  hence t(a)
+    by assumption
+  hence u(a)
+    by axiom 3
+  hence (s(X) /\ r(X) => t(X)) => u(a)
+    by discharge

@@ -13,6 +13,8 @@ module TptpConvert
   , collectDisjuncts
   , collectDisjunct
   , eraseSorts
+  , declConsts
+  , declSymbols
   ) where
 
 import Data.List (partition)
@@ -21,6 +23,50 @@ import qualified Data.Text as Text
 import qualified Data.TPTP as T
 
 import Types
+
+-- The function and predicate symbols of a declaration, in any formula form.
+declSymbols :: T.Declaration -> ([String], [String])
+declSymbols (T.Formula _ (T.CNF (T.Clause lits))) = both [ l | (_, l) <- toList lits ]
+declSymbols (T.Formula _ (T.FOF f))               = both (atoms f)
+declSymbols (T.Formula _ (T.TFF0 f))              = both (atoms f)
+declSymbols _                                     = ([], [])
+
+atoms :: T.FirstOrder s -> [T.Literal]
+atoms (T.Atomic l)         = [l]
+atoms (T.Negated f)        = atoms f
+atoms (T.Connected l _ r)  = atoms l ++ atoms r
+atoms (T.Quantified _ _ f) = atoms f
+
+both :: [T.Literal] -> ([String], [String])
+both ls = (concatMap funcs ls, [ Text.unpack p | T.Predicate (T.Defined (T.Atom p)) _ <- ls ])
+  where
+    funcs (T.Predicate _ ts) = concatMap termF ts
+    funcs (T.Equality l _ r) = termF l ++ termF r
+    termF (T.Function (T.Defined (T.Atom f)) ts) = Text.unpack f : concatMap termF ts
+    termF (T.Function _ ts)                      = concatMap termF ts
+    termF _                                      = []
+
+-- The constant symbols of a declaration, in any formula form.
+declConsts :: T.Declaration -> [String]
+declConsts (T.Formula _ (T.CNF (T.Clause lits))) = concat [ litC l | (_, l) <- toList lits ]
+declConsts (T.Formula _ (T.FOF f))               = formulaConsts f
+declConsts (T.Formula _ (T.TFF0 f))              = formulaConsts f
+declConsts _                                     = []
+
+formulaConsts :: T.FirstOrder s -> [String]
+formulaConsts (T.Atomic l)          = litC l
+formulaConsts (T.Negated f)         = formulaConsts f
+formulaConsts (T.Connected l _ r)   = formulaConsts l ++ formulaConsts r
+formulaConsts (T.Quantified _ _ f)  = formulaConsts f
+
+litC :: T.Literal -> [String]
+litC (T.Predicate _ ts)  = concatMap termC ts
+litC (T.Equality l _ r)  = termC l ++ termC r
+
+termC :: T.Term -> [String]
+termC (T.Function (T.Defined (T.Atom f)) []) = [Text.unpack f]
+termC (T.Function _ ts)                      = concatMap termC ts
+termC _                                      = []
 
 -- A monomorphic typed proof read as an untyped one.  The sorts only restrict
 -- which terms a variable ranges over, and every step of the proof already

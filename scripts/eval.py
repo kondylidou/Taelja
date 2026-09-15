@@ -18,6 +18,9 @@ Optional
   --jobs N          Parallel workers (default 2)
   --lean PATH       Path to lean binary, to verify each taelja proof
   --skip-done       Skip problems where proof.tstp and taelja.txt already exist
+  --list FILE       Run the problems listed in FILE instead of scanning by SPC,
+                    one CATEGORY<TAB>Problems/DOM/NAME.p per line as written by
+                    select_horn.py.  May be repeated.  Twee is not run on TFF.
 
 For each .p file classified as HNE, HEQ or UEQ by its SPC field, each
 available prover is run and its TSTP output is fed to Taelja.
@@ -443,6 +446,8 @@ def main():
     parser.add_argument('--jobs',        type=int, default=2)
     parser.add_argument('--taelja-timeout', type=int, default=60, metavar='SEC',
                         help='Taelja timeout in seconds (default: 60)')
+    parser.add_argument('--list',        action='append', default=[], metavar='FILE',
+                        help='problem list from select_horn.py instead of the SPC scan')
     parser.add_argument('--skip-done',   action='store_true',
                         help='Skip problems where proof.tstp and taelja.txt already exist')
     parser.add_argument('--lean',        default=None, metavar='PATH',
@@ -481,14 +486,23 @@ def main():
     out  = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
 
-    print("\nScanning TPTP problems for HNE/HEQ/UEQ by SPC field...")
     problems = []
-    for p in sorted((tptp / 'Problems').glob('*/*.p')):
-        cat = classify_problem(p)
-        if cat:
-            problems.append((p, cat))
+    if args.list:
+        for lst in args.list:
+            for line in Path(lst).read_text().splitlines():
+                if line.strip():
+                    cat, rel = line.split('\t')
+                    problems.append((tptp / rel, cat))
+        print(f"\nProblems from {', '.join(args.list)}")
+    else:
+        print("\nScanning TPTP problems for HNE/HEQ/UEQ by SPC field...")
+        for p in sorted((tptp / 'Problems').glob('*/*.p')):
+            cat = classify_problem(p)
+            if cat:
+                problems.append((p, cat))
 
-    for c in CATEGORIES:
+    categories = [c for c in CATEGORIES + ['FOF', 'TFF'] if any(cat == c for _, cat in problems)]
+    for c in categories:
         n = sum(1 for _, cat in problems if cat == c)
         print(f"  {c}: {n}")
     print(f"  Total: {len(problems)} problems × {len(provers)} provers = "
@@ -502,6 +516,8 @@ def main():
                       args.skip_done, lean_bin, taelja_timeout): (p, name)
             for p, cat in problems
             for name, binary in provers.items()
+            # Twee reads no types
+            if not (cat == 'TFF' and name == 'twee')
         }
         total = len(futures)
         for i, f in enumerate(as_completed(futures), 1):
@@ -518,7 +534,7 @@ def main():
         w.writerows(sorted(results, key=lambda r: (r['category'], r['problem'], r['prover'])))
 
     print()
-    _print_summary(results, provers, lean_bin is not None)
+    _print_summary(results, provers, lean_bin is not None, categories)
 
     print(f"\nDetailed results: {csv_path}")
 
@@ -577,7 +593,7 @@ def main():
         print("  (no inference rules found)")
 
 
-def _print_summary(results, provers, lean_col):
+def _print_summary(results, provers, lean_col, categories=CATEGORIES):
     # Header columns Category Prover Total Proved Unsupp Transl Fail and Lean
     hdr = (f"{'Category':8s}  {'Prover':7s}  {'Total':>6s}  "
            f"{'Proved':>6s}  {'Unsupp':>6s}  {'Transl':>6s}  {'Fail':>6s}  {'TFail':>6s}"
@@ -586,7 +602,7 @@ def _print_summary(results, provers, lean_col):
     print('-' * len(hdr))
 
     prover_list = list(provers)
-    for cat in CATEGORIES + ['TOTAL']:
+    for cat in categories + ['TOTAL']:
         for prover in prover_list + (['ALL'] if len(provers) > 1 else []):
             sub = [r for r in results
                    if (cat == 'TOTAL' or r['category'] == cat)

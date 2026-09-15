@@ -1,7 +1,7 @@
 module Helpers where
 
 import Control.Applicative ((<|>))
-import Data.List (intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub)
+import Data.List (inits, intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, permutations, tails)
 import Data.Maybe (fromMaybe, isJust, listToMaybe)
 import Control.Monad (foldM)
 import Types
@@ -352,15 +352,34 @@ isEqChain :: ProofBlock -> Bool
 isEqChain (EqChain {}) = True
 isEqChain _            = False
 
--- The second clause is an instance of the first, literal by literal.
+-- A clause's text with its variables named by first occurrence and its body
+-- in the order that gives the smallest text, so variants and reorderings get
+-- the same key.  A body of more than six literals keeps its order.
+clauseKey :: Clause -> String
+clauseKey (Clause bs mh) = minimum (map keyOf orders)
+  where
+    orders | length bs <= 6 = permutations bs
+           | otherwise      = [bs]
+    keyOf body = show (Clause (map (ren body) body) (fmap (ren body) mh))
+    ren body   = renameLit (zip (nub (concatMap litVars body ++ maybe [] litVars mh))
+                                [ "v" ++ show i | i <- [0 :: Int ..] ])
+
+-- The second clause is an instance of the first, the body literals matched
+-- in any order.
 clauseInstance :: Clause -> Clause -> Bool
 clauseInstance (Clause bs1 h1) (Clause bs2 h2) =
   length bs1 == length bs2 && isJust (do
-    σ <- foldM (\s (a, b) -> matchLitWith a b s) [] (zip bs1 bs2)
-    case (h1, h2) of
-      (Just a, Just b)   -> matchLitWith a b σ
-      (Nothing, Nothing) -> Just σ
-      _                  -> Nothing)
+    σ <- case (h1, h2) of
+      (Just a, Just b)   -> matchLitWith a b []
+      (Nothing, Nothing) -> Just []
+      _                  -> Nothing
+    bodies bs1 bs2 σ)
+  where
+    bodies [] [] σ = Just σ
+    bodies (a : as) bs σ = listToMaybe
+      [ σ'' | (b, rest) <- picks bs, Just σ' <- [matchLitWith a b σ], Just σ'' <- [bodies as rest σ'] ]
+    bodies _ _ _ = Nothing
+    picks xs = [ (x, before ++ after) | (before, x : after) <- zip (inits xs) (tails xs) ]
 
 -- Flip an equation, used to try both orientations while matching.
 flipLit :: Literal -> Literal
@@ -395,6 +414,15 @@ blockVars :: ProofBlock -> [String]
 blockVars (HaveHence ls)    = nub (concatMap lineVars ls)
 blockVars (EqChain s steps) = nub (termVars s ++ concatMap stepVars steps)
   where stepVars (RwStep _ (l, r) _, cur) = termVars l ++ termVars r ++ termVars cur
+
+blockConsts :: ProofBlock -> [String]
+blockConsts (HaveHence ls)    = nub (concatMap lineConsts ls)
+  where
+    lineConsts (Have  lit _) = litConsts lit
+    lineConsts (And   lit _) = litConsts lit
+    lineConsts (Hence lit _) = litConsts lit
+blockConsts (EqChain s steps) = nub (termConsts s ++ concatMap stepConsts steps)
+  where stepConsts (RwStep _ (l, r) _, cur) = termConsts l ++ termConsts r ++ termConsts cur
 
 -- Node count, where smaller means a simpler rewrite candidate.
 termSize :: Term -> Int
@@ -450,7 +478,7 @@ isInternalUnit ue = case ueName ue of
 -- that are not TSTP and make the file unparseable.  Without markers the text
 -- is returned unchanged.
 extractSzsBlock :: String -> String
-extractSzsBlock txt =
+extractSzsBlock txt = dropIntroducedParents $
   case break isStart (lines txt) of
     (_, [])        -> txt
     (_, startLine : rest) ->
@@ -467,6 +495,40 @@ extractSzsBlock txt =
     isStart l = "SZS output start" `isInfixOf` l
     isEnd   l = "SZS output end"   `isInfixOf` l
     isUnit  l = any (`isPrefixOf` dropWhile (== ' ') l) ["cnf(", "fof(", "tff(", "tcf("]
+
+-- The parser reads introduced(kind, [info]) only, while Vampire and current
+-- TPTP also write a third list of parents, so that list is dropped.
+dropIntroducedParents :: String -> String
+dropIntroducedParents = go
+  where
+    key = "introduced("
+    go [] = []
+    go s@(c : cs)
+      | key `isPrefixOf` s =
+          let (inner, rest) = balanced (drop (length key) s)
+          in key ++ intercalate "," (take 2 (topLevelArgs inner)) ++ ")" ++ go rest
+      | otherwise = c : go cs
+    -- the text up to the parenthesis closing an open one, and what follows it
+    balanced = walk (0 :: Int)
+      where
+        walk _ [] = ([], [])
+        walk d (x : xs)
+          | x == ')' && d == 0 = ([], xs)
+          | x `elem` "([" = first (x :) (walk (d + 1) xs)
+          | x `elem` ")]" = first (x :) (walk (d - 1) xs)
+          | otherwise     = first (x :) (walk d xs)
+        first f (a, b) = (f a, b)
+
+-- The arguments of a term's text, split at the commas outside brackets.
+topLevelArgs :: String -> [String]
+topLevelArgs = walk (0 :: Int) []
+  where
+    walk _ acc [] = [reverse acc]
+    walk d acc (x : xs)
+      | x == ',' && d == 0 = reverse acc : walk d [] xs
+      | x `elem` "([" = walk (d + 1) (x : acc) xs
+      | x `elem` ")]" = walk (d - 1) (x : acc) xs
+      | otherwise     = walk d (x : acc) xs
 
 -- | Syntactic unification with occurs check.  Both terms share one variable
 -- space (used for the two sides of a goal equation, whose variables stem from

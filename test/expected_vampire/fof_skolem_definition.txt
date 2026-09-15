@@ -1,0 +1,12 @@
+Axiom 1: p(sK0)
+Axiom 2: r(sK0)
+Axiom 3: p(X) /\ r(X) => q(X)
+
+Goal 1: q(sK0)
+Proof:
+  have p(sK0)
+    by axiom 1
+   and r(sK0)
+    by axiom 2
+  hence q(sK0)
+    by axiom 3

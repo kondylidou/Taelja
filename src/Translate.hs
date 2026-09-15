@@ -190,10 +190,14 @@ translateMode strict debug (T.TSTP _ units) = do
           origLeaves = piElectrons origInfo ++ piNuclei origInfo
           (origAxioms, origPosToName, _) =
             assignAxiomNames Map.empty (map convertLit (piGoalLits origInfo)) (piElectrons origInfo) (piNuclei origInfo) unitMap0
-          origTstp2name = Map.fromList
-            [ (leName e, nm)
+          -- a source unit that gave several axioms names none of them, so a
+          -- sub-run numbers those itself and they are merged by statement
+          sourceNames = Map.fromListWith Set.union
+            [ (leName e, Set.singleton nm)
             | e <- origLeaves, leRole e == OrigAxiom
             , Just nm <- [Map.lookup (lePos e) origPosToName] ]
+          origTstp2name = Map.fromList
+            [ (src, nm) | (src, nms) <- Map.toList sourceNames, [nm] <- [Set.toList nms] ]
           origAxiomNames = Set.fromList [ leName e | e <- origLeaves, leRole e == OrigAxiom ]
           candidates = filter (\(cname, _) ->
                           resolveCopySource unitMap0 cname `Set.notMember` origAxiomNames)
@@ -251,8 +255,13 @@ translateMode strict debug (T.TSTP _ units) = do
           -- the input units behind the axioms, for the TPTP output
           input = ProofInput
             { inAxiomUnits = Map.fromList
-                [ (nm, u) | (src, nm) <- Map.toList origTstp2name
-                          , Just u <- [Map.lookup src unitMap0] ]
+                [ (nm, u) | e <- origLeaves, leRole e == OrigAxiom
+                          , Just nm <- [Map.lookup (lePos e) origPosToName]
+                          , Just u <- [Map.lookup (leName e) unitMap0] ]
+            , inAxiomLeaves = Map.fromList
+                [ (nm, leUnit e) | e <- origLeaves, leRole e == OrigAxiom
+                                 , Just nm <- [Map.lookup (lePos e) origPosToName] ]
+            , inGeneralized = []
             , inHypotheses = Map.fromList
                 [ (nm, leUnit e) | e <- origLeaves, leHyp e
                                  , Just nm <- [Map.lookup (lePos e) origPosToName] ]
@@ -261,7 +270,7 @@ translateMode strict debug (T.TSTP _ units) = do
             , inUnits = units
             , inTyped = []
             }
-          withInput sp = sp { spInput = input }
+          withInput sp = generalizeGoals (sp { spInput = input })
       -- A hypothesis the proof assumed must be granted by the conjecture, or
       -- the emitted theorem would be stronger than the conjecture states.
       case conjectureHypotheses units of
@@ -277,6 +286,36 @@ translateMode strict debug (T.TSTP _ units) = do
           Just . withInput <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just allAxioms)
         _ ->
           Just . withInput <$> runAlgorithm debug strict origInfo units Map.empty origTstp2name (Just origAxioms)
+
+-- The Skolem constants of a negated conjecture stand for its universal
+-- variables.  A constant of a hypothesis or goal that occurs in no input unit
+-- is such a constant, and when no axiom or lemma mentions it either the
+-- theorem holds for every value of it, so it is a variable again in the
+-- printed goal.
+generalizeGoals :: StructuredProof -> StructuredProof
+generalizeGoals sp
+  | null fresh = sp
+  | otherwise  = sp { axioms = map renAx (axioms sp)
+                    , goals  = [ (applyConstSubstLit sub l, applyConstSubstBlock sub b) | (l, b) <- goals sp ]
+                    , spInput = (spInput sp) { inGeneralized = [ ("Sk_" ++ c, c) | c <- fresh ] } }
+  where
+    hypNames = Map.keysSet (inHypotheses (spInput sp))
+    isHyp ax = Set.member (axiomDisplayName ax) hypNames
+    axConsts (AUnit _ l)                 = litConsts l
+    axConsts (ANucleus _ (Clause bs mh)) = concatMap litConsts bs ++ maybe [] litConsts mh
+    goalConsts = nub (concatMap (litConsts . fst) (goals sp) ++ concatMap axConsts (filter isHyp (axioms sp)))
+    used  = Set.fromList (concatMap axConsts (filter (not . isHyp) (axioms sp))
+                          ++ concat [ litConsts l ++ blockConsts b | (_, l, b) <- lemmas sp ]
+                          ++ concat [ declConsts d | T.Unit _ d ann <- inUnits (spInput sp), isInputAnn ann ])
+    isInputAnn Nothing                      = True
+    isInputAnn (Just (T.File _ _, _))       = True
+    isInputAnn _                            = False
+    fresh = [ c | c <- goalConsts, Set.notMember c used, not (isRigidConst c) ]
+    sub   = [ (c, Var ("Sk_" ++ c)) | c <- fresh ]
+    renAx ax | isHyp ax = case ax of
+                 AUnit n l                 -> AUnit n (applyConstSubstLit sub l)
+                 ANucleus n (Clause bs mh) -> ANucleus n (Clause (map (applyConstSubstLit sub) bs) (fmap (applyConstSubstLit sub) mh))
+             | otherwise = ax
 
 -- The step layer.  A justification that cannot be established fails with
 -- throwError, the state keeps every sound fact found before the failure, and
@@ -1863,10 +1902,13 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
         | e <- electrons, leRole e == OrigAxiom ]
   in (axiomList, posToName, namedUnits)
   where
+    -- an axiom is one clause of one source unit, so a FOF unit that
+    -- clausifies to several clauses gives several axioms
     step (axAcc, posMap, seen) (pos, Left e) =
       let origKey = leName e
           lit     = electronLit unitMap e
-      in case Map.lookup origKey seen of
+          seenKey = origKey ++ "#" ++ clauseKey (Clause [] (Just lit))
+      in case Map.lookup seenKey seen of
            -- An internal unit is recorded under the empty sentinel.  A later occurrence
            -- is skipped like the first, or the step prints a nameless "by".
            Just existingName | not (null existingName) ->
@@ -1884,12 +1926,13 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
                  let nm = freshAxiomName axAcc
                  in (axAcc ++ [AUnit nm lit],
                      Map.insert pos nm posMap,
-                     Map.insert origKey nm seen)
+                     Map.insert seenKey nm seen)
 
     step (axAcc, posMap, seen) (pos, Right e) =
       -- leSrcDecl preserves the original body-literal order and equation direction
       let origKey = leName e
-      in case Map.lookup origKey seen of
+          seenKey = origKey ++ "#" ++ maybe "" clauseKey (convertDeclToClause (leSrcDecl e))
+      in case Map.lookup seenKey seen of
            -- An internal unit is recorded under the empty sentinel.  A later occurrence
            -- is skipped like the first, or the step prints a nameless "by".
            Just existingName | not (null existingName) ->
@@ -1911,7 +1954,7 @@ assignAxiomNames nameOverride goalLits electrons nuclei unitMap =
                      let nm = freshAxiomName axAcc
                      in (axAcc ++ [ANucleus nm cls],
                          Map.insert pos nm posMap,
-                         Map.insert origKey nm seen)
+                         Map.insert seenKey nm seen)
                    _ -> (axAcc, posMap, seen)
     isGoal l = any (\g -> isJust (matchLit g l) || isJust (matchLit l g)) goalLits
 

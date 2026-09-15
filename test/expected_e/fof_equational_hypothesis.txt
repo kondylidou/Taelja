@@ -1,0 +1,14 @@
+Axiom 1: g(a) = b
+Axiom 2: h(X) = X
+
+Goal 1: f(X) = a => g(h(f(X))) = b
+Proof:
+  g(h(f(X)))
+= { by axiom 2 }
+  g(f(X))
+= { by assumption }
+  g(a)
+= { by axiom 1 }
+  b
+  hence f(X) = a => g(h(f(X))) = b
+    by discharge

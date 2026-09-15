@@ -198,19 +198,29 @@ class Parser:
         return self.pos >= len(self.toks)
 
     def parse_formula(self):
-        """A formula is body_list '=>' atom, or an atom."""
-        atoms = [self.parse_atom()]
+        """A formula is body_list '=>' atom, or an atom.  A body item may be a
+        parenthesized formula, as a goal's Horn hypothesis is."""
+        atoms = [self.parse_unit()]
         while not self.at_end() and self.peek()[0] == 'AND':
             self.consume('AND')
-            atoms.append(self.parse_atom())
+            atoms.append(self.parse_unit())
         if not self.at_end() and self.peek()[0] == 'ARROW':
             self.consume('ARROW')
-            head = self.parse_atom()
+            head = self.parse_unit()
             return Implies(atoms, head)
         if len(atoms) == 1:
             return atoms[0]
         # bare conjunction (shouldn't happen at top level, but handle)
         return atoms[0]
+
+    def parse_unit(self):
+        """An atom, or a formula in parentheses."""
+        if self.peek()[0] == 'LPAREN':
+            self.consume('LPAREN')
+            f = self.parse_formula()
+            self.consume('RPAREN')
+            return f
+        return self.parse_atom()
 
     def parse_atom(self):
         """An atom is term '=' term, or a predicate application."""
@@ -675,10 +685,37 @@ def lean_lit(f, var_map: dict) -> str:
             rhs = f'({rhs})'
         return f'{lhs} = {rhs}'
     if isinstance(f, Implies):
-        parts = [lean_lit(b, var_map) for b in f.body]
+        parts = [nested_lit(b, var_map) for b in f.body]
         head = lean_lit(f.head, var_map)
         return ' → '.join(parts + [head])
     return str(f)
+
+
+def nested_lit(b, var_map):
+    """A body item.  A Horn hypothesis of a goal is a formula of its own, bound
+    over the variables that are its alone."""
+    if not isinstance(b, Implies):
+        return lean_lit(b, var_map)
+    own = [v for v in sorted(vars_in_lit(b)) if v not in var_map]
+    vm = dict(var_map)
+    for i, v in enumerate(own):
+        vm[v] = lean_var_name(v, len(var_map) + i)
+    inner = lean_lit(b, vm)
+    if own:
+        return '(∀ ' + ' '.join(f'({vm[v]} : α)' for v in own) + f', {inner})'
+    return f'({inner})'
+
+
+def nested_only_vars(formula):
+    """Variables that occur only inside a goal's Horn hypotheses, which those
+    hypotheses bind themselves."""
+    if not isinstance(formula, Implies):
+        return set()
+    outer = set(vars_in_lit(formula.head))
+    inner = set()
+    for b in formula.body:
+        (inner if isinstance(b, Implies) else outer).update(vars_in_lit(b))
+    return inner - outer
 
 def lean_type(formula, all_vars: list, extra_vars=None) -> Tuple[str, dict]:
     """
@@ -687,7 +724,8 @@ def lean_type(formula, all_vars: list, extra_vars=None) -> Tuple[str, dict]:
     extra_vars are more Taelja variables to quantify, used when an EqChainProof
     has chain-internal variables not in the formula.
     """
-    fvars = sorted(vars_in_lit(formula) | (set(extra_vars) if extra_vars else set()))
+    fvars = sorted((vars_in_lit(formula) - nested_only_vars(formula))
+                   | (set(extra_vars) if extra_vars else set()))
     var_map = {v: lean_var_name(v, i) for i, v in enumerate(fvars)}
     body = lean_lit(formula, var_map)
 
@@ -977,6 +1015,8 @@ def precise_hyp_rw(prev_lit, target_lit, rw_formula, direction, ref_name, var_ma
 def ref_lean_name(ref: Ref) -> str:
     if ref.kind == 'axiom':
         return f'ax{ref.num}'
+    if ref.kind == 'hyp':
+        return f'hyp{ref.num}'
     else:
         return f'taelja_lemma{ref.num}'
 
@@ -1109,7 +1149,8 @@ def inst_args(formula, subst, var_map, binders=None):
     intermediate chain terms.  Such binders are absent from `subst` and any term
     of the sort will do, so the first real argument is reused for them."""
     stmt_vars = vars_in_lit(formula)
-    order = list(binders) if binders else sorted(stmt_vars)
+    # a hypothesis over the goal's own variables has no binders of its own
+    order = list(binders) if binders is not None else sorted(stmt_vars)
     args = []
     for v in order:
         if v in subst:
@@ -1124,10 +1165,13 @@ def inst_args(formula, subst, var_map, binders=None):
 
 
 def get_formula_vars(num, kind, axiom_types, lemma_types):
-    """Return (var_map, formula) for an axiom or lemma."""
+    """Return (var_map, formula) for an axiom, lemma or hypothesis."""
     if kind == 'axiom':
         if num in axiom_types:
             return axiom_types[num][1], axiom_types[num][2]
+    elif kind == 'hyp':
+        if num in _hyp_types:
+            return _hyp_types[num][1], _hyp_types[num][2]
     else:
         if num in lemma_types:
             return lemma_types[num][1], lemma_types[num][2]
@@ -1142,11 +1186,13 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
     for step in proof.steps:
         chain_vars |= vars_in_term(step.term)
 
-    fvars = sorted(chain_vars | conclusion_vars)
+    fvars = sorted((chain_vars | conclusion_vars) - nested_only_vars(conclusion))
     var_map = {v: lean_var_name(v, i) for i, v in enumerate(fvars)}
     if fvars:
         lines.append(f'intro {" ".join(var_map[v] for v in fvars)}')
-    conclusion = intro_hypotheses(conclusion, lines)
+    conclusion = intro_hypotheses(conclusion, lines, var_map)
+    for step in proof.steps:
+        step.ref = resolve_assumption(step.ref, None, want_eq=True)
 
     if not proof.steps:
         lines.append('rfl')
@@ -1166,6 +1212,8 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
             ax_formula = axiom_types[step.ref.num][2]
         elif step.ref.kind == 'lemma' and step.ref.num in lemma_types:
             ax_formula = lemma_types[step.ref.num][2]
+        elif step.ref.kind == 'hyp' and step.ref.num in _hyp_types:
+            ax_formula = _hyp_types[step.ref.num][2]
 
         if ax_formula is None or not isinstance(ax_formula, EqLit):
             return f'by rw [{ref_name}]'
@@ -1439,28 +1487,59 @@ def ref_formula_of(ref, axiom_types, lemma_types):
         return axiom_types[ref.num][2], list(axiom_types[ref.num][1].keys())
     if ref.kind == 'lemma' and ref.num in lemma_types:
         return lemma_types[ref.num][2], list(lemma_types[ref.num][1].keys())
+    if ref.kind == 'hyp' and ref.num in _hyp_types:
+        return _hyp_types[ref.num][2], list(_hyp_types[ref.num][1].keys())
     return None, []
 
 
-def intro_hypotheses(conclusion, lines):
+# The hypotheses of the goal being proved, numbered from 1, each with its
+# Lean type, the map of its own variables and its formula, so a step citing
+# an assumption can use them like an axiom.
+_hyp_types: dict = {}
+
+
+def intro_hypotheses(conclusion, lines, var_map=None):
     """A goal stated as H1 /\\ H2 => G introduces its hypotheses after its
     variables and is then proved as G.  Returns the conclusion to prove."""
+    _hyp_types.clear()
     if isinstance(conclusion, Implies):
         lines.append('intro ' + ' '.join(f'hyp{i + 1}' for i in range(len(conclusion.body))))
+        for i, b in enumerate(conclusion.body):
+            own = [v for v in sorted(vars_in_lit(b)) if v not in (var_map or {})]
+            vm = {v: lean_var_name(v, len(var_map or {}) + j) for j, v in enumerate(own)}
+            _hyp_types[i + 1] = (nested_lit(b, var_map or {}), vm, b)
         return conclusion.head
     return conclusion
+
+
+def resolve_assumption(ref, lit, want_eq=False):
+    """The hypothesis a step cited as an assumption stands for, as a reference
+    of kind hyp, or the reference unchanged when none fits."""
+    if ref.kind != 'assumption':
+        return ref
+    for k, (_, _, f) in _hyp_types.items():
+        if want_eq:
+            if isinstance(f, EqLit):
+                return Ref('hyp', k, ref.rw, ref.direction)
+            continue
+        head = f.head if isinstance(f, Implies) else f
+        same = (isinstance(head, PredLit) and isinstance(lit, PredLit) and head.head == lit.head) \
+            or (isinstance(head, EqLit) and isinstance(lit, EqLit))
+        if same and isinstance(f, Implies):
+            return Ref('hyp', k, ref.rw, ref.direction)
+    return ref
 
 
 def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, consts=None) -> list:
     if consts is None:
         consts = []
     lines = []
-    conclusion_vars = vars_in_lit(conclusion)
+    conclusion_vars = vars_in_lit(conclusion) - nested_only_vars(conclusion)
     fvars = sorted(conclusion_vars)
     var_map = {v: lean_var_name(v, i) for i, v in enumerate(fvars)}
     if fvars:
         lines.append(f'intro {" ".join(var_map[v] for v in fvars)}')
-    conclusion = intro_hypotheses(conclusion, lines)
+    conclusion = intro_hypotheses(conclusion, lines, var_map)
 
     steps = proof.steps
     if not steps:
@@ -1496,6 +1575,9 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
         lit_has_new_vars = bool(new_vars)
 
         ref = step.ref
+        if isinstance(step, HenceStep):
+            # a hence citing a Horn hypothesis uses it like an axiom
+            ref = resolve_assumption(ref, step.lit)
         ref_name = ref_lean_name(ref)
         hname = fresh_hyp()
 
@@ -1627,6 +1709,8 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                         rl_rw_formula = axiom_types[ref.num][2]
                     elif ref.kind == 'lemma' and ref.num in lemma_types:
                         rl_rw_formula = lemma_types[ref.num][2]
+                    elif ref.kind == 'hyp' and ref.num in _hyp_types:
+                        rl_rw_formula = _hyp_types[ref.num][2]
                     rl_lhs_is_var = isinstance(rl_rw_formula, EqLit) and isinstance(rl_rw_formula.lhs, Var)
                     precise = precise_hyp_rw(
                         prev_lit, step.lit, rl_rw_formula, 'RL', ref_name, svm, prev_inst,
@@ -1698,6 +1782,8 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                             rw_formula = axiom_types[ref.num][2]
                         elif ref.kind == 'lemma' and ref.num in lemma_types:
                             rw_formula = lemma_types[ref.num][2]
+                        elif ref.kind == 'hyp' and ref.num in _hyp_types:
+                            rw_formula = _hyp_types[ref.num][2]
                         lhs_is_var = isinstance(rw_formula, EqLit) and isinstance(rw_formula.lhs, Var)
                         precise = precise_hyp_rw(
                             prev_lit, step.lit, rw_formula, 'LR', ref_name, svm, prev_copy,
@@ -1793,6 +1879,8 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                     ref_var_map = axiom_types[ref.num][1]
                 elif ref.kind == 'lemma' and ref.num in lemma_types:
                     ref_var_map = lemma_types[ref.num][1]
+                elif ref.kind == 'hyp' and ref.num in _hyp_types:
+                    ref_var_map = _hyp_types[ref.num][1]
                 # `apply` unifies against the rule's own orientation only.  A rule deriving
                 # the flipped equation, like an axiom `f x = c` cited for a goal `c = f x`,
                 # needs `apply Eq.symm` first before `apply ref` can unify.

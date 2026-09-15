@@ -20,18 +20,19 @@ import Types
 import Helpers
 import Emitter (applyRenaming, axiomRenaming, blockRenaming, pruneUnusedLemmas)
 import ProofTree (unitNameStr)
-import TptpConvert (convertDeclToClause, convertLit)
+import TptpConvert (convertDeclToClause, convertLit, declSymbols)
 
 -- One line of the derivation.  An input unit is printed as it was read, and
 -- every other line has a name, a role, a formula and the parents its inference
 -- record names.
 data Line
-  = Input T.Unit
-  | Assume String Literal
+  = Input T.Unit String
+  | Assume String Formula
   | Step String String Formula String [String]
 
--- A derived formula is one of ours, or the conjecture printed as it was read.
-data Formula = Ours Literal | OursClause Clause | Verbatim T.Formula
+-- A derived formula is one of ours, or the conjecture printed as it was read,
+-- or text assembled from printed parts.
+data Formula = Ours Literal | OursClause Clause | Verbatim T.Formula | Raw String
 
 emitTptp :: StructuredProof -> String
 emitTptp sp0 = unlines $
@@ -89,32 +90,69 @@ emitTptp sp0 = unlines $
       _                -> False
     axiomOf n = lookup n [ (axiomName a, a) | a <- axioms sp1 ]
     lemmaTarget n = fresh (tptpName n)
+    -- a goal variable that stands for a fresh constant of the prover is that
+    -- constant again here, since a TPTP formula cannot hold a fixed variable,
+    -- and the final theorem generalizes over it
+    reSk = [ (v, Const c) | (v, c) <- inGeneralized input ]
+    skolemVars = map fst reSk
+    reSkLit  = mapLiteralTerms (subVars reSk)
+    subVars s (Var v)    = fromMaybe (Var v) (lookup v s)
+    subVars s (App f ts) = App f (map (subVars s) ts)
+    subVars _ t          = t
     sp  = applyRenaming (Map.fromList ([ (n, axTarget n) | n <- axNames ]
                                        ++ [ (n, lemmaTarget n) | (n, _, _) <- lemmas sp1 ])) sp1
     ren = axiomRenaming (axioms sp1)
 
     -- an input unit that E derived from an introduced definition cites it,
     -- so such parents are printed first
-    inputLines = map (Input . typedUnit . snd) $ nubBy (\a b -> fst a == fst b) $ concat
+    inputLines = map (\(_, u) -> Input (typedUnit u) (newSymbols u)) $ nubBy (\a b -> fst a == fst b) $ concat
       [ withParents u | n <- axNames, not (Set.member n hyps), Just u <- [inputOf n] ]
+      ++ concat [ withParents d | n <- axNames, dn <- definitionsBehind n, Just d <- [Map.lookup dn byName] ]
+    -- The symbols an introduced definition defines, which GDV wants named in
+    -- its info as new_symbols(definition, [...]) and E and Vampire leave out.
+    -- They are the symbols of the unit that no input unit has.
+    fileSyms = let ps = [ declSymbols d | T.Unit _ d ann <- inUnits input, isFileAnn ann ]
+               in Set.fromList (concatMap fst ps ++ concatMap snd ps)
+    isFileAnn Nothing                = True
+    isFileAnn (Just (T.File _ _, _)) = True
+    isFileAnn _                      = False
+    newSymbols u = case u of
+      T.Unit _ d (Just (T.Introduced _ _, _)) ->
+        let (fs, ps) = declSymbols d
+            newF = nub [ s | s <- fs, Set.notMember s fileSyms ]
+            newP = nub [ s | s <- ps, Set.notMember s fileSyms ]
+        in "new_symbols(definition, [" ++ intercalate "," (newF ++ newP) ++ "])"
+      _ -> ""
+    -- the definitions the prover introduced on the way from an input unit to
+    -- an axiom's clause, such as Vampire's Skolem definitions, which the
+    -- clausify step cites as well
+    definitionsBehind n = case Map.lookup n (inAxiomLeaves input) of
+      Nothing   -> []
+      Just leaf -> nub (walk Set.empty [leaf])
+      where
+        walk _ [] = []
+        walk seen (x : xs)
+          | Set.member x seen = walk seen xs
+          | otherwise = case Map.lookup x byName of
+              Just u@(T.Unit _ _ (Just (T.Introduced _ _, _))) -> unitNameStr (unitName u) : walk (Set.insert x seen) xs
+              Just u | not (isInputUnit u) -> walk (Set.insert x seen) (unitParents u ++ xs)
+              _ -> walk (Set.insert x seen) xs
     byName = Map.fromList [ (unitNameStr (unitName u), u) | u <- inUnits input ]
     withParents u = concat [ withParents p | n <- unitParents u, Just p <- [Map.lookup n byName] ]
                     ++ [(unitNameStr (unitName u), u)]
     axiomLines = concat
       [ case (lookup n assumed, inputOf n) of
-          (Just a, _) -> [Assume a (axiomLit ax)]
+          (Just a, _) -> [Assume a (axiomFormula ax)]
           (Nothing, Just u)
             | sameAsInput u n -> []
             | otherwise ->
-                [Step (axTarget n) "plain" (axiomFormula ax) "clausify" [unitNameStr (unitName u)]]
+                [Step (axTarget n) "plain" (axiomFormula ax) "clausify"
+                      (unitNameStr (unitName u) : definitionsBehind n)]
           (Nothing, Nothing) -> [Step (axTarget n) "axiom" (axiomFormula ax) "" []]
       | n <- axNames, Just ax <- [axiomOf n] ]
-    axiomLit ax = case axiomFormula ax of
-      Ours l -> l
-      _      -> falsumLit
-    axiomFormula (AUnit _ l)    = Ours (renameLit ren l)
+    axiomFormula (AUnit _ l)    = Ours (renameLit ren (reSkLit l))
     axiomFormula (ANucleus _ (Clause bs mh)) =
-      OursClause (Clause (map (renameLit ren) bs) (fmap (renameLit ren) mh))
+      OursClause (Clause (map (renameLit ren . reSkLit) bs) (fmap (renameLit ren . reSkLit) mh))
 
     -- facts a have or and line may restate word for word
     facts = [ (axTarget n, l) | AUnit n l <- axioms sp1 ]
@@ -137,17 +175,35 @@ emitTptp sp0 = unlines $
     blockResults = go 1 blocks
     go _ [] = []
     go k ((name, role, lit, blk) : rest) =
-      let (k', steps, final) = blockSteps fresh facts k name role lit blk
+      let (k', steps, final) = blockSteps fresh facts k name role (reSkLit lit) (reSkBlock blk)
       in (steps, final) : go k' rest
+    reSkBlock (HaveHence ls)    = HaveHence (map reSkLine ls)
+    reSkBlock (EqChain s chain) = EqChain (subVars reSk s) [ (rw, subVars reSk t) | (rw, t) <- chain ]
+    reSkLine (Have l n)  = Have (reSkLit l) n
+    reSkLine (And l n)   = And (reSkLit l) n
+    reSkLine (Hence l j) = Hence (reSkLit l) j
     stepLines  = concatMap fst blockResults
     goalFinals = map snd (drop (length (lemmas sp)) blockResults)
     theoremLine = case conj of
       Just u | merged -> [ asTheorem (Verbatim (unitFormula (typedUnit u))) conjName (last stepLines) ]
-      Just u ->
-        [ Step conjName "theorem" (Verbatim (unitFormula (typedUnit u)))
-               (if null assumed then "conclude" else "implies")
-               (goalFinals ++ map snd assumed) ]
+      Just u
+        | null skolemVars ->
+            [ Step conjName "theorem" (Verbatim (unitFormula (typedUnit u)))
+                   (if null assumed then "conclude" else "implies")
+                   (goalFinals ++ map snd assumed) ]
+        -- the discharge holds for the prover's fresh constants, and the
+        -- conjecture follows by generalizing over them
+        | otherwise ->
+            [ Step (fresh "discharged") "plain" (Raw dischargedText)
+                   (if null assumed then "conclude" else "implies")
+                   (goalFinals ++ map snd assumed)
+            , Step conjName "theorem" (Verbatim (unitFormula (typedUnit u))) "generalization" [fresh "discharged"] ]
       Nothing -> []
+    dischargedText =
+      let hs = [ ppFormula env (axiomFormula ax) | ax <- axioms sp1, isJust (lookup (axiomName ax) assumed) ]
+          gs = [ ppFormula env (Ours (renameLit (blockRenaming l b) (reSkLit l))) | (l, b) <- goals sp ]
+          joined xs = case xs of { [x] -> x; _ -> "(" ++ intercalate " & " xs ++ ")" }
+      in if null hs then joined gs else "(" ++ joined hs ++ " => " ++ joined gs ++ ")"
     allLines = inputLines ++ axiomLines
             ++ (if merged then init stepLines else stepLines)
             ++ theoremLine
@@ -157,13 +213,17 @@ asTheorem :: Formula -> String -> Line -> Line
 asTheorem f name (Step _ _ _ rule ps) = Step name "theorem" f rule ps
 asTheorem _ _ l = l
 
--- The assumptions each line rests on, through its parents.
+-- The assumptions each line rests on, through its parents.  An implies step
+-- discharges the assumptions among its parents.
 assumptionDeps :: [Line] -> Map.Map String [String]
 assumptionDeps = foldl add Map.empty
   where
-    add m (Assume n _)      = Map.insert n [n] m
-    add m (Step n _ _ _ ps) = Map.insert n (foldl union [] (mapMaybe (`Map.lookup` m) ps)) m
-    add m (Input _)         = m
+    add m (Assume n _)         = Map.insert n [n] m
+    add m (Step n _ _ rule ps) =
+      let inherited  = foldl union [] (mapMaybe (`Map.lookup` m) ps)
+          discharged = [ p | rule == "implies", p <- ps, Map.lookup p m == Just [p] ]
+      in Map.insert n (filter (`notElem` discharged) inherited) m
+    add m (Input _ _)          = m
 
 -- The symbol types of a typed proof, as argument sorts and result sort.
 type SortEnv = Maybe (Map.Map String ([String], String))
@@ -178,9 +238,19 @@ sortName (T.Reserved (T.Standard T.Rat))  = "$rat"
 sortName (T.Reserved (T.Extended e))      = Text.unpack e
 
 ppLine :: SortEnv -> Map.Map String [String] -> Line -> String
-ppLine _ _ (Input u) = currentIntro (show (pretty (dropUnknownInfo u)))
-ppLine env _ (Assume n lit) =
-  keyword env ++ "(" ++ n ++ ", assumption, " ++ ppLit env lit ++ ", introduced(assumption, [], []))."
+-- an introduced definition has the role definition, whatever the prover wrote
+ppLine _ _ (Input u@(T.Unit _ _ (Just (T.Introduced (T.Standard T.ByDefinition) _, _))) info) =
+  currentIntro info (definitionRole (show (pretty (dropUnknownInfo u))))
+  where
+    definitionRole s = case breakOnFirst ", plain, " s of
+      Just (before, after) -> before ++ ", definition, " ++ after
+      Nothing              -> s
+    breakOnFirst pat str = case [ i | (i, t) <- zip [0 ..] (tails str), pat `isPrefixOf` t ] of
+      []      -> Nothing
+      (i : _) -> Just (take i str, drop (i + length pat) str)
+ppLine _ _ (Input u info) = currentIntro info (show (pretty (dropUnknownInfo u)))
+ppLine env _ (Assume n f) =
+  keyword env ++ "(" ++ n ++ ", assumption, " ++ ppFormula env f ++ ", introduced(assumption, [], []))."
 ppLine env deps (Step n role f rule ps) =
   keyword env ++ "(" ++ n ++ ", " ++ role ++ ", " ++ ppFormula env f ++ ann ++ ")."
   where
@@ -201,6 +271,7 @@ ppFormula :: SortEnv -> Formula -> String
 ppFormula env (Ours lit)     = ppLit env lit
 ppFormula env (OursClause c) = ppClause env c
 ppFormula _   (Verbatim f)   = show (pretty f)
+ppFormula _   (Raw s)        = s
 
 -- The steps of one block, numbered from k, and the name of the one stating
 -- the lemma or goal.  A have or and line that restates the fact it cites word
@@ -296,18 +367,35 @@ conjLiteral (T.Formula _ (T.FOF f)) = go f
     go _                              = Nothing
 conjLiteral _ = Nothing
 
--- E writes introduced(definition) in the old syntax, and the current one
--- wants the info and parent lists as well.
-currentIntro :: String -> String
-currentIntro s = case breakOnLast ", introduced(" s of
-  Just (before, rest) | ',' `notElem` rest ->
-    before ++ ", introduced(" ++ takeWhile (/= ')') rest ++ ", [], []))."
-  _ -> s
+-- The parser keeps two arguments of introduced at most, and current TPTP
+-- wants the kind, the info list and the parent list, so the missing lists
+-- are added.
+currentIntro :: String -> String -> String
+currentIntro info s = case breakOnLast ", introduced(" s of
+  Just (before, rest) ->
+    let (inner, after) = balancedParen rest
+        args = map (dropWhile (== ' ')) (topLevelArgs inner)
+        -- an empty info list gets the symbols the unit introduces
+        args' = case args of
+          [k]        -> [k, "[" ++ info ++ "]"]
+          [k, "[]"]  -> [k, "[" ++ info ++ "]"]
+          _          -> args
+    in before ++ ", introduced(" ++ intercalate ", " (args' ++ replicate (3 - length args') "[]") ++ ")" ++ after
+  Nothing -> s
   where
     breakOnLast pat str =
       case [ i | (i, t) <- zip [0 ..] (tails str), pat `isPrefixOf` t ] of
         [] -> Nothing
         is -> let i = last is in Just (take i str, drop (i + length pat) str)
+    balancedParen = walk (0 :: Int)
+      where
+        walk _ [] = ([], [])
+        walk d (x : xs)
+          | x == ')' && d == 0 = ([], xs)
+          | x `elem` "([" = first (x :) (walk (d + 1) xs)
+          | x `elem` ")]" = first (x :) (walk (d - 1) xs)
+          | otherwise     = first (x :) (walk d xs)
+        first f (a, b) = (f a, b)
 
 -- Vampire writes file(path, unknown) when the problem names no unit, and
 -- the TPTP syntax has no such name, so the info is dropped.

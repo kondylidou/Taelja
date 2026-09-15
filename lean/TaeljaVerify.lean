@@ -106,6 +106,8 @@ import TaeljaVerify.E.Col0062
 import TaeljaVerify.E.Alg0061
 import TaeljaVerify.E.Alg4421
 import TaeljaVerify.E.Set8642
+import TaeljaVerify.E.FofReorderedHypothesis
+import TaeljaVerify.E.FofEquationalHypothesis
 import TaeljaVerify.E.Ana0272
 import TaeljaVerify.E.HornExampleDerivedRw
 import TaeljaVerify.E.HornExampleElimVarRw
@@ -153,4 +155,5 @@ import TaeljaVerify.E.Syn9821
 import TaeljaVerify.Vampire.TptpImplicationConjecture
 import TaeljaVerify.Vampire.TffNato
 import TaeljaVerify.Vampire.TffTypedLemma
+import TaeljaVerify.Vampire.FofSkolemDefinition
 -- Eval benchmark imports
