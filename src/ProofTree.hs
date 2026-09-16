@@ -29,7 +29,7 @@ import Data.Ord (comparing)
 import Data.TPTP.Pretty ()
 import Prettyprinter (pretty)
 import Types
-import Helpers (applySubst, applySubstTerm, deepApplySubstTerm, flipLit, litSubtermCtxs,
+import Helpers (applySubst, applySubstTerm, clauseInstance, deepApplySubstTerm, flipLit, litSubtermCtxs,
                 mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
                 unifyLits, unifyTerms)
 import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertFOFToClause, isReservedTLit)
@@ -52,6 +52,8 @@ buildProofInfo allUnits
   tree <- maybe (Left "the proof never derives $false") Right (buildProofTree allUnits)
   let unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
       resolve = resolveSourceName unitMap
+      -- the clauses the conjecture grants as hypotheses
+      granted = maybe [] (uncurry (++)) (conjectureHypotheses allUnits)
       -- a chain names the unit that rewrote.  A copy resolves to its axiom
       -- and a derived equation keeps its own identity
       chains  = demodChainsForLeaves (resolveCopySource unitMap) tree
@@ -67,7 +69,7 @@ buildProofInfo allUnits
             -- a FOF axiom that clausifies to several clauses is not this
             -- leaf's statement, which then keeps its own clause.  The negated
             -- conjecture keeps its source, which the goal reading expects
-            role    = classifyRole unitMap name decl
+            role    = classifyRole granted unitMap name decl
             srcDecl = case Map.lookup srcName unitMap of
                         Just (T.Unit _ d _)
                           | role == NegConjecture || isJust (convertDeclToClause d) -> d
@@ -79,7 +81,7 @@ buildProofInfo allUnits
         , leDecl    = decl
         , leSrcDecl = srcDecl
         , leRole    = role
-        , leHyp     = isHypothesisOfConjecture unitMap name decl
+        , leHyp     = isHypothesisOfConjecture granted unitMap name decl
         , leSimpl   = fromMaybe [] (Map.lookup pos chains)
         }
       mkInner (pos, name, decl) = LeafEntry
@@ -118,10 +120,12 @@ buildProofInfo allUnits
             $ case extractConjectureGoals allUnits of
     Just lits -> Just lits
     Nothing   -> listToMaybe $
+      -- the source unit's statement, or the clause's own when the source is
+      -- a whole negated formula, as Twee's negate_conjecture leaves it
       [ lits
       | e <- byDepth [ e' | e' <- nuclei, leRole e' == NegConjecture ]
       , let goalDecl = fromMaybe (leDecl e) (lookupDecl unitMap (leName e))
-      , Just lits <- [extractGoalLits goalDecl]
+      , Just lits <- [extractGoalLits goalDecl <|> extractGoalLits (leDecl e)]
       ] ++
       -- in UEQ problems the negated conjecture is a disequality axiom with no negated_conjecture role
       [ lits
@@ -477,13 +481,13 @@ gatherInner pos0 tree0 = snd (go pos0 tree0 Set.empty)
       | n == "?"               = (seen, [(pos, n, d)])   -- synthetic nodes are always included
       | Set.member n seen      = (seen, [])
       | otherwise              = (Set.insert n seen, [(pos, n, d)])
-classifyRole :: Map.Map String T.Unit -> String -> T.Declaration -> LeafRole
-classifyRole unitMap name decl
+classifyRole :: [Clause] -> Map.Map String T.Unit -> String -> T.Declaration -> LeafRole
+classifyRole granted unitMap name decl
   -- positive-unit file clauses are axioms even if labeled negated_conjecture
   -- (Vampire's "prove the negation" mode does this for all input clauses)
   | isPositiveUnitFormula decl && isFileSrc unitMap name     = OrigAxiom
   | isPositiveUnitFormula decl && isFileSrc unitMap resolvedNm = OrigAxiom
-  | isConjHypothesis unitMap name decl                        = OrigAxiom
+  | isConjHypothesis granted unitMap name decl                = OrigAxiom
   | isNegConj decl                                           = NegConjecture
   | maybe False isNegConj (lookupDecl unitMap resolvedNm)    = NegConjecture
   -- A clause whose source traces back to a file conjecture is part of the
@@ -508,9 +512,12 @@ isNegConj _                                              = False
 -- implication conjecture.  It may carry the negated_conjecture role itself,
 -- as with E and Vampire, or be a plain clausified copy of the negated
 -- formula, as TPTP's own tools write it.
-isConjHypothesis :: Map.Map String T.Unit -> String -> T.Declaration -> Bool
-isConjHypothesis unitMap name decl =
-  hasHead (headLitOf decl)
+-- A clause with a head, or one the conjecture grants, as a head-less clause
+-- of its antecedent is a hypothesis too while a head-less clause it does not
+-- grant is the negated conclusion, the goal.
+isConjHypothesis :: [Clause] -> Map.Map String T.Unit -> String -> T.Declaration -> Bool
+isConjHypothesis granted unitMap name decl =
+  (hasHead (headLitOf decl) || grantedClause)
   && (isNegConj decl || csNeg)
   && (Map.notMember cs unitMap || isFileSrc unitMap cs || csNeg)
   where
@@ -519,13 +526,14 @@ isConjHypothesis unitMap name decl =
     -- a disequality is a negated goal, not a head
     hasHead (Just (T.Equality _ T.Negative _)) = False
     hasHead h                                  = isJust h
+    grantedClause = maybe False (\c -> any (`clauseInstance` c) granted) (convertDeclToClause decl)
 
 -- Such a clause was assumed by an implication conjecture only when the
 -- negated conjecture it copies was derived by negating one.  A problem that
 -- states its negated conjecture as clauses has stated inputs instead.
-isHypothesisOfConjecture :: Map.Map String T.Unit -> String -> T.Declaration -> Bool
-isHypothesisOfConjecture unitMap name decl =
-  isConjHypothesis unitMap name decl
+isHypothesisOfConjecture :: [Clause] -> Map.Map String T.Unit -> String -> T.Declaration -> Bool
+isHypothesisOfConjecture granted unitMap name decl =
+  isConjHypothesis granted unitMap name decl
   && maybe False isNegConj (lookupDecl unitMap cs)
   && not (isFileSrc unitMap cs)
   where cs = resolveCopySource unitMap name
@@ -670,9 +678,10 @@ fofConjectures units = concat
       T.Formula (T.Standard T.Conjecture) (T.CNF (T.Clause lits)) -> [clauseFormula (toList lits)]
       _                                                            -> []
   | T.Unit _ decl _ <- units ]
-  where
-    clauseFormula ls = foldr1 (\a b -> T.Connected a T.Disjunction b)
-      [ if s == T.Positive then T.Atomic l else T.Negated (T.Atomic l) | (s, l) <- ls ]
+
+clauseFormula :: [(T.Sign, T.Literal)] -> T.UnsortedFirstOrder
+clauseFormula ls = foldr1 (\a b -> T.Connected a T.Disjunction b)
+  [ if s == T.Positive then T.Atomic l else T.Negated (T.Atomic l) | (s, l) <- ls ]
 
 -- The clauses a conjecture grants as hypotheses, those of the antecedent and
 -- those of a negated conclusion, since ~G is proved by assuming G.  Nothing
@@ -841,17 +850,15 @@ extractConjectureGoals units = listToMaybe
   where
     isConjDecl (T.Formula (T.Standard T.Conjecture) _) = True
     isConjDecl _                                        = False
-    -- Twee emits the conjecture as a CNF clause with a single positive literal
-    extractConjLits (T.Formula _ (T.CNF (T.Clause lits))) =
-      case toList lits of
-        [(T.Positive, lit)] -> Just [lit]
-        _                   -> Nothing
     -- a negated conclusion has no goal atoms, and the clause that closed the
-    -- refutation supplies them instead
-    extractConjLits (T.Formula _ (T.FOF f)) = case readConjecture f of
+    -- refutation supplies them instead.  Twee writes a clausal conjecture as
+    -- a cnf unit, read as the disjunction of its literals.
+    extractConjLits (T.Formula _ (T.CNF (T.Clause lits))) = goalsOf (clauseFormula (toList lits))
+    extractConjLits (T.Formula _ (T.FOF f))               = goalsOf f
+    extractConjLits _                                      = Nothing
+    goalsOf f = case readConjecture f of
       Right c | not (null (cjGoals c)) -> Just (cjGoals c)
       _                                -> Nothing
-    extractConjLits _                        = Nothing
 -- for each PTLeaf position, the chain of demodulation steps before it was
 -- consumed, outermost first
 demodChainsForLeaves

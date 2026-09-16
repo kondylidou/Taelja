@@ -169,6 +169,9 @@ convertFOFToClause fof = case collectDisjuncts fof of
 collectDisjuncts :: T.UnsortedFirstOrder -> Maybe [(T.Sign, T.Literal)]
 collectDisjuncts (T.Quantified T.Forall _ body) = collectDisjuncts body
 collectDisjuncts (T.Atomic lit)                  = Just [(T.Positive, lit)]
+-- ~(a != b) is the positive literal a = b
+collectDisjuncts (T.Negated (T.Atomic (T.Equality l T.Negative r))) =
+  Just [(T.Positive, T.Equality l T.Positive r)]
 collectDisjuncts (T.Negated (T.Atomic lit))      = Just [(T.Negative, lit)]
 -- ~(A & B) is ~A | ~B, ~ ? X F is ! X ~F, and a double negation cancels
 collectDisjuncts (T.Negated (T.Connected l T.Conjunction r)) =

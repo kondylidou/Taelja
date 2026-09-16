@@ -1,0 +1,5 @@
+Goal 1: p => p
+Proof:
+  assume p
+  hence p => p
+    by discharge

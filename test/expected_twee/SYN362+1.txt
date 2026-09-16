@@ -1,0 +1,10 @@
+Goal 1: big_r(X,w(X)) /\ (big_r(z,Y) /\ big_p(Y) => $false) /\ big_p(Y) => $false
+Proof:
+  have big_r(z,w(z))
+    by assumption 1
+   and big_p(w(z))
+    by assumption 3
+  hence $false
+    by assumption 2
+  hence big_r(X,w(X)) /\ (big_r(z,Y) /\ big_p(Y) => $false) /\ big_p(Y) => $false
+    by discharge

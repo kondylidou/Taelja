@@ -1,0 +1,14 @@
+% SZS status Theorem
+
+% SZS output start CNFRefutation
+cnf(c1, conjecture, p | ~p, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN387+1.p', pel6)).
+fof(c2, negated_conjecture, ~(p | ~p), inference(negate_conjecture, [status(cth)], [c1])).
+fof(c3, plain, ~p & p, inference(clausify, [status(esa)], [c2])).
+cnf(c4, plain, ~p, inference(clausify, [status(thm)], [c3])).
+cnf(c5, conjecture, p | ~p, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN387+1.p', pel6)).
+fof(c6, negated_conjecture, ~(p | ~p), inference(negate_conjecture, [status(cth)], [c5])).
+fof(c7, plain, ~p & p, inference(clausify, [status(esa)], [c6])).
+cnf(c8, plain, p, inference(clausify, [status(thm)], [c7])).
+cnf(c9, plain, $false, inference(proved_conjecture, [status(thm)], [c4, c8])).
+% SZS output end CNFRefutation
+

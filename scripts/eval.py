@@ -17,7 +17,8 @@ Optional
   --taelja-timeout SEC  Taelja timeout in seconds (default 60)
   --jobs N          Parallel workers (default 2)
   --lean PATH       Path to lean binary, to verify each taelja proof
-  --skip-done       Skip problems where proof.tstp and taelja.txt already exist
+  --skip-done       Skip problems where proof.tstp and taelja.txt already exist,
+                    except that a Taelja timeout is run again on the cached proof
   --list FILE       Run the problems listed in FILE instead of scanning by SPC,
                     one CATEGORY<TAB>Problems/DOM/NAME.p per line as written by
                     select_horn.py.  May be repeated.  Twee is not run on TFF.
@@ -312,8 +313,11 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
         'prove': '-', 'taelja': '-', 'lean': '-',
     }
 
-    # Skip if already fully processed (proof.tstp + taelja.txt both exist)
-    if skip_done and (out / 'proof.tstp').exists() and (out / 'taelja.txt').exists():
+    # Skip if already fully processed (proof.tstp + taelja.txt both exist).  A
+    # cached Taelja timeout is not a result, it depends on the machine's load,
+    # so such a row runs Taelja again on the cached proof.
+    if skip_done and (out / 'proof.tstp').exists() and (out / 'taelja.txt').exists() \
+            and _read_taelja_status(out, p_file) != 'timeout':
         prove_status, tstp = _read_prove_status(out, prover_name)
         result['prove'] = prove_status
         if prove_status == 'ok':

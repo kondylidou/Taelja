@@ -170,3 +170,6 @@ import TaeljaVerify.Twee.Csr0321
 import TaeljaVerify.Vampire.Csr0511
 import TaeljaVerify.Twee.Csr0311
 import TaeljaVerify.Vampire.Grp6561
+import TaeljaVerify.Vampire.Alg2031
+import TaeljaVerify.Twee.Syn3621
+import TaeljaVerify.Twee.Syn3871

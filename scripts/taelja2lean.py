@@ -724,7 +724,7 @@ def nested_lit(b, var_map):
     an axiom a plain atom shares the clause's variables."""
     if not isinstance(b, (Implies, Not)) and not _closed_hyps:
         return lean_lit(b, var_map)
-    own = [v for v in sorted(vars_in_lit(b)) if v not in var_map]
+    own = [v for v in ordered_vars(b) if v not in var_map]
     vm = dict(var_map)
     for i, v in enumerate(own):
         vm[v] = lean_var_name(v, len(var_map) + i)
@@ -1135,17 +1135,17 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
     _goal_hyps.clear()
     _lemma_hyps.clear()
     if doc.goals:
-        _goal_hyps.extend(repr(b) for b in goal_hypotheses(doc.goals[0].formula)[0])
+        _goal_hyps.extend(hyp_key(b) for b in goal_hypotheses(doc.goals[0].formula)[0])
 
     global _closed_hyps
     lemma_types = {}   # num -> (type_str, var_map, formula)
     for lem in doc.lemmas:
         extra = chain_only_vars(lem.formula, lem.proof)
         hyps, head = goal_hypotheses(lem.formula)
-        if hyps and all(repr(b) in _goal_hyps for b in hyps):
+        if hyps and all(hyp_key(b) in _goal_hyps for b in hyps):
             # a lemma under hypotheses of the goal takes them first, then its
             # own variables, so a citation applies it to the goal's hypotheses
-            _lemma_hyps[lem.num] = [_goal_hyps.index(repr(b)) + 1 for b in hyps]
+            _lemma_hyps[lem.num] = [_goal_hyps.index(hyp_key(b)) + 1 for b in hyps]
             head_str, var_map = lean_type(head, [], extra_vars=extra)
             _closed_hyps = True
             type_str = ' → '.join(nested_lit(b, {}) for b in hyps) + ' → ' + \
@@ -1562,6 +1562,25 @@ _hyp_types: dict = {}
 # The goal's hypotheses in statement order, as repr strings, so a lemma
 # stated under some of them numbers them the same way.
 _goal_hyps: list = []
+
+
+def ordered_vars(b):
+    """The variables of a formula in order of first occurrence, the binder
+    order of a hypothesis, the same on every statement that names it."""
+    seen = []
+    for m in re.finditer(r"Var\(name='([A-Z]\w*)'\)", repr(b)):
+        if m.group(1) not in seen:
+            seen.append(m.group(1))
+    return seen
+
+
+def hyp_key(b):
+    """A hypothesis up to the names of its variables, which each statement
+    renames on its own, so a lemma finds the goal hypothesis it uses."""
+    names = {}
+    def canon(m):
+        return f"Var(name='V{names.setdefault(m.group(1), len(names))}')"
+    return re.sub(r"Var\(name='([A-Z]\w*)'\)", canon, repr(b))
 # The lemmas stated under hypotheses, each with the goal indices of the
 # hypotheses it takes, which a citation applies it to.
 _lemma_hyps: dict = {}
@@ -1595,7 +1614,7 @@ def intro_hypotheses(conclusion, lines, var_map=None):
     negated = hyps[len(conclusion.body):] if isinstance(conclusion, Implies) else hyps
     plain = hyps[:len(hyps) - len(negated)]
     def name_of(i, b):
-        return f'hyp{_goal_hyps.index(repr(b)) + 1}' if repr(b) in _goal_hyps else f'hyp{i + 1}'
+        return f'hyp{_goal_hyps.index(hyp_key(b)) + 1}' if hyp_key(b) in _goal_hyps else f'hyp{i + 1}'
     names = [name_of(i, b) for i, b in enumerate(hyps)]
     if plain:
         lines.append('intro ' + ' '.join(names[:len(plain)]))
@@ -1604,7 +1623,7 @@ def intro_hypotheses(conclusion, lines, var_map=None):
         lines.append('intro hneg')
         lines.append('obtain ⟨' + ', '.join(neg_names) + '⟩ := hneg' if len(neg_names) > 1 else f'have {neg_names[0]} := hneg')
     for name, b in zip(names, hyps):
-        own = [v for v in sorted(vars_in_lit(b)) if v not in (var_map or {})]
+        own = [v for v in ordered_vars(b) if v not in (var_map or {})]
         vm = {v: lean_var_name(v, len(var_map or {}) + j) for j, v in enumerate(own)}
         _hyp_types[int(name[3:])] = (nested_lit(b, var_map or {}), vm, b)
     return head

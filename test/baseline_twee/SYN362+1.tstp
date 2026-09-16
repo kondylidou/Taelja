@@ -1,0 +1,18 @@
+% SZS status Theorem
+
+% SZS output start CNFRefutation
+fof(c1, conjecture, (![Y]: ?[W]: big_r(Y, W) & ?[Z]: ![X]: (big_p(X) => ~big_r(Z, X))) => ?[X2]: ~big_p(X2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN362+1.p', x2113)).
+fof(c2, negated_conjecture, ~((![Y2]: ?[W2]: big_r(Y2, W2) & ?[Z2]: ![X2]: (big_p(X2) => ~big_r(Z2, X2))) => ?[X2]: ~big_p(X2)), inference(negate_conjecture, [status(cth)], [c1])).
+fof(c3, plain, ![Y2]: big_r(Y2, w(Y2)) & ![X2]: (~big_r(z, X2) | ~big_p(X2)) & ![X2]: big_p(X2), inference(clausify, [status(esa)], [c2])).
+cnf(c4, plain, ~big_r(z, X2) | ~big_p(X2), inference(clausify, [status(thm)], [c3])).
+fof(c5, conjecture, (![Y2]: ?[W2]: big_r(Y2, W2) & ?[Z2]: ![X2]: (big_p(X2) => ~big_r(Z2, X2))) => ?[X2]: ~big_p(X2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN362+1.p', x2113)).
+fof(c6, negated_conjecture, ~((![Y2]: ?[W2]: big_r(Y2, W2) & ?[Z2]: ![X2]: (big_p(X2) => ~big_r(Z2, X2))) => ?[X2]: ~big_p(X2)), inference(negate_conjecture, [status(cth)], [c5])).
+fof(c7, plain, ![Y2]: big_r(Y2, w(Y2)) & ![X2]: (~big_r(z, X2) | ~big_p(X2)) & ![X2]: big_p(X2), inference(clausify, [status(esa)], [c6])).
+cnf(c8, plain, big_r(Y2, w(Y2)), inference(clausify, [status(thm)], [c7])).
+fof(c9, conjecture, (![Y2]: ?[W2]: big_r(Y2, W2) & ?[Z2]: ![X2]: (big_p(X2) => ~big_r(Z2, X2))) => ?[X2]: ~big_p(X2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYN/SYN362+1.p', x2113)).
+fof(c10, negated_conjecture, ~((![Y2]: ?[W2]: big_r(Y2, W2) & ?[Z2]: ![X2]: (big_p(X2) => ~big_r(Z2, X2))) => ?[X2]: ~big_p(X2)), inference(negate_conjecture, [status(cth)], [c9])).
+fof(c11, plain, ![Y2]: big_r(Y2, w(Y2)) & ![X2]: (~big_r(z, X2) | ~big_p(X2)) & ![X2]: big_p(X2), inference(clausify, [status(esa)], [c10])).
+cnf(c12, plain, big_p(X2), inference(clausify, [status(thm)], [c11])).
+cnf(c13, plain, $false, inference(proved_conjecture, [status(thm)], [c4, c8, c12])).
+% SZS output end CNFRefutation
+

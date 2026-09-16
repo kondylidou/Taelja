@@ -79,6 +79,10 @@ tweeBenchmarkNames =
   , "KLE057+1"        -- a conjecture written G <= H, negated by Twee's negate_conjecture
   , "CSR032+1"        -- ? [X] : (A => B(X)) read as A => ? [X] : B(X)
   , "CSR031+1"        -- a conjecture ~A that Twee writes as a cnf unit
+  , "SYN387+1"        -- a cnf conjecture p | ~p, read as p => p
+  -- a negated conclusion whose closing clause is read from the clause itself,
+  -- as its source is the whole negated formula
+  , "SYN362+1"
   ]
 
 handcraftedNames :: [String]
@@ -174,6 +178,7 @@ benchmarkNames =
   -- ? [X0] : ! [X1] : G, whose Skolem function term for X1 is the variable
   -- again in the stated goal
   , "GRP656+1"
+  , "ALG203+1"        -- a negated disequality ~(a != b) in a clause, read as a = b
   ]
 
 -- Benchmarks for which an E prover output exists.
