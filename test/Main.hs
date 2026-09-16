@@ -171,6 +171,9 @@ benchmarkNames =
   , "NLP258-1"
   , "SWV818-1"
   , "CSR051+1"        -- ? [X] : (A => B(X)) read as A => ? [X] : B(X)
+  -- ? [X0] : ! [X1] : G, whose Skolem function term for X1 is the variable
+  -- again in the stated goal
+  , "GRP656+1"
   ]
 
 -- Benchmarks for which an E prover output exists.

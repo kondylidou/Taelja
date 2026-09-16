@@ -317,36 +317,49 @@ negationGoal sp
     isContra (Hence _ ByContradiction) = True
     isContra _                         = False
 
--- The Skolem constants of a negated conjecture stand for its universal
--- variables.  A constant of the goal that occurs in no input unit is such a
--- constant, and when no axiom or lemma mentions it either the theorem holds
--- for every value of it, so it is a variable again in the printed goal and in
--- the hypotheses that share it.  A constant of the hypotheses alone stays,
--- since a hypothesis is a clause of its own and a variable there would be
--- quantified within it, while a free constant ranges over the whole theorem.
+-- The Skolem terms of a negated conjecture stand for its universal
+-- variables, a constant for one under no existential quantifier and a
+-- function term for one under some.  A term of the goal headed by a symbol
+-- that occurs in no input unit is such a term, and when no axiom or lemma
+-- mentions the symbol either the theorem holds for every value of the term,
+-- so it is a variable again in the printed goal and in the hypotheses that
+-- share it.  A Skolem term of the hypotheses alone stays, since a hypothesis
+-- is a clause of its own and a variable there would be quantified within it,
+-- while a free term ranges over the whole theorem.
 generalizeGoals :: StructuredProof -> StructuredProof
 generalizeGoals sp
   | null fresh = sp
   | otherwise  = sp { axioms = map renAx (axioms sp)
-                    , goals  = [ (applyConstSubstLit sub l, applyConstSubstBlock sub b) | (l, b) <- goals sp ]
-                    , spInput = (spInput sp) { inGeneralized = [ ("Sk_" ++ c, c) | c <- fresh ] } }
+                    , goals  = [ (applyTermSubstLit sub l, applyTermSubstBlock sub b) | (l, b) <- goals sp ]
+                    , spInput = (spInput sp) { inGeneralized = [ (v, t) | (t, Var v) <- sub ] } }
   where
     hypNames = Map.keysSet (inHypotheses (spInput sp))
     isHyp ax = Set.member (axiomDisplayName ax) hypNames
-    axConsts (AUnit _ l)                 = litConsts l
-    axConsts (ANucleus _ (Clause bs mh)) = concatMap litConsts bs ++ maybe [] litConsts mh
-    goalConsts = nub (concatMap (litConsts . fst) (goals sp))
-    used  = Set.fromList (concatMap axConsts (filter (not . isHyp) (axioms sp))
-                          ++ concat [ litConsts l ++ blockConsts b | (_, l, b) <- lemmas sp ]
-                          ++ concat [ declConsts d | T.Unit _ d ann <- inUnits (spInput sp), isInputAnn ann ])
+    axSyms (AUnit _ l)                 = litSymbols l
+    axSyms (ANucleus _ (Clause bs mh)) = concatMap litSymbols bs ++ maybe [] litSymbols mh
+    used  = Set.fromList (concatMap axSyms (filter (not . isHyp) (axioms sp))
+                          ++ concat [ litSymbols l ++ blockSymbols b | (_, l, b) <- lemmas sp ]
+                          ++ concat [ fs ++ ps | T.Unit _ d ann <- inUnits (spInput sp), isInputAnn ann
+                                               , let (fs, ps) = declSymbols d ])
     isInputAnn Nothing                      = True
     isInputAnn (Just (T.File _ _, _))       = True
     isInputAnn _                            = False
-    fresh = [ c | c <- goalConsts, Set.notMember c used, not (isRigidConst c) ]
-    sub   = [ (c, Var ("Sk_" ++ c)) | c <- fresh ]
+    skolemHeaded t = case t of
+      Const c -> Set.notMember c used && not (isRigidConst c)
+      App f _ -> Set.notMember f used
+      Var _   -> False
+    -- the maximal such subterms of the goals
+    maximal t | skolemHeaded t = [t]
+              | App _ ts <- t  = concatMap maximal ts
+              | otherwise      = []
+    fresh = nub (concat [ maximal t | (l, _) <- goals sp, t <- foldLiteralTerms (: []) l ])
+    sub   = [ (t, Var (name i t)) | (i, t) <- zip [1 :: Int ..] fresh ]
+    name _ (Const c)  = "Sk_" ++ c
+    name i (App f _)  = "Sk_" ++ f ++ "_" ++ show i
+    name i _          = "Sk_" ++ show i
     renAx ax | isHyp ax = case ax of
-                 AUnit n l                 -> AUnit n (applyConstSubstLit sub l)
-                 ANucleus n (Clause bs mh) -> ANucleus n (Clause (map (applyConstSubstLit sub) bs) (fmap (applyConstSubstLit sub) mh))
+                 AUnit n l                 -> AUnit n (applyTermSubstLit sub l)
+                 ANucleus n (Clause bs mh) -> ANucleus n (Clause (map (applyTermSubstLit sub) bs) (fmap (applyTermSubstLit sub) mh))
              | otherwise = ax
 
 -- The step layer.  A justification that cannot be established fails with
@@ -2063,12 +2076,14 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
           solveWith σ bodies (g : rest) =
             concat [ solveWith σ' (before ++ after) rest
                    | (before, b : after) <- zip (inits bodies) (tails bodies)
-                   , Just σ' <- [matchLitWith g b σ]
-                   , applySubst σ' g == b ]
+                   , Just σ' <- [matchEither g b σ] ]
+          -- an equation of the conjecture may be written the other way round
+          -- in the negated clause
+          matchEither g b σ = listToMaybe
+            [ σ' | g0 <- [g, flipLit g], Just σ' <- [matchLitWith g0 b σ], applySubst σ' g0 == b ]
           -- No assignment satisfies every open goal, when some goal atoms are not body
           -- atoms of the nucleus, so instantiate each alone as before.
-          inst g = case [ g' | b <- instBodies, Just ρ <- [matchLit g b]
-                             , let g' = applySubst ρ g, g' == b ] of
+          inst g = case [ applySubst ρ g | b <- instBodies, Just ρ <- [matchEither g b []] ] of
                      (g' : _) -> g'
                      []       -> g
 

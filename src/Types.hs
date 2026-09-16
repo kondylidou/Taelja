@@ -93,7 +93,7 @@ data ProofInput = ProofInput
   , inHypotheses :: Map.Map String String
   , inConjecture :: Maybe T.Unit
   , inAxiomLeaves :: Map.Map String String  -- axiom display name to its clause's unit
-  , inGeneralized :: [(String, String)]     -- goal variable to the Skolem constant it replaced
+  , inGeneralized :: [(String, Term)]       -- goal variable to the Skolem term it replaced
   , inNegated     :: [String]  -- hypotheses from a negated conclusion, so the goal is their negation
   , inUnits      :: [T.Unit]  -- every unit of the input proof
   , inTyped      :: [T.Unit]  -- the units as read when the proof is typed, else empty

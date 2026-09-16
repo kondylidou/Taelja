@@ -90,10 +90,10 @@ emitTptp sp0 = unlines $
       _                -> False
     axiomOf n = lookup n [ (axiomName a, a) | a <- axioms sp1 ]
     lemmaTarget n = fresh (tptpName n)
-    -- a goal variable that stands for a fresh constant of the prover is that
-    -- constant again here, since a TPTP formula cannot hold a fixed variable,
+    -- a goal variable that stands for a Skolem term of the prover is that
+    -- term again here, since a TPTP formula cannot hold a fixed variable,
     -- and the final theorem generalizes over it
-    reSk = [ (v, Const c) | (v, c) <- inGeneralized input ]
+    reSk = inGeneralized input
     skolemVars = map fst reSk
     reSkLit  = mapLiteralTerms (subVars reSk)
     subVars s (Var v)    = fromMaybe (Var v) (lookup v s)
@@ -110,6 +110,14 @@ emitTptp sp0 = unlines $
     inputLines = map (\(_, u) -> Input (typedUnit u) (newSymbols u)) $ sortOn (unitIndex . fst) $ nubBy (\a b -> fst a == fst b) $ concat
       [ withParents u | n <- axNames, not (Set.member n hyps), Just u <- [inputOf n] ]
       ++ concat [ withParents d | n <- axNames, dn <- definitionsBehind n, Just d <- [Map.lookup dn byName] ]
+      ++ concat [ withParents d | d <- skolemDefinitions ]
+    -- the Skolem definitions of the negated conjecture behind the terms the
+    -- goal generalizes, which justify the final generalization
+    skolemDefinitions =
+      [ u | u@(T.Unit _ d (Just (T.Introduced _ _, _))) <- inUnits input
+          , let (fs, _) = declSymbols d
+          , any (`elem` generalizedSyms) [ s | s <- fs, Set.notMember s fileSyms ] ]
+    generalizedSyms = nub (concatMap (termSymbols . snd) (inGeneralized input))
     -- The symbols an introduced definition defines, which GDV wants named in
     -- its info as new_symbols(definition, [...]) and E and Vampire leave out.
     -- They are the symbols of the unit that no input unit has.

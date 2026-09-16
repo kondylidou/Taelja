@@ -1,0 +1,41 @@
+Axiom 1: mult(rd(X,Y),Y) = X
+Axiom 2: mult(X,ld(X,Y)) = Y
+Axiom 3: mult(mult(Z,X),mult(Y,Z)) = mult(mult(Z,mult(X,Y)),Z)
+Axiom 4: ld(X,mult(X,Y)) = Y
+Axiom 5: rd(mult(X,Y),Y) = X
+
+Lemma 6: mult(ld(X,X),Y) = Y
+Proof:
+  mult(ld(X,X),Y)
+= { by axiom 4 R->L }
+  ld(mult(Y,X),mult(mult(Y,X),mult(ld(X,X),Y)))
+= { by axiom 3 }
+  ld(mult(Y,X),mult(mult(Y,mult(X,ld(X,X))),Y))
+= { by axiom 2 }
+  ld(mult(Y,X),mult(mult(Y,X),Y))
+= { by axiom 4 }
+  Y
+
+Goal 1: mult(X,ld(Y,Y)) = X
+Proof:
+  mult(X,ld(Y,Y))
+= { by axiom 5 R->L }
+  rd(mult(mult(X,ld(Y,Y)),ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y)))),ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y))))
+= { by axiom 2 }
+  rd(mult(X,ld(Y,Y)),ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y))))
+= { by axiom 5 R->L }
+  rd(mult(X,ld(Y,Y)),rd(mult(ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y))),B),B))
+= { by lemma 6 }
+  rd(mult(X,ld(Y,Y)),rd(B,B))
+= { by lemma 6 R->L }
+  rd(mult(X,ld(Y,Y)),rd(mult(ld(Y,Y),B),B))
+= { by axiom 5 }
+  rd(mult(X,ld(Y,Y)),ld(Y,Y))
+= { by axiom 5 }
+  X
+
+Goal 2: mult(ld(X,X),Y) = Y
+Proof:
+  mult(ld(X,X),Y)
+= { by lemma 6 }
+  Y

@@ -124,6 +124,45 @@ applyConstSubstTerm _ t           = t
 applyConstSubstLit :: [(String, Term)] -> Literal -> Literal
 applyConstSubstLit s = mapLiteralTerms (applyConstSubstTerm s)
 
+-- The function and constant symbols of a term, a literal and a block.
+termSymbols :: Term -> [String]
+termSymbols (Const c)  = [c]
+termSymbols (Var _)    = []
+termSymbols (App f ts) = f : concatMap termSymbols ts
+
+litSymbols :: Literal -> [String]
+litSymbols = foldLiteralTerms termSymbols
+
+blockSymbols :: ProofBlock -> [String]
+blockSymbols (HaveHence ls)    = nub (concatMap lineSyms ls)
+  where
+    lineSyms (Have  lit _) = litSymbols lit
+    lineSyms (And   lit _) = litSymbols lit
+    lineSyms (Hence lit _) = litSymbols lit
+blockSymbols (EqChain s steps) = nub (termSymbols s ++ concatMap stepSyms steps)
+  where stepSyms (RwStep _ (l, r) _, cur) = termSymbols l ++ termSymbols r ++ termSymbols cur
+
+-- Replace every maximal subterm listed, outermost first.
+applyTermSubstTerm :: [(Term, Term)] -> Term -> Term
+applyTermSubstTerm s t = case lookup t s of
+  Just t' -> t'
+  Nothing -> case t of
+    App f ts -> App f (map (applyTermSubstTerm s) ts)
+    _        -> t
+
+applyTermSubstLit :: [(Term, Term)] -> Literal -> Literal
+applyTermSubstLit s = mapLiteralTerms (applyTermSubstTerm s)
+
+applyTermSubstBlock :: [(Term, Term)] -> ProofBlock -> ProofBlock
+applyTermSubstBlock s (HaveHence ls) = HaveHence (map go ls)
+  where
+    go (Have lit nm)  = Have  (applyTermSubstLit s lit) nm
+    go (And lit nm)   = And   (applyTermSubstLit s lit) nm
+    go (Hence lit j)  = Hence (applyTermSubstLit s lit) j
+applyTermSubstBlock s (EqChain start steps) =
+  EqChain (applyTermSubstTerm s start)
+          [(rw, applyTermSubstTerm s cur) | (rw, cur) <- steps]
+
 applyConstSubstBlock :: [(String, Term)] -> ProofBlock -> ProofBlock
 applyConstSubstBlock s (HaveHence ls) = HaveHence (map go ls)
   where
