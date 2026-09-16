@@ -23,7 +23,7 @@ import qualified Data.Text as Text
 import Control.Applicative ((<|>))
 import Control.Monad (forM)
 import Data.List (inits, intercalate, nub, partition, sortBy)
-import Data.List.NonEmpty (toList)
+import Data.List.NonEmpty (NonEmpty ((:|)), toList)
 import Data.Maybe (catMaybes, fromMaybe, isJust, listToMaybe)
 import Data.Ord (comparing)
 import Data.TPTP.Pretty ()
@@ -564,13 +564,17 @@ readConjecture = conclusion [] . normalizeConjecture
       -- ? X (C & ~G) is ~ ! X (C => G), a negated universal clause
       T.Quantified T.Exists vs b | any isNegated (conjuncts b) ->
         conclusion hs (T.Negated (T.Quantified T.Forall vs (T.Negated b)))
-      -- a conclusion written as a Horn clause, ~A | B, is the implication A => B
+      -- a conclusion written as a Horn clause, ~A | B, is the implication
+      -- A => B, and an all-negative one, ~A | ~B, the negation ~(A & B)
       T.Connected _ T.Disjunction _ | Just g <- hornImplication f -> conclusion hs g
       _ -> Conjecture hs [] <$> goalAtoms False f
     hornImplication f = case collectDisjuncts f of
-      Just pairs | [h] <- [ l | (T.Positive, l) <- pairs ]
-                 , body@(_ : _) <- [ T.Atomic l | (T.Negative, l) <- pairs ]
-        -> Just (T.Connected (foldr1 (\l r -> T.Connected l T.Conjunction r) body) T.Implication (T.Atomic h))
+      Just pairs | body@(_ : _) <- [ T.Atomic l | (T.Negative, l) <- pairs ] ->
+        let conj = foldr1 (\l r -> T.Connected l T.Conjunction r) body
+        in case [ l | (T.Positive, l) <- pairs ] of
+             [h] -> Just (T.Connected conj T.Implication (T.Atomic h))
+             []  -> Just (T.Negated conj)
+             _   -> Nothing
       _ -> Nothing
     conjuncts f = case f of
       T.Connected l T.Conjunction r -> conjuncts l ++ conjuncts r
@@ -615,6 +619,8 @@ normalizeConjecture :: T.UnsortedFirstOrder -> T.UnsortedFirstOrder
 normalizeConjecture f = case f of
   T.Quantified q vs b -> case (q, normalizeConjecture b) of
     (T.Exists, T.Negated g) -> T.Negated (T.Quantified T.Forall vs g)
+    (T.Exists, T.Connected l T.Implication r)
+      | Just g <- scopeImplication vs l r -> g
     (_, b')                 -> T.Quantified q vs b'
   T.Connected l T.ReversedImplication r -> normalizeConjecture (T.Connected r T.Implication l)
   T.Connected l c r -> T.Connected (normalizeConjecture l) c (normalizeConjecture r)
@@ -624,8 +630,49 @@ normalizeConjecture f = case f of
     g'                         -> T.Negated g'
   _ -> f
 
+-- ? [Xs] (A => B) quantifies over the implication only for a variable free
+-- in both sides.  One free in A alone is universal over A, so the hypothesis
+-- is a clause, and one free in B alone is existential over B, so the goal
+-- is an existential conjunction.  Nothing when every variable is in both.
+scopeImplication :: NonEmpty (T.Var, T.Unsorted) -> T.UnsortedFirstOrder -> T.UnsortedFirstOrder
+                 -> Maybe T.UnsortedFirstOrder
+scopeImplication vs l r
+  | null vsL && null vsR = Nothing
+  | otherwise = Just (quant T.Exists vsBoth
+                        (T.Connected (quant T.Forall vsL l) T.Implication (quant T.Exists vsR r)))
+  where
+    fl = freeVars l
+    fr = freeVars r
+    vsL    = [ v | v <- toList vs, Set.member (fst v) fl, Set.notMember (fst v) fr ]
+    vsR    = [ v | v <- toList vs, Set.notMember (fst v) fl ]
+    vsBoth = [ v | v <- toList vs, Set.member (fst v) fl, Set.member (fst v) fr ]
+    quant _ [] g         = g
+    quant q (v : more) g = T.Quantified q (v :| more) g
+
+freeVars :: T.FirstOrder s -> Set.Set T.Var
+freeVars (T.Atomic l)          = Set.fromList (litV l)
+  where
+    litV (T.Predicate _ ts) = concatMap termV ts
+    litV (T.Equality a _ b) = termV a ++ termV b
+    termV (T.Variable v)    = [v]
+    termV (T.Function _ ts) = concatMap termV ts
+    termV _                 = []
+freeVars (T.Negated g)         = freeVars g
+freeVars (T.Connected l _ r)   = Set.union (freeVars l) (freeVars r)
+freeVars (T.Quantified _ vs b) = freeVars b `Set.difference` Set.fromList (map fst (toList vs))
+
+-- The conjecture formulas of the proof.  Twee writes a clausal conjecture as
+-- a cnf unit, which is read as the disjunction of its literals.
 fofConjectures :: [T.Unit] -> [T.UnsortedFirstOrder]
-fofConjectures units = [ f | T.Unit _ (T.Formula (T.Standard T.Conjecture) (T.FOF f)) _ <- units ]
+fofConjectures units = concat
+  [ case decl of
+      T.Formula (T.Standard T.Conjecture) (T.FOF f)                -> [f]
+      T.Formula (T.Standard T.Conjecture) (T.CNF (T.Clause lits)) -> [clauseFormula (toList lits)]
+      _                                                            -> []
+  | T.Unit _ decl _ <- units ]
+  where
+    clauseFormula ls = foldr1 (\a b -> T.Connected a T.Disjunction b)
+      [ if s == T.Positive then T.Atomic l else T.Negated (T.Atomic l) | (s, l) <- ls ]
 
 -- The clauses a conjecture grants as hypotheses, those of the antecedent and
 -- those of a negated conclusion, since ~G is proved by assuming G.  Nothing

@@ -1,0 +1,9 @@
+Axiom 1: mtvisible(c_tptp_member3356_mt) => marriagelicensedocument(c_tptpmarriagelicensedocument)
+
+Goal 1: mtvisible(c_tptp_member3356_mt) => marriagelicensedocument(c_tptpmarriagelicensedocument)
+Proof:
+  assume mtvisible(c_tptp_member3356_mt)
+  hence marriagelicensedocument(c_tptpmarriagelicensedocument)
+    by axiom 1
+  hence mtvisible(c_tptp_member3356_mt) => marriagelicensedocument(c_tptpmarriagelicensedocument)
+    by discharge

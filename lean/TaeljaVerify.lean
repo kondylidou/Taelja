@@ -166,3 +166,6 @@ import TaeljaVerify.Twee.Kle0571
 import TaeljaVerify.E.Lcl4141
 import TaeljaVerify.E.Puz1281
 import TaeljaVerify.Vampire.FofExistentialGoals
+import TaeljaVerify.Twee.Csr0321
+import TaeljaVerify.Vampire.Csr0511
+import TaeljaVerify.Twee.Csr0311

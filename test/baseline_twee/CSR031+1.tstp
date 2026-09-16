@@ -1,0 +1,17 @@
+% SZS status Theorem
+
+% SZS output start CNFRefutation
+fof(c1, axiom, ![OBJ]: ~(collection(OBJ) & individual(OBJ)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR031+1.p', just4)).
+cnf(c2, plain, ~individual(OBJ2) | ~collection(OBJ2), inference(clausify, [status(esa)], [c1])).
+cnf(c3, plain, ~collection(OBJ2) | ~individual(OBJ2), inference(clausify, [status(thm)], [c2])).
+cnf(c4, conjecture, ~disjointwith(c_tptptptpcol_16_8398, c_tptpcol_16_18488), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR031+1.p', query31)).
+cnf(c5, negated_conjecture, disjointwith(c_tptptptpcol_16_8398, c_tptpcol_16_18488), inference(negate_conjecture, [status(cth)], [c4])).
+cnf(c6, plain, disjointwith(c_tptptptpcol_16_8398, c_tptpcol_16_18488), inference(clausify, [status(esa)], [c5])).
+fof(c7, axiom, ![ARG2, INS]: (disjointwith(INS, ARG2) => collection(INS)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR031+1.p', just34)).
+fof(c8, plain, ![INS2]: (collection(INS2) | ![ARG2_2]: ~disjointwith(INS2, ARG2_2)), inference(clausify, [status(esa)], [c7])).
+cnf(c9, plain, ~disjointwith(INS2, ARG2_2) | collection(INS2), inference(clausify, [status(thm)], [c8])).
+cnf(c10, plain, collection(c_tptptptpcol_16_8398), inference(resolution, [status(thm)], [c6, c9])).
+cnf(c11, axiom, individual(c_tptptptpcol_16_8398), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR031+1.p', just6)).
+cnf(c12, plain, $false, inference(proved_conjecture, [status(thm)], [c3, c10, c11])).
+% SZS output end CNFRefutation
+

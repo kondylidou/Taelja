@@ -1,0 +1,15 @@
+% SZS status Theorem
+
+% SZS output start CNFRefutation
+fof(c1, conjecture, ?[COL]: (mtvisible(c_reasoningaboutpossibleantecedentsmt) => isa(f_citynamedfn(s_agen, c_france), COL)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR032+1.p', query32)).
+fof(c2, negated_conjecture, ~?[COL2]: (mtvisible(c_reasoningaboutpossibleantecedentsmt) => isa(f_citynamedfn(s_agen, c_france), COL2)), inference(negate_conjecture, [status(cth)], [c1])).
+fof(c3, plain, mtvisible(c_reasoningaboutpossibleantecedentsmt) & ![COL2]: ~isa(f_citynamedfn(s_agen, c_france), COL2), inference(clausify, [status(esa)], [c2])).
+cnf(c4, plain, ~isa(f_citynamedfn(s_agen, c_france), COL2), inference(clausify, [status(thm)], [c3])).
+cnf(c5, axiom, individual(f_citynamedfn(s_agen, c_france)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR032+1.p', just1)).
+fof(c6, axiom, ![X]: (individual(X) => isa(X, c_individual)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR032+1.p', just57)).
+cnf(c7, plain, isa(X2, c_individual) | ~individual(X2), inference(clausify, [status(esa)], [c6])).
+cnf(c8, plain, ~individual(X2) | isa(X2, c_individual), inference(clausify, [status(thm)], [c7])).
+cnf(c9, plain, isa(f_citynamedfn(s_agen, c_france), c_individual), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c10, plain, $false, inference(proved_conjecture, [status(thm)], [c4, c9])).
+% SZS output end CNFRefutation
+

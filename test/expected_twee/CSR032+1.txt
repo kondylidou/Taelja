@@ -1,0 +1,9 @@
+Axiom 1: individual(f_citynamedfn(s_agen,c_france))
+Axiom 2: individual(X) => isa(X,c_individual)
+
+Goal 1: isa(f_citynamedfn(s_agen,c_france),c_individual)
+Proof:
+  have individual(f_citynamedfn(s_agen,c_france))
+    by axiom 1
+  hence isa(f_citynamedfn(s_agen,c_france),c_individual)
+    by axiom 2

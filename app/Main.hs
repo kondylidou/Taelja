@@ -51,7 +51,9 @@ main = do
             putStrLn ""
       msp <- translateStages mode debug tstp
       case msp of
-        Left _ -> exitFailure
+        Left reason -> do
+          hPutStrLn stderr ("translate: " ++ reason)
+          exitFailure
         -- Force the whole output before printing any of it.  Clause conversion
         -- fails lazily on constructs outside the Horn fragment, so printing as
         -- we go could leave a truncated proof that looks complete.

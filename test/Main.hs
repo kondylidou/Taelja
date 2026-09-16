@@ -77,6 +77,8 @@ tweeBenchmarkNames =
   , "SWV819-1"
   , "SET865-2"        -- goal clause mixing a disequality with a negative atom
   , "KLE057+1"        -- a conjecture written G <= H, negated by Twee's negate_conjecture
+  , "CSR032+1"        -- ? [X] : (A => B(X)) read as A => ? [X] : B(X)
+  , "CSR031+1"        -- a conjecture ~A that Twee writes as a cnf unit
   ]
 
 handcraftedNames :: [String]
@@ -168,6 +170,7 @@ benchmarkNames =
   , "PUZ011-1"        -- goal literals instantiated under one shared substitution
   , "NLP258-1"
   , "SWV818-1"
+  , "CSR051+1"        -- ? [X] : (A => B(X)) read as A => ? [X] : B(X)
   ]
 
 -- Benchmarks for which an E prover output exists.

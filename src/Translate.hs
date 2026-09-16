@@ -143,7 +143,6 @@ translateUntyped mode debug tstp = do
   let failure = "translation failed"
         ++ maybe "" ("; heuristic stage: " ++) errH
         ++ maybe "" ("; strict stage: " ++) errS
-  when (isNothing mRes) $ hPutStrLn stderr ("translate: " ++ failure)
   return (maybe (Left failure) Right mRes)
   where
     runStages = do

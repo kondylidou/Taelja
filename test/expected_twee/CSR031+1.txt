@@ -1,0 +1,15 @@
+Axiom 1: individual(c_tptptptpcol_16_8398)
+Axiom 2: disjointwith(X,Y) => collection(X)
+Axiom 3: collection(Z) /\ individual(Z) => $false
+
+Goal 1: disjointwith(c_tptptptpcol_16_8398,c_tptpcol_16_18488) => $false
+Proof:
+  assume disjointwith(c_tptptptpcol_16_8398,c_tptpcol_16_18488)
+  hence collection(c_tptptptpcol_16_8398)
+    by axiom 2
+   and individual(c_tptptptpcol_16_8398)
+    by axiom 1
+  hence $false
+    by axiom 3
+  hence disjointwith(c_tptptptpcol_16_8398,c_tptpcol_16_18488) => $false
+    by discharge
