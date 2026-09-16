@@ -1,0 +1,108 @@
+# Preprocessing class: FSMSSMSMSSSNFFN.
+# Configuration: G-E--_207_C18_F1_SE_CS_SP_PI_PS_S2SI
+# No SInE strategy applied
+# Search class: FHUNF-FFSM21-SFFFFFNN
+# Configuration: G-E--_208_C18_F1_SE_CS_SP_PS_S5PRR_RG_S04BN
+# Initializing proof state
+# Scanning for AC axioms
+#
+#tcf(i_0_32, negated_conjecture, ~succeeds(p3,p3)).
+#
+#tcf(i_0_30, hypothesis, follows(p8,p3)).
+#
+#tcf(i_0_26, hypothesis, labels(loop,p3)).
+#
+#tcf(i_0_29, hypothesis, follows(p5,p4)).
+#
+#tcf(i_0_22, plain, ![X1:state, X2:state]:((succeeds(X1,X2)|~follows(X1,X2)))).
+#
+#tcf(i_0_28, hypothesis, has(p4,goto(out))).
+#
+#tcf(i_0_31, hypothesis, has(p8,goto(loop))).
+#
+#tcf(i_0_25, plain, ![X1:state, X5:boolean, X2:state]:((succeeds(X2,X1)|~has(X1,ifthen(X5,X2))))).
+#
+#tcf(i_0_23, plain, ![X1:state, X3:state, X2:state]:((succeeds(X1,X3)|~succeeds(X2,X3)|~succeeds(X1,X2)))).
+#
+#tcf(i_0_24, plain, ![X1:state, X4:label, X2:state]:((succeeds(X2,X1)|~has(X1,goto(X4))|~labels(X4,X2)))).
+#
+#tcf(i_0_27, hypothesis, has(p3,ifthen(equal_function(register_j,n),p4))).
+# Presaturation interreduction done
+#
+#tcf(i_0_32, negated_conjecture, ~succeeds(p3,p3)).
+#
+#tcf(i_0_30, hypothesis, follows(p8,p3)).
+#
+#tcf(i_0_26, hypothesis, labels(loop,p3)).
+#
+#tcf(i_0_29, hypothesis, follows(p5,p4)).
+#
+#tcf(i_0_22, plain, ![X1:state, X2:state]:((succeeds(X1,X2)|~follows(X1,X2)))).
+#
+#tcf(i_0_28, hypothesis, has(p4,goto(out))).
+#
+#tcf(i_0_33, hypothesis, succeeds(p8,p3)).
+#
+#tcf(i_0_25, plain, ![X5:boolean, X2:state, X1:state]:((succeeds(X1,X2)|~has(X2,ifthen(X5,X1))))).
+#
+#tcf(i_0_31, hypothesis, has(p8,goto(loop))).
+#
+#tcf(i_0_23, plain, ![X1:state, X2:state, X3:state]:((succeeds(X1,X2)|~succeeds(X3,X2)|~succeeds(X1,X3)))).
+#
+#tcf(i_0_24, plain, ![X4:label, X2:state, X1:state]:((succeeds(X1,X2)|~has(X2,goto(X4))|~labels(X4,X1)))).
+#
+#tcf(i_0_27, hypothesis, has(p3,ifthen(equal_function(register_j,n),p4))).
+#
+#tcf(i_0_38, hypothesis, succeeds(p4,p3)).
+#
+#tcf(i_0_34, hypothesis, succeeds(p5,p4)).
+#
+#tcf(i_0_35, hypothesis, ![X1:state]:((succeeds(X1,p3)|~succeeds(X1,p8)))).
+#
+#tcf(i_0_39, hypothesis, ![X1:state]:((succeeds(X1,p3)|~succeeds(X1,p4)))).
+#
+#tcf(i_0_36, hypothesis, ![X1:state]:((succeeds(X1,p8)|~labels(loop,X1)))).
+#
+#tcf(i_0_41, hypothesis, succeeds(p5,p3)).
+#
+#tcf(i_0_42, hypothesis, succeeds(p3,p8)).
+
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+tff(decl_sort1, type, state: $tType).
+tff(decl_sort2, type, label: $tType).
+tff(decl_sort3, type, statement: $tType).
+tff(decl_23, type, p3: state).
+tff(decl_26, type, p8: state).
+tff(decl_30, type, loop: label).
+tff(decl_32, type, goto: label > statement).
+tff(decl_34, type, follows: (state * state) > $o).
+tff(decl_35, type, succeeds: (state * state) > $o).
+tff(decl_36, type, labels: (label * state) > $o).
+tff(decl_37, type, has: (state * statement) > $o).
+tff(direct_success, axiom, ![X1:state, X2:state]:((follows(X2,X1)=>succeeds(X2,X1))), file('Problems/COM/COM001_1.p', direct_success)).
+tff(goto_success, axiom, ![X2:state, X4:label, X1:state]:(((has(X1,goto(X4))&labels(X4,X2))=>succeeds(X2,X1))), file('Problems/COM/COM001_1.p', goto_success)).
+tff(transitivity_of_success, axiom, ![X1:state, X3:state, X2:state]:(((succeeds(X2,X3)&succeeds(X3,X1))=>succeeds(X2,X1))), file('Problems/COM/COM001_1.p', transitivity_of_success)).
+tff(transition_3_to_8, hypothesis, follows(p8,p3), file('Problems/COM/COM001_1.p', transition_3_to_8)).
+tff(state_8, hypothesis, has(p8,goto(loop)), file('Problems/COM/COM001_1.p', state_8)).
+tff(prove_there_is_a_loop_through_p3, conjecture, succeeds(p3,p3), file('Problems/COM/COM001_1.p', prove_there_is_a_loop_through_p3)).
+tff(label_state_3, hypothesis, labels(loop,p3), file('Problems/COM/COM001_1.p', label_state_3)).
+tff(c_0_7, plain, ![X6:state, X7:state]:((~follows(X7,X6)|succeeds(X7,X6))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[direct_success])])])).
+tff(c_0_8, plain, ![X11:state, X12:label, X13:state]:((~has(X13,goto(X12))|~labels(X12,X11)|succeeds(X11,X13))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[goto_success])])])).
+tff(c_0_9, plain, ![X8:state, X9:state, X10:state]:((~succeeds(X10,X9)|~succeeds(X9,X8)|succeeds(X10,X8))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[transitivity_of_success])])])).
+tcf(c_0_10, plain, ![X1:state, X2:state]:((succeeds(X1,X2)|~follows(X1,X2))), inference(split_conjunct,[status(thm)],[c_0_7])).
+tcf(c_0_11, hypothesis, follows(p8,p3), inference(split_conjunct,[status(thm)],[transition_3_to_8])).
+tcf(c_0_12, plain, ![X1:state, X4:label, X2:state]:((succeeds(X2,X1)|~has(X1,goto(X4))|~labels(X4,X2))), inference(split_conjunct,[status(thm)],[c_0_8])).
+tcf(c_0_13, hypothesis, has(p8,goto(loop)), inference(split_conjunct,[status(thm)],[state_8])).
+tff(c_0_14, negated_conjecture, ~succeeds(p3,p3), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[prove_there_is_a_loop_through_p3])])).
+tcf(c_0_15, plain, ![X1:state, X2:state, X3:state]:((succeeds(X1,X3)|~succeeds(X1,X2)|~succeeds(X2,X3))), inference(split_conjunct,[status(thm)],[c_0_9])).
+tcf(c_0_16, hypothesis, succeeds(p8,p3), inference(spm,[status(thm)],[c_0_10, c_0_11])).
+tcf(c_0_17, hypothesis, ![X1:state]:((succeeds(X1,p8)|~labels(loop,X1))), inference(spm,[status(thm)],[c_0_12, c_0_13])).
+tcf(c_0_18, hypothesis, labels(loop,p3), inference(split_conjunct,[status(thm)],[label_state_3])).
+tff(c_0_19, negated_conjecture, ~succeeds(p3,p3), inference(fof_nnf,[status(thm)],[c_0_14])).
+tcf(c_0_20, hypothesis, ![X1:state]:((succeeds(X1,p3)|~succeeds(X1,p8))), inference(spm,[status(thm)],[c_0_15, c_0_16])).
+tcf(c_0_21, hypothesis, succeeds(p3,p8), inference(spm,[status(thm)],[c_0_17, c_0_18])).
+tcf(c_0_22, negated_conjecture, ~succeeds(p3,p3), inference(split_conjunct,[status(thm)],[c_0_19])).
+cnf(c_0_23, hypothesis, ($false), inference(sr,[status(thm)],[inference(spm,[status(thm)],[c_0_20, c_0_21]), c_0_22]), ['proof']).
+# SZS output end CNFRefutation

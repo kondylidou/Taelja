@@ -1,13 +1,13 @@
 % SZS output start Proof
 fof(f1, negated_conjecture, ! [X0]: p2(X0, X0), file('Problems/SYN/SYN558-1.p')).
-fof(f5, negated_conjecture, p5(c7, c10, c8), file('Problems/SYN/SYN558-1.p')).
+fof(f2, negated_conjecture, ! [X0]: p4(X0, X0), file('Problems/SYN/SYN558-1.p')).
 fof(f3, negated_conjecture, ! [X0]: p6(c7, f3(X0)), file('Problems/SYN/SYN558-1.p')).
+fof(f4, negated_conjecture, p5(c7, c10, c9), file('Problems/SYN/SYN558-1.p')).
+fof(f5, negated_conjecture, p5(c7, c10, c8), file('Problems/SYN/SYN558-1.p')).
 fof(f6, negated_conjecture, ! [X0]: p5(c7, X0, f3(X0)), file('Problems/SYN/SYN558-1.p')).
+fof(f9, negated_conjecture, ! [X2, X0, X1]: (~ p2(X2, X1) | ~ p2(X2, X0) | p2(X0, X1)), file('Problems/SYN/SYN558-1.p')).
 fof(f11, negated_conjecture, ! [X2, X3, X0, X1]: (~ p5(X0, X3, X2) | ~ p5(X0, X1, X3) | p5(X0, X1, X2)), file('Problems/SYN/SYN558-1.p')).
 fof(f13, negated_conjecture, ! [X2, X0, X1]: (~ p5(c7, X2, X1) | ~ p6(c7, X1) | ~ p6(c7, X0) | p2(X0, X1) | ~ p5(c7, X2, X0)), file('Problems/SYN/SYN558-1.p')).
-fof(f9, negated_conjecture, ! [X2, X0, X1]: (~ p2(X2, X1) | ~ p2(X2, X0) | p2(X0, X1)), file('Problems/SYN/SYN558-1.p')).
-fof(f4, negated_conjecture, p5(c7, c10, c9), file('Problems/SYN/SYN558-1.p')).
-fof(f2, negated_conjecture, ! [X0]: p4(X0, X0), file('Problems/SYN/SYN558-1.p')).
 fof(f14, negated_conjecture, ! [X2, X3, X0, X1, X4, X5]: (~ p5(X5, X3, X4) | ~ p2(X3, X1) | ~ p2(X4, X2) | ~ p4(X5, X0) | p5(X0, X1, X2)), file('Problems/SYN/SYN558-1.p')).
 fof(s1, plain, p5(c7,c8,f3(c8)), inference(instantiate, [status(thm)], [f6])).
 fof(lemma_11, lemma, p5(c7,c10,f3(c8)), inference(mp, [status(thm)], [f11, s1, f5])).

@@ -555,6 +555,8 @@ def main():
             key = 'no proof found for goal (Twee)'
         elif 'case split' in err:
             key = 'unsupported conjecture (case split)'
+        elif 'outside the supported calculus' in err:
+            key = 'unsupported proof (inference outside the calculus)'
         elif 'unsupported proof' in err or 'unsupported conjecture' in err:
             key = 'unsupported proof (not Horn)'
         elif 'never derives $false' in err:

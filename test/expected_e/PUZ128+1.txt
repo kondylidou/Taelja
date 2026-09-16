@@ -1,0 +1,34 @@
+Axiom 1: parent_of(iokaste,oedipus)
+Axiom 2: patricide(oedipus)
+Axiom 3: parent_of(oedipus,polyneikes)
+Axiom 4: parent_of(iokaste,polyneikes)
+Axiom 5: parent_of(polyneikes,thersandros)
+Axiom 6: patricide(thersandros) => $false
+
+Lemma 7: (parent_of(iokaste,X) /\ patricide(X) /\ parent_of(X,Y) => patricide(Y)) => patricide(polyneikes)
+Proof:
+  have parent_of(iokaste,oedipus)
+    by axiom 1
+   and patricide(oedipus)
+    by axiom 2
+   and parent_of(oedipus,polyneikes)
+    by axiom 3
+  hence patricide(polyneikes)
+    by assumption 1
+  hence (parent_of(iokaste,X) /\ patricide(X) /\ parent_of(X,Y) => patricide(Y)) => patricide(polyneikes)
+    by discharge
+
+Goal 1: (parent_of(iokaste,X) /\ patricide(X) /\ parent_of(X,Y) => patricide(Y)) => $false
+Proof:
+  have parent_of(iokaste,polyneikes)
+    by axiom 4
+   and patricide(polyneikes)
+    by lemma 7
+   and parent_of(polyneikes,thersandros)
+    by axiom 5
+  hence patricide(thersandros)
+    by assumption 1
+  hence $false
+    by axiom 6
+  hence (parent_of(iokaste,X) /\ patricide(X) /\ parent_of(X,Y) => patricide(Y)) => $false
+    by discharge

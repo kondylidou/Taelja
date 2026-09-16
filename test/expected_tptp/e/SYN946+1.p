@@ -1,0 +1,1 @@
+translation failed; heuristic stage: unsupported conjecture, its conclusion has the disjunction p(X2) | r(X3), so its proof is a case split; strict stage: unsupported conjecture, its conclusion has the disjunction p(X2) | r(X3), so its proof is a case split

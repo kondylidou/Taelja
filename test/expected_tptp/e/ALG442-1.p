@@ -1,19 +1,19 @@
 % SZS output start Proof
-cnf(sos, axiom, m(X1, X1, X2) = X2, file('Problems/ALG/ALG442-1.p', sos)).
+cnf(sos_011, axiom, r(u(X1, X4, X7), u(X2, X5, X8), u(X3, X6, X9)) | ~ r(X1, X2, X3) | ~ r(X4, X5, X6) | ~ r(X7, X8, X9), file('Problems/ALG/ALG442-1.p', sos_011)).
 cnf(sos_015, axiom, r(b, a, a), file('Problems/ALG/ALG442-1.p', sos_015)).
-cnf(sos_001, axiom, m(X1, X2, X2) = X1, file('Problems/ALG/ALG442-1.p', sos_001)).
+cnf(sos_012, axiom, r(v(X1, X4, X7, X10), v(X2, X5, X8, X11), v(X3, X6, X9, X12)) | ~ r(X1, X2, X3) | ~ r(X4, X5, X6) | ~ r(X7, X8, X9) | ~ r(X10, X11, X12), file('Problems/ALG/ALG442-1.p', sos_012)).
+cnf(sos_010, axiom, r(m(X1, X4, X7), m(X2, X5, X8), m(X3, X6, X9)) | ~ r(X1, X2, X3) | ~ r(X4, X5, X6) | ~ r(X7, X8, X9), file('Problems/ALG/ALG442-1.p', sos_010)).
+cnf(sos_014, axiom, r(a, b, a), file('Problems/ALG/ALG442-1.p', sos_014)).
 cnf(sos_002, axiom, u(X1, X1, X1) = X1, file('Problems/ALG/ALG442-1.p', sos_002)).
-cnf(sos_008, axiom, v(X1, X2, X1, X1) = v(X2, X1, X1, X1), file('Problems/ALG/ALG442-1.p', sos_008)).
-cnf(sos_007, axiom, v(X1, X1, X2, X1) = v(X1, X2, X1, X1), file('Problems/ALG/ALG442-1.p', sos_007)).
+cnf(sos_005, axiom, u(X1, X1, X2) = u(X2, X1, X1), file('Problems/ALG/ALG442-1.p', sos_005)).
+cnf(sos_013, axiom, r(a, a, b), file('Problems/ALG/ALG442-1.p', sos_013)).
 cnf(sos_006, axiom, v(X1, X1, X1, X2) = v(X1, X1, X2, X1), file('Problems/ALG/ALG442-1.p', sos_006)).
 cnf(sos_009, axiom, u(X1, X1, X2) = v(X1, X1, X1, X2), file('Problems/ALG/ALG442-1.p', sos_009)).
-cnf(sos_013, axiom, r(a, a, b), file('Problems/ALG/ALG442-1.p', sos_013)).
-cnf(sos_012, axiom, r(v(X1, X4, X7, X10), v(X2, X5, X8, X11), v(X3, X6, X9, X12)) | ~ r(X1, X2, X3) | ~ r(X4, X5, X6) | ~ r(X7, X8, X9) | ~ r(X10, X11, X12), file('Problems/ALG/ALG442-1.p', sos_012)).
-cnf(sos_014, axiom, r(a, b, a), file('Problems/ALG/ALG442-1.p', sos_014)).
 cnf(sos_004, axiom, u(X1, X1, X2) = u(X1, X2, X1), file('Problems/ALG/ALG442-1.p', sos_004)).
-cnf(sos_005, axiom, u(X1, X1, X2) = u(X2, X1, X1), file('Problems/ALG/ALG442-1.p', sos_005)).
-cnf(sos_011, axiom, r(u(X1, X4, X7), u(X2, X5, X8), u(X3, X6, X9)) | ~ r(X1, X2, X3) | ~ r(X4, X5, X6) | ~ r(X7, X8, X9), file('Problems/ALG/ALG442-1.p', sos_011)).
-cnf(sos_010, axiom, r(m(X1, X4, X7), m(X2, X5, X8), m(X3, X6, X9)) | ~ r(X1, X2, X3) | ~ r(X4, X5, X6) | ~ r(X7, X8, X9), file('Problems/ALG/ALG442-1.p', sos_010)).
+cnf(sos_007, axiom, v(X1, X1, X2, X1) = v(X1, X2, X1, X1), file('Problems/ALG/ALG442-1.p', sos_007)).
+cnf(sos_001, axiom, m(X1, X2, X2) = X1, file('Problems/ALG/ALG442-1.p', sos_001)).
+cnf(sos_008, axiom, v(X1, X2, X1, X1) = v(X2, X1, X1, X1), file('Problems/ALG/ALG442-1.p', sos_008)).
+cnf(sos, axiom, m(X1, X1, X2) = X2, file('Problems/ALG/ALG442-1.p', sos)).
 fof(lemma_16, lemma, r(u(b,b,a),u(a,a,b),u(a,a,a)), inference(mp, [status(thm)], [sos_011, sos_015, sos_015, sos_014])).
 fof(s1, plain, r(u(a,b,b),u(a,a,b),u(a,a,a)), inference(rewrite, [status(thm)], [sos_005, lemma_16])).
 fof(lemma_17, lemma, r(u(a,b,b),u(a,a,b),a), inference(rewrite, [status(thm)], [sos_002, s1])).

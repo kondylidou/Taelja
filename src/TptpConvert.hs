@@ -170,6 +170,11 @@ collectDisjuncts :: T.UnsortedFirstOrder -> Maybe [(T.Sign, T.Literal)]
 collectDisjuncts (T.Quantified T.Forall _ body) = collectDisjuncts body
 collectDisjuncts (T.Atomic lit)                  = Just [(T.Positive, lit)]
 collectDisjuncts (T.Negated (T.Atomic lit))      = Just [(T.Negative, lit)]
+-- ~(A & B) is ~A | ~B, ~ ? X F is ! X ~F, and a double negation cancels
+collectDisjuncts (T.Negated (T.Connected l T.Conjunction r)) =
+  (++) <$> collectDisjuncts (T.Negated l) <*> collectDisjuncts (T.Negated r)
+collectDisjuncts (T.Negated (T.Quantified T.Exists _ body)) = collectDisjuncts (T.Negated body)
+collectDisjuncts (T.Negated (T.Negated f))       = collectDisjuncts f
 collectDisjuncts (T.Connected l T.Disjunction r) =
   (++) <$> collectDisjunct l <*> collectDisjunct r
 collectDisjuncts (T.Connected body T.Implication hd) =

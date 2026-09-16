@@ -1,0 +1,12 @@
+Axiom 1: r(X,Y) => s(X)
+Axiom 2: s(X) => t(X)
+
+Goal 1: r(X,sK1) => t(X)
+Proof:
+  assume r(X,sK1)
+  hence s(X)
+    by axiom 1
+  hence t(X)
+    by axiom 2
+  hence r(X,sK1) => t(X)
+    by discharge

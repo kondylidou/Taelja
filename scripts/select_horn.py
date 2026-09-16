@@ -5,9 +5,10 @@ is Horn, for an eval run over them.
 TPTP's SPC field marks only CNF problems as Horn, so a FOF or TFF problem has
 to be clausified to know.  E does that in a moment for all but the largest
 problems, and a clause is Horn when at most one of its literals is positive,
-a disequality counting as negative.  TFF problems with arithmetic and the
-polymorphic and extended forms are left out, since Taelja has no arithmetic
-and reads first-order clauses only.
+a disequality counting as negative.  TFF problems with arithmetic, the
+polymorphic and extended forms, and the modal problems encoded with $ki
+symbols are left out, since Taelja has no arithmetic and reads plain
+first-order clauses only.
 
 Usage
   python3 scripts/select_horn.py <tptp_dir> [--eprover PATH] [--jobs N] [--limit N]
@@ -50,6 +51,8 @@ def form_of(p_file):
                 if line.startswith('% SPC'):
                     for form, pat in FORMS.items():
                         if pat.match(line):
+                            if form == 'TFF' and '$ki' in Path(p_file).read_text(errors='ignore'):
+                                return None
                             return form
                     for cat, pat in CNF_CATEGORIES.items():
                         if pat.match(line):

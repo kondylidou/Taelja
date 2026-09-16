@@ -22,10 +22,12 @@ import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Control.Applicative ((<|>))
 import Control.Monad (forM)
-import Data.List (inits, nub, sortBy)
+import Data.List (inits, intercalate, nub, partition, sortBy)
 import Data.List.NonEmpty (toList)
 import Data.Maybe (catMaybes, fromMaybe, isJust, listToMaybe)
 import Data.Ord (comparing)
+import Data.TPTP.Pretty ()
+import Prettyprinter (pretty)
 import Types
 import Helpers (applySubst, applySubstTerm, deepApplySubstTerm, flipLit, litSubtermCtxs,
                 mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
@@ -37,12 +39,12 @@ data ProofTree
   deriving (Show)
 maxProofUnits :: Int
 maxProofUnits = 50000
--- With axHyps a negated_conjecture clause that has a positive literal and only
--- copies an input counts as an original axiom.  An implication conjecture
--- negates into its hypotheses plus the negated conclusion, and only the
--- all-negative clause is the goal.  The rescue pass turns this on.
-buildProofInfo :: Bool -> [T.Unit] -> Either String ProofInfo
-buildProofInfo axHyps allUnits
+-- A negated_conjecture clause that has a positive literal and only copies an
+-- input is a hypothesis the conjecture granted, listed with the axioms.  An
+-- implication conjecture negates into its hypotheses plus the negated
+-- conclusion, and only the all-negative clause is the goal.
+buildProofInfo :: [T.Unit] -> Either String ProofInfo
+buildProofInfo allUnits
   | length allUnits > maxProofUnits =
       Left ("the proof has " ++ show (length allUnits)
             ++ " clauses, more than the limit of " ++ show maxProofUnits)
@@ -65,7 +67,7 @@ buildProofInfo axHyps allUnits
             -- a FOF axiom that clausifies to several clauses is not this
             -- leaf's statement, which then keeps its own clause.  The negated
             -- conjecture keeps its source, which the goal reading expects
-            role    = classifyRole axHyps unitMap name decl
+            role    = classifyRole unitMap name decl
             srcDecl = case Map.lookup srcName unitMap of
                         Just (T.Unit _ d _)
                           | role == NegConjecture || isJust (convertDeclToClause d) -> d
@@ -77,7 +79,7 @@ buildProofInfo axHyps allUnits
         , leDecl    = decl
         , leSrcDecl = srcDecl
         , leRole    = role
-        , leHyp     = axHyps && isHypothesisOfConjecture unitMap name decl
+        , leHyp     = isHypothesisOfConjecture unitMap name decl
         , leSimpl   = fromMaybe [] (Map.lookup pos chains)
         }
       mkInner (pos, name, decl) = LeafEntry
@@ -103,11 +105,15 @@ buildProofInfo axHyps allUnits
   -- more than one positive literal.  Every other failure has its own message.
   mapM_ (\n -> Left ("unsupported proof, clause " ++ n ++ " is not Horn"))
         (take 1 [ n | (_, n, d) <- leafRows ++ innerRows, isNonHorn d ])
+  mapM_ Left (calculusViolation unitMap =<< findRoot allUnits)
+  conjecture <- mapM readConjecture (listToMaybe (fofConjectures allUnits))
   -- prefer the original conjecture unit since provers may split or simplify
   -- it.  Without one the goal clause is the negated conjecture clause resolved
-  -- closest to the root.  A disjunctive conjecture negates into several
-  -- all-negative clauses, and the root step decides which one is used.
+  -- closest to the root, and for a negated conclusion, proved by deriving
+  -- $false from its conjuncts, the all-negative clause that closed the
+  -- refutation, which may be a derived one.
   let byDepth = sortBy (comparing (\e -> (length (lePos e), lePos e)))
+      negatedConclusion = maybe False (\c -> null (cjGoals c) && not (null (cjNegated c))) conjecture
   rawGoalLits <- maybe (Left "no clause of the proof states the goal") Right
             $ case extractConjectureGoals allUnits of
     Just lits -> Just lits
@@ -120,6 +126,11 @@ buildProofInfo axHyps allUnits
       -- in UEQ problems the negated conjecture is a disequality axiom with no negated_conjecture role
       [ lits
       | e <- nuclei, leRole e == OrigAxiom
+      , Just lits <- [extractGoalLits (leDecl e)]
+      ] ++
+      [ lits
+      | negatedConclusion
+      , e <- byDepth [ e' | e' <- nuclei, leRole e' == Derived ]
       , Just lits <- [extractGoalLits (leDecl e)]
       ]
   -- A goal atom that abbreviates a formula the prover introduced is that
@@ -466,13 +477,13 @@ gatherInner pos0 tree0 = snd (go pos0 tree0 Set.empty)
       | n == "?"               = (seen, [(pos, n, d)])   -- synthetic nodes are always included
       | Set.member n seen      = (seen, [])
       | otherwise              = (Set.insert n seen, [(pos, n, d)])
-classifyRole :: Bool -> Map.Map String T.Unit -> String -> T.Declaration -> LeafRole
-classifyRole axHyps unitMap name decl
+classifyRole :: Map.Map String T.Unit -> String -> T.Declaration -> LeafRole
+classifyRole unitMap name decl
   -- positive-unit file clauses are axioms even if labeled negated_conjecture
   -- (Vampire's "prove the negation" mode does this for all input clauses)
   | isPositiveUnitFormula decl && isFileSrc unitMap name     = OrigAxiom
   | isPositiveUnitFormula decl && isFileSrc unitMap resolvedNm = OrigAxiom
-  | axHyps && isConjHypothesis unitMap name decl              = OrigAxiom
+  | isConjHypothesis unitMap name decl                        = OrigAxiom
   | isNegConj decl                                           = NegConjecture
   | maybe False isNegConj (lookupDecl unitMap resolvedNm)    = NegConjecture
   -- A clause whose source traces back to a file conjecture is part of the
@@ -519,23 +530,109 @@ isHypothesisOfConjecture unitMap name decl =
   && not (isFileSrc unitMap cs)
   where cs = resolveCopySource unitMap name
 
--- The clauses a conjecture grants as hypotheses, one per conjunct of the
--- antecedent of an implication and, when the conclusion is a negation, one
--- per conjunct of the negated formula, since ~G is proved by assuming G.
--- Nothing when there is no FOF conjecture or a conjunct is not a clause.
+-- The FOF conjecture as the format states it.  After the universal prefix,
+-- H => G assumes the Horn clauses of H, a conclusion ~F assumes the clauses
+-- of F and derives $false, and any other conclusion is a conjunction of goal
+-- atoms whose existential variables θ instantiates.  Other shapes, a
+-- disjunction or an equivalence say, have no direct Horn proof and are
+-- refused with the shape named.
+data Conjecture = Conjecture
+  { cjHyps    :: [Clause]      -- the antecedent's clauses
+  , cjNegated :: [Clause]      -- the clauses of a negated conclusion, assumed too
+  , cjGoals   :: [T.Literal] } -- the goal atoms, none for a negated conclusion
+
+readConjecture :: T.UnsortedFirstOrder -> Either String Conjecture
+readConjecture = conclusion [] . normalizeConjecture
+  where
+    conclusion hs f = case f of
+      T.Quantified T.Forall _ b     -> conclusion hs b
+      T.Connected l T.Implication r -> do
+        cs <- hypotheses l
+        conclusion (hs ++ cs) r
+      -- ~(C & ~G) is C => G, so one negated conjunct of a negated conclusion
+      -- is the goal and the others are assumed, while several negated
+      -- conjuncts leave a disjunction
+      T.Negated g -> case partition isNegated (conjuncts g) of
+        ([], pos)          -> do
+          cs <- mapM assumed pos
+          Right (Conjecture hs (concat cs) [])
+        ([T.Negated goal], pos) -> do
+          cs <- mapM assumed pos
+          conclusion (hs ++ concat cs) goal
+        (negs, _) -> Left (refused ("its negated formula has the negated conjuncts "
+                                     ++ intercalate " and " (map render negs) ++ ", so its proof is a case split"))
+      -- ? X (C & ~G) is ~ ! X (C => G), a negated universal clause
+      T.Quantified T.Exists vs b | any isNegated (conjuncts b) ->
+        conclusion hs (T.Negated (T.Quantified T.Forall vs (T.Negated b)))
+      -- a conclusion written as a Horn clause, ~A | B, is the implication A => B
+      T.Connected _ T.Disjunction _ | Just g <- hornImplication f -> conclusion hs g
+      _ -> Conjecture hs [] <$> goalAtoms False f
+    hornImplication f = case collectDisjuncts f of
+      Just pairs | [h] <- [ l | (T.Positive, l) <- pairs ]
+                 , body@(_ : _) <- [ T.Atomic l | (T.Negative, l) <- pairs ]
+        -> Just (T.Connected (foldr1 (\l r -> T.Connected l T.Conjunction r) body) T.Implication (T.Atomic h))
+      _ -> Nothing
+    conjuncts f = case f of
+      T.Connected l T.Conjunction r -> conjuncts l ++ conjuncts r
+      T.Quantified T.Exists _ b     -> conjuncts b
+      _                             -> [f]
+    isNegated (T.Negated _) = True
+    isNegated _             = False
+    -- the antecedent's conjuncts, an equivalence giving both directions and a
+    -- negated implication its premise and negated conclusion
+    hypotheses f = case f of
+      T.Quantified T.Forall _ b     -> hypotheses b
+      T.Connected l T.Conjunction r -> (++) <$> hypotheses l <*> hypotheses r
+      T.Connected l T.Equivalence r -> (++) <$> hypotheses (T.Connected l T.Implication r)
+                                           <*> hypotheses (T.Connected r T.Implication l)
+      T.Negated (T.Connected l T.Implication r) -> (++) <$> hypotheses l <*> hypotheses (T.Negated r)
+      T.Quantified T.Exists _ b     -> hypotheses b
+      _ -> clause ("its hypothesis " ++ render f ++ " is not a Horn clause") f
+    -- a conjunct of the negated conclusion, assumed to derive $false
+    assumed f = clause ("the negated formula has the conjunct " ++ render f ++ ", which is not a Horn clause") f
+    clause why f = maybe (Left (refused why)) (Right . pure) (convertFOFToClause f)
+    -- the goal atoms, and the shape that stops the reading, where an
+    -- implication among them has its own hypotheses and one under an
+    -- existential quantifier negates into a positive clause for every value
+    goalAtoms ex f = case f of
+      T.Quantified T.Exists _ b     -> goalAtoms True b
+      T.Quantified T.Forall _ b     -> goalAtoms ex b
+      T.Atomic a                    -> Right [a]
+      T.Connected l T.Conjunction r -> (++) <$> goalAtoms ex l <*> goalAtoms ex r
+      T.Connected _ T.Disjunction _
+        | not (isJust (convertFOFToClause f)) -> Left (refused ("its conclusion has the disjunction " ++ render f ++ ", so its proof is a case split"))
+      T.Connected _ T.Equivalence _ -> Left (refused ("its conclusion has the equivalence " ++ render f ++ ", two implications with different hypotheses"))
+      _ | ex        -> Left (refused ("its conclusion has the implication " ++ render f ++ " under an existential quantifier, so its proof is a case split"))
+        | isJust (convertFOFToClause f) -> Left (refused ("its conclusion has the conjunct " ++ render f ++ ", an implication with its own hypotheses"))
+        | otherwise -> Left (refused ("its conclusion has the conjunct " ++ render f ++ ", which is not an atom"))
+    refused why = "unsupported conjecture, " ++ why
+    render f = show (pretty f)
+
+-- A <= B is B => A, a double negation cancels, and a negation moves through
+-- an existential quantifier so that ~ ? X F is ! X ~F and ? X ~F is ~ ! X F,
+-- which the reader states as the negation of a universal clause.
+normalizeConjecture :: T.UnsortedFirstOrder -> T.UnsortedFirstOrder
+normalizeConjecture f = case f of
+  T.Quantified q vs b -> case (q, normalizeConjecture b) of
+    (T.Exists, T.Negated g) -> T.Negated (T.Quantified T.Forall vs g)
+    (_, b')                 -> T.Quantified q vs b'
+  T.Connected l T.ReversedImplication r -> normalizeConjecture (T.Connected r T.Implication l)
+  T.Connected l c r -> T.Connected (normalizeConjecture l) c (normalizeConjecture r)
+  T.Negated g -> case normalizeConjecture g of
+    T.Negated h                -> h
+    T.Quantified T.Exists vs b -> normalizeConjecture (T.Quantified T.Forall vs (T.Negated b))
+    g'                         -> T.Negated g'
+  _ -> f
+
+fofConjectures :: [T.Unit] -> [T.UnsortedFirstOrder]
+fofConjectures units = [ f | T.Unit _ (T.Formula (T.Standard T.Conjecture) (T.FOF f)) _ <- units ]
+
+-- The clauses a conjecture grants as hypotheses, those of the antecedent and
+-- those of a negated conclusion, since ~G is proved by assuming G.  Nothing
+-- when there is no FOF conjecture.
 conjectureHypotheses :: [T.Unit] -> Maybe ([Clause], [Clause])
 conjectureHypotheses units = listToMaybe
-  [ cs | T.Unit _ (T.Formula (T.Standard T.Conjecture) (T.FOF f)) _ <- units
-       , Just cs <- [parts f] ]
-  where
-    parts (T.Quantified T.Forall _ b)     = parts b
-    parts (T.Connected l T.Implication r) = (,) <$> clauses l <*> negated r
-    parts f                               = ([],) <$> negated f
-    negated (T.Negated g)                 = clauses g
-    negated _                             = Just []
-    clauses f = mapM convertFOFToClause (conjuncts f)
-    conjuncts (T.Connected l T.Conjunction r) = conjuncts l ++ conjuncts r
-    conjuncts f                               = [f]
+  [ (cjHyps c, cjNegated c) | Right c <- map readConjecture (fofConjectures units) ]
 -- A unit the prover introduced itself, like E's introduced(definition).
 isIntroducedSrc :: Map.Map String T.Unit -> String -> Bool
 isIntroducedSrc unitMap name = case Map.lookup name unitMap of
@@ -555,10 +652,18 @@ lookupDecl unitMap name = case Map.lookup name unitMap of
   _                   -> Nothing
 
 -- The step that negates the conjecture.  Vampire calls it negated_conjecture,
--- E assume_negation, and TPTP's own tools negate.  Source tracing stops
--- there, or a negated goal clause resolves to the conjecture itself.
+-- E assume_negation, Twee negate_conjecture and TPTP's own tools negate.
+-- Source tracing stops there, or a negated goal clause resolves to the
+-- conjecture itself.
 isNegationRule :: Text.Text -> Bool
-isNegationRule r = r `elem` map Text.pack ["negated_conjecture", "negate", "assume_negation"]
+isNegationRule r = r `elem` map Text.pack ["negated_conjecture", "negate", "negate_conjecture", "assume_negation"]
+
+-- A source with the negation step at its top or nested in a simplification,
+-- as E's fof_simplification(assume_negation(c)), so tracing stops at that unit
+sourceNegates :: T.Source -> Bool
+sourceNegates (T.Inference (T.Atom rule) _ ps) =
+  isNegationRule rule || or [ sourceNegates s | T.Parent s _ <- ps ]
+sourceNegates _ = False
 
 -- Trace back only through copy steps, meaning bare unit references and
 -- single-parent preprocessing such as cnf_transformation.  Unlike
@@ -571,15 +676,18 @@ resolveCopySource unitMap = go
     go name = case Map.lookup name unitMap of
       Just (T.Unit _ _ (Just (T.UnitSource parentName, _))) ->
         go (unitNameStr parentName)
-      Just (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ [p], _)))
+      -- a step's one parent, where a Skolemization also cites the Skolem
+      -- definition it introduced, which does not count
+      Just (T.Unit _ _ (Just (src@(T.Inference (T.Atom rule) _ ps), _)))
         | not (Set.member rule coreInferenceNames)
-        , not (isNegationRule rule)
-        , [pn] <- flatParents p
+        , not (sourceNegates src)
+        , [pn] <- filter (\n -> not (isSkolemStep rule && isIntroducedSrc unitMap n)) (concatMap flatParents ps)
         -> go pn
       _ -> name
     flatParents (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
     flatParents (T.Parent (T.Inference _ _ ps) _) = concatMap flatParents ps
     flatParents _                                  = []
+    isSkolemStep r = Text.pack "skolem" `Text.isInfixOf` r
 
 -- Trace back to the original file unit.  Stop at the negation step and at
 -- Twee's rewriting steps, which create new equations by completion
@@ -590,8 +698,8 @@ resolveSourceName unitMap = go
       -- trace through bare UnitSource references (E copies axioms this way)
       Just (T.Unit _ _ (Just (T.UnitSource parentName, _))) ->
         go (unitNameStr parentName)
-      Just (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ parents, _)))
-        | not (isNegationRule rule)
+      Just (T.Unit _ _ (Just (src@(T.Inference (T.Atom rule) _ parents), _)))
+        | not (sourceNegates src)
         , rule /= Text.pack "rewriting"        -- Twee creates new equations here
         , rule /= Text.pack "proved_conjecture" -- Twee's terminal step
         ->
@@ -691,19 +799,12 @@ extractConjectureGoals units = listToMaybe
       case toList lits of
         [(T.Positive, lit)] -> Just [lit]
         _                   -> Nothing
-    extractConjLits (T.Formula _ (T.FOF f)) = extractFOFConj f
+    -- a negated conclusion has no goal atoms, and the clause that closed the
+    -- refutation supplies them instead
+    extractConjLits (T.Formula _ (T.FOF f)) = case readConjecture f of
+      Right c | not (null (cjGoals c)) -> Just (cjGoals c)
+      _                                -> Nothing
     extractConjLits _                        = Nothing
-    -- an existential goal's variables are instantiated by θ, as in CNF
-    extractFOFConj (T.Quantified _ _ body)         = extractFOFConj body
-    extractFOFConj (T.Atomic lit)                  = Just [lit]
-    extractFOFConj (T.Connected l T.Conjunction r) = do
-      ls <- extractFOFConj l
-      rs <- extractFOFConj r
-      return (ls ++ rs)
-    -- For H => G the goal is G.  H is assumed, and after negation it becomes a
-    -- hypothesis clause of the refutation rather than part of the goal.
-    extractFOFConj (T.Connected _ T.Implication r) = extractFOFConj r
-    extractFOFConj _                               = Nothing
 -- for each PTLeaf position, the chain of demodulation steps before it was
 -- consumed, outermost first
 demodChainsForLeaves
@@ -775,15 +876,54 @@ unitNameStr (Right n)         = show n
 coreInferenceNames :: Set.Set Text.Text
 coreInferenceNames = Set.fromList $ map Text.pack
   [ "resolution", "resolve", "superposition", "paramodulation"
-  , "equality_resolution", "equality_factoring"
+  , "equality_resolution"
   , "forward_subsumption_resolution", "backward_subsumption_resolution"
-  , "factoring", "condensation"
+  , "condensation"
   , "definition_unfolding", "trivial_inequality_removal"
   , "forward_demodulation", "backward_demodulation"
   , "duplicate_literal_removal", "subsumption_resolution"
-  , "spm", "sr", "csr", "er", "ef", "rw", "cn", "pm"
+  , "spm", "sr", "csr", "er", "rw", "cn", "pm"
   , "proved_conjecture"
   , "rewriting" ]  -- Twee's rewriting creates new equations and expands into the tree
+-- The calculus of the paper is resolution with subsumption resolution and
+-- duplicate literal elimination, superposition, demodulation and equality
+-- resolution.  These rules are outside it, and a step by any other rule not
+-- listed above that combines several premises is a genuine inference too, so
+-- both are refused by name rather than read as copies of a premise.
+outsideCalculus :: Text.Text -> Bool
+outsideCalculus r = Set.member r outside || Text.pack "avatar_" `Text.isPrefixOf` r
+  where
+    outside = Set.fromList $ map Text.pack
+      [ "factoring", "equality_factoring", "ef"   -- factoring, for non-Horn clauses
+      , "ar"                                       -- E's AC resolution
+      , "cdclpropres"                              -- E's propositional SAT refutation
+      , "unit_resulting_resolution", "global_subsumption" ]
+calculusViolation :: Map.Map String T.Unit -> String -> Maybe String
+calculusViolation unitMap root = go Set.empty [root]
+  where
+    go _ [] = Nothing
+    go seen (n : rest)
+      | Set.member n seen = go seen rest
+      | otherwise = case Map.lookup n unitMap of
+          Just (T.Unit _ _ (Just (src, _))) -> case check src of
+            Just bad -> Just ("unsupported proof, step " ++ n ++ " uses " ++ bad
+                              ++ ", an inference outside the supported calculus of resolution, "
+                              ++ "superposition, demodulation and equality resolution")
+            Nothing  -> go (Set.insert n seen) (names src ++ rest)
+          _ -> go (Set.insert n seen) rest
+    check (T.Inference (T.Atom rule) _ ps)
+      | outsideCalculus rule = Just (Text.unpack rule)
+      | not (Set.member rule coreInferenceNames), not (isNegationRule rule)
+      , length (filter premise ps) > 1 = Just (Text.unpack rule ++ " on several premises")
+      | otherwise = listToMaybe (catMaybes [ check s | T.Parent s _ <- ps ])
+    check _ = Nothing
+    -- a Skolemization or definition step also cites the definition it used
+    premise (T.Parent (T.UnitSource pn) _) = not (isIntroducedSrc unitMap (unitNameStr pn))
+    premise (T.Parent (T.Inference {}) _)  = True
+    premise _                              = False
+    names (T.UnitSource pn)    = [unitNameStr pn]
+    names (T.Inference _ _ ps) = concat [ names s | T.Parent s _ <- ps ]
+    names _                    = []
 coreParentNames :: T.Unit -> Maybe [String]
 coreParentNames (T.Unit _ decl (Just (T.Inference (T.Atom rule) _ parents, _)))
   | Set.member rule coreInferenceNames = Just (concatMap extractName parents)

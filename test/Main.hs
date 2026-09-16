@@ -76,6 +76,7 @@ tweeBenchmarkNames =
   , "SWV818-1"
   , "SWV819-1"
   , "SET865-2"        -- goal clause mixing a disequality with a negative atom
+  , "KLE057+1"        -- a conjecture written G <= H, negated by Twee's negate_conjecture
   ]
 
 handcraftedNames :: [String]
@@ -105,6 +106,12 @@ handcraftedNames =
   -- a conjecture concluding a negation, proved by assuming the negated
   -- conjuncts and deriving $false from an axiom with head $false
   , "ALG018+1"
+  -- a hypothesis ? [Y] : r(X,Y) reaches its clause through Vampire's
+  -- skolemisation step, which also cites the Skolem definition it introduced
+  , "fof_skolem_hypothesis"
+  -- two goal atoms with one predicate, each taking its own instance from the
+  -- negated conjecture clause
+  , "fof_existential_goals"
   ]
 
 benchmarkNames :: [String]
@@ -247,6 +254,13 @@ eBenchmarkNames =
   -- E abbreviates the negated conjecture's conjuncts as ~epred <=> ! [X] (~a | ~b),
   -- which unfolds to the existential goals a and b
   , "SYN577-1"
+  , "COM001_1"        -- a typed proof from E, whose clauses are tcf units
+  , "e_cdclpropres"   -- refused, its last step is outside the calculus
+  -- a negated conjunction whose one negated conjunct is the goal, with E's
+  -- negation step nested in a fof_simplification
+  , "LCL414+1"
+  , "PUZ128+1"        -- ? [X] : (C & ~D), the negation of a universal clause
+  , "SYN946+1"        -- refused, the conclusion p(Y) | r(Z) is a disjunction
   ]
 
 mkTest :: String -> String -> String -> TestTree
@@ -266,6 +280,6 @@ run render path = do
   case eitherResult (feed (parseTSTP contents) mempty) of
     Left err   -> fail ("Parse error in " ++ path ++ ": " ++ err)
     Right tstp -> do
-      result <- catch (translate False tstp >>= \msp -> evaluate (force (maybe "translation failed\n" render msp)))
+      result <- catch (translate False tstp >>= \msp -> evaluate (force (either (++ "\n") render msp)))
                       (\e -> return (show (e :: SomeException)))
       return (LBS.pack result)

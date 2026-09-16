@@ -8,7 +8,7 @@
 module TptpEmitter (emitTptp) where
 
 import Data.Char (isAlphaNum, isAsciiLower, isDigit)
-import Data.List (intercalate, isPrefixOf, nub, nubBy, tails, union)
+import Data.List (intercalate, isPrefixOf, nub, nubBy, sortOn, tails, union)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe, isJust, listToMaybe, mapMaybe, maybeToList)
 import qualified Data.Set as Set
@@ -105,7 +105,9 @@ emitTptp sp0 = unlines $
 
     -- an input unit that E derived from an introduced definition cites it,
     -- so such parents are printed first
-    inputLines = map (\(_, u) -> Input (typedUnit u) (newSymbols u)) $ nubBy (\a b -> fst a == fst b) $ concat
+    -- the units in the proof's own order, so a definition follows the units
+    -- it mentions
+    inputLines = map (\(_, u) -> Input (typedUnit u) (newSymbols u)) $ sortOn (unitIndex . fst) $ nubBy (\a b -> fst a == fst b) $ concat
       [ withParents u | n <- axNames, not (Set.member n hyps), Just u <- [inputOf n] ]
       ++ concat [ withParents d | n <- axNames, dn <- definitionsBehind n, Just d <- [Map.lookup dn byName] ]
     -- The symbols an introduced definition defines, which GDV wants named in
@@ -116,12 +118,18 @@ emitTptp sp0 = unlines $
     isFileAnn Nothing                = True
     isFileAnn (Just (T.File _ _, _)) = True
     isFileAnn _                      = False
+    -- a symbol is new in the first definition that mentions it
+    unitIndex n = fromMaybe maxBound (Map.lookup n unitOrder)
+    unitOrder = Map.fromList (zip [ unitNameStr (unitName u) | u <- inUnits input ] [0 :: Int ..])
     newSymbols u = case u of
-      T.Unit _ d (Just (T.Introduced _ _, _)) ->
+      T.Unit n d (Just (T.Introduced _ _, _)) ->
         let (fs, ps) = declSymbols d
-            newF = nub [ s | s <- fs, Set.notMember s fileSyms ]
-            newP = nub [ s | s <- ps, Set.notMember s fileSyms ]
-        in "new_symbols(definition, [" ++ intercalate "," (newF ++ newP) ++ "])"
+            earlier = Set.fromList $ concat
+              [ let (fs', ps') = declSymbols d' in fs' ++ ps'
+              | T.Unit n' d' (Just (T.Introduced _ _, _)) <- inUnits input
+              , unitIndex (unitNameStr n') < unitIndex (unitNameStr n) ]
+            isNew s = Set.notMember s fileSyms && Set.notMember s earlier
+        in "new_symbols(definition, [" ++ intercalate "," (nub (filter isNew (fs ++ ps))) ++ "])"
       _ -> ""
     -- the definitions the prover introduced on the way from an input unit to
     -- an axiom's clause, such as Vampire's Skolem definitions, which the

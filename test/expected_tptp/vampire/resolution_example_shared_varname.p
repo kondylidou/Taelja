@@ -1,7 +1,7 @@
 % SZS output start Proof
-fof(f24, axiom, l0(c), file('Problems/SYN/SYN189-1.p')).
-fof(f17, axiom, ! [X0]: q0(X0, d), file('Problems/SYN/SYN189-1.p')).
 fof(f1, axiom, s0(d), file('Problems/SYN/SYN189-1.p')).
+fof(f17, axiom, ! [X0]: q0(X0, d), file('Problems/SYN/SYN189-1.p')).
+fof(f24, axiom, l0(c), file('Problems/SYN/SYN189-1.p')).
 fof(f144, axiom, ! [X0]: (q1(X0, X0, X0) | ~ s0(X0)), file('Problems/SYN/SYN189-1.p')).
 fof(f162, axiom, ! [X0, X1]: (~ q1(d, X1, d) | ~ q0(X0, X1) | ~ s0(d) | r1(X0)), file('Problems/SYN/SYN189-1.p')).
 fof(f226, axiom, ! [X0]: (~ r1(X0) | r2(X0) | ~ l0(X0)), file('Problems/SYN/SYN189-1.p')).

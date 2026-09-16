@@ -1,0 +1,10 @@
+# A refutation whose last step is E's propositional SAT step cdclpropres, an
+# inference outside the calculus of the paper.
+fof(a1, axiom, p(a), file('test.p', a1)).
+fof(a2, axiom, ![X]:(p(X)=>q(X)), file('test.p', a2)).
+fof(c, conjecture, q(a), file('test.p', c)).
+fof(c_0_3, negated_conjecture, ~(q(a)), inference(assume_negation,[status(cth)],[c])).
+cnf(c_0_4, plain, (p(a)), inference(split_conjunct,[status(thm)],[a1])).
+cnf(c_0_5, plain, (q(X1)|~p(X1)), inference(split_conjunct,[status(thm)],[inference(fof_nnf,[status(thm)],[a2])])).
+cnf(c_0_6, negated_conjecture, (~q(a)), inference(split_conjunct,[status(thm)],[c_0_3])).
+cnf(c_0_7, negated_conjecture, ($false), inference(cdclpropres,[status(thm)],[c_0_4, c_0_5, c_0_6]), ['proof']).

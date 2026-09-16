@@ -1,0 +1,11 @@
+Axiom 1: domain(zero) = zero
+
+Goal 1: X = zero => domain(X) = zero
+Proof:
+  domain(X)
+= { by assumption 1 }
+  domain(zero)
+= { by axiom 1 }
+  zero
+  hence X = zero => domain(X) = zero
+    by discharge

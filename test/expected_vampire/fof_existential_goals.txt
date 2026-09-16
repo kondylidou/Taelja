@@ -1,0 +1,18 @@
+Axiom 1: p(a)
+Axiom 2: q(a,b)
+Axiom 3: q(c,d)
+
+Goal 1: p(a)
+Proof:
+  have p(a)
+    by axiom 1
+
+Goal 2: q(a,b)
+Proof:
+  have q(a,b)
+    by axiom 2
+
+Goal 3: q(c,d)
+Proof:
+  have q(c,d)
+    by axiom 3

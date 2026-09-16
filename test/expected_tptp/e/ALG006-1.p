@@ -1,7 +1,7 @@
 % SZS output start Proof
-cnf(set_difference_3, axiom, difference(difference(X1, X2), X3) = difference(difference(X1, X3), difference(X2, X3)), file('Problems/ALG/ALG006-1.p', set_difference_3)).
 cnf(set_difference_1, axiom, difference(X1, difference(X2, X1)) = X1, file('Problems/ALG/ALG006-1.p', set_difference_1)).
 cnf(set_difference_2, axiom, difference(X1, difference(X1, X2)) = difference(X2, difference(X2, X1)), file('Problems/ALG/ALG006-1.p', set_difference_2)).
+cnf(set_difference_3, axiom, difference(difference(X1, X2), X3) = difference(difference(X1, X3), difference(X2, X3)), file('Problems/ALG/ALG006-1.p', set_difference_3)).
 fof(s1, plain, ! [X,Y,Z] : difference(X,difference(Y,Y)) = difference(X,difference(Y,difference(Y,difference(Z,Y)))), inference(instantiate, [status(thm)], [set_difference_1])).
 fof(s2, plain, ! [X,Y,Z] : difference(X,difference(Y,Y)) = difference(X,difference(difference(Z,Y),difference(difference(Z,Y),Y))), inference(rewrite, [status(thm)], [set_difference_2, s1])).
 fof(s3, plain, ! [X,Y,Z] : difference(X,difference(Y,Y)) = difference(X,difference(difference(Z,Y),difference(difference(Z,Y),difference(Y,difference(Z,Y))))), inference(rewrite, [status(thm)], [set_difference_1, s2])).

@@ -1,8 +1,8 @@
 % SZS output start Proof
-cnf(wajsberg_1, axiom, implies(truth, X1) = X1, file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_1)).
-cnf(wajsberg_4, axiom, implies(implies(not(X1), not(X2)), implies(X2, X1)) = truth, file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_4)).
-cnf(wajsberg_3, axiom, implies(implies(X1, X2), X2) = implies(implies(X2, X1), X1), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_3)).
 cnf(wajsberg_2, axiom, implies(implies(X1, X2), implies(implies(X2, X3), implies(X1, X3))) = truth, file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_2)).
+cnf(wajsberg_1, axiom, implies(truth, X1) = X1, file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_1)).
+cnf(wajsberg_3, axiom, implies(implies(X1, X2), X2) = implies(implies(X2, X1), X1), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_3)).
+cnf(wajsberg_4, axiom, implies(implies(not(X1), not(X2)), implies(X2, X1)) = truth, file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_4)).
 cnf(big_hat_definition, axiom, big_hat(X1, X2) = not(big_V(not(X1), not(X2))), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL001-1.ax', big_hat_definition)).
 cnf(big_V_definition, axiom, big_V(X1, X2) = implies(implies(X1, X2), X2), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/LCL001-1.ax', big_V_definition)).
 fof(s1, plain, ! [X] : implies(X,not(truth)) = implies(truth,implies(X,not(truth))), inference(instantiate, [status(thm)], [wajsberg_1])).

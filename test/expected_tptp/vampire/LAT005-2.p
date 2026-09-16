@@ -1,21 +1,21 @@
 % SZS output start Proof
 fof(f5, axiom, ! [X0]: join(X0, n0, X0), file('Problems/LAT/LAT005-2.p')).
+fof(f6, axiom, ! [X0]: meet(n0, X0, n0), file('Problems/LAT/LAT005-2.p')).
+fof(f11, axiom, ! [X2, X0, X1]: (~ meet(X0, X1, X2) | meet(X1, X0, X2)), file('Problems/LAT/LAT005-2.p')).
+fof(f12, axiom, ! [X2, X0, X1]: (~ join(X0, X1, X2) | join(X1, X0, X2)), file('Problems/LAT/LAT005-2.p')).
+fof(f13, axiom, ! [X2, X0, X1]: (~ meet(X0, X1, X2) | join(X0, X2, X0)), file('Problems/LAT/LAT005-2.p')).
+fof(f14, axiom, ! [X2, X0, X1]: (~ join(X0, X1, X2) | meet(X0, X2, X0)), file('Problems/LAT/LAT005-2.p')).
+fof(f15, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ meet(X1, X3, X4) | ~ meet(X0, X1, X2) | ~ meet(X0, X4, X5) | meet(X2, X3, X5)), file('Problems/LAT/LAT005-2.p')).
+fof(f16, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ meet(X2, X3, X5) | ~ meet(X1, X3, X4) | ~ meet(X0, X1, X2) | meet(X0, X4, X5)), file('Problems/LAT/LAT005-2.p')).
+fof(f20, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ meet(X2, X1, X4) | ~ join(X0, X2, X3) | ~ meet(X0, X1, X0) | ~ join(X0, X4, X5) | meet(X1, X3, X5)), file('Problems/LAT/LAT005-2.p')).
+fof(f22, negated_conjecture, meet(a, b, c), file('Problems/LAT/LAT005-2.p')).
+fof(f24, negated_conjecture, meet(c, r2, n0), file('Problems/LAT/LAT005-2.p')).
+fof(f25, negated_conjecture, meet(r2, b, e), file('Problems/LAT/LAT005-2.p')).
+fof(f26, negated_conjecture, join(a, b, c2), file('Problems/LAT/LAT005-2.p')).
+fof(f28, negated_conjecture, meet(c2, r1, n0), file('Problems/LAT/LAT005-2.p')).
+fof(f29, negated_conjecture, meet(r2, a, d), file('Problems/LAT/LAT005-2.p')).
 fof(f30, negated_conjecture, join(r1, e, a2), file('Problems/LAT/LAT005-2.p')).
 fof(f31, negated_conjecture, join(r1, d, b2), file('Problems/LAT/LAT005-2.p')).
-fof(f14, axiom, ! [X2, X0, X1]: (~ join(X0, X1, X2) | meet(X0, X2, X0)), file('Problems/LAT/LAT005-2.p')).
-fof(f25, negated_conjecture, meet(r2, b, e), file('Problems/LAT/LAT005-2.p')).
-fof(f11, axiom, ! [X2, X0, X1]: (~ meet(X0, X1, X2) | meet(X1, X0, X2)), file('Problems/LAT/LAT005-2.p')).
-fof(f26, negated_conjecture, join(a, b, c2), file('Problems/LAT/LAT005-2.p')).
-fof(f12, axiom, ! [X2, X0, X1]: (~ join(X0, X1, X2) | join(X1, X0, X2)), file('Problems/LAT/LAT005-2.p')).
-fof(f16, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ meet(X2, X3, X5) | ~ meet(X1, X3, X4) | ~ meet(X0, X1, X2) | meet(X0, X4, X5)), file('Problems/LAT/LAT005-2.p')).
-fof(f29, negated_conjecture, meet(r2, a, d), file('Problems/LAT/LAT005-2.p')).
-fof(f28, negated_conjecture, meet(c2, r1, n0), file('Problems/LAT/LAT005-2.p')).
-fof(f20, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ meet(X2, X1, X4) | ~ join(X0, X2, X3) | ~ meet(X0, X1, X0) | ~ join(X0, X4, X5) | meet(X1, X3, X5)), file('Problems/LAT/LAT005-2.p')).
-fof(f13, axiom, ! [X2, X0, X1]: (~ meet(X0, X1, X2) | join(X0, X2, X0)), file('Problems/LAT/LAT005-2.p')).
-fof(f24, negated_conjecture, meet(c, r2, n0), file('Problems/LAT/LAT005-2.p')).
-fof(f22, negated_conjecture, meet(a, b, c), file('Problems/LAT/LAT005-2.p')).
-fof(f15, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ meet(X1, X3, X4) | ~ meet(X0, X1, X2) | ~ meet(X0, X4, X5) | meet(X2, X3, X5)), file('Problems/LAT/LAT005-2.p')).
-fof(f6, axiom, ! [X0]: meet(n0, X0, n0), file('Problems/LAT/LAT005-2.p')).
 fof(lemma_18, lemma, meet(b,r2,e), inference(mp, [status(thm)], [f11, f25])).
 fof(s1, plain, join(b,a,c2), inference(mp, [status(thm)], [f12, f26])).
 fof(s2, plain, meet(b,c2,b), inference(mp, [status(thm)], [f14, s1])).

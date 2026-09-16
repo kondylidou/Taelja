@@ -11,7 +11,7 @@ import Control.Exception (ErrorCall, SomeException, finally, try)
 import Control.Monad.Except (ExceptT, runExceptT, throwError)
 import Control.Monad.State
 import Data.Either (fromRight)
-import Data.List (find, intercalate, nub, nubBy, partition, sortBy, isSuffixOf)
+import Data.List (find, inits, intercalate, nub, nubBy, partition, sortBy, isSuffixOf, tails)
 import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
 import Data.Ord (Down(..), comparing)
 import qualified Data.Map.Strict as Map
@@ -73,8 +73,7 @@ rescueActive = do
 -- proof's axiom list.
 translateWith :: Bool -> Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
 translateWith strict nameOverride debug (T.TSTP _ units) = do
-  axHyps <- readIORef rescueEnabled
-  case buildProofInfo axHyps units of
+  case buildProofInfo units of
     Left _         -> return Nothing
     Right origInfo ->
       Just <$> runAlgorithm debug strict origInfo units Map.empty nameOverride Nothing
@@ -106,12 +105,12 @@ translateWithBoth nameOverride debug tstp = do
 data StageMode = BothStages | HeuristicOnly | StrictOnly
   deriving (Eq, Show)
 
-translate :: Bool -> T.TSTP -> IO (Maybe StructuredProof)
+translate :: Bool -> T.TSTP -> IO (Either String StructuredProof)
 translate debug tstp = do
   forceStrict <- (Just "1" ==) <$> lookupEnv "TAELJA_STRICT"
   translateStages (if forceStrict then StrictOnly else BothStages) debug tstp
 
-translateStages :: StageMode -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
+translateStages :: StageMode -> Bool -> T.TSTP -> IO (Either String StructuredProof)
 translateStages mode debug tstp@(T.TSTP _ units) =
   fmap withTypes <$> translateUntyped mode debug (eraseSorts tstp)
   where
@@ -121,7 +120,7 @@ translateStages mode debug tstp@(T.TSTP _ units) =
       | null typed = sp
       | otherwise  = sp { spInput = (spInput sp) { inTyped = units } }
 
-translateUntyped :: StageMode -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
+translateUntyped :: StageMode -> Bool -> T.TSTP -> IO (Either String StructuredProof)
 translateUntyped mode debug tstp = do
   writeIORef rescueEnabled False
   r1@(mRes1, errH1, errS1) <- runStages
@@ -141,10 +140,11 @@ translateUntyped mode debug tstp = do
         Nothing -> (Nothing, errH2 <|> errH1, errS2 <|> errS1)
   -- both attempts produced nothing, so name the failures to make the run
   -- diagnosable without --debug
-  when (isNothing mRes) $ hPutStrLn stderr $ "translate: translation failed"
-    ++ maybe "" ("; heuristic stage: " ++) errH
-    ++ maybe "" ("; strict stage: " ++) errS
-  return mRes
+  let failure = "translation failed"
+        ++ maybe "" ("; heuristic stage: " ++) errH
+        ++ maybe "" ("; strict stage: " ++) errS
+  when (isNothing mRes) $ hPutStrLn stderr ("translate: " ++ failure)
+  return (maybe (Left failure) Right mRes)
   where
     runStages = do
       (mHeur, errHeur) <- if mode == StrictOnly then return (Nothing, Nothing)
@@ -163,9 +163,10 @@ translateUntyped mode debug tstp = do
     tryStage strict t dbg' = do
       tStage <- getCPUTime
       when dbg' $ hPutStrLn stderr ("[time] stage " ++ (if strict then "strict" else "heuristic") ++ " start cpu=" ++ show (tStage `div` 1000000000) ++ " ms")
-      r <- try (translateMode strict dbg' t) :: IO (Either SomeException (Maybe StructuredProof))
+      r <- try (translateMode strict dbg' t) :: IO (Either SomeException (Either String StructuredProof))
       case r of
-        Right m -> return (m, Nothing)
+        Right (Right sp)     -> return (Just sp, Nothing)
+        Right (Left reason)  -> return (Nothing, Just reason)
         Left e  -> do
           when dbg' $ hPutStrLn stderr
             ("translate: " ++ (if strict then "strict" else "heuristic")
@@ -178,13 +179,10 @@ translateUntyped mode debug tstp = do
 -- The main translation and every lemma share one axiom numbering from the full
 -- proof, and the emitted axiom list is the original one, so an axiom used only
 -- inside a lemma is still listed.
-translateMode :: Bool -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
+translateMode :: Bool -> Bool -> T.TSTP -> IO (Either String StructuredProof)
 translateMode strict debug (T.TSTP _ units) = do
-  axHyps <- readIORef rescueEnabled
-  case buildProofInfo axHyps units of
-    Left reason -> do
-      hPutStrLn stderr ("translate: " ++ reason)
-      return Nothing
+  case buildProofInfo units of
+    Left reason -> return (Left reason)
     Right origInfo -> do
       let unitMap0 = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- units]
           origLeaves = piElectrons origInfo ++ piNuclei origInfo
@@ -297,11 +295,11 @@ translateMode strict debug (T.TSTP _ units) = do
                        ++ leUnit e ++ " from a negative position, so its proof is a case split")
               _ -> return ()
         Nothing -> return ()
-      case (Map.null validCands, buildProofInfo axHyps modUnits) of
+      case (Map.null validCands, buildProofInfo modUnits) of
         (False, Right mainInfo) ->
-          Just . withInput <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just allAxioms)
+          Right . withInput <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just allAxioms)
         _ ->
-          Just . withInput <$> runAlgorithm debug strict origInfo units Map.empty origTstp2name (Just origAxioms)
+          Right . withInput <$> runAlgorithm debug strict origInfo units Map.empty origTstp2name (Just origAxioms)
 
 -- A conjecture whose conclusion is a negation is proved by assuming the
 -- negated formula and deriving $false, so the goal is that one derivation.
@@ -321,10 +319,12 @@ negationGoal sp
     isContra _                         = False
 
 -- The Skolem constants of a negated conjecture stand for its universal
--- variables.  A constant of a hypothesis or goal that occurs in no input unit
--- is such a constant, and when no axiom or lemma mentions it either the
--- theorem holds for every value of it, so it is a variable again in the
--- printed goal.
+-- variables.  A constant of the goal that occurs in no input unit is such a
+-- constant, and when no axiom or lemma mentions it either the theorem holds
+-- for every value of it, so it is a variable again in the printed goal and in
+-- the hypotheses that share it.  A constant of the hypotheses alone stays,
+-- since a hypothesis is a clause of its own and a variable there would be
+-- quantified within it, while a free constant ranges over the whole theorem.
 generalizeGoals :: StructuredProof -> StructuredProof
 generalizeGoals sp
   | null fresh = sp
@@ -336,7 +336,7 @@ generalizeGoals sp
     isHyp ax = Set.member (axiomDisplayName ax) hypNames
     axConsts (AUnit _ l)                 = litConsts l
     axConsts (ANucleus _ (Clause bs mh)) = concatMap litConsts bs ++ maybe [] litConsts mh
-    goalConsts = nub (concatMap (litConsts . fst) (goals sp) ++ concatMap axConsts (filter isHyp (axioms sp)))
+    goalConsts = nub (concatMap (litConsts . fst) (goals sp))
     used  = Set.fromList (concatMap axConsts (filter (not . isHyp) (axioms sp))
                           ++ concat [ litConsts l ++ blockConsts b | (_, l, b) <- lemmas sp ]
                           ++ concat [ declConsts d | T.Unit _ d ann <- inUnits (spInput sp), isInputAnn ann ])
@@ -2056,12 +2056,14 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
           -- them all.  Instantiating each alone can give a variable two values, as
           -- PUZ011-1 read borders(X0,X1) as borders(indian,india) while african(X1)
           -- forces somalia.  matchLitWith threads the bindings so a contradicting choice
-          -- is rejected and the search backtracks.
+          -- is rejected and the search backtracks.  Each body atom answers one
+          -- goal atom, or two goals with one predicate would take the same fact.
           openGoals = [ g | g <- gs, not (null (litFree g)) ]
-          solve σ []         = [σ]
-          solve σ (g : rest) =
-            concat [ solve σ' rest
-                   | b <- instBodies
+          solve σ gs' = solveWith σ instBodies gs'
+          solveWith σ _ []             = [σ]
+          solveWith σ bodies (g : rest) =
+            concat [ solveWith σ' (before ++ after) rest
+                   | (before, b : after) <- zip (inits bodies) (tails bodies)
                    , Just σ' <- [matchLitWith g b σ]
                    , applySubst σ' g == b ]
           -- No assignment satisfies every open goal, when some goal atoms are not body

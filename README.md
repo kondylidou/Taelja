@@ -12,6 +12,13 @@ concrete axiom or lemma. Derived clauses that the input proof uses more than
 once are introduced as named lemmas with their own proofs. A conjecture of the
 form `H => G` is stated as such, and its proof begins with `assume H`.
 
+Taelja covers the Horn fragment: the refutation must use resolution,
+superposition, demodulation and equality resolution on Horn clauses, and the
+conjecture must be an implication whose hypotheses are Horn clauses and whose
+conclusion is a conjunction of atoms, or the negation of one. Anything else,
+a non-Horn clause, another inference rule, or a disjunction in the
+conclusion say, is refused with a message naming it.
+
 **This file covers the tool itself. See `ARTIFACT.md` for reproducing the
 paper's evaluation.**
 

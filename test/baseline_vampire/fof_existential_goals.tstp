@@ -1,0 +1,13 @@
+% An existential conjecture whose atoms share a predicate, so each goal atom
+% must take its instance from the negated conjecture clause, not from the
+% first fact with that predicate.
+fof(a1, axiom, p(a) & q(a,b) & q(c,d), file('t.p', a1)).
+fof(c, conjecture, ? [X,Y,Z,W] : (p(X) & q(X,Y) & q(Z,W)), file('t.p', c)).
+fof(f3, negated_conjecture, ~ ? [X,Y,Z,W] : (p(X) & q(X,Y) & q(Z,W)), inference(negated_conjecture,[status(cth)],[c])).
+fof(f4, plain, ! [X,Y,Z,W] : (~p(X) | ~q(X,Y) | ~q(Z,W)), inference(ennf_transformation,[],[f3])).
+fof(f5, plain, p(a), inference(cnf_transformation,[],[a1])).
+fof(f6, plain, q(a,b), inference(cnf_transformation,[],[a1])).
+fof(f7, plain, q(c,d), inference(cnf_transformation,[],[a1])).
+fof(f8, plain, ! [X,Y] : (~p(X) | ~q(X,Y)), inference(resolution,[],[f4,f7])).
+fof(f9, plain, ~p(a), inference(resolution,[],[f8,f6])).
+fof(f10, plain, $false, inference(resolution,[],[f9,f5])).

@@ -478,7 +478,7 @@ isInternalUnit ue = case ueName ue of
 -- that are not TSTP and make the file unparseable.  Without markers the text
 -- is returned unchanged.
 extractSzsBlock :: String -> String
-extractSzsBlock txt = dropIntroducedParents $
+extractSzsBlock txt = dropIntroducedParents $ typedClausesAsFormulas $
   case break isStart (lines txt) of
     (_, [])        -> txt
     (_, startLine : rest) ->
@@ -495,6 +495,14 @@ extractSzsBlock txt = dropIntroducedParents $
     isStart l = "SZS output start" `isInfixOf` l
     isEnd   l = "SZS output end"   `isInfixOf` l
     isUnit  l = any (`isPrefixOf` dropWhile (== ' ') l) ["cnf(", "fof(", "tff(", "tcf("]
+
+-- E writes typed clauses as tcf units, which the parser does not know, and a
+-- tcf is a tff whose formula is a clause, so they are read as tff.
+typedClausesAsFormulas :: String -> String
+typedClausesAsFormulas = unlines . map fix . lines
+  where
+    fix l | "tcf(" `isPrefixOf` l = "tff(" ++ drop 4 l
+          | otherwise             = l
 
 -- The parser reads introduced(kind, [info]) only, while Vampire and current
 -- TPTP also write a third list of parents, so that list is dropped.

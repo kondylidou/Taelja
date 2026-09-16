@@ -1,13 +1,13 @@
 % SZS output start Proof
-cnf(total_function1, axiom, product(X1, X2, multiply(X1, X2)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function1)).
-cnf(left_identity, axiom, product(identity, X1, X1), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', left_identity)).
-cnf(total_function2, axiom, X3 = X4 | ~ product(X1, X2, X3) | ~ product(X1, X2, X4), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function2)).
-cnf(a_multiply_b_is_c, hypothesis, product(a, b, c), file('Problems/GRP/GRP012-2.p', a_multiply_b_is_c)).
-cnf(inverse_b_multiply_inverse_a_is_d, hypothesis, product(inverse(b), inverse(a), d), file('Problems/GRP/GRP012-2.p', inverse_b_multiply_inverse_a_is_d)).
-cnf(right_inverse, axiom, product(X1, inverse(X1), identity), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_inverse)).
 cnf(associativity2, axiom, product(X3, X4, X6) | ~ product(X1, X2, X3) | ~ product(X2, X4, X5) | ~ product(X1, X5, X6), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', associativity2)).
-cnf(right_identity, axiom, product(X1, identity, X1), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
+cnf(right_inverse, axiom, product(X1, inverse(X1), identity), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_inverse)).
+cnf(total_function2, axiom, X3 = X4 | ~ product(X1, X2, X3) | ~ product(X1, X2, X4), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function2)).
+cnf(inverse_b_multiply_inverse_a_is_d, hypothesis, product(inverse(b), inverse(a), d), file('Problems/GRP/GRP012-2.p', inverse_b_multiply_inverse_a_is_d)).
+cnf(left_identity, axiom, product(identity, X1, X1), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', left_identity)).
+cnf(total_function1, axiom, product(X1, X2, multiply(X1, X2)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function1)).
+cnf(a_multiply_b_is_c, hypothesis, product(a, b, c), file('Problems/GRP/GRP012-2.p', a_multiply_b_is_c)).
 cnf(left_inverse, axiom, product(inverse(X1), X1, identity), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', left_inverse)).
+cnf(right_identity, axiom, product(X1, identity, X1), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
 fof(s1, plain, ! [X] : product(identity,X,multiply(identity,X)), inference(instantiate, [status(thm)], [total_function1])).
 fof(lemma_10, lemma, ! [X] : multiply(identity,X) = X, inference(mp, [status(thm)], [total_function2, left_identity, s1])).
 fof(s2, plain, product(b,inverse(b),identity), inference(instantiate, [status(thm)], [right_inverse])).

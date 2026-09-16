@@ -1,9 +1,9 @@
 % SZS output start Proof
 cnf(c2, hypothesis, less_equal(b, c), file('HEN005-6.p', b_LE_c)).
 cnf(c3, axiom, ~ less_equal(X, Y) | divide(X, Y) = zero, file('HEN005-6.p', quotient_less_equal1)).
-cnf(c9, axiom, divide(zero, X2) = zero, file('HEN005-6.p', zero_divide_anything_is_zero)).
-cnf(c6, hypothesis, less_equal(a, b), file('HEN005-6.p', a_LE_b)).
 cnf(c5, axiom, less_equal(divide(divide(X2, Z), divide(Y2, Z)), divide(divide(X2, Y2), Z)), file('HEN005-6.p', quotient_property)).
+cnf(c6, hypothesis, less_equal(a, b), file('HEN005-6.p', a_LE_b)).
+cnf(c9, axiom, divide(zero, X2) = zero, file('HEN005-6.p', zero_divide_anything_is_zero)).
 cnf(c11, axiom, less_equal(zero, X2), file('HEN005-6.p', zero_is_smallest)).
 cnf(c12, axiom, ~ less_equal(X2, Y2) | ~ less_equal(Y2, X2) | X2 = Y2, file('HEN005-6.p', less_equal_and_equal)).
 cnf(c16, axiom, divide(X2, Y2) != zero | less_equal(X2, Y2), file('HEN005-6.p', quotient_less_equal2)).

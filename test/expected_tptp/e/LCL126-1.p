@@ -1,7 +1,7 @@
 % SZS output start Proof
-cnf(q_4, axiom, is_a_theorem(equivalent(equivalent(X1, X2), equivalent(equivalent(X1, X3), equivalent(X2, X3)))), file('Problems/LCL/LCL126-1.p', q_4)).
 cnf(condensed_detachment, axiom, is_a_theorem(X2) | ~ is_a_theorem(equivalent(X1, X2)) | ~ is_a_theorem(X1), file('Problems/LCL/LCL126-1.p', condensed_detachment)).
 cnf(q_3, axiom, is_a_theorem(equivalent(X1, equivalent(equivalent(X1, equivalent(X2, X3)), equivalent(X3, X2)))), file('Problems/LCL/LCL126-1.p', q_3)).
+cnf(q_4, axiom, is_a_theorem(equivalent(equivalent(X1, X2), equivalent(equivalent(X1, X3), equivalent(X2, X3)))), file('Problems/LCL/LCL126-1.p', q_4)).
 fof(s1, plain, ! [X,Y,Z,A,B] : is_a_theorem(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(A,B)),equivalent(B,A)))), inference(instantiate, [status(thm)], [q_3])).
 fof(lemma_4, lemma, ! [X,Y,Z,A,B] : is_a_theorem(equivalent(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(A,B)),equivalent(B,A))), inference(mp, [status(thm)], [condensed_detachment, s1, q_4])).
 fof(s2, plain, ! [Z,A,B,Y,X] : is_a_theorem(equivalent(equivalent(equivalent(equivalent(equivalent(Z,A),equivalent(equivalent(Z,B),equivalent(A,B))),equivalent(Y,X)),equivalent(X,Y)),equivalent(equivalent(equivalent(equivalent(equivalent(Z,A),equivalent(equivalent(Z,B),equivalent(A,B))),equivalent(Y,X)),equivalent(X,Y)),equivalent(equivalent(X,Y),equivalent(X,Y))))), inference(instantiate, [status(thm)], [q_4])).

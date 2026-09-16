@@ -1,7 +1,7 @@
 % SZS output start Proof
+fof(f2, axiom, ! [X0]: (sorti2(X0) => ! [X1]: (sorti2(X1) => sorti2(op2(X0, X1)))), file('Problems/ALG/ALG018+1.p')).
 fof(f3, axiom, ? [X0]: (sorti1(X0) & ! [X1]: (sorti1(X1) => op1(X1, X1) = X0)), file('Problems/ALG/ALG018+1.p')).
 fof(f4, axiom, ~ ? [X0]: (sorti2(X0) & ! [X1]: (sorti2(X1) => op2(X1, X1) = X0)), file('Problems/ALG/ALG018+1.p')).
-fof(f2, axiom, ! [X0]: (sorti2(X0) => ! [X1]: (sorti2(X1) => sorti2(op2(X0, X1)))), file('Problems/ALG/ALG018+1.p')).
 fof(f13, definition, ? [X0]: (sorti1(X0) & ! [X1]: (op1(X1, X1) = X0 | ~ sorti1(X1))) => (sorti1(sK0) & ! [X1]: (op1(X1, X1) = sK0 | ~ sorti1(X1))), introduced(definition, [new_symbols(definition, [sK0])], [])).
 fof(f15, definition, ! [X0]: (? [X1]: (op2(X1, X1) != X0 & sorti2(X1)) => (op2(sK1(X0), sK1(X0)) != X0 & sorti2(sK1(X0)))), introduced(definition, [new_symbols(definition, [sK1])], [])).
 fof(axiom_1, plain, sorti1(sK0), inference(clausify, [status(thm)], [f3, f13])).

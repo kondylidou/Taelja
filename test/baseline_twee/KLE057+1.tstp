@@ -1,0 +1,16 @@
+% SZS status Theorem
+
+% SZS output start CNFRefutation
+fof(c1, conjecture, ![X0]: (domain(X0)=zero <= X0=zero), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/KLE/KLE057+1.p', goals)).
+fof(c2, negated_conjecture, ~![X0_2]: (domain(X0_2)=zero <= X0_2=zero), inference(negate_conjecture, [status(cth)], [c1])).
+fof(c3, plain, domain(x0)!=zero & x0=zero, inference(clausify, [status(esa)], [c2])).
+cnf(c4, plain, domain(x0)!=zero, inference(clausify, [status(thm)], [c3])).
+fof(c5, conjecture, ![X0_2]: (domain(X0_2)=zero <= X0_2=zero), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/KLE/KLE057+1.p', goals)).
+fof(c6, negated_conjecture, ~![X0_2]: (domain(X0_2)=zero <= X0_2=zero), inference(negate_conjecture, [status(cth)], [c5])).
+fof(c7, plain, domain(x0)!=zero & x0=zero, inference(clausify, [status(esa)], [c6])).
+cnf(c8, plain, x0=zero, inference(clausify, [status(thm)], [c7])).
+cnf(c9, axiom, domain(zero)=zero, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/KLE/KLE057+1.p', domain4)).
+cnf(c10, plain, domain(x0)=zero, inference(rewriting, [status(thm)], [c8, c9])).
+cnf(c11, plain, $false, inference(proved_conjecture, [status(thm)], [c4, c10])).
+% SZS output end CNFRefutation
+

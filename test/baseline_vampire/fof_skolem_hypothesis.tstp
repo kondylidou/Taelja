@@ -1,0 +1,53 @@
+% SZS output start Proof for skolem_hyp
+fof(f1,axiom,(
+  ! [X0,X1] : (r(X0,X1) => s(X0))),
+  file('skolem_hyp.p',unknown)).
+fof(f2,axiom,(
+  ! [X0] : (s(X0) => t(X0))),
+  file('skolem_hyp.p',unknown)).
+fof(f3,conjecture,(
+  ! [X0] : (? [X1] : r(X0,X1) => t(X0))),
+  file('skolem_hyp.p',unknown)).
+fof(f4,negated_conjecture,(
+  ~! [X0] : (? [X1] : r(X0,X1) => t(X0))),
+  inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  ! [X0,X1] : (s(X0) | ~r(X0,X1))),
+  inference(ennf_transformation,[],[f1])).
+fof(f6,plain,(
+  ! [X0] : (t(X0) | ~s(X0))),
+  inference(ennf_transformation,[],[f2])).
+fof(f7,plain,(
+  ? [X0] : (~t(X0) & ? [X1] : r(X0,X1))),
+  inference(ennf_transformation,[],[f4])).
+fof(f8,plain,(
+  ? [X0] : (~t(X0) & ? [X1] : r(X0,X1)) => (~t(sK0) & ? [X1] : r(sK0,X1))),
+  introduced(definition,[],[skolem_symbol_introduction])).
+fof(f9,plain,(
+  ? [X1] : r(sK0,X1) => r(sK0,sK1)),
+  introduced(definition,[],[skolem_symbol_introduction])).
+fof(f10,plain,(
+  ~t(sK0) & r(sK0,sK1)),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK0,sK1])],[f7,f9,f8])).
+fof(f11,plain,(
+  ( ! [X0,X1] : (~r(X0,X1) | s(X0)) )),
+  inference(cnf_transformation,[],[f5])).
+fof(f12,plain,(
+  ( ! [X0] : (~s(X0) | t(X0)) )),
+  inference(cnf_transformation,[],[f6])).
+fof(f13,plain,(
+  r(sK0,sK1)),
+  inference(cnf_transformation,[],[f10])).
+fof(f14,plain,(
+  ~t(sK0)),
+  inference(cnf_transformation,[],[f10])).
+fof(f15,plain,(
+  s(sK0)),
+  inference(resolution,[],[f11,f13])).
+fof(f16,plain,(
+  t(sK0)),
+  inference(resolution,[],[f15,f12])).
+fof(f17,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f16,f14])).
+% SZS output end Proof for skolem_hyp

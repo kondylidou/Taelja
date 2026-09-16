@@ -1,10 +1,10 @@
 % SZS output start Proof
+cnf(associativity, axiom, multiply(multiply(X1, X2), X3) = multiply(X1, multiply(X2, X3)), file('TPTP/Axioms/GRP004-0.ax', associativity)).
 cnf(left_inverse, axiom, multiply(inverse(X1), X1) = identity, file('TPTP/Axioms/GRP004-0.ax', left_inverse)).
 cnf(left_identity, axiom, multiply(identity, X1) = X1, file('TPTP/Axioms/GRP004-0.ax', left_identity)).
-cnf(associativity, axiom, multiply(multiply(X1, X2), X3) = multiply(X1, multiply(X2, X3)), file('TPTP/Axioms/GRP004-0.ax', associativity)).
-cnf(symmetry_of_glb, axiom, greatest_lower_bound(X1, X2) = greatest_lower_bound(X2, X1), file('TPTP/Axioms/GRP004-2.ax', symmetry_of_glb)).
-cnf(p40a_1, hypothesis, least_upper_bound(identity, X1) = X1, file('Problems/GRP/GRP192-1.p', p40a_1)).
 cnf(glb_absorbtion, axiom, greatest_lower_bound(X1, least_upper_bound(X1, X2)) = X1, file('TPTP/Axioms/GRP004-2.ax', glb_absorbtion)).
+cnf(p40a_1, hypothesis, least_upper_bound(identity, X1) = X1, file('Problems/GRP/GRP192-1.p', p40a_1)).
+cnf(symmetry_of_glb, axiom, greatest_lower_bound(X1, X2) = greatest_lower_bound(X2, X1), file('TPTP/Axioms/GRP004-2.ax', symmetry_of_glb)).
 cnf(monotony_glb1, axiom, multiply(X1, greatest_lower_bound(X2, X3)) = greatest_lower_bound(multiply(X1, X2), multiply(X1, X3)), file('TPTP/Axioms/GRP004-2.ax', monotony_glb1)).
 fof(s1, plain, ! [X,Y] : greatest_lower_bound(X,Y) = multiply(identity,greatest_lower_bound(X,Y)), inference(instantiate, [status(thm)], [left_identity])).
 fof(s2, plain, ! [X,Y] : greatest_lower_bound(X,Y) = multiply(multiply(inverse(inverse(greatest_lower_bound(X,Y))),inverse(greatest_lower_bound(X,Y))),greatest_lower_bound(X,Y)), inference(rewrite, [status(thm)], [left_inverse, s1])).

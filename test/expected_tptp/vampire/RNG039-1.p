@@ -1,16 +1,16 @@
 % SZS output start Proof
+fof(f3, axiom, ! [X0, X1]: product(X0, X1, multiply(X0, X1)), file('Problems/RNG/RNG039-1.p')).
+fof(f17, axiom, ! [X2, X3, X0, X1]: (~ product(X0, X1, X3) | ~ product(X0, X1, X2) | X2 = X3), file('Problems/RNG/RNG039-1.p')).
+fof(f21, axiom, ! [X0]: add(X0, additive_identity) = X0, file('Problems/RNG/RNG039-1.p')).
 fof(f22, axiom, ! [X0]: add(X0, X0) = additive_identity, file('Problems/RNG/RNG039-1.p')).
 fof(f24, axiom, ! [X0]: multiply(X0, X0) = X0, file('Problems/RNG/RNG039-1.p')).
-fof(f33, axiom, ! [X0, X1]: product(a, multiply(b, X0), multiply(X1, X0)), file('Problems/RNG/RNG039-1.p')).
-fof(f59, negated_conjecture, product(a, b, c), file('Problems/RNG/RNG039-1.p')).
-fof(f17, axiom, ! [X2, X3, X0, X1]: (~ product(X0, X1, X3) | ~ product(X0, X1, X2) | X2 = X3), file('Problems/RNG/RNG039-1.p')).
-fof(f54, axiom, product(add(a, b), b, add(c, b)), file('Problems/RNG/RNG039-1.p')).
-fof(f3, axiom, ! [X0, X1]: product(X0, X1, multiply(X0, X1)), file('Problems/RNG/RNG039-1.p')).
 fof(f26, axiom, multiply(b, a) = d, file('Problems/RNG/RNG039-1.p')).
+fof(f33, axiom, ! [X0, X1]: product(a, multiply(b, X0), multiply(X1, X0)), file('Problems/RNG/RNG039-1.p')).
 fof(f46, axiom, ! [X0]: product(multiply(X0, b), a, multiply(X0, d)), file('Problems/RNG/RNG039-1.p')).
-fof(f60, negated_conjecture, product(b, a, d), file('Problems/RNG/RNG039-1.p')).
-fof(f21, axiom, ! [X0]: add(X0, additive_identity) = X0, file('Problems/RNG/RNG039-1.p')).
+fof(f54, axiom, product(add(a, b), b, add(c, b)), file('Problems/RNG/RNG039-1.p')).
 fof(f57, axiom, product(add(a, b), a, add(a, d)), file('Problems/RNG/RNG039-1.p')).
+fof(f59, negated_conjecture, product(a, b, c), file('Problems/RNG/RNG039-1.p')).
+fof(f60, negated_conjecture, product(b, a, d), file('Problems/RNG/RNG039-1.p')).
 fof(s1, plain, ! [X] : product(a,multiply(b,b),multiply(X,b)), inference(instantiate, [status(thm)], [f33])).
 fof(lemma_13, lemma, ! [X] : product(a,b,multiply(X,b)), inference(rewrite, [status(thm)], [f24, s1])).
 fof(s2, plain, product(a,multiply(b,b),multiply(b,b)), inference(instantiate, [status(thm)], [f33])).

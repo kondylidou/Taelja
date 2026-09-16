@@ -1,6 +1,6 @@
 % SZS output start Proof
-cnf(s_definition, axiom, apply(apply(apply(s, X1), X2), X3) = apply(apply(X1, X3), apply(X2, X3)), file('Problems/COL/COL006-2.p', s_definition)).
 cnf(k_definition, axiom, apply(apply(k, X1), X2) = X1, file('Problems/COL/COL006-2.p', k_definition)).
+cnf(s_definition, axiom, apply(apply(apply(s, X1), X2), X3) = apply(apply(X1, X3), apply(X2, X3)), file('Problems/COL/COL006-2.p', s_definition)).
 cnf(strong_fixed_point, axiom, fixed_point(X1) | apply(X1, fixed_pt) != apply(fixed_pt, apply(X1, fixed_pt)), file('Problems/COL/COL006-2.p', strong_fixed_point)).
 fof(s1, plain, ! [X,Y] : apply(apply(apply(s,k),X),Y) = apply(apply(k,Y),apply(X,Y)), inference(instantiate, [status(thm)], [s_definition])).
 fof(lemma_4, lemma, ! [X,Y] : apply(apply(apply(s,k),X),Y) = Y, inference(rewrite, [status(thm)], [k_definition, s1])).

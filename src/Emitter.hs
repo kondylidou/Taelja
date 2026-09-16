@@ -107,7 +107,7 @@ lemmaLines :: [Axiom] -> Map.Map String [String] -> (String, Literal, ProofBlock
 lemmaLines hyps deps (name, lit, block) =
   (cap name ++ ": " ++ stated) :
   "Proof:" :
-  blockLines (renameBlock renaming block) ++
+  blockLines hyps (renameBlock renaming block) ++
   [ l | not (null used), l <- ["  hence " ++ stated, "    by discharge"] ] ++
   [""]
   where
@@ -126,7 +126,7 @@ goalLines :: [Axiom] -> [String] -> Int -> (Literal, ProofBlock) -> [String]
 goalLines hyps negated n (lit, block) =
   ("Goal " ++ show n ++ ": " ++ stated) :
   "Proof:" :
-  blockLines (renameBlock renaming block) ++
+  blockLines hyps (renameBlock renaming block) ++
   [ l | not (null hyps), l <- ["  hence " ++ stated, "    by discharge"] ]
   where
     (negHyps, anteHyps) = partition ((`elem` negated) . axiomName) hyps
@@ -138,16 +138,20 @@ goalLines hyps negated n (lit, block) =
     ppHyp (AUnit _ l)    = ppLiteral (renameLit renaming l)
     ppHyp (ANucleus _ c) = "(" ++ ppClauseWith renaming c ++ ")"
 
-blockLines :: ProofBlock -> [String]
-blockLines (HaveHence ls)    = concatMap renderLine ls
-blockLines (EqChain s steps) = renderEqChain s steps
+blockLines :: [Axiom] -> ProofBlock -> [String]
+blockLines hyps (HaveHence ls) = concatMap (renderLine hyps) ls
+blockLines _ (EqChain s steps) = renderEqChain s steps
 
-renderLine :: ProofLine -> [String]
-renderLine (Have lit nm)
-  | "assumption " `isPrefixOf` nm = ["  assume " ++ ppLiteral lit]
-renderLine (Have  lit nm) = ["  have "  ++ ppLiteral lit, "    by " ++ nm]
-renderLine (And   lit nm) = ["   and "  ++ ppLiteral lit, "    by " ++ nm]
-renderLine (Hence lit j)  = ["  hence " ++ ppLiteral lit, "    " ++ ppJust j]
+-- A hypothesis is assumed where the proof states it as it was assumed, and
+-- an instance of it is a step citing the assumption like an axiom.
+renderLine :: [Axiom] -> ProofLine -> [String]
+renderLine hyps (Have lit nm)
+  | "assumption " `isPrefixOf` nm
+  , or [ clauseKey (Clause [] (Just l)) == clauseKey (Clause [] (Just lit)) | AUnit n l <- hyps, n == nm ]
+  = ["  assume " ++ ppLiteral lit]
+renderLine _ (Have  lit nm) = ["  have "  ++ ppLiteral lit, "    by " ++ nm]
+renderLine _ (And   lit nm) = ["   and "  ++ ppLiteral lit, "    by " ++ nm]
+renderLine _ (Hence lit j)  = ["  hence " ++ ppLiteral lit, "    " ++ ppJust j]
 
 ppJust :: Justification -> String
 ppJust (ByAxiom nm)        = "by " ++ nm

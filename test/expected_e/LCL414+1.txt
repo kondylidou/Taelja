@@ -1,0 +1,14 @@
+Goal 1: a_truth(implies(Y,implies(Z,Y))) /\ a_truth(implies(implies(Y,implies(Z,A)),implies(implies(Y,Z),implies(Y,A)))) /\ (a_truth(implies(Y,Z)) /\ a_truth(Y) => a_truth(Z)) => a_truth(implies(X,X))
+Proof:
+  have a_truth(implies(implies(X,implies(implies(B,X),X)),implies(implies(X,implies(B,X)),implies(X,X))))
+    by assumption 2
+   and a_truth(implies(X,implies(implies(B,X),X)))
+    by assumption 1
+  hence a_truth(implies(implies(X,implies(B,X)),implies(X,X)))
+    by assumption 3
+   and a_truth(implies(X,implies(B,X)))
+    by assumption 1
+  hence a_truth(implies(X,X))
+    by assumption 3
+  hence a_truth(implies(Y,implies(Z,Y))) /\ a_truth(implies(implies(Y,implies(Z,A)),implies(implies(Y,Z),implies(Y,A)))) /\ (a_truth(implies(Y,Z)) /\ a_truth(Y) => a_truth(Z)) => a_truth(implies(X,X))
+    by discharge

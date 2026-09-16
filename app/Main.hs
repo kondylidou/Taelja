@@ -40,7 +40,7 @@ main = do
     Left err    -> hPutStrLn stderr ("Parse error: " ++ err) >> exitFailure
     Right tstp@(T.TSTP _ units) -> do
       when debug $ do
-        case buildProofInfo False units of
+        case buildProofInfo units of
           Left reason -> putStrLn ("No proof tree, " ++ reason)
           Right info  -> do
             putStrLn "-- Proof tree"
@@ -51,11 +51,11 @@ main = do
             putStrLn ""
       msp <- translateStages mode debug tstp
       case msp of
-        Nothing -> exitFailure
+        Left _ -> exitFailure
         -- Force the whole output before printing any of it.  Clause conversion
         -- fails lazily on constructs outside the Horn fragment, so printing as
         -- we go could leave a truncated proof that looks complete.
-        Just sp -> do
+        Right sp -> do
           r <- try (evaluate (force (render sp)))
           case r of
             Left e -> do

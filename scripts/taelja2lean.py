@@ -720,8 +720,9 @@ def lean_lit(f, var_map: dict) -> str:
 def nested_lit(b, var_map):
     """A body item.  A Horn hypothesis of a goal, or a conjunct of its negated
     conclusion, is a formula of its own, bound over the variables that are its
-    alone.  A plain atom shares the clause's variables."""
-    if not isinstance(b, (Implies, Not)):
+    alone, and so is an atom while a goal or lemma statement is rendered.  In
+    an axiom a plain atom shares the clause's variables."""
+    if not isinstance(b, (Implies, Not)) and not _closed_hyps:
         return lean_lit(b, var_map)
     own = [v for v in sorted(vars_in_lit(b)) if v not in var_map]
     vm = dict(var_map)
@@ -744,7 +745,7 @@ def nested_only_vars(formula):
     outer = set() if isinstance(formula.head, Not) else set(vars_in_lit(formula.head))
     inner = set(vars_in_lit(formula.head)) if isinstance(formula.head, Not) else set()
     for b in formula.body:
-        (inner if isinstance(b, (Implies, Not)) else outer).update(vars_in_lit(b))
+        (inner if isinstance(b, (Implies, Not)) or _closed_hyps else outer).update(vars_in_lit(b))
     return inner - outer
 
 def lean_type(formula, all_vars: list, extra_vars=None) -> Tuple[str, dict]:
@@ -1136,6 +1137,7 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
     if doc.goals:
         _goal_hyps.extend(repr(b) for b in goal_hypotheses(doc.goals[0].formula)[0])
 
+    global _closed_hyps
     lemma_types = {}   # num -> (type_str, var_map, formula)
     for lem in doc.lemmas:
         extra = chain_only_vars(lem.formula, lem.proof)
@@ -1145,8 +1147,10 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
             # own variables, so a citation applies it to the goal's hypotheses
             _lemma_hyps[lem.num] = [_goal_hyps.index(repr(b)) + 1 for b in hyps]
             head_str, var_map = lean_type(head, [], extra_vars=extra)
+            _closed_hyps = True
             type_str = ' → '.join(nested_lit(b, {}) for b in hyps) + ' → ' + \
                        (f'({head_str})' if head_str.startswith('∀') else head_str)
+            _closed_hyps = False
             lemma_types[lem.num] = (type_str, var_map, head)
         else:
             type_str, var_map = lean_type(lem.formula, [], extra_vars=extra)
@@ -1158,14 +1162,17 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
         lines.append(f'-- Lemma {lem.num}')
         lines.append(f'theorem taelja_lemma{lem.num} : {type_str} := by')
         _hyps_before_vars = lem.num in _lemma_hyps
+        _closed_hyps = _hyps_before_vars
         proof_lines = emit_proof(lem.proof, axiom_types, lemma_types,
                                  lem.formula if _hyps_before_vars else formula, consts_sorted)
         _hyps_before_vars = False
+        _closed_hyps = False
         for pl in proof_lines:
             lines.append(f'  {pl}')
         lines.append('')
 
-    # Emit goals
+    # Emit goals, whose hypotheses are each closed over their own variables
+    _closed_hyps = True
     for g in doc.goals:
         extra = chain_only_vars(g.formula, g.proof)
         type_str, var_map = lean_type(g.formula, [], extra_vars=extra)
@@ -1175,6 +1182,7 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
         for pl in proof_lines:
             lines.append(f'  {pl}')
         lines.append('')
+    _closed_hyps = False
 
     if namespace:
         lines.append(f'end {namespace}')
@@ -1557,6 +1565,10 @@ _goal_hyps: list = []
 # The lemmas stated under hypotheses, each with the goal indices of the
 # hypotheses it takes, which a citation applies it to.
 _lemma_hyps: dict = {}
+
+# while a goal or a lemma under the goal's hypotheses is rendered, every
+# hypothesis is a formula of its own, an atom included
+_closed_hyps = False
 # Whether hypotheses are introduced before the statement's variables, as a
 # lemma under hypotheses is typed.
 _hyps_before_vars = False
@@ -1665,10 +1677,9 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
         new_vars = [v for v in sv if v not in var_map]
         lit_has_new_vars = bool(new_vars)
 
-        ref = step.ref
-        if isinstance(step, HenceStep):
-            # a hence citing a Horn hypothesis uses it like an axiom
-            ref = resolve_assumption(ref, step.lit)
+        # a step citing a hypothesis by number uses it like an axiom, while an
+        # assume line restates the hypothesis itself
+        ref = resolve_assumption(step.ref, step.lit)
         ref_name = ref_lean_name(ref)
         hname = fresh_hyp()
 

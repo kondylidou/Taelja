@@ -1,10 +1,10 @@
 % SZS output start Proof
 fof(f2, axiom, ! [X0]: sum(X0, additive_identity, X0), file('Problems/RNG/RNG038-1.p')).
-fof(f18, axiom, ! [X0, X1]: (X0 != additive_identity | product(X0, h(X0, X1), X1)), file('Problems/RNG/RNG038-1.p')).
-fof(f14, axiom, ! [X2, X3, X0, X1, X6, X4, X5]: (~ product(X5, X1, X6) | ~ product(X3, X1, X4) | ~ sum(X0, X3, X5) | ~ product(X0, X1, X2) | sum(X2, X4, X6)), file('Problems/RNG/RNG038-1.p')).
 fof(f6, axiom, ! [X0]: sum(X0, additive_inverse(X0), additive_identity), file('Problems/RNG/RNG038-1.p')).
 fof(f8, axiom, ! [X2, X3, X0, X1, X4, X5]: (~ sum(X1, X3, X4) | ~ sum(X0, X1, X2) | ~ sum(X0, X4, X5) | sum(X2, X3, X5)), file('Problems/RNG/RNG038-1.p')).
+fof(f14, axiom, ! [X2, X3, X0, X1, X6, X4, X5]: (~ product(X5, X1, X6) | ~ product(X3, X1, X4) | ~ sum(X0, X3, X5) | ~ product(X0, X1, X2) | sum(X2, X4, X6)), file('Problems/RNG/RNG038-1.p')).
 fof(f16, axiom, ! [X2, X3, X0, X1]: (~ sum(X0, X1, X3) | ~ sum(X0, X1, X2) | X2 = X3), file('Problems/RNG/RNG038-1.p')).
+fof(f18, axiom, ! [X0, X1]: (X0 != additive_identity | product(X0, h(X0, X1), X1)), file('Problems/RNG/RNG038-1.p')).
 fof(s1, plain, product(additive_identity,h(additive_identity,b),b), inference(instantiate, [status(thm)], [f18])).
 fof(s2, plain, product(additive_identity,h(additive_identity,b),b), inference(instantiate, [status(thm)], [f18])).
 fof(s3, plain, sum(additive_identity,additive_identity,additive_identity), inference(instantiate, [status(thm)], [f2])).
