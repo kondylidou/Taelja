@@ -586,13 +586,18 @@ readConjecture = conclusion [] . normalizeConjecture
       -- proof assumes the negation of each literal and derives $false
       _ | Just cs <- negatedDisjuncts f -> Right (Conjecture hs cs [])
       _ -> Conjecture hs [] <$> goalAtoms False f
+    -- a $false disjunct adds nothing, and a $true one is not read here, so
+    -- the conclusion is refused as a tautology below
     negatedDisjuncts f = case collectDisjuncts (stripQuantifiers f) of
-      Just pairs | length pairs > 1 ->
+      Just pairs | length pairs > 1, not (any tautological pairs) ->
         Just [ case s of
                  T.Positive -> Clause [convertLit l] Nothing
                  T.Negative -> Clause [] (Just (convertLit l))
-             | (s, l) <- pairs ]
+             | (s, l) <- pairs, not (isReservedTLit l) ]
       _ -> Nothing
+    tautological (T.Positive, T.Predicate (T.Reserved (T.Standard T.Tautology)) []) = True
+    tautological (T.Negative, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])    = True
+    tautological _                                                                 = False
     stripQuantifiers (T.Quantified _ _ b) = stripQuantifiers b
     stripQuantifiers g                   = g
     hornImplication f = case collectDisjuncts f of
@@ -628,9 +633,11 @@ readConjecture = conclusion [] . normalizeConjecture
     goalAtoms ex f = case f of
       T.Quantified T.Exists _ b     -> goalAtoms True b
       T.Quantified T.Forall _ b     -> goalAtoms ex b
+      T.Atomic a | isReservedTLit a -> Left (refused ("its conclusion " ++ render f ++ " is a truth constant, not an atom"))
       T.Atomic a                    -> Right [a]
       T.Connected l T.Conjunction r -> (++) <$> goalAtoms ex l <*> goalAtoms ex r
       T.Connected _ T.Disjunction _
+        | maybe False (any tautological) (collectDisjuncts f) -> Left (refused ("its conclusion " ++ render f ++ " is a tautology"))
         | not (isJust (convertFOFToClause f)) -> Left (refused ("its conclusion has the disjunction " ++ render f ++ ", so its proof is a case split"))
       T.Connected _ T.Equivalence _ -> Left (refused ("its conclusion has the equivalence " ++ render f ++ ", two implications with different hypotheses"))
       _ | ex        -> Left (refused ("its conclusion has the implication " ++ render f ++ " under an existential quantifier, so its proof is a case split"))

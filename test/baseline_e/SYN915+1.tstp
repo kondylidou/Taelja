@@ -1,0 +1,18 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FUHPF-FFSF00-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+## Presaturation interreduction done
+
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+fof(truth, conjecture, $true, file('Problems/SYN/SYN915+1.p', truth)).
+fof(c_0_1, negated_conjecture, ~($true), inference(assume_negation,[status(cth)],[truth])).
+fof(c_0_2, negated_conjecture, ~$true, inference(fof_nnf,[status(thm)],[inference(fof_nnf,[status(thm)],[c_0_1])])).
+cnf(c_0_3, negated_conjecture, ($false), inference(split_conjunct,[status(thm)],[c_0_2])).
+cnf(c_0_4, negated_conjecture, ($false), inference(cn,[status(thm)],[c_0_3]), ['proof']).
+# SZS output end CNFRefutation

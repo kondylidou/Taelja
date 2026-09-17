@@ -1,0 +1,1 @@
+translation failed; heuristic stage: unsupported conjecture, its conclusion $true is a truth constant, not an atom; strict stage: unsupported conjecture, its conclusion $true is a truth constant, not an atom
