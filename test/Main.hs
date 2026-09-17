@@ -185,6 +185,9 @@ benchmarkNames =
   -- a hypothesis clause whose body equation the prover wrote the other way
   -- round and whose head stands next to a disequality
   , "KLE129+1"
+  -- the drinker, ? [Y] : ! [X] : (f(Y) => f(X)), read as f(Y) => f(X) with the
+  -- hypothesis closed and the goal universal
+  , "SYN048+1"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -277,7 +280,7 @@ eBenchmarkNames =
   -- negation step nested in a fof_simplification
   , "LCL414+1"
   , "PUZ128+1"        -- ? [X] : (C & ~D), the negation of a universal clause
-  , "SYN946+1"        -- refused, the conclusion p(Y) | r(Z) is a disjunction
+  , "SYN946+1"        -- a disjunctive conclusion p(Y) | r(Z), proved by contradiction
   ]
 
 mkTest :: String -> String -> String -> TestTree

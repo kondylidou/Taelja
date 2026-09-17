@@ -175,3 +175,5 @@ import TaeljaVerify.Twee.Syn3621
 import TaeljaVerify.Twee.Syn3871
 import TaeljaVerify.Vampire.Seu3031
 import TaeljaVerify.Vampire.Kle1291
+import TaeljaVerify.Vampire.Syn0481
+import TaeljaVerify.E.Syn9461

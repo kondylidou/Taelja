@@ -1,1 +1,8 @@
-translation failed; heuristic stage: unsupported conjecture, its conclusion has the disjunction p(X2) | r(X3), so its proof is a case split; strict stage: unsupported conjecture, its conclusion has the disjunction p(X2) | r(X3), so its proof is a case split
+Goal 1: p(X) /\ (p(esk2_0) => $false) => $false
+Proof:
+  have p(esk2_0)
+    by assumption 1
+  hence $false
+    by assumption 2
+  hence p(X) /\ (p(esk2_0) => $false) => $false
+    by discharge

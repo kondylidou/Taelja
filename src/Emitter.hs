@@ -28,6 +28,10 @@ emit sp0 = unlines $ concat
     assumptionNames = Map.fromList (zip (map axiomName (anteHyps0 ++ negHyps0)) (map axiomName hyps))
     sp       = renumberAxioms (pruneUnusedLemmas (dropHypotheses assumptionNames sp0))
 
+renameAxiomVars :: [(String, String)] -> Axiom -> Axiom
+renameAxiomVars r (AUnit n l)                 = AUnit n (renameLit r l)
+renameAxiomVars r (ANucleus n (Clause bs mh)) = ANucleus n (Clause (map (renameLit r) bs) (fmap (renameLit r) mh))
+
 setAxName :: String -> Axiom -> Axiom
 setAxName n (AUnit _ l)    = AUnit n l
 setAxName n (ANucleus _ c) = ANucleus n c
@@ -107,7 +111,7 @@ lemmaLines :: [Axiom] -> Map.Map String [String] -> (String, Literal, ProofBlock
 lemmaLines hyps deps (name, lit, block) =
   (cap name ++ ": " ++ stated) :
   "Proof:" :
-  blockLines hyps (renameBlock renaming block) ++
+  blockLines (map (renameAxiomVars renaming) hyps) (renameBlock renaming block) ++
   [ l | not (null used), l <- ["  hence " ++ stated, "    by discharge"] ] ++
   [""]
   where
@@ -126,7 +130,7 @@ goalLines :: [Axiom] -> [String] -> Int -> (Literal, ProofBlock) -> [String]
 goalLines hyps negated n (lit, block) =
   ("Goal " ++ show n ++ ": " ++ stated) :
   "Proof:" :
-  blockLines hyps (renameBlock renaming block) ++
+  blockLines (map (renameAxiomVars renaming) hyps) (renameBlock renaming block) ++
   [ l | not (null hyps), l <- ["  hence " ++ stated, "    by discharge"] ]
   where
     (negHyps, anteHyps) = partition ((`elem` negated) . axiomName) hyps
@@ -142,12 +146,14 @@ blockLines :: [Axiom] -> ProofBlock -> [String]
 blockLines hyps (HaveHence ls) = concatMap (renderLine hyps) ls
 blockLines _ (EqChain s steps) = renderEqChain s steps
 
--- A hypothesis is assumed where the proof states it as it was assumed, and
--- an instance of it is a step citing the assumption like an axiom.
+-- A hypothesis is assumed where the proof states it exactly as assumed, and
+-- an instance of it, one with the goal's variables in place of its own, is a
+-- step citing the assumption like an axiom.  The hypotheses arrive renamed
+-- like the block.
 renderLine :: [Axiom] -> ProofLine -> [String]
 renderLine hyps (Have lit nm)
   | "assumption " `isPrefixOf` nm
-  , or [ clauseKey (Clause [] (Just l)) == clauseKey (Clause [] (Just lit)) | AUnit n l <- hyps, n == nm ]
+  , or [ l == lit | AUnit n l <- hyps, n == nm ]
   = ["  assume " ++ ppLiteral lit]
 renderLine _ (Have  lit nm) = ["  have "  ++ ppLiteral lit, "    by " ++ nm]
 renderLine _ (And   lit nm) = ["   and "  ++ ppLiteral lit, "    by " ++ nm]
