@@ -519,7 +519,7 @@ isInternalUnit ue = case ueName ue of
 -- that are not TSTP and make the file unparseable.  Without markers the text
 -- is returned unchanged.
 extractSzsBlock :: String -> String
-extractSzsBlock txt = dropIntroducedParents $ typedClausesAsFormulas $
+extractSzsBlock txt = dropIntroducedParents $ typedClausesAsFormulas $ dropDistinctTypings $
   case break isStart (lines txt) of
     (_, [])        -> txt
     (_, startLine : rest) ->
@@ -536,6 +536,14 @@ extractSzsBlock txt = dropIntroducedParents $ typedClausesAsFormulas $
     isStart l = "SZS output start" `isInfixOf` l
     isEnd   l = "SZS output end"   `isInfixOf` l
     isUnit  l = any (`isPrefixOf` dropWhile (== ' ') l) ["cnf(", "fof(", "tff(", "tcf("]
+
+-- E declares a distinct object with a type, tff(d, type, "Apple": $i), which
+-- is not TPTP and which the parser rejects, and a distinct object needs no
+-- declaration, so those lines are dropped.
+dropDistinctTypings :: String -> String
+dropDistinctTypings = unlines . filter (not . distinctTyping) . lines
+  where
+    distinctTyping l = "tff(" `isPrefixOf` l && ", type, \"" `isInfixOf` l
 
 -- E writes typed clauses as tcf units, which the parser does not know, and a
 -- tcf is a tff whose formula is a clause, so they are read as tff.

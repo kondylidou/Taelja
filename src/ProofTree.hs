@@ -37,18 +37,28 @@ data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
   deriving (Show)
-maxProofUnits :: Int
-maxProofUnits = 50000
+-- A declaration with a distinct object, "Apple" say, in a term.
+usesDistinctObjects :: T.Declaration -> Bool
+usesDistinctObjects d = case d of
+  T.Formula _ (T.CNF (T.Clause lits)) -> any (litHas . snd) (toList lits)
+  T.Formula _ (T.FOF f)               -> formulaHas f
+  _                                   -> False
+  where
+    formulaHas (T.Atomic l)         = litHas l
+    formulaHas (T.Negated g)        = formulaHas g
+    formulaHas (T.Connected l _ r)  = formulaHas l || formulaHas r
+    formulaHas (T.Quantified _ _ b) = formulaHas b
+    litHas (T.Predicate _ ts) = any termHas ts
+    litHas (T.Equality a _ b) = termHas a || termHas b
+    termHas (T.DistinctTerm _) = True
+    termHas (T.Function _ ts)  = any termHas ts
+    termHas _                  = False
 -- A negated_conjecture clause that has a positive literal and only copies an
 -- input is a hypothesis the conjecture granted, listed with the axioms.  An
 -- implication conjecture negates into its hypotheses plus the negated
 -- conclusion, and only the all-negative clause is the goal.
 buildProofInfo :: [T.Unit] -> Either String ProofInfo
-buildProofInfo allUnits
-  | length allUnits > maxProofUnits =
-      Left ("the proof has " ++ show (length allUnits)
-            ++ " clauses, more than the limit of " ++ show maxProofUnits)
-  | otherwise = do
+buildProofInfo allUnits = do
   tree <- maybe (Left "the proof never derives $false") Right (buildProofTree allUnits)
   let unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
       resolve = resolveSourceName unitMap
@@ -108,6 +118,10 @@ buildProofInfo allUnits
   mapM_ (\n -> Left ("unsupported proof, clause " ++ n ++ " is not Horn"))
         (take 1 [ n | (_, n, d) <- leafRows ++ innerRows, isNonHorn d ])
   mapM_ Left (calculusViolation unitMap =<< findRoot allUnits)
+  -- distinct objects are unequal by a theory fact, not by an inference
+  mapM_ (\n -> Left ("unsupported proof, unit " ++ n
+                     ++ " uses distinct objects, whose inequality is a theory fact outside the calculus"))
+        (take 1 [ unitNameStr n | T.Unit n d _ <- allUnits, usesDistinctObjects d ])
   conjecture <- mapM readConjecture (listToMaybe (fofConjectures allUnits))
   -- prefer the original conjecture unit since provers may split or simplify
   -- it.  Without one the goal clause is the negated conjecture clause resolved

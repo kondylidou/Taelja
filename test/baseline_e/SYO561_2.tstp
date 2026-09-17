@@ -1,0 +1,19 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FUHPF-FFSF00-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+## Presaturation interreduction done
+
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+tff(decl_23, type, "Apple": $i).
+tff(decl_24, type, "Microsoft": $i).
+fof(apple_not_microsoft, conjecture, "Apple"!="Microsoft", file('Problems/SYO/SYO561_2.p', apple_not_microsoft)).
+fof(c_0_1, negated_conjecture, "Apple"="Microsoft", inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[apple_not_microsoft])])).
+cnf(c_0_2, negated_conjecture, ("Apple"="Microsoft"), inference(split_conjunct,[status(thm)],[c_0_1])).
+cnf(c_0_3, negated_conjecture, ($false), inference(cn,[status(thm)],[c_0_2]), ['proof']).
+# SZS output end CNFRefutation

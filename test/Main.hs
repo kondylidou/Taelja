@@ -282,6 +282,7 @@ eBenchmarkNames =
   , "PUZ128+1"        -- ? [X] : (C & ~D), the negation of a universal clause
   , "SYN946+1"        -- a disjunctive conclusion p(Y) | r(Z), proved by contradiction
   , "SYN915+1"        -- refused, the conjecture is $true
+  , "SYO561_2"        -- refused, "Apple" != "Microsoft" holds by distinct objects
   ]
 
 mkTest :: String -> String -> String -> TestTree
