@@ -1,5 +1,7 @@
 module TweeInterface
   ( findProver
+  , startFallbackBudget
+  , fallbackBudgetSpent
   , toTptpTerm
   , toCnfAxiom
   , toCnfNegGoal
@@ -20,12 +22,13 @@ module TweeInterface
   ) where
 
 import Control.Applicative ((<|>))
-import Data.Char (isAsciiLower, isAsciiUpper, isDigit, toUpper)
+import Data.Char (isAlphaNum, isAsciiLower, isAsciiUpper, isDigit, toUpper)
 import Data.List (intercalate, isInfixOf, isPrefixOf, nub, sortBy)
 import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
 import Control.Exception (SomeException, bracket, try)
-import Data.IORef (IORef, newIORef, readIORef, modifyIORef')
+import Data.IORef (IORef, newIORef, readIORef, modifyIORef', writeIORef)
+import GHC.Clock (getMonotonicTime)
 import Control.Monad (when)
 import System.IO.Unsafe (unsafePerformIO)
 import System.Directory (doesFileExist, findExecutable, getTemporaryDirectory, removeFile)
@@ -71,12 +74,43 @@ findProver var exe what = do
 -- timeout (readProcessWithExitCode's cleanup) and Nothing is returned.
 runProverCapped :: Int -> FilePath -> [String] -> IO (Maybe String)
 runProverCapped secs bin args = do
-  r <- timeout (secs * 1000000)
-         (try (readProcessWithExitCode bin args "")
-            :: IO (Either SomeException (ExitCode, String, String)))
-  return $ case r of
-    Just (Right (_, out, _)) -> Just out
-    _                        -> Nothing
+  deadline <- readIORef fallbackDeadline
+  now      <- getMonotonicTime
+  let remaining = deadline - now
+  if remaining <= 0
+    then writeIORef fallbackExhausted True >> return Nothing
+    else do
+      let cap = min secs (ceiling remaining)
+      r <- timeout (cap * 1000000)
+             (try (readProcessWithExitCode bin args "")
+                :: IO (Either SomeException (ExitCode, String, String)))
+      now' <- getMonotonicTime
+      when (now' >= deadline) $ writeIORef fallbackExhausted True
+      return $ case r of
+        Just (Right (_, out, _)) -> Just out
+        _                        -> Nothing
+
+-- One budget for all the Twee and E calls of a run, so that a run's length
+-- is Taelja's own work plus this, and a run that spends it says so.  A
+-- top-level translation starts it, and sub-runs share it.
+{-# NOINLINE fallbackDeadline #-}
+fallbackDeadline :: IORef Double
+fallbackDeadline = unsafePerformIO (newIORef 0)
+
+{-# NOINLINE fallbackExhausted #-}
+fallbackExhausted :: IORef Bool
+fallbackExhausted = unsafePerformIO (newIORef False)
+
+startFallbackBudget :: IO Int
+startFallbackBudget = do
+  secs <- timeoutSecsFromEnv "TAELJA_FALLBACK_TIMEOUT" 30
+  now  <- getMonotonicTime
+  writeIORef fallbackDeadline (now + fromIntegral secs)
+  writeIORef fallbackExhausted False
+  return secs
+
+fallbackBudgetSpent :: IO Bool
+fallbackBudgetSpent = readIORef fallbackExhausted
 
 -- Seconds from an environment variable, with a default when it is unset or
 -- unreadable.  Clamped to at least 1, since zero or less would fail at once or
@@ -146,15 +180,13 @@ tptpSafeName [] = False
 tptpSafeName nm = bareName nm || not (any (`elem` "'\\") nm)
 
 -- Names that need no quotes.
+-- A name needs no quoting when it is a lower word, which is not read back as
+-- a variable or a number.  A string of digits is quoted, since Taelja has no
+-- arithmetic and a constant such as LCL's '0' is an atom, which Twee must
+-- see as the same symbol in the axioms and in the goal.
 bareName :: String -> Bool
-bareName []         = False
-bareName nm@(c : cs)
-  -- an integer literal is a term in its own right and needs no quoting
-  | all isDigit nm                        = True
-  | c == '-', not (null cs), all isDigit cs = True
-  -- Anything else must be an unquoted atom with a lowercase initial, so it is
-  -- not read back as a variable, and no character that would end the token.
-  | otherwise = isAsciiLower c
+bareName []       = False
+bareName (c : cs) = isAsciiLower c && all (\x -> isAlphaNum x || x == '_') cs
                 && all (\ch -> isAsciiLower ch || isAsciiUpper ch || isDigit ch || ch == '_') cs
 
 tptpSafeTerm :: Term -> Bool

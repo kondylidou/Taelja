@@ -9,9 +9,11 @@ module Debug
   , ppSimplChain
   , dbg
   , dbgScoped
+  , subrunDepth
   ) where
 
 import Data.List (intercalate, nub, sort, sortBy)
+import Control.Exception (finally)
 import Data.IORef (IORef, newIORef, readIORef, modifyIORef')
 import System.IO.Unsafe (unsafePerformIO)
 import Data.List.NonEmpty (NonEmpty, toList)
@@ -255,11 +257,14 @@ ppSimplChain ss = intercalate ", " [n ++ "(" ++ ppDir d ++ ")" | (n, d) <- ss]
 
 -- Nesting depth of recursive sub-translations.  A sub-run reuses E's clause
 -- names and position strings, so a flat trace cannot tell which run a name
--- belongs to.  Every debug line is tagged with its depth instead.  This
--- affects only debug output.
+-- belongs to.  Every debug line is tagged with its depth, and the lemma
+-- builder reads it to keep prover re-proofs to the outermost run.
 {-# NOINLINE debugDepthRef #-}
 debugDepthRef :: IORef Int
 debugDepthRef = unsafePerformIO (newIORef 0)
+
+subrunDepth :: IO Int
+subrunDepth = readIORef debugDepthRef
 
 dbg :: Bool -> String -> IO ()
 dbg True  msg = do
@@ -273,7 +278,8 @@ dbgScoped :: Bool -> String -> IO a -> IO a
 dbgScoped debug label act = do
   modifyIORef' debugDepthRef (+ 1)
   dbg debug ("[subrun-enter] " ++ label)
-  r <- act
+  -- a sub-run that throws still leaves its level, or every later run in the
+  -- process would count as nested
+  r <- act `finally` modifyIORef' debugDepthRef (subtract 1)
   dbg debug ("[subrun-exit] " ++ label)
-  modifyIORef' debugDepthRef (subtract 1)
   return r

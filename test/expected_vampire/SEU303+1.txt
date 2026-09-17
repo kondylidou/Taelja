@@ -1,0 +1,24 @@
+Axiom 1: relation(X) => relation_image(X,relation_dom(X)) = relation_rng(X)
+Axiom 2: relation(Y) /\ function(Y) /\ finite(X) => finite(relation_image(Y,X))
+
+Lemma 3: relation(sK1) => relation_image(sK1,relation_dom(sK1)) = relation_rng(sK1)
+Proof:
+  assume relation(sK1)
+  hence relation_image(sK1,relation_dom(sK1)) = relation_rng(sK1)
+    by axiom 1
+  hence relation(sK1) => relation_image(sK1,relation_dom(sK1)) = relation_rng(sK1)
+    by discharge
+
+Goal 1: function(sK1) /\ relation(sK1) /\ finite(relation_dom(sK1)) => finite(relation_rng(sK1))
+Proof:
+  assume relation(sK1)
+   and function(sK1)
+    by assumption 1
+   and finite(relation_dom(sK1))
+    by assumption 3
+  hence finite(relation_image(sK1,relation_dom(sK1)))
+    by axiom 2
+  hence finite(relation_rng(sK1))
+    by rw lemma 3
+  hence function(sK1) /\ relation(sK1) /\ finite(relation_dom(sK1)) => finite(relation_rng(sK1))
+    by discharge

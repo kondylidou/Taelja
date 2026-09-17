@@ -71,5 +71,8 @@ fof(s46, plain, product(d,multiply(b,a),d), inference(rewrite, [status(thm)], [l
 fof(s47, plain, product(d,d,d), inference(rewrite, [status(thm)], [f26, s46])).
 fof(lemma_24, lemma, product(a,d,d), inference(rewrite, [status(thm)], [lemma_17, s47])).
 fof(s48, plain, b = d, inference(mp, [status(thm)], [f17, lemma_24, lemma_23])).
-fof(goal_1, theorem, c = d, inference(rewrite, [status(thm)], [lemma_19, s48])).
+fof(lemma_25, lemma, b = a, inference(rewrite, [status(thm)], [lemma_17, s48])).
+fof(s49, plain, c = b, inference(instantiate, [status(thm)], [lemma_19])).
+fof(s50, plain, c = a, inference(rewrite, [status(thm)], [lemma_25, s49])).
+fof(goal_1, theorem, c = d, inference(rewrite, [status(thm)], [lemma_17, s50])).
 % SZS output end Proof

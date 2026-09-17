@@ -5,12 +5,15 @@ module LemmaBuilder
   , buildCandidateLemma
   , buildCandidateLemmaSubDagOnly
   , buildCandidateLemmaReprove
+  , clearLemmaCache
   , BuiltLemma
   , makeFileSourced
   ) where
 
 import Control.Monad (when)
 import Control.Applicative ((<|>))
+import Data.IORef (IORef, modifyIORef', newIORef, readIORef, writeIORef)
+import System.IO.Unsafe (unsafePerformIO)
 import Data.List (intercalate, nub)
 import Data.Maybe (isJust, listToMaybe, mapMaybe, maybeToList)
 import Data.Attoparsec.Text (eitherResult, feed)
@@ -28,7 +31,7 @@ import Helpers
   , extractSzsBlock, isEmptyBlock, isEqLit, litVars, renameRefsBlock
   , unitEquation
   )
-import Debug (dbgScoped)
+import Debug (dbgScoped, subrunDepth)
 import ProofTree (headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
 import TptpConvert
 import TweeInterface (TweeBudget (..), callTwee, findProver, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
@@ -237,14 +240,35 @@ buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
             , Just dn <- [Map.lookup (resolveCopySource unitMap aname) bySource]
             ]
           nameOvr   = Map.union (lemmaNameOverrides bodyLits_sk tstp2name) resolvedOvr
-      when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG for " ++ cname ++ ":\n" ++ content)
-      case eitherResult (feed (parseTSTP (Text.pack content)) mempty) of
-        Left err -> do
-          when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG parse error: " ++ err)
-          return Nothing
-        Right tstp -> do
-          msp <- dbgScoped debug ("sub-DAG for " ++ cname) (translateFn nameOvr debug tstp)
-          return (msp >>= liftSubProof nameOvr cname lit undoMap)
+          key       = (content, Map.toList nameOvr)
+      -- the same sub-DAG under the same names is asked for from every sub-run
+      -- that needs the unit, and its translation is the same each time
+      cache <- readIORef subDagCache
+      case Map.lookup key cache of
+        Just r -> do
+          when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG for " ++ cname ++ " cached")
+          return r
+        Nothing -> do
+          when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG for " ++ cname ++ ":\n" ++ content)
+          r <- case eitherResult (feed (parseTSTP (Text.pack content)) mempty) of
+            Left err -> do
+              when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG parse error: " ++ err)
+              return Nothing
+            Right tstp -> do
+              msp <- dbgScoped debug ("sub-DAG for " ++ cname) (translateFn nameOvr debug tstp)
+              return (msp >>= liftSubProof nameOvr cname lit undoMap)
+          modifyIORef' subDagCache (Map.insert key r)
+          return r
+
+-- Sub-DAG translations of one top-level run, keyed by the sub-problem text
+-- and the outer names it uses.  Cleared when a top-level run starts, since
+-- the stages translate differently.
+{-# NOINLINE subDagCache #-}
+subDagCache :: IORef (Map.Map (String, [(String, String)]) (Maybe BuiltLemma))
+subDagCache = unsafePerformIO (newIORef Map.empty)
+
+clearLemmaCache :: IO ()
+clearLemmaCache = writeIORef subDagCache Map.empty
 
 -- Turn the recursive translation of a candidate into an outer lemma.  The goal
 -- block becomes the lemma's proof, and the sub-lemmas are renamed apart and
@@ -293,6 +317,16 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
         ("buildCandidateLemma: prover path skipped for " ++ cname ++ " (synthetic name collision)")
       return Nothing
   | otherwise = do
+   depth <- subrunDepth
+   -- a prover sub-proof introduces fresh units, so one inside a sub-run
+   -- would nest without a termination measure, and only the outermost run
+   -- asks the prover
+   if depth > 0
+    then do
+      when debug $ hPutStrLn stderr
+        ("buildCandidateLemma: prover path skipped for " ++ cname ++ " inside a sub-run")
+      return Nothing
+    else do
       let ancNames = ancestorNamesOf unitMap cname
           dispNameOf aname =
             Map.lookup (resolveSourceName unitMap aname) tstp2name

@@ -36,7 +36,7 @@ import TptpConvert
 import TweeInterface
 import LemmaBuilder
 import Theta (ThetaCtx (..), computeNucleusTheta, sharedNodeTheta, resolutionCoherent, derivedHead, explainStatus)
-import Debug (dbg, ppLitI, ppClauseI, ppSimplChain)
+import Debug (dbg, ppLitI, ppClauseI, ppSimplChain, subrunDepth)
 
 -- Rescue mode re-proves derived units mid-translation and retries ancestors
 -- broadly.  It is off for the first attempt, so successful translations are
@@ -123,6 +123,7 @@ translateStages mode debug tstp@(T.TSTP _ units) =
 translateUntyped :: StageMode -> Bool -> T.TSTP -> IO (Either String StructuredProof)
 translateUntyped mode debug tstp = do
   writeIORef rescueEnabled False
+  fallbackSecs <- startFallbackBudget
   r1@(mRes1, errH1, errS1) <- runStages
   (mRes, errH, errS) <- case mRes1 of
     Just _  -> return r1
@@ -140,7 +141,9 @@ translateUntyped mode debug tstp = do
         Nothing -> (Nothing, errH2 <|> errH1, errS2 <|> errS1)
   -- both attempts produced nothing, so name the failures to make the run
   -- diagnosable without --debug
+  spent <- fallbackBudgetSpent
   let failure = "translation failed"
+        ++ (if spent then "; the fallback budget of " ++ show fallbackSecs ++ " s for Twee and E calls is spent" else "")
         ++ maybe "" ("; heuristic stage: " ++) errH
         ++ maybe "" ("; strict stage: " ++) errS
   return (maybe (Left failure) Right mRes)
@@ -180,6 +183,8 @@ translateUntyped mode debug tstp = do
 -- inside a lemma is still listed.
 translateMode :: Bool -> Bool -> T.TSTP -> IO (Either String StructuredProof)
 translateMode strict debug (T.TSTP _ units) = do
+  depth <- subrunDepth
+  when (depth == 0) clearLemmaCache
   case buildProofInfo units of
     Left reason -> return (Left reason)
     Right origInfo -> do
@@ -631,19 +636,28 @@ citeChainSteps = mapM cite
       let eqLit = uncurry Eq (rwEq rw)
           variantOf a b = isJust (matchLit a b) && isJust (matchLit b a)
           -- a named unit stating this equation (either orientation)
-          named = listToMaybe [ nm | u <- units
-                                   , variantOf (ueUnit u) eqLit || variantOf (ueUnit u) (flipLit eqLit)
-                                   , Just nm <- [ueName u] ]
+          isVariant u = variantOf (ueUnit u) eqLit || variantOf (ueUnit u) (flipLit eqLit)
+          named = listToMaybe [ u | u <- units, isVariant u, isJust (ueName u) ]
+          -- a derived unit proved under the nucleus that produced it, possibly
+          -- the other way round from the prover's own statement of it
+          proved = listToMaybe [ u | u <- units, isVariant u, isJust (ueProof u) ]
+          -- the step's direction is read against the cited statement
+          oriented u nm
+            | variantOf (ueUnit u) eqLit = rw { rwName = nm }
+            | otherwise = rw { rwName = nm, rwEq = (snd (rwEq rw), fst (rwEq rw)), rwDir = flipDir (rwDir rw) }
       case named of
-        Just nm | nm == rwName rw -> return (rw, c)
-        Just nm -> return (rw { rwName = nm }, c)
-        Nothing -> do
-          nameToPos <- gets stNameToPos
-          case Map.lookup (rwName rw) nameToPos >>= \p -> find ((== Just p) . uePos) units of
-            Nothing -> throwError ("rewrite step cites an unknown unit: " ++ rwName rw)
-            Just u  -> do
-              nm <- ensureNamed (ueUnit u) (makeBlock u [] [])
-              return (rw { rwName = nm }, c)
+        Just u | Just nm <- ueName u -> return (oriented u nm, c)
+        _ -> case proved of
+          Just u -> do
+            nm <- ensureNamed (ueUnit u) (makeBlock u [] [])
+            return (oriented u nm, c)
+          Nothing -> do
+            nameToPos <- gets stNameToPos
+            case Map.lookup (rwName rw) nameToPos >>= \p -> find ((== Just p) . uePos) units of
+              Nothing -> throwError ("rewrite step cites an unknown unit: " ++ rwName rw)
+              Just u  -> do
+                nm <- ensureNamed (ueUnit u) (makeBlock u [] [])
+                return (rw { rwName = nm }, c)
 
 -- raw derived electrons with no proof are excluded since Twee cannot justify them later
 tweableUnits :: [UnitEntry] -> [UnitEntry]

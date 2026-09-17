@@ -200,13 +200,19 @@ theorem taelja_lemma24 : product a d d := by
   rw (config := { occs := .pos [1] }) [← h_rw]
   apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
 
--- Goal 1
-theorem taelja_goal1 : c = d := by
+-- Lemma 25
+theorem taelja_lemma25 : b = a := by
   have h1 : product a d d := by first | (exact taelja_lemma24) | (first | apply taelja_lemma24 <;> first | rfl | assumption)
   have h2 : product a d b := by first | (exact taelja_lemma23) | (first | apply taelja_lemma23 <;> first | rfl | assumption)
   have h3 : b = d := by first | (exact ax5 b a d d h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : c = d := by have h_rw := taelja_lemma19; rw [←h_rw]; exact h3
+  have h4 : b = a := by have h_rw := taelja_lemma17; rw [h_rw]; exact h3
   exact h4
+
+-- Goal 1
+theorem taelja_goal1 : c = d := by
+  calc c = b := by have h_rw := taelja_lemma19; rw [h_rw]
+      _ = a := by have h_rw := taelja_lemma25; rw [h_rw]
+      _ = d := by have h_rw := taelja_lemma17; rw [h_rw]
 
 end VampireRng0391
 

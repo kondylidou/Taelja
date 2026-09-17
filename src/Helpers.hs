@@ -409,16 +409,18 @@ clauseInstance :: Clause -> Clause -> Bool
 clauseInstance (Clause bs1 h1) (Clause bs2 h2) =
   length bs1 == length bs2 && isJust (do
     σ <- case (h1, h2) of
-      (Just a, Just b)   -> matchLitWith a b []
+      (Just a, Just b)   -> matchEither a b []
       (Nothing, Nothing) -> Just []
       _                  -> Nothing
     bodies bs1 bs2 σ)
   where
     bodies [] [] σ = Just σ
     bodies (a : as) bs σ = listToMaybe
-      [ σ'' | (b, rest) <- picks bs, Just σ' <- [matchLitWith a b σ], Just σ'' <- [bodies as rest σ'] ]
+      [ σ'' | (b, rest) <- picks bs, Just σ' <- [matchEither a b σ], Just σ'' <- [bodies as rest σ'] ]
     bodies _ _ _ = Nothing
     picks xs = [ (x, before ++ after) | (before, x : after) <- zip (inits xs) (tails xs) ]
+    -- an equation is the same literal either way round
+    matchEither a b σ = matchLitWith a b σ <|> matchLitWith (flipLit a) b σ
 
 -- Flip an equation, used to try both orientations while matching.
 flipLit :: Literal -> Literal

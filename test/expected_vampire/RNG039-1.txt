@@ -190,7 +190,7 @@ Proof:
 = { by axiom 3 }
   true
 
-Goal 1: c = d
+Lemma 25: b = a
 Proof:
   have product(a,d,d)
     by lemma 24
@@ -198,5 +198,15 @@ Proof:
     by lemma 23
   hence b = d
     by axiom 5
-  hence c = d
-    by rw lemma 19
+  hence b = a
+    by rw lemma 17 R->L
+
+Goal 1: c = d
+Proof:
+  c
+= { by lemma 19 R->L }
+  b
+= { by lemma 25 }
+  a
+= { by lemma 17 }
+  d

@@ -35,7 +35,8 @@ Output layout
   <out>/results.csv
 
 prove is ok, timeout or fail.
-taelja is ok, timeout, fail, unsupported, or - when not attempted.
+taelja is ok, timeout, fail, unsupported, budget (the Twee and E call budget was
+  spent), or - when not attempted.
 """
 
 import argparse
@@ -287,6 +288,8 @@ def _read_taelja_status(out, p_file):
         return 'timeout'
     if 'unsupported proof' in err or 'unsupported conjecture' in err:
         return 'unsupported'
+    if 'fallback budget' in err:
+        return 'budget'
     if txt.strip() and _only_warnings(err) and not _has_empty_proof(txt) and not _has_fatal_warning(err):
         if _goal_matches_conjecture(txt, p_file):
             # Drop a stale '[eval] ...' note left by an earlier, buggier check.
@@ -390,6 +393,8 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
         result['taelja'] = 'timeout'
     elif 'unsupported proof' in err or 'unsupported conjecture' in err:
         result['taelja'] = 'unsupported'
+    elif 'fallback budget' in err:
+        result['taelja'] = 'budget'
     elif rc == 0 and proof.strip() and _only_warnings(err) and not _has_empty_proof(proof) and not _has_fatal_warning(err):
         if _goal_matches_conjecture(proof, p_file):
             result['taelja'] = 'ok'
@@ -553,6 +558,8 @@ def main():
         txt = (p / 'taelja.txt').read_text().strip() if (p / 'taelja.txt').exists() else ''
         if r['taelja'] == 'timeout' or 'TIMEOUT' in err:
             key = 'TIMEOUT (Taelja)'
+        elif r['taelja'] == 'budget':
+            key = 'fallback budget spent (Twee and E calls)'
         elif 'no unit found for goal' in err:
             key = 'no unit found for goal'
         elif 'no proof found for goal' in err:
@@ -604,7 +611,7 @@ def main():
 def _print_summary(results, provers, lean_col, categories=CATEGORIES):
     # Header columns Category Prover Total Proved Unsupp Transl Fail and Lean
     hdr = (f"{'Category':8s}  {'Prover':7s}  {'Total':>6s}  "
-           f"{'Proved':>6s}  {'Unsupp':>6s}  {'Transl':>6s}  {'Fail':>6s}  {'TFail':>6s}"
+           f"{'Proved':>6s}  {'Unsupp':>6s}  {'Transl':>6s}  {'Fail':>6s}  {'Budget':>6s}  {'TFail':>6s}"
            + (f"  {'Lean':>6s}" if lean_col else ''))
     print(hdr)
     print('-' * len(hdr))
@@ -625,12 +632,13 @@ def _print_summary(results, provers, lean_col, categories=CATEGORIES):
             translated  = sum(1 for r in sub if r['taelja'] == 'ok')
             failed      = sum(1 for r in sub if r['prove'] == 'ok'
                               and r['taelja'] in ('fail', 'timeout'))
+            budget      = sum(1 for r in sub if r['taelja'] == 'budget')
             tfail       = sum(1 for r in sub if r['prove'] == 'tfail')
             lean        = sum(1 for r in sub if r.get('lean') == 'ok')
 
             cat_col = cat if prover in (prover_list[0], 'ALL') else ''
             row = (f"{cat_col:8s}  {prover:7s}  {n:6d}  "
-                   f"{proved:6d}  {unsupported:6d}  {translated:6d}  {failed:6d}  {tfail:6d}")
+                   f"{proved:6d}  {unsupported:6d}  {translated:6d}  {failed:6d}  {budget:6d}  {tfail:6d}")
             if lean_col:
                 row += f"  {lean:6d}"
             print(row)

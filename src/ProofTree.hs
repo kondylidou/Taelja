@@ -32,7 +32,7 @@ import Types
 import Helpers (applySubst, applySubstTerm, clauseInstance, deepApplySubstTerm, flipLit, litSubtermCtxs,
                 mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
                 unifyLits, unifyTerms)
-import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertFOFToClause, isReservedTLit)
+import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertFOFToClause, convertLit, isReservedTLit)
 data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
@@ -517,16 +517,16 @@ isNegConj _                                              = False
 -- grant is the negated conclusion, the goal.
 isConjHypothesis :: [Clause] -> Map.Map String T.Unit -> String -> T.Declaration -> Bool
 isConjHypothesis granted unitMap name decl =
-  (hasHead (headLitOf decl) || grantedClause)
+  (hasHead || grantedClause)
   && (isNegConj decl || csNeg)
   && (Map.notMember cs unitMap || isFileSrc unitMap cs || csNeg)
   where
     cs    = resolveCopySource unitMap name
     csNeg = maybe False isNegConj (lookupDecl unitMap cs)
-    -- a disequality is a negated goal, not a head
-    hasHead (Just (T.Equality _ T.Negative _)) = False
-    hasHead h                                  = isJust h
-    grantedClause = maybe False (\c -> any (`clauseInstance` c) granted) (convertDeclToClause decl)
+    -- the clause's head, where a disequality is a negated goal, not a head
+    clause  = convertDeclToClause decl
+    hasHead = maybe False (isJust . hd) clause
+    grantedClause = maybe False (\c -> any (`clauseInstance` c) granted) clause
 
 -- Such a clause was assumed by an implication conjecture only when the
 -- negated conjecture it copies was derived by negating one.  A problem that
@@ -554,6 +554,13 @@ readConjecture = conclusion [] . normalizeConjecture
   where
     conclusion hs f = case f of
       T.Quantified T.Forall _ b     -> conclusion hs b
+      -- ? Y ! X (A(Y) => B(X)) is proved by the Horn refutation of
+      -- (! Y A(Y)) => (! X B(X)), which implies it, since with every Y
+      -- satisfying A every X satisfies B, and otherwise a Y with ~A(Y) is the
+      -- witness.  So an existential over an implication is read as the
+      -- implication with a closed hypothesis and a universal goal.
+      T.Quantified T.Exists _ b@(T.Connected _ T.Implication _) -> conclusion hs b
+      T.Quantified T.Exists _ b@(T.Quantified T.Forall _ (T.Connected _ T.Implication _)) -> conclusion hs b
       T.Connected l T.Implication r -> do
         cs <- hypotheses l
         conclusion (hs ++ cs) r
@@ -575,7 +582,19 @@ readConjecture = conclusion [] . normalizeConjecture
       -- a conclusion written as a Horn clause, ~A | B, is the implication
       -- A => B, and an all-negative one, ~A | ~B, the negation ~(A & B)
       T.Connected _ T.Disjunction _ | Just g <- hornImplication f -> conclusion hs g
+      -- any other disjunction of literals, A | B, is ~(~A & ~B), so its
+      -- proof assumes the negation of each literal and derives $false
+      _ | Just cs <- negatedDisjuncts f -> Right (Conjecture hs cs [])
       _ -> Conjecture hs [] <$> goalAtoms False f
+    negatedDisjuncts f = case collectDisjuncts (stripQuantifiers f) of
+      Just pairs | length pairs > 1 ->
+        Just [ case s of
+                 T.Positive -> Clause [convertLit l] Nothing
+                 T.Negative -> Clause [] (Just (convertLit l))
+             | (s, l) <- pairs ]
+      _ -> Nothing
+    stripQuantifiers (T.Quantified _ _ b) = stripQuantifiers b
+    stripQuantifiers g                   = g
     hornImplication f = case collectDisjuncts f of
       Just pairs | body@(_ : _) <- [ T.Atomic l | (T.Negative, l) <- pairs ] ->
         let conj = foldr1 (\l r -> T.Connected l T.Conjunction r) body
@@ -874,7 +893,7 @@ demodChainsForLeaves resolveName tree0 =
             then (seenElec, seenInner, Map.empty)
             else (Set.insert n seenElec, seenInner, Map.singleton pos [])
       | otherwise = (seenElec, seenInner, Map.singleton pos [])
-    go pos (PTNode n _ rule [l, r]) seenElec seenInner
+    go pos (PTNode n nd rule [l, r]) seenElec seenInner
       | n /= "?" && Set.member n seenInner = (seenElec, seenInner, Map.empty)
       | isDemodRule rule && isDemodApplicationTo rule r =
           let eqName = resolveName (treeName l)
@@ -885,6 +904,15 @@ demodChainsForLeaves resolveName tree0 =
               (se'', si'', rMap) = go (pos ++ "1") r se' si'
               si''' = if n /= "?" then Set.insert n si'' else si''
           in  (se'', si''', Map.union lMap (Map.map ((eqName, dir) :) rMap))
+      -- a superposition of a unit equation into the head of a clause is a
+      -- demodulation of that clause, in the direction that yields the
+      -- derived head
+      | isSuperpositionRule rule, Just (eqT, clT, eqPos, clPos, dir) <- superpositionInto nd l r =
+          let eqName = resolveName (treeName eqT)
+              (se',  si',  eMap) = go (pos ++ eqPos) eqT seenElec seenInner
+              (se'', si'', cMap) = go (pos ++ clPos) clT se' si'
+              si''' = if n /= "?" then Set.insert n si'' else si''
+          in  (se'', si''', Map.union eMap (Map.map ((eqName, dir) :) cMap))
       | otherwise =
           let (se',  si',  lMap) = go (pos ++ "0") l seenElec seenInner
               (se'', si'', rMap) = go (pos ++ "1") r se' si'
@@ -917,6 +945,26 @@ demodChainsForLeaves resolveName tree0 =
     ptDecl (PTLeaf _ d)     = d
     ptDecl (PTNode _ d _ _) = d
     isDemodRule r = Set.member r demodRuleNames
+    isSuperpositionRule r = r `elem` map Text.pack ["superposition", "paramodulation", "spm", "pm"]
+    unitEquation t = isPositiveUnitFormula (ptDecl t)
+                     && case headLitOf (ptDecl t) of { Just (T.Equality {}) -> True; _ -> False }
+    superpositionInto nd l r
+      | unitEquation l, not (isPositiveUnitFormula (ptDecl r)), Just d <- headRewrite nd l r = Just (l, r, "0", "1", d)
+      | unitEquation r, not (isPositiveUnitFormula (ptDecl l)), Just d <- headRewrite nd r l = Just (r, l, "1", "0", d)
+      | otherwise = Nothing
+    -- the direction in which the equation, unified with a subterm of the
+    -- clause's head, turns that head into the derived clause's head
+    headRewrite nd eqT clT = do
+      eqL    <- convertLit <$> headLitOf (ptDecl eqT)
+      (a, b) <- case eqL of { Eq x y -> Just (x, y); _ -> Nothing }
+      h      <- convertLit <$> headLitOf (ptDecl clT)
+      target <- convertLit <$> headLitOf nd
+      listToMaybe
+        [ d | (d, from, to) <- [(LR, a, b), (RL, b, a)]
+            , (sub, rebuild) <- litSubtermCtxs h
+            , Just σ <- [unifyTerms sub from []]
+            , let h' = applySubst σ (rebuild (applySubstTerm σ to))
+            , isJust (matchLit h' target), isJust (matchLit target h') ]
     treeName (PTLeaf n _)     = n
     treeName (PTNode n _ _ _) = n
 demodRuleNames :: Set.Set Text.Text

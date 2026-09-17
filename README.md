@@ -97,7 +97,9 @@ Taelja looks for each prover at its variable if set (`TAELJA_TWEE`,
 directory, then on the PATH, and says once on stderr when one is missing.
 Without Twee the rewrite steps the refutation does not justify itself are left
 unproved, and without E derived clauses used more than once are inlined rather
-than proved as lemmas.
+than proved as lemmas. All Twee and E calls of one run share a time budget,
+`TAELJA_FALLBACK_TIMEOUT` seconds (30 by default); a run that spends it stops
+and says so.
 
 Tested with E 3.2.5.
 

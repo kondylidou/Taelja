@@ -5,13 +5,13 @@ Axiom 4: sorti2(X) /\ op2(X,X) = X /\ sorti2(Y) => op2(Y,Y) = Y
 Axiom 5: sorti1(X) /\ sorti1(Y) => sorti1(op1(X,Y))
 Axiom 6: sK1 = op1(sK1,sK1) => $false
 
-Lemma 7: (sorti1(X) => j(h(X)) = X) => sK1 = j(h(sK1))
+Lemma 7: (sorti1(X) => j(h(X)) = X) => j(h(sK1)) = sK1
 Proof:
   have sorti1(sK1)
     by axiom 1
-  hence sK1 = j(h(sK1))
+  hence j(h(sK1)) = sK1
     by assumption 2
-  hence (sorti1(X) => j(h(X)) = X) => sK1 = j(h(sK1))
+  hence (sorti1(X) => j(h(X)) = X) => j(h(sK1)) = sK1
     by discharge
 
 Lemma 8: (sorti1(X) => sorti2(h(X))) /\ (sorti1(Y) => j(h(Y)) = Y) => sorti2(h(sK1))
@@ -21,9 +21,9 @@ Proof:
   hence sorti2(h(sK1))
     by assumption 1
   hence sorti2(h(j(h(sK1))))
-    by rw lemma 7
-  hence sorti2(h(sK1))
     by rw lemma 7 R->L
+  hence sorti2(h(sK1))
+    by rw lemma 7
   hence (sorti1(X) => sorti2(h(X))) /\ (sorti1(Y) => j(h(Y)) = Y) => sorti2(h(sK1))
     by discharge
 
@@ -53,7 +53,7 @@ Proof:
   hence op2(h(sK1),h(sK1)) = h(sK1)
     by axiom 4
   hence op2(h(j(h(sK1))),h(sK1)) = h(sK1)
-    by rw lemma 7
+    by rw lemma 7 R->L
   hence (sorti1(X) => sorti2(h(X))) /\ (sorti1(Y) => j(h(Y)) = Y) /\ (sorti1(Z) /\ sorti1(A) => h(op1(A,Z)) = op2(h(A),h(Z))) => op2(h(j(h(sK1))),h(sK1)) = h(sK1)
     by discharge
 
@@ -66,7 +66,7 @@ Proof:
   hence h(op1(sK1,sK1)) = op2(h(sK1),h(sK1))
     by assumption 3
   hence h(op1(j(h(sK1)),sK1)) = op2(h(sK1),h(sK1))
-    by rw lemma 7
+    by rw lemma 7 R->L
   hence (sorti1(X) => j(h(X)) = X) /\ (sorti1(Y) /\ sorti1(Z) => h(op1(Z,Y)) = op2(h(Z),h(Y))) => h(op1(j(h(sK1)),sK1)) = op2(h(sK1),h(sK1))
     by discharge
 
@@ -86,15 +86,15 @@ Proof:
 Lemma 13: (sorti1(X) => sorti2(h(X))) /\ (sorti1(Y) => j(h(Y)) = Y) /\ (sorti1(Z) /\ sorti1(A) => h(op1(A,Z)) = op2(h(A),h(Z))) => sK1 = op1(sK1,sK1)
 Proof:
   sK1
-= { by lemma 7 }
+= { by lemma 7 R->L }
   j(h(sK1))
 = { by lemma 10 R->L }
   j(op2(h(j(h(sK1))),h(sK1)))
-= { by lemma 7 R->L }
+= { by lemma 7 }
   j(op2(h(sK1),h(sK1)))
 = { by lemma 11 R->L }
   j(h(op1(j(h(sK1)),sK1)))
-= { by lemma 7 R->L }
+= { by lemma 7 }
   j(h(op1(sK1,sK1)))
 = { by lemma 12 }
   op1(sK1,sK1)

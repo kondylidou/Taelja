@@ -179,6 +179,12 @@ benchmarkNames =
   -- again in the stated goal
   , "GRP656+1"
   , "ALG203+1"        -- a negated disequality ~(a != b) in a clause, read as a = b
+  -- a superposition of a derived equation into an axiom, replayed as a
+  -- rewrite of the axiom's head
+  , "SEU303+1"
+  -- a hypothesis clause whose body equation the prover wrote the other way
+  -- round and whose head stands next to a disequality
+  , "KLE129+1"
   ]
 
 -- Benchmarks for which an E prover output exists.

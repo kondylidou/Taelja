@@ -1,0 +1,79 @@
+Axiom 1: addition(X,X) = X
+Axiom 2: forward_diamond(X,divergence(X)) = divergence(X)
+Axiom 3: domain(X) = antidomain(antidomain(X))
+Axiom 4: forward_diamond(X,Y) = domain(multiplication(X,domain(Y)))
+
+Lemma 5: forward_diamond(X,Y) = antidomain(antidomain(multiplication(X,antidomain(antidomain(Y)))))
+Proof:
+  forward_diamond(X,Y)
+= { by axiom 4 }
+  domain(multiplication(X,domain(Y)))
+= { by axiom 3 }
+  antidomain(antidomain(multiplication(X,domain(Y))))
+= { by axiom 3 }
+  antidomain(antidomain(multiplication(X,antidomain(antidomain(Y)))))
+
+Lemma 6: antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))) = addition(divergence(sK0),antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))))
+Proof:
+  antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0))))))
+= { by lemma 5 R->L }
+  forward_diamond(sK0,divergence(sK0))
+= { by axiom 2 }
+  divergence(sK0)
+= { by axiom 1 R->L }
+  addition(divergence(sK0),divergence(sK0))
+= { by axiom 2 R->L }
+  addition(divergence(sK0),forward_diamond(sK0,divergence(sK0)))
+= { by lemma 5 }
+  addition(divergence(sK0),antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))))
+
+Lemma 7: forward_diamond(sK0,domain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))) = addition(domain(multiplication(sK0,antidomain(antidomain(divergence(sK0))))),forward_diamond(sK0,domain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))))
+Proof:
+  forward_diamond(sK0,domain(multiplication(sK0,antidomain(antidomain(divergence(sK0))))))
+= { by axiom 3 }
+  forward_diamond(sK0,antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))))
+= { by lemma 5 R->L }
+  forward_diamond(sK0,forward_diamond(sK0,divergence(sK0)))
+= { by axiom 2 }
+  forward_diamond(sK0,divergence(sK0))
+= { by lemma 5 }
+  antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0))))))
+= { by lemma 6 }
+  addition(divergence(sK0),antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))))
+= { by lemma 5 R->L }
+  addition(divergence(sK0),forward_diamond(sK0,divergence(sK0)))
+= { by axiom 2 R->L }
+  addition(forward_diamond(sK0,divergence(sK0)),forward_diamond(sK0,divergence(sK0)))
+= { by axiom 2 R->L }
+  addition(forward_diamond(sK0,divergence(sK0)),forward_diamond(sK0,forward_diamond(sK0,divergence(sK0))))
+= { by lemma 5 }
+  addition(antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))),forward_diamond(sK0,forward_diamond(sK0,divergence(sK0))))
+= { by lemma 5 }
+  addition(antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))),forward_diamond(sK0,antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0))))))))
+= { by axiom 3 R->L }
+  addition(domain(multiplication(sK0,antidomain(antidomain(divergence(sK0))))),forward_diamond(sK0,antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0))))))))
+= { by axiom 3 R->L }
+  addition(domain(multiplication(sK0,antidomain(antidomain(divergence(sK0))))),forward_diamond(sK0,domain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))))
+
+Lemma 8: (forward_diamond(sK0,domain(X)) = addition(domain(X),forward_diamond(sK0,domain(X))) => zero = domain(X)) => zero = domain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))
+Proof:
+  have forward_diamond(sK0,domain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))) = addition(domain(multiplication(sK0,antidomain(antidomain(divergence(sK0))))),forward_diamond(sK0,domain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))))
+    by lemma 7
+  hence zero = domain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))
+    by assumption 1
+  hence (forward_diamond(sK0,domain(X)) = addition(domain(X),forward_diamond(sK0,domain(X))) => zero = domain(X)) => zero = domain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))
+    by discharge
+
+Goal 1: (forward_diamond(sK0,domain(X)) = addition(domain(X),forward_diamond(sK0,domain(X))) => zero = domain(X)) => divergence(sK0) = zero
+Proof:
+  divergence(sK0)
+= { by axiom 2 R->L }
+  forward_diamond(sK0,divergence(sK0))
+= { by lemma 5 }
+  antidomain(antidomain(multiplication(sK0,antidomain(antidomain(divergence(sK0))))))
+= { by axiom 3 R->L }
+  domain(multiplication(sK0,antidomain(antidomain(divergence(sK0)))))
+= { by lemma 8 R->L }
+  zero
+  hence (forward_diamond(sK0,domain(X)) = addition(domain(X),forward_diamond(sK0,domain(X))) => zero = domain(X)) => divergence(sK0) = zero
+    by discharge
