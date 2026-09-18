@@ -966,7 +966,7 @@ demodChainsForLeaves resolveName tree0 =
     ptDecl (PTLeaf _ d)     = d
     ptDecl (PTNode _ d _ _) = d
     isDemodRule r = Set.member r demodRuleNames
-    isSuperpositionRule r = r `elem` map Text.pack ["superposition", "paramodulation", "spm", "pm"]
+    isSuperpositionRule r = r `elem` map Text.pack ["superposition", "paramodulation", "paramod", "spm", "pm"]
     unitEquation t = isPositiveUnitFormula (ptDecl t)
                      && case headLitOf (ptDecl t) of { Just (T.Equality {}) -> True; _ -> False }
     superpositionInto nd l r
@@ -999,6 +999,8 @@ unitNameStr (Right n)         = show n
 coreInferenceNames :: Set.Set Text.Text
 coreInferenceNames = Set.fromList $ map Text.pack
   [ "resolution", "resolve", "superposition", "paramodulation"
+  -- Prover9's names, where a hyperresolution is a nucleus with its electrons
+  , "hyper", "paramod"
   , "equality_resolution"
   , "forward_subsumption_resolution", "backward_subsumption_resolution"
   , "condensation"
