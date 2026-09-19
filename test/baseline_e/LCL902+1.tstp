@@ -1,0 +1,305 @@
+# Preprocessing class: FSMSSMSSSSSNFFN.
+# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+# No SInE strategy applied
+# Search class: FHUSM-FFSF22-MFFFFFNN
+# Configuration: H----_042_B03_F1_AE_Q4_SP_S2S
+# Initializing proof state
+# Scanning for AC axioms
+# + is AC
+# AC handling enabled
+#
+#cnf(i_0_15, negated_conjecture, ('==>'('==>'(esk1_0,'1'),'1')!=esk1_0)).
+#
+#cnf(i_0_9, plain, ('>='(X1,'0'))).
+#
+#cnf(i_0_13, plain, ('+'(X1,'1')='1')).
+#
+#cnf(i_0_4, plain, ('>='(X1,X1))).
+#
+#cnf(i_0_3, plain, ('+'(X1,'0')=X1)).
+#
+#cnf(i_0_2, plain, ('+'(X1,X2)='+'(X2,X1))).
+#
+#cnf(i_0_16, plain, ('+'('1',X1)='1')).
+##
+#cnf(i_0_17, plain, ('+'('0',X1)=X1)).
+##
+#cnf(i_0_6, plain, (X1=X2|~'>='(X2,X1)|~'>='(X1,X2))).
+#
+#cnf(i_0_24, plain, ('0'=X1|~'>='('0',X1))).
+#
+#cnf(i_0_5, plain, ('>='(X1,X3)|~'>='(X2,X3)|~'>='(X1,X2))).
+#
+#cnf(i_0_8, plain, ('>='(X2,'==>'(X1,X3))|~'>='('+'(X1,X2),X3))).
+#
+#cnf(i_0_28, plain, ('>='(X1,'==>'('0',X2))|~'>='(X1,X2))).
+#
+#cnf(i_0_30, plain, ('>='('0','==>'(X1,X2))|~'>='(X1,X2))).
+#
+#cnf(i_0_27, plain, ('>='(X1,'==>'('1',X2))|~'>='('1',X2))).
+#
+#cnf(i_0_29, plain, ('>='('1','==>'(X1,X2))|~'>='('1',X2))).
+#
+#cnf(i_0_31, plain, ('>='(X1,'==>'(X2,X3))|~'>='('+'(X1,X2),X3))).
+##
+#cnf(i_0_1, plain, ('+'('+'(X1,X2),X3)='+'(X1,'+'(X2,X3)))).
+#
+#cnf(i_0_33, plain, ('>='(X1,'==>'(X2,'0')))).
+#
+#cnf(i_0_66, plain, ('==>'(X1,'0')='0')).
+#
+#cnf(i_0_36, plain, ('>='(X1,'==>'('0',X1)))).
+#
+#cnf(i_0_38, plain, ('>='('0','==>'(X1,X1)))).
+#
+#cnf(i_0_14, plain, ('==>'('==>'('==>'(X1,'1'),X1),X1)='0')).
+####
+#cnf(i_0_40, plain, ('>='(X1,'==>'('1','1')))).
+#
+#cnf(i_0_100, plain, ('0'='==>'('1','1'))).
+#
+#cnf(i_0_42, plain, ('>='('1','==>'(X1,'1')))).
+#
+#cnf(i_0_17, plain, ('+'('==>'('1','1'),X1)=X1)).
+#
+#cnf(i_0_3, plain, ('+'(X1,'==>'('1','1'))=X1)).
+###
+#cnf(i_0_81, plain, ('>='(X1,'==>'('==>'('1','1'),X2))|~'>='(X1,X2))).
+###
+#cnf(i_0_110, plain, ('>='(X1,'==>'(X2,'1'))|~'>='(X1,'1'))).
+####
+#cnf(i_0_80, plain, ('==>'('==>'('1','1'),X1)=X1|~'>='('==>'('==>'('1','1'),X1),X1))).
+#
+#cnf(i_0_30, plain, ('>='('==>'('1','1'),'==>'(X1,X2))|~'>='(X1,X2))).
+#
+#cnf(i_0_109, plain, ('==>'(X1,'1')='1'|~'>='('==>'(X1,'1'),'1'))).
+#
+#cnf(i_0_66, plain, ('==>'(X1,'==>'('1','1'))='==>'('1','1'))).
+#
+#cnf(i_0_34, plain, ('>='(X1,'==>'(X2,'+'(X2,X1))))).
+#
+#cnf(i_0_50, plain, ('>='(X1,'==>'(X2,'+'(X1,X2))))).
+###
+#cnf(i_0_10, plain, ('>='('+'(X1,X3),'+'(X2,X3))|~'>='(X1,X2))).
+#
+#cnf(i_0_73, plain, ('>='('1','==>'(X1,'==>'('==>'('1','1'),'1'))))).
+#
+#cnf(i_0_74, plain, ('>='(X1,'==>'('1','==>'('==>'('1','1'),'1'))))).
+####
+#cnf(i_0_168, plain, ('>='('+'(X1,X2),X2))).
+#
+#cnf(i_0_201, plain, ('>='('1',X1))).
+#
+#cnf(i_0_27, plain, ('>='(X1,'==>'('1',X2)))).
+#
+#cnf(i_0_199, plain, ('>='(X1,'==>'(X2,X1)))).
+#
+#cnf(i_0_200, plain, ('>='(X1,'==>'(X2,X2)))).
+#
+#cnf(i_0_213, plain, (X1='1'|~'>='(X1,'1'))).
+#
+#cnf(i_0_214, plain, ('>='(X1,X2)|~'>='(X1,'1'))).
+#
+#cnf(i_0_198, plain, ('>='(X1,X2)|~'>='(X1,'+'(X3,X2)))).
+##
+#cnf(i_0_232, plain, ('>='(X1,'==>'(X2,X3))|~'>='(X1,X3))).
+#
+#cnf(i_0_253, plain, ('>='(X1,X2)|~'>='(X1,'+'(X2,X3)))).
+#####
+#cnf(i_0_206, plain, ('>='('+'(X2,X1),X2))).
+###
+#cnf(i_0_203, plain, ('>='('+'(X1,'+'(X2,X3)),X3))).
+#
+#cnf(i_0_235, plain, ('>='(X1,'==>'(X2,'==>'(X3,X3))))).
+#
+#cnf(i_0_12, plain, ('>='('==>'(X3,X1),'==>'(X3,X2))|~'>='(X1,X2))).
+########
+#cnf(i_0_216, plain, ('>='(X1,'==>'(X2,'==>'('1',X3))))).
+####
+#cnf(i_0_197, plain, ('+'(X2,X1)=X1|~'>='(X1,'+'(X2,X1)))).
+##
+#cnf(i_0_231, plain, ('==>'(X1,X2)=X2|~'>='('==>'(X1,X2),X2))).
+#
+#cnf(i_0_283, plain, ('+'(X1,X2)=X1|~'>='(X1,'+'(X1,X2)))).
+######
+#cnf(i_0_358, plain, ('==>'(X1,'==>'(X2,X2))='==>'(X2,X2))).
+#
+#cnf(i_0_355, plain, ('==>'(X1,'==>'('1',X2))='==>'('1',X2))).
+###
+#cnf(i_0_259, plain, ('>='('+'(X1,X2),'==>'(X3,X2)))).
+#
+#cnf(i_0_11, plain, ('>='('==>'(X2,X3),'==>'(X1,X3))|~'>='(X1,X2))).
+#
+#cnf(i_0_327, plain, ('>='('==>'(X1,'1'),'==>'(X1,X2)))).
+###
+#cnf(i_0_264, plain, ('>='(X1,'==>'(X2,'==>'(X3,X1))))).
+#
+#cnf(i_0_274, plain, ('>='('+'(X1,'+'(X2,X3)),X2))).
+##
+#cnf(i_0_282, plain, ('>='('+'(X1,X2),'==>'(X3,X1)))).
+##
+#cnf(i_0_304, plain, ('>='(X1,'==>'('+'(X2,X3),X3)))).
+##
+#cnf(i_0_241, plain, ('==>'(X1,X1)=X2|~'>='('==>'(X1,X1),X2))).
+##
+#cnf(i_0_143, plain, ('>='(X1,'==>'(X2,'+'(X2,X3)))|~'>='(X1,X3))).
+#
+#cnf(i_0_159, plain, ('>='(X1,'==>'(X2,'+'(X3,X2)))|~'>='(X1,X3))).
+#
+#cnf(i_0_250, plain, ('>='(X1,X2)|~'>='(X1,'+'(X3,'+'(X4,X2))))).
+######
+#cnf(i_0_496, plain, ('==>'(X1,X1)='==>'(X2,X2))).
+#
+#cnf(i_0_549, plain, ('+'('==>'(X2,X2),X1)=X1)).
+#
+#cnf(i_0_550, plain, ('+'(X1,'==>'(X2,X2))=X1)).
+###
+#cnf(i_0_7, plain, ('>='('+'(X2,X1),X3)|~'>='(X1,'==>'(X2,X3)))).
+#
+#cnf(i_0_498, plain, ('==>'('1','1')='==>'('1',X1))).
+####
+#cnf(i_0_609, plain, ('+'('==>'('1',X1),X2)=X2)).
+#
+#cnf(i_0_633, plain, ('+'(X1,'==>'('1',X2))=X1)).
+####################
+#cnf(i_0_53, plain, ('+'(X1,'+'(X2,X3))='+'(X3,'+'(X1,X2)))).
+##
+#cnf(i_0_698, plain, ('==>'('1',X2)='==>'('1',X1))).
+#########
+#cnf(i_0_382, plain, ('>='(X1,'==>'(X2,X3))|~'>='(X1,'+'(X4,X3)))).
+#####
+#cnf(i_0_421, plain, ('>='(X1,'==>'(X2,'==>'(X3,X4)))|~'>='(X1,X4))).
+#
+#cnf(i_0_436, plain, ('>='(X1,X2)|~'>='(X1,'+'(X3,'+'(X2,X4))))).
+#########
+#cnf(i_0_55, plain, ('>='('+'(X1,X2),'==>'(X3,X4))|~'>='('+'(X1,'+'(X2,X3)),X4))).
+##
+#cnf(i_0_491, plain, ('==>'(X1,X1)='==>'('1',X2))).
+##############
+#cnf(i_0_457, plain, ('>='(X1,'==>'(X2,X3))|~'>='(X1,'+'(X3,X4)))).
+#########################
+#cnf(i_0_593, plain, ('>='('==>'(X1,X1),'==>'(X2,X3))|~'>='(X2,X3))).
+###########
+#cnf(i_0_57, plain, ('>='(X1,'==>'('+'(X2,X3),X4))|~'>='('+'(X2,'+'(X3,X1)),X4))).
+#####
+#cnf(i_0_642, plain, ('>='('+'(X1,'==>'(X1,'1')),X2))).
+#
+#cnf(i_0_1093, plain, ('+'(X1,'==>'(X1,'1'))='1')).
+#
+#cnf(i_0_1128, plain, ('==>'('==>'('1',X1),'1')='1')).
+#
+#cnf(i_0_1129, plain, ('==>'('==>'(X1,X1),'1')='1')).
+##################
+#cnf(i_0_62, plain, ('+'(X2,'+'(X1,X3))='+'(X1,'+'(X2,X3)))).
+#
+#cnf(i_0_1133, plain, ('>='(X1,'==>'('==>'(X1,'1'),'1')))).
+###
+#cnf(i_0_1132, plain, ('>='(X1,'==>'('==>'(X1,'1'),X2)))).
+######
+#cnf(i_0_384, plain, ('>='(X1,'==>'(X2,'==>'(X3,X2))))).
+##############
+#cnf(i_0_439, plain, ('>='(X1,'==>'('+'(X2,X3),X2)))).
+#####
+#cnf(i_0_649, plain, ('>='('+'(X1,'==>'(X1,X2)),X2))).
+#
+#cnf(i_0_1451, plain, ('>='('==>'('==>'('1',X1),X2),X2))).
+#
+#cnf(i_0_1472, plain, ('==>'('==>'('1',X2),X1)=X1)).
+####
+#cnf(i_0_1519, plain, ('==>'('==>'(X1,X1),X2)=X2)).
+################
+#cnf(i_0_470, plain, ('==>'(X1,'==>'('+'(X2,X3),X3))='==>'('+'(X2,X3),X3))).
+###
+#cnf(i_0_654, plain, ('>='('+'(X1,X2),'+'(X2,X1)))).
+###
+#cnf(i_0_1131, plain, ('+'(X1,'+'('==>'(X1,'1'),X2))='1')).
+###########
+#cnf(i_0_1435, plain, ('>='(X1,X2)|~'>='(X1,'+'(X3,'==>'(X3,X2))))).
+########
+#cnf(i_0_1354, plain, ('==>'(X1,'==>'(X2,'==>'(X3,X2)))='==>'(X2,'==>'(X3,X2)))).
+#
+#cnf(i_0_1386, plain, ('==>'(X1,'==>'('+'(X2,X3),X2))='==>'('+'(X2,X3),X2))).
+#
+#cnf(i_0_14, plain, ('==>'('==>'('==>'(X1,'1'),X1),X1)='==>'('1','1'))).
+#######
+#cnf(i_0_1869, plain, ('>='('==>'('==>'(X1,'1'),X1),X1))).
+#
+#cnf(i_0_1901, plain, ('==>'('==>'(X1,'1'),X1)=X1)).
+##
+#cnf(i_0_1935, plain, ('>='('==>'('==>'(X1,'1'),'1'),X1))).
+#
+#cnf(i_0_1614, plain, ('>='(X1,'+'(X2,X3))|~'>='(X1,'+'(X3,X2)))).
+#
+#cnf(i_0_222, plain, ('==>'('1',X1)=X2|~'>='('==>'('1',X1),X2))).
+#####
+#cnf(i_0_410, plain, ('>='(X1,'==>'(X2,X3))|~'>='(X1,'==>'(X2,'1')))).
+####
+#cnf(i_0_1963, plain, ('==>'('==>'(X1,'1'),'1')=X1)).
+
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+fof(sos_12, axiom, ![X1]:('+'(X1,'1')='1'), file('Problems/LCL/LCL902+1.p', sos_12)).
+fof(sos_02, axiom, ![X1, X2]:('+'(X1,X2)='+'(X2,X1)), file('Problems/LCL/LCL902+1.p', sos_02)).
+fof(sos_07, axiom, ![X9, X10, X11]:(('>='('+'(X9,X10),X11)<=>'>='(X10,'==>'(X9,X11)))), file('Problems/LCL/LCL902+1.p', sos_07)).
+fof(sos_06, axiom, ![X7, X8]:((('>='(X7,X8)&'>='(X8,X7))=>X7=X8)), file('Problems/LCL/LCL902+1.p', sos_06)).
+fof(sos_08, axiom, ![X1]:('>='(X1,'0')), file('Problems/LCL/LCL902+1.p', sos_08)).
+fof(sos_04, axiom, ![X1]:('>='(X1,X1)), file('Problems/LCL/LCL902+1.p', sos_04)).
+fof(sos_03, axiom, ![X1]:('+'(X1,'0')=X1), file('Problems/LCL/LCL902+1.p', sos_03)).
+fof(sos_09, axiom, ![X12, X13, X14]:(('>='(X12,X13)=>'>='('+'(X12,X14),'+'(X13,X14)))), file('Problems/LCL/LCL902+1.p', sos_09)).
+fof(sos_13, axiom, ![X1]:('==>'('==>'('==>'(X1,'1'),X1),X1)='0'), file('Problems/LCL/LCL902+1.p', sos_13)).
+fof(sos_11, axiom, ![X18, X19, X20]:(('>='(X18,X19)=>'>='('==>'(X20,X18),'==>'(X20,X19)))), file('Problems/LCL/LCL902+1.p', sos_11)).
+fof(goals_14, conjecture, ![X21]:('==>'('==>'(X21,'1'),'1')=X21), file('Problems/LCL/LCL902+1.p', goals_14)).
+fof(c_0_11, plain, ![X47]:('+'(X47,'1')='1'), inference(variable_rename,[status(thm)],[sos_12])).
+fof(c_0_12, plain, ![X25, X26]:('+'(X25,X26)='+'(X26,X25)), inference(variable_rename,[status(thm)],[sos_02])).
+fof(c_0_13, plain, ![X34, X35, X36]:(((~'>='('+'(X34,X35),X36)|'>='(X35,'==>'(X34,X36)))&(~'>='(X35,'==>'(X34,X36))|'>='('+'(X34,X35),X36)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[sos_07])])])).
+cnf(c_0_14, plain, ('+'(X1,'1')='1'), inference(split_conjunct,[status(thm)],[c_0_11])).
+cnf(c_0_15, plain, ('+'(X1,X2)='+'(X2,X1)), inference(split_conjunct,[status(thm)],[c_0_12])).
+fof(c_0_16, plain, ![X32, X33]:((~'>='(X32,X33)|~'>='(X33,X32)|X32=X33)), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[sos_06])])])).
+fof(c_0_17, plain, ![X37]:('>='(X37,'0')), inference(variable_rename,[status(thm)],[sos_08])).
+cnf(c_0_18, plain, ('>='(X2,'==>'(X1,X3))|~'>='('+'(X1,X2),X3)), inference(split_conjunct,[status(thm)],[c_0_13])).
+cnf(c_0_19, plain, ('+'('1',X1)='1'), inference(spm,[status(thm)],[c_0_14, c_0_15])).
+fof(c_0_20, plain, ![X28]:('>='(X28,X28)), inference(variable_rename,[status(thm)],[sos_04])).
+fof(c_0_21, plain, ![X27]:('+'(X27,'0')=X27), inference(variable_rename,[status(thm)],[sos_03])).
+cnf(c_0_22, plain, (X1=X2|~'>='(X1,X2)|~'>='(X2,X1)), inference(split_conjunct,[status(thm)],[c_0_16])).
+cnf(c_0_23, plain, ('>='(X1,'0')), inference(split_conjunct,[status(thm)],[c_0_17])).
+cnf(c_0_24, plain, ('>='(X1,'==>'('1',X2))|~'>='('1',X2)), inference(spm,[status(thm)],[c_0_18, c_0_19])).
+cnf(c_0_25, plain, ('>='(X1,X1)), inference(split_conjunct,[status(thm)],[c_0_20])).
+cnf(c_0_26, plain, ('+'(X1,'0')=X1), inference(split_conjunct,[status(thm)],[c_0_21])).
+cnf(c_0_27, plain, ('0'=X1|~'>='('0',X1)), inference(spm,[status(thm)],[c_0_22, c_0_23])).
+cnf(c_0_28, plain, ('>='(X1,'==>'('1','1'))), inference(spm,[status(thm)],[c_0_24, c_0_25])).
+fof(c_0_29, plain, ![X38, X39, X40]:((~'>='(X38,X39)|'>='('+'(X38,X40),'+'(X39,X40)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[sos_09])])])).
+cnf(c_0_30, plain, ('+'('0',X1)=X1), inference(spm,[status(thm)],[c_0_26, c_0_15])).
+cnf(c_0_31, plain, ('0'='==>'('1','1')), inference(spm,[status(thm)],[c_0_27, c_0_28])).
+cnf(c_0_32, plain, ('>='('+'(X1,X3),'+'(X2,X3))|~'>='(X1,X2)), inference(split_conjunct,[status(thm)],[c_0_29])).
+cnf(c_0_33, plain, ('+'('==>'('1','1'),X1)=X1), inference(rw,[status(thm)],[c_0_30, c_0_31])).
+cnf(c_0_34, plain, ('>='(X1,'==>'(X2,X3))|~'>='('+'(X1,X2),X3)), inference(spm,[status(thm)],[c_0_18, c_0_15])).
+cnf(c_0_35, plain, ('>='('+'(X1,X2),X2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_32, c_0_28]), c_0_33])).
+cnf(c_0_36, plain, ('>='(X1,'==>'(X2,X2))), inference(spm,[status(thm)],[c_0_34, c_0_35])).
+fof(c_0_37, plain, ![X48]:('==>'('==>'('==>'(X48,'1'),X48),X48)='0'), inference(variable_rename,[status(thm)],[sos_13])).
+cnf(c_0_38, plain, ('==>'(X1,X1)=X2|~'>='('==>'(X1,X1),X2)), inference(spm,[status(thm)],[c_0_22, c_0_36])).
+fof(c_0_39, plain, ![X44, X45, X46]:((~'>='(X44,X45)|'>='('==>'(X46,X44),'==>'(X46,X45)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[sos_11])])])).
+cnf(c_0_40, plain, ('>='('+'(X2,X1),X3)|~'>='(X1,'==>'(X2,X3))), inference(split_conjunct,[status(thm)],[c_0_13])).
+cnf(c_0_41, plain, ('==>'('==>'('==>'(X1,'1'),X1),X1)='0'), inference(split_conjunct,[status(thm)],[c_0_37])).
+cnf(c_0_42, plain, ('+'(X1,'==>'('1','1'))=X1), inference(rw,[status(thm)],[c_0_26, c_0_31])).
+cnf(c_0_43, plain, ('==>'(X1,X1)='==>'(X2,X2)), inference(spm,[status(thm)],[c_0_38, c_0_36])).
+cnf(c_0_44, plain, ('>='('==>'(X3,X1),'==>'(X3,X2))|~'>='(X1,X2)), inference(split_conjunct,[status(thm)],[c_0_39])).
+cnf(c_0_45, plain, ('>='('1',X1)), inference(spm,[status(thm)],[c_0_35, c_0_19])).
+cnf(c_0_46, plain, ('>='('+'(X1,'==>'(X1,X2)),X2)), inference(spm,[status(thm)],[c_0_40, c_0_25])).
+cnf(c_0_47, plain, ('==>'('==>'('==>'(X1,'1'),X1),X1)='==>'('1','1')), inference(rw,[status(thm)],[c_0_41, c_0_31])).
+cnf(c_0_48, plain, ('+'(X1,'==>'(X2,X2))=X1), inference(spm,[status(thm)],[c_0_42, c_0_43])).
+cnf(c_0_49, plain, ('>='('==>'(X1,'1'),'==>'(X1,X2))), inference(spm,[status(thm)],[c_0_44, c_0_45])).
+cnf(c_0_50, plain, ('>='('==>'('==>'(X1,'1'),X1),X1)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_46, c_0_47]), c_0_48])).
+cnf(c_0_51, plain, ('>='(X1,'==>'(X2,X1))), inference(spm,[status(thm)],[c_0_18, c_0_35])).
+cnf(c_0_52, plain, (X1='1'|~'>='(X1,'1')), inference(spm,[status(thm)],[c_0_22, c_0_45])).
+cnf(c_0_53, plain, ('>='('+'(X1,'==>'(X1,'1')),X2)), inference(spm,[status(thm)],[c_0_40, c_0_49])).
+fof(c_0_54, negated_conjecture, ~(![X21]:('==>'('==>'(X21,'1'),'1')=X21)), inference(assume_negation,[status(cth)],[goals_14])).
+cnf(c_0_55, plain, ('==>'('==>'(X1,'1'),X1)=X1), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_22, c_0_50]), c_0_51])])).
+cnf(c_0_56, plain, ('+'(X1,'==>'(X1,'1'))='1'), inference(spm,[status(thm)],[c_0_52, c_0_53])).
+fof(c_0_57, negated_conjecture, '==>'('==>'(esk1_0,'1'),'1')!=esk1_0, inference(fof_nnf,[status(thm)],[inference(skolemize,[status(esa)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[c_0_54])])])])).
+cnf(c_0_58, plain, ('>='('==>'('==>'(X1,'1'),'1'),X1)), inference(spm,[status(thm)],[c_0_49, c_0_55])).
+cnf(c_0_59, plain, ('>='(X1,'==>'('==>'(X1,'1'),X2))), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_34, c_0_56]), c_0_45])])).
+cnf(c_0_60, negated_conjecture, ('==>'('==>'(esk1_0,'1'),'1')!=esk1_0), inference(split_conjunct,[status(thm)],[c_0_57])).
+cnf(c_0_61, plain, ('==>'('==>'(X1,'1'),'1')=X1), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_22, c_0_58]), c_0_59])])).
+cnf(c_0_62, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_60, c_0_61])]), ['proof']).
+# SZS output end CNFRefutation

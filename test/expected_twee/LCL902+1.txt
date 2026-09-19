@@ -1,0 +1,104 @@
+Axiom 1: +(X,0) = X
+Axiom 2: ==>(==>(==>(X,1),X),X) = 0
+Axiom 3: >=(X,X)
+Axiom 4: >=(Y,==>(Z,A)) => >=(+(Z,Y),A)
+Axiom 5: >=(B,0)
+Axiom 6: >=(C,U) => >=(+(C,V),+(U,V))
+Axiom 7: +(X,W) = +(W,X)
+Axiom 8: >=(+(Z,Y),A) => >=(Y,==>(Z,A))
+Axiom 9: >=(X1,X2) /\ >=(X2,X1) => X1 = X2
+Axiom 10: +(X,1) = 1
+Axiom 11: >=(X3,X4) => >=(==>(X5,X3),==>(X5,X4))
+
+Lemma 12: +(0,X) = X
+Proof:
+  +(0,X)
+= { by axiom 7 }
+  +(X,0)
+= { by axiom 1 }
+  X
+
+Lemma 13: >=(+(==>(==>(x17,1),x17),==>(==>(==>(x17,1),x17),x17)),x17)
+Proof:
+  have >=(==>(==>(==>(x17,1),x17),x17),==>(==>(==>(x17,1),x17),x17))
+    by axiom 3
+  hence >=(+(==>(==>(x17,1),x17),==>(==>(==>(x17,1),x17),x17)),x17)
+    by axiom 4
+
+Lemma 14: >=(==>(==>(x17,1),x17),x17)
+Proof:
+  >=(==>(==>(x17,1),x17),x17)
+= { by axiom 1 R->L }
+  >=(+(==>(==>(x17,1),x17),0),x17)
+= { by axiom 2 R->L }
+  >=(+(==>(==>(x17,1),x17),==>(==>(==>(x17,1),x17),x17)),x17)
+= { by lemma 13 }
+  true
+
+Lemma 15: >=(+(1,X),+(0,X))
+Proof:
+  have >=(1,0)
+    by axiom 5
+  hence >=(+(1,X),+(0,X))
+    by axiom 6
+
+Lemma 16: >=(+(x17,1),x17)
+Proof:
+  >=(+(x17,1),x17)
+= { by axiom 7 }
+  >=(+(1,x17),x17)
+= { by axiom 10 R->L }
+  >=(+(+(Z,1),x17),x17)
+= { by lemma 12 R->L }
+  >=(+(+(Z,1),x17),+(0,x17))
+= { by axiom 10 }
+  >=(+(1,x17),+(0,x17))
+= { by lemma 15 }
+  true
+
+Lemma 17: x17 = ==>(==>(x17,1),x17)
+Proof:
+  have >=(==>(x17,1),0)
+    by axiom 5
+  hence >=(+(==>(x17,1),x17),+(0,x17))
+    by axiom 6
+  hence >=(x17,==>(==>(x17,1),+(0,x17)))
+    by axiom 8
+  hence >=(x17,==>(==>(x17,1),x17))
+    by rw lemma 12
+   and >=(==>(==>(x17,1),x17),x17)
+    by lemma 14
+  hence x17 = ==>(==>(x17,1),x17)
+    by axiom 9
+
+Lemma 18: >=(==>(X,1),==>(X,x17))
+Proof:
+  have >=(+(x17,1),x17)
+    by lemma 16
+  hence >=(1,x17)
+    by rw axiom 10
+  hence >=(==>(X,1),==>(X,x17))
+    by axiom 11
+
+Lemma 19: >=(==>(==>(x17,1),1),x17)
+Proof:
+  >=(==>(==>(x17,1),1),x17)
+= { by lemma 17 }
+  >=(==>(==>(x17,1),1),==>(==>(x17,1),x17))
+= { by lemma 18 }
+  true
+
+Goal 1: ==>(==>(x17,1),1) = x17
+Proof:
+  have >=(==>(x17,1),==>(x17,1))
+    by axiom 3
+  hence >=(+(x17,==>(x17,1)),1)
+    by axiom 4
+  hence >=(+(==>(x17,1),x17),1)
+    by rw axiom 7
+  hence >=(x17,==>(==>(x17,1),1))
+    by axiom 8
+   and >=(==>(==>(x17,1),1),x17)
+    by lemma 19
+  hence ==>(==>(x17,1),1) = x17
+    by axiom 9

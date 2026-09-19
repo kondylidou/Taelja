@@ -45,23 +45,84 @@ axiom ax11 : ∀ (x : α), (add x additive_identity) = x
 axiom ax12 : product (add a b) a (add a d)
 
 -- Lemma 13
-theorem taelja_lemma13 : ∀ (x : α), product a b (multiply x b) := by
-  intro x
+theorem taelja_lemma13 : product a b b := by
   have h_rw := ax2 b
   rw (config := { occs := .pos [1] }) [← h_rw]
+  have h_rw := ax2 b
+  rw (config := { occs := .pos [3] }) [← h_rw]
   apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
 
 -- Lemma 14
-theorem taelja_lemma14 : ∀ (x : α), b = (multiply x b) := by
-  intro x
-  have h1 : product a (multiply b b) (multiply b b) := by first | (exact ax3 b b) | (first | apply ax3 <;> first | rfl | assumption)
-  have h2 : product a (multiply b b) (multiply x b) := by first | (exact ax3 b x) | (first | apply ax3 <;> first | rfl | assumption)
-  have h3 : (multiply x b) = (multiply b b) := by first | (exact ax5 (multiply x b) a (multiply b b) (multiply b b) h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : (multiply x b) = b := by have h_rw := ax2 b; rw (config := { occs := .pos [2] }) [←h_rw]; exact h3
-  exact h4.symm
+theorem taelja_lemma14 : b = c := by
+  have h1 : product a b c := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
+  have h2 : product a b b := by first | (exact taelja_lemma13) | (first | apply taelja_lemma13 <;> first | rfl | assumption)
+  have h3 : b = c := by first | (exact ax5 b a b c h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  exact h3
 
 -- Lemma 15
-theorem taelja_lemma15 : product a d (multiply a a) := by
+theorem taelja_lemma15 : product a b (multiply (add a b) b) := by
+  have h_rw := taelja_lemma14
+  rw (config := { occs := .pos [3] }) [h_rw]
+  have h_rw := taelja_lemma14
+  rw (config := { occs := .pos [2] }) [h_rw]
+  have h_rw := taelja_lemma14
+  rw [h_rw]
+  have h_rw := taelja_lemma14
+  rw (config := { occs := .pos [2] }) [← h_rw]
+  have h_rw := taelja_lemma14
+  rw (config := { occs := .pos [2] }) [← h_rw]
+  have h_rw := ax2 c
+  rw [← h_rw]
+  have h_rw := taelja_lemma14
+  rw (config := { occs := .pos [2] }) [h_rw]
+  have h_rw := taelja_lemma14
+  rw (config := { occs := .pos [1] }) [← h_rw]
+  apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+
+-- Lemma 16
+theorem taelja_lemma16 : (multiply (add a b) b) = b := by
+  have h1 : product a b b := by first | (exact taelja_lemma13) | (first | apply taelja_lemma13 <;> first | rfl | assumption)
+  have h2 : product a b (multiply (add a b) b) := by first | (exact taelja_lemma15) | (first | apply taelja_lemma15 <;> first | rfl | assumption)
+  have h3 : (multiply (add a b) b) = b := by first | (exact ax5 (multiply (add a b) b) a b b h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  exact h3
+
+-- Lemma 17
+theorem taelja_lemma17 : product (add a b) b b := by
+  have h_rw := taelja_lemma14
+  rw (config := { occs := .pos [3] }) [h_rw]
+  have h_rw := taelja_lemma14
+  rw (config := { occs := .pos [2] }) [h_rw]
+  have h_rw := taelja_lemma14
+  rw (config := { occs := .pos [2] }) [← h_rw]
+  have h_rw := taelja_lemma16
+  rw (config := { occs := .pos [2] }) [← h_rw]
+  have h_rw := taelja_lemma14
+  rw (config := { occs := .pos [3] }) [h_rw]
+  apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+
+-- Lemma 18
+theorem taelja_lemma18 : (add c b) = b := by
+  have h1 : product (add a b) b b := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
+  have h2 : product (add a b) b (add c b) := by first | (exact ax6) | (first | apply ax6 <;> first | rfl | assumption)
+  have h3 : (add c b) = b := by first | (exact ax5 (add c b) (add a b) b b h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  exact h3
+
+-- Lemma 19
+theorem taelja_lemma19 : additive_identity = b := by
+  calc additive_identity = add c c := by rw [ax1]
+      _ = add c b := by have h_rw := taelja_lemma14; rw [h_rw]
+      _ = b := by have h_rw := taelja_lemma18; rw [h_rw]
+
+-- Lemma 20
+theorem taelja_lemma20 : product a d d := by
+  have h_rw := ax8
+  rw (config := { occs := .pos [1] }) [← h_rw]
+  have h_rw := ax8
+  rw [← h_rw]
+  apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+
+-- Lemma 21
+theorem taelja_lemma21 : product a d (multiply a a) := by
   have h_rw := ax2 a
   rw (config := { occs := .pos [3] }) [← h_rw]
   have h_rw := ax2 a
@@ -80,139 +141,107 @@ theorem taelja_lemma15 : product a d (multiply a a) := by
   rw (config := { occs := .pos [1] }) [h_rw]
   apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
 
--- Lemma 16
-theorem taelja_lemma16 : product a d d := by
-  have h_rw := ax8
-  rw (config := { occs := .pos [1] }) [← h_rw]
-  have h_rw := ax8
-  rw [← h_rw]
-  apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
-
--- Lemma 17
-theorem taelja_lemma17 : a = d := by
-  have h1 : product a d (multiply a a) := by first | (exact taelja_lemma15) | (first | apply taelja_lemma15 <;> first | rfl | assumption)
-  have h2 : product a d d := by first | (exact taelja_lemma16) | (first | apply taelja_lemma16 <;> first | rfl | assumption)
-  have h3 : d = (multiply a a) := by first | (exact ax5 d a d (multiply a a) h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : d = a := by have h_rw := ax2 a; rw [←h_rw]; exact h3
-  exact h4.symm
-
--- Lemma 18
-theorem taelja_lemma18 : product a b b := by
-  have h1 : ∀ (x : α), product a b (multiply x b) := fun x => by first | (exact taelja_lemma13 x) | (first | apply taelja_lemma13 <;> first | rfl | assumption)
-  have h2 : product a b b := by have h_rw := taelja_lemma14 a; rw (config := { occs := .pos [2] }) [h_rw]; exact h1 a
-  exact h2
-
--- Lemma 19
-theorem taelja_lemma19 : b = c := by
-  have h1 : product a b c := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h2 : product a b b := by first | (exact taelja_lemma18) | (first | apply taelja_lemma18 <;> first | rfl | assumption)
-  have h3 : b = c := by first | (exact ax5 b a b c h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h3
-
--- Lemma 20
-theorem taelja_lemma20 : product (add a b) b b := by
-  have h_rw := taelja_lemma17
-  rw [h_rw]
-  have h_rw := taelja_lemma19
-  rw (config := { occs := .pos [3] }) [h_rw]
-  have h_rw := taelja_lemma19
-  rw (config := { occs := .pos [2] }) [h_rw]
-  have h_rw := taelja_lemma17
-  rw [← h_rw]
-  have h_rw := taelja_lemma19
-  rw (config := { occs := .pos [2] }) [← h_rw]
-  have h_rw := taelja_lemma14 (add a b)
-  rw (config := { occs := .pos [2] }) [h_rw]
-  have h_rw := taelja_lemma19
-  rw (config := { occs := .pos [3] }) [h_rw]
-  apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
-
--- Lemma 21
-theorem taelja_lemma21 : product (add a b) b additive_identity := by
-  have h_rw := taelja_lemma17
-  rw [h_rw]
-  have h_rw := taelja_lemma19
-  rw (config := { occs := .pos [2] }) [h_rw]
-  have h_rw := taelja_lemma17
-  rw [← h_rw]
-  have h_rw := ax1 c
-  rw [← h_rw]
-  have h_rw := taelja_lemma17
-  rw [h_rw]
-  have h_rw := taelja_lemma19
-  rw [h_rw]
-  have h_rw := taelja_lemma19
-  rw (config := { occs := .pos [4] }) [← h_rw]
-  have h_rw := taelja_lemma19
-  rw (config := { occs := .pos [2] }) [← h_rw]
-  have h_rw := taelja_lemma19
-  rw (config := { occs := .pos [1] }) [← h_rw]
-  have h_rw := taelja_lemma17
-  rw [← h_rw]
-  apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
-
 -- Lemma 22
-theorem taelja_lemma22 : additive_identity = b := by
-  have h1 : product (add a b) b b := by first | (exact taelja_lemma20) | (first | apply taelja_lemma20 <;> first | rfl | assumption)
-  have h2 : product (add a b) b additive_identity := by first | (exact taelja_lemma21) | (first | apply taelja_lemma21 <;> first | rfl | assumption)
-  have h3 : additive_identity = b := by first | (exact ax5 additive_identity (add a b) b b h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+theorem taelja_lemma22 : (multiply a a) = (multiply a d) := by
+  have h1 : product a d (multiply a d) := by first | (exact ax7 a d) | (first | apply ax7 <;> first | rfl | assumption)
+  have h2 : product a d (multiply a a) := by first | (exact taelja_lemma21) | (first | apply taelja_lemma21 <;> first | rfl | assumption)
+  have h3 : (multiply a a) = (multiply a d) := by first | (exact ax5 (multiply a a) a d (multiply a d) h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h3
 
 -- Lemma 23
-theorem taelja_lemma23 : product a d b := by
-  have h_rw := taelja_lemma17
+theorem taelja_lemma23 : (multiply a d) = d := by
+  have h1 : product a d d := by first | (exact taelja_lemma20) | (first | apply taelja_lemma20 <;> first | rfl | assumption)
+  have h2 : product a d (multiply a d) := by first | (exact ax7 a d) | (first | apply ax7 <;> first | rfl | assumption)
+  have h3 : (multiply a d) = d := by first | (exact ax5 (multiply a d) a d d h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  exact h3
+
+-- Lemma 24
+theorem taelja_lemma24 : a = d := by
+  calc a = multiply a a := by have h_rw := ax2 a; rw [h_rw]
+      _ = multiply a d := by have h_rw := taelja_lemma22; rw [h_rw]
+      _ = d := by have h_rw := taelja_lemma23; rw [h_rw]
+
+-- Lemma 25
+theorem taelja_lemma25 : product a b (multiply b b) := by
+  have h_rw := ax2 b
+  rw (config := { occs := .pos [3] }) [← h_rw]
+  have h_rw := ax2 b
+  rw (config := { occs := .pos [2] }) [← h_rw]
+  have h_rw := ax2 b
+  rw (config := { occs := .pos [1] }) [← h_rw]
+  have h_rw := ax2 (multiply b b)
   rw [h_rw]
-  have h_rw := taelja_lemma22
+  have h_rw := ax2 (multiply b b)
+  rw (config := { occs := .pos [1] }) [← h_rw]
+  have h_rw := ax2 (multiply b b)
+  rw (config := { occs := .pos [3] }) [← h_rw]
+  have h_rw := ax2 b
+  rw (config := { occs := .pos [1] }) [h_rw]
+  apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+
+-- Lemma 26
+theorem taelja_lemma26 : b = c := by
+  have h1 : product a b c := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
+  have h2 : product a b (multiply b b) := by first | (exact taelja_lemma25) | (first | apply taelja_lemma25 <;> first | rfl | assumption)
+  have h3 : (multiply b b) = c := by first | (exact ax5 (multiply b b) a b c h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : b = c := by have h_rw := ax2 b; rw [←h_rw]; exact h3
+  exact h4
+
+-- Lemma 27
+theorem taelja_lemma27 : product a d b := by
+  have h_rw := taelja_lemma24
+  rw [h_rw]
+  have h_rw := taelja_lemma19
   rw [← h_rw]
   have h_rw := ax1 d
   rw [← h_rw]
   have h_rw := ax11 d
   rw (config := { occs := .pos [1] }) [← h_rw]
-  have h_rw := taelja_lemma22
+  have h_rw := taelja_lemma19
   rw [h_rw]
-  have h_rw := taelja_lemma17
+  have h_rw := taelja_lemma24
   rw (config := { occs := .pos [3] }) [← h_rw]
-  have h_rw := taelja_lemma17
+  have h_rw := taelja_lemma24
   rw (config := { occs := .pos [2] }) [← h_rw]
-  have h_rw := taelja_lemma17
+  have h_rw := taelja_lemma24
   rw (config := { occs := .pos [1] }) [← h_rw]
   apply ax12 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
 
--- Lemma 24
-theorem taelja_lemma24 : product a d d := by
-  have h_rw := taelja_lemma17
+-- Lemma 28
+theorem taelja_lemma28 : product a d d := by
+  have h_rw := taelja_lemma24
   rw [h_rw]
   have h_rw := ax8
   rw (config := { occs := .pos [2] }) [← h_rw]
   have h_rw := taelja_lemma19
-  rw [h_rw]
-  have h_rw := taelja_lemma17
+  rw [← h_rw]
+  have h_rw := taelja_lemma24
   rw [h_rw]
   have h_rw := ax8
   rw (config := { occs := .pos [3] }) [← h_rw]
   have h_rw := taelja_lemma19
-  rw [h_rw]
-  have h_rw := taelja_lemma17
+  rw [← h_rw]
+  have h_rw := taelja_lemma24
   rw [h_rw]
   have h_rw := taelja_lemma19
-  rw (config := { occs := .pos [1] }) [← h_rw]
-  have h_rw := taelja_lemma17
+  rw (config := { occs := .pos [1] }) [h_rw]
+  have h_rw := taelja_lemma24
   rw (config := { occs := .pos [1] }) [← h_rw]
   apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
 
--- Lemma 25
-theorem taelja_lemma25 : b = a := by
-  have h1 : product a d d := by first | (exact taelja_lemma24) | (first | apply taelja_lemma24 <;> first | rfl | assumption)
-  have h2 : product a d b := by first | (exact taelja_lemma23) | (first | apply taelja_lemma23 <;> first | rfl | assumption)
+-- Lemma 29
+theorem taelja_lemma29 : b = a := by
+  have h1 : product a d d := by first | (exact taelja_lemma28) | (first | apply taelja_lemma28 <;> first | rfl | assumption)
+  have h2 : product a d b := by first | (exact taelja_lemma27) | (first | apply taelja_lemma27 <;> first | rfl | assumption)
   have h3 : b = d := by first | (exact ax5 b a d d h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : b = a := by have h_rw := taelja_lemma17; rw [h_rw]; exact h3
+  have h4 : b = a := by have h_rw := taelja_lemma24; rw [h_rw]; exact h3
   exact h4
 
 -- Goal 1
 theorem taelja_goal1 : c = d := by
-  calc c = b := by have h_rw := taelja_lemma19; rw [h_rw]
-      _ = a := by have h_rw := taelja_lemma25; rw [h_rw]
-      _ = d := by have h_rw := taelja_lemma17; rw [h_rw]
+  calc c = b := by have h_rw := taelja_lemma26; rw [h_rw]
+      _ = a := by have h_rw := taelja_lemma29; rw [h_rw]
+      _ = d := by have h_rw := taelja_lemma24; rw [h_rw]
 
 end VampireRng0391
 

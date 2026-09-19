@@ -4,6 +4,8 @@
 module ProofTree
   ( buildProofInfo
   , conjectureHypotheses
+  , classifyRole
+  , inlineAtomCongruences
   , headLitOf
   , unitNameStr
   , demodRuleNames
@@ -21,7 +23,7 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Control.Applicative ((<|>))
-import Control.Monad (forM, when)
+import Control.Monad (forM, guard, when)
 import Data.List (inits, intercalate, nub, partition, sortBy, tails)
 import Data.List.NonEmpty (NonEmpty ((:|)), toList)
 import Data.Maybe (catMaybes, fromMaybe, isJust, listToMaybe)
@@ -1020,7 +1022,7 @@ coreInferenceNames = Set.fromList $ map Text.pack
   , "hyper", "paramod"
   , "equality_resolution"
   , "forward_subsumption_resolution", "backward_subsumption_resolution"
-  , "condensation"
+  , "condensation", "condense"   -- Vampire's and E's names for condensation
   , "definition_unfolding", "trivial_inequality_removal"
   , "forward_demodulation", "backward_demodulation"
   , "duplicate_literal_removal", "subsumption_resolution"
@@ -1066,6 +1068,47 @@ calculusViolation unitMap root = go Set.empty [root]
     names (T.UnitSource pn)    = [unitNameStr pn]
     names (T.Inference _ _ ps) = concat [ names s | T.Parent s _ <- ps ]
     names _                    = []
+-- Twee reads a predicate as a function, and an equation between two atoms,
+-- as finite(relation_image(a,relation_dom(a))) = finite(relation_rng(a)) on
+-- SEU303+1, is reflexivity rewritten by term equations, which is congruence.
+-- Rewriting an atom with it is rewriting the atom by those equations, so a
+-- parent that is such an equation is replaced by them, and the proof stays
+-- within first-order terms.
+inlineAtomCongruences :: [T.Unit] -> [T.Unit]
+inlineAtomCongruences units
+  | Map.null congr = units
+  | otherwise      = map replaceIn units
+  where
+    unitMap = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n _ _) <- units ]
+    nameOf  = Map.fromList [ (unitNameStr n, n) | T.Unit n _ _ <- units ]
+    predSyms = Set.fromList (concat [ snd (declSymbols d) | T.Unit _ d _ <- units ])
+    ruleOf nm = Map.lookup nm unitMap >>= inferenceRuleName
+    parentsOf (T.Unit _ _ (Just (T.Inference _ _ ps, _))) = concatMap parentNames ps
+    parentsOf _ = []
+    parentNames (T.Parent (T.UnitSource n) _) = [unitNameStr n]
+    parentNames _                             = []
+    isAtomEquation d = case headLitOf d of
+      Just (T.Equality (T.Function (T.Defined (T.Atom f)) _) T.Positive (T.Function (T.Defined (T.Atom g)) _)) ->
+        f == g && Set.member (Text.unpack f) predSyms && isPositiveUnitFormula d
+      _ -> False
+    -- the term equations an atom equation was built from, in order
+    congr = Map.fromList
+      [ (nm, eqs) | (nm, u@(T.Unit _ d _)) <- Map.toList unitMap
+                  , ruleOf nm == Just (Text.pack "rewriting"), isAtomEquation d
+                  , Just eqs <- [built u] ]
+    built u = do
+      let ps = parentsOf u
+      guard (any (\p -> ruleOf p == Just (Text.pack "reflexivity")) ps)
+      return [ p | p <- ps, ruleOf p /= Just (Text.pack "reflexivity") ]
+    replaceIn u@(T.Unit n d (Just (T.Inference r info ps, extra))) =
+      let ps' = concatMap swap ps
+      in if ps' == ps then u else T.Unit n d (Just (T.Inference r info ps', extra))
+    replaceIn u = u
+    swap p@(T.Parent (T.UnitSource n) _) = case Map.lookup (unitNameStr n) congr of
+      Just eqs -> [ T.Parent (T.UnitSource e) [] | Just e <- map (`Map.lookup` nameOf) eqs ]
+      Nothing  -> [p]
+    swap p = [p]
+
 coreParentNames :: T.Unit -> Maybe [String]
 coreParentNames (T.Unit _ decl (Just (T.Inference (T.Atom rule) _ parents, _)))
   | Set.member rule coreInferenceNames = Just (concatMap extractName parents)

@@ -179,3 +179,10 @@ import TaeljaVerify.Vampire.Seu3031
 import TaeljaVerify.Vampire.Kle1291
 import TaeljaVerify.Vampire.Syn0481
 import TaeljaVerify.E.Syn9461
+import TaeljaVerify.E.Lcl9021
+import TaeljaVerify.Twee.Ana1331
+import TaeljaVerify.Twee.Lcl89710
+import TaeljaVerify.Twee.Lcl9021
+import TaeljaVerify.E.Sww9671
+import TaeljaVerify.E.Sww9681
+import TaeljaVerify.Twee.Seu3031

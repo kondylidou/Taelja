@@ -22,28 +22,27 @@ axiom ax3 : ∀ (a : α) (y_ : α), (implies_ (implies_ y_ a) a) = (implies_ (im
 -- Axiom 4
 axiom ax4 : ∀ (a : α) (b : α) (y_ : α), (implies_ (implies_ y_ a) (implies_ (implies_ a b) (implies_ y_ b))) = truth
 
+-- Lemma 5
+theorem taelja_lemma5 : ∀ (x_ : α) (y_ : α), (implies_ x_ (implies_ x_ y_)) = truth := by
+  intro x_ y_
+  calc implies_ x_ (implies_ x_ y_) = implies_ truth (implies_ x_ (implies_ x_ y_)) := by have h_rw := ax1 (implies_ x_ (implies_ x_ y_)); rw [h_rw]
+      _ = implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))) := by have h_rw := ax1 (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw]
+      _ = implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by have h_rw := ax1 (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))); rw [h_rw]
+      _ = implies_ truth (implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))))) := by have h_rw := ax1 (implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))))); rw [h_rw]
+      _ = implies_ truth (implies_ truth (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) truth)) := by have h_rw := ax2 truth (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw]
+      _ = implies_ truth (implies_ (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) truth) truth) := by have h_rw := ax2 (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) truth) truth; rw [h_rw]
+      _ = implies_ truth (implies_ (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))) (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by have h_rw := ax3 truth (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw]
+      _ = implies_ truth (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))))) := by have h_rw := ax2 (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))) (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw]
+      _ = implies_ truth (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by have h_rw := ax1 (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw]
+      _ = implies_ (implies_ truth truth) (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by have h_rw := ax1 truth; rw [h_rw]
+      _ = truth := by have h_rw := ax4 truth (implies_ x_ (implies_ x_ y_)) truth; rw [h_rw]
+
 -- Goal 1
 theorem taelja_goal1 : x = y := by
   calc x = implies_ truth x := by have h_rw := ax1 x; rw [h_rw]
       _ = implies_ truth (implies_ truth x) := by have h_rw := ax1 (implies_ truth x); rw [h_rw]
-      _ = implies_ truth (implies_ truth (implies_ truth x)) := by have h_rw := ax1 (implies_ truth (implies_ truth x)); rw [h_rw]
-      _ = implies_ truth (implies_ truth (implies_ truth (implies_ truth x))) := by have h_rw := ax1 (implies_ truth (implies_ truth (implies_ truth x))); rw [h_rw]
-      _ = implies_ truth (implies_ truth (implies_ (implies_ truth x) truth)) := by have h_rw := ax2 truth (implies_ truth x); rw [h_rw]
-      _ = implies_ truth (implies_ (implies_ (implies_ truth x) truth) truth) := by have h_rw := ax2 (implies_ (implies_ truth x) truth) truth; rw [h_rw]
-      _ = implies_ truth (implies_ (implies_ truth (implies_ truth x)) (implies_ truth x)) := by have h_rw := ax3 truth (implies_ truth x); rw [h_rw]
-      _ = implies_ truth (implies_ (implies_ truth x) (implies_ truth (implies_ truth x))) := by have h_rw := ax2 (implies_ truth (implies_ truth x)) (implies_ truth x); rw [h_rw]
-      _ = implies_ truth (implies_ (implies_ truth x) (implies_ truth x)) := by have h_rw := ax1 (implies_ truth x); rw [h_rw]
-      _ = implies_ (implies_ truth truth) (implies_ (implies_ truth x) (implies_ truth x)) := by have h_rw := ax1 truth; rw [h_rw]
-      _ = truth := by have h_rw := ax4 truth x truth; rw [h_rw]
-      _ = implies_ (implies_ truth truth) (implies_ (implies_ truth y) (implies_ truth y)) := by have h_rw := ax4 truth y truth; rw [h_rw]
-      _ = implies_ truth (implies_ (implies_ truth y) (implies_ truth y)) := by have h_rw := ax1 truth; rw [h_rw]
-      _ = implies_ truth (implies_ (implies_ truth y) (implies_ truth (implies_ truth y))) := by have h_rw := ax1 (implies_ truth y); rw [h_rw]
-      _ = implies_ truth (implies_ (implies_ truth (implies_ truth y)) (implies_ truth y)) := by have h_rw := ax2 (implies_ truth (implies_ truth y)) (implies_ truth y); rw [h_rw]
-      _ = implies_ truth (implies_ (implies_ (implies_ truth y) truth) truth) := by have h_rw := ax3 truth (implies_ truth y); rw [h_rw]
-      _ = implies_ truth (implies_ truth (implies_ (implies_ truth y) truth)) := by have h_rw := ax2 (implies_ (implies_ truth y) truth) truth; rw [h_rw]
-      _ = implies_ truth (implies_ truth (implies_ truth (implies_ truth y))) := by have h_rw := ax2 truth (implies_ truth y); rw [h_rw]
-      _ = implies_ truth (implies_ truth (implies_ truth y)) := by have h_rw := ax1 (implies_ truth (implies_ truth (implies_ truth y))); rw [h_rw]
-      _ = implies_ truth (implies_ truth y) := by have h_rw := ax1 (implies_ truth (implies_ truth y)); rw [h_rw]
+      _ = truth := by have h_rw := taelja_lemma5 truth x; rw [h_rw]
+      _ = implies_ truth (implies_ truth y) := by have h_rw := taelja_lemma5 truth y; rw [h_rw]
       _ = implies_ truth y := by have h_rw := ax1 (implies_ truth y); rw [h_rw]
       _ = y := by have h_rw := ax1 y; rw [h_rw]
 

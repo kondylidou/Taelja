@@ -1,6 +1,7 @@
 module Helpers where
 
 import Control.Applicative ((<|>))
+import Data.Char (isSpace)
 import Data.List (inits, intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, permutations, tails)
 import Data.Maybe (fromMaybe, isJust, listToMaybe)
 import Control.Monad (foldM)
@@ -503,8 +504,19 @@ appendLine (EqChain {})   _ = error "appendLine: cannot extend EqChain"
 
 ppTerm :: Term -> String
 ppTerm (Var x)    = x
-ppTerm (Const c)  = c
-ppTerm (App f ts) = f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+ppTerm (Const c)  = ppSymbol c
+ppTerm (App f ts) = ppSymbol f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+
+-- A symbol as printed.  One with a space or a quote in its name, as LCL897-10's
+-- ' = =>', is quoted as in TPTP, since unquoted it would not read back.
+ppSymbol :: String -> String
+ppSymbol f
+  | any (\c -> isSpace c || c == '\'') f = "'" ++ concatMap esc f ++ "'"
+  | otherwise = f
+  where
+    esc '\'' = "\\'"
+    esc '\\' = "\\\\"
+    esc c    = [c]
 
 -- True for units internal to the Twee encoding that must not appear in a proof,
 -- namely the Skolemized premises prem_N, the ifeq_axiom sentinel and any unit

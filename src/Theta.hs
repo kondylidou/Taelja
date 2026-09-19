@@ -91,8 +91,9 @@ sharedNodeTheta declAt entries = Map.mapWithKey thetaAt clauses
     ground (App f ts) = App f (map ground ts)
 
 -- How well each inference could be replayed.  It is strict when the replay
--- matches the printed conclusion exactly, loose when one literal on each side
--- is left over from a simplification the prover folded in, and none when
+-- matches the printed conclusion exactly, rewritten when the conclusion is an
+-- instance of one premise rewritten by the other, loose when one literal on
+-- each side is left over from a simplification the prover folded in, and none when
 -- nothing explains it.  Anything but strict is where θ can lose a binding, so
 -- check this first when a nucleus fails.
 explainStatus :: Map.Map String T.Declaration -> [LeafEntry] -> [(String, String)]
@@ -110,12 +111,7 @@ explainStatus declAt entries =
               [ (p, kids) | p <- Map.keys clauses
                           , let kids = filter (`Map.member` clauses) [p ++ "0", p ++ "1"]
                           , not (null kids) ]
-    status (parent, kids)
-      | not (null [ () | (pairs, result) <- alternatives kids
-                       , Just s1 <- [foldM (\acc (a, b) -> unifyU a b acc) Map.empty pairs]
-                       , _ <- cover result parent s1 ]) = "strict"
-      | not (null (explain (parent, kids) Map.empty)) = "loose"
-      | otherwise = "none"
+    status inf = head ([ t | (t, ss) <- explainTiers inf Map.empty, not (null ss) ] ++ ["none"])
 
 polLits :: Clause -> [(Bool, Literal)]
 polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
@@ -182,20 +178,32 @@ unifyU a b s = case (walk s a, walk s b) of
 -- premises combine into the printed conclusion up to instantiation and the
 -- dropping of trivial or duplicate literals.
 explain :: ([(Bool, Literal)], [[(Bool, Literal)]]) -> USubst -> [USubst]
-explain (parent, kids) s
-  | not (null strict) = strict
-  -- A prover may fold a rewriting into an inference and print one body
-  -- literal in its un-normalized form (Twee on ANA023-2 prints
-  -- c_plus(c_0,g,t_b) <= k where the step used g <= k).  Then no replay
-  -- reproduces the clause literally.  Rather than leave every variable of
-  -- the premise free, the remaining literals are allowed to determine them.
-  | otherwise = concat [ coverLoose result parent s1
-                       | (pairs, result) <- alternatives kids
-                       , Just s1 <- [foldM (\acc (a, b) -> unifyU a b acc) s pairs] ]
+explain inf s = concat (take 1 [ ss | (_, ss) <- explainTiers inf s, not (null ss) ])
+
+-- The explanations of an inference by how closely they reproduce it, the
+-- first tier with any being the one used.
+explainTiers :: ([(Bool, Literal)], [[(Bool, Literal)]]) -> USubst -> [(String, [USubst])]
+explainTiers (parent, kids) s = [("strict", strict), ("rewritten", rewritten), ("loose", loose)]
   where
+    -- A prover may fold a rewriting into an inference and print one body
+    -- literal in its un-normalized form (Twee on ANA023-2 prints
+    -- c_plus(c_0,g,t_b) <= k where the step used g <= k).  Then no replay
+    -- reproduces the clause literally.  Rather than leave every variable of
+    -- the premise free, the remaining literals are allowed to determine them.
+    loose = concat [ coverLoose result parent s1
+                   | (pairs, result) <- alternatives kids
+                   , Just s1 <- [foldM (\acc (a, b) -> unifyU a b acc) s pairs] ]
     strict = [ s2 | (pairs, result) <- alternatives kids
                   , Just s1 <- [foldM (\acc (a, b) -> unifyU a b acc) s pairs]
                   , s2 <- cover result parent s1 ]
+    -- A step that instantiates one premise and rewrites the instance by the
+    -- other, a unit equation, at a position that was a variable, as Twee's
+    -- rewriting of c31 by c17 on LCL902+1.  No superposition reaches such a
+    -- position, and the conclusion is the instance up to that rewrite.
+    rewritten = [ s2 | [x, y] <- [kids], (inst, eqk) <- [(x, y), (y, x)]
+                     , [(True, Eq a b)] <- [eqk]
+                     , (l, r) <- [(a, b), (b, a)]
+                     , s2 <- coverRewritten (l, r) inst parent s ]
 
 -- The ways two premises (or one) combine, each as the term equations the
 -- step needs and the literals of its result.
@@ -270,6 +278,32 @@ cover result parent s0 = go result [] s0
             , Just s' <- [matchModulo rigid (litTerm l') (litTerm p) s]
             , s'' <- go ls (i : hit) s' ]
       ++ [ s'' | not sign, Eq a b <- [l], Just s' <- [unifyU a b s], s'' <- go ls hit s' ]
+
+-- Like cover, but a conclusion literal may be the result literal rewritten
+-- once by l -> r, so the result literal matches the conclusion literal with
+-- one instance of r put back to the instance of l.  At least one literal is
+-- matched that way, since otherwise cover would have succeeded.
+coverRewritten :: (Term, Term) -> [(Bool, Literal)] -> [(Bool, Literal)] -> USubst -> [USubst]
+coverRewritten (l, r) result parent s0 = go result [] False s0
+  where
+    idxParent = zip [0 :: Int ..] parent
+    rigid = Set.fromList
+              (concatMap (litVars . mapLiteralTerms (walkDeep s0) . snd) parent)
+    go [] hit used s
+      | used && all ((`elem` hit) . fst) idxParent = [s]
+      | otherwise = []
+    go ((sign, lit) : ls) hit used s =
+      [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
+            , l' <- orientations lit
+            , Just s' <- [matchModulo rigid (litTerm l') (litTerm p) s]
+            , s'' <- go ls (i : hit) used s' ]
+      ++ [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
+               , (u, ctx) <- litSubtermCtxs p
+               , Just s1 <- [matchModulo rigid r u s]
+               , let p' = ctx (walkDeep s1 l)
+               , l' <- orientations lit
+               , Just s' <- [matchModulo rigid (litTerm l') (litTerm p') s1]
+               , s'' <- go ls (i : hit) True s' ]
 
 -- Matching under a substitution.  Unbound, non-rigid pattern variables may be
 -- bound, and the target is never instantiated.

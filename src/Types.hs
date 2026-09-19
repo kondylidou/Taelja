@@ -120,6 +120,7 @@ data AlgState = AlgState
   , stNameToPos  :: Map.Map String String        -- TSTP unit name -> tree position of its electron
   , stEqByName   :: Map.Map String (Term, Term)  -- TSTP unit name -> its unit equation
   , stGoalTemplate :: [Literal]  -- the conjecture's own goal literals (shared free variables across conjuncts), consulted by emitGoalProof
+  , stCandLemmas :: Map.Map String [(String, Literal, ProofBlock)]  -- a candidate lemma's display name -> its entries, sub-lemmas first
       -- stReprove re-proves the derived unit at a tree position from its
       -- ancestry.  Only top-level runs use it, and it returns Nothing elsewhere.
   }

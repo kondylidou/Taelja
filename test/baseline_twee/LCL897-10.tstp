@@ -1,0 +1,56 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, '+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c))!='+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))), file('TPTP/Problems/LCL/LCL897-10.p', goals_09)).
+cnf(c2, axiom, '+'(A, ' = =>'(A, B))='+'(B, ' = =>'(B, A)), file('TPTP/Problems/LCL/LCL897-10.p', sos_08)).
+cnf(c3, axiom, ' = =>'('+'(A2, B2), C)=' = =>'(A2, ' = =>'(B2, C)), file('TPTP/Problems/LCL/LCL897-10.p', sos_07)).
+cnf(c4, plain, ' = =>'('+'(X2, ' = =>'(X2, X3)), X)=' = =>'(X3, ' = =>'(' = =>'(X3, X2), X)), inference(rewriting, [status(thm)], [c2, c3])).
+cnf(c5, axiom, '+'(A2, B2)='+'(B2, A2), file('TPTP/Problems/LCL/LCL897-10.p', sos_02)).
+cnf(c6, plain, ' = =>'('+'(X3, X2), X)=' = =>'(X2, ' = =>'(X3, X)), inference(rewriting, [status(thm)], [c3, c5])).
+cnf(c7, plain, ' = =>'(X2, ' = =>'(X3, X))=' = =>'(X3, ' = =>'(X2, X)), inference(rewriting, [status(thm)], [c6, c3])).
+cnf(c8, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c))='+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), ' = =>'(b, c))), inference(rewriting, [status(thm)], [c4, c7])).
+cnf(c9, axiom, '+'(A2, '0')=A2, file('TPTP/Problems/LCL/LCL897-10.p', sos_03)).
+cnf(c10, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, c), '0')))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c8, c9])).
+cnf(c11, axiom, ' = =>'(A2, A2)='0', file('TPTP/Problems/LCL/LCL897-10.p', sos_04)).
+cnf(c12, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, c), ' = =>'('+'(b, ' = =>'(b, c)), '+'(b, ' = =>'(b, c))))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c10, c11])).
+cnf(c13, plain, ' = =>'('+'(X2, X3), X)=' = =>'(X3, ' = =>'(X2, X)), inference(rewriting, [status(thm)], [c5, c3])).
+cnf(c14, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, c), ' = =>'(' = =>'(b, c), ' = =>'(b, '+'(b, ' = =>'(b, c)))))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c12, c13])).
+cnf(c15, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, '+'(b, ' = =>'(b, c))), ' = =>'(' = =>'(b, '+'(b, ' = =>'(b, c))), ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c14, c2])).
+cnf(c16, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, '+'(b, ' = =>'(b, c))), ' = =>'(b, ' = =>'(' = =>'(b, '+'(b, ' = =>'(b, c))), c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c15, c7])).
+cnf(c17, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, '+'(b, ' = =>'(b, c))), ' = =>'('+'(b, ' = =>'(b, '+'(b, ' = =>'(b, c)))), c))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c16, c3])).
+cnf(c18, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, '+'(b, ' = =>'(b, c))), ' = =>'('+'('+'(b, ' = =>'(b, c)), ' = =>'('+'(b, ' = =>'(b, c)), b)), c))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c17, c2])).
+cnf(c19, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, '+'(b, ' = =>'(b, c))), ' = =>'('+'(b, ' = =>'(b, c)), ' = =>'(' = =>'('+'(b, ' = =>'(b, c)), b), c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c18, c3])).
+cnf(c20, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, '+'(b, ' = =>'(b, c))), ' = =>'(' = =>'('+'(b, ' = =>'(b, c)), b), ' = =>'('+'(b, ' = =>'(b, c)), c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c19, c7])).
+cnf(c21, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, '+'(b, ' = =>'(b, c))), ' = =>'(' = =>'('+'(b, ' = =>'(b, c)), b), ' = =>'(' = =>'(b, c), ' = =>'(b, c))))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c20, c13])).
+cnf(c22, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, '+'(b, ' = =>'(b, c))), ' = =>'(' = =>'('+'(b, ' = =>'(b, c)), b), '0'))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c21, c11])).
+cnf(c23, axiom, ' = =>'(A2, '0')='0', file('TPTP/Problems/LCL/LCL897-10.p', sos_05)).
+cnf(c24, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), '+'(' = =>'(b, '+'(b, ' = =>'(b, c))), '0')))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c22, c23])).
+cnf(c25, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(b, a), ' = =>'(b, '+'(b, ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c24, c9])).
+cnf(c26, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(b, ' = =>'(' = =>'(b, a), '+'(b, ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c25, c7])).
+cnf(c27, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), '+'(b, ' = =>'(b, c))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c26, c4])).
+cnf(c28, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'(' = =>'(a, b), ' = =>'(a, '+'(b, ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c27, c13])).
+cnf(c29, plain, '+'(' = =>'(' = =>'(a, b), ' = =>'(a, '+'(b, ' = =>'(b, c)))), '+'(a, ' = =>'(a, b)))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c28, c5])).
+cnf(c30, plain, '+'('+'(X3, X), X2)='+'(X2, '+'(X, X3)), inference(rewriting, [status(thm)], [c5, c5])).
+cnf(c31, axiom, '+'('+'(A2, B2), C2)='+'(A2, '+'(B2, C2)), file('TPTP/Problems/LCL/LCL897-10.p', sos_01)).
+cnf(c32, plain, '+'(X2, '+'(X, X3))='+'(X3, '+'(X, X2)), inference(rewriting, [status(thm)], [c30, c31])).
+cnf(c33, plain, '+'(X2, '+'(X, X3))='+'(X3, '+'(X2, X)), inference(rewriting, [status(thm)], [c32, c5])).
+cnf(c34, plain, '+'(' = =>'(a, b), '+'(' = =>'(' = =>'(a, b), ' = =>'(a, '+'(b, ' = =>'(b, c)))), a))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c29, c33])).
+cnf(c35, plain, '+'('+'(' = =>'(a, b), ' = =>'(' = =>'(a, b), ' = =>'(a, '+'(b, ' = =>'(b, c))))), a)='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c34, c31])).
+cnf(c36, plain, '+'('+'(' = =>'(a, '+'(b, ' = =>'(b, c))), ' = =>'(' = =>'(a, '+'(b, ' = =>'(b, c))), ' = =>'(a, b))), a)='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c35, c2])).
+cnf(c37, plain, '+'(' = =>'(a, '+'(b, ' = =>'(b, c))), '+'(' = =>'(' = =>'(a, '+'(b, ' = =>'(b, c))), ' = =>'(a, b)), a))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c36, c31])).
+cnf(c38, plain, '+'(' = =>'(a, '+'(b, ' = =>'(b, c))), '+'(a, ' = =>'(' = =>'(a, '+'(b, ' = =>'(b, c))), ' = =>'(a, b))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c37, c5])).
+cnf(c39, plain, '+'(' = =>'(a, '+'(b, ' = =>'(b, c))), '+'(a, ' = =>'('+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))), b)))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c38, c13])).
+cnf(c40, plain, '+'(' = =>'(a, '+'(b, ' = =>'(b, c))), '+'(' = =>'('+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))), b), a))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c39, c5])).
+cnf(c41, plain, '+'(' = =>'('+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))), b), '+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c40, c33])).
+cnf(c42, plain, '+'(' = =>'('+'('+'(b, ' = =>'(b, c)), ' = =>'('+'(b, ' = =>'(b, c)), a)), b), '+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c41, c2])).
+cnf(c43, plain, '+'(' = =>'('+'(b, ' = =>'(b, c)), ' = =>'(' = =>'('+'(b, ' = =>'(b, c)), a), b)), '+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c42, c3])).
+cnf(c44, plain, '+'(' = =>'(' = =>'('+'(b, ' = =>'(b, c)), a), ' = =>'('+'(b, ' = =>'(b, c)), b)), '+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c43, c7])).
+cnf(c45, plain, '+'(' = =>'(' = =>'('+'(b, ' = =>'(b, c)), a), ' = =>'(' = =>'(b, c), ' = =>'(b, b))), '+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c44, c13])).
+cnf(c46, plain, '+'(' = =>'(' = =>'('+'(b, ' = =>'(b, c)), a), ' = =>'(' = =>'(b, c), '0')), '+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c45, c11])).
+cnf(c47, plain, '+'(' = =>'(' = =>'('+'(b, ' = =>'(b, c)), a), '0'), '+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))))='+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c)), inference(rewriting, [status(thm)], [c46, c23])).
+cnf(c48, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c))='+'('0', '+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c))))), inference(rewriting, [status(thm)], [c47, c23])).
+cnf(c49, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c))='+'('+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))), '0'), inference(rewriting, [status(thm)], [c48, c5])).
+cnf(c50, plain, '+'('+'(a, ' = =>'(a, b)), ' = =>'('+'(a, ' = =>'(a, b)), c))='+'(a, ' = =>'(a, '+'(b, ' = =>'(b, c)))), inference(rewriting, [status(thm)], [c49, c9])).
+cnf(c51, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c50])).
+% SZS output end CNFRefutation
+

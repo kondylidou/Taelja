@@ -5,7 +5,7 @@ module Translate (translate, translateWith
   ) where
 
 import Control.Applicative ((<|>))
-import Control.Monad (foldM, forM, forM_, void, when)
+import Control.Monad (foldM, forM, forM_, unless, void, when)
 import Data.Bifunctor (second)
 import Control.Exception (ErrorCall, SomeException, finally, try)
 import Control.Monad.Except (ExceptT, runExceptT, throwError)
@@ -29,7 +29,7 @@ import System.IO (hPutStrLn, stderr)
 import Types
 import Helpers
 import ProofTree
-  ( buildProofInfo, conjectureHypotheses, headLitOf, isDerivedUnit, isOrigAxiomDecl, isPositiveUnitFormula, unitNameStr
+  ( buildProofInfo, conjectureHypotheses, inlineAtomCongruences, headLitOf, isDerivedUnit, isOrigAxiomDecl, isPositiveUnitFormula, unitNameStr
   , resolveCopySource
   )
 import TptpConvert
@@ -182,7 +182,8 @@ translateUntyped mode debug tstp = do
 -- proof, and the emitted axiom list is the original one, so an axiom used only
 -- inside a lemma is still listed.
 translateMode :: Bool -> Bool -> T.TSTP -> IO (Either String StructuredProof)
-translateMode strict debug (T.TSTP _ units) = do
+translateMode strict debug (T.TSTP _ units0) = do
+  let units = inlineAtomCongruences units0
   depth <- subrunDepth
   when (depth == 0) clearLemmaCache
   case buildProofInfo units of
@@ -228,7 +229,7 @@ translateMode strict debug (T.TSTP _ units) = do
           -- cites (LCL126-1/E re-proves through q_3).  Identical axioms
           -- introduced by several candidates share one outer number.
           origNames = Set.fromList (map axiomDisplayName origAxioms)
-          mergeCands _    []                            = ([], [])
+          mergeCands accA []                            = (accA, [])
           mergeCands accA ((cname, (l, blk, lifted, own)) : rest) =
             let (accA', ren) = foldl addOne (accA, Map.empty) own
                 addOne (as, m) a =
@@ -597,6 +598,19 @@ absorbReprove (glit, gblk, subs, own) = do
       gblk'         = renameRefsBlock rn gblk
       subs'         = [ (n, l, renameRefsBlock rn b) | (n, l, b) <- subs ]
   modify $ \st -> st { stExtraAxioms = extra', stLemmas = stLemmas st ++ subs' }
+  -- A re-proof names the outer candidate lemmas it rests on as the outer run
+  -- does, and one the tree never used as an electron is stated here, as
+  -- lemma c_0_13 cited by the re-proof of c_0_36 on SWW967+1/E
+  let cited stated = [ n | b <- gblk' : [ b' | (_, _, b') <- stated ], n <- blockRefNames b ]
+      addCited = do
+        st <- get
+        let stated  = stLemmas st
+            missing = nub [ n | n <- cited stated, n `notElem` [ m | (m, _, _) <- stated ]
+                              , Map.member n (stCandLemmas st) ]
+        unless (null missing) $ do
+          put st { stLemmas = stated ++ concat [ es | n <- missing, Just es <- [Map.lookup n (stCandLemmas st)] ] }
+          addCited
+  addCited
   return (glit, gblk')
 
 -- A non-ground atom's variables as fresh constants (for a prover call that
@@ -1762,11 +1776,23 @@ proveGoal simpl mChain goal = do
                         Just blk -> emitGoalProof (Eq r l) blk
                         Nothing ->
                           throwError ("no proof found for goal: " ++ ppLitI goal)
-    _ ->
+    _ -> do
+      -- find_elec's second step, a proved unit rewritten into the goal by
+      -- proved equations, as Twee's c29 on SEU303+1 rewrites
+      -- finite(relation_image(a,relation_dom(a))) by the equation c13
+      mRw <- if isJust (findUnitForGoal goal units) || not (null (litFree goal))
+               then return Nothing
+               else do
+                 let isHH u = case ueProof u of { Just (HaveHence _) -> True; _ -> False }
+                     srcElecs = [ u | u <- units, isNothing (ueName u), isHH u ] ++ [ u | u <- units, isJust (ueName u) ]
+                 matchViaRw goal [] srcElecs (filter (isEqLit . ueUnit) (tweableUnits units))
       case findUnitForGoal goal units of
         Just (ue, ρ0, instGoal) -> do
           blk <- makeBlock ue ρ0 []
           emitGoalProof instGoal blk
+        Nothing | Just (ki, σi, _, rwi) <- mRw -> do
+          blk <- makeBlock ki σi rwi
+          emitGoalProof goal blk
         Nothing -> do
           allElecs <- gets stUnits
           axNuclei <- gets stAxNuclei
@@ -2300,6 +2326,10 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , stNameToPos  = nameToPos
         , stEqByName   = eqByTstpName
         , stGoalTemplate = goalLits'
+        , stCandLemmas = Map.fromList
+            [ (dn, lifted ++ [(dn, lit, blk)])
+            | (cname, (lit, blk, lifted, _)) <- Map.toList candLemmaMap
+            , let dn = Map.findWithDefault ("lemma " ++ cname) cname nameOverride ]
         , stExtraAxioms = []
         , stBaseAxioms  = axiomList ++ bgAxiomList
         }

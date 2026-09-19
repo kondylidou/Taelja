@@ -32,7 +32,7 @@ import Helpers
   , unitEquation
   )
 import Debug (dbgScoped, subrunDepth)
-import ProofTree (headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
+import ProofTree (classifyRole, conjectureHypotheses, headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
 import TptpConvert
 import TweeInterface (TweeBudget (..), callTwee, findProver, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
 
@@ -328,6 +328,7 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
       return Nothing
     else do
       let ancNames = ancestorNamesOf unitMap cname
+          granted  = maybe [] (uncurry (++)) (conjectureHypotheses (Map.elems unitMap))
           dispNameOf aname =
             Map.lookup (resolveSourceName unitMap aname) tstp2name
               <|> Map.lookup aname tstp2name
@@ -336,8 +337,12 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
           -- clausified copy of a file axiom (E marks those plain, e.g. a
           -- fof_simplification of a Horn axiom), provided its citation
           -- resolves to a display name
+          -- A clause the conjecture grants, as LCL133-1's lemma_antecedent,
+          -- is an axiom of the outer proof too, as the main run reads it
           effOrigAncestor aname u@(T.Unit _ adecl _) =
             (not (isDerivedUnit u) && isOrigAxiomDecl adecl)
+              || (not (isDerivedUnit u) && classifyRole granted unitMap aname adecl == OrigAxiom
+                  && isJust (dispNameOf aname))
               || (isFileSrc unitMap copySrc
                   && maybe False isOrigAxiomDecl (lookupDecl unitMap copySrc)
                   && isJust (dispNameOf aname))

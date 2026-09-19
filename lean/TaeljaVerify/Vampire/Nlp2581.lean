@@ -86,19 +86,21 @@ axiom ax23 : ∀ (x : α) (y : α), smoke x y → event x y
 axiom ax24 : ∀ (a : α) (b : α) (c : α) (u : α) (v : α) (w : α) (x : α) (x1 : α) (x2 : α) (y : α) (z : α), be x y z z → man x z → state x y → smoke a b → present a b → agent a b z → event a b → forename x c → jules_forename x c → of x c z → accessible_world x a → proposition x a → proposition x u → accessible_world x u → think_believe_consider x v → present x v → event x v → theme x v u → agent x w x1 → agent x v x1 → man x x1 → of x x2 x1 → vincent_forename x x2 → forename x x2 → theme x w a → event x w → present x w → think_believe_consider x w → actual_world x → man u (skf4 u)
 
 -- Lemma 25
-theorem taelja_lemma25 : smoke skc12 (skf2 skc10) := by
+theorem taelja_lemma25 : ∀ (x : α), present skc12 (skf2 x) := by
+  intro x
   have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h2 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
   have h3 : man skc12 skc15 := by first | (exact ax3 skc8 skc12 skc15 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : smoke skc12 (skf2 skc10) := by first | (exact ax6 skc15 skc10 h3) | (first | (exact ax6 _ _ h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : present skc12 (skf2 x) := by first | (exact ax5 skc15 x h3) | (first | (exact ax5 _ _ h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h4
 
 -- Lemma 26
-theorem taelja_lemma26 : present skc12 (skf2 skc10) := by
+theorem taelja_lemma26 : ∀ (x : α), smoke skc12 (skf2 x) := by
+  intro x
   have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h2 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
   have h3 : man skc12 skc15 := by first | (exact ax3 skc8 skc12 skc15 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : present skc12 (skf2 skc10) := by first | (exact ax5 skc15 skc10 h3) | (first | (exact ax5 _ _ h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : smoke skc12 (skf2 x) := by first | (exact ax6 skc15 x h3) | (first | (exact ax6 _ _ h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
   exact h4
 
 -- Lemma 27
@@ -111,12 +113,9 @@ theorem taelja_lemma27 : agent skc12 (skf2 skc10) skc10 := by
 
 -- Lemma 28
 theorem taelja_lemma28 : event skc12 (skf2 skc10) := by
-  have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : man skc12 skc15 := by first | (exact ax3 skc8 skc12 skc15 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : smoke skc12 (skf2 skc10) := by first | (exact ax6 skc15 skc10 h3) | (first | (exact ax6 _ _ h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h5 : event skc12 (skf2 skc10) := by first | (exact ax23 skc12 (skf2 skc10) h4) | (first | (exact ax23 _ _ h4) | (apply ax23 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h5
+  have h1 : smoke skc12 (skf2 skc10) := by first | (exact taelja_lemma26 skc10) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
+  have h2 : event skc12 (skf2 skc10) := by first | (exact ax23 skc12 (skf2 skc10) h1) | (first | (exact ax23 _ _ h1) | (apply ax23 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  exact h2
 
 -- Lemma 29
 theorem taelja_lemma29 : forename skc8 skc11 := by
@@ -132,21 +131,15 @@ theorem taelja_lemma30 : forename skc8 skc14 := by
 
 -- Goal 1
 theorem taelja_goal1 : event skc12 (skf2 (skf4 skc12)) := by
-  have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : man skc12 skc15 := by first | (exact ax3 skc8 skc12 skc15 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : smoke skc12 (skf2 (skf4 skc12)) := by first | (exact ax6 skc15 (skf4 skc12) h3) | (first | (exact ax6 _ _ h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h5 : event skc12 (skf2 (skf4 skc12)) := by first | (exact ax23 skc12 (skf2 (skf4 skc12)) h4) | (first | (exact ax23 _ _ h4) | (apply ax23 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h5
+  have h1 : smoke skc12 (skf2 (skf4 skc12)) := by first | (exact taelja_lemma26 (skf4 skc12)) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
+  have h2 : event skc12 (skf2 (skf4 skc12)) := by first | (exact ax23 skc12 (skf2 (skf4 skc12)) h1) | (first | (exact ax23 _ _ h1) | (apply ax23 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  exact h2
 
 -- Goal 2
 theorem taelja_goal2 : event skc12 (skf2 skc10) := by
-  have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : man skc12 skc15 := by first | (exact ax3 skc8 skc12 skc15 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : smoke skc12 (skf2 skc10) := by first | (exact ax6 skc15 skc10 h3) | (first | (exact ax6 _ _ h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h5 : event skc12 (skf2 skc10) := by first | (exact ax23 skc12 (skf2 skc10) h4) | (first | (exact ax23 _ _ h4) | (apply ax23 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h5
+  have h1 : smoke skc12 (skf2 skc10) := by first | (exact taelja_lemma26 skc10) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
+  have h2 : event skc12 (skf2 skc10) := by first | (exact ax23 skc12 (skf2 skc10) h1) | (first | (exact ax23 _ _ h1) | (apply ax23 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  exact h2
 
 -- Goal 3
 theorem taelja_goal3 : agent skc12 (skf2 skc10) skc10 := by
@@ -161,8 +154,8 @@ theorem taelja_goal4 : agent skc12 (skf2 (skf4 skc12)) (skf4 skc12) := by
   have h1 : be skc8 skc9 skc10 skc10 := by first | (exact ax20) | (first | apply ax20 <;> first | rfl | assumption)
   have h2 : man skc8 skc10 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h3 : state skc8 skc9 := by first | (exact ax19) | (first | apply ax19 <;> first | rfl | assumption)
-  have h4 : smoke skc12 (skf2 skc10) := by first | (exact taelja_lemma25) | (first | apply taelja_lemma25 <;> first | rfl | assumption)
-  have h5 : present skc12 (skf2 skc10) := by first | (exact taelja_lemma26) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
+  have h4 : smoke skc12 (skf2 skc10) := by first | (exact taelja_lemma26 skc10) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
+  have h5 : present skc12 (skf2 skc10) := by first | (exact taelja_lemma25 skc10) | (first | apply taelja_lemma25 <;> first | rfl | assumption)
   have h6 : agent skc12 (skf2 skc10) skc10 := by first | (exact taelja_lemma27) | (first | apply taelja_lemma27 <;> first | rfl | assumption)
   have h7 : event skc12 (skf2 skc10) := by first | (exact taelja_lemma28) | (first | apply taelja_lemma28 <;> first | rfl | assumption)
   have h8 : forename skc8 skc11 := by first | (exact taelja_lemma29) | (first | apply taelja_lemma29 <;> first | rfl | assumption)
@@ -203,19 +196,13 @@ theorem taelja_goal6 : be skc8 skc9 skc10 skc10 := by
 
 -- Goal 7
 theorem taelja_goal7 : smoke skc12 (skf2 skc10) := by
-  have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : man skc12 skc15 := by first | (exact ax3 skc8 skc12 skc15 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : smoke skc12 (skf2 skc10) := by first | (exact ax6 skc15 skc10 h3) | (first | (exact ax6 _ _ h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h4
+  have h1 : smoke skc12 (skf2 skc10) := by first | (exact taelja_lemma26 skc10) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
+  exact h1
 
 -- Goal 8
 theorem taelja_goal8 : present skc12 (skf2 skc10) := by
-  have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : man skc12 skc15 := by first | (exact ax3 skc8 skc12 skc15 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : present skc12 (skf2 skc10) := by first | (exact ax5 skc15 skc10 h3) | (first | (exact ax5 _ _ h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h4
+  have h1 : present skc12 (skf2 skc10) := by first | (exact taelja_lemma25 skc10) | (first | apply taelja_lemma25 <;> first | rfl | assumption)
+  exact h1
 
 -- Goal 9
 theorem taelja_goal9 : agent skc12 (skf2 skc10) skc10 := by
@@ -267,19 +254,13 @@ theorem taelja_goal17 : accessible_world skc8 skc12 := by
 
 -- Goal 18
 theorem taelja_goal18 : smoke skc12 (skf2 (skf4 skc12)) := by
-  have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : man skc12 skc15 := by first | (exact ax3 skc8 skc12 skc15 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : smoke skc12 (skf2 (skf4 skc12)) := by first | (exact ax6 skc15 (skf4 skc12) h3) | (first | (exact ax6 _ _ h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h4
+  have h1 : smoke skc12 (skf2 (skf4 skc12)) := by first | (exact taelja_lemma26 (skf4 skc12)) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
+  exact h1
 
 -- Goal 19
 theorem taelja_goal19 : present skc12 (skf2 (skf4 skc12)) := by
-  have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : man skc12 skc15 := by first | (exact ax3 skc8 skc12 skc15 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : present skc12 (skf2 (skf4 skc12)) := by first | (exact ax5 skc15 (skf4 skc12) h3) | (first | (exact ax5 _ _ h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h4
+  have h1 : present skc12 (skf2 (skf4 skc12)) := by first | (exact taelja_lemma25 (skf4 skc12)) | (first | apply taelja_lemma25 <;> first | rfl | assumption)
+  exact h1
 
 -- Goal 20
 theorem taelja_goal20 : state skc8 skc9 := by
@@ -288,12 +269,9 @@ theorem taelja_goal20 : state skc8 skc9 := by
 
 -- Goal 21
 theorem taelja_goal21 : event skc12 (skf2 (skf4 skc12)) := by
-  have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : man skc12 skc15 := by first | (exact ax3 skc8 skc12 skc15 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : smoke skc12 (skf2 (skf4 skc12)) := by first | (exact ax6 skc15 (skf4 skc12) h3) | (first | (exact ax6 _ _ h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h5 : event skc12 (skf2 (skf4 skc12)) := by first | (exact ax23 skc12 (skf2 (skf4 skc12)) h4) | (first | (exact ax23 _ _ h4) | (apply ax23 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h5
+  have h1 : smoke skc12 (skf2 (skf4 skc12)) := by first | (exact taelja_lemma26 (skf4 skc12)) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
+  have h2 : event skc12 (skf2 (skf4 skc12)) := by first | (exact ax23 skc12 (skf2 (skf4 skc12)) h1) | (first | (exact ax23 _ _ h1) | (apply ax23 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  exact h2
 
 -- Goal 22
 theorem taelja_goal22 : think_believe_consider skc8 skc13 := by

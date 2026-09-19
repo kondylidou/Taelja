@@ -1,0 +1,50 @@
+% SZS status Theorem
+
+% SZS output start CNFRefutation
+cnf(c1, conjecture, '==>'('==>'(X17, '1'), '1')=X17, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', goals_14)).
+fof(c2, negated_conjecture, ~![X17_2]: '==>'('==>'(X17_2, '1'), '1')=X17_2, inference(negate_conjecture, [status(cth)], [c1])).
+cnf(c3, plain, '==>'('==>'(x17, '1'), '1')!=x17, inference(clausify, [status(esa)], [c2])).
+cnf(c4, axiom, '>='(A, '0'), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_08)).
+fof(c5, axiom, ![X8, X9, X10]: ('>='(X8, X9) => '>='('+'(X8, X10), '+'(X9, X10))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_09)).
+fof(c6, plain, ![X8_2]: ![X9_2]: (~'>='(X8_2, X9_2) | ![X10_2]: '>='('+'(X8_2, X10_2), '+'(X9_2, X10_2))), inference(clausify, [status(esa)], [c5])).
+cnf(c7, plain, ~'>='(X8_2, X9_2) | '>='('+'(X8_2, X10_2), '+'(X9_2, X10_2)), inference(clausify, [status(thm)], [c6])).
+cnf(c8, plain, '>='('+'('1', x17), '+'('0', x17)), inference(resolution, [status(thm)], [c4, c7])).
+fof(c9, axiom, ![X14, X15, X16]: ('>='(X14, X15) => '>='('==>'(X16, X14), '==>'(X16, X15))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_11)).
+fof(c10, plain, ![X14_2]: ![X15_2]: (~'>='(X14_2, X15_2) | ![X16_2]: '>='('==>'(X16_2, X14_2), '==>'(X16_2, X15_2))), inference(clausify, [status(esa)], [c9])).
+cnf(c11, plain, ~'>='(X14_2, X15_2) | '>='('==>'(X16_2, X14_2), '==>'(X16_2, X15_2)), inference(clausify, [status(thm)], [c10])).
+cnf(c12, axiom, '+'(A2, '1')='1', file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_12)).
+cnf(c13, plain, ~'>='('+'(x17, '1'), x17) | '>='('==>'('==>'(x17, '1'), '1'), '==>'('==>'(x17, '1'), x17)), inference(rewriting, [status(thm)], [c11, c12])).
+cnf(c14, axiom, '+'(A2, B)='+'(B, A2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_02)).
+cnf(c15, plain, ~'>='('+'('1', x17), x17) | '>='('==>'('==>'(x17, '1'), '1'), '==>'('==>'(x17, '1'), x17)), inference(rewriting, [status(thm)], [c13, c14])).
+cnf(c16, axiom, '+'(A2, '0')=A2, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_03)).
+cnf(c17, plain, '+'('0', X)=X, inference(rewriting, [status(thm)], [c14, c16])).
+cnf(c18, plain, ~'>='('+'('1', x17), '+'('0', x17)) | '>='('==>'('==>'(x17, '1'), '1'), '==>'('==>'(x17, '1'), x17)), inference(rewriting, [status(thm)], [c15, c17])).
+cnf(c19, plain, '>='('==>'('==>'(x17, '1'), '1'), '==>'('==>'(x17, '1'), x17)), inference(resolution, [status(thm)], [c8, c18])).
+cnf(c20, axiom, '>='(A2, A2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_04)).
+fof(c21, axiom, ![X5, X6, X7]: ('>='('+'(X5, X6), X7) <=> '>='(X6, '==>'(X5, X7))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_07)).
+fof(c22, plain, ![X5_2, X6_2, X7_2]: (('>='(X6_2, '==>'(X5_2, X7_2)) | ~'>='('+'(X5_2, X6_2), X7_2)) & (~'>='(X6_2, '==>'(X5_2, X7_2)) | '>='('+'(X5_2, X6_2), X7_2))), inference(clausify, [status(esa)], [c21])).
+cnf(c23, plain, ~'>='(X6_2, '==>'(X5_2, X7_2)) | '>='('+'(X5_2, X6_2), X7_2), inference(clausify, [status(thm)], [c22])).
+cnf(c24, plain, '>='('+'('==>'('==>'(x17, '1'), x17), '==>'('==>'('==>'(x17, '1'), x17), x17)), x17), inference(resolution, [status(thm)], [c20, c23])).
+cnf(c25, axiom, '==>'('==>'('==>'(A2, '1'), A2), A2)='0', file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_13)).
+cnf(c26, plain, '>='('+'('==>'('==>'(x17, '1'), x17), '0'), x17), inference(rewriting, [status(thm)], [c24, c25])).
+cnf(c27, plain, '>='('==>'('==>'(x17, '1'), x17), x17), inference(rewriting, [status(thm)], [c26, c16])).
+cnf(c28, plain, '>='('+'('==>'(x17, '1'), x17), '+'('0', x17)), inference(resolution, [status(thm)], [c4, c7])).
+fof(c29, axiom, ![X5_2, X6_2, X7_2]: ('>='('+'(X5_2, X6_2), X7_2) <=> '>='(X6_2, '==>'(X5_2, X7_2))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_07)).
+fof(c30, plain, ![X5_2, X6_2, X7_2]: (('>='(X6_2, '==>'(X5_2, X7_2)) | ~'>='('+'(X5_2, X6_2), X7_2)) & (~'>='(X6_2, '==>'(X5_2, X7_2)) | '>='('+'(X5_2, X6_2), X7_2))), inference(clausify, [status(esa)], [c29])).
+cnf(c31, plain, ~'>='('+'(X5_2, X6_2), X7_2) | '>='(X6_2, '==>'(X5_2, X7_2)), inference(clausify, [status(thm)], [c30])).
+cnf(c32, plain, ~'>='('+'('==>'(x17, '1'), x17), '+'('0', x17)) | '>='(x17, '==>'('==>'(x17, '1'), x17)), inference(rewriting, [status(thm)], [c31, c17])).
+cnf(c33, plain, '>='(x17, '==>'('==>'(x17, '1'), x17)), inference(resolution, [status(thm)], [c28, c32])).
+fof(c34, axiom, ![X3, X4]: (('>='(X3, X4) & '>='(X4, X3)) => X3=X4), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/LCL/LCL902+1.p', sos_06)).
+cnf(c35, plain, X3_2=X4_2 | ~'>='(X4_2, X3_2) | ~'>='(X3_2, X4_2), inference(clausify, [status(esa)], [c34])).
+cnf(c36, plain, ~'>='(X3_2, X4_2) | ~'>='(X4_2, X3_2) | X3_2=X4_2, inference(clausify, [status(thm)], [c35])).
+cnf(c37, plain, ~'>='('==>'('==>'(x17, '1'), x17), x17) | '==>'('==>'(x17, '1'), x17)=x17, inference(resolution, [status(thm)], [c33, c36])).
+cnf(c38, plain, '==>'('==>'(x17, '1'), x17)=x17, inference(resolution, [status(thm)], [c27, c37])).
+cnf(c39, plain, '>='('==>'('==>'(x17, '1'), '1'), x17), inference(rewriting, [status(thm)], [c19, c38])).
+cnf(c40, plain, '>='('+'(x17, '==>'(x17, '1')), '1'), inference(resolution, [status(thm)], [c20, c23])).
+cnf(c41, plain, ~'>='('+'(x17, '==>'(x17, '1')), '1') | '>='(x17, '==>'('==>'(x17, '1'), '1')), inference(rewriting, [status(thm)], [c31, c14])).
+cnf(c42, plain, '>='(x17, '==>'('==>'(x17, '1'), '1')), inference(resolution, [status(thm)], [c40, c41])).
+cnf(c43, plain, ~'>='('==>'('==>'(x17, '1'), '1'), x17) | '==>'('==>'(x17, '1'), '1')=x17, inference(resolution, [status(thm)], [c42, c36])).
+cnf(c44, plain, '==>'('==>'(x17, '1'), '1')=x17, inference(resolution, [status(thm)], [c39, c43])).
+cnf(c45, plain, $false, inference(proved_conjecture, [status(thm)], [c3, c44])).
+% SZS output end CNFRefutation
+

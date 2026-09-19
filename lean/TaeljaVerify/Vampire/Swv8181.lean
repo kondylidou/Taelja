@@ -14,10 +14,15 @@ axiom v_ta : α
 -- Axiom 1
 axiom ax1 : ∀ (x : α), x = v_ta
 
+-- Lemma 2
+theorem taelja_lemma2 : ∀ (x : α) (y : α), x = y := by
+  intro x y
+  calc x = v_ta := by have h_rw := ax1 x; rw [h_rw]
+      _ = y := by have h_rw := ax1 y; rw [h_rw]
+
 -- Goal 1
 theorem taelja_goal1 : v_s = v_t := by
-  calc v_s = v_ta := by have h_rw := ax1 v_s; rw [h_rw]
-      _ = v_t := by have h_rw := ax1 v_t; rw [h_rw]
+  calc v_s = v_t := by have h_rw := taelja_lemma2 v_s v_t; rw [h_rw]
 
 end VampireSwv8181
 

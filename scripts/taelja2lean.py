@@ -116,7 +116,7 @@ class Document:
 
 # ─── Tokenizer ───────────────────────────────────────────────────────────────
 
-_SYM_CHARS = '+*/^<>-%&|~'
+_SYM_CHARS = '+*/^<>=-%&|~'
 
 
 def _symbolic_ident_end(s: str, i: int):
@@ -134,6 +134,22 @@ def tokenize(s: str) -> list:
     while i < len(s):
         if s[i].isspace():
             i += 1
+        elif s[i] == "'":
+            # a quoted symbol, as LCL897-10's ' = =>', read as its name
+            j, name = i + 1, ''
+            while j < len(s) and s[j] != "'":
+                if s[j] == '\\' and j + 1 < len(s):
+                    j += 1
+                name += s[j]
+                j += 1
+            tokens.append(('IDENT', name))
+            i = j + 1
+        elif s[i] in '=>' and _symbolic_ident_end(s, i) is not None:
+            # an operator name applied as a function, as LCL's ==>(X,Y) or
+            # >=(X,Y), before => and = are read as connectives
+            j = _symbolic_ident_end(s, i)
+            tokens.append(('IDENT', s[i:j]))
+            i = j
         elif s[i:i+2] == '=>':
             tokens.append(('ARROW', '=>'))
             i += 2
@@ -666,7 +682,7 @@ def lean_name(name: str) -> str:
     if name and not (name[0].isalnum() or name[0] == '_'):
         # symbolic function symbols (e.g. "+", ">") are not Lean identifiers
         words = {'+': 'plus', '-': 'minus', '*': 'times', '/': 'div', '^': 'pow',
-                 '<': 'lt', '>': 'gt', '%': 'mod', '&': 'and', '|': 'or', '~': 'tilde'}
+                 '<': 'lt', '>': 'gt', '=': 'eq', ' ': 'sp', '%': 'mod', '&': 'and', '|': 'or', '~': 'tilde'}
         return 'op_' + '_'.join(words.get(c, f'c{ord(c)}') for c in name)
     return name
 

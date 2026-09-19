@@ -180,10 +180,10 @@ renderEqChain s steps =
 ppLiteral :: Literal -> String
 ppLiteral (Eq l r)    = ppTerm l ++ " = " ++ ppTerm r
 ppLiteral (NEq l r)   = ppTerm l ++ " != " ++ ppTerm r
-ppLiteral (Rel n [])  = n
-ppLiteral (Rel n ts)  = n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
-ppLiteral (NRel n []) = "~" ++ n
-ppLiteral (NRel n ts) = "~" ++ n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+ppLiteral (Rel n [])  = ppSymbol n
+ppLiteral (Rel n ts)  = ppSymbol n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+ppLiteral (NRel n []) = "~" ++ ppSymbol n
+ppLiteral (NRel n ts) = "~" ++ ppSymbol n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 
 -- Apply a name→name mapping throughout lemma and goal proof blocks.
 applyRenaming :: Map.Map String String -> StructuredProof -> StructuredProof

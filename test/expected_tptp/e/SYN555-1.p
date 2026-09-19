@@ -7,8 +7,8 @@ cnf(p4_4, negated_conjecture, p4(f5(c7, c10, c9), c9), file('Problems/SYN/SYN555
 cnf(p4_6, negated_conjecture, p4(f5(c7, X1, c8), f5(c7, X1, c9)), file('Problems/SYN/SYN555-1.p', p4_6)).
 cnf(p3_3, negated_conjecture, p3(X1, X1), file('Problems/SYN/SYN555-1.p', p3_3)).
 cnf(p2_1, negated_conjecture, p2(X1, X1), file('Problems/SYN/SYN555-1.p', p2_1)).
-fof(s1, plain, p4(f5(c7,f6(c10,c9,c8),c8),f5(c7,f6(c10,c9,c8),c9)), inference(instantiate, [status(thm)], [p4_6])).
-fof(s2, plain, p4(f5(c7,f6(c10,c9,c8),c8),f5(c7,f6(c10,c9,c8),c8)), inference(instantiate, [status(thm)], [p4_2])).
-fof(lemma_9, lemma, p4(f5(c7,f6(c10,c9,c8),c9),f5(c7,f6(c10,c9,c8),c8)), inference(mp, [status(thm)], [p4_8, s1, s2])).
-fof(goal_1, theorem, p4(f5(c7,c10,c8),c8), inference(mp, [status(thm)], [p4_12, p4_4, lemma_9])).
+fof(s1, plain, ! [X] : p4(f5(c7,X,c8),f5(c7,X,c8)), inference(instantiate, [status(thm)], [p4_2])).
+fof(lemma_9, lemma, ! [X] : p4(f5(c7,X,c9),f5(c7,X,c8)), inference(mp, [status(thm)], [p4_8, p4_6, s1])).
+fof(s2, plain, p4(f5(c7,f6(c10,c9,c8),c9),f5(c7,f6(c10,c9,c8),c8)), inference(instantiate, [status(thm)], [lemma_9])).
+fof(goal_1, theorem, p4(f5(c7,c10,c8),c8), inference(mp, [status(thm)], [p4_12, p4_4, s2])).
 % SZS output end Proof

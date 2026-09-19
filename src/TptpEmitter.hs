@@ -114,12 +114,13 @@ emitTptp sp0 = unlines $
       [ withParents u | n <- axNames, not (Set.member n hyps), Just u <- [inputOf n] ]
       ++ concat [ withParents d | n <- axNames, dn <- definitionsBehind n, Just d <- [Map.lookup dn byName] ]
       ++ concat [ withParents d | d <- skolemDefinitions ]
-    -- the Skolem definitions of the negated conjecture behind the terms the
-    -- goal generalizes, which justify the final generalization
+    -- the prover's Skolem definitions of the negated conjecture behind the
+    -- terms the goal generalizes or keeps, which justify the theorem, as
+    -- Vampire's f25 for sK0 on LCL903+1
     skolemDefinitions =
       [ u | u@(T.Unit _ d (Just (T.Introduced _ _, _))) <- inUnits input
           , let (fs, _) = declSymbols d
-          , any (`elem` generalizedSyms) [ s | s <- fs, Set.notMember s fileSyms ] ]
+          , any (`elem` (generalizedSyms ++ goalSkolems)) [ s | s <- fs, Set.notMember s fileSyms ] ]
     generalizedSyms = nub (concatMap (termSymbols . snd) (inGeneralized input))
     -- The symbols an introduced definition defines, which GDV wants named in
     -- its info as new_symbols(definition, [...]) and E and Vampire leave out.
@@ -235,10 +236,10 @@ emitTptp sp0 = unlines $
     -- symbol of the negated conjecture.  The text keeps it when a lemma
     -- mentions it, as on PHI011+1/E, and without a definition in the proof,
     -- as Vampire prints, the theorem generalizes over it
-    conjSkolems =
+    conjSkolems = [ f | f <- goalSkolems, Set.notMember f definedSyms ]
+    goalSkolems =
       [ f | f <- nub (concatMap (litSymbols . fst) (goals sp1))
           , Set.notMember f fileSyms
-          , Set.notMember f definedSyms
           , f `notElem` concat [ axSyms ax | ax <- axioms sp1, not (isJust (lookup (axiomName ax) assumed)) ] ]
     definedSyms = Set.fromList (concat [ fst (declSymbols d) | T.Unit _ d (Just (T.Introduced _ _, _)) <- inUnits input ])
     axSyms (AUnit _ l)                 = litSymbols l
@@ -565,10 +566,25 @@ unitDecl :: T.Unit -> T.Declaration
 unitDecl (T.Unit _ d _) = d
 unitDecl _              = T.Formula (T.Standard T.Plain) (T.FOF (T.Atomic (T.Predicate (T.Defined (T.Atom mempty)) [])))
 
+-- The conjecture's formula.  A clause, as Twee writes the conjecture of
+-- LCL902+1 with its variable X17 free, is its universal closure, since a
+-- formula printed as fof must be closed.
 unitFormula :: T.Unit -> T.Formula
 unitFormula u = case unitDecl u of
+  T.Formula _ (T.CNF (T.Clause lits)) ->
+    let fo (T.Positive, l) = T.Atomic l
+        fo (T.Negative, l) = T.Negated (T.Atomic l)
+        body = foldr1 (\a b -> T.Connected a T.Disjunction b) (map fo (toList lits))
+        vars = nub (concatMap (litVarNames . snd) (toList lits))
+    in T.FOF (T.quantified T.Forall [ (T.Var (Text.pack v), T.Unsorted ()) | v <- vars ] body)
   T.Formula _ f -> f
   _             -> T.FOF (T.Atomic (T.Predicate (T.Defined (T.Atom mempty)) []))
+  where
+    litVarNames (T.Predicate _ ts)  = concatMap termVarNames ts
+    litVarNames (T.Equality a _ b)  = termVarNames a ++ termVarNames b
+    termVarNames (T.Variable (T.Var v)) = [Text.unpack v]
+    termVarNames (T.Function _ ts)      = concatMap termVarNames ts
+    termVarNames _                      = []
 
 axiomName :: Axiom -> String
 axiomName (AUnit n _)    = n

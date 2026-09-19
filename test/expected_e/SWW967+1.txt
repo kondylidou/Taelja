@@ -1,0 +1,80 @@
+Axiom 1: pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
+Axiom 2: pred_attacker(tuple_client_A_out_1(Y,Z,A)) => pred_attacker(A)
+Axiom 3: pred_attacker(B) => pred_attacker(tuple_client_A_in_2(B))
+Axiom 4: pred_attacker(C) => pred_attacker(tuple_client_A_in_4(C))
+Axiom 5: pred_attacker(U) => pred_attacker(tuple_client_A_in_6(U))
+Axiom 6: pred_attacker(V) => pred_attacker(tuple_client_A_in_8(V))
+Axiom 7: pred_eq_bitstring_bitstring(W,X1)
+Axiom 8: pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(X2,X3,X4)),constr_cbc_dec_1(X5,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X6,name_Kas)))) /\ pred_attacker(tuple_client_A_in_8(X5)) /\ pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(X6,name_Kas))) /\ pred_attacker(tuple_client_A_in_6(X6)) /\ pred_attacker(tuple_client_A_in_4(X2)) /\ pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(X3,name_Kas))) /\ pred_eq_bitstring_bitstring(name_Na(X4),constr_tuple_4_get_0x30(constr_cbc_dec_4(X3,name_Kas))) /\ pred_attacker(tuple_client_A_in_2(X3)) => pred_attacker(tuple_client_A_out_9(name_objective))
+Axiom 9: pred_attacker(tuple_client_A_out_9(X7)) => pred_attacker(X7)
+
+Lemma 10: pred_attacker(tuple_client_A_in_2(name_Na(X)))
+Proof:
+  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
+    by axiom 1
+  hence pred_attacker(name_Na(X))
+    by axiom 2
+  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
+    by axiom 3
+
+Lemma 11: pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
+Proof:
+  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
+    by axiom 1
+  hence pred_attacker(name_Na(X))
+    by axiom 2
+  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
+    by axiom 3
+  hence pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
+    by axiom 4
+
+Lemma 12: pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))
+Proof:
+  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
+    by axiom 1
+  hence pred_attacker(name_Na(X))
+    by axiom 2
+  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
+    by axiom 3
+  hence pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
+    by axiom 4
+  hence pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))
+    by axiom 5
+
+Lemma 13: pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))))
+Proof:
+  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
+    by axiom 1
+  hence pred_attacker(name_Na(X))
+    by axiom 2
+  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
+    by axiom 3
+  hence pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
+    by axiom 4
+  hence pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))
+    by axiom 5
+  hence pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))))
+    by axiom 6
+
+Goal 1: pred_attacker(name_objective)
+Proof:
+  have pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(tuple_client_A_in_2(name_Na(X)),name_Na(X),Y)),constr_cbc_dec_1(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))),name_Kas))))
+    by axiom 7
+   and pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))))
+    by lemma 13
+   and pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))),name_Kas)))
+    by axiom 7
+   and pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))
+    by lemma 12
+   and pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
+    by lemma 11
+   and pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(name_Na(X),name_Kas)))
+    by axiom 7
+   and pred_eq_bitstring_bitstring(name_Na(Y),constr_tuple_4_get_0x30(constr_cbc_dec_4(name_Na(X),name_Kas)))
+    by axiom 7
+   and pred_attacker(tuple_client_A_in_2(name_Na(X)))
+    by lemma 10
+  hence pred_attacker(tuple_client_A_out_9(name_objective))
+    by axiom 8
+  hence pred_attacker(name_objective)
+    by axiom 9

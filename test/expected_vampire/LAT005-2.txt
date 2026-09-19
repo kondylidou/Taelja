@@ -23,7 +23,14 @@ Proof:
   hence meet(b,r2,e)
     by axiom 6
 
-Lemma 19: meet(c2,b,b)
+Lemma 19: meet(a,r2,d)
+Proof:
+  have meet(r2,a,d)
+    by axiom 10
+  hence meet(a,r2,d)
+    by axiom 6
+
+Lemma 20: meet(c2,b,b)
 Proof:
   have join(a,b,c2)
     by axiom 7
@@ -32,13 +39,6 @@ Proof:
   hence meet(b,c2,b)
     by axiom 4
   hence meet(c2,b,b)
-    by axiom 6
-
-Lemma 20: meet(a,r2,d)
-Proof:
-  have meet(r2,a,d)
-    by axiom 10
-  hence meet(a,r2,d)
     by axiom 6
 
 Lemma 21: meet(c2,a,a)
@@ -59,12 +59,10 @@ Proof:
 
 Lemma 23: meet(d,c2,d)
 Proof:
-  have meet(r2,a,d)
-    by axiom 10
-  hence meet(a,r2,d)
-    by axiom 6
+  have meet(a,r2,d)
+    by lemma 19
    and meet(a,r2,d)
-    by lemma 20
+    by lemma 19
    and meet(c2,a,a)
     by lemma 21
   hence meet(c2,d,d)
@@ -74,14 +72,12 @@ Proof:
 
 Lemma 24: meet(c2,e,e)
 Proof:
-  have meet(r2,b,e)
-    by axiom 5
-  hence meet(b,r2,e)
-    by axiom 6
+  have meet(b,r2,e)
+    by lemma 18
    and meet(b,r2,e)
     by lemma 18
    and meet(c2,b,b)
-    by lemma 19
+    by lemma 20
   hence meet(c2,e,e)
     by axiom 9
 
@@ -94,10 +90,8 @@ Proof:
 
 Lemma 26: meet(b,e,e)
 Proof:
-  have meet(r2,b,e)
-    by axiom 5
-  hence meet(b,r2,e)
-    by axiom 6
+  have meet(b,r2,e)
+    by lemma 18
   hence join(b,e,b)
     by axiom 13
   hence join(e,b,b)

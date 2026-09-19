@@ -1,0 +1,35 @@
+% SZS status Theorem
+
+% SZS output start CNFRefutation
+fof(c1, conjecture, ![A]: ((relation(A) & function(A)) => (finite(relation_dom(A)) => finite(relation_rng(A)))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SEU/SEU303+1.p', t26_finset_1)).
+fof(c2, negated_conjecture, ~![A2]: ((relation(A2) & function(A2)) => (finite(relation_dom(A2)) => finite(relation_rng(A2)))), inference(negate_conjecture, [status(cth)], [c1])).
+fof(c3, plain, relation(a) & function(a) & finite(relation_dom(a)) & ~finite(relation_rng(a)), inference(clausify, [status(esa)], [c2])).
+cnf(c4, plain, ~finite(relation_rng(a)), inference(clausify, [status(thm)], [c3])).
+cnf(c5, plain, X=X, inference(reflexivity, [status(thm)], [])).
+fof(c6, conjecture, ![A2]: ((relation(A2) & function(A2)) => (finite(relation_dom(A2)) => finite(relation_rng(A2)))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SEU/SEU303+1.p', t26_finset_1)).
+fof(c7, negated_conjecture, ~![A2]: ((relation(A2) & function(A2)) => (finite(relation_dom(A2)) => finite(relation_rng(A2)))), inference(negate_conjecture, [status(cth)], [c6])).
+fof(c8, plain, relation(a) & function(a) & finite(relation_dom(a)) & ~finite(relation_rng(a)), inference(clausify, [status(esa)], [c7])).
+cnf(c9, plain, relation(a), inference(clausify, [status(thm)], [c8])).
+fof(c10, axiom, ![A2]: (relation(A2) => relation_image(A2, relation_dom(A2))=relation_rng(A2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SEU/SEU303+1.p', t146_relat_1)).
+cnf(c11, plain, relation_image(A2, relation_dom(A2))=relation_rng(A2) | ~relation(A2), inference(clausify, [status(esa)], [c10])).
+cnf(c12, plain, ~relation(A2) | relation_image(A2, relation_dom(A2))=relation_rng(A2), inference(clausify, [status(thm)], [c11])).
+cnf(c13, plain, relation_image(a, relation_dom(a))=relation_rng(a), inference(resolution, [status(thm)], [c9, c12])).
+cnf(c14, plain, finite(relation_image(a, relation_dom(a)))=finite(relation_rng(a)), inference(rewriting, [status(thm)], [c5, c13])).
+fof(c15, conjecture, ![A2]: ((relation(A2) & function(A2)) => (finite(relation_dom(A2)) => finite(relation_rng(A2)))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SEU/SEU303+1.p', t26_finset_1)).
+fof(c16, negated_conjecture, ~![A2]: ((relation(A2) & function(A2)) => (finite(relation_dom(A2)) => finite(relation_rng(A2)))), inference(negate_conjecture, [status(cth)], [c15])).
+fof(c17, plain, relation(a) & function(a) & finite(relation_dom(a)) & ~finite(relation_rng(a)), inference(clausify, [status(esa)], [c16])).
+cnf(c18, plain, function(a), inference(clausify, [status(thm)], [c17])).
+fof(c19, conjecture, ![A2]: ((relation(A2) & function(A2)) => (finite(relation_dom(A2)) => finite(relation_rng(A2)))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SEU/SEU303+1.p', t26_finset_1)).
+fof(c20, negated_conjecture, ~![A2]: ((relation(A2) & function(A2)) => (finite(relation_dom(A2)) => finite(relation_rng(A2)))), inference(negate_conjecture, [status(cth)], [c19])).
+fof(c21, plain, relation(a) & function(a) & finite(relation_dom(a)) & ~finite(relation_rng(a)), inference(clausify, [status(esa)], [c20])).
+cnf(c22, plain, finite(relation_dom(a)), inference(clausify, [status(thm)], [c21])).
+fof(c23, axiom, ![B, A2]: ((relation(A2) & (function(A2) & finite(B))) => finite(relation_image(A2, B))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SEU/SEU303+1.p', fc13_finset_1)).
+fof(c24, plain, ![B2]: (![A2]: (finite(relation_image(A2, B2)) | ~function(A2) | ~relation(A2)) | ~finite(B2)), inference(clausify, [status(esa)], [c23])).
+cnf(c25, plain, ~relation(A2) | ~function(A2) | ~finite(B2) | finite(relation_image(A2, B2)), inference(clausify, [status(thm)], [c24])).
+cnf(c26, plain, ~relation(a) | ~function(a) | finite(relation_image(a, relation_dom(a))), inference(resolution, [status(thm)], [c22, c25])).
+cnf(c27, plain, ~relation(a) | finite(relation_image(a, relation_dom(a))), inference(resolution, [status(thm)], [c18, c26])).
+cnf(c28, plain, finite(relation_image(a, relation_dom(a))), inference(resolution, [status(thm)], [c9, c27])).
+cnf(c29, plain, finite(relation_rng(a)), inference(rewriting, [status(thm)], [c14, c28])).
+cnf(c30, plain, $false, inference(proved_conjecture, [status(thm)], [c4, c29])).
+% SZS output end CNFRefutation
+

@@ -1,0 +1,77 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, d(T)!=times(x, cos(x)), file('TPTP/Problems/ANA/ANA133-1.p', goal)).
+cnf(c2, axiom, d('+'(T2, U))='+'(d(T2), d(U)), file('TPTP/Problems/ANA/ANA133-1.p', derivative_of_plus)).
+cnf(c3, axiom, '+'(X, '+'(Y, Z))='+'('+'(X, Y), Z), file('TPTP/Problems/ANA/ANA133-1.p', associtivity_of_plus)).
+cnf(c4, axiom, '+'(X2, minus(X2))=zero, file('TPTP/Problems/ANA/ANA133-1.p', minus)).
+cnf(c5, plain, '+'(X3, '+'(minus(X3), X2))='+'(zero, X2), inference(rewriting, [status(thm)], [c3, c4])).
+cnf(c6, axiom, '+'(zero, X2)=X2, file('TPTP/Problems/ANA/ANA133-1.p', plus_zero)).
+cnf(c7, plain, '+'(X3, '+'(minus(X3), X2))=X2, inference(rewriting, [status(thm)], [c5, c6])).
+cnf(c8, plain, minus(minus(X2))='+'(X2, zero), inference(rewriting, [status(thm)], [c7, c4])).
+cnf(c9, axiom, '+'(X2, Y2)='+'(Y2, X2), file('TPTP/Problems/ANA/ANA133-1.p', commutativity_of_plus)).
+cnf(c10, plain, '+'(X2, zero)=X2, inference(rewriting, [status(thm)], [c9, c6])).
+cnf(c11, plain, minus(minus(X2))=X2, inference(rewriting, [status(thm)], [c8, c10])).
+cnf(c12, plain, '+'(minus(X2), '+'(minus(minus(X2)), times(minus(minus(X2)), minus(one))))=times(X2, minus(one)), inference(rewriting, [status(thm)], [c11, c7])).
+cnf(c13, axiom, times(X2, Y2)=times(Y2, X2), file('TPTP/Problems/ANA/ANA133-1.p', commutativity_of_times)).
+cnf(c14, axiom, times(one, X2)=X2, file('TPTP/Problems/ANA/ANA133-1.p', times_one)).
+cnf(c15, plain, times(X2, one)=X2, inference(rewriting, [status(thm)], [c13, c14])).
+cnf(c16, plain, '+'(minus(X2), '+'(times(minus(minus(X2)), one), times(minus(minus(X2)), minus(one))))=times(X2, minus(one)), inference(rewriting, [status(thm)], [c12, c15])).
+cnf(c17, axiom, times(X2, '+'(Y2, Z2))='+'(times(X2, Y2), times(X2, Z2)), file('TPTP/Problems/ANA/ANA133-1.p', distributivity)).
+cnf(c18, plain, '+'(minus(X2), times(minus(minus(X2)), '+'(one, minus(one))))=times(X2, minus(one)), inference(rewriting, [status(thm)], [c16, c17])).
+cnf(c19, plain, '+'(minus(X2), times(minus(minus(X2)), zero))=times(X2, minus(one)), inference(rewriting, [status(thm)], [c18, c4])).
+cnf(c20, axiom, times(zero, X2)=zero, file('TPTP/Problems/ANA/ANA133-1.p', times_zero)).
+cnf(c21, plain, times(X2, zero)=zero, inference(rewriting, [status(thm)], [c13, c20])).
+cnf(c22, plain, times(X2, minus(one))='+'(minus(X2), zero), inference(rewriting, [status(thm)], [c19, c21])).
+cnf(c23, plain, times(X2, minus(one))=minus(X2), inference(rewriting, [status(thm)], [c22, c10])).
+cnf(c24, plain, '+'(d(times(d(d(cos(x))), minus(one))), d(times(d(d(d(cos(x)))), x)))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c2, c23])).
+cnf(c25, axiom, d(times(T2, U2))='+'(times(T2, d(U2)), times(U2, d(T2))), file('TPTP/Problems/ANA/ANA133-1.p', derivative_of_times)).
+cnf(c26, plain, '+'('+'(times(d(d(cos(x))), d(minus(one))), times(minus(one), d(d(d(cos(x)))))), d(times(d(d(d(cos(x)))), x)))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c24, c25])).
+cnf(c27, plain, '+'('+'(times(d(d(cos(x))), '+'(zero, d(minus(one)))), times(minus(one), d(d(d(cos(x)))))), d(times(d(d(d(cos(x)))), x)))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c26, c6])).
+cnf(c28, axiom, d(one)=zero, file('TPTP/Problems/ANA/ANA133-1.p', derivative_of_one)).
+cnf(c29, plain, '+'('+'(times(d(d(cos(x))), '+'(d(one), d(minus(one)))), times(minus(one), d(d(d(cos(x)))))), d(times(d(d(d(cos(x)))), x)))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c27, c28])).
+cnf(c30, plain, '+'(d(X2), d(minus(X2)))=d(zero), inference(rewriting, [status(thm)], [c2, c4])).
+cnf(c31, axiom, d(zero)=zero, file('TPTP/Problems/ANA/ANA133-1.p', derivative_of_zero)).
+cnf(c32, plain, '+'(d(X2), d(minus(X2)))=zero, inference(rewriting, [status(thm)], [c30, c31])).
+cnf(c33, plain, '+'('+'(times(d(d(cos(x))), zero), times(minus(one), d(d(d(cos(x)))))), d(times(d(d(d(cos(x)))), x)))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c29, c32])).
+cnf(c34, plain, '+'('+'(zero, times(minus(one), d(d(d(cos(x)))))), d(times(d(d(d(cos(x)))), x)))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c33, c21])).
+cnf(c35, plain, '+'(times(minus(one), d(d(d(cos(x))))), d(times(d(d(d(cos(x)))), x)))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c34, c6])).
+cnf(c36, plain, '+'(times(d(d(d(cos(x)))), minus(one)), d(times(d(d(d(cos(x)))), x)))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c35, c13])).
+cnf(c37, plain, '+'(minus(d(d(d(cos(x))))), d(times(d(d(d(cos(x)))), x)))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c36, c23])).
+cnf(c38, plain, '+'(d(times(d(d(d(cos(x)))), x)), minus(d(d(d(cos(x))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c37, c9])).
+cnf(c39, plain, '+'('+'(times(d(d(d(cos(x)))), d(x)), times(x, d(d(d(d(cos(x))))))), minus(d(d(d(cos(x))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c38, c25])).
+cnf(c40, axiom, d(x)=one, file('TPTP/Problems/ANA/ANA133-1.p', derivative_of_x)).
+cnf(c41, plain, '+'('+'(times(d(d(d(cos(x)))), one), times(x, d(d(d(d(cos(x))))))), minus(d(d(d(cos(x))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c39, c40])).
+cnf(c42, plain, '+'('+'(d(d(d(cos(x)))), times(x, d(d(d(d(cos(x))))))), minus(d(d(d(cos(x))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c41, c15])).
+cnf(c43, plain, '+'(d(d(d(cos(x)))), '+'(times(x, d(d(d(d(cos(x)))))), minus(d(d(d(cos(x)))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c42, c3])).
+cnf(c44, plain, '+'(d(d(d(cos(x)))), '+'(minus(d(d(d(cos(x))))), times(x, d(d(d(d(cos(x))))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c43, c9])).
+cnf(c45, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, d(d(d(d(cos(x)))))), inference(rewriting, [status(thm)], [c44, c7])).
+cnf(c46, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, d(minus(minus(d(d(d(cos(x)))))))), inference(rewriting, [status(thm)], [c45, c11])).
+cnf(c47, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, d(minus('+'(minus(d(d(d(cos(x))))), zero)))), inference(rewriting, [status(thm)], [c46, c10])).
+cnf(c48, plain, times(x, d(minus('+'(minus(d(d(d(cos(x))))), '+'('+'(minus(minus(d(d(d(cos(x)))))), d(cos(x))), minus('+'(minus(minus(d(d(d(cos(x)))))), d(cos(x)))))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c47, c4])).
+cnf(c49, plain, times(x, d(minus('+'(minus(d(d(d(cos(x))))), '+'(minus(minus(d(d(d(cos(x)))))), '+'(d(cos(x)), minus('+'(minus(minus(d(d(d(cos(x)))))), d(cos(x))))))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c48, c3])).
+cnf(c50, plain, times(x, d(minus('+'(d(cos(x)), minus('+'(minus(minus(d(d(d(cos(x)))))), d(cos(x))))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c49, c7])).
+cnf(c51, plain, times(x, d(minus('+'(d(cos(x)), minus('+'(d(cos(x)), minus(minus(d(d(d(cos(x))))))))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c50, c9])).
+cnf(c52, plain, times(x, d(minus('+'(d(cos(x)), minus('+'(d(cos(x)), d(d(d(cos(x))))))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c51, c11])).
+cnf(c53, plain, times(x, d(minus('+'(d(cos(x)), minus(d('+'(cos(x), d(d(cos(x))))))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c52, c2])).
+cnf(c54, plain, minus(times(d(x), sin(x)))=minus(sin(x)), inference(rewriting, [status(thm)], [c14, c40])).
+cnf(c55, plain, minus(times(sin(x), d(x)))=minus(sin(x)), inference(rewriting, [status(thm)], [c54, c13])).
+cnf(c56, axiom, d(cos(T2))=minus(times(sin(T2), d(T2))), file('TPTP/Problems/ANA/ANA133-1.p', derivative_of_cos)).
+cnf(c57, plain, d(cos(x))=minus(sin(x)), inference(rewriting, [status(thm)], [c55, c56])).
+cnf(c58, plain, times(x, d(minus('+'(d(cos(x)), minus(d('+'(cos(x), d(minus(sin(x))))))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c53, c57])).
+cnf(c59, axiom, d(sin(T2))=times(cos(T2), d(T2)), file('TPTP/Problems/ANA/ANA133-1.p', derivative_of_sin)).
+cnf(c60, plain, times(d(x), cos(x))=d(sin(x)), inference(rewriting, [status(thm)], [c59, c13])).
+cnf(c61, plain, times(one, cos(x))=d(sin(x)), inference(rewriting, [status(thm)], [c60, c40])).
+cnf(c62, plain, d(sin(x))=cos(x), inference(rewriting, [status(thm)], [c61, c14])).
+cnf(c63, plain, times(x, d(minus('+'(d(cos(x)), minus(d('+'(d(sin(x)), d(minus(sin(x))))))))))=d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x))), inference(rewriting, [status(thm)], [c58, c62])).
+cnf(c64, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, d(minus('+'(d(cos(x)), minus(d(zero)))))), inference(rewriting, [status(thm)], [c63, c32])).
+cnf(c65, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, d(minus('+'(d(cos(x)), minus(zero))))), inference(rewriting, [status(thm)], [c64, c31])).
+cnf(c66, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, d(minus('+'(d(cos(x)), '+'(zero, minus(zero)))))), inference(rewriting, [status(thm)], [c65, c6])).
+cnf(c67, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, d(minus('+'(d(cos(x)), zero)))), inference(rewriting, [status(thm)], [c66, c4])).
+cnf(c68, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, d(minus(d(cos(x))))), inference(rewriting, [status(thm)], [c67, c10])).
+cnf(c69, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, d(minus(minus(sin(x))))), inference(rewriting, [status(thm)], [c68, c57])).
+cnf(c70, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, d(sin(x))), inference(rewriting, [status(thm)], [c69, c11])).
+cnf(c71, plain, d('+'(minus(d(d(cos(x)))), times(d(d(d(cos(x)))), x)))=times(x, cos(x)), inference(rewriting, [status(thm)], [c70, c62])).
+cnf(c72, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c71])).
+% SZS output end CNFRefutation
+

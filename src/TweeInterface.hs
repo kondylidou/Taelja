@@ -260,7 +260,12 @@ toIfeqCnfHorn name headLit bodies =
 -- Returns the rewrite chain from goalTerm to "true", or Nothing if unprovable.
 callTweeRelLemma :: TweeBudget -> [UnitEntry] -> [HornAxiomEntry] -> Literal
                  -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTweeRelLemma budget units hornAxioms goalLit
+callTweeRelLemma budget units0 hornAxioms0 goalLit0 =
+  withAliases units0 goalLit0 hornAxioms0 $ \units' goal' horns' -> callTweeRelLemmaPlain budget units' horns' goal'
+
+callTweeRelLemmaPlain :: TweeBudget -> [UnitEntry] -> [HornAxiomEntry] -> Literal
+                      -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
+callTweeRelLemmaPlain budget units hornAxioms goalLit
   | not (tptpSafeLit goalLit) = return Nothing
   | otherwise = do
   let goalTerm  = litRelTerm goalLit
@@ -464,7 +469,49 @@ parseTweeChain idToUe output l r =
              Just (dropWhile (== ' ') startLine, collectSteps rest)
 
 callTwee :: TweeBudget -> [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTwee budget units goal@(Eq l r)
+callTwee budget units goal =
+  withAliases units goal [] $ \units' goal' _ -> callTweePlain budget units' goal'
+
+-- Twee prints a symbol that is not a plain name, as LCL's '+' or '==>', infix
+-- in its proofs, where parseTweeTerm cannot read it back.  Such a symbol gets
+-- a plain alias for the call and its own name again in the answer, in the
+-- chain's terms and in the units it cites.
+withAliases
+  :: [UnitEntry] -> Literal -> [HornAxiomEntry]
+  -> ([UnitEntry] -> Literal -> [HornAxiomEntry] -> IO (Maybe (Term, [(UnitEntry, Dir, Term)])))
+  -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
+withAliases units lit horns call
+  | null unplain = call units lit horns
+  | otherwise = do
+      r <- call [ u { ueUnit = renLit fwd (ueUnit u) } | u <- units ] (renLit fwd lit)
+                [ h { haHead = renLit fwd (haHead h), haBodies = map (renLit fwd) (haBodies h) } | h <- horns ]
+      return (fmap (\(t, ch) -> ( renTerm back t
+                                , [ (u { ueUnit = renLit back (ueUnit u) }, d, renTerm back x) | (u, d, x) <- ch ])) r)
+  where
+    allLits = map ueUnit units ++ [lit] ++ concat [ haHead h : haBodies h | h <- horns ]
+    syms    = nub (concatMap symsOf allLits)
+    unplain = [ f | f <- syms, not (bareName f) ]
+    aliases = zip unplain [ a | i <- [1 :: Int ..], let a = "taelja_sym" ++ show i, a `notElem` syms ]
+    fwd     = Map.fromList aliases
+    back    = Map.fromList [ (a, f) | (f, a) <- aliases ]
+    symsOf (Rel n ts)  = n : concatMap termSyms ts
+    symsOf (NRel n ts) = n : concatMap termSyms ts
+    symsOf (Eq a b)    = termSyms a ++ termSyms b
+    symsOf (NEq a b)   = termSyms a ++ termSyms b
+    termSyms (Const c)  = [c]
+    termSyms (Var _)    = []
+    termSyms (App f ts) = f : concatMap termSyms ts
+    ren m f = Map.findWithDefault f f m
+    renTerm m (Const c)  = Const (ren m c)
+    renTerm _ (Var v)    = Var v
+    renTerm m (App f ts) = App (ren m f) (map (renTerm m) ts)
+    renLit m (Rel n ts)  = Rel (ren m n) (map (renTerm m) ts)
+    renLit m (NRel n ts) = NRel (ren m n) (map (renTerm m) ts)
+    renLit m (Eq a b)    = Eq (renTerm m a) (renTerm m b)
+    renLit m (NEq a b)   = NEq (renTerm m a) (renTerm m b)
+
+callTweePlain :: TweeBudget -> [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
+callTweePlain budget units goal@(Eq l r)
   | not (tptpSafeLit goal) = return Nothing
   | otherwise = do
   let relUnits   = relevantUnits goal (filter (tptpSafeLit . ueUnit) units)
@@ -484,7 +531,7 @@ callTwee budget units goal@(Eq l r)
       input   = unlines (axioms ++ [negGoal])
   out <- runTwee budget "eq" input
   return (parseTweeChain idToUe out l r)
-callTwee budget units goal@(Rel name args)
+callTweePlain budget units goal@(Rel name args)
   | not (tptpSafeLit goal) = return Nothing
   | otherwise = do
   let goalTerm  = if null args then Const name else App name args
@@ -505,4 +552,4 @@ callTwee budget units goal@(Rel name args)
   where
     isRelLit (Rel _ _) = True
     isRelLit _         = False
-callTwee _ _ _ = return Nothing
+callTweePlain _ _ _ = return Nothing

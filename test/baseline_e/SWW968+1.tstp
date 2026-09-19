@@ -1,0 +1,1014 @@
+# Preprocessing class: FSLSSMSMSSSNFFN.
+# Configuration: C07_19_nc_SOS_SAT001_MinMin_p005000_rr
+# No SInE strategy applied
+# Search class: FHUSM-FFMM31-DFFFFFNN
+# partial match(1): FHUSM-FFMM21-DFFFFFNN
+# Configuration: new_ho_10
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_78, plain, (name_objective2!=name_objective1)).
+#
+#cnf(i_0_56, plain, (name_objective1!=name_A)).
+#
+#cnf(i_0_190, negated_conjecture, (~pred_attacker(tuple_2(name_objective1,name_objective2)))).
+#
+#cnf(i_0_62, plain, (name_objective1!=name_B)).
+#
+#cnf(i_0_71, plain, (name_objective1!=name_Kas)).
+#
+#cnf(i_0_74, plain, (name_objective1!=name_Kbs)).
+#
+#cnf(i_0_57, plain, (name_objective2!=name_A)).
+#
+#cnf(i_0_63, plain, (name_objective2!=name_B)).
+#
+#cnf(i_0_1, plain, (constr_CONST_0x30!=constr_CONST_1)).
+#
+#cnf(i_0_161, plain, (pred_attacker(constr_CONST_0x30))).
+#
+#cnf(i_0_2, plain, (constr_CONST_0x30!=constr_CONST_2)).
+#
+#cnf(i_0_13, plain, (constr_CONST_2!=constr_CONST_1)).
+#
+#cnf(i_0_72, plain, (name_objective2!=name_Kas)).
+#
+#cnf(i_0_75, plain, (name_objective2!=name_Kbs)).
+#
+#cnf(i_0_11, plain, (constr_CONST_0x30!=name_objective1)).
+#
+#cnf(i_0_22, plain, (constr_CONST_1!=name_objective1)).
+#
+#cnf(i_0_32, plain, (constr_CONST_2!=name_objective1)).
+#
+#cnf(i_0_41, plain, (constr_CONST_3!=name_objective1)).
+#
+#cnf(i_0_49, plain, (constr_CONST_4!=name_objective1)).
+#
+#cnf(i_0_67, plain, (name_I!=name_objective1)).
+#
+#cnf(i_0_3, plain, (constr_CONST_0x30!=constr_CONST_3)).
+#
+#cnf(i_0_160, plain, (pred_attacker(constr_CONST_1))).
+#
+#cnf(i_0_14, plain, (constr_CONST_3!=constr_CONST_1)).
+#
+#cnf(i_0_24, plain, (constr_CONST_3!=constr_CONST_2)).
+#
+#cnf(i_0_76, plain, (name_c!=name_objective1)).
+#
+#cnf(i_0_12, plain, (constr_CONST_0x30!=name_objective2)).
+#
+#cnf(i_0_23, plain, (constr_CONST_1!=name_objective2)).
+#
+#cnf(i_0_33, plain, (constr_CONST_2!=name_objective2)).
+#
+#cnf(i_0_42, plain, (constr_CONST_3!=name_objective2)).
+#
+#cnf(i_0_50, plain, (constr_CONST_4!=name_objective2)).
+#
+#cnf(i_0_68, plain, (name_I!=name_objective2)).
+#
+#cnf(i_0_77, plain, (name_c!=name_objective2)).
+#
+#cnf(i_0_4, plain, (constr_CONST_0x30!=constr_CONST_4)).
+#
+#cnf(i_0_159, plain, (pred_attacker(constr_CONST_2))).
+#
+#cnf(i_0_15, plain, (constr_CONST_4!=constr_CONST_1)).
+#
+#cnf(i_0_25, plain, (constr_CONST_4!=constr_CONST_2)).
+#
+#cnf(i_0_34, plain, (constr_CONST_4!=constr_CONST_3)).
+#
+#cnf(i_0_5, plain, (constr_CONST_0x30!=name_A)).
+#
+#cnf(i_0_16, plain, (constr_CONST_1!=name_A)).
+#
+#cnf(i_0_26, plain, (constr_CONST_2!=name_A)).
+#
+#cnf(i_0_35, plain, (constr_CONST_3!=name_A)).
+#
+#cnf(i_0_43, plain, (constr_CONST_4!=name_A)).
+#
+#cnf(i_0_6, plain, (constr_CONST_0x30!=name_B)).
+#
+#cnf(i_0_17, plain, (constr_CONST_1!=name_B)).
+#
+#cnf(i_0_27, plain, (constr_CONST_2!=name_B)).
+#
+#cnf(i_0_158, plain, (pred_attacker(constr_CONST_3))).
+#
+#cnf(i_0_36, plain, (constr_CONST_3!=name_B)).
+#
+#cnf(i_0_44, plain, (constr_CONST_4!=name_B)).
+#
+#cnf(i_0_51, plain, (name_B!=name_A)).
+#
+#cnf(i_0_7, plain, (constr_CONST_0x30!=name_I)).
+#
+#cnf(i_0_18, plain, (name_I!=constr_CONST_1)).
+#
+#cnf(i_0_28, plain, (name_I!=constr_CONST_2)).
+#
+#cnf(i_0_37, plain, (name_I!=constr_CONST_3)).
+#
+#cnf(i_0_45, plain, (name_I!=constr_CONST_4)).
+#
+#cnf(i_0_52, plain, (name_I!=name_A)).
+#
+#cnf(i_0_58, plain, (name_I!=name_B)).
+#
+#cnf(i_0_8, plain, (constr_CONST_0x30!=name_Kas)).
+#
+#cnf(i_0_157, plain, (pred_attacker(constr_CONST_4))).
+#
+#cnf(i_0_19, plain, (constr_CONST_1!=name_Kas)).
+#
+#cnf(i_0_29, plain, (constr_CONST_2!=name_Kas)).
+#
+#cnf(i_0_38, plain, (constr_CONST_3!=name_Kas)).
+#
+#cnf(i_0_46, plain, (constr_CONST_4!=name_Kas)).
+#
+#cnf(i_0_53, plain, (name_A!=name_Kas)).
+#
+#cnf(i_0_59, plain, (name_B!=name_Kas)).
+#
+#cnf(i_0_64, plain, (name_I!=name_Kas)).
+#
+#cnf(i_0_9, plain, (constr_CONST_0x30!=name_Kbs)).
+#
+#cnf(i_0_20, plain, (constr_CONST_1!=name_Kbs)).
+#
+#cnf(i_0_30, plain, (constr_CONST_2!=name_Kbs)).
+#
+#cnf(i_0_39, plain, (constr_CONST_3!=name_Kbs)).
+#
+#cnf(i_0_179, plain, (pred_attacker(name_A))).
+#
+#cnf(i_0_47, plain, (constr_CONST_4!=name_Kbs)).
+#
+#cnf(i_0_54, plain, (name_Kbs!=name_A)).
+#
+#cnf(i_0_60, plain, (name_Kbs!=name_B)).
+#
+#cnf(i_0_65, plain, (name_I!=name_Kbs)).
+#
+#cnf(i_0_69, plain, (name_Kbs!=name_Kas)).
+#
+#cnf(i_0_10, plain, (constr_CONST_0x30!=name_c)).
+#
+#cnf(i_0_21, plain, (name_c!=constr_CONST_1)).
+#
+#cnf(i_0_31, plain, (name_c!=constr_CONST_2)).
+#
+#cnf(i_0_40, plain, (name_c!=constr_CONST_3)).
+#
+#cnf(i_0_48, plain, (name_c!=constr_CONST_4)).
+#
+#cnf(i_0_55, plain, (name_c!=name_A)).
+#
+#cnf(i_0_178, plain, (pred_attacker(name_B))).
+#
+#cnf(i_0_61, plain, (name_c!=name_B)).
+#
+#cnf(i_0_66, plain, (name_c!=name_I)).
+#
+#cnf(i_0_70, plain, (name_c!=name_Kas)).
+#
+#cnf(i_0_73, plain, (name_c!=name_Kbs)).
+#
+#cnf(i_0_177, plain, (pred_attacker(name_I))).
+#
+#cnf(i_0_176, plain, (pred_attacker(name_c))).
+#
+#cnf(i_0_103, plain, (pred_attacker(tuple_true))).
+#
+#cnf(i_0_112, plain, (pred_attacker(tuple_false))).
+#
+#cnf(i_0_181, plain, (pred_attacker(name_new0x2Dname(X1)))).
+#
+#cnf(i_0_105, plain, (pred_attacker(X1)|~pred_attacker(tuple_succ(X1)))).
+#
+#cnf(i_0_180, plain, (pred_equal(X1,X1))).
+#
+#cnf(i_0_151, plain, (pred_attacker(constr_cbc_4_get_3_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_107, plain, (pred_attacker(X1)|~pred_attacker(tuple_server_S_out_2(X1)))).
+#
+#cnf(i_0_116, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_B_out_2(X1)))).
+#
+#cnf(i_0_152, plain, (pred_attacker(constr_cbc_4_get_2_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_153, plain, (pred_attacker(constr_cbc_4_get_1_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_118, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_B_in_3(X1)))).
+#
+#cnf(i_0_120, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_B_in_1(X1)))).
+#
+#cnf(i_0_122, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_9(X1)))).
+#
+#cnf(i_0_124, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_7(X1)))).
+#
+#cnf(i_0_126, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_5(X1)))).
+#
+#cnf(i_0_128, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_3(X1)))).
+#
+#cnf(i_0_154, plain, (pred_attacker(constr_cbc_3_get_2_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_155, plain, (pred_attacker(constr_cbc_3_get_1_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_130, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_10(X1)))).
+#
+#cnf(i_0_136, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_in_8(X1)))).
+#
+#cnf(i_0_156, plain, (pred_attacker(constr_cbc_2_get_1_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_97, plain, (pred_attacker(constr_tuple_4_get_3_bitstring(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_138, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_in_6(X1)))).
+#
+#cnf(i_0_140, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_in_4(X1)))).
+#
+#cnf(i_0_142, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_in_2(X1)))).
+#
+#cnf(i_0_173, plain, (pred_attacker(X2)|~pred_attacker(tuple_2(X1,X2)))).
+#
+#cnf(i_0_172, plain, (pred_attacker(X1)|~pred_attacker(tuple_2(X1,X2)))).
+#
+#cnf(i_0_98, plain, (pred_attacker(constr_tuple_4_get_2_bitstring(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_102, plain, (pred_attacker(constr_tuple_2_get_0x30_bitstring(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_99, plain, (pred_attacker(constr_tuple_4_get_1(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_174, plain, (pred_attacker(X2)|~pred_mess(X1,X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_170, plain, (pred_attacker(X3)|~pred_attacker(tuple_3(X1,X2,X3)))).
+#
+#cnf(i_0_100, plain, (pred_attacker(constr_tuple_4_get_0x30(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_101, plain, (pred_attacker(constr_tuple_2_get_1(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_104, plain, (pred_attacker(tuple_succ(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_106, plain, (pred_attacker(tuple_server_S_out_2(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_115, plain, (pred_attacker(tuple_client_B_out_2(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_117, plain, (pred_attacker(tuple_client_B_in_3(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_119, plain, (pred_attacker(tuple_client_B_in_1(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_121, plain, (pred_attacker(tuple_client_A_out_9(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_123, plain, (pred_attacker(tuple_client_A_out_7(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_125, plain, (pred_attacker(tuple_client_A_out_5(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_111, plain, (pred_attacker(X3)|~pred_attacker(tuple_server_S_in_1(X1,X2,X3)))).
+#
+#cnf(i_0_134, plain, (pred_attacker(X3)|~pred_attacker(tuple_client_A_out_1(X1,X2,X3)))).
+#
+#cnf(i_0_127, plain, (pred_attacker(tuple_client_A_out_3(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_129, plain, (pred_attacker(tuple_client_A_out_10(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_135, plain, (pred_attacker(tuple_client_A_in_8(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_137, plain, (pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_139, plain, (pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_141, plain, (pred_attacker(tuple_client_A_in_2(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_171, plain, (pred_attacker(tuple_2(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_169, plain, (pred_attacker(X2)|~pred_attacker(tuple_3(X1,X2,X3)))).
+#
+#cnf(i_0_175, plain, (pred_mess(X1,X2)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_92, plain, (constr_tuple_2_get_0x30_bitstring(tuple_2(X1,X2))=X1)).
+#
+#cnf(i_0_110, plain, (pred_attacker(X2)|~pred_attacker(tuple_server_S_in_1(X1,X2,X3)))).
+#
+#cnf(i_0_133, plain, (pred_attacker(X2)|~pred_attacker(tuple_client_A_out_1(X1,X2,X3)))).
+#
+#cnf(i_0_95, plain, (constr_tuple_2_get_1(tuple_2(X1,X2))=X2)).
+#
+#cnf(i_0_82, plain, (constr_cbc_dec_1(constr_cbc_enc_1(X1,X2),X2)=X1)).
+#
+#cnf(i_0_168, plain, (pred_attacker(X1)|~pred_attacker(tuple_3(X1,X2,X3)))).
+#
+#cnf(i_0_109, plain, (pred_attacker(X1)|~pred_attacker(tuple_server_S_in_1(X1,X2,X3)))).
+#
+#cnf(i_0_132, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_1(X1,X2,X3)))).
+#
+#cnf(i_0_147, plain, (pred_attacker(constr_cbc_dec_4(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_148, plain, (pred_attacker(constr_cbc_dec_3(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_149, plain, (pred_attacker(constr_cbc_dec_2(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_89, plain, (constr_dec(constr_enc(X1,X2),X2)=X1)).
+#
+#cnf(i_0_182, plain, (pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X1))))).
+#
+#cnf(i_0_166, plain, (pred_attacker(X4)|~pred_attacker(tuple_4(X1,X2,X3,X4)))).
+#
+#cnf(i_0_165, plain, (pred_attacker(X3)|~pred_attacker(tuple_4(X1,X2,X3,X4)))).
+#
+#cnf(i_0_146, plain, (pred_attacker(constr_cbc_enc_1(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_150, plain, (pred_attacker(constr_cbc_dec_1(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_113, plain, (pred_attacker(constr_enc(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_114, plain, (pred_attacker(constr_dec(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_164, plain, (pred_attacker(X2)|~pred_attacker(tuple_4(X1,X2,X3,X4)))).
+#
+#cnf(i_0_163, plain, (pred_attacker(X1)|~pred_attacker(tuple_4(X1,X2,X3,X4)))).
+#
+#cnf(i_0_167, plain, (pred_attacker(tuple_3(X1,X2,X3))|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_145, plain, (pred_attacker(constr_cbc_enc_2(X1,X2,X3))|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_186, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(tuple_client_A_in_8(X4))|~pred_attacker(tuple_client_A_in_6(X5))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_90, plain, (constr_tuple_4_get_3_bitstring(tuple_4(X1,X2,X3,X4))=X4)).
+#
+#cnf(i_0_91, plain, (constr_tuple_4_get_2_bitstring(tuple_4(X1,X2,X3,X4))=X3)).
+#
+#cnf(i_0_93, plain, (constr_tuple_4_get_1(tuple_4(X1,X2,X3,X4))=X2)).
+#
+#cnf(i_0_94, plain, (constr_tuple_4_get_0x30(tuple_4(X1,X2,X3,X4))=X1)).
+#
+#cnf(i_0_88, plain, (constr_cbc_2_get_1_prefixes(constr_cbc_enc_2(X1,X2,X3))=constr_cbc_enc_1(X1,X3))).
+#
+#cnf(i_0_108, plain, (pred_attacker(tuple_server_S_in_1(X1,X2,X3))|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_131, plain, (pred_attacker(tuple_client_A_out_1(X1,X2,X3))|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_183, plain, (pred_attacker(tuple_client_A_out_3(constr_tuple_4_get_3_bitstring(constr_cbc_dec_4(X1,name_Kas))))|~pred_attacker(tuple_client_A_in_2(X1)))).
+#
+#cnf(i_0_162, plain, (pred_attacker(tuple_4(X1,X2,X3,X4))|~pred_attacker(X4)|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_144, plain, (pred_attacker(constr_cbc_enc_3(X1,X2,X3,X4))|~pred_attacker(X4)|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_81, plain, (constr_cbc_dec_2(constr_cbc_enc_2(X1,X2,X3),X3)=tuple_2(X1,X2))).
+#
+#cnf(i_0_188, plain, (pred_attacker(tuple_client_B_out_2(constr_cbc_enc_1(name_Nb_63(X2),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kbs)))))|~pred_attacker(tuple_client_B_in_1(X1)))).
+#
+#cnf(i_0_87, plain, (constr_cbc_3_get_1_prefixes(constr_cbc_enc_3(X1,X2,X3,X4))=constr_cbc_enc_1(X1,X4))).
+#
+#cnf(i_0_86, plain, (constr_cbc_3_get_2_prefixes(constr_cbc_enc_3(X1,X2,X3,X4))=constr_cbc_enc_2(X1,X2,X4))).
+#
+#cnf(i_0_85, plain, (constr_cbc_4_get_1_prefixes(constr_cbc_enc_4(X1,X2,X3,X4,X5))=constr_cbc_enc_1(X1,X5))).
+#
+#cnf(i_0_80, plain, (constr_cbc_dec_3(constr_cbc_enc_3(X1,X2,X3,X4),X4)=tuple_3(X1,X2,X3))).
+#
+#cnf(i_0_84, plain, (constr_cbc_4_get_2_prefixes(constr_cbc_enc_4(X1,X2,X3,X4,X5))=constr_cbc_enc_2(X1,X2,X5))).
+#
+#cnf(i_0_143, plain, (pred_attacker(constr_cbc_enc_4(X1,X2,X3,X4,X5))|~pred_attacker(X5)|~pred_attacker(X4)|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_83, plain, (constr_cbc_4_get_3_prefixes(constr_cbc_enc_4(X1,X2,X3,X4,X5))=constr_cbc_enc_3(X1,X2,X3,X5))).
+#
+#cnf(i_0_79, plain, (constr_cbc_dec_4(constr_cbc_enc_4(X1,X2,X3,X4,X5),X5)=tuple_4(X1,X2,X3,X4))).
+#
+#cnf(i_0_187, plain, (pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X5,name_Kas)))))|~pred_attacker(tuple_client_A_in_8(X4))|~pred_attacker(tuple_client_A_in_6(X5))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_185, plain, (pred_attacker(tuple_client_A_out_7(constr_cbc_enc_1(name_Na0x27(X2,X3,X4),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas)))))|~pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(tuple_client_A_in_4(X2))|~pred_attacker(tuple_client_A_in_2(X3)))).
+#
+#cnf(i_0_189, plain, (pred_attacker(tuple_server_S_out_2(constr_cbc_enc_4(X3,X2,name_Kab_66(X4),constr_cbc_enc_2(name_Kab_66(X4),X1,name_Kbs),name_Kas)))|~pred_attacker(tuple_server_S_in_1(X1,X2,X3)))).
+#
+#cnf(i_0_184, plain, (pred_attacker(tuple_client_A_out_5(constr_cbc_enc_1(tuple_succ(constr_cbc_dec_1(X1,constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas)))),constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas)))))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+# Presaturation interreduction done
+#
+#cnf(i_0_161, plain, (pred_attacker(constr_CONST_0x30))).
+#
+#cnf(i_0_78, plain, (name_objective2!=name_objective1)).
+#
+#cnf(i_0_56, plain, (name_objective1!=name_A)).
+#
+#cnf(i_0_62, plain, (name_objective1!=name_B)).
+#
+#cnf(i_0_71, plain, (name_objective1!=name_Kas)).
+#
+#cnf(i_0_190, negated_conjecture, (~pred_attacker(tuple_2(name_objective1,name_objective2)))).
+#
+#cnf(i_0_74, plain, (name_objective1!=name_Kbs)).
+#
+#cnf(i_0_57, plain, (name_objective2!=name_A)).
+#
+#cnf(i_0_63, plain, (name_objective2!=name_B)).
+#
+#cnf(i_0_72, plain, (name_objective2!=name_Kas)).
+#
+#cnf(i_0_75, plain, (name_objective2!=name_Kbs)).
+#
+#cnf(i_0_160, plain, (pred_attacker(constr_CONST_1))).
+#
+#cnf(i_0_159, plain, (pred_attacker(constr_CONST_2))).
+#
+#cnf(i_0_1, plain, (constr_CONST_0x30!=constr_CONST_1)).
+#
+#cnf(i_0_2, plain, (constr_CONST_0x30!=constr_CONST_2)).
+#
+#cnf(i_0_11, plain, (constr_CONST_0x30!=name_objective1)).
+#
+#cnf(i_0_22, plain, (constr_CONST_1!=name_objective1)).
+#
+#cnf(i_0_32, plain, (constr_CONST_2!=name_objective1)).
+#
+#cnf(i_0_41, plain, (constr_CONST_3!=name_objective1)).
+#
+#cnf(i_0_49, plain, (constr_CONST_4!=name_objective1)).
+#
+#cnf(i_0_67, plain, (name_I!=name_objective1)).
+#
+#cnf(i_0_76, plain, (name_c!=name_objective1)).
+#
+#cnf(i_0_12, plain, (constr_CONST_0x30!=name_objective2)).
+#
+#cnf(i_0_158, plain, (pred_attacker(constr_CONST_3))).
+#
+#cnf(i_0_157, plain, (pred_attacker(constr_CONST_4))).
+#
+#cnf(i_0_13, plain, (constr_CONST_2!=constr_CONST_1)).
+#
+#cnf(i_0_3, plain, (constr_CONST_0x30!=constr_CONST_3)).
+#
+#cnf(i_0_23, plain, (constr_CONST_1!=name_objective2)).
+#
+#cnf(i_0_33, plain, (constr_CONST_2!=name_objective2)).
+#
+#cnf(i_0_42, plain, (constr_CONST_3!=name_objective2)).
+#
+#cnf(i_0_50, plain, (constr_CONST_4!=name_objective2)).
+#
+#cnf(i_0_68, plain, (name_I!=name_objective2)).
+#
+#cnf(i_0_77, plain, (name_c!=name_objective2)).
+#
+#cnf(i_0_14, plain, (constr_CONST_3!=constr_CONST_1)).
+#
+#cnf(i_0_24, plain, (constr_CONST_3!=constr_CONST_2)).
+#
+#cnf(i_0_179, plain, (pred_attacker(name_A))).
+#
+#cnf(i_0_178, plain, (pred_attacker(name_B))).
+#
+#cnf(i_0_4, plain, (constr_CONST_0x30!=constr_CONST_4)).
+#
+#cnf(i_0_15, plain, (constr_CONST_4!=constr_CONST_1)).
+#
+#cnf(i_0_25, plain, (constr_CONST_4!=constr_CONST_2)).
+#
+#cnf(i_0_34, plain, (constr_CONST_4!=constr_CONST_3)).
+#
+#cnf(i_0_5, plain, (constr_CONST_0x30!=name_A)).
+#
+#cnf(i_0_16, plain, (constr_CONST_1!=name_A)).
+#
+#cnf(i_0_26, plain, (constr_CONST_2!=name_A)).
+#
+#cnf(i_0_35, plain, (constr_CONST_3!=name_A)).
+#
+#cnf(i_0_43, plain, (constr_CONST_4!=name_A)).
+#
+#cnf(i_0_6, plain, (constr_CONST_0x30!=name_B)).
+#
+#cnf(i_0_177, plain, (pred_attacker(name_I))).
+#
+#cnf(i_0_176, plain, (pred_attacker(name_c))).
+#
+#cnf(i_0_17, plain, (constr_CONST_1!=name_B)).
+#
+#cnf(i_0_27, plain, (constr_CONST_2!=name_B)).
+#
+#cnf(i_0_36, plain, (constr_CONST_3!=name_B)).
+#
+#cnf(i_0_44, plain, (constr_CONST_4!=name_B)).
+#
+#cnf(i_0_51, plain, (name_B!=name_A)).
+#
+#cnf(i_0_7, plain, (constr_CONST_0x30!=name_I)).
+#
+#cnf(i_0_18, plain, (name_I!=constr_CONST_1)).
+#
+#cnf(i_0_28, plain, (name_I!=constr_CONST_2)).
+#
+#cnf(i_0_37, plain, (name_I!=constr_CONST_3)).
+#
+#cnf(i_0_45, plain, (name_I!=constr_CONST_4)).
+#
+#cnf(i_0_103, plain, (pred_attacker(tuple_true))).
+#
+#cnf(i_0_112, plain, (pred_attacker(tuple_false))).
+#
+#cnf(i_0_52, plain, (name_I!=name_A)).
+#
+#cnf(i_0_58, plain, (name_I!=name_B)).
+#
+#cnf(i_0_8, plain, (constr_CONST_0x30!=name_Kas)).
+#
+#cnf(i_0_19, plain, (constr_CONST_1!=name_Kas)).
+#
+#cnf(i_0_29, plain, (constr_CONST_2!=name_Kas)).
+#
+#cnf(i_0_38, plain, (constr_CONST_3!=name_Kas)).
+#
+#cnf(i_0_46, plain, (constr_CONST_4!=name_Kas)).
+#
+#cnf(i_0_53, plain, (name_A!=name_Kas)).
+#
+#cnf(i_0_59, plain, (name_B!=name_Kas)).
+#
+#cnf(i_0_64, plain, (name_I!=name_Kas)).
+#
+#cnf(i_0_181, plain, (pred_attacker(name_new0x2Dname(X1)))).
+#
+#cnf(i_0_180, plain, (pred_equal(X1,X1))).
+#
+#cnf(i_0_9, plain, (constr_CONST_0x30!=name_Kbs)).
+#
+#cnf(i_0_20, plain, (constr_CONST_1!=name_Kbs)).
+#
+#cnf(i_0_30, plain, (constr_CONST_2!=name_Kbs)).
+#
+#cnf(i_0_39, plain, (constr_CONST_3!=name_Kbs)).
+#
+#cnf(i_0_47, plain, (constr_CONST_4!=name_Kbs)).
+#
+#cnf(i_0_54, plain, (name_Kbs!=name_A)).
+#
+#cnf(i_0_60, plain, (name_Kbs!=name_B)).
+#
+#cnf(i_0_65, plain, (name_I!=name_Kbs)).
+#
+#cnf(i_0_69, plain, (name_Kbs!=name_Kas)).
+#
+#cnf(i_0_10, plain, (constr_CONST_0x30!=name_c)).
+#
+#cnf(i_0_92, plain, (constr_tuple_2_get_0x30_bitstring(tuple_2(X1,X2))=X1)).
+#
+#cnf(i_0_105, plain, (pred_attacker(X1)|~pred_attacker(tuple_succ(X1)))).
+#
+#cnf(i_0_21, plain, (name_c!=constr_CONST_1)).
+#
+#cnf(i_0_31, plain, (name_c!=constr_CONST_2)).
+#
+#cnf(i_0_40, plain, (name_c!=constr_CONST_3)).
+#
+#cnf(i_0_48, plain, (name_c!=constr_CONST_4)).
+#
+#cnf(i_0_55, plain, (name_c!=name_A)).
+#
+#cnf(i_0_61, plain, (name_c!=name_B)).
+#
+#cnf(i_0_66, plain, (name_c!=name_I)).
+#
+#cnf(i_0_70, plain, (name_c!=name_Kas)).
+#
+#cnf(i_0_73, plain, (name_c!=name_Kbs)).
+#
+#cnf(i_0_107, plain, (pred_attacker(X1)|~pred_attacker(tuple_server_S_out_2(X1)))).
+#
+#cnf(i_0_95, plain, (constr_tuple_2_get_1(tuple_2(X1,X2))=X2)).
+#
+#cnf(i_0_151, plain, (pred_attacker(constr_cbc_4_get_3_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_116, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_B_out_2(X1)))).
+#
+#cnf(i_0_118, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_B_in_3(X1)))).
+#
+#cnf(i_0_152, plain, (pred_attacker(constr_cbc_4_get_2_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_153, plain, (pred_attacker(constr_cbc_4_get_1_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_120, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_B_in_1(X1)))).
+#
+#cnf(i_0_122, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_9(X1)))).
+#
+#cnf(i_0_124, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_7(X1)))).
+#
+#cnf(i_0_126, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_5(X1)))).
+#
+#cnf(i_0_128, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_3(X1)))).
+#
+#cnf(i_0_130, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_10(X1)))).
+#
+#cnf(i_0_82, plain, (constr_cbc_dec_1(constr_cbc_enc_1(X1,X2),X2)=X1)).
+#
+#cnf(i_0_154, plain, (pred_attacker(constr_cbc_3_get_2_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_136, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_in_8(X1)))).
+#
+#cnf(i_0_138, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_in_6(X1)))).
+#
+#cnf(i_0_155, plain, (pred_attacker(constr_cbc_3_get_1_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_156, plain, (pred_attacker(constr_cbc_2_get_1_prefixes(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_140, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_in_4(X1)))).
+#
+#cnf(i_0_142, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_in_2(X1)))).
+#
+#cnf(i_0_173, plain, (pred_attacker(X1)|~pred_attacker(tuple_2(X2,X1)))).
+#
+#cnf(i_0_172, plain, (pred_attacker(X1)|~pred_attacker(tuple_2(X1,X2)))).
+#
+#cnf(i_0_97, plain, (pred_attacker(constr_tuple_4_get_3_bitstring(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_98, plain, (pred_attacker(constr_tuple_4_get_2_bitstring(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_89, plain, (constr_dec(constr_enc(X1,X2),X2)=X1)).
+#
+#cnf(i_0_102, plain, (pred_attacker(constr_tuple_2_get_0x30_bitstring(X1))|~pred_attacker(X1))).
+##
+#cnf(i_0_174, plain, (pred_attacker(X1)|~pred_mess(X2,X1)|~pred_attacker(X2))).
+#
+#cnf(i_0_99, plain, (pred_attacker(constr_tuple_4_get_1(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_100, plain, (pred_attacker(constr_tuple_4_get_0x30(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_101, plain, (pred_attacker(constr_tuple_2_get_1(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_104, plain, (pred_attacker(tuple_succ(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_106, plain, (pred_attacker(tuple_server_S_out_2(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_115, plain, (pred_attacker(tuple_client_B_out_2(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_117, plain, (pred_attacker(tuple_client_B_in_3(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_119, plain, (pred_attacker(tuple_client_B_in_1(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_182, plain, (pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X1))))).
+#
+#cnf(i_0_121, plain, (pred_attacker(tuple_client_A_out_9(X1))|~pred_attacker(X1))).
+##
+#cnf(i_0_170, plain, (pred_attacker(X1)|~pred_attacker(tuple_3(X2,X3,X1)))).
+#
+#cnf(i_0_123, plain, (pred_attacker(tuple_client_A_out_7(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_125, plain, (pred_attacker(tuple_client_A_out_5(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_127, plain, (pred_attacker(tuple_client_A_out_3(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_129, plain, (pred_attacker(tuple_client_A_out_10(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_135, plain, (pred_attacker(tuple_client_A_in_8(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_137, plain, (pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_139, plain, (pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_141, plain, (pred_attacker(tuple_client_A_in_2(X1))|~pred_attacker(X1))).
+#
+#cnf(i_0_90, plain, (constr_tuple_4_get_3_bitstring(tuple_4(X1,X2,X3,X4))=X4)).
+#
+#cnf(i_0_171, plain, (pred_attacker(tuple_2(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_252, negated_conjecture, (~pred_attacker(name_objective2)|~pred_attacker(name_objective1))).
+#
+#cnf(i_0_111, plain, (pred_attacker(X1)|~pred_attacker(tuple_server_S_in_1(X2,X3,X1)))).
+#
+#cnf(i_0_175, plain, (pred_mess(X1,X2)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_134, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_1(X2,X3,X1)))).
+#
+#cnf(i_0_169, plain, (pred_attacker(X1)|~pred_attacker(tuple_3(X2,X1,X3)))).
+#
+#cnf(i_0_110, plain, (pred_attacker(X1)|~pred_attacker(tuple_server_S_in_1(X2,X1,X3)))).
+#
+#cnf(i_0_133, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_1(X2,X1,X3)))).
+#
+#cnf(i_0_168, plain, (pred_attacker(X1)|~pred_attacker(tuple_3(X1,X2,X3)))).
+#
+#cnf(i_0_109, plain, (pred_attacker(X1)|~pred_attacker(tuple_server_S_in_1(X1,X2,X3)))).
+#
+#cnf(i_0_132, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_1(X1,X2,X3)))).
+#
+#cnf(i_0_91, plain, (constr_tuple_4_get_2_bitstring(tuple_4(X1,X2,X3,X4))=X3)).
+#
+#cnf(i_0_257, plain, (pred_attacker(name_Na(X1)))).
+#
+#cnf(i_0_166, plain, (pred_attacker(X1)|~pred_attacker(tuple_4(X2,X3,X4,X1)))).
+#
+#cnf(i_0_165, plain, (pred_attacker(X1)|~pred_attacker(tuple_4(X2,X3,X1,X4)))).
+#
+#cnf(i_0_147, plain, (pred_attacker(constr_cbc_dec_4(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_148, plain, (pred_attacker(constr_cbc_dec_3(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_149, plain, (pred_attacker(constr_cbc_dec_2(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_146, plain, (pred_attacker(constr_cbc_enc_1(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_150, plain, (pred_attacker(constr_cbc_dec_1(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_113, plain, (pred_attacker(constr_enc(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_114, plain, (pred_attacker(constr_dec(X1,X2))|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_164, plain, (pred_attacker(X1)|~pred_attacker(tuple_4(X2,X1,X3,X4)))).
+#
+#cnf(i_0_93, plain, (constr_tuple_4_get_1(tuple_4(X1,X2,X3,X4))=X2)).
+#
+#cnf(i_0_266, plain, (pred_attacker(X1)|~pred_attacker(constr_cbc_enc_1(X1,X2))|~pred_attacker(X2))).
+#
+#cnf(i_0_269, plain, (pred_attacker(X1)|~pred_attacker(constr_enc(X1,X2))|~pred_attacker(X2))).
+#
+#cnf(i_0_163, plain, (pred_attacker(X1)|~pred_attacker(tuple_4(X1,X2,X3,X4)))).
+#
+#cnf(i_0_94, plain, (constr_tuple_4_get_0x30(tuple_4(X1,X2,X3,X4))=X1)).
+#
+#cnf(i_0_88, plain, (constr_cbc_2_get_1_prefixes(constr_cbc_enc_2(X1,X2,X3))=constr_cbc_enc_1(X1,X3))).
+#
+#cnf(i_0_167, plain, (pred_attacker(tuple_3(X1,X2,X3))|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_145, plain, (pred_attacker(constr_cbc_enc_2(X1,X2,X3))|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_108, plain, (pred_attacker(tuple_server_S_in_1(X1,X2,X3))|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_131, plain, (pred_attacker(tuple_client_A_out_1(X1,X2,X3))|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_183, plain, (pred_attacker(tuple_client_A_out_3(constr_tuple_4_get_3_bitstring(constr_cbc_dec_4(X1,name_Kas))))|~pred_attacker(tuple_client_A_in_2(X1)))).
+#
+#cnf(i_0_186, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(tuple_client_A_in_8(X1))|~pred_attacker(tuple_client_A_in_6(X2))|~pred_attacker(tuple_client_A_in_4(X3))|~pred_attacker(tuple_client_A_in_2(X4)))).
+#
+#cnf(i_0_81, plain, (constr_cbc_dec_2(constr_cbc_enc_2(X1,X2,X3),X3)=tuple_2(X1,X2))).
+#
+#cnf(i_0_296, plain, (pred_attacker(constr_tuple_4_get_3_bitstring(constr_cbc_dec_4(X1,name_Kas)))|~pred_attacker(tuple_client_A_in_2(X1)))).
+#####
+#cnf(i_0_162, plain, (pred_attacker(tuple_4(X1,X2,X3,X4))|~pred_attacker(X4)|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_144, plain, (pred_attacker(constr_cbc_enc_3(X1,X2,X3,X4))|~pred_attacker(X4)|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_87, plain, (constr_cbc_3_get_1_prefixes(constr_cbc_enc_3(X1,X2,X3,X4))=constr_cbc_enc_1(X1,X4))).
+#
+#cnf(i_0_86, plain, (constr_cbc_3_get_2_prefixes(constr_cbc_enc_3(X1,X2,X3,X4))=constr_cbc_enc_2(X1,X2,X4))).
+#
+#cnf(i_0_143, plain, (pred_attacker(constr_cbc_enc_4(X1,X2,X3,X4,X5))|~pred_attacker(X5)|~pred_attacker(X4)|~pred_attacker(X3)|~pred_attacker(X2)|~pred_attacker(X1))).
+#
+#cnf(i_0_85, plain, (constr_cbc_4_get_1_prefixes(constr_cbc_enc_4(X1,X2,X3,X4,X5))=constr_cbc_enc_1(X1,X5))).
+#
+#cnf(i_0_80, plain, (constr_cbc_dec_3(constr_cbc_enc_3(X1,X2,X3,X4),X4)=tuple_3(X1,X2,X3))).
+#
+#cnf(i_0_274, plain, (pred_attacker(constr_cbc_enc_1(X1,X3))|~pred_attacker(constr_cbc_enc_2(X1,X2,X3)))).
+##
+#cnf(i_0_315, plain, (pred_attacker(constr_cbc_enc_1(X1,X4))|~pred_attacker(constr_cbc_enc_3(X1,X2,X3,X4)))).
+##
+#cnf(i_0_298, plain, (pred_attacker(tuple_2(X1,X2))|~pred_attacker(constr_cbc_enc_2(X1,X2,X3))|~pred_attacker(X3))).
+#
+#cnf(i_0_188, plain, (pred_attacker(tuple_client_B_out_2(constr_cbc_enc_1(name_Nb_63(X1),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X2,name_Kbs)))))|~pred_attacker(tuple_client_B_in_1(X2)))).
+#
+#cnf(i_0_84, plain, (constr_cbc_4_get_2_prefixes(constr_cbc_enc_4(X1,X2,X3,X4,X5))=constr_cbc_enc_2(X1,X2,X5))).
+#
+#cnf(i_0_83, plain, (constr_cbc_4_get_3_prefixes(constr_cbc_enc_4(X1,X2,X3,X4,X5))=constr_cbc_enc_3(X1,X2,X3,X5))).
+#
+#cnf(i_0_79, plain, (constr_cbc_dec_4(constr_cbc_enc_4(X1,X2,X3,X4,X5),X5)=tuple_4(X1,X2,X3,X4))).
+#
+#cnf(i_0_187, plain, (pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas)))))|~pred_attacker(tuple_client_A_in_8(X2))|~pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(tuple_client_A_in_4(X3))|~pred_attacker(tuple_client_A_in_2(X4)))).
+#
+#cnf(i_0_185, plain, (pred_attacker(tuple_client_A_out_7(constr_cbc_enc_1(name_Na0x27(X1,X2,X3),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X4,name_Kas)))))|~pred_attacker(tuple_client_A_in_6(X4))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_189, plain, (pred_attacker(tuple_server_S_out_2(constr_cbc_enc_4(X1,X2,name_Kab_66(X3),constr_cbc_enc_2(name_Kab_66(X3),X4,name_Kbs),name_Kas)))|~pred_attacker(tuple_server_S_in_1(X4,X2,X1)))).
+##
+#cnf(i_0_342, plain, (pred_attacker(X4)|~pred_attacker(tuple_client_A_in_2(constr_cbc_enc_4(X1,X2,X3,X4,name_Kas))))).
+#
+#cnf(i_0_350, plain, (pred_attacker(X1)|~pred_attacker(constr_cbc_enc_4(X2,X3,X4,X1,name_Kas)))).
+#
+#cnf(i_0_316, plain, (pred_attacker(constr_cbc_enc_2(X1,X2,X4))|~pred_attacker(constr_cbc_enc_3(X1,X2,X3,X4)))).
+##
+#cnf(i_0_184, plain, (pred_attacker(tuple_client_A_out_5(constr_cbc_enc_1(tuple_succ(constr_cbc_dec_1(X1,constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas)))),constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas)))))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_297, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(tuple_client_A_in_6(X2))|~pred_attacker(tuple_client_A_in_4(X3))|~pred_attacker(tuple_client_A_in_2(X4)))).
+#
+#cnf(i_0_327, plain, (pred_attacker(constr_cbc_enc_1(X1,X5))|~pred_attacker(constr_cbc_enc_4(X1,X2,X3,X4,X5)))).
+#
+#cnf(i_0_341, plain, (pred_attacker(tuple_client_A_out_3(X4))|~pred_attacker(tuple_client_A_in_2(constr_cbc_enc_4(X1,X2,X3,X4,name_Kas))))).
+#
+#cnf(i_0_328, plain, (pred_attacker(tuple_3(X1,X2,X3))|~pred_attacker(constr_cbc_enc_3(X1,X2,X3,X4))|~pred_attacker(X4))).
+#
+#cnf(i_0_338, plain, (pred_attacker(tuple_client_B_out_2(constr_cbc_enc_1(name_Nb_63(X1),X2)))|~pred_attacker(tuple_client_B_in_1(constr_cbc_enc_2(X2,X3,name_Kbs))))).
+#
+#cnf(i_0_337, plain, (pred_attacker(constr_cbc_enc_1(name_Nb_63(X1),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X2,name_Kbs))))|~pred_attacker(tuple_client_B_in_1(X2)))).
+#
+#cnf(i_0_362, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(tuple_client_A_in_4(X2))|~pred_attacker(tuple_client_A_in_2(X3)))).
+#
+#cnf(i_0_370, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_372, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(X1))).
+#
+#cnf(i_0_373, plain, (pred_attacker(tuple_client_A_out_9(name_objective1)))).
+#
+#cnf(i_0_435, plain, (pred_attacker(name_objective1))).
+#
+#cnf(i_0_252, negated_conjecture, (~pred_attacker(name_objective2))).
+#
+#cnf(i_0_339, plain, (pred_attacker(constr_cbc_enc_2(X1,X2,X5))|~pred_attacker(constr_cbc_enc_4(X1,X2,X3,X4,X5)))).
+#
+#cnf(i_0_340, plain, (pred_attacker(constr_cbc_enc_3(X1,X2,X3,X5))|~pred_attacker(constr_cbc_enc_4(X1,X2,X3,X4,X5)))).
+#
+#cnf(i_0_344, plain, (pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas)))))|~pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(tuple_client_A_in_4(X3))|~pred_attacker(tuple_client_A_in_2(X4)))).
+#
+#cnf(i_0_343, plain, (pred_attacker(tuple_4(X1,X2,X3,X4))|~pred_attacker(constr_cbc_enc_4(X1,X2,X3,X4,X5))|~pred_attacker(X5))).
+#
+#cnf(i_0_346, plain, (pred_attacker(tuple_client_A_out_7(constr_cbc_enc_1(name_Na0x27(X1,X2,X3),X4)))|~pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(X4,X5,name_Kas)))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_345, plain, (pred_attacker(constr_cbc_enc_1(name_Na0x27(X1,X2,X3),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X4,name_Kas))))|~pred_attacker(tuple_client_A_in_6(X4))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_367, plain, (pred_attacker(name_Nb_63(X1))|~pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X2,name_Kbs)))|~pred_attacker(tuple_client_B_in_1(X2)))).
+#
+#cnf(i_0_445, plain, (pred_attacker(name_Nb_63(X1))|~pred_attacker(constr_cbc_dec_2(X2,name_Kbs))|~pred_attacker(tuple_client_B_in_1(X2)))).
+#
+#cnf(i_0_446, plain, (pred_attacker(name_Nb_63(X1))|~pred_attacker(constr_cbc_dec_2(X2,name_Kbs))|~pred_attacker(X2))).
+#
+#cnf(i_0_448, plain, (pred_attacker(name_Nb_63(X1))|~pred_attacker(name_Kbs))).
+#
+#cnf(i_0_364, plain, (pred_attacker(tuple_client_A_out_3(X1))|~pred_attacker(constr_cbc_enc_4(X2,X3,X4,X1,name_Kas)))).
+#
+#cnf(i_0_358, plain, (pred_attacker(tuple_client_A_out_5(constr_cbc_enc_1(tuple_succ(constr_cbc_dec_1(X1,X4)),X4)))|~pred_attacker(tuple_client_A_in_2(constr_cbc_enc_4(X2,X3,X4,X5,name_Kas)))|~pred_attacker(tuple_client_A_in_4(X1)))).
+##
+#cnf(i_0_360, plain, (pred_attacker(tuple_client_A_out_5(constr_cbc_enc_1(tuple_succ(X1),constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas)))))|~pred_attacker(tuple_client_A_in_4(constr_cbc_enc_1(X1,constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas)))))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_347, plain, (pred_attacker(constr_cbc_enc_4(X1,X2,name_Kab_66(X3),constr_cbc_enc_2(name_Kab_66(X3),X4,name_Kbs),name_Kas))|~pred_attacker(tuple_server_S_in_1(X4,X2,X1)))).
+#
+#cnf(i_0_357, plain, (pred_attacker(constr_cbc_enc_1(tuple_succ(constr_cbc_dec_1(X1,constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas)))),constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas))))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_457, plain, (pred_attacker(constr_cbc_enc_1(X1,name_Kas))|~pred_attacker(tuple_server_S_in_1(X4,X2,X1)))).
+##
+#cnf(i_0_464, plain, (pred_attacker(constr_cbc_enc_1(X1,name_Kas))|~pred_attacker(X1))).
+#
+#cnf(i_0_458, plain, (pred_attacker(constr_cbc_enc_2(X1,X2,name_Kas))|~pred_attacker(tuple_server_S_in_1(X4,X2,X1)))).
+#
+#cnf(i_0_472, plain, (pred_attacker(constr_cbc_enc_2(X1,X2,name_Kas))|~pred_attacker(X1)|~pred_attacker(X2))).
+#####
+#cnf(i_0_366, plain, (pred_attacker(tuple_client_B_out_2(constr_cbc_enc_1(name_Nb_63(X1),X2)))|~pred_attacker(constr_cbc_enc_2(X2,X3,name_Kbs)))).
+#
+#cnf(i_0_368, plain, (pred_attacker(constr_cbc_enc_1(name_Nb_63(X1),X2))|~pred_attacker(tuple_client_B_in_1(constr_cbc_enc_2(X2,X3,name_Kbs))))).
+###
+#cnf(i_0_439, plain, (pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas)))))|~pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(tuple_client_A_in_2(X3)))).
+#
+#cnf(i_0_492, plain, (pred_attacker(constr_cbc_enc_1(name_Nb_63(X1),X2))|~pred_attacker(constr_cbc_enc_2(X2,X3,name_Kbs)))).
+##
+#cnf(i_0_509, plain, (pred_attacker(constr_cbc_enc_1(name_Nb_63(X1),X2))|~pred_attacker(name_Kbs)|~pred_attacker(X2))).
+##
+#cnf(i_0_491, plain, (pred_attacker(tuple_client_B_out_2(constr_cbc_enc_1(name_Nb_63(X1),X2)))|~pred_attacker(name_Kbs)|~pred_attacker(X2))).
+#
+#cnf(i_0_459, plain, (pred_attacker(constr_cbc_enc_3(X1,X2,name_Kab_66(X3),name_Kas))|~pred_attacker(tuple_server_S_in_1(X4,X2,X1)))).
+#
+#cnf(i_0_442, plain, (pred_attacker(name_Na0x27(X1,X2,X3))|~pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X4,name_Kas)))|~pred_attacker(tuple_client_A_in_6(X4))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_441, plain, (pred_attacker(tuple_client_A_out_7(constr_cbc_enc_1(name_Na0x27(X1,X2,X3),X4)))|~pred_attacker(constr_cbc_enc_2(X4,X5,name_Kas))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_443, plain, (pred_attacker(constr_cbc_enc_1(name_Na0x27(X1,X2,X3),X4))|~pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(X4,X5,name_Kas)))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_451, plain, (pred_attacker(tuple_client_A_out_5(constr_cbc_enc_1(tuple_succ(constr_cbc_dec_1(X1,X2)),X2)))|~pred_attacker(constr_cbc_enc_4(X3,X4,X2,X5,name_Kas))|~pred_attacker(tuple_client_A_in_4(X1)))).
+#
+#cnf(i_0_461, plain, (pred_attacker(constr_cbc_enc_1(tuple_succ(constr_cbc_dec_1(X1,X4)),X4))|~pred_attacker(tuple_client_A_in_2(constr_cbc_enc_4(X2,X3,X4,X5,name_Kas)))|~pred_attacker(tuple_client_A_in_4(X1)))).
+#
+#cnf(i_0_444, plain, (pred_attacker(name_Nb_63(X1))|~pred_attacker(tuple_client_B_in_1(constr_cbc_enc_2(X2,X3,name_Kbs)))|~pred_attacker(X2))).
+##
+#cnf(i_0_533, plain, (pred_attacker(name_Nb_63(X1))|~pred_attacker(constr_cbc_enc_2(X2,X3,name_Kbs))|~pred_attacker(X2))).
+##
+#cnf(i_0_508, plain, (pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas)))))|~pred_attacker(tuple_client_A_in_6(X1)))).
+#
+#cnf(i_0_539, plain, (pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas))))|~pred_attacker(tuple_client_A_in_6(X1)))).
+##
+#cnf(i_0_453, plain, (pred_attacker(tuple_client_A_out_5(constr_cbc_enc_1(tuple_succ(X1),X4)))|~pred_attacker(tuple_client_A_in_2(constr_cbc_enc_4(X2,X3,X4,X5,name_Kas)))|~pred_attacker(tuple_client_A_in_4(constr_cbc_enc_1(X1,X4))))).
+#
+#cnf(i_0_460, plain, (pred_attacker(tuple_succ(constr_cbc_dec_1(X1,constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas)))))|~pred_attacker(constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas)))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_452, plain, (pred_attacker(constr_cbc_enc_1(tuple_succ(X1),constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas))))|~pred_attacker(tuple_client_A_in_4(constr_cbc_enc_1(X1,constr_tuple_4_get_2_bitstring(constr_cbc_dec_4(X2,name_Kas)))))|~pred_attacker(tuple_client_A_in_2(X2)))).
+##
+#cnf(i_0_454, plain, (pred_attacker(tuple_4(X1,X2,name_Kab_66(X3),constr_cbc_enc_2(name_Kab_66(X3),X4,name_Kbs)))|~pred_attacker(tuple_server_S_in_1(X4,X2,X1))|~pred_attacker(name_Kas))).
+#
+#cnf(i_0_447, plain, (pred_attacker(name_Nb_63(X1))|~pred_attacker(constr_cbc_enc_2(X2,X3,name_Kbs))|~pred_attacker(tuple_2(X2,X3)))).
+##
+#cnf(i_0_541, plain, (~pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas)))|~pred_attacker(tuple_client_A_in_6(X1)))).
+#
+#cnf(i_0_555, plain, (~pred_attacker(constr_cbc_dec_2(X1,name_Kas))|~pred_attacker(tuple_client_A_in_6(X1)))).
+#
+#cnf(i_0_557, plain, (~pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(name_Kas))).
+#
+#cnf(i_0_559, plain, (~pred_attacker(name_Kas))).
+#
+#cnf(i_0_524, plain, (pred_attacker(constr_cbc_enc_3(X1,X2,name_Kab_66(X3),name_Kas))|~pred_attacker(X1)|~pred_attacker(X2))).
+#
+#cnf(i_0_456, plain, (pred_attacker(tuple_client_A_out_3(constr_cbc_enc_2(name_Kab_66(X1),X2,name_Kbs)))|~pred_attacker(tuple_server_S_in_1(X2,X4,X3)))).
+###
+#cnf(i_0_529, plain, (pred_attacker(constr_cbc_enc_1(name_Na0x27(X1,X2,X3),X4))|~pred_attacker(constr_cbc_enc_2(X4,X5,name_Kas))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2)))).
+#
+#cnf(i_0_545, plain, (pred_attacker(tuple_succ(constr_cbc_dec_1(X1,X4)))|~pred_attacker(tuple_client_A_in_2(constr_cbc_enc_4(X2,X3,X4,X5,name_Kas)))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(X4))).
+#
+#cnf(i_0_455, plain, (pred_attacker(constr_cbc_enc_2(name_Kab_66(X1),X2,name_Kbs))|~pred_attacker(tuple_server_S_in_1(X2,X4,X3)))).
+##
+#cnf(i_0_554, plain, (~pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(X1,X2,name_Kas)))|~pred_attacker(X1))).
+#
+#cnf(i_0_585, plain, (~pred_attacker(constr_cbc_enc_2(X1,X2,name_Kas))|~pred_attacker(X1))).
+#
+#cnf(i_0_587, plain, (~pred_attacker(X1))).
+
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+fof(ax185, axiom, ![X209, X210, X211, X212, X213]:(((((((((pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(X212,X211,X209)),constr_cbc_dec_1(X213,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X210,name_Kas))))&pred_attacker(tuple_client_A_in_8(X213)))&pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(X210,name_Kas))))&pred_attacker(tuple_client_A_in_6(X210)))&pred_attacker(tuple_client_A_in_4(X212)))&pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(X211,name_Kas))))&pred_eq_bitstring_bitstring(name_Na(X209),constr_tuple_4_get_0x30(constr_cbc_dec_4(X211,name_Kas))))&pred_attacker(tuple_client_A_in_2(X211)))=>pred_attacker(tuple_client_A_out_9(name_objective1)))), file('Problems/SWW/SWW968+1.p', ax185)).
+fof(ax95, axiom, ![X63, X64]:(pred_eq_bitstring_bitstring(X63,X64)), file('Problems/SWW/SWW968+1.p', ax95)).
+fof(ax134, axiom, ![X119]:((pred_attacker(X119)=>pred_attacker(tuple_client_A_in_8(X119)))), file('Problems/SWW/SWW968+1.p', ax134)).
+fof(ax136, axiom, ![X121]:((pred_attacker(X121)=>pred_attacker(tuple_client_A_in_6(X121)))), file('Problems/SWW/SWW968+1.p', ax136)).
+fof(ax186, axiom, ![X214, X215, X216, X217, X218]:(((((((((pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(X217,X216,X214)),constr_cbc_dec_1(X218,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X215,name_Kas))))&pred_attacker(tuple_client_A_in_8(X218)))&pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(X215,name_Kas))))&pred_attacker(tuple_client_A_in_6(X215)))&pred_attacker(tuple_client_A_in_4(X217)))&pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(X216,name_Kas))))&pred_eq_bitstring_bitstring(name_Na(X214),constr_tuple_4_get_0x30(constr_cbc_dec_4(X216,name_Kas))))&pred_attacker(tuple_client_A_in_2(X216)))=>pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X215,name_Kas))))))), file('Problems/SWW/SWW968+1.p', ax186)).
+fof(ax138, axiom, ![X123]:((pred_attacker(X123)=>pred_attacker(tuple_client_A_in_4(X123)))), file('Problems/SWW/SWW968+1.p', ax138)).
+fof(ax140, axiom, ![X125]:((pred_attacker(X125)=>pred_attacker(tuple_client_A_in_2(X125)))), file('Problems/SWW/SWW968+1.p', ax140)).
+fof(ax133, axiom, ![X116, X117, X118]:((pred_attacker(tuple_client_A_out_1(X116,X117,X118))=>pred_attacker(X118))), file('Problems/SWW/SWW968+1.p', ax133)).
+fof(ax181, axiom, ![X199]:(pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X199)))), file('Problems/SWW/SWW968+1.p', ax181)).
+fof(co0, conjecture, pred_attacker(tuple_2(name_objective1,name_objective2)), file('Problems/SWW/SWW968+1.p', co0)).
+fof(ax170, axiom, ![X187, X188]:(((pred_attacker(X187)&pred_attacker(X188))=>pred_attacker(tuple_2(X187,X188)))), file('Problems/SWW/SWW968+1.p', ax170)).
+fof(ax121, axiom, ![X98]:((pred_attacker(tuple_client_A_out_9(X98))=>pred_attacker(X98))), file('Problems/SWW/SWW968+1.p', ax121)).
+fof(ax113, axiom, ![X89, X90]:(((pred_attacker(X89)&pred_attacker(X90))=>pred_attacker(constr_dec(X89,X90)))), file('Problems/SWW/SWW968+1.p', ax113)).
+fof(ax88, axiom, ![X41, X42]:(constr_dec(constr_enc(X42,X41),X41)=X42), file('Problems/SWW/SWW968+1.p', ax88)).
+fof(ax129, axiom, ![X106]:((pred_attacker(tuple_client_A_out_10(X106))=>pred_attacker(X106))), file('Problems/SWW/SWW968+1.p', ax129)).
+fof(ax151, axiom, ![X150]:((pred_attacker(X150)=>pred_attacker(constr_cbc_4_get_2_prefixes(X150)))), file('Problems/SWW/SWW968+1.p', ax151)).
+fof(ax83, axiom, ![X20, X21, X22, X23, X24]:(constr_cbc_4_get_2_prefixes(constr_cbc_enc_4(X21,X22,X23,X24,X20))=constr_cbc_enc_2(X21,X22,X20)), file('Problems/SWW/SWW968+1.p', ax83)).
+fof(ax106, axiom, ![X74]:((pred_attacker(tuple_server_S_out_2(X74))=>pred_attacker(X74))), file('Problems/SWW/SWW968+1.p', ax106)).
+fof(ax188, axiom, ![X221, X222, X223, X224]:((pred_attacker(tuple_server_S_in_1(X222,X223,X224))=>pred_attacker(tuple_server_S_out_2(constr_cbc_enc_4(X224,X223,name_Kab_66(X221),constr_cbc_enc_2(name_Kab_66(X221),X222,name_Kbs),name_Kas))))), file('Problems/SWW/SWW968+1.p', ax188)).
+fof(ax80, axiom, ![X10, X11, X12]:(constr_cbc_dec_2(constr_cbc_enc_2(X11,X12,X10),X10)=tuple_2(X11,X12)), file('Problems/SWW/SWW968+1.p', ax80)).
+fof(ax91, axiom, ![X51, X52]:(constr_tuple_2_get_0x30_bitstring(tuple_2(X51,X52))=X51), file('Problems/SWW/SWW968+1.p', ax91)).
+fof(ax107, axiom, ![X75, X76, X77]:((((pred_attacker(X75)&pred_attacker(X76))&pred_attacker(X77))=>pred_attacker(tuple_server_S_in_1(X75,X76,X77)))), file('Problems/SWW/SWW968+1.p', ax107)).
+fof(ax160, axiom, pred_attacker(constr_CONST_0x30), file('Problems/SWW/SWW968+1.p', ax160)).
+fof(c_0_23, plain, ![X433, X434, X435, X436, X437]:((~pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(X436,X435,X433)),constr_cbc_dec_1(X437,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X434,name_Kas))))|~pred_attacker(tuple_client_A_in_8(X437))|~pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(X434,name_Kas)))|~pred_attacker(tuple_client_A_in_6(X434))|~pred_attacker(tuple_client_A_in_4(X436))|~pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(X435,name_Kas)))|~pred_eq_bitstring_bitstring(name_Na(X433),constr_tuple_4_get_0x30(constr_cbc_dec_4(X435,name_Kas)))|~pred_attacker(tuple_client_A_in_2(X435))|pred_attacker(tuple_client_A_out_9(name_objective1)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax185])])])).
+fof(c_0_24, plain, ![X287, X288]:(pred_eq_bitstring_bitstring(X287,X288)), inference(variable_rename,[status(thm)],[ax95])).
+cnf(c_0_25, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(X1,X2,X3)),constr_cbc_dec_1(X4,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X5,name_Kas))))|~pred_attacker(tuple_client_A_in_8(X4))|~pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(X5,name_Kas)))|~pred_attacker(tuple_client_A_in_6(X5))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(X2,name_Kas)))|~pred_eq_bitstring_bitstring(name_Na(X3),constr_tuple_4_get_0x30(constr_cbc_dec_4(X2,name_Kas)))|~pred_attacker(tuple_client_A_in_2(X2))), inference(split_conjunct,[status(thm)],[c_0_23])).
+cnf(c_0_26, plain, (pred_eq_bitstring_bitstring(X1,X2)), inference(split_conjunct,[status(thm)],[c_0_24])).
+fof(c_0_27, plain, ![X343]:((~pred_attacker(X343)|pred_attacker(tuple_client_A_in_8(X343)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax134])])])).
+cnf(c_0_28, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(tuple_client_A_in_8(X4))|~pred_attacker(tuple_client_A_in_6(X5))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2))), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_25, c_0_26]), c_0_26]), c_0_26]), c_0_26])])).
+cnf(c_0_29, plain, (pred_attacker(tuple_client_A_in_8(X1))|~pred_attacker(X1)), inference(split_conjunct,[status(thm)],[c_0_27])).
+fof(c_0_30, plain, ![X345]:((~pred_attacker(X345)|pred_attacker(tuple_client_A_in_6(X345)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax136])])])).
+fof(c_0_31, plain, ![X438, X439, X440, X441, X442]:((~pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(X441,X440,X438)),constr_cbc_dec_1(X442,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X439,name_Kas))))|~pred_attacker(tuple_client_A_in_8(X442))|~pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(X439,name_Kas)))|~pred_attacker(tuple_client_A_in_6(X439))|~pred_attacker(tuple_client_A_in_4(X441))|~pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(X440,name_Kas)))|~pred_eq_bitstring_bitstring(name_Na(X438),constr_tuple_4_get_0x30(constr_cbc_dec_4(X440,name_Kas)))|~pred_attacker(tuple_client_A_in_2(X440))|pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X439,name_Kas))))))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax186])])])).
+cnf(c_0_32, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(tuple_client_A_in_4(X2))|~pred_attacker(tuple_client_A_in_2(X3))), inference(condense,[status(thm)],[inference(spm,[status(thm)],[c_0_28, c_0_29])])).
+cnf(c_0_33, plain, (pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(X1)), inference(split_conjunct,[status(thm)],[c_0_30])).
+fof(c_0_34, plain, ![X347]:((~pred_attacker(X347)|pred_attacker(tuple_client_A_in_4(X347)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax138])])])).
+cnf(c_0_35, plain, (pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X5,name_Kas)))))|~pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(X1,X2,X3)),constr_cbc_dec_1(X4,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X5,name_Kas))))|~pred_attacker(tuple_client_A_in_8(X4))|~pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(X5,name_Kas)))|~pred_attacker(tuple_client_A_in_6(X5))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(X2,name_Kas)))|~pred_eq_bitstring_bitstring(name_Na(X3),constr_tuple_4_get_0x30(constr_cbc_dec_4(X2,name_Kas)))|~pred_attacker(tuple_client_A_in_2(X2))), inference(split_conjunct,[status(thm)],[c_0_31])).
+cnf(c_0_36, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2))), inference(condense,[status(thm)],[inference(spm,[status(thm)],[c_0_32, c_0_33])])).
+cnf(c_0_37, plain, (pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(X1)), inference(split_conjunct,[status(thm)],[c_0_34])).
+fof(c_0_38, plain, ![X349]:((~pred_attacker(X349)|pred_attacker(tuple_client_A_in_2(X349)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax140])])])).
+fof(c_0_39, plain, ![X340, X341, X342]:((~pred_attacker(tuple_client_A_out_1(X340,X341,X342))|pred_attacker(X342))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax133])])])).
+fof(c_0_40, plain, ![X423]:(pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X423)))), inference(variable_rename,[status(thm)],[ax181])).
+cnf(c_0_41, plain, (pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X5,name_Kas)))))|~pred_attacker(tuple_client_A_in_8(X4))|~pred_attacker(tuple_client_A_in_6(X5))|~pred_attacker(tuple_client_A_in_4(X1))|~pred_attacker(tuple_client_A_in_2(X2))), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_35, c_0_26]), c_0_26]), c_0_26]), c_0_26])])).
+fof(c_0_42, negated_conjecture, ~pred_attacker(tuple_2(name_objective1,name_objective2)), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[co0])])).
+cnf(c_0_43, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(tuple_client_A_in_2(X1))), inference(condense,[status(thm)],[inference(spm,[status(thm)],[c_0_36, c_0_37])])).
+cnf(c_0_44, plain, (pred_attacker(tuple_client_A_in_2(X1))|~pred_attacker(X1)), inference(split_conjunct,[status(thm)],[c_0_38])).
+cnf(c_0_45, plain, (pred_attacker(X3)|~pred_attacker(tuple_client_A_out_1(X1,X2,X3))), inference(split_conjunct,[status(thm)],[c_0_39])).
+cnf(c_0_46, plain, (pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X1)))), inference(split_conjunct,[status(thm)],[c_0_40])).
+cnf(c_0_47, plain, (pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas)))))|~pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(tuple_client_A_in_4(X2))|~pred_attacker(tuple_client_A_in_2(X3))), inference(condense,[status(thm)],[inference(spm,[status(thm)],[c_0_41, c_0_29])])).
+fof(c_0_48, negated_conjecture, ~pred_attacker(tuple_2(name_objective1,name_objective2)), inference(fof_nnf,[status(thm)],[c_0_42])).
+fof(c_0_49, plain, ![X411, X412]:((~pred_attacker(X411)|~pred_attacker(X412)|pred_attacker(tuple_2(X411,X412)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax170])])])).
+fof(c_0_50, plain, ![X322]:((~pred_attacker(tuple_client_A_out_9(X322))|pred_attacker(X322))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax121])])])).
+cnf(c_0_51, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))|~pred_attacker(X1)), inference(spm,[status(thm)],[c_0_43, c_0_44])).
+cnf(c_0_52, plain, (pred_attacker(name_Na(X1))), inference(spm,[status(thm)],[c_0_45, c_0_46])).
+fof(c_0_53, plain, ![X313, X314]:((~pred_attacker(X313)|~pred_attacker(X314)|pred_attacker(constr_dec(X313,X314)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax113])])])).
+fof(c_0_54, plain, ![X265, X266]:(constr_dec(constr_enc(X266,X265),X265)=X266), inference(variable_rename,[status(thm)],[ax88])).
+fof(c_0_55, plain, ![X330]:((~pred_attacker(tuple_client_A_out_10(X330))|pred_attacker(X330))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax129])])])).
+cnf(c_0_56, plain, (pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas)))))|~pred_attacker(tuple_client_A_in_6(X1))|~pred_attacker(tuple_client_A_in_2(X2))), inference(condense,[status(thm)],[inference(spm,[status(thm)],[c_0_47, c_0_37])])).
+cnf(c_0_57, negated_conjecture, (~pred_attacker(tuple_2(name_objective1,name_objective2))), inference(split_conjunct,[status(thm)],[c_0_48])).
+cnf(c_0_58, plain, (pred_attacker(tuple_2(X1,X2))|~pred_attacker(X1)|~pred_attacker(X2)), inference(split_conjunct,[status(thm)],[c_0_49])).
+cnf(c_0_59, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_9(X1))), inference(split_conjunct,[status(thm)],[c_0_50])).
+cnf(c_0_60, plain, (pred_attacker(tuple_client_A_out_9(name_objective1))), inference(spm,[status(thm)],[c_0_51, c_0_52])).
+cnf(c_0_61, plain, (pred_attacker(constr_dec(X1,X2))|~pred_attacker(X1)|~pred_attacker(X2)), inference(split_conjunct,[status(thm)],[c_0_53])).
+cnf(c_0_62, plain, (constr_dec(constr_enc(X1,X2),X2)=X1), inference(split_conjunct,[status(thm)],[c_0_54])).
+cnf(c_0_63, plain, (pred_attacker(X1)|~pred_attacker(tuple_client_A_out_10(X1))), inference(split_conjunct,[status(thm)],[c_0_55])).
+cnf(c_0_64, plain, (pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas)))))|~pred_attacker(tuple_client_A_in_6(X1))), inference(condense,[status(thm)],[inference(spm,[status(thm)],[c_0_56, c_0_44])])).
+cnf(c_0_65, negated_conjecture, (~pred_attacker(name_objective2)|~pred_attacker(name_objective1)), inference(spm,[status(thm)],[c_0_57, c_0_58])).
+cnf(c_0_66, plain, (pred_attacker(name_objective1)), inference(spm,[status(thm)],[c_0_59, c_0_60])).
+fof(c_0_67, plain, ![X374]:((~pred_attacker(X374)|pred_attacker(constr_cbc_4_get_2_prefixes(X374)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax151])])])).
+fof(c_0_68, plain, ![X244, X245, X246, X247, X248]:(constr_cbc_4_get_2_prefixes(constr_cbc_enc_4(X245,X246,X247,X248,X244))=constr_cbc_enc_2(X245,X246,X244)), inference(variable_rename,[status(thm)],[ax83])).
+fof(c_0_69, plain, ![X298]:((~pred_attacker(tuple_server_S_out_2(X298))|pred_attacker(X298))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax106])])])).
+fof(c_0_70, plain, ![X445, X446, X447, X448]:((~pred_attacker(tuple_server_S_in_1(X446,X447,X448))|pred_attacker(tuple_server_S_out_2(constr_cbc_enc_4(X448,X447,name_Kab_66(X445),constr_cbc_enc_2(name_Kab_66(X445),X446,name_Kbs),name_Kas))))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax188])])])).
+cnf(c_0_71, plain, (pred_attacker(X1)|~pred_attacker(constr_enc(X1,X2))|~pred_attacker(X2)), inference(spm,[status(thm)],[c_0_61, c_0_62])).
+cnf(c_0_72, plain, (pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas))))|~pred_attacker(tuple_client_A_in_6(X1))), inference(spm,[status(thm)],[c_0_63, c_0_64])).
+cnf(c_0_73, negated_conjecture, (~pred_attacker(name_objective2)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_65, c_0_66])])).
+fof(c_0_74, plain, ![X234, X235, X236]:(constr_cbc_dec_2(constr_cbc_enc_2(X235,X236,X234),X234)=tuple_2(X235,X236)), inference(variable_rename,[status(thm)],[ax80])).
+fof(c_0_75, plain, ![X275, X276]:(constr_tuple_2_get_0x30_bitstring(tuple_2(X275,X276))=X275), inference(variable_rename,[status(thm)],[ax91])).
+cnf(c_0_76, plain, (pred_attacker(constr_cbc_4_get_2_prefixes(X1))|~pred_attacker(X1)), inference(split_conjunct,[status(thm)],[c_0_67])).
+cnf(c_0_77, plain, (constr_cbc_4_get_2_prefixes(constr_cbc_enc_4(X1,X2,X3,X4,X5))=constr_cbc_enc_2(X1,X2,X5)), inference(split_conjunct,[status(thm)],[c_0_68])).
+cnf(c_0_78, plain, (pred_attacker(X1)|~pred_attacker(tuple_server_S_out_2(X1))), inference(split_conjunct,[status(thm)],[c_0_69])).
+cnf(c_0_79, plain, (pred_attacker(tuple_server_S_out_2(constr_cbc_enc_4(X3,X2,name_Kab_66(X4),constr_cbc_enc_2(name_Kab_66(X4),X1,name_Kbs),name_Kas)))|~pred_attacker(tuple_server_S_in_1(X1,X2,X3))), inference(split_conjunct,[status(thm)],[c_0_70])).
+cnf(c_0_80, plain, (~pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X1,name_Kas)))|~pred_attacker(tuple_client_A_in_6(X1))), inference(sr,[status(thm)],[inference(spm,[status(thm)],[c_0_71, c_0_72]), c_0_73])).
+cnf(c_0_81, plain, (constr_cbc_dec_2(constr_cbc_enc_2(X1,X2,X3),X3)=tuple_2(X1,X2)), inference(split_conjunct,[status(thm)],[c_0_74])).
+cnf(c_0_82, plain, (constr_tuple_2_get_0x30_bitstring(tuple_2(X1,X2))=X1), inference(split_conjunct,[status(thm)],[c_0_75])).
+cnf(c_0_83, plain, (pred_attacker(constr_cbc_enc_2(X1,X2,X3))|~pred_attacker(constr_cbc_enc_4(X1,X2,X4,X5,X3))), inference(spm,[status(thm)],[c_0_76, c_0_77])).
+cnf(c_0_84, plain, (pred_attacker(constr_cbc_enc_4(X1,X2,name_Kab_66(X3),constr_cbc_enc_2(name_Kab_66(X3),X4,name_Kbs),name_Kas))|~pred_attacker(tuple_server_S_in_1(X4,X2,X1))), inference(spm,[status(thm)],[c_0_78, c_0_79])).
+fof(c_0_85, plain, ![X299, X300, X301]:((~pred_attacker(X299)|~pred_attacker(X300)|~pred_attacker(X301)|pred_attacker(tuple_server_S_in_1(X299,X300,X301)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax107])])])).
+cnf(c_0_86, plain, (~pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(X1,X2,name_Kas)))|~pred_attacker(X1)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_80, c_0_81]), c_0_82])).
+cnf(c_0_87, plain, (pred_attacker(constr_cbc_enc_2(X1,X2,name_Kas))|~pred_attacker(tuple_server_S_in_1(X3,X2,X1))), inference(spm,[status(thm)],[c_0_83, c_0_84])).
+cnf(c_0_88, plain, (pred_attacker(tuple_server_S_in_1(X1,X2,X3))|~pred_attacker(X1)|~pred_attacker(X2)|~pred_attacker(X3)), inference(split_conjunct,[status(thm)],[c_0_85])).
+cnf(c_0_89, plain, (~pred_attacker(constr_cbc_enc_2(X1,X2,name_Kas))|~pred_attacker(X1)), inference(spm,[status(thm)],[c_0_86, c_0_33])).
+cnf(c_0_90, plain, (pred_attacker(constr_cbc_enc_2(X1,X2,name_Kas))|~pred_attacker(X1)|~pred_attacker(X2)), inference(condense,[status(thm)],[inference(spm,[status(thm)],[c_0_87, c_0_88])])).
+cnf(c_0_91, plain, (pred_attacker(constr_CONST_0x30)), inference(split_conjunct,[status(thm)],[ax160])).
+cnf(c_0_92, plain, (~pred_attacker(X1)), inference(condense,[status(thm)],[inference(spm,[status(thm)],[c_0_89, c_0_90])])).
+cnf(c_0_93, plain, ($false), inference(sr,[status(thm)],[c_0_91, c_0_92]), ['proof']).
+# SZS output end CNFRefutation

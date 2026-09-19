@@ -84,6 +84,10 @@ tweeBenchmarkNames =
   -- as its source is the whole negated formula
   , "SYN362+1"
   , "LCL133-1"        -- goal x = y, whose symbols come only through implies(truth,X) = X
+  , "ANA133-1"        -- symbols such as '+' that Twee prints infix, given aliases for the call
+  , "LCL897-10"       -- the symbol ' = =>', quoted in the text
+  , "LCL902+1"        -- an instance of c31 rewritten by c17 at a variable position
+  , "SEU303+1"        -- Twee's equation between atoms, read as the term equation it comes from
   ]
 
 handcraftedNames :: [String]
@@ -286,6 +290,9 @@ eBenchmarkNames =
   , "SYO561_2"        -- refused, "Apple" != "Microsoft" holds by distinct objects
   , "PHI011+1"        -- csr(er(csr(csr(..),..)),..) reuses a unit, renamed apart per step
   , "SYN973+1"        -- refused, the conjecture simplifies to $true before clausification
+  , "LCL902+1"        -- symbols such as '==>' and '>=', which Twee prints infix
+  , "SWW967+1"        -- a re-proof citing the outer candidate lemma c_0_13, stated too
+  , "SWW968+1"        -- E's condensation, named condense
   ]
 
 mkTest :: String -> String -> String -> TestTree
