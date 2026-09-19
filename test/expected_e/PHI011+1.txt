@@ -1,0 +1,35 @@
+Axiom 1: is_the(X,Y) => property(Y)
+Axiom 2: is_the(Y,X) => object(Y)
+Axiom 3: object(Y) /\ property(X) /\ object(Z) /\ is_the(Y,X) /\ Y = Z => exemplifies_property(X,Z)
+
+Lemma 4: is_the(esk3_0,esk1_0) => property(esk1_0)
+Proof:
+  assume is_the(esk3_0,esk1_0)
+  hence property(esk1_0)
+    by axiom 1
+  hence is_the(esk3_0,esk1_0) => property(esk1_0)
+    by discharge
+
+Lemma 5: is_the(esk3_0,esk1_0) => object(esk3_0)
+Proof:
+  assume is_the(esk3_0,esk1_0)
+  hence object(esk3_0)
+    by axiom 2
+  hence is_the(esk3_0,esk1_0) => object(esk3_0)
+    by discharge
+
+Goal 1: is_the(esk3_0,esk1_0) => exemplifies_property(esk1_0,esk3_0)
+Proof:
+  assume is_the(esk3_0,esk1_0)
+  hence object(esk3_0)
+    by axiom 2
+   and property(esk1_0)
+    by lemma 4
+   and object(esk3_0)
+    by lemma 5
+   and is_the(esk3_0,esk1_0)
+    by assumption 1
+  hence exemplifies_property(esk1_0,esk3_0)
+    by axiom 3
+  hence is_the(esk3_0,esk1_0) => exemplifies_property(esk1_0,esk3_0)
+    by discharge

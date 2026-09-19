@@ -200,14 +200,21 @@ explain (parent, kids) s
 -- The ways two premises (or one) combine, each as the term equations the
 -- step needs and the literals of its result.
 alternatives :: [[(Bool, Literal)]] -> [([(Term, Term)], [(Bool, Literal)])]
-alternatives [a]    = [([], a)]
--- The last two cover a step that instantiates one premise and then rewrites it
--- by the other.  The rewritten position is still a variable when the
--- conclusion is matched, so no superposition reaches it.  Treating the
--- conclusion as an instance of that premise recovers the instantiation.
-alternatives [a, b] = resolve a b ++ resolve b a ++ superpose a b ++ superpose b a
-                      ++ [([], a), ([], b)]
-alternatives _      = []
+alternatives kids = concat [ (pairs, r) : [ (pairs ++ ps', r') | (ps', r') <- eqResolve r ] | (pairs, r) <- base kids ]
+  where
+    base [a]    = [([], a)]
+    -- The last two cover a step that instantiates one premise and then rewrites it
+    -- by the other.  The rewritten position is still a variable when the
+    -- conclusion is matched, so no superposition reaches it.  Treating the
+    -- conclusion as an instance of that premise recovers the instantiation.
+    base [a, b] = resolve a b ++ resolve b a ++ superpose a b ++ superpose b a
+                  ++ [([], a), ([], b)]
+    base _      = []
+
+-- An equality resolution folded into a step, as E's er inside csr(er(...)),
+-- removes a body equation s ≈ t by unifying s and t.
+eqResolve :: [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
+eqResolve c = [ ([(s, t)], rest) | ((False, Eq s t), rest) <- picks c ]
 
 heads, bodies :: [(Bool, Literal)] -> [Literal]
 heads x  = [ l | (True, l) <- x ]

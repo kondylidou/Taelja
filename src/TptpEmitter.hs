@@ -7,7 +7,10 @@
 -- a reader sees a direct proof.
 module TptpEmitter (emitTptp) where
 
+import Control.Monad (foldM, guard)
 import Data.Char (isAlphaNum, isAsciiLower, isDigit)
+import Data.Foldable (toList)
+import Data.List.NonEmpty (nonEmpty)
 import Data.List (intercalate, isPrefixOf, nub, nubBy, sortOn, tails, union)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe, isJust, listToMaybe, mapMaybe, maybeToList)
@@ -203,27 +206,146 @@ emitTptp sp0 = unlines $
     theoremLine = case conj of
       Just u | merged -> [ asTheorem (Verbatim (unitFormula (typedUnit u))) conjName (last stepLines) ]
       Just u
-        | null skolemVars ->
+        | null skolemVars, null conjSkolems ->
             [ Step conjName "theorem" (Verbatim (unitFormula (typedUnit u)))
                    (if null assumed then "conclude" else "implies")
                    (goalFinals ++ map snd assumed) ]
         -- the discharge holds for the prover's fresh constants, and the
-        -- conjecture follows by generalizing over them
+        -- conjecture follows by generalizing over them, which their
+        -- definition justifies
         | otherwise ->
             [ Step (fresh "discharged") "plain" (Raw dischargedText)
                    (if null assumed then "conclude" else "implies")
                    (goalFinals ++ map snd assumed)
-            , Step conjName "theorem" (Verbatim (unitFormula (typedUnit u))) "generalization" [fresh "discharged"] ]
+            , Step conjName "theorem" (Verbatim (unitFormula (typedUnit u))) "generalization"
+                   (fresh "discharged" : [ defName | isJust skolemDef ]) ]
       Nothing -> []
+    -- E names the Skolem constants of the negated conjecture without
+    -- defining them, so their definition is printed here, as Vampire prints
+    -- its own
+    undefinedSkolems = nub (conjSkolems ++ [ f | f <- generalizedSyms, Set.notMember f definedSyms ])
+    defName   = fresh "skolem_definition"
+    skolemDef = do
+      u <- conj
+      guard (not (null undefinedSkolems))
+      skolemDefinition defName (typedUnit u) undefinedSkolems
+        (map reSkLit ([ l | (l, _) <- goals sp1 ] ++ [ l | ax@(AUnit _ l) <- axioms sp1, isJust (lookup (axiomName ax) assumed) ]))
+    skolemDefLines = [ Input d ("new_symbols(definition, [" ++ intercalate "," undefinedSkolems ++ "])") | Just d <- [skolemDef] ]
+    -- a symbol of the goal that no input unit and no axiom has is a Skolem
+    -- symbol of the negated conjecture.  The text keeps it when a lemma
+    -- mentions it, as on PHI011+1/E, and without a definition in the proof,
+    -- as Vampire prints, the theorem generalizes over it
+    conjSkolems =
+      [ f | f <- nub (concatMap (litSymbols . fst) (goals sp1))
+          , Set.notMember f fileSyms
+          , Set.notMember f definedSyms
+          , f `notElem` concat [ axSyms ax | ax <- axioms sp1, not (isJust (lookup (axiomName ax) assumed)) ] ]
+    definedSyms = Set.fromList (concat [ fst (declSymbols d) | T.Unit _ d (Just (T.Introduced _ _, _)) <- inUnits input ])
+    axSyms (AUnit _ l)                 = litSymbols l
+    axSyms (ANucleus _ (Clause bs mh)) = concatMap litSymbols bs ++ maybe [] litSymbols mh
     dischargedText =
       let hs = [ ppFormula env (axiomFormula ax) | ax <- axioms sp1, isJust (lookup (axiomName ax) assumed) ]
           gs = [ ppFormula env (Ours (renameLit (blockRenaming l b) (reSkLit l))) | (l, b) <- goals sp ]
           joined xs = case xs of { [x] -> x; _ -> "(" ++ intercalate " & " xs ++ ")" }
       in if null hs then joined gs else "(" ++ joined hs ++ " => " ++ joined gs ++ ")"
-    allLines = inputLines ++ axiomLines
+    allLines = skolemDefLines ++ inputLines ++ axiomLines
             ++ (if merged then init stepLines else stepLines)
             ++ theoremLine
     deps = assumptionDeps allLines
+
+-- The definition of the Skolem constants that stand for universal variables
+-- of the conjecture, (? [Xs] : ~ M) => ~ M[Xs := cs], where M is the
+-- conjecture with those universal quantifiers taken out.  Each constant is
+-- read off by matching the goals and hypotheses against the atoms of M.  A
+-- variable no fact fixes stays existential on the right.  Only constants
+-- are defined, and Nothing is the answer for anything else.
+skolemDefinition :: String -> T.Unit -> [String] -> [Literal] -> Maybe T.Unit
+skolemDefinition name conjU syms facts = do
+  f' <- case unitFormula conjU of
+          T.FOF f  -> T.FOF <$> define f
+          T.TFF0 f -> T.TFF0 <$> define f
+          _        -> Nothing
+  return (T.Unit (Left (T.Atom (Text.pack name))) (T.Formula (T.Standard T.Plain) f')
+            (Just (T.Introduced (T.Standard T.ByDefinition) Nothing, Nothing)))
+  where
+    define :: T.FirstOrder s -> Maybe (T.FirstOrder s)
+    define f = do
+      let (vs, m) = universals f
+          names   = [ Text.unpack v | (T.Var v, _) <- vs ]
+      guard (not (null vs) && length (nub names) == length names)
+      guard (all (`notElem` names) (boundIn m))
+      let atoms   = [ l | a <- atomsIn m, Just l <- [safeLit a] ]
+          relevant = [ l | l <- facts, any (`elem` syms) (litSymbols l) ]
+      σ <- listToMaybe (solve names atoms relevant [])
+      let consts = [ (v, c) | (v, Const c) <- σ ]
+      guard (length consts == length σ && length (nub (map snd consts)) == length consts)
+      guard (all (`elem` map snd consts) syms)
+      let unmapped = [ p | p@(T.Var v, _) <- vs, Text.unpack v `notElem` map fst consts ]
+      vs' <- nonEmpty vs
+      return (T.Connected (T.Quantified T.Exists vs' (T.Negated m)) T.Implication
+                          (T.quantified T.Exists unmapped (T.Negated (substFO consts m))))
+
+    -- the universal variables of positive polarity with what is left
+    universals :: T.FirstOrder s -> ([(T.Var, s)], T.FirstOrder s)
+    universals g = case g of
+      T.Quantified T.Forall vs b -> let (ws, m) = universals b in (toList vs ++ ws, m)
+      T.Connected a T.Implication b -> let (ws, m) = universals b in (ws, T.Connected a T.Implication m)
+      T.Connected a T.ReversedImplication b -> let (ws, m) = universals a in (ws, T.Connected m T.ReversedImplication b)
+      T.Connected a c b | c `elem` [T.Conjunction, T.Disjunction] ->
+        let (ws, ma) = universals a; (xs, mb) = universals b in (ws ++ xs, T.Connected ma c mb)
+      T.Negated (T.Quantified T.Exists vs b) -> let (ws, m) = universals (T.Negated b) in (toList vs ++ ws, m)
+      T.Negated (T.Negated b) -> universals b
+      _ -> ([], g)
+
+    boundIn :: T.FirstOrder s -> [String]
+    boundIn g = case g of
+      T.Quantified _ vs b -> [ Text.unpack v | (T.Var v, _) <- toList vs ] ++ boundIn b
+      T.Connected a _ b   -> boundIn a ++ boundIn b
+      T.Negated b         -> boundIn b
+      T.Atomic _          -> []
+
+    atomsIn :: T.FirstOrder s -> [T.Literal]
+    atomsIn g = case g of
+      T.Atomic l          -> [l]
+      T.Negated b         -> atomsIn b
+      T.Connected a _ b   -> atomsIn a ++ atomsIn b
+      T.Quantified _ _ b  -> atomsIn b
+
+    safeLit l = case l of
+      T.Predicate (T.Defined _) ts | all safeTerm ts -> Just (unsign (convertLit l))
+      T.Equality a _ b | safeTerm a && safeTerm b     -> Just (unsign (convertLit l))
+      _                                               -> Nothing
+    safeTerm t = case t of
+      T.Variable _                  -> True
+      T.Function (T.Defined _) ts   -> all safeTerm ts
+      _                             -> False
+    unsign (NEq a b) = Eq a b
+    unsign l         = l
+
+    -- every fact an instance of some atom, binding only the universals
+    solve _ _ [] σ = [σ]
+    solve names atoms (l : ls) σ =
+      [ σ'' | a <- atoms, a' <- [a, flipLit a]
+            , Just ρ <- [matchLit a' (unsign l)]
+            , all ((`elem` names) . fst) ρ
+            , Just σ' <- [merge σ ρ]
+            , σ'' <- solve names atoms ls σ' ]
+    merge σ ρ = foldM (\acc (v, t) -> case lookup v acc of
+                         Nothing -> Just (acc ++ [(v, t)])
+                         Just t' -> if t == t' then Just acc else Nothing) σ ρ
+
+    substFO :: [(String, String)] -> T.FirstOrder s -> T.FirstOrder s
+    substFO σ g = case g of
+      T.Atomic l         -> T.Atomic (substLit l)
+      T.Negated b        -> T.Negated (substFO σ b)
+      T.Connected a c b  -> T.Connected (substFO σ a) c (substFO σ b)
+      T.Quantified q vs b -> T.Quantified q vs (substFO σ b)
+      where
+        substLit (T.Predicate n ts) = T.Predicate n (map substT ts)
+        substLit (T.Equality a sg b) = T.Equality (substT a) sg (substT b)
+        substT t@(T.Variable (T.Var v)) = maybe t (\c -> T.Function (T.Defined (T.Atom (Text.pack c))) []) (lookup (Text.unpack v) σ)
+        substT (T.Function n ts) = T.Function n (map substT ts)
+        substT t = t
 
 asTheorem :: Formula -> String -> Line -> Line
 asTheorem f name (Step _ _ _ rule ps) = Step name "theorem" f rule ps

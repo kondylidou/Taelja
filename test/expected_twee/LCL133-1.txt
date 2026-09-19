@@ -1,0 +1,52 @@
+Axiom 1: implies(truth,X) = X
+Axiom 2: implies(Y,Z) = implies(Z,Y)
+Axiom 3: implies(implies(Y,A),A) = implies(implies(A,Y),Y)
+Axiom 4: implies(implies(Y,A),implies(implies(A,B),implies(Y,B))) = truth
+
+Goal 1: x = y
+Proof:
+  x
+= { by axiom 1 R->L }
+  implies(truth,x)
+= { by axiom 1 R->L }
+  implies(truth,implies(truth,x))
+= { by axiom 1 R->L }
+  implies(truth,implies(truth,implies(truth,x)))
+= { by axiom 1 R->L }
+  implies(truth,implies(truth,implies(truth,implies(truth,x))))
+= { by axiom 2 }
+  implies(truth,implies(truth,implies(implies(truth,x),truth)))
+= { by axiom 2 R->L }
+  implies(truth,implies(implies(implies(truth,x),truth),truth))
+= { by axiom 3 }
+  implies(truth,implies(implies(truth,implies(truth,x)),implies(truth,x)))
+= { by axiom 2 }
+  implies(truth,implies(implies(truth,x),implies(truth,implies(truth,x))))
+= { by axiom 1 }
+  implies(truth,implies(implies(truth,x),implies(truth,x)))
+= { by axiom 1 R->L }
+  implies(implies(truth,truth),implies(implies(truth,x),implies(truth,x)))
+= { by axiom 4 }
+  truth
+= { by axiom 4 R->L }
+  implies(implies(truth,truth),implies(implies(truth,y),implies(truth,y)))
+= { by axiom 1 }
+  implies(truth,implies(implies(truth,y),implies(truth,y)))
+= { by axiom 1 R->L }
+  implies(truth,implies(implies(truth,y),implies(truth,implies(truth,y))))
+= { by axiom 2 R->L }
+  implies(truth,implies(implies(truth,implies(truth,y)),implies(truth,y)))
+= { by axiom 3 R->L }
+  implies(truth,implies(implies(implies(truth,y),truth),truth))
+= { by axiom 2 }
+  implies(truth,implies(truth,implies(implies(truth,y),truth)))
+= { by axiom 2 R->L }
+  implies(truth,implies(truth,implies(truth,implies(truth,y))))
+= { by axiom 1 }
+  implies(truth,implies(truth,implies(truth,y)))
+= { by axiom 1 }
+  implies(truth,implies(truth,y))
+= { by axiom 1 }
+  implies(truth,y)
+= { by axiom 1 }
+  y

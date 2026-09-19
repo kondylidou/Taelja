@@ -328,7 +328,10 @@ relevantUnits goal units =
     expand syms =
       let newSyms = nub (syms ++ concat (filter (any (`elem` syms)) allUnitSyms))
       in if newSyms == syms then syms else expand newSyms
-    finalSyms = expand (litSyms goal)
+    -- the symbols of the universal equations are reachable from any goal,
+    -- since such an equation rewrites any term into one with them, as x = y
+    -- on LCL133-1 follows only through implies(truth,X) = X
+    finalSyms = expand (litSyms goal ++ concat [ litSyms (ueUnit u) | u <- units, universal (ueUnit u) ])
 
 -- Parse a term from Twee's readable proof format.  Variables start uppercase,
 -- and constants and functions start lowercase or with an underscore.

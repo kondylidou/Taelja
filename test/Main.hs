@@ -83,6 +83,7 @@ tweeBenchmarkNames =
   -- a negated conclusion whose closing clause is read from the clause itself,
   -- as its source is the whole negated formula
   , "SYN362+1"
+  , "LCL133-1"        -- goal x = y, whose symbols come only through implies(truth,X) = X
   ]
 
 handcraftedNames :: [String]
@@ -283,6 +284,8 @@ eBenchmarkNames =
   , "SYN946+1"        -- a disjunctive conclusion p(Y) | r(Z), proved by contradiction
   , "SYN915+1"        -- refused, the conjecture is $true
   , "SYO561_2"        -- refused, "Apple" != "Microsoft" holds by distinct objects
+  , "PHI011+1"        -- csr(er(csr(csr(..),..)),..) reuses a unit, renamed apart per step
+  , "SYN973+1"        -- refused, the conjecture simplifies to $true before clausification
   ]
 
 mkTest :: String -> String -> String -> TestTree

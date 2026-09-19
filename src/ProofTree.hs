@@ -21,8 +21,8 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Control.Applicative ((<|>))
-import Control.Monad (forM)
-import Data.List (inits, intercalate, nub, partition, sortBy)
+import Control.Monad (forM, when)
+import Data.List (inits, intercalate, nub, partition, sortBy, tails)
 import Data.List.NonEmpty (NonEmpty ((:|)), toList)
 import Data.Maybe (catMaybes, fromMaybe, isJust, listToMaybe)
 import Data.Ord (comparing)
@@ -32,7 +32,7 @@ import Types
 import Helpers (applySubst, applySubstTerm, clauseInstance, deepApplySubstTerm, flipLit, litSubtermCtxs,
                 mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
                 unifyLits, unifyTerms)
-import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertFOFToClause, convertLit, isReservedTLit)
+import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertFOFToClause, convertLit, declSymbols, isReservedTLit)
 data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
@@ -123,6 +123,11 @@ buildProofInfo allUnits = do
                      ++ " uses distinct objects, whose inequality is a theory fact outside the calculus"))
         (take 1 [ unitNameStr n | T.Unit n d _ <- allUnits, usesDistinctObjects d ])
   conjecture <- mapM readConjecture (listToMaybe (fofConjectures allUnits))
+  -- a refutation whose leaves have no atom was found by simplifying the
+  -- formulas before clausification, as E's fof_simplification of
+  -- ~(p(z) => p(z)) to ~$true on SYN973+1, which no clause inference shows
+  when (all (\(_, _, d) -> let (fs, ps) = declSymbols d in null fs && null ps) leafRows) $
+    Left "unsupported proof, the prover reduced the conjecture to a truth constant by formula simplification, outside the supported calculus of resolution, superposition, demodulation and equality resolution"
   -- prefer the original conjecture unit since provers may split or simplify
   -- it.  Without one the goal clause is the negated conjecture clause resolved
   -- closest to the root, and for a negated conclusion, proved by deriving
@@ -278,7 +283,12 @@ replayNested outerD d0 ds = do
   outer <- convertDeclToClause outerD
   c0    <- convertDeclToClause d0
   cs    <- mapM convertDeclToClause ds
-  (c1, units) <- case cs of { (x : xs) -> Just (x, xs); [] -> Nothing }
+  (c1, units0) <- case cs of { (x : xs) -> Just (x, xs); [] -> Nothing }
+  -- each step renames its unit apart, so a unit used twice, as c_0_8 in
+  -- csr(er(csr(csr(c_0_7,c_0_8),c_0_9)),c_0_8) on PHI011+1, does not share
+  -- variables with the conditions an earlier step brought along
+  let units = [ Clause (map (suffixVarsLit sfx) bs) (fmap (suffixVarsLit sfx) mh)
+              | (i, Clause bs mh) <- zip [1 :: Int ..] units0, let sfx = "_s" ++ show i ]
   listToMaybe
     [ (prov, map (clauseToDecl . instC σ) chain)
     -- Condense the resolvent before simplifying it.  A Horn premise brings its
@@ -289,11 +299,18 @@ replayNested outerD d0 ds = do
     | (prov, r0) <- resolvents c0 c1
     , let r = cn r0
     , chain <- chains r (init units)
-    , final <- simplifyBy (last chain) (last units)
+    , final0 <- simplifyBy (last chain) (last units)
+    , final <- final0 : eqResolutions final0
     , Just σ <- [matchClause final outer] ]
   where
+    -- an equality resolution the prover folded in, as E's er inside
+    -- csr(er(...)), may precede any simplification
     chains r []       = [[r]]
-    chains r (u : us) = [ r : rest | r' <- simplifyBy r u, rest <- chains r' us ]
+    chains r (u : us) = [ r : rest | r1 <- r : eqResolutions r, r' <- simplifyBy r1 u, rest <- chains r' us ]
+    eqResolutions (Clause bs mh) =
+      [ instC σ (Clause (before ++ after) mh)
+      | (before, Eq s t : after) <- zip (inits bs) (tails bs)
+      , Just σ <- [unifyTerms s t []] ]
     instC σ (Clause bs mh) = Clause (map (inst σ) bs) (fmap (inst σ) mh)
     inst σ = mapLiteralTerms (deepApplySubstTerm σ)
 -- Every resolvent and superposition of two clauses (variables renamed

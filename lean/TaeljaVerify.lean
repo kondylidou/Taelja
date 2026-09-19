@@ -139,6 +139,7 @@ import TaeljaVerify.Vampire.Puz0111
 import TaeljaVerify.Vampire.Nlp2581
 import TaeljaVerify.E.Puz0111
 import TaeljaVerify.E.Grp1921
+import TaeljaVerify.E.Phi0111
 import TaeljaVerify.E.Lcl1261
 import TaeljaVerify.Vampire.Rng0381
 import TaeljaVerify.Vampire.Rng0391
@@ -173,6 +174,7 @@ import TaeljaVerify.Vampire.Grp6561
 import TaeljaVerify.Vampire.Alg2031
 import TaeljaVerify.Twee.Syn3621
 import TaeljaVerify.Twee.Syn3871
+import TaeljaVerify.Twee.Lcl1331
 import TaeljaVerify.Vampire.Seu3031
 import TaeljaVerify.Vampire.Kle1291
 import TaeljaVerify.Vampire.Syn0481
