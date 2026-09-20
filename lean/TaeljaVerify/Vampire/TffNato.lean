@@ -5,6 +5,7 @@ namespace VampireTffNato
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom germany : α
@@ -29,7 +30,7 @@ theorem taelja_goal1 : protects sweden germany := by
   have h1 : nato_member sweden := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : nato_member germany := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h3 : attacked russia germany := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
-  have h4 : protects sweden germany := by first | (exact ax4 sweden germany russia h1 h2 h3) | (first | (exact ax4 _ _ _ h1 h2 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : protects sweden germany := by first | (exact ax4 sweden germany russia h1 h2 h3) | (first | (exact ax4 _ _ _ h1 h2 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 end VampireTffNato

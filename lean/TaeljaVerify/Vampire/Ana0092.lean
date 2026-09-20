@@ -5,6 +5,7 @@ namespace VampireAna0092
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom c_0 : α
@@ -37,31 +38,31 @@ axiom ax6 : ∀ (a : α) (x : α) (y : α) (z : α), c_lessequals y z x → clas
 
 -- Lemma 7
 theorem taelja_lemma7 : class_OrderedGroup_Opordered__ab__semigroup__add__imp__le t_b := by
-  have h1 : class_Ring__and__Field_Oordered__idom t_b := by first | (exact ax2) | (apply ax2 <;> first | rfl | assumption)
-  have h2 : class_OrderedGroup_Opordered__ab__semigroup__add__imp__le t_b := by first | (exact ax3 t_b h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : class_Ring__and__Field_Oordered__idom t_b := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+  have h2 : class_OrderedGroup_Opordered__ab__semigroup__add__imp__le t_b := by first | (exact ax3 t_b h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Lemma 8
 theorem taelja_lemma8 : ∀ (x : α), (c_plus x (c_uminus x t_b) t_b) = c_0 := by
   intro x
-  have h1 : class_Ring__and__Field_Oordered__idom t_b := by first | (exact ax2) | (apply ax2 <;> first | rfl | assumption)
-  have h2 : class_OrderedGroup_Oab__group__add t_b := by first | (exact ax4 t_b h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h3 : (c_plus x (c_uminus x t_b) t_b) = c_0 := by first | (exact ax5 t_b x h2) | (first | (exact ax5 _ _ h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : class_Ring__and__Field_Oordered__idom t_b := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+  have h2 : class_OrderedGroup_Oab__group__add t_b := by first | (exact ax4 t_b h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : (c_plus x (c_uminus x t_b) t_b) = c_0 := by first | (exact ax5 t_b x h2) | (first | (exact ax5 _ _ h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 -- Lemma 9
 theorem taelja_lemma9 : ∀ (x : α), c_lessequals (c_plus (v_lb v_x) x t_b) (c_plus (v_f v_x) x t_b) t_b := by
   intro x
-  have h1 : c_lessequals (v_lb v_x) (v_f v_x) t_b := by first | (exact ax1 v_x) | (apply ax1 <;> first | rfl | assumption)
-  have h2 : class_OrderedGroup_Opordered__ab__semigroup__add__imp__le t_b := by first | (exact taelja_lemma7) | (apply taelja_lemma7 <;> first | rfl | assumption)
-  have h3 : c_lessequals (c_plus (v_lb v_x) x t_b) (c_plus (v_f v_x) x t_b) t_b := by first | (exact ax6 x t_b (v_lb v_x) (v_f v_x) h1 h2) | (first | (exact ax6 _ _ _ _ h1 h2) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : c_lessequals (v_lb v_x) (v_f v_x) t_b := by first | (exact ax1 v_x) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : class_OrderedGroup_Opordered__ab__semigroup__add__imp__le t_b := by first | (exact taelja_lemma7) | (first | apply taelja_lemma7 <;> first | rfl | assumption)
+  have h3 : c_lessequals (c_plus (v_lb v_x) x t_b) (c_plus (v_f v_x) x t_b) t_b := by first | (exact ax6 x t_b (v_lb v_x) (v_f v_x) h1 h2) | (first | (exact ax6 _ _ _ _ h1 h2) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : c_lessequals c_0 (c_plus (v_f v_x) (c_uminus (v_lb v_x) t_b) t_b) t_b := by
   have h_rw := taelja_lemma8 (v_lb v_x)
   rw [← h_rw]
-  apply taelja_lemma9 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 end VampireAna0092
 

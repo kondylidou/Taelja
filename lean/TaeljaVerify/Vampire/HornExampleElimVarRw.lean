@@ -5,6 +5,7 @@ namespace VampireHornExampleElimVarRw
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -24,8 +25,8 @@ axiom ax3 : ∀ (x : α) (y : α), q x y → (f x) = (g y)
 
 -- Goal 1
 theorem taelja_goal1 : (f a) = c := by
-  have h1 : ∀ (x : α), q a x := fun x => by apply ax1
-  have h2 : ∀ (x : α), (f a) = (g x) := fun x => by have h1_i := h1 x; first | (exact ax3 _ _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | apply h1))
+  have h1 : ∀ (x : α), q a x := fun x => by first | (exact ax1 x) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : ∀ (x : α), (f a) = (g x) := fun x => by first | (exact ax3 a x (h1 x)) | (have h1_i := h1 x; first | (exact ax3 _ _ (h1 _)) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h1 | exact taelja_elem)) | (apply Eq.symm; apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h1 | exact taelja_elem)))
   have h3 : (f a) = c := by have h_rw := h2; simp only [ax2] at h_rw; exact h_rw a
   exact h3
 

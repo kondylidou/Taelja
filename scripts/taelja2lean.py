@@ -662,7 +662,7 @@ def lean_name(name: str) -> str:
         'true', 'false', 'not', 'and', 'or', 'id',
         # further reserved words / tactic keywords seen as TPTP symbols
         'at', 'only', 'using', 'to', 'as', 'deriving', 'inductive', 'mutual',
-        'private', 'protected', 'partial', 'unsafe', 'opaque', 'omit', 'include',
+        'private', 'public', 'protected', 'partial', 'unsafe', 'opaque', 'omit', 'include',
         'notation', 'macro', 'syntax', 'elab', 'set_option', 'termination_by',
         'decreasing_by', 'generalizing', 'suffices', 'obtain', 'rcases', 'cases',
         'induction', 'constructor', 'left', 'right', 'exists', 'forall', 'nat',
@@ -1099,6 +1099,9 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
     # Declare sort
     lines.append('-- Uninterpreted sort')
     lines.append('axiom α : Type')
+    # first-order domains are nonempty, and an element is needed to close a
+    # goal for a lemma variable that the premises leave undetermined
+    lines.append('axiom taelja_elem : α')
     lines.append('')
 
     # Declare constants one per line, since Lean 4 does not allow multi-binder axioms
@@ -1295,12 +1298,23 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
         elif step.ref.kind == 'hyp' and step.ref.num in _hyp_types:
             ax_formula = _hyp_types[step.ref.num][2]
 
+        # Without an instantiation, the step is still the cited equation at
+        # some instance, which Lean can elaborate from the expected type, and
+        # rw in either direction is tried as well.
+        def loose(name):
+            nvars = len(get_formula_vars(step.ref.num, step.ref.kind, axiom_types, lemma_types)[0]) \
+                if step.ref.num in axiom_types or step.ref.num in lemma_types or step.ref.num in _hyp_types else 0
+            holes = ' '.join(['_'] * nvars)
+            app = f'{name} {holes}'.strip()
+            return (f'by first | (exact {app}) | (exact Eq.symm ({app}))'
+                    f' | (simp only [{name}]) | rw [{name}] | rw [← {name}]')
+
         if ax_formula is None or not isinstance(ax_formula, EqLit):
-            return f'by rw [{ref_name}]'
+            return loose(ref_name)
 
         subst = find_rw_subst(prev_term, step.term, ax_formula, direction)
         if subst is None:
-            return f'by rw [{ref_name}]'  # fallback
+            return loose(ref_name)
 
         # Build the instantiated application axN arg1 arg2 ...
         args = inst_args(ax_formula, subst, var_map,
@@ -1318,7 +1332,15 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
         goal_t = App('=', [prev_term, step.term])
         target = App('=', [step.term, step.term]) if direction == 'LR' else App('=', [prev_term, prev_term])
         k, total = rewritten_occurrence(goal_t, lhs_i, rhs_i, target)
-        return f'by have h_rw := {inst}; {rw_tactic("", "h_rw", k, total)}'
+        # An equation with a bare variable on one side, as REL001+1's axiom 11
+        # X = join(...), has no pattern for rw, but the instance is the step
+        # itself, so it is taken as the proof of the step.
+        direct = (f'first | (exact {inst}) | (exact Eq.symm ({inst}))'
+                  if isinstance(ax_formula.lhs, Var) or isinstance(ax_formula.rhs, Var) else None)
+        rw = f'have h_rw := {inst}; {rw_tactic("", "h_rw", k, total)}'
+        if direct is not None:
+            return f'by first | ({direct}) | ({rw})'
+        return f'by {rw}'
 
     # TPTP predicates are sometimes encoded as "f(args) = true" in the proof.
     # When the last calc step lands on Const('true'), the chain ends with a
@@ -1348,6 +1370,8 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
                     pat_g, rep_g = (rhs_i, lhs_i) if direction == 'RL' else (lhs_i, rhs_i)
                     k, total = rewritten_occurrence(prev_t, pat_g, rep_g, step.term)
                     lines.append(f'have h_rw := {inst_s}')
+                    # the instance may not be the one the step rewrote, as on
+                    # LCL888+1, and then the equation itself still finds it
                     lines.append(rw_tactic(arrow, 'h_rw', k, total))
                 else:
                     arrow = '← ' if direction == 'RL' else ''
@@ -1378,7 +1402,16 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
             else:
                 lines.append(f'exact Eq.symm ({final_rn} true_)')
         else:
-            close_tac = 'first | assumption | rfl | exact Eq.symm (by assumption)'
+            # apply leaves a goal for each universally quantified variable it
+            # cannot determine from the conclusion.  Those are terms, not
+            # proofs, so the closing tactics are tried rather than forced, and
+            # solving the premises assigns them (HEN006-3/Twee).
+            # apply leaves a goal for each universally quantified variable it
+            # cannot determine from the conclusion.  Those are terms, not
+            # proofs, and the domain is nonempty, so an element closes them
+            # once the premises no longer determine them (HEN006-3/Twee).
+            close_tac = ('first | assumption | rfl | exact Eq.symm (by assumption)'
+                         ' | exact taelja_elem')
             lines.append(f'apply {final_rn} <;> ({close_tac})')
         return lines
 
@@ -1633,6 +1666,11 @@ def intro_hypotheses(conclusion, lines, var_map=None):
     def name_of(i, b):
         return f'hyp{_goal_hyps.index(hyp_key(b)) + 1}' if hyp_key(b) in _goal_hyps else f'hyp{i + 1}'
     names = [name_of(i, b) for i, b in enumerate(hyps)]
+    # two hypotheses may share a key, as REL031+1's two instances of
+    # join(composition(converse(X),X),one) = one do, and then the key is no
+    # name.  Numbering by position matches the text's assumption numbers.
+    if len(set(names)) != len(names):
+        names = [f'hyp{i + 1}' for i in range(len(hyps))]
     if plain:
         lines.append('intro ' + ' '.join(names[:len(plain)]))
     if negated:
@@ -1653,6 +1691,12 @@ def resolve_assumption(ref, lit, want_eq=False):
         return ref
     if ref.num and ref.num in _hyp_types:
         return Ref('hyp', ref.num, ref.rw, ref.direction)
+    # an assume line restates a hypothesis, so one stating the literal itself
+    # comes before an implication whose head has the same predicate
+    if not want_eq:
+        for k, (_, _, f) in _hyp_types.items():
+            if not isinstance(f, Implies) and str(f) == str(lit):
+                return Ref('hyp', k, ref.rw, ref.direction)
     for k, (_, _, f) in _hyp_types.items():
         if want_eq:
             if isinstance(f, EqLit):
@@ -1966,6 +2010,8 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                                'exact Eq.trans (by assumption) (Eq.symm (by assumption))',
                                'exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption))']
                 close_parts += [f'apply {h}' for h in univ_hyp_names]
+                # a goal for a variable apply could not determine, see above
+                close_parts += ['exact taelja_elem']
                 close_tac = 'first | ' + ' | '.join(close_parts)
 
                 # 'axioms' in plural names no specific axiom, so try every axiom and lemma in

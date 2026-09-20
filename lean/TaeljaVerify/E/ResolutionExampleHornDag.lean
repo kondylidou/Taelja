@@ -5,6 +5,7 @@ namespace EResolutionExampleHornDag
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -31,22 +32,22 @@ axiom ax5 : ∀ (x : α), r1 x → r2 x → r0 x
 -- Lemma 6
 theorem taelja_lemma6 : ∀ (x : α), q a x := by
   intro x
-  have h1 : p a := by apply ax1
-  have h2 : q a x := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : p a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : q a x := by first | (exact ax2 a x h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Lemma 7
 theorem taelja_lemma7 : r2 a := by
-  have h1 : q a c := by apply taelja_lemma6
-  have h2 : r2 a := by first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : q a c := by first | (exact taelja_lemma6 c) | (first | apply taelja_lemma6 <;> first | rfl | assumption)
+  have h2 : r2 a := by first | (exact ax4 a h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : r0 a := by
-  have h1 : q a b := by apply taelja_lemma6
-  have h2 : r1 a := by first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : r2 a := by apply taelja_lemma7
-  have h4 : r0 a := by first | (exact ax5 _ h2 h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : q a b := by first | (exact taelja_lemma6 b) | (first | apply taelja_lemma6 <;> first | rfl | assumption)
+  have h2 : r1 a := by first | (exact ax3 a h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : r2 a := by first | (exact taelja_lemma7) | (first | apply taelja_lemma7 <;> first | rfl | assumption)
+  have h4 : r0 a := by first | (exact ax5 a h2 h3) | (first | (exact ax5 _ h2 h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 end EResolutionExampleHornDag

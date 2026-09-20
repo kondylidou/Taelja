@@ -5,6 +5,7 @@ namespace ESyn9821
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -64,63 +65,63 @@ axiom ax15 : ∀ (x : α) (y : α) (z : α), ssM (sent x b (pair (encr (triple x
 theorem taelja_lemma16 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := by
   have h1 : ssM (sent a b (pair a na)) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : ssBf na := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : ssM (sent b t (triple b (nb na) (encr (triple a na (tb na)) bt))) := by first | (exact ax5 a na h1 h2) | (first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := by first | (exact ax2 b t (triple b (nb na) (encr (triple a na (tb na)) bt)) h3) | (first | (exact ax2 _ _ _ h3) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : ssM (sent b t (triple b (nb na) (encr (triple a na (tb na)) bt))) := by first | (exact ax5 a na h1 h2) | (first | (exact ax5 _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := by first | (exact ax2 b t (triple b (nb na) (encr (triple a na (tb na)) bt)) h3) | (first | (exact ax2 _ _ _ h3) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 17
 theorem taelja_lemma17 : ssIm na := by
   have h1 : ssM (sent a b (pair a na)) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : ssIm (pair a na) := by first | (exact ax2 a b (pair a na) h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h3 : ssIm na := by first | (exact ax3 a na h2) | (first | (exact ax3 _ _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h2 : ssIm (pair a na) := by first | (exact ax2 a b (pair a na) h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : ssIm na := by first | (exact ax3 a na h2) | (first | (exact ax3 _ _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 -- Lemma 18
 theorem taelja_lemma18 : ssIm (encr (triple a na (tb na)) bt) := by
   have h1 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := by first | (exact taelja_lemma16) | (first | apply taelja_lemma16 <;> first | rfl | assumption)
-  have h2 : ssIm (encr (triple a na (tb na)) bt) := by first | (exact ax6 b (nb na) (encr (triple a na (tb na)) bt) h1) | (first | (exact ax6 _ _ _ h1) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h2 : ssIm (encr (triple a na (tb na)) bt) := by first | (exact ax6 b (nb na) (encr (triple a na (tb na)) bt) h1) | (first | (exact ax6 _ _ _ h1) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Lemma 19
 theorem taelja_lemma19 : ssIk (key na a) := by
   have h1 : ssIm na := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
   have h2 : ssP a := by first | (exact ax8) | (first | apply ax8 <;> first | rfl | assumption)
-  have h3 : ssIk (key na a) := by first | (exact ax9 na a h1 h2) | (first | (exact ax9 _ _ h1 h2) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : ssIk (key na a) := by first | (exact ax9 na a h1 h2) | (first | (exact ax9 _ _ h1 h2) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 -- Lemma 20
 theorem taelja_lemma20 : ssIm (encr (nb na) na) := by
   have h1 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := by first | (exact taelja_lemma16) | (first | apply taelja_lemma16 <;> first | rfl | assumption)
-  have h2 : ssIm (nb na) := by first | (exact ax7 b (nb na) (encr (triple a na (tb na)) bt) h1) | (first | (exact ax7 _ _ _ h1) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h2 : ssIm (nb na) := by first | (exact ax7 b (nb na) (encr (triple a na (tb na)) bt) h1) | (first | (exact ax7 _ _ _ h1) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : ssIk (key na a) := by first | (exact taelja_lemma19) | (first | apply taelja_lemma19 <;> first | rfl | assumption)
   have h4 : ssP a := by first | (exact ax8) | (first | apply ax8 <;> first | rfl | assumption)
-  have h5 : ssIm (encr (nb na) na) := by first | (exact ax10 (nb na) na a h2 h3 h4) | (first | (exact ax10 _ _ _ h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : ssIm (encr (nb na) na) := by first | (exact ax10 (nb na) na a h2 h3 h4) | (first | (exact ax10 _ _ _ h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 -- Lemma 21
 theorem taelja_lemma21 : ssSb (pair a na) := by
   have h1 : ssM (sent a b (pair a na)) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : ssBf na := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : ssSb (pair a na) := by first | (exact ax14 a na h1 h2) | (first | (exact ax14 _ _ h1 h2) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : ssSb (pair a na) := by first | (exact ax14 a na h1 h2) | (first | (exact ax14 _ _ h1 h2) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : ssIk (key na b) := by
   have h1 : ssIm na := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
   have h2 : ssP b := by first | (exact ax12) | (first | apply ax12 <;> first | rfl | assumption)
-  have h3 : ssIk (key na b) := by first | (exact ax9 na b h1 h2) | (first | (exact ax9 _ _ h1 h2) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : ssIk (key na b) := by first | (exact ax9 na b h1 h2) | (first | (exact ax9 _ _ h1 h2) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 -- Goal 2
 theorem taelja_goal2 : ssBk (key na a) := by
   have h1 : ssIm (encr (triple a na (tb na)) bt) := by first | (exact taelja_lemma18) | (first | apply taelja_lemma18 <;> first | rfl | assumption)
   have h2 : ssIm (encr (nb na) na) := by first | (exact taelja_lemma20) | (first | apply taelja_lemma20 <;> first | rfl | assumption)
-  have h3 : ssIm (pair (encr (triple a na (tb na)) bt) (encr (nb na) na)) := by first | (exact ax11 (encr (triple a na (tb na)) bt) (encr (nb na) na) h1 h2) | (first | (exact ax11 _ _ h1 h2) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : ssIm (pair (encr (triple a na (tb na)) bt) (encr (nb na) na)) := by first | (exact ax11 (encr (triple a na (tb na)) bt) (encr (nb na) na) h1 h2) | (first | (exact ax11 _ _ h1 h2) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h4 : ssP a := by first | (exact ax8) | (first | apply ax8 <;> first | rfl | assumption)
   have h5 : ssP b := by first | (exact ax12) | (first | apply ax12 <;> first | rfl | assumption)
-  have h6 : ssM (sent a b (pair (encr (triple a na (tb na)) bt) (encr (nb na) na))) := by first | (exact ax13 (pair (encr (triple a na (tb na)) bt) (encr (nb na) na)) a b h3 h4 h5) | (first | (exact ax13 _ _ _ h3 h4 h5) | (apply ax13 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h6 : ssM (sent a b (pair (encr (triple a na (tb na)) bt) (encr (nb na) na))) := by first | (exact ax13 (pair (encr (triple a na (tb na)) bt) (encr (nb na) na)) a b h3 h4 h5) | (first | (exact ax13 _ _ _ h3 h4 h5) | (apply ax13 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h7 : ssSb (pair a na) := by first | (exact taelja_lemma21) | (first | apply taelja_lemma21 <;> first | rfl | assumption)
-  have h8 : ssBk (key na a) := by first | (exact ax15 a na na h6 h7) | (first | (exact ax15 _ _ _ h6 h7) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h8 : ssBk (key na a) := by first | (exact ax15 a na na h6 h7) | (first | (exact ax15 _ _ _ h6 h7) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h8
 
 end ESyn9821

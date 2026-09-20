@@ -5,6 +5,7 @@ namespace VampireResolutionExampleHornReuseInlined
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -24,11 +25,11 @@ axiom ax3 : ∀ (x : α) (y : α), q x y → p y → q (f x) y
 
 -- Goal 1
 theorem taelja_goal1 : q (f (f b)) a := by
-  have h1 : q b a := by apply ax2
-  have h2 : p a := by apply ax1
-  have h3 : q (f b) a := by first | (exact ax3 _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h4 : p a := by apply ax1
-  have h5 : q (f (f b)) a := by first | (exact ax3 _ _ h3 h4) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : q b a := by first | (exact ax2 a) | (first | apply ax2 <;> first | rfl | assumption)
+  have h2 : p a := by first | (exact ax1 a) | (first | apply ax1 <;> first | rfl | assumption)
+  have h3 : q (f b) a := by first | (exact ax3 b a h1 h2) | (first | (exact ax3 _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : p a := by first | (exact ax1 a) | (first | apply ax1 <;> first | rfl | assumption)
+  have h5 : q (f (f b)) a := by first | (exact ax3 (f b) a h3 h4) | (first | (exact ax3 _ _ h3 h4) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 end VampireResolutionExampleHornReuseInlined

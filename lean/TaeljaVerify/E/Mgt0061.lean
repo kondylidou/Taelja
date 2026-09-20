@@ -5,6 +5,7 @@ namespace EMgt0061
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom sk2 : α
@@ -52,13 +53,13 @@ axiom ax12 : ∀ (a : α) (b : α) (c : α) (u : α) (v : α) (w : α) (x : α) 
 -- Lemma 13
 theorem taelja_lemma13 : reproducibility sk2 (sk1 sk7 sk2) sk7 := by
   have h1 : organization sk2 sk7 := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
-  have h2 : reproducibility sk2 (sk1 sk7 sk2) sk7 := by first | (exact ax4 sk2 sk7 h1) | (first | (exact ax4 _ _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h2 : reproducibility sk2 (sk1 sk7 sk2) sk7 := by first | (exact ax4 sk2 sk7 h1) | (first | (exact ax4 _ _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Lemma 14
 theorem taelja_lemma14 : reproducibility sk2 (sk1 sk8 sk2) sk8 := by
   have h1 : organization sk2 sk8 := by first | (exact ax5) | (first | apply ax5 <;> first | rfl | assumption)
-  have h2 : reproducibility sk2 (sk1 sk8 sk2) sk8 := by first | (exact ax4 sk2 sk8 h1) | (first | (exact ax4 _ _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h2 : reproducibility sk2 (sk1 sk8 sk2) sk8 := by first | (exact ax4 sk2 sk8 h1) | (first | (exact ax4 _ _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Lemma 15
@@ -69,7 +70,7 @@ theorem taelja_lemma15 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := by
   have h4 : reproducibility sk2 (sk1 sk7 sk2) sk7 := by first | (exact taelja_lemma13) | (first | apply taelja_lemma13 <;> first | rfl | assumption)
   have h5 : reproducibility sk2 (sk1 sk8 sk2) sk8 := by first | (exact taelja_lemma14) | (first | apply taelja_lemma14 <;> first | rfl | assumption)
   have h6 : greater sk8 sk7 := by first | (exact ax6) | (first | apply ax6 <;> first | rfl | assumption)
-  have h7 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := by first | (exact ax8 (sk1 sk7 sk2) (sk1 sk8 sk2) sk2 sk7 sk8 h1 h2 h3 h4 h5 h6) | (first | (exact ax8 _ _ _ _ _ h1 h2 h3 h4 h5 h6) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h7 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := by first | (exact ax8 (sk1 sk7 sk2) (sk1 sk8 sk2) sk2 sk7 sk8 h1 h2 h3 h4 h5 h6) | (first | (exact ax8 _ _ _ _ _ h1 h2 h3 h4 h5 h6) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h7
 
 -- Goal 1
@@ -83,7 +84,7 @@ theorem taelja_goal1 : greater sk4 sk3 := by
   have h7 : reproducibility sk2 (sk1 sk7 sk2) sk7 := by first | (exact taelja_lemma13) | (first | apply taelja_lemma13 <;> first | rfl | assumption)
   have h8 : reproducibility sk2 (sk1 sk8 sk2) sk8 := by first | (exact taelja_lemma14) | (first | apply taelja_lemma14 <;> first | rfl | assumption)
   have h9 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := by first | (exact taelja_lemma15) | (first | apply taelja_lemma15 <;> first | rfl | assumption)
-  have h10 : greater sk4 sk3 := by first | (exact ax11 sk8 sk3 sk4 sk5 sk6 (sk1 sk7 sk2) sk2 (sk1 sk8 sk2) sk7 sk2 h1 h2 h3 h4 h5 h6 h7 h8 h9) | (first | (exact ax11 _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4 h5 h6 h7 h8 h9) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h10 : greater sk4 sk3 := by first | (exact ax11 sk8 sk3 sk4 sk5 sk6 (sk1 sk7 sk2) sk2 (sk1 sk8 sk2) sk7 sk2 h1 h2 h3 h4 h5 h6 h7 h8 h9) | (first | (exact ax11 _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4 h5 h6 h7 h8 h9) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h10
 
 -- Goal 2
@@ -97,7 +98,7 @@ theorem taelja_goal2 : greater sk6 sk5 := by
   have h7 : reproducibility sk2 (sk1 sk7 sk2) sk7 := by first | (exact taelja_lemma13) | (first | apply taelja_lemma13 <;> first | rfl | assumption)
   have h8 : reproducibility sk2 (sk1 sk8 sk2) sk8 := by first | (exact taelja_lemma14) | (first | apply taelja_lemma14 <;> first | rfl | assumption)
   have h9 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := by first | (exact taelja_lemma15) | (first | apply taelja_lemma15 <;> first | rfl | assumption)
-  have h10 : greater sk6 sk5 := by first | (exact ax12 sk8 sk3 sk4 sk5 sk6 (sk1 sk7 sk2) sk2 (sk1 sk8 sk2) sk7 sk2 h1 h2 h3 h4 h5 h6 h7 h8 h9) | (first | (exact ax12 _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4 h5 h6 h7 h8 h9) | (apply ax12 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h10 : greater sk6 sk5 := by first | (exact ax12 sk8 sk3 sk4 sk5 sk6 (sk1 sk7 sk2) sk2 (sk1 sk8 sk2) sk7 sk2 h1 h2 h3 h4 h5 h6 h7 h8 h9) | (first | (exact ax12 _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4 h5 h6 h7 h8 h9) | (apply ax12 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h10
 
 end EMgt0061

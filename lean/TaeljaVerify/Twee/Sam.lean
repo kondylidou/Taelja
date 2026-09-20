@@ -5,6 +5,7 @@ namespace TweeSam
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -21,19 +22,19 @@ axiom comp : α → α → Prop
 -- Axiom 1
 axiom ax1 : ∀ (x : α) (y : α), (join x y) = (join y x)
 -- Axiom 2
-axiom ax2 : ∀ (a : α) (b : α) (z : α), (join z (join a b)) = (join (join z a) b)
+axiom ax2 : ∀ (a_ : α) (b_ : α) (z : α), (join z (join a_ b_)) = (join (join z a_) b_)
 -- Axiom 3
-axiom ax3 : ∀ (a : α) (z : α), (meet z a) = (meet a z)
+axiom ax3 : ∀ (a_ : α) (z : α), (meet z a_) = (meet a_ z)
 -- Axiom 4
-axiom ax4 : ∀ (a : α) (z : α), (join z (meet z a)) = z
+axiom ax4 : ∀ (a_ : α) (z : α), (join z (meet z a_)) = z
 -- Axiom 5
-axiom ax5 : ∀ (a : α) (z : α), (meet z (join z a)) = z
+axiom ax5 : ∀ (a_ : α) (z : α), (meet z (join z a_)) = z
 -- Axiom 6
-axiom ax6 : ∀ (a : α) (c : α) (z : α), (meet z (meet a c)) = (meet (meet z a) c)
+axiom ax6 : ∀ (a_ : α) (c_ : α) (z : α), (meet z (meet a_ c_)) = (meet (meet z a_) c_)
 -- Axiom 7
 axiom ax7 : comp b (join c d)
 -- Axiom 8
-axiom ax8 : ∀ (a : α) (z : α), comp z a → (meet z a) = zero
+axiom ax8 : ∀ (a_ : α) (z : α), comp z a_ → (meet z a_) = zero
 -- Axiom 9
 axiom ax9 : ∀ (z : α), (meet zero z) = zero
 -- Axiom 10
@@ -41,29 +42,29 @@ axiom ax10 : ∀ (z : α), (join zero z) = z
 
 -- Lemma 11
 theorem taelja_lemma11 : (meet b (join c d)) = zero := by
-  have h1 : comp b (join c d) := by apply ax7
-  have h2 : (meet b (join c d)) = zero := by first | (exact ax8 _ _ h1) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : comp b (join c d) := by first | (exact ax7) | (first | apply ax7 <;> first | rfl | assumption)
+  have h2 : (meet b (join c d)) = zero := by first | (exact ax8 (join c d) b h1) | (first | (exact ax8 _ _ h1) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Lemma 12
 theorem taelja_lemma12 : ∀ (x : α), (join (meet b c) x) = x := by
   intro x
-  calc join (meet b c) x = join (meet b (meet c (join c d))) x := by have h_rw := ax5 d c; rw [h_rw]
+  calc join (meet b c) x = join (meet b (meet c (join c d))) x := by first | (first | (exact ax5 d c) | (exact Eq.symm (ax5 d c))) | (have h_rw := ax5 d c; rw [h_rw])
       _ = join (meet b (meet c (join d c))) x := by have h_rw := ax1 c d; rw [h_rw]
       _ = join (meet b (meet (join d c) c)) x := by have h_rw := ax3 c (join d c); rw [h_rw]
       _ = join (meet (meet b (join d c)) c) x := by have h_rw := ax6 (join d c) c b; rw [h_rw]
       _ = join (meet (meet b (join c d)) c) x := by have h_rw := ax1 c d; rw [h_rw]
       _ = join (meet zero c) x := by have h_rw := taelja_lemma11; rw [h_rw]
       _ = join zero x := by have h_rw := ax9 c; rw [h_rw]
-      _ = x := by have h_rw := ax10 x; rw [h_rw]
+      _ = x := by first | (first | (exact ax10 x) | (exact Eq.symm (ax10 x))) | (have h_rw := ax10 x; rw [h_rw])
 
 -- Goal 1
 theorem taelja_goal1 : (meet (join a (meet b c)) (join a (meet b d))) = a := by
-  calc meet (join a (meet b c)) (join a (meet b d)) = meet (join a (meet b c)) (join (join (meet b c) a) (meet b d)) := by have h_rw := taelja_lemma12 a; rw [h_rw]
+  calc meet (join a (meet b c)) (join a (meet b d)) = meet (join a (meet b c)) (join (join (meet b c) a) (meet b d)) := by first | (first | (exact taelja_lemma12 a) | (exact Eq.symm (taelja_lemma12 a))) | (have h_rw := taelja_lemma12 a; rw [h_rw])
       _ = meet (join a (meet b c)) (join (join a (meet b c)) (meet b d)) := by have h_rw := ax1 a (meet b c); rw (config := { occs := .pos [3] }) [h_rw]
-      _ = join a (meet b c) := by have h_rw := ax5 (meet b d) (join a (meet b c)); rw [h_rw]
+      _ = join a (meet b c) := by first | (first | (exact ax5 (meet b d) (join a (meet b c))) | (exact Eq.symm (ax5 (meet b d) (join a (meet b c))))) | (have h_rw := ax5 (meet b d) (join a (meet b c)); rw [h_rw])
       _ = join (meet b c) a := by have h_rw := ax1 a (meet b c); rw [h_rw]
-      _ = a := by have h_rw := taelja_lemma12 a; rw [h_rw]
+      _ = a := by first | (first | (exact taelja_lemma12 a) | (exact Eq.symm (taelja_lemma12 a))) | (have h_rw := taelja_lemma12 a; rw [h_rw])
 
 end TweeSam
 

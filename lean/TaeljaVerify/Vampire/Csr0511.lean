@@ -5,6 +5,7 @@ namespace VampireCsr0511
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom c_tptp_member3356_mt : α
@@ -19,8 +20,8 @@ axiom ax1 : mtvisible c_tptp_member3356_mt → marriagelicensedocument c_tptpmar
 -- Goal 1
 theorem taelja_goal1 : (mtvisible c_tptp_member3356_mt) → marriagelicensedocument c_tptpmarriagelicensedocument := by
   intro hyp1
-  have h1 : mtvisible c_tptp_member3356_mt := by assumption
-  have h2 : marriagelicensedocument c_tptpmarriagelicensedocument := by first | (exact ax1 h1) | (first | (exact ax1 h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : mtvisible c_tptp_member3356_mt := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
+  have h2 : marriagelicensedocument c_tptpmarriagelicensedocument := by first | (exact ax1 h1) | (first | (exact ax1 h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 end VampireCsr0511

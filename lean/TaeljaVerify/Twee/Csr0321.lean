@@ -5,6 +5,7 @@ namespace TweeCsr0321
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom c_france : α
@@ -24,7 +25,7 @@ axiom ax2 : ∀ (x : α), individual x → isa x c_individual
 -- Goal 1
 theorem taelja_goal1 : isa (f_citynamedfn s_agen c_france) c_individual := by
   have h1 : individual (f_citynamedfn s_agen c_france) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : isa (f_citynamedfn s_agen c_france) c_individual := by first | (exact ax2 (f_citynamedfn s_agen c_france) h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h2 : isa (f_citynamedfn s_agen c_france) c_individual := by first | (exact ax2 (f_citynamedfn s_agen c_france) h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 end TweeCsr0321

@@ -5,6 +5,7 @@ namespace EHornExampleEqHeadInlined
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -27,10 +28,10 @@ axiom ax4 : ∀ (x : α), (f x) = (g x)
 
 -- Goal 1
 theorem taelja_goal1 : (g a) = zero := by
-  have h1 : p (f a) := by apply ax2
-  have h2 : q (f a) := by apply ax1
-  have h3 : (f a) = zero := by first | (exact ax3 _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h4 : (g a) = zero := by have h_rw := h3; rw [ax4] at h_rw; exact h_rw
+  have h1 : p (f a) := by first | (exact ax2 a) | (first | apply ax2 <;> first | rfl | assumption)
+  have h2 : q (f a) := by first | (exact ax1 a) | (first | apply ax1 <;> first | rfl | assumption)
+  have h3 : (f a) = zero := by first | (exact ax3 (f a) h1 h2) | (first | (exact ax3 _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : (g a) = zero := by have h_rw := ax4 a; rw [←h_rw]; exact h3
   exact h4
 
 end EHornExampleEqHeadInlined

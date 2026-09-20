@@ -127,12 +127,42 @@ lemmaLines hyps deps (name, lit, block) =
 -- hypotheses it supplied are the negated conjuncts and the block derives
 -- $false.
 goalLines :: [Axiom] -> [String] -> Int -> (Literal, ProofBlock) -> [String]
-goalLines hyps negated n (lit, block) =
+goalLines hyps0 negated n (lit, block) =
   ("Goal " ++ show n ++ ": " ++ stated) :
   "Proof:" :
   blockLines (map (renameAxiomVars renaming) hyps) (renameBlock renaming block) ++
   [ l | not (null hyps), l <- ["  hence " ++ stated, "    by discharge"] ]
   where
+    -- A hypothesis is a clause of its own, so its variables are bound within
+    -- it.  One sharing a name with a variable of the conclusion would read as
+    -- the goal's, and the goal would state more than it proves, as
+    -- f(sK0) /\ (f(X) => $false) => g(X) does on SYN408+1.
+    hyps = [ renameAxiomVars [ (v, v ++ "_h" ++ show i)
+                             | v <- axiomVars ax, v `elem` litVars lit, not (shared ax v) ] ax
+           | (i, ax) <- zip [1 :: Int ..] hyps0 ]
+    -- A hypothesis is a clause of its own, so its variables are bound within
+    -- it, except where the conjecture shares them with the conclusion, as in
+    -- r(X,sK1) => t(X).  The proof shows which it is.  A variable the proof
+    -- keeps, in a term of the hypothesis the proof states, is the theorem's,
+    -- and one the proof only uses instantiated, as SYN408+1 uses f(X) at
+    -- f(sK0), belongs to the hypothesis alone.
+    -- a variable generalizeGoals made from a Skolem term stands for the same
+    -- term in the goal and in the hypotheses, so it is shared by construction
+    shared _  v | "Sk_" `isPrefixOf` v = True
+    shared ax v = any (\t -> notVarTerm t && v `elem` termVars t && t `elem` blockTerms)
+                      (concatMap litTerms (axLits ax))
+    axLits (AUnit _ l)                 = [l]
+    axLits (ANucleus _ (Clause bs mh)) = bs ++ maybe [] (: []) mh
+    litTerms l = concatMap subTerms (foldLiteralTerms (: []) l) ++ [atomTermOf l]
+    atomTermOf l = case l of { Rel nm as -> App nm as; NRel nm as -> App nm as; _ -> Var "" }
+    subTerms t = t : case t of { App _ ts -> concatMap subTerms ts; _ -> [] }
+    notVarTerm t = case t of { Var _ -> False; _ -> True }
+    blockTerms = case block of
+      HaveHence ls    -> concatMap (litTerms . lineLit) ls
+      EqChain st sts  -> concatMap subTerms (st : map snd sts)
+    lineLit (Have x _)  = x
+    lineLit (And x _)   = x
+    lineLit (Hence x _) = x
     (negHyps, anteHyps) = partition ((`elem` negated) . axiomName) hyps
     stated | null negHyps = ppHyps anteHyps ++ ppLiteral (renameLit renaming lit)
            | otherwise    = ppHyps anteHyps ++ "~(" ++ intercalate " /\\ " (map ppHyp negHyps) ++ ")"

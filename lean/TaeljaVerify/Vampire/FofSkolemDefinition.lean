@@ -5,6 +5,7 @@ namespace VampireFofSkolemDefinition
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom sK0 : α
@@ -24,7 +25,7 @@ axiom ax3 : ∀ (x : α), p x → r x → q x
 theorem taelja_goal1 : q sK0 := by
   have h1 : p sK0 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : r sK0 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h3 : q sK0 := by first | (exact ax3 sK0 h1 h2) | (first | (exact ax3 _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : q sK0 := by first | (exact ax3 sK0 h1 h2) | (first | (exact ax3 _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 end VampireFofSkolemDefinition

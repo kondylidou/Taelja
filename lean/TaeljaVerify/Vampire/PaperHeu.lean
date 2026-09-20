@@ -5,6 +5,7 @@ namespace VampirePaperHeu
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -25,12 +26,12 @@ axiom ax3 : (g a) = a → p (g a)
 theorem taelja_lemma4 : ∀ (x : α), (g x) = x := by
   intro x
   calc g x = f x := by have h_rw := ax2 x; rw [h_rw]
-      _ = x := by have h_rw := ax1 x; rw [h_rw]
+      _ = x := by first | (first | (exact ax1 x) | (exact Eq.symm (ax1 x))) | (have h_rw := ax1 x; rw [h_rw])
 
 -- Goal 1
 theorem taelja_goal1 : p (g a) := by
-  have h1 : (g a) = a := by apply taelja_lemma4
-  have h2 : p (g a) := by first | (exact ax3 h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : (g a) = a := by first | (exact taelja_lemma4 a) | (first | apply taelja_lemma4 <;> first | rfl | assumption | (apply Eq.symm; apply taelja_lemma4 <;> first | rfl | assumption))
+  have h2 : p (g a) := by first | (exact ax3 h1) | (first | (exact ax3 h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 end VampirePaperHeu

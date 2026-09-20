@@ -5,6 +5,7 @@ namespace EAlg4421
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -53,7 +54,7 @@ theorem taelja_lemma16 : r (u b b a) (u a a b) (u a a a) := by
   have h1 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h2 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h3 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
-  have h4 : r (u b b a) (u a a b) (u a a a) := by first | (exact ax14 b a a a b a b a a h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (u b b a) (u a a b) (u a a a) := by first | (exact ax14 b a a a b a b a a h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 17
@@ -62,14 +63,14 @@ theorem taelja_lemma17 : r (u a b b) (u a a b) a := by
   rw (config := { occs := .pos [4] }) [← h_rw]
   have h_rw := ax13 b a
   rw [← h_rw]
-  apply taelja_lemma16 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma16 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 18
 theorem taelja_lemma18 : r (u b a a) (u a a a) (u a b b) := by
   have h1 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h2 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   have h3 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
-  have h4 : r (u b a a) (u a a a) (u a b b) := by first | (exact ax14 a a b a a b b a a h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (u b a a) (u a a a) (u a b b) := by first | (exact ax14 a a b a a b b a a h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 19
@@ -78,7 +79,7 @@ theorem taelja_lemma19 : r (u a a b) a (u a b b) := by
   rw (config := { occs := .pos [3] }) [← h_rw]
   have h_rw := ax13 a b
   rw [h_rw]
-  apply taelja_lemma18 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma18 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 20
 theorem taelja_lemma20 : r (v a a a b) (v b b a a) (v a a b a) := by
@@ -86,7 +87,7 @@ theorem taelja_lemma20 : r (v a a a b) (v b b a a) (v a a b a) := by
   have h2 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h3 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   have h4 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h5 : r (v a a a b) (v b b a a) (v a a b a) := by first | (exact ax10 a b a a a b a b a a b a h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : r (v a a a b) (v b b a a) (v a a b a) := by first | (exact ax10 a b a a a b a b a a b a h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 -- Lemma 21
@@ -94,7 +95,7 @@ theorem taelja_lemma21 : r (u a a b) (u a b a) (u b a a) := by
   have h1 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   have h2 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h3 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h4 : r (u a a b) (u a b a) (u b a a) := by first | (exact ax14 a b a b a a a a b h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (u a a b) (u a b a) (u b a a) := by first | (exact ax14 a b a b a a a a b h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 22
@@ -105,7 +106,7 @@ theorem taelja_lemma22 : r (u a a b) (v b b a a) (u a a b) := by
   rw [h_rw]
   have h_rw := ax8 a b
   rw [h_rw]
-  apply taelja_lemma20 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma20 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 23
 theorem taelja_lemma23 : r (u a a b) (u a a b) (u a a b) := by
@@ -113,7 +114,7 @@ theorem taelja_lemma23 : r (u a a b) (u a a b) (u a a b) := by
   rw (config := { occs := .pos [2] }) [h_rw]
   have h_rw := ax13 a b
   rw (config := { occs := .pos [2] }) [h_rw]
-  apply taelja_lemma21 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma21 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 24
 theorem taelja_lemma24 : r (v a a a a) (v b b a a) (v a a b b) := by
@@ -121,7 +122,7 @@ theorem taelja_lemma24 : r (v a a a a) (v b b a a) (v a a b b) := by
   have h2 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h3 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   have h4 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
-  have h5 : r (v a a a a) (v b b a a) (v a a b b) := by first | (exact ax10 a b a a a b a a a b b a h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : r (v a a a a) (v b b a a) (v a a b b) := by first | (exact ax10 a b a a a b a a a b b a h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 -- Lemma 25
@@ -129,7 +130,7 @@ theorem taelja_lemma25 : r (m (u a a b) (u a a b) (u a b b)) (m (v b b a a) (u a
   have h1 : r (u a a b) (v b b a a) (u a a b) := by first | (exact taelja_lemma22) | (first | apply taelja_lemma22 <;> first | rfl | assumption)
   have h2 : r (u a a b) (u a a b) (u a a b) := by first | (exact taelja_lemma23) | (first | apply taelja_lemma23 <;> first | rfl | assumption)
   have h3 : r (u a b b) (u a a b) a := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
-  have h4 : r (m (u a a b) (u a a b) (u a b b)) (m (v b b a a) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := by first | (exact ax15 (u a a b) (u a a b) (u a a b) (u a b b) (u a a b) a (u a a b) (v b b a a) (u a a b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (u a a b) (u a a b) (u a b b)) (m (v b b a a) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := by first | (exact ax15 (u a a b) (u a a b) (u a a b) (u a b b) (u a a b) a (u a a b) (v b b a a) (u a a b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 26
@@ -138,7 +139,7 @@ theorem taelja_lemma26 : r a (v b b a a) (v a a b b) := by
   rw (config := { occs := .pos [1] }) [← h_rw]
   have h_rw := ax8 a a
   rw [h_rw]
-  apply taelja_lemma24 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma24 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 27
 theorem taelja_lemma27 : r (u a b b) (v b b a a) a := by
@@ -148,14 +149,14 @@ theorem taelja_lemma27 : r (u a b b) (v b b a a) a := by
   rw [← h_rw]
   have h_rw := ax1 (u a a b) (u a b b)
   rw [← h_rw]
-  apply taelja_lemma25 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma25 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 28
 theorem taelja_lemma28 : r (m a (u a b b) (u a b b)) (m (v b b a a) (v b b a a) (u a a b)) (m (v a a b b) a a) := by
   have h1 : r a (v b b a a) (v a a b b) := by first | (exact taelja_lemma26) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
   have h2 : r (u a b b) (v b b a a) a := by first | (exact taelja_lemma27) | (first | apply taelja_lemma27 <;> first | rfl | assumption)
   have h3 : r (u a b b) (u a a b) a := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
-  have h4 : r (m a (u a b b) (u a b b)) (m (v b b a a) (v b b a a) (u a a b)) (m (v a a b b) a a) := by first | (exact ax15 (u a b b) (v b b a a) a (u a b b) (u a a b) a a (v b b a a) (v a a b b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m a (u a b b) (u a b b)) (m (v b b a a) (v b b a a) (u a a b)) (m (v a a b b) a a) := by first | (exact ax15 (u a b b) (v b b a a) a (u a b b) (u a a b) a a (v b b a a) (v a a b b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 29
@@ -163,7 +164,7 @@ theorem taelja_lemma29 : r (u a a a) (u a a b) (u b b a) := by
   have h1 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   have h2 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   have h3 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
-  have h4 : r (u a a a) (u a a b) (u b b a) := by first | (exact ax14 a a b a b a a a b h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (u a a a) (u a a b) (u b b a) := by first | (exact ax14 a a b a b a a a b h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 30
@@ -174,7 +175,7 @@ theorem taelja_lemma30 : r a (u a a b) (v a a b b) := by
   rw [← h_rw]
   have h_rw := ax3 a (u a b b)
   rw (config := { occs := .pos [1] }) [← h_rw]
-  apply taelja_lemma28 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma28 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 31
 theorem taelja_lemma31 : r a (u a a b) (u a b b) := by
@@ -182,7 +183,7 @@ theorem taelja_lemma31 : r a (u a a b) (u a b b) := by
   rw [← h_rw]
   have h_rw := ax4 a
   rw (config := { occs := .pos [1] }) [← h_rw]
-  apply taelja_lemma29 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma29 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 32
 theorem taelja_lemma32 : r (v b b a a) (v a a a a) (v a a b b) := by
@@ -190,7 +191,7 @@ theorem taelja_lemma32 : r (v b b a a) (v a a a a) (v a a b b) := by
   have h2 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h3 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   have h4 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
-  have h5 : r (v b b a a) (v a a a a) (v a a b b) := by first | (exact ax10 b a a a a b b a a b a a h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : r (v b b a a) (v a a a a) (v a a b b) := by first | (exact ax10 b a a a a b b a a b a a h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 -- Lemma 33
@@ -198,7 +199,7 @@ theorem taelja_lemma33 : r (m a a (u a a b)) (m (u a a b) (u a a b) a) (m (v a a
   have h1 : r a (u a a b) (v a a b b) := by first | (exact taelja_lemma30) | (first | apply taelja_lemma30 <;> first | rfl | assumption)
   have h2 : r a (u a a b) (u a b b) := by first | (exact taelja_lemma31) | (first | apply taelja_lemma31 <;> first | rfl | assumption)
   have h3 : r (u a a b) a (u a b b) := by first | (exact taelja_lemma19) | (first | apply taelja_lemma19 <;> first | rfl | assumption)
-  have h4 : r (m a a (u a a b)) (m (u a a b) (u a a b) a) (m (v a a b b) (u a b b) (u a b b)) := by first | (exact ax15 a (u a a b) (u a b b) (u a a b) a (u a b b) a (u a a b) (v a a b b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m a a (u a a b)) (m (u a a b) (u a a b) a) (m (v a a b b) (u a b b) (u a b b)) := by first | (exact ax15 a (u a a b) (u a b b) (u a a b) a (u a b b) a (u a a b) (v a a b b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 34
@@ -207,7 +208,7 @@ theorem taelja_lemma34 : r (v b b a a) a (v a a b b) := by
   rw (config := { occs := .pos [3] }) [← h_rw]
   have h_rw := ax8 a a
   rw [h_rw]
-  apply taelja_lemma32 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma32 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 35
 theorem taelja_lemma35 : r (u a a b) a (v a a b b) := by
@@ -217,14 +218,14 @@ theorem taelja_lemma35 : r (u a a b) a (v a a b b) := by
   rw (config := { occs := .pos [3] }) [← h_rw]
   have h_rw := ax1 a (u a a b)
   rw (config := { occs := .pos [1] }) [← h_rw]
-  apply taelja_lemma33 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma33 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 36
 theorem taelja_lemma36 : r (m (v b b a a) (u a a b) (u a a b)) (m a a a) (m (v a a b b) (v a a b b) (u a b b)) := by
   have h1 : r (v b b a a) a (v a a b b) := by first | (exact taelja_lemma34) | (first | apply taelja_lemma34 <;> first | rfl | assumption)
   have h2 : r (u a a b) a (v a a b b) := by first | (exact taelja_lemma35) | (first | apply taelja_lemma35 <;> first | rfl | assumption)
   have h3 : r (u a a b) a (u a b b) := by first | (exact taelja_lemma19) | (first | apply taelja_lemma19 <;> first | rfl | assumption)
-  have h4 : r (m (v b b a a) (u a a b) (u a a b)) (m a a a) (m (v a a b b) (v a a b b) (u a b b)) := by first | (exact ax15 (u a a b) a (v a a b b) (u a a b) a (u a b b) (v b b a a) a (v a a b b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (v b b a a) (u a a b) (u a a b)) (m a a a) (m (v a a b b) (v a a b b) (u a b b)) := by first | (exact ax15 (u a a b) a (v a a b b) (u a a b) a (u a b b) (v b b a a) a (v a a b b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 37
@@ -232,7 +233,7 @@ theorem taelja_lemma37 : r (u a a b) (u b b a) (u a a a) := by
   have h1 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h2 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h3 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h4 : r (u a a b) (u b b a) (u a a a) := by first | (exact ax14 a b a b a a a b a h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (u a a b) (u b b a) (u a a a) := by first | (exact ax14 a b a b a a a b a h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 38
@@ -243,7 +244,7 @@ theorem taelja_lemma38 : r (v b b a a) a (u a b b) := by
   rw (config := { occs := .pos [3] }) [← h_rw]
   have h_rw := ax3 (v b b a a) (u a a b)
   rw [← h_rw]
-  apply taelja_lemma36 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma36 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 39
 theorem taelja_lemma39 : r (u a a b) (u a b b) a := by
@@ -251,7 +252,7 @@ theorem taelja_lemma39 : r (u a a b) (u a b b) a := by
   rw (config := { occs := .pos [4] }) [← h_rw]
   have h_rw := ax13 b a
   rw [← h_rw]
-  apply taelja_lemma37 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma37 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 40
 theorem taelja_lemma40 : r (v a a b b) (v b b a a) (v a a a a) := by
@@ -259,7 +260,7 @@ theorem taelja_lemma40 : r (v a a b b) (v b b a a) (v a a a a) := by
   have h2 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h3 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h4 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h5 : r (v a a b b) (v b b a a) (v a a a a) := by first | (exact ax10 a b a b a a a b a a b a h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : r (v a a b b) (v b b a a) (v a a a a) := by first | (exact ax10 a b a b a a a b a a b a h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 -- Lemma 41
@@ -268,7 +269,7 @@ theorem taelja_lemma41 : r (v a a b b) (v b b a a) a := by
   rw (config := { occs := .pos [5] }) [← h_rw]
   have h_rw := ax8 a a
   rw [h_rw]
-  apply taelja_lemma40 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma40 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 42
 theorem taelja_lemma42 : r (v a a b b) (v a b a a) (v b a a a) := by
@@ -276,7 +277,7 @@ theorem taelja_lemma42 : r (v a a b b) (v a b a a) (v b a a a) := by
   have h2 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h3 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h4 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h5 : r (v a a b b) (v a b a a) (v b a a a) := by first | (exact ax10 a b a b a a a b a a a b h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : r (v a a b b) (v a b a a) (v b a a a) := by first | (exact ax10 a b a b a a a b a a a b h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 -- Lemma 43
@@ -284,7 +285,7 @@ theorem taelja_lemma43 : r (m (v a a b b) (u a b b) (u a b b)) (m (v b b a a) (v
   have h1 : r (v a a b b) (v b b a a) a := by first | (exact taelja_lemma41) | (first | apply taelja_lemma41 <;> first | rfl | assumption)
   have h2 : r (u a b b) (v b b a a) a := by first | (exact taelja_lemma27) | (first | apply taelja_lemma27 <;> first | rfl | assumption)
   have h3 : r (u a b b) (u a a b) a := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
-  have h4 : r (m (v a a b b) (u a b b) (u a b b)) (m (v b b a a) (v b b a a) (u a a b)) (m a a a) := by first | (exact ax15 (u a b b) (v b b a a) a (u a b b) (u a a b) a (v a a b b) (v b b a a) a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (v a a b b) (u a b b) (u a b b)) (m (v b b a a) (v b b a a) (u a a b)) (m a a a) := by first | (exact ax15 (u a b b) (v b b a a) a (u a b b) (u a a b) a (v a a b b) (v b b a a) a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 44
@@ -303,7 +304,7 @@ theorem taelja_lemma44 : r (v a a b b) (u a a b) (u a a b) := by
   rw [h_rw]
   have h_rw := ax6 a b
   rw [h_rw]
-  apply taelja_lemma42 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma42 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 45
 theorem taelja_lemma45 : r (v a a b b) (u a a b) a := by
@@ -313,14 +314,14 @@ theorem taelja_lemma45 : r (v a a b b) (u a a b) a := by
   rw [← h_rw]
   have h_rw := ax3 (v a a b b) (u a b b)
   rw [← h_rw]
-  apply taelja_lemma43 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma43 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 46
 theorem taelja_lemma46 : r (u a a a) (u a b b) (u b a a) := by
   have h1 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   have h2 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h3 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
-  have h4 : r (u a a a) (u a b b) (u b a a) := by first | (exact ax14 a b a a b a a a b h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (u a a a) (u a b b) (u b a a) := by first | (exact ax14 a b a a b a a a b h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 47
@@ -328,7 +329,7 @@ theorem taelja_lemma47 : r (m (v a a b b) (v a a b b) (u a b b)) (m (u a a b) (u
   have h1 : r (v a a b b) (u a a b) (u a a b) := by first | (exact taelja_lemma44) | (first | apply taelja_lemma44 <;> first | rfl | assumption)
   have h2 : r (v a a b b) (u a a b) a := by first | (exact taelja_lemma45) | (first | apply taelja_lemma45 <;> first | rfl | assumption)
   have h3 : r (u a b b) (u a a b) a := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
-  have h4 : r (m (v a a b b) (v a a b b) (u a b b)) (m (u a a b) (u a a b) (u a a b)) (m (u a a b) a a) := by first | (exact ax15 (v a a b b) (u a a b) a (u a b b) (u a a b) a (v a a b b) (u a a b) (u a a b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (v a a b b) (v a a b b) (u a b b)) (m (u a a b) (u a a b) (u a a b)) (m (u a a b) a a) := by first | (exact ax15 (v a a b b) (u a a b) a (u a b b) (u a a b) a (v a a b b) (u a a b) (u a a b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 48
@@ -337,7 +338,7 @@ theorem taelja_lemma48 : r a (u a b b) (u a a b) := by
   rw [h_rw]
   have h_rw := ax4 a
   rw (config := { occs := .pos [1] }) [← h_rw]
-  apply taelja_lemma46 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma46 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 49
 theorem taelja_lemma49 : r (u a b b) (u a a b) (u a a b) := by
@@ -347,14 +348,14 @@ theorem taelja_lemma49 : r (u a b b) (u a a b) (u a a b) := by
   rw (config := { occs := .pos [1] }) [← h_rw]
   have h_rw := ax1 (v a a b b) (u a b b)
   rw [← h_rw]
-  apply taelja_lemma47 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma47 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 50
 theorem taelja_lemma50 : r (m (v b b a a) (u a a b) (u a a b)) (m a a (u a b b)) (m (u a b b) (u a b b) a) := by
   have h1 : r (v b b a a) a (u a b b) := by first | (exact taelja_lemma38) | (first | apply taelja_lemma38 <;> first | rfl | assumption)
   have h2 : r (u a a b) a (u a b b) := by first | (exact taelja_lemma19) | (first | apply taelja_lemma19 <;> first | rfl | assumption)
   have h3 : r (u a a b) (u a b b) a := by first | (exact taelja_lemma39) | (first | apply taelja_lemma39 <;> first | rfl | assumption)
-  have h4 : r (m (v b b a a) (u a a b) (u a a b)) (m a a (u a b b)) (m (u a b b) (u a b b) a) := by first | (exact ax15 (u a a b) a (u a b b) (u a a b) (u a b b) a (v b b a a) a (u a b b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (v b b a a) (u a a b) (u a a b)) (m a a (u a b b)) (m (u a b b) (u a b b) a) := by first | (exact ax15 (u a a b) a (u a b b) (u a a b) (u a b b) a (v b b a a) a (u a b b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 51
@@ -362,7 +363,7 @@ theorem taelja_lemma51 : r (m a (u a b b) (u a b b)) (m (u a b b) (u a a b) (u a
   have h1 : r a (u a b b) (u a a b) := by first | (exact taelja_lemma48) | (first | apply taelja_lemma48 <;> first | rfl | assumption)
   have h2 : r (u a b b) (u a a b) (u a a b) := by first | (exact taelja_lemma49) | (first | apply taelja_lemma49 <;> first | rfl | assumption)
   have h3 : r (u a b b) (u a a b) a := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
-  have h4 : r (m a (u a b b) (u a b b)) (m (u a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := by first | (exact ax15 (u a b b) (u a a b) (u a a b) (u a b b) (u a a b) a a (u a b b) (u a a b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m a (u a b b) (u a b b)) (m (u a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := by first | (exact ax15 (u a b b) (u a a b) (u a a b) (u a b b) (u a a b) a a (u a b b) (u a a b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 52
@@ -373,7 +374,7 @@ theorem taelja_lemma52 : r (v b b a a) (u a b b) a := by
   rw (config := { occs := .pos [1] }) [← h_rw]
   have h_rw := ax3 (v b b a a) (u a a b)
   rw [← h_rw]
-  apply taelja_lemma50 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma50 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 53
 theorem taelja_lemma53 : r a (u a b b) a := by
@@ -383,7 +384,7 @@ theorem taelja_lemma53 : r a (u a b b) a := by
   rw [← h_rw]
   have h_rw := ax3 a (u a b b)
   rw (config := { occs := .pos [1] }) [← h_rw]
-  apply taelja_lemma51 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma51 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 54
 theorem taelja_lemma54 : r (v a b a a) (v a a b b) (v b a a a) := by
@@ -391,7 +392,7 @@ theorem taelja_lemma54 : r (v a b a a) (v a a b b) (v b a a a) := by
   have h2 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h3 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h4 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
-  have h5 : r (v a b a a) (v a a b b) (v b a a a) := by first | (exact ax10 b a a a b a a a b a a b h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : r (v a b a a) (v a a b b) (v b a a a) := by first | (exact ax10 b a a a b a a a b a a b h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 -- Lemma 55
@@ -410,7 +411,7 @@ theorem taelja_lemma55 : r (u a a b) (v a a b b) (u a a b) := by
   rw [h_rw]
   have h_rw := ax6 a b
   rw [h_rw]
-  apply taelja_lemma54 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma54 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 56
 theorem taelja_lemma56 : r (v b b a a) (v a a b b) (v a a a a) := by
@@ -418,7 +419,7 @@ theorem taelja_lemma56 : r (v b b a a) (v a a b b) (v a a a a) := by
   have h2 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h3 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h4 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
-  have h5 : r (v b b a a) (v a a b b) (v a a a a) := by first | (exact ax10 b a a a b a b a b a a a h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : r (v b b a a) (v a a b b) (v a a a a) := by first | (exact ax10 b a a a b a b a b a a a h1 h2 h3 h4) | (first | (exact ax10 _ _ _ _ _ _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 -- Lemma 57
@@ -426,7 +427,7 @@ theorem taelja_lemma57 : r (m (u a a b) (u a a b) (u a b b)) (m (v a a b b) (u a
   have h1 : r (u a a b) (v a a b b) (u a a b) := by first | (exact taelja_lemma55) | (first | apply taelja_lemma55 <;> first | rfl | assumption)
   have h2 : r (u a a b) (u a a b) (u a a b) := by first | (exact taelja_lemma23) | (first | apply taelja_lemma23 <;> first | rfl | assumption)
   have h3 : r (u a b b) (u a a b) a := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
-  have h4 : r (m (u a a b) (u a a b) (u a b b)) (m (v a a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := by first | (exact ax15 (u a a b) (u a a b) (u a a b) (u a b b) (u a a b) a (u a a b) (v a a b b) (u a a b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (u a a b) (u a a b) (u a b b)) (m (v a a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := by first | (exact ax15 (u a a b) (u a a b) (u a a b) (u a b b) (u a a b) a (u a a b) (v a a b b) (u a a b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 58
@@ -435,7 +436,7 @@ theorem taelja_lemma58 : r (v b b a a) (v a a b b) a := by
   rw (config := { occs := .pos [5] }) [← h_rw]
   have h_rw := ax8 a a
   rw [h_rw]
-  apply taelja_lemma56 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma56 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 59
 theorem taelja_lemma59 : r (u a b b) (v a a b b) a := by
@@ -445,14 +446,14 @@ theorem taelja_lemma59 : r (u a b b) (v a a b b) a := by
   rw [← h_rw]
   have h_rw := ax1 (u a a b) (u a b b)
   rw [← h_rw]
-  apply taelja_lemma57 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma57 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 60
 theorem taelja_lemma60 : r (m (v b b a a) (u a b b) (u a b b)) (m (v a a b b) (v a a b b) (u a a b)) (m a a a) := by
   have h1 : r (v b b a a) (v a a b b) a := by first | (exact taelja_lemma58) | (first | apply taelja_lemma58 <;> first | rfl | assumption)
   have h2 : r (u a b b) (v a a b b) a := by first | (exact taelja_lemma59) | (first | apply taelja_lemma59 <;> first | rfl | assumption)
   have h3 : r (u a b b) (u a a b) a := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
-  have h4 : r (m (v b b a a) (u a b b) (u a b b)) (m (v a a b b) (v a a b b) (u a a b)) (m a a a) := by first | (exact ax15 (u a b b) (v a a b b) a (u a b b) (u a a b) a (v b b a a) (v a a b b) a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (v b b a a) (u a b b) (u a b b)) (m (v a a b b) (v a a b b) (u a a b)) (m a a a) := by first | (exact ax15 (u a b b) (v a a b b) a (u a b b) (u a a b) a (v b b a a) (v a a b b) a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 61
@@ -460,7 +461,7 @@ theorem taelja_lemma61 : r (u a b b) (u a a a) (u b a a) := by
   have h1 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   have h2 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h3 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h4 : r (u a b b) (u a a a) (u b a a) := by first | (exact ax14 b a a b a a a a b h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (u a b b) (u a a a) (u b a a) := by first | (exact ax14 b a a b a a a a b h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 62
@@ -471,7 +472,7 @@ theorem taelja_lemma62 : r (v b b a a) (u a a b) a := by
   rw [← h_rw]
   have h_rw := ax3 (v b b a a) (u a b b)
   rw [← h_rw]
-  apply taelja_lemma60 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma60 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 63
 theorem taelja_lemma63 : r (u a b b) a (u a a b) := by
@@ -479,14 +480,14 @@ theorem taelja_lemma63 : r (u a b b) a (u a a b) := by
   rw [h_rw]
   have h_rw := ax4 a
   rw (config := { occs := .pos [2] }) [← h_rw]
-  apply taelja_lemma61 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma61 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 64
 theorem taelja_lemma64 : r (m (v b b a a) (u a b b) (u a b b)) (m (u a a b) (u a a b) a) (m a a (u a a b)) := by
   have h1 : r (v b b a a) (u a a b) a := by first | (exact taelja_lemma62) | (first | apply taelja_lemma62 <;> first | rfl | assumption)
   have h2 : r (u a b b) (u a a b) a := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
   have h3 : r (u a b b) a (u a a b) := by first | (exact taelja_lemma63) | (first | apply taelja_lemma63 <;> first | rfl | assumption)
-  have h4 : r (m (v b b a a) (u a b b) (u a b b)) (m (u a a b) (u a a b) a) (m a a (u a a b)) := by first | (exact ax15 (u a b b) (u a a b) a (u a b b) a (u a a b) (v b b a a) (u a a b) a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (v b b a a) (u a b b) (u a b b)) (m (u a a b) (u a a b) a) (m a a (u a a b)) := by first | (exact ax15 (u a b b) (u a a b) a (u a b b) a (u a a b) (v b b a a) (u a a b) a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 65
@@ -497,14 +498,14 @@ theorem taelja_lemma65 : r (v b b a a) a (u a a b) := by
   rw (config := { occs := .pos [3] }) [← h_rw]
   have h_rw := ax3 (v b b a a) (u a b b)
   rw [← h_rw]
-  apply taelja_lemma64 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma64 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 66
 theorem taelja_lemma66 : r (m (v b b a a) a a) (m (u a b b) (u a b b) b) (m a a a) := by
   have h1 : r (v b b a a) (u a b b) a := by first | (exact taelja_lemma52) | (first | apply taelja_lemma52 <;> first | rfl | assumption)
   have h2 : r a (u a b b) a := by first | (exact taelja_lemma53) | (first | apply taelja_lemma53 <;> first | rfl | assumption)
   have h3 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
-  have h4 : r (m (v b b a a) a a) (m (u a b b) (u a b b) b) (m a a a) := by first | (exact ax15 a (u a b b) a a b a (v b b a a) (u a b b) a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (v b b a a) a a) (m (u a b b) (u a b b) b) (m a a a) := by first | (exact ax15 a (u a b b) a a b a (v b b a a) (u a b b) a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 67
@@ -512,7 +513,7 @@ theorem taelja_lemma67 : r (m (v b b a a) (u a b b) (u a b b)) (m a (u a a b) (u
   have h1 : r (v b b a a) a (u a a b) := by first | (exact taelja_lemma65) | (first | apply taelja_lemma65 <;> first | rfl | assumption)
   have h2 : r (u a b b) (u a a b) (u a a b) := by first | (exact taelja_lemma49) | (first | apply taelja_lemma49 <;> first | rfl | assumption)
   have h3 : r (u a b b) (u a a b) a := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
-  have h4 : r (m (v b b a a) (u a b b) (u a b b)) (m a (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := by first | (exact ax15 (u a b b) (u a a b) (u a a b) (u a b b) (u a a b) a (v b b a a) a (u a a b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (v b b a a) (u a b b) (u a b b)) (m a (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := by first | (exact ax15 (u a b b) (u a a b) (u a a b) (u a b b) (u a a b) a (v b b a a) a (u a a b) h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 68
@@ -523,7 +524,7 @@ theorem taelja_lemma68 : r (v b b a a) b a := by
   rw (config := { occs := .pos [3] }) [← h_rw]
   have h_rw := ax3 (v b b a a) a
   rw [← h_rw]
-  apply taelja_lemma66 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma66 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 69
 theorem taelja_lemma69 : r (v b b a a) a a := by
@@ -533,14 +534,14 @@ theorem taelja_lemma69 : r (v b b a a) a a := by
   rw (config := { occs := .pos [3] }) [← h_rw]
   have h_rw := ax3 (v b b a a) (u a b b)
   rw [← h_rw]
-  apply taelja_lemma67 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma67 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 70
 theorem taelja_lemma70 : r (m (v b b a a) (v b b a a) b) (m b a a) (m a a a) := by
   have h1 : r (v b b a a) b a := by first | (exact taelja_lemma68) | (first | apply taelja_lemma68 <;> first | rfl | assumption)
   have h2 : r (v b b a a) a a := by first | (exact taelja_lemma69) | (first | apply taelja_lemma69 <;> first | rfl | assumption)
   have h3 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h4 : r (m (v b b a a) (v b b a a) b) (m b a a) (m a a a) := by first | (exact ax15 (v b b a a) a a b a a (v b b a a) b a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m (v b b a a) (v b b a a) b) (m b a a) (m a a a) := by first | (exact ax15 (v b b a a) a a b a a (v b b a a) b a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 71
@@ -551,14 +552,14 @@ theorem taelja_lemma71 : r b b a := by
   rw (config := { occs := .pos [2] }) [← h_rw]
   have h_rw := ax1 (v b b a a) b
   rw (config := { occs := .pos [1] }) [← h_rw]
-  apply taelja_lemma70 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma70 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 72
 theorem taelja_lemma72 : r (m b b a) (m a b b) (m a a a) := by
   have h1 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h2 : r b b a := by first | (exact taelja_lemma71) | (first | apply taelja_lemma71 <;> first | rfl | assumption)
   have h3 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
-  have h4 : r (m b b a) (m a b b) (m a a a) := by first | (exact ax15 b b a a b a b a a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : r (m b b a) (m a b b) (m a a a) := by first | (exact ax15 b b a a b a b a a h1 h2 h3) | (first | (exact ax15 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Goal 1
@@ -569,7 +570,7 @@ theorem taelja_goal1 : r a a a := by
   rw (config := { occs := .pos [2] }) [← h_rw]
   have h_rw := ax1 b a
   rw (config := { occs := .pos [1] }) [← h_rw]
-  apply taelja_lemma72 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply taelja_lemma72 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 end EAlg4421
 

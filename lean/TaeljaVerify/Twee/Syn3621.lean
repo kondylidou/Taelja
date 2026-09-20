@@ -5,6 +5,7 @@ namespace TweeSyn3621
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom z : α
@@ -19,7 +20,7 @@ theorem taelja_goal1 : (∀ (x : α), big_r x (w x)) → (∀ (y : α), (big_r z
   intro hyp1 hyp2 hyp3
   have h1 : big_r z (w z) := by first | (exact hyp1 z) | (first | apply hyp1 <;> first | rfl | assumption)
   have h2 : big_p (w z) := by first | (exact hyp3 (w z)) | (first | apply hyp3 <;> first | rfl | assumption)
-  have h3 : False := by first | (exact hyp2 (w z) h1 h2) | (first | (exact hyp2 _ h1 h2) | (apply hyp2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : False := by first | (exact hyp2 (w z) h1 h2) | (first | (exact hyp2 _ h1 h2) | (apply hyp2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 end TweeSyn3621

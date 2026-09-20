@@ -5,6 +5,7 @@ namespace EGrp1921
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -34,76 +35,76 @@ axiom ax7 : ∀ (x : α) (y : α) (z : α), (multiply x (greatest_lower_bound y 
 -- Lemma 8
 theorem taelja_lemma8 : ∀ (x : α) (y : α), x = y := by
   intro x y
-  calc x = multiply identity x := by have h_rw := ax2 x; rw [h_rw]
+  calc x = multiply identity x := by first | (first | (exact ax2 x) | (exact Eq.symm (ax2 x))) | (have h_rw := ax2 x; rw [h_rw])
       _ = multiply (multiply (inverse (inverse x)) (inverse x)) x := by have h_rw := ax1 (inverse x); rw [h_rw]
       _ = multiply (inverse (inverse x)) (multiply (inverse x) x) := by have h_rw := ax3 (inverse (inverse x)) (inverse x) x; rw [h_rw]
       _ = multiply (inverse (inverse x)) identity := by have h_rw := ax1 x; rw [h_rw]
-      _ = multiply (inverse (inverse x)) (multiply identity identity) := by have h_rw := ax2 identity; rw [h_rw]
+      _ = multiply (inverse (inverse x)) (multiply identity identity) := by first | (first | (exact ax2 identity) | (exact Eq.symm (ax2 identity))) | (have h_rw := ax2 identity; rw [h_rw])
       _ = multiply (inverse (inverse x)) (multiply (multiply (inverse x) x) identity) := by have h_rw := ax1 x; rw [h_rw]
       _ = multiply (inverse (inverse x)) (multiply (inverse x) (multiply x identity)) := by have h_rw := ax3 (inverse x) x identity; rw [h_rw]
       _ = multiply (multiply (inverse (inverse x)) (inverse x)) (multiply x identity) := by have h_rw := ax3 (inverse (inverse x)) (inverse x) (multiply x identity); rw [h_rw]
       _ = multiply identity (multiply x identity) := by have h_rw := ax1 (inverse x); rw [h_rw]
-      _ = multiply x identity := by have h_rw := ax2 (multiply x identity); rw [h_rw]
-      _ = multiply x (greatest_lower_bound identity (least_upper_bound identity (inverse x))) := by have h_rw := ax6 identity (inverse x); rw [h_rw]
-      _ = multiply x (greatest_lower_bound identity (inverse x)) := by have h_rw := ax5 (inverse x); rw [h_rw]
+      _ = multiply x identity := by first | (first | (exact ax2 (multiply x identity)) | (exact Eq.symm (ax2 (multiply x identity)))) | (have h_rw := ax2 (multiply x identity); rw [h_rw])
+      _ = multiply x (greatest_lower_bound identity (least_upper_bound identity (inverse x))) := by first | (first | (exact ax6 identity (inverse x)) | (exact Eq.symm (ax6 identity (inverse x)))) | (have h_rw := ax6 identity (inverse x); rw [h_rw])
+      _ = multiply x (greatest_lower_bound identity (inverse x)) := by first | (first | (exact ax5 (inverse x)) | (exact Eq.symm (ax5 (inverse x)))) | (have h_rw := ax5 (inverse x); rw [h_rw])
       _ = greatest_lower_bound (multiply x identity) (multiply x (inverse x)) := by have h_rw := ax7 x identity (inverse x); rw [h_rw]
-      _ = greatest_lower_bound (multiply identity (multiply x identity)) (multiply x (inverse x)) := by have h_rw := ax2 (multiply x identity); rw [h_rw]
+      _ = greatest_lower_bound (multiply identity (multiply x identity)) (multiply x (inverse x)) := by first | (first | (exact ax2 (multiply x identity)) | (exact Eq.symm (ax2 (multiply x identity)))) | (have h_rw := ax2 (multiply x identity); rw [h_rw])
       _ = greatest_lower_bound (multiply (multiply (inverse (inverse x)) (inverse x)) (multiply x identity)) (multiply x (inverse x)) := by have h_rw := ax1 (inverse x); rw [h_rw]
       _ = greatest_lower_bound (multiply (inverse (inverse x)) (multiply (inverse x) (multiply x identity))) (multiply x (inverse x)) := by have h_rw := ax3 (inverse (inverse x)) (inverse x) (multiply x identity); rw [h_rw]
       _ = greatest_lower_bound (multiply (inverse (inverse x)) (multiply (multiply (inverse x) x) identity)) (multiply x (inverse x)) := by have h_rw := ax3 (inverse x) x identity; rw [h_rw]
       _ = greatest_lower_bound (multiply (inverse (inverse x)) (multiply identity identity)) (multiply x (inverse x)) := by have h_rw := ax1 x; rw [h_rw]
-      _ = greatest_lower_bound (multiply (inverse (inverse x)) identity) (multiply x (inverse x)) := by have h_rw := ax2 identity; rw [h_rw]
+      _ = greatest_lower_bound (multiply (inverse (inverse x)) identity) (multiply x (inverse x)) := by first | (first | (exact ax2 identity) | (exact Eq.symm (ax2 identity))) | (have h_rw := ax2 identity; rw [h_rw])
       _ = greatest_lower_bound (multiply (inverse (inverse x)) (multiply (inverse x) x)) (multiply x (inverse x)) := by have h_rw := ax1 x; rw [h_rw]
       _ = greatest_lower_bound (multiply (multiply (inverse (inverse x)) (inverse x)) x) (multiply x (inverse x)) := by have h_rw := ax3 (inverse (inverse x)) (inverse x) x; rw [h_rw]
       _ = greatest_lower_bound (multiply identity x) (multiply x (inverse x)) := by have h_rw := ax1 (inverse x); rw [h_rw]
-      _ = greatest_lower_bound x (multiply x (inverse x)) := by have h_rw := ax2 x; rw [h_rw]
-      _ = greatest_lower_bound x (multiply identity (multiply x (inverse x))) := by have h_rw := ax2 (multiply x (inverse x)); rw [h_rw]
+      _ = greatest_lower_bound x (multiply x (inverse x)) := by first | (first | (exact ax2 x) | (exact Eq.symm (ax2 x))) | (have h_rw := ax2 x; rw [h_rw])
+      _ = greatest_lower_bound x (multiply identity (multiply x (inverse x))) := by first | (first | (exact ax2 (multiply x (inverse x))) | (exact Eq.symm (ax2 (multiply x (inverse x))))) | (have h_rw := ax2 (multiply x (inverse x)); rw [h_rw])
       _ = greatest_lower_bound x (multiply (multiply (inverse (inverse x)) (inverse x)) (multiply x (inverse x))) := by have h_rw := ax1 (inverse x); rw [h_rw]
       _ = greatest_lower_bound x (multiply (inverse (inverse x)) (multiply (inverse x) (multiply x (inverse x)))) := by have h_rw := ax3 (inverse (inverse x)) (inverse x) (multiply x (inverse x)); rw [h_rw]
       _ = greatest_lower_bound x (multiply (inverse (inverse x)) (multiply (multiply (inverse x) x) (inverse x))) := by have h_rw := ax3 (inverse x) x (inverse x); rw [h_rw]
       _ = greatest_lower_bound x (multiply (inverse (inverse x)) (multiply identity (inverse x))) := by have h_rw := ax1 x; rw [h_rw]
-      _ = greatest_lower_bound x (multiply (inverse (inverse x)) (inverse x)) := by have h_rw := ax2 (inverse x); rw [h_rw]
+      _ = greatest_lower_bound x (multiply (inverse (inverse x)) (inverse x)) := by first | (first | (exact ax2 (inverse x)) | (exact Eq.symm (ax2 (inverse x)))) | (have h_rw := ax2 (inverse x); rw [h_rw])
       _ = greatest_lower_bound x identity := by have h_rw := ax1 (inverse x); rw [h_rw]
       _ = greatest_lower_bound identity x := by have h_rw := ax4 identity x; rw [h_rw]
-      _ = greatest_lower_bound identity (least_upper_bound identity x) := by have h_rw := ax5 x; rw [h_rw]
-      _ = identity := by have h_rw := ax6 identity x; rw [h_rw]
-      _ = greatest_lower_bound identity (least_upper_bound identity y) := by have h_rw := ax6 identity y; rw [h_rw]
-      _ = greatest_lower_bound identity y := by have h_rw := ax5 y; rw [h_rw]
+      _ = greatest_lower_bound identity (least_upper_bound identity x) := by first | (first | (exact ax5 x) | (exact Eq.symm (ax5 x))) | (have h_rw := ax5 x; rw [h_rw])
+      _ = identity := by first | (first | (exact ax6 identity x) | (exact Eq.symm (ax6 identity x))) | (have h_rw := ax6 identity x; rw [h_rw])
+      _ = greatest_lower_bound identity (least_upper_bound identity y) := by first | (first | (exact ax6 identity y) | (exact Eq.symm (ax6 identity y))) | (have h_rw := ax6 identity y; rw [h_rw])
+      _ = greatest_lower_bound identity y := by first | (first | (exact ax5 y) | (exact Eq.symm (ax5 y))) | (have h_rw := ax5 y; rw [h_rw])
       _ = greatest_lower_bound y identity := by have h_rw := ax4 identity y; rw [h_rw]
       _ = greatest_lower_bound y (multiply (inverse (inverse y)) (inverse y)) := by have h_rw := ax1 (inverse y); rw [h_rw]
-      _ = greatest_lower_bound y (multiply (inverse (inverse y)) (multiply identity (inverse y))) := by have h_rw := ax2 (inverse y); rw [h_rw]
+      _ = greatest_lower_bound y (multiply (inverse (inverse y)) (multiply identity (inverse y))) := by first | (first | (exact ax2 (inverse y)) | (exact Eq.symm (ax2 (inverse y)))) | (have h_rw := ax2 (inverse y); rw [h_rw])
       _ = greatest_lower_bound y (multiply (inverse (inverse y)) (multiply (multiply (inverse y) y) (inverse y))) := by have h_rw := ax1 y; rw [h_rw]
       _ = greatest_lower_bound y (multiply (inverse (inverse y)) (multiply (inverse y) (multiply y (inverse y)))) := by have h_rw := ax3 (inverse y) y (inverse y); rw [h_rw]
       _ = greatest_lower_bound y (multiply (multiply (inverse (inverse y)) (inverse y)) (multiply y (inverse y))) := by have h_rw := ax3 (inverse (inverse y)) (inverse y) (multiply y (inverse y)); rw [h_rw]
       _ = greatest_lower_bound y (multiply identity (multiply y (inverse y))) := by have h_rw := ax1 (inverse y); rw [h_rw]
-      _ = greatest_lower_bound y (multiply y (inverse y)) := by have h_rw := ax2 (multiply y (inverse y)); rw [h_rw]
-      _ = greatest_lower_bound (multiply identity y) (multiply y (inverse y)) := by have h_rw := ax2 y; rw [h_rw]
+      _ = greatest_lower_bound y (multiply y (inverse y)) := by first | (first | (exact ax2 (multiply y (inverse y))) | (exact Eq.symm (ax2 (multiply y (inverse y))))) | (have h_rw := ax2 (multiply y (inverse y)); rw [h_rw])
+      _ = greatest_lower_bound (multiply identity y) (multiply y (inverse y)) := by first | (first | (exact ax2 y) | (exact Eq.symm (ax2 y))) | (have h_rw := ax2 y; rw [h_rw])
       _ = greatest_lower_bound (multiply (multiply (inverse (inverse y)) (inverse y)) y) (multiply y (inverse y)) := by have h_rw := ax1 (inverse y); rw [h_rw]
       _ = greatest_lower_bound (multiply (inverse (inverse y)) (multiply (inverse y) y)) (multiply y (inverse y)) := by have h_rw := ax3 (inverse (inverse y)) (inverse y) y; rw [h_rw]
       _ = greatest_lower_bound (multiply (inverse (inverse y)) identity) (multiply y (inverse y)) := by have h_rw := ax1 y; rw [h_rw]
-      _ = greatest_lower_bound (multiply (inverse (inverse y)) (multiply identity identity)) (multiply y (inverse y)) := by have h_rw := ax2 identity; rw [h_rw]
+      _ = greatest_lower_bound (multiply (inverse (inverse y)) (multiply identity identity)) (multiply y (inverse y)) := by first | (first | (exact ax2 identity) | (exact Eq.symm (ax2 identity))) | (have h_rw := ax2 identity; rw [h_rw])
       _ = greatest_lower_bound (multiply (inverse (inverse y)) (multiply (multiply (inverse y) y) identity)) (multiply y (inverse y)) := by have h_rw := ax1 y; rw [h_rw]
       _ = greatest_lower_bound (multiply (inverse (inverse y)) (multiply (inverse y) (multiply y identity))) (multiply y (inverse y)) := by have h_rw := ax3 (inverse y) y identity; rw [h_rw]
       _ = greatest_lower_bound (multiply (multiply (inverse (inverse y)) (inverse y)) (multiply y identity)) (multiply y (inverse y)) := by have h_rw := ax3 (inverse (inverse y)) (inverse y) (multiply y identity); rw [h_rw]
       _ = greatest_lower_bound (multiply identity (multiply y identity)) (multiply y (inverse y)) := by have h_rw := ax1 (inverse y); rw [h_rw]
-      _ = greatest_lower_bound (multiply y identity) (multiply y (inverse y)) := by have h_rw := ax2 (multiply y identity); rw [h_rw]
+      _ = greatest_lower_bound (multiply y identity) (multiply y (inverse y)) := by first | (first | (exact ax2 (multiply y identity)) | (exact Eq.symm (ax2 (multiply y identity)))) | (have h_rw := ax2 (multiply y identity); rw [h_rw])
       _ = multiply y (greatest_lower_bound identity (inverse y)) := by have h_rw := ax7 y identity (inverse y); rw [h_rw]
-      _ = multiply y (greatest_lower_bound identity (least_upper_bound identity (inverse y))) := by have h_rw := ax5 (inverse y); rw [h_rw]
-      _ = multiply y identity := by have h_rw := ax6 identity (inverse y); rw [h_rw]
-      _ = multiply identity (multiply y identity) := by have h_rw := ax2 (multiply y identity); rw [h_rw]
+      _ = multiply y (greatest_lower_bound identity (least_upper_bound identity (inverse y))) := by first | (first | (exact ax5 (inverse y)) | (exact Eq.symm (ax5 (inverse y)))) | (have h_rw := ax5 (inverse y); rw [h_rw])
+      _ = multiply y identity := by first | (first | (exact ax6 identity (inverse y)) | (exact Eq.symm (ax6 identity (inverse y)))) | (have h_rw := ax6 identity (inverse y); rw [h_rw])
+      _ = multiply identity (multiply y identity) := by first | (first | (exact ax2 (multiply y identity)) | (exact Eq.symm (ax2 (multiply y identity)))) | (have h_rw := ax2 (multiply y identity); rw [h_rw])
       _ = multiply (multiply (inverse (inverse y)) (inverse y)) (multiply y identity) := by have h_rw := ax1 (inverse y); rw [h_rw]
       _ = multiply (inverse (inverse y)) (multiply (inverse y) (multiply y identity)) := by have h_rw := ax3 (inverse (inverse y)) (inverse y) (multiply y identity); rw [h_rw]
       _ = multiply (inverse (inverse y)) (multiply (multiply (inverse y) y) identity) := by have h_rw := ax3 (inverse y) y identity; rw [h_rw]
       _ = multiply (inverse (inverse y)) (multiply identity identity) := by have h_rw := ax1 y; rw [h_rw]
-      _ = multiply (inverse (inverse y)) identity := by have h_rw := ax2 identity; rw [h_rw]
+      _ = multiply (inverse (inverse y)) identity := by first | (first | (exact ax2 identity) | (exact Eq.symm (ax2 identity))) | (have h_rw := ax2 identity; rw [h_rw])
       _ = multiply (inverse (inverse y)) (multiply (inverse y) y) := by have h_rw := ax1 y; rw [h_rw]
       _ = multiply (multiply (inverse (inverse y)) (inverse y)) y := by have h_rw := ax3 (inverse (inverse y)) (inverse y) y; rw [h_rw]
       _ = multiply identity y := by have h_rw := ax1 (inverse y); rw [h_rw]
-      _ = y := by have h_rw := ax2 y; rw [h_rw]
+      _ = y := by first | (first | (exact ax2 y) | (exact Eq.symm (ax2 y))) | (have h_rw := ax2 y; rw [h_rw])
 
 -- Goal 1
 theorem taelja_goal1 : (multiply a b) = (multiply b a) := by
-  calc multiply a b = multiply b a := by have h_rw := taelja_lemma8 (multiply a b) (multiply b a); rw [h_rw]
+  calc multiply a b = multiply b a := by first | (first | (exact taelja_lemma8 (multiply a b) (multiply b a)) | (exact Eq.symm (taelja_lemma8 (multiply a b) (multiply b a)))) | (have h_rw := taelja_lemma8 (multiply a b) (multiply b a); rw [h_rw])
 
 end EGrp1921
 

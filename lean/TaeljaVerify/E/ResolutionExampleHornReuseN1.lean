@@ -5,6 +5,7 @@ namespace EResolutionExampleHornReuseN1
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -27,10 +28,10 @@ axiom ax4 : ∀ (z : α), q (f b) z → r z
 
 -- Goal 1
 theorem taelja_goal1 : r a := by
-  have h1 : q b a := by apply ax1
-  have h2 : p a := by apply ax2
-  have h3 : q (f b) a := by first | (exact ax3 _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h4 : r a := by first | (exact ax4 _ h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : q b a := by first | (exact ax1 a) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : p a := by first | (exact ax2 a) | (first | apply ax2 <;> first | rfl | assumption)
+  have h3 : q (f b) a := by first | (exact ax3 b a h1 h2) | (first | (exact ax3 _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : r a := by first | (exact ax4 a h3) | (first | (exact ax4 _ h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 end EResolutionExampleHornReuseN1

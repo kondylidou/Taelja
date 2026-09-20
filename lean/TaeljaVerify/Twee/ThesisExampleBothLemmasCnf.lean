@@ -5,6 +5,7 @@ namespace TweeThesisExampleBothLemmasCnf
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -31,19 +32,19 @@ axiom ax5 : ∀ (y : α), s y → q y → p y
 theorem taelja_lemma6 : ∀ (x : α), (g x) = x := by
   intro x
   calc g x = f x := by have h_rw := ax2 x; rw [h_rw]
-      _ = x := by have h_rw := ax3 x; rw [h_rw]
+      _ = x := by first | (first | (exact ax3 x) | (exact Eq.symm (ax3 x))) | (have h_rw := ax3 x; rw [h_rw])
 
 -- Lemma 7
 theorem taelja_lemma7 : q a := by
-  have h1 : (g a) = a := by apply taelja_lemma6
-  have h2 : q a := by first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : (g a) = a := by first | (exact taelja_lemma6 a) | (first | apply taelja_lemma6 <;> first | rfl | assumption | (apply Eq.symm; apply taelja_lemma6 <;> first | rfl | assumption))
+  have h2 : q a := by first | (exact ax4 a h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : p a := by
-  have h1 : s a := by apply ax1
-  have h2 : q a := by apply taelja_lemma7
-  have h3 : p a := by first | (exact ax5 _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : s a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : q a := by first | (exact taelja_lemma7) | (first | apply taelja_lemma7 <;> first | rfl | assumption)
+  have h3 : p a := by first | (exact ax5 a h1 h2) | (first | (exact ax5 _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 end TweeThesisExampleBothLemmasCnf

@@ -5,6 +5,7 @@ namespace EPhi0111
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom esk1_0 : α
@@ -25,26 +26,26 @@ axiom ax3 : ∀ (x : α) (y : α) (z : α), object y → property x → object z
 -- Lemma 4
 theorem taelja_lemma4 : (is_the esk3_0 esk1_0) → property esk1_0 := by
   intro hyp1
-  have h1 : is_the esk3_0 esk1_0 := by assumption
-  have h2 : property esk1_0 := by first | (exact ax1 esk3_0 esk1_0 h1) | (first | (exact ax1 _ _ h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : is_the esk3_0 esk1_0 := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
+  have h2 : property esk1_0 := by first | (exact ax1 esk3_0 esk1_0 h1) | (first | (exact ax1 _ _ h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Lemma 5
 theorem taelja_lemma5 : (is_the esk3_0 esk1_0) → object esk3_0 := by
   intro hyp1
-  have h1 : is_the esk3_0 esk1_0 := by assumption
-  have h2 : object esk3_0 := by first | (exact ax2 esk1_0 esk3_0 h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : is_the esk3_0 esk1_0 := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
+  have h2 : object esk3_0 := by first | (exact ax2 esk1_0 esk3_0 h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : (is_the esk3_0 esk1_0) → exemplifies_property esk1_0 esk3_0 := by
   intro hyp1
-  have h1 : is_the esk3_0 esk1_0 := by assumption
-  have h2 : object esk3_0 := by first | (exact ax2 esk1_0 esk3_0 h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : is_the esk3_0 esk1_0 := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
+  have h2 : object esk3_0 := by first | (exact ax2 esk1_0 esk3_0 h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : property esk1_0 := by first | (exact (taelja_lemma4 hyp1)) | (first | apply (taelja_lemma4 hyp1) <;> first | rfl | assumption)
   have h4 : object esk3_0 := by first | (exact (taelja_lemma5 hyp1)) | (first | apply (taelja_lemma5 hyp1) <;> first | rfl | assumption)
   have h5 : is_the esk3_0 esk1_0 := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
-  have h6 : exemplifies_property esk1_0 esk3_0 := by first | (exact ax3 _ _ _ h2 h3 h4 h5) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption))))
+  have h6 : exemplifies_property esk1_0 esk3_0 := by first | (exact ax3 _ _ _ h2 h3 h4 h5) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem))
   exact h6
 
 end EPhi0111

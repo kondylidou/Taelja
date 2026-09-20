@@ -5,6 +5,7 @@ namespace VampireKrympaExampleHay
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -20,7 +21,7 @@ axiom ax2 : ∀ (x : α), (h a x) = c
 
 -- Goal 1
 theorem taelja_goal1 : a = c := by
-  calc a = h a b := by have h_rw := ax1 a; rw [h_rw]
+  calc a = h a b := by first | (first | (exact ax1 a) | (exact Eq.symm (ax1 a))) | (have h_rw := ax1 a; rw [h_rw])
       _ = c := by have h_rw := ax2 b; rw [h_rw]
 
 end VampireKrympaExampleHay

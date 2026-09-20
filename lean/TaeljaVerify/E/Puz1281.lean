@@ -5,6 +5,7 @@ namespace EPuz1281
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom iokaste : α
@@ -29,22 +30,22 @@ axiom ax5 : parent_of polyneikes thersandros
 axiom ax6 : patricide thersandros → False
 
 -- Lemma 7
-theorem taelja_lemma7 : (∀ (x : α) (y : α), parent_of iokaste x → patricide x → parent_of x y → patricide y) → patricide polyneikes := by
+theorem taelja_lemma7 : (∀ (x : α) (y : α), (parent_of iokaste x) → (patricide x) → (parent_of x y) → patricide y) → patricide polyneikes := by
   intro hyp1
   have h1 : parent_of iokaste oedipus := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : patricide oedipus := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h3 : parent_of oedipus polyneikes := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
-  have h4 : patricide polyneikes := by first | (exact hyp1 oedipus polyneikes h1 h2 h3) | (first | (exact hyp1 _ _ h1 h2 h3) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : patricide polyneikes := by first | (exact hyp1 oedipus polyneikes h1 h2 h3) | (first | (exact hyp1 _ _ h1 h2 h3) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Goal 1
-theorem taelja_goal1 : (∀ (x : α) (y : α), parent_of iokaste x → patricide x → parent_of x y → patricide y) → False := by
+theorem taelja_goal1 : (∀ (x : α) (y : α), (parent_of iokaste x) → (patricide x) → (parent_of x y) → patricide y) → False := by
   intro hyp1
   have h1 : parent_of iokaste polyneikes := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
   have h2 : patricide polyneikes := by first | (exact (taelja_lemma7 hyp1)) | (first | apply (taelja_lemma7 hyp1) <;> first | rfl | assumption)
   have h3 : parent_of polyneikes thersandros := by first | (exact ax5) | (first | apply ax5 <;> first | rfl | assumption)
-  have h4 : patricide thersandros := by first | (exact hyp1 polyneikes thersandros h1 h2 h3) | (first | (exact hyp1 _ _ h1 h2 h3) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h5 : False := by first | (exact ax6 h4) | (first | (exact ax6 h4) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : patricide thersandros := by first | (exact hyp1 polyneikes thersandros h1 h2 h3) | (first | (exact hyp1 _ _ h1 h2 h3) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h5 : False := by first | (exact ax6 h4) | (first | (exact ax6 h4) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 end EPuz1281

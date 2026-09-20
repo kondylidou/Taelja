@@ -5,6 +5,7 @@ namespace EKrympaExample5Nonparallel
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -20,10 +21,10 @@ axiom ax2 : ∀ (x : α), (f x) = x
 
 -- Goal 1
 theorem taelja_goal1 : (h (f b) a) = (h a (f b)) := by
-  calc h (f b) a = h b a := by have h_rw := ax2 b; rw [h_rw]
+  calc h (f b) a = h b a := by first | (first | (exact ax2 b) | (exact Eq.symm (ax2 b))) | (have h_rw := ax2 b; rw [h_rw])
       _ = h a a := by have h_rw := ax1; rw (config := { occs := .pos [2] }) [h_rw]
       _ = h a b := by have h_rw := ax1; rw (config := { occs := .pos [2] }) [h_rw]
-      _ = h a (f b) := by have h_rw := ax2 b; rw [h_rw]
+      _ = h a (f b) := by first | (first | (exact ax2 b) | (exact Eq.symm (ax2 b))) | (have h_rw := ax2 b; rw [h_rw])
 
 end EKrympaExample5Nonparallel
 

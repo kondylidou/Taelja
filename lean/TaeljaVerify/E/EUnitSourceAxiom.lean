@@ -5,6 +5,7 @@ namespace EEUnitSourceAxiom
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -20,8 +21,8 @@ axiom ax2 : ∀ (x : α) (y : α), less_equal x y → member x y
 
 -- Goal 1
 theorem taelja_goal1 : member a top := by
-  have h1 : less_equal a top := by apply ax1
-  have h2 : member a top := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : less_equal a top := by first | (exact ax1 a) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : member a top := by first | (exact ax2 a top h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 end EEUnitSourceAxiom

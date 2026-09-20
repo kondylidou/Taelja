@@ -5,6 +5,7 @@ namespace VampireESimpleHne
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -20,8 +21,8 @@ axiom ax2 : r a b
 
 -- Goal 1
 theorem taelja_goal1 : s b a := by
-  have h1 : r a b := by apply ax2
-  have h2 : s b a := by first | (exact ax1 _ _ h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : r a b := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+  have h2 : s b a := by first | (exact ax1 a b h1) | (first | (exact ax1 _ _ h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 end VampireESimpleHne

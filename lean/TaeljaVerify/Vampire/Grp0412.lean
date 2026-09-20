@@ -5,6 +5,7 @@ namespace VampireGrp0412
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -16,13 +17,13 @@ axiom product : α → α → α → Prop
 -- Axiom 1
 axiom ax1 : ∀ (x : α), product identity x x
 -- Axiom 2
-axiom ax2 : ∀ (a : α) (x : α) (y : α) (z : α), product x y z → product x y a → equalish a z
+axiom ax2 : ∀ (a_ : α) (x : α) (y : α) (z : α), product x y z → product x y a_ → equalish a_ z
 
 -- Goal 1
 theorem taelja_goal1 : equalish a a := by
-  have h1 : product identity a a := by apply ax1
-  have h2 : product identity a a := by apply ax1
-  have h3 : equalish a a := by first | (exact ax2 _ _ _ _ h1 h2) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : product identity a a := by first | (exact ax1 a) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : product identity a a := by first | (exact ax1 a) | (first | apply ax1 <;> first | rfl | assumption)
+  have h3 : equalish a a := by first | (exact ax2 a identity a a h1 h2) | (first | (exact ax2 _ _ _ _ h1 h2) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 end VampireGrp0412

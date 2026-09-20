@@ -5,6 +5,7 @@ namespace VampireSeu3031
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom sK1 : α
@@ -25,17 +26,17 @@ axiom ax2 : ∀ (x : α) (y : α), relation y → function y → finite x → fi
 -- Lemma 3
 theorem taelja_lemma3 : (relation sK1) → (relation_image sK1 (relation_dom sK1)) = (relation_rng sK1) := by
   intro hyp2
-  have h1 : relation sK1 := by assumption
-  have h2 : (relation_image sK1 (relation_dom sK1)) = (relation_rng sK1) := by first | (exact ax1 sK1 h1) | (first | (exact ax1 _ h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : relation sK1 := by first | (exact hyp2) | (first | apply hyp2 <;> first | rfl | assumption)
+  have h2 : (relation_image sK1 (relation_dom sK1)) = (relation_rng sK1) := by first | (exact ax1 sK1 h1) | (first | (exact ax1 _ h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : (function sK1) → (relation sK1) → (finite (relation_dom sK1)) → finite (relation_rng sK1) := by
   intro hyp1 hyp2 hyp3
-  have h1 : relation sK1 := by assumption
+  have h1 : relation sK1 := by first | (exact hyp2) | (first | apply hyp2 <;> first | rfl | assumption)
   have h2 : function sK1 := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
   have h3 : finite (relation_dom sK1) := by first | (exact hyp3) | (first | apply hyp3 <;> first | rfl | assumption)
-  have h4 : finite (relation_image sK1 (relation_dom sK1)) := by first | (exact ax2 (relation_dom sK1) sK1 h1 h2 h3) | (first | (exact ax2 _ _ h1 h2 h3) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : finite (relation_image sK1 (relation_dom sK1)) := by first | (exact ax2 (relation_dom sK1) sK1 h1 h2 h3) | (first | (exact ax2 _ _ h1 h2 h3) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h5 : finite (relation_rng sK1) := by have h_rw := (taelja_lemma3 hyp2); rw [←h_rw]; exact h4
   exact h5
 

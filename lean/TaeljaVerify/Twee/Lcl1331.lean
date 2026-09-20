@@ -5,6 +5,7 @@ namespace TweeLcl1331
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom truth : α
@@ -25,26 +26,26 @@ axiom ax4 : ∀ (a : α) (b : α) (y_ : α), (implies_ (implies_ y_ a) (implies_
 -- Lemma 5
 theorem taelja_lemma5 : ∀ (x_ : α) (y_ : α), (implies_ x_ (implies_ x_ y_)) = truth := by
   intro x_ y_
-  calc implies_ x_ (implies_ x_ y_) = implies_ truth (implies_ x_ (implies_ x_ y_)) := by have h_rw := ax1 (implies_ x_ (implies_ x_ y_)); rw [h_rw]
-      _ = implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))) := by have h_rw := ax1 (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw]
-      _ = implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by have h_rw := ax1 (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))); rw [h_rw]
-      _ = implies_ truth (implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))))) := by have h_rw := ax1 (implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))))); rw [h_rw]
+  calc implies_ x_ (implies_ x_ y_) = implies_ truth (implies_ x_ (implies_ x_ y_)) := by first | (first | (exact ax1 (implies_ x_ (implies_ x_ y_))) | (exact Eq.symm (ax1 (implies_ x_ (implies_ x_ y_))))) | (have h_rw := ax1 (implies_ x_ (implies_ x_ y_)); rw [h_rw])
+      _ = implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))) := by first | (first | (exact ax1 (implies_ truth (implies_ x_ (implies_ x_ y_)))) | (exact Eq.symm (ax1 (implies_ truth (implies_ x_ (implies_ x_ y_)))))) | (have h_rw := ax1 (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw])
+      _ = implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by first | (first | (exact ax1 (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))))) | (exact Eq.symm (ax1 (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))))))) | (have h_rw := ax1 (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))); rw [h_rw])
+      _ = implies_ truth (implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))))) := by first | (first | (exact ax1 (implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))))) | (exact Eq.symm (ax1 (implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))))))) | (have h_rw := ax1 (implies_ truth (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))))); rw [h_rw])
       _ = implies_ truth (implies_ truth (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) truth)) := by have h_rw := ax2 truth (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw]
       _ = implies_ truth (implies_ (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) truth) truth) := by have h_rw := ax2 (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) truth) truth; rw [h_rw]
       _ = implies_ truth (implies_ (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))) (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by have h_rw := ax3 truth (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw]
       _ = implies_ truth (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_))))) := by have h_rw := ax2 (implies_ truth (implies_ truth (implies_ x_ (implies_ x_ y_)))) (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw]
-      _ = implies_ truth (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by have h_rw := ax1 (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw]
-      _ = implies_ (implies_ truth truth) (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by have h_rw := ax1 truth; rw [h_rw]
+      _ = implies_ truth (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by first | (first | (exact ax1 (implies_ truth (implies_ x_ (implies_ x_ y_)))) | (exact Eq.symm (ax1 (implies_ truth (implies_ x_ (implies_ x_ y_)))))) | (have h_rw := ax1 (implies_ truth (implies_ x_ (implies_ x_ y_))); rw [h_rw])
+      _ = implies_ (implies_ truth truth) (implies_ (implies_ truth (implies_ x_ (implies_ x_ y_))) (implies_ truth (implies_ x_ (implies_ x_ y_)))) := by first | (first | (exact ax1 truth) | (exact Eq.symm (ax1 truth))) | (have h_rw := ax1 truth; rw [h_rw])
       _ = truth := by have h_rw := ax4 truth (implies_ x_ (implies_ x_ y_)) truth; rw [h_rw]
 
 -- Goal 1
 theorem taelja_goal1 : x = y := by
-  calc x = implies_ truth x := by have h_rw := ax1 x; rw [h_rw]
-      _ = implies_ truth (implies_ truth x) := by have h_rw := ax1 (implies_ truth x); rw [h_rw]
+  calc x = implies_ truth x := by first | (first | (exact ax1 x) | (exact Eq.symm (ax1 x))) | (have h_rw := ax1 x; rw [h_rw])
+      _ = implies_ truth (implies_ truth x) := by first | (first | (exact ax1 (implies_ truth x)) | (exact Eq.symm (ax1 (implies_ truth x)))) | (have h_rw := ax1 (implies_ truth x); rw [h_rw])
       _ = truth := by have h_rw := taelja_lemma5 truth x; rw [h_rw]
       _ = implies_ truth (implies_ truth y) := by have h_rw := taelja_lemma5 truth y; rw [h_rw]
-      _ = implies_ truth y := by have h_rw := ax1 (implies_ truth y); rw [h_rw]
-      _ = y := by have h_rw := ax1 y; rw [h_rw]
+      _ = implies_ truth y := by first | (first | (exact ax1 (implies_ truth y)) | (exact Eq.symm (ax1 (implies_ truth y)))) | (have h_rw := ax1 (implies_ truth y); rw [h_rw])
+      _ = y := by first | (first | (exact ax1 y) | (exact Eq.symm (ax1 y))) | (have h_rw := ax1 y; rw [h_rw])
 
 end TweeLcl1331
 

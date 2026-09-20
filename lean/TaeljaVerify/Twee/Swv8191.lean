@@ -5,6 +5,7 @@ namespace TweeSwv8191
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom v_s : α
@@ -17,12 +18,12 @@ axiom ax1 : ∀ (x : α), x = v_ta
 -- Lemma 2
 theorem taelja_lemma2 : ∀ (x : α) (y : α), x = y := by
   intro x y
-  calc x = v_ta := by have h_rw := ax1 x; rw [h_rw]
-      _ = y := by have h_rw := ax1 y; rw [h_rw]
+  calc x = v_ta := by first | (first | (exact ax1 x) | (exact Eq.symm (ax1 x))) | (have h_rw := ax1 x; rw [h_rw])
+      _ = y := by first | (first | (exact ax1 y) | (exact Eq.symm (ax1 y))) | (have h_rw := ax1 y; rw [h_rw])
 
 -- Goal 1
 theorem taelja_goal1 : v_s = v_t := by
-  calc v_s = v_t := by have h_rw := taelja_lemma2 v_s v_t; rw [h_rw]
+  calc v_s = v_t := by first | (first | (exact taelja_lemma2 v_s v_t) | (exact Eq.symm (taelja_lemma2 v_s v_t))) | (have h_rw := taelja_lemma2 v_s v_t; rw [h_rw])
 
 end TweeSwv8191
 

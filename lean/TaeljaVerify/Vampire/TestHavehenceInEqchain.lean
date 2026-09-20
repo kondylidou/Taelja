@@ -5,6 +5,7 @@ namespace VampireTestHavehenceInEqchain
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -28,14 +29,14 @@ axiom ax4 : ∀ (x : α), q x → (g x) = (h x)
 
 -- Lemma 5
 theorem taelja_lemma5 : (f a) = (g a) := by
-  have h1 : p a := by apply ax1
-  have h2 : (f a) = (g a) := by first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : p a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : (f a) = (g a) := by first | (exact ax2 a h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Lemma 6
 theorem taelja_lemma6 : (g a) = (h a) := by
-  have h1 : q a := by apply ax3
-  have h2 : (g a) = (h a) := by first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : q a := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
+  have h2 : (g a) = (h a) := by first | (exact ax4 a h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1

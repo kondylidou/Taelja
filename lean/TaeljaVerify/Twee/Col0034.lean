@@ -5,6 +5,7 @@ namespace TweeCol0034
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom b : α
@@ -18,7 +19,7 @@ axiom fixed_point : α → Prop
 -- Axiom 1
 axiom ax1 : ∀ (x : α) (y : α) (z : α), (apply_ (apply_ (apply_ b x) y) z) = (apply_ x (apply_ y z))
 -- Axiom 2
-axiom ax2 : ∀ (a : α) (b : α), (apply_ (apply_ w a) b) = (apply_ (apply_ a b) b)
+axiom ax2 : ∀ (a : α) (b_ : α), (apply_ (apply_ w a) b_) = (apply_ (apply_ a b_) b_)
 -- Axiom 3
 axiom ax3 : ∀ (c : α), (apply_ c fixed_pt) = (apply_ fixed_pt (apply_ c fixed_pt)) → fixed_point c
 
@@ -43,8 +44,8 @@ theorem taelja_lemma5 : (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)
 
 -- Goal 1
 theorem taelja_goal1 : fixed_point (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) := by
-  have h1 : (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) = (apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt)) := by apply taelja_lemma5
-  have h2 : fixed_point (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) := by first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) = (apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt)) := by first | (exact taelja_lemma5) | (first | apply taelja_lemma5 <;> first | rfl | assumption | (apply Eq.symm; apply taelja_lemma5 <;> first | rfl | assumption))
+  have h2 : fixed_point (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) := by first | (exact ax3 (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 end TweeCol0034

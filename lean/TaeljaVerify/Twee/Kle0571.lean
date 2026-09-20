@@ -5,6 +5,7 @@ namespace TweeKle0571
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom zero : α
@@ -15,10 +16,10 @@ axiom domain : α → α
 axiom ax1 : (domain zero) = zero
 
 -- Goal 1
-theorem taelja_goal1 : ∀ (x : α), x = zero → (domain x) = zero := by
+theorem taelja_goal1 : ∀ (x : α), (x = zero) → (domain x) = zero := by
   intro x
   intro hyp1
-  calc domain x = domain zero := by have h_rw := hyp1; rw [h_rw]
+  calc domain x = domain zero := by first | (first | (exact hyp1) | (exact Eq.symm (hyp1))) | (have h_rw := hyp1; rw [h_rw])
       _ = zero := by have h_rw := ax1; rw [h_rw]
 
 end TweeKle0571

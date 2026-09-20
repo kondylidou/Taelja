@@ -5,6 +5,7 @@ namespace TweeCat0191
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom c1 : α

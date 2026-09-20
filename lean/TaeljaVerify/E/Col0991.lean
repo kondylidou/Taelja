@@ -5,6 +5,7 @@ namespace ECol0991
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom r : α
@@ -34,19 +35,19 @@ axiom ax6 : ∀ (x : α) (y_ : α) (z : α), member (pair x y_) z → member (pa
 
 -- Goal 1
 theorem taelja_goal1 : member (pair ya (diamond_strip_lemmaD_sk1 y yp ya r)) (trancl r) := by
-  have h1 : diamond r := by first | (exact ax3) | (apply ax3 <;> first | rfl | assumption)
-  have h2 : member (pair y yp) (trancl r) := by first | (exact ax2) | (apply ax2 <;> first | rfl | assumption)
-  have h3 : member (pair y ya) r := by first | (exact ax1) | (apply ax1 <;> first | rfl | assumption)
-  have h4 : member (pair ya (diamond_strip_lemmaD_sk1 y yp ya r)) (trancl r) := by first | (exact ax5 ya r y yp h1 h2 h3) | (first | (exact ax5 _ _ _ _ h1 h2 h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : diamond r := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
+  have h2 : member (pair y yp) (trancl r) := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+  have h3 : member (pair y ya) r := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h4 : member (pair ya (diamond_strip_lemmaD_sk1 y yp ya r)) (trancl r) := by first | (exact ax5 ya r y yp h1 h2 h3) | (first | (exact ax5 _ _ _ _ h1 h2 h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Goal 2
 theorem taelja_goal2 : member (pair yp (diamond_strip_lemmaD_sk1 y yp ya r)) (trancl r) := by
-  have h1 : diamond r := by first | (exact ax3) | (apply ax3 <;> first | rfl | assumption)
-  have h2 : member (pair y yp) (trancl r) := by first | (exact ax2) | (apply ax2 <;> first | rfl | assumption)
-  have h3 : member (pair y ya) r := by first | (exact ax1) | (apply ax1 <;> first | rfl | assumption)
-  have h4 : member (pair yp (diamond_strip_lemmaD_sk1 y yp ya r)) r := by first | (exact ax4 ya r y yp h1 h2 h3) | (first | (exact ax4 _ _ _ _ h1 h2 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h5 : member (pair yp (diamond_strip_lemmaD_sk1 y yp ya r)) (trancl r) := by first | (exact ax6 yp (diamond_strip_lemmaD_sk1 y yp ya r) r h4) | (first | (exact ax6 _ _ _ h4) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : diamond r := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
+  have h2 : member (pair y yp) (trancl r) := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+  have h3 : member (pair y ya) r := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h4 : member (pair yp (diamond_strip_lemmaD_sk1 y yp ya r)) r := by first | (exact ax4 ya r y yp h1 h2 h3) | (first | (exact ax4 _ _ _ _ h1 h2 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h5 : member (pair yp (diamond_strip_lemmaD_sk1 y yp ya r)) (trancl r) := by first | (exact ax6 yp (diamond_strip_lemmaD_sk1 y yp ya r) r h4) | (first | (exact ax6 _ _ _ h4) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 end ECol0991

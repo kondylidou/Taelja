@@ -5,6 +5,7 @@ namespace ESyo6321
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom n_0 : α
@@ -26,13 +27,13 @@ axiom ax3 : ∀ (x : α), E (f x) n_0 → epred2_0
 -- Goal 1
 theorem taelja_goal1 : ∀ (x : α), E (f (AP (s (s n_0)) x)) n_0 := by
   intro x
-  have h1 : E (f (AP (s (s n_0)) x)) n_0 := by first | (exact ax2 x) | (apply ax2 <;> first | rfl | assumption)
+  have h1 : E (f (AP (s (s n_0)) x)) n_0 := by first | (exact ax2 x) | (first | apply ax2 <;> first | rfl | assumption)
   exact h1
 
 -- Goal 2
 theorem taelja_goal2 : ∀ (x : α), E (f x) (s n_0) := by
   intro x
-  have h1 : E (f x) (s n_0) := by first | (exact ax1 x) | (apply ax1 <;> first | rfl | assumption)
+  have h1 : E (f x) (s n_0) := by first | (exact ax1 x) | (first | apply ax1 <;> first | rfl | assumption)
   exact h1
 
 end ESyo6321

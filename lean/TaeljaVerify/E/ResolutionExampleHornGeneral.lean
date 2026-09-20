@@ -5,6 +5,7 @@ namespace EResolutionExampleHornGeneral
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -29,16 +30,16 @@ axiom ax5 : ∀ (x : α) (y : α), p x → q y → r x y
 
 -- Lemma 6
 theorem taelja_lemma6 : q b := by
-  have h1 : t b := by apply ax3
-  have h2 : q b := by first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : t b := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
+  have h2 : q b := by first | (exact ax4 b h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : r a b := by
-  have h1 : s a := by apply ax1
-  have h2 : p a := by first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : q b := by apply taelja_lemma6
-  have h4 : r a b := by first | (exact ax5 _ _ h2 h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : s a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : p a := by first | (exact ax2 a h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : q b := by first | (exact taelja_lemma6) | (first | apply taelja_lemma6 <;> first | rfl | assumption)
+  have h4 : r a b := by first | (exact ax5 a b h2 h3) | (first | (exact ax5 _ _ h2 h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 end EResolutionExampleHornGeneral

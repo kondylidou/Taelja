@@ -5,6 +5,7 @@ namespace VampireResolutionExampleHornDag
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -30,18 +31,18 @@ axiom ax5 : ∀ (x : α), r1 x → r2 x → r0 x
 
 -- Lemma 6
 theorem taelja_lemma6 : r2 a := by
-  have h1 : p a := by apply ax1
-  have h2 : q a c := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : r2 a := by first | (exact ax4 _ h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : p a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : q a c := by first | (exact ax2 a c h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : r2 a := by first | (exact ax4 a h2) | (first | (exact ax4 _ h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : r0 a := by
-  have h1 : p a := by apply ax1
-  have h2 : q a b := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : r1 a := by first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h4 : r2 a := by apply taelja_lemma6
-  have h5 : r0 a := by first | (exact ax5 _ h3 h4) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : p a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : q a b := by first | (exact ax2 a b h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : r1 a := by first | (exact ax3 a h2) | (first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : r2 a := by first | (exact taelja_lemma6) | (first | apply taelja_lemma6 <;> first | rfl | assumption)
+  have h5 : r0 a := by first | (exact ax5 a h3 h4) | (first | (exact ax5 _ h3 h4) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 end VampireResolutionExampleHornDag

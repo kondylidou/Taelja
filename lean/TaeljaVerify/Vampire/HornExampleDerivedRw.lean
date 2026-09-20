@@ -5,6 +5,7 @@ namespace VampireHornExampleDerivedRw
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -27,15 +28,15 @@ axiom ax4 : ∀ (x : α), q x → a = x
 
 -- Lemma 5
 theorem taelja_lemma5 : a = b := by
-  have h1 : q b := by apply ax3
-  have h2 : a = b := by first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : q b := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
+  have h2 : a = b := by first | (exact ax4 b h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : (f b) = c := by
-  have h1 : p a := by apply ax1
-  have h2 : (f a) = c := by first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : (f b) = c := by have h_rw := h2; rw [taelja_lemma5] at h_rw; exact h_rw
+  have h1 : p a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : (f a) = c := by first | (exact ax2 a h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : (f b) = c := by have h_rw := taelja_lemma5; rw [←h_rw]; exact h2
   exact h3
 
 end VampireHornExampleDerivedRw

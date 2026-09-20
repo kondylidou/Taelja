@@ -5,6 +5,7 @@ namespace VampireTestNonunitChain
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -22,15 +23,15 @@ axiom ax3 : p a → q a → r a
 
 -- Lemma 4
 theorem taelja_lemma4 : q a := by
-  have h1 : p a := by apply ax1
-  have h2 : q a := by first | (exact ax2 h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : p a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : q a := by first | (exact ax2 h1) | (first | (exact ax2 h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : r a := by
-  have h1 : p a := by apply ax1
-  have h2 : q a := by apply taelja_lemma4
-  have h3 : r a := by first | (exact ax3 h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : p a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : q a := by first | (exact taelja_lemma4) | (first | apply taelja_lemma4 <;> first | rfl | assumption)
+  have h3 : r a := by first | (exact ax3 h1 h2) | (first | (exact ax3 h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 end VampireTestNonunitChain

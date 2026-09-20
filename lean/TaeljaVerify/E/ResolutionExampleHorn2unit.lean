@@ -5,6 +5,7 @@ namespace EResolutionExampleHorn2unit
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -23,9 +24,9 @@ axiom ax3 : ∀ (x : α) (y : α), p x → q y → r x y
 
 -- Goal 1
 theorem taelja_goal1 : r a b := by
-  have h1 : p a := by apply ax1
-  have h2 : q b := by apply ax2
-  have h3 : r a b := by first | (exact ax3 _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : p a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : q b := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+  have h3 : r a b := by first | (exact ax3 a b h1 h2) | (first | (exact ax3 _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 end EResolutionExampleHorn2unit

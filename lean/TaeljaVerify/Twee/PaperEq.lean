@@ -5,6 +5,7 @@ namespace TweePaperEq
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -21,12 +22,12 @@ axiom ax2 : ∀ (y : α), (f y) = y
 theorem taelja_lemma3 : ∀ (x : α), (g x) = x := by
   intro x
   calc g x = f x := by have h_rw := ax1 x; rw [h_rw]
-      _ = x := by have h_rw := ax2 x; rw [h_rw]
+      _ = x := by first | (first | (exact ax2 x) | (exact Eq.symm (ax2 x))) | (have h_rw := ax2 x; rw [h_rw])
 
 -- Goal 1
 theorem taelja_goal1 : (g (g a)) = a := by
-  calc g (g a) = g a := by have h_rw := taelja_lemma3 (g a); rw [h_rw]
-      _ = a := by have h_rw := taelja_lemma3 a; rw [h_rw]
+  calc g (g a) = g a := by first | (first | (exact taelja_lemma3 (g a)) | (exact Eq.symm (taelja_lemma3 (g a)))) | (have h_rw := taelja_lemma3 (g a); rw [h_rw])
+      _ = a := by first | (first | (exact taelja_lemma3 a) | (exact Eq.symm (taelja_lemma3 a))) | (have h_rw := taelja_lemma3 a; rw [h_rw])
 
 end TweePaperEq
 

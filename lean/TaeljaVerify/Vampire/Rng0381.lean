@@ -5,6 +5,7 @@ namespace VampireRng0381
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom additive_identity : α
@@ -35,7 +36,7 @@ theorem taelja_lemma7 : sum_ b b b := by
   have h2 : product additive_identity (h additive_identity b) b := by first | apply ax2 <;> first | rfl | assumption
   have h3 : sum_ additive_identity additive_identity additive_identity := by first | (exact ax1 additive_identity) | (first | apply ax1 <;> first | rfl | assumption)
   have h4 : product additive_identity (h additive_identity b) b := by first | apply ax2 <;> first | rfl | assumption
-  have h5 : sum_ b b b := by first | (exact ax3 b additive_identity b b additive_identity (h additive_identity b) additive_identity h1 h2 h3 h4) | (first | (exact ax3 _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : sum_ b b b := by first | (exact ax3 b additive_identity b b additive_identity (h additive_identity b) additive_identity h1 h2 h3 h4) | (first | (exact ax3 _ _ _ _ _ _ _ h1 h2 h3 h4) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 -- Lemma 8
@@ -43,14 +44,14 @@ theorem taelja_lemma8 : sum_ b (additive_inverse b) b := by
   have h1 : sum_ b (additive_inverse b) additive_identity := by first | (exact ax4 b) | (first | apply ax4 <;> first | rfl | assumption)
   have h2 : sum_ b b b := by first | (exact taelja_lemma7) | (first | apply taelja_lemma7 <;> first | rfl | assumption)
   have h3 : sum_ b additive_identity b := by first | (exact ax1 b) | (first | apply ax1 <;> first | rfl | assumption)
-  have h4 : sum_ b (additive_inverse b) b := by first | (exact ax5 (additive_inverse b) additive_identity b b b b h1 h2 h3) | (first | (exact ax5 _ _ _ _ _ _ h1 h2 h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : sum_ b (additive_inverse b) b := by first | (exact ax5 (additive_inverse b) additive_identity b b b b h1 h2 h3) | (first | (exact ax5 _ _ _ _ _ _ h1 h2 h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Goal 1
 theorem taelja_goal1 : b = additive_identity := by
   have h1 : sum_ b (additive_inverse b) additive_identity := by first | (exact ax4 b) | (first | apply ax4 <;> first | rfl | assumption)
   have h2 : sum_ b (additive_inverse b) b := by first | (exact taelja_lemma8) | (first | apply taelja_lemma8 <;> first | rfl | assumption)
-  have h3 : b = additive_identity := by first | (exact ax6 additive_identity b b (additive_inverse b) h1 h2) | (first | (exact ax6 _ _ _ _ h1 h2) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : b = additive_identity := by first | (exact ax6 additive_identity b b (additive_inverse b) h1 h2) | (first | (exact ax6 _ _ _ _ h1 h2) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 end VampireRng0381

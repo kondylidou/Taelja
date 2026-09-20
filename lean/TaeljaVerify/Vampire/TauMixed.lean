@@ -5,6 +5,7 @@ namespace VampireTauMixed
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -28,13 +29,13 @@ axiom ax4 : ∀ (x : α), q x → (g x) = x → p (g a)
 theorem taelja_lemma5 : ∀ (x : α), (g x) = x := by
   intro x
   calc g x = f x := by have h_rw := ax3 x; rw [h_rw]
-      _ = x := by have h_rw := ax2 x; rw [h_rw]
+      _ = x := by first | (first | (exact ax2 x) | (exact Eq.symm (ax2 x))) | (have h_rw := ax2 x; rw [h_rw])
 
 -- Goal 1
 theorem taelja_goal1 : p (g a) := by
-  have h1 : q a := by apply ax1
-  have h2 : (g a) = a := by apply taelja_lemma5
-  have h3 : p (g a) := by first | (exact ax4 _ h1 h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : q a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : (g a) = a := by first | (exact taelja_lemma5 a) | (first | apply taelja_lemma5 <;> first | rfl | assumption | (apply Eq.symm; apply taelja_lemma5 <;> first | rfl | assumption))
+  have h3 : p (g a) := by first | (exact ax4 a h1 h2) | (first | (exact ax4 _ h1 h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 end VampireTauMixed

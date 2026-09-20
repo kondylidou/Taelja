@@ -5,6 +5,7 @@ namespace VampireGrp6561
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 axiom ld : α → α → α
 axiom mult : α → α → α
@@ -24,26 +25,26 @@ axiom ax5 : ∀ (x : α) (y : α), (rd (mult x y) y) = x
 -- Lemma 6
 theorem taelja_lemma6 : ∀ (x : α) (y : α), (mult (ld x x) y) = y := by
   intro x y
-  calc mult (ld x x) y = ld (mult y x) (mult (mult y x) (mult (ld x x) y)) := by have h_rw := ax4 (mult y x) (mult (ld x x) y); rw [h_rw]
+  calc mult (ld x x) y = ld (mult y x) (mult (mult y x) (mult (ld x x) y)) := by first | (first | (exact ax4 (mult y x) (mult (ld x x) y)) | (exact Eq.symm (ax4 (mult y x) (mult (ld x x) y)))) | (have h_rw := ax4 (mult y x) (mult (ld x x) y); rw [h_rw])
       _ = ld (mult y x) (mult (mult y (mult x (ld x x))) y) := by have h_rw := ax3 x (ld x x) y; rw [h_rw]
-      _ = ld (mult y x) (mult (mult y x) y) := by have h_rw := ax2 x x; rw [h_rw]
-      _ = y := by have h_rw := ax4 (mult y x) y; rw [h_rw]
+      _ = ld (mult y x) (mult (mult y x) y) := by first | (first | (exact ax2 x x) | (exact Eq.symm (ax2 x x))) | (have h_rw := ax2 x x; rw [h_rw])
+      _ = y := by first | (first | (exact ax4 (mult y x) y) | (exact Eq.symm (ax4 (mult y x) y))) | (have h_rw := ax4 (mult y x) y; rw [h_rw])
 
 -- Goal 1
 theorem taelja_goal1 : ∀ (b : α) (x : α) (y : α), (mult x (ld y y)) = x := by
   intro b x y
-  calc mult x (ld y y) = rd (mult (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y)))) (ld (mult x (ld y y)) (mult x (ld y y))) := by have h_rw := ax5 (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y))); rw [h_rw]
-      _ = rd (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y))) := by have h_rw := ax2 (mult x (ld y y)) (mult x (ld y y)); rw [h_rw]
-      _ = rd (mult x (ld y y)) (rd (mult (ld (mult x (ld y y)) (mult x (ld y y))) b) b) := by have h_rw := ax5 (ld (mult x (ld y y)) (mult x (ld y y))) b; rw [h_rw]
-      _ = rd (mult x (ld y y)) (rd b b) := by have h_rw := taelja_lemma6 (mult x (ld y y)) b; rw [h_rw]
-      _ = rd (mult x (ld y y)) (rd (mult (ld y y) b) b) := by have h_rw := taelja_lemma6 y b; rw [h_rw]
-      _ = rd (mult x (ld y y)) (ld y y) := by have h_rw := ax5 (ld y y) b; rw [h_rw]
-      _ = x := by have h_rw := ax5 x (ld y y); rw [h_rw]
+  calc mult x (ld y y) = rd (mult (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y)))) (ld (mult x (ld y y)) (mult x (ld y y))) := by first | (first | (exact ax5 (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y)))) | (exact Eq.symm (ax5 (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y)))))) | (have h_rw := ax5 (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y))); rw [h_rw])
+      _ = rd (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y))) := by first | (first | (exact ax2 (mult x (ld y y)) (mult x (ld y y))) | (exact Eq.symm (ax2 (mult x (ld y y)) (mult x (ld y y))))) | (have h_rw := ax2 (mult x (ld y y)) (mult x (ld y y)); rw [h_rw])
+      _ = rd (mult x (ld y y)) (rd (mult (ld (mult x (ld y y)) (mult x (ld y y))) b) b) := by first | (first | (exact ax5 (ld (mult x (ld y y)) (mult x (ld y y))) b) | (exact Eq.symm (ax5 (ld (mult x (ld y y)) (mult x (ld y y))) b))) | (have h_rw := ax5 (ld (mult x (ld y y)) (mult x (ld y y))) b; rw [h_rw])
+      _ = rd (mult x (ld y y)) (rd b b) := by first | (first | (exact taelja_lemma6 (mult x (ld y y)) b) | (exact Eq.symm (taelja_lemma6 (mult x (ld y y)) b))) | (have h_rw := taelja_lemma6 (mult x (ld y y)) b; rw [h_rw])
+      _ = rd (mult x (ld y y)) (rd (mult (ld y y) b) b) := by first | (first | (exact taelja_lemma6 y b) | (exact Eq.symm (taelja_lemma6 y b))) | (have h_rw := taelja_lemma6 y b; rw [h_rw])
+      _ = rd (mult x (ld y y)) (ld y y) := by first | (first | (exact ax5 (ld y y) b) | (exact Eq.symm (ax5 (ld y y) b))) | (have h_rw := ax5 (ld y y) b; rw [h_rw])
+      _ = x := by first | (first | (exact ax5 x (ld y y)) | (exact Eq.symm (ax5 x (ld y y)))) | (have h_rw := ax5 x (ld y y); rw [h_rw])
 
 -- Goal 2
 theorem taelja_goal2 : ∀ (x : α) (y : α), (mult (ld x x) y) = y := by
   intro x y
-  calc mult (ld x x) y = y := by have h_rw := taelja_lemma6 x y; rw [h_rw]
+  calc mult (ld x x) y = y := by first | (first | (exact taelja_lemma6 x y) | (exact Eq.symm (taelja_lemma6 x y))) | (have h_rw := taelja_lemma6 x y; rw [h_rw])
 
 end VampireGrp6561
 

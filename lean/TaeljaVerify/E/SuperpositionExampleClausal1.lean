@@ -5,6 +5,7 @@ namespace ESuperpositionExampleClausal1
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -28,7 +29,7 @@ theorem taelja_goal1 : c = a := by
 
 -- Goal 2
 theorem taelja_goal2 : (f d) = d := by
-  calc f d = d := by have h_rw := ax3 d; rw [h_rw]
+  calc f d = d := by first | (first | (exact ax3 d) | (exact Eq.symm (ax3 d))) | (have h_rw := ax3 d; rw [h_rw])
 
 end ESuperpositionExampleClausal1
 

@@ -5,6 +5,7 @@ namespace VampireFofSkolemHypothesis
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom sK1 : α
@@ -22,9 +23,9 @@ axiom ax2 : ∀ (x : α), s x → t x
 theorem taelja_goal1 : ∀ (x : α), (r x sK1) → t x := by
   intro x
   intro hyp1
-  have h1 : r x sK1 := by assumption
-  have h2 : s x := by first | (exact ax1 x sK1 h1) | (first | (exact ax1 _ _ h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h3 : t x := by first | (exact ax2 x h2) | (first | (exact ax2 _ h2) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : r x sK1 := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
+  have h2 : s x := by first | (exact ax1 x sK1 h1) | (first | (exact ax1 _ _ h1) | (apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : t x := by first | (exact ax2 x h2) | (first | (exact ax2 _ h2) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 end VampireFofSkolemHypothesis

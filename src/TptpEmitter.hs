@@ -164,8 +164,9 @@ emitTptp sp0 = unlines $
     -- it is printed here as A => S, the axiom implying its Skolemized form,
     -- which any model of A satisfies for some choice of the new symbols.
     -- Vampire's own Skolem definitions are cited by definitionsBehind.
-    skolemDefsBehind n = case (Map.lookup n (inAxiomLeaves input), inputOf n) of
-      (Just leaf, Just root) -> nubBy (\a b -> fst a == fst b) (mapMaybe (axiomSkolemDef root) (walkEsa Set.empty [leaf]))
+    -- the Skolemizing steps behind an axiom's clause, as units
+    skolemStepsBehind n = case (Map.lookup n (inAxiomLeaves input), inputOf n) of
+      (Just leaf, Just root) -> [ (root, u) | u <- walkEsa Set.empty [leaf] ]
       _                      -> []
       where
         walkEsa _ [] = []
@@ -195,8 +196,26 @@ emitTptp sp0 = unlines $
       return (nm, Input (T.Unit (Left (T.Atom (Text.pack nm))) (T.Formula (T.Standard T.Plain) f)
                                 (Just (T.Introduced (T.Standard T.ByDefinition) Nothing, Nothing)))
                         ("new_symbols(definition, [" ++ intercalate "," (skolemSyms u) ++ "])"))
-    skolemAxLines = nubBy (\a b -> fst a == fst b)
-      [ d | n <- axNames, isNothing (lookup n assumed), d <- skolemDefsBehind n ]
+    -- A symbol is declared new in one definition only, and a prover may
+    -- Skolemize the same axiom twice, as Twee does on ALG018+1, so the later
+    -- step cites the definition that already declares its symbols.
+    skolemChosen = pick Set.empty [ p | n <- axNames, isNothing (lookup n assumed), p <- skolemStepsBehind n ]
+      where
+        pick _ [] = []
+        pick seen ((root, u) : rest)
+          | any (`Set.notMember` seen) (skolemSyms u)
+          , Just (nm, line) <- axiomSkolemDef root u
+          = (unitNameStr (unitName u), nm, Just line) : pick (foldr Set.insert seen (skolemSyms u)) rest
+          | Just nm <- lookup (Set.fromList (skolemSyms u)) declaredBy
+          = (unitNameStr (unitName u), nm, Nothing) : pick seen rest
+          | otherwise = pick seen rest
+        declaredBy = [ (Set.fromList (skolemSyms u), nm)
+                     | (root, u) <- [ p | n <- axNames, isNothing (lookup n assumed), p <- skolemStepsBehind n ]
+                     , Just (nm, _) <- [axiomSkolemDef root u] ]
+    skolemDefsBehind n =
+      nub [ (nm, ()) | (un, nm, _) <- skolemChosen
+                     , un `elem` map (unitNameStr . unitName . snd) (skolemStepsBehind n) ]
+    skolemAxLines = [ (nm, line) | (_, nm, Just line) <- skolemChosen ]
     withParents u = concat [ withParents p | n <- unitParents u, Just p <- [Map.lookup n byName] ]
                     ++ [(unitNameStr (unitName u), u)]
     axiomLines = concat

@@ -5,6 +5,7 @@ namespace TweeAna0072
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom c_1 : α
@@ -31,16 +32,16 @@ axiom ax4 : ∀ (a : α) (b : α), class_Orderings_Oorder a → c_lessequals b b
 -- Lemma 5
 theorem taelja_lemma5 : ∀ (x : α), x = (c_times c_1 x t_b) := by
   intro x
-  have h1 : class_Ring__and__Field_Oordered__idom t_b := by apply ax1
-  have h2 : x = (c_times c_1 x t_b) := by first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : class_Ring__and__Field_Oordered__idom t_b := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : x = (c_times c_1 x t_b) := by first | (exact ax2 t_b x h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : c_lessequals (c_HOL_Oabs (v_f (v_x c_1)) t_b) (c_times c_1 (c_HOL_Oabs (v_f (v_x c_1)) t_b) t_b) t_b := by
-  have h1 : class_Ring__and__Field_Oordered__idom t_b := by apply ax1
-  have h2 : class_Orderings_Oorder t_b := by first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : c_lessequals (c_HOL_Oabs (v_f (v_x c_1)) t_b) (c_HOL_Oabs (v_f (v_x c_1)) t_b) t_b := by first | (exact ax4 _ _ h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h4 : c_lessequals (c_HOL_Oabs (v_f (v_x c_1)) t_b) (c_times c_1 (c_HOL_Oabs (v_f (v_x c_1)) t_b) t_b) t_b := by rw [← taelja_lemma5]; exact h3
+  have h1 : class_Ring__and__Field_Oordered__idom t_b := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : class_Orderings_Oorder t_b := by first | (exact ax3 t_b h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : c_lessequals (c_HOL_Oabs (v_f (v_x c_1)) t_b) (c_HOL_Oabs (v_f (v_x c_1)) t_b) t_b := by first | (exact ax4 t_b (c_HOL_Oabs (v_f (v_x c_1)) t_b) h2) | (first | (exact ax4 _ _ h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : c_lessequals (c_HOL_Oabs (v_f (v_x c_1)) t_b) (c_times c_1 (c_HOL_Oabs (v_f (v_x c_1)) t_b) t_b) t_b := by have h_rw := taelja_lemma5 (c_HOL_Oabs (v_f (v_x c_1)) t_b); rw [←h_rw]; exact h3
   exact h4
 
 end TweeAna0072

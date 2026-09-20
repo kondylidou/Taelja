@@ -5,6 +5,7 @@ namespace EMgt0322
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom efficient_producers : α
@@ -42,16 +43,16 @@ axiom ax7 : ∀ (a : α) (x : α) (y : α) (z : α), environment x → subpopula
 theorem taelja_lemma8 : subpopulations first_movers efficient_producers sk2 (sk3 (sk1 sk2)) := by
   have h1 : environment sk2 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : stable sk2 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h3 : in_environment sk2 (sk1 sk2) := by first | (exact ax3 sk2 h1 h2) | (first | (exact ax3 _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : subpopulations first_movers efficient_producers sk2 (sk3 (sk1 sk2)) := by first | (exact ax4 (sk1 sk2) h3) | (first | (exact ax4 _ h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : in_environment sk2 (sk1 sk2) := by first | (exact ax3 sk2 h1 h2) | (first | (exact ax3 _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : subpopulations first_movers efficient_producers sk2 (sk3 (sk1 sk2)) := by first | (exact ax4 (sk1 sk2) h3) | (first | (exact ax4 _ h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 9
 theorem taelja_lemma9 : greater_or_equal (sk3 (sk1 sk2)) (sk1 sk2) := by
   have h1 : environment sk2 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : stable sk2 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h3 : in_environment sk2 (sk1 sk2) := by first | (exact ax3 sk2 h1 h2) | (first | (exact ax3 _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : greater_or_equal (sk3 (sk1 sk2)) (sk1 sk2) := by first | (exact ax5 (sk1 sk2) h3) | (first | (exact ax5 _ h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : in_environment sk2 (sk1 sk2) := by first | (exact ax3 sk2 h1 h2) | (first | (exact ax3 _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : greater_or_equal (sk3 (sk1 sk2)) (sk1 sk2) := by first | (exact ax5 (sk1 sk2) h3) | (first | (exact ax5 _ h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 10
@@ -60,14 +61,14 @@ theorem taelja_lemma10 : greater (growth_rate efficient_producers (sk3 (sk1 sk2)
   have h2 : stable sk2 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h3 : subpopulations first_movers efficient_producers sk2 (sk3 (sk1 sk2)) := by first | (exact taelja_lemma8) | (first | apply taelja_lemma8 <;> first | rfl | assumption)
   have h4 : greater_or_equal (sk3 (sk1 sk2)) (sk1 sk2) := by first | (exact taelja_lemma9) | (first | apply taelja_lemma9 <;> first | rfl | assumption)
-  have h5 : greater (growth_rate efficient_producers (sk3 (sk1 sk2))) (growth_rate first_movers (sk3 (sk1 sk2))) := by first | (exact ax6 sk2 (sk3 (sk1 sk2)) h1 h2 h3 h4) | (first | (exact ax6 _ _ h1 h2 h3 h4) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : greater (growth_rate efficient_producers (sk3 (sk1 sk2))) (growth_rate first_movers (sk3 (sk1 sk2))) := by first | (exact ax6 sk2 (sk3 (sk1 sk2)) h1 h2 h3 h4) | (first | (exact ax6 _ _ h1 h2 h3 h4) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 -- Goal 1
 theorem taelja_goal1 : in_environment sk2 (sk1 sk2) := by
   have h1 : environment sk2 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : stable sk2 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h3 : in_environment sk2 (sk1 sk2) := by first | (exact ax3 sk2 h1 h2) | (first | (exact ax3 _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : in_environment sk2 (sk1 sk2) := by first | (exact ax3 sk2 h1 h2) | (first | (exact ax3 _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 -- Goal 2
@@ -75,7 +76,7 @@ theorem taelja_goal2 : selection_favors efficient_producers first_movers (sk3 (s
   have h1 : environment sk2 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : subpopulations first_movers efficient_producers sk2 (sk3 (sk1 sk2)) := by first | (exact taelja_lemma8) | (first | apply taelja_lemma8 <;> first | rfl | assumption)
   have h3 : greater (growth_rate efficient_producers (sk3 (sk1 sk2))) (growth_rate first_movers (sk3 (sk1 sk2))) := by first | (exact taelja_lemma10) | (first | apply taelja_lemma10 <;> first | rfl | assumption)
-  have h4 : selection_favors efficient_producers first_movers (sk3 (sk1 sk2)) := by first | (exact ax7 (sk3 (sk1 sk2)) sk2 first_movers efficient_producers h1 h2 h3) | (first | (exact ax7 _ _ _ _ h1 h2 h3) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : selection_favors efficient_producers first_movers (sk3 (sk1 sk2)) := by first | (exact ax7 (sk3 (sk1 sk2)) sk2 first_movers efficient_producers h1 h2 h3) | (first | (exact ax7 _ _ _ _ h1 h2 h3) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 end EMgt0322

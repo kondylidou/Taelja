@@ -5,6 +5,7 @@ namespace ECom0011
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom loop : α
@@ -34,16 +35,16 @@ axiom ax6 : ∀ (a : α) (x : α) (z : α), succeeds z a → succeeds a x → su
 -- Lemma 7
 theorem taelja_lemma7 : succeeds p8 p3 := by
   have h1 : follows p8 p3 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h2 : succeeds p8 p3 := by first | (exact ax5 p3 p8 h1) | (first | (exact ax5 _ _ h1) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h2 : succeeds p8 p3 := by first | (exact ax5 p3 p8 h1) | (first | (exact ax5 _ _ h1) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : succeeds p3 p3 := by
   have h1 : has p8 (goto loop) := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h2 : labels loop p3 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h3 : succeeds p3 p8 := by first | (exact ax3 p8 loop p3 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : succeeds p3 p8 := by first | (exact ax3 p8 loop p3 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h4 : succeeds p8 p3 := by first | (exact taelja_lemma7) | (first | apply taelja_lemma7 <;> first | rfl | assumption)
-  have h5 : succeeds p3 p3 := by first | (exact ax6 p8 p3 p3 h3 h4) | (first | (exact ax6 _ _ _ h3 h4) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h5 : succeeds p3 p3 := by first | (exact ax6 p8 p3 p3 h3 h4) | (first | (exact ax6 _ _ _ h3 h4) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 end ECom0011

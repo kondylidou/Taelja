@@ -5,6 +5,7 @@ namespace VampireKle1291
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom sK0 : α
@@ -37,7 +38,7 @@ theorem taelja_lemma5 : ∀ (x : α) (y : α), (forward_diamond x y) = (antidoma
 theorem taelja_lemma6 : (antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) = (addition (divergence sK0) (antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0))))))) := by
   calc antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) = forward_diamond sK0 (divergence sK0) := by have h_rw := taelja_lemma5 sK0 (divergence sK0); rw [h_rw]
       _ = divergence sK0 := by have h_rw := ax2 sK0; rw [h_rw]
-      _ = addition (divergence sK0) (divergence sK0) := by have h_rw := ax1 (divergence sK0); rw [h_rw]
+      _ = addition (divergence sK0) (divergence sK0) := by first | (first | (exact ax1 (divergence sK0)) | (exact Eq.symm (ax1 (divergence sK0)))) | (have h_rw := ax1 (divergence sK0); rw [h_rw])
       _ = addition (divergence sK0) (forward_diamond sK0 (divergence sK0)) := by have h_rw := ax2 sK0; rw [h_rw]
       _ = addition (divergence sK0) (antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) := by have h_rw := taelja_lemma5 sK0 (divergence sK0); rw [h_rw]
 
@@ -60,7 +61,7 @@ theorem taelja_lemma7 : (forward_diamond sK0 (domain (multiplication sK0 (antido
 theorem taelja_lemma8 : (∀ (x : α), ((forward_diamond sK0 (domain x)) = (addition (domain x) (forward_diamond sK0 (domain x)))) → zero = (domain x)) → zero = (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) := by
   intro hyp1
   have h1 : (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) = (addition (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))))) := by first | (exact taelja_lemma7) | (first | apply taelja_lemma7 <;> first | rfl | assumption | (apply Eq.symm; apply taelja_lemma7 <;> first | rfl | assumption))
-  have h2 : zero = (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) := by first | (exact hyp1 (multiplication sK0 (antidomain (antidomain (divergence sK0)))) h1) | (first | (exact hyp1 _ h1) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))) | (apply Eq.symm; apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h2 : zero = (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) := by first | (exact hyp1 (multiplication sK0 (antidomain (antidomain (divergence sK0)))) h1) | (first | (exact hyp1 _ h1) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1

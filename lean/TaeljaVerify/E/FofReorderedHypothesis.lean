@@ -5,6 +5,7 @@ namespace EFofReorderedHypothesis
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -22,12 +23,12 @@ axiom ax2 : s a
 axiom ax3 : ∀ (x : α), t x → u x
 
 -- Goal 1
-theorem taelja_goal1 : (∀ (x : α), s x → r x → t x) → u a := by
+theorem taelja_goal1 : (∀ (x : α), (s x) → (r x) → t x) → u a := by
   intro hyp1
   have h1 : s a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h2 : r a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h3 : t a := by first | (exact hyp1 a h1 h2) | (first | (exact hyp1 _ h1 h2) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : u a := by first | (exact ax3 a h3) | (first | (exact ax3 _ h3) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h3 : t a := by first | (exact hyp1 a h1 h2) | (first | (exact hyp1 _ h1 h2) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : u a := by first | (exact ax3 a h3) | (first | (exact ax3 _ h3) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 end EFofReorderedHypothesis

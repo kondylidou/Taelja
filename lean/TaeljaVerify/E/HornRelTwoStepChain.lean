@@ -5,6 +5,7 @@ namespace EHornRelTwoStepChain
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -30,7 +31,7 @@ theorem taelja_goal1 : p (g (f a)) := by
   rw [h_rw]
   have h_rw := ax2
   rw [h_rw]
-  apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption))
+  apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 end EHornRelTwoStepChain
 

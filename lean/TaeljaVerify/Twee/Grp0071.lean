@@ -5,6 +5,7 @@ namespace TweeGrp0071
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom c : α
@@ -17,13 +18,13 @@ axiom ax1 : ∀ (x : α), product identity x x
 -- Axiom 2
 axiom ax2 : ∀ (y : α), product y c y
 -- Axiom 3
-axiom ax3 : ∀ (a : α) (b : α) (c : α) (z : α), product z a b → product z a c → b = c
+axiom ax3 : ∀ (a : α) (b : α) (c_ : α) (z : α), product z a b → product z a c_ → b = c_
 
 -- Goal 1
 theorem taelja_goal1 : identity = c := by
-  have h1 : product identity c identity := by apply ax2
-  have h2 : product identity c c := by apply ax1
-  have h3 : identity = c := by first | (exact ax3 _ _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : product identity c identity := by first | (exact ax2 identity) | (first | apply ax2 <;> first | rfl | assumption)
+  have h2 : product identity c c := by first | (exact ax1 c) | (first | apply ax1 <;> first | rfl | assumption)
+  have h3 : identity = c := by first | (exact ax3 c identity c identity h1 h2) | (first | (exact ax3 _ _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
 end TweeGrp0071

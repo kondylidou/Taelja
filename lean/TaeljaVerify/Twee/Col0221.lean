@@ -5,6 +5,7 @@ namespace TweeCol0221
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom b : α

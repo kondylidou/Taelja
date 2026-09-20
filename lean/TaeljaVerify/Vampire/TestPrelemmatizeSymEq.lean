@@ -5,6 +5,7 @@ namespace VampireTestPrelemmatizeSymEq
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -27,16 +28,16 @@ axiom ax4 : ∀ (x : α), p x → q x → r x
 
 -- Lemma 5
 theorem taelja_lemma5 : q a := by
-  have h1 : (h a) = (k a) := by apply ax1
-  have h2 : q a := by first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : (h a) = (k a) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption | (apply Eq.symm; apply ax1 <;> first | rfl | assumption))
+  have h2 : q a := by first | (exact ax3 a (h1.symm)) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : r a := by
-  have h1 : (h a) = (k a) := by apply ax1
-  have h2 : p a := by first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
-  have h3 : q a := by apply taelja_lemma5
-  have h4 : r a := by first | (exact ax4 _ h2 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption)))
+  have h1 : (h a) = (k a) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption | (apply Eq.symm; apply ax1 <;> first | rfl | assumption))
+  have h2 : p a := by first | (exact ax2 a h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : q a := by first | (exact taelja_lemma5) | (first | apply taelja_lemma5 <;> first | rfl | assumption)
+  have h4 : r a := by first | (exact ax4 a h2 h3) | (first | (exact ax4 _ h2 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 end VampireTestPrelemmatizeSymEq

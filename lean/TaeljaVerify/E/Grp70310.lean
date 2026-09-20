@@ -5,6 +5,7 @@ namespace EGrp70310
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom op_c : α
@@ -31,9 +32,9 @@ axiom ax5 : ∀ (x : α) (y : α), (mult op_c (mult x y)) = (mult (mult op_c x) 
 theorem taelja_lemma6 : ∀ (z : α), op_e = op_c := by
   intro z
   calc op_e = mult (mult (rd op_c (mult unit_ z)) z) unit_ := by have h_rw := ax4 unit_ z; rw [h_rw]
-      _ = mult (rd op_c (mult unit_ z)) z := by have h_rw := ax3 (mult (rd op_c (mult unit_ z)) z); rw [h_rw]
-      _ = mult (rd op_c z) z := by have h_rw := ax2 z; rw [h_rw]
-      _ = op_c := by have h_rw := ax1 op_c z; rw [h_rw]
+      _ = mult (rd op_c (mult unit_ z)) z := by first | (first | (exact ax3 (mult (rd op_c (mult unit_ z)) z)) | (exact Eq.symm (ax3 (mult (rd op_c (mult unit_ z)) z)))) | (have h_rw := ax3 (mult (rd op_c (mult unit_ z)) z); rw [h_rw])
+      _ = mult (rd op_c z) z := by first | (first | (exact ax2 z) | (exact Eq.symm (ax2 z))) | (have h_rw := ax2 z; rw [h_rw])
+      _ = op_c := by first | (first | (exact ax1 op_c z) | (exact Eq.symm (ax1 op_c z))) | (have h_rw := ax1 op_c z; rw [h_rw])
 
 -- Goal 1
 theorem taelja_goal1 : (mult op_e (mult x2 x3)) = (mult (mult op_e x2) x3) := by

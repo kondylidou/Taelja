@@ -5,6 +5,7 @@ namespace VampirePuz0111
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom india : α

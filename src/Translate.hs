@@ -12,7 +12,7 @@ import Control.Monad.Except (ExceptT, runExceptT, throwError)
 import Control.Monad.State
 import Data.Either (fromRight)
 import Data.List (find, inits, intercalate, nub, nubBy, partition, sortBy, isSuffixOf, tails)
-import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
+import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe, mapMaybe, maybeToList)
 import Data.Ord (Down(..), comparing)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -358,7 +358,21 @@ generalizeGoals sp
     maximal t | skolemHeaded t = [t]
               | App _ ts <- t  = concatMap maximal ts
               | otherwise      = []
-    fresh = nub (concat [ maximal t | (l, _) <- goals sp, t <- foldLiteralTerms (: []) l ])
+    fresh0 = nub (concat [ maximal t | (l, _) <- goals sp, t <- foldLiteralTerms (: []) l ])
+    -- A hypothesis may hold another instance of the same Skolem symbol, as
+    -- SYN731+1/E's hypothesis p(Z,A,esk1_2(Z,A)) does beside the goal's
+    -- esk1_2(X,X).  Reading the goal's term as a variable would then claim
+    -- more than the proof shows, so such a symbol keeps its term.
+    hypTerms = concat [ foldLiteralTerms subterms l
+                      | ax <- axioms sp, isHyp ax, l <- axLits ax ]
+    axLits (AUnit _ l)                 = [l]
+    axLits (ANucleus _ (Clause bs mh)) = bs ++ maybeToList mh
+    subterms t = t : case t of { App _ ts -> concatMap subterms ts; _ -> [] }
+    headOf (Const c) = c
+    headOf (App f _) = f
+    headOf _         = ""
+    loose = [ headOf t | t <- hypTerms, headOf t `elem` map headOf fresh0, t `notElem` fresh0 ]
+    fresh = [ t | t <- fresh0, headOf t `notElem` loose ]
     sub   = [ (t, Var (name i t)) | (i, t) <- zip [1 :: Int ..] fresh ]
     name _ (Const c)  = "Sk_" ++ c
     name i (App f _)  = "Sk_" ++ f ++ "_" ++ show i
@@ -2052,7 +2066,10 @@ assignAxiomNames nameOverride negationConj goalLits0 electrons nuclei unitMap =
                  -- named like every other axiom
                  case convertDeclToClause (leSrcDecl e) of
                    Just cls@(Clause bs mh)
-                     | isJust mh || not (all isGoal bs) ->
+                     -- a hypothesis the conjecture grants is named even when
+                     -- it reads like the negated conjecture, as SYN929+1's
+                     -- p(Y) => $false from ~ ? [Y] : p(Y) does
+                     | isJust mh || not (all isGoal bs) || leHyp e ->
                      let nm = freshAxiomName axAcc
                      in (axAcc ++ [ANucleus nm cls],
                          Map.insert pos nm posMap,

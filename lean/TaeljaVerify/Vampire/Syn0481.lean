@@ -5,6 +5,7 @@ namespace VampireSyn0481
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 axiom big_f : α → Prop
 

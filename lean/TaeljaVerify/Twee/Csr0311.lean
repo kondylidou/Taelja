@@ -5,6 +5,7 @@ namespace TweeCsr0311
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom c_tptpcol_16_18488 : α
@@ -24,10 +25,10 @@ axiom ax3 : ∀ (z : α), collection z → individual z → False
 -- Goal 1
 theorem taelja_goal1 : (disjointwith c_tptptptpcol_16_8398 c_tptpcol_16_18488) → False := by
   intro hyp1
-  have h1 : disjointwith c_tptptptpcol_16_8398 c_tptpcol_16_18488 := by assumption
-  have h2 : collection c_tptptptpcol_16_8398 := by first | (exact ax2 c_tptptptpcol_16_8398 c_tptpcol_16_18488 h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : disjointwith c_tptptptpcol_16_8398 c_tptpcol_16_18488 := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
+  have h2 : collection c_tptptptpcol_16_8398 := by first | (exact ax2 c_tptptptpcol_16_8398 c_tptpcol_16_18488 h1) | (first | (exact ax2 _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : individual c_tptptptpcol_16_8398 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h4 : False := by first | (exact ax3 c_tptptptpcol_16_8398 h2 h3) | (first | (exact ax3 _ h2 h3) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h4 : False := by first | (exact ax3 c_tptptptpcol_16_8398 h2 h3) | (first | (exact ax3 _ h2 h3) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 end TweeCsr0311

@@ -5,6 +5,7 @@ namespace ESwv8181
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom v_s : α
@@ -16,8 +17,8 @@ axiom ax1 : ∀ (x : α), x = v_ta
 
 -- Goal 1
 theorem taelja_goal1 : v_s = v_t := by
-  calc v_s = v_ta := by have h_rw := ax1 v_s; rw [h_rw]
-      _ = v_t := by have h_rw := ax1 v_t; rw [h_rw]
+  calc v_s = v_ta := by first | (first | (exact ax1 v_s) | (exact Eq.symm (ax1 v_s))) | (have h_rw := ax1 v_s; rw [h_rw])
+      _ = v_t := by first | (first | (exact ax1 v_t) | (exact Eq.symm (ax1 v_t))) | (have h_rw := ax1 v_t; rw [h_rw])
 
 end ESwv8181
 

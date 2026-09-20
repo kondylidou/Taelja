@@ -5,13 +5,14 @@ namespace TweeSyn3871
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 axiom p : Prop
 
 -- Goal 1
 theorem taelja_goal1 : (p) → p := by
   intro hyp1
-  have h1 : p := by assumption
+  have h1 : p := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
   exact h1
 
 end TweeSyn3871

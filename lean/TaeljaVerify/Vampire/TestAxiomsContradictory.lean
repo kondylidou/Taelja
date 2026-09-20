@@ -5,6 +5,7 @@ namespace VTestAxiomsContradictory
 
 -- Uninterpreted sort
 axiom α : Type
+axiom taelja_elem : α
 
 -- Constants
 axiom a : α
@@ -20,8 +21,8 @@ axiom ax2 : p a → False
 
 -- Goal 1
 theorem taelja_goal1 : q b := by
-  have h1 : p a := by first | (exact ax1) | (apply ax1 <;> first | rfl | assumption)
-  have h2 : False := by first | (exact ax2 h1) | (first | (exact ax2 h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
+  have h1 : p a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : False := by first | (exact ax2 h1) | (first | (exact ax2 h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : q b := h2.elim
   exact h3
 
