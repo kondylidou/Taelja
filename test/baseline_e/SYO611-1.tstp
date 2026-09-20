@@ -1,0 +1,38 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FHHNS-FFSF21-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_6, plain, (le(X1,X1))).
+#
+#cnf(i_0_9, plain, (eq(f(X1),a0))).
+#
+#cnf(i_0_8, plain, (le(X2,X3)|~le(max(X1,X2),X3))).
+#
+#cnf(i_0_7, plain, (le(X1,X3)|~le(max(X1,X2),X3))).
+#
+#cnf(i_0_10, plain, (~le(s(X1),X2))).
+# Presaturation interreduction done
+#
+#cnf(i_0_6, plain, (le(X1,X1))).
+#
+#cnf(i_0_9, plain, (eq(f(X1),a0))).
+#
+#cnf(i_0_10, plain, (~le(s(X1),X2))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(sos_05, axiom, (~eq(f(X1),a0)|~eq(f(X2),a0)|~le(s(X1),X2)), file('Problems/SYO/SYO611-1.p', sos_05)).
+cnf(sos_04, axiom, (eq(f(X1),a0)), file('Problems/SYO/SYO611-1.p', sos_04)).
+cnf(sos_01, axiom, (le(X1,X1)), file('Problems/SYO/SYO611-1.p', sos_01)).
+cnf(c_0_3, plain, (~eq(f(X1),a0)|~eq(f(X2),a0)|~le(s(X1),X2)), inference(fof_simplification,[status(thm)],[sos_05])).
+cnf(c_0_4, plain, (~eq(f(X1),a0)|~eq(f(X2),a0)|~le(s(X1),X2)), c_0_3).
+cnf(c_0_5, axiom, (eq(f(X1),a0)), sos_04).
+cnf(c_0_6, plain, (~le(s(X1),X2)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_4, c_0_5]), c_0_5])])).
+cnf(c_0_7, axiom, (le(X1,X1)), sos_01).
+cnf(c_0_8, plain, ($false), inference(spm,[status(thm)],[c_0_6, c_0_7]), ['proof']).
+# SZS output end CNFRefutation

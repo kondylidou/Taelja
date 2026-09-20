@@ -1,7 +1,7 @@
 module Helpers where
 
 import Control.Applicative ((<|>))
-import Data.Char (isSpace)
+import Data.Char (isAlphaNum)
 import Data.List (inits, intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, permutations, tails)
 import Data.Maybe (fromMaybe, isJust, listToMaybe)
 import Control.Monad (foldM)
@@ -507,12 +507,14 @@ ppTerm (Var x)    = x
 ppTerm (Const c)  = ppSymbol c
 ppTerm (App f ts) = ppSymbol f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 
--- A symbol as printed.  One with a space or a quote in its name, as LCL897-10's
--- ' = =>', is quoted as in TPTP, since unquoted it would not read back.
+-- A symbol as printed.  A word or an operator name, as LCL's ==>, reads back
+-- unquoted.  Anything else, as LCL897-10's ' = =>' or CSR117+1's 55.67631,
+-- is quoted as in TPTP.  A defined symbol such as $false stays as it is.
 ppSymbol :: String -> String
 ppSymbol f
-  | any (\c -> isSpace c || c == '\'') f = "'" ++ concatMap esc f ++ "'"
-  | otherwise = f
+  | all (\c -> isAlphaNum c || c == '_') f || all (`elem` "+*/^<>=-%&|~") f = f
+  | ('$' : rest) <- f, all (\c -> isAlphaNum c || c == '_') rest = f
+  | otherwise = "'" ++ concatMap esc f ++ "'"
   where
     esc '\'' = "\\'"
     esc '\\' = "\\\\"

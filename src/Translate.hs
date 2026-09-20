@@ -443,7 +443,12 @@ emitGoalProof lit blk = do
   -- a goal proved at a fresh constant holds for every value of it
   let litG = unrigidLit lit'
       blk' = orientToGoal axNuclei litG (unrigidBlock blk)
-  if goalsConsistentWith template (existing ++ [litG])
+  -- a goal proved twice is one goal, as s__Object(s__Denmark) reached from
+  -- both s__Object(X2) and s__Object(X6) on CSR117+1/E, and counting it twice
+  -- would pass a conjecture with a conjunct left unproved
+  if any (\e -> isJust (matchLit e litG) && isJust (matchLit litG e)) existing
+    then return ()
+  else if goalsConsistentWith template (existing ++ [litG])
     then modify $ \s -> s { stGoals = stGoals s ++ [(litG, blk')] }
     else throwError ("emitGoalProof: " ++ ppLitI litG
                       ++ " is inconsistent with an already-proven goal")
@@ -1610,6 +1615,19 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                                   Nothing   -> return False
                       else return False
 
+-- The goal literals no emitted goal proves.  An emitted goal proves one it
+-- unifies with, in either orientation, since goals are emitted with their
+-- fresh constants as variables again.  Counting emitted goals instead would
+-- pass a conjunct proved twice for one proved never.
+openGoalsOf :: [Literal] -> AlgM [Literal]
+openGoalsOf goalLits = do
+  emitted <- gets (map fst . stGoals)
+  let proves e0 g = let e = suffixVarsLit "_e" e0
+                    in isJust (unifyLits g e []) || isJust (unifyLits (flipEqLit g) e [])
+      flipEqLit (Eq a b) = Eq b a
+      flipEqLit l        = l
+  return (nub [ g | g <- goalLits, not (any (`proves` g) emitted) ])
+
 processNuclei
   :: Bool  -- debug
   -> Bool  -- warn if nuclei remain unprocessed after all retries
@@ -1633,31 +1651,29 @@ processNuclei debug warnOnFail thetaCtx nuclei posToName goalLits simpl = do
                         | e <- nuclei, (v, t) <- computeNucleusTheta thetaCtx e ] ++ "}"
   go nuclei
   where
-    nGoals = length goalLits
-
     go [] = return ()
     go pending = do
-      nDone <- gets (length . stGoals)
-      when (nDone < nGoals) $ do
+      open0 <- openGoalsOf goalLits
+      unless (null open0) $ do
         prevCount <- gets (length . stUnits)
         failed    <- processPass pending
         newCount  <- gets (length . stUnits)
-        nDone2    <- gets (length . stGoals)
+        open2     <- openGoalsOf goalLits
         -- Retry only if new units were derived and the goal is still unproved.
         -- This handles Vampire FOF proofs where axiom leaves appear at deeper
         -- positions than refutation-chain inner nodes (string-sort ordering
         -- puts inner nodes first, but axioms may depend on each other).
-        if newCount > prevCount && nDone2 < nGoals && not (null failed)
+        if newCount > prevCount && not (null open2) && not (null failed)
           then go failed
-          else when (warnOnFail && not (null failed) && nDone2 < nGoals) $
+          else when (warnOnFail && not (null failed) && not (null open2)) $
             liftIO $ hPutStrLn stderr $
               "[warn] processNuclei: " ++ show (length failed)
               ++ " nucleus/nuclei could not be processed"
 
     processPass [] = return []
     processPass (entry : rest) = do
-      nDone <- gets (length . stGoals)
-      if nDone >= nGoals
+      open1 <- openGoalsOf goalLits
+      if null open1
         then return []
         else do
           prevCount <- gets (length . stUnits)
@@ -2374,26 +2390,36 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
   let emittedGoals = [ suffixVarsLit ("_g" ++ show i) g | (i, (g, _)) <- zip [1 :: Int ..] (stGoals finalSt) ]
       conjGoals    = map (suffixVarsLit "_c") goalLits'
       unifiesWith σ g = listToMaybe [ σ' | l <- conjGoals, Just σ' <- [unifyLits l g σ] ]
-  case foldM unifiesWith [] emittedGoals of
-    Just _  -> return ()
-    Nothing -> error ("emitted goals are not a consistent instance of the conjecture: "
-                      ++ intercalate ", " (map (ppLitI . fst) (stGoals finalSt)))
+  -- Every conjunct of the conjecture has a goal proof, all under one
+  -- substitution, so none is left unproved and none is proved at another
+  -- instance.  The pairing is searched, since a conjunct may unify with
+  -- several emitted goals and only one choice extends to the rest.
+  let covers σ [] = Just σ
+      covers σ (c : cs) = listToMaybe
+        [ r | e <- emittedGoals, Just σ' <- [unifyLits c e σ], Just r <- [covers σ' cs] ]
+  σJoint <- case covers [] conjGoals of
+    Just σ  -> return σ
+    Nothing -> error ("goal(s) could not be proved: "
+                      ++ intercalate ", " [ ppLitI c | c <- goalLits'
+                                          , isNothing (covers [] [suffixVarsLit "_c" c]) ]
+                      ++ " (no emitted goal proves this conjunct)")
+  when (isNothing (foldM unifiesWith σJoint emittedGoals)) $
+    error ("emitted goals are not a consistent instance of the conjecture: "
+           ++ intercalate ", " (map (ppLitI . fst) (stGoals finalSt)))
   return (StructuredProof (axiomList ++ bgAxiomList ++ stExtraAxioms finalSt)
                           (stLemmas finalSt) (stGoals finalSt) emptyInput)
   where
     action thetaCtx' allNuclei innerNusNG posToName goalLits simpl pG1Chain = do
       -- First pass over leaf axioms and derived nuclei with ground heads.
       processNuclei debug False thetaCtx' allNuclei posToName goalLits simpl
-      nDone <- gets (length . stGoals)
+      open1 <- openGoalsOf goalLits
       -- Second pass over derived Horn nuclei with non-ground heads, like E's inline
       -- spm steps.  It runs only when the first pass failed, so named axiom paths
       -- keep priority.
-      when (nDone < length goalLits) $
+      unless (null open1) $
         processNuclei debug False thetaCtx' innerNusNG posToName goalLits simpl
-      nDone2 <- gets (length . stGoals)
-      when (nDone2 < length goalLits) $ do
-        proven <- gets (map fst . stGoals)
-        let unproven = filter (`notElem` proven) goalLits
+      unproven <- openGoalsOf goalLits
+      unless (null unproven) $ do
         -- The goal literals share their existential variables, so the instance one
         -- goal is proved at instantiates the rest, as Algorithm 1 emits every G_j
         -- under the same θ.
@@ -2409,10 +2435,9 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
                          [ θ'' | e <- emitted, Just ρ <- [matchLit g' e], Just θ'' <- [extendSubst θ ρ] ]
               proveAll θ' rest
         proveAll [] unproven
-      nDone3 <- gets (length . stGoals)
-      when (nDone3 < length goalLits) $ do
-        proven3 <- gets (map fst . stGoals)
+      open3 <- openGoalsOf goalLits
+      unless (null open3) $
         error ("goal(s) could not be proved: "
-               ++ intercalate ", " (map ppLitI (filter (`notElem` proven3) goalLits))
+               ++ intercalate ", " (map ppLitI open3)
                ++ " (no step of the input proof establishes it under theta, and the rewrite search found no chain)")
 

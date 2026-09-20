@@ -1,0 +1,161 @@
+Axiom 1: s__Nation(s__Denmark)
+Axiom 2: is_instance(s__Denmark,s__OECDMemberEconomiesClass)
+Axiom 3: capital_city(s__Copenhagen,s__Denmark)
+Axiom 4: s__Nation(X) => s__GeopoliticalArea(X)
+Axiom 5: s__GeopoliticalArea(X) => s__GeographicArea(X)
+Axiom 6: s__GeographicArea(X) => s__Region(X)
+Axiom 7: s__Region(X) => s__Object(X)
+Axiom 8: int(esk17_0)
+Axiom 9: s__City(s__Copenhagen)
+Axiom 10: s__City(X) => s__GeopoliticalArea(X)
+Axiom 11: is_instance(s__Copenhagen,s__CoastalCitiesClass)
+Axiom 12: is_instance(X,s__CoastalCitiesClass) /\ s__City(X) => s__orientation(X,esk15_1(X),s__Near)
+Axiom 13: s__WaterArea(Y) /\ s__City(Z) /\ s__orientation(Z,Y,s__Near) => s__capability(s__Flooding__t,s__located__m,Z)
+Axiom 14: is_instance(X,s__CoastalCitiesClass) /\ s__City(X) => s__Sea(esk15_1(X))
+Axiom 15: s__Sea(X) => s__BodyOfWater(X)
+Axiom 16: s__BodyOfWater(X) => s__WaterArea(X)
+Axiom 17: s__SymbolicString(copenhagen)
+Axiom 18: s__SymbolicString(dk)
+Axiom 19: real('55.67631')
+Axiom 20: real('12.569355')
+Axiom 21: look_different(s__Copenhagen,s__Moscow)
+Axiom 22: to_int('55.67631') = 55
+Axiom 23: latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk)
+Axiom 24: s__SymbolicString(moscow)
+Axiom 25: s__SymbolicString(ru)
+Axiom 26: real('55.75695')
+Axiom 27: real('37.614975')
+Axiom 28: to_int('55.75695') = 55
+Axiom 29: latlong(s__Moscow,'55.75695','37.614975',moscow,ru)
+
+Lemma 30: s__orientation(s__Copenhagen,esk15_1(s__Copenhagen),s__Near)
+Proof:
+  have is_instance(s__Copenhagen,s__CoastalCitiesClass)
+    by axiom 11
+   and s__City(s__Copenhagen)
+    by axiom 9
+  hence s__orientation(s__Copenhagen,esk15_1(s__Copenhagen),s__Near)
+    by axiom 12
+
+Goal 1: s__Object(s__Denmark)
+Proof:
+  have s__Nation(s__Denmark)
+    by axiom 1
+  hence s__GeopoliticalArea(s__Denmark)
+    by axiom 4
+  hence s__GeographicArea(s__Denmark)
+    by axiom 5
+  hence s__Region(s__Denmark)
+    by axiom 6
+  hence s__Object(s__Denmark)
+    by axiom 7
+
+Goal 2: s__Object(s__Copenhagen)
+Proof:
+  have s__City(s__Copenhagen)
+    by axiom 9
+  hence s__GeopoliticalArea(s__Copenhagen)
+    by axiom 10
+  hence s__GeographicArea(s__Copenhagen)
+    by axiom 5
+  hence s__Region(s__Copenhagen)
+    by axiom 6
+  hence s__Object(s__Copenhagen)
+    by axiom 7
+
+Goal 3: real('55.67631')
+Proof:
+  have real('55.67631')
+    by axiom 19
+
+Goal 4: real('12.569355')
+Proof:
+  have real('12.569355')
+    by axiom 20
+
+Goal 5: s__SymbolicString(copenhagen)
+Proof:
+  have s__SymbolicString(copenhagen)
+    by axiom 17
+
+Goal 6: s__SymbolicString(dk)
+Proof:
+  have s__SymbolicString(dk)
+    by axiom 18
+
+Goal 7: int(esk17_0)
+Proof:
+  have int(esk17_0)
+    by axiom 8
+
+Goal 8: real('55.75695')
+Proof:
+  have real('55.75695')
+    by axiom 26
+
+Goal 9: real('37.614975')
+Proof:
+  have real('37.614975')
+    by axiom 27
+
+Goal 10: s__SymbolicString(moscow)
+Proof:
+  have s__SymbolicString(moscow)
+    by axiom 24
+
+Goal 11: s__SymbolicString(ru)
+Proof:
+  have s__SymbolicString(ru)
+    by axiom 25
+
+Goal 12: is_instance(s__Denmark,s__OECDMemberEconomiesClass)
+Proof:
+  have is_instance(s__Denmark,s__OECDMemberEconomiesClass)
+    by axiom 2
+
+Goal 13: capital_city(s__Copenhagen,s__Denmark)
+Proof:
+  have capital_city(s__Copenhagen,s__Denmark)
+    by axiom 3
+
+Goal 14: look_different(s__Copenhagen,s__Moscow)
+Proof:
+  have look_different(s__Copenhagen,s__Moscow)
+    by axiom 21
+
+Goal 15: latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk)
+Proof:
+  have latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk)
+    by axiom 23
+
+Goal 16: latlong(s__Moscow,'55.75695','37.614975',moscow,ru)
+Proof:
+  have latlong(s__Moscow,'55.75695','37.614975',moscow,ru)
+    by axiom 29
+
+Goal 17: s__capability(s__Flooding__t,s__located__m,s__Copenhagen)
+Proof:
+  have is_instance(s__Copenhagen,s__CoastalCitiesClass)
+    by axiom 11
+   and s__City(s__Copenhagen)
+    by axiom 9
+  hence s__Sea(esk15_1(s__Copenhagen))
+    by axiom 14
+  hence s__BodyOfWater(esk15_1(s__Copenhagen))
+    by axiom 15
+  hence s__WaterArea(esk15_1(s__Copenhagen))
+    by axiom 16
+   and s__City(s__Copenhagen)
+    by axiom 9
+   and s__orientation(s__Copenhagen,esk15_1(s__Copenhagen),s__Near)
+    by lemma 30
+  hence s__capability(s__Flooding__t,s__located__m,s__Copenhagen)
+    by axiom 13
+
+Goal 18: to_int('55.67631') = to_int('55.75695')
+Proof:
+  to_int('55.67631')
+= { by axiom 22 }
+  55
+= { by axiom 28 R->L }
+  to_int('55.75695')

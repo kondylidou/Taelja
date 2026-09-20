@@ -677,8 +677,9 @@ def lean_name(name: str) -> str:
     if name.lower() in keywords:
         return name + '_'
     if name and name[0].isdigit():
-        # numerals are not identifiers (SYO632-1 has a constant named 0)
-        return 'n_' + name
+        # numerals are not identifiers (SYO632-1 has a constant named 0), and
+        # a dot would be a namespace separator (CSR117+1 has 55.67631)
+        return 'n_' + ''.join(c if c.isalnum() or c == '_' else f'_c{ord(c)}_' for c in name)
     if name and not (name[0].isalnum() or name[0] == '_'):
         # symbolic function symbols (e.g. "+", ">") are not Lean identifiers
         words = {'+': 'plus', '-': 'minus', '*': 'times', '/': 'div', '^': 'pow',

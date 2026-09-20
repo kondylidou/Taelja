@@ -112,14 +112,7 @@ theorem taelja_goal1 : ssIk (key na b) := by
   exact h3
 
 -- Goal 2
-theorem taelja_goal2 : ssIk (key na b) := by
-  have h1 : ssIm na := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
-  have h2 : ssP b := by first | (exact ax12) | (first | apply ax12 <;> first | rfl | assumption)
-  have h3 : ssIk (key na b) := by first | (exact ax9 na b h1 h2) | (first | (exact ax9 _ _ h1 h2) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h3
-
--- Goal 3
-theorem taelja_goal3 : ssBk (key na a) := by
+theorem taelja_goal2 : ssBk (key na a) := by
   have h1 : ssIm (encr (triple a na (tb na)) bt) := by first | (exact taelja_lemma18) | (first | apply taelja_lemma18 <;> first | rfl | assumption)
   have h2 : ssIm (encr (nb na) na) := by first | (exact taelja_lemma20) | (first | apply taelja_lemma20 <;> first | rfl | assumption)
   have h3 : ssIm (pair (encr (triple a na (tb na)) bt) (encr (nb na) na)) := by first | (exact ax11 (encr (triple a na (tb na)) bt) (encr (nb na) na) h1 h2) | (first | (exact ax11 _ _ h1 h2) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))

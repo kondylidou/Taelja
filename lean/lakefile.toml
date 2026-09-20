@@ -5,6 +5,11 @@ defaultTargets = ["taeljaverify"]
 [[lean_lib]]
 name = "TaeljaVerify"
 
+# the modules generated from eval_out, built by "lake build TaeljaVerifyEval"
+# when they are present, and not part of the default target
+[[lean_lib]]
+name = "TaeljaVerifyEval"
+
 [[lean_exe]]
 name = "taeljaverify"
 root = "Main"

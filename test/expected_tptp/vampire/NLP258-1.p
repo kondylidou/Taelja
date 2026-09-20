@@ -47,34 +47,22 @@ fof(goal_5, theorem, man(skc8,skc10), inference(instantiate, [status(thm)], [f82
 fof(goal_6, theorem, be(skc8,skc9,skc10,skc10), inference(instantiate, [status(thm)], [f90])).
 fof(goal_7, theorem, smoke(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_26])).
 fof(goal_8, theorem, present(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_25])).
-fof(s11, plain, man(skc12,skc10), inference(mp, [status(thm)], [f52, f84, f82])).
-fof(goal_9, theorem, agent(skc12,skf2(skc10),skc10), inference(mp, [status(thm)], [f94, s11])).
-fof(goal_10, theorem, event(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_28])).
-fof(goal_11, theorem, forename(skc8,skc11), inference(instantiate, [status(thm)], [lemma_29])).
-fof(goal_12, theorem, jules_forename(skc8,skc11), inference(instantiate, [status(thm)], [f80])).
-fof(goal_13, theorem, of(skc8,skc11,skc10), inference(instantiate, [status(thm)], [f89])).
-fof(goal_14, theorem, accessible_world(skc8,skc12), inference(instantiate, [status(thm)], [f84])).
-fof(goal_15, theorem, proposition(skc8,skc12), inference(instantiate, [status(thm)], [f85])).
-fof(goal_16, theorem, proposition(skc8,skc12), inference(instantiate, [status(thm)], [f85])).
-fof(goal_17, theorem, accessible_world(skc8,skc12), inference(instantiate, [status(thm)], [f84])).
-fof(goal_18, theorem, smoke(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_26])).
-fof(goal_19, theorem, present(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_25])).
-fof(goal_20, theorem, state(skc8,skc9), inference(instantiate, [status(thm)], [f83])).
-fof(s12, plain, smoke(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_26])).
-fof(goal_21, theorem, event(skc12,skf2(skf4(skc12))), inference(mp, [status(thm)], [f1, s12])).
-fof(goal_22, theorem, think_believe_consider(skc8,skc13), inference(instantiate, [status(thm)], [f79])).
-fof(goal_23, theorem, present(skc8,skc13), inference(instantiate, [status(thm)], [f78])).
-fof(goal_24, theorem, event(skc8,skc13), inference(instantiate, [status(thm)], [f77])).
-fof(goal_25, theorem, theme(skc8,skc13,skc12), inference(instantiate, [status(thm)], [f88])).
-fof(goal_26, theorem, agent(skc8,skc13,skc15), inference(instantiate, [status(thm)], [f87])).
-fof(goal_27, theorem, agent(skc8,skc13,skc15), inference(instantiate, [status(thm)], [f87])).
-fof(goal_28, theorem, man(skc8,skc15), inference(instantiate, [status(thm)], [f74])).
-fof(goal_29, theorem, of(skc8,skc14,skc15), inference(instantiate, [status(thm)], [f86])).
-fof(goal_30, theorem, vincent_forename(skc8,skc14), inference(instantiate, [status(thm)], [f76])).
-fof(goal_31, theorem, forename(skc8,skc14), inference(instantiate, [status(thm)], [lemma_30])).
-fof(goal_32, theorem, theme(skc8,skc13,skc12), inference(instantiate, [status(thm)], [f88])).
-fof(goal_33, theorem, event(skc8,skc13), inference(instantiate, [status(thm)], [f77])).
-fof(goal_34, theorem, present(skc8,skc13), inference(instantiate, [status(thm)], [f78])).
-fof(goal_35, theorem, think_believe_consider(skc8,skc13), inference(instantiate, [status(thm)], [f79])).
-fof(goal_36, theorem, actual_world(skc8), inference(instantiate, [status(thm)], [f73])).
+fof(goal_9, theorem, forename(skc8,skc11), inference(instantiate, [status(thm)], [lemma_29])).
+fof(goal_10, theorem, jules_forename(skc8,skc11), inference(instantiate, [status(thm)], [f80])).
+fof(goal_11, theorem, of(skc8,skc11,skc10), inference(instantiate, [status(thm)], [f89])).
+fof(goal_12, theorem, accessible_world(skc8,skc12), inference(instantiate, [status(thm)], [f84])).
+fof(goal_13, theorem, proposition(skc8,skc12), inference(instantiate, [status(thm)], [f85])).
+fof(goal_14, theorem, smoke(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_26])).
+fof(goal_15, theorem, present(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_25])).
+fof(goal_16, theorem, state(skc8,skc9), inference(instantiate, [status(thm)], [f83])).
+fof(goal_17, theorem, think_believe_consider(skc8,skc13), inference(instantiate, [status(thm)], [f79])).
+fof(goal_18, theorem, present(skc8,skc13), inference(instantiate, [status(thm)], [f78])).
+fof(goal_19, theorem, event(skc8,skc13), inference(instantiate, [status(thm)], [f77])).
+fof(goal_20, theorem, theme(skc8,skc13,skc12), inference(instantiate, [status(thm)], [f88])).
+fof(goal_21, theorem, agent(skc8,skc13,skc15), inference(instantiate, [status(thm)], [f87])).
+fof(goal_22, theorem, man(skc8,skc15), inference(instantiate, [status(thm)], [f74])).
+fof(goal_23, theorem, of(skc8,skc14,skc15), inference(instantiate, [status(thm)], [f86])).
+fof(goal_24, theorem, vincent_forename(skc8,skc14), inference(instantiate, [status(thm)], [f76])).
+fof(goal_25, theorem, forename(skc8,skc14), inference(instantiate, [status(thm)], [lemma_30])).
+fof(goal_26, theorem, actual_world(skc8), inference(instantiate, [status(thm)], [f73])).
 % SZS output end Proof

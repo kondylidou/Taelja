@@ -13,7 +13,7 @@ import Data.Foldable (toList)
 import Data.List.NonEmpty (nonEmpty)
 import Data.List (intercalate, isPrefixOf, nub, nubBy, sortOn, tails, union)
 import qualified Data.Map.Strict as Map
-import Data.Maybe (fromMaybe, isJust, listToMaybe, mapMaybe, maybeToList)
+import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe, maybeToList)
 import qualified Data.Set as Set
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
@@ -158,6 +158,45 @@ emitTptp sp0 = unlines $
               Just u | not (isInputUnit u) -> walk (Set.insert x seen) (unitParents u ++ xs)
               _ -> walk (Set.insert x seen) xs
     byName = Map.fromList [ (unitNameStr (unitName u), u) | u <- inUnits input ]
+    -- An axiom E or Twee Skolemized on the way to its clause, as CSR117+1's
+    -- ? [X1] : int(X1) into int(esk17_0), follows from the axiom only with
+    -- the Skolem symbols defined.  The prover leaves the definition out, so
+    -- it is printed here as A => S, the axiom implying its Skolemized form,
+    -- which any model of A satisfies for some choice of the new symbols.
+    -- Vampire's own Skolem definitions are cited by definitionsBehind.
+    skolemDefsBehind n = case (Map.lookup n (inAxiomLeaves input), inputOf n) of
+      (Just leaf, Just root) -> nubBy (\a b -> fst a == fst b) (mapMaybe (axiomSkolemDef root) (walkEsa Set.empty [leaf]))
+      _                      -> []
+      where
+        walkEsa _ [] = []
+        walkEsa seen (x : xs)
+          | Set.member x seen = walkEsa seen xs
+          | otherwise = case Map.lookup x byName of
+              Just u | not (isInputUnit u) ->
+                [ u | esaStep u, not (null (skolemSyms u)) ] ++ walkEsa (Set.insert x seen) (unitParents u ++ xs)
+              _ -> walkEsa (Set.insert x seen) xs
+    esaStep (T.Unit _ _ (Just (src, _))) = hasEsa src
+    esaStep _ = False
+    hasEsa (T.Inference _ infos ps) = any isEsa infos || or [ hasEsa src | T.Parent src _ <- ps ]
+    hasEsa _ = False
+    isEsa (T.Status (T.Standard T.ESA)) = True
+    isEsa _                             = False
+    -- the symbols a step brings in, as none of its parents has them
+    skolemSyms u =
+      let parentSyms = concat [ fst (declSymbols (unitDecl p)) | pn <- unitParents u, Just p <- [Map.lookup pn byName] ]
+      in nub [ f | f <- fst (declSymbols (unitDecl u)), Set.notMember f fileSyms
+                 , f `notElem` parentSyms, Set.notMember f definedSyms ]
+    axiomSkolemDef root u = do
+      f <- case (unitDecl root, unitDecl u) of
+             (T.Formula _ (T.FOF a), T.Formula _ (T.FOF b))   -> Just (T.FOF (T.Connected a T.Implication b))
+             (T.Formula _ (T.TFF0 a), T.Formula _ (T.TFF0 b)) -> Just (T.TFF0 (T.Connected a T.Implication b))
+             _                                                -> Nothing
+      let nm = fresh ("skolem_" ++ unitNameStr (unitName u))
+      return (nm, Input (T.Unit (Left (T.Atom (Text.pack nm))) (T.Formula (T.Standard T.Plain) f)
+                                (Just (T.Introduced (T.Standard T.ByDefinition) Nothing, Nothing)))
+                        ("new_symbols(definition, [" ++ intercalate "," (skolemSyms u) ++ "])"))
+    skolemAxLines = nubBy (\a b -> fst a == fst b)
+      [ d | n <- axNames, isNothing (lookup n assumed), d <- skolemDefsBehind n ]
     withParents u = concat [ withParents p | n <- unitParents u, Just p <- [Map.lookup n byName] ]
                     ++ [(unitNameStr (unitName u), u)]
     axiomLines = concat
@@ -167,7 +206,7 @@ emitTptp sp0 = unlines $
             | sameAsInput u n -> []
             | otherwise ->
                 [Step (axTarget n) "plain" (axiomFormula ax) "clausify"
-                      (unitNameStr (unitName u) : definitionsBehind n)]
+                      (unitNameStr (unitName u) : definitionsBehind n ++ map fst (skolemDefsBehind n))]
           (Nothing, Nothing) -> [Step (axTarget n) "axiom" (axiomFormula ax) "" []]
       | n <- axNames, Just ax <- [axiomOf n] ]
     axiomFormula (AUnit _ l)    = Ours (renameLit ren (reSkLit l))
@@ -249,7 +288,7 @@ emitTptp sp0 = unlines $
           gs = [ ppFormula env (Ours (renameLit (blockRenaming l b) (reSkLit l))) | (l, b) <- goals sp ]
           joined xs = case xs of { [x] -> x; _ -> "(" ++ intercalate " & " xs ++ ")" }
       in if null hs then joined gs else "(" ++ joined hs ++ " => " ++ joined gs ++ ")"
-    allLines = skolemDefLines ++ inputLines ++ axiomLines
+    allLines = skolemDefLines ++ inputLines ++ map snd skolemAxLines ++ axiomLines
             ++ (if merged then init stepLines else stepLines)
             ++ theoremLine
     deps = assumptionDeps allLines
@@ -389,19 +428,27 @@ ppLine _ _ (Input u@(T.Unit _ _ (Just (T.Introduced (T.Standard T.ByDefinition) 
       (i : _) -> Just (take i str, drop (i + length pat) str)
 ppLine _ _ (Input u info) = currentIntro info (show (pretty (dropUnknownInfo u)))
 ppLine env _ (Assume n f) =
-  keyword env ++ "(" ++ n ++ ", assumption, " ++ ppFormula env f ++ ", introduced(assumption, [], []))."
+  keyword env ++ "(" ++ unitRef n ++ ", assumption, " ++ ppFormula env f ++ ", introduced(assumption, [], []))."
 ppLine env deps (Step n role f rule ps) =
-  keyword env ++ "(" ++ n ++ ", " ++ role ++ ", " ++ ppFormula env f ++ ann ++ ")."
+  keyword env ++ "(" ++ unitRef n ++ ", " ++ role ++ ", " ++ ppFormula env f ++ ann ++ ")."
   where
     ann | null rule = ""
         | otherwise = ", inference(" ++ rule ++ ", [" ++ intercalate ", " info ++ "], ["
-                      ++ intercalate ", " ps ++ "])"
+                      ++ intercalate ", " (map unitRef ps) ++ "])"
     assumed = Map.findWithDefault [] n deps
     info
-      | rule == "implies" = ["status(thm)", "discharge(implies, [" ++ intercalate ", " onParents ++ "])"]
+      | rule == "implies" = ["status(thm)", "discharge(implies, [" ++ intercalate ", " (map unitRef onParents) ++ "])"]
       | null assumed      = ["status(thm)"]
-      | otherwise         = ["status(thm)", "assumptions([" ++ intercalate ", " assumed ++ "])"]
+      | otherwise         = ["status(thm)", "assumptions([" ++ intercalate ", " (map unitRef assumed) ++ "])"]
     onParents = [ p | p <- ps, Map.lookup p deps == Just [p] ]
+
+-- A unit name as TPTP writes it.  An input unit keeps its own name, which
+-- may need quotes, as CSR117+1's '55.75695_55', and a name already quoted or
+-- an integer stays as it is.
+unitRef :: String -> String
+unitRef n@('\'' : _) = n
+unitRef n | not (null n) && all isDigit n = n
+          | otherwise                     = symbol n
 
 keyword :: SortEnv -> String
 keyword = maybe "fof" (const "tff")

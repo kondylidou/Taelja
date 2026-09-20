@@ -187,150 +187,92 @@ Proof:
   have present(skc12,skf2(skc10))
     by lemma 25
 
-Goal 9: agent(skc12,skf2(skc10),skc10)
-Proof:
-  have accessible_world(skc8,skc12)
-    by axiom 2
-   and man(skc8,skc10)
-    by axiom 1
-  hence man(skc12,skc10)
-    by axiom 3
-  hence agent(skc12,skf2(skc10),skc10)
-    by axiom 7
-
-Goal 10: event(skc12,skf2(skc10))
-Proof:
-  have event(skc12,skf2(skc10))
-    by lemma 28
-
-Goal 11: forename(skc8,skc11)
+Goal 9: forename(skc8,skc11)
 Proof:
   have forename(skc8,skc11)
     by lemma 29
 
-Goal 12: jules_forename(skc8,skc11)
+Goal 10: jules_forename(skc8,skc11)
 Proof:
   have jules_forename(skc8,skc11)
     by axiom 14
 
-Goal 13: of(skc8,skc11,skc10)
+Goal 11: of(skc8,skc11,skc10)
 Proof:
   have of(skc8,skc11,skc10)
     by axiom 15
 
-Goal 14: accessible_world(skc8,skc12)
+Goal 12: accessible_world(skc8,skc12)
 Proof:
   have accessible_world(skc8,skc12)
     by axiom 2
 
-Goal 15: proposition(skc8,skc12)
+Goal 13: proposition(skc8,skc12)
 Proof:
   have proposition(skc8,skc12)
     by axiom 13
 
-Goal 16: proposition(skc8,skc12)
-Proof:
-  have proposition(skc8,skc12)
-    by axiom 13
-
-Goal 17: accessible_world(skc8,skc12)
-Proof:
-  have accessible_world(skc8,skc12)
-    by axiom 2
-
-Goal 18: smoke(skc12,skf2(skf4(skc12)))
+Goal 14: smoke(skc12,skf2(skf4(skc12)))
 Proof:
   have smoke(skc12,skf2(skf4(skc12)))
     by lemma 26
 
-Goal 19: present(skc12,skf2(skf4(skc12)))
+Goal 15: present(skc12,skf2(skf4(skc12)))
 Proof:
   have present(skc12,skf2(skf4(skc12)))
     by lemma 25
 
-Goal 20: state(skc8,skc9)
+Goal 16: state(skc8,skc9)
 Proof:
   have state(skc8,skc9)
     by axiom 19
 
-Goal 21: event(skc12,skf2(skf4(skc12)))
-Proof:
-  have smoke(skc12,skf2(skf4(skc12)))
-    by lemma 26
-  hence event(skc12,skf2(skf4(skc12)))
-    by axiom 23
-
-Goal 22: think_believe_consider(skc8,skc13)
+Goal 17: think_believe_consider(skc8,skc13)
 Proof:
   have think_believe_consider(skc8,skc13)
     by axiom 11
 
-Goal 23: present(skc8,skc13)
+Goal 18: present(skc8,skc13)
 Proof:
   have present(skc8,skc13)
     by axiom 10
 
-Goal 24: event(skc8,skc13)
+Goal 19: event(skc8,skc13)
 Proof:
   have event(skc8,skc13)
     by axiom 9
 
-Goal 25: theme(skc8,skc13,skc12)
+Goal 20: theme(skc8,skc13,skc12)
 Proof:
   have theme(skc8,skc13,skc12)
     by axiom 12
 
-Goal 26: agent(skc8,skc13,skc15)
+Goal 21: agent(skc8,skc13,skc15)
 Proof:
   have agent(skc8,skc13,skc15)
     by axiom 8
 
-Goal 27: agent(skc8,skc13,skc15)
-Proof:
-  have agent(skc8,skc13,skc15)
-    by axiom 8
-
-Goal 28: man(skc8,skc15)
+Goal 22: man(skc8,skc15)
 Proof:
   have man(skc8,skc15)
     by axiom 4
 
-Goal 29: of(skc8,skc14,skc15)
+Goal 23: of(skc8,skc14,skc15)
 Proof:
   have of(skc8,skc14,skc15)
     by axiom 17
 
-Goal 30: vincent_forename(skc8,skc14)
+Goal 24: vincent_forename(skc8,skc14)
 Proof:
   have vincent_forename(skc8,skc14)
     by axiom 16
 
-Goal 31: forename(skc8,skc14)
+Goal 25: forename(skc8,skc14)
 Proof:
   have forename(skc8,skc14)
     by lemma 30
 
-Goal 32: theme(skc8,skc13,skc12)
-Proof:
-  have theme(skc8,skc13,skc12)
-    by axiom 12
-
-Goal 33: event(skc8,skc13)
-Proof:
-  have event(skc8,skc13)
-    by axiom 9
-
-Goal 34: present(skc8,skc13)
-Proof:
-  have present(skc8,skc13)
-    by axiom 10
-
-Goal 35: think_believe_consider(skc8,skc13)
-Proof:
-  have think_believe_consider(skc8,skc13)
-    by axiom 11
-
-Goal 36: actual_world(skc8)
+Goal 26: actual_world(skc8)
 Proof:
   have actual_world(skc8)
     by axiom 18

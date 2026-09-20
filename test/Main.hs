@@ -266,6 +266,7 @@ eBenchmarkNames =
   , "MGT032-2"
   , "SYN590-1"
   , "SYN982-1"
+  , "SYO611-1"        -- three goal conjuncts, whose pairing with the proved goals is searched
   -- a goal clause whose literals mix a disequality with negative atoms,
   -- X1 != v_x(X1) | ~c_in(X1,v_S,tc_set(t_a)), states two goals
   , "SET864-2"
@@ -293,6 +294,7 @@ eBenchmarkNames =
   , "LCL902+1"        -- symbols such as '==>' and '>=', which Twee prints infix
   , "SWW967+1"        -- a re-proof citing the outer candidate lemma c_0_13, stated too
   , "SWW968+1"        -- E's condensation, named condense
+  , "CSR117+1"        -- a conjunct proved twice and one never, and 55.67631 quoted
   ]
 
 mkTest :: String -> String -> String -> TestTree

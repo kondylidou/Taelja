@@ -16,13 +16,18 @@ EVAL    = TAELJA / "eval_out"
 LEAN    = TAELJA / "lean" / "TaeljaVerify"
 RESULTS = EVAL / "results.csv"
 ROOT_LEAN = TAELJA / "lean" / "TaeljaVerify.lean"
+# The eval modules are generated from eval_out and not shipped, so their
+# imports go to a file of their own, which .gitignore covers, and the tracked
+# TaeljaVerify.lean keeps the suite's own modules only.
+EVAL_LEAN = TAELJA / "lean" / "TaeljaVerifyEval.lean"
 
 PROVER_DIR = {"vampire": "Vampire", "e": "E", "twee": "Twee"}
+CATEGORIES = ("HEQ", "HNE", "UEQ", "FOF", "TFF")
 
 
 def to_camel(name: str) -> str:
-    """ANA009-2 → Ana0092,  ALG440-1 → Alg4401"""
-    parts = re.split(r'[-_.]', name)  # MSC015-1.005 -> Msc0151005 (dots are not valid in Lean names)
+    """ANA009-2 → Ana0092,  ALG440-1 → Alg4401,  ALG018+1 → Alg0181"""
+    parts = re.split(r'[-_.+]', name)  # MSC015-1.005 -> Msc0151005 (dots and pluses are not valid in Lean names)
     return ''.join(p.capitalize() for p in parts if p)
 
 
@@ -51,7 +56,7 @@ def main():
     errors = []
 
     for row in rows:
-        cat    = row["category"]          # HEQ, HNE, UEQ
+        cat    = row["category"]          # HEQ, HNE, UEQ, FOF, TFF
         prob   = row["problem"]           # ANA009-2
         prover = row["prover"]            # vampire / e / twee
 
@@ -84,7 +89,7 @@ def main():
 
     # Rewrite TaeljaVerify.lean with all imports
     # Keep existing non-eval imports (Vampire/, E/, Twee/ at top level), add eval ones.
-    existing = ROOT_LEAN.read_text().splitlines()
+    existing = EVAL_LEAN.read_text().splitlines() if EVAL_LEAN.exists() else []
     # Keep lines up to and including the last non-eval import block
     eval_marker = "-- Eval benchmark imports"
     base_lines = []
@@ -100,28 +105,26 @@ def main():
         kept = set(
             line.strip().removeprefix("import ")
             for line in existing
-            if line.startswith("import TaeljaVerify.HEQ.")
-            or line.startswith("import TaeljaVerify.HNE.")
-            or line.startswith("import TaeljaVerify.UEQ.")
+            if any(line.startswith(f"import TaeljaVerify.{c}.") for c in CATEGORIES)
         )
     else:
         kept = set()
     all_eval_imports = sorted(kept | set(generated))
     if not args.only_new:
         wanted = set(all_eval_imports)
-        for cat in ("HEQ", "HNE", "UEQ"):
+        for cat in CATEGORIES:
             for pdir in PROVER_DIR.values():
                 for f in (LEAN / cat / pdir).glob("*.lean"):
                     if f"TaeljaVerify.{cat}.{pdir}.{f.stem}" not in wanted:
                         f.unlink()
 
     new_content = "\n".join(base_lines).rstrip()
-    new_content += f"\n\n{eval_marker}\n"
+    new_content = (new_content + "\n\n" if new_content else "") + f"{eval_marker}\n"
     new_content += "\n".join(f"import {m}" for m in all_eval_imports)
     new_content += "\n"
-    ROOT_LEAN.write_text(new_content)
+    EVAL_LEAN.write_text(new_content)
 
-    print(f"Generated {len(generated)} files.")
+    print(f"Generated {len(generated)} files. Build them with: lake build TaeljaVerifyEval")
     if errors:
         print(f"{len(errors)} errors:")
         for e in errors[:20]:

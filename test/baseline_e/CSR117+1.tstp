@@ -1,0 +1,1858 @@
+# Preprocessing class: FSLMSMSLSSSNFFN.
+# Configuration: G-E--_008_C45_F1_PI_SE_Q4_CS_SP_S4SI
+# No SInE strategy applied
+# Search class: FHHSF-FFMM11-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_37, plain, (s__Object(s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_25, plain, (s__SetOrClass(s__Flooding__t))).
+#
+#cnf(i_0_33, plain, (s__Object(s__CoastalCitiesClass))).
+#
+#cnf(i_0_3, plain, (s__Object(esk3_0))).
+#
+#cnf(i_0_34, plain, (s__City(s__Moscow))).
+#
+#cnf(i_0_219, plain, (to_int('37.97615')='37')).
+#
+#cnf(i_0_26, plain, (s__CaseRole(s__located__m))).
+#
+#cnf(i_0_268, plain, (~s__Entity(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_267, plain, (~s__Object(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_265, plain, (~s__PositionalAttribute(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_262, plain, (~s__CaseRole(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_122, plain, (s__SymbolicString(athens))).
+#
+#cnf(i_0_123, plain, (s__SymbolicString(gr))).
+#
+#cnf(i_0_127, plain, (s__SymbolicString(berlin))).
+#
+#cnf(i_0_128, plain, (s__SymbolicString(de))).
+#
+#cnf(i_0_132, plain, (s__SymbolicString(bratislava))).
+#
+#cnf(i_0_235, plain, (to_int('52.516074')='52')).
+#
+#cnf(i_0_133, plain, (s__SymbolicString(sk))).
+#
+#cnf(i_0_258, plain, (~s__SymbolicString(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_253, plain, (~real(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_247, plain, (~int(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_266, plain, (~s__Object(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_137, plain, (s__SymbolicString(brussels))).
+#
+#cnf(i_0_138, plain, (s__SymbolicString(be))).
+#
+#cnf(i_0_142, plain, (s__SymbolicString(budapest))).
+#
+#cnf(i_0_143, plain, (s__SymbolicString(hu))).
+#
+#cnf(i_0_147, plain, (s__SymbolicString(canberra))).
+#
+#cnf(i_0_225, plain, (to_int('48.149245')='48')).
+#
+#cnf(i_0_148, plain, (s__SymbolicString(au))).
+#
+#cnf(i_0_264, plain, (~s__PositionalAttribute(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_261, plain, (~s__CaseRole(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_257, plain, (~s__SymbolicString(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_252, plain, (~real(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_152, plain, (s__SymbolicString(copenhagen))).
+#
+#cnf(i_0_153, plain, (s__SymbolicString(dk))).
+#
+#cnf(i_0_157, plain, (s__SymbolicString(helsinki))).
+#
+#cnf(i_0_158, plain, (s__SymbolicString(fi))).
+#
+#cnf(i_0_162, plain, (s__SymbolicString(lisbon))).
+#
+#cnf(i_0_232, plain, (to_int('50.848385')='50')).
+#
+#cnf(i_0_163, plain, (s__SymbolicString(pt))).
+#
+#cnf(i_0_246, plain, (~int(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_263, plain, (~s__PositionalAttribute(X1)|~s__Object(X1))).
+#
+#cnf(i_0_260, plain, (~s__CaseRole(X1)|~s__Object(X1))).
+#
+#cnf(i_0_256, plain, (~s__SymbolicString(X1)|~s__Object(X1))).
+#
+#cnf(i_0_167, plain, (s__SymbolicString(luxembourg_city))).
+#
+#cnf(i_0_168, plain, (s__SymbolicString(lu))).
+#
+#cnf(i_0_172, plain, (s__SymbolicString(moscow))).
+#
+#cnf(i_0_173, plain, (s__SymbolicString(ru))).
+#
+#cnf(i_0_177, plain, (s__SymbolicString(paris))).
+#
+#cnf(i_0_223, plain, (to_int('47.506225')='47')).
+#
+#cnf(i_0_178, plain, (s__SymbolicString(fr))).
+#
+#cnf(i_0_251, plain, (~real(X1)|~s__Object(X1))).
+#
+#cnf(i_0_245, plain, (~int(X1)|~s__Object(X1))).
+#
+#cnf(i_0_269, plain, (~s__WaterArea(X1)|~s__GeopoliticalArea(X1))).
+#
+#cnf(i_0_270, plain, (~s__City(X1)|~s__Nation(X1))).
+#
+#cnf(i_0_182, plain, (s__SymbolicString(prague))).
+#
+#cnf(i_0_183, plain, (s__SymbolicString(cz))).
+#
+#cnf(i_0_187, plain, (s__SymbolicString(seoul))).
+#
+#cnf(i_0_188, plain, (s__SymbolicString(kr))).
+#
+#cnf(i_0_192, plain, (s__SymbolicString(vienna))).
+#
+#cnf(i_0_216, plain, (to_int('-35.306541')='-35')).
+#
+#cnf(i_0_193, plain, (s__SymbolicString(at))).
+#
+#cnf(i_0_259, plain, (~s__CaseRole(X1)|~s__PositionalAttribute(X1))).
+#
+#cnf(i_0_255, plain, (~s__SymbolicString(X1)|~s__PositionalAttribute(X1))).
+#
+#cnf(i_0_250, plain, (~real(X1)|~s__PositionalAttribute(X1))).
+#
+#cnf(i_0_244, plain, (~int(X1)|~s__PositionalAttribute(X1))).
+#
+#cnf(i_0_197, plain, (s__SymbolicString(warsaw))).
+#
+#cnf(i_0_198, plain, (s__SymbolicString(pl))).
+#
+#cnf(i_0_14, plain, (s__SymbolicString(esk14_0))).
+#
+#cnf(i_0_120, plain, (real('37.97615'))).
+#
+#cnf(i_0_121, plain, (real('23.736415'))).
+#
+#cnf(i_0_237, plain, (to_int('55.67631')='55')).
+#
+#cnf(i_0_125, plain, (real('52.516074'))).
+#
+#cnf(i_0_254, plain, (~s__SymbolicString(X1)|~s__CaseRole(X1))).
+#
+#cnf(i_0_249, plain, (~real(X1)|~s__CaseRole(X1))).
+#
+#cnf(i_0_243, plain, (~int(X1)|~s__CaseRole(X1))).
+#
+#cnf(i_0_248, plain, (~real(X1)|~s__SymbolicString(X1))).
+#
+#cnf(i_0_126, plain, (real('13.376987'))).
+#
+#cnf(i_0_130, plain, (real('48.149245'))).
+#
+#cnf(i_0_131, plain, (real('17.107005'))).
+#
+#cnf(i_0_135, plain, (real('50.848385'))).
+#
+#cnf(i_0_136, plain, (real('4.349685'))).
+#
+#cnf(i_0_240, plain, (to_int('60.17116')='60')).
+#
+#cnf(i_0_140, plain, (real('47.506225'))).
+#
+#cnf(i_0_242, plain, (~int(X1)|~s__SymbolicString(X1))).
+#
+#cnf(i_0_241, plain, (~int(X1)|~real(X1))).
+#
+#cnf(i_0_15, plain, (s__Object(X1)|~s__Region(X1))).
+#
+#cnf(i_0_16, plain, (s__Region(X1)|~s__GeographicArea(X1))).
+#
+#cnf(i_0_141, plain, (real('19.06482'))).
+#
+#cnf(i_0_145, plain, (real('-35.306541'))).
+#
+#cnf(i_0_146, plain, (real('149.126556'))).
+#
+#cnf(i_0_150, plain, (real('55.67631'))).
+#
+#cnf(i_0_151, plain, (real('12.569355'))).
+#
+#cnf(i_0_221, plain, (to_int('38.725679')='38')).
+#
+#cnf(i_0_155, plain, (real('60.17116'))).
+#
+#cnf(i_0_21, plain, (s__WaterArea(X1)|~s__BodyOfWater(X1))).
+#
+#cnf(i_0_22, plain, (s__BodyOfWater(X1)|~s__Sea(X1))).
+#
+#cnf(i_0_23, plain, (s__PositionalAttribute(X1)|~s__SymmetricPositionalAttribute(X1))).
+#
+#cnf(i_0_1, plain, (s__SetOrClass(esk1_0))).
+#
+#cnf(i_0_156, plain, (real('24.93258'))).
+#
+#cnf(i_0_160, plain, (real('38.725679'))).
+#
+#cnf(i_0_161, plain, (real('-9.150371'))).
+#
+#cnf(i_0_165, plain, (real('49.609531'))).
+#
+#cnf(i_0_166, plain, (real('6.12997'))).
+#
+#cnf(i_0_229, plain, (to_int('49.609531')='49')).
+#
+#cnf(i_0_170, plain, (real('55.75695'))).
+#
+#cnf(i_0_2, plain, (s__Entity(esk2_0))).
+#
+#cnf(i_0_4, plain, (s__Region(esk4_0))).
+#
+#cnf(i_0_5, plain, (s__GeopoliticalArea(esk5_0))).
+#
+#cnf(i_0_38, plain, (s__Nation(s__CzechRepublic))).
+#
+#cnf(i_0_171, plain, (real('37.614975'))).
+#
+#cnf(i_0_175, plain, (real('48.856925'))).
+#
+#cnf(i_0_176, plain, (real('2.34121'))).
+#
+#cnf(i_0_180, plain, (real('50.079083'))).
+#
+#cnf(i_0_181, plain, (real('14.43323'))).
+#
+#cnf(i_0_238, plain, (to_int('55.75695')='55')).
+#
+#cnf(i_0_185, plain, (real('37.557121'))).
+#
+#cnf(i_0_40, plain, (s__Nation(s__Denmark))).
+#
+#cnf(i_0_42, plain, (s__Nation(s__Finland))).
+#
+#cnf(i_0_44, plain, (s__Nation(s__Germany))).
+#
+#cnf(i_0_46, plain, (s__Nation(s__Greece))).
+#
+#cnf(i_0_186, plain, (real('126.977379'))).
+#
+#cnf(i_0_190, plain, (real('48.202548'))).
+#
+#cnf(i_0_191, plain, (real('16.368805'))).
+#
+#cnf(i_0_195, plain, (real('52.23537'))).
+#
+#cnf(i_0_196, plain, (real('21.009485'))).
+#
+#cnf(i_0_227, plain, (to_int('48.856925')='48')).
+#
+#cnf(i_0_31, plain, (real(esk16_0))).
+#
+#cnf(i_0_48, plain, (s__Nation(s__Hungary))).
+#
+#cnf(i_0_50, plain, (s__Nation(s__Italy))).
+#
+#cnf(i_0_52, plain, (s__Nation(s__Luxembourg))).
+#
+#cnf(i_0_54, plain, (s__Nation(s__Mexico))).
+#
+#cnf(i_0_215, plain, (int('-35'))).
+#
+#cnf(i_0_217, plain, (int('37'))).
+#
+#cnf(i_0_220, plain, (int('38'))).
+#
+#cnf(i_0_222, plain, (int('47'))).
+#
+#cnf(i_0_224, plain, (int('48'))).
+#
+#cnf(i_0_231, plain, (to_int('50.079083')='50')).
+#
+#cnf(i_0_228, plain, (int('49'))).
+#
+#cnf(i_0_56, plain, (s__Nation(s__NewZealand))).
+#
+#cnf(i_0_58, plain, (s__Nation(s__Poland))).
+#
+#cnf(i_0_60, plain, (s__Nation(s__Sweden))).
+#
+#cnf(i_0_62, plain, (s__Nation(s__SouthKorea))).
+#
+#cnf(i_0_230, plain, (int('50'))).
+#
+#cnf(i_0_233, plain, (int('52'))).
+#
+#cnf(i_0_236, plain, (int('55'))).
+#
+#cnf(i_0_239, plain, (int('60'))).
+#
+#cnf(i_0_32, plain, (int(esk17_0))).
+#
+#cnf(i_0_218, plain, (to_int('37.557121')='37')).
+#
+#cnf(i_0_226, plain, (to_int('48.202548')='48')).
+#
+#cnf(i_0_64, plain, (s__Nation(s__Slovakia))).
+#
+#cnf(i_0_66, plain, (s__Nation(s__Spain))).
+#
+#cnf(i_0_68, plain, (s__Nation(s__Switzerland))).
+#
+#cnf(i_0_70, plain, (s__Nation(s__UnitedKingdom))).
+#
+#cnf(i_0_234, plain, (to_int('52.23537')='52')).
+#
+#cnf(i_0_39, plain, (is_instance(s__CzechRepublic,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_41, plain, (is_instance(s__Denmark,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_43, plain, (is_instance(s__Finland,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_45, plain, (is_instance(s__Germany,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_72, plain, (s__Nation(s__UnitedStates))).
+#
+#cnf(i_0_74, plain, (s__Nation(s__Portugal))).
+#
+#cnf(i_0_76, plain, (s__Nation(s__Norway))).
+#
+#cnf(i_0_78, plain, (s__Nation(s__Netherlands))).
+#
+#cnf(i_0_80, plain, (s__Nation(s__Iceland))).
+#
+#cnf(i_0_82, plain, (s__Nation(s__Belgium))).
+#
+#cnf(i_0_84, plain, (s__Nation(s__France))).
+#
+#cnf(i_0_47, plain, (is_instance(s__Greece,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_49, plain, (is_instance(s__Hungary,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_51, plain, (is_instance(s__Italy,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_53, plain, (is_instance(s__Luxembourg,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_86, plain, (s__Nation(s__Australia))).
+#
+#cnf(i_0_88, plain, (s__Nation(s__Austria))).
+#
+#cnf(i_0_6, plain, (s__Nation(esk6_0))).
+#
+#cnf(i_0_102, plain, (s__City(s__Copenhagen))).
+#
+#cnf(i_0_90, plain, (s__City(s__Athens))).
+#
+#cnf(i_0_92, plain, (s__City(s__Berlin))).
+#
+#cnf(i_0_94, plain, (s__City(s__Bratislava))).
+#
+#cnf(i_0_55, plain, (is_instance(s__Mexico,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_57, plain, (is_instance(s__NewZealand,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_59, plain, (is_instance(s__Poland,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_61, plain, (is_instance(s__Sweden,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_96, plain, (s__City(s__Brussels))).
+#
+#cnf(i_0_98, plain, (s__City(s__Budapest))).
+#
+#cnf(i_0_100, plain, (s__City(s__Canberra))).
+#
+#cnf(i_0_104, plain, (s__City(s__Helsinki))).
+#
+#cnf(i_0_106, plain, (s__City(s__Lisbon))).
+#
+#cnf(i_0_108, plain, (s__City(s__Luxembourg_City))).
+#
+#cnf(i_0_110, plain, (s__City(s__Paris))).
+#
+#cnf(i_0_63, plain, (is_instance(s__SouthKorea,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_65, plain, (is_instance(s__Slovakia,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_67, plain, (is_instance(s__Spain,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_69, plain, (is_instance(s__Switzerland,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_112, plain, (s__City(s__Prague))).
+#
+#cnf(i_0_114, plain, (s__City(s__Seoul))).
+#
+#cnf(i_0_116, plain, (s__City(s__Vienna))).
+#
+#cnf(i_0_118, plain, (s__City(s__Warsaw))).
+#
+#cnf(i_0_7, plain, (s__City(esk7_0))).
+#
+#cnf(i_0_8, plain, (s__WaterArea(esk8_0))).
+#
+#cnf(i_0_9, plain, (s__BodyOfWater(esk9_0))).
+#
+#cnf(i_0_71, plain, (is_instance(s__UnitedKingdom,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_73, plain, (is_instance(s__UnitedStates,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_75, plain, (is_instance(s__Portugal,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_77, plain, (is_instance(s__Norway,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_10, plain, (s__Sea(esk10_0))).
+#
+#cnf(i_0_11, plain, (s__PositionalAttribute(esk11_0))).
+#
+#cnf(i_0_24, plain, (s__SymmetricPositionalAttribute(s__Near))).
+#
+#cnf(i_0_12, plain, (s__SymmetricPositionalAttribute(esk12_0))).
+#
+#cnf(i_0_13, plain, (s__CaseRole(esk13_0))).
+#
+#cnf(i_0_18, plain, (s__GeopoliticalArea(X1)|~s__Nation(X1))).
+#
+#cnf(i_0_79, plain, (is_instance(s__Netherlands,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_81, plain, (is_instance(s__Iceland,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_83, plain, (is_instance(s__Belgium,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_85, plain, (is_instance(s__France,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_87, plain, (is_instance(s__Australia,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_35, plain, (is_instance(s__Copenhagen,s__CoastalCitiesClass))).
+#
+#cnf(i_0_89, plain, (is_instance(s__Austria,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_19, plain, (s__GeopoliticalArea(X1)|~s__City(X1))).
+#
+#cnf(i_0_17, plain, (s__GeographicArea(X1)|~s__GeopoliticalArea(X1))).
+#
+#cnf(i_0_20, plain, (s__GeographicArea(X1)|~s__WaterArea(X1))).
+#
+#cnf(i_0_103, plain, (capital_city(s__Copenhagen,s__Denmark))).
+#
+#cnf(i_0_206, plain, (look_different(s__Copenhagen,s__Moscow))).
+#
+#cnf(i_0_200, plain, (look_different(s__Athens,s__Moscow))).
+#
+#cnf(i_0_201, plain, (look_different(s__Berlin,s__Moscow))).
+#
+#cnf(i_0_202, plain, (look_different(s__Bratislava,s__Moscow))).
+#
+#cnf(i_0_203, plain, (look_different(s__Brussels,s__Moscow))).
+#
+#cnf(i_0_91, plain, (capital_city(s__Athens,s__Greece))).
+#
+#cnf(i_0_204, plain, (look_different(s__Budapest,s__Moscow))).
+#
+#cnf(i_0_93, plain, (capital_city(s__Berlin,s__Germany))).
+#
+#cnf(i_0_95, plain, (capital_city(s__Bratislava,s__Slovakia))).
+#
+#cnf(i_0_97, plain, (capital_city(s__Brussels,s__Belgium))).
+#
+#cnf(i_0_99, plain, (capital_city(s__Budapest,s__Hungary))).
+#
+#cnf(i_0_205, plain, (look_different(s__Canberra,s__Moscow))).
+#
+#cnf(i_0_207, plain, (look_different(s__Helsinki,s__Moscow))).
+#
+#cnf(i_0_208, plain, (look_different(s__Lisbon,s__Moscow))).
+#
+#cnf(i_0_209, plain, (look_different(s__Luxembourg_City,s__Moscow))).
+#
+#cnf(i_0_210, plain, (look_different(s__Paris,s__Moscow))).
+#
+#cnf(i_0_101, plain, (capital_city(s__Canberra,s__Australia))).
+#
+#cnf(i_0_211, plain, (look_different(s__Prague,s__Moscow))).
+#
+#cnf(i_0_105, plain, (capital_city(s__Helsinki,s__Finland))).
+#
+#cnf(i_0_107, plain, (capital_city(s__Lisbon,s__Portugal))).
+#
+#cnf(i_0_109, plain, (capital_city(s__Luxembourg_City,s__Luxembourg))).
+#
+#cnf(i_0_111, plain, (capital_city(s__Paris,s__France))).
+#
+#cnf(i_0_212, plain, (look_different(s__Seoul,s__Moscow))).
+#
+#cnf(i_0_213, plain, (look_different(s__Vienna,s__Moscow))).
+#
+#cnf(i_0_214, plain, (look_different(s__Warsaw,s__Moscow))).
+#
+#cnf(i_0_36, plain, (int(to_int(X1))|~real(X1))).
+#
+#cnf(i_0_113, plain, (capital_city(s__Prague,s__CzechRepublic))).
+#
+#cnf(i_0_115, plain, (capital_city(s__Seoul,s__SouthKorea))).
+#
+#cnf(i_0_117, plain, (capital_city(s__Vienna,s__Austria))).
+#
+#cnf(i_0_119, plain, (capital_city(s__Warsaw,s__Poland))).
+#
+#cnf(i_0_28, plain, (s__Sea(esk15_1(X1))|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1))).
+#
+#cnf(i_0_27, plain, (s__orientation(X1,esk15_1(X1),s__Near)|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1))).
+#
+#cnf(i_0_174, plain, (latlong(s__Moscow,'55.75695','37.614975',moscow,ru))).
+#
+#cnf(i_0_154, plain, (latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk))).
+#
+#cnf(i_0_124, plain, (latlong(s__Athens,'37.97615','23.736415',athens,gr))).
+#
+#cnf(i_0_129, plain, (latlong(s__Berlin,'52.516074','13.376987',berlin,de))).
+#
+#cnf(i_0_134, plain, (latlong(s__Bratislava,'48.149245','17.107005',bratislava,sk))).
+#
+#cnf(i_0_139, plain, (latlong(s__Brussels,'50.848385','4.349685',brussels,be))).
+#
+#cnf(i_0_29, plain, (s__capability(s__Flooding__t,s__located__m,X2)|~s__orientation(X2,X1,s__Near)|~s__WaterArea(X1)|~s__City(X2))).
+#
+#cnf(i_0_144, plain, (latlong(s__Budapest,'47.506225','19.06482',budapest,hu))).
+#
+#cnf(i_0_149, plain, (latlong(s__Canberra,'-35.306541','149.126556',canberra,au))).
+#
+#cnf(i_0_159, plain, (latlong(s__Helsinki,'60.17116','24.93258',helsinki,fi))).
+#
+#cnf(i_0_164, plain, (latlong(s__Lisbon,'38.725679','-9.150371',lisbon,pt))).
+#
+#cnf(i_0_169, plain, (latlong(s__Luxembourg_City,'49.609531','6.12997',luxembourg_city,lu))).
+#
+#cnf(i_0_179, plain, (latlong(s__Paris,'48.856925','2.34121',paris,fr))).
+#
+#cnf(i_0_184, plain, (latlong(s__Prague,'50.079083','14.43323',prague,cz))).
+#
+#cnf(i_0_189, plain, (latlong(s__Seoul,'37.557121','126.977379',seoul,kr))).
+#
+#cnf(i_0_194, plain, (latlong(s__Vienna,'48.202548','16.368805',vienna,at))).
+#
+#cnf(i_0_199, plain, (latlong(s__Warsaw,'52.23537','21.009485',warsaw,pl))).
+#
+#cnf(i_0_30, negated_conjecture, (to_int(X3)!=to_int(X8)|~latlong(s__Moscow,X8,X9,X10,X11)|~latlong(X1,X3,X4,X5,X6)|~look_different(X1,s__Moscow)|~capital_city(X1,X2)|~int(X7)|~real(X9)|~real(X8)|~real(X4)|~real(X3)|~s__capability(s__Flooding__t,s__located__m,X1)|~is_instance(X2,s__OECDMemberEconomiesClass)|~s__SymbolicString(X11)|~s__SymbolicString(X10)|~s__SymbolicString(X6)|~s__SymbolicString(X5)|~s__Object(X2)|~s__Object(X1))).
+# Presaturation interreduction done
+#
+#cnf(i_0_37, plain, (s__Object(s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_268, plain, (~s__Entity(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_267, plain, (~s__Object(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_265, plain, (~s__PositionalAttribute(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_262, plain, (~s__CaseRole(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_25, plain, (s__SetOrClass(s__Flooding__t))).
+#
+#cnf(i_0_271, plain, (~s__Object(s__Flooding__t))).
+#
+#cnf(i_0_33, plain, (s__Object(s__CoastalCitiesClass))).
+#
+#cnf(i_0_3, plain, (s__Object(esk3_0))).
+#
+#cnf(i_0_34, plain, (s__City(s__Moscow))).
+#
+#cnf(i_0_219, plain, (to_int('37.97615')='37')).
+#
+#cnf(i_0_26, plain, (s__CaseRole(s__located__m))).
+#
+#cnf(i_0_272, plain, (~s__SetOrClass(s__located__m))).
+#
+#cnf(i_0_258, plain, (~s__SymbolicString(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_273, plain, (~s__SymbolicString(s__Flooding__t))).
+#
+#cnf(i_0_253, plain, (~real(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_274, plain, (~real(s__Flooding__t))).
+#
+#cnf(i_0_122, plain, (s__SymbolicString(athens))).
+#
+#cnf(i_0_123, plain, (s__SymbolicString(gr))).
+#
+#cnf(i_0_127, plain, (s__SymbolicString(berlin))).
+#
+#cnf(i_0_128, plain, (s__SymbolicString(de))).
+#
+#cnf(i_0_132, plain, (s__SymbolicString(bratislava))).
+#
+#cnf(i_0_133, plain, (s__SymbolicString(sk))).
+#
+#cnf(i_0_247, plain, (~int(X1)|~s__SetOrClass(X1))).
+#
+#cnf(i_0_275, plain, (~int(s__Flooding__t))).
+#
+#cnf(i_0_266, plain, (~s__Object(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_264, plain, (~s__PositionalAttribute(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_137, plain, (s__SymbolicString(brussels))).
+#
+#cnf(i_0_138, plain, (s__SymbolicString(be))).
+#
+#cnf(i_0_142, plain, (s__SymbolicString(budapest))).
+#
+#cnf(i_0_143, plain, (s__SymbolicString(hu))).
+#
+#cnf(i_0_147, plain, (s__SymbolicString(canberra))).
+#
+#cnf(i_0_235, plain, (to_int('52.516074')='52')).
+#
+#cnf(i_0_148, plain, (s__SymbolicString(au))).
+#
+#cnf(i_0_261, plain, (~s__CaseRole(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_257, plain, (~s__SymbolicString(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_252, plain, (~real(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_246, plain, (~int(X1)|~s__Entity(X1))).
+#
+#cnf(i_0_152, plain, (s__SymbolicString(copenhagen))).
+#
+#cnf(i_0_153, plain, (s__SymbolicString(dk))).
+#
+#cnf(i_0_157, plain, (s__SymbolicString(helsinki))).
+#
+#cnf(i_0_158, plain, (s__SymbolicString(fi))).
+#
+#cnf(i_0_162, plain, (s__SymbolicString(lisbon))).
+#
+#cnf(i_0_225, plain, (to_int('48.149245')='48')).
+#
+#cnf(i_0_163, plain, (s__SymbolicString(pt))).
+#
+#cnf(i_0_263, plain, (~s__PositionalAttribute(X1)|~s__Object(X1))).
+#
+#cnf(i_0_260, plain, (~s__CaseRole(X1)|~s__Object(X1))).
+#
+#cnf(i_0_276, plain, (~s__Object(s__located__m))).
+#
+#cnf(i_0_256, plain, (~s__SymbolicString(X1)|~s__Object(X1))).
+#
+#cnf(i_0_278, plain, (~s__SymbolicString(s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_277, plain, (~s__SymbolicString(esk3_0))).
+#
+#cnf(i_0_279, plain, (~s__SymbolicString(s__CoastalCitiesClass))).
+#
+#cnf(i_0_167, plain, (s__SymbolicString(luxembourg_city))).
+#
+#cnf(i_0_168, plain, (s__SymbolicString(lu))).
+#
+#cnf(i_0_232, plain, (to_int('50.848385')='50')).
+#
+#cnf(i_0_172, plain, (s__SymbolicString(moscow))).
+#
+#cnf(i_0_251, plain, (~real(X1)|~s__Object(X1))).
+#
+#cnf(i_0_280, plain, (~real(esk3_0))).
+#
+#cnf(i_0_281, plain, (~real(s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_282, plain, (~real(s__CoastalCitiesClass))).
+#
+#cnf(i_0_173, plain, (s__SymbolicString(ru))).
+#
+#cnf(i_0_177, plain, (s__SymbolicString(paris))).
+#
+#cnf(i_0_178, plain, (s__SymbolicString(fr))).
+#
+#cnf(i_0_182, plain, (s__SymbolicString(prague))).
+#
+#cnf(i_0_183, plain, (s__SymbolicString(cz))).
+#
+#cnf(i_0_223, plain, (to_int('47.506225')='47')).
+#
+#cnf(i_0_187, plain, (s__SymbolicString(seoul))).
+#
+#cnf(i_0_245, plain, (~int(X1)|~s__Object(X1))).
+#
+#cnf(i_0_283, plain, (~int(esk3_0))).
+#
+#cnf(i_0_284, plain, (~int(s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_285, plain, (~int(s__CoastalCitiesClass))).
+#
+#cnf(i_0_188, plain, (s__SymbolicString(kr))).
+#
+#cnf(i_0_192, plain, (s__SymbolicString(vienna))).
+#
+#cnf(i_0_193, plain, (s__SymbolicString(at))).
+#
+#cnf(i_0_197, plain, (s__SymbolicString(warsaw))).
+#
+#cnf(i_0_198, plain, (s__SymbolicString(pl))).
+#
+#cnf(i_0_216, plain, (to_int('-35.306541')='-35')).
+#
+#cnf(i_0_14, plain, (s__SymbolicString(esk14_0))).
+#
+#cnf(i_0_269, plain, (~s__WaterArea(X1)|~s__GeopoliticalArea(X1))).
+#
+#cnf(i_0_270, plain, (~s__City(X1)|~s__Nation(X1))).
+#
+#cnf(i_0_286, plain, (~s__Nation(s__Moscow))).
+#
+#cnf(i_0_259, plain, (~s__CaseRole(X1)|~s__PositionalAttribute(X1))).
+#
+#cnf(i_0_120, plain, (real('37.97615'))).
+#
+#cnf(i_0_287, plain, (~s__PositionalAttribute(s__located__m))).
+#
+#cnf(i_0_121, plain, (real('23.736415'))).
+#
+#cnf(i_0_125, plain, (real('52.516074'))).
+#
+#cnf(i_0_126, plain, (real('13.376987'))).
+#
+#cnf(i_0_237, plain, (to_int('55.67631')='55')).
+#
+#cnf(i_0_130, plain, (real('48.149245'))).
+#
+#cnf(i_0_255, plain, (~s__SymbolicString(X1)|~s__PositionalAttribute(X1))).
+#
+#cnf(i_0_250, plain, (~real(X1)|~s__PositionalAttribute(X1))).
+#
+#cnf(i_0_244, plain, (~int(X1)|~s__PositionalAttribute(X1))).
+#
+#cnf(i_0_254, plain, (~s__SymbolicString(X1)|~s__CaseRole(X1))).
+#
+#cnf(i_0_288, plain, (~s__SymbolicString(s__located__m))).
+#
+#cnf(i_0_131, plain, (real('17.107005'))).
+#
+#cnf(i_0_135, plain, (real('50.848385'))).
+#
+#cnf(i_0_136, plain, (real('4.349685'))).
+#
+#cnf(i_0_140, plain, (real('47.506225'))).
+#
+#cnf(i_0_240, plain, (to_int('60.17116')='60')).
+#
+#cnf(i_0_141, plain, (real('19.06482'))).
+#
+#cnf(i_0_249, plain, (~real(X1)|~s__CaseRole(X1))).
+#
+#cnf(i_0_289, plain, (~real(s__located__m))).
+#
+#cnf(i_0_243, plain, (~int(X1)|~s__CaseRole(X1))).
+#
+#cnf(i_0_290, plain, (~int(s__located__m))).
+#
+#cnf(i_0_145, plain, (real('-35.306541'))).
+#
+#cnf(i_0_146, plain, (real('149.126556'))).
+#
+#cnf(i_0_150, plain, (real('55.67631'))).
+#
+#cnf(i_0_151, plain, (real('12.569355'))).
+#
+#cnf(i_0_155, plain, (real('60.17116'))).
+#
+#cnf(i_0_221, plain, (to_int('38.725679')='38')).
+#
+#cnf(i_0_156, plain, (real('24.93258'))).
+#
+#cnf(i_0_248, plain, (~real(X1)|~s__SymbolicString(X1))).
+#
+#cnf(i_0_291, plain, (~real(esk14_0))).
+#
+#cnf(i_0_292, plain, (~real(pl))).
+#
+#cnf(i_0_293, plain, (~real(warsaw))).
+#
+#cnf(i_0_160, plain, (real('38.725679'))).
+#
+#cnf(i_0_294, plain, (~real(at))).
+#
+#cnf(i_0_295, plain, (~real(vienna))).
+#
+#cnf(i_0_296, plain, (~real(kr))).
+#
+#cnf(i_0_297, plain, (~real(seoul))).
+#
+#cnf(i_0_1, plain, (s__SetOrClass(esk1_0))).
+#
+#cnf(i_0_161, plain, (real('-9.150371'))).
+#
+#cnf(i_0_298, plain, (~real(cz))).
+#
+#cnf(i_0_299, plain, (~real(prague))).
+#
+#cnf(i_0_300, plain, (~real(fr))).
+#
+#cnf(i_0_301, plain, (~real(paris))).
+#
+#cnf(i_0_165, plain, (real('49.609531'))).
+#
+#cnf(i_0_302, plain, (~real(ru))).
+#
+#cnf(i_0_303, plain, (~real(moscow))).
+#
+#cnf(i_0_304, plain, (~real(lu))).
+#
+#cnf(i_0_305, plain, (~real(luxembourg_city))).
+#
+#cnf(i_0_166, plain, (real('6.12997'))).
+#
+#cnf(i_0_170, plain, (real('55.75695'))).
+#
+#cnf(i_0_306, plain, (~real(pt))).
+#
+#cnf(i_0_307, plain, (~real(lisbon))).
+#
+#cnf(i_0_308, plain, (~real(fi))).
+#
+#cnf(i_0_309, plain, (~real(helsinki))).
+#
+#cnf(i_0_171, plain, (real('37.614975'))).
+#
+#cnf(i_0_310, plain, (~real(dk))).
+#
+#cnf(i_0_311, plain, (~real(copenhagen))).
+#
+#cnf(i_0_312, plain, (~real(au))).
+#
+#cnf(i_0_313, plain, (~real(canberra))).
+#
+#cnf(i_0_229, plain, (to_int('49.609531')='49')).
+#
+#cnf(i_0_175, plain, (real('48.856925'))).
+#
+#cnf(i_0_314, plain, (~real(hu))).
+#
+#cnf(i_0_315, plain, (~real(budapest))).
+#
+#cnf(i_0_316, plain, (~real(be))).
+#
+#cnf(i_0_317, plain, (~real(brussels))).
+#
+#cnf(i_0_176, plain, (real('2.34121'))).
+#
+#cnf(i_0_318, plain, (~real(sk))).
+#
+#cnf(i_0_319, plain, (~real(bratislava))).
+#
+#cnf(i_0_320, plain, (~real(de))).
+#
+#cnf(i_0_321, plain, (~real(berlin))).
+#
+#cnf(i_0_2, plain, (s__Entity(esk2_0))).
+#
+#cnf(i_0_180, plain, (real('50.079083'))).
+#
+#cnf(i_0_322, plain, (~real(gr))).
+#
+#cnf(i_0_323, plain, (~real(athens))).
+#
+#cnf(i_0_324, plain, (~s__Object(esk1_0))).
+#
+#cnf(i_0_325, plain, (~s__SymbolicString(esk1_0))).
+#
+#cnf(i_0_181, plain, (real('14.43323'))).
+#
+#cnf(i_0_326, plain, (~real(esk1_0))).
+#
+#cnf(i_0_327, plain, (~int(esk1_0))).
+#
+#cnf(i_0_329, plain, (~s__Object(esk2_0))).
+#
+#cnf(i_0_332, plain, (~s__SymbolicString(esk2_0))).
+#
+#cnf(i_0_4, plain, (s__Region(esk4_0))).
+#
+#cnf(i_0_185, plain, (real('37.557121'))).
+#
+#cnf(i_0_328, plain, (~s__SetOrClass(esk2_0))).
+#
+#cnf(i_0_330, plain, (~s__PositionalAttribute(esk2_0))).
+#
+#cnf(i_0_331, plain, (~s__CaseRole(esk2_0))).
+#
+#cnf(i_0_333, plain, (~real(esk2_0))).
+#
+#cnf(i_0_186, plain, (real('126.977379'))).
+#
+#cnf(i_0_334, plain, (~int(esk2_0))).
+#
+#cnf(i_0_190, plain, (real('48.202548'))).
+#
+#cnf(i_0_191, plain, (real('16.368805'))).
+#
+#cnf(i_0_195, plain, (real('52.23537'))).
+#
+#cnf(i_0_5, plain, (s__GeopoliticalArea(esk5_0))).
+#
+#cnf(i_0_196, plain, (real('21.009485'))).
+#
+#cnf(i_0_242, plain, (~int(X1)|~s__SymbolicString(X1))).
+#
+#cnf(i_0_241, plain, (~int(X1)|~real(X1))).
+#
+#cnf(i_0_15, plain, (s__Object(X1)|~s__Region(X1))).
+#
+#cnf(i_0_16, plain, (s__Region(X1)|~s__GeographicArea(X1))).
+#
+#cnf(i_0_31, plain, (real(esk16_0))).
+#
+#cnf(i_0_215, plain, (int('-35'))).
+#
+#cnf(i_0_336, plain, (~s__SymbolicString('-35'))).
+#
+#cnf(i_0_337, plain, (~real('-35'))).
+#
+#cnf(i_0_217, plain, (int('37'))).
+#
+#cnf(i_0_38, plain, (s__Nation(s__CzechRepublic))).
+#
+#cnf(i_0_220, plain, (int('38'))).
+#
+#cnf(i_0_338, plain, (~s__SymbolicString('37'))).
+#
+#cnf(i_0_339, plain, (~real('37'))).
+#
+#cnf(i_0_340, plain, (~s__SymbolicString('38'))).
+#
+#cnf(i_0_341, plain, (~real('38'))).
+#
+#cnf(i_0_222, plain, (int('47'))).
+#
+#cnf(i_0_342, plain, (~s__SymbolicString('47'))).
+#
+#cnf(i_0_343, plain, (~real('47'))).
+#
+#cnf(i_0_224, plain, (int('48'))).
+#
+#cnf(i_0_344, plain, (~s__SymbolicString('48'))).
+#
+#cnf(i_0_238, plain, (to_int('55.75695')='55')).
+#
+#cnf(i_0_228, plain, (int('49'))).
+#
+#cnf(i_0_345, plain, (~real('48'))).
+#
+#cnf(i_0_346, plain, (~s__SymbolicString('49'))).
+#
+#cnf(i_0_347, plain, (~real('49'))).
+#
+#cnf(i_0_21, plain, (s__WaterArea(X1)|~s__BodyOfWater(X1))).
+#
+#cnf(i_0_230, plain, (int('50'))).
+#
+#cnf(i_0_348, plain, (~s__SymbolicString('50'))).
+#
+#cnf(i_0_349, plain, (~real('50'))).
+#
+#cnf(i_0_233, plain, (int('52'))).
+#
+#cnf(i_0_350, plain, (~s__SymbolicString('52'))).
+#
+#cnf(i_0_40, plain, (s__Nation(s__Denmark))).
+#
+#cnf(i_0_236, plain, (int('55'))).
+#
+#cnf(i_0_351, plain, (~real('52'))).
+#
+#cnf(i_0_352, plain, (~s__SymbolicString('55'))).
+#
+#cnf(i_0_353, plain, (~real('55'))).
+#
+#cnf(i_0_22, plain, (s__BodyOfWater(X1)|~s__Sea(X1))).
+#
+#cnf(i_0_239, plain, (int('60'))).
+#
+#cnf(i_0_354, plain, (~s__SymbolicString('60'))).
+#
+#cnf(i_0_355, plain, (~real('60'))).
+#
+#cnf(i_0_32, plain, (int(esk17_0))).
+#
+#cnf(i_0_356, plain, (~s__SymbolicString(esk17_0))).
+#
+#cnf(i_0_42, plain, (s__Nation(s__Finland))).
+#
+#cnf(i_0_335, plain, (s__Object(esk4_0))).
+#
+#cnf(i_0_357, plain, (~real(esk17_0))).
+#
+#cnf(i_0_358, plain, (~s__SymbolicString(esk4_0))).
+#
+#cnf(i_0_359, plain, (~real(esk4_0))).
+#
+#cnf(i_0_360, plain, (~int(esk4_0))).
+#
+#cnf(i_0_227, plain, (to_int('48.856925')='48')).
+#
+#cnf(i_0_39, plain, (is_instance(s__CzechRepublic,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_41, plain, (is_instance(s__Denmark,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_43, plain, (is_instance(s__Finland,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_45, plain, (is_instance(s__Germany,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_44, plain, (s__Nation(s__Germany))).
+#
+#cnf(i_0_231, plain, (to_int('50.079083')='50')).
+#
+#cnf(i_0_23, plain, (s__PositionalAttribute(X1)|~s__SymmetricPositionalAttribute(X1))).
+#
+#cnf(i_0_46, plain, (s__Nation(s__Greece))).
+#
+#cnf(i_0_48, plain, (s__Nation(s__Hungary))).
+#
+#cnf(i_0_50, plain, (s__Nation(s__Italy))).
+#
+#cnf(i_0_218, plain, (to_int('37.557121')='37')).
+#
+#cnf(i_0_47, plain, (is_instance(s__Greece,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_49, plain, (is_instance(s__Hungary,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_51, plain, (is_instance(s__Italy,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_53, plain, (is_instance(s__Luxembourg,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_52, plain, (s__Nation(s__Luxembourg))).
+#
+#cnf(i_0_226, plain, (to_int('48.202548')='48')).
+#
+#cnf(i_0_54, plain, (s__Nation(s__Mexico))).
+#
+#cnf(i_0_56, plain, (s__Nation(s__NewZealand))).
+#
+#cnf(i_0_58, plain, (s__Nation(s__Poland))).
+#
+#cnf(i_0_60, plain, (s__Nation(s__Sweden))).
+#
+#cnf(i_0_234, plain, (to_int('52.23537')='52')).
+#
+#cnf(i_0_55, plain, (is_instance(s__Mexico,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_57, plain, (is_instance(s__NewZealand,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_59, plain, (is_instance(s__Poland,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_61, plain, (is_instance(s__Sweden,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_62, plain, (s__Nation(s__SouthKorea))).
+#
+#cnf(i_0_64, plain, (s__Nation(s__Slovakia))).
+#
+#cnf(i_0_66, plain, (s__Nation(s__Spain))).
+#
+#cnf(i_0_68, plain, (s__Nation(s__Switzerland))).
+#
+#cnf(i_0_70, plain, (s__Nation(s__UnitedKingdom))).
+#
+#cnf(i_0_72, plain, (s__Nation(s__UnitedStates))).
+#
+#cnf(i_0_74, plain, (s__Nation(s__Portugal))).
+#
+#cnf(i_0_63, plain, (is_instance(s__SouthKorea,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_65, plain, (is_instance(s__Slovakia,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_67, plain, (is_instance(s__Spain,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_69, plain, (is_instance(s__Switzerland,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_76, plain, (s__Nation(s__Norway))).
+#
+#cnf(i_0_78, plain, (s__Nation(s__Netherlands))).
+#
+#cnf(i_0_80, plain, (s__Nation(s__Iceland))).
+#
+#cnf(i_0_82, plain, (s__Nation(s__Belgium))).
+#
+#cnf(i_0_84, plain, (s__Nation(s__France))).
+#
+#cnf(i_0_86, plain, (s__Nation(s__Australia))).
+#
+#cnf(i_0_88, plain, (s__Nation(s__Austria))).
+#
+#cnf(i_0_71, plain, (is_instance(s__UnitedKingdom,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_73, plain, (is_instance(s__UnitedStates,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_75, plain, (is_instance(s__Portugal,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_77, plain, (is_instance(s__Norway,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_6, plain, (s__Nation(esk6_0))).
+#
+#cnf(i_0_102, plain, (s__City(s__Copenhagen))).
+#
+#cnf(i_0_361, plain, (~s__Nation(s__Copenhagen))).
+#
+#cnf(i_0_90, plain, (s__City(s__Athens))).
+#
+#cnf(i_0_362, plain, (~s__Nation(s__Athens))).
+#
+#cnf(i_0_92, plain, (s__City(s__Berlin))).
+#
+#cnf(i_0_94, plain, (s__City(s__Bratislava))).
+#
+#cnf(i_0_79, plain, (is_instance(s__Netherlands,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_81, plain, (is_instance(s__Iceland,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_83, plain, (is_instance(s__Belgium,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_85, plain, (is_instance(s__France,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_96, plain, (s__City(s__Brussels))).
+#
+#cnf(i_0_98, plain, (s__City(s__Budapest))).
+#
+#cnf(i_0_363, plain, (~s__Nation(s__Berlin))).
+#
+#cnf(i_0_364, plain, (~s__Nation(s__Bratislava))).
+#
+#cnf(i_0_365, plain, (~s__Nation(s__Brussels))).
+#
+#cnf(i_0_366, plain, (~s__Nation(s__Budapest))).
+#
+#cnf(i_0_100, plain, (s__City(s__Canberra))).
+#
+#cnf(i_0_87, plain, (is_instance(s__Australia,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_89, plain, (is_instance(s__Austria,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_206, plain, (look_different(s__Copenhagen,s__Moscow))).
+#
+#cnf(i_0_200, plain, (look_different(s__Athens,s__Moscow))).
+#
+#cnf(i_0_104, plain, (s__City(s__Helsinki))).
+#
+#cnf(i_0_106, plain, (s__City(s__Lisbon))).
+#
+#cnf(i_0_367, plain, (~s__Nation(s__Canberra))).
+#
+#cnf(i_0_368, plain, (~s__Nation(s__Helsinki))).
+#
+#cnf(i_0_369, plain, (~s__Nation(s__Lisbon))).
+#
+#cnf(i_0_108, plain, (s__City(s__Luxembourg_City))).
+#
+#cnf(i_0_110, plain, (s__City(s__Paris))).
+#
+#cnf(i_0_201, plain, (look_different(s__Berlin,s__Moscow))).
+#
+#cnf(i_0_202, plain, (look_different(s__Bratislava,s__Moscow))).
+#
+#cnf(i_0_203, plain, (look_different(s__Brussels,s__Moscow))).
+#
+#cnf(i_0_204, plain, (look_different(s__Budapest,s__Moscow))).
+#
+#cnf(i_0_112, plain, (s__City(s__Prague))).
+#
+#cnf(i_0_114, plain, (s__City(s__Seoul))).
+#
+#cnf(i_0_370, plain, (~s__Nation(s__Luxembourg_City))).
+#
+#cnf(i_0_371, plain, (~s__Nation(s__Paris))).
+#
+#cnf(i_0_372, plain, (~s__Nation(s__Prague))).
+#
+#cnf(i_0_373, plain, (~s__Nation(s__Seoul))).
+#
+#cnf(i_0_116, plain, (s__City(s__Vienna))).
+#
+#cnf(i_0_205, plain, (look_different(s__Canberra,s__Moscow))).
+#
+#cnf(i_0_207, plain, (look_different(s__Helsinki,s__Moscow))).
+#
+#cnf(i_0_208, plain, (look_different(s__Lisbon,s__Moscow))).
+#
+#cnf(i_0_209, plain, (look_different(s__Luxembourg_City,s__Moscow))).
+#
+#cnf(i_0_118, plain, (s__City(s__Warsaw))).
+#
+#cnf(i_0_7, plain, (s__City(esk7_0))).
+#
+#cnf(i_0_374, plain, (~s__Nation(s__Vienna))).
+#
+#cnf(i_0_375, plain, (~s__Nation(s__Warsaw))).
+#
+#cnf(i_0_376, plain, (~s__Nation(esk7_0))).
+#
+#cnf(i_0_8, plain, (s__WaterArea(esk8_0))).
+#
+#cnf(i_0_9, plain, (s__BodyOfWater(esk9_0))).
+#
+#cnf(i_0_210, plain, (look_different(s__Paris,s__Moscow))).
+#
+#cnf(i_0_211, plain, (look_different(s__Prague,s__Moscow))).
+#
+#cnf(i_0_212, plain, (look_different(s__Seoul,s__Moscow))).
+#
+#cnf(i_0_213, plain, (look_different(s__Vienna,s__Moscow))).
+#
+#cnf(i_0_10, plain, (s__Sea(esk10_0))).
+#
+#cnf(i_0_11, plain, (s__PositionalAttribute(esk11_0))).
+#
+#cnf(i_0_377, plain, (~s__GeopoliticalArea(esk8_0))).
+#
+#cnf(i_0_380, plain, (~s__SetOrClass(esk11_0))).
+#
+#cnf(i_0_381, plain, (~s__Object(esk11_0))).
+#
+#cnf(i_0_382, plain, (~s__SymbolicString(esk11_0))).
+#
+#cnf(i_0_383, plain, (~real(esk11_0))).
+#
+#cnf(i_0_384, plain, (~int(esk11_0))).
+#
+#cnf(i_0_214, plain, (look_different(s__Warsaw,s__Moscow))).
+#
+#cnf(i_0_36, plain, (int(to_int(X1))|~real(X1))).
+#
+#cnf(i_0_385, plain, (~real(X1)|~s__SymbolicString(to_int(X1)))).
+#
+#cnf(i_0_24, plain, (s__SymmetricPositionalAttribute(s__Near))).
+#
+#cnf(i_0_12, plain, (s__SymmetricPositionalAttribute(esk12_0))).
+##########
+#cnf(i_0_13, plain, (s__CaseRole(esk13_0))).
+#
+#cnf(i_0_378, plain, (s__WaterArea(esk9_0))).
+########
+#cnf(i_0_422, plain, (~s__Object(esk13_0))).
+#
+#cnf(i_0_424, plain, (~s__SymbolicString(esk13_0))).
+#
+#cnf(i_0_35, plain, (is_instance(s__Copenhagen,s__CoastalCitiesClass))).
+#
+#cnf(i_0_379, plain, (s__BodyOfWater(esk10_0))).
+#
+#cnf(i_0_421, plain, (~s__SetOrClass(esk13_0))).
+#
+#cnf(i_0_423, plain, (~s__PositionalAttribute(esk13_0))).
+#
+#cnf(i_0_425, plain, (~real(esk13_0))).
+#
+#cnf(i_0_426, plain, (~int(esk13_0))).
+#
+#cnf(i_0_427, plain, (~s__GeopoliticalArea(esk9_0))).
+#
+#cnf(i_0_386, plain, (~real(to_int(X1))|~real(X1))).
+####
+#cnf(i_0_103, plain, (capital_city(s__Copenhagen,s__Denmark))).
+#
+#cnf(i_0_419, plain, (s__PositionalAttribute(s__Near))).
+##########
+#cnf(i_0_91, plain, (capital_city(s__Athens,s__Greece))).
+#
+#cnf(i_0_420, plain, (s__PositionalAttribute(esk12_0))).
+#####
+#cnf(i_0_446, plain, (~s__Object(s__Near))).
+#
+#cnf(i_0_447, plain, (~s__SymbolicString(s__Near))).
+#
+#cnf(i_0_448, plain, (~real(s__Near))).
+#
+#cnf(i_0_449, plain, (~int(s__Near))).
+#
+#cnf(i_0_451, plain, (~s__Object(esk12_0))).
+#
+#cnf(i_0_93, plain, (capital_city(s__Berlin,s__Germany))).
+#
+#cnf(i_0_428, plain, (s__WaterArea(esk10_0))).
+#
+#cnf(i_0_445, plain, (~s__SetOrClass(s__Near))).
+#
+#cnf(i_0_450, plain, (~s__SetOrClass(esk12_0))).
+#
+#cnf(i_0_452, plain, (~s__SymbolicString(esk12_0))).
+#
+#cnf(i_0_453, plain, (~real(esk12_0))).
+#
+#cnf(i_0_454, plain, (~int(esk12_0))).
+#
+#cnf(i_0_455, plain, (~s__GeopoliticalArea(esk10_0))).
+#
+#cnf(i_0_95, plain, (capital_city(s__Bratislava,s__Slovakia))).
+#
+#cnf(i_0_97, plain, (capital_city(s__Brussels,s__Belgium))).
+#
+#cnf(i_0_99, plain, (capital_city(s__Budapest,s__Hungary))).
+#
+#cnf(i_0_101, plain, (capital_city(s__Canberra,s__Australia))).
+#
+#cnf(i_0_105, plain, (capital_city(s__Helsinki,s__Finland))).
+#
+#cnf(i_0_18, plain, (s__GeopoliticalArea(X1)|~s__Nation(X1))).
+#
+#cnf(i_0_456, plain, (~s__Nation(esk10_0))).
+#
+#cnf(i_0_457, plain, (~s__Nation(esk9_0))).
+#
+#cnf(i_0_458, plain, (~s__Nation(esk8_0))).
+#
+#cnf(i_0_107, plain, (capital_city(s__Lisbon,s__Portugal))).
+#
+#cnf(i_0_109, plain, (capital_city(s__Luxembourg_City,s__Luxembourg))).
+#
+#cnf(i_0_111, plain, (capital_city(s__Paris,s__France))).
+#
+#cnf(i_0_113, plain, (capital_city(s__Prague,s__CzechRepublic))).
+#
+#cnf(i_0_115, plain, (capital_city(s__Seoul,s__SouthKorea))).
+#
+#cnf(i_0_117, plain, (capital_city(s__Vienna,s__Austria))).
+#
+#cnf(i_0_119, plain, (capital_city(s__Warsaw,s__Poland))).
+#
+#cnf(i_0_19, plain, (s__GeopoliticalArea(X1)|~s__City(X1))).
+#
+#cnf(i_0_459, plain, (~s__City(esk10_0))).
+#
+#cnf(i_0_460, plain, (~s__City(esk9_0))).
+#
+#cnf(i_0_461, plain, (~s__City(esk8_0))).
+#
+#cnf(i_0_17, plain, (s__GeographicArea(X1)|~s__GeopoliticalArea(X1))).
+#
+#cnf(i_0_20, plain, (s__GeographicArea(X1)|~s__WaterArea(X1))).
+#
+#cnf(i_0_462, plain, (s__Region(X1)|~s__GeopoliticalArea(X1))).
+#
+#cnf(i_0_464, plain, (s__Object(X1)|~s__GeopoliticalArea(X1))).
+#
+#cnf(i_0_465, plain, (s__Object(esk5_0))).
+#
+#cnf(i_0_174, plain, (latlong(s__Moscow,'55.75695','37.614975',moscow,ru))).
+#
+#cnf(i_0_466, plain, (s__Object(X1)|~s__Nation(X1))).
+#
+#cnf(i_0_468, plain, (~s__SymbolicString(esk5_0))).
+#
+#cnf(i_0_469, plain, (~real(esk5_0))).
+#
+#cnf(i_0_470, plain, (~int(esk5_0))).
+#
+#cnf(i_0_471, plain, (~s__Nation(esk13_0))).
+#
+#cnf(i_0_476, plain, (~s__Nation(s__located__m))).
+#
+#cnf(i_0_477, plain, (~s__Nation(s__Flooding__t))).
+#
+#cnf(i_0_472, plain, (~s__Nation(esk12_0))).
+#
+#cnf(i_0_473, plain, (~s__Nation(esk11_0))).
+#
+#cnf(i_0_474, plain, (~s__Nation(esk2_0))).
+#
+#cnf(i_0_154, plain, (latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk))).
+#
+#cnf(i_0_467, plain, (s__Object(X1)|~s__City(X1))).
+#
+#cnf(i_0_475, plain, (~s__Nation(esk1_0))).
+#
+#cnf(i_0_478, plain, (~s__Nation(s__Near))).
+#
+#cnf(i_0_482, plain, (~s__City(esk13_0))).
+#
+#cnf(i_0_483, plain, (~s__City(esk12_0))).
+#
+#cnf(i_0_487, plain, (~s__City(s__located__m))).
+#
+#cnf(i_0_488, plain, (~s__City(s__Flooding__t))).
+#
+#cnf(i_0_484, plain, (~s__City(esk11_0))).
+#
+#cnf(i_0_485, plain, (~s__City(esk2_0))).
+#
+#cnf(i_0_486, plain, (~s__City(esk1_0))).
+#
+#cnf(i_0_124, plain, (latlong(s__Athens,'37.97615','23.736415',athens,gr))).
+#
+#cnf(i_0_463, plain, (s__Region(X1)|~s__WaterArea(X1))).
+#
+#cnf(i_0_489, plain, (~s__City(s__Near))).
+#
+#cnf(i_0_479, plain, (~s__SymbolicString(X1)|~s__Nation(X1))).
+#
+#cnf(i_0_494, plain, (~s__SymbolicString(esk6_0))).
+#
+#cnf(i_0_495, plain, (~s__SymbolicString(s__Austria))).
+#
+#cnf(i_0_496, plain, (~s__SymbolicString(s__Australia))).
+#
+#cnf(i_0_497, plain, (~s__SymbolicString(s__France))).
+#
+#cnf(i_0_498, plain, (~s__SymbolicString(s__Belgium))).
+#
+#cnf(i_0_499, plain, (~s__SymbolicString(s__Iceland))).
+#
+#cnf(i_0_500, plain, (~s__SymbolicString(s__Netherlands))).
+#
+#cnf(i_0_129, plain, (latlong(s__Berlin,'52.516074','13.376987',berlin,de))).
+#
+#cnf(i_0_493, plain, (s__Object(X1)|~s__WaterArea(X1))).
+#
+#cnf(i_0_501, plain, (~s__SymbolicString(s__Norway))).
+#
+#cnf(i_0_502, plain, (~s__SymbolicString(s__Portugal))).
+#
+#cnf(i_0_503, plain, (~s__SymbolicString(s__UnitedStates))).
+#
+#cnf(i_0_504, plain, (~s__SymbolicString(s__UnitedKingdom))).
+#
+#cnf(i_0_505, plain, (~s__SymbolicString(s__Switzerland))).
+#
+#cnf(i_0_506, plain, (~s__SymbolicString(s__Spain))).
+#
+#cnf(i_0_507, plain, (~s__SymbolicString(s__Slovakia))).
+#
+#cnf(i_0_508, plain, (~s__SymbolicString(s__SouthKorea))).
+#
+#cnf(i_0_509, plain, (~s__SymbolicString(s__Sweden))).
+#
+#cnf(i_0_134, plain, (latlong(s__Bratislava,'48.149245','17.107005',bratislava,sk))).
+#
+#cnf(i_0_521, plain, (s__Object(esk10_0))).
+#
+#cnf(i_0_510, plain, (~s__SymbolicString(s__Poland))).
+#
+#cnf(i_0_511, plain, (~s__SymbolicString(s__NewZealand))).
+#
+#cnf(i_0_512, plain, (~s__SymbolicString(s__Mexico))).
+#
+#cnf(i_0_513, plain, (~s__SymbolicString(s__Luxembourg))).
+#
+#cnf(i_0_514, plain, (~s__SymbolicString(s__Italy))).
+#
+#cnf(i_0_515, plain, (~s__SymbolicString(s__Hungary))).
+#
+#cnf(i_0_516, plain, (~s__SymbolicString(s__Greece))).
+#
+#cnf(i_0_517, plain, (~s__SymbolicString(s__Germany))).
+#
+#cnf(i_0_518, plain, (~s__SymbolicString(s__Finland))).
+#
+#cnf(i_0_139, plain, (latlong(s__Brussels,'50.848385','4.349685',brussels,be))).
+#
+#cnf(i_0_522, plain, (s__Object(esk9_0))).
+#
+#cnf(i_0_519, plain, (~s__SymbolicString(s__Denmark))).
+#
+#cnf(i_0_520, plain, (~s__SymbolicString(s__CzechRepublic))).
+#
+#cnf(i_0_524, plain, (~s__SymbolicString(esk10_0))).
+#
+#cnf(i_0_525, plain, (~real(esk10_0))).
+#
+#cnf(i_0_526, plain, (~int(esk10_0))).
+#
+#cnf(i_0_527, plain, (~s__SymbolicString(esk9_0))).
+#
+#cnf(i_0_528, plain, (~real(esk9_0))).
+#
+#cnf(i_0_529, plain, (~int(esk9_0))).
+#
+#cnf(i_0_523, plain, (s__Object(esk8_0))).
+#
+#cnf(i_0_144, plain, (latlong(s__Budapest,'47.506225','19.06482',budapest,hu))).
+#
+#cnf(i_0_149, plain, (latlong(s__Canberra,'-35.306541','149.126556',canberra,au))).
+#
+#cnf(i_0_530, plain, (~s__SymbolicString(esk8_0))).
+#
+#cnf(i_0_531, plain, (~real(esk8_0))).
+#
+#cnf(i_0_532, plain, (~int(esk8_0))).
+#
+#cnf(i_0_480, plain, (~real(X1)|~s__Nation(X1))).
+#
+#cnf(i_0_533, plain, (~real(esk6_0))).
+#
+#cnf(i_0_534, plain, (~real(s__Austria))).
+#
+#cnf(i_0_535, plain, (~real(s__Australia))).
+#
+#cnf(i_0_536, plain, (~real(s__France))).
+#
+#cnf(i_0_537, plain, (~real(s__Belgium))).
+#
+#cnf(i_0_159, plain, (latlong(s__Helsinki,'60.17116','24.93258',helsinki,fi))).
+#
+#cnf(i_0_164, plain, (latlong(s__Lisbon,'38.725679','-9.150371',lisbon,pt))).
+#
+#cnf(i_0_538, plain, (~real(s__Iceland))).
+#
+#cnf(i_0_539, plain, (~real(s__Netherlands))).
+#
+#cnf(i_0_540, plain, (~real(s__Norway))).
+#
+#cnf(i_0_541, plain, (~real(s__Portugal))).
+#
+#cnf(i_0_542, plain, (~real(s__UnitedStates))).
+#
+#cnf(i_0_543, plain, (~real(s__UnitedKingdom))).
+#
+#cnf(i_0_544, plain, (~real(s__Switzerland))).
+#
+#cnf(i_0_545, plain, (~real(s__Spain))).
+#
+#cnf(i_0_546, plain, (~real(s__Slovakia))).
+#
+#cnf(i_0_169, plain, (latlong(s__Luxembourg_City,'49.609531','6.12997',luxembourg_city,lu))).
+#
+#cnf(i_0_179, plain, (latlong(s__Paris,'48.856925','2.34121',paris,fr))).
+#
+#cnf(i_0_547, plain, (~real(s__SouthKorea))).
+#
+#cnf(i_0_548, plain, (~real(s__Sweden))).
+#
+#cnf(i_0_549, plain, (~real(s__Poland))).
+#
+#cnf(i_0_550, plain, (~real(s__NewZealand))).
+#
+#cnf(i_0_551, plain, (~real(s__Mexico))).
+#
+#cnf(i_0_552, plain, (~real(s__Luxembourg))).
+#
+#cnf(i_0_553, plain, (~real(s__Italy))).
+#
+#cnf(i_0_554, plain, (~real(s__Hungary))).
+#
+#cnf(i_0_555, plain, (~real(s__Greece))).
+#
+#cnf(i_0_184, plain, (latlong(s__Prague,'50.079083','14.43323',prague,cz))).
+#
+#cnf(i_0_189, plain, (latlong(s__Seoul,'37.557121','126.977379',seoul,kr))).
+#
+#cnf(i_0_556, plain, (~real(s__Germany))).
+#
+#cnf(i_0_557, plain, (~real(s__Finland))).
+#
+#cnf(i_0_558, plain, (~real(s__Denmark))).
+#
+#cnf(i_0_559, plain, (~real(s__CzechRepublic))).
+#
+#cnf(i_0_481, plain, (~int(X1)|~s__Nation(X1))).
+#
+#cnf(i_0_560, plain, (~s__Nation(esk17_0))).
+#
+#cnf(i_0_561, plain, (~s__Nation('60'))).
+#
+#cnf(i_0_562, plain, (~s__Nation('55'))).
+#
+#cnf(i_0_563, plain, (~s__Nation('52'))).
+#
+#cnf(i_0_194, plain, (latlong(s__Vienna,'48.202548','16.368805',vienna,at))).
+#
+#cnf(i_0_199, plain, (latlong(s__Warsaw,'52.23537','21.009485',warsaw,pl))).
+#
+#cnf(i_0_564, plain, (~s__Nation('50'))).
+#
+#cnf(i_0_565, plain, (~s__Nation('49'))).
+#
+#cnf(i_0_566, plain, (~s__Nation('48'))).
+#
+#cnf(i_0_567, plain, (~s__Nation('47'))).
+#
+#cnf(i_0_568, plain, (~s__Nation('38'))).
+#
+#cnf(i_0_569, plain, (~s__Nation('37'))).
+#
+#cnf(i_0_570, plain, (~s__Nation('-35'))).
+#
+#cnf(i_0_492, plain, (~int(X1)|~s__City(X1))).
+#
+#cnf(i_0_572, plain, (~s__City(esk17_0))).
+#
+#cnf(i_0_28, plain, (s__Sea(esk15_1(X1))|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1))).
+#
+#cnf(i_0_584, plain, (s__BodyOfWater(esk15_1(X1))|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1))).
+#
+#cnf(i_0_573, plain, (~s__City('60'))).
+#
+#cnf(i_0_574, plain, (~s__City('55'))).
+#
+#cnf(i_0_575, plain, (~s__City('52'))).
+#
+#cnf(i_0_576, plain, (~s__City('50'))).
+#
+#cnf(i_0_577, plain, (~s__City('49'))).
+#
+#cnf(i_0_578, plain, (~s__City('48'))).
+#
+#cnf(i_0_579, plain, (~s__City('47'))).
+#
+#cnf(i_0_580, plain, (~s__City('38'))).
+#
+#cnf(i_0_581, plain, (~s__City('37'))).
+#
+#cnf(i_0_27, plain, (s__orientation(X1,esk15_1(X1),s__Near)|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1))).
+#
+#cnf(i_0_585, plain, (s__WaterArea(esk15_1(X1))|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1))).
+#
+#cnf(i_0_582, plain, (~s__City('-35'))).
+#
+#cnf(i_0_490, plain, (~s__SymbolicString(X1)|~s__City(X1))).
+#
+#cnf(i_0_588, plain, (~s__SymbolicString(esk7_0))).
+#
+#cnf(i_0_589, plain, (~s__SymbolicString(s__Warsaw))).
+#
+#cnf(i_0_604, plain, (~s__SymbolicString(s__Moscow))).
+#
+#cnf(i_0_590, plain, (~s__SymbolicString(s__Vienna))).
+#
+#cnf(i_0_591, plain, (~s__SymbolicString(s__Seoul))).
+#
+#cnf(i_0_592, plain, (~s__SymbolicString(s__Prague))).
+#
+#cnf(i_0_593, plain, (~s__SymbolicString(s__Paris))).
+#
+#cnf(i_0_29, plain, (s__capability(s__Flooding__t,s__located__m,X1)|~s__orientation(X1,X2,s__Near)|~s__WaterArea(X2)|~s__City(X1))).
+#
+#cnf(i_0_587, plain, (s__Object(esk15_1(X1))|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1))).
+#
+#cnf(i_0_594, plain, (~s__SymbolicString(s__Luxembourg_City))).
+#
+#cnf(i_0_595, plain, (~s__SymbolicString(s__Lisbon))).
+#
+#cnf(i_0_596, plain, (~s__SymbolicString(s__Helsinki))).
+#
+#cnf(i_0_597, plain, (~s__SymbolicString(s__Canberra))).
+#
+#cnf(i_0_598, plain, (~s__SymbolicString(s__Budapest))).
+#
+#cnf(i_0_599, plain, (~s__SymbolicString(s__Brussels))).
+#
+#cnf(i_0_600, plain, (~s__SymbolicString(s__Bratislava))).
+#
+#cnf(i_0_601, plain, (~s__SymbolicString(s__Berlin))).
+#
+#cnf(i_0_602, plain, (~s__SymbolicString(s__Athens))).
+#
+#cnf(i_0_30, negated_conjecture, (to_int(X1)!=to_int(X2)|~latlong(s__Moscow,X2,X3,X4,X5)|~latlong(X6,X1,X7,X8,X9)|~look_different(X6,s__Moscow)|~capital_city(X6,X10)|~int(X11)|~real(X3)|~real(X2)|~real(X7)|~real(X1)|~s__capability(s__Flooding__t,s__located__m,X6)|~is_instance(X10,s__OECDMemberEconomiesClass)|~s__SymbolicString(X5)|~s__SymbolicString(X4)|~s__SymbolicString(X9)|~s__SymbolicString(X8)|~s__Object(X10)|~s__Object(X6))).
+#
+#cnf(i_0_605, plain, (s__capability(s__Flooding__t,s__located__m,X1)|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1))).
+#
+#cnf(i_0_603, plain, (~s__SymbolicString(s__Copenhagen))).
+#
+#cnf(i_0_491, plain, (~real(X1)|~s__City(X1))).
+#
+#cnf(i_0_610, plain, (~real(esk7_0))).
+#
+#cnf(i_0_611, plain, (~real(s__Warsaw))).
+#
+#cnf(i_0_626, plain, (~real(s__Moscow))).
+#
+#cnf(i_0_612, plain, (~real(s__Vienna))).
+#
+#cnf(i_0_613, plain, (~real(s__Seoul))).
+#
+#cnf(i_0_614, plain, (~real(s__Prague))).
+#
+#cnf(i_0_615, plain, (~real(s__Paris))).
+#
+#cnf(i_0_571, plain, (~real(X1)|~s__Nation(to_int(X1)))).
+#
+#cnf(i_0_616, plain, (~real(s__Luxembourg_City))).
+#
+#cnf(i_0_617, plain, (~real(s__Lisbon))).
+#
+#cnf(i_0_618, plain, (~real(s__Helsinki))).
+#
+#cnf(i_0_619, plain, (~real(s__Canberra))).
+#
+#cnf(i_0_620, plain, (~real(s__Budapest))).
+#
+#cnf(i_0_621, plain, (~real(s__Brussels))).
+#
+#cnf(i_0_622, plain, (~real(s__Bratislava))).
+#
+#cnf(i_0_623, plain, (~real(s__Berlin))).
+#
+#cnf(i_0_624, plain, (~real(s__Athens))).
+#
+#cnf(i_0_625, plain, (~real(s__Copenhagen))).
+#
+#cnf(i_0_583, plain, (~real(X1)|~s__City(to_int(X1)))).
+###########
+#cnf(i_0_586, plain, (~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1)|~s__GeopoliticalArea(esk15_1(X1)))).
+###########
+#cnf(i_0_606, plain, (~is_instance(X1,s__CoastalCitiesClass)|~s__SymbolicString(esk15_1(X1))|~s__City(X1))).
+###########
+#cnf(i_0_607, plain, (~real(esk15_1(X1))|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1))).
+###
+#cnf(i_0_608, plain, (~int(esk15_1(X1))|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1))).
+#
+#cnf(i_0_659, plain, (~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1)|~s__Nation(esk15_1(X1)))).
+#
+#cnf(i_0_660, plain, (~is_instance(X1,s__CoastalCitiesClass)|~s__City(esk15_1(X1))|~s__City(X1))).
+#
+#cnf(i_0_609, negated_conjecture, (to_int(X1)!='55'|~latlong(X2,X1,X3,X4,X5)|~look_different(X2,s__Moscow)|~capital_city(X2,X6)|~int(X7)|~real(X3)|~real(X1)|~s__capability(s__Flooding__t,s__located__m,X2)|~is_instance(X6,s__OECDMemberEconomiesClass)|~s__SymbolicString(X5)|~s__SymbolicString(X4)|~s__Object(X6)|~s__Object(X2))).
+#
+#cnf(i_0_676, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,X1)|~int(X2)|~s__capability(s__Flooding__t,s__located__m,s__Moscow)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(s__Moscow)|~s__Object(X1))).
+#
+#cnf(i_0_677, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,X1)|~int(X2)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(s__Moscow)|~s__Object(X1))).
+#
+#cnf(i_0_679, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,X1)|~int(X2)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(X1))).
+#
+#cnf(i_0_680, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,X1)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(X1))).
+#
+#cnf(i_0_661, negated_conjecture, ('55'!='52'|~capital_city(s__Warsaw,X1)|~int(X2)|~s__capability(s__Flooding__t,s__located__m,s__Warsaw)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(s__Warsaw)|~s__Object(X1))).
+#
+#cnf(i_0_699, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,s__OECDMemberEconomiesClass)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(s__OECDMemberEconomiesClass,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_693, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,esk10_0)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(esk10_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_694, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,esk9_0)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(esk9_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_695, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,esk8_0)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(esk8_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_696, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,esk5_0)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(esk5_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_697, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,esk4_0)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(esk4_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_698, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,esk3_0)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(esk3_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_700, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,s__CoastalCitiesClass)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(s__CoastalCitiesClass,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_701, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,X1)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Nation(X1))).
+#
+#cnf(i_0_702, negated_conjecture, (~look_different(s__Moscow,s__Moscow)|~capital_city(s__Moscow,X1)|~is_instance(s__Moscow,s__CoastalCitiesClass)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__City(X1))).
+#
+#cnf(i_0_662, negated_conjecture, ('55'!='48'|~capital_city(s__Vienna,X1)|~int(X2)|~s__capability(s__Flooding__t,s__located__m,s__Vienna)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(s__Vienna)|~s__Object(X1))).
+#
+#cnf(i_0_675, negated_conjecture, (~capital_city(s__Copenhagen,X1)|~int(X2)|~s__capability(s__Flooding__t,s__located__m,s__Copenhagen)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(s__Copenhagen)|~s__Object(X1))).
+#
+#cnf(i_0_705, negated_conjecture, (~capital_city(s__Copenhagen,X1)|~int(X2)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(s__Copenhagen)|~s__Object(X1))).
+#
+#cnf(i_0_707, negated_conjecture, (~capital_city(s__Copenhagen,X1)|~int(X2)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(X1))).
+#
+#cnf(i_0_708, negated_conjecture, (~capital_city(s__Copenhagen,X1)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(X1))).
+#
+#cnf(i_0_721, negated_conjecture, (~capital_city(s__Copenhagen,esk10_0)|~is_instance(esk10_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_727, negated_conjecture, (~capital_city(s__Copenhagen,s__OECDMemberEconomiesClass)|~is_instance(s__OECDMemberEconomiesClass,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_722, negated_conjecture, (~capital_city(s__Copenhagen,esk9_0)|~is_instance(esk9_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_723, negated_conjecture, (~capital_city(s__Copenhagen,esk8_0)|~is_instance(esk8_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_724, negated_conjecture, (~capital_city(s__Copenhagen,esk5_0)|~is_instance(esk5_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_725, negated_conjecture, (~capital_city(s__Copenhagen,esk4_0)|~is_instance(esk4_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_663, negated_conjecture, ('55'!='37'|~capital_city(s__Seoul,X1)|~int(X2)|~s__capability(s__Flooding__t,s__located__m,s__Seoul)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(s__Seoul)|~s__Object(X1))).
+#
+#cnf(i_0_726, negated_conjecture, (~capital_city(s__Copenhagen,esk3_0)|~is_instance(esk3_0,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_728, negated_conjecture, (~capital_city(s__Copenhagen,s__CoastalCitiesClass)|~is_instance(s__CoastalCitiesClass,s__OECDMemberEconomiesClass))).
+#
+#cnf(i_0_729, negated_conjecture, (~capital_city(s__Copenhagen,X1)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Nation(X1))).
+
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+fof(where, conjecture, ?[X2, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15]:((((((((((((((((((s__Object(X2)&s__Object(X6))&real(X7))&real(X8))&s__SymbolicString(X9))&s__SymbolicString(X10))&int(X11))&real(X12))&real(X13))&s__SymbolicString(X14))&s__SymbolicString(X15))&is_instance(X6,s__OECDMemberEconomiesClass))&capital_city(X2,X6))&look_different(X2,s__Moscow))&latlong(X2,X7,X8,X9,X10))&latlong(s__Moscow,X12,X13,X14,X15))&to_int(X7)=to_int(X12))&s__capability(s__Flooding__t,s__located__m,X2))), file('Problems/CSR/CSR117+1.p', where)).
+fof(kb_SUMO_MILO_Domains_9679, axiom, ![X1]:((s__Sea(X1)=>s__BodyOfWater(X1))), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_Domains_9679)).
+fof(coastal_cities_near_water, axiom, ![X2]:((s__City(X2)=>(is_instance(X2,s__CoastalCitiesClass)=>?[X3]:((s__Sea(X3)&s__orientation(X2,X3,s__Near)))))), file('Problems/CSR/CSR117+1.p', coastal_cities_near_water)).
+fof(kb_SUMO_MILO_Domains_9582, axiom, ![X1]:((s__BodyOfWater(X1)=>s__WaterArea(X1))), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_Domains_9582)).
+fof(kb_SUMO_MILO_6365, axiom, ![X1]:((s__GeographicArea(X1)=>s__Region(X1))), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6365)).
+fof(kb_SUMO_MILO_6345, axiom, ![X1]:((s__GeopoliticalArea(X1)=>s__GeographicArea(X1))), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6345)).
+fof(latlong_s__Moscow, axiom, latlong(s__Moscow,'55.75695','37.614975',moscow,ru), file('Problems/CSR/CSR117+1.p', latlong_s__Moscow)).
+fof('55.75695_55', axiom, to_int('55.75695')='55', file('Problems/CSR/CSR117+1.p', '55.75695_55')).
+fof(moscow_long_type, axiom, real('37.614975'), file('Problems/CSR/CSR117+1.p', moscow_long_type)).
+fof(moscow_lat_type, axiom, real('55.75695'), file('Problems/CSR/CSR117+1.p', moscow_lat_type)).
+fof(ru_type, axiom, s__SymbolicString(ru), file('Problems/CSR/CSR117+1.p', ru_type)).
+fof(moscow_type, axiom, s__SymbolicString(moscow), file('Problems/CSR/CSR117+1.p', moscow_type)).
+fof(flood_near_water, axiom, ![X4, X5]:(((s__WaterArea(X4)&s__City(X5))=>(s__orientation(X5,X4,s__Near)=>s__capability(s__Flooding__t,s__located__m,X5)))), file('Problems/CSR/CSR117+1.p', flood_near_water)).
+fof(kb_SUMO_MILO_701, axiom, ![X1]:((s__Region(X1)=>s__Object(X1))), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_701)).
+fof(latlong_s__Copenhagen, axiom, latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk), file('Problems/CSR/CSR117+1.p', latlong_s__Copenhagen)).
+fof('55.67631_55', axiom, to_int('55.67631')='55', file('Problems/CSR/CSR117+1.p', '55.67631_55')).
+fof(s__Copenhagen_not_s__Moscow, axiom, look_different(s__Copenhagen,s__Moscow), file('Problems/CSR/CSR117+1.p', s__Copenhagen_not_s__Moscow)).
+fof(copenhagen_long_type, axiom, real('12.569355'), file('Problems/CSR/CSR117+1.p', copenhagen_long_type)).
+fof(copenhagen_lat_type, axiom, real('55.67631'), file('Problems/CSR/CSR117+1.p', copenhagen_lat_type)).
+fof(dk_type, axiom, s__SymbolicString(dk), file('Problems/CSR/CSR117+1.p', dk_type)).
+fof(copenhagen_type, axiom, s__SymbolicString(copenhagen), file('Problems/CSR/CSR117+1.p', copenhagen_type)).
+fof(kb_SUMO_MILO_6437, axiom, ![X1]:((s__City(X1)=>s__GeopoliticalArea(X1))), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6437)).
+fof(copenhagen_coastal, axiom, is_instance(s__Copenhagen,s__CoastalCitiesClass), file('Problems/CSR/CSR117+1.p', copenhagen_coastal)).
+fof(s__Copenhagen_type, axiom, s__City(s__Copenhagen), file('Problems/CSR/CSR117+1.p', s__Copenhagen_type)).
+fof(int_type, axiom, ?[X1]:(int(X1)), file('Problems/CSR/CSR117+1.p', int_type)).
+fof(kb_SUMO_MILO_6428, axiom, ![X1]:((s__Nation(X1)=>s__GeopoliticalArea(X1))), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6428)).
+fof(s__Copenhagen_s__Denmark, axiom, capital_city(s__Copenhagen,s__Denmark), file('Problems/CSR/CSR117+1.p', s__Copenhagen_s__Denmark)).
+fof(s__Denmark_OECD, axiom, is_instance(s__Denmark,s__OECDMemberEconomiesClass), file('Problems/CSR/CSR117+1.p', s__Denmark_OECD)).
+fof(s__Denmark_type, axiom, s__Nation(s__Denmark), file('Problems/CSR/CSR117+1.p', s__Denmark_type)).
+fof(c_0_29, negated_conjecture, ~(?[X2, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15]:((((((((((((((((((s__Object(X2)&s__Object(X6))&real(X7))&real(X8))&s__SymbolicString(X9))&s__SymbolicString(X10))&int(X11))&real(X12))&real(X13))&s__SymbolicString(X14))&s__SymbolicString(X15))&is_instance(X6,s__OECDMemberEconomiesClass))&capital_city(X2,X6))&look_different(X2,s__Moscow))&latlong(X2,X7,X8,X9,X10))&latlong(s__Moscow,X12,X13,X14,X15))&to_int(X7)=to_int(X12))&s__capability(s__Flooding__t,s__located__m,X2)))), inference(assume_negation,[status(cth)],[where])).
+fof(c_0_30, plain, ![X37]:((~s__Sea(X37)|s__BodyOfWater(X37))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[kb_SUMO_MILO_Domains_9679])])])).
+fof(c_0_31, plain, ![X39]:(((s__Sea(esk15_1(X39))|~is_instance(X39,s__CoastalCitiesClass)|~s__City(X39))&(s__orientation(X39,esk15_1(X39),s__Near)|~is_instance(X39,s__CoastalCitiesClass)|~s__City(X39)))), inference(distribute,[status(thm)],[inference(fof_nnf,[status(thm)],[inference(skolemize,[status(esa)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[coastal_cities_near_water])])])])])).
+fof(c_0_32, negated_conjecture, ![X43, X44, X45, X46, X47, X48, X49, X50, X51, X52, X53]:((~s__Object(X43)|~s__Object(X44)|~real(X45)|~real(X46)|~s__SymbolicString(X47)|~s__SymbolicString(X48)|~int(X49)|~real(X50)|~real(X51)|~s__SymbolicString(X52)|~s__SymbolicString(X53)|~is_instance(X44,s__OECDMemberEconomiesClass)|~capital_city(X43,X44)|~look_different(X43,s__Moscow)|~latlong(X43,X45,X46,X47,X48)|~latlong(s__Moscow,X50,X51,X52,X53)|to_int(X45)!=to_int(X50)|~s__capability(s__Flooding__t,s__located__m,X43))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[c_0_29])])])).
+fof(c_0_33, plain, ![X36]:((~s__BodyOfWater(X36)|s__WaterArea(X36))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[kb_SUMO_MILO_Domains_9582])])])).
+cnf(c_0_34, plain, (s__BodyOfWater(X1)|~s__Sea(X1)), inference(split_conjunct,[status(thm)],[c_0_30])).
+cnf(c_0_35, plain, (s__Sea(esk15_1(X1))|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1)), inference(split_conjunct,[status(thm)],[c_0_31])).
+fof(c_0_36, plain, ![X31]:((~s__GeographicArea(X31)|s__Region(X31))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[kb_SUMO_MILO_6365])])])).
+fof(c_0_37, plain, ![X32]:((~s__GeopoliticalArea(X32)|s__GeographicArea(X32))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[kb_SUMO_MILO_6345])])])).
+cnf(c_0_38, negated_conjecture, (~s__Object(X1)|~s__Object(X2)|~real(X3)|~real(X4)|~s__SymbolicString(X5)|~s__SymbolicString(X6)|~int(X7)|~real(X8)|~real(X9)|~s__SymbolicString(X10)|~s__SymbolicString(X11)|~is_instance(X2,s__OECDMemberEconomiesClass)|~capital_city(X1,X2)|~look_different(X1,s__Moscow)|~latlong(X1,X3,X4,X5,X6)|~latlong(s__Moscow,X8,X9,X10,X11)|to_int(X3)!=to_int(X8)|~s__capability(s__Flooding__t,s__located__m,X1)), inference(split_conjunct,[status(thm)],[c_0_32])).
+cnf(c_0_39, plain, (latlong(s__Moscow,'55.75695','37.614975',moscow,ru)), inference(split_conjunct,[status(thm)],[latlong_s__Moscow])).
+cnf(c_0_40, plain, (to_int('55.75695')='55'), inference(split_conjunct,[status(thm)],['55.75695_55'])).
+cnf(c_0_41, plain, (real('37.614975')), inference(split_conjunct,[status(thm)],[moscow_long_type])).
+cnf(c_0_42, plain, (real('55.75695')), inference(split_conjunct,[status(thm)],[moscow_lat_type])).
+cnf(c_0_43, plain, (s__SymbolicString(ru)), inference(split_conjunct,[status(thm)],[ru_type])).
+cnf(c_0_44, plain, (s__SymbolicString(moscow)), inference(split_conjunct,[status(thm)],[moscow_type])).
+fof(c_0_45, plain, ![X41, X42]:((~s__WaterArea(X41)|~s__City(X42)|(~s__orientation(X42,X41,s__Near)|s__capability(s__Flooding__t,s__located__m,X42)))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[flood_near_water])])])).
+cnf(c_0_46, plain, (s__WaterArea(X1)|~s__BodyOfWater(X1)), inference(split_conjunct,[status(thm)],[c_0_33])).
+cnf(c_0_47, plain, (s__BodyOfWater(esk15_1(X1))|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1)), inference(spm,[status(thm)],[c_0_34, c_0_35])).
+fof(c_0_48, plain, ![X30]:((~s__Region(X30)|s__Object(X30))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[kb_SUMO_MILO_701])])])).
+cnf(c_0_49, plain, (s__Region(X1)|~s__GeographicArea(X1)), inference(split_conjunct,[status(thm)],[c_0_36])).
+cnf(c_0_50, plain, (s__GeographicArea(X1)|~s__GeopoliticalArea(X1)), inference(split_conjunct,[status(thm)],[c_0_37])).
+cnf(c_0_51, negated_conjecture, (to_int(X1)!='55'|~latlong(X2,X1,X3,X4,X5)|~look_different(X2,s__Moscow)|~capital_city(X2,X6)|~int(X7)|~real(X3)|~real(X1)|~s__capability(s__Flooding__t,s__located__m,X2)|~is_instance(X6,s__OECDMemberEconomiesClass)|~s__SymbolicString(X5)|~s__SymbolicString(X4)|~s__Object(X6)|~s__Object(X2)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_38, c_0_39]), c_0_40]), c_0_41]), c_0_42]), c_0_43]), c_0_44])])).
+cnf(c_0_52, plain, (latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk)), inference(split_conjunct,[status(thm)],[latlong_s__Copenhagen])).
+cnf(c_0_53, plain, (to_int('55.67631')='55'), inference(split_conjunct,[status(thm)],['55.67631_55'])).
+cnf(c_0_54, plain, (look_different(s__Copenhagen,s__Moscow)), inference(split_conjunct,[status(thm)],[s__Copenhagen_not_s__Moscow])).
+cnf(c_0_55, plain, (real('12.569355')), inference(split_conjunct,[status(thm)],[copenhagen_long_type])).
+cnf(c_0_56, plain, (real('55.67631')), inference(split_conjunct,[status(thm)],[copenhagen_lat_type])).
+cnf(c_0_57, plain, (s__SymbolicString(dk)), inference(split_conjunct,[status(thm)],[dk_type])).
+cnf(c_0_58, plain, (s__SymbolicString(copenhagen)), inference(split_conjunct,[status(thm)],[copenhagen_type])).
+cnf(c_0_59, plain, (s__capability(s__Flooding__t,s__located__m,X2)|~s__WaterArea(X1)|~s__City(X2)|~s__orientation(X2,X1,s__Near)), inference(split_conjunct,[status(thm)],[c_0_45])).
+cnf(c_0_60, plain, (s__orientation(X1,esk15_1(X1),s__Near)|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1)), inference(split_conjunct,[status(thm)],[c_0_31])).
+cnf(c_0_61, plain, (s__WaterArea(esk15_1(X1))|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1)), inference(spm,[status(thm)],[c_0_46, c_0_47])).
+cnf(c_0_62, plain, (s__Object(X1)|~s__Region(X1)), inference(split_conjunct,[status(thm)],[c_0_48])).
+cnf(c_0_63, plain, (s__Region(X1)|~s__GeopoliticalArea(X1)), inference(spm,[status(thm)],[c_0_49, c_0_50])).
+fof(c_0_64, plain, ![X34]:((~s__City(X34)|s__GeopoliticalArea(X34))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[kb_SUMO_MILO_6437])])])).
+cnf(c_0_65, negated_conjecture, (~capital_city(s__Copenhagen,X1)|~int(X2)|~s__capability(s__Flooding__t,s__located__m,s__Copenhagen)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(s__Copenhagen)|~s__Object(X1)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_51, c_0_52]), c_0_53]), c_0_54]), c_0_55]), c_0_56]), c_0_57]), c_0_58])])).
+cnf(c_0_66, plain, (s__capability(s__Flooding__t,s__located__m,X1)|~is_instance(X1,s__CoastalCitiesClass)|~s__City(X1)), inference(csr,[status(thm)],[inference(spm,[status(thm)],[c_0_59, c_0_60]), c_0_61])).
+cnf(c_0_67, plain, (is_instance(s__Copenhagen,s__CoastalCitiesClass)), inference(split_conjunct,[status(thm)],[copenhagen_coastal])).
+cnf(c_0_68, plain, (s__City(s__Copenhagen)), inference(split_conjunct,[status(thm)],[s__Copenhagen_type])).
+cnf(c_0_69, plain, (s__Object(X1)|~s__GeopoliticalArea(X1)), inference(spm,[status(thm)],[c_0_62, c_0_63])).
+cnf(c_0_70, plain, (s__GeopoliticalArea(X1)|~s__City(X1)), inference(split_conjunct,[status(thm)],[c_0_64])).
+cnf(c_0_71, negated_conjecture, (~capital_city(s__Copenhagen,X1)|~int(X2)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(s__Copenhagen)|~s__Object(X1)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_65, c_0_66]), c_0_67]), c_0_68])])).
+cnf(c_0_72, plain, (s__Object(X1)|~s__City(X1)), inference(spm,[status(thm)],[c_0_69, c_0_70])).
+fof(c_0_73, plain, int(esk17_0), inference(skolemize,[status(esa)],[inference(variable_rename,[status(thm)],[int_type])])).
+fof(c_0_74, plain, ![X33]:((~s__Nation(X33)|s__GeopoliticalArea(X33))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[kb_SUMO_MILO_6428])])])).
+cnf(c_0_75, negated_conjecture, (~capital_city(s__Copenhagen,X1)|~int(X2)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(X1)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_71, c_0_72]), c_0_68])])).
+cnf(c_0_76, plain, (int(esk17_0)), inference(split_conjunct,[status(thm)],[c_0_73])).
+cnf(c_0_77, plain, (s__GeopoliticalArea(X1)|~s__Nation(X1)), inference(split_conjunct,[status(thm)],[c_0_74])).
+cnf(c_0_78, negated_conjecture, (~capital_city(s__Copenhagen,X1)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Object(X1)), inference(spm,[status(thm)],[c_0_75, c_0_76])).
+cnf(c_0_79, plain, (s__Object(X1)|~s__Nation(X1)), inference(spm,[status(thm)],[c_0_69, c_0_77])).
+cnf(c_0_80, negated_conjecture, (~capital_city(s__Copenhagen,X1)|~is_instance(X1,s__OECDMemberEconomiesClass)|~s__Nation(X1)), inference(spm,[status(thm)],[c_0_78, c_0_79])).
+cnf(c_0_81, plain, (capital_city(s__Copenhagen,s__Denmark)), inference(split_conjunct,[status(thm)],[s__Copenhagen_s__Denmark])).
+cnf(c_0_82, plain, (is_instance(s__Denmark,s__OECDMemberEconomiesClass)), inference(split_conjunct,[status(thm)],[s__Denmark_OECD])).
+cnf(c_0_83, plain, (s__Nation(s__Denmark)), inference(split_conjunct,[status(thm)],[s__Denmark_type])).
+cnf(c_0_84, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_80, c_0_81]), c_0_82]), c_0_83])]), ['proof']).
+# SZS output end CNFRefutation

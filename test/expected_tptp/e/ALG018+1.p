@@ -2,15 +2,17 @@
 fof(ax3, axiom, ? [X1]: (sorti1(X1) & ! [X2]: (sorti1(X2) => op1(X2, X2) = X1)), file('Problems/ALG/ALG018+1.p', ax3)).
 fof(ax2, axiom, ! [X1]: (sorti2(X1) => ! [X2]: (sorti2(X2) => sorti2(op2(X1, X2)))), file('Problems/ALG/ALG018+1.p', ax2)).
 fof(ax4, axiom, ~ ? [X1]: (sorti2(X1) & ! [X2]: (sorti2(X2) => op2(X2, X2) = X1)), file('Problems/ALG/ALG018+1.p', ax4)).
-fof(axiom_1, plain, sorti1(esk1_0), inference(clausify, [status(thm)], [ax3])).
-fof(axiom_2, plain, ! [X] : (sorti1(X) => op1(X,X) = esk1_0), inference(clausify, [status(thm)], [ax3])).
+fof(skolem_c_0_5, definition, ? [X1]: (sorti1(X1) & ! [X2]: (sorti1(X2) => op1(X2, X2) = X1)) => ! [X14]: (sorti1(esk1_0) & (~ sorti1(X14) | op1(X14, X14) = esk1_0)), introduced(definition, [new_symbols(definition, [esk1_0])], [])).
+fof(skolem_c_0_17, definition, ~ ? [X1]: (sorti2(X1) & ! [X2]: (sorti2(X2) => op2(X2, X2) = X1)) => ! [X15]: ((sorti2(esk2_1(X15)) | ~ sorti2(X15)) & (op2(esk2_1(X15), esk2_1(X15)) != X15 | ~ sorti2(X15))), introduced(definition, [new_symbols(definition, [esk2_1])], [])).
+fof(axiom_1, plain, sorti1(esk1_0), inference(clausify, [status(thm)], [ax3, skolem_c_0_5])).
+fof(axiom_2, plain, ! [X] : (sorti1(X) => op1(X,X) = esk1_0), inference(clausify, [status(thm)], [ax3, skolem_c_0_5])).
 fof(c_0_13, assumption, ! [X] : (sorti1(X) => sorti2(h(X))), introduced(assumption, [], [])).
 fof(c_0_12, assumption, ! [X,Y] : ((sorti1(X) & sorti1(Y)) => h(op1(X,Y)) = op2(h(X),h(Y))), introduced(assumption, [], [])).
-fof(axiom_6, plain, ! [X] : (sorti2(X) => sorti2(esk2_1(X))), inference(clausify, [status(thm)], [ax4])).
+fof(axiom_6, plain, ! [X] : (sorti2(X) => sorti2(esk2_1(X))), inference(clausify, [status(thm)], [ax4, skolem_c_0_17])).
 fof(c_0_9, assumption, ! [X,Y] : ((sorti2(X) & sorti2(Y)) => j(op2(X,Y)) = op1(j(X),j(Y))), introduced(assumption, [], [])).
 fof(c_0_10, assumption, ! [X] : (sorti2(X) => sorti1(j(X))), introduced(assumption, [], [])).
 fof(c_0_14, assumption, ! [X] : (sorti2(X) => h(j(X)) = X), introduced(assumption, [], [])).
-fof(axiom_10, plain, ! [X] : ((sorti2(X) & op2(esk2_1(X),esk2_1(X)) = X) => $false), inference(clausify, [status(thm)], [ax4])).
+fof(axiom_10, plain, ! [X] : ((sorti2(X) & op2(esk2_1(X),esk2_1(X)) = X) => $false), inference(clausify, [status(thm)], [ax4, skolem_c_0_17])).
 fof(s1, plain, sorti2(h(esk1_0)), inference(mp, [status(thm), assumptions([c_0_13])], [c_0_13, axiom_1])).
 fof(lemma_11, lemma, sorti2(esk2_1(h(esk1_0))), inference(mp, [status(thm), assumptions([c_0_13])], [axiom_6, s1])).
 fof(s2, plain, sorti2(h(esk1_0)), inference(mp, [status(thm), assumptions([c_0_13])], [c_0_13, axiom_1])).

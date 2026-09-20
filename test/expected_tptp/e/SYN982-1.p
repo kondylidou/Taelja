@@ -24,8 +24,7 @@ fof(s3, plain, ssIm(nb(na)), inference(mp, [status(thm)], [clause18, lemma_16]))
 fof(lemma_20, lemma, ssIm(encr(nb(na),na)), inference(mp, [status(thm)], [clause29, s3, lemma_19, clause5])).
 fof(lemma_21, lemma, ssSb(pair(a,na)), inference(mp, [status(thm)], [clause30, clause16, clause3])).
 fof(goal_1, theorem, ssIk(key(na,b)), inference(mp, [status(thm)], [clause25, lemma_17, clause4])).
-fof(goal_2, theorem, ssIk(key(na,b)), inference(mp, [status(thm)], [clause25, lemma_17, clause4])).
 fof(s4, plain, ssIm(pair(encr(triple(a,na,tb(na)),bt),encr(nb(na),na))), inference(mp, [status(thm)], [clause26, lemma_18, lemma_20])).
 fof(s5, plain, ssM(sent(a,b,pair(encr(triple(a,na,tb(na)),bt),encr(nb(na),na)))), inference(mp, [status(thm)], [clause27, s4, clause5, clause4])).
-fof(goal_3, theorem, ssBk(key(na,a)), inference(mp, [status(thm)], [clause34, s5, lemma_21])).
+fof(goal_2, theorem, ssBk(key(na,a)), inference(mp, [status(thm)], [clause34, s5, lemma_21])).
 % SZS output end Proof

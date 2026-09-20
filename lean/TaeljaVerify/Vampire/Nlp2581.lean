@@ -205,146 +205,92 @@ theorem taelja_goal8 : present skc12 (skf2 skc10) := by
   exact h1
 
 -- Goal 9
-theorem taelja_goal9 : agent skc12 (skf2 skc10) skc10 := by
-  have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : man skc8 skc10 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h3 : man skc12 skc10 := by first | (exact ax3 skc8 skc12 skc10 h1 h2) | (first | (exact ax3 _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  have h4 : agent skc12 (skf2 skc10) skc10 := by first | (exact ax7 skc10 h3) | (first | (exact ax7 _ h3) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h4
-
--- Goal 10
-theorem taelja_goal10 : event skc12 (skf2 skc10) := by
-  have h1 : event skc12 (skf2 skc10) := by first | (exact taelja_lemma28) | (first | apply taelja_lemma28 <;> first | rfl | assumption)
-  exact h1
-
--- Goal 11
-theorem taelja_goal11 : forename skc8 skc11 := by
+theorem taelja_goal9 : forename skc8 skc11 := by
   have h1 : forename skc8 skc11 := by first | (exact taelja_lemma29) | (first | apply taelja_lemma29 <;> first | rfl | assumption)
   exact h1
 
--- Goal 12
-theorem taelja_goal12 : jules_forename skc8 skc11 := by
+-- Goal 10
+theorem taelja_goal10 : jules_forename skc8 skc11 := by
   have h1 : jules_forename skc8 skc11 := by first | (exact ax14) | (first | apply ax14 <;> first | rfl | assumption)
   exact h1
 
--- Goal 13
-theorem taelja_goal13 : of skc8 skc11 skc10 := by
+-- Goal 11
+theorem taelja_goal11 : of skc8 skc11 skc10 := by
   have h1 : of skc8 skc11 skc10 := by first | (exact ax15) | (first | apply ax15 <;> first | rfl | assumption)
   exact h1
 
--- Goal 14
-theorem taelja_goal14 : accessible_world skc8 skc12 := by
+-- Goal 12
+theorem taelja_goal12 : accessible_world skc8 skc12 := by
   have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+  exact h1
+
+-- Goal 13
+theorem taelja_goal13 : proposition skc8 skc12 := by
+  have h1 : proposition skc8 skc12 := by first | (exact ax13) | (first | apply ax13 <;> first | rfl | assumption)
+  exact h1
+
+-- Goal 14
+theorem taelja_goal14 : smoke skc12 (skf2 (skf4 skc12)) := by
+  have h1 : smoke skc12 (skf2 (skf4 skc12)) := by first | (exact taelja_lemma26 (skf4 skc12)) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
   exact h1
 
 -- Goal 15
-theorem taelja_goal15 : proposition skc8 skc12 := by
-  have h1 : proposition skc8 skc12 := by first | (exact ax13) | (first | apply ax13 <;> first | rfl | assumption)
-  exact h1
-
--- Goal 16
-theorem taelja_goal16 : proposition skc8 skc12 := by
-  have h1 : proposition skc8 skc12 := by first | (exact ax13) | (first | apply ax13 <;> first | rfl | assumption)
-  exact h1
-
--- Goal 17
-theorem taelja_goal17 : accessible_world skc8 skc12 := by
-  have h1 : accessible_world skc8 skc12 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  exact h1
-
--- Goal 18
-theorem taelja_goal18 : smoke skc12 (skf2 (skf4 skc12)) := by
-  have h1 : smoke skc12 (skf2 (skf4 skc12)) := by first | (exact taelja_lemma26 (skf4 skc12)) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
-  exact h1
-
--- Goal 19
-theorem taelja_goal19 : present skc12 (skf2 (skf4 skc12)) := by
+theorem taelja_goal15 : present skc12 (skf2 (skf4 skc12)) := by
   have h1 : present skc12 (skf2 (skf4 skc12)) := by first | (exact taelja_lemma25 (skf4 skc12)) | (first | apply taelja_lemma25 <;> first | rfl | assumption)
   exact h1
 
--- Goal 20
-theorem taelja_goal20 : state skc8 skc9 := by
+-- Goal 16
+theorem taelja_goal16 : state skc8 skc9 := by
   have h1 : state skc8 skc9 := by first | (exact ax19) | (first | apply ax19 <;> first | rfl | assumption)
   exact h1
 
--- Goal 21
-theorem taelja_goal21 : event skc12 (skf2 (skf4 skc12)) := by
-  have h1 : smoke skc12 (skf2 (skf4 skc12)) := by first | (exact taelja_lemma26 (skf4 skc12)) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
-  have h2 : event skc12 (skf2 (skf4 skc12)) := by first | (exact ax23 skc12 (skf2 (skf4 skc12)) h1) | (first | (exact ax23 _ _ h1) | (apply ax23 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)))))
-  exact h2
-
--- Goal 22
-theorem taelja_goal22 : think_believe_consider skc8 skc13 := by
+-- Goal 17
+theorem taelja_goal17 : think_believe_consider skc8 skc13 := by
   have h1 : think_believe_consider skc8 skc13 := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   exact h1
 
--- Goal 23
-theorem taelja_goal23 : present skc8 skc13 := by
+-- Goal 18
+theorem taelja_goal18 : present skc8 skc13 := by
   have h1 : present skc8 skc13 := by first | (exact ax10) | (first | apply ax10 <;> first | rfl | assumption)
   exact h1
 
--- Goal 24
-theorem taelja_goal24 : event skc8 skc13 := by
+-- Goal 19
+theorem taelja_goal19 : event skc8 skc13 := by
   have h1 : event skc8 skc13 := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   exact h1
 
--- Goal 25
-theorem taelja_goal25 : theme skc8 skc13 skc12 := by
+-- Goal 20
+theorem taelja_goal20 : theme skc8 skc13 skc12 := by
   have h1 : theme skc8 skc13 skc12 := by first | (exact ax12) | (first | apply ax12 <;> first | rfl | assumption)
   exact h1
 
--- Goal 26
-theorem taelja_goal26 : agent skc8 skc13 skc15 := by
+-- Goal 21
+theorem taelja_goal21 : agent skc8 skc13 skc15 := by
   have h1 : agent skc8 skc13 skc15 := by first | (exact ax8) | (first | apply ax8 <;> first | rfl | assumption)
   exact h1
 
--- Goal 27
-theorem taelja_goal27 : agent skc8 skc13 skc15 := by
-  have h1 : agent skc8 skc13 skc15 := by first | (exact ax8) | (first | apply ax8 <;> first | rfl | assumption)
-  exact h1
-
--- Goal 28
-theorem taelja_goal28 : man skc8 skc15 := by
+-- Goal 22
+theorem taelja_goal22 : man skc8 skc15 := by
   have h1 : man skc8 skc15 := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
   exact h1
 
--- Goal 29
-theorem taelja_goal29 : of skc8 skc14 skc15 := by
+-- Goal 23
+theorem taelja_goal23 : of skc8 skc14 skc15 := by
   have h1 : of skc8 skc14 skc15 := by first | (exact ax17) | (first | apply ax17 <;> first | rfl | assumption)
   exact h1
 
--- Goal 30
-theorem taelja_goal30 : vincent_forename skc8 skc14 := by
+-- Goal 24
+theorem taelja_goal24 : vincent_forename skc8 skc14 := by
   have h1 : vincent_forename skc8 skc14 := by first | (exact ax16) | (first | apply ax16 <;> first | rfl | assumption)
   exact h1
 
--- Goal 31
-theorem taelja_goal31 : forename skc8 skc14 := by
+-- Goal 25
+theorem taelja_goal25 : forename skc8 skc14 := by
   have h1 : forename skc8 skc14 := by first | (exact taelja_lemma30) | (first | apply taelja_lemma30 <;> first | rfl | assumption)
   exact h1
 
--- Goal 32
-theorem taelja_goal32 : theme skc8 skc13 skc12 := by
-  have h1 : theme skc8 skc13 skc12 := by first | (exact ax12) | (first | apply ax12 <;> first | rfl | assumption)
-  exact h1
-
--- Goal 33
-theorem taelja_goal33 : event skc8 skc13 := by
-  have h1 : event skc8 skc13 := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
-  exact h1
-
--- Goal 34
-theorem taelja_goal34 : present skc8 skc13 := by
-  have h1 : present skc8 skc13 := by first | (exact ax10) | (first | apply ax10 <;> first | rfl | assumption)
-  exact h1
-
--- Goal 35
-theorem taelja_goal35 : think_believe_consider skc8 skc13 := by
-  have h1 : think_believe_consider skc8 skc13 := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
-  exact h1
-
--- Goal 36
-theorem taelja_goal36 : actual_world skc8 := by
+-- Goal 26
+theorem taelja_goal26 : actual_world skc8 := by
   have h1 : actual_world skc8 := by first | (exact ax18) | (first | apply ax18 <;> first | rfl | assumption)
   exact h1
 

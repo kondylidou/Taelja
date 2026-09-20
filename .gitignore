@@ -9,4 +9,7 @@ lean/.lake/
 lean/TaeljaVerify/HEQ/
 lean/TaeljaVerify/HNE/
 lean/TaeljaVerify/UEQ/
+lean/TaeljaVerify/FOF/
+lean/TaeljaVerify/TFF/
+lean/TaeljaVerifyEval.lean
 __pycache__/

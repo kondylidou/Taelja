@@ -186,3 +186,5 @@ import TaeljaVerify.Twee.Lcl9021
 import TaeljaVerify.E.Sww9671
 import TaeljaVerify.E.Sww9681
 import TaeljaVerify.Twee.Seu3031
+import TaeljaVerify.E.Csr1171
+import TaeljaVerify.E.Syo6111

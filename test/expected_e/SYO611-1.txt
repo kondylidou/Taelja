@@ -1,0 +1,17 @@
+Axiom 1: le(X,X)
+Axiom 2: eq(f(X),a0)
+
+Goal 1: eq(f(X),a0)
+Proof:
+  have eq(f(X),a0)
+    by axiom 2
+
+Goal 2: eq(f(s(X)),a0)
+Proof:
+  have eq(f(s(X)),a0)
+    by axiom 2
+
+Goal 3: le(s(X),s(X))
+Proof:
+  have le(s(X),s(X))
+    by axiom 1

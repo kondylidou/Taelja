@@ -81,16 +81,7 @@ Proof:
   hence ssIk(key(na,b))
     by axiom 9
 
-Goal 2: ssIk(key(na,b))
-Proof:
-  have ssIm(na)
-    by lemma 17
-   and ssP(b)
-    by axiom 12
-  hence ssIk(key(na,b))
-    by axiom 9
-
-Goal 3: ssBk(key(na,a))
+Goal 2: ssBk(key(na,a))
 Proof:
   have ssIm(encr(triple(a,na,tb(na)),bt))
     by lemma 18
