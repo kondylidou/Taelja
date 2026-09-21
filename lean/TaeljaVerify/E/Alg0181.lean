@@ -32,56 +32,63 @@ axiom ax4 : ∀ (x : α), sorti2 x → sorti2 (esk2_1 x)
 axiom ax5 : ∀ (x : α), sorti2 x → (op2 (esk2_1 x) (esk2_1 x)) = x → False
 
 -- Lemma 6
-theorem taelja_lemma6 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → sorti2 (esk2_1 (h esk1_0)) := by
+theorem taelja_lemma6 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → sorti2 (h esk1_0) := by
   intro hyp1
   -- the variable X of the proof, fixed as an arbitrary element
   have x : α := taelja_elem
   have h1 : sorti1 esk1_0 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : sorti2 (h esk1_0) := by first | (exact hyp1 esk1_0 h1) | (first | (exact hyp1 _ h1) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact ax4 (h esk1_0) h2) | (first | (exact ax4 _ h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h3
+  exact h2
 
 -- Lemma 7
-theorem taelja_lemma7 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (x : α), (sorti2 x) → (h (j x)) = x) → (h (j (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))))) = (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) := by
+theorem taelja_lemma7 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → sorti2 (esk2_1 (h esk1_0)) := by
+  intro hyp1
+  -- the variable X of the proof, fixed as an arbitrary element
+  have x : α := taelja_elem
+  have h1 : sorti2 (h esk1_0) := by first | (exact (taelja_lemma6 hyp1)) | (first | apply (taelja_lemma6 hyp1) <;> first | rfl | assumption)
+  have h2 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact ax4 (h esk1_0) h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h2
+
+-- Lemma 8
+theorem taelja_lemma8 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (x : α), (sorti2 x) → (h (j x)) = x) → (h (j (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))))) = (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) := by
   intro hyp1 hyp5
   -- the variable X of the proof, fixed as an arbitrary element
   have x : α := taelja_elem
-  have h1 : sorti1 esk1_0 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : sorti2 (h esk1_0) := by first | (exact hyp1 esk1_0 h1) | (first | (exact hyp1 _ h1) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact ax4 (h esk1_0) h2) | (first | (exact ax4 _ h2) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h4 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact (taelja_lemma6 hyp1)) | (first | apply (taelja_lemma6 hyp1) <;> first | rfl | assumption)
-  have h5 : sorti2 (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) := by first | (exact ax3 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0)) h3 h4) | (first | (exact ax3 _ _ h3 h4) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h6 : (h (j (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))))) = (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) := by first | (exact hyp5 (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) h5) | (first | (exact hyp5 _ h5) | (apply hyp5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply hyp5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h6
+  have h1 : sorti2 (h esk1_0) := by first | (exact (taelja_lemma6 hyp1)) | (first | apply (taelja_lemma6 hyp1) <;> first | rfl | assumption)
+  have h2 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact ax4 (h esk1_0) h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact (taelja_lemma7 hyp1)) | (first | apply (taelja_lemma7 hyp1) <;> first | rfl | assumption)
+  have h4 : sorti2 (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) := by first | (exact ax3 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0)) h2 h3) | (first | (exact ax3 _ _ h2 h3) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h5 : (h (j (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))))) = (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) := by first | (exact hyp5 (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) h4) | (first | (exact hyp5 _ h4) | (apply hyp5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply hyp5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h5
 
--- Lemma 8
-theorem taelja_lemma8 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (x : α) (y : α), (sorti2 x) → (sorti2 y) → (j (op2 x y)) = (op1 (j x) (j y))) → (j (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0)))) = (op1 (j (esk2_1 (h esk1_0))) (j (esk2_1 (h esk1_0)))) := by
+-- Lemma 9
+theorem taelja_lemma9 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (x : α) (y : α), (sorti2 x) → (sorti2 y) → (j (op2 x y)) = (op1 (j x) (j y))) → (j (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0)))) = (op1 (j (esk2_1 (h esk1_0))) (j (esk2_1 (h esk1_0)))) := by
   intro hyp1 hyp4
   -- the variable X of the proof, fixed as an arbitrary element
   have x : α := taelja_elem
   -- the variable Y of the proof, fixed as an arbitrary element
   have y : α := taelja_elem
-  have h1 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact (taelja_lemma6 hyp1)) | (first | apply (taelja_lemma6 hyp1) <;> first | rfl | assumption)
-  have h2 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact (taelja_lemma6 hyp1)) | (first | apply (taelja_lemma6 hyp1) <;> first | rfl | assumption)
+  have h1 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact (taelja_lemma7 hyp1)) | (first | apply (taelja_lemma7 hyp1) <;> first | rfl | assumption)
+  have h2 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact (taelja_lemma7 hyp1)) | (first | apply (taelja_lemma7 hyp1) <;> first | rfl | assumption)
   have h3 : (j (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0)))) = (op1 (j (esk2_1 (h esk1_0))) (j (esk2_1 (h esk1_0)))) := by first | (exact hyp4 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0)) h1 h2) | (first | (exact hyp4 _ _ h1 h2) | (apply hyp4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply hyp4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
--- Lemma 9
-theorem taelja_lemma9 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (x : α), (sorti2 x) → sorti1 (j x)) → (op1 (j (esk2_1 (h esk1_0))) (j (esk2_1 (h esk1_0)))) = esk1_0 := by
+-- Lemma 10
+theorem taelja_lemma10 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (x : α), (sorti2 x) → sorti1 (j x)) → (op1 (j (esk2_1 (h esk1_0))) (j (esk2_1 (h esk1_0)))) = esk1_0 := by
   intro hyp1 hyp2
   -- the variable X of the proof, fixed as an arbitrary element
   have x : α := taelja_elem
-  have h1 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact (taelja_lemma6 hyp1)) | (first | apply (taelja_lemma6 hyp1) <;> first | rfl | assumption)
+  have h1 : sorti2 (esk2_1 (h esk1_0)) := by first | (exact (taelja_lemma7 hyp1)) | (first | apply (taelja_lemma7 hyp1) <;> first | rfl | assumption)
   have h2 : sorti1 (j (esk2_1 (h esk1_0))) := by first | (exact hyp2 (esk2_1 (h esk1_0)) h1) | (first | (exact hyp2 _ h1) | (apply hyp2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : (op1 (j (esk2_1 (h esk1_0))) (j (esk2_1 (h esk1_0)))) = esk1_0 := by first | (exact ax2 (j (esk2_1 (h esk1_0))) h2) | (first | (exact ax2 _ h2) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
--- Lemma 10
-theorem taelja_lemma10 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (x : α), (sorti2 x) → sorti1 (j x)) → (∀ (x : α) (y : α), (sorti2 x) → (sorti2 y) → (j (op2 x y)) = (op1 (j x) (j y))) → (∀ (x : α), (sorti2 x) → (h (j x)) = x) → (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) = (h esk1_0) := by
+-- Lemma 11
+theorem taelja_lemma11 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (x : α), (sorti2 x) → sorti1 (j x)) → (∀ (x : α) (y : α), (sorti2 x) → (sorti2 y) → (j (op2 x y)) = (op1 (j x) (j y))) → (∀ (x : α), (sorti2 x) → (h (j x)) = x) → (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) = (h esk1_0) := by
   intro hyp1 hyp2 hyp4 hyp5
-  calc op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0)) = h (j (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0)))) := by have h_rw := (taelja_lemma7 hyp1 hyp5); rw [h_rw]
-      _ = h (op1 (j (esk2_1 (h esk1_0))) (j (esk2_1 (h esk1_0)))) := by have h_rw := (taelja_lemma8 hyp1 hyp4); rw [h_rw]
-      _ = h esk1_0 := by have h_rw := (taelja_lemma9 hyp1 hyp2); rw [h_rw]
+  calc op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0)) = h (j (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0)))) := by have h_rw := (taelja_lemma8 hyp1 hyp5); rw [h_rw]
+      _ = h (op1 (j (esk2_1 (h esk1_0))) (j (esk2_1 (h esk1_0)))) := by have h_rw := (taelja_lemma9 hyp1 hyp4); rw [h_rw]
+      _ = h esk1_0 := by have h_rw := (taelja_lemma10 hyp1 hyp2); rw [h_rw]
 
 -- Goal 1
 theorem taelja_goal1 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (x : α), (sorti2 x) → sorti1 (j x)) → (∀ (x : α) (y : α), (sorti1 x) → (sorti1 y) → (h (op1 x y)) = (op2 (h x) (h y))) → (∀ (x : α) (y : α), (sorti2 x) → (sorti2 y) → (j (op2 x y)) = (op1 (j x) (j y))) → (∀ (x : α), (sorti2 x) → (h (j x)) = x) → False := by
@@ -90,11 +97,10 @@ theorem taelja_goal1 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (x :
   have x : α := taelja_elem
   -- the variable Y of the proof, fixed as an arbitrary element
   have y : α := taelja_elem
-  have h1 : sorti1 esk1_0 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : sorti2 (h esk1_0) := by first | (exact hyp1 esk1_0 h1) | (first | (exact hyp1 _ h1) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) = (h esk1_0) := by first | (exact (taelja_lemma10 hyp1 hyp2 hyp4 hyp5)) | (first | apply (taelja_lemma10 hyp1 hyp2 hyp4 hyp5) <;> first | rfl | assumption | (apply Eq.symm; apply (taelja_lemma10 hyp1 hyp2 hyp4 hyp5) <;> first | rfl | assumption))
-  have h4 : False := by first | (exact ax5 (h esk1_0) h2 h3) | (first | (exact ax5 _ h2 h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h4
+  have h1 : sorti2 (h esk1_0) := by first | (exact (taelja_lemma6 hyp1)) | (first | apply (taelja_lemma6 hyp1) <;> first | rfl | assumption)
+  have h2 : (op2 (esk2_1 (h esk1_0)) (esk2_1 (h esk1_0))) = (h esk1_0) := by first | (exact (taelja_lemma11 hyp1 hyp2 hyp4 hyp5)) | (first | apply (taelja_lemma11 hyp1 hyp2 hyp4 hyp5) <;> first | rfl | assumption | (apply Eq.symm; apply (taelja_lemma11 hyp1 hyp2 hyp4 hyp5) <;> first | rfl | assumption))
+  have h3 : False := by first | (exact ax5 (h esk1_0) h1 h2) | (first | (exact ax5 _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h3
 
 end EAlg0181
 

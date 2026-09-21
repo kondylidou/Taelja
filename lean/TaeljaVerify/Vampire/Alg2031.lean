@@ -43,20 +43,7 @@ theorem taelja_lemma7 : (∀ (x : α), (sorti1 x) → (j (h x)) = x) → (j (h s
   exact h2
 
 -- Lemma 8
-theorem taelja_lemma8 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (y : α), (sorti1 y) → (j (h y)) = y) → sorti2 (h sK1) := by
-  intro hyp1 hyp2
-  -- the variable X of the proof, fixed as an arbitrary element
-  have x : α := taelja_elem
-  -- the variable Y of the proof, fixed as an arbitrary element
-  have y : α := taelja_elem
-  have h1 : sorti1 sK1 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : sorti2 (h sK1) := by first | (exact hyp1 sK1 h1) | (first | (exact hyp1 _ h1) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : sorti2 (h (j (h sK1))) := by have h_rw := (taelja_lemma7 hyp2); rw [h_rw]; exact h2
-  have h4 : sorti2 (h sK1) := by have h_rw := (taelja_lemma7 hyp2); rw [←h_rw]; exact h3
-  exact h4
-
--- Lemma 9
-theorem taelja_lemma9 : (∀ (x : α) (y : α), (sorti1 x) → (sorti1 y) → (h (op1 y x)) = (op2 (h y) (h x))) → (h sK0) = (op2 (h sK0) (h sK0)) := by
+theorem taelja_lemma8 : (∀ (x : α) (y : α), (sorti1 x) → (sorti1 y) → (h (op1 y x)) = (op2 (h y) (h x))) → (h sK0) = (op2 (h sK0) (h sK0)) := by
   intro hyp3
   -- the variable X of the proof, fixed as an arbitrary element
   have x : α := taelja_elem
@@ -66,6 +53,19 @@ theorem taelja_lemma9 : (∀ (x : α) (y : α), (sorti1 x) → (sorti1 y) → (h
   have h2 : sorti1 sK0 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h3 : (h (op1 sK0 sK0)) = (op2 (h sK0) (h sK0)) := by first | (exact hyp3 sK0 sK0 h1 h2) | (first | (exact hyp3 _ _ h1 h2) | (apply hyp3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply hyp3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h4 : (h sK0) = (op2 (h sK0) (h sK0)) := by have h_rw := ax3; rw (config := { occs := .pos [1] }) [h_rw]; exact h3
+  exact h4
+
+-- Lemma 9
+theorem taelja_lemma9 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (y : α), (sorti1 y) → (j (h y)) = y) → sorti2 (h sK1) := by
+  intro hyp1 hyp2
+  -- the variable X of the proof, fixed as an arbitrary element
+  have x : α := taelja_elem
+  -- the variable Y of the proof, fixed as an arbitrary element
+  have y : α := taelja_elem
+  have h1 : sorti1 sK1 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : sorti2 (h sK1) := by first | (exact hyp1 sK1 h1) | (first | (exact hyp1 _ h1) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : sorti2 (h (j (h sK1))) := by have h_rw := (taelja_lemma7 hyp2); rw [h_rw]; exact h2
+  have h4 : sorti2 (h sK1) := by have h_rw := (taelja_lemma7 hyp2); rw [←h_rw]; exact h3
   exact h4
 
 -- Lemma 10
@@ -81,8 +81,8 @@ theorem taelja_lemma10 : (∀ (x : α), (sorti1 x) → sorti2 (h x)) → (∀ (y
   have z : α := taelja_elem
   have h1 : sorti1 sK0 := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h2 : sorti2 (h sK0) := by first | (exact hyp1 sK0 h1) | (first | (exact hyp1 _ h1) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : (h sK0) = (op2 (h sK0) (h sK0)) := by first | (exact (taelja_lemma9 hyp3)) | (first | apply (taelja_lemma9 hyp3) <;> first | rfl | assumption | (apply Eq.symm; apply (taelja_lemma9 hyp3) <;> first | rfl | assumption))
-  have h4 : sorti2 (h sK1) := by first | (exact (taelja_lemma8 hyp1 hyp2)) | (first | apply (taelja_lemma8 hyp1 hyp2) <;> first | rfl | assumption)
+  have h3 : (h sK0) = (op2 (h sK0) (h sK0)) := by first | (exact (taelja_lemma8 hyp3)) | (first | apply (taelja_lemma8 hyp3) <;> first | rfl | assumption | (apply Eq.symm; apply (taelja_lemma8 hyp3) <;> first | rfl | assumption))
+  have h4 : sorti2 (h sK1) := by first | (exact (taelja_lemma9 hyp1 hyp2)) | (first | apply (taelja_lemma9 hyp1 hyp2) <;> first | rfl | assumption)
   have h5 : (op2 (h sK1) (h sK1)) = (h sK1) := by first | (exact ax4 (h sK0) (h sK1) h2 (h3.symm) h4) | (first | (exact ax4 _ _ h2 h3 h4) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h6 : (op2 (h (j (h sK1))) (h sK1)) = (h sK1) := by have h_rw := (taelja_lemma7 hyp2); rw [h_rw]; exact h5
   exact h6

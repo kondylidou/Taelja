@@ -94,15 +94,7 @@ axiom ax21 : ∀ (x36 : α), pred_attacker (tuple_client_A_out_9 x36) → pred_a
 axiom ax22 : ∀ (x37 : α) (x38 : α), pred_attacker x37 → pred_attacker x38 → pred_attacker (tuple_2 x37 x38)
 
 -- Lemma 23
-theorem taelja_lemma23 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := by
-  have h_rw := ax9 constr_CONST_0x30 name_Kas constr_CONST_0x30
-  rw [h_rw]
-  have h_rw := ax8 constr_CONST_0x30 constr_CONST_0x30
-  rw [h_rw]
-  apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
-
--- Lemma 24
-theorem taelja_lemma24 : pred_attacker (tuple_client_A_in_2 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by
+theorem taelja_lemma23 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by
   -- the variable X of the proof, fixed as an arbitrary element
   have x : α := taelja_elem
   have h1 : pred_attacker constr_CONST_0x30 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
@@ -114,8 +106,23 @@ theorem taelja_lemma24 : pred_attacker (tuple_client_A_in_2 (tuple_client_A_in_6
   have h7 : pred_attacker (constr_cbc_4_get_2_prefixes (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas)) := by first | (exact ax6 (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas) h6) | (first | (exact ax6 _ h6) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h8 : pred_attacker (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) := by have h_rw := ax5 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas; rw [←h_rw]; exact h7
   have h9 : pred_attacker (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) := by first | (exact ax7 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) h8) | (first | (exact ax7 _ h8) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h10 : pred_attacker (tuple_client_A_in_2 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by first | (exact ax10 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) h9) | (first | (exact ax10 _ h9) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h10 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by first | (exact ax12 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) h9) | (first | (exact ax12 _ h9) | (apply ax12 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h10
+
+-- Lemma 24
+theorem taelja_lemma24 : pred_attacker (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) := by
+  -- the variable X of the proof, fixed as an arbitrary element
+  have x : α := taelja_elem
+  have h1 : pred_attacker constr_CONST_0x30 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : pred_attacker constr_CONST_0x30 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h3 : pred_attacker constr_CONST_0x30 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h4 : pred_attacker (tuple_server_S_in_1 constr_CONST_0x30 constr_CONST_0x30 constr_CONST_0x30) := by first | (exact ax2 constr_CONST_0x30 constr_CONST_0x30 constr_CONST_0x30 h1 h2 h3) | (first | (exact ax2 _ _ _ h1 h2 h3) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h5 : pred_attacker (tuple_server_S_out_2 (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas)) := by first | (exact ax3 constr_CONST_0x30 constr_CONST_0x30 constr_CONST_0x30 x h4) | (first | (exact ax3 _ _ _ _ h4) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h6 : pred_attacker (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas) := by first | (exact ax4 (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas) h5) | (first | (exact ax4 _ h5) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h7 : pred_attacker (constr_cbc_4_get_2_prefixes (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas)) := by first | (exact ax6 (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas) h6) | (first | (exact ax6 _ h6) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h8 : pred_attacker (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) := by have h_rw := ax5 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas; rw [←h_rw]; exact h7
+  have h9 : pred_attacker (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) := by first | (exact ax7 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) h8) | (first | (exact ax7 _ h8) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h9
 
 -- Lemma 25
 theorem taelja_lemma25 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by
@@ -134,7 +141,7 @@ theorem taelja_lemma25 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_6
   exact h10
 
 -- Lemma 26
-theorem taelja_lemma26 : pred_attacker (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) := by
+theorem taelja_lemma26 : pred_attacker (tuple_client_A_in_2 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by
   -- the variable X of the proof, fixed as an arbitrary element
   have x : α := taelja_elem
   have h1 : pred_attacker constr_CONST_0x30 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
@@ -146,94 +153,60 @@ theorem taelja_lemma26 : pred_attacker (tuple_client_A_in_6 (constr_cbc_enc_2 co
   have h7 : pred_attacker (constr_cbc_4_get_2_prefixes (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas)) := by first | (exact ax6 (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas) h6) | (first | (exact ax6 _ h6) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h8 : pred_attacker (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) := by have h_rw := ax5 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas; rw [←h_rw]; exact h7
   have h9 : pred_attacker (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) := by first | (exact ax7 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) h8) | (first | (exact ax7 _ h8) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h9
-
--- Lemma 27
-theorem taelja_lemma27 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by
-  -- the variable X of the proof, fixed as an arbitrary element
-  have x : α := taelja_elem
-  have h1 : pred_attacker constr_CONST_0x30 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : pred_attacker constr_CONST_0x30 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h3 : pred_attacker constr_CONST_0x30 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h4 : pred_attacker (tuple_server_S_in_1 constr_CONST_0x30 constr_CONST_0x30 constr_CONST_0x30) := by first | (exact ax2 constr_CONST_0x30 constr_CONST_0x30 constr_CONST_0x30 h1 h2 h3) | (first | (exact ax2 _ _ _ h1 h2 h3) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h5 : pred_attacker (tuple_server_S_out_2 (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas)) := by first | (exact ax3 constr_CONST_0x30 constr_CONST_0x30 constr_CONST_0x30 x h4) | (first | (exact ax3 _ _ _ _ h4) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h6 : pred_attacker (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas) := by first | (exact ax4 (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas) h5) | (first | (exact ax4 _ h5) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h7 : pred_attacker (constr_cbc_4_get_2_prefixes (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas)) := by first | (exact ax6 (constr_cbc_enc_4 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas) h6) | (first | (exact ax6 _ h6) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h8 : pred_attacker (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) := by have h_rw := ax5 constr_CONST_0x30 constr_CONST_0x30 (name_Kab_66 x) (constr_cbc_enc_2 (name_Kab_66 x) constr_CONST_0x30 name_Kbs) name_Kas; rw [←h_rw]; exact h7
-  have h9 : pred_attacker (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) := by first | (exact ax7 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) h8) | (first | (exact ax7 _ h8) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h10 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by first | (exact ax12 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) h9) | (first | (exact ax12 _ h9) | (apply ax12 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h10 : pred_attacker (tuple_client_A_in_2 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by first | (exact ax10 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) h9) | (first | (exact ax10 _ h9) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h10
 
--- Lemma 28
-theorem taelja_lemma28 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 constr_CONST_0x30)) := by
+-- Lemma 27
+theorem taelja_lemma27 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 constr_CONST_0x30)) := by
   -- the variable X of the proof, fixed as an arbitrary element
   have x : α := taelja_elem
   have h1 : pred_eq_bitstring_bitstring (tuple_succ (name_Na0x27 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) x)) (constr_cbc_dec_1 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by first | (exact ax13 (tuple_succ (name_Na0x27 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) x)) (constr_cbc_dec_1 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) | (first | apply ax13 <;> first | rfl | assumption)
-  have h2 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by first | (exact taelja_lemma27) | (first | apply taelja_lemma27 <;> first | rfl | assumption)
+  have h2 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by first | (exact taelja_lemma23) | (first | apply taelja_lemma23 <;> first | rfl | assumption)
   have h3 : pred_eq_bitstring_bitstring name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := by first | (exact ax13 name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) | (first | apply ax13 <;> first | rfl | assumption)
-  have h4 : pred_attacker (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) := by first | (exact taelja_lemma26) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
+  have h4 : pred_attacker (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) := by first | (exact taelja_lemma24) | (first | apply taelja_lemma24 <;> first | rfl | assumption)
   have h5 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by first | (exact taelja_lemma25) | (first | apply taelja_lemma25 <;> first | rfl | assumption)
   have h6 : pred_eq_bitstring_bitstring name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) name_Kas)) := by first | (exact ax13 name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) name_Kas))) | (first | apply ax13 <;> first | rfl | assumption)
   have h7 : pred_eq_bitstring_bitstring (name_Na x) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) name_Kas)) := by first | (exact ax13 (name_Na x) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) name_Kas))) | (first | apply ax13 <;> first | rfl | assumption)
-  have h8 : pred_attacker (tuple_client_A_in_2 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by first | (exact taelja_lemma24) | (first | apply taelja_lemma24 <;> first | rfl | assumption)
+  have h8 : pred_attacker (tuple_client_A_in_2 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := by first | (exact taelja_lemma26) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
   have h9 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) := by first | (exact ax14 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) x (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) h1 h2 h3 h4 h5 h6 h7 h8) | (first | (exact ax14 _ _ _ _ _ h1 h2 h3 h4 h5 h6 h7 h8) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h10 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30)))) := by have h_rw := ax9 constr_CONST_0x30 name_Kas constr_CONST_0x30; rw [←h_rw]; exact h9
   have h11 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 constr_CONST_0x30)) := by have h_rw := ax8 constr_CONST_0x30 constr_CONST_0x30; rw [←h_rw]; exact h10
   exact h11
 
--- Lemma 29
-theorem taelja_lemma29 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) := by
+-- Lemma 28
+theorem taelja_lemma28 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) := by
   have h_rw := ax9 constr_CONST_0x30 name_Kas constr_CONST_0x30
   rw [h_rw]
   have h_rw := ax8 constr_CONST_0x30 constr_CONST_0x30
   rw [h_rw]
-  apply taelja_lemma28 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+  apply taelja_lemma27 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
--- Lemma 30
-theorem taelja_lemma30 : pred_attacker (constr_enc name_objective2 constr_CONST_0x30) := by
-  have h1 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) := by first | (exact taelja_lemma29) | (first | apply taelja_lemma29 <;> first | rfl | assumption)
+-- Lemma 29
+theorem taelja_lemma29 : pred_attacker (constr_enc name_objective2 constr_CONST_0x30) := by
+  have h1 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) := by first | (exact taelja_lemma28) | (first | apply taelja_lemma28 <;> first | rfl | assumption)
   have h2 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by first | (exact ax15 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) h1) | (first | (exact ax15 _ h1) | (apply ax15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30))) := by have h_rw := ax9 constr_CONST_0x30 name_Kas constr_CONST_0x30; rw [←h_rw]; exact h2
   have h4 : pred_attacker (constr_enc name_objective2 constr_CONST_0x30) := by have h_rw := ax8 constr_CONST_0x30 constr_CONST_0x30; rw [←h_rw]; exact h3
   exact h4
 
--- Lemma 31
-theorem taelja_lemma31 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by
+-- Lemma 30
+theorem taelja_lemma30 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by
   have h_rw := ax9 constr_CONST_0x30 name_Kas constr_CONST_0x30
   rw [h_rw]
   have h_rw := ax8 constr_CONST_0x30 constr_CONST_0x30
   rw [h_rw]
-  apply taelja_lemma30 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+  apply taelja_lemma29 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+
+-- Lemma 31
+theorem taelja_lemma31 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := by
+  have h_rw := ax9 constr_CONST_0x30 name_Kas constr_CONST_0x30
+  rw [h_rw]
+  have h_rw := ax8 constr_CONST_0x30 constr_CONST_0x30
+  rw [h_rw]
+  apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 32
-theorem taelja_lemma32 : ∀ (x : α), pred_attacker (tuple_client_A_in_2 (name_Na x)) := by
-  intro x
-  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax18 x) | (first | apply ax18 <;> first | rfl | assumption)
-  have h2 : pred_attacker (name_Na x) := by first | (exact ax19 name_A name_B (name_Na x) h1) | (first | (exact ax19 _ _ _ h1) | (apply ax19 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax10 (name_Na x) h2) | (first | (exact ax10 _ h2) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h3
-
--- Lemma 33
-theorem taelja_lemma33 : ∀ (x : α), pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by
-  intro x
-  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax18 x) | (first | apply ax18 <;> first | rfl | assumption)
-  have h2 : pred_attacker (name_Na x) := by first | (exact ax19 name_A name_B (name_Na x) h1) | (first | (exact ax19 _ _ _ h1) | (apply ax19 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax10 (name_Na x) h2) | (first | (exact ax10 _ h2) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact ax11 (tuple_client_A_in_2 (name_Na x)) h3) | (first | (exact ax11 _ h3) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h4
-
--- Lemma 34
-theorem taelja_lemma34 : ∀ (x : α), pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by
-  intro x
-  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax18 x) | (first | apply ax18 <;> first | rfl | assumption)
-  have h2 : pred_attacker (name_Na x) := by first | (exact ax19 name_A name_B (name_Na x) h1) | (first | (exact ax19 _ _ _ h1) | (apply ax19 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax10 (name_Na x) h2) | (first | (exact ax10 _ h2) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact ax11 (tuple_client_A_in_2 (name_Na x)) h3) | (first | (exact ax11 _ h3) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h5 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by first | (exact ax7 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h4) | (first | (exact ax7 _ h4) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h5
-
--- Lemma 35
-theorem taelja_lemma35 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by
+theorem taelja_lemma32 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by
   intro x
   have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax18 x) | (first | apply ax18 <;> first | rfl | assumption)
   have h2 : pred_attacker (name_Na x) := by first | (exact ax19 name_A name_B (name_Na x) h1) | (first | (exact ax19 _ _ _ h1) | (apply ax19 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
@@ -243,10 +216,37 @@ theorem taelja_lemma35 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (tuple
   have h6 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by first | (exact ax12 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) h5) | (first | (exact ax12 _ h5) | (apply ax12 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h6
 
+-- Lemma 33
+theorem taelja_lemma33 : ∀ (x : α), pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by
+  intro x
+  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax18 x) | (first | apply ax18 <;> first | rfl | assumption)
+  have h2 : pred_attacker (name_Na x) := by first | (exact ax19 name_A name_B (name_Na x) h1) | (first | (exact ax19 _ _ _ h1) | (apply ax19 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax10 (name_Na x) h2) | (first | (exact ax10 _ h2) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact ax11 (tuple_client_A_in_2 (name_Na x)) h3) | (first | (exact ax11 _ h3) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h5 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by first | (exact ax7 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h4) | (first | (exact ax7 _ h4) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h5
+
+-- Lemma 34
+theorem taelja_lemma34 : ∀ (x : α), pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by
+  intro x
+  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax18 x) | (first | apply ax18 <;> first | rfl | assumption)
+  have h2 : pred_attacker (name_Na x) := by first | (exact ax19 name_A name_B (name_Na x) h1) | (first | (exact ax19 _ _ _ h1) | (apply ax19 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax10 (name_Na x) h2) | (first | (exact ax10 _ h2) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact ax11 (tuple_client_A_in_2 (name_Na x)) h3) | (first | (exact ax11 _ h3) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h4
+
+-- Lemma 35
+theorem taelja_lemma35 : ∀ (x : α), pred_attacker (tuple_client_A_in_2 (name_Na x)) := by
+  intro x
+  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax18 x) | (first | apply ax18 <;> first | rfl | assumption)
+  have h2 : pred_attacker (name_Na x) := by first | (exact ax19 name_A name_B (name_Na x) h1) | (first | (exact ax19 _ _ _ h1) | (apply ax19 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax10 (name_Na x) h2) | (first | (exact ax10 _ h2) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h3
+
 -- Lemma 36
 theorem taelja_lemma36 : pred_attacker (constr_dec (constr_enc name_objective2 constr_CONST_0x30) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by
-  have h1 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by first | (exact taelja_lemma31) | (first | apply taelja_lemma31 <;> first | rfl | assumption)
-  have h2 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := by first | (exact taelja_lemma23) | (first | apply taelja_lemma23 <;> first | rfl | assumption)
+  have h1 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by first | (exact taelja_lemma30) | (first | apply taelja_lemma30 <;> first | rfl | assumption)
+  have h2 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := by first | (exact taelja_lemma31) | (first | apply taelja_lemma31 <;> first | rfl | assumption)
   have h3 : pred_attacker (constr_dec (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by first | (exact ax17 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) h1 h2) | (first | (exact ax17 _ _ h1 h2) | (apply ax17 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h4 : pred_attacker (constr_dec (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by have h_rw := ax9 constr_CONST_0x30 name_Kas constr_CONST_0x30; rw [←h_rw]; exact h3
   have h5 : pred_attacker (constr_dec (constr_enc name_objective2 constr_CONST_0x30) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by have h_rw := ax8 constr_CONST_0x30 constr_CONST_0x30; rw (config := { occs := .pos [1] }) [←h_rw]; exact h4
@@ -269,13 +269,13 @@ theorem taelja_goal1 : pred_attacker (tuple_2 name_objective1 name_objective2) :
   -- the variable Y of the proof, fixed as an arbitrary element
   have y : α := taelja_elem
   have h1 : pred_eq_bitstring_bitstring (tuple_succ (name_Na0x27 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y)) (constr_cbc_dec_1 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas))) := by first | (exact ax13 (tuple_succ (name_Na0x27 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y)) (constr_cbc_dec_1 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas)))) | (first | apply ax13 <;> first | rfl | assumption)
-  have h2 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by first | (exact taelja_lemma35 x) | (first | apply taelja_lemma35 <;> first | rfl | assumption)
+  have h2 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by first | (exact taelja_lemma32 x) | (first | apply taelja_lemma32 <;> first | rfl | assumption)
   have h3 : pred_eq_bitstring_bitstring name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas)) := by first | (exact ax13 name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas))) | (first | apply ax13 <;> first | rfl | assumption)
-  have h4 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by first | (exact taelja_lemma34 x) | (first | apply taelja_lemma34 <;> first | rfl | assumption)
-  have h5 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact taelja_lemma33 x) | (first | apply taelja_lemma33 <;> first | rfl | assumption)
+  have h4 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by first | (exact taelja_lemma33 x) | (first | apply taelja_lemma33 <;> first | rfl | assumption)
+  have h5 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact taelja_lemma34 x) | (first | apply taelja_lemma34 <;> first | rfl | assumption)
   have h6 : pred_eq_bitstring_bitstring name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (name_Na x) name_Kas)) := by first | (exact ax13 name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (name_Na x) name_Kas))) | (first | apply ax13 <;> first | rfl | assumption)
   have h7 : pred_eq_bitstring_bitstring (name_Na y) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (name_Na x) name_Kas)) := by first | (exact ax13 (name_Na y) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (name_Na x) name_Kas))) | (first | apply ax13 <;> first | rfl | assumption)
-  have h8 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact taelja_lemma32 x) | (first | apply taelja_lemma32 <;> first | rfl | assumption)
+  have h8 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact taelja_lemma35 x) | (first | apply taelja_lemma35 <;> first | rfl | assumption)
   have h9 : pred_attacker (tuple_client_A_out_9 name_objective1) := by first | (exact ax20 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h1 h2 h3 h4 h5 h6 h7 h8) | (first | (exact ax20 _ _ _ _ _ h1 h2 h3 h4 h5 h6 h7 h8) | (apply ax20 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h10 : pred_attacker name_objective1 := by first | (exact ax21 name_objective1 h9) | (first | (exact ax21 _ h9) | (apply ax21 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h11 : pred_attacker name_objective2 := by first | (exact taelja_lemma37) | (first | apply taelja_lemma37 <;> first | rfl | assumption)

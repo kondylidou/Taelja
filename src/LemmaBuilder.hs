@@ -122,22 +122,19 @@ type BuiltLemma = (Literal, ProofBlock, [(String, Literal, ProofBlock)], [Axiom]
 -- a circular import.
 buildCandidateLemma
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
-  -> Bool                   -- strict mode translates the candidate's own sub-DAG first
   -> Map.Map String T.Unit
   -> Map.Map String String  -- TSTP name to display name in the outer proof
   -> Bool                   -- debug
   -> (String, T.Declaration)
   -> IO (Maybe BuiltLemma)
-buildCandidateLemma translateFn strict unitMap tstp2name debug (cname, cdecl) =
+buildCandidateLemma translateFn unitMap tstp2name debug (cname, cdecl) =
   case headLitOf cdecl of
     Nothing   -> return Nothing
     Just tlit -> do
       let lit     = convertLit tlit
           bodyLits = map convertLit (bodyLitsOf cdecl)
           (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
-      mSub <- if strict
-                then buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
-                else return Nothing
+      mSub <- buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
       case mSub of
         Just r  -> return (Just r)
         Nothing -> buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap

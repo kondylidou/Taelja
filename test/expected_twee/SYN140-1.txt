@@ -42,23 +42,14 @@ Proof:
   hence p1(a,a,a)
     by axiom 8
 
-Lemma 24: q2(a,b,b)
-Proof:
-  have k0(b)
-    by axiom 7
-   and p1(a,a,a)
-    by lemma 23
-  hence q2(a,b,b)
-    by axiom 9
-
-Lemma 25: l1(a,a)
+Lemma 24: l1(a,a)
 Proof:
   have n0(b,a)
     by axiom 11
   hence l1(a,a)
     by axiom 12
 
-Lemma 26: n1(a,b,a)
+Lemma 25: n1(a,b,a)
 Proof:
   have s0(b)
     by axiom 13
@@ -69,16 +60,25 @@ Proof:
   hence n1(a,b,a)
     by axiom 14
 
-Lemma 27: n1(a,b,b)
+Lemma 26: n1(a,b,b)
 Proof:
   have l0(a)
     by axiom 10
    and l1(a,a)
-    by lemma 25
+    by lemma 24
    and n1(a,b,a)
-    by lemma 26
+    by lemma 25
   hence n1(a,b,b)
     by axiom 15
+
+Lemma 27: q2(a,b,b)
+Proof:
+  have k0(b)
+    by axiom 7
+   and p1(a,a,a)
+    by lemma 23
+  hence q2(a,b,b)
+    by axiom 9
 
 Lemma 28: s2(a)
 Proof:
@@ -87,9 +87,9 @@ Proof:
   hence p1(b,b,b)
     by axiom 8
    and n1(a,b,b)
-    by lemma 27
+    by lemma 26
    and q2(a,b,b)
-    by lemma 24
+    by lemma 27
   hence q2(b,a,b)
     by axiom 16
    and s1(b)

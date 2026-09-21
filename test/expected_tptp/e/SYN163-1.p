@@ -64,11 +64,11 @@ fof(lemma_54, lemma, q1(d,d,d), inference(mp, [status(thm)], [rule_117, axiom_28
 fof(s9, plain, p0(b,b), inference(instantiate, [status(thm)], [axiom_14])).
 fof(s10, plain, s1(d), inference(instantiate, [status(thm)], [lemma_47])).
 fof(lemma_55, lemma, ! [X] : l2(X,X), inference(mp, [status(thm)], [rule_133, s9, s10, axiom_19])).
-fof(lemma_56, lemma, q1(a,a,a), inference(mp, [status(thm)], [rule_100, axiom_37])).
 fof(s11, plain, m1(a,e,a), inference(mp, [status(thm)], [rule_021, axiom_20, axiom_28])).
-fof(lemma_57, lemma, p2(e,a,e), inference(mp, [status(thm)], [rule_176, s11])).
+fof(lemma_56, lemma, p2(e,a,e), inference(mp, [status(thm)], [rule_176, s11])).
+fof(lemma_57, lemma, q1(a,a,a), inference(mp, [status(thm)], [rule_100, axiom_37])).
 fof(s12, plain, k1(c), inference(mp, [status(thm)], [rule_001, axiom_26])).
-fof(s13, plain, p2(a,e,e), inference(mp, [status(thm)], [rule_155, s12, lemma_57])).
+fof(s13, plain, p2(a,e,e), inference(mp, [status(thm)], [rule_155, s12, lemma_56])).
 fof(lemma_58, lemma, r3(a,e,a), inference(mp, [status(thm)], [rule_267, s13])).
 fof(lemma_59, lemma, p1(a,a,a), inference(mp, [status(thm)], [rule_088, axiom_20])).
 fof(s14, plain, m0(a,a,a), inference(instantiate, [status(thm)], [axiom_12])).
@@ -79,19 +79,19 @@ fof(s16, plain, q0(a,d), inference(instantiate, [status(thm)], [axiom_17])).
 fof(s17, plain, r1(a), inference(mp, [status(thm)], [rule_124, s16, axiom_1, lemma_54])).
 fof(s18, plain, r2(a), inference(mp, [status(thm)], [rule_188, s17, axiom_20])).
 fof(s19, plain, q3(a,a), inference(mp, [status(thm)], [rule_258, s18, lemma_47, lemma_55])).
-fof(s20, plain, k4(e), inference(mp, [status(thm)], [rule_276, s19, lemma_56, lemma_58])).
+fof(s20, plain, k4(e), inference(mp, [status(thm)], [rule_276, s19, lemma_57, lemma_58])).
 fof(s21, plain, m3(e,e,e), inference(instantiate, [status(thm)], [lemma_48])).
 fof(lemma_62, lemma, n4(e,e), inference(mp, [status(thm)], [rule_284, s20, s21])).
 fof(s22, plain, n3(a), inference(instantiate, [status(thm)], [lemma_51])).
-fof(s23, plain, p0(b,a), inference(instantiate, [status(thm)], [axiom_14])).
-fof(s24, plain, r4(a), inference(mp, [status(thm)], [rule_298, s22, lemma_53, s23])).
-fof(lemma_63, lemma, n5(a,a), inference(mp, [status(thm)], [rule_314, s24])).
-fof(s25, plain, n3(a), inference(instantiate, [status(thm)], [lemma_51])).
-fof(lemma_64, lemma, p4(a,a,a), inference(mp, [status(thm)], [rule_286, lemma_53, s25])).
+fof(lemma_63, lemma, p4(a,a,a), inference(mp, [status(thm)], [rule_286, lemma_53, s22])).
+fof(s23, plain, n3(a), inference(instantiate, [status(thm)], [lemma_51])).
+fof(s24, plain, p0(b,a), inference(instantiate, [status(thm)], [axiom_14])).
+fof(s25, plain, r4(a), inference(mp, [status(thm)], [rule_298, s23, lemma_53, s24])).
+fof(lemma_64, lemma, n5(a,a), inference(mp, [status(thm)], [rule_314, s25])).
 fof(s26, plain, m0(a,e,a), inference(instantiate, [status(thm)], [axiom_12])).
 fof(s27, plain, p1(e,b,a), inference(mp, [status(thm)], [rule_082, s26, lemma_60])).
 fof(s28, plain, k3(a,a,e), inference(mp, [status(thm)], [rule_201, s27, lemma_50, lemma_50])).
 fof(s29, plain, m3(e,e,e), inference(instantiate, [status(thm)], [lemma_48])).
 fof(s30, plain, q4(e,e), inference(mp, [status(thm)], [rule_295, s28, lemma_61, s29])).
-fof(goal_1, theorem, n5(e,a), inference(mp, [status(thm)], [rule_307, s30, lemma_62, lemma_64, lemma_63])).
+fof(goal_1, theorem, n5(e,a), inference(mp, [status(thm)], [rule_307, s30, lemma_62, lemma_63, lemma_64])).
 % SZS output end Proof

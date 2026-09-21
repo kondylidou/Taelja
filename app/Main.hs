@@ -13,7 +13,7 @@ import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
 
 import ProofTree (buildProofInfo)
-import Translate (translateStages, StageMode (..))
+import Translate (translate)
 import Emitter (emit)
 import TptpEmitter (emitTptp)
 import qualified Data.Text as Text
@@ -27,13 +27,10 @@ main = do
       files = filter ((/= "--") . take 2) args
       debug = "--debug" `elem` flags
       render = if "--tptp" `elem` flags then emitTptp else emit
-      mode  | "--strict-only" `elem` flags    = StrictOnly
-            | "--heuristic-only" `elem` flags = HeuristicOnly
-            | otherwise                       = BothStages
-      known = ["--debug", "--tptp", "--strict-only", "--heuristic-only"]
+      known = ["--debug", "--tptp"]
   inputFile <- case files of
     [f] | all (`elem` known) flags -> return f
-    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--tptp] [--strict-only | --heuristic-only] <proof-file>" >> exitFailure
+    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--tptp] <proof-file>" >> exitFailure
   raw <- TIO.readFile inputFile
   let contents = Text.pack (extractSzsBlock (Text.unpack raw))
   case eitherResult (feed (parseTSTP contents) mempty) of
@@ -49,7 +46,7 @@ main = do
             putStrLn "-- Inference rules"
             dumpInferenceRules units
             putStrLn ""
-      msp <- translateStages mode debug tstp
+      msp <- translate debug tstp
       case msp of
         Left reason -> do
           hPutStrLn stderr ("translate: " ++ reason)

@@ -247,7 +247,16 @@ Proof:
   hence n4(a,e)
     by axiom 28
 
-Lemma 67: n5(e,e)
+Lemma 67: p4(e,e,e)
+Proof:
+  have q3(e,e)
+    by lemma 57
+   and n3(e)
+    by lemma 55
+  hence p4(e,e,e)
+    by axiom 46
+
+Lemma 68: n5(e,e)
 Proof:
   have n3(e)
     by lemma 55
@@ -259,15 +268,6 @@ Proof:
     by axiom 44
   hence n5(e,e)
     by axiom 45
-
-Lemma 68: p4(e,e,e)
-Proof:
-  have q3(e,e)
-    by lemma 57
-   and n3(e)
-    by lemma 55
-  hence p4(e,e,e)
-    by axiom 46
 
 Goal 1: n5(a,e)
 Proof:
@@ -292,8 +292,8 @@ Proof:
    and n4(a,e)
     by lemma 66
    and p4(e,e,e)
-    by lemma 68
-   and n5(e,e)
     by lemma 67
+   and n5(e,e)
+    by lemma 68
   hence n5(a,e)
     by axiom 47

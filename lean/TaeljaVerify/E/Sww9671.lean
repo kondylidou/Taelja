@@ -54,34 +54,7 @@ axiom ax8 : ∀ (x2 : α) (x3 : α) (x4 : α) (x5 : α) (x6 : α), pred_eq_bitst
 axiom ax9 : ∀ (x7 : α), pred_attacker (tuple_client_A_out_9 x7) → pred_attacker x7
 
 -- Lemma 10
-theorem taelja_lemma10 : ∀ (x : α), pred_attacker (tuple_client_A_in_2 (name_Na x)) := by
-  intro x
-  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax1 x) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : pred_attacker (name_Na x) := by first | (exact ax2 (name_Na x) name_A name_B h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax3 (name_Na x) h2) | (first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h3
-
--- Lemma 11
-theorem taelja_lemma11 : ∀ (x : α), pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by
-  intro x
-  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax1 x) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : pred_attacker (name_Na x) := by first | (exact ax2 (name_Na x) name_A name_B h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax3 (name_Na x) h2) | (first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact ax4 (tuple_client_A_in_2 (name_Na x)) h3) | (first | (exact ax4 _ h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h4
-
--- Lemma 12
-theorem taelja_lemma12 : ∀ (x : α), pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by
-  intro x
-  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax1 x) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : pred_attacker (name_Na x) := by first | (exact ax2 (name_Na x) name_A name_B h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax3 (name_Na x) h2) | (first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact ax4 (tuple_client_A_in_2 (name_Na x)) h3) | (first | (exact ax4 _ h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h5 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by first | (exact ax5 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h4) | (first | (exact ax5 _ h4) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h5
-
--- Lemma 13
-theorem taelja_lemma13 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by
+theorem taelja_lemma10 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by
   intro x
   have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax1 x) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : pred_attacker (name_Na x) := by first | (exact ax2 (name_Na x) name_A name_B h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
@@ -91,6 +64,33 @@ theorem taelja_lemma13 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (tuple
   have h6 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by first | (exact ax6 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) h5) | (first | (exact ax6 _ h5) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h6
 
+-- Lemma 11
+theorem taelja_lemma11 : ∀ (x : α), pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by
+  intro x
+  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax1 x) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : pred_attacker (name_Na x) := by first | (exact ax2 (name_Na x) name_A name_B h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax3 (name_Na x) h2) | (first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact ax4 (tuple_client_A_in_2 (name_Na x)) h3) | (first | (exact ax4 _ h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h5 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by first | (exact ax5 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h4) | (first | (exact ax5 _ h4) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h5
+
+-- Lemma 12
+theorem taelja_lemma12 : ∀ (x : α), pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by
+  intro x
+  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax1 x) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : pred_attacker (name_Na x) := by first | (exact ax2 (name_Na x) name_A name_B h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax3 (name_Na x) h2) | (first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact ax4 (tuple_client_A_in_2 (name_Na x)) h3) | (first | (exact ax4 _ h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h4
+
+-- Lemma 13
+theorem taelja_lemma13 : ∀ (x : α), pred_attacker (tuple_client_A_in_2 (name_Na x)) := by
+  intro x
+  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := by first | (exact ax1 x) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : pred_attacker (name_Na x) := by first | (exact ax2 (name_Na x) name_A name_B h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact ax3 (name_Na x) h2) | (first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h3
+
 -- Goal 1
 theorem taelja_goal1 : pred_attacker name_objective := by
   -- the variable X of the proof, fixed as an arbitrary element
@@ -98,13 +98,13 @@ theorem taelja_goal1 : pred_attacker name_objective := by
   -- the variable Y of the proof, fixed as an arbitrary element
   have y : α := taelja_elem
   have h1 : pred_eq_bitstring_bitstring (tuple_succ (name_Na0x27 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y)) (constr_cbc_dec_1 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas))) := by first | (exact ax7 (tuple_succ (name_Na0x27 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y)) (constr_cbc_dec_1 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas)))) | (first | apply ax7 <;> first | rfl | assumption)
-  have h2 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by first | (exact taelja_lemma13 x) | (first | apply taelja_lemma13 <;> first | rfl | assumption)
+  have h2 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by first | (exact taelja_lemma10 x) | (first | apply taelja_lemma10 <;> first | rfl | assumption)
   have h3 : pred_eq_bitstring_bitstring name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas)) := by first | (exact ax7 name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas))) | (first | apply ax7 <;> first | rfl | assumption)
-  have h4 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by first | (exact taelja_lemma12 x) | (first | apply taelja_lemma12 <;> first | rfl | assumption)
-  have h5 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact taelja_lemma11 x) | (first | apply taelja_lemma11 <;> first | rfl | assumption)
+  have h4 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by first | (exact taelja_lemma11 x) | (first | apply taelja_lemma11 <;> first | rfl | assumption)
+  have h5 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by first | (exact taelja_lemma12 x) | (first | apply taelja_lemma12 <;> first | rfl | assumption)
   have h6 : pred_eq_bitstring_bitstring name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (name_Na x) name_Kas)) := by first | (exact ax7 name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (name_Na x) name_Kas))) | (first | apply ax7 <;> first | rfl | assumption)
   have h7 : pred_eq_bitstring_bitstring (name_Na y) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (name_Na x) name_Kas)) := by first | (exact ax7 (name_Na y) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (name_Na x) name_Kas))) | (first | apply ax7 <;> first | rfl | assumption)
-  have h8 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact taelja_lemma10 x) | (first | apply taelja_lemma10 <;> first | rfl | assumption)
+  have h8 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := by first | (exact taelja_lemma13 x) | (first | apply taelja_lemma13 <;> first | rfl | assumption)
   have h9 : pred_attacker (tuple_client_A_out_9 name_objective) := by first | (exact ax8 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h1 h2 h3 h4 h5 h6 h7 h8) | (first | (exact ax8 _ _ _ _ _ h1 h2 h3 h4 h5 h6 h7 h8) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h10 : pred_attacker name_objective := by first | (exact ax9 name_objective h9) | (first | (exact ax9 _ h9) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h10

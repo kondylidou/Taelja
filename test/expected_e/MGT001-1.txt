@@ -15,19 +15,19 @@ Axiom 14: organization(X,Y) /\ organization(Z,A) /\ reliability(X,B,Y) /\ reliab
 Axiom 15: survival_chance(sk5,sk11,sk7)
 Axiom 16: organization(X,Y) /\ organization(Z,A) /\ reliability(X,B,Y) /\ reliability(Z,C,A) /\ accountability(X,U,Y) /\ accountability(Z,V,A) /\ survival_chance(X,W,Y) /\ survival_chance(Z,X1,A) /\ greater(C,B) /\ greater(V,U) => greater(X1,W)
 
-Lemma 17: accountability(sk4,sk2(sk6,sk4),sk6)
+Lemma 17: reproducibility(sk4,sk3(sk6,sk4),sk6)
 Proof:
   have organization(sk4,sk6)
     by axiom 1
-  hence accountability(sk4,sk2(sk6,sk4),sk6)
-    by axiom 4
+  hence reproducibility(sk4,sk3(sk6,sk4),sk6)
+    by axiom 5
 
-Lemma 18: reliability(sk5,sk1(sk7,sk5),sk7)
+Lemma 18: reproducibility(sk5,sk3(sk7,sk5),sk7)
 Proof:
   have organization(sk5,sk7)
     by axiom 3
-  hence reliability(sk5,sk1(sk7,sk5),sk7)
-    by axiom 2
+  hence reproducibility(sk5,sk3(sk7,sk5),sk7)
+    by axiom 5
 
 Lemma 19: reliability(sk4,sk1(sk6,sk4),sk6)
 Proof:
@@ -36,26 +36,26 @@ Proof:
   hence reliability(sk4,sk1(sk6,sk4),sk6)
     by axiom 2
 
-Lemma 20: accountability(sk5,sk2(sk7,sk5),sk7)
+Lemma 20: reliability(sk5,sk1(sk7,sk5),sk7)
+Proof:
+  have organization(sk5,sk7)
+    by axiom 3
+  hence reliability(sk5,sk1(sk7,sk5),sk7)
+    by axiom 2
+
+Lemma 21: accountability(sk4,sk2(sk6,sk4),sk6)
+Proof:
+  have organization(sk4,sk6)
+    by axiom 1
+  hence accountability(sk4,sk2(sk6,sk4),sk6)
+    by axiom 4
+
+Lemma 22: accountability(sk5,sk2(sk7,sk5),sk7)
 Proof:
   have organization(sk5,sk7)
     by axiom 3
   hence accountability(sk5,sk2(sk7,sk5),sk7)
     by axiom 4
-
-Lemma 21: reproducibility(sk4,sk3(sk6,sk4),sk6)
-Proof:
-  have organization(sk4,sk6)
-    by axiom 1
-  hence reproducibility(sk4,sk3(sk6,sk4),sk6)
-    by axiom 5
-
-Lemma 22: reproducibility(sk5,sk3(sk7,sk5),sk7)
-Proof:
-  have organization(sk5,sk7)
-    by axiom 3
-  hence reproducibility(sk5,sk3(sk7,sk5),sk7)
-    by axiom 5
 
 Lemma 23: greater(sk3(sk7,sk5),sk3(sk6,sk4))
 Proof:
@@ -68,9 +68,9 @@ Proof:
    and reorganization_free(sk5,sk7,sk7)
     by axiom 9
    and reproducibility(sk4,sk3(sk6,sk4),sk6)
-    by lemma 21
+    by lemma 17
    and reproducibility(sk5,sk3(sk7,sk5),sk7)
-    by lemma 22
+    by lemma 18
    and inertia(sk4,sk8,sk6)
     by axiom 8
    and inertia(sk5,sk9,sk7)
@@ -89,15 +89,15 @@ Proof:
    and reliability(sk4,sk1(sk6,sk4),sk6)
     by lemma 19
    and reliability(sk5,sk1(sk7,sk5),sk7)
-    by lemma 18
-   and accountability(sk4,sk2(sk6,sk4),sk6)
-    by lemma 17
-   and accountability(sk5,sk2(sk7,sk5),sk7)
     by lemma 20
-   and reproducibility(sk4,sk3(sk6,sk4),sk6)
+   and accountability(sk4,sk2(sk6,sk4),sk6)
     by lemma 21
-   and reproducibility(sk5,sk3(sk7,sk5),sk7)
+   and accountability(sk5,sk2(sk7,sk5),sk7)
     by lemma 22
+   and reproducibility(sk4,sk3(sk6,sk4),sk6)
+    by lemma 17
+   and reproducibility(sk5,sk3(sk7,sk5),sk7)
+    by lemma 18
    and greater(sk3(sk7,sk5),sk3(sk6,sk4))
     by lemma 23
   hence greater(sk1(sk7,sk5),sk1(sk6,sk4))
@@ -112,15 +112,15 @@ Proof:
    and reliability(sk4,sk1(sk6,sk4),sk6)
     by lemma 19
    and reliability(sk5,sk1(sk7,sk5),sk7)
-    by lemma 18
-   and accountability(sk4,sk2(sk6,sk4),sk6)
-    by lemma 17
-   and accountability(sk5,sk2(sk7,sk5),sk7)
     by lemma 20
-   and reproducibility(sk4,sk3(sk6,sk4),sk6)
+   and accountability(sk4,sk2(sk6,sk4),sk6)
     by lemma 21
-   and reproducibility(sk5,sk3(sk7,sk5),sk7)
+   and accountability(sk5,sk2(sk7,sk5),sk7)
     by lemma 22
+   and reproducibility(sk4,sk3(sk6,sk4),sk6)
+    by lemma 17
+   and reproducibility(sk5,sk3(sk7,sk5),sk7)
+    by lemma 18
    and greater(sk3(sk7,sk5),sk3(sk6,sk4))
     by lemma 23
   hence greater(sk2(sk7,sk5),sk2(sk6,sk4))
@@ -135,11 +135,11 @@ Proof:
    and reliability(sk4,sk1(sk6,sk4),sk6)
     by lemma 19
    and reliability(sk5,sk1(sk7,sk5),sk7)
-    by lemma 18
-   and accountability(sk4,sk2(sk6,sk4),sk6)
-    by lemma 17
-   and accountability(sk5,sk2(sk7,sk5),sk7)
     by lemma 20
+   and accountability(sk4,sk2(sk6,sk4),sk6)
+    by lemma 21
+   and accountability(sk5,sk2(sk7,sk5),sk7)
+    by lemma 22
    and survival_chance(sk4,sk10,sk6)
     by axiom 13
    and survival_chance(sk5,sk11,sk7)

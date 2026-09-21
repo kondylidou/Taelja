@@ -6,16 +6,7 @@ Axiom 5: p3(f4(c16),f6(c15))
 Axiom 6: p3(Y,X) /\ p3(Z,A) /\ p10(Y,Z) => p10(X,A)
 Axiom 7: p10(f6(X),f6(A)) => p12(X,A)
 
-Lemma 8: p3(f4(f9(c16)),f6(f8(f9(c16))))
-Proof:
-  have p11(c16)
-    by axiom 1
-  hence p11(f9(c16))
-    by axiom 2
-  hence p3(f4(f9(c16)),f6(f8(f9(c16))))
-    by axiom 3
-
-Lemma 9: p10(f4(f9(c16)),f4(c16))
+Lemma 8: p10(f4(f9(c16)),f4(c16))
 Proof:
   have p11(c16)
     by axiom 1
@@ -31,12 +22,16 @@ Proof:
 
 Goal 2: p12(f8(f9(c16)),c15)
 Proof:
-  have p3(f4(f9(c16)),f6(f8(f9(c16))))
-    by lemma 8
+  have p11(c16)
+    by axiom 1
+  hence p11(f9(c16))
+    by axiom 2
+  hence p3(f4(f9(c16)),f6(f8(f9(c16))))
+    by axiom 3
    and p3(f4(c16),f6(c15))
     by axiom 5
    and p10(f4(f9(c16)),f4(c16))
-    by lemma 9
+    by lemma 8
   hence p10(f6(f8(f9(c16))),f6(c15))
     by axiom 6
   hence p12(f8(f9(c16)),c15)

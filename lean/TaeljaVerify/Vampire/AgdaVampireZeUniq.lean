@@ -26,17 +26,17 @@ axiom ax3 : ∀ (x : α) (y : α) (z : α), (plus (plus x y) z) = (plus x (plus 
 theorem taelja_lemma4 : ∀ (x : α) (y : α), (plus x y) = (plus (neg (neg x)) y) := by
   intro x y
   calc plus x y = plus ze (plus x y) := by first | (first | (exact ax1 (plus x y)) | (exact Eq.symm (ax1 (plus x y)))) | (have h_rw := ax1 (plus x y); rw [h_rw])
-      _ = plus (plus (neg (neg x)) (neg x)) (plus x y) := by first | (exact ax2 _) | (exact Eq.symm (ax2 _)) | (simp only [ax2]) | rw [ax2] | rw [← ax2]
+      _ = plus (plus (neg (neg x)) (neg x)) (plus x y) := by have h_rw := ax2 (neg x); rw [h_rw]
       _ = plus (neg (neg x)) (plus (neg x) (plus x y)) := by have h_rw := ax3 (neg (neg x)) (neg x) (plus x y); rw [h_rw]
       _ = plus (neg (neg x)) (plus (plus (neg x) x) y) := by have h_rw := ax3 (neg x) x y; rw [h_rw]
-      _ = plus (neg (neg x)) (plus ze y) := by first | (exact ax2 _) | (exact Eq.symm (ax2 _)) | (simp only [ax2]) | rw [ax2] | rw [← ax2]
+      _ = plus (neg (neg x)) (plus ze y) := by have h_rw := ax2 x; rw [h_rw]
       _ = plus (neg (neg x)) y := by first | (first | (exact ax1 y) | (exact Eq.symm (ax1 y))) | (have h_rw := ax1 y; rw [h_rw])
 
 -- Lemma 5
 theorem taelja_lemma5 : ∀ (x : α) (y : α), (plus (neg x) (plus x y)) = y := by
   intro x y
   calc plus (neg x) (plus x y) = plus (plus (neg x) x) y := by have h_rw := ax3 (neg x) x y; rw [h_rw]
-      _ = plus ze y := by first | (exact ax2 _) | (exact Eq.symm (ax2 _)) | (simp only [ax2]) | rw [ax2] | rw [← ax2]
+      _ = plus ze y := by have h_rw := ax2 x; rw [h_rw]
       _ = y := by first | (first | (exact ax1 y) | (exact Eq.symm (ax1 y))) | (have h_rw := ax1 y; rw [h_rw])
 
 -- Goal 1

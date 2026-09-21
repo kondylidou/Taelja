@@ -14,20 +14,7 @@ Proof:
   hence (sorti1(X) => j(h(X)) = X) => j(h(sK1)) = sK1
     by discharge
 
-Lemma 8: (sorti1(X) => sorti2(h(X))) /\ (sorti1(Y) => j(h(Y)) = Y) => sorti2(h(sK1))
-Proof:
-  have sorti1(sK1)
-    by axiom 1
-  hence sorti2(h(sK1))
-    by assumption 1
-  hence sorti2(h(j(h(sK1))))
-    by rw lemma 7 R->L
-  hence sorti2(h(sK1))
-    by rw lemma 7
-  hence (sorti1(X) => sorti2(h(X))) /\ (sorti1(Y) => j(h(Y)) = Y) => sorti2(h(sK1))
-    by discharge
-
-Lemma 9: (sorti1(X) /\ sorti1(Y) => h(op1(Y,X)) = op2(h(Y),h(X))) => h(sK0) = op2(h(sK0),h(sK0))
+Lemma 8: (sorti1(X) /\ sorti1(Y) => h(op1(Y,X)) = op2(h(Y),h(X))) => h(sK0) = op2(h(sK0),h(sK0))
 Proof:
   have sorti1(sK0)
     by axiom 2
@@ -40,6 +27,19 @@ Proof:
   hence (sorti1(X) /\ sorti1(Y) => h(op1(Y,X)) = op2(h(Y),h(X))) => h(sK0) = op2(h(sK0),h(sK0))
     by discharge
 
+Lemma 9: (sorti1(X) => sorti2(h(X))) /\ (sorti1(Y) => j(h(Y)) = Y) => sorti2(h(sK1))
+Proof:
+  have sorti1(sK1)
+    by axiom 1
+  hence sorti2(h(sK1))
+    by assumption 1
+  hence sorti2(h(j(h(sK1))))
+    by rw lemma 7 R->L
+  hence sorti2(h(sK1))
+    by rw lemma 7
+  hence (sorti1(X) => sorti2(h(X))) /\ (sorti1(Y) => j(h(Y)) = Y) => sorti2(h(sK1))
+    by discharge
+
 Lemma 10: (sorti1(X) => sorti2(h(X))) /\ (sorti1(Y) => j(h(Y)) = Y) /\ (sorti1(Z) /\ sorti1(A) => h(op1(A,Z)) = op2(h(A),h(Z))) => op2(h(j(h(sK1))),h(sK1)) = h(sK1)
 Proof:
   have sorti1(sK0)
@@ -47,9 +47,9 @@ Proof:
   hence sorti2(h(sK0))
     by assumption 1
    and h(sK0) = op2(h(sK0),h(sK0))
-    by lemma 9
-   and sorti2(h(sK1))
     by lemma 8
+   and sorti2(h(sK1))
+    by lemma 9
   hence op2(h(sK1),h(sK1)) = h(sK1)
     by axiom 4
   hence op2(h(j(h(sK1))),h(sK1)) = h(sK1)

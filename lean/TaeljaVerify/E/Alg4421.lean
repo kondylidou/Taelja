@@ -51,35 +51,35 @@ axiom ax14 : ∀ (a_ : α) (b_ : α) (c : α) (u_ : α) (v_ : α) (w : α) (x : 
 axiom ax15 : ∀ (a_ : α) (b_ : α) (c : α) (u_ : α) (v_ : α) (w : α) (x : α) (y : α) (z : α), r x y z → r a_ b_ c → r u_ v_ w → r (m x a_ u_) (m y b_ v_) (m z c w)
 
 -- Lemma 16
-theorem taelja_lemma16 : r (u b b a) (u a a b) (u a a a) := by
-  have h1 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+theorem taelja_lemma16 : r (u a b b) (u b a a) (u a a a) := by
+  have h1 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
   have h2 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h3 : r a b a := by first | (exact ax11) | (first | apply ax11 <;> first | rfl | assumption)
-  have h4 : r (u b b a) (u a a b) (u a a a) := by first | (exact ax14 b a a a b a b a a h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+  have h4 : r (u a b b) (u b a a) (u a a a) := by first | (exact ax14 b a a b a a a b a h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 17
 theorem taelja_lemma17 : r (u a b b) (u a a b) a := by
   have h_rw := ax4 a
   rw (config := { occs := .pos [4] }) [← h_rw]
-  have h_rw := ax13 b a
-  rw [← h_rw]
+  have h_rw := ax13 a b
+  rw [h_rw]
   apply taelja_lemma16 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 18
-theorem taelja_lemma18 : r (u b a a) (u a a a) (u a b b) := by
-  have h1 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+theorem taelja_lemma18 : r (u a a b) (u a a a) (u b b a) := by
+  have h1 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
   have h2 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
-  have h3 : r a a b := by first | (exact ax9) | (first | apply ax9 <;> first | rfl | assumption)
-  have h4 : r (u b a a) (u a a a) (u a b b) := by first | (exact ax14 a a b a a b b a a h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : r b a a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+  have h4 : r (u a a b) (u a a a) (u b b a) := by first | (exact ax14 a a b b a a a a b h1 h2 h3) | (first | (exact ax14 _ _ _ _ _ _ _ _ _ h1 h2 h3) | (apply ax14 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 19
 theorem taelja_lemma19 : r (u a a b) a (u a b b) := by
+  have h_rw := ax13 b a
+  rw [← h_rw]
   have h_rw := ax4 a
   rw (config := { occs := .pos [3] }) [← h_rw]
-  have h_rw := ax13 a b
-  rw [h_rw]
   apply taelja_lemma18 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 20

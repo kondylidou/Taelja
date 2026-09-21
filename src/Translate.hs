@@ -1,8 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
-module Translate (translate, translateWith
-  , translateStages
-  , StageMode (..)
-  ) where
+module Translate (translate, translateWith) where
 
 import Control.Applicative ((<|>))
 import Control.Monad (foldM, forM, forM_, unless, void, when)
@@ -20,7 +17,6 @@ import qualified Data.Text as Text
 import qualified Data.TPTP as T
 import Data.IORef (IORef, modifyIORef', newIORef, readIORef, writeIORef)
 import GHC.Clock (getMonotonicTime)
-import System.Environment (lookupEnv)
 import System.IO.Unsafe (unsafePerformIO)
 import System.CPUTime (getCPUTime)
 import System.Timeout (timeout)
@@ -71,48 +67,25 @@ rescueActive = do
 -- Recursive entry point, like translate but with a prebuilt name override map.
 -- Overridden names are used as they are, so a lemma sub-proof cites the outer
 -- proof's axiom list.
-translateWith :: Bool -> Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
-translateWith strict nameOverride debug (T.TSTP _ units) = do
+translateWith :: Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
+translateWith nameOverride debug (T.TSTP _ units) = do
   case buildProofInfo units of
     Left _         -> return Nothing
     Right origInfo ->
-      Just <$> runAlgorithm debug strict origInfo units Map.empty nameOverride Nothing
+      Just <$> runAlgorithm debug origInfo units Map.empty nameOverride Nothing
 
--- Two-stage recursive entry point for re-proving derived units mid-run, with
--- the heuristic stage first and the strict stage when it fails, like translate.
--- A single stage misses proofs the other finds, and the re-proved unit only
--- needs some complete sub-proof.
-translateWithBoth :: Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
-translateWithBoth nameOverride debug tstp = do
-  rH <- try (translateWith False nameOverride debug tstp)
-          :: IO (Either ErrorCall (Maybe StructuredProof))
-  let mH = fromRight Nothing rH
-  case mH of
-    Just sp -> return (Just sp)
-    Nothing -> do
-      rS <- try (translateWith True nameOverride debug tstp)
-              :: IO (Either ErrorCall (Maybe StructuredProof))
-      return (fromRight Nothing rS)
-
--- Two translation strategies, tried in order.  Both compute θ the same way and
--- differ in which nuclei are processed and how lemma candidates are proved.
--- The heuristic stage also processes derived nuclei with non-ground heads and
--- proves lemma candidates with Twee or E directly, which gives the compact
--- proofs of the suite.  When it proves no goal, the strict stage uses leaf
--- nuclei only and proves candidates by translating their own sub-DAG first.
--- Twee proofs with non-ground intermediate lemmas like HEN006-4 need it.
--- Either stage can also run alone with --heuristic-only or --strict-only.
-data StageMode = BothStages | HeuristicOnly | StrictOnly
-  deriving (Eq, Show)
+-- Recursive entry point for re-proving derived units mid-run.  A failure
+-- inside the sub-run counts as no proof, and the re-proved unit only needs
+-- some complete sub-proof.
+translateCatching :: Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof)
+translateCatching nameOverride debug tstp = do
+  r <- try (translateWith nameOverride debug tstp)
+         :: IO (Either ErrorCall (Maybe StructuredProof))
+  return (fromRight Nothing r)
 
 translate :: Bool -> T.TSTP -> IO (Either String StructuredProof)
-translate debug tstp = do
-  forceStrict <- (Just "1" ==) <$> lookupEnv "TAELJA_STRICT"
-  translateStages (if forceStrict then StrictOnly else BothStages) debug tstp
-
-translateStages :: StageMode -> Bool -> T.TSTP -> IO (Either String StructuredProof)
-translateStages mode debug tstp@(T.TSTP _ units) =
-  fmap withTypes <$> translateUntyped mode debug (eraseSorts tstp)
+translate debug tstp@(T.TSTP _ units) =
+  fmap withTypes <$> translateUntyped debug (eraseSorts tstp)
   where
     -- a typed proof keeps its units as read, so the TPTP output can be typed too
     typed = [ () | T.Unit _ (T.Typing _ _) _ <- units ]
@@ -120,12 +93,12 @@ translateStages mode debug tstp@(T.TSTP _ units) =
       | null typed = sp
       | otherwise  = sp { spInput = (spInput sp) { inTyped = units } }
 
-translateUntyped :: StageMode -> Bool -> T.TSTP -> IO (Either String StructuredProof)
-translateUntyped mode debug tstp = do
+translateUntyped :: Bool -> T.TSTP -> IO (Either String StructuredProof)
+translateUntyped debug tstp = do
   writeIORef rescueEnabled False
   fallbackSecs <- startFallbackBudget
-  r1@(mRes1, errH1, errS1) <- runStages
-  (mRes, errH, errS) <- case mRes1 of
+  r1@(mRes1, err1) <- runOnce
+  (mRes, err) <- case mRes1 of
     Just _  -> return r1
     Nothing -> do
       -- incomplete, so make one more attempt with re-proving on, within
@@ -135,54 +108,39 @@ translateUntyped mode debug tstp = do
       writeIORef rescueDeadline (now + fromIntegral budget)
       writeIORef rescueEnabled True
       when debug $ hPutStrLn stderr "translate: incomplete result; retrying with re-proving enabled"
-      (mRes2raw, errH2, errS2) <- runStages
-      return $ case mRes2raw of
-        Just _  -> (mRes2raw, errH2, errS2)
-        Nothing -> (Nothing, errH2 <|> errH1, errS2 <|> errS1)
-  -- both attempts produced nothing, so name the failures to make the run
+      (mRes2, err2) <- runOnce
+      return $ case mRes2 of
+        Just _  -> (mRes2, err2)
+        Nothing -> (Nothing, err2 <|> err1)
+  -- both attempts produced nothing, so name the failure to make the run
   -- diagnosable without --debug
   spent <- fallbackBudgetSpent
   let failure = "translation failed"
         ++ (if spent then "; the fallback budget of " ++ show fallbackSecs ++ " s for Twee and E calls is spent" else "")
-        ++ maybe "" ("; heuristic stage: " ++) errH
-        ++ maybe "" ("; strict stage: " ++) errS
+        ++ maybe "" ("; " ++) err
   return (maybe (Left failure) Right mRes)
   where
-    runStages = do
-      (mHeur, errHeur) <- if mode == StrictOnly then return (Nothing, Nothing)
-                          else tryStage False tstp debug
-      case mHeur of
-        Just sp -> return (Just sp, errHeur, Nothing)
-        Nothing
-          | mode == HeuristicOnly -> return (Nothing, errHeur, Nothing)
-          | otherwise -> do
-              when (debug && mode /= StrictOnly) $ hPutStrLn stderr "translate: heuristic stage failed; trying strict mode"
-              (mStrict, errStrict) <- tryStage True tstp debug
-              return (mStrict, errHeur, errStrict)
-    -- a crash inside one stage (e.g. an unprovable unit hitting an error call
-    -- deep in the matcher) counts as that stage producing nothing, so the
-    -- other stage still gets its chance
-    tryStage strict t dbg' = do
+    -- a crash (e.g. an unprovable unit hitting an error call deep in the
+    -- matcher) counts as no proof, with its message as the reason
+    runOnce = do
       tStage <- getCPUTime
-      when dbg' $ hPutStrLn stderr ("[time] stage " ++ (if strict then "strict" else "heuristic") ++ " start cpu=" ++ show (tStage `div` 1000000000) ++ " ms")
-      r <- try (translateMode strict dbg' t) :: IO (Either SomeException (Either String StructuredProof))
+      when debug $ hPutStrLn stderr ("[time] start cpu=" ++ show (tStage `div` 1000000000) ++ " ms")
+      r <- try (translateMode debug tstp) :: IO (Either SomeException (Either String StructuredProof))
       case r of
         Right (Right sp)     -> return (Just sp, Nothing)
         Right (Left reason)  -> return (Nothing, Just reason)
         Left e  -> do
-          when dbg' $ hPutStrLn stderr
-            ("translate: " ++ (if strict then "strict" else "heuristic")
-             ++ " stage failed with: " ++ show e)
+          when debug $ hPutStrLn stderr ("translate: failed with: " ++ show e)
           return (Nothing, Just (takeWhile (/= '\n') (show e)))
 
--- The pipeline shared by both stages.  Lemma introduction comes first.  Every
+-- The translation.  Lemma introduction comes first.  Every
 -- derived clause used at least twice, unless it only copies an axiom, is
 -- re-proved and translated recursively into a leaf named "lemma <tstp-name>".
 -- The main translation and every lemma share one axiom numbering from the full
 -- proof, and the emitted axiom list is the original one, so an axiom used only
 -- inside a lemma is still listed.
-translateMode :: Bool -> Bool -> T.TSTP -> IO (Either String StructuredProof)
-translateMode strict debug (T.TSTP _ units0) = do
+translateMode :: Bool -> T.TSTP -> IO (Either String StructuredProof)
+translateMode debug (T.TSTP _ units0) = do
   let units = inlineAtomCongruences units0
   depth <- subrunDepth
   when (depth == 0) clearLemmaCache
@@ -213,7 +171,7 @@ translateMode strict debug (T.TSTP _ units0) = do
       -- throwing candidate ends the whole run.  The cost is that every candidate
       -- runs to completion, and HEN010-3/vampire goes from 13 s to 147 s.
       candResults <- forM candidates $ \c -> do
-        r <- liftIO (try (buildCandidateLemma (translateWith strict) strict unitMap0 origTstp2name debug c))
+        r <- liftIO (try (buildCandidateLemma translateWith unitMap0 origTstp2name debug c))
         case r of
           Right v -> return v
           Left e  -> do
@@ -302,9 +260,9 @@ translateMode strict debug (T.TSTP _ units0) = do
         Nothing -> return ()
       case (Map.null validCands, buildProofInfo modUnits) of
         (False, Right mainInfo) ->
-          Right . withInput <$> runAlgorithm debug strict mainInfo modUnits validCands nameOverride (Just allAxioms)
+          Right . withInput <$> runAlgorithm debug mainInfo modUnits validCands nameOverride (Just allAxioms)
         _ ->
-          Right . withInput <$> runAlgorithm debug strict origInfo units Map.empty origTstp2name (Just origAxioms)
+          Right . withInput <$> runAlgorithm debug origInfo units Map.empty origTstp2name (Just origAxioms)
 
 -- A conjecture whose conclusion is a negation is proved by assuming the
 -- negated formula and deriving $false, so the goal is that one derivation.
@@ -1569,19 +1527,17 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                           case blk2 of
                             EqChain {} -> void (ensureNamed headInst2 (return blk2))
                             _ -> return ()
-                          -- If the grounded head matches the goal, emit the proof now
-                          -- so pass-2 (innerNusNG) cannot overwrite it with "by axioms".
+                          -- If the grounded head matches the goal, emit the proof now.
                           case listToMaybe [gl' | gl' <- goalLits
                                                , isJust (matchLit headInst2 gl')] of
                             Just gl' -> emitGoalProof gl' blk2
                             Nothing  -> return ()
-                -- A derived inner nucleus whose head matches a goal under another grounding
-                -- retries processBody with the goal-grounded body, so findElecIO can find
-                -- unnamed ground electrons like E's inline spm steps in GRP001-5.  It fires
-                -- only in the second pass, so named axiom paths keep priority, and only when
-                -- the head instance matches a goal that is equational or the head has free
-                -- variables.  The guard on litVars keeps ground-head nuclei of the first pass
-                -- from short-circuiting named axiom proofs of relational goals.
+                -- A nucleus whose head matches a goal under another grounding retries
+                -- processBody with the goal-grounded body, so findElecIO can find unnamed
+                -- ground electrons like E's inline spm steps in GRP001-5.  It fires only
+                -- when the head instance matches a goal that is equational or the head
+                -- has free variables.  The guard on litVars keeps ground-head nuclei from
+                -- short-circuiting named axiom proofs of relational goals.
                 -- headLit is flipped when needed so applySubst thn of it equals the goal.
                 let orientedPair gl = case (headInst, gl) of
                       (Eq a b, Eq c d)
@@ -2099,14 +2055,13 @@ assignAxiomNames nameOverride negationConj goalLits0 electrons nuclei unitMap =
 
 runAlgorithm
   :: Bool
-  -> Bool                        -- strict paper mode (see translate)
   -> ProofInfo
   -> [T.Unit]
   -> Map.Map String BuiltLemma   -- tstp_name → pre-built lemma (with lifted sub-lemmas)
   -> Map.Map String String       -- TSTP name to display name
   -> Maybe [Axiom]               -- canonical emitted axiom list, or Nothing to derive it from this tree
   -> IO StructuredProof
-runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms = do
+runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
   -- one re-proof attempt per tree position, so repeated failures are free
   reproveCache <- newIORef (Map.empty :: Map.Map String (Maybe BuiltLemma))
   let unitMap    = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
@@ -2162,8 +2117,36 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
                      (g' : _) -> g'
                      []       -> g
 
-      (rawAxiomList, posToName, namedUnits) =
+      (rawAxiomList0, posToName0, namedUnits0) =
         assignAxiomNames nameOverride negationConj goalLits' (piElectrons info) (piNuclei info) unitMap
+      -- With a fixed outer axiom list, a leaf the override could not name
+      -- (its source clausified to several clauses) got a fresh number above,
+      -- which may collide with an outer number, as ALG018+1/E's
+      -- sorti2(X) => sorti2(esk2_1(X)) became axiom 1 beside the outer
+      -- axiom 1.  Such an axiom takes the outer name of the axiom with its
+      -- statement, or else a number beyond the outer list.
+      (rawAxiomList, posToName, namedUnits, extraFixed) = case mFixedAxioms of
+        Nothing    -> (rawAxiomList0, posToName0, namedUnits0, [])
+        Just fixed ->
+          let fixedNames = map axiomDisplayName fixed
+              assign _ [] = []
+              assign used (a : as) =
+                let nm = axiomDisplayName a
+                in case find (sameAxiomStatement a) fixed of
+                     Just f -> (nm, axiomDisplayName f) : assign used as
+                     Nothing
+                       | nm `elem` fixedNames || nm `elem` used ->
+                           let new = head [ n | i <- [1 :: Int ..], let n = "axiom " ++ show i
+                                              , n `notElem` fixedNames, n `notElem` used ]
+                           in (nm, new) : assign (new : used) as
+                       | otherwise -> (nm, nm) : assign (nm : used) as
+              ren = Map.fromList (assign [] rawAxiomList0)
+              rn n = Map.findWithDefault n n ren
+              renamed = [ renameAxiom (rn (axiomDisplayName a)) a | a <- rawAxiomList0 ]
+          in ( renamed
+             , Map.map rn posToName0
+             , [ u { ueName = fmap rn (ueName u) } | u <- namedUnits0 ]
+             , [ a | a <- renamed, axiomDisplayName a `notElem` fixedNames ] )
       negationConj = case conjectureHypotheses allUnits of
         Just (_, cons) -> not (null cons)
         Nothing        -> False
@@ -2178,7 +2161,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         ]
       -- Real axioms (not candidates)
       axiomList = case mFixedAxioms of
-        Just fixed -> fixed
+        Just fixed -> fixed ++ extraFixed
         Nothing    -> filter (\case
           AUnit nm _    -> nm `Set.notMember` candAxiomNames
           ANucleus nm _ -> nm `Set.notMember` candAxiomNames
@@ -2263,26 +2246,10 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         | AUnit nm lit <- axiomList
         , nm `notElem` mapMaybe ueName namedUnits ]
 
-      -- derived clauses with ⊥ are skipped since they would intercept goal emission
-      hasGroundHead e =
-        let θ_e = computeNucleusTheta thetaCtx e
-        in case convertDeclToClause (leDecl e) of
-          Just (Clause _ (Just hl)) -> null (litFree (applySubst θ_e hl))
-          _                         -> False
-      -- inner nuclei with positive heads but non-ground vars (e.g. derived Horn
-      -- clauses from E's inline inference steps like spm(A,B) inside sr(...))
-      hasPositiveHead e = case convertDeclToClause (leDecl e) of
-        Just (Clause _ (Just _)) -> True
-        _                         -> False
-      leafNuclei  = filter (\e -> leRole e `elem` [OrigAxiom, NegConjecture]) (piNuclei info)
-      innerNus      = filter (\e -> leRole e == Derived && hasGroundHead e) (piNuclei info)
-      -- In strict mode the nuclei are the non-unit leaf clauses.  Derived inner
-      -- nuclei are only a second-pass fallback, so they never pre-empt a leaf
-      -- nucleus processed later.
-      innerNusNG    = sortBy (comparing lePos) $
-                      filter (\e -> leRole e == Derived && hasPositiveHead e
-                                    && (strict || not (hasGroundHead e))) (piNuclei info)
-      allNuclei   = sortBy (comparing lePos) (leafNuclei ++ (if strict then [] else innerNus))
+      -- The nuclei are the non-unit leaf clauses, as the paper's collect_leaves
+      -- returns them.  Derived inner nodes are what the algorithm reconstructs.
+      allNuclei   = sortBy (comparing lePos)
+                      (filter (\e -> leRole e `elem` [OrigAxiom, NegConjecture]) (piNuclei info))
 
       nAll = length axiomList + length bgAxiomList
       -- only nuclei with a display name can be cited
@@ -2340,8 +2307,8 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
               else do
                 modifyIORef' reproveInProgress (Set.insert (leName e))
                 r <- (if isNothing mFixedAxioms
-                        then buildCandidateLemmaSubDagOnly translateWithBoth unitMap nameOverride debug (leName e, cdecl)
-                        else buildCandidateLemmaReprove translateWithBoth unitMap nameOverride debug (leName e, cdecl))
+                        then buildCandidateLemmaSubDagOnly translateCatching unitMap nameOverride debug (leName e, cdecl)
+                        else buildCandidateLemmaReprove translateCatching unitMap nameOverride debug (leName e, cdecl))
                        `finally` modifyIORef' reproveInProgress (Set.delete (leName e))
                 dbg debug ("[reprove] pos=" ++ pos ++ " name=" ++ leName e ++ " -> " ++ maybe "Nothing" (const "Just") r)
                 return r
@@ -2399,7 +2366,7 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
       dbg debug $ "pG1: " ++ ppSimplChain chain
     dbg debug ""
 
-  (outcome, finalSt) <- runStateT (runExceptT (action thetaCtx allNuclei innerNusNG posToName goalLits' simpl pG1Chain)) initSt
+  (outcome, finalSt) <- runStateT (runExceptT (action thetaCtx allNuclei posToName goalLits' simpl pG1Chain)) initSt
   either error return outcome
   -- A refutation that never resolves the negated conjecture (the axioms
   -- alone are contradictory) has no goal proof to show.
@@ -2433,15 +2400,9 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
   return (StructuredProof (axiomList ++ bgAxiomList ++ stExtraAxioms finalSt)
                           (stLemmas finalSt) (stGoals finalSt ++ closing) emptyInput)
   where
-    action thetaCtx' allNuclei innerNusNG posToName goalLits simpl pG1Chain = do
-      -- First pass over leaf axioms and derived nuclei with ground heads.
+    action thetaCtx' allNuclei posToName goalLits simpl pG1Chain = do
+      -- the nucleus loop of Algorithm 1
       processNuclei debug False thetaCtx' allNuclei posToName goalLits simpl
-      open1 <- openGoalsOf goalLits
-      -- Second pass over derived Horn nuclei with non-ground heads, like E's inline
-      -- spm steps.  It runs only when the first pass failed, so named axiom paths
-      -- keep priority.
-      unless (null open1) $
-        processNuclei debug False thetaCtx' innerNusNG posToName goalLits simpl
       unproven <- openGoalsOf goalLits
       unless (null unproven) $ do
         -- The goal literals share their existential variables, so the instance one

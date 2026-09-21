@@ -33,13 +33,7 @@ axiom ax4 : c_in v_c (c_Zorn_Omaxchain v_S t_a) (tc_set (tc_set t_a))
 axiom ax5 : ∀ (a : α) (x : α) (y : α) (z : α), c_in x y (tc_set z) → c_in a (c_Zorn_Omaxchain y z) (tc_set (tc_set z)) → c_lessequals (c_Union a z) x (tc_set z) → (c_Union a z) = x
 
 -- Lemma 6
-theorem taelja_lemma6 : c_in (v_x (c_Union v_c t_a)) v_S (tc_set t_a) := by
-  have h1 : c_in (c_Union v_c t_a) v_S (tc_set t_a) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : c_in (v_x (c_Union v_c t_a)) v_S (tc_set t_a) := by first | (exact ax2 (c_Union v_c t_a) h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h2
-
--- Lemma 7
-theorem taelja_lemma7 : c_lessequals (c_Union v_c t_a) (v_x (c_Union v_c t_a)) (tc_set t_a) := by
+theorem taelja_lemma6 : c_lessequals (c_Union v_c t_a) (v_x (c_Union v_c t_a)) (tc_set t_a) := by
   have h1 : c_in (c_Union v_c t_a) v_S (tc_set t_a) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : c_lessequals (c_Union v_c t_a) (v_x (c_Union v_c t_a)) (tc_set t_a) := by first | (exact ax3 (c_Union v_c t_a) h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
@@ -51,11 +45,12 @@ theorem taelja_goal1 : c_in (c_Union v_c t_a) v_S (tc_set t_a) := by
 
 -- Goal 2
 theorem taelja_goal2 : (c_Union v_c t_a) = (v_x (c_Union v_c t_a)) := by
-  have h1 : c_in (v_x (c_Union v_c t_a)) v_S (tc_set t_a) := by first | (exact taelja_lemma6) | (first | apply taelja_lemma6 <;> first | rfl | assumption)
-  have h2 : c_in v_c (c_Zorn_Omaxchain v_S t_a) (tc_set (tc_set t_a)) := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
-  have h3 : c_lessequals (c_Union v_c t_a) (v_x (c_Union v_c t_a)) (tc_set t_a) := by first | (exact taelja_lemma7) | (first | apply taelja_lemma7 <;> first | rfl | assumption)
-  have h4 : (c_Union v_c t_a) = (v_x (c_Union v_c t_a)) := by first | (exact ax5 v_c (v_x (c_Union v_c t_a)) v_S t_a h1 h2 h3) | (first | (exact ax5 _ _ _ _ h1 h2 h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h4
+  have h1 : c_in (c_Union v_c t_a) v_S (tc_set t_a) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : c_in (v_x (c_Union v_c t_a)) v_S (tc_set t_a) := by first | (exact ax2 (c_Union v_c t_a) h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : c_in v_c (c_Zorn_Omaxchain v_S t_a) (tc_set (tc_set t_a)) := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
+  have h4 : c_lessequals (c_Union v_c t_a) (v_x (c_Union v_c t_a)) (tc_set t_a) := by first | (exact taelja_lemma6) | (first | apply taelja_lemma6 <;> first | rfl | assumption)
+  have h5 : (c_Union v_c t_a) = (v_x (c_Union v_c t_a)) := by first | (exact ax5 v_c (v_x (c_Union v_c t_a)) v_S t_a h2 h3 h4) | (first | (exact ax5 _ _ _ _ h2 h3 h4) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h5
 
 end ESet8642
 

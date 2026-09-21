@@ -5,25 +5,30 @@ Axiom 4: sum(X,additive_inverse(X),additive_identity)
 Axiom 5: sum(Y,B,C) /\ sum(X,Y,U) /\ sum(X,C,Z) => sum(U,B,Z)
 Axiom 6: sum(X,Y,B) /\ sum(X,Y,U) => U = B
 
-Lemma 7: sum(b,b,b)
+Lemma 7: product(additive_identity,h(additive_identity,X),X)
+Proof:
+  have product(additive_identity,h(additive_identity,X),X)
+    by axiom 2
+
+Lemma 8: sum(b,b,b)
 Proof:
   have product(additive_identity,h(additive_identity,b),b)
-    by axiom 2
+    by lemma 7
    and product(additive_identity,h(additive_identity,b),b)
-    by axiom 2
+    by lemma 7
    and sum(additive_identity,additive_identity,additive_identity)
     by axiom 1
    and product(additive_identity,h(additive_identity,b),b)
-    by axiom 2
+    by lemma 7
   hence sum(b,b,b)
     by axiom 3
 
-Lemma 8: sum(b,additive_inverse(b),b)
+Lemma 9: sum(b,additive_inverse(b),b)
 Proof:
   have sum(b,additive_inverse(b),additive_identity)
     by axiom 4
    and sum(b,b,b)
-    by lemma 7
+    by lemma 8
    and sum(b,additive_identity,b)
     by axiom 1
   hence sum(b,additive_inverse(b),b)
@@ -34,6 +39,6 @@ Proof:
   have sum(b,additive_inverse(b),additive_identity)
     by axiom 4
    and sum(b,additive_inverse(b),b)
-    by lemma 8
+    by lemma 9
   hence b = additive_identity
     by axiom 6

@@ -38,14 +38,7 @@ axiom ax6 : ∀ (a : α) (x : α) (y : α) (z : α), p3 y x → p3 z a → p10 y
 axiom ax7 : ∀ (a : α) (x : α), p10 (f6 x) (f6 a) → p12 x a
 
 -- Lemma 8
-theorem taelja_lemma8 : p3 (f4 (f9 c16)) (f6 (f8 (f9 c16))) := by
-  have h1 : p11 c16 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : p11 (f9 c16) := by first | (exact ax2 c16 h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : p3 (f4 (f9 c16)) (f6 (f8 (f9 c16))) := by first | (exact ax3 (f9 c16) h2) | (first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h3
-
--- Lemma 9
-theorem taelja_lemma9 : p10 (f4 (f9 c16)) (f4 c16) := by
+theorem taelja_lemma8 : p10 (f4 (f9 c16)) (f4 c16) := by
   have h1 : p11 c16 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : p10 (f4 (f9 c16)) (f4 c16) := by first | (exact ax4 c16 h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
@@ -58,12 +51,14 @@ theorem taelja_goal1 : p11 (f9 c16) := by
 
 -- Goal 2
 theorem taelja_goal2 : p12 (f8 (f9 c16)) c15 := by
-  have h1 : p3 (f4 (f9 c16)) (f6 (f8 (f9 c16))) := by first | (exact taelja_lemma8) | (first | apply taelja_lemma8 <;> first | rfl | assumption)
-  have h2 : p3 (f4 c16) (f6 c15) := by first | (exact ax5) | (first | apply ax5 <;> first | rfl | assumption)
-  have h3 : p10 (f4 (f9 c16)) (f4 c16) := by first | (exact taelja_lemma9) | (first | apply taelja_lemma9 <;> first | rfl | assumption)
-  have h4 : p10 (f6 (f8 (f9 c16))) (f6 c15) := by first | (exact ax6 (f6 c15) (f6 (f8 (f9 c16))) (f4 (f9 c16)) (f4 c16) h1 h2 h3) | (first | (exact ax6 _ _ _ _ h1 h2 h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h5 : p12 (f8 (f9 c16)) c15 := by first | (exact ax7 c15 (f8 (f9 c16)) h4) | (first | (exact ax7 _ _ h4) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h5
+  have h1 : p11 c16 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : p11 (f9 c16) := by first | (exact ax2 c16 h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h3 : p3 (f4 (f9 c16)) (f6 (f8 (f9 c16))) := by first | (exact ax3 (f9 c16) h2) | (first | (exact ax3 _ h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : p3 (f4 c16) (f6 c15) := by first | (exact ax5) | (first | apply ax5 <;> first | rfl | assumption)
+  have h5 : p10 (f4 (f9 c16)) (f4 c16) := by first | (exact taelja_lemma8) | (first | apply taelja_lemma8 <;> first | rfl | assumption)
+  have h6 : p10 (f6 (f8 (f9 c16))) (f6 c15) := by first | (exact ax6 (f6 c15) (f6 (f8 (f9 c16))) (f4 (f9 c16)) (f4 c16) h3 h4 h5) | (first | (exact ax6 _ _ _ _ h3 h4 h5) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h7 : p12 (f8 (f9 c16)) c15 := by first | (exact ax7 c15 (f8 (f9 c16)) h6) | (first | (exact ax7 _ _ h6) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h7
 
 -- Goal 3
 theorem taelja_goal3 : p3 (f4 (f9 c16)) (f6 (f8 (f9 c16))) := by

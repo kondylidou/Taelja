@@ -142,14 +142,7 @@ Proof:
   hence l2(X,X)
     by axiom 12
 
-Lemma 56: q1(a,a,a)
-Proof:
-  have n0(b,a)
-    by axiom 14
-  hence q1(a,a,a)
-    by axiom 15
-
-Lemma 57: p2(e,a,e)
+Lemma 56: p2(e,a,e)
 Proof:
   have l0(a)
     by axiom 1
@@ -160,6 +153,13 @@ Proof:
   hence p2(e,a,e)
     by axiom 19
 
+Lemma 57: q1(a,a,a)
+Proof:
+  have n0(b,a)
+    by axiom 14
+  hence q1(a,a,a)
+    by axiom 15
+
 Lemma 58: r3(a,e,a)
 Proof:
   have n0(d,c)
@@ -167,7 +167,7 @@ Proof:
   hence k1(c)
     by axiom 17
    and p2(e,a,e)
-    by lemma 57
+    by lemma 56
   hence p2(a,e,e)
     by axiom 20
   hence r3(a,e,a)
@@ -217,7 +217,7 @@ Proof:
   hence q3(a,a)
     by axiom 13
    and q1(a,a,a)
-    by lemma 56
+    by lemma 57
    and r3(a,e,a)
     by lemma 58
   hence k4(e)
@@ -227,7 +227,16 @@ Proof:
   hence n4(e,e)
     by axiom 26
 
-Lemma 63: n5(a,a)
+Lemma 63: p4(a,a,a)
+Proof:
+  have q3(e,e)
+    by lemma 53
+   and n3(a)
+    by lemma 51
+  hence p4(a,a,a)
+    by axiom 44
+
+Lemma 64: n5(a,a)
 Proof:
   have n3(a)
     by lemma 51
@@ -239,15 +248,6 @@ Proof:
     by axiom 42
   hence n5(a,a)
     by axiom 43
-
-Lemma 64: p4(a,a,a)
-Proof:
-  have q3(e,e)
-    by lemma 53
-   and n3(a)
-    by lemma 51
-  hence p4(a,a,a)
-    by axiom 44
 
 Goal 1: n5(e,a)
 Proof:
@@ -272,8 +272,8 @@ Proof:
    and n4(e,e)
     by lemma 62
    and p4(a,a,a)
-    by lemma 64
-   and n5(a,a)
     by lemma 63
+   and n5(a,a)
+    by lemma 64
   hence n5(e,a)
     by axiom 45

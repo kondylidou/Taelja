@@ -21,17 +21,7 @@ Axiom 20: pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(X31,X32,X33)),const
 Axiom 21: pred_attacker(tuple_client_A_out_9(X36)) => pred_attacker(X36)
 Axiom 22: pred_attacker(X37) /\ pred_attacker(X38) => pred_attacker(tuple_2(X37,X38))
 
-Lemma 23: pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))
-Proof:
-  pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))
-= { by axiom 9 }
-  pred_attacker(constr_tuple_2_get_0x30_bitstring(tuple_2(constr_CONST_0x30,constr_CONST_0x30)))
-= { by axiom 8 }
-  pred_attacker(constr_CONST_0x30)
-= { by axiom 1 }
-  true
-
-Lemma 24: pred_attacker(tuple_client_A_in_2(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
+Lemma 23: pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
 Proof:
   have pred_attacker(constr_CONST_0x30)
     by axiom 1
@@ -51,8 +41,29 @@ Proof:
     by rw axiom 5
   hence pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)))
     by axiom 7
-  hence pred_attacker(tuple_client_A_in_2(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
-    by axiom 10
+  hence pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
+    by axiom 12
+
+Lemma 24: pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)))
+Proof:
+  have pred_attacker(constr_CONST_0x30)
+    by axiom 1
+   and pred_attacker(constr_CONST_0x30)
+    by axiom 1
+   and pred_attacker(constr_CONST_0x30)
+    by axiom 1
+  hence pred_attacker(tuple_server_S_in_1(constr_CONST_0x30,constr_CONST_0x30,constr_CONST_0x30))
+    by axiom 2
+  hence pred_attacker(tuple_server_S_out_2(constr_cbc_enc_4(constr_CONST_0x30,constr_CONST_0x30,name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),constr_CONST_0x30,name_Kbs),name_Kas)))
+    by axiom 3
+  hence pred_attacker(constr_cbc_enc_4(constr_CONST_0x30,constr_CONST_0x30,name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),constr_CONST_0x30,name_Kbs),name_Kas))
+    by axiom 4
+  hence pred_attacker(constr_cbc_4_get_2_prefixes(constr_cbc_enc_4(constr_CONST_0x30,constr_CONST_0x30,name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),constr_CONST_0x30,name_Kbs),name_Kas)))
+    by axiom 6
+  hence pred_attacker(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))
+    by rw axiom 5
+  hence pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)))
+    by axiom 7
 
 Lemma 25: pred_attacker(tuple_client_A_in_4(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
 Proof:
@@ -77,7 +88,7 @@ Proof:
   hence pred_attacker(tuple_client_A_in_4(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
     by axiom 11
 
-Lemma 26: pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)))
+Lemma 26: pred_attacker(tuple_client_A_in_2(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
 Proof:
   have pred_attacker(constr_CONST_0x30)
     by axiom 1
@@ -97,40 +108,19 @@ Proof:
     by rw axiom 5
   hence pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)))
     by axiom 7
+  hence pred_attacker(tuple_client_A_in_2(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
+    by axiom 10
 
-Lemma 27: pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
-Proof:
-  have pred_attacker(constr_CONST_0x30)
-    by axiom 1
-   and pred_attacker(constr_CONST_0x30)
-    by axiom 1
-   and pred_attacker(constr_CONST_0x30)
-    by axiom 1
-  hence pred_attacker(tuple_server_S_in_1(constr_CONST_0x30,constr_CONST_0x30,constr_CONST_0x30))
-    by axiom 2
-  hence pred_attacker(tuple_server_S_out_2(constr_cbc_enc_4(constr_CONST_0x30,constr_CONST_0x30,name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),constr_CONST_0x30,name_Kbs),name_Kas)))
-    by axiom 3
-  hence pred_attacker(constr_cbc_enc_4(constr_CONST_0x30,constr_CONST_0x30,name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),constr_CONST_0x30,name_Kbs),name_Kas))
-    by axiom 4
-  hence pred_attacker(constr_cbc_4_get_2_prefixes(constr_cbc_enc_4(constr_CONST_0x30,constr_CONST_0x30,name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),constr_CONST_0x30,name_Kbs),name_Kas)))
-    by axiom 6
-  hence pred_attacker(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))
-    by rw axiom 5
-  hence pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)))
-    by axiom 7
-  hence pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
-    by axiom 12
-
-Lemma 28: pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_CONST_0x30)))
+Lemma 27: pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_CONST_0x30)))
 Proof:
   have pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)),tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)),X)),constr_cbc_dec_1(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))))
     by axiom 13
    and pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
-    by lemma 27
+    by lemma 23
    and pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))
     by axiom 13
    and pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)))
-    by lemma 26
+    by lemma 24
    and pred_attacker(tuple_client_A_in_4(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
     by lemma 25
    and pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)),name_Kas)))
@@ -138,7 +128,7 @@ Proof:
    and pred_eq_bitstring_bitstring(name_Na(X),constr_tuple_4_get_0x30(constr_cbc_dec_4(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas)),name_Kas)))
     by axiom 13
    and pred_attacker(tuple_client_A_in_2(tuple_client_A_in_6(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas))))
-    by lemma 24
+    by lemma 26
   hence pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))))
     by axiom 14
   hence pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(tuple_2(constr_CONST_0x30,constr_CONST_0x30)))))
@@ -146,20 +136,20 @@ Proof:
   hence pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_CONST_0x30)))
     by rw axiom 8
 
-Lemma 29: pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))))
+Lemma 28: pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))))
 Proof:
   pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))))
 = { by axiom 9 }
   pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(tuple_2(constr_CONST_0x30,constr_CONST_0x30)))))
 = { by axiom 8 }
   pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_CONST_0x30)))
-= { by lemma 28 }
+= { by lemma 27 }
   true
 
-Lemma 30: pred_attacker(constr_enc(name_objective2,constr_CONST_0x30))
+Lemma 29: pred_attacker(constr_enc(name_objective2,constr_CONST_0x30))
 Proof:
   have pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))))
-    by lemma 29
+    by lemma 28
   hence pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))))
     by axiom 15
   hence pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(tuple_2(constr_CONST_0x30,constr_CONST_0x30))))
@@ -167,50 +157,27 @@ Proof:
   hence pred_attacker(constr_enc(name_objective2,constr_CONST_0x30))
     by rw axiom 8
 
-Lemma 31: pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))))
+Lemma 30: pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))))
 Proof:
   pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))))
 = { by axiom 9 }
   pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(tuple_2(constr_CONST_0x30,constr_CONST_0x30))))
 = { by axiom 8 }
   pred_attacker(constr_enc(name_objective2,constr_CONST_0x30))
-= { by lemma 30 }
+= { by lemma 29 }
   true
 
-Lemma 32: pred_attacker(tuple_client_A_in_2(name_Na(X)))
+Lemma 31: pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))
 Proof:
-  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
-    by axiom 18
-  hence pred_attacker(name_Na(X))
-    by axiom 19
-  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
-    by axiom 10
+  pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))
+= { by axiom 9 }
+  pred_attacker(constr_tuple_2_get_0x30_bitstring(tuple_2(constr_CONST_0x30,constr_CONST_0x30)))
+= { by axiom 8 }
+  pred_attacker(constr_CONST_0x30)
+= { by axiom 1 }
+  true
 
-Lemma 33: pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
-Proof:
-  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
-    by axiom 18
-  hence pred_attacker(name_Na(X))
-    by axiom 19
-  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
-    by axiom 10
-  hence pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
-    by axiom 11
-
-Lemma 34: pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))
-Proof:
-  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
-    by axiom 18
-  hence pred_attacker(name_Na(X))
-    by axiom 19
-  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
-    by axiom 10
-  hence pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
-    by axiom 11
-  hence pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))
-    by axiom 7
-
-Lemma 35: pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))))
+Lemma 32: pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))))
 Proof:
   have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
     by axiom 18
@@ -225,12 +192,45 @@ Proof:
   hence pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))))
     by axiom 12
 
+Lemma 33: pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))
+Proof:
+  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
+    by axiom 18
+  hence pred_attacker(name_Na(X))
+    by axiom 19
+  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
+    by axiom 10
+  hence pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
+    by axiom 11
+  hence pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))
+    by axiom 7
+
+Lemma 34: pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
+Proof:
+  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
+    by axiom 18
+  hence pred_attacker(name_Na(X))
+    by axiom 19
+  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
+    by axiom 10
+  hence pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
+    by axiom 11
+
+Lemma 35: pred_attacker(tuple_client_A_in_2(name_Na(X)))
+Proof:
+  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
+    by axiom 18
+  hence pred_attacker(name_Na(X))
+    by axiom 19
+  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
+    by axiom 10
+
 Lemma 36: pred_attacker(constr_dec(constr_enc(name_objective2,constr_CONST_0x30),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))))
 Proof:
   have pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))))
-    by lemma 31
+    by lemma 30
    and pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))
-    by lemma 23
+    by lemma 31
   hence pred_attacker(constr_dec(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))))
     by axiom 17
   hence pred_attacker(constr_dec(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(tuple_2(constr_CONST_0x30,constr_CONST_0x30))),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))))
@@ -255,19 +255,19 @@ Proof:
   have pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(tuple_client_A_in_2(name_Na(X)),name_Na(X),Y)),constr_cbc_dec_1(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))),name_Kas))))
     by axiom 13
    and pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))))
-    by lemma 35
+    by lemma 32
    and pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))),name_Kas)))
     by axiom 13
    and pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))
-    by lemma 34
-   and pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
     by lemma 33
+   and pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))
+    by lemma 34
    and pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(name_Na(X),name_Kas)))
     by axiom 13
    and pred_eq_bitstring_bitstring(name_Na(Y),constr_tuple_4_get_0x30(constr_cbc_dec_4(name_Na(X),name_Kas)))
     by axiom 13
    and pred_attacker(tuple_client_A_in_2(name_Na(X)))
-    by lemma 32
+    by lemma 35
   hence pred_attacker(tuple_client_A_out_9(name_objective1))
     by axiom 20
   hence pred_attacker(name_objective1)

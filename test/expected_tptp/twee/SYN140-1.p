@@ -25,14 +25,14 @@ fof(s2, plain, q0(d,d), inference(instantiate, [status(thm)], [c4])).
 fof(lemma_22, lemma, s1(d), inference(mp, [status(thm)], [c7, s2, lemma_21])).
 fof(s3, plain, p0(b,a), inference(instantiate, [status(thm)], [c2])).
 fof(lemma_23, lemma, p1(a,a,a), inference(mp, [status(thm)], [c15, s3])).
-fof(lemma_24, lemma, q2(a,b,b), inference(mp, [status(thm)], [c17, c14, lemma_23])).
-fof(lemma_25, lemma, l1(a,a), inference(mp, [status(thm)], [c23, c22])).
+fof(lemma_24, lemma, l1(a,a), inference(mp, [status(thm)], [c23, c22])).
 fof(s4, plain, p0(b,b), inference(instantiate, [status(thm)], [c2])).
-fof(lemma_26, lemma, n1(a,b,a), inference(mp, [status(thm)], [c26, c25, c21, s4])).
-fof(lemma_27, lemma, n1(a,b,b), inference(mp, [status(thm)], [c30, c21, lemma_25, lemma_26])).
+fof(lemma_25, lemma, n1(a,b,a), inference(mp, [status(thm)], [c26, c25, c21, s4])).
+fof(lemma_26, lemma, n1(a,b,b), inference(mp, [status(thm)], [c30, c21, lemma_24, lemma_25])).
+fof(lemma_27, lemma, q2(a,b,b), inference(mp, [status(thm)], [c17, c14, lemma_23])).
 fof(s5, plain, p0(b,b), inference(instantiate, [status(thm)], [c2])).
 fof(s6, plain, p1(b,b,b), inference(mp, [status(thm)], [c15, s5])).
-fof(s7, plain, q2(b,a,b), inference(mp, [status(thm)], [c34, s6, lemma_27, lemma_24])).
+fof(s7, plain, q2(b,a,b), inference(mp, [status(thm)], [c34, s6, lemma_26, lemma_27])).
 fof(lemma_28, lemma, s2(a), inference(mp, [status(thm)], [c39, s7, lemma_21])).
 fof(s8, plain, p0(b,a), inference(instantiate, [status(thm)], [c2])).
 fof(s9, plain, p1(a,a,a), inference(mp, [status(thm)], [c15, s8])).

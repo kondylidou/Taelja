@@ -7,13 +7,13 @@ Proof:
   plus(X,Y)
 = { by axiom 1 R->L }
   plus(ze,plus(X,Y))
-= { by axiom 2 }
+= { by axiom 2 R->L }
   plus(plus(neg(neg(X)),neg(X)),plus(X,Y))
 = { by axiom 3 }
   plus(neg(neg(X)),plus(neg(X),plus(X,Y)))
 = { by axiom 3 R->L }
   plus(neg(neg(X)),plus(plus(neg(X),X),Y))
-= { by axiom 2 R->L }
+= { by axiom 2 }
   plus(neg(neg(X)),plus(ze,Y))
 = { by axiom 1 }
   plus(neg(neg(X)),Y)
@@ -23,7 +23,7 @@ Proof:
   plus(neg(X),plus(X,Y))
 = { by axiom 3 R->L }
   plus(plus(neg(X),X),Y)
-= { by axiom 2 R->L }
+= { by axiom 2 }
   plus(ze,Y)
 = { by axiom 1 }
   Y

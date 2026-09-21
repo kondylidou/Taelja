@@ -44,22 +44,18 @@ axiom ax6 : ∀ (x : α) (y : α) (z : α), c_in x c_Tarski_OCompleteLattice (tc
 axiom ax7 : ∀ (x : α) (y : α) (z : α), (c_Tarski_Oglb x y z) = (c_Tarski_Olub x (c_Tarski_Odual y z) z)
 
 -- Lemma 8
-theorem taelja_lemma8 : c_lessequals v_S (c_Tarski_Opotype_Opset v_cl t_a tc_Product__Type_Ounit) (tc_set t_a) := by
-  have h1 : c_lessequals v_S v_A (tc_set t_a) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : c_lessequals v_S (c_Tarski_Opotype_Opset v_cl t_a tc_Product__Type_Ounit) (tc_set t_a) := by have h_rw := ax4; rw [←h_rw]; exact h1
-  exact h2
+theorem taelja_lemma8 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) (tc_set t_a) := by
+  have h_rw := ax5 v_cl t_a
+  rw [h_rw]
+  have h_rw := ax4
+  rw [← h_rw]
+  apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 9
-theorem taelja_lemma9 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) (tc_set t_a) := by
-  have h1 : c_lessequals v_S (c_Tarski_Opotype_Opset v_cl t_a tc_Product__Type_Ounit) (tc_set t_a) := by first | (exact taelja_lemma8) | (first | apply taelja_lemma8 <;> first | rfl | assumption)
-  have h2 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) (tc_set t_a) := by have h_rw := ax5 v_cl t_a; rw [h_rw]; exact h1
-  exact h2
-
--- Lemma 10
-theorem taelja_lemma10 : c_in (c_Tarski_Olub v_S (c_Tarski_Odual v_cl t_a) t_a) (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) t_a := by
+theorem taelja_lemma9 : c_in (c_Tarski_Olub v_S (c_Tarski_Odual v_cl t_a) t_a) (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) t_a := by
   have h1 : c_in (c_Tarski_Odual v_cl t_a) c_Tarski_OCompleteLattice (tc_Tarski_Opotype_Opotype__ext__type t_a tc_Product__Type_Ounit) := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
   have h2 : c_in (c_Tarski_Odual v_cl t_a) c_Tarski_OPartialOrder (tc_Tarski_Opotype_Opotype__ext__type t_a tc_Product__Type_Ounit) := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h3 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) (tc_set t_a) := by first | (exact taelja_lemma9) | (first | apply taelja_lemma9 <;> first | rfl | assumption)
+  have h3 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) (tc_set t_a) := by first | (exact taelja_lemma8) | (first | apply taelja_lemma8 <;> first | rfl | assumption)
   have h4 : c_in (c_Tarski_Olub v_S (c_Tarski_Odual v_cl t_a) t_a) (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) t_a := by first | (exact ax6 (c_Tarski_Odual v_cl t_a) t_a v_S h1 h2 h3) | (first | (exact ax6 _ _ _ h1 h2 h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
@@ -71,7 +67,7 @@ theorem taelja_goal1 : c_in (c_Tarski_Oglb v_S v_cl t_a) v_A t_a := by
   rw [← h_rw]
   have h_rw := ax7 v_S v_cl t_a
   rw [h_rw]
-  apply taelja_lemma10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+  apply taelja_lemma9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 end ELat2632
 

@@ -14,12 +14,12 @@ cnf(sos_007, axiom, v(X1, X1, X2, X1) = v(X1, X2, X1, X1), file('Problems/ALG/AL
 cnf(sos_001, axiom, m(X1, X2, X2) = X1, file('Problems/ALG/ALG442-1.p', sos_001)).
 cnf(sos_008, axiom, v(X1, X2, X1, X1) = v(X2, X1, X1, X1), file('Problems/ALG/ALG442-1.p', sos_008)).
 cnf(sos, axiom, m(X1, X1, X2) = X2, file('Problems/ALG/ALG442-1.p', sos)).
-fof(lemma_16, lemma, r(u(b,b,a),u(a,a,b),u(a,a,a)), inference(mp, [status(thm)], [sos_011, sos_015, sos_015, sos_014])).
+fof(lemma_16, lemma, r(u(a,b,b),u(b,a,a),u(a,a,a)), inference(mp, [status(thm)], [sos_011, sos_014, sos_015, sos_015])).
 fof(s1, plain, r(u(a,b,b),u(a,a,b),u(a,a,a)), inference(rewrite, [status(thm)], [sos_005, lemma_16])).
 fof(lemma_17, lemma, r(u(a,b,b),u(a,a,b),a), inference(rewrite, [status(thm)], [sos_002, s1])).
-fof(lemma_18, lemma, r(u(b,a,a),u(a,a,a),u(a,b,b)), inference(mp, [status(thm)], [sos_011, sos_015, sos_013, sos_013])).
-fof(s2, plain, r(u(a,a,b),u(a,a,a),u(a,b,b)), inference(rewrite, [status(thm)], [sos_005, lemma_18])).
-fof(lemma_19, lemma, r(u(a,a,b),a,u(a,b,b)), inference(rewrite, [status(thm)], [sos_002, s2])).
+fof(lemma_18, lemma, r(u(a,a,b),u(a,a,a),u(b,b,a)), inference(mp, [status(thm)], [sos_011, sos_013, sos_013, sos_015])).
+fof(s2, plain, r(u(a,a,b),a,u(b,b,a)), inference(rewrite, [status(thm)], [sos_002, lemma_18])).
+fof(lemma_19, lemma, r(u(a,a,b),a,u(a,b,b)), inference(rewrite, [status(thm)], [sos_005, s2])).
 fof(lemma_20, lemma, r(v(a,a,a,b),v(b,b,a,a),v(a,a,b,a)), inference(mp, [status(thm)], [sos_012, sos_014, sos_014, sos_013, sos_015])).
 fof(lemma_21, lemma, r(u(a,a,b),u(a,b,a),u(b,a,a)), inference(mp, [status(thm)], [sos_011, sos_013, sos_014, sos_015])).
 fof(s3, plain, r(u(a,a,b),v(b,b,a,a),v(a,a,b,a)), inference(rewrite, [status(thm)], [sos_009, lemma_20])).

@@ -4,16 +4,7 @@ Axiom 3: sorti1(Y) => op1(Y,Y) = sK0
 Axiom 4: sorti2(X) /\ sorti2(Y) => sorti2(op2(X,Y))
 Axiom 5: op2(sK1(X),sK1(X)) = X /\ sorti2(X) => $false
 
-Lemma 6: (sorti1(X) => sorti2(h(X))) => sorti2(h(sK0))
-Proof:
-  have sorti1(sK0)
-    by axiom 1
-  hence sorti2(h(sK0))
-    by assumption 1
-  hence (sorti1(X) => sorti2(h(X))) => sorti2(h(sK0))
-    by discharge
-
-Lemma 7: (sorti1(X) => sorti2(h(X))) => sorti2(sK1(h(sK0)))
+Lemma 6: (sorti1(X) => sorti2(h(X))) => sorti2(sK1(h(sK0)))
 Proof:
   have sorti1(sK0)
     by axiom 1
@@ -24,7 +15,7 @@ Proof:
   hence (sorti1(X) => sorti2(h(X))) => sorti2(sK1(h(sK0)))
     by discharge
 
-Lemma 8: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) => op1(j(sK1(h(sK0))),j(sK1(h(sK0)))) = sK0
+Lemma 7: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) => op1(j(sK1(h(sK0))),j(sK1(h(sK0)))) = sK0
 Proof:
   have sorti1(sK0)
     by axiom 1
@@ -39,7 +30,7 @@ Proof:
   hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) => op1(j(sK1(h(sK0))),j(sK1(h(sK0)))) = sK0
     by discharge
 
-Lemma 9: (sorti1(X) => sorti2(h(X))) => sorti2(sK1(h(sK0)))
+Lemma 8: (sorti1(X) => sorti2(h(X))) => sorti2(sK1(h(sK0)))
 Proof:
   have sorti1(sK0)
     by axiom 1
@@ -50,7 +41,7 @@ Proof:
   hence (sorti1(X) => sorti2(h(X))) => sorti2(sK1(h(sK0)))
     by discharge
 
-Lemma 10: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) => j(op2(sK1(h(op1(j(sK1(h(sK0))),j(sK1(h(sK0)))))),sK1(h(sK0)))) = op1(j(sK1(h(sK0))),j(sK1(h(sK0))))
+Lemma 9: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) => j(op2(sK1(h(op1(j(sK1(h(sK0))),j(sK1(h(sK0)))))),sK1(h(sK0)))) = op1(j(sK1(h(sK0))),j(sK1(h(sK0))))
 Proof:
   have sorti1(sK0)
     by axiom 1
@@ -59,63 +50,72 @@ Proof:
   hence sorti2(sK1(h(sK0)))
     by axiom 2
    and sorti2(sK1(h(sK0)))
-    by lemma 9
+    by lemma 8
   hence j(op2(sK1(h(sK0)),sK1(h(sK0)))) = op1(j(sK1(h(sK0))),j(sK1(h(sK0))))
     by assumption 3
   hence j(op2(sK1(h(op1(j(sK1(h(sK0))),j(sK1(h(sK0)))))),sK1(h(sK0)))) = op1(j(sK1(h(sK0))),j(sK1(h(sK0))))
-    by rw lemma 8 R->L
+    by rw lemma 7 R->L
   hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) => j(op2(sK1(h(op1(j(sK1(h(sK0))),j(sK1(h(sK0)))))),sK1(h(sK0)))) = op1(j(sK1(h(sK0))),j(sK1(h(sK0))))
     by discharge
 
-Lemma 11: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) => sK0 = j(op2(sK1(h(sK0)),sK1(h(sK0))))
+Lemma 10: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) => sK0 = j(op2(sK1(h(sK0)),sK1(h(sK0))))
 Proof:
   sK0
-= { by lemma 8 R->L }
+= { by lemma 7 R->L }
   op1(j(sK1(h(sK0))),j(sK1(h(sK0))))
-= { by lemma 10 R->L }
+= { by lemma 9 R->L }
   j(op2(sK1(h(op1(j(sK1(h(sK0))),j(sK1(h(sK0)))))),sK1(h(sK0))))
-= { by lemma 8 }
+= { by lemma 7 }
   j(op2(sK1(h(sK0)),sK1(h(sK0))))
   hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) => sK0 = j(op2(sK1(h(sK0)),sK1(h(sK0))))
     by discharge
 
-Lemma 12: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) /\ (sorti2(B) => h(j(B)) = B) => h(j(op2(sK1(h(j(op2(sK1(h(sK0)),sK1(h(sK0)))))),sK1(h(sK0))))) = op2(sK1(h(sK0)),sK1(h(sK0)))
+Lemma 11: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) /\ (sorti2(B) => h(j(B)) = B) => h(j(op2(sK1(h(j(op2(sK1(h(sK0)),sK1(h(sK0)))))),sK1(h(sK0))))) = op2(sK1(h(sK0)),sK1(h(sK0)))
 Proof:
   have sorti2(sK1(h(sK0)))
-    by lemma 7
+    by lemma 6
    and sorti2(sK1(h(sK0)))
-    by lemma 7
+    by lemma 6
   hence sorti2(op2(sK1(h(sK0)),sK1(h(sK0))))
     by axiom 4
   hence sorti2(op2(sK1(h(j(op2(sK1(h(sK0)),sK1(h(sK0)))))),sK1(h(sK0))))
-    by rw lemma 11
+    by rw lemma 10
   hence sorti2(op2(sK1(h(sK0)),sK1(h(sK0))))
-    by rw lemma 11 R->L
+    by rw lemma 10 R->L
   hence h(j(op2(sK1(h(sK0)),sK1(h(sK0))))) = op2(sK1(h(sK0)),sK1(h(sK0)))
     by assumption 4
   hence h(j(op2(sK1(h(j(op2(sK1(h(sK0)),sK1(h(sK0)))))),sK1(h(sK0))))) = op2(sK1(h(sK0)),sK1(h(sK0)))
-    by rw lemma 11
+    by rw lemma 10
   hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) /\ (sorti2(B) => h(j(B)) = B) => h(j(op2(sK1(h(j(op2(sK1(h(sK0)),sK1(h(sK0)))))),sK1(h(sK0))))) = op2(sK1(h(sK0)),sK1(h(sK0)))
     by discharge
 
-Lemma 13: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) /\ (sorti2(B) => h(j(B)) = B) => op2(sK1(h(sK0)),sK1(h(sK0))) = h(sK0)
+Lemma 12: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) /\ (sorti2(B) => h(j(B)) = B) => op2(sK1(h(sK0)),sK1(h(sK0))) = h(sK0)
 Proof:
   op2(sK1(h(sK0)),sK1(h(sK0)))
-= { by lemma 12 R->L }
+= { by lemma 11 R->L }
   h(j(op2(sK1(h(j(op2(sK1(h(sK0)),sK1(h(sK0)))))),sK1(h(sK0)))))
-= { by lemma 11 R->L }
+= { by lemma 10 R->L }
   h(j(op2(sK1(h(sK0)),sK1(h(sK0)))))
-= { by lemma 11 R->L }
+= { by lemma 10 R->L }
   h(sK0)
   hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) /\ (sorti2(B) => h(j(B)) = B) => op2(sK1(h(sK0)),sK1(h(sK0))) = h(sK0)
+    by discharge
+
+Lemma 13: (sorti1(X) => sorti2(h(X))) => sorti2(h(sK0))
+Proof:
+  have sorti1(sK0)
+    by axiom 1
+  hence sorti2(h(sK0))
+    by assumption 1
+  hence (sorti1(X) => sorti2(h(X))) => sorti2(h(sK0))
     by discharge
 
 Goal 1: (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) /\ (sorti2(B) => h(j(B)) = B) => $false
 Proof:
   have op2(sK1(h(sK0)),sK1(h(sK0))) = h(sK0)
-    by lemma 13
+    by lemma 12
    and sorti2(h(sK0))
-    by lemma 6
+    by lemma 13
   hence $false
     by axiom 5
   hence (sorti1(X) => sorti2(h(X))) /\ (sorti2(Y) => sorti1(j(Y))) /\ (sorti2(Z) /\ sorti2(A) => j(op2(A,Z)) = op1(j(A),j(Z))) /\ (sorti2(B) => h(j(B)) = B) => $false

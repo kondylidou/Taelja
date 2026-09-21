@@ -12,13 +12,13 @@ fof(axiom_5, plain, sK0 = op1(sK0,sK0), inference(clausify, [status(thm)], [f3, 
 fof(f28, assumption, ! [Z,A] : ((sorti1(Z) & sorti1(A)) => h(op1(A,Z)) = op2(h(A),h(Z))), introduced(assumption, [], [])).
 fof(axiom_9, plain, (sK1 = op1(sK1,sK1) => $false), inference(clausify, [status(thm)], [f3, f13, f12])).
 fof(lemma_10, lemma, j(h(sK1)) = sK1, inference(mp, [status(thm), assumptions([f25])], [f25, axiom_1])).
-fof(s1, plain, sorti2(h(sK1)), inference(mp, [status(thm), assumptions([f24])], [f24, axiom_1])).
-fof(s2, plain, sorti2(h(j(h(sK1)))), inference(rewrite, [status(thm), assumptions([f25, f24])], [lemma_10, s1])).
-fof(lemma_11, lemma, sorti2(h(sK1)), inference(rewrite, [status(thm), assumptions([f25, f24])], [lemma_10, s2])).
-fof(s3, plain, h(op1(sK0,sK0)) = op2(h(sK0),h(sK0)), inference(mp, [status(thm), assumptions([f28])], [f28, axiom_4, axiom_4])).
-fof(lemma_12, lemma, h(sK0) = op2(h(sK0),h(sK0)), inference(rewrite, [status(thm), assumptions([f28])], [axiom_5, s3])).
+fof(s1, plain, h(op1(sK0,sK0)) = op2(h(sK0),h(sK0)), inference(mp, [status(thm), assumptions([f28])], [f28, axiom_4, axiom_4])).
+fof(lemma_11, lemma, h(sK0) = op2(h(sK0),h(sK0)), inference(rewrite, [status(thm), assumptions([f28])], [axiom_5, s1])).
+fof(s2, plain, sorti2(h(sK1)), inference(mp, [status(thm), assumptions([f24])], [f24, axiom_1])).
+fof(s3, plain, sorti2(h(j(h(sK1)))), inference(rewrite, [status(thm), assumptions([f25, f24])], [lemma_10, s2])).
+fof(lemma_12, lemma, sorti2(h(sK1)), inference(rewrite, [status(thm), assumptions([f25, f24])], [lemma_10, s3])).
 fof(s4, plain, sorti2(h(sK0)), inference(mp, [status(thm), assumptions([f24])], [f24, axiom_4])).
-fof(s5, plain, op2(h(sK1),h(sK1)) = h(sK1), inference(mp, [status(thm), assumptions([f24, f28, f25])], [f4, s4, lemma_12, lemma_11])).
+fof(s5, plain, op2(h(sK1),h(sK1)) = h(sK1), inference(mp, [status(thm), assumptions([f24, f28, f25])], [f4, s4, lemma_11, lemma_12])).
 fof(lemma_13, lemma, op2(h(j(h(sK1))),h(sK1)) = h(sK1), inference(rewrite, [status(thm), assumptions([f25, f24, f28])], [lemma_10, s5])).
 fof(s6, plain, h(op1(sK1,sK1)) = op2(h(sK1),h(sK1)), inference(mp, [status(thm), assumptions([f28])], [f28, axiom_1, axiom_1])).
 fof(lemma_14, lemma, h(op1(j(h(sK1)),sK1)) = op2(h(sK1),h(sK1)), inference(rewrite, [status(thm), assumptions([f25, f28])], [lemma_10, s6])).

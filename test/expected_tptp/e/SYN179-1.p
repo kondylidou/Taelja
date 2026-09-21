@@ -15,15 +15,15 @@ cnf(axiom_1, axiom, s0(d), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.
 cnf(axiom_9, axiom, r0(b), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_9)).
 fof(s1, plain, p0(b,b), inference(instantiate, [status(thm)], [axiom_14])).
 fof(lemma_15, lemma, s1(b), inference(mp, [status(thm)], [rule_125, s1])).
-fof(s2, plain, p0(b,d), inference(instantiate, [status(thm)], [axiom_14])).
-fof(s3, plain, m0(e,d,b), inference(instantiate, [status(thm)], [axiom_19])).
-fof(lemma_16, lemma, l1(d,e), inference(mp, [status(thm)], [rule_003, s2, axiom_9, s3])).
-fof(s4, plain, s1(a), inference(mp, [status(thm)], [rule_126, axiom_36, lemma_15])).
-fof(lemma_17, lemma, s2(d), inference(mp, [status(thm)], [rule_190, s4, axiom_1])).
-fof(s5, plain, q2(e,e,d), inference(mp, [status(thm)], [rule_186, lemma_16])).
-fof(lemma_18, lemma, q3(e,d), inference(mp, [status(thm)], [rule_255, s5, axiom_30])).
-fof(s6, plain, m0(d,d,d), inference(instantiate, [status(thm)], [axiom_19])).
-fof(s7, plain, m0(e,d,d), inference(instantiate, [status(thm)], [axiom_19])).
-fof(s8, plain, n1(d,d,e), inference(mp, [status(thm)], [rule_059, s6, s7])).
-fof(goal_1, theorem, q3(d,e), inference(mp, [status(thm)], [rule_257, s8, lemma_17, lemma_18])).
+fof(s2, plain, s1(a), inference(mp, [status(thm)], [rule_126, axiom_36, lemma_15])).
+fof(lemma_16, lemma, s2(d), inference(mp, [status(thm)], [rule_190, s2, axiom_1])).
+fof(s3, plain, p0(b,d), inference(instantiate, [status(thm)], [axiom_14])).
+fof(s4, plain, m0(e,d,b), inference(instantiate, [status(thm)], [axiom_19])).
+fof(s5, plain, l1(d,e), inference(mp, [status(thm)], [rule_003, s3, axiom_9, s4])).
+fof(s6, plain, q2(e,e,d), inference(mp, [status(thm)], [rule_186, s5])).
+fof(lemma_17, lemma, q3(e,d), inference(mp, [status(thm)], [rule_255, s6, axiom_30])).
+fof(s7, plain, m0(d,d,d), inference(instantiate, [status(thm)], [axiom_19])).
+fof(s8, plain, m0(e,d,d), inference(instantiate, [status(thm)], [axiom_19])).
+fof(s9, plain, n1(d,d,e), inference(mp, [status(thm)], [rule_059, s7, s8])).
+fof(goal_1, theorem, q3(d,e), inference(mp, [status(thm)], [rule_257, s9, lemma_16, lemma_17])).
 % SZS output end Proof

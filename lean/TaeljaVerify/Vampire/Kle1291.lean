@@ -36,21 +36,13 @@ theorem taelja_lemma5 : ∀ (x : α) (y : α), (forward_diamond x y) = (antidoma
       _ = antidomain (antidomain (multiplication x (antidomain (antidomain y)))) := by have h_rw := ax3 y; rw [h_rw]
 
 -- Lemma 6
-theorem taelja_lemma6 : (antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) = (addition (divergence sK0) (antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0))))))) := by
-  calc antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) = forward_diamond sK0 (divergence sK0) := by have h_rw := taelja_lemma5 sK0 (divergence sK0); rw [h_rw]
-      _ = divergence sK0 := by have h_rw := ax2 sK0; rw [h_rw]
-      _ = addition (divergence sK0) (divergence sK0) := by first | (first | (exact ax1 (divergence sK0)) | (exact Eq.symm (ax1 (divergence sK0)))) | (have h_rw := ax1 (divergence sK0); rw [h_rw])
-      _ = addition (divergence sK0) (forward_diamond sK0 (divergence sK0)) := by have h_rw := ax2 sK0; rw [h_rw]
-      _ = addition (divergence sK0) (antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) := by have h_rw := taelja_lemma5 sK0 (divergence sK0); rw [h_rw]
-
--- Lemma 7
-theorem taelja_lemma7 : (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) = (addition (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))))) := by
+theorem taelja_lemma6 : (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) = (addition (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))))) := by
   calc forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) = forward_diamond sK0 (antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) := by have h_rw := ax3 (multiplication sK0 (antidomain (antidomain (divergence sK0)))); rw [h_rw]
       _ = forward_diamond sK0 (forward_diamond sK0 (divergence sK0)) := by have h_rw := taelja_lemma5 sK0 (divergence sK0); rw [h_rw]
       _ = forward_diamond sK0 (divergence sK0) := by have h_rw := ax2 sK0; rw (config := { occs := .pos [1] }) [h_rw]
-      _ = antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) := by have h_rw := taelja_lemma5 sK0 (divergence sK0); rw [h_rw]
-      _ = addition (divergence sK0) (antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) := by have h_rw := taelja_lemma6; rw (config := { occs := .pos [1] }) [h_rw]
-      _ = addition (divergence sK0) (forward_diamond sK0 (divergence sK0)) := by have h_rw := taelja_lemma5 sK0 (divergence sK0); rw [h_rw]
+      _ = divergence sK0 := by have h_rw := ax2 sK0; rw [h_rw]
+      _ = addition (divergence sK0) (divergence sK0) := by first | (first | (exact ax1 (divergence sK0)) | (exact Eq.symm (ax1 (divergence sK0)))) | (have h_rw := ax1 (divergence sK0); rw [h_rw])
+      _ = addition (divergence sK0) (forward_diamond sK0 (divergence sK0)) := by have h_rw := ax2 sK0; rw [h_rw]
       _ = addition (forward_diamond sK0 (divergence sK0)) (forward_diamond sK0 (divergence sK0)) := by have h_rw := ax2 sK0; rw (config := { occs := .pos [2] }) [h_rw]
       _ = addition (forward_diamond sK0 (divergence sK0)) (forward_diamond sK0 (forward_diamond sK0 (divergence sK0))) := by have h_rw := ax2 sK0; rw (config := { occs := .pos [4] }) [h_rw]
       _ = addition (antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) (forward_diamond sK0 (forward_diamond sK0 (divergence sK0))) := by have h_rw := taelja_lemma5 sK0 (divergence sK0); rw (config := { occs := .pos [1] }) [h_rw]
@@ -58,12 +50,12 @@ theorem taelja_lemma7 : (forward_diamond sK0 (domain (multiplication sK0 (antido
       _ = addition (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) (forward_diamond sK0 (antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0))))))) := by have h_rw := ax3 (multiplication sK0 (antidomain (antidomain (divergence sK0)))); rw [h_rw]
       _ = addition (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) := by have h_rw := ax3 (multiplication sK0 (antidomain (antidomain (divergence sK0)))); rw (config := { occs := .pos [3] }) [h_rw]
 
--- Lemma 8
-theorem taelja_lemma8 : (∀ (x : α), ((forward_diamond sK0 (domain x)) = (addition (domain x) (forward_diamond sK0 (domain x)))) → zero = (domain x)) → zero = (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) := by
+-- Lemma 7
+theorem taelja_lemma7 : (∀ (x : α), ((forward_diamond sK0 (domain x)) = (addition (domain x) (forward_diamond sK0 (domain x)))) → zero = (domain x)) → zero = (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) := by
   intro hyp1
   -- the variable X of the proof, fixed as an arbitrary element
   have x : α := taelja_elem
-  have h1 : (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) = (addition (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))))) := by first | (exact taelja_lemma7) | (first | apply taelja_lemma7 <;> first | rfl | assumption | (apply Eq.symm; apply taelja_lemma7 <;> first | rfl | assumption))
+  have h1 : (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) = (addition (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))))) := by first | (exact taelja_lemma6) | (first | apply taelja_lemma6 <;> first | rfl | assumption | (apply Eq.symm; apply taelja_lemma6 <;> first | rfl | assumption))
   have h2 : zero = (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) := by first | (exact hyp1 (multiplication sK0 (antidomain (antidomain (divergence sK0)))) h1) | (first | (exact hyp1 _ h1) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
@@ -73,7 +65,7 @@ theorem taelja_goal1 : (∀ (x : α), ((forward_diamond sK0 (domain x)) = (addit
   calc divergence sK0 = forward_diamond sK0 (divergence sK0) := by have h_rw := ax2 sK0; rw [h_rw]
       _ = antidomain (antidomain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) := by have h_rw := taelja_lemma5 sK0 (divergence sK0); rw [h_rw]
       _ = domain (multiplication sK0 (antidomain (antidomain (divergence sK0)))) := by have h_rw := ax3 (multiplication sK0 (antidomain (antidomain (divergence sK0)))); rw [h_rw]
-      _ = zero := by have h_rw := (taelja_lemma8 hyp1); rw [h_rw]
+      _ = zero := by have h_rw := (taelja_lemma7 hyp1); rw [h_rw]
 
 end VampireKle1291
 

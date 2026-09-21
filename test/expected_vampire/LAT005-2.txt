@@ -70,25 +70,14 @@ Proof:
   hence meet(d,c2,d)
     by axiom 6
 
-Lemma 24: meet(c2,e,e)
-Proof:
-  have meet(b,r2,e)
-    by lemma 18
-   and meet(b,r2,e)
-    by lemma 18
-   and meet(c2,b,b)
-    by lemma 20
-  hence meet(c2,e,e)
-    by axiom 9
-
-Lemma 25: meet(r2,c,n0)
+Lemma 24: meet(r2,c,n0)
 Proof:
   have meet(c,r2,n0)
     by axiom 14
   hence meet(r2,c,n0)
     by axiom 6
 
-Lemma 26: meet(b,e,e)
+Lemma 25: meet(b,e,e)
 Proof:
   have meet(b,r2,e)
     by lemma 18
@@ -101,16 +90,27 @@ Proof:
   hence meet(b,e,e)
     by axiom 6
 
-Lemma 27: meet(d,b,n0)
+Lemma 26: meet(d,b,n0)
 Proof:
   have meet(a,b,c)
     by axiom 15
    and meet(r2,a,d)
     by axiom 10
    and meet(r2,c,n0)
-    by lemma 25
+    by lemma 24
   hence meet(d,b,n0)
     by axiom 16
+
+Lemma 27: meet(c2,e,e)
+Proof:
+  have meet(b,r2,e)
+    by lemma 18
+   and meet(b,r2,e)
+    by lemma 18
+   and meet(c2,b,b)
+    by lemma 20
+  hence meet(c2,e,e)
+    by axiom 9
 
 Lemma 28: meet(b2,c2,d)
 Proof:
@@ -141,13 +141,13 @@ Proof:
   have meet(n0,e,n0)
     by axiom 17
    and meet(b,e,e)
-    by lemma 26
+    by lemma 25
    and meet(d,b,n0)
-    by lemma 27
+    by lemma 26
   hence meet(d,e,n0)
     by axiom 9
    and meet(c2,e,e)
-    by lemma 24
+    by lemma 27
    and meet(b2,c2,d)
     by lemma 28
   hence meet(b2,e,n0)

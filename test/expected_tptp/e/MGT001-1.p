@@ -15,14 +15,14 @@ cnf(mp1_1, axiom, reliability(X1, sk1(X2, X1), X2) | ~ organization(X1, X2), fil
 cnf(t1_FOL_17, negated_conjecture, survival_chance(sk5, sk11, sk7), file('Problems/MGT/MGT001-1.p', t1_FOL_17)).
 cnf(a2_FOL_5, hypothesis, greater(X6, X5) | ~ organization(X1, X2) | ~ organization(X3, X4) | ~ reliability(X1, X5, X2) | ~ reliability(X3, X6, X4) | ~ accountability(X1, X7, X2) | ~ accountability(X3, X8, X4) | ~ reproducibility(X1, X9, X2) | ~ reproducibility(X3, X10, X4) | ~ greater(X10, X9), file('Problems/MGT/MGT001-1.p', a2_FOL_5)).
 cnf(t1_FOL_16, negated_conjecture, survival_chance(sk4, sk10, sk6), file('Problems/MGT/MGT001-1.p', t1_FOL_16)).
-fof(lemma_17, lemma, accountability(sk4,sk2(sk6,sk4),sk6), inference(mp, [status(thm)], [mp2_2, t1_FOL_10])).
-fof(lemma_18, lemma, reliability(sk5,sk1(sk7,sk5),sk7), inference(mp, [status(thm)], [mp1_1, t1_FOL_11])).
+fof(lemma_17, lemma, reproducibility(sk4,sk3(sk6,sk4),sk6), inference(mp, [status(thm)], [mp3_3, t1_FOL_10])).
+fof(lemma_18, lemma, reproducibility(sk5,sk3(sk7,sk5),sk7), inference(mp, [status(thm)], [mp3_3, t1_FOL_11])).
 fof(lemma_19, lemma, reliability(sk4,sk1(sk6,sk4),sk6), inference(mp, [status(thm)], [mp1_1, t1_FOL_10])).
-fof(lemma_20, lemma, accountability(sk5,sk2(sk7,sk5),sk7), inference(mp, [status(thm)], [mp2_2, t1_FOL_11])).
-fof(lemma_21, lemma, reproducibility(sk4,sk3(sk6,sk4),sk6), inference(mp, [status(thm)], [mp3_3, t1_FOL_10])).
-fof(lemma_22, lemma, reproducibility(sk5,sk3(sk7,sk5),sk7), inference(mp, [status(thm)], [mp3_3, t1_FOL_11])).
-fof(lemma_23, lemma, greater(sk3(sk7,sk5),sk3(sk6,sk4)), inference(mp, [status(thm)], [a3_FOL_9, t1_FOL_10, t1_FOL_11, t1_FOL_12, t1_FOL_13, lemma_21, lemma_22, t1_FOL_14, t1_FOL_15, t1_FOL_18])).
-fof(lemma_24, lemma, greater(sk1(sk7,sk5),sk1(sk6,sk4)), inference(mp, [status(thm)], [a2_FOL_5, t1_FOL_10, t1_FOL_11, lemma_19, lemma_18, lemma_17, lemma_20, lemma_21, lemma_22, lemma_23])).
-fof(lemma_25, lemma, greater(sk2(sk7,sk5),sk2(sk6,sk4)), inference(mp, [status(thm)], [a2_FOL_6, t1_FOL_10, t1_FOL_11, lemma_19, lemma_18, lemma_17, lemma_20, lemma_21, lemma_22, lemma_23])).
-fof(goal_1, theorem, greater(sk11,sk10), inference(mp, [status(thm)], [a1_FOL_4, t1_FOL_10, t1_FOL_11, lemma_19, lemma_18, lemma_17, lemma_20, t1_FOL_16, t1_FOL_17, lemma_24, lemma_25])).
+fof(lemma_20, lemma, reliability(sk5,sk1(sk7,sk5),sk7), inference(mp, [status(thm)], [mp1_1, t1_FOL_11])).
+fof(lemma_21, lemma, accountability(sk4,sk2(sk6,sk4),sk6), inference(mp, [status(thm)], [mp2_2, t1_FOL_10])).
+fof(lemma_22, lemma, accountability(sk5,sk2(sk7,sk5),sk7), inference(mp, [status(thm)], [mp2_2, t1_FOL_11])).
+fof(lemma_23, lemma, greater(sk3(sk7,sk5),sk3(sk6,sk4)), inference(mp, [status(thm)], [a3_FOL_9, t1_FOL_10, t1_FOL_11, t1_FOL_12, t1_FOL_13, lemma_17, lemma_18, t1_FOL_14, t1_FOL_15, t1_FOL_18])).
+fof(lemma_24, lemma, greater(sk1(sk7,sk5),sk1(sk6,sk4)), inference(mp, [status(thm)], [a2_FOL_5, t1_FOL_10, t1_FOL_11, lemma_19, lemma_20, lemma_21, lemma_22, lemma_17, lemma_18, lemma_23])).
+fof(lemma_25, lemma, greater(sk2(sk7,sk5),sk2(sk6,sk4)), inference(mp, [status(thm)], [a2_FOL_6, t1_FOL_10, t1_FOL_11, lemma_19, lemma_20, lemma_21, lemma_22, lemma_17, lemma_18, lemma_23])).
+fof(goal_1, theorem, greater(sk11,sk10), inference(mp, [status(thm)], [a1_FOL_4, t1_FOL_10, t1_FOL_11, lemma_19, lemma_20, lemma_21, lemma_22, t1_FOL_16, t1_FOL_17, lemma_24, lemma_25])).
 % SZS output end Proof

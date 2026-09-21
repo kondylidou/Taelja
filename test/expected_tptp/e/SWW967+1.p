@@ -9,23 +9,23 @@ fof(ax119, axiom, ! [X114, X115, X116]: (pred_attacker(tuple_client_A_out_1(X114
 fof(ax167, axiom, ! [X197]: pred_attacker(tuple_client_A_out_1(name_A, name_B, name_Na(X197))), file('Problems/SWW/SWW967+1.p', ax167)).
 fof(ax109, axiom, ! [X98]: (pred_attacker(tuple_client_A_out_9(X98)) => pred_attacker(X98)), file('Problems/SWW/SWW967+1.p', ax109)).
 fof(s1, plain, ! [X] : pred_attacker(name_Na(X)), inference(mp, [status(thm)], [ax119, ax167])).
-fof(lemma_10, lemma, ! [X] : pred_attacker(tuple_client_A_in_2(name_Na(X))), inference(mp, [status(thm)], [ax126, s1])).
-fof(s2, plain, ! [X] : pred_attacker(name_Na(X)), inference(mp, [status(thm)], [ax119, ax167])).
-fof(s3, plain, ! [X] : pred_attacker(tuple_client_A_in_2(name_Na(X))), inference(mp, [status(thm)], [ax126, s2])).
-fof(lemma_11, lemma, ! [X] : pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))), inference(mp, [status(thm)], [ax124, s3])).
-fof(s4, plain, ! [X] : pred_attacker(name_Na(X)), inference(mp, [status(thm)], [ax119, ax167])).
-fof(s5, plain, ! [X] : pred_attacker(tuple_client_A_in_2(name_Na(X))), inference(mp, [status(thm)], [ax126, s4])).
-fof(s6, plain, ! [X] : pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))), inference(mp, [status(thm)], [ax124, s5])).
-fof(lemma_12, lemma, ! [X] : pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))), inference(mp, [status(thm)], [ax122, s6])).
-fof(s7, plain, ! [X] : pred_attacker(name_Na(X)), inference(mp, [status(thm)], [ax119, ax167])).
-fof(s8, plain, ! [X] : pred_attacker(tuple_client_A_in_2(name_Na(X))), inference(mp, [status(thm)], [ax126, s7])).
-fof(s9, plain, ! [X] : pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))), inference(mp, [status(thm)], [ax124, s8])).
-fof(s10, plain, ! [X] : pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))), inference(mp, [status(thm)], [ax122, s9])).
-fof(lemma_13, lemma, ! [X] : pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))), inference(mp, [status(thm)], [ax120, s10])).
+fof(s2, plain, ! [X] : pred_attacker(tuple_client_A_in_2(name_Na(X))), inference(mp, [status(thm)], [ax126, s1])).
+fof(s3, plain, ! [X] : pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))), inference(mp, [status(thm)], [ax124, s2])).
+fof(s4, plain, ! [X] : pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))), inference(mp, [status(thm)], [ax122, s3])).
+fof(lemma_10, lemma, ! [X] : pred_attacker(tuple_client_A_in_8(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))))), inference(mp, [status(thm)], [ax120, s4])).
+fof(s5, plain, ! [X] : pred_attacker(name_Na(X)), inference(mp, [status(thm)], [ax119, ax167])).
+fof(s6, plain, ! [X] : pred_attacker(tuple_client_A_in_2(name_Na(X))), inference(mp, [status(thm)], [ax126, s5])).
+fof(s7, plain, ! [X] : pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))), inference(mp, [status(thm)], [ax124, s6])).
+fof(lemma_11, lemma, ! [X] : pred_attacker(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))))), inference(mp, [status(thm)], [ax122, s7])).
+fof(s8, plain, ! [X] : pred_attacker(name_Na(X)), inference(mp, [status(thm)], [ax119, ax167])).
+fof(s9, plain, ! [X] : pred_attacker(tuple_client_A_in_2(name_Na(X))), inference(mp, [status(thm)], [ax126, s8])).
+fof(lemma_12, lemma, ! [X] : pred_attacker(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))), inference(mp, [status(thm)], [ax124, s9])).
+fof(s10, plain, ! [X] : pred_attacker(name_Na(X)), inference(mp, [status(thm)], [ax119, ax167])).
+fof(lemma_13, lemma, ! [X] : pred_attacker(tuple_client_A_in_2(name_Na(X))), inference(mp, [status(thm)], [ax126, s10])).
 fof(s11, plain, ! [X,Y] : pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(tuple_client_A_in_2(name_Na(X)),name_Na(X),Y)),constr_cbc_dec_1(tuple_client_A_in_6(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X)))),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))),name_Kas)))), inference(instantiate, [status(thm)], [ax83])).
 fof(s12, plain, ! [X] : pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(tuple_client_A_in_4(tuple_client_A_in_2(name_Na(X))),name_Kas))), inference(instantiate, [status(thm)], [ax83])).
 fof(s13, plain, ! [X] : pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(name_Na(X),name_Kas))), inference(instantiate, [status(thm)], [ax83])).
 fof(s14, plain, ! [Y,X] : pred_eq_bitstring_bitstring(name_Na(Y),constr_tuple_4_get_0x30(constr_cbc_dec_4(name_Na(X),name_Kas))), inference(instantiate, [status(thm)], [ax83])).
-fof(s15, plain, pred_attacker(tuple_client_A_out_9(name_objective)), inference(mp, [status(thm)], [ax171, s11, lemma_13, s12, lemma_12, lemma_11, s13, s14, lemma_10])).
+fof(s15, plain, pred_attacker(tuple_client_A_out_9(name_objective)), inference(mp, [status(thm)], [ax171, s11, lemma_10, s12, lemma_11, lemma_12, s13, s14, lemma_13])).
 fof(co0, theorem, pred_attacker(name_objective), inference(mp, [status(thm)], [ax109, s15])).
 % SZS output end Proof

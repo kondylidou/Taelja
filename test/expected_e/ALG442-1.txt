@@ -14,15 +14,15 @@ Axiom 13: u(X,X,Y) = u(Y,X,X)
 Axiom 14: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) => r(u(X,A,U),u(Y,B,V),u(Z,C,W))
 Axiom 15: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) => r(m(X,A,U),m(Y,B,V),m(Z,C,W))
 
-Lemma 16: r(u(b,b,a),u(a,a,b),u(a,a,a))
+Lemma 16: r(u(a,b,b),u(b,a,a),u(a,a,a))
 Proof:
-  have r(b,a,a)
+  have r(a,b,a)
+    by axiom 11
+   and r(b,a,a)
     by axiom 2
    and r(b,a,a)
     by axiom 2
-   and r(a,b,a)
-    by axiom 11
-  hence r(u(b,b,a),u(a,a,b),u(a,a,a))
+  hence r(u(a,b,b),u(b,a,a),u(a,a,a))
     by axiom 14
 
 Lemma 17: r(u(a,b,b),u(a,a,b),a)
@@ -30,29 +30,29 @@ Proof:
   r(u(a,b,b),u(a,a,b),a)
 = { by axiom 4 R->L }
   r(u(a,b,b),u(a,a,b),u(a,a,a))
-= { by axiom 13 R->L }
-  r(u(b,b,a),u(a,a,b),u(a,a,a))
+= { by axiom 13 }
+  r(u(a,b,b),u(b,a,a),u(a,a,a))
 = { by lemma 16 }
   true
 
-Lemma 18: r(u(b,a,a),u(a,a,a),u(a,b,b))
+Lemma 18: r(u(a,a,b),u(a,a,a),u(b,b,a))
 Proof:
-  have r(b,a,a)
+  have r(a,a,b)
+    by axiom 9
+   and r(a,a,b)
+    by axiom 9
+   and r(b,a,a)
     by axiom 2
-   and r(a,a,b)
-    by axiom 9
-   and r(a,a,b)
-    by axiom 9
-  hence r(u(b,a,a),u(a,a,a),u(a,b,b))
+  hence r(u(a,a,b),u(a,a,a),u(b,b,a))
     by axiom 14
 
 Lemma 19: r(u(a,a,b),a,u(a,b,b))
 Proof:
   r(u(a,a,b),a,u(a,b,b))
+= { by axiom 13 R->L }
+  r(u(a,a,b),a,u(b,b,a))
 = { by axiom 4 R->L }
-  r(u(a,a,b),u(a,a,a),u(a,b,b))
-= { by axiom 13 }
-  r(u(b,a,a),u(a,a,a),u(a,b,b))
+  r(u(a,a,b),u(a,a,a),u(b,b,a))
 = { by lemma 18 }
   true
 

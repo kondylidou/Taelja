@@ -42,16 +42,14 @@ Proof:
   hence >=(+(1,X),+(0,X))
     by axiom 6
 
-Lemma 16: >=(+(x17,1),x17)
+Lemma 16: >=(1,x17)
 Proof:
-  >=(+(x17,1),x17)
-= { by axiom 7 }
-  >=(+(1,x17),x17)
+  >=(1,x17)
 = { by axiom 10 R->L }
-  >=(+(+(Z,1),x17),x17)
+  >=(+(x17,1),x17)
+= { by axiom 7 R->L }
+  >=(+(1,x17),x17)
 = { by lemma 12 R->L }
-  >=(+(+(Z,1),x17),+(0,x17))
-= { by axiom 10 }
   >=(+(1,x17),+(0,x17))
 = { by lemma 15 }
   true
@@ -73,10 +71,8 @@ Proof:
 
 Lemma 18: >=(==>(X,1),==>(X,x17))
 Proof:
-  have >=(+(x17,1),x17)
+  have >=(1,x17)
     by lemma 16
-  hence >=(1,x17)
-    by rw axiom 10
   hence >=(==>(X,1),==>(X,x17))
     by axiom 11
 

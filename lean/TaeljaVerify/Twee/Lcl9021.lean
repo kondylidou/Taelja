@@ -70,16 +70,13 @@ theorem taelja_lemma15 : ∀ (x : α), op_gt_eq (op_plus n_1 x) (op_plus n_0 x) 
   exact h2
 
 -- Lemma 16
-theorem taelja_lemma16 : ∀ (z : α), op_gt_eq (op_plus x17 n_1) x17 := by
-  intro z
-  have h_rw := ax7 n_1 x17
-  rw [h_rw]
-  have h_rw := ax10 z
+theorem taelja_lemma16 : op_gt_eq n_1 x17 := by
+  have h_rw := ax10 x17
+  rw [← h_rw]
+  have h_rw := ax7 x17 n_1
   rw [← h_rw]
   have h_rw := taelja_lemma12 x17
   rw (config := { occs := .pos [2] }) [← h_rw]
-  have h_rw := ax10 z
-  rw [h_rw]
   apply taelja_lemma15 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 17
@@ -95,10 +92,9 @@ theorem taelja_lemma17 : x17 = (op_eq_eq_gt (op_eq_eq_gt x17 n_1) x17) := by
 -- Lemma 18
 theorem taelja_lemma18 : ∀ (x : α), op_gt_eq (op_eq_eq_gt x n_1) (op_eq_eq_gt x x17) := by
   intro x
-  have h1 : op_gt_eq (op_plus x17 n_1) x17 := by first | (exact taelja_lemma16 x) | (first | apply taelja_lemma16 <;> first | rfl | assumption)
-  have h2 : op_gt_eq n_1 x17 := by have h_rw := ax10 x17; rw [←h_rw]; exact h1
-  have h3 : op_gt_eq (op_eq_eq_gt x n_1) (op_eq_eq_gt x x17) := by first | (exact ax11 n_1 x17 x h2) | (first | (exact ax11 _ _ _ h2) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h3
+  have h1 : op_gt_eq n_1 x17 := by first | (exact taelja_lemma16) | (first | apply taelja_lemma16 <;> first | rfl | assumption)
+  have h2 : op_gt_eq (op_eq_eq_gt x n_1) (op_eq_eq_gt x x17) := by first | (exact ax11 n_1 x17 x h1) | (first | (exact ax11 _ _ _ h1) | (apply ax11 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h2
 
 -- Lemma 19
 theorem taelja_lemma19 : op_gt_eq (op_eq_eq_gt (op_eq_eq_gt x17 n_1) n_1) x17 := by

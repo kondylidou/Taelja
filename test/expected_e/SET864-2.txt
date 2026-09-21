@@ -4,14 +4,7 @@ Axiom 3: c_in(X,v_S,tc_set(t_a)) => c_lessequals(X,v_x(X),tc_set(t_a))
 Axiom 4: c_in(v_c,c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a)))
 Axiom 5: c_in(X,Y,tc_set(Z)) /\ c_in(A,c_Zorn_Omaxchain(Y,Z),tc_set(tc_set(Z))) /\ c_lessequals(c_Union(A,Z),X,tc_set(Z)) => c_Union(A,Z) = X
 
-Lemma 6: c_in(v_x(c_Union(v_c,t_a)),v_S,tc_set(t_a))
-Proof:
-  have c_in(c_Union(v_c,t_a),v_S,tc_set(t_a))
-    by axiom 1
-  hence c_in(v_x(c_Union(v_c,t_a)),v_S,tc_set(t_a))
-    by axiom 2
-
-Lemma 7: c_lessequals(c_Union(v_c,t_a),v_x(c_Union(v_c,t_a)),tc_set(t_a))
+Lemma 6: c_lessequals(c_Union(v_c,t_a),v_x(c_Union(v_c,t_a)),tc_set(t_a))
 Proof:
   have c_in(c_Union(v_c,t_a),v_S,tc_set(t_a))
     by axiom 1
@@ -25,11 +18,13 @@ Proof:
 
 Goal 2: c_Union(v_c,t_a) = v_x(c_Union(v_c,t_a))
 Proof:
-  have c_in(v_x(c_Union(v_c,t_a)),v_S,tc_set(t_a))
-    by lemma 6
+  have c_in(c_Union(v_c,t_a),v_S,tc_set(t_a))
+    by axiom 1
+  hence c_in(v_x(c_Union(v_c,t_a)),v_S,tc_set(t_a))
+    by axiom 2
    and c_in(v_c,c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a)))
     by axiom 4
    and c_lessequals(c_Union(v_c,t_a),v_x(c_Union(v_c,t_a)),tc_set(t_a))
-    by lemma 7
+    by lemma 6
   hence c_Union(v_c,t_a) = v_x(c_Union(v_c,t_a))
     by axiom 5
