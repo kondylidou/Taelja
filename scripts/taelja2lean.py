@@ -1269,12 +1269,21 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
     if _hyps_before_vars:
         conclusion = intro_hypotheses(conclusion, lines, {})
         conclusion_vars = vars_in_lit(conclusion)
-    fvars = sorted((chain_vars | conclusion_vars) - nested_only_vars(conclusion))
+    nested = nested_only_vars(conclusion)
+    fvars = sorted((chain_vars | conclusion_vars) - nested)
     var_map = {v: lean_var_name(v, i) for i, v in enumerate(fvars)}
     if fvars:
         lines.append(f'intro {" ".join(var_map[v] for v in fvars)}')
     if not _hyps_before_vars:
         conclusion = intro_hypotheses(conclusion, lines, var_map)
+    # a chain may use a hypothesis at its own variable, which the conclusion
+    # does not bind, as REL046+1's chain does with Z.  The hypothesis holds
+    # for every value, so an element stands for it.
+    for i, v in enumerate(sorted(chain_vars & nested)):
+        nm = lean_var_name(v, len(var_map) + i)
+        var_map[v] = nm
+        lines.append(f'-- the variable {v} of the proof, fixed as an arbitrary element')
+        lines.append(f'have {nm} : α := taelja_elem')
     for step in proof.steps:
         step.ref = resolve_assumption(step.ref, None, want_eq=True)
 

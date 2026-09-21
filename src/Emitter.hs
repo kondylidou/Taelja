@@ -157,8 +157,10 @@ goalLines hyps0 negated n (lit, block) =
     atomTermOf l = case l of { Rel nm as -> App nm as; NRel nm as -> App nm as; _ -> Var "" }
     subTerms t = t : case t of { App _ ts -> concatMap subTerms ts; _ -> [] }
     notVarTerm t = case t of { Var _ -> False; _ -> True }
+    -- the line stating the conclusion itself is not a use of a hypothesis,
+    -- as SYN929+1/E's hence p(X) beside the hypothesis p(X) => $false
     blockTerms = case block of
-      HaveHence ls    -> concatMap (litTerms . lineLit) ls
+      HaveHence ls    -> concatMap litTerms (filter (/= lit) (map lineLit ls))
       EqChain st sts  -> concatMap subTerms (st : map snd sts)
     lineLit (Have x _)  = x
     lineLit (And x _)   = x

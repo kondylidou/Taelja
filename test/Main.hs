@@ -92,7 +92,8 @@ tweeBenchmarkNames =
 
 handcraftedNames :: [String]
 handcraftedNames =
-  [ "test_rl_safety"
+  [ "agda_vampire_ze_uniq"  -- the worked example of Sinkarovs and Rawson, When Agda met Vampire
+  , "test_rl_safety"
   , "test_eq_symmetry"
   , "test_nonunit_single"
   , "test_nonunit_chain"

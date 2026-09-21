@@ -188,3 +188,4 @@ import TaeljaVerify.E.Sww9681
 import TaeljaVerify.Twee.Seu3031
 import TaeljaVerify.E.Csr1171
 import TaeljaVerify.E.Syo6111
+import TaeljaVerify.Vampire.AgdaVampireZeUniq

@@ -314,9 +314,11 @@ translateMode strict debug (T.TSTP _ units0) = do
 negationGoal :: StructuredProof -> StructuredProof
 negationGoal sp
   | null (inNegated (spInput sp)) = sp
-  | otherwise = case goals sp of
-      (_, blk) : _ -> sp { goals = [(falsumLit, dropContradiction blk)] }
-      []           -> sp
+  | otherwise = case [ b | (l, b) <- goals sp, l == falsumLit ] of
+      b : _ -> sp { goals = [(falsumLit, b)] }
+      []    -> case goals sp of
+        (_, blk) : _ -> sp { goals = [(falsumLit, dropContradiction blk)] }
+        []           -> sp
   where
     dropContradiction (HaveHence ls) = HaveHence (reverse (dropWhile isContra (reverse ls)))
     dropContradiction b              = b
@@ -2359,6 +2361,8 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         , stNameToPos  = nameToPos
         , stEqByName   = eqByTstpName
         , stGoalTemplate = goalLits'
+        , stNegationConj = negationConj
+        , stClosing = Nothing
         , stCandLemmas = Map.fromList
             [ (dn, lifted ++ [(dn, lit, blk)])
             | (cname, (lit, blk, lifted, _)) <- Map.toList candLemmaMap
@@ -2423,8 +2427,11 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
   when (isNothing (foldM unifiesWith σJoint emittedGoals)) $
     error ("emitted goals are not a consistent instance of the conjecture: "
            ++ intercalate ", " (map (ppLitI . fst) (stGoals finalSt)))
+  -- the derivation of $false, appended after the coverage check, which the
+  -- conjuncts' own goals pass
+  let closing = [ (falsumLit, b) | negationConj, Just b <- [stClosing finalSt] ]
   return (StructuredProof (axiomList ++ bgAxiomList ++ stExtraAxioms finalSt)
-                          (stLemmas finalSt) (stGoals finalSt) emptyInput)
+                          (stLemmas finalSt) (stGoals finalSt ++ closing) emptyInput)
   where
     action thetaCtx' allNuclei innerNusNG posToName goalLits simpl pG1Chain = do
       -- First pass over leaf axioms and derived nuclei with ground heads.
@@ -2457,4 +2464,30 @@ runAlgorithm debug strict info allUnits candLemmaMap nameOverride mFixedAxioms =
         error ("goal(s) could not be proved: "
                ++ intercalate ", " (map ppLitI open3)
                ++ " (no step of the input proof establishes it under theta, and the rewrite search found no chain)")
+      -- A negated conclusion is proved by deriving $false from its conjuncts,
+      -- so the goal shown is that derivation, the conjuncts' proofs as premises
+      -- and the closing clause as the rule.  SWW469_1 has two conjuncts,
+      -- sK0 = sK1 and a proposition, and showed the first alone as the proof.
+      negation <- gets stNegationConj
+      gs0 <- gets stGoals
+      let derivesFalse (HaveHence ls) = or [ True | Hence l _ <- ls, l == falsumLit ]
+          derivesFalse _              = False
+      -- a goal block that already derives $false, as the contradiction route
+      -- builds, is that derivation and stays as it is
+      when (negation && not (any (derivesFalse . snd) gs0)) $ case closerName goalLits posToName of
+        Nothing -> return ()
+        Just ax -> do
+          gs <- gets stGoals
+          prems <- forM gs $ \(g, b) -> do
+            nm <- ensureNamed g (return b)
+            return (g, nm)
+          let ls = [ (if i == (0 :: Int) then Have else And) g nm | (i, (g, nm)) <- zip [0 ..] prems ]
+          modify $ \st -> st { stClosing = Just (HaveHence (ls ++ [Hence falsumLit (ByAxiom ax)])) }
+    -- the clause that closes the refutation on the conjuncts, by its display name
+    closerName goalLits posToName = listToMaybe
+      [ nm | e <- piNuclei info
+           , Just (Clause bs Nothing) <- [convertDeclToClause (leSrcDecl e)]
+           , length bs == length goalLits
+           , all (\b -> any (\g -> isJust (matchLit b g) || isJust (matchLit g b)) goalLits) bs
+           , Just nm <- [Map.lookup (lePos e) posToName] ]
 

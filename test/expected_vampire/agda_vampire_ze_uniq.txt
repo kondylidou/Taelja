@@ -1,0 +1,53 @@
+Axiom 1: plus(ze,X) = X
+Axiom 2: plus(neg(X),X) = ze
+Axiom 3: plus(plus(X,Y),Z) = plus(X,plus(Y,Z))
+
+Lemma 4: plus(X,Y) = plus(neg(neg(X)),Y)
+Proof:
+  plus(X,Y)
+= { by axiom 1 R->L }
+  plus(ze,plus(X,Y))
+= { by axiom 2 }
+  plus(plus(neg(neg(X)),neg(X)),plus(X,Y))
+= { by axiom 3 }
+  plus(neg(neg(X)),plus(neg(X),plus(X,Y)))
+= { by axiom 3 R->L }
+  plus(neg(neg(X)),plus(plus(neg(X),X),Y))
+= { by axiom 2 R->L }
+  plus(neg(neg(X)),plus(ze,Y))
+= { by axiom 1 }
+  plus(neg(neg(X)),Y)
+
+Lemma 5: plus(neg(X),plus(X,Y)) = Y
+Proof:
+  plus(neg(X),plus(X,Y))
+= { by axiom 3 R->L }
+  plus(plus(neg(X),X),Y)
+= { by axiom 2 R->L }
+  plus(ze,Y)
+= { by axiom 1 }
+  Y
+
+Goal 1: sK1 = plus(X,sK1) => X = ze
+Proof:
+  X
+= { by lemma 5 R->L }
+  plus(neg(neg(X)),plus(neg(X),X))
+= { by axiom 2 }
+  plus(neg(neg(X)),ze)
+= { by lemma 4 R->L }
+  plus(X,ze)
+= { by axiom 2 R->L }
+  plus(X,plus(neg(neg(sK1)),neg(sK1)))
+= { by lemma 4 R->L }
+  plus(X,plus(sK1,neg(sK1)))
+= { by axiom 3 R->L }
+  plus(plus(X,sK1),neg(sK1))
+= { by assumption 1 R->L }
+  plus(sK1,neg(sK1))
+= { by lemma 4 }
+  plus(neg(neg(sK1)),neg(sK1))
+= { by axiom 2 }
+  ze
+  hence sK1 = plus(X,sK1) => X = ze
+    by discharge

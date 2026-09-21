@@ -121,6 +121,8 @@ data AlgState = AlgState
   , stEqByName   :: Map.Map String (Term, Term)  -- TSTP unit name -> its unit equation
   , stGoalTemplate :: [Literal]  -- the conjecture's own goal literals (shared free variables across conjuncts), consulted by emitGoalProof
   , stCandLemmas :: Map.Map String [(String, Literal, ProofBlock)]  -- a candidate lemma's display name -> its entries, sub-lemmas first
+  , stNegationConj :: Bool  -- the conjecture concludes a negation, proved by deriving $false
+  , stClosing :: Maybe ProofBlock  -- the derivation of $false from the goal nucleus's premises, for such a conjecture
       -- stReprove re-proves the derived unit at a tree position from its
       -- ancestry.  Only top-level runs use it, and it returns Nothing elsewhere.
   }
