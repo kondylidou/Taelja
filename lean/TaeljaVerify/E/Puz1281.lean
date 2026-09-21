@@ -5,7 +5,8 @@ namespace EPuz1281
 
 -- Uninterpreted sort
 axiom α : Type
-axiom taelja_elem : α
+axiom taelja_nonempty : Nonempty α
+noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 -- Constants
 axiom iokaste : α
@@ -32,6 +33,10 @@ axiom ax6 : patricide thersandros → False
 -- Lemma 7
 theorem taelja_lemma7 : (∀ (x : α) (y : α), (parent_of iokaste x) → (patricide x) → (parent_of x y) → patricide y) → patricide polyneikes := by
   intro hyp1
+  -- the variable X of the proof, fixed as an arbitrary element
+  have x : α := taelja_elem
+  -- the variable Y of the proof, fixed as an arbitrary element
+  have y : α := taelja_elem
   have h1 : parent_of iokaste oedipus := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : patricide oedipus := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
   have h3 : parent_of oedipus polyneikes := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
@@ -41,6 +46,10 @@ theorem taelja_lemma7 : (∀ (x : α) (y : α), (parent_of iokaste x) → (patri
 -- Goal 1
 theorem taelja_goal1 : (∀ (x : α) (y : α), (parent_of iokaste x) → (patricide x) → (parent_of x y) → patricide y) → False := by
   intro hyp1
+  -- the variable X of the proof, fixed as an arbitrary element
+  have x : α := taelja_elem
+  -- the variable Y of the proof, fixed as an arbitrary element
+  have y : α := taelja_elem
   have h1 : parent_of iokaste polyneikes := by first | (exact ax4) | (first | apply ax4 <;> first | rfl | assumption)
   have h2 : patricide polyneikes := by first | (exact (taelja_lemma7 hyp1)) | (first | apply (taelja_lemma7 hyp1) <;> first | rfl | assumption)
   have h3 : parent_of polyneikes thersandros := by first | (exact ax5) | (first | apply ax5 <;> first | rfl | assumption)

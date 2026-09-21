@@ -5,7 +5,8 @@ namespace TweeSyn1401
 
 -- Uninterpreted sort
 axiom α : Type
-axiom taelja_elem : α
+axiom taelja_nonempty : Nonempty α
+noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 -- Constants
 axiom a : α
@@ -142,12 +143,14 @@ theorem taelja_lemma29 : s3 a b := by
 -- Goal 1
 theorem taelja_goal1 : ∀ (x : α), m4 b x := by
   intro x
+  -- the variable Y of the proof, fixed as an arbitrary element
+  have y : α := taelja_elem
   have h1 : p0 b b := by first | (exact ax1 b) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : s1 d := by first | (exact taelja_lemma22) | (first | apply taelja_lemma22 <;> first | rfl | assumption)
-  have h3 : ∀ (y : α), m0 y d x := fun y => by first | (exact ax2 y x) | (first | apply ax2 <;> first | rfl | assumption)
-  have h4 : l2 x x := by first | (exact ax6 b d x x h1 h2 (h3 x)) | (first | (exact ax6 _ _ _ _ h1 h2 (h3 _)) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h3 | exact taelja_elem)))
+  have h3 : m0 y d x := by first | (exact ax2 y x) | (first | apply ax2 <;> first | rfl | assumption)
+  have h4 : l2 x x := by first | (exact ax6 b d y x h1 h2 h3) | (first | (exact ax6 _ _ _ _ h1 h2 h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h5 : s3 a b := by first | (exact taelja_lemma29) | (first | apply taelja_lemma29 <;> first | rfl | assumption)
-  have h6 : m4 b x := by first | (exact ax20 x x b h4 h5) | (first | (exact ax20 _ _ _ h4 h5) | (apply ax20 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h3 | exact taelja_elem)))
+  have h6 : m4 b x := by first | (exact ax20 x x b h4 h5) | (first | (exact ax20 _ _ _ h4 h5) | (apply ax20 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h6
 
 end TweeSyn1401

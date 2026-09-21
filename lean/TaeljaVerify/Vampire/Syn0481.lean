@@ -5,7 +5,8 @@ namespace VampireSyn0481
 
 -- Uninterpreted sort
 axiom α : Type
-axiom taelja_elem : α
+axiom taelja_nonempty : Nonempty α
+noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 axiom big_f : α → Prop
 
@@ -13,6 +14,8 @@ axiom big_f : α → Prop
 theorem taelja_goal1 : ∀ (x : α), (∀ (y : α), big_f y) → big_f x := by
   intro x
   intro hyp1
+  -- the variable Y of the proof, fixed as an arbitrary element
+  have y : α := taelja_elem
   have h1 : big_f x := by first | (exact hyp1 x) | (first | apply hyp1 <;> first | rfl | assumption)
   exact h1
 

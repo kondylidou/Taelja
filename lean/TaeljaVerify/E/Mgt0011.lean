@@ -5,7 +5,8 @@ namespace EMgt0011
 
 -- Uninterpreted sort
 axiom α : Type
-axiom taelja_elem : α
+axiom taelja_nonempty : Nonempty α
+noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 -- Constants
 axiom sk10 : α

@@ -5,7 +5,8 @@ namespace ESyn1591
 
 -- Uninterpreted sort
 axiom α : Type
-axiom taelja_elem : α
+axiom taelja_nonempty : Nonempty α
+noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 -- Constants
 axiom a : α
@@ -232,10 +233,12 @@ theorem taelja_lemma58 : q1 d d d := by
 -- Lemma 59
 theorem taelja_lemma59 : ∀ (x : α), l2 x x := by
   intro x
+  -- the variable Y of the proof, fixed as an arbitrary element
+  have y : α := taelja_elem
   have h1 : p0 b b := by first | (exact ax8 b) | (first | apply ax8 <;> first | rfl | assumption)
   have h2 : s1 d := by first | (exact taelja_lemma49 d) | (first | apply taelja_lemma49 <;> first | rfl | assumption)
-  have h3 : ∀ (y : α), m0 y d x := fun y => by first | (exact ax9 y x) | (first | apply ax9 <;> first | rfl | assumption)
-  have h4 : l2 x x := by first | (exact ax12 x x b d h1 h2 (h3 x)) | (first | (exact ax12 _ _ _ _ h1 h2 (h3 _)) | (apply ax12 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h3 | exact taelja_elem)))
+  have h3 : m0 y d x := by first | (exact ax9 y x) | (first | apply ax9 <;> first | rfl | assumption)
+  have h4 : l2 x x := by first | (exact ax12 y x b d h1 h2 h3) | (first | (exact ax12 _ _ _ _ h1 h2 h3) | (apply ax12 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Lemma 60
@@ -252,20 +255,24 @@ theorem taelja_lemma61 : r3 a e a := by
 
 -- Lemma 62
 theorem taelja_lemma62 : n4 a a := by
+  -- the variable X of the proof, fixed as an arbitrary element
+  have x : α := taelja_elem
+  -- the variable Y of the proof, fixed as an arbitrary element
+  have y : α := taelja_elem
   have h1 : q0 a d := by first | (exact ax5 a) | (first | apply ax5 <;> first | rfl | assumption)
   have h2 : s0 d := by first | (exact ax3) | (first | apply ax3 <;> first | rfl | assumption)
   have h3 : q1 d d d := by first | (exact taelja_lemma58) | (first | apply taelja_lemma58 <;> first | rfl | assumption)
   have h4 : r1 a := by first | (exact ax6 a d h1 h2 h3) | (first | (exact ax6 _ _ h1 h2 h3) | (apply ax6 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h5 : l0 a := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h6 : r2 a := by first | (exact ax7 a h4 h5) | (first | (exact ax7 _ h4 h5) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h7 : ∀ (x : α), s1 x := fun x => by first | (exact taelja_lemma49 x) | (first | apply taelja_lemma49 <;> first | rfl | assumption)
-  have h8 : ∀ (y : α), l2 y y := fun y => by first | (exact taelja_lemma59 y) | (first | apply taelja_lemma59 <;> first | rfl | assumption)
-  have h9 : q3 a a := by first | (exact ax13 a a a h6 (h7 a) (h8 a)) | (first | (exact ax13 _ _ _ h6 (h7 _) (h8 _)) | (apply ax13 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h7 | apply h8 | exact taelja_elem)))
+  have h7 : s1 x := by first | (exact taelja_lemma49 x) | (first | apply taelja_lemma49 <;> first | rfl | assumption)
+  have h8 : l2 y y := by first | (exact taelja_lemma59 y) | (first | apply taelja_lemma59 <;> first | rfl | assumption)
+  have h9 : q3 a a := by first | (exact ax13 a x y h6 h7 h8) | (first | (exact ax13 _ _ _ h6 h7 h8) | (apply ax13 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h10 : q1 a a a := by first | (exact taelja_lemma60) | (first | apply taelja_lemma60 <;> first | rfl | assumption)
   have h11 : r3 a e a := by first | (exact taelja_lemma61) | (first | apply taelja_lemma61 <;> first | rfl | assumption)
-  have h12 : k4 e := by first | (exact ax22 a a h9 h10 h11) | (first | (exact ax22 _ _ h9 h10 h11) | (apply ax22 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h7 | apply h8 | exact taelja_elem)))
+  have h12 : k4 e := by first | (exact ax22 a a h9 h10 h11) | (first | (exact ax22 _ _ h9 h10 h11) | (apply ax22 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h13 : m3 a a a := by first | (exact taelja_lemma52 a) | (first | apply taelja_lemma52 <;> first | rfl | assumption)
-  have h14 : n4 a a := by first | (exact ax26 a e h12 h13) | (first | (exact ax26 _ _ h12 h13) | (apply ax26 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h7 | apply h8 | exact taelja_elem)))
+  have h14 : n4 a a := by first | (exact ax26 a e h12 h13) | (first | (exact ax26 _ _ h12 h13) | (apply ax26 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h14
 
 -- Lemma 63

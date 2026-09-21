@@ -1099,9 +1099,10 @@ def emit_lean(doc: Document, namespace: str = '') -> str:
     # Declare sort
     lines.append('-- Uninterpreted sort')
     lines.append('axiom α : Type')
-    # first-order domains are nonempty, and an element is needed to close a
-    # goal for a lemma variable that the premises leave undetermined
-    lines.append('axiom taelja_elem : α')
+    # first-order domains are nonempty, which a goal for a variable the
+    # premises leave undetermined needs an element for
+    lines.append('axiom taelja_nonempty : Nonempty α')
+    lines.append('noncomputable def taelja_elem : α := Classical.choice taelja_nonempty')
     lines.append('')
 
     # Declare constants one per line, since Lean 4 does not allow multi-binder axioms
@@ -1728,6 +1729,20 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
     if not steps:
         lines.append('exact taelja_hole_unproved')  # undefined on purpose so a hole fails rather than warns
         return lines
+
+    # A step may use a hypothesis at its own variable, as REL046+1 uses
+    # meet(Z,Y) = join(X,meet(Z,Y)) at Z, which the conclusion does not bind.
+    # The hypothesis holds for every value, so an element stands for it.
+    step_vars = set()
+    for st in steps:
+        if getattr(st, 'lit', None) is not None:
+            step_vars |= set(vars_in_lit(st.lit))
+    loose_vars = sorted(v for v in step_vars if v not in var_map)
+    for i, v in enumerate(loose_vars):
+        nm = lean_var_name(v, len(var_map) + i)
+        var_map[v] = nm
+        lines.append(f'-- the variable {v} of the proof, fixed as an arbitrary element')
+        lines.append(f'have {nm} : α := taelja_elem')
 
     # step_name[i] is the Lean hypothesis name for step i, current is the main
     # chain hypothesis from have or hence, and extras are the and-items collected

@@ -5,7 +5,8 @@ namespace ESyn9461
 
 -- Uninterpreted sort
 axiom α : Type
-axiom taelja_elem : α
+axiom taelja_nonempty : Nonempty α
+noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 -- Constants
 axiom esk2_0 : α
@@ -15,6 +16,8 @@ axiom p : α → Prop
 -- Goal 1
 theorem taelja_goal1 : (∀ (x : α), p x) → ((p esk2_0) → False) → False := by
   intro hyp1 hyp2
+  -- the variable X of the proof, fixed as an arbitrary element
+  have x : α := taelja_elem
   have h1 : p esk2_0 := by first | (exact hyp1 esk2_0) | (first | apply hyp1 <;> first | rfl | assumption)
   have h2 : False := by first | (exact hyp2 h1) | (first | (exact hyp2 h1) | (apply hyp2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2

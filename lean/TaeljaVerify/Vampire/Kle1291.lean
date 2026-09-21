@@ -5,7 +5,8 @@ namespace VampireKle1291
 
 -- Uninterpreted sort
 axiom α : Type
-axiom taelja_elem : α
+axiom taelja_nonempty : Nonempty α
+noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 -- Constants
 axiom sK0 : α
@@ -60,6 +61,8 @@ theorem taelja_lemma7 : (forward_diamond sK0 (domain (multiplication sK0 (antido
 -- Lemma 8
 theorem taelja_lemma8 : (∀ (x : α), ((forward_diamond sK0 (domain x)) = (addition (domain x) (forward_diamond sK0 (domain x)))) → zero = (domain x)) → zero = (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) := by
   intro hyp1
+  -- the variable X of the proof, fixed as an arbitrary element
+  have x : α := taelja_elem
   have h1 : (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0)))))) = (addition (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) (forward_diamond sK0 (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))))) := by first | (exact taelja_lemma7) | (first | apply taelja_lemma7 <;> first | rfl | assumption | (apply Eq.symm; apply taelja_lemma7 <;> first | rfl | assumption))
   have h2 : zero = (domain (multiplication sK0 (antidomain (antidomain (divergence sK0))))) := by first | (exact hyp1 (multiplication sK0 (antidomain (antidomain (divergence sK0)))) h1) | (first | (exact hyp1 _ h1) | (apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2

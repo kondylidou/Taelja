@@ -5,7 +5,8 @@ namespace ELcl4141
 
 -- Uninterpreted sort
 axiom α : Type
-axiom taelja_elem : α
+axiom taelja_nonempty : Nonempty α
+noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 axiom implies_ : α → α → α
 
@@ -15,11 +16,19 @@ axiom a_truth : α → Prop
 theorem taelja_goal1 : ∀ (x : α), (∀ (y : α) (z : α), a_truth (implies_ y (implies_ z y))) → (∀ (y : α) (z : α) (a : α), a_truth (implies_ (implies_ y (implies_ z a)) (implies_ (implies_ y z) (implies_ y a)))) → (∀ (y : α) (z : α), (a_truth (implies_ y z)) → (a_truth y) → a_truth z) → a_truth (implies_ x x) := by
   intro x
   intro hyp1 hyp2 hyp3
-  have h1 : ∀ (b : α), a_truth (implies_ (implies_ x (implies_ (implies_ b x) x)) (implies_ (implies_ x (implies_ b x)) (implies_ x x))) := fun b => by first | (exact hyp2 x (implies_ b x) x) | (first | apply hyp2 <;> first | rfl | assumption)
-  have h2 : ∀ (b : α), a_truth (implies_ x (implies_ (implies_ b x) x)) := fun b => by first | (exact hyp1 x (implies_ b x)) | (first | apply hyp1 <;> first | rfl | assumption)
-  have h3 : ∀ (b : α), a_truth (implies_ (implies_ x (implies_ b x)) (implies_ x x)) := fun b => by first | (exact hyp3 (implies_ x (implies_ (implies_ b x) x)) (implies_ (implies_ x (implies_ b x)) (implies_ x x)) (h1 b) (h2 b)) | (have h1_i := h1 b; have h2_i := h2 b; first | (exact hyp3 _ _ (h1 _) (h2 _)) | (apply hyp3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h1 | apply h2 | exact taelja_elem)))
-  have h4 : ∀ (b : α), a_truth (implies_ x (implies_ b x)) := fun b => by first | (exact hyp1 x b) | (first | apply hyp1 <;> first | rfl | assumption)
-  have h5 : a_truth (implies_ x x) := by first | (exact hyp3 (implies_ x (implies_ x x)) (implies_ x x) (h3 x) (h4 x)) | (first | (exact hyp3 _ _ (h3 _) (h4 _)) | (apply hyp3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | apply h1 | apply h2 | apply h3 | apply h4 | exact taelja_elem)))
+  -- the variable A of the proof, fixed as an arbitrary element
+  have a : α := taelja_elem
+  -- the variable B of the proof, fixed as an arbitrary element
+  have b : α := taelja_elem
+  -- the variable Y of the proof, fixed as an arbitrary element
+  have y : α := taelja_elem
+  -- the variable Z of the proof, fixed as an arbitrary element
+  have z : α := taelja_elem
+  have h1 : a_truth (implies_ (implies_ x (implies_ (implies_ b x) x)) (implies_ (implies_ x (implies_ b x)) (implies_ x x))) := by first | (exact hyp2 x (implies_ b x) x) | (first | apply hyp2 <;> first | rfl | assumption)
+  have h2 : a_truth (implies_ x (implies_ (implies_ b x) x)) := by first | (exact hyp1 x (implies_ b x)) | (first | apply hyp1 <;> first | rfl | assumption)
+  have h3 : a_truth (implies_ (implies_ x (implies_ b x)) (implies_ x x)) := by first | (exact hyp3 (implies_ x (implies_ (implies_ b x) x)) (implies_ (implies_ x (implies_ b x)) (implies_ x x)) h1 h2) | (first | (exact hyp3 _ _ h1 h2) | (apply hyp3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : a_truth (implies_ x (implies_ b x)) := by first | (exact hyp1 x b) | (first | apply hyp1 <;> first | rfl | assumption)
+  have h5 : a_truth (implies_ x x) := by first | (exact hyp3 (implies_ x (implies_ b x)) (implies_ x x) h3 h4) | (first | (exact hyp3 _ _ h3 h4) | (apply hyp3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h5
 
 end ELcl4141
