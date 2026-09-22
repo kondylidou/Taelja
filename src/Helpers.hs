@@ -228,12 +228,6 @@ litSubtermCtxs lit = case lit of
     argCtxs ts = [ (u, \x -> take i ts ++ [c x] ++ drop (i + 1) ts)
                  | (i, t) <- zip [0 ..] ts, (u, c) <- termCtxs t ]
 
--- Every way of rewriting a term once with an equation, at any subterm.
-rewriteResults :: Term -> (Term, Term) -> Dir -> [Term]
-rewriteResults t (l, r) dir =
-  [ ctx (applySubstTerm s rhs) | (u, ctx) <- termCtxs t, Just s <- [matchTerms lhs u] ]
-  where (lhs, rhs) = if dir == LR then (l, r) else (r, l)
-
 -- An equation whose right side has a variable its left side lacks, such as
 -- zero = divide(zero,X), brings that variable into the line it rewrites, and
 -- the next step then uses it at one value.  Read on its own the line would

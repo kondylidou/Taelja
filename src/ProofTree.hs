@@ -721,6 +721,8 @@ dropPositiveExists pos f = case f of
         (r', wr) = dropPositiveExists pos r
     in (T.Connected l' T.Implication r', wl ++ wr)
   T.Negated g -> let (g', w) = dropPositiveExists (not pos) g in (T.Negated g', w)
+  -- under an equivalence a position is positive and negative at once
+  T.Connected _ T.Equivalence _ -> (f, [])
   T.Connected l c r ->
     let (l', wl) = dropPositiveExists pos l
         (r', wr) = dropPositiveExists pos r
