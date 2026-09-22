@@ -23,5 +23,5 @@ fof(s14, plain, sK0 = plus(sK1,neg(sK1)), inference(rewrite, [status(thm), assum
 fof(s15, plain, sK0 = plus(neg(neg(sK1)),neg(sK1)), inference(rewrite, [status(thm), assumptions([f12])], [lemma_5, s14])).
 fof(s16, plain, sK0 = ze, inference(rewrite, [status(thm), assumptions([f12])], [f2, s15])).
 fof(discharged, plain, (sK1 = plus(sK0,sK1) => sK0 = ze), inference(implies, [status(thm), discharge(implies, [f12])], [s16, f12])).
-fof(f4, theorem, ! [X0, X1]: (plus(X0, X1) = X1 => X0 = ze), inference(generalization, [status(thm)], [discharged])).
+fof(f4, theorem, ! [X0, X1]: (plus(X0, X1) = X1 => X0 = ze), inference(generalization, [status(thm)], [discharged, f7])).
 % SZS output end Proof

@@ -190,9 +190,9 @@ def tokenize(s: str) -> list:
         elif s[i:i+2] == '!=':
             tokens.append(('NEQ', '!='))
             i += 2
-        elif s[i].isalnum() or s[i] == '_':
+        elif s[i].isalnum() or s[i] in '_$':
             j = i
-            while j < len(s) and (s[j].isalnum() or s[j] == '_'):
+            while j < len(s) and (s[j].isalnum() or s[j] in '_$'):
                 j += 1
             tokens.append(('IDENT', s[i:j]))
             i = j
@@ -692,8 +692,8 @@ def lean_name(name: str) -> str:
 _func_predicates: set = frozenset()
 
 def is_falsum(f) -> bool:
-    """The reserved TPTP atom $false (the tokenizer may drop the '$')."""
-    return isinstance(f, PredLit) and not f.args and f.head.lstrip('$') == 'false'
+    """The reserved TPTP atom $false, and not a problem's own predicate false."""
+    return isinstance(f, PredLit) and not f.args and f.head == '$false'
 
 
 def lean_lit(f, var_map: dict) -> str:

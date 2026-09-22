@@ -945,8 +945,7 @@ findElecIO li thn pos units = case li of
                 addUnit ki
                 return (Just (ki, [], thn, []))
   _ -> do
-    let isHHu u    = case ueProof u of { Just (HaveHence _) -> True; _ -> False }
-        hhElecs    = [ u | u <- units, isNothing (ueName u), isHHu u ]
+    let hhElecs    = [ u | u <- units, isNothing (ueName u), hasHenceProof u ]
         namedElecs = [ u | u <- units, isJust (ueName u) ]
         srcElecs   = hhElecs ++ namedElecs
         eqEntries  = filter (isEqLit . ueUnit) (tweableUnits units)
@@ -1025,8 +1024,12 @@ findElecIO li thn pos units = case li of
                 let axiomNms = nub [ nm | (ue, _, _) <- chain
                                         , not (isInternalUnit ue)
                                         , Just nm <- [ueName ue] ]
+                -- A Horn axiom matched by its head alone says nothing about
+                -- its premises, and the chain discharged them through units
+                -- it does not name, so citing it would print "hence L by
+                -- axiom N" with no premise stated.  Only a unit rule is a step.
                 case axiomNms of
-                  [nm] -> do
+                  [nm] | not (any (\ha -> haDispName ha == Just nm && not (null (haBodies ha))) hornAxioms) -> do
                     let blk = HaveHence [Hence li (ByAxiom nm)]
                         ki  = UnitEntry Nothing li (Just blk) (Just pos)
                     addUnit ki
@@ -1041,11 +1044,10 @@ recoverElecFromTweeChain
   -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
 recoverElecFromTweeChain li thn chain = do
   let chainUes  = map (\(ue, _, _) -> ue) chain
-      hhElecs   = filter isHH chainUes
+      hhElecs   = filter hasHenceProof chainUes
       eqEntries = filter isEq chainUes
   matchViaRw li thn hhElecs eqEntries
   where
-    isHH ue = case ueProof ue of { Just (HaveHence _) -> True; _ -> False }
     isEq ue = case ueUnit ue of { Eq _ _ -> True; _ -> False }
 
 -- For each candidate electron, try (a) direct match and (b) single-step rewriting
@@ -1404,11 +1406,18 @@ processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
                                 let pairs = zip goalLits matched
                                 if null pairs then return False
                                 else do
-                                  forM_ pairs $ \(gl, (ki, σi, rwi)) -> do
+                                  blks <- forM pairs $ \(gl, (ki, σi, rwi)) -> do
                                     let gl' = applySubst σ_sib (applySubst thn gl)
                                     blk <- emitBlockForGoal gl' ki σi rwi
-                                    emitGoalProof gl' blk
-                                  return True
+                                    return (gl', blk)
+                                  -- the one body atom answers one goal, which
+                                  -- need not be the first, so a block that
+                                  -- concludes another atom is not emitted
+                                  if all (uncurry blockConcludes) blks
+                                    then do
+                                      forM_ blks (uncurry emitGoalProof)
+                                      return True
+                                    else return False
                 _ -> return False
               Just hl ->
                 case listToMaybe [σ | gl <- goalLits, Just σ <- [matchLit hl gl]] of
@@ -1635,21 +1644,18 @@ openGoalsOf :: [Literal] -> AlgM [Literal]
 openGoalsOf goalLits = do
   emitted <- gets (map fst . stGoals)
   let proves e0 g = let e = suffixVarsLit "_e" e0
-                    in isJust (unifyLits g e []) || isJust (unifyLits (flipEqLit g) e [])
-      flipEqLit (Eq a b) = Eq b a
-      flipEqLit l        = l
+                    in isJust (unifyLits g e []) || isJust (unifyLits (flipLit g) e [])
   return (nub [ g | g <- goalLits, not (any (`proves` g) emitted) ])
 
 processNuclei
   :: Bool  -- debug
-  -> Bool  -- warn if nuclei remain unprocessed after all retries
   -> ThetaCtx     -- per-nucleus θ context
   -> [LeafEntry]
   -> Map.Map String String
   -> [Literal]
   -> Map.Map String [(String, Dir)]
   -> AlgM ()
-processNuclei debug warnOnFail thetaCtx nuclei posToName goalLits simpl = do
+processNuclei debug thetaCtx nuclei posToName goalLits simpl = do
   -- θ is one substitution over the whole tree, shown once with each binding
   -- tagged by the position its variable belongs to.
   -- inferences the replay could not account for exactly.  A failing nucleus
@@ -1675,12 +1681,8 @@ processNuclei debug warnOnFail thetaCtx nuclei posToName goalLits simpl = do
         -- This handles Vampire FOF proofs where axiom leaves appear at deeper
         -- positions than refutation-chain inner nodes (string-sort ordering
         -- puts inner nodes first, but axioms may depend on each other).
-        if newCount > prevCount && not (null open2) && not (null failed)
-          then go failed
-          else when (warnOnFail && not (null failed) && not (null open2)) $
-            liftIO $ hPutStrLn stderr $
-              "[warn] processNuclei: " ++ show (length failed)
-              ++ " nucleus/nuclei could not be processed"
+        when (newCount > prevCount && not (null open2) && not (null failed)) $
+          go failed
 
     processPass [] = return []
     processPass (entry : rest) = do
@@ -1811,8 +1813,7 @@ proveGoal simpl mChain goal = do
       mRw <- if isJust (findUnitForGoal goal units) || not (null (litFree goal))
                then return Nothing
                else do
-                 let isHH u = case ueProof u of { Just (HaveHence _) -> True; _ -> False }
-                     srcElecs = [ u | u <- units, isNothing (ueName u), isHH u ] ++ [ u | u <- units, isJust (ueName u) ]
+                 let srcElecs = [ u | u <- units, isNothing (ueName u), hasHenceProof u ] ++ [ u | u <- units, isJust (ueName u) ]
                  matchViaRw goal [] srcElecs (filter (isEqLit . ueUnit) (tweableUnits units))
       case findUnitForGoal goal units of
         Just (ue, ρ0, instGoal) -> do
@@ -1937,16 +1938,17 @@ proveGoal simpl mChain goal = do
             startTerm = atomTerm lit
         mRes <- if not (null (litFree lit)) then return Nothing   -- instance proofs cannot justify a general electron
                 else liftIO $ callTweeRelLemma InternalBudget (tweableUnits units') filteredHornAxioms lit
+        -- A chain through a Horn rule carries the encoding's own steps, and
+        -- with those left out the remaining steps do not follow one another
+        -- and a rule is cited by its head alone, so only a chain of named
+        -- units is a proof.
         case mRes of
-          Just (_, chain) | not (null chain) -> do
-            let steps = [ (RwStep nm (unitEquation (ueUnit u)) dir, cur)
-                        | (u, dir, cur) <- chain
-                        , not (isInternalUnit u)
-                        , Just nm <- [ueName u] ]
-            case steps of
-              [] -> return Nothing
-              _  -> do
-                let blk = EqChain startTerm steps
+          Just (_, chain)
+            | not (null chain)
+            , all (\(u, _, _) -> not (isInternalUnit u) && isJust (ueName u)) chain -> do
+                let steps = [ (RwStep nm (unitEquation (ueUnit u)) dir, cur)
+                            | (u, dir, cur) <- chain, Just nm <- [ueName u] ]
+                    blk   = EqChain startTerm steps
                 nm <- promoteToLemma lit blk
                 return (Just (UnitEntry (Just nm) lit (Just blk) Nothing))
           _ -> return Nothing
@@ -1954,6 +1956,10 @@ proveGoal simpl mChain goal = do
 
 -- use the general source formula for OrigAxiom, falling back to the derived
 -- literal when resolveSourceName traced through rewriting to an unrelated source
+-- A unit whose stored proof is a have/hence block, which a chain may inline.
+hasHenceProof :: UnitEntry -> Bool
+hasHenceProof u = case ueProof u of { Just (HaveHence _) -> True; _ -> False }
+
 -- The key an axiom's display name is remembered under, its source unit and
 -- the clause it states, so one unit clausifying to several axioms keeps them
 -- apart.
@@ -2453,7 +2459,7 @@ runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
   where
     action thetaCtx' allNuclei posToName goalLits simpl pG1Chain = do
       -- the nucleus loop of Algorithm 1
-      processNuclei debug False thetaCtx' allNuclei posToName goalLits simpl
+      processNuclei debug thetaCtx' allNuclei posToName goalLits simpl
       unproven <- openGoalsOf goalLits
       unless (null unproven) $ do
         -- The goal literals share their existential variables, so the instance one

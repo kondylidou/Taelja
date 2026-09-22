@@ -126,9 +126,10 @@ def main():
 
     print(f"Generated {len(generated)} files. Build them with: lake build TaeljaVerifyEval")
     if errors:
-        print(f"{len(errors)} errors:")
+        print(f"{len(errors)} errors, so the census covers fewer proofs than translated:")
         for e in errors[:20]:
             print(" ", e)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

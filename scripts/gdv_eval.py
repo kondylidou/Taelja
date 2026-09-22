@@ -21,9 +21,11 @@ GDV = os.environ.get('GDV', str(Path(os.environ.get('GDV_DIR', '')) / 'GDV'))
 def status_of(taelja, row, tries=3):
     d = EVAL / row['category'] / row['problem'] / row['prover']
     problem = TPTP / 'Problems' / row['problem'][:3] / (row['problem'] + '.p')
+    out = subprocess.run([taelja, '--tptp', str(d / 'proof.tstp')],
+                         capture_output=True, text=True, timeout=300)
+    if out.returncode != 0 or not out.stdout.strip():
+        return 'NoDerivation'
     with tempfile.NamedTemporaryFile('w', suffix='.p', delete=False) as tmp:
-        out = subprocess.run([taelja, '--tptp', str(d / 'proof.tstp')],
-                             capture_output=True, text=True, timeout=300)
         tmp.write(out.stdout)
         path = tmp.name
     try:

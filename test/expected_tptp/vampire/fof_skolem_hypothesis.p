@@ -8,5 +8,5 @@ fof(s1, plain, r(sK0,sK1), inference(instantiate, [status(thm), assumptions([f13
 fof(s2, plain, s(sK0), inference(mp, [status(thm), assumptions([f13])], [f1, s1])).
 fof(s3, plain, t(sK0), inference(mp, [status(thm), assumptions([f13])], [f2, s2])).
 fof(discharged, plain, (r(sK0,sK1) => t(sK0)), inference(implies, [status(thm), discharge(implies, [f13])], [s3, f13])).
-fof(f3, theorem, ! [X0]: (? [X1]: r(X0, X1) => t(X0)), inference(generalization, [status(thm)], [discharged])).
+fof(f3, theorem, ! [X0]: (? [X1]: r(X0, X1) => t(X0)), inference(generalization, [status(thm)], [discharged, f8, f9])).
 % SZS output end Proof

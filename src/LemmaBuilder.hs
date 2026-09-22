@@ -27,9 +27,9 @@ import System.IO (hPutStrLn, stderr)
 
 import Types
 import Helpers
-  ( applySubst, applyConstSubstBlock, applyConstSubstLit, blockRefNames
-  , blockConcludes, extractSzsBlock, isEmptyBlock, isEqLit, litVars, renameRefsBlock
-  , unitEquation
+  ( applySubst, applyConstSubstBlock, applyConstSubstLit, blockRefNames, blockVars
+  , blockConcludes, extractSzsBlock, isEmptyBlock, isEqLit, litVars, renameBlock, renameLit
+  , renameRefsBlock, unitEquation
   )
 import Debug (dbgScoped, subrunDepth)
 import ProofTree (classifyRole, conjectureHypotheses, headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
@@ -99,6 +99,20 @@ skolemizeAll lit bodyLits =
      , map (applySubst skSubst) bodyLits
      , [(sk, Var v) | (v, sk) <- skMap] )
 
+-- The candidate's variables come back from their Skolem constants under
+-- their own names, so a variable of the sub-proof that happens to share one
+-- of those names is renamed apart first, or the constant would land on it.
+deSkolemizeBlock :: [(String, Term)] -> ProofBlock -> ProofBlock
+deSkolemizeBlock undoMap blk =
+  applyConstSubstBlock undoMap (renameBlock (apartFrom undoMap (blockVars blk)) blk)
+
+deSkolemizeLit :: [(String, Term)] -> Literal -> Literal
+deSkolemizeLit undoMap l =
+  applyConstSubstLit undoMap (renameLit (apartFrom undoMap (litVars l)) l)
+
+apartFrom :: [(String, Term)] -> [String] -> [(String, String)]
+apartFrom undoMap vs = [ (v, v ++ "_l") | v <- nub vs, v `elem` [ w | (_, Var w) <- undoMap ] ]
+
 -- Replace a candidate unit's inference source with a synthetic file source so
 -- that buildProofInfo treats it as an OrigAxiom leaf (halts expansion there).
 makeFileSourced :: T.Unit -> T.Unit
@@ -158,8 +172,7 @@ buildCandidateLemmaSubDagOnly translateFn unitMap tstp2name debug (cname, cdecl)
           (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
       buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
 
--- Re-prove a derived unit mid-translation, first by its own sub-DAG and then
--- by the prover.
+-- Re-proving a derived unit mid-translation takes the same route.
 buildCandidateLemmaReprove
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
   -> Map.Map String T.Unit
@@ -167,17 +180,7 @@ buildCandidateLemmaReprove
   -> Bool
   -> (String, T.Declaration)
   -> IO (Maybe BuiltLemma)
-buildCandidateLemmaReprove translateFn unitMap tstp2name debug (cname, cdecl) =
-  case headLitOf cdecl of
-    Nothing   -> return Nothing
-    Just tlit -> do
-      let lit      = convertLit tlit
-          bodyLits = map convertLit (bodyLitsOf cdecl)
-          (lit_sk, bodyLits_sk, undoMap) = skolemizeAll lit bodyLits
-      mSub <- buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
-      case mSub of
-        Just r  -> return (Just r)
-        Nothing -> buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
+buildCandidateLemmaReprove = buildCandidateLemma
 
 -- The unit stating the problem's conjecture, whose role the format names.
 isConjectureUnit :: T.Unit -> Bool
@@ -291,8 +294,8 @@ liftSubProof nameOvr cname lit undoMap sp = do
       newName n = "lemma " ++ cname ++ "/" ++ n
       renaming  = Map.fromList [ (n, newName n) | (n, _, _) <- subLemmas ]
       ren nm    = Map.findWithDefault nm nm renaming
-      lift blk  = applyConstSubstBlock undoMap (renameRefsBlock ren blk)
-      lifted    = [ (newName n, applyConstSubstLit undoMap l, lift b) | (n, l, b) <- subLemmas ]
+      lift blk  = deSkolemizeBlock undoMap (renameRefsBlock ren blk)
+      lifted    = [ (newName n, deSkolemizeLit undoMap l, lift b) | (n, l, b) <- subLemmas ]
       blk'      = lift goalBlk
       -- Names the sub-run took from the outer proof.  Anything else in its
       -- axiom list it numbered itself, unknown to the outer proof.
@@ -403,7 +406,12 @@ buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
                                     | (ue, dir, cur) <- chain
                                     , Just nm <- [ueName ue] ]
                             blk   = EqChain start steps
-                        in return (Just (lit, applyConstSubstBlock undoMap blk, [], []))
+                            -- Twee may run the chain from r to l, and then
+                            -- the lemma states the equation that way round
+                            stmt  = case lit of
+                                      Eq a b | start /= l -> Eq b a
+                                      _                   -> lit
+                        in return (Just (stmt, deSkolemizeBlock undoMap blk, [], []))
                   _ -> return Nothing
               _ -> return Nothing
           else return Nothing
@@ -490,12 +498,7 @@ premLinesFor bodyLits_sk =
 -- cited as "assumption", the negated conjecture is suppressed, and axioms keep
 -- their outer names.
 lemmaNameOverrides :: [Literal] -> Map.Map String String -> Map.Map String String
-lemmaNameOverrides bodyLits_sk tstp2name = Map.unions
-  [ syntheticOverrides bodyLits_sk
-  , tstp2name
-    -- ancestor axioms reach the E subproblem under sanitized ids (quoted
-    -- TPTP names lose their spaces), so the overrides answer to those too
-  , Map.mapKeys sanitizeId tstp2name ]
+lemmaNameOverrides bodyLits_sk tstp2name = Map.union (syntheticOverrides bodyLits_sk) tstp2name
 
 -- Overrides for the synthetic units alone (premises cited as "assumption",
 -- negated conjecture suppressed).

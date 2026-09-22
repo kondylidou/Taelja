@@ -1,7 +1,6 @@
 module TptpConvert
   ( bodyLitsOf
   , bodyLitsOfFOF
-  , headLitsOfFOF
   , convertTerm
   , convertLit
   , convertDeclToClause
@@ -13,7 +12,6 @@ module TptpConvert
   , collectDisjuncts
   , collectDisjunct
   , eraseSorts
-  , declConsts
   , declSymbols
   ) where
 
@@ -46,28 +44,6 @@ both ls = (concatMap funcs ls, [ Text.unpack p | T.Predicate (T.Defined (T.Atom 
     termF (T.Function _ ts)                      = concatMap termF ts
     termF _                                      = []
 
--- The constant symbols of a declaration, in any formula form.
-declConsts :: T.Declaration -> [String]
-declConsts (T.Formula _ (T.CNF (T.Clause lits))) = concat [ litC l | (_, l) <- toList lits ]
-declConsts (T.Formula _ (T.FOF f))               = formulaConsts f
-declConsts (T.Formula _ (T.TFF0 f))              = formulaConsts f
-declConsts _                                     = []
-
-formulaConsts :: T.FirstOrder s -> [String]
-formulaConsts (T.Atomic l)          = litC l
-formulaConsts (T.Negated f)         = formulaConsts f
-formulaConsts (T.Connected l _ r)   = formulaConsts l ++ formulaConsts r
-formulaConsts (T.Quantified _ _ f)  = formulaConsts f
-
-litC :: T.Literal -> [String]
-litC (T.Predicate _ ts)  = concatMap termC ts
-litC (T.Equality l _ r)  = termC l ++ termC r
-
-termC :: T.Term -> [String]
-termC (T.Function (T.Defined (T.Atom f)) []) = [Text.unpack f]
-termC (T.Function _ ts)                      = concatMap termC ts
-termC _                                      = []
-
 -- A monomorphic typed proof read as an untyped one.  The sorts only restrict
 -- which terms a variable ranges over, and every step of the proof already
 -- respects them, so dropping the quantifier sorts and the type declarations
@@ -98,9 +74,6 @@ bodyLitsOf _ = []
 -- literal would turn an axiom into a false unit.
 bodyLitsOfFOF :: T.UnsortedFirstOrder -> [T.Literal]
 bodyLitsOfFOF f = [ l | Just pairs <- [collectDisjuncts f], (T.Negative, l) <- pairs ]
-
-headLitsOfFOF :: T.UnsortedFirstOrder -> [T.Literal]
-headLitsOfFOF f = [ l | Just pairs <- [collectDisjuncts f], (T.Positive, l) <- pairs ]
 
 convertTerm :: T.Term -> Term
 convertTerm (T.Variable (T.Var v))                   = Var (Text.unpack v)

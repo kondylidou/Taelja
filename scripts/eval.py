@@ -193,7 +193,7 @@ def _read_prove_status(out, prover_name):
 def _has_empty_proof(txt):
     """True if any goal's proof section is empty."""
     import re
-    return bool(re.search(r'Proof:\s*(?:Goal\b|\Z)', txt, re.DOTALL))
+    return bool(re.search(r'Proof:\s*(?:Goal\b|Lemma\b|\Z)', txt, re.DOTALL))
 
 
 def _only_warnings(err):

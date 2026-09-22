@@ -59,10 +59,26 @@ parentNames ps = [ unitName pn | T.Parent (T.UnitSource pn) _ <- ps ]
 -- Unit propagation over the cited clauses, as the chain of resolutions that
 -- derives $false.  Only a resolution with a unit is taken, which is what
 -- propagation does and what keeps the clauses shrinking, and the shortest
--- resolvent is taken first so a fact is used as soon as it is there.
+-- resolvent is taken first so a fact is used as soon as it is there.  The
+-- refutation E found is propositional, over the clauses as they stand, so a
+-- resolvent bringing in a term none of them has is not a step of it, and
+-- with the terms fixed the clauses that can arise are finitely many, which
+-- is what makes the search stop.
 propRefute :: String -> [(String, Clause)] -> Maybe [Step]
 propRefute base prem = go prem [] (Set.fromList (map (clauseKey . snd) prem)) (1 :: Int)
   where
+    known = Set.fromList [ t | (_, c) <- prem, t <- clauseTerms c, notVar t ]
+    inKnown c = all (\t -> Set.member t known) [ t | t <- clauseTerms c, notVar t ]
+    notVar (Var _) = False
+    notVar _       = True
+    clauseTerms (Clause bs mh) = concatMap litSubterms (bs ++ maybe [] (: []) mh)
+    litSubterms l = concatMap subterms (litTopTerms l)
+    litTopTerms l = case l of
+      Rel _ ts  -> ts
+      NRel _ ts -> ts
+      Eq a b    -> [a, b]
+      NEq a b   -> [a, b]
+    subterms t = t : case t of { App _ ts -> concatMap subterms ts; _ -> [] }
     go avail steps seen i = case nextStep avail seen of
       Nothing -> Nothing
       Just (l, r, c)
@@ -78,6 +94,7 @@ propRefute base prem = go prem [] (Set.fromList (map (clauseKey . snd) prem)) (1
         | (ln, a) <- avail, (rn, b) <- avail, ln /= rn
         , isUnitClause a || isUnitClause b
         , (_, c) <- resolvents' a b
+        , inKnown c
         , Set.notMember (clauseKey c) seen ])
 
 isUnitClause :: Clause -> Bool

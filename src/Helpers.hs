@@ -4,7 +4,6 @@ import Control.Applicative ((<|>))
 import Data.Char (isAlphaNum)
 import Data.List (inits, intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, permutations, tails)
 import Data.Maybe (fromMaybe, isJust, listToMaybe)
-import Control.Monad (foldM)
 import Types
 
 termVars :: Term -> [String]
@@ -19,9 +18,6 @@ termConsts :: Term -> [String]
 termConsts (Const c)  = [c]
 termConsts (Var _)    = []
 termConsts (App _ ts) = concatMap termConsts ts
-
-litConsts :: Literal -> [String]
-litConsts = foldLiteralTerms termConsts
 
 -- Theorem 1's fresh constants.  θ grounds every variable the proof leaves
 -- unbound to one of these, so a body atom is ground when its nucleus is
@@ -337,54 +333,6 @@ suffixVarsLit suf = mapLiteralTerms go
     go (Const c)  = Const c
     go (App f ts) = App f (map go ts)
 
--- Bidirectional matching, where body variables bind σ0 and electron variables bind ρi.
-matchBothLit :: Literal -> Literal -> Subst -> Subst -> Maybe (Subst, Subst)
-matchBothLit (Rel n1 ts1) (Rel n2 ts2) σ0 ρi
-  | n1 == n2, length ts1 == length ts2 =
-      foldl step (Just (σ0, ρi)) (zip ts1 ts2)
-  where step ms (t, s) = ms >>= uncurry (matchBothTerm t s)
-matchBothLit (Eq l1 r1) (Eq l2 r2) σ0 ρi =
-  matchBothTerm l1 l2 σ0 ρi >>= uncurry (matchBothTerm r1 r2)
-matchBothLit _ _ _ _ = Nothing
-
-matchBothTerm :: Term -> Term -> Subst -> Subst -> Maybe (Subst, Subst)
-matchBothTerm (Var x) (Var y) σ0 ρi | x == y = Just (σ0, ρi)
-matchBothTerm (Var x) k σ0 ρi =
-  let k' = applySubstTerm ρi k
-  in case lookup x σ0 of
-    Nothing -> Just ((x, k') : σ0, ρi)
-    -- x is already bound to t, so match t against k'.  An electron variable
-    -- with suffix _e is constrained on the electron side ρi rather than σ0,
-    -- so a repeated body variable as in m0(X,X,Y) grounds it at both places.
-    Just t  -> if t == k' then Just (σ0, ρi)
-               else case t of
-                 Var y | "_e" `isSuffixOf` y ->
-                   case lookup y ρi of
-                     Nothing -> Just (σ0, (y, k') : ρi)
-                     Just t' -> if t' == k' then Just (σ0, ρi) else Nothing
-                 _ -> matchBothTerm t k' σ0 ρi
-matchBothTerm l (Var y) σ0 ρi =
-  let l' = applySubstTerm σ0 l
-  in case lookup y ρi of
-    Nothing -> Just (σ0, (y, l') : ρi)
-    -- Apply σ0 to the stored binding, which may hold σ0 variables bound later.
-    -- Two body terms met through one electron variable, as X in m0(X,X)
-    -- against m0(s,t), are unified on the body side, since that variable
-    -- forces s and t to be the same instance.
-    Just t  -> let t' = applySubstTerm σ0 t
-               in if t' == l' then Just (σ0, ρi)
-                  -- Symmetric to the σ0 case above.  It recurses through the
-                  -- same bidirectional matcher rather than a separate unifier,
-                  -- so it searches no further than the repeated-variable case.
-                  else matchBothTerm t' l' σ0 ρi
-matchBothTerm (Const c) (Const d) σ0 ρi =
-  if c == d then Just (σ0, ρi) else Nothing
-matchBothTerm (App f ts) (App g us) σ0 ρi
-  | f == g, length ts == length us =
-      foldl step (Just (σ0, ρi)) (zip ts us)
-  where step ms (t, u) = ms >>= uncurry (matchBothTerm t u)
-matchBothTerm _ _ _ _ = Nothing
-
 rewriteTerm :: Term -> (Term, Term) -> Dir -> Maybe Term
 rewriteTerm t (l, r) dir = tryRoot <|> trySubs
   where
@@ -484,10 +432,12 @@ blockConcludes lit blk = case blk of
     []      -> False
   EqChain start steps -> case reverse steps of
     ((_, t) : _) -> ok (Eq start t)
-                    || (t == Const "true" && start == atomTerm lit)
+                    || (t == Const "true" && isRelLit lit && start == atomTerm lit)
     []           -> False
   where
     ok l = isJust (matchLit l lit) || isJust (matchLit (flipLit l) lit)
+    isRelLit (Rel _ _) = True
+    isRelLit _         = False
     lineLit (Have l _)  = l
     lineLit (And l _)   = l
     lineLit (Hence l _) = l
@@ -582,23 +532,11 @@ blockVars (HaveHence ls)    = nub (concatMap lineVars ls)
 blockVars (EqChain s steps) = nub (termVars s ++ concatMap stepVars steps)
   where stepVars (RwStep _ (l, r) _, cur) = termVars l ++ termVars r ++ termVars cur
 
-blockConsts :: ProofBlock -> [String]
-blockConsts (HaveHence ls)    = nub (concatMap lineConsts ls)
-  where
-    lineConsts (Have  lit _) = litConsts lit
-    lineConsts (And   lit _) = litConsts lit
-    lineConsts (Hence lit _) = litConsts lit
-blockConsts (EqChain s steps) = nub (termConsts s ++ concatMap stepConsts steps)
-  where stepConsts (RwStep _ (l, r) _, cur) = termConsts l ++ termConsts r ++ termConsts cur
-
 -- Node count, where smaller means a simpler rewrite candidate.
 termSize :: Term -> Int
 termSize (Var _)    = 1
 termSize (Const _)  = 1
 termSize (App _ ts) = 1 + sum (map termSize ts)
-
-litSize :: Literal -> Int
-litSize = sum . foldLiteralTerms (\t -> [termSize t])
 
 -- Names (axioms, lemmas, "assumption", ...) cited anywhere in a block.
 blockRefNames :: ProofBlock -> [String]
@@ -775,16 +713,3 @@ rwChain eqOf start chain = go start [] (reverse chain)
       (l, r) <- eqOf nm
       cur'   <- rewriteLit cur (l, r) dir
       go cur' ((RwStep nm (l, r) dir, cur') : acc) rest
-
--- Undo a demodulation chain on a literal shown after rewriting, applying the
--- steps backwards and outermost first.  The equation's variables are renamed
--- apart, or undoing g(X) = c on a literal with its own X would identify them.
-unrewriteLit :: (String -> Maybe (Term, Term)) -> Literal -> [(String, Dir)] -> Maybe Literal
-unrewriteLit eqOf = foldM step
-  where
-    step cur (nm, dir) = do
-      (l0, r0) <- eqOf nm
-      let (l, r) = case suffixVarsLit "_u" (Eq l0 r0) of
-                     Eq l' r' -> (l', r')
-                     _        -> (l0, r0)
-      rewriteLit cur (l, r) (flipDir dir)

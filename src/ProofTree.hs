@@ -148,7 +148,10 @@ buildProofInfo allUnits = do
       , let goalDecl = fromMaybe (leDecl e) (lookupDecl unitMap (leName e))
       , Just lits <- [extractGoalLits goalDecl <|> extractGoalLits (leDecl e)]
       ] ++
-      -- in UEQ problems the negated conjecture is a disequality axiom with no negated_conjecture role
+      -- in UEQ problems the negated conjecture is a disequality axiom with no
+      -- negated_conjecture role, and a negated conclusion's conjuncts, which
+      -- the conjecture grants, state the atoms whose derivation of $false is
+      -- the goal, as on SYN946+1
       [ lits
       | e <- nuclei, leRole e == OrigAxiom
       , Just lits <- [extractGoalLits (leDecl e)]
@@ -1170,19 +1173,12 @@ inlineAtomCongruences units
     swap p = [p]
 
 coreParentNames :: T.Unit -> Maybe [String]
-coreParentNames (T.Unit _ decl (Just (T.Inference (T.Atom rule) _ parents, _)))
+coreParentNames (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ parents, _)))
   | Set.member rule coreInferenceNames = Just (concatMap extractName parents)
-  | isPredicateRewriting rule decl     = Just (concatMap extractName parents)
   where
     extractName (T.Parent (T.UnitSource n) _)     = [unitNameStr n]
     extractName (T.Parent (T.Inference _ _ ps) _) = concatMap extractName ps
     extractName (T.Parent _ _)                    = []  -- unknown source is skipped
-    isPredicateRewriting r d
-      | r == Text.pack "rewriting" = case headLitOf d of
-          Just (T.Equality {}) -> False
-          Just _               -> True
-          Nothing              -> False
-      | otherwise = False
 coreParentNames _ = Nothing
 inferenceRuleName :: T.Unit -> Maybe Text.Text
 inferenceRuleName (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ _, _))) = Just rule

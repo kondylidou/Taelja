@@ -245,8 +245,12 @@ emitTptp sp0 = unlines $
     conjName  = fromMaybe "goal" (fmap (unitNameStr . unitName) conj)
     conjAtom  = conj >>= conjLiteral . unitDecl
     -- the one goal states the conjecture itself, so its step is the theorem
+    -- A goal generalized over the prover's fresh constants is not the
+    -- conjecture's own step, since its parents speak of the constants, so
+    -- it goes through the discharge and generalization below instead.
     merged = case (goals sp, conjAtom) of
       ([(g, _)], Just c) -> null assumed && variantLit g c && not (null stepLines)
+                            && null skolemVars && null conjSkolems
       _                  -> False
     goalRole | isJust conj && not merged = "plain"
              | otherwise                 = "theorem"
@@ -277,7 +281,8 @@ emitTptp sp0 = unlines $
                    (if null assumed then "conclude" else "implies")
                    (goalFinals ++ map snd assumed)
             , Step conjName "theorem" (Verbatim (unitFormula (typedUnit u))) "generalization"
-                   (fresh "discharged" : [ defName | isJust skolemDef ]) ]
+                   (fresh "discharged" : [ defName | isJust skolemDef ]
+                    ++ [ unitNameStr (unitName d) | d <- skolemDefinitions ]) ]
       Nothing -> []
     -- E names the Skolem constants of the negated conjecture without
     -- defining them, so their definition is printed here, as Vampire prints

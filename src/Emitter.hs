@@ -15,7 +15,7 @@ emit sp0 = unlines $ concat
   [ axiomLines (axioms sp)
   , [ "" | not (null (axioms sp)) ]
   , concatMap (lemmaLines hyps (lemmaDeps (lemmas sp))) (lemmas sp)
-  , intercalate [""] (zipWith (goalLines hyps negated) [1..] (goals sp))
+  , intercalate [""] (zipWith (goalLines hyps) [1..] (goals sp))
   ]
   where
     hypNames = Map.keysSet (inHypotheses (spInput sp0))
@@ -108,13 +108,14 @@ blockRenaming lit block = zip (nub (litVars lit ++ blockVars block)) prettyVarNa
 -- A lemma that rests on assumptions of the goal states them, as the goal
 -- does, and discharges them.
 lemmaLines :: [Axiom] -> Map.Map String [String] -> (String, Literal, ProofBlock) -> [String]
-lemmaLines hyps deps (name, lit, block) =
+lemmaLines hyps0 deps (name, lit, block) =
   (cap name ++ ": " ++ stated) :
   "Proof:" :
   blockLines (map (renameAxiomVars renaming) hyps) (renameBlock renaming block) ++
   [ l | not (null used), l <- ["  hence " ++ stated, "    by discharge"] ] ++
   [""]
   where
+    hyps     = hypsApart lit block hyps0
     used     = [ ax | ax <- hyps, axiomName ax `elem` Map.findWithDefault [] name deps ]
     renaming = zip (nub (litVars lit ++ concatMap axiomVars used ++ blockVars block)) prettyVarNames
     stated   = (if null used then "" else intercalate " /\\ " (map ppHyp used) ++ " => ")
@@ -126,28 +127,37 @@ lemmaLines hyps deps (name, lit, block) =
 -- its proof ends by discharging them.  When the conclusion is a negation the
 -- hypotheses it supplied are the negated conjuncts and the block derives
 -- $false.
-goalLines :: [Axiom] -> [String] -> Int -> (Literal, ProofBlock) -> [String]
-goalLines hyps0 negated n (lit, block) =
+goalLines :: [Axiom] -> Int -> (Literal, ProofBlock) -> [String]
+goalLines hyps0 n (lit, block) =
   ("Goal " ++ show n ++ ": " ++ stated) :
   "Proof:" :
   blockLines (map (renameAxiomVars renaming) hyps) (renameBlock renaming block) ++
   [ l | not (null hyps), l <- ["  hence " ++ stated, "    by discharge"] ]
   where
-    -- A hypothesis is a clause of its own, so its variables are bound within
-    -- it.  One sharing a name with a variable of the conclusion would read as
-    -- the goal's, and the goal would state more than it proves, as
-    -- f(sK0) /\ (f(X) => $false) => g(X) does on SYN408+1.
-    hyps = [ renameAxiomVars [ (v, v ++ "_h" ++ show i)
-                             | v <- axiomVars ax, v `elem` litVars lit, not (shared ax v) ] ax
-           | (i, ax) <- zip [1 :: Int ..] hyps0 ]
-    -- A hypothesis is a clause of its own, so its variables are bound within
-    -- it, except where the conjecture shares them with the conclusion, as in
-    -- r(X,sK1) => t(X).  The proof shows which it is.  A variable the proof
-    -- keeps, in a term of the hypothesis the proof states, is the theorem's,
-    -- and one the proof only uses instantiated, as SYN408+1 uses f(X) at
-    -- f(sK0), belongs to the hypothesis alone.
-    -- a variable generalizeGoals made from a Skolem term stands for the same
-    -- term in the goal and in the hypotheses, so it is shared by construction
+    hyps     = hypsApart lit block hyps0
+    stated   = ppHyps hyps ++ ppLiteral (renameLit renaming lit)
+    renaming = zip (nub (litVars lit ++ concatMap axiomVars hyps ++ blockVars block)) prettyVarNames
+    ppHyps hs | null hs   = ""
+              | otherwise = intercalate " /\\ " (map ppHyp hs) ++ " => "
+    ppHyp (AUnit _ l)    = ppLiteral (renameLit renaming l)
+    ppHyp (ANucleus _ c) = "(" ++ ppClauseWith renaming c ++ ")"
+
+-- A hypothesis is a clause of its own, so its variables are bound within it.
+-- One sharing a name with a variable of the conclusion would read as the
+-- conclusion's, and the statement would claim more than it proves, as
+-- f(sK0) /\ (f(X) => $false) => g(X) did on SYN408+1.  The conjecture may
+-- share a variable between a hypothesis and the conclusion, as in
+-- r(X,sK1) => t(X), and the proof shows which it is.  A variable the proof
+-- keeps, in a term of the hypothesis the proof states, is the statement's,
+-- and one the proof only uses instantiated belongs to the hypothesis alone.
+-- A variable generalizeGoals made from a Skolem term stands for the same term
+-- in the conclusion and in the hypotheses, so it is shared by construction.
+hypsApart :: Literal -> ProofBlock -> [Axiom] -> [Axiom]
+hypsApart lit block hyps0 =
+  [ renameAxiomVars [ (v, v ++ "_h" ++ show i)
+                    | v <- axiomVars ax, v `elem` litVars lit, not (shared ax v) ] ax
+  | (i, ax) <- zip [1 :: Int ..] hyps0 ]
+  where
     shared _  v | "Sk_" `isPrefixOf` v = True
     shared ax v = any (\t -> notVarTerm t && v `elem` termVars t && t `elem` blockTerms)
                       (concatMap litTerms (axLits ax))
@@ -165,14 +175,6 @@ goalLines hyps0 negated n (lit, block) =
     lineLit (Have x _)  = x
     lineLit (And x _)   = x
     lineLit (Hence x _) = x
-    (negHyps, anteHyps) = partition ((`elem` negated) . axiomName) hyps
-    stated | null negHyps = ppHyps anteHyps ++ ppLiteral (renameLit renaming lit)
-           | otherwise    = ppHyps anteHyps ++ "~(" ++ intercalate " /\\ " (map ppHyp negHyps) ++ ")"
-    renaming = zip (nub (litVars lit ++ concatMap axiomVars hyps ++ blockVars block)) prettyVarNames
-    ppHyps hs | null hs   = ""
-              | otherwise = intercalate " /\\ " (map ppHyp hs) ++ " => "
-    ppHyp (AUnit _ l)    = ppLiteral (renameLit renaming l)
-    ppHyp (ANucleus _ c) = "(" ++ ppClauseWith renaming c ++ ")"
 
 blockLines :: [Axiom] -> ProofBlock -> [String]
 blockLines hyps (HaveHence ls) = concatMap (renderLine hyps) ls
@@ -216,6 +218,7 @@ ppLiteral (Rel n [])  = ppSymbol n
 ppLiteral (Rel n ts)  = ppSymbol n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 ppLiteral (NRel n []) = "~" ++ ppSymbol n
 ppLiteral (NRel n ts) = "~" ++ ppSymbol n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+
 
 -- Apply a name→name mapping throughout lemma and goal proof blocks.
 applyRenaming :: Map.Map String String -> StructuredProof -> StructuredProof

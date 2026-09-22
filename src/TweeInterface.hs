@@ -3,33 +3,26 @@ module TweeInterface
   , startFallbackBudget
   , fallbackBudgetSpent
   , toTptpTerm
-  , toCnfAxiom
-  , toCnfNegGoal
   , HornAxiomEntry (..)
-  , toIfeqCnfHorn
-  , ifeqSelectorAxiom
   , sanitizeId
-  , parseTweeTerm
-  , parseTweeArgList
   , parseTweeChain
   , callTweeRelLemma
   , callTwee
   , TweeBudget (..)
-  , relevantUnits
   , runProverCapped
   , withTempInput
   , timeoutSecsFromEnv
   ) where
 
 import Control.Applicative ((<|>))
-import Data.Char (isAlphaNum, isAsciiLower, isAsciiUpper, isDigit, toUpper)
+import Data.Char (isAsciiLower, isAsciiUpper, isDigit, toUpper)
 import Data.List (intercalate, isInfixOf, isPrefixOf, nub, sortBy)
 import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
 import Control.Exception (SomeException, bracket, try)
 import Data.IORef (IORef, newIORef, readIORef, modifyIORef', writeIORef)
 import GHC.Clock (getMonotonicTime)
-import Control.Monad (when)
+import Control.Monad (forM_, when)
 import System.IO.Unsafe (unsafePerformIO)
 import System.Directory (doesFileExist, findExecutable, getTemporaryDirectory, removeFile)
 import System.Environment (lookupEnv)
@@ -135,13 +128,16 @@ runTwee budget tag input = do
     Just out -> return out
     Nothing  -> do
       mBin <- findProver "TAELJA_TWEE" "twee" "rewrite fallbacks"
-      out <- case mBin of
-        Nothing  -> return ""
+      mOut <- case mBin of
+        Nothing  -> return Nothing
         Just bin -> withTempInput tag input $ \tmpFile -> do
           let maxTime = show secs
-          fromMaybe "" <$> runProverCapped (secs + 5) bin
+          runProverCapped (secs + 5) bin
             ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile]
-      modifyIORef' tweeCache (Map.insert (input, secs) out)
+      -- an answer the fallback budget cut short is no answer, and is not
+      -- remembered, since a later translation asks with a fresh budget
+      let out = fromMaybe "" mOut
+      forM_ mOut $ \o -> modifyIORef' tweeCache (Map.insert (input, secs) o)
       -- TAELJA_TWEE_DEBUG=1 dumps every distinct call (input and output)
       dumpEnv <- lookupEnv "TAELJA_TWEE_DEBUG"
       when (dumpEnv == Just "1") $
@@ -186,7 +182,7 @@ tptpSafeName nm = bareName nm || not (any (`elem` "'\\") nm)
 -- see as the same symbol in the axioms and in the goal.
 bareName :: String -> Bool
 bareName []       = False
-bareName (c : cs) = isAsciiLower c && all (\x -> isAlphaNum x || x == '_') cs
+bareName (c : cs) = isAsciiLower c
                 && all (\ch -> isAsciiLower ch || isAsciiUpper ch || isDigit ch || ch == '_') cs
 
 tptpSafeTerm :: Term -> Bool

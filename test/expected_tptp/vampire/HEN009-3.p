@@ -11,17 +11,17 @@ fof(f10, axiom, divide(identity, b) = c, file('Problems/HEN/HEN009-3.p')).
 fof(f11, axiom, divide(identity, c) = d, file('Problems/HEN/HEN009-3.p')).
 fof(lemma_11, lemma, ! [X] : zero = divide(zero,X), inference(mp, [status(thm)], [f1, f5])).
 fof(s1, plain, ! [X] : divide(X,identity) = zero, inference(mp, [status(thm)], [f1, f7])).
-fof(lemma_12, lemma, ! [X] : divide(X,identity) = divide(zero,X), inference(rewrite, [status(thm)], [lemma_11, s1])).
+fof(lemma_12, lemma, ! [X,Y] : divide(X,identity) = divide(zero,Y), inference(rewrite, [status(thm)], [lemma_11, s1])).
 fof(s2, plain, ! [X] : less_equal(divide(divide(X,a),divide(identity,a)),divide(divide(X,identity),a)), inference(instantiate, [status(thm)], [f4])).
-fof(s3, plain, ! [X] : less_equal(divide(divide(X,a),divide(identity,a)),divide(divide(zero,X),a)), inference(rewrite, [status(thm)], [lemma_12, s2])).
+fof(s3, plain, ! [X,Z] : less_equal(divide(divide(X,a),divide(identity,a)),divide(divide(zero,Z),a)), inference(rewrite, [status(thm)], [lemma_12, s2])).
 fof(s4, plain, ! [X] : less_equal(divide(divide(X,a),divide(identity,a)),divide(zero,a)), inference(rewrite, [status(thm)], [lemma_11, s3])).
 fof(s5, plain, ! [X] : less_equal(divide(divide(X,a),divide(identity,a)),zero), inference(rewrite, [status(thm)], [lemma_11, s4])).
 fof(lemma_13, lemma, ! [X] : less_equal(divide(divide(X,a),b),zero), inference(rewrite, [status(thm)], [f9, s5])).
 fof(lemma_14, lemma, ! [X] : zero = divide(zero,X), inference(mp, [status(thm)], [f1, f5])).
 fof(s6, plain, ! [X] : divide(X,identity) = zero, inference(mp, [status(thm)], [f1, f7])).
-fof(lemma_15, lemma, ! [X] : divide(X,identity) = divide(zero,X), inference(rewrite, [status(thm)], [lemma_14, s6])).
+fof(lemma_15, lemma, ! [X,Y] : divide(X,identity) = divide(zero,Y), inference(rewrite, [status(thm)], [lemma_14, s6])).
 fof(s7, plain, ! [X] : less_equal(divide(divide(X,b),divide(identity,b)),divide(divide(X,identity),b)), inference(instantiate, [status(thm)], [f4])).
-fof(s8, plain, ! [X] : less_equal(divide(divide(X,b),divide(identity,b)),divide(divide(zero,X),b)), inference(rewrite, [status(thm)], [lemma_15, s7])).
+fof(s8, plain, ! [X,Z] : less_equal(divide(divide(X,b),divide(identity,b)),divide(divide(zero,Z),b)), inference(rewrite, [status(thm)], [lemma_15, s7])).
 fof(s9, plain, ! [X] : less_equal(divide(divide(X,b),divide(identity,b)),divide(zero,b)), inference(rewrite, [status(thm)], [lemma_14, s8])).
 fof(s10, plain, ! [X] : less_equal(divide(divide(X,b),divide(identity,b)),zero), inference(rewrite, [status(thm)], [lemma_14, s9])).
 fof(lemma_16, lemma, ! [X] : less_equal(divide(divide(X,b),c),zero), inference(rewrite, [status(thm)], [f10, s10])).

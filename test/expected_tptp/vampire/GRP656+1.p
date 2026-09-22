@@ -18,5 +18,5 @@ fof(s9, plain, ! [X] : mult(sK0(ld(X,X)),ld(X,X)) = rd(mult(sK0(ld(X,X)),ld(X,X)
 fof(s10, plain, ! [X] : mult(sK0(ld(X,X)),ld(X,X)) = sK0(ld(X,X)), inference(rewrite, [status(thm)], [f4, s9])).
 fof(s11, plain, ! [X] : mult(ld(X,X),sK0(ld(X,X))) = sK0(ld(X,X)), inference(instantiate, [status(thm)], [lemma_6])).
 fof(discharged, plain, (! [Y] : mult(sK0(ld(Y,Y)),ld(Y,Y)) = sK0(ld(Y,Y)) & ! [X] : mult(ld(X,X),sK0(ld(X,X))) = sK0(ld(X,X))), inference(conclude, [status(thm)], [s10, s11])).
-fof(f6, theorem, ? [X0]: ! [X1]: (mult(X1, X0) = X1 & mult(X0, X1) = X1), inference(generalization, [status(thm)], [discharged])).
+fof(f6, theorem, ? [X0]: ! [X1]: (mult(X1, X0) = X1 & mult(X0, X1) = X1), inference(generalization, [status(thm)], [discharged, f9])).
 % SZS output end Proof
