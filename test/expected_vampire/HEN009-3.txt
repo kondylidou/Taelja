@@ -33,7 +33,7 @@ Proof:
 = { by lemma 11 }
   less_equal(divide(divide(X,a),divide(identity,a)),divide(zero,a))
 = { by lemma 11 }
-  less_equal(divide(divide(X,a),divide(identity,a)),divide(divide(zero,Z),a))
+  less_equal(divide(divide(X,a),divide(identity,a)),divide(divide(zero,Y),a))
 = { by lemma 12 R->L }
   less_equal(divide(divide(X,a),divide(identity,a)),divide(divide(X,identity),a))
 = { by axiom 5 }
@@ -63,7 +63,7 @@ Proof:
 = { by lemma 14 }
   less_equal(divide(divide(X,b),divide(identity,b)),divide(zero,b))
 = { by lemma 14 }
-  less_equal(divide(divide(X,b),divide(identity,b)),divide(divide(zero,Z),b))
+  less_equal(divide(divide(X,b),divide(identity,b)),divide(divide(zero,Y),b))
 = { by lemma 15 R->L }
   less_equal(divide(divide(X,b),divide(identity,b)),divide(divide(X,identity),b))
 = { by axiom 5 }

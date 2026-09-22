@@ -117,7 +117,7 @@ lemmaLines hyps0 deps (name, lit, block) =
   where
     hyps     = hypsApart lit block hyps0
     used     = [ ax | ax <- hyps, axiomName ax `elem` Map.findWithDefault [] name deps ]
-    renaming = zip (nub (litVars lit ++ concatMap axiomVars used ++ blockVars block)) prettyVarNames
+    renaming = zip (nub (litVars lit ++ concatMap axiomVars used ++ blockShownVars block ++ blockVars block)) prettyVarNames
     stated   = (if null used then "" else intercalate " /\\ " (map ppHyp used) ++ " => ")
                ++ ppLiteral (renameLit renaming lit)
     ppHyp (AUnit _ l)    = ppLiteral (renameLit renaming l)
@@ -136,7 +136,7 @@ goalLines hyps0 n (lit, block) =
   where
     hyps     = hypsApart lit block hyps0
     stated   = ppHyps hyps ++ ppLiteral (renameLit renaming lit)
-    renaming = zip (nub (litVars lit ++ concatMap axiomVars hyps ++ blockVars block)) prettyVarNames
+    renaming = zip (nub (litVars lit ++ concatMap axiomVars hyps ++ blockShownVars block ++ blockVars block)) prettyVarNames
     ppHyps hs | null hs   = ""
               | otherwise = intercalate " /\\ " (map ppHyp hs) ++ " => "
     ppHyp (AUnit _ l)    = ppLiteral (renameLit renaming l)

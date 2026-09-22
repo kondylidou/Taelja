@@ -532,6 +532,13 @@ blockVars (HaveHence ls)    = nub (concatMap lineVars ls)
 blockVars (EqChain s steps) = nub (termVars s ++ concatMap stepVars steps)
   where stepVars (RwStep _ (l, r) _, cur) = termVars l ++ termVars r ++ termVars cur
 
+-- The variables a block prints, in order.  A chain step's cited equation is
+-- printed by name only, so its variables are not among them and should not
+-- take a display name before those that are.
+blockShownVars :: ProofBlock -> [String]
+blockShownVars (HaveHence ls)    = nub (concatMap lineVars ls)
+blockShownVars (EqChain s steps) = nub (termVars s ++ concatMap (termVars . snd) steps)
+
 -- Node count, where smaller means a simpler rewrite candidate.
 termSize :: Term -> Int
 termSize (Var _)    = 1

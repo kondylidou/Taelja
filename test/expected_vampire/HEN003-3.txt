@@ -16,9 +16,9 @@ Lemma 8: less_equal(divide(divide(a,a),zero),zero)
 Proof:
   less_equal(divide(divide(a,a),zero),zero)
 = { by lemma 7 }
-  less_equal(divide(divide(a,a),divide(divide(a,Z),a)),zero)
+  less_equal(divide(divide(a,a),divide(divide(a,X),a)),zero)
 = { by lemma 7 }
-  less_equal(divide(divide(a,a),divide(divide(a,Z),a)),divide(divide(a,divide(a,Z)),a))
+  less_equal(divide(divide(a,a),divide(divide(a,X),a)),divide(divide(a,divide(a,X)),a))
 = { by axiom 3 }
   true
 

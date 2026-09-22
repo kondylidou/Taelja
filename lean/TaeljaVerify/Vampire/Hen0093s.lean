@@ -58,15 +58,15 @@ theorem taelja_lemma12 : ∀ (x : α) (y : α), (divide x identity) = (divide ze
   exact h3
 
 -- Lemma 13
-theorem taelja_lemma13 : ∀ (x : α) (z : α), less_equal (divide (divide x a) b) zero := by
-  intro x z
+theorem taelja_lemma13 : ∀ (x : α) (y : α), less_equal (divide (divide x a) b) zero := by
+  intro x y
   have h_rw := ax4
   rw [← h_rw]
   have h_rw := taelja_lemma11 a
   rw [h_rw]
-  have h_rw := taelja_lemma11 z
+  have h_rw := taelja_lemma11 y
   rw [h_rw]
-  have h_rw := taelja_lemma12 x z
+  have h_rw := taelja_lemma12 x y
   rw [← h_rw]
   apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
@@ -86,15 +86,15 @@ theorem taelja_lemma15 : ∀ (x : α) (y : α), (divide x identity) = (divide ze
   exact h3
 
 -- Lemma 16
-theorem taelja_lemma16 : ∀ (x : α) (z : α), less_equal (divide (divide x b) c) zero := by
-  intro x z
+theorem taelja_lemma16 : ∀ (x : α) (y : α), less_equal (divide (divide x b) c) zero := by
+  intro x y
   have h_rw := ax8
   rw [← h_rw]
   have h_rw := taelja_lemma14 b
   rw [h_rw]
-  have h_rw := taelja_lemma14 z
+  have h_rw := taelja_lemma14 y
   rw [h_rw]
-  have h_rw := taelja_lemma15 x z
+  have h_rw := taelja_lemma15 x y
   rw [← h_rw]
   apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 

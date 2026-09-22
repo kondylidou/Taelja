@@ -24,11 +24,11 @@ Proof:
 = { by axiom 2 }
   rd(mult(X,ld(Y,Y)),ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y))))
 = { by axiom 5 R->L }
-  rd(mult(X,ld(Y,Y)),rd(mult(ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y))),B),B))
+  rd(mult(X,ld(Y,Y)),rd(mult(ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y))),Z),Z))
 = { by lemma 6 }
-  rd(mult(X,ld(Y,Y)),rd(B,B))
+  rd(mult(X,ld(Y,Y)),rd(Z,Z))
 = { by lemma 6 R->L }
-  rd(mult(X,ld(Y,Y)),rd(mult(ld(Y,Y),B),B))
+  rd(mult(X,ld(Y,Y)),rd(mult(ld(Y,Y),Z),Z))
 = { by axiom 5 }
   rd(mult(X,ld(Y,Y)),ld(Y,Y))
 = { by axiom 5 }
