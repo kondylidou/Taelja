@@ -31,7 +31,7 @@ import Data.Ord (comparing)
 import Data.TPTP.Pretty ()
 import Prettyprinter (pretty)
 import Types
-import Helpers (applySubst, applySubstTerm, clauseInstance, deepApplySubstTerm, flipLit, litSubtermCtxs,
+import Helpers (applySubst, applySubstTerm, clauseInstance, witnessPrefix, deepApplySubstTerm, flipLit, litSubtermCtxs,
                 mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
                 unifyLits, unifyTerms)
 import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertFOFToClause, convertLit, declSymbols, isReservedTLit)
@@ -612,6 +612,11 @@ readConjecture = conclusion [] . normalizeConjecture
       -- ? X (C & ~G) is ~ ! X (C => G), a negated universal clause
       T.Quantified T.Exists vs b | any isNegated (conjuncts b) ->
         conclusion hs (T.Negated (T.Quantified T.Forall vs (T.Negated b)))
+      -- A <=> A states one implication twice, so its Horn reading assumes A
+      -- and derives A, as SYN390+1's p <=> p and SYN932+1's ? [X] : c <=> c do
+      T.Connected l T.Equivalence r
+        | dropVacuous (normalizeConjecture l) == dropVacuous (normalizeConjecture r) ->
+            conclusion hs (T.Connected l T.Implication r)
       -- a conclusion written as a Horn clause, ~A | B, is the implication
       -- A => B, and an all-negative one, ~A | ~B, the negation ~(A & B)
       T.Connected _ T.Disjunction _ | Just g <- hornImplication f -> conclusion hs g
@@ -656,7 +661,28 @@ readConjecture = conclusion [] . normalizeConjecture
                                            <*> hypotheses (T.Connected r T.Implication l)
       T.Negated (T.Connected l T.Implication r) -> (++) <$> hypotheses l <*> hypotheses (T.Negated r)
       T.Quantified T.Exists _ b     -> hypotheses b
-      _ -> clause ("its hypothesis " ++ render f ++ " is not a Horn clause") f
+      _ -> hypClause ("its hypothesis " ++ render f ++ " is not a Horn clause") f
+    -- A hypothesis may promise a witness, as SYN359+1's
+    -- big_r(Y) => ? [Z] : big_q(Y,Z) does, and Skolemized it is a Horn clause.
+    -- The witness variable stands for the term the prover's Skolemization
+    -- names, and the clause is granted only at such a term.
+    -- A conjunctive conclusion states one clause per conjunct, as
+    -- SYN729+1's p(X) => ? [Y] : (l(X,g(h(Y))) & p(Y)) does.
+    hypClause why f =
+      let (f', ws) = dropPositiveExists True f
+          sigma    = [ (v, Var (witnessPrefix ++ v)) | v <- ws ]
+          parts    = splitConclusion f'
+          instC (Clause bs mh) = Clause (map (applySubst sigma) bs) (fmap (applySubst sigma) mh)
+      in case mapM convertFOFToClause parts of
+           Just cs | not (null ws) || length parts > 1 -> Right (map instC cs)
+           _ -> clause why f
+    splitConclusion g = case g of
+      T.Quantified T.Forall vs b -> map (T.Quantified T.Forall vs) (splitConclusion b)
+      T.Connected l T.Implication r
+        | cs@(_ : _ : _) <- conjunctParts r -> [ T.Connected l T.Implication c | c <- cs ]
+      _ -> [g]
+    conjunctParts (T.Connected a T.Conjunction b) = conjunctParts a ++ conjunctParts b
+    conjunctParts x = [x]
     -- a conjunct of the negated conclusion, assumed to derive $false
     assumed f = clause ("the negated formula has the conjunct " ++ render f ++ ", which is not a Horn clause") f
     clause why f = maybe (Left (refused why)) (Right . pure) (convertFOFToClause f)
@@ -678,6 +704,36 @@ readConjecture = conclusion [] . normalizeConjecture
         | otherwise -> Left (refused ("its conclusion has the conjunct " ++ render f ++ ", which is not an atom"))
     refused why = "unsupported conjecture, " ++ why
     render f = show (pretty f)
+
+-- Drop the existential quantifiers of the positive positions of a formula,
+-- naming the variables they bound.  This is Skolemization with the witness
+-- left open, so the clause is the one the prover's Skolemization states, at
+-- whichever term it named.
+dropPositiveExists :: Bool -> T.UnsortedFirstOrder -> (T.UnsortedFirstOrder, [String])
+dropPositiveExists pos f = case f of
+  T.Quantified T.Exists vs b
+    | pos -> let (b', ws) = dropPositiveExists pos b
+             in (b', [ Text.unpack v | (T.Var v, _) <- toList vs ] ++ ws)
+  T.Quantified q vs b ->
+    let (b', ws) = dropPositiveExists pos b in (T.Quantified q vs b', ws)
+  T.Connected l T.Implication r ->
+    let (l', wl) = dropPositiveExists (not pos) l
+        (r', wr) = dropPositiveExists pos r
+    in (T.Connected l' T.Implication r', wl ++ wr)
+  T.Negated g -> let (g', w) = dropPositiveExists (not pos) g in (T.Negated g', w)
+  T.Connected l c r ->
+    let (l', wl) = dropPositiveExists pos l
+        (r', wr) = dropPositiveExists pos r
+    in (T.Connected l' c r', wl ++ wr)
+  _ -> (f, [])
+
+-- A quantifier binding a variable the body does not mention states nothing,
+-- as SYN932+1's ? [X] : c does, so the body alone is the formula.
+dropVacuous :: T.UnsortedFirstOrder -> T.UnsortedFirstOrder
+dropVacuous f = case f of
+  T.Quantified _ vs b
+    | not (any ((`Set.member` freeVars b) . fst) (toList vs)) -> dropVacuous b
+  _ -> f
 
 -- A <= B is B => A, a double negation cancels, and a negation moves through
 -- an existential quantifier so that ~ ? X F is ! X ~F and ? X ~F is ~ ! X F,
@@ -1028,6 +1084,9 @@ coreInferenceNames = Set.fromList $ map Text.pack
   , "duplicate_literal_removal", "subsumption_resolution"
   , "spm", "sr", "csr", "er", "rw", "cn", "pm"
   , "proved_conjecture"
+  -- E's propositional refutation over the Horn clauses it cites, which unit
+  -- propagation replays as the chain of resolutions the algorithm searches for
+  , "cdclpropres"
   , "rewriting" ]  -- Twee's rewriting creates new equations and expands into the tree
 -- The calculus of the paper is resolution with subsumption resolution and
 -- duplicate literal elimination, superposition, demodulation and equality
@@ -1040,7 +1099,6 @@ outsideCalculus r = Set.member r outside || Text.pack "avatar_" `Text.isPrefixOf
     outside = Set.fromList $ map Text.pack
       [ "factoring", "equality_factoring", "ef"   -- factoring, for non-Horn clauses
       , "ar"                                       -- E's AC resolution
-      , "cdclpropres"                              -- E's propositional SAT refutation
       , "unit_resulting_resolution", "global_subsumption" ]
 calculusViolation :: Map.Map String T.Unit -> String -> Maybe String
 calculusViolation unitMap root = go Set.empty [root]

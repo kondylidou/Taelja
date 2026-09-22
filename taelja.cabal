@@ -15,6 +15,7 @@ library
     Emitter
     TptpEmitter
     ProofTree
+    PropRes
     TptpConvert
     TweeInterface
     LemmaBuilder

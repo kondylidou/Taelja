@@ -1,0 +1,29 @@
+Axiom 1: genlmt(c_tptpgeo_member8_mt,c_tptpgeo_spindleheadmt)
+Axiom 2: mtvisible(X) /\ genlmt(X,Y) => mtvisible(Y)
+Axiom 3: genlmt(c_tptpgeo_spindleheadmt,c_worldgeographymt)
+Axiom 4: mtvisible(c_worldgeographymt) => geolevel_4(c_georegion_l4_x75_y75)
+Axiom 5: geolevel_4(Z) => geographicalregion(Z)
+Axiom 6: geographicalregion(A) => geographicalsubregions(A,A)
+Axiom 7: geographicalsubregions(B,C) => inregion(C,B)
+
+Goal 1: mtvisible(c_tptpgeo_member8_mt) => inregion(c_georegion_l4_x75_y75,c_georegion_l4_x75_y75)
+Proof:
+  assume mtvisible(c_tptpgeo_member8_mt)
+   and genlmt(c_tptpgeo_member8_mt,c_tptpgeo_spindleheadmt)
+    by axiom 1
+  hence mtvisible(c_tptpgeo_spindleheadmt)
+    by axiom 2
+   and genlmt(c_tptpgeo_spindleheadmt,c_worldgeographymt)
+    by axiom 3
+  hence mtvisible(c_worldgeographymt)
+    by axiom 2
+  hence geolevel_4(c_georegion_l4_x75_y75)
+    by axiom 4
+  hence geographicalregion(c_georegion_l4_x75_y75)
+    by axiom 5
+  hence geographicalsubregions(c_georegion_l4_x75_y75,c_georegion_l4_x75_y75)
+    by axiom 6
+  hence inregion(c_georegion_l4_x75_y75,c_georegion_l4_x75_y75)
+    by axiom 7
+  hence mtvisible(c_tptpgeo_member8_mt) => inregion(c_georegion_l4_x75_y75,c_georegion_l4_x75_y75)
+    by discharge

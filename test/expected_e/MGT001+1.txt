@@ -1,0 +1,165 @@
+Axiom 1: organization(X,Y) => reliability(X,esk1_2(X,Y),Y)
+Axiom 2: organization(X,Y) => accountability(X,esk2_2(X,Y),Y)
+Axiom 3: organization(X,Y) => reproducibility(X,esk3_2(X,Y),Y)
+Axiom 4: greater(X,Y) /\ organization(Z,A) /\ organization(B,C) /\ reorganization_free(Z,A,A) /\ reorganization_free(B,C,C) /\ reproducibility(Z,U,A) /\ reproducibility(B,V,C) /\ inertia(Z,Y,A) /\ inertia(B,X,C) => greater(V,U)
+Axiom 5: greater(V,U) /\ organization(Z,A) /\ organization(B,C) /\ reliability(Z,Y,A) /\ reliability(B,X,C) /\ accountability(Z,W,A) /\ accountability(B,X1,C) /\ reproducibility(Z,U,A) /\ reproducibility(B,V,C) => greater(X,Y)
+Axiom 6: greater(V,U) /\ organization(Z,A) /\ organization(B,C) /\ reliability(Z,W,A) /\ reliability(B,X1,C) /\ accountability(Z,Y,A) /\ accountability(B,X,C) /\ reproducibility(Z,U,A) /\ reproducibility(B,V,C) => greater(X,Y)
+Axiom 7: organization(X,X2) /\ organization(A,X3) /\ reliability(X,B,X2) /\ reliability(A,C,X3) /\ accountability(X,W,X2) /\ accountability(A,X1,X3) /\ survival_chance(X,X4,X2) /\ survival_chance(A,X5,X3) /\ greater(C,B) /\ greater(X1,W) => greater(X5,X4)
+
+Lemma 8: organization(esk4_0,esk6_0) => reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
+Proof:
+  assume organization(esk4_0,esk6_0)
+  hence reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
+    by axiom 3
+  hence organization(esk4_0,esk6_0) => reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
+    by discharge
+
+Lemma 9: organization(esk5_0,esk7_0) => reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+Proof:
+  assume organization(esk5_0,esk7_0)
+  hence reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+    by axiom 3
+  hence organization(esk5_0,esk7_0) => reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+    by discharge
+
+Lemma 10: organization(esk4_0,esk6_0) => reliability(esk4_0,esk1_2(esk4_0,esk6_0),esk6_0)
+Proof:
+  assume organization(esk4_0,esk6_0)
+  hence reliability(esk4_0,esk1_2(esk4_0,esk6_0),esk6_0)
+    by axiom 1
+  hence organization(esk4_0,esk6_0) => reliability(esk4_0,esk1_2(esk4_0,esk6_0),esk6_0)
+    by discharge
+
+Lemma 11: organization(esk5_0,esk7_0) => reliability(esk5_0,esk1_2(esk5_0,esk7_0),esk7_0)
+Proof:
+  assume organization(esk5_0,esk7_0)
+  hence reliability(esk5_0,esk1_2(esk5_0,esk7_0),esk7_0)
+    by axiom 1
+  hence organization(esk5_0,esk7_0) => reliability(esk5_0,esk1_2(esk5_0,esk7_0),esk7_0)
+    by discharge
+
+Lemma 12: organization(esk4_0,esk6_0) => accountability(esk4_0,esk2_2(esk4_0,esk6_0),esk6_0)
+Proof:
+  assume organization(esk4_0,esk6_0)
+  hence accountability(esk4_0,esk2_2(esk4_0,esk6_0),esk6_0)
+    by axiom 2
+  hence organization(esk4_0,esk6_0) => accountability(esk4_0,esk2_2(esk4_0,esk6_0),esk6_0)
+    by discharge
+
+Lemma 13: organization(esk5_0,esk7_0) => accountability(esk5_0,esk2_2(esk5_0,esk7_0),esk7_0)
+Proof:
+  assume organization(esk5_0,esk7_0)
+  hence accountability(esk5_0,esk2_2(esk5_0,esk7_0),esk7_0)
+    by axiom 2
+  hence organization(esk5_0,esk7_0) => accountability(esk5_0,esk2_2(esk5_0,esk7_0),esk7_0)
+    by discharge
+
+Lemma 14: organization(esk4_0,esk6_0) /\ organization(esk5_0,esk7_0) /\ greater(esk9_0,esk8_0) /\ reorganization_free(esk4_0,esk6_0,esk6_0) /\ inertia(esk4_0,esk8_0,esk6_0) /\ reorganization_free(esk5_0,esk7_0,esk7_0) /\ inertia(esk5_0,esk9_0,esk7_0) => greater(esk1_2(esk5_0,esk7_0),esk1_2(esk4_0,esk6_0))
+Proof:
+  assume greater(esk9_0,esk8_0)
+   and organization(esk4_0,esk6_0)
+    by assumption 1
+   and organization(esk5_0,esk7_0)
+    by assumption 2
+   and reorganization_free(esk4_0,esk6_0,esk6_0)
+    by assumption 4
+   and reorganization_free(esk5_0,esk7_0,esk7_0)
+    by assumption 6
+   and reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
+    by lemma 8
+   and reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+    by lemma 9
+   and inertia(esk4_0,esk8_0,esk6_0)
+    by assumption 5
+   and inertia(esk5_0,esk9_0,esk7_0)
+    by assumption 7
+  hence greater(esk3_2(esk5_0,esk7_0),esk3_2(esk4_0,esk6_0))
+    by axiom 4
+   and organization(esk4_0,esk6_0)
+    by assumption 1
+   and organization(esk5_0,esk7_0)
+    by assumption 2
+   and reliability(esk4_0,esk1_2(esk4_0,esk6_0),esk6_0)
+    by lemma 10
+   and reliability(esk5_0,esk1_2(esk5_0,esk7_0),esk7_0)
+    by lemma 11
+   and accountability(esk4_0,esk2_2(esk4_0,esk6_0),esk6_0)
+    by lemma 12
+   and accountability(esk5_0,esk2_2(esk5_0,esk7_0),esk7_0)
+    by lemma 13
+   and reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
+    by lemma 8
+   and reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+    by lemma 9
+  hence greater(esk1_2(esk5_0,esk7_0),esk1_2(esk4_0,esk6_0))
+    by axiom 5
+  hence organization(esk4_0,esk6_0) /\ organization(esk5_0,esk7_0) /\ greater(esk9_0,esk8_0) /\ reorganization_free(esk4_0,esk6_0,esk6_0) /\ inertia(esk4_0,esk8_0,esk6_0) /\ reorganization_free(esk5_0,esk7_0,esk7_0) /\ inertia(esk5_0,esk9_0,esk7_0) => greater(esk1_2(esk5_0,esk7_0),esk1_2(esk4_0,esk6_0))
+    by discharge
+
+Lemma 15: organization(esk4_0,esk6_0) /\ organization(esk5_0,esk7_0) /\ greater(esk9_0,esk8_0) /\ reorganization_free(esk4_0,esk6_0,esk6_0) /\ inertia(esk4_0,esk8_0,esk6_0) /\ reorganization_free(esk5_0,esk7_0,esk7_0) /\ inertia(esk5_0,esk9_0,esk7_0) => greater(esk2_2(esk5_0,esk7_0),esk2_2(esk4_0,esk6_0))
+Proof:
+  assume greater(esk9_0,esk8_0)
+   and organization(esk4_0,esk6_0)
+    by assumption 1
+   and organization(esk5_0,esk7_0)
+    by assumption 2
+   and reorganization_free(esk4_0,esk6_0,esk6_0)
+    by assumption 4
+   and reorganization_free(esk5_0,esk7_0,esk7_0)
+    by assumption 6
+   and reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
+    by lemma 8
+   and reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+    by lemma 9
+   and inertia(esk4_0,esk8_0,esk6_0)
+    by assumption 5
+   and inertia(esk5_0,esk9_0,esk7_0)
+    by assumption 7
+  hence greater(esk3_2(esk5_0,esk7_0),esk3_2(esk4_0,esk6_0))
+    by axiom 4
+   and organization(esk4_0,esk6_0)
+    by assumption 1
+   and organization(esk5_0,esk7_0)
+    by assumption 2
+   and reliability(esk4_0,esk1_2(esk4_0,esk6_0),esk6_0)
+    by lemma 10
+   and reliability(esk5_0,esk1_2(esk5_0,esk7_0),esk7_0)
+    by lemma 11
+   and accountability(esk4_0,esk2_2(esk4_0,esk6_0),esk6_0)
+    by lemma 12
+   and accountability(esk5_0,esk2_2(esk5_0,esk7_0),esk7_0)
+    by lemma 13
+   and reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
+    by lemma 8
+   and reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+    by lemma 9
+  hence greater(esk2_2(esk5_0,esk7_0),esk2_2(esk4_0,esk6_0))
+    by axiom 6
+  hence organization(esk4_0,esk6_0) /\ organization(esk5_0,esk7_0) /\ greater(esk9_0,esk8_0) /\ reorganization_free(esk4_0,esk6_0,esk6_0) /\ inertia(esk4_0,esk8_0,esk6_0) /\ reorganization_free(esk5_0,esk7_0,esk7_0) /\ inertia(esk5_0,esk9_0,esk7_0) => greater(esk2_2(esk5_0,esk7_0),esk2_2(esk4_0,esk6_0))
+    by discharge
+
+Goal 1: organization(esk4_0,esk6_0) /\ organization(esk5_0,esk7_0) /\ greater(esk9_0,esk8_0) /\ reorganization_free(esk4_0,esk6_0,esk6_0) /\ inertia(esk4_0,esk8_0,esk6_0) /\ reorganization_free(esk5_0,esk7_0,esk7_0) /\ inertia(esk5_0,esk9_0,esk7_0) /\ survival_chance(esk4_0,Y,esk6_0) /\ survival_chance(esk5_0,X,esk7_0) => greater(X,Y)
+Proof:
+  assume organization(esk4_0,esk6_0)
+   and organization(esk5_0,esk7_0)
+    by assumption 2
+   and reliability(esk4_0,esk1_2(esk4_0,esk6_0),esk6_0)
+    by lemma 10
+   and reliability(esk5_0,esk1_2(esk5_0,esk7_0),esk7_0)
+    by lemma 11
+   and accountability(esk4_0,esk2_2(esk4_0,esk6_0),esk6_0)
+    by lemma 12
+   and accountability(esk5_0,esk2_2(esk5_0,esk7_0),esk7_0)
+    by lemma 13
+   and survival_chance(esk4_0,Y,esk6_0)
+    by assumption 8
+   and survival_chance(esk5_0,X,esk7_0)
+    by assumption 9
+   and greater(esk1_2(esk5_0,esk7_0),esk1_2(esk4_0,esk6_0))
+    by lemma 14
+   and greater(esk2_2(esk5_0,esk7_0),esk2_2(esk4_0,esk6_0))
+    by lemma 15
+  hence greater(X,Y)
+    by axiom 7
+  hence organization(esk4_0,esk6_0) /\ organization(esk5_0,esk7_0) /\ greater(esk9_0,esk8_0) /\ reorganization_free(esk4_0,esk6_0,esk6_0) /\ inertia(esk4_0,esk8_0,esk6_0) /\ reorganization_free(esk5_0,esk7_0,esk7_0) /\ inertia(esk5_0,esk9_0,esk7_0) /\ survival_chance(esk4_0,Y,esk6_0) /\ survival_chance(esk5_0,X,esk7_0) => greater(X,Y)
+    by discharge

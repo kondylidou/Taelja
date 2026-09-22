@@ -1,0 +1,349 @@
+Axiom 1: element(X) => times(X,sK0(X)) = X
+Axiom 2: element(X) => times(X,X) = sK0(X)
+Axiom 3: times(times(X,Y),Z) = times(Y,times(Z,X))
+Axiom 4: times(X,Y) = X /\ times(X,X) = Y => element(X)
+
+Lemma 5: element(sK1) => times(sK1,sK0(sK1)) = sK1
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK0(sK1)) = sK1
+    by axiom 1
+  hence element(sK1) => times(sK1,sK0(sK1)) = sK1
+    by discharge
+
+Lemma 6: element(sK1) => times(sK1,sK1) = sK0(sK1)
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK1) = sK0(sK1)
+    by axiom 2
+  hence element(sK1) => times(sK1,sK1) = sK0(sK1)
+    by discharge
+
+Lemma 7: element(sK1) => times(sK1,X) = times(sK1,times(X,sK0(sK1)))
+Proof:
+  times(sK1,X)
+= { by lemma 5 R->L }
+  times(times(sK1,sK0(sK1)),X)
+= { by lemma 6 R->L }
+  times(times(sK1,times(sK1,sK1)),X)
+= { by axiom 3 R->L }
+  times(times(times(sK1,sK1),sK1),X)
+= { by lemma 6 }
+  times(times(sK0(sK1),sK1),X)
+= { by axiom 3 }
+  times(sK1,times(X,sK0(sK1)))
+  hence element(sK1) => times(sK1,X) = times(sK1,times(X,sK0(sK1)))
+    by discharge
+
+Lemma 8: element(sK1) => times(sK1,sK1) = sK0(sK1)
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK1) = sK0(sK1)
+    by axiom 2
+  hence element(sK1) => times(sK1,sK1) = sK0(sK1)
+    by discharge
+
+Lemma 9: sK3 = times(sK1,sK2) => times(X,times(Y,sK3)) = times(sK1,times(sK2,times(X,Y)))
+Proof:
+  times(X,times(Y,sK3))
+= { by assumption 1 }
+  times(X,times(Y,times(sK1,sK2)))
+= { by axiom 3 R->L }
+  times(times(times(sK1,sK2),X),Y)
+= { by axiom 3 }
+  times(times(sK2,times(X,sK1)),Y)
+= { by axiom 3 }
+  times(times(X,sK1),times(Y,sK2))
+= { by axiom 3 }
+  times(sK1,times(times(Y,sK2),X))
+= { by axiom 3 }
+  times(sK1,times(sK2,times(X,Y)))
+  hence sK3 = times(sK1,sK2) => times(X,times(Y,sK3)) = times(sK1,times(sK2,times(X,Y)))
+    by discharge
+
+Lemma 10: sK3 = times(sK1,sK2) => times(sK2,times(X,sK1)) = times(sK3,X)
+Proof:
+  times(sK2,times(X,sK1))
+= { by axiom 3 R->L }
+  times(times(sK1,sK2),X)
+= { by assumption 1 R->L }
+  times(sK3,X)
+  hence sK3 = times(sK1,sK2) => times(sK2,times(X,sK1)) = times(sK3,X)
+    by discharge
+
+Lemma 11: element(sK1) => sK1 = times(sK1,sK0(sK1))
+Proof:
+  assume element(sK1)
+  hence sK1 = times(sK1,sK0(sK1))
+    by axiom 1
+  hence element(sK1) => sK1 = times(sK1,sK0(sK1))
+    by discharge
+
+Lemma 12: element(sK1) => times(sK1,sK0(sK1)) = sK1
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK0(sK1)) = sK1
+    by axiom 1
+  hence element(sK1) => times(sK1,sK0(sK1)) = sK1
+    by discharge
+
+Lemma 13: element(sK1) => times(sK1,sK1) = sK0(sK1)
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK1) = sK0(sK1)
+    by axiom 2
+  hence element(sK1) => times(sK1,sK1) = sK0(sK1)
+    by discharge
+
+Lemma 14: element(sK1) => times(X,times(sK1,Y)) = times(Y,times(sK1,X))
+Proof:
+  times(X,times(sK1,Y))
+= { by lemma 12 R->L }
+  times(X,times(times(sK1,sK0(sK1)),Y))
+= { by axiom 3 }
+  times(X,times(sK0(sK1),times(Y,sK1)))
+= { by axiom 3 R->L }
+  times(times(times(Y,sK1),X),sK0(sK1))
+= { by axiom 3 }
+  times(times(sK1,times(X,Y)),sK0(sK1))
+= { by axiom 3 }
+  times(times(X,Y),times(sK0(sK1),sK1))
+= { by axiom 3 }
+  times(Y,times(times(sK0(sK1),sK1),X))
+= { by lemma 13 R->L }
+  times(Y,times(times(times(sK1,sK1),sK1),X))
+= { by axiom 3 }
+  times(Y,times(times(sK1,times(sK1,sK1)),X))
+= { by lemma 13 }
+  times(Y,times(times(sK1,sK0(sK1)),X))
+= { by lemma 12 }
+  times(Y,times(sK1,X))
+  hence element(sK1) => times(X,times(sK1,Y)) = times(Y,times(sK1,X))
+    by discharge
+
+Lemma 15: element(sK1) => times(sK1,sK0(sK1)) = sK1
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK0(sK1)) = sK1
+    by axiom 1
+  hence element(sK1) => times(sK1,sK0(sK1)) = sK1
+    by discharge
+
+Lemma 16: element(sK1) => times(sK1,sK1) = sK0(sK1)
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK1) = sK0(sK1)
+    by axiom 2
+  hence element(sK1) => times(sK1,sK1) = sK0(sK1)
+    by discharge
+
+Lemma 17: element(sK1) => sK1 = times(sK0(sK1),sK1)
+Proof:
+  sK1
+= { by lemma 15 R->L }
+  times(sK1,sK0(sK1))
+= { by lemma 16 R->L }
+  times(sK1,times(sK1,sK1))
+= { by axiom 3 R->L }
+  times(times(sK1,sK1),sK1)
+= { by lemma 16 }
+  times(sK0(sK1),sK1)
+  hence element(sK1) => sK1 = times(sK0(sK1),sK1)
+    by discharge
+
+Lemma 18: element(sK2) => sK2 = times(sK2,sK0(sK2))
+Proof:
+  assume element(sK2)
+  hence sK2 = times(sK2,sK0(sK2))
+    by axiom 1
+  hence element(sK2) => sK2 = times(sK2,sK0(sK2))
+    by discharge
+
+Lemma 19: element(sK1) => times(sK1,sK1) = sK0(sK1)
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK1) = sK0(sK1)
+    by axiom 2
+  hence element(sK1) => times(sK1,sK1) = sK0(sK1)
+    by discharge
+
+Lemma 20: element(sK1) => times(sK1,times(X,sK1)) = times(sK0(sK1),X)
+Proof:
+  times(sK1,times(X,sK1))
+= { by axiom 3 R->L }
+  times(times(sK1,sK1),X)
+= { by lemma 19 }
+  times(sK0(sK1),X)
+  hence element(sK1) => times(sK1,times(X,sK1)) = times(sK0(sK1),X)
+    by discharge
+
+Lemma 21: element(sK1) => times(sK1,sK0(sK1)) = sK1
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK0(sK1)) = sK1
+    by axiom 1
+  hence element(sK1) => times(sK1,sK0(sK1)) = sK1
+    by discharge
+
+Lemma 22: element(sK1) => times(sK1,times(sK0(sK1),times(X,Y))) = times(X,times(Y,sK1))
+Proof:
+  times(sK1,times(sK0(sK1),times(X,Y)))
+= { by axiom 3 R->L }
+  times(times(times(X,Y),sK1),sK0(sK1))
+= { by axiom 3 }
+  times(times(Y,times(sK1,X)),sK0(sK1))
+= { by axiom 3 }
+  times(times(sK1,X),times(sK0(sK1),Y))
+= { by axiom 3 }
+  times(X,times(times(sK0(sK1),Y),sK1))
+= { by axiom 3 }
+  times(X,times(Y,times(sK1,sK0(sK1))))
+= { by lemma 21 }
+  times(X,times(Y,sK1))
+  hence element(sK1) => times(sK1,times(sK0(sK1),times(X,Y))) = times(X,times(Y,sK1))
+    by discharge
+
+Lemma 23: element(sK1) => times(sK1,sK1) = sK0(sK1)
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK1) = sK0(sK1)
+    by axiom 2
+  hence element(sK1) => times(sK1,sK1) = sK0(sK1)
+    by discharge
+
+Lemma 24: element(sK1) => times(sK1,times(sK1,times(X,Y))) = times(X,times(Y,sK0(sK1)))
+Proof:
+  times(sK1,times(sK1,times(X,Y)))
+= { by axiom 3 R->L }
+  times(times(times(X,Y),sK1),sK1)
+= { by axiom 3 }
+  times(times(Y,times(sK1,X)),sK1)
+= { by axiom 3 }
+  times(times(sK1,X),times(sK1,Y))
+= { by axiom 3 }
+  times(X,times(times(sK1,Y),sK1))
+= { by axiom 3 }
+  times(X,times(Y,times(sK1,sK1)))
+= { by lemma 23 }
+  times(X,times(Y,sK0(sK1)))
+  hence element(sK1) => times(sK1,times(sK1,times(X,Y))) = times(X,times(Y,sK0(sK1)))
+    by discharge
+
+Lemma 25: element(sK1) => times(sK1,sK1) = sK0(sK1)
+Proof:
+  assume element(sK1)
+  hence times(sK1,sK1) = sK0(sK1)
+    by axiom 2
+  hence element(sK1) => times(sK1,sK1) = sK0(sK1)
+    by discharge
+
+Lemma 26: sK3 = times(sK1,sK2) /\ element(sK1) => times(sK3,sK1) = times(sK2,sK0(sK1))
+Proof:
+  times(sK3,sK1)
+= { by assumption 1 }
+  times(times(sK1,sK2),sK1)
+= { by axiom 3 }
+  times(sK2,times(sK1,sK1))
+= { by lemma 25 }
+  times(sK2,sK0(sK1))
+  hence sK3 = times(sK1,sK2) /\ element(sK1) => times(sK3,sK1) = times(sK2,sK0(sK1))
+    by discharge
+
+Lemma 27: element(sK2) => times(sK2,sK2) = sK0(sK2)
+Proof:
+  assume element(sK2)
+  hence times(sK2,sK2) = sK0(sK2)
+    by axiom 2
+  hence element(sK2) => times(sK2,sK2) = sK0(sK2)
+    by discharge
+
+Lemma 28: element(sK2) => times(sK2,times(X,sK2)) = times(sK0(sK2),X)
+Proof:
+  times(sK2,times(X,sK2))
+= { by axiom 3 R->L }
+  times(times(sK2,sK2),X)
+= { by lemma 27 }
+  times(sK0(sK2),X)
+  hence element(sK2) => times(sK2,times(X,sK2)) = times(sK0(sK2),X)
+    by discharge
+
+Lemma 29: sK3 = times(sK1,sK2) /\ element(sK1) /\ element(sK2) => times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2))) = times(sK1,sK2)
+Proof:
+  times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2)))
+= { by assumption 1 R->L }
+  times(times(sK1,sK2),times(times(sK1,sK2),sK3))
+= { by lemma 9 }
+  times(sK1,times(sK2,times(times(sK1,sK2),times(sK1,sK2))))
+= { by assumption 1 R->L }
+  times(sK1,times(sK2,times(sK3,times(sK1,sK2))))
+= { by lemma 10 R->L }
+  times(sK1,times(sK2,times(sK2,times(times(sK1,sK2),sK1))))
+= { by lemma 22 R->L }
+  times(sK1,times(sK2,times(sK1,times(sK0(sK1),times(sK2,times(sK1,sK2))))))
+= { by lemma 28 }
+  times(sK1,times(sK2,times(sK1,times(sK0(sK1),times(sK0(sK2),sK1)))))
+= { by lemma 22 }
+  times(sK1,times(sK2,times(sK0(sK2),times(sK1,sK1))))
+= { by lemma 8 }
+  times(sK1,times(sK2,times(sK0(sK2),sK0(sK1))))
+= { by lemma 9 R->L }
+  times(sK0(sK2),times(sK0(sK1),sK3))
+= { by lemma 20 R->L }
+  times(sK0(sK2),times(sK1,times(sK3,sK1)))
+= { by lemma 26 }
+  times(sK0(sK2),times(sK1,times(sK2,sK0(sK1))))
+= { by lemma 7 R->L }
+  times(sK0(sK2),times(sK1,sK2))
+= { by lemma 14 }
+  times(sK2,times(sK1,sK0(sK2)))
+= { by lemma 7 }
+  times(sK2,times(sK1,times(sK0(sK2),sK0(sK1))))
+= { by lemma 8 R->L }
+  times(sK2,times(sK1,times(sK0(sK2),times(sK1,sK1))))
+= { by lemma 14 R->L }
+  times(sK2,times(sK1,times(sK1,times(sK1,sK0(sK2)))))
+= { by lemma 14 R->L }
+  times(sK2,times(times(sK1,sK0(sK2)),times(sK1,sK1)))
+= { by lemma 8 }
+  times(sK2,times(times(sK1,sK0(sK2)),sK0(sK1)))
+= { by lemma 24 R->L }
+  times(sK1,times(sK1,times(sK2,times(sK1,sK0(sK2)))))
+= { by lemma 14 R->L }
+  times(sK1,times(sK1,times(sK0(sK2),times(sK1,sK2))))
+= { by lemma 24 }
+  times(sK0(sK2),times(times(sK1,sK2),sK0(sK1)))
+= { by axiom 3 }
+  times(sK0(sK2),times(sK2,times(sK0(sK1),sK1)))
+= { by lemma 17 R->L }
+  times(sK0(sK2),times(sK2,sK1))
+= { by lemma 11 }
+  times(sK0(sK2),times(sK2,times(sK1,sK0(sK1))))
+= { by lemma 14 }
+  times(sK0(sK2),times(sK0(sK1),times(sK1,sK2)))
+= { by axiom 3 R->L }
+  times(sK0(sK2),times(times(sK2,sK0(sK1)),sK1))
+= { by axiom 3 R->L }
+  times(times(sK1,sK0(sK2)),times(sK2,sK0(sK1)))
+= { by axiom 3 R->L }
+  times(times(sK0(sK1),times(sK1,sK0(sK2))),sK2)
+= { by lemma 14 R->L }
+  times(times(sK0(sK2),times(sK1,sK0(sK1))),sK2)
+= { by lemma 11 R->L }
+  times(times(sK0(sK2),sK1),sK2)
+= { by axiom 3 }
+  times(sK1,times(sK2,sK0(sK2)))
+= { by lemma 18 R->L }
+  times(sK1,sK2)
+  hence sK3 = times(sK1,sK2) /\ element(sK1) /\ element(sK2) => times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2))) = times(sK1,sK2)
+    by discharge
+
+Goal 1: sK3 = times(sK1,sK2) /\ element(sK1) /\ element(sK2) => element(sK3)
+Proof:
+  have times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2))) = times(sK1,sK2)
+    by lemma 29
+  hence element(times(sK1,sK2))
+    by axiom 4
+  hence element(sK3)
+    by rw assumption 1 R->L
+  hence sK3 = times(sK1,sK2) /\ element(sK1) /\ element(sK2) => element(sK3)
+    by discharge

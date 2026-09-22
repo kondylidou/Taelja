@@ -1366,6 +1366,10 @@ def emit_eqchain(proof: EqChainProof, axiom_types, lemma_types, conclusion, cons
                 ax_f = axiom_types[step.ref.num][2]
             elif step.ref.kind == 'lemma' and step.ref.num in lemma_types:
                 ax_f = lemma_types[step.ref.num][2]
+            # a step may cite a hypothesis of the lemma, whose equation picks
+            # the occurrence just as an axiom's does
+            elif step.ref.kind == 'hyp' and step.ref.num in _hyp_types:
+                ax_f = _hyp_types[step.ref.num][2]
             if ax_f is not None and isinstance(ax_f, EqLit):
                 subst = find_rw_subst(prev_t, step.term, ax_f, direction)
                 if subst is not None:

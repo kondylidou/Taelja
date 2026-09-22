@@ -1,0 +1,308 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for ALG210+2
+% SZS output start Proof for ALG210+2
+fof(f1,axiom,(
+  ! [X0,X1,X2] : times(times(X0,X1),X2) = times(X1,times(X2,X0))),
+  file('Problems/ALG/ALG210+2.p',unknown)).
+fof(f2,axiom,(
+  ! [X0] : (element(X0) <=> ? [X1] : (times(X0,X1) = X0 & times(X0,X0) = X1))),
+  file('Problems/ALG/ALG210+2.p',unknown)).
+fof(f3,conjecture,(
+  ! [X0,X1,X2] : ((element(X0) & element(X1) & X2 = times(X0,X1)) => element(X2))),
+  file('Problems/ALG/ALG210+2.p',unknown)).
+fof(f4,negated_conjecture,(
+  ~! [X0,X1,X2] : ((element(X0) & element(X1) & X2 = times(X0,X1)) => element(X2))),
+  inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  ? [X0,X1,X2] : (~element(X2) & (element(X0) & element(X1) & X2 = times(X0,X1)))),
+  inference(ennf_transformation,[],[f4])).
+fof(f6,plain,(
+  ? [X0,X1,X2] : (~element(X2) & element(X0) & element(X1) & X2 = times(X0,X1))),
+  inference(flattening,[],[f5])).
+fof(f7,plain,(
+  ! [X0] : ((element(X0) | ! [X1] : (times(X0,X1) != X0 | times(X0,X0) != X1)) & (? [X1] : (times(X0,X1) = X0 & times(X0,X0) = X1) | ~element(X0)))),
+  inference(nnf_transformation,[],[f2])).
+fof(f8,plain,(
+  ! [X0] : ((element(X0) | ! [X1] : (times(X0,X1) != X0 | times(X0,X0) != X1)) & (? [X2] : (times(X0,X2) = X0 & times(X0,X0) = X2) | ~element(X0)))),
+  inference(rectify,[],[f7])).
+fof(f9,plain,(
+  ! [X0] : (? [X2] : (times(X0,X2) = X0 & times(X0,X0) = X2) => (times(X0,sK0(X0)) = X0 & times(X0,X0) = sK0(X0)))),
+  introduced(definition,[],[skolem_symbol_introduction])).
+fof(f10,plain,(
+  ! [X0] : ((element(X0) | ! [X1] : (times(X0,X1) != X0 | times(X0,X0) != X1)) & ((times(X0,sK0(X0)) = X0 & times(X0,X0) = sK0(X0)) | ~element(X0)))),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK0])],[f8,f9])).
+fof(f11,plain,(
+  ? [X0,X1,X2] : (~element(X2) & element(X0) & element(X1) & X2 = times(X0,X1)) => (~element(sK3) & element(sK1) & element(sK2) & sK3 = times(sK1,sK2))),
+  introduced(definition,[],[skolem_symbol_introduction])).
+fof(f12,plain,(
+  ~element(sK3) & element(sK1) & element(sK2) & sK3 = times(sK1,sK2)),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK1,sK2,sK3])],[f6,f11])).
+fof(f13,plain,(
+  ( ! [X2,X0,X1] : (times(times(X0,X1),X2) = times(X1,times(X2,X0))) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f14,plain,(
+  ( ! [X0] : (~element(X0) | times(X0,X0) = sK0(X0)) )),
+  inference(cnf_transformation,[],[f10])).
+fof(f15,plain,(
+  ( ! [X0] : (~element(X0) | times(X0,sK0(X0)) = X0) )),
+  inference(cnf_transformation,[],[f10])).
+fof(f16,plain,(
+  ( ! [X0,X1] : (element(X0) | times(X0,X1) != X0 | times(X0,X0) != X1) )),
+  inference(cnf_transformation,[],[f10])).
+fof(f17,plain,(
+  sK3 = times(sK1,sK2)),
+  inference(cnf_transformation,[],[f12])).
+fof(f18,plain,(
+  element(sK2)),
+  inference(cnf_transformation,[],[f12])).
+fof(f19,plain,(
+  element(sK1)),
+  inference(cnf_transformation,[],[f12])).
+fof(f20,plain,(
+  ~element(sK3)),
+  inference(cnf_transformation,[],[f12])).
+fof(f21,plain,(
+  ( ! [X0] : (times(X0,times(X0,X0)) != X0 | element(X0)) )),
+  inference(equality_resolution,[],[f16])).
+fof(f22,plain,(
+  times(sK2,sK2) = sK0(sK2)),
+  inference(resolution,[],[f14,f18])).
+fof(f23,plain,(
+  times(sK1,sK1) = sK0(sK1)),
+  inference(resolution,[],[f14,f19])).
+fof(f24,plain,(
+  sK2 = times(sK2,sK0(sK2))),
+  inference(resolution,[],[f15,f18])).
+fof(f25,plain,(
+  sK1 = times(sK1,sK0(sK1))),
+  inference(resolution,[],[f15,f19])).
+fof(f28,plain,(
+  ( ! [X0] : (times(sK2,times(X0,sK1)) = times(sK3,X0)) )),
+  inference(superposition,[],[f13,f17])).
+fof(f29,plain,(
+  ( ! [X0] : (times(sK2,times(X0,sK2)) = times(sK0(sK2),X0)) )),
+  inference(superposition,[],[f13,f22])).
+fof(f30,plain,(
+  ( ! [X0] : (times(sK1,times(X0,sK1)) = times(sK0(sK1),X0)) )),
+  inference(superposition,[],[f13,f23])).
+fof(f31,plain,(
+  ( ! [X2,X3,X0,X1] : (times(X1,times(X3,times(X2,X0))) = times(times(X0,times(X1,X2)),X3)) )),
+  inference(superposition,[],[f13,f13])).
+fof(f32,plain,(
+  ( ! [X0,X1] : (times(X1,X0) != times(times(X1,X0),times(X0,times(times(X1,X0),X1))) | element(times(X1,X0))) )),
+  inference(superposition,[],[f21,f13])).
+fof(f35,plain,(
+  ( ! [X0,X1] : (times(X1,X0) != times(X0,times(times(X0,times(times(X1,X0),X1)),X1)) | element(times(X1,X0))) )),
+  inference(forward_demodulation,[],[f32,f13])).
+fof(f36,plain,(
+  ( ! [X2,X3,X0,X1] : (times(X1,times(X3,times(X2,X0))) = times(times(X1,X2),times(X3,X0))) )),
+  inference(forward_demodulation,[],[f31,f13])).
+fof(f38,plain,(
+  ( ! [X0,X1] : (times(X1,X0) != times(X0,times(times(times(X1,X0),X1),times(X1,X0))) | element(times(X1,X0))) )),
+  inference(forward_demodulation,[],[f35,f13])).
+fof(f39,plain,(
+  ( ! [X2,X3,X0,X1] : (times(X1,times(X3,times(X2,X0))) = times(X2,times(times(X3,X0),X1))) )),
+  inference(forward_demodulation,[],[f36,f13])).
+fof(f41,plain,(
+  ( ! [X0,X1] : (times(X1,X0) != times(X0,times(X1,times(times(X1,X0),times(X1,X0)))) | element(times(X1,X0))) )),
+  inference(forward_demodulation,[],[f38,f13])).
+fof(f42,plain,(
+  ( ! [X2,X3,X0,X1] : (times(X1,times(X3,times(X2,X0))) = times(X2,times(X0,times(X1,X3)))) )),
+  inference(forward_demodulation,[],[f39,f13])).
+fof(f44,plain,(
+  ( ! [X0,X1] : (times(X1,X0) != times(X0,times(X1,times(X0,times(times(X1,X0),X1)))) | element(times(X1,X0))) )),
+  inference(forward_demodulation,[],[f41,f13])).
+fof(f46,plain,(
+  ( ! [X0,X1] : (times(X1,X0) != times(X0,times(X1,times(X0,times(X0,times(X1,X1))))) | element(times(X1,X0))) )),
+  inference(forward_demodulation,[],[f44,f13])).
+fof(f47,plain,(
+  ( ! [X0] : (times(sK0(sK2),times(X0,sK2)) = times(sK2,X0)) )),
+  inference(superposition,[],[f13,f24])).
+fof(f48,plain,(
+  ( ! [X0] : (times(sK0(sK1),times(X0,sK1)) = times(sK1,X0)) )),
+  inference(superposition,[],[f13,f25])).
+fof(f49,plain,(
+  times(sK3,sK1) = times(sK2,sK0(sK1))),
+  inference(superposition,[],[f28,f23])).
+fof(f50,plain,(
+  ( ! [X0,X1] : (times(sK3,times(X1,X0)) = times(sK2,times(X0,times(sK1,X1)))) )),
+  inference(superposition,[],[f28,f13])).
+fof(f51,plain,(
+  ( ! [X0,X1] : (times(times(X0,sK1),times(X1,sK2)) = times(times(sK3,X0),X1)) )),
+  inference(superposition,[],[f13,f28])).
+fof(f52,plain,(
+  ( ! [X0,X1] : (times(times(X0,sK1),times(X1,sK2)) = times(X0,times(X1,sK3))) )),
+  inference(forward_demodulation,[],[f51,f13])).
+fof(f53,plain,(
+  ( ! [X0,X1] : (times(sK3,times(X1,X0)) = times(sK1,times(X1,times(sK2,X0)))) )),
+  inference(forward_demodulation,[],[f50,f42])).
+fof(f54,plain,(
+  ( ! [X0,X1] : (times(X0,times(X1,sK3)) = times(sK1,times(times(X1,sK2),X0))) )),
+  inference(forward_demodulation,[],[f52,f13])).
+fof(f55,plain,(
+  ( ! [X0,X1] : (times(X0,times(X1,sK3)) = times(sK1,times(sK2,times(X0,X1)))) )),
+  inference(forward_demodulation,[],[f54,f13])).
+fof(f74,plain,(
+  ( ! [X0,X1] : (times(sK2,times(sK0(sK2),times(X0,X1))) = times(X0,times(X1,sK2))) )),
+  inference(superposition,[],[f42,f24])).
+fof(f75,plain,(
+  ( ! [X0,X1] : (times(sK1,times(sK0(sK1),times(X0,X1))) = times(X0,times(X1,sK1))) )),
+  inference(superposition,[],[f42,f25])).
+fof(f76,plain,(
+  ( ! [X0,X1] : (times(sK1,times(sK1,times(X0,X1))) = times(X0,times(X1,sK0(sK1)))) )),
+  inference(superposition,[],[f42,f23])).
+fof(f270,plain,(
+  ( ! [X0,X1] : (times(sK0(sK2),times(X1,X0)) = times(sK2,times(X0,times(sK2,X1)))) )),
+  inference(superposition,[],[f29,f13])).
+fof(f274,plain,(
+  ( ! [X0,X1] : (times(X0,times(sK2,times(X1,sK2))) = times(X1,times(sK0(sK2),X0))) )),
+  inference(superposition,[],[f42,f29])).
+fof(f281,plain,(
+  ( ! [X0,X1] : (times(X1,times(sK0(sK2),X0)) = times(X0,times(sK0(sK2),X1))) )),
+  inference(forward_demodulation,[],[f274,f29])).
+fof(f297,plain,(
+  times(sK1,sK2) != times(sK2,times(sK1,times(sK2,times(sK3,sK1)))) | element(times(sK1,sK2))),
+  inference(superposition,[],[f46,f28])).
+fof(f317,plain,(
+  times(sK1,sK2) != times(sK0(sK2),times(times(sK3,sK1),sK1)) | element(times(sK1,sK2))),
+  inference(forward_demodulation,[],[f297,f270])).
+fof(f329,plain,(
+  times(sK1,sK2) != times(sK0(sK2),times(sK1,times(sK1,sK3))) | element(times(sK1,sK2))),
+  inference(forward_demodulation,[],[f317,f13])).
+fof(f339,plain,(
+  times(sK1,sK2) != times(sK1,times(sK3,times(sK0(sK2),sK1))) | element(times(sK1,sK2))),
+  inference(forward_demodulation,[],[f329,f42])).
+fof(f349,plain,(
+  times(sK1,sK2) != times(sK1,times(sK1,times(sK0(sK2),sK3))) | element(times(sK1,sK2))),
+  inference(forward_demodulation,[],[f339,f281])).
+fof(f359,plain,(
+  times(sK1,sK2) != times(sK0(sK2),times(sK3,sK0(sK1))) | element(times(sK1,sK2))),
+  inference(forward_demodulation,[],[f349,f76])).
+fof(f369,plain,(
+  sK3 != times(sK0(sK2),times(sK3,sK0(sK1))) | element(times(sK1,sK2))),
+  inference(forward_demodulation,[],[f359,f17])).
+fof(f379,plain,(
+  element(sK3) | sK3 != times(sK0(sK2),times(sK3,sK0(sK1)))),
+  inference(forward_demodulation,[],[f369,f17])).
+fof(f389,plain,(
+  sK3 != times(sK0(sK2),times(sK3,sK0(sK1)))),
+  inference(forward_subsumption_resolution,[],[f379,f20])).
+fof(f426,plain,(
+  times(sK1,sK0(sK1)) = times(sK0(sK1),sK1)),
+  inference(superposition,[],[f30,f23])).
+fof(f443,plain,(
+  sK1 = times(sK0(sK1),sK1)),
+  inference(forward_demodulation,[],[f426,f25])).
+fof(f460,plain,(
+  ( ! [X0] : (times(sK1,X0) = times(sK1,times(X0,sK0(sK1)))) )),
+  inference(superposition,[],[f13,f443])).
+fof(f462,plain,(
+  times(sK0(sK2),sK3) = times(sK2,sK1)),
+  inference(superposition,[],[f47,f17])).
+fof(f501,plain,(
+  ( ! [X0,X1] : (times(sK1,times(X1,X0)) = times(sK0(sK1),times(X0,times(sK1,X1)))) )),
+  inference(superposition,[],[f48,f13])).
+fof(f503,plain,(
+  ( ! [X0,X1] : (times(X0,times(sK1,times(X1,sK0(sK1)))) = times(X1,times(sK1,X0))) )),
+  inference(superposition,[],[f42,f48])).
+fof(f512,plain,(
+  ( ! [X0,X1] : (times(X0,times(sK1,X1)) = times(X1,times(sK1,X0))) )),
+  inference(forward_demodulation,[],[f503,f460])).
+fof(f514,plain,(
+  ( ! [X0,X1] : (times(sK1,times(X1,X0)) = times(sK1,times(X1,times(sK0(sK1),X0)))) )),
+  inference(forward_demodulation,[],[f501,f42])).
+fof(f545,plain,(
+  ( ! [X0] : (times(sK3,times(X0,sK0(sK1))) = times(sK1,times(X0,times(sK3,sK1)))) )),
+  inference(superposition,[],[f53,f49])).
+fof(f551,plain,(
+  times(sK3,times(sK1,sK1)) = times(sK1,times(sK0(sK1),sK2))),
+  inference(superposition,[],[f53,f30])).
+fof(f580,plain,(
+  times(sK1,times(sK1,sK3)) = times(sK1,times(sK0(sK1),sK2))),
+  inference(forward_demodulation,[],[f551,f512])).
+fof(f649,plain,(
+  ( ! [X0] : (times(sK1,times(times(X0,sK1),sK3)) = times(sK1,times(sK2,times(sK0(sK1),X0)))) )),
+  inference(superposition,[],[f55,f30])).
+fof(f658,plain,(
+  times(sK1,times(sK1,sK3)) = times(sK1,times(sK2,sK0(sK1)))),
+  inference(superposition,[],[f55,f23])).
+fof(f698,plain,(
+  times(sK1,sK2) = times(sK1,times(sK1,sK3))),
+  inference(forward_demodulation,[],[f658,f460])).
+fof(f707,plain,(
+  ( ! [X0] : (times(sK1,times(sK2,X0)) = times(sK1,times(times(X0,sK1),sK3))) )),
+  inference(forward_demodulation,[],[f649,f514])).
+fof(f724,plain,(
+  sK3 = times(sK1,times(sK1,sK3))),
+  inference(forward_demodulation,[],[f698,f17])).
+fof(f730,plain,(
+  ( ! [X0] : (times(sK1,times(sK2,X0)) = times(sK1,times(sK1,times(sK3,X0)))) )),
+  inference(forward_demodulation,[],[f707,f13])).
+fof(f749,plain,(
+  ( ! [X0] : (times(sK3,times(X0,sK0(sK1))) = times(sK1,times(sK2,X0))) )),
+  inference(forward_demodulation,[],[f730,f76])).
+fof(f976,plain,(
+  times(sK2,times(sK0(sK2),sK1)) = times(sK0(sK1),times(sK1,sK2))),
+  inference(superposition,[],[f74,f443])).
+fof(f1017,plain,(
+  times(sK2,times(sK0(sK2),sK1)) = times(sK2,times(sK1,sK0(sK1)))),
+  inference(forward_demodulation,[],[f976,f512])).
+fof(f1048,plain,(
+  times(sK2,times(sK0(sK2),sK1)) = times(sK2,sK1)),
+  inference(forward_demodulation,[],[f1017,f25])).
+fof(f1076,plain,(
+  times(sK3,sK0(sK2)) = times(sK2,sK1)),
+  inference(forward_demodulation,[],[f1048,f28])).
+fof(f1165,plain,(
+  times(sK2,times(sK0(sK2),sK1)) = times(sK1,times(sK0(sK1),sK2))),
+  inference(superposition,[],[f75,f24])).
+fof(f1166,plain,(
+  times(sK2,times(sK0(sK1),sK1)) = times(sK1,times(sK0(sK1),times(sK3,sK1)))),
+  inference(superposition,[],[f75,f49])).
+fof(f1217,plain,(
+  times(sK2,times(sK0(sK1),sK1)) = times(sK3,times(sK0(sK1),sK0(sK1)))),
+  inference(forward_demodulation,[],[f1166,f545])).
+fof(f1218,plain,(
+  times(sK1,times(sK1,sK3)) = times(sK2,times(sK0(sK2),sK1))),
+  inference(forward_demodulation,[],[f1165,f580])).
+fof(f1252,plain,(
+  times(sK2,times(sK0(sK1),sK1)) = times(sK1,times(sK2,sK0(sK1)))),
+  inference(forward_demodulation,[],[f1217,f749])).
+fof(f1253,plain,(
+  times(sK1,times(sK1,sK3)) = times(sK3,sK0(sK2))),
+  inference(forward_demodulation,[],[f1218,f28])).
+fof(f1285,plain,(
+  times(sK1,sK2) = times(sK2,times(sK0(sK1),sK1))),
+  inference(forward_demodulation,[],[f1252,f460])).
+fof(f1286,plain,(
+  times(sK1,times(sK1,sK3)) = times(sK2,sK1)),
+  inference(forward_demodulation,[],[f1253,f1076])).
+fof(f1317,plain,(
+  times(sK1,sK2) = times(sK3,sK0(sK1))),
+  inference(forward_demodulation,[],[f1285,f28])).
+fof(f1318,plain,(
+  sK3 = times(sK2,sK1)),
+  inference(forward_demodulation,[],[f1286,f724])).
+fof(f1337,plain,(
+  sK3 = times(sK3,sK0(sK1))),
+  inference(forward_demodulation,[],[f1317,f17])).
+fof(f1878,plain,(
+  sK3 != times(sK0(sK2),sK3)),
+  inference(superposition,[],[f389,f1337])).
+fof(f1894,plain,(
+  sK3 != times(sK2,sK1)),
+  inference(forward_demodulation,[],[f1878,f462])).
+fof(f1898,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f1894,f1318])).
+% SZS output end Proof for ALG210+2
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.019 s
+% Peak memory usage: 8 MB
+% ------------------------------
+% ------------------------------

@@ -28,7 +28,7 @@ import System.IO (hPutStrLn, stderr)
 import Types
 import Helpers
   ( applySubst, applyConstSubstBlock, applyConstSubstLit, blockRefNames
-  , extractSzsBlock, isEmptyBlock, isEqLit, litVars, renameRefsBlock
+  , blockConcludes, extractSzsBlock, isEmptyBlock, isEqLit, litVars, renameRefsBlock
   , unitEquation
   )
 import Debug (dbgScoped, subrunDepth)
@@ -179,6 +179,11 @@ buildCandidateLemmaReprove translateFn unitMap tstp2name debug (cname, cdecl) =
         Just r  -> return (Just r)
         Nothing -> buildWithProver translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk undoMap
 
+-- The unit stating the problem's conjecture, whose role the format names.
+isConjectureUnit :: T.Unit -> Bool
+isConjectureUnit (T.Unit _ (T.Formula (T.Standard T.Conjecture) _) _) = True
+isConjectureUnit _                                                    = False
+
 -- Synthetic unit names of a sub-problem must not collide with the candidate's
 -- ancestry, or lemmaNameOverrides would rename a real axiom to "assumption".
 syntheticCollision :: Map.Map String T.Unit -> String -> [Literal] -> Bool
@@ -206,7 +211,13 @@ buildFromSubDag translateFn unitMap tstp2name debug cname lit lit_sk bodyLits_sk
       return Nothing
   | otherwise = do
       let ancNames  = ancestorNamesOf unitMap cname
-          ancUnits  = [ u | aname <- Set.toList ancNames, Just u <- [Map.lookup aname unitMap] ]
+          -- The sub-problem states its own conjecture, the negation of the
+          -- candidate, so the outer one is left out.  Kept, the sub-run read
+          -- the outer goal instead and ALG210+2's lemmas restated the
+          -- assumption they rest on.  The negated conjecture's clauses stay,
+          -- since the hypotheses the conjecture grants are among them.
+          ancUnits  = [ u | aname <- Set.toList ancNames, Just u <- [Map.lookup aname unitMap]
+                          , not (isConjectureUnit u) ]
           candUnit  = maybeToList (Map.lookup cname unitMap)
           unitLines = map (show . pretty) (ancUnits ++ candUnit)
           premLines = premLinesFor bodyLits_sk
@@ -294,6 +305,7 @@ liftSubProof nameOvr cname lit undoMap sp = do
   -- since Translate.reproveAt' hands in any clause at a tree position,
   -- including a Horn nucleus with body atoms.
   if isEmptyBlock blk'
+     || not (blockConcludes lit blk')
      || "assumption" `elem` blockRefNames blk'
      || any (\(_, _, b) -> "assumption" `elem` blockRefNames b) lifted
     then Nothing

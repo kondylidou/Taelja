@@ -1,0 +1,15 @@
+Goal 1: big_r(X) /\ (big_r(Y) => big_q(Y,esk2_1(Y))) /\ (big_q(Y,Z) => big_q(Y,Y)) => big_q(X,X)
+Proof:
+  assume big_r(X)
+  hence big_q(X,esk2_1(X))
+    by assumption 2
+  hence big_q(X,X)
+    by assumption 3
+  hence big_r(X) /\ (big_r(Y) => big_q(Y,esk2_1(Y))) /\ (big_q(Y,Z) => big_q(Y,Y)) => big_q(X,X)
+    by discharge
+
+Goal 2: big_r(X) /\ (big_r(Y) => big_q(Y,esk2_1(Y))) /\ (big_q(Y,Z) => big_q(Y,Y)) => big_r(X)
+Proof:
+  assume big_r(X)
+  hence big_r(X) /\ (big_r(Y) => big_q(Y,esk2_1(Y))) /\ (big_q(Y,Z) => big_q(Y,Y)) => big_r(X)
+    by discharge

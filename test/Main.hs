@@ -128,7 +128,13 @@ handcraftedNames =
 
 benchmarkNames :: [String]
 benchmarkNames =
-  [ "ANA023-2"
+  -- a Twee chain rewriting by zero = divide(zero,X), whose fresh variable the
+  -- next step fixes
+  [ "HEN009-3"
+  -- a candidate lemma whose sub-proof must read its own conjecture and not
+  -- the outer one
+  , "ALG210+2"
+  , "ANA023-2"
   , "GRP001-5"
   , "LCL146-1"
   , "horn_example_derived_rw"
@@ -282,7 +288,27 @@ eBenchmarkNames =
   -- which unfolds to the existential goals a and b
   , "SYN577-1"
   , "COM001_1"        -- a typed proof from E, whose clauses are tcf units
-  , "e_cdclpropres"   -- refused, its last step is outside the calculus
+  -- E's propositional refutation of the cited Horn clauses, replayed as the
+  -- chain of resolutions
+  , "e_cdclpropres"
+  , "CSR026+3"        -- the same step over seven clauses, a chain through a lemma
+  -- the same step where the goal is existential, so the chain must state the
+  -- instantiation the propositional step leaves out
+  , "CSR057+3"
+  -- p <=> p states one implication twice, so its Horn reading assumes p and
+  -- derives p, and the refusal names what the proof really lacks
+  , "SYN390+1"
+  -- a hypothesis promising a witness, big_r(Y) => ? [Z] : big_q(Y,Z), which
+  -- is a Horn clause at the term the prover's Skolemization named
+  , "SYN359+1"
+  -- the same with a conjunctive conclusion, one clause per conjunct
+  , "SYN729+1"
+  -- one source formula stating two axioms with the same body and different
+  -- heads, which must keep their own numbers or a step cites the other one
+  , "MGT001+1"
+  -- a hypothesis the conjecture grants, which is stated and not proved, so it
+  -- is no lemma candidate
+  , "LCL888+1"
   -- a negated conjunction whose one negated conjunct is the goal, with E's
   -- negation step nested in a fof_simplification
   , "LCL414+1"

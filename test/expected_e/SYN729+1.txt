@@ -1,0 +1,19 @@
+Goal 1: p(X) /\ (p(Y) => p(esk1_1(Y))) /\ (p(Y) => p(h(Y))) /\ (p(Y) => p(g(Y))) /\ (p(Y) => l(Y,g(h(esk1_1(Y))))) => l(X,g(h(esk1_1(X))))
+Proof:
+  assume p(X)
+  hence l(X,g(h(esk1_1(X))))
+    by assumption 5
+  hence p(X) /\ (p(Y) => p(esk1_1(Y))) /\ (p(Y) => p(h(Y))) /\ (p(Y) => p(g(Y))) /\ (p(Y) => l(Y,g(h(esk1_1(Y))))) => l(X,g(h(esk1_1(X))))
+    by discharge
+
+Goal 2: p(X) /\ (p(Y) => p(esk1_1(Y))) /\ (p(Y) => p(h(Y))) /\ (p(Y) => p(g(Y))) /\ (p(Y) => l(Y,g(h(esk1_1(Y))))) => p(g(h(esk1_1(X))))
+Proof:
+  assume p(X)
+  hence p(esk1_1(X))
+    by assumption 2
+  hence p(h(esk1_1(X)))
+    by assumption 3
+  hence p(g(h(esk1_1(X))))
+    by assumption 4
+  hence p(X) /\ (p(Y) => p(esk1_1(Y))) /\ (p(Y) => p(h(Y))) /\ (p(Y) => p(g(Y))) /\ (p(Y) => l(Y,g(h(esk1_1(Y))))) => p(g(h(esk1_1(X))))
+    by discharge

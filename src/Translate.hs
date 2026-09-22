@@ -24,8 +24,9 @@ import System.IO (hPutStrLn, stderr)
 
 import Types
 import Helpers
+import PropRes (expandPropRes)
 import ProofTree
-  ( buildProofInfo, conjectureHypotheses, inlineAtomCongruences, headLitOf, isDerivedUnit, isOrigAxiomDecl, isPositiveUnitFormula, unitNameStr
+  ( buildProofInfo, conjectureHypotheses, inlineAtomCongruences, headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, unitNameStr
   , resolveCopySource
   )
 import TptpConvert
@@ -141,7 +142,7 @@ translateUntyped debug tstp = do
 -- inside a lemma is still listed.
 translateMode :: Bool -> T.TSTP -> IO (Either String StructuredProof)
 translateMode debug (T.TSTP _ units0) = do
-  let units = inlineAtomCongruences units0
+  let units = expandPropRes (inlineAtomCongruences units0)
   depth <- subrunDepth
   when (depth == 0) clearLemmaCache
   case buildProofInfo units of
@@ -154,17 +155,32 @@ translateMode debug (T.TSTP _ units0) = do
           negationConj = case conjectureHypotheses units of
             Just (_, cons) -> not (null cons)
             Nothing        -> False
-          -- a source unit that gave several axioms names none of them, so a
-          -- sub-run numbers those itself and they are merged by statement
-          sourceNames = Map.fromListWith Set.union
-            [ (leName e, Set.singleton nm)
-            | e <- origLeaves, leRole e == OrigAxiom
+          -- A source unit that clausifies to several axioms is remembered
+          -- under one key per clause, since the display name belongs to the
+          -- clause and not to the unit.  MGT001+1 states two axioms with the
+          -- same body and different heads in one formula, and naming them by
+          -- the unit alone made a step cite the other one.
+          namedOrig =
+            [ (leName e, k, nm)
+            | (e, k) <- [ (e, electronNameKey unitMap0 e) | e <- piElectrons origInfo ]
+                     ++ [ (e, nucleusNameKey e)           | e <- piNuclei origInfo ]
+            , leRole e == OrigAxiom
             , Just nm <- [Map.lookup (lePos e) origPosToName] ]
-          origTstp2name = Map.fromList
-            [ (src, nm) | (src, nms) <- Map.toList sourceNames, [nm] <- [Set.toList nms] ]
+          uniqueNames tagged = Map.fromList
+            [ (src, nm)
+            | (src, nms) <- Map.toList (Map.fromListWith Set.union tagged)
+            , [nm] <- [Set.toList nms] ]
+          origTstp2name = Map.union
+            (uniqueNames [ (k, Set.singleton nm)      | (_, k, nm) <- namedOrig ])
+            (uniqueNames [ (src, Set.singleton nm)    | (src, _, nm) <- namedOrig ])
           origAxiomNames = Set.fromList [ leName e | e <- origLeaves, leRole e == OrigAxiom ]
+          -- An axiom or a hypothesis the conjecture grants is stated, not
+          -- proved, so it is no lemma candidate.  LCL888+1/E's hypothesis
+          -- esk3_0 = ==>(esk3_0, esk2_0) became a lemma whose one rewrite
+          -- step cited that lemma itself.
           candidates = filter (\(cname, _) ->
-                          resolveCopySource unitMap0 cname `Set.notMember` origAxiomNames)
+                          resolveCopySource unitMap0 cname `Set.notMember` origAxiomNames
+                          && cname `Set.notMember` origAxiomNames)
                         (findLemmaCandidates units)
       -- A candidate lemma is an optimisation, so a failing sub-translation inlines
       -- that step instead of abandoning the proof.  Without this catch the first
@@ -243,17 +259,30 @@ translateMode debug (T.TSTP _ units0) = do
                    , Just c <- [convertDeclToClause (leDecl e)]
                    , any (`clauseInstance` c) cons ]
             _ -> []
-          withInput sp = generalizeGoals (negationGoal (sp { spInput = input }))
+          withInput sp = tightenChains (generalizeGoals (negationGoal (sp { spInput = input })))
       -- A hypothesis the proof assumed must be granted by the conjecture, or
       -- the emitted theorem would be stronger than the conjecture states.  A
       -- positive clause from a negative position of the conjecture, as
       -- ? [Y] : ! [X] : (p(Y) => p(X)) yields, makes the refutation a case
       -- split, which no direct Horn proof presents.
+      -- A hypothesis promising a witness is granted only at a term the
+      -- prover's Skolemization named, so a witness variable must stand for a
+      -- symbol the problem does not state.
+      let problemSyms = Set.fromList
+            [ f | T.Unit n d _ <- units, isFileSrc unitMap0 (unitNameStr n)
+                , f <- fst (declSymbols d) ]
+          witnessNamed sigma = and
+            [ introduced t | (v, t) <- sigma, isWitnessVar v ]
+          introduced t = case t of
+            App f _ -> Set.notMember f problemSyms
+            Const c -> Set.notMember c problemSyms
+            Var _   -> False
+          grants g c = maybe False witnessNamed (clauseInstanceSubst g c)
       case conjectureHypotheses units of
         Just (ante, cons) -> let granted = ante ++ cons in
           forM_ [ e | e <- origLeaves, leHyp e ] $ \e ->
             case convertDeclToClause (leDecl e) of
-              Just c | not (any (`clauseInstance` c) granted) ->
+              Just c | not (any (\g -> grants g c) granted) ->
                 error ("unsupported conjecture, its negation yields the positive clause "
                        ++ leUnit e ++ " from a negative position, so its proof is a case split")
               _ -> return ()
@@ -292,6 +321,17 @@ negationGoal sp
 -- share it.  A Skolem term of the hypotheses alone stays, since a hypothesis
 -- is a clause of its own and a variable there would be quantified within it,
 -- while a free term ranges over the whole theorem.
+-- Bind the variables a rewrite chain introduces and its next step fixes, in
+-- every lemma and goal block.  It runs on the assembled proof, where the
+-- blocks state variables and no longer Theorem 1's fresh constants.
+tightenChains :: StructuredProof -> StructuredProof
+tightenChains sp = sp
+  { lemmas = [ (n, l, tighten b) | (n, l, b) <- lemmas sp ]
+  , goals  = [ (l, tighten b)    | (l, b)    <- goals sp ] }
+  where
+    tighten (EqChain start steps) = uncurry EqChain (tightenChainVars start steps)
+    tighten b                      = b
+
 generalizeGoals :: StructuredProof -> StructuredProof
 generalizeGoals sp
   | null fresh = sp
@@ -1914,6 +1954,17 @@ proveGoal simpl mChain goal = do
 
 -- use the general source formula for OrigAxiom, falling back to the derived
 -- literal when resolveSourceName traced through rewriting to an unrelated source
+-- The key an axiom's display name is remembered under, its source unit and
+-- the clause it states, so one unit clausifying to several axioms keeps them
+-- apart.
+electronNameKey :: Map.Map String T.Unit -> LeafEntry -> String
+electronNameKey unitMap e =
+  leName e ++ "#" ++ clauseKey (Clause [] (Just (electronLit unitMap e)))
+
+nucleusNameKey :: LeafEntry -> String
+nucleusNameKey e =
+  leName e ++ "#" ++ maybe "" clauseKey (convertDeclToClause (leSrcDecl e))
+
 electronLit :: Map.Map String T.Unit -> LeafEntry -> Literal
 electronLit unitMap e = case leRole e of
   OrigAxiom ->
@@ -1981,7 +2032,7 @@ assignAxiomNames nameOverride negationConj goalLits0 electrons nuclei unitMap =
     step (axAcc, posMap, seen) (pos, Left e) =
       let origKey = leName e
           lit     = electronLit unitMap e
-          seenKey = origKey ++ "#" ++ clauseKey (Clause [] (Just lit))
+          seenKey = electronNameKey unitMap e
       in case Map.lookup seenKey seen of
            -- An internal unit is recorded under the empty sentinel.  A later occurrence
            -- is skipped like the first, or the step prints a nameless "by".
@@ -1989,13 +2040,13 @@ assignAxiomNames nameOverride negationConj goalLits0 electrons nuclei unitMap =
              (axAcc, Map.insert pos existingName posMap, seen)
            Just _ -> (axAcc, posMap, seen)
            Nothing ->
-             case Map.lookup origKey nameOverride of
+             case Map.lookup seenKey nameOverride <|> Map.lookup origKey nameOverride of
                Just nm | not (null nm) ->
                  -- Use the main proof's display name, which is already in the outer axiom list
-                 (axAcc, Map.insert pos nm posMap, Map.insert origKey nm seen)
+                 (axAcc, Map.insert pos nm posMap, Map.insert seenKey nm seen)
                Just _ ->
                  -- The empty sentinel marks an internal Twee axiom, which is skipped
-                 (axAcc, posMap, Map.insert origKey "" seen)
+                 (axAcc, posMap, Map.insert seenKey "" seen)
                Nothing ->
                  let nm = freshAxiomName axAcc
                  in (axAcc ++ [AUnit nm lit],
@@ -2005,7 +2056,7 @@ assignAxiomNames nameOverride negationConj goalLits0 electrons nuclei unitMap =
     step (axAcc, posMap, seen) (pos, Right e) =
       -- leSrcDecl preserves the original body-literal order and equation direction
       let origKey = leName e
-          seenKey = origKey ++ "#" ++ maybe "" clauseKey (convertDeclToClause (leSrcDecl e))
+          seenKey = nucleusNameKey e
       in case Map.lookup seenKey seen of
            -- An internal unit is recorded under the empty sentinel.  A later occurrence
            -- is skipped like the first, or the step prints a nameless "by".
@@ -2013,11 +2064,11 @@ assignAxiomNames nameOverride negationConj goalLits0 electrons nuclei unitMap =
              (axAcc, Map.insert pos existingName posMap, seen)
            Just _ -> (axAcc, posMap, seen)
            Nothing ->
-             case Map.lookup origKey nameOverride of
+             case Map.lookup seenKey nameOverride <|> Map.lookup origKey nameOverride of
                Just nm | not (null nm) ->
-                 (axAcc, Map.insert pos nm posMap, Map.insert origKey nm seen)
+                 (axAcc, Map.insert pos nm posMap, Map.insert seenKey nm seen)
                Just _ ->
-                 (axAcc, posMap, Map.insert origKey "" seen)
+                 (axAcc, posMap, Map.insert seenKey "" seen)
                Nothing ->
                  -- a headless clause stating the goals is the negated conjecture and gets
                  -- no axiom name, while any other headless clause is a negative fact and is

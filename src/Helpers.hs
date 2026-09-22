@@ -162,7 +162,8 @@ applyTermSubstBlock s (HaveHence ls) = HaveHence (map go ls)
     go (Hence lit j)  = Hence (applyTermSubstLit s lit) j
 applyTermSubstBlock s (EqChain start steps) =
   EqChain (applyTermSubstTerm s start)
-          [(rw, applyTermSubstTerm s cur) | (rw, cur) <- steps]
+          [ (RwStep nm (applyTermSubstTerm s l, applyTermSubstTerm s r) d, applyTermSubstTerm s cur)
+          | (RwStep nm (l, r) d, cur) <- steps ]
 
 applyConstSubstBlock :: [(String, Term)] -> ProofBlock -> ProofBlock
 applyConstSubstBlock s (HaveHence ls) = HaveHence (map go ls)
@@ -172,7 +173,8 @@ applyConstSubstBlock s (HaveHence ls) = HaveHence (map go ls)
     go (Hence lit j)  = Hence (applyConstSubstLit s lit) j
 applyConstSubstBlock s (EqChain start steps) =
   EqChain (applyConstSubstTerm s start)
-          [(rw, applyConstSubstTerm s cur) | (rw, cur) <- steps]
+          [ (RwStep nm (applyConstSubstTerm s l, applyConstSubstTerm s r) d, applyConstSubstTerm s cur)
+          | (RwStep nm (l, r) d, cur) <- steps ]
 
 -- Fails if a shared variable has conflicting bindings.
 -- Extends a substitution and composes as it goes, applying each new binding
@@ -225,6 +227,100 @@ litSubtermCtxs lit = case lit of
   where
     argCtxs ts = [ (u, \x -> take i ts ++ [c x] ++ drop (i + 1) ts)
                  | (i, t) <- zip [0 ..] ts, (u, c) <- termCtxs t ]
+
+-- Every way of rewriting a term once with an equation, at any subterm.
+rewriteResults :: Term -> (Term, Term) -> Dir -> [Term]
+rewriteResults t (l, r) dir =
+  [ ctx (applySubstTerm s rhs) | (u, ctx) <- termCtxs t, Just s <- [matchTerms lhs u] ]
+  where (lhs, rhs) = if dir == LR then (l, r) else (r, l)
+
+-- An equation whose right side has a variable its left side lacks, such as
+-- zero = divide(zero,X), brings that variable into the line it rewrites, and
+-- the next step then uses it at one value.  Read on its own the line would
+-- hold for every value, which is more than the step gives, so the variable is
+-- bound here to the value the next step takes and the chain states the
+-- instance the proof uses.
+tightenChainVars :: Term -> [(RwStep, Term)] -> (Term, [(RwStep, Term)])
+tightenChainVars start steps =
+  (apply start, [ (st, apply t) | (st, t) <- steps ])
+  where
+    terms    = start : map snd steps
+    -- the chain states an equation between its first and last term, so the
+    -- variables of both belong to the statement and stay as they are
+    stmtVars = termVars start ++ termVars (last terms)
+    local v  = v `notElem` stmtVars
+    apply    = deepApplySubstTerm sigma
+    -- only a chain that carries a variable of its own can need this
+    sigma | all (`elem` stmtVars) (concatMap termVars terms) = []
+          | otherwise = foldl bind [] [0 .. length steps - 1]
+
+    -- A step rewrites one subterm, so the line and the next one differ there.
+    -- When the cited equation does not take the one into the other as they
+    -- stand, the variables the chain brought along are bound to the values
+    -- the step takes them at.
+    bind acc i =
+      let prev = deepApplySubstTerm acc (terms !! i)
+          cur  = deepApplySubstTerm acc (terms !! (i + 1))
+          RwStep _ (l, r) dir = fst (steps !! i)
+          (l0, r0) = if dir == LR then (l, r) else (r, l)
+          -- the equation's variables are its own, so they are renamed apart
+          -- from the line's, which may use the same names
+          apart = [ (v, Var (v ++ "_ax")) | v <- nub (termVars l0 ++ termVars r0) ]
+          (lhs, rhs) = (applySubstTerm apart l0, applySubstTerm apart r0)
+      in case diffSubterm prev cur of
+           Nothing -> acc
+           Just (x, y)
+             | not (any local (termVars x ++ termVars y)) -> acc
+             | rewrites lhs rhs x y -> acc
+             | otherwise -> case fixup lhs rhs x y of
+                 (rho : _) -> acc ++ rho
+                 []        -> acc
+
+    -- The equation takes x to y as it stands.  Its own variables may be
+    -- instantiated here, since it holds for every value of them, while a
+    -- variable of the line is one the step is fixing and not free to move.
+    rewrites lhs rhs x y = or
+      [ True
+      | Just s  <- [matchTerms lhs x]
+      , Just s2 <- [matchTerms (applySubstTerm s rhs) y]
+      , all (\(v, t) -> t == Var v || v `notElem` (termVars x ++ stmtVars)) s2 ]
+
+    -- the equation applies once the chain's own variables take the values
+    -- unifying it with the step demands
+    fixup lhs rhs x y =
+      [ rho
+      | Just s1 <- [unifyTerms lhs x []]
+      , Just s2 <- [unifyTerms (deepApplySubstTerm s1 rhs) (deepApplySubstTerm s1 y) s1]
+      -- the value must be one the chain states, never a variable of the
+      -- equation, which stands for nothing outside its own step
+      -- resolve the unifier so a value stated through the equation's own
+      -- variable comes out as the term the chain has there
+      , let s2' = [ (v, deepApplySubstTerm s2 t) | (v, t) <- s2 ]
+      , let rho = [ b | b@(v, t) <- orient s2'
+                      , local v, t /= Var v, v `elem` (termVars x ++ termVars y)
+                      , all (`elem` (termVars x ++ termVars y ++ stmtVars)) (termVars t) ]
+      , not (null rho)
+      , rewrites lhs rhs (deepApplySubstTerm rho x) (deepApplySubstTerm rho y) ]
+
+    -- unification may bind the line's variable to the statement's or the
+    -- other way round, and only the line's may be bound
+    orient rho = [ case t of
+                     Var w | not (local v), local w -> (w, Var v)
+                     _                              -> (v, t)
+                 | (v, t) <- rho ]
+
+-- The smallest subterm pair holding every difference between two terms, and
+-- nothing when they are equal.  A step rewrites one subterm, so this is the
+-- redex and its replacement.
+diffSubterm :: Term -> Term -> Maybe (Term, Term)
+diffSubterm a b
+  | a == b = Nothing
+  | otherwise = case (a, b) of
+      (App f as, App g bs)
+        | f == g, length as == length bs
+        , [(x, y)] <- [ p | p@(x, y) <- zip as bs, x /= y ] ->
+            Just (fromMaybe (x, y) (diffSubterm x y))
+      _ -> Just (a, b)
 
 termCtxs :: Term -> [(Term, Term -> Term)]
 termCtxs t = (t, id) : case t of
@@ -383,6 +479,25 @@ flipDir RL = LR
 falsumLit :: Literal
 falsumLit = Rel "$false" []
 
+-- The fact a block ends on establishes the literal it is stored under, up to
+-- orientation and instantiation.  A block whose last line states something
+-- else proves nothing about that literal, as ALG210+2's candidate lemmas did
+-- when their sub-proof only restated the assumption they rest on.
+blockConcludes :: Literal -> ProofBlock -> Bool
+blockConcludes lit blk = case blk of
+  HaveHence ls -> case reverse ls of
+    (l : _) -> ok (lineLit l)
+    []      -> False
+  EqChain start steps -> case reverse steps of
+    ((_, t) : _) -> ok (Eq start t)
+                    || (t == Const "true" && start == atomTerm lit)
+    []           -> False
+  where
+    ok l = isJust (matchLit l lit) || isJust (matchLit (flipLit l) lit)
+    lineLit (Have l _)  = l
+    lineLit (And l _)   = l
+    lineLit (Hence l _) = l
+
 isEmptyBlock :: ProofBlock -> Bool
 isEmptyBlock (HaveHence []) = True
 isEmptyBlock (EqChain _ []) = True
@@ -407,8 +522,24 @@ clauseKey (Clause bs mh) = minimum (map keyOf orders)
 -- The second clause is an instance of the first, the body literals matched
 -- in any order.
 clauseInstance :: Clause -> Clause -> Bool
-clauseInstance (Clause bs1 h1) (Clause bs2 h2) =
-  length bs1 == length bs2 && isJust (do
+clauseInstance c1 c2 = isJust (clauseInstanceSubst c1 c2)
+
+-- The prefix of a variable standing for the witness of an existential
+-- conclusion a hypothesis of the conjecture promises, as SYN359+1's
+-- big_r(Y) => ? [Z] : big_q(Y,Z) does.  The conjecture grants the clause only
+-- at a witness the prover named, so the substitution is checked at these
+-- variables where the clause is granted.
+witnessPrefix :: String
+witnessPrefix = "Wit_"
+
+isWitnessVar :: String -> Bool
+isWitnessVar = (witnessPrefix `isPrefixOf`)
+
+-- The matching substitution when the second clause is an instance of the
+-- first, the body literals matched in any order.
+clauseInstanceSubst :: Clause -> Clause -> Maybe Subst
+clauseInstanceSubst (Clause bs1 h1) (Clause bs2 h2) =
+  if length bs1 /= length bs2 then Nothing else (do
     σ <- case (h1, h2) of
       (Just a, Just b)   -> matchEither a b []
       (Nothing, Nothing) -> Just []

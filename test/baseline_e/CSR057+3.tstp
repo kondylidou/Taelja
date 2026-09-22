@@ -1,0 +1,28 @@
+fof(query157, conjecture, ?[X15]:((mtvisible(c_tptpgeo_member8_mt)=>inregion(X15,c_georegion_l4_x75_y75))), file('Problems/CSR/CSR057+3.p', query157)).
+fof(ax2_7997, axiom, ![X21, X22]:(((mtvisible(X21)&genlmt(X21,X22))=>mtvisible(X22))), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/CSR002+2.ax', ax2_7997)).
+fof(ax2_1724, axiom, ![X1]:((geolevel_4(X1)=>geographicalregion(X1))), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/CSR002+2.ax', ax2_1724)).
+fof(ax2_1120, axiom, (mtvisible(c_worldgeographymt)=>geolevel_4(c_georegion_l4_x75_y75)), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/CSR002+2.ax', ax2_1120)).
+fof(ax2_1229, axiom, genlmt(c_tptpgeo_member8_mt,c_tptpgeo_spindleheadmt), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/CSR002+2.ax', ax2_1229)).
+fof(ax2_1111, axiom, genlmt(c_tptpgeo_spindleheadmt,c_worldgeographymt), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/CSR002+2.ax', ax2_1111)).
+fof(ax2_7882, axiom, ![X15]:((geographicalregion(X15)=>geographicalsubregions(X15,X15))), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/CSR002+2.ax', ax2_7882)).
+fof(ax2_1935, axiom, ![X3, X4]:((geographicalsubregions(X3,X4)=>inregion(X4,X3))), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/CSR002+2.ax', ax2_1935)).
+fof(c_0_8, negated_conjecture, ~(?[X15]:((mtvisible(c_tptpgeo_member8_mt)=>inregion(X15,c_georegion_l4_x75_y75)))), inference(assume_negation,[status(cth)],[query157])).
+fof(c_0_9, plain, ![X5978, X5979]:((~mtvisible(X5978)|~genlmt(X5978,X5979)|mtvisible(X5979))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax2_7997])])])).
+fof(c_0_10, negated_conjecture, ![X5993]:((mtvisible(c_tptpgeo_member8_mt)&~inregion(X5993,c_georegion_l4_x75_y75))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[c_0_8])])])).
+fof(c_0_11, plain, ![X528]:((~geolevel_4(X528)|geographicalregion(X528))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax2_1724])])])).
+fof(c_0_12, plain, (~mtvisible(c_worldgeographymt)|geolevel_4(c_georegion_l4_x75_y75)), inference(fof_nnf,[status(thm)],[inference(fof_nnf,[status(thm)],[ax2_1120])])).
+cnf(c_0_13, plain, (mtvisible(X2)|~mtvisible(X1)|~genlmt(X1,X2)), inference(split_conjunct,[status(thm)],[c_0_9])).
+cnf(c_0_14, plain, (genlmt(c_tptpgeo_member8_mt,c_tptpgeo_spindleheadmt)), inference(split_conjunct,[status(thm)],[ax2_1229])).
+cnf(c_0_15, negated_conjecture, (mtvisible(c_tptpgeo_member8_mt)), inference(split_conjunct,[status(thm)],[c_0_10])).
+cnf(c_0_16, plain, (genlmt(c_tptpgeo_spindleheadmt,c_worldgeographymt)), inference(split_conjunct,[status(thm)],[ax2_1111])).
+cnf(c_0_17, plain, (geographicalregion(X1)|~geolevel_4(X1)), inference(split_conjunct,[status(thm)],[c_0_11])).
+cnf(c_0_18, plain, (geolevel_4(c_georegion_l4_x75_y75)|~mtvisible(c_worldgeographymt)), inference(split_conjunct,[status(thm)],[c_0_12])).
+fof(c_0_19, plain, ![X5794]:((~geographicalregion(X5794)|geographicalsubregions(X5794,X5794))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax2_7882])])])).
+fof(c_0_20, plain, ![X591, X592]:((~geographicalsubregions(X591,X592)|inregion(X592,X591))), inference(fof_nnf,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[ax2_1935])])])).
+cnf(c_0_21, plain, (mtvisible(c_tptpgeo_spindleheadmt)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_13, c_0_14]), c_0_15])])).
+cnf(c_0_22, plain, (mtvisible(c_worldgeographymt)|~mtvisible(c_tptpgeo_spindleheadmt)), inference(spm,[status(thm)],[c_0_13, c_0_16])).
+cnf(c_0_23, plain, (geographicalregion(c_georegion_l4_x75_y75)|~mtvisible(c_worldgeographymt)), inference(spm,[status(thm)],[c_0_17, c_0_18])).
+cnf(c_0_24, plain, (geographicalsubregions(X1,X1)|~geographicalregion(X1)), inference(split_conjunct,[status(thm)],[c_0_19])).
+cnf(c_0_25, plain, (inregion(X2,X1)|~geographicalsubregions(X1,X2)), inference(split_conjunct,[status(thm)],[c_0_20])).
+cnf(c_0_26, negated_conjecture, (~inregion(X1,c_georegion_l4_x75_y75)), inference(split_conjunct,[status(thm)],[c_0_10])).
+cnf(c_0_27, plain, ($false), inference(cdclpropres,[status(thm)],[c_0_21, c_0_22, c_0_23, c_0_24, c_0_25, c_0_26]), ['proof']).

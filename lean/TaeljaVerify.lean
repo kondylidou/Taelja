@@ -85,6 +85,15 @@ import TaeljaVerify.Twee.Col0221
 -- E prover test cases
 import TaeljaVerify.E.Ana0232
 import TaeljaVerify.E.Col0034
+import TaeljaVerify.E.Csr0263
+import TaeljaVerify.E.Syn7291s
+import TaeljaVerify.E.Syn3591s
+import TaeljaVerify.E.Csr0573
+import TaeljaVerify.Vampire.Alg2102s
+import TaeljaVerify.Vampire.Hen0093s
+import TaeljaVerify.E.Lcl8881s
+import TaeljaVerify.E.Mgt0011s
+import TaeljaVerify.E.ECdclpropres
 import TaeljaVerify.E.EUnitSourceAxiom
 import TaeljaVerify.E.Grp0071
 import TaeljaVerify.E.Hen0064
