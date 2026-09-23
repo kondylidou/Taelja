@@ -304,7 +304,16 @@ negationGoal sp
   | otherwise = case [ b | (l, b) <- goals sp, l == falsumLit ] of
       b : _ -> sp { goals = [(falsumLit, b)] }
       []    -> case goals sp of
-        (_, blk) : _ -> sp { goals = [(falsumLit, dropContradiction blk)] }
+        -- a goal block built by the contradiction route derives $false and
+        -- then restates the goal, and that derivation is the proof shown.
+        -- Any other block proves an atom and not the negation, so the
+        -- proof is not one of the conjecture, as PUZ129+2/Twee's block
+        -- ending on property1(s,healthy,pos) was not.
+        (_, blk) : _
+          | blk' <- dropContradiction blk, blockConcludes falsumLit blk' ->
+              sp { goals = [(falsumLit, blk')] }
+          | otherwise ->
+              error "the derivation of $false from the negated conclusion is not shown"
         []           -> sp
   where
     dropContradiction (HaveHence ls) = HaveHence (reverse (dropWhile isContra (reverse ls)))
@@ -2493,7 +2502,6 @@ runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
       -- a goal block that already derives $false, as the contradiction route
       -- builds, is that derivation and stays as it is
       when (negation && not (any (derivesFalse . snd) gs0)) $ case closerName goalLits posToName of
-        Nothing -> return ()
         Just ax -> do
           gs <- gets stGoals
           prems <- forM gs $ \(g, b) -> do
@@ -2501,10 +2509,46 @@ runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
             return (g, nm)
           let ls = [ (if i == (0 :: Int) then Have else And) g nm | (i, (g, nm)) <- zip [0 ..] prems ]
           modify $ \st -> st { stClosing = Just (HaveHence (ls ++ [Hence falsumLit (ByAxiom ax)])) }
+        -- The closing clause may also rest on a hypothesis or a unit the
+        -- proof named beside the conjuncts' goals, as PUZ129+2's
+        -- grocer(Z) /\ property1(Z,healthy,pos) => $false does with the
+        -- assumption grocer(s) and the derived property1(s,healthy,pos).
+        -- Its body is established literal by literal under one substitution.
+        Nothing -> do
+          gs    <- gets stGoals
+          units <- gets stUnits
+          let named = [ (ueUnit u, Left nm) | u <- units, Just nm <- [ueName u] ]
+                   ++ [ (g, Right b) | (g, b) <- gs ]
+              establish sigma [] = [(sigma, [])]
+              establish sigma (b : bs) =
+                [ (sigma'', (applySubst sigma'' b, src) : rest)
+                | (l, src) <- named
+                , Just sigma' <- [matchLitWith b l sigma]
+                , (sigma'', rest) <- establish sigma' bs ]
+              closers =
+                [ (nm, prems)
+                | e <- piNuclei info
+                , Just (Clause bs Nothing) <- [closerClause e]
+                , not (null bs)
+                , Just nm <- [Map.lookup (lePos e) posToName]
+                , (_, prems) : _ <- [establish [] bs] ]
+          case closers of
+            [] -> return ()
+            (ax, prems) : _ -> do
+              named' <- forM prems $ \(g, src) -> case src of
+                Left nm -> return (g, nm)
+                Right b -> do
+                  nm <- ensureNamed g (return b)
+                  return (g, nm)
+              let ls = [ (if i == (0 :: Int) then Have else And) g nm | (i, (g, nm)) <- zip [0 ..] named' ]
+              modify $ \st -> st { stClosing = Just (HaveHence (ls ++ [Hence falsumLit (ByAxiom ax)])) }
+    -- a hypothesis clausified from a FOF conjecture has that whole formula
+    -- as its source, so the clause the leaf states is read then
+    closerClause e = convertDeclToClause (leSrcDecl e) <|> convertDeclToClause (leDecl e)
     -- the clause that closes the refutation on the conjuncts, by its display name
     closerName goalLits posToName = listToMaybe
       [ nm | e <- piNuclei info
-           , Just (Clause bs Nothing) <- [convertDeclToClause (leSrcDecl e)]
+           , Just (Clause bs Nothing) <- [closerClause e]
            , length bs == length goalLits
            , all (\b -> any (\g -> isJust (matchLit b g) || isJust (matchLit g b)) goalLits) bs
            , Just nm <- [Map.lookup (lePos e) posToName] ]
