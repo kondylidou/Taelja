@@ -959,7 +959,9 @@ findElecIO
   -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
 findElecIO li thn pos units = case li of
   Eq l r -> do
-    mRaw <- liftIO (callTwee InternalBudget (tweableUnits units) (Eq l r))
+    allowed <- gets stProverAllowed
+    mRaw <- if not allowed then return Nothing
+            else liftIO (callTwee InternalBudget (tweableUnits units) (Eq l r))
     case mRaw of
       Nothing       -> return Nothing
       Just (_, [])  -> return Nothing
@@ -1005,7 +1007,8 @@ findElecIO li thn pos units = case li of
         -- variables become fresh constants for the call.  Twee reads goal variables
         -- existentially, and the chain is lifted back afterwards.
         let (liSk, undoSk) = skolemizeLitFresh li
-        mRaw <- if null eqEntries then return Nothing
+        allowed <- gets stProverAllowed
+        mRaw <- if null eqEntries || not allowed then return Nothing
                 else liftIO (callTwee InternalBudget (tweableUnits units) liSk)
         case fmap (second (map (\(u, d, t) -> (u, d, applyConstSubstTerm undoSk t)))) mRaw of
           Just (_, chain) | not (null chain) -> do
@@ -1057,6 +1060,9 @@ findElecIO li thn pos units = case li of
               ++ show [ pos' | (_, pos', _, _) <- cands ]
             goRe cands
           tryHornFallback = do
+            allowed <- gets stProverAllowed
+            if not allowed then return Nothing else tryHornFallback'
+          tryHornFallback' = do
             hornAxioms <- gets stHornAxioms
             -- Exclude axioms with equational heads or bodies.  The ifeq encoding makes
             -- equational bodies unconditional and equational heads vanish.
@@ -1726,12 +1732,22 @@ processNuclei debug thetaCtx nuclei posToName goalLits simpl = do
   when debug $ liftIO $ dbg True $ "θ = {"
     ++ intercalate ", " [ v ++ "@" ++ lePos e ++ "→" ++ ppTerm t
                         | e <- nuclei, (v, t) <- computeNucleusTheta thetaCtx e ] ++ "}"
-  go nuclei
+  -- The paper's find_elec calls the prover only once no candidate matches
+  -- directly or along its rewriting chain.  A nucleus that fails on one pass
+  -- is retried once later passes have derived the electron it needs, so the
+  -- prover is withheld until the passes over matches and chains make no more
+  -- progress, and only the nuclei still open are then retried with it.
+  -- LCL121-1 asked Twee 536 times for nuclei it then matched without it,
+  -- and spent its budget on that.
+  modify (\st -> st { stProverAllowed = False })
+  remaining <- go nuclei
+  modify (\st -> st { stProverAllowed = True })
+  unless (null remaining) $ void (go remaining)
   where
-    go [] = return ()
+    go [] = return []
     go pending = do
       open0 <- openGoalsOf goalLits
-      unless (null open0) $ do
+      if null open0 then return [] else do
         prevCount <- gets (length . stUnits)
         failed    <- processPass pending
         newCount  <- gets (length . stUnits)
@@ -1740,8 +1756,9 @@ processNuclei debug thetaCtx nuclei posToName goalLits simpl = do
         -- This handles Vampire FOF proofs where axiom leaves appear at deeper
         -- positions than refutation-chain inner nodes (string-sort ordering
         -- puts inner nodes first, but axioms may depend on each other).
-        when (newCount > prevCount && not (null open2) && not (null failed)) $
-          go failed
+        if newCount > prevCount && not (null open2) && not (null failed)
+          then go failed
+          else return failed
 
     processPass [] = return []
     processPass (entry : rest) = do
@@ -2434,6 +2451,7 @@ runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
 
       initSt = AlgState
         { stDebug      = debug
+        , stProverAllowed = True
         , stUnits      = namedUnits ++ listedAxiomUnits ++ derivedUnits ++ bgNamedUnits
         , stHornAxioms = hornAxiomEntries
         , stLemmas     = preLemmaEntries

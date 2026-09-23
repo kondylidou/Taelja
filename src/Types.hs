@@ -104,6 +104,7 @@ emptyInput = ProofInput Map.empty Map.empty Nothing Map.empty [] [] [] []
 
 data AlgState = AlgState
   { stDebug      :: Bool  -- gate for per-goal warnings (a stage's result may be superseded)
+  , stProverAllowed :: Bool  -- whether find_elec may call a prover, false during the cheap phase
   , stUnits      :: [UnitEntry]
   , stHornAxioms :: [HornAxiomEntry]  -- original Horn axioms for Twee fallback calls
   , stLemmas     :: [(String, Literal, ProofBlock)]
