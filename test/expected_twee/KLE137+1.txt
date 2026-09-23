@@ -1,0 +1,93 @@
+Axiom 1: multiplication(X,one) = X
+Axiom 2: addition(Y,Y) = Y
+Axiom 3: multiplication(addition(Y,Z),A) = addition(multiplication(Y,A),multiplication(Z,A))
+Axiom 4: multiplication(one,Y) = Y
+Axiom 5: addition(Y,addition(Z,B)) = addition(addition(Y,Z),B)
+Axiom 6: addition(Y,Z) = Z => leq(Y,Z)
+Axiom 7: leq(A,addition(multiplication(Y,A),Z)) => leq(A,multiplication(strong_iteration(Y),Z))
+
+Lemma 8: addition(x0,addition(x0,addition(multiplication(one,x0),one))) = addition(x0,addition(multiplication(one,x0),one))
+Proof:
+  addition(x0,addition(x0,addition(multiplication(one,x0),one)))
+= { by axiom 4 R->L }
+  addition(x0,addition(x0,addition(multiplication(one,multiplication(one,x0)),one)))
+= { by axiom 4 R->L }
+  addition(x0,addition(multiplication(one,x0),addition(multiplication(one,multiplication(one,x0)),one)))
+= { by axiom 4 R->L }
+  addition(multiplication(one,x0),addition(multiplication(one,x0),addition(multiplication(one,multiplication(one,x0)),one)))
+= { by axiom 4 }
+  addition(multiplication(one,x0),addition(multiplication(one,x0),addition(multiplication(one,x0),one)))
+= { by axiom 5 }
+  addition(addition(multiplication(one,x0),multiplication(one,x0)),addition(multiplication(one,x0),one))
+= { by axiom 2 }
+  addition(multiplication(one,x0),addition(multiplication(one,x0),one))
+= { by axiom 4 R->L }
+  addition(multiplication(one,x0),addition(multiplication(one,multiplication(one,x0)),one))
+= { by axiom 4 }
+  addition(x0,addition(multiplication(one,multiplication(one,x0)),one))
+= { by axiom 4 }
+  addition(x0,addition(multiplication(one,x0),one))
+
+Lemma 9: leq(x0,addition(x0,addition(multiplication(one,x0),one)))
+Proof:
+  have addition(x0,addition(x0,addition(multiplication(one,x0),one))) = addition(x0,addition(multiplication(one,x0),one))
+    by lemma 8
+  hence leq(x0,addition(x0,addition(multiplication(one,x0),one)))
+    by axiom 6
+
+Lemma 10: leq(x0,addition(multiplication(addition(one,one),x0),one))
+Proof:
+  leq(x0,addition(multiplication(addition(one,one),x0),one))
+= { by axiom 4 R->L }
+  leq(x0,addition(multiplication(addition(one,one),multiplication(one,x0)),one))
+= { by axiom 2 R->L }
+  leq(x0,addition(multiplication(addition(one,one),multiplication(addition(one,one),x0)),one))
+= { by axiom 4 R->L }
+  leq(multiplication(one,x0),addition(multiplication(addition(one,one),multiplication(addition(one,one),x0)),one))
+= { by axiom 2 R->L }
+  leq(multiplication(addition(one,one),x0),addition(multiplication(addition(one,one),multiplication(addition(one,one),x0)),one))
+= { by axiom 2 }
+  leq(multiplication(addition(one,one),x0),addition(multiplication(one,multiplication(addition(one,one),x0)),one))
+= { by axiom 4 }
+  leq(multiplication(addition(one,one),x0),addition(multiplication(addition(one,one),x0),one))
+= { by axiom 2 R->L }
+  leq(multiplication(addition(one,one),x0),addition(multiplication(addition(one,one),x0),addition(one,one)))
+= { by axiom 2 R->L }
+  leq(multiplication(addition(one,one),x0),addition(addition(multiplication(addition(one,one),x0),multiplication(addition(one,one),x0)),addition(one,one)))
+= { by axiom 5 R->L }
+  leq(multiplication(addition(one,one),x0),addition(multiplication(addition(one,one),x0),addition(multiplication(addition(one,one),x0),addition(one,one))))
+= { by axiom 2 }
+  leq(multiplication(addition(one,one),x0),addition(multiplication(addition(one,one),x0),addition(multiplication(addition(one,one),x0),one)))
+= { by axiom 4 R->L }
+  leq(multiplication(addition(one,one),x0),addition(multiplication(addition(one,one),x0),addition(multiplication(one,multiplication(addition(one,one),x0)),one)))
+= { by axiom 2 }
+  leq(multiplication(one,x0),addition(multiplication(addition(one,one),x0),addition(multiplication(one,multiplication(addition(one,one),x0)),one)))
+= { by axiom 4 }
+  leq(x0,addition(multiplication(addition(one,one),x0),addition(multiplication(one,multiplication(addition(one,one),x0)),one)))
+= { by axiom 2 }
+  leq(x0,addition(multiplication(one,x0),addition(multiplication(one,multiplication(addition(one,one),x0)),one)))
+= { by axiom 4 }
+  leq(x0,addition(x0,addition(multiplication(one,multiplication(addition(one,one),x0)),one)))
+= { by axiom 2 }
+  leq(x0,addition(x0,addition(multiplication(one,multiplication(one,x0)),one)))
+= { by axiom 4 }
+  leq(x0,addition(x0,addition(multiplication(one,x0),one)))
+= { by lemma 9 }
+  true
+
+Lemma 11: leq(x0,multiplication(strong_iteration(addition(one,one)),one))
+Proof:
+  have leq(x0,addition(multiplication(addition(one,one),x0),one))
+    by lemma 10
+  hence leq(x0,multiplication(strong_iteration(addition(one,one)),one))
+    by axiom 7
+
+Goal 1: leq(x0,strong_iteration(one))
+Proof:
+  leq(x0,strong_iteration(one))
+= { by axiom 2 R->L }
+  leq(x0,strong_iteration(addition(one,one)))
+= { by axiom 1 R->L }
+  leq(x0,multiplication(strong_iteration(addition(one,one)),one))
+= { by lemma 11 }
+  true

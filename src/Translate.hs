@@ -1364,7 +1364,21 @@ processOneNucleus
 processOneNucleus debug thetaCtx entry posToName goalLits simpl = do
   let pos    = lePos entry
       mAxName = Map.lookup pos posToName
-  case convertDeclToClause (leSrcDecl entry) of
+  -- a negated conjecture clause keeps the negated formula as its source,
+  -- which is no clause when it negates a universal, as Twee's
+  -- ~ ! [X] : leq(X, ...) on KLE137+1, and then the clause the leaf states
+  -- is the nucleus
+  -- Its body equations are oriented as the conjecture states them, since
+  -- the prover may have turned them round, and the goal is stated as the
+  -- conjecture does.
+  let leafCls = orientToGoals <$> convertDeclToClause (leDecl entry)
+      orientToGoals (Clause bs mh) = Clause (map orientLit bs) mh
+      statesGoal l = any (\g -> isJust (matchLit l g) || isJust (matchLit g l)) goalLits
+      orientLit l@(Eq a b)
+        | statesGoal l          = l
+        | statesGoal (Eq b a)   = Eq b a
+      orientLit l = l
+  case convertDeclToClause (leSrcDecl entry) <|> leafCls of
     Nothing  -> do
       liftIO $ dbg debug $ "[skip] pos=" ++ pos ++ " (" ++ leName entry ++ ") — could not convert to clause"
       return False

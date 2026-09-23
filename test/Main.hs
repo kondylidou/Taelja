@@ -43,7 +43,10 @@ tptpNames =
 
 tweeBenchmarkNames :: [String]
 tweeBenchmarkNames =
-  [ "sam"
+  -- a negated conjecture whose source is the negated universal formula,
+  -- which is no clause, so the clause the leaf states is the nucleus
+  [ "KLE137+1"
+  , "sam"
   , "ANA007-2"
   , "HEN005-6"
   , "thesis_example_both_lemmas_cnf"
