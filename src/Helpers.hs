@@ -2,7 +2,7 @@ module Helpers where
 
 import Control.Applicative ((<|>))
 import Data.Char (isAlphaNum)
-import Data.List (inits, intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, permutations, tails)
+import Data.List ((\\), inits, intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, permutations, tails)
 import Data.Maybe (fromMaybe, isJust, listToMaybe)
 import Types
 
@@ -257,12 +257,12 @@ tightenChainVars start steps =
           -- from the line's, which may use the same names
           apart = [ (v, Var (v ++ "_ax")) | v <- nub (termVars l0 ++ termVars r0) ]
           (lhs, rhs) = (applySubstTerm apart l0, applySubstTerm apart r0)
-      in case diffSubterm prev cur of
-           Nothing -> acc
-           Just (x, y)
-             | not (any local (termVars x ++ termVars y)) -> acc
-             | rewrites lhs rhs x y -> acc
-             | otherwise -> case fixup lhs rhs x y of
+      in case diffSpine prev cur of
+           [] -> acc
+           pairs
+             | not (any local (concat [ termVars x ++ termVars y | (x, y) <- pairs ])) -> acc
+             | any (uncurry (rewrites lhs rhs)) pairs -> acc
+             | otherwise -> case concat [ fixup lhs rhs x y | (x, y) <- pairs ] of
                  (rho : _) -> acc ++ rho
                  []        -> acc
 
@@ -299,18 +299,50 @@ tightenChainVars start steps =
                      _                              -> (v, t)
                  | (v, t) <- rho ]
 
--- The smallest subterm pair holding every difference between two terms, and
--- nothing when they are equal.  A step rewrites one subterm, so this is the
--- redex and its replacement.
-diffSubterm :: Term -> Term -> Maybe (Term, Term)
-diffSubterm a b
-  | a == b = Nothing
-  | otherwise = case (a, b) of
+-- A printed chain step is justified when the equation it cites, as the
+-- proof states it, takes the line into the next one, at one subterm or at
+-- every occurrence of one instance, in either orientation.  The equation's
+-- own variables are free and its names are renamed apart from the line's.
+chainStepJustified :: (Term, Term) -> Term -> Term -> Bool
+chainStepJustified (l0, r0) prev cur =
+  case diffSpine prev cur of
+    []    -> True
+    pairs -> or [ once lhs rhs x y | (lhs, rhs) <- [(l, r), (r, l)], (x, y) <- pairs ]
+             || or [ everywhere lhs rhs | (lhs, rhs) <- [(l, r), (r, l)] ]
+  where
+    apart = [ (v, Var (v ++ "_ax")) | v <- nub (termVars l0 ++ termVars r0) ]
+    (l, r) = (applySubstTerm apart l0, applySubstTerm apart r0)
+    lineVs = termVars prev ++ termVars cur
+    once lhs rhs x y = or
+      [ True
+      | Just s  <- [matchTerms lhs x]
+      , Just s2 <- [matchTerms (applySubstTerm s rhs) y]
+      , all (\(v, t) -> t == Var v || v `notElem` lineVs) s2 ]
+    everywhere lhs rhs = or
+      [ replaceAllTerm (applySubstTerm s lhs) (applySubstTerm s rhs) prev == cur
+      | (u, _) <- termCtxs prev, Just s <- [matchTerms lhs u]
+      , null (termVars (applySubstTerm s rhs) \\ termVars (applySubstTerm s lhs)) ]
+
+replaceAllTerm :: Term -> Term -> Term -> Term
+replaceAllTerm a b t
+  | t == a    = b
+  | otherwise = case t of
+      App f ts -> App f (map (replaceAllTerm a b) ts)
+      _        -> t
+
+-- The subterm pairs on the way from two terms down to the smallest pair
+-- holding every difference between them, root first, and none when they
+-- are equal.  A step rewrites one subterm, which is one of these pairs, and
+-- not always the smallest, since the replacement may share structure with
+-- the redex, as apply(apply(w,w),X) to apply(apply(w,X),X) does.
+diffSpine :: Term -> Term -> [(Term, Term)]
+diffSpine a b
+  | a == b = []
+  | otherwise = (a, b) : case (a, b) of
       (App f as, App g bs)
         | f == g, length as == length bs
-        , [(x, y)] <- [ p | p@(x, y) <- zip as bs, x /= y ] ->
-            Just (fromMaybe (x, y) (diffSubterm x y))
-      _ -> Just (a, b)
+        , [(x, y)] <- [ p | p@(x, y) <- zip as bs, x /= y ] -> diffSpine x y
+      _ -> []
 
 termCtxs :: Term -> [(Term, Term -> Term)]
 termCtxs t = (t, id) : case t of

@@ -259,7 +259,7 @@ translateMode debug (T.TSTP _ units0) = do
                    , Just c <- [convertDeclToClause (leDecl e)]
                    , any (`clauseInstance` c) cons ]
             _ -> []
-          withInput sp = tightenChains (generalizeGoals (negationGoal (sp { spInput = input })))
+          withInput sp = checkChains (tightenChains (generalizeGoals (negationGoal (sp { spInput = input }))))
       -- A hypothesis the proof assumed must be granted by the conjecture, or
       -- the emitted theorem would be stronger than the conjecture states.  A
       -- positive clause from a negative position of the conjecture, as
@@ -330,6 +330,32 @@ negationGoal sp
 -- share it.  A Skolem term of the hypotheses alone stays, since a hypothesis
 -- is a clause of its own and a variable there would be quantified within it,
 -- while a free term ranges over the whole theorem.
+-- Every printed chain step must be a rewrite by the statement it cites, as
+-- the assembled proof states it.  The search may have rewritten with a
+-- unit's original clause while the lemma promoted for it states the
+-- instance the proof stored, and then the printed step cites a statement
+-- that does not make it, as GRP658+1's lemma for f295 did.  A citation of
+-- a hypothesis is stated by its clause, and a name the proof does not state
+-- is left to the checkers.
+checkChains :: StructuredProof -> StructuredProof
+checkChains sp = case [ (n, rw, prev, cur) | (n, blk) <- blocks, Just (rw, prev, cur) <- [unjustified blk] ] of
+    []            -> sp
+    (n, rw, prev, cur) : _ ->
+      error ("the chain of " ++ n ++ " has a step by " ++ rwName rw
+             ++ " that the statement of " ++ rwName rw ++ " does not make: "
+             ++ ppLitI (Eq prev cur) ++ " by " ++ maybe "?" (ppLitI . uncurry Eq) (Map.lookup (rwName rw) stated))
+  where
+    blocks = [ (n, b) | (n, _, b) <- lemmas sp ]
+          ++ [ ("goal " ++ show i, b) | (i, (_, b)) <- zip [1 :: Int ..] (goals sp) ]
+    stated = Map.fromList $
+      [ (n, (a, b)) | AUnit n (Eq a b) <- axioms sp ]
+      ++ [ (n, (a, b)) | (n, Eq a b, _) <- lemmas sp ]
+    unjustified (EqChain start steps) = listToMaybe
+      [ (rw, prev, cur) | ((rw, cur), prev) <- zip steps (start : map snd steps)
+                        , Just eq <- [Map.lookup (rwName rw) stated]
+                        , not (chainStepJustified eq prev cur) ]
+    unjustified _ = Nothing
+
 -- Bind the variables a rewrite chain introduces and its next step fixes, in
 -- every lemma and goal block.  It runs on the assembled proof, where the
 -- blocks state variables and no longer Theorem 1's fresh constants.
@@ -697,9 +723,19 @@ citeChainSteps = mapM cite
             nameToPos <- gets stNameToPos
             case Map.lookup (rwName rw) nameToPos >>= \p -> find ((== Just p) . uePos) units of
               Nothing -> throwError ("rewrite step cites an unknown unit: " ++ rwName rw)
-              Just u  -> do
-                nm <- ensureNamed (ueUnit u) (makeBlock u [] [])
-                return (rw { rwName = nm }, c)
+              -- The unit is stored as the instance the proof derived, which
+              -- a demodulation may have simplified further, and a lemma
+              -- states that instance.  The step applied the prover's clause,
+              -- so the two must state one equation, or the lemma would be
+              -- cited for a step it does not make, as GRP658+1's
+              -- mult(rd(X,mult(X,X)),X) = rd(Y,Y) was for f295.
+              Just u
+                | isVariant u -> do
+                    nm <- ensureNamed (ueUnit u) (makeBlock u [] [])
+                    return (oriented u nm, c)
+                | otherwise ->
+                    throwError ("rewrite step by " ++ rwName rw ++ " is stated as "
+                                ++ ppLitI (ueUnit u) ++ ", not as the equation it applied")
 
 -- raw derived electrons with no proof are excluded since Twee cannot justify them later
 tweableUnits :: [UnitEntry] -> [UnitEntry]

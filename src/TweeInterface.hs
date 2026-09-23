@@ -22,7 +22,7 @@ import qualified Data.Map.Strict as Map
 import Control.Exception (SomeException, bracket, try)
 import Data.IORef (IORef, newIORef, readIORef, modifyIORef', writeIORef)
 import GHC.Clock (getMonotonicTime)
-import Control.Monad (forM_, when)
+import Control.Monad (when)
 import System.IO.Unsafe (unsafePerformIO)
 import System.Directory (doesFileExist, findExecutable, getTemporaryDirectory, removeFile)
 import System.Environment (lookupEnv)
@@ -96,6 +96,7 @@ fallbackExhausted = unsafePerformIO (newIORef False)
 
 startFallbackBudget :: IO Int
 startFallbackBudget = do
+  writeIORef tweeCache Map.empty
   secs <- timeoutSecsFromEnv "TAELJA_FALLBACK_TIMEOUT" 30
   now  <- getMonotonicTime
   writeIORef fallbackDeadline (now + fromIntegral secs)
@@ -134,10 +135,11 @@ runTwee budget tag input = do
           let maxTime = show secs
           runProverCapped (secs + 5) bin
             ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile]
-      -- an answer the fallback budget cut short is no answer, and is not
-      -- remembered, since a later translation asks with a fresh budget
+      -- an answer the budget cut short is remembered as empty for the rest
+      -- of this translation, or the same question would be asked again until
+      -- the budget is gone, and the cache is cleared when a new budget starts
       let out = fromMaybe "" mOut
-      forM_ mOut $ \o -> modifyIORef' tweeCache (Map.insert (input, secs) o)
+      modifyIORef' tweeCache (Map.insert (input, secs) out)
       -- TAELJA_TWEE_DEBUG=1 dumps every distinct call (input and output)
       dumpEnv <- lookupEnv "TAELJA_TWEE_DEBUG"
       when (dumpEnv == Just "1") $
