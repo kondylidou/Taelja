@@ -301,6 +301,18 @@ eBenchmarkNames =
   -- a disjunctive conclusion, which is the negation of the conjunction of
   -- the disjuncts' negations, so those are assumed and $false derived
   , "SYN346+1"
+  -- a disjunct whose negation is a clause only once the negation is pushed
+  -- inward, ~ ! [Y] : (~ r1(X,Y) | p5(Y)) stating ? [Y] : (r1(X,Y) & ~ p5(Y))
+  , "LCL646+1.001"
+  -- the same where a disjunct is an existential, so the witness it promises
+  -- is named
+  , "SYN378+1"
+  -- a conjunct of the negated conclusion stating two clauses, where
+  -- ! [X] : ((p(X) | r(X)) & q(X)) negates to ? [X] : (~ (p(X) | r(X)) & ~ q(X))
+  , "SYN379+1"
+  -- an implication under an existential quantifier, read as the disjunction
+  -- ~A | B, so the proof assumes A and ~B and derives $false
+  , "SYN339+1"
   -- p <=> p states one implication twice, so its Horn reading assumes p and
   -- derives p, and the refusal names what the proof really lacks
   , "SYN390+1"

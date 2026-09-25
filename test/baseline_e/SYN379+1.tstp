@@ -1,0 +1,19 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FUHPF-FFSF00-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+## Presaturation interreduction done
+
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+fof(x2131, conjecture, (![X1]:(big_p(X1))=>?[X2]:((![X1, X3]:(big_q(X1,X2,X3))=>~(![X3]:((big_p(X3)&~(big_q(X2,X2,X3)))))))), file('Problems/SYN/SYN379+1.p', x2131)).
+fof(c_0_1, negated_conjecture, ~((![X1]:(big_p(X1))=>?[X2]:((![X1, X3]:(big_q(X1,X2,X3))=>~(![X3]:((big_p(X3)&~big_q(X2,X2,X3)))))))), inference(fof_simplification,[status(thm)],[inference(assume_negation,[status(cth)],[x2131])])).
+fof(c_0_2, negated_conjecture, ![X4, X5, X6, X7, X8]:((big_p(X4)&(big_q(X6,X5,X7)&(big_p(X8)&~big_q(X5,X5,X8))))), inference(fof_nnf,[status(thm)],[inference(shift_quantors,[status(thm)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[c_0_1])])])])).
+cnf(c_0_3, negated_conjecture, (~big_q(X1,X1,X2)), inference(split_conjunct,[status(thm)],[c_0_2])).
+cnf(c_0_4, negated_conjecture, (big_q(X1,X2,X3)), inference(split_conjunct,[status(thm)],[c_0_2])).
+cnf(c_0_5, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_3, c_0_4])]), ['proof']).
+# SZS output end CNFRefutation

@@ -1,0 +1,7 @@
+Goal 1: big_q(esk1_0) /\ (big_q(X) => $false) => $false
+Proof:
+  assume big_q(esk1_0)
+  hence $false
+    by assumption 2
+  hence big_q(esk1_0) /\ (big_q(X) => $false) => $false
+    by discharge

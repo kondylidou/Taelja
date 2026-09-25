@@ -1,0 +1,27 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FUUNF-FFSF11-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_2, negated_conjecture, (big_f(X1,esk1_1(X1),X2))).
+#
+#cnf(i_0_1, negated_conjecture, (~big_f(esk1_1(X1),X2,X2))).
+# Presaturation interreduction done
+#
+#cnf(i_0_1, negated_conjecture, (~big_f(esk1_1(X1),X2,X2))).
+#
+#cnf(i_0_2, negated_conjecture, (big_f(X1,esk1_1(X1),X2))).
+
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+fof(church_46_15_4, conjecture, ?[X1]:(![X2]:(?[X3]:((big_f(X1,X2,X3)=>big_f(X2,X3,X3))))), file('Problems/SYN/SYN339+1.p', church_46_15_4)).
+fof(c_0_1, negated_conjecture, ~(?[X1]:(![X2]:(?[X3]:((big_f(X1,X2,X3)=>big_f(X2,X3,X3)))))), inference(assume_negation,[status(cth)],[church_46_15_4])).
+fof(c_0_2, negated_conjecture, ![X4, X6, X7]:((big_f(X4,esk1_1(X4),X6)&~big_f(esk1_1(X4),X7,X7))), inference(fof_nnf,[status(thm)],[inference(shift_quantors,[status(thm)],[inference(skolemize,[status(esa)],[inference(variable_rename,[status(thm)],[inference(shift_quantors,[status(thm)],[inference(fof_nnf,[status(thm)],[c_0_1])])])])])])).
+cnf(c_0_3, negated_conjecture, (~big_f(esk1_1(X1),X2,X2)), inference(split_conjunct,[status(thm)],[c_0_2])).
+cnf(c_0_4, negated_conjecture, (big_f(X1,esk1_1(X1),X2)), inference(split_conjunct,[status(thm)],[c_0_2])).
+cnf(c_0_5, negated_conjecture, ($false), inference(spm,[status(thm)],[c_0_3, c_0_4]), ['proof']).
+# SZS output end CNFRefutation

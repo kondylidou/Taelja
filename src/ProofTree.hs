@@ -645,6 +645,11 @@ readConjecture = conclusion [] . normalizeConjecture
                               (filter (not . isFalseDisjunct) ds)
       _ -> Nothing
     disjunctParts (T.Connected l T.Disjunction r) = disjunctParts l ++ disjunctParts r
+    -- an implication A => B is the disjunction ~A | B, so a conclusion that
+    -- states one under an existential quantifier, as SYN339+1's
+    -- ? [X] ! [Y] ? [Z] : (big_f(X,Y,Z) => big_f(Y,Z,Z)) does, is proved by
+    -- assuming A and ~B and deriving $false
+    disjunctParts (T.Connected l T.Implication r) = disjunctParts (T.Negated l) ++ disjunctParts r
     disjunctParts g                               = [g]
     reservedAtom g = case g of
       T.Atomic (T.Predicate (T.Reserved (T.Standard r)) []) -> Just r
@@ -688,22 +693,28 @@ readConjecture = conclusion [] . normalizeConjecture
     -- A conjunctive conclusion states one clause per conjunct, as
     -- SYN729+1's p(X) => ? [Y] : (l(X,g(h(Y))) & p(Y)) does.
     hypClause why f =
-      let (f', ws) = dropPositiveExists True f
+      let g        = pushNegation f
+          (f', ws) = dropPositiveExists True g
           sigma    = [ (v, Var (witnessPrefix ++ v)) | v <- ws ]
           parts    = splitConclusion f'
           instC (Clause bs mh) = Clause (map (applySubst sigma) bs) (fmap (applySubst sigma) mh)
       in case mapM convertFOFToClause parts of
            Just cs | not (null ws) || length parts > 1 -> Right (map instC cs)
-           _ -> clause why f
+           _ -> clause why g
+    -- A conjunction states one clause per conjunct, whether it stands alone,
+    -- as ! [Z] : (p(Z) & ~ q(Z)) does, or is the conclusion of an
+    -- implication, as SYN729+1's p(X) => ? [Y] : (l(X,g(h(Y))) & p(Y)) does.
     splitConclusion g = case g of
       T.Quantified T.Forall vs b -> map (T.Quantified T.Forall vs) (splitConclusion b)
       T.Connected l T.Implication r
         | cs@(_ : _ : _) <- conjunctParts r -> [ T.Connected l T.Implication c | c <- cs ]
+      T.Connected _ T.Conjunction _
+        | cs@(_ : _ : _) <- conjunctParts g -> concatMap splitConclusion cs
       _ -> [g]
     conjunctParts (T.Connected a T.Conjunction b) = conjunctParts a ++ conjunctParts b
     conjunctParts x = [x]
     -- a conjunct of the negated conclusion, assumed to derive $false
-    assumed f = clause ("the negated formula has the conjunct " ++ render f ++ ", which is not a Horn clause") f
+    assumed f = hypClause ("the negated formula has the conjunct " ++ render f ++ ", which is not a Horn clause") f
     clause why f = maybe (Left (refused why)) (Right . pure) (convertFOFToClause f)
     -- the goal atoms, and the shape that stops the reading, where an
     -- implication among them has its own hypotheses and one under an
@@ -747,6 +758,29 @@ dropPositiveExists pos f = case f of
         (r', wr) = dropPositiveExists pos r
     in (T.Connected l' c r', wl ++ wr)
   _ -> (f, [])
+
+-- Push a negation inward, so that an assumed formula shows the clauses it
+-- states.  ~ ! [X] : F is ? [X] : ~F, whose witness dropPositiveExists names,
+-- ~(A | B) is ~A & ~B, which splits into one clause per disjunct, and
+-- ~(A => B) is A & ~B.  A negated conjunction is left as it stands, since
+-- ~A | ~B is one clause already.  Only an assumed formula is read this way,
+-- since a negated conclusion is what the reader itself splits into a goal and
+-- the conjuncts assumed beside it.
+pushNegation :: T.UnsortedFirstOrder -> T.UnsortedFirstOrder
+pushNegation f = case f of
+  T.Negated g                   -> negateIn g
+  T.Quantified q vs b           -> T.Quantified q vs (pushNegation b)
+  T.Connected l T.Conjunction r -> T.Connected (pushNegation l) T.Conjunction (pushNegation r)
+  _                             -> f
+
+negateIn :: T.UnsortedFirstOrder -> T.UnsortedFirstOrder
+negateIn g = case g of
+  T.Negated h                   -> pushNegation h
+  T.Quantified T.Forall vs b    -> T.Quantified T.Exists vs (negateIn b)
+  T.Quantified T.Exists vs b    -> T.Quantified T.Forall vs (negateIn b)
+  T.Connected l T.Disjunction r -> T.Connected (negateIn l) T.Conjunction (negateIn r)
+  T.Connected l T.Implication r -> T.Connected (pushNegation l) T.Conjunction (negateIn r)
+  _                             -> T.Negated g
 
 -- A quantifier binding a variable the body does not mention states nothing,
 -- as SYN932+1's ? [X] : c does, so the body alone is the formula.

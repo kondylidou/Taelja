@@ -1,0 +1,9 @@
+Goal 1: r1(esk1_0,esk4_0) /\ (r1(esk1_0,X) => p2(X)) /\ (p2(esk4_0) => $false) => $false
+Proof:
+  assume r1(esk1_0,esk4_0)
+  hence p2(esk4_0)
+    by assumption 2
+  hence $false
+    by assumption 3
+  hence r1(esk1_0,esk4_0) /\ (r1(esk1_0,X) => p2(X)) /\ (p2(esk4_0) => $false) => $false
+    by discharge
