@@ -35,8 +35,9 @@ Output layout
   <out>/results.csv
 
 prove is ok, timeout or fail.
-taelja is ok, timeout, fail, unsupported, budget (the Twee and E call budget was
-  spent), or - when not attempted.
+taelja is ok, timeout, fail, nonhorn (the proof the prover returned leaves the
+  Horn fragment, so it is out of scope rather than a refusal), unsupported,
+  budget (the Twee and E call budget was spent), or - when not attempted.
 """
 
 import argparse
@@ -55,6 +56,14 @@ SPC_PATTERNS = {
 CATEGORIES = ['HNE', 'HEQ', 'UEQ']
 
 SCRIPT_DIR = Path(__file__).parent
+
+
+# A proof whose clauses are not all Horn is out of the fragment Taelja
+# translates, whatever the problem is: a prover may name subformulas or keep a
+# disjunction its other clausification distributes away.  Such a proof is
+# counted apart from the refusals, which are about the conjecture or the
+# calculus.
+NON_HORN_PROOF = re.compile(r'unsupported proof, clause \S+ is not Horn')
 
 
 def classify_problem(p_file):
@@ -286,6 +295,8 @@ def _read_taelja_status(out, p_file):
     err = '\n'.join(line for line in raw_err.splitlines() if not line.startswith('[eval]'))
     if 'TIMEOUT' in err:
         return 'timeout'
+    if NON_HORN_PROOF.search(err):
+        return 'nonhorn'
     if 'unsupported proof' in err or 'unsupported conjecture' in err:
         return 'unsupported'
     if 'fallback budget' in err:
@@ -391,6 +402,8 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
 
     if rc == -1:
         result['taelja'] = 'timeout'
+    elif NON_HORN_PROOF.search(err):
+        result['taelja'] = 'nonhorn'
     elif 'unsupported proof' in err or 'unsupported conjecture' in err:
         result['taelja'] = 'unsupported'
     elif 'fallback budget' in err:
@@ -549,7 +562,8 @@ def main():
 
     # --- Taelja failure breakdown ---
     proved_results = [r for r in results if r['prove'] == 'ok']
-    failed_taelja  = [r for r in proved_results if r['taelja'] not in ('ok', 'unsupported', '-')]
+    failed_taelja  = [r for r in proved_results
+                      if r['taelja'] not in ('ok', 'unsupported', 'nonhorn', '-')]
     print(f"\nTaelja failure breakdown ({len(failed_taelja)} prover-proved, supported but not translated):")
     err_cats = {}
     for r in failed_taelja:
@@ -611,7 +625,7 @@ def main():
 def _print_summary(results, provers, lean_col, categories=CATEGORIES):
     # Header columns Category Prover Total Proved Unsupp Transl Fail and Lean
     hdr = (f"{'Category':8s}  {'Prover':7s}  {'Total':>6s}  "
-           f"{'Proved':>6s}  {'Unsupp':>6s}  {'Transl':>6s}  {'Fail':>6s}  {'Budget':>6s}  {'TFail':>6s}"
+           f"{'Proved':>6s}  {'NonHrn':>6s}  {'Unsupp':>6s}  {'Transl':>6s}  {'Fail':>6s}  {'Budget':>6s}  {'TFail':>6s}"
            + (f"  {'Lean':>6s}" if lean_col else ''))
     print(hdr)
     print('-' * len(hdr))
@@ -628,6 +642,7 @@ def _print_summary(results, provers, lean_col, categories=CATEGORIES):
             # tfail counts as proved since the prover found a proof and only its TSTP
             # output failed
             proved      = sum(1 for r in sub if r['prove'] in ('ok', 'tfail'))
+            nonhorn     = sum(1 for r in sub if r['taelja'] == 'nonhorn')
             unsupported = sum(1 for r in sub if r['taelja'] == 'unsupported')
             translated  = sum(1 for r in sub if r['taelja'] == 'ok')
             failed      = sum(1 for r in sub if r['prove'] == 'ok'
@@ -638,7 +653,8 @@ def _print_summary(results, provers, lean_col, categories=CATEGORIES):
 
             cat_col = cat if prover in (prover_list[0], 'ALL') else ''
             row = (f"{cat_col:8s}  {prover:7s}  {n:6d}  "
-                   f"{proved:6d}  {unsupported:6d}  {translated:6d}  {failed:6d}  {budget:6d}  {tfail:6d}")
+                   f"{proved:6d}  {nonhorn:6d}  {unsupported:6d}  {translated:6d}  "
+                   f"{failed:6d}  {budget:6d}  {tfail:6d}")
             if lean_col:
                 row += f"  {lean:6d}"
             print(row)

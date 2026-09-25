@@ -1,0 +1,10 @@
+Goal 1: big_f(X,esk3_2(X,Y)) /\ (big_f(esk1_0,esk3_2(X,Y)) /\ big_f(Y,esk3_2(X,Y)) => $false) => $false
+Proof:
+  have big_f(esk1_0,esk3_2(esk1_0,esk1_0))
+    by assumption 1
+   and big_f(esk1_0,esk3_2(esk1_0,esk1_0))
+    by assumption 1
+  hence $false
+    by assumption 2
+  hence big_f(X,esk3_2(X,Y)) /\ (big_f(esk1_0,esk3_2(X,Y)) /\ big_f(Y,esk3_2(X,Y)) => $false) => $false
+    by discharge

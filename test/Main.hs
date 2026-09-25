@@ -298,6 +298,9 @@ eBenchmarkNames =
   -- the same step where the goal is existential, so the chain must state the
   -- instantiation the propositional step leaves out
   , "CSR057+3"
+  -- a disjunctive conclusion, which is the negation of the conjunction of
+  -- the disjuncts' negations, so those are assumed and $false derived
+  , "SYN346+1"
   -- p <=> p states one implication twice, so its Horn reading assumes p and
   -- derives p, and the refusal names what the proof really lacks
   , "SYN390+1"

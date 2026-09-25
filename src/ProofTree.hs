@@ -623,19 +623,35 @@ readConjecture = conclusion [] . normalizeConjecture
       -- a conclusion written as a Horn clause, ~A | B, is the implication
       -- A => B, and an all-negative one, ~A | ~B, the negation ~(A & B)
       T.Connected _ T.Disjunction _ | Just g <- hornImplication f -> conclusion hs g
-      -- any other disjunction of literals, A | B, is ~(~A & ~B), so its
-      -- proof assumes the negation of each literal and derives $false
+      -- any other disjunction, A | B, is ~(~A & ~B), so its proof assumes
+      -- the negation of each disjunct and derives $false
       _ | Just cs <- negatedDisjuncts f -> Right (Conjecture hs cs [])
       _ -> Conjecture hs [] <$> goalAtoms False f
     -- a $false disjunct adds nothing, and a $true one is not read here, so
     -- the conclusion is refused as a tautology below
-    negatedDisjuncts f = case collectDisjuncts (stripQuantifiers f) of
-      Just pairs | length pairs > 1, not (any tautological pairs) ->
-        Just [ case s of
-                 T.Positive -> Clause [convertLit l] Nothing
-                 T.Negative -> Clause [] (Just (convertLit l))
-             | (s, l) <- pairs, not (isReservedTLit l) ]
+    -- A disjunct need not be a literal.  Its negation is what the proof
+    -- assumes, and that may be a Horn clause of its own, as LCL646+1.001's
+    -- disjunct ~ ! [Y] : (~ r1(X,Y) | p6(Y)) has the negation
+    -- ! [Y] : (r1(X,Y) => p6(Y)).
+    negatedDisjuncts f = case disjunctParts (stripQuantifiers f) of
+      ds@(_ : _ : _)
+        | not (any isTrueDisjunct ds) ->
+            -- the negation of a disjunct is assumed, exactly as a hypothesis
+            -- of the conjecture is, so it is read by the same rules: a
+            -- conjunction states one clause per conjunct and a promised
+            -- witness is Skolemized
+            either (const Nothing) Just $
+              concat <$> mapM (hypotheses . normalizeConjecture . T.Negated)
+                              (filter (not . isFalseDisjunct) ds)
       _ -> Nothing
+    disjunctParts (T.Connected l T.Disjunction r) = disjunctParts l ++ disjunctParts r
+    disjunctParts g                               = [g]
+    reservedAtom g = case g of
+      T.Atomic (T.Predicate (T.Reserved (T.Standard r)) []) -> Just r
+      _                                                      -> Nothing
+    isTrueDisjunct g = reservedAtom g == Just T.Tautology
+                       || (case g of { T.Negated h -> reservedAtom h == Just T.Falsum; _ -> False })
+    isFalseDisjunct g = reservedAtom g == Just T.Falsum
     tautological (T.Positive, T.Predicate (T.Reserved (T.Standard T.Tautology)) []) = True
     tautological (T.Negative, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])    = True
     tautological _                                                                 = False
