@@ -1,0 +1,49 @@
+Axiom 1: product(inverse(a),inverse(b),d)
+Axiom 2: product(X,inverse(X),identity)
+Axiom 3: product(inverse(Y),inverse(Z),A) => product(Y,A,Z)
+Axiom 4: product(X,identity,X)
+Axiom 5: product(B,C,U) /\ product(B,C,V) => U = V
+Axiom 6: product(a,b,c)
+Axiom 7: product(W,W,identity)
+
+Lemma 8: product(X,identity,inverse(X))
+Proof:
+  have product(inverse(X),inverse(inverse(X)),identity)
+    by axiom 2
+  hence product(X,identity,inverse(X))
+    by axiom 3
+
+Lemma 9: inverse(X) = X
+Proof:
+  have product(X,identity,X)
+    by axiom 4
+   and product(X,identity,inverse(X))
+    by lemma 8
+  hence inverse(X) = X
+    by axiom 5
+
+Lemma 10: product(a,b,d)
+Proof:
+  have product(inverse(a),inverse(b),d)
+    by axiom 1
+  hence product(a,inverse(b),d)
+    by rw lemma 9
+  hence product(a,b,d)
+    by rw lemma 9
+
+Lemma 11: d = c
+Proof:
+  have product(a,b,c)
+    by axiom 6
+   and product(a,b,d)
+    by lemma 10
+  hence d = c
+    by axiom 5
+
+Goal 1: product(c,d,identity)
+Proof:
+  product(c,d,identity)
+= { by lemma 11 }
+  product(c,c,identity)
+= { by axiom 7 }
+  true

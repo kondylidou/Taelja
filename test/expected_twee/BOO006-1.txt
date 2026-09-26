@@ -1,0 +1,221 @@
+Axiom 1: sum(X,Y,add(X,Y))
+Axiom 2: sum(Z,A,B) => sum(A,Z,B)
+Axiom 3: sum(Z,A,C) /\ sum(Z,A,U) => C = U
+Axiom 4: product(inverse(Z),Z,additive_identity)
+Axiom 5: sum(Z,additive_identity,Z)
+Axiom 6: product(Z,multiplicative_identity,Z)
+Axiom 7: product(Z,A,V) /\ product(Z,W,X1) /\ sum(A,W,X2) /\ sum(V,X1,X3) => product(Z,X2,X3)
+Axiom 8: product(Z,A,multiply(Z,A))
+Axiom 9: product(Z,A,X4) /\ product(Z,A,X5) => X4 = X5
+Axiom 10: sum(Z,A,X6) /\ sum(Z,B,X7) /\ product(A,B,X8) /\ sum(Z,X8,X9) => product(X6,X7,X9)
+Axiom 11: product(Z,A,B) => product(A,Z,B)
+Axiom 12: product(multiplicative_identity,Z,Z)
+Axiom 13: sum(additive_identity,Z,Z)
+Axiom 14: product(Z,inverse(Z),additive_identity)
+Axiom 15: sum(inverse(Z),Z,multiplicative_identity)
+
+Lemma 16: sum(X,Y,add(Y,X))
+Proof:
+  have sum(Y,X,add(Y,X))
+    by axiom 1
+  hence sum(X,Y,add(Y,X))
+    by axiom 2
+
+Lemma 17: add(X,Y) = add(Y,X)
+Proof:
+  have sum(X,Y,add(X,Y))
+    by axiom 1
+   and sum(X,Y,add(Y,X))
+    by lemma 16
+  hence add(X,Y) = add(Y,X)
+    by axiom 3
+
+Lemma 18: product(X,Y,multiply(Y,X))
+Proof:
+  have product(Y,X,multiply(Y,X))
+    by axiom 8
+  hence product(X,Y,multiply(Y,X))
+    by axiom 11
+
+Lemma 19: multiply(X,Y) = multiply(Y,X)
+Proof:
+  have product(X,Y,multiply(X,Y))
+    by axiom 8
+   and product(X,Y,multiply(Y,X))
+    by lemma 18
+  hence multiply(X,Y) = multiply(Y,X)
+    by axiom 9
+
+Lemma 20: product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,multiply(X,additive_identity)))
+Proof:
+  have sum(multiplicative_identity,additive_identity,multiplicative_identity)
+    by axiom 5
+   and sum(multiplicative_identity,X,add(multiplicative_identity,X))
+    by axiom 1
+   and product(additive_identity,X,multiply(additive_identity,X))
+    by axiom 8
+   and sum(multiplicative_identity,multiply(additive_identity,X),add(multiplicative_identity,multiply(additive_identity,X)))
+    by axiom 1
+  hence product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,multiply(additive_identity,X)))
+    by axiom 10
+  hence product(multiplicative_identity,add(X,multiplicative_identity),add(multiplicative_identity,multiply(additive_identity,X)))
+    by rw lemma 17 R->L
+  hence product(multiplicative_identity,add(X,multiplicative_identity),add(multiply(additive_identity,X),multiplicative_identity))
+    by rw lemma 17 R->L
+  hence product(multiplicative_identity,add(multiplicative_identity,X),add(multiply(additive_identity,X),multiplicative_identity))
+    by rw lemma 17 R->L
+  hence product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,multiply(additive_identity,X)))
+    by rw lemma 17 R->L
+  hence product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,multiply(X,additive_identity)))
+    by rw lemma 19 R->L
+
+Lemma 21: add(multiplicative_identity,multiply(X,additive_identity)) = add(X,multiplicative_identity)
+Proof:
+  have product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,X))
+    by axiom 12
+   and product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,multiply(X,additive_identity)))
+    by lemma 20
+  hence add(multiplicative_identity,X) = add(multiplicative_identity,multiply(X,additive_identity))
+    by axiom 9
+  hence add(X,multiplicative_identity) = add(multiplicative_identity,multiply(X,additive_identity))
+    by rw lemma 17
+
+Lemma 22: product(additive_identity,add(multiplicative_identity,X),multiply(X,additive_identity))
+Proof:
+  have product(additive_identity,multiplicative_identity,additive_identity)
+    by axiom 6
+   and product(additive_identity,X,multiply(additive_identity,X))
+    by axiom 8
+   and sum(multiplicative_identity,X,add(multiplicative_identity,X))
+    by axiom 1
+   and sum(additive_identity,multiply(additive_identity,X),multiply(additive_identity,X))
+    by axiom 13
+  hence product(additive_identity,add(multiplicative_identity,X),multiply(additive_identity,X))
+    by axiom 7
+  hence product(additive_identity,add(multiplicative_identity,X),multiply(X,additive_identity))
+    by rw lemma 19 R->L
+
+Lemma 23: multiply(additive_identity,add(X,multiplicative_identity)) = multiply(X,additive_identity)
+Proof:
+  have product(additive_identity,add(multiplicative_identity,X),multiply(additive_identity,add(multiplicative_identity,X)))
+    by axiom 8
+   and product(additive_identity,add(multiplicative_identity,X),multiply(X,additive_identity))
+    by lemma 22
+  hence multiply(additive_identity,add(multiplicative_identity,X)) = multiply(X,additive_identity)
+    by axiom 9
+  hence multiply(additive_identity,add(X,multiplicative_identity)) = multiply(X,additive_identity)
+    by rw lemma 17
+
+Lemma 24: product(inverse(add(X,multiplicative_identity)),add(add(X,multiplicative_identity),multiplicative_identity),inverse(add(X,multiplicative_identity)))
+Proof:
+  have product(inverse(add(X,multiplicative_identity)),multiplicative_identity,inverse(add(X,multiplicative_identity)))
+    by axiom 6
+   and product(inverse(add(X,multiplicative_identity)),add(X,multiplicative_identity),additive_identity)
+    by axiom 4
+   and sum(multiplicative_identity,add(X,multiplicative_identity),add(multiplicative_identity,add(X,multiplicative_identity)))
+    by axiom 1
+   and sum(inverse(add(X,multiplicative_identity)),additive_identity,inverse(add(X,multiplicative_identity)))
+    by axiom 5
+  hence product(inverse(add(X,multiplicative_identity)),add(multiplicative_identity,add(X,multiplicative_identity)),inverse(add(X,multiplicative_identity)))
+    by axiom 7
+  hence product(inverse(add(X,multiplicative_identity)),add(add(X,multiplicative_identity),multiplicative_identity),inverse(add(X,multiplicative_identity)))
+    by rw lemma 17
+
+Lemma 25: product(add(X,multiplicative_identity),inverse(add(X,multiplicative_identity)),multiply(inverse(add(X,multiplicative_identity)),add(X,multiplicative_identity)))
+Proof:
+  have product(inverse(add(X,multiplicative_identity)),add(X,multiplicative_identity),multiply(inverse(add(X,multiplicative_identity)),add(X,multiplicative_identity)))
+    by axiom 8
+  hence product(add(X,multiplicative_identity),inverse(add(X,multiplicative_identity)),multiply(inverse(add(X,multiplicative_identity)),add(X,multiplicative_identity)))
+    by axiom 11
+
+Lemma 26: multiply(inverse(add(X,multiplicative_identity)),add(add(X,multiplicative_identity),multiplicative_identity)) = inverse(add(X,multiplicative_identity))
+Proof:
+  have product(inverse(add(X,multiplicative_identity)),add(add(X,multiplicative_identity),multiplicative_identity),multiply(inverse(add(X,multiplicative_identity)),add(add(X,multiplicative_identity),multiplicative_identity)))
+    by axiom 8
+   and product(inverse(add(X,multiplicative_identity)),add(add(X,multiplicative_identity),multiplicative_identity),inverse(add(X,multiplicative_identity)))
+    by lemma 24
+  hence multiply(inverse(add(X,multiplicative_identity)),add(add(X,multiplicative_identity),multiplicative_identity)) = inverse(add(X,multiplicative_identity))
+    by axiom 9
+
+Lemma 27: additive_identity = multiply(inverse(add(X,multiplicative_identity)),add(X,multiplicative_identity))
+Proof:
+  have product(add(X,multiplicative_identity),inverse(add(X,multiplicative_identity)),additive_identity)
+    by axiom 14
+   and product(add(X,multiplicative_identity),inverse(add(X,multiplicative_identity)),multiply(inverse(add(X,multiplicative_identity)),add(X,multiplicative_identity)))
+    by lemma 25
+  hence additive_identity = multiply(inverse(add(X,multiplicative_identity)),add(X,multiplicative_identity))
+    by axiom 9
+
+Lemma 28: inverse(add(X,multiplicative_identity)) = additive_identity
+Proof:
+  inverse(add(X,multiplicative_identity))
+= { by lemma 26 R->L }
+  multiply(inverse(add(X,multiplicative_identity)),add(add(X,multiplicative_identity),multiplicative_identity))
+= { by lemma 21 R->L }
+  multiply(inverse(add(X,multiplicative_identity)),add(multiplicative_identity,multiply(add(X,multiplicative_identity),additive_identity)))
+= { by lemma 19 }
+  multiply(inverse(add(X,multiplicative_identity)),add(multiplicative_identity,multiply(additive_identity,add(X,multiplicative_identity))))
+= { by lemma 23 }
+  multiply(inverse(add(X,multiplicative_identity)),add(multiplicative_identity,multiply(X,additive_identity)))
+= { by lemma 21 }
+  multiply(inverse(add(X,multiplicative_identity)),add(X,multiplicative_identity))
+= { by lemma 27 R->L }
+  additive_identity
+
+Lemma 29: sum(inverse(add(x,multiplicative_identity)),multiply(additive_identity,add(x,multiplicative_identity)),add(inverse(add(x,multiplicative_identity)),multiply(add(x,multiplicative_identity),additive_identity)))
+Proof:
+  have sum(inverse(add(x,multiplicative_identity)),multiply(add(x,multiplicative_identity),additive_identity),add(inverse(add(x,multiplicative_identity)),multiply(add(x,multiplicative_identity),additive_identity)))
+    by axiom 1
+  hence sum(inverse(add(x,multiplicative_identity)),multiply(additive_identity,add(x,multiplicative_identity)),add(inverse(add(x,multiplicative_identity)),multiply(add(x,multiplicative_identity),additive_identity)))
+    by rw lemma 19 R->L
+
+Lemma 30: sum(multiply(additive_identity,add(x,multiplicative_identity)),additive_identity,add(additive_identity,multiply(additive_identity,add(x,multiplicative_identity))))
+Proof:
+  have sum(additive_identity,multiply(additive_identity,add(x,multiplicative_identity)),add(additive_identity,multiply(additive_identity,add(x,multiplicative_identity))))
+    by axiom 1
+  hence sum(multiply(additive_identity,add(x,multiplicative_identity)),additive_identity,add(additive_identity,multiply(additive_identity,add(x,multiplicative_identity))))
+    by axiom 2
+
+Lemma 31: add(inverse(add(x,multiplicative_identity)),multiply(add(x,multiplicative_identity),additive_identity)) = inverse(add(x,multiplicative_identity))
+Proof:
+  have sum(inverse(add(x,multiplicative_identity)),additive_identity,inverse(add(x,multiplicative_identity)))
+    by axiom 5
+   and sum(inverse(add(x,multiplicative_identity)),add(x,multiplicative_identity),multiplicative_identity)
+    by axiom 15
+   and product(additive_identity,add(x,multiplicative_identity),multiply(additive_identity,add(x,multiplicative_identity)))
+    by axiom 8
+   and sum(inverse(add(x,multiplicative_identity)),multiply(additive_identity,add(x,multiplicative_identity)),add(inverse(add(x,multiplicative_identity)),multiply(add(x,multiplicative_identity),additive_identity)))
+    by lemma 29
+  hence product(inverse(add(x,multiplicative_identity)),multiplicative_identity,add(inverse(add(x,multiplicative_identity)),multiply(add(x,multiplicative_identity),additive_identity)))
+    by axiom 10
+   and product(inverse(add(x,multiplicative_identity)),multiplicative_identity,inverse(add(x,multiplicative_identity)))
+    by axiom 6
+  hence add(inverse(add(x,multiplicative_identity)),multiply(add(x,multiplicative_identity),additive_identity)) = inverse(add(x,multiplicative_identity))
+    by axiom 9
+
+Lemma 32: multiply(additive_identity,add(x,multiplicative_identity)) = add(additive_identity,multiply(additive_identity,add(x,multiplicative_identity)))
+Proof:
+  have sum(multiply(additive_identity,add(x,multiplicative_identity)),additive_identity,multiply(additive_identity,add(x,multiplicative_identity)))
+    by axiom 5
+   and sum(multiply(additive_identity,add(x,multiplicative_identity)),additive_identity,add(additive_identity,multiply(additive_identity,add(x,multiplicative_identity))))
+    by lemma 30
+  hence multiply(additive_identity,add(x,multiplicative_identity)) = add(additive_identity,multiply(additive_identity,add(x,multiplicative_identity)))
+    by axiom 3
+
+Goal 1: product(x,additive_identity,additive_identity)
+Proof:
+  product(x,additive_identity,additive_identity)
+= { by lemma 28 R->L }
+  product(x,additive_identity,inverse(add(x,multiplicative_identity)))
+= { by lemma 31 R->L }
+  product(x,additive_identity,add(inverse(add(x,multiplicative_identity)),multiply(add(x,multiplicative_identity),additive_identity)))
+= { by lemma 19 }
+  product(x,additive_identity,add(inverse(add(x,multiplicative_identity)),multiply(additive_identity,add(x,multiplicative_identity))))
+= { by lemma 28 }
+  product(x,additive_identity,add(additive_identity,multiply(additive_identity,add(x,multiplicative_identity))))
+= { by lemma 32 R->L }
+  product(x,additive_identity,multiply(additive_identity,add(x,multiplicative_identity)))
+= { by lemma 23 }
+  product(x,additive_identity,multiply(x,additive_identity))
+= { by axiom 8 }
+  true

@@ -218,8 +218,9 @@ theorem taelja_goal17 : s__capability s__Flooding__t s__located__m s__Copenhagen
 
 -- Goal 18
 theorem taelja_goal18 : (to_int n_55_c46_67631) = (to_int n_55_c46_75695) := by
-  calc to_int n_55_c46_67631 = n_55 := by have h_rw := ax22; rw [h_rw]
-      _ = to_int n_55_c46_75695 := by have h_rw := ax28; rw [h_rw]
+  have h1 : (to_int n_55_c46_67631) = n_55 := by first | (exact ax22) | (first | apply ax22 <;> first | rfl | assumption | (apply Eq.symm; apply ax22 <;> first | rfl | assumption))
+  have h2 : (to_int n_55_c46_67631) = (to_int n_55_c46_75695) := by have h_rw := ax28; rw [h_rw]; exact h1
+  exact h2
 
 end ECsr1171
 

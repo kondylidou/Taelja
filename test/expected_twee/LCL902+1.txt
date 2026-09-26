@@ -35,26 +35,7 @@ Proof:
 = { by lemma 13 }
   true
 
-Lemma 15: >=(+(1,X),+(0,X))
-Proof:
-  have >=(1,0)
-    by axiom 5
-  hence >=(+(1,X),+(0,X))
-    by axiom 6
-
-Lemma 16: >=(1,x17)
-Proof:
-  >=(1,x17)
-= { by axiom 10 R->L }
-  >=(+(x17,1),x17)
-= { by axiom 7 R->L }
-  >=(+(1,x17),x17)
-= { by lemma 12 R->L }
-  >=(+(1,x17),+(0,x17))
-= { by lemma 15 }
-  true
-
-Lemma 17: x17 = ==>(==>(x17,1),x17)
+Lemma 15: x17 = ==>(==>(x17,1),x17)
 Proof:
   have >=(==>(x17,1),0)
     by axiom 5
@@ -69,19 +50,27 @@ Proof:
   hence x17 = ==>(==>(x17,1),x17)
     by axiom 9
 
-Lemma 18: >=(==>(X,1),==>(X,x17))
+Lemma 16: >=(==>(X,1),==>(X,x17))
 Proof:
-  have >=(1,x17)
-    by lemma 16
+  have >=(1,0)
+    by axiom 5
+  hence >=(+(1,x17),+(0,x17))
+    by axiom 6
+  hence >=(+(1,x17),x17)
+    by rw lemma 12
+  hence >=(+(x17,1),x17)
+    by rw axiom 7 R->L
+  hence >=(1,x17)
+    by rw axiom 10
   hence >=(==>(X,1),==>(X,x17))
     by axiom 11
 
-Lemma 19: >=(==>(==>(x17,1),1),x17)
+Lemma 17: >=(==>(==>(x17,1),1),x17)
 Proof:
   >=(==>(==>(x17,1),1),x17)
-= { by lemma 17 }
+= { by lemma 15 }
   >=(==>(==>(x17,1),1),==>(==>(x17,1),x17))
-= { by lemma 18 }
+= { by lemma 16 }
   true
 
 Goal 1: ==>(==>(x17,1),1) = x17
@@ -91,10 +80,10 @@ Proof:
   hence >=(+(x17,==>(x17,1)),1)
     by axiom 4
   hence >=(+(==>(x17,1),x17),1)
-    by rw axiom 7
+    by rw axiom 7 R->L
   hence >=(x17,==>(==>(x17,1),1))
     by axiom 8
    and >=(==>(==>(x17,1),1),x17)
-    by lemma 19
+    by lemma 17
   hence ==>(==>(x17,1),1) = x17
     by axiom 9

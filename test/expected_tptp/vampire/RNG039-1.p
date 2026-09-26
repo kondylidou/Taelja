@@ -78,8 +78,7 @@ fof(s46, plain, product(d,d,additive_identity), inference(rewrite, [status(thm)]
 fof(s47, plain, product(d,d,b), inference(rewrite, [status(thm)], [lemma_19, s46])).
 fof(lemma_31, lemma, product(a,d,b), inference(rewrite, [status(thm)], [lemma_27, s47])).
 fof(s48, plain, b = d, inference(mp, [status(thm)], [f17, lemma_30, lemma_31])).
-fof(lemma_32, lemma, b = a, inference(rewrite, [status(thm)], [lemma_27, s48])).
-fof(s49, plain, c = b, inference(instantiate, [status(thm)], [lemma_29])).
-fof(s50, plain, c = a, inference(rewrite, [status(thm)], [lemma_32, s49])).
-fof(goal_1, theorem, c = d, inference(rewrite, [status(thm)], [lemma_27, s50])).
+fof(s49, plain, b = a, inference(rewrite, [status(thm)], [lemma_27, s48])).
+fof(s50, plain, b = d, inference(rewrite, [status(thm)], [lemma_27, s49])).
+fof(goal_1, theorem, c = d, inference(rewrite, [status(thm)], [lemma_29, s50])).
 % SZS output end Proof

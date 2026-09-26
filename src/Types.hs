@@ -122,8 +122,12 @@ data AlgState = AlgState
   , stNameToPos  :: Map.Map String String        -- TSTP unit name -> tree position of its electron
   , stEqByName   :: Map.Map String (Term, Term)  -- TSTP unit name -> its unit equation
   , stTweeSteps  :: [(String, String, String)]  -- a Twee rewriting step: its conclusion and its two premises, as TSTP names
-  , stUnreadSteps :: Set.Set String  -- Twee steps that could not be read, kept when a failed attempt is undone
-  , stReadSteps :: Map.Map String (Term, [(UnitEntry, Dir, Term)])  -- Twee steps read, each its chain from its own left side
+  , stUnitLitByName :: Map.Map String Literal  -- TSTP unit name -> its literal, for a positive unit, equation or atom
+  , stLiteralRewrites :: Map.Map String [(Literal, [(String, Dir, (Term, Term), Literal)])]  -- nucleus position -> the rewrites the proof makes to each of its body literals, by equation name and the instance applied
+  , stHeadRewrites :: Map.Map String (Literal, [(String, Dir, (Term, Term), Literal)])  -- nucleus position -> its head under θ and the rewrites the proof makes to it before the clause is a unit
+  , stReadableUnits :: Set.Set String  -- units whose derivation the translation reads step by step (see readableUnits)
+  , stUnreadSteps :: Set.Set (String, (Term, Term))  -- Twee steps that could not be read, with the equation read, kept when a failed attempt is undone
+  , stReadSteps :: Map.Map (String, (Term, Term)) (Term, [(UnitEntry, Dir, Term)])  -- Twee steps read, with the equation read, each its chain from its left side
   , stGoalTemplate :: [Literal]  -- the conjecture's own goal literals (shared free variables across conjuncts), consulted by emitGoalProof
   , stCandLemmas :: Map.Map String [(String, Literal, ProofBlock)]  -- a candidate lemma's display name -> its entries, sub-lemmas first
   , stNegationConj :: Bool  -- the conjecture concludes a negation, proved by deriving $false
@@ -157,4 +161,7 @@ data ProofInfo = ProofInfo
   , piDeclAt    :: Map.Map String T.Declaration
       -- the clause at each position on an entry's ancestor chain and at their
       -- siblings, read from the full tree and used to trace θ from the root
+  , piUnitAt    :: Map.Map String String
+      -- the proof unit at each of those positions, so a unit the tree uses
+      -- twice is known at both though its entry keeps only the first
   } deriving (Show)

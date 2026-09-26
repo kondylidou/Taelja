@@ -25,9 +25,10 @@ axiom ax2 : ∀ (x : α), (h x) = x
 theorem taelja_goal1 : ∀ (x : α), ((f x) = a) → (g (h (f x))) = b := by
   intro x
   intro hyp1
-  calc g (h (f x)) = g (f x) := by first | (first | (exact ax2 (f x)) | (exact Eq.symm (ax2 (f x)))) | (have h_rw := ax2 (f x); rw [h_rw])
-      _ = g a := by have h_rw := hyp1; rw [h_rw]
-      _ = b := by have h_rw := ax1; rw [h_rw]
+  have h1 : (g a) = b := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption | (apply Eq.symm; apply ax1 <;> first | rfl | assumption))
+  have h2 : (g (f x)) = b := by have h_rw := hyp1; rw [h_rw]; exact h1
+  have h3 : (g (h (f x))) = b := by have h_rw := ax2 (f x); rw [h_rw]; exact h2
+  exact h3
 
 end EFofEquationalHypothesis
 

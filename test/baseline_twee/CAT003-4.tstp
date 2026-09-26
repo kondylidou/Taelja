@@ -1,0 +1,13 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, g!=h, file('TPTP/Problems/CAT/CAT003-4.p', prove_g_equals_h)).
+cnf(c2, axiom, compose(X, compose(Y, Z))=compose(compose(X, Y), Z), file('TPTP/Problems/CAT/CAT003-4.p', associativity_of_compose)).
+cnf(c3, hypothesis, compose(X2, compose(a, b))!=Y2 | compose(Z2, compose(a, b))!=Y2 | X2=Z2, file('TPTP/Problems/CAT/CAT003-4.p', epimorphism)).
+cnf(c4, plain, compose(compose(h, a), b)!=compose(g, compose(a, b)) | g=h, inference(rewriting, [status(thm)], [c3, c2])).
+cnf(c5, hypothesis, compose(h, a)=compose(g, a), file('TPTP/Problems/CAT/CAT003-4.p', ha_equals_ga)).
+cnf(c6, plain, compose(compose(g, a), b)!=compose(g, compose(a, b)) | g=h, inference(rewriting, [status(thm)], [c4, c5])).
+cnf(c7, plain, g=h, inference(resolution, [status(thm)], [c2, c6])).
+cnf(c8, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c7])).
+% SZS output end CNFRefutation
+

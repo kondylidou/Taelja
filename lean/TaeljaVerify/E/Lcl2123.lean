@@ -11,7 +11,6 @@ noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 -- Constants
 axiom p : α
 axiom q : α
-axiom true_ : α
 
 axiom not_ : α → α
 axiom implies_ : α → α → α
@@ -42,26 +41,18 @@ theorem taelja_lemma6 : theorem_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) 
   have h2 : theorem_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) := by first | (exact ax3 (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
--- Lemma 7
-theorem taelja_lemma7 : theorem_ (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) := by
+-- Goal 1
+theorem taelja_goal1 : theorem_ (implies_ (not_ p) (implies_ q (implies_ (implies_ p q) q))) := by
   have h1 : axiom_ (or_ (not_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)))) := by first | (exact taelja_lemma5 (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) (not_ (not_ p))) | (first | apply taelja_lemma5 <;> first | rfl | assumption)
   have h2 : theorem_ (or_ (not_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)))) := by first | (exact ax3 (or_ (not_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)))) h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : theorem_ (implies_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)))) := by have h_rw := ax1 (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))); rw [h_rw]; exact h2
   have h4 : theorem_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) := by first | (exact taelja_lemma6) | (first | apply taelja_lemma6 <;> first | rfl | assumption)
   have h5 : theorem_ (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) := by first | (exact ax4 (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) h3 h4) | (first | (exact ax4 _ _ h3 h4) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h5
-
--- Goal 1
-theorem taelja_goal1 : theorem_ (implies_ (not_ p) (implies_ q (implies_ (implies_ p q) q))) := by
-  have h_rw := ax1 (not_ p) (implies_ q (implies_ (implies_ p q) q))
-  rw [h_rw]
-  have h_rw := ax1 q (implies_ (implies_ p q) q)
-  rw [h_rw]
-  have h_rw := ax1 (implies_ p q) q
-  rw [h_rw]
-  have h_rw := ax1 p q
-  rw [h_rw]
-  apply taelja_lemma7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+  have h6 : theorem_ (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (implies_ p q)) q))) := by have h_rw := ax1 p q; rw [h_rw]; exact h5
+  have h7 : theorem_ (or_ (not_ (not_ p)) (or_ (not_ q) (implies_ (implies_ p q) q))) := by have h_rw := ax1 (implies_ p q) q; rw [h_rw]; exact h6
+  have h8 : theorem_ (or_ (not_ (not_ p)) (implies_ q (implies_ (implies_ p q) q))) := by have h_rw := ax1 q (implies_ (implies_ p q) q); rw [h_rw]; exact h7
+  have h9 : theorem_ (implies_ (not_ p) (implies_ q (implies_ (implies_ p q) q))) := by have h_rw := ax1 (not_ p) (implies_ q (implies_ (implies_ p q) q)); rw [h_rw]; exact h8
+  exact h9
 
 end ELcl2123
 

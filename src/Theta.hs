@@ -16,6 +16,9 @@ module Theta
   , resolutionCoherent
   , derivedHead
   , explainStatus
+  , thetaClauses
+  , literalRewrites
+  , headRewrites
   ) where
 
 import Control.Monad (foldM)
@@ -36,6 +39,7 @@ data ThetaCtx = ThetaCtx
   , tcEqOf    :: String -> Maybe (Term, Term)    -- the chain's equations by name
   , tcShared  :: Map.Map String Subst  -- θ|p for every position (see sharedNodeTheta)
   , tcStatus  :: [(String, String)]     -- how well each inference replayed (see explainStatus)
+  , tcClauses :: Map.Map String Clause  -- the clause θ|p is over at each position (see thetaClauses)
   }
 
 -- θ restricted to one nucleus, in the variables of its abstract clause.  This
@@ -48,6 +52,93 @@ computeNucleusTheta ctx entry =
         Just (Clause bs (Just h)) -> filter (`notElem` concatMap litVars bs) (litVars h)
         _                          -> []
   in filter (\(v, _) -> v `notElem` headOnly) θ
+
+-- The clause at every position, as θ is solved over it: an entry's abstract
+-- clause and the printed clause elsewhere.
+thetaClauses :: Map.Map String T.Declaration -> [LeafEntry] -> Map.Map String Clause
+thetaClauses declAt entries = Map.union entryClauses (Map.mapMaybe convertDeclToClause declAt)
+  where
+    entryClauses = Map.fromList [ (lePos e, c) | e <- entries, Just c <- [convertDeclToClause (abstractDecl e)] ]
+
+-- The rewrites the proof makes to each body literal of the clause at a
+-- position before it resolves that literal.  A step above the clause may
+-- rewrite one of its literals by a unit equation, as Twee's c4 and c6 rewrite
+-- a body literal of c3 on CAT003-4, and then the electron that resolves it
+-- states the rewritten atom, not the body atom.  Under θ every clause on the
+-- way up is ground, so each literal is followed up the tree for as long as a
+-- step keeps it, as it is or rewritten once by an instance of the unit
+-- equation beside it.  θ fixes only what resolution binds, so that instance is
+-- found by matching the equation as the proof states it.
+-- Each rewrite is given with the position of that equation, its direction,
+-- the instance it applies, and the literal it leaves.
+literalRewrites :: ThetaCtx -> String -> [(Literal, [(String, Dir, (Term, Term), Literal)])]
+literalRewrites ctx pos = case groundAt pos of
+  Just (Clause bs _) -> [ (b, up pos b) | b <- bs ]
+  Nothing            -> []
+  where
+    groundAt p = do
+      Clause bs mh <- Map.lookup p (tcClauses ctx)
+      let s = Map.findWithDefault [] p (tcShared ctx)
+      return (Clause (map (applySubst s) bs) (fmap (applySubst s) mh))
+    same x y = x == y || x == flipLit y
+    up p cur
+      | null p    = []
+      | otherwise = case groundAt q of
+          Just (Clause qbs _)
+            | any (same cur) qbs -> up q cur
+            | Just (Clause [] (Just (Eq l r))) <- Map.lookup sib (tcClauses ctx)
+            , (d, e, cur') : _ <- rewritesTo cur (l, r) qbs
+            -> (sib, d, e, cur') : up q cur'
+          _ -> []
+      where
+        q   = init p
+        sib = q ++ [if last p == '0' then '1' else '0']
+
+-- The rewrites the proof makes to the head of the clause at a position
+-- before the clause is a unit, the electron the nucleus derives.  Twee may
+-- rewrite a nucleus's head while body literals remain, as c9 rewrites the
+-- head of c3 by c8 on CAT014-4, and then the electron states the rewritten
+-- head.  The head is followed up the tree through the clauses that still have
+-- body literals, and the walk stops at the first unit, whose later rewrites
+-- are steps of their own.  The head under θ comes with them, as the chain
+-- starts from that instance.
+headRewrites :: ThetaCtx -> String -> (Maybe Literal, [(String, Dir, (Term, Term), Literal)])
+headRewrites ctx pos = case groundAt pos of
+  Just (Clause (_ : _) (Just h)) -> (Just h, up pos h)
+  _                              -> (Nothing, [])
+  where
+    groundAt p = do
+      Clause bs mh <- Map.lookup p (tcClauses ctx)
+      let s = Map.findWithDefault [] p (tcShared ctx)
+      return (Clause (map (applySubst s) bs) (fmap (applySubst s) mh))
+    same x y = x == y || x == flipLit y
+    up p cur
+      | null p    = []
+      | otherwise = case groundAt q of
+          Just (Clause qbs (Just qh))
+            | same cur qh -> if null qbs then [] else up q cur
+            | not (null qbs)
+            , Just (Clause [] (Just (Eq l r))) <- Map.lookup sib (tcClauses ctx)
+            , (d, e, cur') : _ <- rewritesTo cur (l, r) [qh]
+            -> (sib, d, e, cur') : up q cur'
+          _ -> []
+      where
+        q   = init p
+        sib = q ++ [if last p == '0' then '1' else '0']
+
+-- The literals among ts that cur rewrites to in one step by an instance of
+-- l = r, each with its direction, the instance, and in cur's orientation.
+-- The redex fixes the variables of the side it matches and the literal the
+-- step leaves fixes the rest, as when Twee rewrites zero to a larger term.
+rewritesTo :: Literal -> (Term, Term) -> [Literal] -> [(Dir, (Term, Term), Literal)]
+rewritesTo cur (l, r) ts =
+  [ (d, (applySubstTerm τ (applySubstTerm σ l), applySubstTerm τ (applySubstTerm σ r)), t')
+  | (d, a, b) <- [(LR, l, r), (RL, r, l)]
+  , (u, rebuild) <- litSubtermCtxs cur
+  , Just σ <- [matchTerms a u]
+  , t <- ts
+  , t' <- nub [t, flipLit t]
+  , Just τ <- [matchLit (rebuild (applySubstTerm σ b)) t'] ]
 
 -- The clause a position stands for.  A leaf uses its source axiom, whose
 -- variables the nucleus is processed with, and anything else uses the clause
@@ -62,8 +153,7 @@ abstractDecl e = if leRole e == OrigAxiom then leSrcDecl e else leDecl e
 sharedNodeTheta :: Map.Map String T.Declaration -> [LeafEntry] -> Map.Map String Subst
 sharedNodeTheta declAt entries = Map.mapWithKey thetaAt clauses
   where
-    entryClauses = Map.fromList [ (lePos e, c) | e <- entries, Just c <- [convertDeclToClause (abstractDecl e)] ]
-    clauses = Map.union entryClauses (Map.mapMaybe convertDeclToClause declAt)
+    clauses = thetaClauses declAt entries
 
     -- variables renamed apart by position as v@p
     at p v = v ++ "@" ++ p
@@ -100,8 +190,7 @@ explainStatus :: Map.Map String T.Declaration -> [LeafEntry] -> [(String, String
 explainStatus declAt entries =
   [ (p, status (litsAt p, map litsAt kids)) | (p, kids) <- nodes ]
   where
-    entryClauses = Map.fromList [ (lePos e, c) | e <- entries, Just c <- [convertDeclToClause (abstractDecl e)] ]
-    clauses = Map.union entryClauses (Map.mapMaybe convertDeclToClause declAt)
+    clauses = thetaClauses declAt entries
     at p v = v ++ "@" ++ p
     litsAt p = [ (b, mapLiteralTerms (apart p) l) | (b, l) <- polLits (clauses Map.! p) ]
     apart p (Var v)    = Var (at p v)

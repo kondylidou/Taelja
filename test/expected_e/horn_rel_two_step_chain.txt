@@ -4,10 +4,9 @@ Axiom 3: f(a) = b
 
 Goal 1: p(g(f(a)))
 Proof:
-  p(g(f(a)))
-= { by axiom 3 }
-  p(g(b))
-= { by axiom 2 }
-  p(c)
-= { by axiom 1 }
-  true
+  have p(c)
+    by axiom 1
+  hence p(g(b))
+    by rw axiom 2 R->L
+  hence p(g(f(a)))
+    by rw axiom 3 R->L

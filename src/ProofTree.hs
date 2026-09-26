@@ -177,32 +177,37 @@ buildProofInfo allUnits = do
       Left ("unsupported conjecture, " ++ Text.unpack n
             ++ " abbreviates a formula the prover introduced that is not a conjunction of atoms, so its proof is a case split")
     lits -> Right lits
-  let declAtPos = declByPath tree
-      -- every prefix of an entry position, plus the sibling of each prefix
+  let -- every prefix of an entry position, plus the sibling of each prefix
       wanted = Set.toList $ Set.fromList $ concat
         [ p : [ init p ++ [sib] | not (null p), let sib = if last p == '0' then '1' else '0' ]
         | e <- electrons ++ nuclei
         , p <- inits (lePos e) ]
-      declMap = Map.fromList [ (p, d) | p <- wanted, Just d <- [declAtPos p] ]
+      nodes   = [ (p, t) | p <- wanted, Just t <- [nodeByPath tree p] ]
+      declMap = Map.fromList [ (p, ptDeclOf t) | (p, t) <- nodes ]
+      unitAt  = Map.fromList [ (p, ptNameOf t) | (p, t) <- nodes ]
   return ProofInfo
     { piElectrons = electrons
     , piNuclei    = nuclei
     , piGoalLits  = goalLits
     , piDeclAt    = declMap
+    , piUnitAt    = unitAt
     }
 -- Navigate the memoised tree along a position string.  Each character is the
 -- child index used by gatherLeaves and gatherInner, and unary nodes use 1.
-declByPath :: ProofTree -> String -> Maybe T.Declaration
-declByPath t [] = Just (ptDeclOf t)
-declByPath (PTLeaf _ _) _ = Nothing
-declByPath (PTNode _ _ _ kids) (c : rest) =
+nodeByPath :: ProofTree -> String -> Maybe ProofTree
+nodeByPath t [] = Just t
+nodeByPath (PTLeaf _ _) _ = Nothing
+nodeByPath (PTNode _ _ _ kids) (c : rest) =
   case kids of
-    [k]  -> if c == '1' then declByPath k rest else Nothing
+    [k]  -> if c == '1' then nodeByPath k rest else Nothing
     _ -> let i = fromEnum c - fromEnum '0'
-         in if i >= 0 && i < length kids then declByPath (kids !! i) rest else Nothing
+         in if i >= 0 && i < length kids then nodeByPath (kids !! i) rest else Nothing
 ptDeclOf :: ProofTree -> T.Declaration
 ptDeclOf (PTLeaf _ d)     = d
 ptDeclOf (PTNode _ d _ _) = d
+ptNameOf :: ProofTree -> String
+ptNameOf (PTLeaf n _)     = n
+ptNameOf (PTNode n _ _ _) = n
 buildProofTree :: [T.Unit] -> Maybe ProofTree
 buildProofTree allUnits =
   case findRoot allUnits of

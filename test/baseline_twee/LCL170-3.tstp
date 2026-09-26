@@ -1,0 +1,12 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~theorem(implies(q, implies(p, q))), file('TPTP/Problems/LCL/LCL170-3.p', prove_this)).
+cnf(c2, axiom, axiom(implies(A, or(B, A))), file('TPTP/Problems/LCL/LCL170-3.p', axiom_1_3)).
+cnf(c3, axiom, implies(X, Y)=or(not(X), Y), file('TPTP/Problems/LCL/LCL170-3.p', implies_definition)).
+cnf(c4, plain, axiom(implies(q, implies(p, q))), inference(rewriting, [status(thm)], [c2, c3])).
+cnf(c5, axiom, theorem(X2) | ~axiom(X2), file('TPTP/Problems/LCL/LCL170-3.p', rule_1)).
+cnf(c6, plain, theorem(implies(q, implies(p, q))), inference(resolution, [status(thm)], [c4, c5])).
+cnf(c7, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c6])).
+% SZS output end CNFRefutation
+

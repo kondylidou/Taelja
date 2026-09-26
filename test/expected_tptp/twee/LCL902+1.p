@@ -19,25 +19,24 @@ fof(s2, plain, '>='('==>'('==>'('==>'(x17,'1'),x17),x17),'==>'('==>'('==>'(x17,'
 fof(lemma_13, lemma, '>='('+'('==>'('==>'(x17,'1'),x17),'==>'('==>'('==>'(x17,'1'),x17),x17)),x17), inference(mp, [status(thm)], [axiom_4, s2])).
 fof(s3, plain, '>='('+'('==>'('==>'(x17,'1'),x17),'0'),x17), inference(rewrite, [status(thm)], [c25, lemma_13])).
 fof(lemma_14, lemma, '>='('==>'('==>'(x17,'1'),x17),x17), inference(rewrite, [status(thm)], [c16, s3])).
-fof(s4, plain, '>='('1','0'), inference(instantiate, [status(thm)], [c4])).
-fof(lemma_15, lemma, ! [X] : '>='('+'('1',X),'+'('0',X)), inference(mp, [status(thm)], [c5, s4])).
-fof(s5, plain, '>='('+'('1',x17),'+'('0',x17)), inference(instantiate, [status(thm)], [lemma_15])).
-fof(s6, plain, '>='('+'('1',x17),x17), inference(rewrite, [status(thm)], [lemma_12, s5])).
-fof(s7, plain, '>='('+'(x17,'1'),x17), inference(rewrite, [status(thm)], [c14, s6])).
-fof(lemma_16, lemma, '>='('1',x17), inference(rewrite, [status(thm)], [c12, s7])).
-fof(s8, plain, '>='('==>'(x17,'1'),'0'), inference(instantiate, [status(thm)], [c4])).
-fof(s9, plain, '>='('+'('==>'(x17,'1'),x17),'+'('0',x17)), inference(mp, [status(thm)], [c5, s8])).
-fof(s10, plain, '>='(x17,'==>'('==>'(x17,'1'),'+'('0',x17))), inference(mp, [status(thm)], [axiom_8, s9])).
-fof(s11, plain, '>='(x17,'==>'('==>'(x17,'1'),x17)), inference(rewrite, [status(thm)], [lemma_12, s10])).
-fof(lemma_17, lemma, x17 = '==>'('==>'(x17,'1'),x17), inference(mp, [status(thm)], [c34, s11, lemma_14])).
-fof(lemma_18, lemma, ! [X] : '>='('==>'(X,'1'),'==>'(X,x17)), inference(mp, [status(thm)], [c9, lemma_16])).
-fof(s12, plain, '>='('==>'('==>'(x17,'1'),'1'),'==>'('==>'(x17,'1'),x17)), inference(instantiate, [status(thm)], [lemma_18])).
-fof(lemma_19, lemma, '>='('==>'('==>'(x17,'1'),'1'),x17), inference(rewrite, [status(thm)], [lemma_17, s12])).
-fof(s13, plain, '>='('==>'(x17,'1'),'==>'(x17,'1')), inference(instantiate, [status(thm)], [c20])).
-fof(s14, plain, '>='('+'(x17,'==>'(x17,'1')),'1'), inference(mp, [status(thm)], [axiom_4, s13])).
-fof(s15, plain, '>='('+'('==>'(x17,'1'),x17),'1'), inference(rewrite, [status(thm)], [c14, s14])).
-fof(s16, plain, '>='(x17,'==>'('==>'(x17,'1'),'1')), inference(mp, [status(thm)], [axiom_8, s15])).
-fof(s17, plain, '==>'('==>'(x17,'1'),'1') = x17, inference(mp, [status(thm)], [c34, s16, lemma_19])).
-fof(discharged, plain, '==>'('==>'(x17,'1'),'1') = x17, inference(conclude, [status(thm)], [s17])).
+fof(s4, plain, '>='('==>'(x17,'1'),'0'), inference(instantiate, [status(thm)], [c4])).
+fof(s5, plain, '>='('+'('==>'(x17,'1'),x17),'+'('0',x17)), inference(mp, [status(thm)], [c5, s4])).
+fof(s6, plain, '>='(x17,'==>'('==>'(x17,'1'),'+'('0',x17))), inference(mp, [status(thm)], [axiom_8, s5])).
+fof(s7, plain, '>='(x17,'==>'('==>'(x17,'1'),x17)), inference(rewrite, [status(thm)], [lemma_12, s6])).
+fof(lemma_15, lemma, x17 = '==>'('==>'(x17,'1'),x17), inference(mp, [status(thm)], [c34, s7, lemma_14])).
+fof(s8, plain, '>='('1','0'), inference(instantiate, [status(thm)], [c4])).
+fof(s9, plain, '>='('+'('1',x17),'+'('0',x17)), inference(mp, [status(thm)], [c5, s8])).
+fof(s10, plain, '>='('+'('1',x17),x17), inference(rewrite, [status(thm)], [lemma_12, s9])).
+fof(s11, plain, '>='('+'(x17,'1'),x17), inference(rewrite, [status(thm)], [c14, s10])).
+fof(s12, plain, '>='('1',x17), inference(rewrite, [status(thm)], [c12, s11])).
+fof(lemma_16, lemma, ! [X] : '>='('==>'(X,'1'),'==>'(X,x17)), inference(mp, [status(thm)], [c9, s12])).
+fof(s13, plain, '>='('==>'('==>'(x17,'1'),'1'),'==>'('==>'(x17,'1'),x17)), inference(instantiate, [status(thm)], [lemma_16])).
+fof(lemma_17, lemma, '>='('==>'('==>'(x17,'1'),'1'),x17), inference(rewrite, [status(thm)], [lemma_15, s13])).
+fof(s14, plain, '>='('==>'(x17,'1'),'==>'(x17,'1')), inference(instantiate, [status(thm)], [c20])).
+fof(s15, plain, '>='('+'(x17,'==>'(x17,'1')),'1'), inference(mp, [status(thm)], [axiom_4, s14])).
+fof(s16, plain, '>='('+'('==>'(x17,'1'),x17),'1'), inference(rewrite, [status(thm)], [c14, s15])).
+fof(s17, plain, '>='(x17,'==>'('==>'(x17,'1'),'1')), inference(mp, [status(thm)], [axiom_8, s16])).
+fof(s18, plain, '==>'('==>'(x17,'1'),'1') = x17, inference(mp, [status(thm)], [c34, s17, lemma_17])).
+fof(discharged, plain, '==>'('==>'(x17,'1'),'1') = x17, inference(conclude, [status(thm)], [s18])).
 fof(c1, theorem, ! [X17]: '==>'('==>'(X17, '1'), '1') = X17, inference(generalization, [status(thm)], [discharged, skolem_definition])).
 % SZS output end Proof

@@ -8,13 +8,12 @@ Axiom 7: c_Tarski_Oglb(X,Y,Z) = c_Tarski_Olub(X,c_Tarski_Odual(Y,Z),Z)
 
 Lemma 8: c_lessequals(v_S,c_Tarski_Opotype_Opset(c_Tarski_Odual(v_cl,t_a),t_a,tc_Product__Type_Ounit),tc_set(t_a))
 Proof:
-  c_lessequals(v_S,c_Tarski_Opotype_Opset(c_Tarski_Odual(v_cl,t_a),t_a,tc_Product__Type_Ounit),tc_set(t_a))
-= { by axiom 5 }
-  c_lessequals(v_S,c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),tc_set(t_a))
-= { by axiom 4 R->L }
-  c_lessequals(v_S,v_A,tc_set(t_a))
-= { by axiom 1 }
-  true
+  have c_lessequals(v_S,v_A,tc_set(t_a))
+    by axiom 1
+  hence c_lessequals(v_S,c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),tc_set(t_a))
+    by rw axiom 4
+  hence c_lessequals(v_S,c_Tarski_Opotype_Opset(c_Tarski_Odual(v_cl,t_a),t_a,tc_Product__Type_Ounit),tc_set(t_a))
+    by rw axiom 5 R->L
 
 Lemma 9: c_in(c_Tarski_Olub(v_S,c_Tarski_Odual(v_cl,t_a),t_a),c_Tarski_Opotype_Opset(c_Tarski_Odual(v_cl,t_a),t_a,tc_Product__Type_Ounit),t_a)
 Proof:

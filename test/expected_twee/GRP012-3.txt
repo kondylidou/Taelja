@@ -1,0 +1,74 @@
+Axiom 1: product(X,Y,multiply(X,Y))
+Axiom 2: product(Z,inverse(Z),identity)
+Axiom 3: product(Z,identity,Z)
+Axiom 4: product(Z,A,B) /\ product(A,C,U) /\ product(Z,U,V) => product(B,C,V)
+Axiom 5: product(Z,A,W) /\ product(Z,A,X1) => W = X1
+Axiom 6: product(identity,Z,Z)
+Axiom 7: product(Z,A,X2) /\ product(A,W,X3) /\ product(X2,W,X1) => product(Z,X3,X1)
+
+Lemma 8: product(X,multiply(inverse(X),Y),Y)
+Proof:
+  have product(X,inverse(X),identity)
+    by axiom 2
+   and product(inverse(X),Y,multiply(inverse(X),Y))
+    by axiom 1
+   and product(identity,Y,Y)
+    by axiom 6
+  hence product(X,multiply(inverse(X),Y),Y)
+    by axiom 7
+
+Lemma 9: multiply(X,multiply(inverse(X),Y)) = Y
+Proof:
+  have product(X,multiply(inverse(X),Y),multiply(X,multiply(inverse(X),Y)))
+    by axiom 1
+   and product(X,multiply(inverse(X),Y),Y)
+    by lemma 8
+  hence multiply(X,multiply(inverse(X),Y)) = Y
+    by axiom 5
+
+Lemma 10: product(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))),b)
+Proof:
+  have product(b,multiply(inverse(b),inverse(a)),multiply(b,multiply(inverse(b),inverse(a))))
+    by axiom 1
+   and product(multiply(inverse(b),inverse(a)),inverse(multiply(inverse(b),inverse(a))),identity)
+    by axiom 2
+   and product(b,identity,b)
+    by axiom 3
+  hence product(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))),b)
+    by axiom 4
+
+Lemma 11: multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a)))) = b
+Proof:
+  have product(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))),multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a)))))
+    by axiom 1
+   and product(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))),b)
+    by lemma 10
+  hence multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a)))) = b
+    by axiom 5
+
+Lemma 12: multiply(inverse(b),inverse(a)) = inverse(inverse(multiply(inverse(b),inverse(a))))
+Proof:
+  have product(multiply(inverse(b),inverse(a)),inverse(multiply(inverse(b),inverse(a))),identity)
+    by axiom 2
+   and product(inverse(multiply(inverse(b),inverse(a))),inverse(inverse(multiply(inverse(b),inverse(a)))),identity)
+    by axiom 2
+   and product(multiply(inverse(b),inverse(a)),identity,multiply(inverse(b),inverse(a)))
+    by axiom 3
+  hence product(identity,inverse(inverse(multiply(inverse(b),inverse(a)))),multiply(inverse(b),inverse(a)))
+    by axiom 4
+   and product(identity,inverse(inverse(multiply(inverse(b),inverse(a)))),inverse(inverse(multiply(inverse(b),inverse(a)))))
+    by axiom 6
+  hence multiply(inverse(b),inverse(a)) = inverse(inverse(multiply(inverse(b),inverse(a))))
+    by axiom 5
+
+Goal 1: inverse(multiply(a,b)) = multiply(inverse(b),inverse(a))
+Proof:
+  inverse(multiply(a,b))
+= { by lemma 11 R->L }
+  inverse(multiply(a,multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))))))
+= { by lemma 9 }
+  inverse(multiply(a,multiply(inverse(a),inverse(multiply(inverse(b),inverse(a))))))
+= { by lemma 9 }
+  inverse(inverse(multiply(inverse(b),inverse(a))))
+= { by lemma 12 R->L }
+  multiply(inverse(b),inverse(a))

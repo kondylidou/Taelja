@@ -1,0 +1,33 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, inverse(multiply(a, b))!=multiply(inverse(b), inverse(a)), file('TPTP/Problems/GRP/GRP012-3.p', prove_inverse_of_product_is_product_of_inverses)).
+cnf(c2, plain, X2=X2, inference(reflexivity, [status(thm)], [])).
+cnf(c3, axiom, product(X, Y, multiply(X, Y)), file('TPTP/Problems/GRP/GRP012-3.p', total_function1)).
+cnf(c4, axiom, product(X2, inverse(X2), identity), file('TPTP/Problems/GRP/GRP012-3.p', right_inverse)).
+cnf(c5, axiom, product(X2, identity, X2), file('TPTP/Problems/GRP/GRP012-3.p', right_identity)).
+cnf(c6, axiom, ~product(X2, Y2, U) | ~product(Y2, Z, V) | ~product(X2, V, W) | product(U, Z, W), file('TPTP/Problems/GRP/GRP012-3.p', associativity2)).
+cnf(c7, plain, ~product(b, multiply(inverse(b), inverse(a)), multiply(b, multiply(inverse(b), inverse(a)))) | ~product(multiply(inverse(b), inverse(a)), inverse(multiply(inverse(b), inverse(a))), identity) | product(multiply(b, multiply(inverse(b), inverse(a))), inverse(multiply(inverse(b), inverse(a))), b), inference(resolution, [status(thm)], [c5, c6])).
+cnf(c8, plain, ~product(b, multiply(inverse(b), inverse(a)), multiply(b, multiply(inverse(b), inverse(a)))) | product(multiply(b, multiply(inverse(b), inverse(a))), inverse(multiply(inverse(b), inverse(a))), b), inference(resolution, [status(thm)], [c4, c7])).
+cnf(c9, plain, product(multiply(b, multiply(inverse(b), inverse(a))), inverse(multiply(inverse(b), inverse(a))), b), inference(resolution, [status(thm)], [c3, c8])).
+cnf(c10, axiom, ~product(X2, Y2, Z2) | ~product(X2, Y2, W2) | Z2=W2, file('TPTP/Problems/GRP/GRP012-3.p', total_function2)).
+cnf(c11, plain, ~product(X4, X3, X2) | multiply(X4, X3)=X2, inference(resolution, [status(thm)], [c3, c10])).
+cnf(c12, plain, multiply(multiply(b, multiply(inverse(b), inverse(a))), inverse(multiply(inverse(b), inverse(a))))=b, inference(resolution, [status(thm)], [c9, c11])).
+cnf(c13, plain, inverse(multiply(a, multiply(multiply(b, multiply(inverse(b), inverse(a))), inverse(multiply(inverse(b), inverse(a))))))=inverse(multiply(a, b)), inference(rewriting, [status(thm)], [c2, c12])).
+cnf(c14, axiom, product(identity, X2, X2), file('TPTP/Problems/GRP/GRP012-3.p', left_identity)).
+cnf(c15, axiom, ~product(X2, Y2, U2) | ~product(Y2, Z2, V2) | ~product(U2, Z2, W2) | product(X2, V2, W2), file('TPTP/Problems/GRP/GRP012-3.p', associativity1)).
+cnf(c16, plain, ~product(X3, inverse(X3), identity) | ~product(inverse(X3), X2, multiply(inverse(X3), X2)) | product(X3, multiply(inverse(X3), X2), X2), inference(resolution, [status(thm)], [c14, c15])).
+cnf(c17, plain, ~product(inverse(X3), X2, multiply(inverse(X3), X2)) | product(X3, multiply(inverse(X3), X2), X2), inference(resolution, [status(thm)], [c4, c16])).
+cnf(c18, plain, product(X3, multiply(inverse(X3), X2), X2), inference(resolution, [status(thm)], [c3, c17])).
+cnf(c19, plain, multiply(X3, multiply(inverse(X3), X2))=X2, inference(resolution, [status(thm)], [c18, c11])).
+cnf(c20, plain, inverse(multiply(a, multiply(inverse(a), inverse(multiply(inverse(b), inverse(a))))))=inverse(multiply(a, b)), inference(rewriting, [status(thm)], [c13, c19])).
+cnf(c21, plain, inverse(inverse(multiply(inverse(b), inverse(a))))=inverse(multiply(a, b)), inference(rewriting, [status(thm)], [c20, c19])).
+cnf(c22, plain, ~product(multiply(inverse(b), inverse(a)), inverse(multiply(inverse(b), inverse(a))), identity) | ~product(inverse(multiply(inverse(b), inverse(a))), inverse(inverse(multiply(inverse(b), inverse(a)))), identity) | product(identity, inverse(inverse(multiply(inverse(b), inverse(a)))), multiply(inverse(b), inverse(a))), inference(resolution, [status(thm)], [c5, c6])).
+cnf(c23, plain, ~product(multiply(inverse(b), inverse(a)), inverse(multiply(inverse(b), inverse(a))), identity) | product(identity, inverse(inverse(multiply(inverse(b), inverse(a)))), multiply(inverse(b), inverse(a))), inference(resolution, [status(thm)], [c4, c22])).
+cnf(c24, plain, product(identity, inverse(inverse(multiply(inverse(b), inverse(a)))), multiply(inverse(b), inverse(a))), inference(resolution, [status(thm)], [c4, c23])).
+cnf(c25, plain, ~product(identity, inverse(inverse(multiply(inverse(b), inverse(a)))), inverse(inverse(multiply(inverse(b), inverse(a))))) | inverse(inverse(multiply(inverse(b), inverse(a))))=multiply(inverse(b), inverse(a)), inference(resolution, [status(thm)], [c24, c10])).
+cnf(c26, plain, inverse(inverse(multiply(inverse(b), inverse(a))))=multiply(inverse(b), inverse(a)), inference(resolution, [status(thm)], [c14, c25])).
+cnf(c27, plain, multiply(inverse(b), inverse(a))=inverse(multiply(a, b)), inference(rewriting, [status(thm)], [c21, c26])).
+cnf(c28, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c27])).
+% SZS output end CNFRefutation
+

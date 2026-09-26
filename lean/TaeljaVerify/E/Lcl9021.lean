@@ -89,47 +89,42 @@ theorem taelja_lemma17 : ∀ (x : α), op_gt_eq (op_plus x (op_eq_eq_gt n_1 n_1)
   apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
 -- Lemma 18
-theorem taelja_lemma18 : ∀ (x : α), op_gt_eq (op_plus n_1 (op_eq_eq_gt x x)) n_1 := by
-  intro x
-  have h_rw := taelja_lemma12 (op_eq_eq_gt x x)
-  rw [h_rw]
-  apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
-
--- Lemma 19
-theorem taelja_lemma19 : ∀ (x : α), op_gt_eq (op_eq_eq_gt n_1 n_1) (op_eq_eq_gt x x) := by
+theorem taelja_lemma18 : ∀ (x : α), op_gt_eq (op_eq_eq_gt n_1 n_1) (op_eq_eq_gt x x) := by
   intro x
   have h1 : op_gt_eq (op_plus x (op_eq_eq_gt n_1 n_1)) x := by first | (exact taelja_lemma17 x) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
   have h2 : op_gt_eq (op_eq_eq_gt n_1 n_1) (op_eq_eq_gt x x) := by first | (exact ax5 x (op_eq_eq_gt n_1 n_1) x h1) | (first | (exact ax5 _ _ _ h1) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
--- Lemma 20
-theorem taelja_lemma20 : ∀ (x : α), (op_eq_eq_gt x x) = (op_eq_eq_gt n_1 n_1) := by
+-- Lemma 19
+theorem taelja_lemma19 : ∀ (x : α), (op_eq_eq_gt x x) = (op_eq_eq_gt n_1 n_1) := by
   intro x
-  have h1 : op_gt_eq (op_plus n_1 (op_eq_eq_gt x x)) n_1 := by first | (exact taelja_lemma18 x) | (first | apply taelja_lemma18 <;> first | rfl | assumption)
-  have h2 : op_gt_eq (op_eq_eq_gt x x) (op_eq_eq_gt n_1 n_1) := by first | (exact ax5 n_1 (op_eq_eq_gt x x) n_1 h1) | (first | (exact ax5 _ _ _ h1) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : op_gt_eq (op_eq_eq_gt n_1 n_1) (op_eq_eq_gt x x) := by first | (exact taelja_lemma19 x) | (first | apply taelja_lemma19 <;> first | rfl | assumption)
-  have h4 : (op_eq_eq_gt x x) = (op_eq_eq_gt n_1 n_1) := by first | (exact ax7 (op_eq_eq_gt x x) (op_eq_eq_gt n_1 n_1) h2 h3) | (first | (exact ax7 _ _ h2 h3) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h4
+  have h1 : op_gt_eq n_1 n_1 := by first | (exact ax4 n_1) | (first | apply ax4 <;> first | rfl | assumption)
+  have h2 : op_gt_eq (op_plus n_1 (op_eq_eq_gt x x)) n_1 := by have h_rw := taelja_lemma12 (op_eq_eq_gt x x); rw [h_rw]; exact h1
+  have h3 : op_gt_eq (op_eq_eq_gt x x) (op_eq_eq_gt n_1 n_1) := by first | (exact ax5 n_1 (op_eq_eq_gt x x) n_1 h2) | (first | (exact ax5 _ _ _ h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : op_gt_eq (op_eq_eq_gt n_1 n_1) (op_eq_eq_gt x x) := by first | (exact taelja_lemma18 x) | (first | apply taelja_lemma18 <;> first | rfl | assumption)
+  have h5 : (op_eq_eq_gt x x) = (op_eq_eq_gt n_1 n_1) := by first | (exact ax7 (op_eq_eq_gt x x) (op_eq_eq_gt n_1 n_1) h3 h4) | (first | (exact ax7 _ _ h3 h4) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h5
 
--- Lemma 21
-theorem taelja_lemma21 : ∀ (x : α) (y : α), (op_plus x (op_eq_eq_gt y y)) = x := by
+-- Lemma 20
+theorem taelja_lemma20 : ∀ (x : α) (y : α), (op_plus x (op_eq_eq_gt y y)) = x := by
   intro x y
   calc op_plus x (op_eq_eq_gt y y) = op_plus (op_eq_eq_gt y y) x := by have h_rw := ax1 (op_eq_eq_gt y y) x; rw [h_rw]
-      _ = op_plus (op_eq_eq_gt n_1 n_1) x := by have h_rw := taelja_lemma20 y; rw [h_rw]
+      _ = op_plus (op_eq_eq_gt n_1 n_1) x := by have h_rw := taelja_lemma19 y; rw [h_rw]
       _ = op_plus n_0 x := by have h_rw := taelja_lemma15; rw [h_rw]
       _ = op_plus x n_0 := by have h_rw := ax1 x n_0; rw [h_rw]
       _ = x := by first | (first | (exact ax3 x) | (exact Eq.symm (ax3 x))) | (have h_rw := ax3 x; rw [h_rw])
 
--- Lemma 22
-theorem taelja_lemma22 : ∀ (x : α), op_gt_eq (op_plus n_1 x) (op_plus (op_eq_eq_gt n_1 n_1) x) := by
+-- Lemma 21
+theorem taelja_lemma21 : ∀ (x : α), op_gt_eq (op_plus n_1 x) (op_plus (op_eq_eq_gt n_1 n_1) x) := by
   intro x
-  have h1 : op_gt_eq n_1 n_0 := by first | (exact ax6 n_1) | (first | apply ax6 <;> first | rfl | assumption)
-  have h2 : op_gt_eq n_1 (op_eq_eq_gt n_1 n_1) := by have h_rw := taelja_lemma15; rw [←h_rw]; exact h1
-  have h3 : op_gt_eq (op_plus n_1 x) (op_plus (op_eq_eq_gt n_1 n_1) x) := by first | (exact ax8 n_1 (op_eq_eq_gt n_1 n_1) x h2) | (first | (exact ax8 _ _ _ h2) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h3
+  have h1 : op_gt_eq n_1 n_1 := by first | (exact ax4 n_1) | (first | apply ax4 <;> first | rfl | assumption)
+  have h2 : op_gt_eq (op_plus n_1 n_1) n_1 := by have h_rw := taelja_lemma12 n_1; rw [h_rw]; exact h1
+  have h3 : op_gt_eq n_1 (op_eq_eq_gt n_1 n_1) := by first | (exact ax5 n_1 n_1 n_1 h2) | (first | (exact ax5 _ _ _ h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  have h4 : op_gt_eq (op_plus n_1 x) (op_plus (op_eq_eq_gt n_1 n_1) x) := by first | (exact ax8 n_1 (op_eq_eq_gt n_1 n_1) x h3) | (first | (exact ax8 _ _ _ h3) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h4
 
--- Lemma 23
-theorem taelja_lemma23 : op_gt_eq n_1 (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) := by
+-- Lemma 22
+theorem taelja_lemma22 : op_gt_eq n_1 (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) := by
   have h_rw := ax3 (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1))
   rw [← h_rw]
   have h_rw := ax1 n_0 (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1))
@@ -138,83 +133,83 @@ theorem taelja_lemma23 : op_gt_eq n_1 (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) 
   rw [h_rw]
   have h_rw := taelja_lemma12 (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1))
   rw (config := { occs := .pos [1] }) [← h_rw]
-  apply taelja_lemma22 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+  apply taelja_lemma21 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
--- Lemma 24
-theorem taelja_lemma24 : op_gt_eq (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) n_1 := by
+-- Lemma 23
+theorem taelja_lemma23 : op_gt_eq (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) n_1 := by
   have h1 : op_gt_eq n_1 n_1 := by first | (exact ax4 n_1) | (first | apply ax4 <;> first | rfl | assumption)
   have h2 : op_gt_eq (op_eq_eq_gt esk1_0 n_1) (op_eq_eq_gt esk1_0 n_1) := by first | (exact ax9 n_1 n_1 esk1_0 h1) | (first | (exact ax9 _ _ _ h1) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : op_gt_eq (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) n_1 := by first | (exact ax10 (op_eq_eq_gt esk1_0 n_1) esk1_0 n_1 h2) | (first | (exact ax10 _ _ _ h2) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
--- Lemma 25
-theorem taelja_lemma25 : n_1 = (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) := by
-  have h1 : op_gt_eq n_1 (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) := by first | (exact taelja_lemma23) | (first | apply taelja_lemma23 <;> first | rfl | assumption)
-  have h2 : op_gt_eq (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) n_1 := by first | (exact taelja_lemma24) | (first | apply taelja_lemma24 <;> first | rfl | assumption)
+-- Lemma 24
+theorem taelja_lemma24 : n_1 = (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) := by
+  have h1 : op_gt_eq n_1 (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) := by first | (exact taelja_lemma22) | (first | apply taelja_lemma22 <;> first | rfl | assumption)
+  have h2 : op_gt_eq (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) n_1 := by first | (exact taelja_lemma23) | (first | apply taelja_lemma23 <;> first | rfl | assumption)
   have h3 : n_1 = (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) := by first | (exact ax7 n_1 (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) h1 h2) | (first | (exact ax7 _ _ h1 h2) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 
--- Lemma 26
-theorem taelja_lemma26 : op_gt_eq (op_plus (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0 := by
-  have h_rw := taelja_lemma21 esk1_0 (op_plus (op_eq_eq_gt esk1_0 n_1) esk1_0)
+-- Lemma 25
+theorem taelja_lemma25 : op_gt_eq (op_plus (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0 := by
+  have h_rw := taelja_lemma20 esk1_0 (op_plus (op_eq_eq_gt esk1_0 n_1) esk1_0)
   rw (config := { occs := .pos [3] }) [← h_rw]
   have h_rw := ax1 (op_eq_eq_gt (op_plus (op_eq_eq_gt esk1_0 n_1) esk1_0) (op_plus (op_eq_eq_gt esk1_0 n_1) esk1_0)) esk1_0
   rw [← h_rw]
   have h_rw := ax1 esk1_0 (op_eq_eq_gt esk1_0 n_1)
   rw (config := { occs := .pos [1] }) [← h_rw]
-  have h_rw := taelja_lemma25
+  have h_rw := taelja_lemma24
   rw [← h_rw]
   have h_rw := ax1 esk1_0 (op_eq_eq_gt esk1_0 n_1)
   rw (config := { occs := .pos [1] }) [← h_rw]
-  have h_rw := taelja_lemma25
+  have h_rw := taelja_lemma24
   rw [← h_rw]
   have h_rw := ax1 esk1_0 (op_eq_eq_gt esk1_0 n_1)
   rw [← h_rw]
-  have h_rw := taelja_lemma25
+  have h_rw := taelja_lemma24
   rw [← h_rw]
   have h_rw := taelja_lemma12 esk1_0
   rw (config := { occs := .pos [1] }) [← h_rw]
-  apply taelja_lemma22 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+  apply taelja_lemma21 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
--- Lemma 27
-theorem taelja_lemma27 : op_gt_eq esk1_0 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) := by
-  have h1 : op_gt_eq (op_plus (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0 := by first | (exact taelja_lemma26) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
+-- Lemma 26
+theorem taelja_lemma26 : op_gt_eq esk1_0 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) := by
+  have h1 : op_gt_eq (op_plus (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0 := by first | (exact taelja_lemma25) | (first | apply taelja_lemma25 <;> first | rfl | assumption)
   have h2 : op_gt_eq esk1_0 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) := by first | (exact ax5 (op_eq_eq_gt esk1_0 n_1) esk1_0 esk1_0 h1) | (first | (exact ax5 _ _ _ h1) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
--- Lemma 28
-theorem taelja_lemma28 : op_gt_eq n_1 esk1_0 := by
-  have h_rw := taelja_lemma25
+-- Lemma 27
+theorem taelja_lemma27 : op_gt_eq n_1 esk1_0 := by
+  have h_rw := taelja_lemma24
   rw [h_rw]
   have h_rw := ax1 (op_eq_eq_gt esk1_0 n_1) esk1_0
   rw [← h_rw]
-  apply taelja_lemma26 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+  apply taelja_lemma25 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
--- Lemma 29
-theorem taelja_lemma29 : (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) = esk1_0 := by
+-- Lemma 28
+theorem taelja_lemma28 : (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) = esk1_0 := by
   have h1 : op_gt_eq (op_eq_eq_gt (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0) (op_eq_eq_gt (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0) := by first | (exact ax4 (op_eq_eq_gt (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0)) | (first | apply ax4 <;> first | rfl | assumption)
   have h2 : op_gt_eq (op_plus (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) (op_eq_eq_gt (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0)) esk1_0 := by first | (exact ax10 (op_eq_eq_gt (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0) (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0 h1) | (first | (exact ax10 _ _ _ h1) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : op_gt_eq (op_plus (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) (op_eq_eq_gt n_1 n_1)) esk1_0 := by have h_rw := taelja_lemma16 esk1_0; rw [←h_rw]; exact h2
-  have h4 : op_gt_eq (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0 := by have h_rw := taelja_lemma21 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) n_1; rw [←h_rw]; exact h3
-  have h5 : op_gt_eq esk1_0 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) := by first | (exact taelja_lemma27) | (first | apply taelja_lemma27 <;> first | rfl | assumption)
+  have h4 : op_gt_eq (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0 := by have h_rw := taelja_lemma20 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) n_1; rw [←h_rw]; exact h3
+  have h5 : op_gt_eq esk1_0 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) := by first | (exact taelja_lemma26) | (first | apply taelja_lemma26 <;> first | rfl | assumption)
   have h6 : (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) = esk1_0 := by first | (exact ax7 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) esk1_0) esk1_0 h4 h5) | (first | (exact ax7 _ _ h4 h5) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h6
 
--- Lemma 30
-theorem taelja_lemma30 : ∀ (x : α), op_gt_eq (op_eq_eq_gt x n_1) (op_eq_eq_gt x esk1_0) := by
+-- Lemma 29
+theorem taelja_lemma29 : ∀ (x : α), op_gt_eq (op_eq_eq_gt x n_1) (op_eq_eq_gt x esk1_0) := by
   intro x
-  have h1 : op_gt_eq n_1 esk1_0 := by first | (exact taelja_lemma28) | (first | apply taelja_lemma28 <;> first | rfl | assumption)
+  have h1 : op_gt_eq n_1 esk1_0 := by first | (exact taelja_lemma27) | (first | apply taelja_lemma27 <;> first | rfl | assumption)
   have h2 : op_gt_eq (op_eq_eq_gt x n_1) (op_eq_eq_gt x esk1_0) := by first | (exact ax9 n_1 esk1_0 x h1) | (first | (exact ax9 _ _ _ h1) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
--- Lemma 31
-theorem taelja_lemma31 : op_gt_eq (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) esk1_0 := by
-  have h_rw := taelja_lemma29
+-- Lemma 30
+theorem taelja_lemma30 : op_gt_eq (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) esk1_0 := by
+  have h_rw := taelja_lemma28
   rw (config := { occs := .pos [2] }) [← h_rw]
-  apply taelja_lemma30 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+  apply taelja_lemma29 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
 
--- Lemma 32
-theorem taelja_lemma32 : op_gt_eq esk1_0 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) := by
+-- Lemma 31
+theorem taelja_lemma31 : op_gt_eq esk1_0 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) := by
   have h1 : op_gt_eq n_1 n_1 := by first | (exact ax4 n_1) | (first | apply ax4 <;> first | rfl | assumption)
   have h2 : op_gt_eq (op_eq_eq_gt esk1_0 n_1) (op_eq_eq_gt esk1_0 n_1) := by first | (exact ax9 n_1 n_1 esk1_0 h1) | (first | (exact ax9 _ _ _ h1) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : op_gt_eq (op_plus esk1_0 (op_eq_eq_gt esk1_0 n_1)) n_1 := by first | (exact ax10 (op_eq_eq_gt esk1_0 n_1) esk1_0 n_1 h2) | (first | (exact ax10 _ _ _ h2) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
@@ -224,8 +219,8 @@ theorem taelja_lemma32 : op_gt_eq esk1_0 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n
 
 -- Goal 1
 theorem taelja_goal1 : (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) = esk1_0 := by
-  have h1 : op_gt_eq (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) esk1_0 := by first | (exact taelja_lemma31) | (first | apply taelja_lemma31 <;> first | rfl | assumption)
-  have h2 : op_gt_eq esk1_0 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) := by first | (exact taelja_lemma32) | (first | apply taelja_lemma32 <;> first | rfl | assumption)
+  have h1 : op_gt_eq (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) esk1_0 := by first | (exact taelja_lemma30) | (first | apply taelja_lemma30 <;> first | rfl | assumption)
+  have h2 : op_gt_eq esk1_0 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) := by first | (exact taelja_lemma31) | (first | apply taelja_lemma31 <;> first | rfl | assumption)
   have h3 : (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) = esk1_0 := by first | (exact ax7 (op_eq_eq_gt (op_eq_eq_gt esk1_0 n_1) n_1) esk1_0 h1 h2) | (first | (exact ax7 _ _ h1 h2) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 

@@ -1,0 +1,24 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~product(c, d, identity), file('TPTP/Problems/GRP/GRP013-1.p', prove_c_times_d_is_identity)).
+cnf(c2, plain, X2=X2, inference(reflexivity, [status(thm)], [])).
+cnf(c3, hypothesis, product(inverse(a), inverse(b), d), file('TPTP/Problems/GRP/GRP013-1.p', inverse_a_times_inverse_b_is_d)).
+cnf(c4, hypothesis, product(a, b, c), file('TPTP/Problems/GRP/GRP013-1.p', a_times_b_is_c)).
+cnf(c5, axiom, ~product(X, Y, Z) | ~product(X, Y, W) | Z=W, file('TPTP/Problems/GRP/GRP013-1.p', total_function2)).
+cnf(c6, plain, ~product(a, b, d) | d=c, inference(resolution, [status(thm)], [c4, c5])).
+cnf(c7, axiom, product(X2, inverse(X2), identity), file('TPTP/Problems/GRP/GRP013-1.p', right_inverse)).
+cnf(c8, hypothesis, ~product(inverse(A), inverse(B), C) | product(A, C, B), file('TPTP/Problems/GRP/GRP013-1.p', inverses_have_property)).
+cnf(c9, plain, product(X2, identity, inverse(X2)), inference(resolution, [status(thm)], [c7, c8])).
+cnf(c10, axiom, product(X2, identity, X2), file('TPTP/Problems/GRP/GRP013-1.p', right_identity)).
+cnf(c11, plain, ~product(X2, identity, inverse(X2)) | inverse(X2)=X2, inference(resolution, [status(thm)], [c10, c5])).
+cnf(c12, plain, inverse(X2)=X2, inference(resolution, [status(thm)], [c9, c11])).
+cnf(c13, plain, ~product(a, inverse(b), d) | d=c, inference(rewriting, [status(thm)], [c6, c12])).
+cnf(c14, plain, ~product(inverse(a), inverse(b), d) | d=c, inference(rewriting, [status(thm)], [c13, c12])).
+cnf(c15, plain, d=c, inference(resolution, [status(thm)], [c3, c14])).
+cnf(c16, plain, product(c, d, identity)=product(c, c, identity), inference(rewriting, [status(thm)], [c2, c15])).
+cnf(c17, hypothesis, product(A2, A2, identity), file('TPTP/Problems/GRP/GRP013-1.p', squareness)).
+cnf(c18, plain, product(c, d, identity), inference(rewriting, [status(thm)], [c16, c17])).
+cnf(c19, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c18])).
+% SZS output end CNFRefutation
+

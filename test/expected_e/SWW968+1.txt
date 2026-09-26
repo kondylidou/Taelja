@@ -217,13 +217,12 @@ Proof:
 
 Lemma 35: pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))
 Proof:
-  pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))
-= { by axiom 9 }
-  pred_attacker(constr_tuple_2_get_0x30_bitstring(tuple_2(constr_CONST_0x30,constr_CONST_0x30)))
-= { by axiom 8 }
-  pred_attacker(constr_CONST_0x30)
-= { by axiom 1 }
-  true
+  have pred_attacker(constr_CONST_0x30)
+    by axiom 1
+  hence pred_attacker(constr_tuple_2_get_0x30_bitstring(tuple_2(constr_CONST_0x30,constr_CONST_0x30)))
+    by rw axiom 8 R->L
+  hence pred_attacker(constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas)))
+    by rw axiom 9 R->L
 
 Lemma 36: pred_attacker(constr_dec(constr_enc(name_objective2,constr_CONST_0x30),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(constr_CONST_0x30,constr_CONST_0x30,name_Kas),name_Kas))))
 Proof:

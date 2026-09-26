@@ -9,6 +9,8 @@ import Data.TPTP.Parse.Text (parseTSTP)
 import System.Environment (setEnv)
 import Test.Tasty
 import Test.Tasty.Golden
+import Test.Tasty.Golden.Advanced (goldenTest)
+import System.Process (readProcessWithExitCode)
 
 import Translate (translate)
 import Emitter (emit)
@@ -31,6 +33,7 @@ tests = testGroup "Taelja"
   , testGroup "Vampire"     (map (mkTest "expected_vampire" "baseline_vampire") benchmarkNames)
   , testGroup "E"           (map (mkTest "expected_e"       "baseline_e")       eBenchmarkNames)
   , testGroup "Twee"        (map (mkTest "expected_twee"    "baseline_twee")    tweeBenchmarkNames)
+  , testGroup "Twee, no fallback" (map mkReadTest tweeReadNames)
   , testGroup "TPTP"        (map mkTptpTest tptpNames)
   ]
 
@@ -55,6 +58,35 @@ tweeBenchmarkNames =
   -- a step whose rewrite fixes a variable the first rewrite left open, as
   -- c22 fixes A to X2, where the equation's own X2 must not be bound
   , "GRP509-1"
+  -- a Twee step that rewrites a fact, read as P = true, one rewrite with its
+  -- equation and one with the fact, as c4 rewrites axiom(implies(A,or(B,A)))
+  , "LCL170-3"
+  -- Twee rewrites a body literal of the nucleus c3 by c2 and c5 before
+  -- resolving it with c2, so the body atom is c2's instance with those
+  -- rewrites undone
+  , "CAT003-4"
+  -- a premise the algorithm derives more generally than Twee printed it,
+  -- with the head-only variables of c4 free where c5 has them equal
+  , "LCL431-2"
+  -- Twee rewrites the head of the nucleus c3 by c8 while its body literal
+  -- remains, so the electron it derives, c12, is the head rewritten
+  , "CAT014-4"
+  -- the chain that rewrites a body literal of c6 cites c11, which resolution
+  -- derived from input units, so it is read though nothing names it yet
+  , "SWV251-2"
+  -- c13 and c14 rewrite a body literal of c5 by c12, an equation with a
+  -- variable that the tree uses twice, and its second use is named too
+  , "GRP013-1"
+  -- the premise c2 of the Twee step c13 is X2 = X2, taken by reflexivity,
+  -- so the step is one rewrite by c12
+  , "GRP012-3"
+  -- c25 rewrites zero to a larger term by c24, whose variables only the
+  -- literal the step leaves fixes, and the chain cites the instance of c24
+  -- the lemma sub-run proved, stated the way round the electron is
+  , "HEN010-3"
+  -- the lemma sub-run proves c20 only under its Skolem constants, so the
+  -- Twee step c39 that rests on it is read at the instance its use needs
+  , "BOO006-1"
   , "sam"
   , "ANA007-2"
   , "HEN005-6"
@@ -355,6 +387,22 @@ mkTest :: String -> String -> String -> TestTree
 mkTest expectedDir prover name = goldenVsString name
   ("test/" ++ expectedDir ++ "/" ++ name ++ ".txt")
   (run emit ("test/" ++ prover ++ "/" ++ name ++ ".tstp"))
+
+-- The Twee proofs the translation reads from the input proof alone.  The
+-- executable translates each with the fallback off, and the output must be
+-- its golden unchanged.  The golden belongs to the Twee group, so accepting
+-- never rewrites it from here.
+tweeReadNames :: [String]
+tweeReadNames = filter (/= "KLE137+1") tweeBenchmarkNames
+  -- KLE137+1 resolves an equation with a unit by rewriting it to t = t
+
+mkReadTest :: String -> TestTree
+mkReadTest name = goldenTest name
+  (LBS.readFile ("test/expected_twee/" ++ name ++ ".txt"))
+  (do (_, out, err) <- readProcessWithExitCode "taelja" ["--no-fallback", "test/baseline_twee/" ++ name ++ ".tstp"] ""
+      return (LBS.pack (out ++ err)))
+  (\golden out -> return (if golden == out then Nothing else Just "differs from the golden with the fallback off"))
+  (const (return ()))
 
 mkTptpTest :: (String, String) -> TestTree
 mkTptpTest (prover, name) = goldenVsString (prover ++ "/" ++ name)

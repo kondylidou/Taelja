@@ -14,6 +14,7 @@ module TweeInterface
   , withTempInput
   , timeoutSecsFromEnv
   , tweeRewritingSteps
+  , readableUnits
   , tweableUnits
   , isRelHornAxiom
   , twoRewrites
@@ -23,9 +24,10 @@ module TweeInterface
 
 import Control.Applicative ((<|>))
 import Data.Char (isAsciiLower, isAsciiUpper, isDigit, toUpper)
-import Data.List (intercalate, isInfixOf, isPrefixOf, nub, sortBy)
+import Data.List (foldl', intercalate, isInfixOf, isPrefixOf, nub, sortBy)
 import Data.Maybe (fromMaybe, isJust, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 import Control.Exception (SomeException, bracket, try)
 import Data.IORef (IORef, newIORef, readIORef, modifyIORef', writeIORef)
 import GHC.Clock (getMonotonicTime)
@@ -578,6 +580,24 @@ callTweePlain budget units goal@(Rel name args)
     isRelLit _         = False
 callTweePlain _ _ _ = return Nothing
 
+-- The units whose whole derivation, down to input units, uses only steps the
+-- translation reads from the proof: Twee's rewriting, read as two rewrites,
+-- and resolution, which the nuclei replay.  A unit derived another way, as
+-- E's rw and spm, needs the prover or a demodulation chain to be justified.
+readableUnits :: [T.Unit] -> Set.Set String
+readableUnits = foldl' add Set.empty
+  where
+    -- a unit's parents come before it in the proof
+    add done (T.Unit n _ src)
+      | readable src = Set.insert (unitNameStr n) done
+      | otherwise    = done
+      where
+        readable (Just (T.Inference (T.Atom rule) _ ps, _)) =
+          rule `elem` map Text.pack ["rewriting", "resolution"]
+            && all (`Set.member` done) [ unitNameStr p | T.Parent (T.UnitSource p) _ <- ps ]
+        readable _ = True
+    add done _ = done
+
 -- Twee's rewriting steps, each its conclusion and its two premises by name.
 -- Twee writes a step as one rewrite with each premise between the two sides of
 -- its conclusion, and twoRewrites reads that back.
@@ -597,14 +617,14 @@ tweeRewritingSteps units =
 -- holds for all of them, and it takes a leaf of the left side.  The result
 -- says whether the chain runs from the right side, and for each rewrite, in
 -- the order made, which premise it uses, its direction, and whether it
--- rewrites the whole term.
+-- rewrites the whole term, and the instance of the premise it applies.
 twoRewrites :: Term -> Term -> (Term, Term) -> (Term, Term)
-            -> Maybe (Bool, (Int, Dir, Bool), (Int, Dir, Bool), Term)
+            -> Maybe (Bool, (Int, Dir, Bool, (Term, Term)), (Int, Dir, Bool, (Term, Term)), Term)
 twoRewrites gl gr e1 e2 = listToMaybe
-  (  [ (False, (1, dA, rA), (2, dB, rB), m) | (dA, rA, dB, rB, m) <- via gl gr e1 e2 ]
-  ++ [ (True,  (1, dA, rA), (2, dB, rB), m) | (dA, rA, dB, rB, m) <- via gr gl e1 e2 ]
-  ++ [ (False, (2, dA, rA), (1, dB, rB), m) | (dA, rA, dB, rB, m) <- via gl gr e2 e1 ]
-  ++ [ (True,  (2, dA, rA), (1, dB, rB), m) | (dA, rA, dB, rB, m) <- via gr gl e2 e1 ] )
+  (  [ (False, (1, dA, rA, iA), (2, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gl gr e1 e2 ]
+  ++ [ (True,  (1, dA, rA, iA), (2, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gr gl e1 e2 ]
+  ++ [ (False, (2, dA, rA, iA), (1, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gl gr e2 e1 ]
+  ++ [ (True,  (2, dA, rA, iA), (1, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gr gl e2 e1 ] )
   where
     rigid = nub (termVars gl ++ termVars gr)
     -- the value an unfixed variable takes, the smallest term at hand, so
@@ -618,18 +638,24 @@ twoRewrites gl gr e1 e2 = listToMaybe
       _        -> (l, r)
     ways (l, r) = [(LR, l, r), (RL, r, l)]
     via start end ea eb = do
-      (dA, fromA, toA) <- ways (apart "_t1" ea)
+      let ea' = apart "_t1" ea
+          eb' = apart "_t2" eb
+      (dA, fromA, toA) <- ways ea'
       (i, (sub, ctx)) <- zip [0 :: Int ..] (termCtxs start)
       Just s1 <- [unifyApart rigid fromA sub []]
       let mid0 = deepApplySubstTerm s1 (ctx toA)
-      (dB, fromB, toB) <- ways (apart "_t2" eb)
+      (dB, fromB, toB) <- ways eb'
       -- the second rewrite is the last, so it works where mid0 and end differ
       (k, (sub2, ctx2)) <- zip [0 :: Int ..] (diffCtxs mid0 end)
       Just s2 <- [unifyApart rigid fromB sub2 s1]
       Just s3 <- [unifyApart rigid (deepApplySubstTerm s2 (ctx2 toB)) end s2]
       let mid1 = deepApplySubstTerm s3 mid0
-          fill = [ (v, leaf) | v <- nub (termVars mid1), v `notElem` rigid ]
-      return (dA, i == 0, dB, k == 0, deepApplySubstTerm fill mid1)
+          inst (l, r) = (deepApplySubstTerm s3 l, deepApplySubstTerm s3 r)
+          (iA, iB) = (inst ea', inst eb')
+          fill = [ (v, leaf) | v <- nub (termVars mid1 ++ concatMap termVars [fst iA, snd iA, fst iB, snd iB])
+                             , v `notElem` rigid ]
+          filled (l, r) = (deepApplySubstTerm fill l, deepApplySubstTerm fill r)
+      return (dA, i == 0, filled iA, dB, k == 0, filled iB, deepApplySubstTerm fill mid1)
 
 -- A derivation from pl to pr, instantiated to run from `from` to `to`, and
 -- turned round when the equation was applied right to left.

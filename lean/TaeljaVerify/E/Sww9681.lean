@@ -237,11 +237,10 @@ theorem taelja_lemma34 : pred_attacker (constr_enc name_objective2 (constr_tuple
 
 -- Lemma 35
 theorem taelja_lemma35 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := by
-  have h_rw := ax9 constr_CONST_0x30 name_Kas constr_CONST_0x30
-  rw [h_rw]
-  have h_rw := ax8 constr_CONST_0x30 constr_CONST_0x30
-  rw [h_rw]
-  apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+  have h1 : pred_attacker constr_CONST_0x30 := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : pred_attacker (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30)) := by have h_rw := ax8 constr_CONST_0x30 constr_CONST_0x30; rw [h_rw]; exact h1
+  have h3 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := by have h_rw := ax9 constr_CONST_0x30 name_Kas constr_CONST_0x30; rw [h_rw]; exact h2
+  exact h3
 
 -- Lemma 36
 theorem taelja_lemma36 : pred_attacker (constr_dec (constr_enc name_objective2 constr_CONST_0x30) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by

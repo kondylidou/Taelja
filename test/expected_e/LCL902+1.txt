@@ -66,38 +66,32 @@ Proof:
 = { by axiom 4 }
   true
 
-Lemma 18: >=(+(1,==>(X,X)),1)
-Proof:
-  >=(+(1,==>(X,X)),1)
-= { by lemma 12 }
-  >=(1,1)
-= { by axiom 4 }
-  true
-
-Lemma 19: >=(==>(1,1),==>(X,X))
+Lemma 18: >=(==>(1,1),==>(X,X))
 Proof:
   have >=(+(X,==>(1,1)),X)
     by lemma 17
   hence >=(==>(1,1),==>(X,X))
     by axiom 5
 
-Lemma 20: ==>(X,X) = ==>(1,1)
+Lemma 19: ==>(X,X) = ==>(1,1)
 Proof:
-  have >=(+(1,==>(X,X)),1)
-    by lemma 18
+  have >=(1,1)
+    by axiom 4
+  hence >=(+(1,==>(X,X)),1)
+    by rw lemma 12 R->L
   hence >=(==>(X,X),==>(1,1))
     by axiom 5
    and >=(==>(1,1),==>(X,X))
-    by lemma 19
+    by lemma 18
   hence ==>(X,X) = ==>(1,1)
     by axiom 7
 
-Lemma 21: +(X,==>(Y,Y)) = X
+Lemma 20: +(X,==>(Y,Y)) = X
 Proof:
   +(X,==>(Y,Y))
 = { by axiom 1 R->L }
   +(==>(Y,Y),X)
-= { by lemma 20 }
+= { by lemma 19 }
   +(==>(1,1),X)
 = { by lemma 15 R->L }
   +(0,X)
@@ -106,16 +100,18 @@ Proof:
 = { by axiom 3 }
   X
 
-Lemma 22: >=(+(1,X),+(==>(1,1),X))
+Lemma 21: >=(+(1,X),+(==>(1,1),X))
 Proof:
-  have >=(1,0)
-    by axiom 6
+  have >=(1,1)
+    by axiom 4
+  hence >=(+(1,1),1)
+    by rw lemma 12 R->L
   hence >=(1,==>(1,1))
-    by rw lemma 15
+    by axiom 5
   hence >=(+(1,X),+(==>(1,1),X))
     by axiom 8
 
-Lemma 23: >=(1,+(esk1_0,==>(esk1_0,1)))
+Lemma 22: >=(1,+(esk1_0,==>(esk1_0,1)))
 Proof:
   >=(1,+(esk1_0,==>(esk1_0,1)))
 = { by axiom 3 R->L }
@@ -126,10 +122,10 @@ Proof:
   >=(1,+(==>(1,1),+(esk1_0,==>(esk1_0,1))))
 = { by lemma 12 R->L }
   >=(+(1,+(esk1_0,==>(esk1_0,1))),+(==>(1,1),+(esk1_0,==>(esk1_0,1))))
-= { by lemma 22 }
+= { by lemma 21 }
   true
 
-Lemma 24: >=(+(esk1_0,==>(esk1_0,1)),1)
+Lemma 23: >=(+(esk1_0,==>(esk1_0,1)),1)
 Proof:
   have >=(1,1)
     by axiom 4
@@ -138,57 +134,57 @@ Proof:
   hence >=(+(esk1_0,==>(esk1_0,1)),1)
     by axiom 10
 
-Lemma 25: 1 = +(esk1_0,==>(esk1_0,1))
+Lemma 24: 1 = +(esk1_0,==>(esk1_0,1))
 Proof:
   have >=(1,+(esk1_0,==>(esk1_0,1)))
-    by lemma 23
+    by lemma 22
    and >=(+(esk1_0,==>(esk1_0,1)),1)
-    by lemma 24
+    by lemma 23
   hence 1 = +(esk1_0,==>(esk1_0,1))
     by axiom 7
 
-Lemma 26: >=(+(==>(esk1_0,1),esk1_0),esk1_0)
+Lemma 25: >=(+(==>(esk1_0,1),esk1_0),esk1_0)
 Proof:
   >=(+(==>(esk1_0,1),esk1_0),esk1_0)
-= { by lemma 21 R->L }
+= { by lemma 20 R->L }
   >=(+(==>(esk1_0,1),esk1_0),+(esk1_0,==>(+(==>(esk1_0,1),esk1_0),+(==>(esk1_0,1),esk1_0))))
 = { by axiom 1 R->L }
   >=(+(==>(esk1_0,1),esk1_0),+(==>(+(==>(esk1_0,1),esk1_0),+(==>(esk1_0,1),esk1_0)),esk1_0))
 = { by axiom 1 R->L }
   >=(+(esk1_0,==>(esk1_0,1)),+(==>(+(==>(esk1_0,1),esk1_0),+(==>(esk1_0,1),esk1_0)),esk1_0))
-= { by lemma 25 R->L }
+= { by lemma 24 R->L }
   >=(1,+(==>(+(==>(esk1_0,1),esk1_0),+(==>(esk1_0,1),esk1_0)),esk1_0))
 = { by axiom 1 R->L }
   >=(1,+(==>(+(esk1_0,==>(esk1_0,1)),+(==>(esk1_0,1),esk1_0)),esk1_0))
-= { by lemma 25 R->L }
+= { by lemma 24 R->L }
   >=(1,+(==>(1,+(==>(esk1_0,1),esk1_0)),esk1_0))
 = { by axiom 1 R->L }
   >=(1,+(==>(1,+(esk1_0,==>(esk1_0,1))),esk1_0))
-= { by lemma 25 R->L }
+= { by lemma 24 R->L }
   >=(1,+(==>(1,1),esk1_0))
 = { by lemma 12 R->L }
   >=(+(1,esk1_0),+(==>(1,1),esk1_0))
-= { by lemma 22 }
+= { by lemma 21 }
   true
 
-Lemma 27: >=(esk1_0,==>(==>(esk1_0,1),esk1_0))
+Lemma 26: >=(esk1_0,==>(==>(esk1_0,1),esk1_0))
 Proof:
   have >=(+(==>(esk1_0,1),esk1_0),esk1_0)
-    by lemma 26
+    by lemma 25
   hence >=(esk1_0,==>(==>(esk1_0,1),esk1_0))
     by axiom 5
 
-Lemma 28: >=(1,esk1_0)
+Lemma 27: >=(1,esk1_0)
 Proof:
   >=(1,esk1_0)
-= { by lemma 25 }
+= { by lemma 24 }
   >=(+(esk1_0,==>(esk1_0,1)),esk1_0)
 = { by axiom 1 R->L }
   >=(+(==>(esk1_0,1),esk1_0),esk1_0)
-= { by lemma 26 }
+= { by lemma 25 }
   true
 
-Lemma 29: ==>(==>(esk1_0,1),esk1_0) = esk1_0
+Lemma 28: ==>(==>(esk1_0,1),esk1_0) = esk1_0
 Proof:
   have >=(==>(==>(==>(esk1_0,1),esk1_0),esk1_0),==>(==>(==>(esk1_0,1),esk1_0),esk1_0))
     by axiom 4
@@ -197,28 +193,28 @@ Proof:
   hence >=(+(==>(==>(esk1_0,1),esk1_0),==>(1,1)),esk1_0)
     by rw lemma 16
   hence >=(==>(==>(esk1_0,1),esk1_0),esk1_0)
-    by rw lemma 21
+    by rw lemma 20
    and >=(esk1_0,==>(==>(esk1_0,1),esk1_0))
-    by lemma 27
+    by lemma 26
   hence ==>(==>(esk1_0,1),esk1_0) = esk1_0
     by axiom 7
 
-Lemma 30: >=(==>(X,1),==>(X,esk1_0))
+Lemma 29: >=(==>(X,1),==>(X,esk1_0))
 Proof:
   have >=(1,esk1_0)
-    by lemma 28
+    by lemma 27
   hence >=(==>(X,1),==>(X,esk1_0))
     by axiom 9
 
-Lemma 31: >=(==>(==>(esk1_0,1),1),esk1_0)
+Lemma 30: >=(==>(==>(esk1_0,1),1),esk1_0)
 Proof:
   >=(==>(==>(esk1_0,1),1),esk1_0)
-= { by lemma 29 R->L }
+= { by lemma 28 R->L }
   >=(==>(==>(esk1_0,1),1),==>(==>(esk1_0,1),esk1_0))
-= { by lemma 30 }
+= { by lemma 29 }
   true
 
-Lemma 32: >=(esk1_0,==>(==>(esk1_0,1),1))
+Lemma 31: >=(esk1_0,==>(==>(esk1_0,1),1))
 Proof:
   have >=(1,1)
     by axiom 4
@@ -234,8 +230,8 @@ Proof:
 Goal 1: ==>(==>(esk1_0,1),1) = esk1_0
 Proof:
   have >=(==>(==>(esk1_0,1),1),esk1_0)
-    by lemma 31
+    by lemma 30
    and >=(esk1_0,==>(==>(esk1_0,1),1))
-    by lemma 32
+    by lemma 31
   hence ==>(==>(esk1_0,1),1) = esk1_0
     by axiom 7

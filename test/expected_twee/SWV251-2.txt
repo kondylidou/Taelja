@@ -1,0 +1,39 @@
+Axiom 1: c_in(v_x,c_Message_Oanalz(c_insert(v_X,v_H,tc_Message_Omsg)),tc_Message_Omsg)
+Axiom 2: c_lessequals(X,X,tc_set(Y))
+Axiom 3: c_lessequals(c_union(Z,A,B),C,tc_set(B)) => c_lessequals(A,C,tc_set(B))
+Axiom 4: c_union(Z,c_minus(U,Z,tc_set(B)),B) = c_union(Z,U,B)
+Axiom 5: c_in(v_X,c_Message_Osynth(c_Message_Oanalz(v_G)),tc_Message_Omsg)
+Axiom 6: c_in(V,U,B) => c_minus(c_insert(V,Z,B),U,tc_set(B)) = c_minus(Z,U,tc_set(B))
+Axiom 7: c_lessequals(W,X1,tc_set(tc_Message_Omsg)) => c_lessequals(c_Message_Oanalz(W),c_Message_Oanalz(X1),tc_set(tc_Message_Omsg))
+Axiom 8: c_in(X2,Z,B) /\ c_lessequals(Z,U,tc_set(B)) => c_in(X2,U,B)
+
+Lemma 9: c_minus(c_insert(v_X,X,tc_Message_Omsg),c_Message_Osynth(c_Message_Oanalz(v_G)),tc_set(tc_Message_Omsg)) = c_minus(X,c_Message_Osynth(c_Message_Oanalz(v_G)),tc_set(tc_Message_Omsg))
+Proof:
+  have c_in(v_X,c_Message_Osynth(c_Message_Oanalz(v_G)),tc_Message_Omsg)
+    by axiom 5
+  hence c_minus(c_insert(v_X,X,tc_Message_Omsg),c_Message_Osynth(c_Message_Oanalz(v_G)),tc_set(tc_Message_Omsg)) = c_minus(X,c_Message_Osynth(c_Message_Oanalz(v_G)),tc_set(tc_Message_Omsg))
+    by axiom 6
+
+Lemma 10: c_lessequals(c_Message_Oanalz(c_insert(v_X,v_H,tc_Message_Omsg)),c_Message_Oanalz(c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),v_H,tc_Message_Omsg)),tc_set(tc_Message_Omsg))
+Proof:
+  have c_lessequals(c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),c_insert(v_X,v_H,tc_Message_Omsg),tc_Message_Omsg),c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),c_insert(v_X,v_H,tc_Message_Omsg),tc_Message_Omsg),tc_set(tc_Message_Omsg))
+    by axiom 2
+  hence c_lessequals(c_insert(v_X,v_H,tc_Message_Omsg),c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),c_insert(v_X,v_H,tc_Message_Omsg),tc_Message_Omsg),tc_set(tc_Message_Omsg))
+    by axiom 3
+  hence c_lessequals(c_insert(v_X,v_H,tc_Message_Omsg),c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),c_minus(c_insert(v_X,v_H,tc_Message_Omsg),c_Message_Osynth(c_Message_Oanalz(v_G)),tc_set(tc_Message_Omsg)),tc_Message_Omsg),tc_set(tc_Message_Omsg))
+    by rw axiom 4 R->L
+  hence c_lessequals(c_insert(v_X,v_H,tc_Message_Omsg),c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),c_minus(v_H,c_Message_Osynth(c_Message_Oanalz(v_G)),tc_set(tc_Message_Omsg)),tc_Message_Omsg),tc_set(tc_Message_Omsg))
+    by rw lemma 9
+  hence c_lessequals(c_Message_Oanalz(c_insert(v_X,v_H,tc_Message_Omsg)),c_Message_Oanalz(c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),c_minus(v_H,c_Message_Osynth(c_Message_Oanalz(v_G)),tc_set(tc_Message_Omsg)),tc_Message_Omsg)),tc_set(tc_Message_Omsg))
+    by axiom 7
+  hence c_lessequals(c_Message_Oanalz(c_insert(v_X,v_H,tc_Message_Omsg)),c_Message_Oanalz(c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),v_H,tc_Message_Omsg)),tc_set(tc_Message_Omsg))
+    by rw axiom 4
+
+Goal 1: c_in(v_x,c_Message_Oanalz(c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),v_H,tc_Message_Omsg)),tc_Message_Omsg)
+Proof:
+  have c_in(v_x,c_Message_Oanalz(c_insert(v_X,v_H,tc_Message_Omsg)),tc_Message_Omsg)
+    by axiom 1
+   and c_lessequals(c_Message_Oanalz(c_insert(v_X,v_H,tc_Message_Omsg)),c_Message_Oanalz(c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),v_H,tc_Message_Omsg)),tc_set(tc_Message_Omsg))
+    by lemma 10
+  hence c_in(v_x,c_Message_Oanalz(c_union(c_Message_Osynth(c_Message_Oanalz(v_G)),v_H,tc_Message_Omsg)),tc_Message_Omsg)
+    by axiom 8

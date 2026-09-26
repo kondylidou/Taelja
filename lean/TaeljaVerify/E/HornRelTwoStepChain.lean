@@ -12,7 +12,6 @@ noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 axiom a : α
 axiom b : α
 axiom c : α
-axiom true_ : α
 
 axiom f : α → α
 axiom g : α → α
@@ -28,11 +27,10 @@ axiom ax3 : (f a) = b
 
 -- Goal 1
 theorem taelja_goal1 : p (g (f a)) := by
-  have h_rw := ax3
-  rw [h_rw]
-  have h_rw := ax2
-  rw [h_rw]
-  apply ax1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+  have h1 : p c := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
+  have h2 : p (g b) := by have h_rw := ax2; rw [h_rw]; exact h1
+  have h3 : p (g (f a)) := by have h_rw := ax3; rw [h_rw]; exact h2
+  exact h3
 
 end EHornRelTwoStepChain
 

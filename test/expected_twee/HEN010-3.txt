@@ -1,0 +1,209 @@
+Axiom 1: less_equal(zero,X)
+Axiom 2: less_equal(divide(divide(X,Y),divide(Z,Y)),divide(divide(X,Z),Y))
+Axiom 3: less_equal(divide(A,B),A)
+Axiom 4: less_equal(X,Z) => divide(X,Z) = zero
+Axiom 5: less_equal(X,Z) /\ less_equal(Z,X) => X = Z
+Axiom 6: divide(X,Z) = zero => less_equal(X,Z)
+
+Lemma 7: divide(divide(X,Y),X) = zero
+Proof:
+  have less_equal(divide(X,Y),X)
+    by axiom 3
+  hence divide(divide(X,Y),X) = zero
+    by axiom 4
+
+Lemma 8: divide(zero,X) = zero
+Proof:
+  have less_equal(zero,X)
+    by axiom 1
+  hence divide(zero,X) = zero
+    by axiom 4
+
+Lemma 9: less_equal(divide(divide(X,X),divide(zero,X)),zero)
+Proof:
+  less_equal(divide(divide(X,X),divide(zero,X)),zero)
+= { by lemma 7 R->L }
+  less_equal(divide(divide(X,X),divide(zero,X)),divide(divide(X,zero),X))
+= { by axiom 2 }
+  true
+
+Lemma 10: less_equal(divide(X,X),zero)
+Proof:
+  have less_equal(zero,divide(divide(X,X),divide(zero,X)))
+    by axiom 1
+   and less_equal(divide(divide(X,X),divide(zero,X)),zero)
+    by lemma 9
+  hence zero = divide(divide(X,X),divide(zero,X))
+    by axiom 5
+  hence zero = divide(divide(X,X),zero)
+    by rw lemma 8
+  hence less_equal(divide(X,X),zero)
+    by axiom 6
+
+Lemma 11: divide(X,X) = zero
+Proof:
+  have less_equal(zero,divide(X,X))
+    by axiom 1
+   and less_equal(divide(X,X),zero)
+    by lemma 10
+  hence divide(X,X) = zero
+    by axiom 5
+
+Lemma 12: divide(divide(divide(X,Y),zero),divide(divide(X,Y),Y)) = zero
+Proof:
+  have less_equal(divide(divide(X,Y),divide(Y,Y)),divide(divide(X,Y),Y))
+    by axiom 2
+  hence less_equal(divide(divide(X,Y),zero),divide(divide(X,Y),Y))
+    by rw lemma 11
+  hence divide(divide(divide(X,Y),zero),divide(divide(X,Y),Y)) = zero
+    by axiom 4
+
+Lemma 13: less_equal(divide(divide(divide(X,Y),divide(divide(X,Y),Y)),divide(zero,divide(divide(X,Y),Y))),zero)
+Proof:
+  have less_equal(divide(divide(divide(X,Y),divide(divide(X,Y),Y)),divide(zero,divide(divide(X,Y),Y))),divide(divide(divide(X,Y),zero),divide(divide(X,Y),Y)))
+    by axiom 2
+  hence less_equal(divide(divide(divide(X,Y),divide(divide(X,Y),Y)),divide(zero,divide(divide(X,Y),Y))),zero)
+    by rw lemma 12
+
+Lemma 14: divide(divide(X,Y),Y) = divide(X,Y)
+Proof:
+  have less_equal(zero,divide(divide(divide(X,Y),divide(divide(X,Y),Y)),divide(zero,divide(divide(X,Y),Y))))
+    by axiom 1
+   and less_equal(divide(divide(divide(X,Y),divide(divide(X,Y),Y)),divide(zero,divide(divide(X,Y),Y))),zero)
+    by lemma 13
+  hence zero = divide(divide(divide(X,Y),divide(divide(X,Y),Y)),divide(zero,divide(divide(X,Y),Y)))
+    by axiom 5
+  hence zero = divide(divide(divide(X,Y),divide(divide(X,Y),Y)),zero)
+    by rw lemma 8
+  hence less_equal(divide(divide(X,Y),divide(divide(X,Y),Y)),zero)
+    by axiom 6
+   and less_equal(zero,divide(divide(X,Y),divide(divide(X,Y),Y)))
+    by axiom 1
+  hence divide(divide(X,Y),divide(divide(X,Y),Y)) = zero
+    by axiom 5
+  hence less_equal(divide(X,Y),divide(divide(X,Y),Y))
+    by axiom 6
+   and less_equal(divide(divide(X,Y),Y),divide(X,Y))
+    by axiom 3
+  hence divide(divide(X,Y),Y) = divide(X,Y)
+    by axiom 5
+
+Lemma 15: less_equal(divide(divide(X,divide(X,zero)),zero),divide(divide(X,zero),divide(X,zero)))
+Proof:
+  have less_equal(divide(divide(X,divide(X,zero)),divide(zero,divide(X,zero))),divide(divide(X,zero),divide(X,zero)))
+    by axiom 2
+  hence less_equal(divide(divide(X,divide(X,zero)),zero),divide(divide(X,zero),divide(X,zero)))
+    by rw lemma 8
+
+Lemma 16: divide(X,zero) = X
+Proof:
+  have less_equal(zero,divide(divide(X,divide(X,zero)),zero))
+    by axiom 1
+  hence less_equal(divide(divide(X,zero),divide(X,zero)),divide(divide(X,divide(X,zero)),zero))
+    by rw lemma 11 R->L
+   and less_equal(divide(divide(X,divide(X,zero)),zero),divide(divide(X,zero),divide(X,zero)))
+    by lemma 15
+  hence divide(divide(X,zero),divide(X,zero)) = divide(divide(X,divide(X,zero)),zero)
+    by axiom 5
+  hence zero = divide(divide(X,divide(X,zero)),zero)
+    by rw lemma 11
+  hence less_equal(divide(X,divide(X,zero)),zero)
+    by axiom 6
+   and less_equal(zero,divide(X,divide(X,zero)))
+    by axiom 1
+  hence divide(X,divide(X,zero)) = zero
+    by axiom 5
+  hence less_equal(X,divide(X,zero))
+    by axiom 6
+   and less_equal(divide(X,zero),X)
+    by axiom 3
+  hence divide(X,zero) = X
+    by axiom 5
+
+Lemma 17: less_equal(divide(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a)),divide(zero,a))
+Proof:
+  have less_equal(divide(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a)),divide(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),divide(identity,a)),a))
+    by axiom 2
+  hence less_equal(divide(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a)),divide(zero,a))
+    by rw lemma 7
+
+Lemma 18: less_equal(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),zero)
+Proof:
+  less_equal(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),zero)
+= { by lemma 11 R->L }
+  less_equal(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),divide(divide(identity,a),divide(identity,a)))
+= { by axiom 2 }
+  true
+
+Lemma 19: zero = divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a)))
+Proof:
+  have less_equal(zero,divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))))
+    by axiom 1
+   and less_equal(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),zero)
+    by lemma 18
+  hence zero = divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a)))
+    by axiom 5
+
+Lemma 20: divide(divide(divide(divide(identity,divide(identity,a)),a),divide(divide(a,divide(identity,a)),a)),divide(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),a)) = zero
+Proof:
+  have less_equal(divide(divide(divide(identity,divide(identity,a)),a),divide(divide(a,divide(identity,a)),a)),divide(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),a))
+    by axiom 2
+  hence divide(divide(divide(divide(identity,divide(identity,a)),a),divide(divide(a,divide(identity,a)),a)),divide(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),a)) = zero
+    by axiom 4
+
+Lemma 21: less_equal(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a))
+Proof:
+  have less_equal(zero,divide(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a)))
+    by axiom 1
+  hence less_equal(divide(zero,a),divide(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a)))
+    by rw lemma 8 R->L
+   and less_equal(divide(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a)),divide(zero,a))
+    by lemma 17
+  hence divide(zero,a) = divide(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a))
+    by axiom 5
+  hence zero = divide(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a))
+    by rw lemma 8
+  hence less_equal(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a))
+    by axiom 6
+
+Lemma 22: divide(identity,a) = divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a)
+Proof:
+  have less_equal(divide(divide(divide(identity,a),a),divide(divide(identity,divide(identity,a)),a)),divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a))
+    by axiom 2
+  hence less_equal(divide(divide(divide(identity,a),a),divide(divide(divide(identity,divide(identity,a)),a),zero)),divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a))
+    by rw lemma 16 R->L
+  hence less_equal(divide(divide(divide(identity,a),a),divide(divide(divide(identity,divide(identity,a)),a),divide(divide(a,divide(identity,a)),a))),divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a))
+    by rw lemma 7 R->L
+  hence less_equal(divide(divide(divide(identity,a),a),divide(divide(divide(divide(identity,divide(identity,a)),a),divide(divide(a,divide(identity,a)),a)),zero)),divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a))
+    by rw lemma 16 R->L
+  hence less_equal(divide(divide(divide(identity,a),a),divide(divide(divide(divide(identity,divide(identity,a)),a),divide(divide(a,divide(identity,a)),a)),divide(zero,a))),divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a))
+    by rw lemma 8 R->L
+  hence less_equal(divide(divide(divide(identity,a),a),divide(divide(divide(divide(identity,divide(identity,a)),a),divide(divide(a,divide(identity,a)),a)),divide(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),a))),divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a))
+    by rw lemma 19
+  hence less_equal(divide(divide(divide(identity,a),a),zero),divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a))
+    by rw lemma 20
+  hence less_equal(divide(divide(identity,a),a),divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a))
+    by rw lemma 16
+   and less_equal(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),a))
+    by lemma 21
+  hence divide(divide(identity,a),a) = divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a)
+    by axiom 5
+  hence divide(identity,a) = divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a)
+    by rw lemma 14
+
+Lemma 23: less_equal(divide(identity,a),divide(divide(identity,a),divide(identity,divide(identity,a))))
+Proof:
+  less_equal(divide(identity,a),divide(divide(identity,a),divide(identity,divide(identity,a))))
+= { by lemma 22 }
+  less_equal(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),divide(identity,divide(identity,a))))
+= { by axiom 3 }
+  true
+
+Goal 1: divide(identity,a) = divide(divide(identity,a),divide(identity,divide(identity,a)))
+Proof:
+  have less_equal(divide(divide(identity,a),divide(identity,divide(identity,a))),divide(identity,a))
+    by axiom 3
+   and less_equal(divide(identity,a),divide(divide(identity,a),divide(identity,divide(identity,a))))
+    by lemma 23
+  hence divide(identity,a) = divide(divide(identity,a),divide(identity,divide(identity,a)))
+    by axiom 5

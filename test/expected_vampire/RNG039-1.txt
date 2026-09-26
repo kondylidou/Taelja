@@ -245,7 +245,7 @@ Proof:
 = { by axiom 12 }
   true
 
-Lemma 32: b = a
+Goal 1: c = d
 Proof:
   have product(a,d,d)
     by lemma 30
@@ -255,13 +255,7 @@ Proof:
     by axiom 5
   hence b = a
     by rw lemma 27 R->L
-
-Goal 1: c = d
-Proof:
-  c
-= { by lemma 29 R->L }
-  b
-= { by lemma 32 }
-  a
-= { by lemma 27 }
-  d
+  hence b = d
+    by rw lemma 27
+  hence c = d
+    by rw lemma 29

@@ -63,6 +63,10 @@ import TaeljaVerify.Twee.Cat0191
 import TaeljaVerify.Twee.Grp1361
 import TaeljaVerify.Twee.Grp5091
 import TaeljaVerify.Twee.Col0427
+import TaeljaVerify.Twee.Lcl4312
+import TaeljaVerify.Twee.Cat0034
+import TaeljaVerify.Twee.Cat0144
+import TaeljaVerify.Twee.Lcl1703
 import TaeljaVerify.Twee.Set8652
 import TaeljaVerify.Twee.Ana0072
 import TaeljaVerify.Twee.Ana0232
@@ -208,3 +212,8 @@ import TaeljaVerify.Twee.Seu3031
 import TaeljaVerify.E.Csr1171
 import TaeljaVerify.E.Syo6111
 import TaeljaVerify.Vampire.AgdaVampireZeUniq
+import TaeljaVerify.Twee.Swv2512
+import TaeljaVerify.Twee.Grp0131
+import TaeljaVerify.Twee.Grp0123
+import TaeljaVerify.Twee.Hen0103
+import TaeljaVerify.Twee.Boo0061

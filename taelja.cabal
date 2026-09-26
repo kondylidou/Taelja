@@ -48,7 +48,9 @@ test-suite taelja-tests
     tptp          ^>=0.1,
     tasty         >=1.4,
     tasty-golden  >=2.3,
+    process       >=1.6,
     taelja
+  build-tool-depends: taelja:taelja
   default-language: GHC2021
 
 executable taelja
