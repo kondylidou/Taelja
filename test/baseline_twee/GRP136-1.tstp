@@ -1,0 +1,10 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, a!=b, file('TPTP/Problems/GRP/GRP136-1.p', prove_ax_antisyma)).
+cnf(c2, hypothesis, least_upper_bound(a, b)=a, file('TPTP/Problems/GRP/GRP136-1.p', ax_antisyma_2)).
+cnf(c3, hypothesis, least_upper_bound(a, b)=b, file('TPTP/Problems/GRP/GRP136-1.p', ax_antisyma_1)).
+cnf(c4, plain, b=a, inference(rewriting, [status(thm)], [c2, c3])).
+cnf(c5, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c4])).
+% SZS output end CNFRefutation
+

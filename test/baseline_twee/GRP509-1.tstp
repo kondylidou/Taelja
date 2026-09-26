@@ -1,0 +1,32 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, multiply(inverse(a1), a1)!=multiply(inverse(b1), b1), file('TPTP/Problems/GRP/GRP509-1.p', prove_these_axioms_1)).
+cnf(c2, axiom, multiply(multiply(multiply(A, B), C), inverse(multiply(A, C)))=B, file('TPTP/Problems/GRP/GRP509-1.p', single_axiom)).
+cnf(c3, plain, multiply(X3, inverse(multiply(multiply(X2, X3), inverse(multiply(X2, X)))))=X, inference(rewriting, [status(thm)], [c2, c2])).
+cnf(c4, plain, inverse(multiply(multiply(X4, X), inverse(multiply(X4, X3))))=multiply(multiply(X3, X2), inverse(multiply(X, X2))), inference(rewriting, [status(thm)], [c2, c3])).
+cnf(c5, plain, multiply(X2, inverse(multiply(X3, inverse(multiply(multiply(X, X3), inverse(multiply(X, X2)))))))=inverse(multiply(multiply(X4, X3), inverse(multiply(X4, X3)))), inference(rewriting, [status(thm)], [c4, c3])).
+cnf(c6, plain, inverse(multiply(multiply(X3, X2), inverse(multiply(X3, X2))))=multiply(X, inverse(X)), inference(rewriting, [status(thm)], [c5, c3])).
+cnf(c7, plain, multiply(X2, multiply(X, inverse(X)))=X2, inference(rewriting, [status(thm)], [c6, c3])).
+cnf(c8, plain, multiply(multiply(multiply(X3, X2), multiply(X, inverse(X))), inverse(multiply(X3, multiply(X, inverse(X)))))=multiply(multiply(X3, X2), inverse(X3)), inference(rewriting, [status(thm)], [c7, c7])).
+cnf(c9, plain, multiply(multiply(X2, X), inverse(X2))=X, inference(rewriting, [status(thm)], [c8, c2])).
+cnf(c10, plain, multiply(X2, inverse(multiply(X, X2)))=inverse(X), inference(rewriting, [status(thm)], [c9, c9])).
+cnf(c11, plain, multiply(inverse(X), multiply(multiply(X, inverse(multiply(multiply(inverse(X), X), inverse(X)))), inverse(X)))=inverse(multiply(inverse(X), X)), inference(rewriting, [status(thm)], [c10, c9])).
+cnf(c12, plain, multiply(inverse(X), multiply(multiply(X, inverse(multiply(multiply(inverse(X), X), inverse(X)))), inverse(multiply(inverse(X), inverse(multiply(multiply(X2, inverse(X)), inverse(multiply(X2, X))))))))=inverse(multiply(inverse(X), X)), inference(rewriting, [status(thm)], [c11, c3])).
+cnf(c13, plain, multiply(inverse(X2), multiply(multiply(X2, inverse(multiply(multiply(inverse(X2), X2), inverse(X2)))), inverse(multiply(inverse(X2), multiply(X2, inverse(multiply(multiply(inverse(X2), X2), inverse(multiply(inverse(X2), inverse(multiply(multiply(X, inverse(X2)), inverse(multiply(X, X2)))))))))))))=inverse(multiply(inverse(X2), X2)), inference(rewriting, [status(thm)], [c12, c3])).
+cnf(c14, plain, multiply(inverse(X), multiply(multiply(X, inverse(multiply(multiply(inverse(X), X), inverse(X)))), inverse(multiply(inverse(X), multiply(X, inverse(multiply(multiply(inverse(X), X), inverse(X))))))))=inverse(multiply(inverse(X), X)), inference(rewriting, [status(thm)], [c13, c3])).
+cnf(c15, plain, multiply(inverse(X), inverse(inverse(X)))=inverse(multiply(inverse(X), X)), inference(rewriting, [status(thm)], [c14, c10])).
+cnf(c16, plain, multiply(inverse(X), inverse(multiply(X3, inverse(multiply(multiply(X2, X3), inverse(multiply(X2, inverse(X))))))))=inverse(multiply(inverse(X), X)), inference(rewriting, [status(thm)], [c15, c3])).
+cnf(c17, plain, multiply(multiply(X2, inverse(multiply(multiply(X, X2), inverse(multiply(X, inverse(X3)))))), inverse(multiply(X2, inverse(multiply(multiply(X, X2), inverse(multiply(X, inverse(X3))))))))=inverse(multiply(inverse(X3), X3)), inference(rewriting, [status(thm)], [c16, c3])).
+cnf(c18, plain, inverse(multiply(multiply(X3, X), inverse(multiply(X3, X))))=inverse(multiply(inverse(X2), X2)), inference(rewriting, [status(thm)], [c17, c6])).
+cnf(c19, plain, multiply(multiply(X2, inverse(multiply(multiply(X, X2), inverse(multiply(X, X4))))), inverse(multiply(X2, inverse(multiply(multiply(X, X2), inverse(multiply(X, X4)))))))=inverse(multiply(inverse(X3), X3)), inference(rewriting, [status(thm)], [c18, c4])).
+cnf(c20, plain, multiply(X4, inverse(multiply(X2, inverse(multiply(multiply(X, X2), inverse(multiply(X, X4)))))))=inverse(multiply(inverse(X3), X3)), inference(rewriting, [status(thm)], [c19, c3])).
+cnf(c21, plain, inverse(multiply(inverse(X), X))=multiply(X2, inverse(X2)), inference(rewriting, [status(thm)], [c20, c3])).
+cnf(c22, plain, multiply(X2, multiply(X, inverse(X)))=inverse(inverse(X2)), inference(rewriting, [status(thm)], [c10, c21])).
+cnf(c23, plain, inverse(inverse(X))=X, inference(rewriting, [status(thm)], [c22, c7])).
+cnf(c24, plain, inverse(multiply(inverse(X), X))=multiply(inverse(a1), a1), inference(rewriting, [status(thm)], [c23, c21])).
+cnf(c25, plain, multiply(inverse(b1), inverse(inverse(b1)))=multiply(inverse(a1), a1), inference(rewriting, [status(thm)], [c24, c21])).
+cnf(c26, plain, multiply(inverse(b1), b1)=multiply(inverse(a1), a1), inference(rewriting, [status(thm)], [c25, c23])).
+cnf(c27, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c26])).
+% SZS output end CNFRefutation
+

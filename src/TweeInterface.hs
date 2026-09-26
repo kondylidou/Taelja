@@ -1,5 +1,6 @@
 module TweeInterface
   ( findProver
+  , disableFallback
   , startFallbackBudget
   , fallbackBudgetSpent
   , toTptpTerm
@@ -12,12 +13,18 @@ module TweeInterface
   , runProverCapped
   , withTempInput
   , timeoutSecsFromEnv
+  , tweeRewritingSteps
+  , tweableUnits
+  , isRelHornAxiom
+  , twoRewrites
+  , spliceAt
+  , reverseChain
   ) where
 
 import Control.Applicative ((<|>))
 import Data.Char (isAsciiLower, isAsciiUpper, isDigit, toUpper)
 import Data.List (intercalate, isInfixOf, isPrefixOf, nub, sortBy)
-import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
+import Data.Maybe (fromMaybe, isJust, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
 import Control.Exception (SomeException, bracket, try)
 import Data.IORef (IORef, newIORef, readIORef, modifyIORef', writeIORef)
@@ -32,8 +39,13 @@ import System.Process (readProcessWithExitCode)
 import System.Timeout (timeout)
 import Text.Read (readMaybe)
 
+import qualified Data.TPTP as T
+import qualified Data.Text as Text
+
 import Types
-import Helpers (isEqLit, litVars, rewriteTermAll)
+import Helpers (applySubstTerm, deepApplySubstTerm, diffCtxs, flipDir, isEqLit, litVars,
+                matchLit, rewriteTermAll, suffixVarsLit, termCtxs, termVars, unifyApart)
+import ProofTree (unitNameStr)
 
 -- A prover binary, looked up once per run.  The variable names it outright,
 -- otherwise bin/<name> in the current directory, otherwise <name> on the
@@ -42,8 +54,22 @@ import Helpers (isEqLit, litVars, rewriteTermAll)
 proverBinRef :: IORef (Map.Map String (Maybe FilePath))
 proverBinRef = unsafePerformIO (newIORef Map.empty)
 
+-- Whether a prover may be asked at all.  --no-fallback turns them off, so a
+-- proof is translated from what the input proof states and nothing else.
+{-# NOINLINE fallbackEnabled #-}
+fallbackEnabled :: IORef Bool
+fallbackEnabled = unsafePerformIO (newIORef True)
+
+disableFallback :: IO ()
+disableFallback = writeIORef fallbackEnabled False
+
 findProver :: String -> String -> String -> IO (Maybe FilePath)
 findProver var exe what = do
+  enabled <- readIORef fallbackEnabled
+  if not enabled then return Nothing else findProverOn var exe what
+
+findProverOn :: String -> String -> String -> IO (Maybe FilePath)
+findProverOn var exe what = do
   cached <- Map.lookup exe <$> readIORef proverBinRef
   case cached of
     Just found -> return found
@@ -551,3 +577,81 @@ callTweePlain budget units goal@(Rel name args)
     isRelLit (Rel _ _) = True
     isRelLit _         = False
 callTweePlain _ _ _ = return Nothing
+
+-- Twee's rewriting steps, each its conclusion and its two premises by name.
+-- Twee writes a step as one rewrite with each premise between the two sides of
+-- its conclusion, and twoRewrites reads that back.
+tweeRewritingSteps :: [T.Unit] -> [(String, String, String)]
+tweeRewritingSteps units =
+  [ (unitNameStr n, p1, p2)
+  | T.Unit n _ (Just (T.Inference (T.Atom rule) _ ps, _)) <- units
+  , rule == Text.pack "rewriting"
+  , [p1, p2] <- [[ unitNameStr pn | T.Parent (T.UnitSource pn) _ <- ps ]] ]
+
+-- From one side of an equation to the other by one rewrite with each of two
+-- equations.  Twee usually applies its premises in the order it lists them,
+-- and sometimes the other way round, so both orders are read, the listed one
+-- first.  The equations are renamed apart and their variables fixed by
+-- unification, while the equation's own variables stay as they are.  An
+-- equation variable no rewrite fixes may take any value, since the equation
+-- holds for all of them, and it takes a leaf of the left side.  The result
+-- says whether the chain runs from the right side, and for each rewrite, in
+-- the order made, which premise it uses, its direction, and whether it
+-- rewrites the whole term.
+twoRewrites :: Term -> Term -> (Term, Term) -> (Term, Term)
+            -> Maybe (Bool, (Int, Dir, Bool), (Int, Dir, Bool), Term)
+twoRewrites gl gr e1 e2 = listToMaybe
+  (  [ (False, (1, dA, rA), (2, dB, rB), m) | (dA, rA, dB, rB, m) <- via gl gr e1 e2 ]
+  ++ [ (True,  (1, dA, rA), (2, dB, rB), m) | (dA, rA, dB, rB, m) <- via gr gl e1 e2 ]
+  ++ [ (False, (2, dA, rA), (1, dB, rB), m) | (dA, rA, dB, rB, m) <- via gl gr e2 e1 ]
+  ++ [ (True,  (2, dA, rA), (1, dB, rB), m) | (dA, rA, dB, rB, m) <- via gr gl e2 e1 ] )
+  where
+    rigid = nub (termVars gl ++ termVars gr)
+    -- the value an unfixed variable takes, the smallest term at hand, so
+    -- the line stays no larger than the step needs
+    leaf = head ([ t | (t, _) <- termCtxs gl, isLeaf t ] ++ [gl])
+    isLeaf (App _ []) = True
+    isLeaf (App _ _)  = False
+    isLeaf _          = True
+    apart sfx (l, r) = case suffixVarsLit sfx (Eq l r) of
+      Eq l' r' -> (l', r')
+      _        -> (l, r)
+    ways (l, r) = [(LR, l, r), (RL, r, l)]
+    via start end ea eb = do
+      (dA, fromA, toA) <- ways (apart "_t1" ea)
+      (i, (sub, ctx)) <- zip [0 :: Int ..] (termCtxs start)
+      Just s1 <- [unifyApart rigid fromA sub []]
+      let mid0 = deepApplySubstTerm s1 (ctx toA)
+      (dB, fromB, toB) <- ways (apart "_t2" eb)
+      -- the second rewrite is the last, so it works where mid0 and end differ
+      (k, (sub2, ctx2)) <- zip [0 :: Int ..] (diffCtxs mid0 end)
+      Just s2 <- [unifyApart rigid fromB sub2 s1]
+      Just s3 <- [unifyApart rigid (deepApplySubstTerm s2 (ctx2 toB)) end s2]
+      let mid1 = deepApplySubstTerm s3 mid0
+          fill = [ (v, leaf) | v <- nub (termVars mid1), v `notElem` rigid ]
+      return (dA, i == 0, dB, k == 0, deepApplySubstTerm fill mid1)
+
+-- A derivation from pl to pr, instantiated to run from `from` to `to`, and
+-- turned round when the equation was applied right to left.
+spliceAt :: Dir -> Term -> Term -> (Term, Term) -> (Term, [(UnitEntry, Dir, Term)])
+         -> Maybe [(UnitEntry, Dir, Term)]
+spliceAt d from to (pl, pr) (_, steps) = do
+  let (a, b, ordered) = case d of
+        LR -> (pl, pr, steps)
+        RL -> (pr, pl, reverseChain pl steps)
+  sigma <- matchLit (Eq a b) (Eq from to)
+  return [ (u, dir, applySubstTerm sigma t) | (u, dir, t) <- ordered ]
+
+-- The same chain read backwards, from its last term to its first.
+reverseChain :: Term -> [(UnitEntry, Dir, Term)] -> [(UnitEntry, Dir, Term)]
+reverseChain start steps =
+  reverse [ (u, flipDir d, prev) | ((u, d, _), prev) <- zip steps (start : map (\(_, _, t) -> t) steps) ]
+
+-- raw derived electrons with no proof are excluded since Twee cannot justify them later
+tweableUnits :: [UnitEntry] -> [UnitEntry]
+tweableUnits = filter (\u -> isJust (ueName u) || isJust (ueProof u))
+
+-- Horn axioms that are purely relational (no equality heads or bodies).
+-- Equality-headed/bodied axioms break the ifeq+pair Twee encoding.
+isRelHornAxiom :: HornAxiomEntry -> Bool
+isRelHornAxiom ha = not (isEqLit (haHead ha)) && not (any isEqLit (haBodies ha))

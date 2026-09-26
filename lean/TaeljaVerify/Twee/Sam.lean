@@ -42,30 +42,64 @@ axiom ax9 : ∀ (z : α), (meet zero z) = zero
 axiom ax10 : ∀ (z : α), (join zero z) = z
 
 -- Lemma 11
-theorem taelja_lemma11 : (meet b (join c d)) = zero := by
+theorem taelja_lemma11 : ∀ (x : α) (y : α), (join (meet x y) y) = y := by
+  intro x y
+  calc join (meet x y) y = join y (meet x y) := by have h_rw := ax1 (meet x y) y; rw [h_rw]
+      _ = join y (meet y x) := by have h_rw := ax3 y x; rw [h_rw]
+      _ = y := by first | (first | (exact ax4 x y) | (exact Eq.symm (ax4 x y))) | (have h_rw := ax4 x y; rw [h_rw])
+
+-- Lemma 12
+theorem taelja_lemma12 : ∀ (x : α) (y : α) (z : α), (join (meet x y) (join z y)) = (join z y) := by
+  intro x y z
+  calc join (meet x y) (join z y) = join (meet x y) (join y z) := by have h_rw := ax1 z y; rw [h_rw]
+      _ = join (join (meet x y) y) z := by have h_rw := ax2 y z (meet x y); rw [h_rw]
+      _ = join y z := by first | (first | (exact taelja_lemma11 x y) | (exact Eq.symm (taelja_lemma11 x y))) | (have h_rw := taelja_lemma11 x y; rw [h_rw])
+      _ = join z y := by have h_rw := ax1 y z; rw [h_rw]
+
+-- Lemma 13
+theorem taelja_lemma13 : (meet b (join c d)) = zero := by
   have h1 : comp b (join c d) := by first | (exact ax7) | (first | apply ax7 <;> first | rfl | assumption)
   have h2 : (meet b (join c d)) = zero := by first | (exact ax8 (join c d) b h1) | (first | (exact ax8 _ _ h1) | (apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax8 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
--- Lemma 12
-theorem taelja_lemma12 : ∀ (x : α), (join (meet b c) x) = x := by
+-- Lemma 14
+theorem taelja_lemma14 : (meet b c) = zero := by
+  calc meet b c = meet (meet b c) (join (meet b c) (join d c)) := by first | (first | (exact ax5 (join d c) (meet b c)) | (exact Eq.symm (ax5 (join d c) (meet b c)))) | (have h_rw := ax5 (join d c) (meet b c); rw [h_rw])
+      _ = meet (meet b c) (join d c) := by have h_rw := taelja_lemma12 b c d; rw [h_rw]
+      _ = meet (meet b c) (join c d) := by have h_rw := ax1 d c; rw [h_rw]
+      _ = meet (join c d) (meet b c) := by have h_rw := ax3 (join c d) (meet b c); rw [h_rw]
+      _ = meet (join c d) (meet c b) := by have h_rw := ax3 b c; rw [h_rw]
+      _ = meet (meet c b) (join c d) := by have h_rw := ax3 (join c d) (meet c b); rw [h_rw]
+      _ = meet c (meet b (join c d)) := by have h_rw := ax6 b (join c d) c; rw [h_rw]
+      _ = meet c (meet (join c d) b) := by have h_rw := ax3 (join c d) b; rw [h_rw]
+      _ = meet c (meet b (join c d)) := by have h_rw := ax3 b (join c d); rw [h_rw]
+      _ = meet c zero := by have h_rw := taelja_lemma13; rw [h_rw]
+      _ = meet zero c := by have h_rw := ax3 zero c; rw [h_rw]
+      _ = zero := by have h_rw := ax9 c; rw [h_rw]
+
+-- Lemma 15
+theorem taelja_lemma15 : ∀ (x : α), (join (meet b c) x) = x := by
   intro x
-  calc join (meet b c) x = join (meet b (meet c (join c d))) x := by first | (first | (exact ax5 d c) | (exact Eq.symm (ax5 d c))) | (have h_rw := ax5 d c; rw [h_rw])
-      _ = join (meet b (meet c (join d c))) x := by have h_rw := ax1 c d; rw [h_rw]
-      _ = join (meet b (meet (join d c) c)) x := by have h_rw := ax3 c (join d c); rw [h_rw]
-      _ = join (meet (meet b (join d c)) c) x := by have h_rw := ax6 (join d c) c b; rw [h_rw]
-      _ = join (meet (meet b (join c d)) c) x := by have h_rw := ax1 c d; rw [h_rw]
-      _ = join (meet zero c) x := by have h_rw := taelja_lemma11; rw [h_rw]
-      _ = join zero x := by have h_rw := ax9 c; rw [h_rw]
+  calc join (meet b c) x = join zero x := by have h_rw := taelja_lemma14; rw [h_rw]
       _ = x := by first | (first | (exact ax10 x) | (exact Eq.symm (ax10 x))) | (have h_rw := ax10 x; rw [h_rw])
+
+-- Lemma 16
+theorem taelja_lemma16 : ∀ (x : α) (y : α) (z : α), (join x (join y z)) = (join z (join y x)) := by
+  intro x y z
+  calc join x (join y z) = join x (join z y) := by have h_rw := ax1 z y; rw [h_rw]
+      _ = join (join z y) x := by have h_rw := ax1 (join z y) x; rw [h_rw]
+      _ = join z (join y x) := by have h_rw := ax2 y x z; rw [h_rw]
+      _ = join z (join x y) := by have h_rw := ax1 y x; rw [h_rw]
+      _ = join z (join y x) := by have h_rw := ax1 x y; rw [h_rw]
 
 -- Goal 1
 theorem taelja_goal1 : (meet (join a (meet b c)) (join a (meet b d))) = a := by
-  calc meet (join a (meet b c)) (join a (meet b d)) = meet (join a (meet b c)) (join (join (meet b c) a) (meet b d)) := by first | (first | (exact taelja_lemma12 a) | (exact Eq.symm (taelja_lemma12 a))) | (have h_rw := taelja_lemma12 a; rw [h_rw])
-      _ = meet (join a (meet b c)) (join (join a (meet b c)) (meet b d)) := by have h_rw := ax1 a (meet b c); rw (config := { occs := .pos [3] }) [h_rw]
+  calc meet (join a (meet b c)) (join a (meet b d)) = meet (join a (meet b c)) (join (meet b c) (join a (meet b d))) := by first | (first | (exact taelja_lemma15 (join a (meet b d))) | (exact Eq.symm (taelja_lemma15 (join a (meet b d))))) | (have h_rw := taelja_lemma15 (join a (meet b d)); rw [h_rw])
+      _ = meet (join a (meet b c)) (join (meet b d) (join a (meet b c))) := by have h_rw := taelja_lemma16 (meet b c) a (meet b d); rw [h_rw]
+      _ = meet (join a (meet b c)) (join (join a (meet b c)) (meet b d)) := by have h_rw := ax1 (meet b d) (join a (meet b c)); rw [h_rw]
       _ = join a (meet b c) := by first | (first | (exact ax5 (meet b d) (join a (meet b c))) | (exact Eq.symm (ax5 (meet b d) (join a (meet b c))))) | (have h_rw := ax5 (meet b d) (join a (meet b c)); rw [h_rw])
       _ = join (meet b c) a := by have h_rw := ax1 a (meet b c); rw [h_rw]
-      _ = a := by first | (first | (exact taelja_lemma12 a) | (exact Eq.symm (taelja_lemma12 a))) | (have h_rw := taelja_lemma12 a; rw [h_rw])
+      _ = a := by first | (first | (exact taelja_lemma15 a) | (exact Eq.symm (taelja_lemma15 a))) | (have h_rw := taelja_lemma15 a; rw [h_rw])
 
 end TweeSam
 

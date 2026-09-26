@@ -52,33 +52,24 @@ axiom ax14 : ∀ (x_ : α), (d (cos x_)) = (minus (times (sin x_) (d x_)))
 axiom ax15 : ∀ (x_ : α), (d (sin x_)) = (times (cos x_) (d x_))
 
 -- Lemma 16
-theorem taelja_lemma16 : ∀ (x_ : α), (times x_ (minus one)) = (minus x_) := by
-  intro x_
-  calc times x_ (minus one) = op_plus zero (times x_ (minus one)) := by first | (first | (exact ax4 (times x_ (minus one))) | (exact Eq.symm (ax4 (times x_ (minus one))))) | (have h_rw := ax4 (times x_ (minus one)); rw [h_rw])
-      _ = op_plus (op_plus x_ (minus x_)) (times x_ (minus one)) := by have h_rw := ax3 x_; rw [h_rw]
-      _ = op_plus (op_plus (minus x_) x_) (times x_ (minus one)) := by have h_rw := ax5 x_ (minus x_); rw [h_rw]
-      _ = op_plus (minus x_) (op_plus x_ (times x_ (minus one))) := by have h_rw := ax2 x_ (times x_ (minus one)) (minus x_); rw [h_rw]
-      _ = op_plus (minus x_) (op_plus (times one x_) (times x_ (minus one))) := by first | (first | (exact ax7 x_) | (exact Eq.symm (ax7 x_))) | (have h_rw := ax7 x_; rw [h_rw])
-      _ = op_plus (minus x_) (op_plus (times x_ one) (times x_ (minus one))) := by have h_rw := ax6 one x_; rw [h_rw]
-      _ = op_plus (minus x_) (times x_ (op_plus one (minus one))) := by have h_rw := ax8 x_ one (minus one); rw [h_rw]
-      _ = op_plus (minus x_) (times x_ zero) := by have h_rw := ax3 one; rw [h_rw]
-      _ = op_plus (minus x_) (times zero x_) := by have h_rw := ax6 zero x_; rw [h_rw]
-      _ = op_plus (minus x_) zero := by have h_rw := ax9 x_; rw [h_rw]
-      _ = op_plus zero (minus x_) := by have h_rw := ax5 zero (minus x_); rw [h_rw]
-      _ = minus x_ := by first | (first | (exact ax4 (minus x_)) | (exact Eq.symm (ax4 (minus x_)))) | (have h_rw := ax4 (minus x_); rw [h_rw])
+theorem taelja_lemma16 : ∀ (x_ : α) (y : α), (op_plus x_ (op_plus (minus x_) y)) = y := by
+  intro x_ y
+  calc op_plus x_ (op_plus (minus x_) y) = op_plus (op_plus x_ (minus x_)) y := by have h_rw := ax2 (minus x_) y x_; rw [h_rw]
+      _ = op_plus zero y := by have h_rw := ax3 x_; rw [h_rw]
+      _ = y := by first | (first | (exact ax4 y) | (exact Eq.symm (ax4 y))) | (have h_rw := ax4 y; rw [h_rw])
 
 -- Lemma 17
-theorem taelja_lemma17 : ∀ (x_ : α), (op_plus (d x_) (d (minus x_))) = zero := by
+theorem taelja_lemma17 : ∀ (x_ : α), (op_plus x_ zero) = x_ := by
   intro x_
-  calc op_plus (d x_) (d (minus x_)) = d (op_plus x_ (minus x_)) := by have h_rw := ax1 x_ (minus x_); rw [h_rw]
-      _ = d zero := by have h_rw := ax3 x_; rw [h_rw]
-      _ = zero := by have h_rw := ax12; rw [h_rw]
+  calc op_plus x_ zero = op_plus zero x_ := by have h_rw := ax5 x_ zero; rw [h_rw]
+      _ = x_ := by first | (first | (exact ax4 x_) | (exact Eq.symm (ax4 x_))) | (have h_rw := ax4 x_; rw [h_rw])
 
 -- Lemma 18
-theorem taelja_lemma18 : ∀ (x_ : α), (times x_ zero) = zero := by
+theorem taelja_lemma18 : ∀ (x_ : α), (minus (minus x_)) = x_ := by
   intro x_
-  calc times x_ zero = times zero x_ := by have h_rw := ax6 zero x_; rw [h_rw]
-      _ = zero := by have h_rw := ax9 x_; rw [h_rw]
+  calc minus (minus x_) = op_plus x_ (op_plus (minus x_) (minus (minus x_))) := by first | (first | (exact taelja_lemma16 x_ (minus (minus x_))) | (exact Eq.symm (taelja_lemma16 x_ (minus (minus x_))))) | (have h_rw := taelja_lemma16 x_ (minus (minus x_)); rw [h_rw])
+      _ = op_plus x_ zero := by have h_rw := ax3 (minus x_); rw [h_rw]
+      _ = x_ := by first | (first | (exact taelja_lemma17 x_) | (exact Eq.symm (taelja_lemma17 x_))) | (have h_rw := taelja_lemma17 x_; rw [h_rw])
 
 -- Lemma 19
 theorem taelja_lemma19 : ∀ (x_ : α), (times x_ one) = x_ := by
@@ -87,32 +78,33 @@ theorem taelja_lemma19 : ∀ (x_ : α), (times x_ one) = x_ := by
       _ = x_ := by first | (first | (exact ax7 x_) | (exact Eq.symm (ax7 x_))) | (have h_rw := ax7 x_; rw [h_rw])
 
 -- Lemma 20
-theorem taelja_lemma20 : ∀ (x_ : α) (y : α), (op_plus x_ (op_plus (minus x_) y)) = y := by
-  intro x_ y
-  calc op_plus x_ (op_plus (minus x_) y) = op_plus (op_plus x_ (minus x_)) y := by have h_rw := ax2 (minus x_) y x_; rw [h_rw]
-      _ = op_plus zero y := by have h_rw := ax3 x_; rw [h_rw]
-      _ = y := by first | (first | (exact ax4 y) | (exact Eq.symm (ax4 y))) | (have h_rw := ax4 y; rw [h_rw])
+theorem taelja_lemma20 : ∀ (x_ : α), (times x_ zero) = zero := by
+  intro x_
+  calc times x_ zero = times zero x_ := by have h_rw := ax6 x_ zero; rw [h_rw]
+      _ = zero := by have h_rw := ax9 x_; rw [h_rw]
 
 -- Lemma 21
-theorem taelja_lemma21 : ∀ (x_ : α), (minus (minus x_)) = x_ := by
+theorem taelja_lemma21 : ∀ (x_ : α), (times x_ (minus one)) = (minus x_) := by
   intro x_
-  calc minus (minus x_) = op_plus zero (minus (minus x_)) := by first | (first | (exact ax4 (minus (minus x_))) | (exact Eq.symm (ax4 (minus (minus x_))))) | (have h_rw := ax4 (minus (minus x_)); rw [h_rw])
-      _ = op_plus (op_plus x_ (minus x_)) (minus (minus x_)) := by have h_rw := ax3 x_; rw [h_rw]
-      _ = op_plus x_ (op_plus (minus x_) (minus (minus x_))) := by have h_rw := ax2 (minus x_) (minus (minus x_)) x_; rw [h_rw]
-      _ = op_plus x_ zero := by have h_rw := ax3 (minus x_); rw [h_rw]
-      _ = op_plus zero x_ := by have h_rw := ax5 zero x_; rw [h_rw]
-      _ = x_ := by first | (first | (exact ax4 x_) | (exact Eq.symm (ax4 x_))) | (have h_rw := ax4 x_; rw [h_rw])
+  calc times x_ (minus one) = op_plus (minus x_) (op_plus (minus (minus x_)) (times x_ (minus one))) := by first | (first | (exact taelja_lemma16 (minus x_) (times x_ (minus one))) | (exact Eq.symm (taelja_lemma16 (minus x_) (times x_ (minus one))))) | (have h_rw := taelja_lemma16 (minus x_) (times x_ (minus one)); rw [h_rw])
+      _ = op_plus (minus x_) (op_plus (minus (minus x_)) (times (minus (minus x_)) (minus one))) := by first | (first | (exact taelja_lemma18 x_) | (exact Eq.symm (taelja_lemma18 x_))) | (have h_rw := taelja_lemma18 x_; rw (config := { occs := .pos [3] }) [h_rw])
+      _ = op_plus (minus x_) (op_plus (times (minus (minus x_)) one) (times (minus (minus x_)) (minus one))) := by first | (first | (exact taelja_lemma19 (minus (minus x_))) | (exact Eq.symm (taelja_lemma19 (minus (minus x_))))) | (have h_rw := taelja_lemma19 (minus (minus x_)); rw [h_rw])
+      _ = op_plus (minus x_) (times (minus (minus x_)) (op_plus one (minus one))) := by have h_rw := ax8 (minus (minus x_)) one (minus one); rw [h_rw]
+      _ = op_plus (minus x_) (times (minus (minus x_)) zero) := by have h_rw := ax3 one; rw [h_rw]
+      _ = op_plus (minus x_) zero := by have h_rw := taelja_lemma20 (minus (minus x_)); rw [h_rw]
+      _ = minus x_ := by first | (first | (exact taelja_lemma17 (minus x_)) | (exact Eq.symm (taelja_lemma17 (minus x_)))) | (have h_rw := taelja_lemma17 (minus x_); rw [h_rw])
 
 -- Lemma 22
-theorem taelja_lemma22 : ∀ (x_ : α), (op_plus x_ zero) = x_ := by
+theorem taelja_lemma22 : ∀ (x_ : α), (op_plus (d x_) (d (minus x_))) = zero := by
   intro x_
-  calc op_plus x_ zero = op_plus zero x_ := by have h_rw := ax5 x_ zero; rw [h_rw]
-      _ = x_ := by first | (first | (exact ax4 x_) | (exact Eq.symm (ax4 x_))) | (have h_rw := ax4 x_; rw [h_rw])
+  calc op_plus (d x_) (d (minus x_)) = d (op_plus x_ (minus x_)) := by have h_rw := ax1 x_ (minus x_); rw [h_rw]
+      _ = d zero := by have h_rw := ax3 x_; rw [h_rw]
+      _ = zero := by have h_rw := ax12; rw [h_rw]
 
 -- Lemma 23
 theorem taelja_lemma23 : (d (cos x)) = (minus (sin x)) := by
   calc d (cos x) = minus (times (sin x) (d x)) := by have h_rw := ax14 x; rw [h_rw]
-      _ = minus (times (d x) (sin x)) := by have h_rw := ax6 (sin x) (d x); rw [h_rw]
+      _ = minus (times (d x) (sin x)) := by have h_rw := ax6 (d x) (sin x); rw [h_rw]
       _ = minus (times one (sin x)) := by have h_rw := ax13; rw [h_rw]
       _ = minus (sin x) := by first | (first | (exact ax7 (sin x)) | (exact Eq.symm (ax7 (sin x)))) | (have h_rw := ax7 (sin x); rw [h_rw])
 
@@ -125,77 +117,41 @@ theorem taelja_lemma24 : (d (sin x)) = (cos x) := by
 
 -- Goal 1
 theorem taelja_goal1 : (d (op_plus (minus (d (d (cos x)))) (times (d (d (d (cos x)))) x))) = (times x (cos x)) := by
-  calc d (op_plus (minus (d (d (cos x)))) (times (d (d (d (cos x)))) x)) = op_plus (d (minus (d (d (cos x))))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := ax1 (minus (d (d (cos x)))) (times (d (d (d (cos x)))) x); rw [h_rw]
-      _ = op_plus (d (times (d (d (cos x))) (minus one))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := taelja_lemma16 (d (d (cos x))); rw [h_rw]
-      _ = op_plus (d (times (minus one) (d (d (cos x))))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := ax6 (d (d (cos x))) (minus one); rw [h_rw]
-      _ = op_plus (op_plus (times (minus one) (d (d (d (cos x))))) (times (d (d (cos x))) (d (minus one)))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := ax10 (d (d (cos x))) (minus one); rw [h_rw]
-      _ = op_plus (op_plus (times (d (d (d (cos x)))) (minus one)) (times (d (d (cos x))) (d (minus one)))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := ax6 (d (d (d (cos x)))) (minus one); rw [h_rw]
-      _ = op_plus (op_plus (minus (d (d (d (cos x))))) (times (d (d (cos x))) (d (minus one)))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := taelja_lemma16 (d (d (d (cos x)))); rw [h_rw]
-      _ = op_plus (op_plus (minus (d (d (d (cos x))))) (times (d (d (cos x))) (op_plus zero (d (minus one))))) (d (times (d (d (d (cos x)))) x)) := by first | (first | (exact ax4 (d (minus one))) | (exact Eq.symm (ax4 (d (minus one))))) | (have h_rw := ax4 (d (minus one)); rw [h_rw])
-      _ = op_plus (op_plus (minus (d (d (d (cos x))))) (times (d (d (cos x))) (op_plus (d one) (d (minus one))))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := ax11; rw [h_rw]
-      _ = op_plus (op_plus (minus (d (d (d (cos x))))) (times (d (d (cos x))) zero)) (d (times (d (d (d (cos x)))) x)) := by have h_rw := taelja_lemma17 one; rw [h_rw]
-      _ = op_plus (op_plus (minus (d (d (d (cos x))))) zero) (d (times (d (d (d (cos x)))) x)) := by have h_rw := taelja_lemma18 (d (d (cos x))); rw [h_rw]
-      _ = op_plus (minus (d (d (d (cos x))))) (d (times (d (d (d (cos x)))) x)) := by first | (first | (exact taelja_lemma22 (minus (d (d (d (cos x)))))) | (exact Eq.symm (taelja_lemma22 (minus (d (d (d (cos x)))))))) | (have h_rw := taelja_lemma22 (minus (d (d (d (cos x))))); rw [h_rw])
-      _ = op_plus (d (times (d (d (d (cos x)))) x)) (minus (d (d (d (cos x))))) := by have h_rw := ax5 (d (times (d (d (d (cos x)))) x)) (minus (d (d (d (cos x))))); rw [h_rw]
-      _ = op_plus (d (times (d (minus (minus (d (d (cos x)))))) x)) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma21 (d (d (cos x)))) | (exact Eq.symm (taelja_lemma21 (d (d (cos x)))))) | (have h_rw := taelja_lemma21 (d (d (cos x))); rw [h_rw])
-      _ = op_plus (d (times (d (times (minus (d (d (cos x)))) (minus one))) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma16 (minus (d (d (cos x)))); rw [h_rw]
-      _ = op_plus (d (times (d (times (minus one) (minus (d (d (cos x)))))) x)) (minus (d (d (d (cos x))))) := by have h_rw := ax6 (minus (d (d (cos x)))) (minus one); rw [h_rw]
-      _ = op_plus (d (times (op_plus (times (minus one) (d (minus (d (d (cos x)))))) (times (minus (d (d (cos x)))) (d (minus one)))) x)) (minus (d (d (d (cos x))))) := by have h_rw := ax10 (minus (d (d (cos x)))) (minus one); rw [h_rw]
-      _ = op_plus (d (times (op_plus (times (d (minus (d (d (cos x))))) (minus one)) (times (minus (d (d (cos x)))) (d (minus one)))) x)) (minus (d (d (d (cos x))))) := by have h_rw := ax6 (d (minus (d (d (cos x))))) (minus one); rw [h_rw]
-      _ = op_plus (d (times (op_plus (minus (d (minus (d (d (cos x)))))) (times (minus (d (d (cos x)))) (d (minus one)))) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma16 (d (minus (d (d (cos x))))); rw [h_rw]
-      _ = op_plus (d (times (op_plus (minus (d (minus (d (d (cos x)))))) (times (minus (d (d (cos x)))) (op_plus zero (d (minus one))))) x)) (minus (d (d (d (cos x))))) := by first | (first | (exact ax4 (d (minus one))) | (exact Eq.symm (ax4 (d (minus one))))) | (have h_rw := ax4 (d (minus one)); rw [h_rw])
-      _ = op_plus (d (times (op_plus (minus (d (minus (d (d (cos x)))))) (times (minus (d (d (cos x)))) (op_plus (d one) (d (minus one))))) x)) (minus (d (d (d (cos x))))) := by have h_rw := ax11; rw [h_rw]
-      _ = op_plus (d (times (op_plus (minus (d (minus (d (d (cos x)))))) (times (minus (d (d (cos x)))) zero)) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma17 one; rw [h_rw]
-      _ = op_plus (d (times (op_plus (minus (d (minus (d (d (cos x)))))) zero) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma18 (minus (d (d (cos x)))); rw [h_rw]
-      _ = op_plus (d (times (minus (d (minus (d (d (cos x)))))) x)) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma22 (minus (d (minus (d (d (cos x))))))) | (exact Eq.symm (taelja_lemma22 (minus (d (minus (d (d (cos x))))))))) | (have h_rw := taelja_lemma22 (minus (d (minus (d (d (cos x)))))); rw [h_rw])
-      _ = op_plus (d (times (minus (d (op_plus (minus (d (d (cos x)))) zero))) x)) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma22 (minus (d (d (cos x))))) | (exact Eq.symm (taelja_lemma22 (minus (d (d (cos x))))))) | (have h_rw := taelja_lemma22 (minus (d (d (cos x)))); rw [h_rw])
-      _ = op_plus (d (times (minus (d (op_plus (minus (d (d (cos x)))) (times (d (cos x)) zero)))) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma18 (d (cos x)); rw [h_rw]
-      _ = op_plus (d (times (minus (d (op_plus (minus (d (d (cos x)))) (times (d (cos x)) (op_plus (d one) (d (minus one))))))) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma17 one; rw [h_rw]
-      _ = op_plus (d (times (minus (d (op_plus (minus (d (d (cos x)))) (times (d (cos x)) (op_plus zero (d (minus one))))))) x)) (minus (d (d (d (cos x))))) := by have h_rw := ax11; rw [h_rw]
-      _ = op_plus (d (times (minus (d (op_plus (minus (d (d (cos x)))) (times (d (cos x)) (d (minus one)))))) x)) (minus (d (d (d (cos x))))) := by first | (first | (exact ax4 (d (minus one))) | (exact Eq.symm (ax4 (d (minus one))))) | (have h_rw := ax4 (d (minus one)); rw [h_rw])
-      _ = op_plus (d (times (minus (d (op_plus (times (d (d (cos x))) (minus one)) (times (d (cos x)) (d (minus one)))))) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma16 (d (d (cos x))); rw [h_rw]
-      _ = op_plus (d (times (minus (d (op_plus (times (minus one) (d (d (cos x)))) (times (d (cos x)) (d (minus one)))))) x)) (minus (d (d (d (cos x))))) := by have h_rw := ax6 (d (d (cos x))) (minus one); rw [h_rw]
-      _ = op_plus (d (times (minus (d (d (times (minus one) (d (cos x)))))) x)) (minus (d (d (d (cos x))))) := by have h_rw := ax10 (d (cos x)) (minus one); rw [h_rw]
-      _ = op_plus (d (times (minus (d (d (times (d (cos x)) (minus one))))) x)) (minus (d (d (d (cos x))))) := by have h_rw := ax6 (d (cos x)) (minus one); rw [h_rw]
-      _ = op_plus (d (times (minus (d (d (minus (d (cos x)))))) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma16 (d (cos x)); rw [h_rw]
-      _ = op_plus (d (times (minus (d (d (minus (minus (sin x)))))) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma23; rw (config := { occs := .pos [1] }) [h_rw]
-      _ = op_plus (d (times (minus (d (d (sin x)))) x)) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma21 (sin x)) | (exact Eq.symm (taelja_lemma21 (sin x)))) | (have h_rw := taelja_lemma21 (sin x); rw [h_rw])
-      _ = op_plus (d (times (minus (d (cos x))) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma24; rw [h_rw]
-      _ = op_plus (d (times (minus (minus (sin x))) x)) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma23; rw (config := { occs := .pos [1] }) [h_rw]
-      _ = op_plus (d (times (sin x) x)) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma21 (sin x)) | (exact Eq.symm (taelja_lemma21 (sin x)))) | (have h_rw := taelja_lemma21 (sin x); rw [h_rw])
-      _ = op_plus (op_plus (times (sin x) (d x)) (times x (d (sin x)))) (minus (d (d (d (cos x))))) := by have h_rw := ax10 x (sin x); rw [h_rw]
-      _ = op_plus (op_plus (times (sin x) one) (times x (d (sin x)))) (minus (d (d (d (cos x))))) := by have h_rw := ax13; rw [h_rw]
-      _ = op_plus (op_plus (sin x) (times x (d (sin x)))) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma19 (sin x)) | (exact Eq.symm (taelja_lemma19 (sin x)))) | (have h_rw := taelja_lemma19 (sin x); rw [h_rw])
-      _ = op_plus (op_plus (sin x) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma24; rw [h_rw]
-      _ = op_plus (op_plus (minus (minus (sin x))) (times x (cos x))) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma21 (sin x)) | (exact Eq.symm (taelja_lemma21 (sin x)))) | (have h_rw := taelja_lemma21 (sin x); rw [h_rw])
-      _ = op_plus (op_plus (minus (d (cos x))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma23; rw (config := { occs := .pos [2] }) [h_rw]
-      _ = op_plus (op_plus (minus (d (d (sin x)))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma24; rw [h_rw]
-      _ = op_plus (op_plus (minus (d (d (minus (minus (sin x)))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma21 (sin x)) | (exact Eq.symm (taelja_lemma21 (sin x)))) | (have h_rw := taelja_lemma21 (sin x); rw [h_rw])
-      _ = op_plus (op_plus (minus (d (d (minus (d (cos x)))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma23; rw (config := { occs := .pos [2] }) [h_rw]
-      _ = op_plus (op_plus (minus (d (d (times (d (cos x)) (minus one))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma16 (d (cos x)); rw [h_rw]
-      _ = op_plus (op_plus (minus (d (d (times (minus one) (d (cos x)))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := ax6 (d (cos x)) (minus one); rw [h_rw]
-      _ = op_plus (op_plus (minus (d (op_plus (times (minus one) (d (d (cos x)))) (times (d (cos x)) (d (minus one)))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := ax10 (d (cos x)) (minus one); rw [h_rw]
-      _ = op_plus (op_plus (minus (d (op_plus (times (d (d (cos x))) (minus one)) (times (d (cos x)) (d (minus one)))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := ax6 (d (d (cos x))) (minus one); rw [h_rw]
-      _ = op_plus (op_plus (minus (d (op_plus (minus (d (d (cos x)))) (times (d (cos x)) (d (minus one)))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma16 (d (d (cos x))); rw [h_rw]
-      _ = op_plus (op_plus (minus (d (op_plus (minus (d (d (cos x)))) (times (d (cos x)) (op_plus zero (d (minus one))))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by first | (first | (exact ax4 (d (minus one))) | (exact Eq.symm (ax4 (d (minus one))))) | (have h_rw := ax4 (d (minus one)); rw [h_rw])
-      _ = op_plus (op_plus (minus (d (op_plus (minus (d (d (cos x)))) (times (d (cos x)) (op_plus (d one) (d (minus one))))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := ax11; rw [h_rw]
-      _ = op_plus (op_plus (minus (d (op_plus (minus (d (d (cos x)))) (times (d (cos x)) zero)))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma17 one; rw [h_rw]
-      _ = op_plus (op_plus (minus (d (op_plus (minus (d (d (cos x)))) zero))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma18 (d (cos x)); rw [h_rw]
-      _ = op_plus (op_plus (minus (d (minus (d (d (cos x)))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma22 (minus (d (d (cos x))))) | (exact Eq.symm (taelja_lemma22 (minus (d (d (cos x))))))) | (have h_rw := taelja_lemma22 (minus (d (d (cos x)))); rw [h_rw])
-      _ = op_plus (op_plus (op_plus (minus (d (minus (d (d (cos x)))))) zero) (times x (cos x))) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma22 (minus (d (minus (d (d (cos x))))))) | (exact Eq.symm (taelja_lemma22 (minus (d (minus (d (d (cos x))))))))) | (have h_rw := taelja_lemma22 (minus (d (minus (d (d (cos x)))))); rw [h_rw])
-      _ = op_plus (op_plus (op_plus (minus (d (minus (d (d (cos x)))))) (times (minus (d (d (cos x)))) zero)) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma18 (minus (d (d (cos x)))); rw [h_rw]
-      _ = op_plus (op_plus (op_plus (minus (d (minus (d (d (cos x)))))) (times (minus (d (d (cos x)))) (op_plus (d one) (d (minus one))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma17 one; rw [h_rw]
-      _ = op_plus (op_plus (op_plus (minus (d (minus (d (d (cos x)))))) (times (minus (d (d (cos x)))) (op_plus zero (d (minus one))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := ax11; rw [h_rw]
-      _ = op_plus (op_plus (op_plus (minus (d (minus (d (d (cos x)))))) (times (minus (d (d (cos x)))) (d (minus one)))) (times x (cos x))) (minus (d (d (d (cos x))))) := by first | (first | (exact ax4 (d (minus one))) | (exact Eq.symm (ax4 (d (minus one))))) | (have h_rw := ax4 (d (minus one)); rw [h_rw])
-      _ = op_plus (op_plus (op_plus (times (d (minus (d (d (cos x))))) (minus one)) (times (minus (d (d (cos x)))) (d (minus one)))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma16 (d (minus (d (d (cos x))))); rw [h_rw]
-      _ = op_plus (op_plus (op_plus (times (minus one) (d (minus (d (d (cos x)))))) (times (minus (d (d (cos x)))) (d (minus one)))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := ax6 (d (minus (d (d (cos x))))) (minus one); rw [h_rw]
-      _ = op_plus (op_plus (d (times (minus one) (minus (d (d (cos x)))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := ax10 (minus (d (d (cos x)))) (minus one); rw [h_rw]
-      _ = op_plus (op_plus (d (times (minus (d (d (cos x)))) (minus one))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := ax6 (minus (d (d (cos x)))) (minus one); rw [h_rw]
-      _ = op_plus (op_plus (d (minus (minus (d (d (cos x)))))) (times x (cos x))) (minus (d (d (d (cos x))))) := by have h_rw := taelja_lemma16 (minus (d (d (cos x)))); rw [h_rw]
-      _ = op_plus (op_plus (d (d (d (cos x)))) (times x (cos x))) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma21 (d (d (cos x)))) | (exact Eq.symm (taelja_lemma21 (d (d (cos x)))))) | (have h_rw := taelja_lemma21 (d (d (cos x))); rw [h_rw])
-      _ = op_plus (d (d (d (cos x)))) (op_plus (times x (cos x)) (minus (d (d (d (cos x)))))) := by have h_rw := ax2 (times x (cos x)) (minus (d (d (d (cos x))))) (d (d (d (cos x)))); rw [h_rw]
-      _ = op_plus (d (d (d (cos x)))) (op_plus (minus (d (d (d (cos x))))) (times x (cos x))) := by have h_rw := ax5 (times x (cos x)) (minus (d (d (d (cos x))))); rw [h_rw]
-      _ = times x (cos x) := by first | (first | (exact taelja_lemma20 (d (d (d (cos x)))) (times x (cos x))) | (exact Eq.symm (taelja_lemma20 (d (d (d (cos x)))) (times x (cos x))))) | (have h_rw := taelja_lemma20 (d (d (d (cos x)))) (times x (cos x)); rw [h_rw])
+  calc d (op_plus (minus (d (d (cos x)))) (times (d (d (d (cos x)))) x)) = d (op_plus (times (d (d (cos x))) (minus one)) (times (d (d (d (cos x)))) x)) := by have h_rw := taelja_lemma21 (d (d (cos x))); rw [h_rw]
+      _ = op_plus (d (times (d (d (cos x))) (minus one))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := ax1 (times (d (d (cos x))) (minus one)) (times (d (d (d (cos x)))) x); rw [h_rw]
+      _ = op_plus (op_plus (times (d (d (cos x))) (d (minus one))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := ax10 (minus one) (d (d (cos x))); rw [h_rw]
+      _ = op_plus (op_plus (times (d (d (cos x))) (op_plus zero (d (minus one)))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := by first | (first | (exact ax4 (d (minus one))) | (exact Eq.symm (ax4 (d (minus one))))) | (have h_rw := ax4 (d (minus one)); rw [h_rw])
+      _ = op_plus (op_plus (times (d (d (cos x))) (op_plus (d one) (d (minus one)))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := ax11; rw [h_rw]
+      _ = op_plus (op_plus (times (d (d (cos x))) zero) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := taelja_lemma22 one; rw [h_rw]
+      _ = op_plus (op_plus zero (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := taelja_lemma20 (d (d (cos x))); rw [h_rw]
+      _ = op_plus (times (minus one) (d (d (d (cos x))))) (d (times (d (d (d (cos x)))) x)) := by first | (first | (exact ax4 (times (minus one) (d (d (d (cos x)))))) | (exact Eq.symm (ax4 (times (minus one) (d (d (d (cos x)))))))) | (have h_rw := ax4 (times (minus one) (d (d (d (cos x))))); rw [h_rw])
+      _ = op_plus (times (d (d (d (cos x)))) (minus one)) (d (times (d (d (d (cos x)))) x)) := by have h_rw := ax6 (minus one) (d (d (d (cos x)))); rw [h_rw]
+      _ = op_plus (minus (d (d (d (cos x))))) (d (times (d (d (d (cos x)))) x)) := by have h_rw := taelja_lemma21 (d (d (d (cos x)))); rw [h_rw]
+      _ = op_plus (d (times (d (d (d (cos x)))) x)) (minus (d (d (d (cos x))))) := by have h_rw := ax5 (minus (d (d (d (cos x))))) (d (times (d (d (d (cos x)))) x)); rw [h_rw]
+      _ = op_plus (op_plus (times (d (d (d (cos x)))) (d x)) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x))))) := by have h_rw := ax10 x (d (d (d (cos x)))); rw [h_rw]
+      _ = op_plus (op_plus (times (d (d (d (cos x)))) one) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x))))) := by have h_rw := ax13; rw [h_rw]
+      _ = op_plus (op_plus (d (d (d (cos x)))) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma19 (d (d (d (cos x))))) | (exact Eq.symm (taelja_lemma19 (d (d (d (cos x))))))) | (have h_rw := taelja_lemma19 (d (d (d (cos x)))); rw [h_rw])
+      _ = op_plus (d (d (d (cos x)))) (op_plus (times x (d (d (d (d (cos x)))))) (minus (d (d (d (cos x)))))) := by have h_rw := ax2 (times x (d (d (d (d (cos x)))))) (minus (d (d (d (cos x))))) (d (d (d (cos x)))); rw [h_rw]
+      _ = op_plus (d (d (d (cos x)))) (op_plus (minus (d (d (d (cos x))))) (times x (d (d (d (d (cos x))))))) := by have h_rw := ax5 (times x (d (d (d (d (cos x)))))) (minus (d (d (d (cos x))))); rw [h_rw]
+      _ = times x (d (d (d (d (cos x))))) := by first | (first | (exact taelja_lemma16 (d (d (d (cos x)))) (times x (d (d (d (d (cos x))))))) | (exact Eq.symm (taelja_lemma16 (d (d (d (cos x)))) (times x (d (d (d (d (cos x))))))))) | (have h_rw := taelja_lemma16 (d (d (d (cos x)))) (times x (d (d (d (d (cos x)))))); rw [h_rw])
+      _ = times x (d (minus (minus (d (d (d (cos x))))))) := by first | (first | (exact taelja_lemma18 (d (d (d (cos x))))) | (exact Eq.symm (taelja_lemma18 (d (d (d (cos x))))))) | (have h_rw := taelja_lemma18 (d (d (d (cos x)))); rw [h_rw])
+      _ = times x (d (minus (op_plus (minus (d (d (d (cos x))))) zero))) := by first | (first | (exact taelja_lemma17 (minus (d (d (d (cos x)))))) | (exact Eq.symm (taelja_lemma17 (minus (d (d (d (cos x)))))))) | (have h_rw := taelja_lemma17 (minus (d (d (d (cos x))))); rw [h_rw])
+      _ = times x (d (minus (op_plus (minus (d (d (d (cos x))))) (op_plus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x)))))))) := by have h_rw := ax3 (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))); rw [h_rw]
+      _ = times x (d (minus (op_plus (minus (d (d (d (cos x))))) (op_plus (minus (minus (d (d (d (cos x)))))) (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))))))) := by have h_rw := ax2 (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x)))) (minus (minus (d (d (d (cos x)))))); rw [h_rw]
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))))) := by first | (first | (exact taelja_lemma16 (minus (d (d (d (cos x))))) (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x)))))) | (exact Eq.symm (taelja_lemma16 (minus (d (d (d (cos x))))) (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x)))))))) | (have h_rw := taelja_lemma16 (minus (d (d (d (cos x))))) (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))); rw [h_rw])
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (op_plus (d (cos x)) (minus (minus (d (d (d (cos x))))))))))) := by have h_rw := ax5 (minus (minus (d (d (d (cos x)))))) (d (cos x)); rw [h_rw]
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (op_plus (d (cos x)) (d (d (d (cos x))))))))) := by first | (first | (exact taelja_lemma18 (d (d (d (cos x))))) | (exact Eq.symm (taelja_lemma18 (d (d (d (cos x))))))) | (have h_rw := taelja_lemma18 (d (d (d (cos x)))); rw [h_rw])
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (cos x) (d (d (cos x))))))))) := by have h_rw := ax1 (cos x) (d (d (cos x))); rw [h_rw]
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (cos x) (d (minus (sin x))))))))) := by have h_rw := taelja_lemma23; rw (config := { occs := .pos [2] }) [h_rw]
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (d (sin x)) (d (minus (sin x))))))))) := by have h_rw := taelja_lemma24; rw [h_rw]
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (d zero))))) := by have h_rw := taelja_lemma22 (sin x); rw [h_rw]
+      _ = times x (d (minus (op_plus (d (cos x)) (minus zero)))) := by have h_rw := ax12; rw [h_rw]
+      _ = times x (d (minus (op_plus (d (cos x)) (op_plus zero (minus zero))))) := by first | (first | (exact ax4 (minus zero)) | (exact Eq.symm (ax4 (minus zero)))) | (have h_rw := ax4 (minus zero); rw [h_rw])
+      _ = times x (d (minus (op_plus (d (cos x)) zero))) := by have h_rw := ax3 zero; rw [h_rw]
+      _ = times x (d (minus (d (cos x)))) := by first | (first | (exact taelja_lemma17 (d (cos x))) | (exact Eq.symm (taelja_lemma17 (d (cos x))))) | (have h_rw := taelja_lemma17 (d (cos x)); rw [h_rw])
+      _ = times x (d (minus (minus (sin x)))) := by have h_rw := taelja_lemma23; rw [h_rw]
+      _ = times x (d (sin x)) := by first | (first | (exact taelja_lemma18 (sin x)) | (exact Eq.symm (taelja_lemma18 (sin x)))) | (have h_rw := taelja_lemma18 (sin x); rw [h_rw])
+      _ = times x (cos x) := by have h_rw := taelja_lemma24; rw [h_rw]
 
 end TweeAna1331
 

@@ -3,29 +3,31 @@ Axiom 2: implies(Y,Z) = implies(Z,Y)
 Axiom 3: implies(implies(Y,A),A) = implies(implies(A,Y),Y)
 Axiom 4: implies(implies(Y,A),implies(implies(A,B),implies(Y,B))) = truth
 
-Lemma 5: implies(X,implies(X,Y)) = truth
+Lemma 5: implies(X,X) = X
+Proof:
+  implies(X,X)
+= { by axiom 1 R->L }
+  implies(X,implies(truth,X))
+= { by axiom 2 }
+  implies(implies(truth,X),X)
+= { by axiom 3 }
+  implies(implies(X,truth),truth)
+= { by axiom 2 }
+  implies(truth,implies(X,truth))
+= { by axiom 2 }
+  implies(truth,implies(truth,X))
+= { by axiom 1 }
+  implies(truth,X)
+= { by axiom 1 }
+  X
+
+Lemma 6: implies(X,implies(X,Y)) = truth
 Proof:
   implies(X,implies(X,Y))
-= { by axiom 1 R->L }
-  implies(truth,implies(X,implies(X,Y)))
-= { by axiom 1 R->L }
-  implies(truth,implies(truth,implies(X,implies(X,Y))))
-= { by axiom 1 R->L }
-  implies(truth,implies(truth,implies(truth,implies(X,implies(X,Y)))))
-= { by axiom 1 R->L }
-  implies(truth,implies(truth,implies(truth,implies(truth,implies(X,implies(X,Y))))))
-= { by axiom 2 }
-  implies(truth,implies(truth,implies(implies(truth,implies(X,implies(X,Y))),truth)))
-= { by axiom 2 R->L }
-  implies(truth,implies(implies(implies(truth,implies(X,implies(X,Y))),truth),truth))
-= { by axiom 3 }
-  implies(truth,implies(implies(truth,implies(truth,implies(X,implies(X,Y)))),implies(truth,implies(X,implies(X,Y)))))
-= { by axiom 2 }
-  implies(truth,implies(implies(truth,implies(X,implies(X,Y))),implies(truth,implies(truth,implies(X,implies(X,Y))))))
-= { by axiom 1 }
-  implies(truth,implies(implies(truth,implies(X,implies(X,Y))),implies(truth,implies(X,implies(X,Y)))))
-= { by axiom 1 R->L }
-  implies(implies(truth,truth),implies(implies(truth,implies(X,implies(X,Y))),implies(truth,implies(X,implies(X,Y)))))
+= { by lemma 5 R->L }
+  implies(X,implies(implies(X,Y),implies(X,Y)))
+= { by lemma 5 R->L }
+  implies(implies(X,X),implies(implies(X,Y),implies(X,Y)))
 = { by axiom 4 }
   truth
 
@@ -36,9 +38,9 @@ Proof:
   implies(truth,x)
 = { by axiom 1 R->L }
   implies(truth,implies(truth,x))
-= { by lemma 5 }
+= { by lemma 6 }
   truth
-= { by lemma 5 R->L }
+= { by lemma 6 R->L }
   implies(truth,implies(truth,y))
 = { by axiom 1 }
   implies(truth,y)

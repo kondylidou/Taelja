@@ -31,13 +31,18 @@ theorem taelja_lemma4 : ∀ (x : α), (apply_ (apply_ w w) x) = (apply_ (apply_ 
       _ = apply_ (apply_ x x) x := by have h_rw := ax2 x x; rw [h_rw]
 
 -- Lemma 5
-theorem taelja_lemma5 : (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) = (apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt)) := by
+theorem taelja_lemma5 : ∀ (x : α) (y : α), (apply_ (apply_ (apply_ (apply_ b w) b) x) y) = (apply_ x (apply_ y y)) := by
+  intro x y
+  calc apply_ (apply_ (apply_ (apply_ b w) b) x) y = apply_ (apply_ w (apply_ b x)) y := by have h_rw := ax1 w b x; rw [h_rw]
+      _ = apply_ (apply_ (apply_ b x) y) y := by have h_rw := ax2 (apply_ b x) y; rw [h_rw]
+      _ = apply_ x (apply_ y y) := by have h_rw := ax1 x y y; rw [h_rw]
+
+-- Lemma 6
+theorem taelja_lemma6 : (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) = (apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt)) := by
   calc apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt = apply_ (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b)) (apply_ b fixed_pt) := by have h_rw := ax1 (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b)) b fixed_pt; rw [h_rw]
       _ = apply_ (apply_ w w) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := by have h_rw := ax1 (apply_ w w) (apply_ (apply_ b w) b) (apply_ b fixed_pt); rw [h_rw]
       _ = apply_ (apply_ (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := by have h_rw := taelja_lemma4 (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)); rw [h_rw]
-      _ = apply_ (apply_ (apply_ w (apply_ b (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := by have h_rw := ax1 w b (apply_ b fixed_pt); rw (config := { occs := .pos [1] }) [h_rw]
-      _ = apply_ (apply_ (apply_ (apply_ b (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := by have h_rw := ax2 (apply_ b (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)); rw [h_rw]
-      _ = apply_ (apply_ (apply_ b fixed_pt) (apply_ (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := by have h_rw := ax1 (apply_ b fixed_pt) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)); rw [h_rw]
+      _ = apply_ (apply_ (apply_ b fixed_pt) (apply_ (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := by have h_rw := taelja_lemma5 (apply_ b fixed_pt) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)); rw (config := { occs := .pos [1] }) [h_rw]
       _ = apply_ fixed_pt (apply_ (apply_ (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) := by have h_rw := ax1 fixed_pt (apply_ (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)); rw [h_rw]
       _ = apply_ fixed_pt (apply_ (apply_ w w) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) := by have h_rw := taelja_lemma4 (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)); rw [h_rw]
       _ = apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b)) (apply_ b fixed_pt)) := by have h_rw := ax1 (apply_ w w) (apply_ (apply_ b w) b) (apply_ b fixed_pt); rw [h_rw]
@@ -45,7 +50,7 @@ theorem taelja_lemma5 : (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)
 
 -- Goal 1
 theorem taelja_goal1 : fixed_point (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) := by
-  have h1 : (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) = (apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt)) := by first | (exact taelja_lemma5) | (first | apply taelja_lemma5 <;> first | rfl | assumption | (apply Eq.symm; apply taelja_lemma5 <;> first | rfl | assumption))
+  have h1 : (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) = (apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt)) := by first | (exact taelja_lemma6) | (first | apply taelja_lemma6 <;> first | rfl | assumption | (apply Eq.symm; apply taelja_lemma6 <;> first | rfl | assumption))
   have h2 : fixed_point (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) := by first | (exact ax3 (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) h1) | (first | (exact ax3 _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 

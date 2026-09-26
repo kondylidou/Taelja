@@ -46,6 +46,15 @@ tweeBenchmarkNames =
   -- a negated conjecture whose source is the negated universal formula,
   -- which is no clause, so the clause the leaf states is the nucleus
   [ "KLE137+1"
+  -- a goal Twee derived by rewriting one hypothesis with another, replayed
+  -- from that step as one rewrite with each, with no call to Twee
+  , "GRP136-1"
+  -- a chain of Twee steps, each premise that is no axiom replayed from the
+  -- step that derived it, down to the axioms
+  , "COL042-7"
+  -- a step whose rewrite fixes a variable the first rewrite left open, as
+  -- c22 fixes A to X2, where the equation's own X2 must not be bound
+  , "GRP509-1"
   , "sam"
   , "ANA007-2"
   , "HEN005-6"

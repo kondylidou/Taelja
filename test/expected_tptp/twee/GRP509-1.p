@@ -1,0 +1,36 @@
+% SZS output start Proof
+cnf(c2, axiom, multiply(multiply(multiply(A, B), C), inverse(multiply(A, C))) = B, file('TPTP/Problems/GRP/GRP509-1.p', single_axiom)).
+fof(s1, plain, ! [X,Y,Z] : multiply(X,inverse(multiply(multiply(Y,X),inverse(multiply(Y,Z))))) = multiply(multiply(multiply(multiply(Y,X),Z),inverse(multiply(Y,Z))),inverse(multiply(multiply(Y,X),inverse(multiply(Y,Z))))), inference(instantiate, [status(thm)], [c2])).
+fof(lemma_2, lemma, ! [X,Y,Z] : multiply(X,inverse(multiply(multiply(Y,X),inverse(multiply(Y,Z))))) = Z, inference(rewrite, [status(thm)], [c2, s1])).
+fof(s2, plain, ! [X,Y,Z,A] : inverse(multiply(multiply(X,Y),inverse(multiply(X,Z)))) = multiply(multiply(multiply(Y,inverse(multiply(multiply(X,Y),inverse(multiply(X,Z))))),A),inverse(multiply(Y,A))), inference(instantiate, [status(thm)], [c2])).
+fof(lemma_3, lemma, ! [X,Y,Z,A] : inverse(multiply(multiply(X,Y),inverse(multiply(X,Z)))) = multiply(multiply(Z,A),inverse(multiply(Y,A))), inference(rewrite, [status(thm)], [lemma_2, s2])).
+fof(s3, plain, ! [X,Y,Z] : inverse(multiply(multiply(X,Y),inverse(multiply(X,Y)))) = multiply(multiply(Y,inverse(multiply(multiply(X,Y),inverse(multiply(X,Z))))),inverse(multiply(Y,inverse(multiply(multiply(X,Y),inverse(multiply(X,Z))))))), inference(instantiate, [status(thm)], [lemma_3])).
+fof(s4, plain, ! [X,Y,Z] : inverse(multiply(multiply(X,Y),inverse(multiply(X,Y)))) = multiply(Z,inverse(multiply(Y,inverse(multiply(multiply(X,Y),inverse(multiply(X,Z))))))), inference(rewrite, [status(thm)], [lemma_2, s3])).
+fof(lemma_4, lemma, ! [X,Y,Z] : inverse(multiply(multiply(X,Y),inverse(multiply(X,Y)))) = multiply(Z,inverse(Z)), inference(rewrite, [status(thm)], [lemma_2, s4])).
+fof(s5, plain, ! [X,Y] : multiply(X,multiply(Y,inverse(Y))) = multiply(X,inverse(multiply(multiply(X,X),inverse(multiply(X,X))))), inference(instantiate, [status(thm)], [lemma_4])).
+fof(lemma_5, lemma, ! [X,Y] : multiply(X,multiply(Y,inverse(Y))) = X, inference(rewrite, [status(thm)], [lemma_2, s5])).
+fof(s6, plain, ! [X,Y] : multiply(multiply(X,Y),inverse(X)) = multiply(multiply(X,Y),inverse(multiply(X,multiply(X,inverse(X))))), inference(instantiate, [status(thm)], [lemma_5])).
+fof(s7, plain, ! [X,Y] : multiply(multiply(X,Y),inverse(X)) = multiply(multiply(multiply(X,Y),multiply(X,inverse(X))),inverse(multiply(X,multiply(X,inverse(X))))), inference(rewrite, [status(thm)], [lemma_5, s6])).
+fof(lemma_6, lemma, ! [X,Y] : multiply(multiply(X,Y),inverse(X)) = Y, inference(rewrite, [status(thm)], [c2, s7])).
+fof(s8, plain, ! [X,Y] : multiply(X,inverse(multiply(Y,X))) = multiply(multiply(multiply(Y,X),inverse(Y)),inverse(multiply(Y,X))), inference(instantiate, [status(thm)], [lemma_6])).
+fof(lemma_7, lemma, ! [X,Y] : multiply(X,inverse(multiply(Y,X))) = inverse(Y), inference(rewrite, [status(thm)], [lemma_6, s8])).
+fof(s9, plain, ! [X] : inverse(multiply(inverse(X),X)) = multiply(inverse(X),inverse(multiply(multiply(inverse(X),X),inverse(X)))), inference(instantiate, [status(thm)], [lemma_7])).
+fof(s10, plain, ! [X] : inverse(multiply(inverse(X),X)) = multiply(inverse(X),multiply(multiply(X,inverse(multiply(multiply(inverse(X),X),inverse(X)))),inverse(X))), inference(rewrite, [status(thm)], [lemma_6, s9])).
+fof(s11, plain, ! [X] : inverse(multiply(inverse(X),X)) = multiply(inverse(X),multiply(multiply(X,inverse(multiply(multiply(inverse(X),X),inverse(X)))),inverse(multiply(inverse(X),inverse(multiply(multiply(X,inverse(X)),inverse(multiply(X,X)))))))), inference(rewrite, [status(thm)], [lemma_2, s10])).
+fof(s12, plain, ! [X] : inverse(multiply(inverse(X),X)) = multiply(inverse(X),multiply(multiply(X,inverse(multiply(multiply(inverse(X),X),inverse(X)))),inverse(multiply(inverse(X),multiply(X,inverse(multiply(multiply(inverse(X),X),inverse(multiply(inverse(X),inverse(multiply(multiply(X,inverse(X)),inverse(multiply(X,X))))))))))))), inference(rewrite, [status(thm)], [lemma_2, s11])).
+fof(s13, plain, ! [X] : inverse(multiply(inverse(X),X)) = multiply(inverse(X),multiply(multiply(X,inverse(multiply(multiply(inverse(X),X),inverse(X)))),inverse(multiply(inverse(X),multiply(X,inverse(multiply(multiply(inverse(X),X),inverse(X)))))))), inference(rewrite, [status(thm)], [lemma_2, s12])).
+fof(s14, plain, ! [X] : inverse(multiply(inverse(X),X)) = multiply(inverse(X),inverse(inverse(X))), inference(rewrite, [status(thm)], [lemma_7, s13])).
+fof(s15, plain, ! [X] : inverse(multiply(inverse(X),X)) = multiply(inverse(X),inverse(multiply(X,inverse(multiply(multiply(X,X),inverse(multiply(X,inverse(X)))))))), inference(rewrite, [status(thm)], [lemma_2, s14])).
+fof(s16, plain, ! [X] : inverse(multiply(inverse(X),X)) = multiply(multiply(X,inverse(multiply(multiply(X,X),inverse(multiply(X,inverse(X)))))),inverse(multiply(X,inverse(multiply(multiply(X,X),inverse(multiply(X,inverse(X)))))))), inference(rewrite, [status(thm)], [lemma_2, s15])).
+fof(s17, plain, ! [X] : inverse(multiply(inverse(X),X)) = inverse(multiply(multiply(X,X),inverse(multiply(X,X)))), inference(rewrite, [status(thm)], [lemma_4, s16])).
+fof(s18, plain, ! [X,Y] : inverse(multiply(inverse(X),X)) = multiply(multiply(X,inverse(multiply(multiply(X,X),inverse(multiply(X,Y))))),inverse(multiply(X,inverse(multiply(multiply(X,X),inverse(multiply(X,Y))))))), inference(rewrite, [status(thm)], [lemma_3, s17])).
+fof(s19, plain, ! [X,Y] : inverse(multiply(inverse(X),X)) = multiply(Y,inverse(multiply(X,inverse(multiply(multiply(X,X),inverse(multiply(X,Y))))))), inference(rewrite, [status(thm)], [lemma_2, s18])).
+fof(lemma_8, lemma, ! [X,Y] : inverse(multiply(inverse(X),X)) = multiply(Y,inverse(Y)), inference(rewrite, [status(thm)], [lemma_2, s19])).
+fof(s20, plain, ! [X] : inverse(inverse(X)) = multiply(X,inverse(multiply(inverse(X),X))), inference(instantiate, [status(thm)], [lemma_7])).
+fof(s21, plain, ! [X] : inverse(inverse(X)) = multiply(X,multiply(X,inverse(X))), inference(rewrite, [status(thm)], [lemma_8, s20])).
+fof(lemma_9, lemma, ! [X] : inverse(inverse(X)) = X, inference(rewrite, [status(thm)], [lemma_5, s21])).
+fof(s22, plain, multiply(inverse(a1),a1) = multiply(inverse(a1),inverse(inverse(a1))), inference(instantiate, [status(thm)], [lemma_9])).
+fof(s23, plain, multiply(inverse(a1),a1) = inverse(multiply(inverse(b1),b1)), inference(rewrite, [status(thm)], [lemma_8, s22])).
+fof(s24, plain, multiply(inverse(a1),a1) = multiply(inverse(b1),inverse(inverse(b1))), inference(rewrite, [status(thm)], [lemma_8, s23])).
+fof(goal_1, theorem, multiply(inverse(a1),a1) = multiply(inverse(b1),b1), inference(rewrite, [status(thm)], [lemma_9, s24])).
+% SZS output end Proof

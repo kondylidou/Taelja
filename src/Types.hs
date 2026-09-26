@@ -1,6 +1,7 @@
 module Types where
 
 import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 import qualified Data.TPTP as T
 
 data Term
@@ -120,6 +121,9 @@ data AlgState = AlgState
   , stBaseAxioms  :: [Axiom]
   , stNameToPos  :: Map.Map String String        -- TSTP unit name -> tree position of its electron
   , stEqByName   :: Map.Map String (Term, Term)  -- TSTP unit name -> its unit equation
+  , stTweeSteps  :: [(String, String, String)]  -- a Twee rewriting step: its conclusion and its two premises, as TSTP names
+  , stUnreadSteps :: Set.Set String  -- Twee steps that could not be read, kept when a failed attempt is undone
+  , stReadSteps :: Map.Map String (Term, [(UnitEntry, Dir, Term)])  -- Twee steps read, each its chain from its own left side
   , stGoalTemplate :: [Literal]  -- the conjecture's own goal literals (shared free variables across conjuncts), consulted by emitGoalProof
   , stCandLemmas :: Map.Map String [(String, Literal, ProofBlock)]  -- a candidate lemma's display name -> its entries, sub-lemmas first
   , stNegationConj :: Bool  -- the conjecture concludes a negation, proved by deriving $false

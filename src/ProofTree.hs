@@ -491,27 +491,35 @@ gatherLeaves pos0 tree0 =
             (seenElec, seenInner, []) (zip ['0'..] kids)
 -- Gather inner nodes, recording each distinct TSTP clause name at most once.
 -- Synthetic nodes (name "?") are always included since they are distinct objects.
+-- A named node met again adds only the synthetic nodes below it, since its
+-- named ones are recorded already, so those are kept with positions relative
+-- to it and emitted again there rather than walking its subtree once more.
+-- A proof that reuses its equations would otherwise be walked once per path,
+-- which for BOO023-1's 457 steps is 3 x 10^11 visits.
 gatherInner :: String -> ProofTree -> [(String, String, T.Declaration)]
-gatherInner pos0 tree0 = snd (go pos0 tree0 Set.empty)
+gatherInner pos0 tree0 = let (_, _, res) = go pos0 tree0 Set.empty Map.empty in res
   where
-    go _   (PTLeaf _ _) seen = (seen, [])
-    go pos (PTNode n d rule [k]) seen =
-      let (seen', ks)       = go (pos ++ "1") k seen
-          (seen'', inner)   = addNode pos n d rule seen'
-      in  (seen'', ks ++ inner)
-    go pos (PTNode n d rule [l,r]) seen =
-      let (seen',  ls)      = go (pos ++ "0") l seen
-          (seen'', rs)      = go (pos ++ "1") r seen'
-          (seen''', inner)  = addNode pos n d rule seen''
-      in  (seen''', ls ++ rs ++ inner)
-    go pos (PTNode n d rule kids) seen =
-      let (seen', kidsRes) =
-            foldl (\(s, acc) (c, kid) ->
-                     let (s', res) = go (pos ++ [c]) kid s
-                     in  (s', acc ++ res))
-                  (seen, []) (zip ['0'..] kids)
-          (seen'', inner) = addNode pos n d rule seen'
-      in  (seen'', kidsRes ++ inner)
+    go _ (PTLeaf _ _) seen memo = (seen, memo, [])
+    go pos (PTNode n d rule kids) seen memo
+      | n /= "?", Just rel <- Map.lookup n memo =
+          (seen, memo, [ (pos ++ p, nm, dd) | (p, nm, dd) <- rel ])
+      | otherwise =
+          let (seen', memo', kidsRes) = goKids pos kids seen memo
+              (seen'', inner)         = addNode pos n d rule seen'
+              res   = kidsRes ++ inner
+              memo'' | n /= "?"  = Map.insert n [ (drop (length pos) p, nm, dd) | (p, nm, dd) <- res, nm == "?" ] memo'
+                     | otherwise = memo'
+          in  (seen'', memo'', res)
+    goKids pos [k] seen memo = go (pos ++ "1") k seen memo
+    goKids pos [l, r] seen memo =
+      let (seen',  memo',  ls) = go (pos ++ "0") l seen memo
+          (seen'', memo'', rs) = go (pos ++ "1") r seen' memo'
+      in  (seen'', memo'', ls ++ rs)
+    goKids pos kids seen memo =
+      foldl (\(s, m, acc) (c, kid) ->
+               let (s', m', res) = go (pos ++ [c]) kid s m
+               in  (s', m', acc ++ res))
+            (seen, memo, []) (zip ['0'..] kids)
     addNode pos n d rule seen
       | rule == Text.pack "proved_conjecture" = (seen, [])
       | n == "?"               = (seen, [(pos, n, d)])   -- synthetic nodes are always included

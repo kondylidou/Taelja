@@ -54,11 +54,15 @@ import TaeljaVerify.Vampire.TestRlSafety
 import TaeljaVerify.Vampire.TestAxiomsContradictory
 import TaeljaVerify.Vampire.TestSplitDerivedUnit
 import TaeljaVerify.Vampire.Syn5581
+import TaeljaVerify.Vampire.Syn7191
 import TaeljaVerify.Vampire.ThesisExampleBothLemmas
 import TaeljaVerify.Vampire.UnitsOnlyRelationalExample
 
 -- Twee prover test cases
 import TaeljaVerify.Twee.Cat0191
+import TaeljaVerify.Twee.Grp1361
+import TaeljaVerify.Twee.Grp5091
+import TaeljaVerify.Twee.Col0427
 import TaeljaVerify.Twee.Set8652
 import TaeljaVerify.Twee.Ana0072
 import TaeljaVerify.Twee.Ana0232

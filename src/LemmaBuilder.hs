@@ -8,13 +8,16 @@ module LemmaBuilder
   , clearLemmaCache
   , BuiltLemma
   , makeFileSourced
+  , buildAllCandidates
+  , orderPrebuiltLemmas
   ) where
 
-import Control.Monad (when)
+import Control.Exception (ErrorCall, try)
+import Control.Monad (foldM, when)
 import Control.Applicative ((<|>))
 import Data.IORef (IORef, modifyIORef', newIORef, readIORef, writeIORef)
 import System.IO.Unsafe (unsafePerformIO)
-import Data.List (intercalate, nub)
+import Data.List (intercalate, nub, stripPrefix)
 import Data.Maybe (isJust, listToMaybe, mapMaybe, maybeToList)
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.TPTP.Parse.Text (parseTSTP)
@@ -521,3 +524,54 @@ syntheticNames bodyLits_sk =
 premName, lemmaStepName :: Int -> String
 premName i      = "prem_" ++ show i
 lemmaStepName i = "lemma_step_" ++ show i
+
+-- Build the lemma candidates in order.  A candidate lemma is an optimisation,
+-- so a failing sub-translation inlines that step instead of abandoning the
+-- proof.  Without this catch the first throwing candidate ends the whole run.
+-- The cost is that every candidate runs to completion, and HEN010-3/vampire
+-- goes from 13 s to 147 s.
+-- In a Twee proof a candidate's sub-run reads its ancestry step by step, so a
+-- candidate built earlier is given to the later ones as the lemma it is, named
+-- as the outer proof names it, and cited there rather than read and proved
+-- again.
+buildAllCandidates
+  :: (Map.Map String String -> Bool -> T.TSTP -> IO (Maybe StructuredProof))
+  -> Map.Map String T.Unit
+  -> Map.Map String String  -- TSTP name to display name in the outer proof
+  -> Bool                   -- debug
+  -> Bool                   -- whether a candidate cites the ones built before it
+  -> [(String, T.Declaration)]
+  -> IO [Maybe BuiltLemma]
+buildAllCandidates translateFn unitMap tstp2name debug citeEarlier cands =
+  reverse . snd <$> foldM buildOne ([], []) cands
+  where
+    buildOne (done, acc) c = do
+      let earlier = if citeEarlier then done else []
+          unitMapC = foldr (Map.adjust makeFileSourced) unitMap earlier
+          namesC   = foldr (\c' -> Map.insert c' ("lemma " ++ c')) tstp2name earlier
+      r <- try (buildCandidateLemma translateFn unitMapC namesC debug c)
+      v <- case r of
+        Right v -> return v
+        Left e  -> do
+          when debug $ hPutStrLn stderr
+            ("buildCandidateLemma: " ++ fst c ++ " failed, inlining instead: " ++ show (e :: ErrorCall))
+          return Nothing
+      return (if isJust v then done ++ [fst c] else done, v : acc)
+
+-- The pre-built lemmas in the order the proof tree reaches the candidates,
+-- each preceded by the sub-lemmas its recursive translation introduced and by
+-- the candidates it cites, which a Twee proof's later candidates do and which
+-- the tree may not reach itself.  The candidates come as TSTP name and display
+-- name.
+orderPrebuiltLemmas :: Map.Map String BuiltLemma -> [(String, String)] -> [(String, Literal, ProofBlock)]
+orderPrebuiltLemmas built reached = snd (foldl emit (Set.empty, []) reached)
+  where
+    emit (seen, acc) (c, nm)
+      | Set.member c seen = (seen, acc)
+      | Just (lit, blk, lifted, _) <- Map.lookup c built =
+          let cited = [ c' | ref <- concatMap blockRefNames (blk : [ b | (_, _, b) <- lifted ])
+                           , Just c' <- [stripPrefix "lemma " ref]
+                           , c' /= c, Map.member c' built ]
+              (seen', acc') = foldl emit (Set.insert c seen, acc) [ (c', "lemma " ++ c') | c' <- cited ]
+          in (seen', acc' ++ lifted ++ [(nm, lit, blk)])
+      | otherwise = (seen, acc)

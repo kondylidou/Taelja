@@ -182,18 +182,8 @@ translateMode debug (T.TSTP _ units0) = do
                           resolveCopySource unitMap0 cname `Set.notMember` origAxiomNames
                           && cname `Set.notMember` origAxiomNames)
                         (findLemmaCandidates units)
-      -- A candidate lemma is an optimisation, so a failing sub-translation inlines
-      -- that step instead of abandoning the proof.  Without this catch the first
-      -- throwing candidate ends the whole run.  The cost is that every candidate
-      -- runs to completion, and HEN010-3/vampire goes from 13 s to 147 s.
-      candResults <- forM candidates $ \c -> do
-        r <- liftIO (try (buildCandidateLemma translateWith unitMap0 origTstp2name debug c))
-        case r of
-          Right v -> return v
-          Left e  -> do
-            when debug $ liftIO $ hPutStrLn stderr
-              ("buildCandidateLemma: " ++ fst c ++ " failed, inlining instead: " ++ show (e :: ErrorCall))
-            return Nothing
+      candResults <- liftIO (buildAllCandidates translateWith unitMap0 origTstp2name debug
+                               (not (null (tweeRewritingSteps units))) candidates)
       let builtCands =
             [ (cname, r) | ((cname, _), Just r) <- zip candidates candResults ]
           -- A candidate's sub-proof may rest on a file axiom the outer
@@ -609,7 +599,7 @@ ensureNamed lit0 buildBlk0 = do
 tryRelLemma :: [UnitEntry] -> Literal -> Maybe String -> AlgM String
 tryRelLemma units lit mPos = do
   let relOrEqUnits = filter (\ue' -> isJust (ueName ue') || isEqLit (ueUnit ue')) units
-  mRes <- liftIO (callTwee InternalBudget relOrEqUnits lit)
+  mRes <- eqChainFor InternalBudget relOrEqUnits lit
   case mRes of
     Just (start, chain) | not (null chain) -> do
       steps <- mapM promoteChainStep chain
@@ -737,14 +727,7 @@ citeChainSteps = mapM cite
                     throwError ("rewrite step by " ++ rwName rw ++ " is stated as "
                                 ++ ppLitI (ueUnit u) ++ ", not as the equation it applied")
 
--- raw derived electrons with no proof are excluded since Twee cannot justify them later
-tweableUnits :: [UnitEntry] -> [UnitEntry]
-tweableUnits = filter (\u -> isJust (ueName u) || isJust (ueProof u))
 
--- Horn axioms that are purely relational (no equality heads or bodies).
--- Equality-headed/bodied axioms break the ifeq+pair Twee encoding.
-isRelHornAxiom :: HornAxiomEntry -> Bool
-isRelHornAxiom ha = not (isEqLit (haHead ha)) && not (any isEqLit (haBodies ha))
 
 -- Promote one step from a Twee chain into a named proof step (eq or relational).
 promoteChainStep :: (UnitEntry, Dir, Term) -> AlgM (RwStep, Term)
@@ -752,9 +735,131 @@ promoteChainStep (stepUe, dir, cur) = do
   nm <- ensureNamed (ueUnit stepUe) (makeBlock stepUe [] [])
   return (RwStep nm (unitEquation (ueUnit stepUe)) dir, cur)
 
+-- A goal that a Twee step derived is read from that step.  Twee records
+-- a step as one rewrite with each of its two premises, so one side of the goal
+-- rewrites into the other through them.  The chain has the shape a prover's
+-- chain has, and it is cited and emitted the same way.  A reading that fails
+-- leaves the state as it found it, so no premise it named stays behind.
+readTweeStep :: Literal -> AlgM (Maybe (Term, [(UnitEntry, Dir, Term)]))
+readTweeStep goal = case goal of
+  Eq gl gr -> do
+    steps <- gets stTweeSteps
+    eqs   <- gets stEqByName
+    let concludes nm = case Map.lookup nm eqs of
+          Just (l, r) -> isJust (matchLit (Eq l r) goal) || isJust (matchLit (Eq r l) goal)
+          Nothing     -> False
+        tryAll [] = return Nothing
+        tryAll (c : cs) = do
+          saved <- get
+          r <- readTweeChain c gl gr
+          case r of
+            Just chain -> return (Just chain)
+            Nothing    -> do
+              failed <- gets stUnreadSteps
+              put saved { stUnreadSteps = failed }
+              tryAll cs
+    tryAll [ c | (c, _, _) <- steps, concludes c ]
+  _ -> return Nothing
+
+-- A premise of a Twee step, a unit the proof states or has proved, or an
+-- equation a further Twee step derived.
+data Premise = Given UnitEntry | ByStep String (Term, Term)
+
+premiseEq :: Premise -> Maybe (Term, Term)
+premiseEq (Given u)    = case ueUnit u of { Eq l r -> Just (l, r); _ -> Nothing }
+premiseEq (ByStep _ e) = Just e
+
+premiseOf :: String -> AlgM (Maybe Premise)
+premiseOf nm = do
+  eqs   <- gets stEqByName
+  units <- gets (tweableUnits . stUnits)
+  steps <- gets stTweeSteps
+  return $ case Map.lookup nm eqs of
+    Nothing     -> Nothing
+    Just (l, r) ->
+      let e = Eq l r
+          variant a b = isJust (matchLit a b) && isJust (matchLit b a)
+      in case listToMaybe [ u | u <- units, variant (ueUnit u) e || variant (ueUnit u) (flipLit e) ] of
+           Just u  -> Just (Given u)
+           Nothing | any (\(c, _, _) -> c == nm) steps -> Just (ByStep nm (l, r))
+                   | otherwise                          -> Nothing
+
+-- The chain from l to r through the two premises of the Twee step c.
+readTweeChain :: String -> Term -> Term -> AlgM (Maybe (Term, [(UnitEntry, Dir, Term)]))
+readTweeChain c l r = do
+  steps <- gets stTweeSteps
+  case [ (p1, p2) | (c', p1, p2) <- steps, c' == c ] of
+    ((p1, p2) : _) -> do
+      mq1 <- premiseOf p1
+      mq2 <- premiseOf p2
+      case (mq1, mq2) of
+        (Just q1, Just q2)
+          | Just e1 <- premiseEq q1, Just e2 <- premiseEq q2 ->
+              case twoRewrites l r e1 e2 of
+                Just (back, (ia, dA, rA), (ib, dB, rB), mid) -> do
+                  -- in the order the chain runs, from l to r
+                  let q i = if i == (1 :: Int) then q1 else q2
+                      (x, y) = if back then ((q ib, flipDir dB, rB), (q ia, flipDir dA, rA))
+                                       else ((q ia, dA, rA), (q ib, dB, rB))
+                  ma <- stepsFor x l mid
+                  mb <- maybe (return Nothing) (const (stepsFor y mid r)) ma
+                  return ((\a b -> (l, a ++ b)) <$> ma <*> mb)
+                Nothing -> do
+                  dbgFlag <- gets stDebug
+                  liftIO $ dbg dbgFlag ("[read] " ++ c ++ ": " ++ ppLitI (Eq l r)
+                                        ++ " is no two rewrites by its premises " ++ p1 ++ ", "
+                                        ++ ppLitI (uncurry Eq e1) ++ " and " ++ p2 ++ ", " ++ ppLitI (uncurry Eq e2))
+                  return Nothing
+        _ -> return Nothing
+    [] -> return Nothing
+
+-- A premise's own derivation, once per step and remembered either way.
+readPremiseStep :: String -> (Term, Term) -> AlgM (Maybe (Term, [(UnitEntry, Dir, Term)]))
+readPremiseStep nm (pl, pr) = do
+  failed <- gets (Set.member nm . stUnreadSteps)
+  done   <- gets (Map.lookup nm . stReadSteps)
+  case (failed, done) of
+    (True, _)       -> return Nothing
+    (_, Just chain) -> return (Just chain)
+    _ -> do
+      r <- readTweeChain nm pl pr
+      modify (\st -> case r of
+        Just chain -> st { stReadSteps = Map.insert nm chain (stReadSteps st) }
+        Nothing    -> st { stUnreadSteps = Set.insert nm (stUnreadSteps st) })
+      return r
+
+-- The rewrite steps one premise makes from one term to the next.  A unit is
+-- cited.  A derived equation that only this step uses, and applies to the
+-- whole term, is one link of the derivation Twee was making, so its own
+-- derivation is spliced in there.  One the proof uses more than once, or
+-- applies inside the term as a rule, is named as a lemma once and cited, so
+-- the proof keeps the input proof's sharing and grows with it linearly.
+stepsFor :: (Premise, Dir, Bool) -> Term -> Term -> AlgM (Maybe [(UnitEntry, Dir, Term)])
+stepsFor (Given u, d, _) _ to = return (Just [(u, d, to)])
+stepsFor (ByStep nm e@(pl, pr), d, atRoot) from to = do
+  steps0 <- gets stTweeSteps
+  let uses = length [ () | (_, p1, p2) <- steps0, p <- [p1, p2], p == nm ]
+  sub <- readPremiseStep nm e
+  case sub of
+    Nothing -> return Nothing
+    Just chain@(start, steps)
+      | atRoot && uses == 1 -> return (spliceAt d from to e chain)
+      | otherwise -> do
+          n <- ensureNamed (Eq pl pr) (EqChain start <$> mapM promoteChainStep steps)
+          return (Just [(UnitEntry (Just n) (unrigidLit (Eq pl pr)) Nothing Nothing, d, to)])
+
+-- The chain for an equation.  The step of the input proof that derived it
+-- comes first, and Twee is asked only when the proof has no such step.
+eqChainFor :: TweeBudget -> [UnitEntry] -> Literal -> AlgM (Maybe (Term, [(UnitEntry, Dir, Term)]))
+eqChainFor budget units lit = do
+  mRead <- readTweeStep lit
+  case mRead of
+    Just chain -> return (Just chain)
+    Nothing    -> liftIO (callTwee budget units lit)
+
 tweeChain :: TweeBudget -> Term -> Term -> [UnitEntry] -> AlgM (Maybe ProofBlock)
 tweeChain budget l r units = do
-  mRes <- liftIO (callTwee budget units (Eq l r))
+  mRes <- eqChainFor budget units (Eq l r)
   case mRes of
     Nothing              -> return Nothing
     Just (_, [])         -> return Nothing
@@ -959,9 +1064,14 @@ findElecIO
   -> AlgM (Maybe (UnitEntry, Subst, Subst, [(RwStep, Literal)]))
 findElecIO li thn pos units = case li of
   Eq l r -> do
+    -- the step of the input proof that derived the equation is read in
+    -- either phase, since it asks no prover
     allowed <- gets stProverAllowed
-    mRaw <- if not allowed then return Nothing
-            else liftIO (callTwee InternalBudget (tweableUnits units) (Eq l r))
+    mRead <- readTweeStep (Eq l r)
+    mRaw <- case mRead of
+      Just chain -> return (Just chain)
+      Nothing | not allowed -> return Nothing
+              | otherwise   -> liftIO (callTwee InternalBudget (tweableUnits units) (Eq l r))
     case mRaw of
       Nothing       -> return Nothing
       Just (_, [])  -> return Nothing
@@ -1865,7 +1975,7 @@ proveGoal simpl mChain goal = do
               let l' = deepApplySubstTerm ρ l
               emitGoalProof (Eq l' l') (EqChain l' [])
             Nothing  -> do
-              mTwee <- liftIO (callTwee GoalBudget (tweableUnits units) goal)
+              mTwee <- eqChainFor GoalBudget (tweableUnits units) goal
               case mTwee of
                 Just (start, chain) | not (null chain) -> do
                   steps' <- mapM promoteChainStep chain
@@ -2204,6 +2314,9 @@ runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
                      (sharedNodeTheta (piDeclAt info) (piNuclei info ++ piElectrons info))
                      (explainStatus (piDeclAt info) (piNuclei info ++ piElectrons info))
       nameToPos  = Map.fromList [ (leName e, lePos e) | e <- piElectrons info ]
+      -- Twee's rewriting steps.  A goal one of them derived is read from it,
+      -- not proved again.
+      tweeSteps = tweeRewritingSteps allUnits
       eqByTstpName = Map.fromList
         [ (unitNameStr n, (l, r))
         | T.Unit n decl _ <- allUnits
@@ -2301,11 +2414,13 @@ runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
           ) rawAxiomList
       -- Pre-built lemmas in proof-tree order, each preceded by the sub-lemmas
       -- its recursive translation introduced
-      preLemmaEntries = concat
-        [ lifted ++ [(axNm, lit, blk)]
+      -- Pre-built lemmas in proof-tree order, each preceded by the sub-lemmas
+      -- its recursive translation introduced and the candidates it cites
+      preLemmaEntries = orderPrebuiltLemmas candLemmaMap
+        [ (leName e, axNm)
         | e <- piElectrons info
         , leRole e == OrigAxiom
-        , Just (lit, blk, lifted, _) <- [Map.lookup (leName e) candLemmaMap]
+        , Map.member (leName e) candLemmaMap
         , Just axNm <- [Map.lookup (lePos e) posToName]
         ]
 
@@ -2461,6 +2576,9 @@ runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
         , stReprove    = reproveAt
         , stNameToPos  = nameToPos
         , stEqByName   = eqByTstpName
+        , stTweeSteps  = tweeSteps
+        , stUnreadSteps = Set.empty
+        , stReadSteps = Map.empty
         , stGoalTemplate = goalLits'
         , stNegationConj = negationConj
         , stClosing = Nothing

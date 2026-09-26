@@ -9,43 +9,97 @@ Axiom 8: comp(Z,A) => meet(Z,A) = zero
 Axiom 9: meet(zero,Z) = zero
 Axiom 10: join(zero,Z) = Z
 
-Lemma 11: meet(b,join(c,d)) = zero
+Lemma 11: join(meet(X,Y),Y) = Y
+Proof:
+  join(meet(X,Y),Y)
+= { by axiom 1 }
+  join(Y,meet(X,Y))
+= { by axiom 3 }
+  join(Y,meet(Y,X))
+= { by axiom 4 }
+  Y
+
+Lemma 12: join(meet(X,Y),join(Z,Y)) = join(Z,Y)
+Proof:
+  join(meet(X,Y),join(Z,Y))
+= { by axiom 1 }
+  join(meet(X,Y),join(Y,Z))
+= { by axiom 2 }
+  join(join(meet(X,Y),Y),Z)
+= { by lemma 11 }
+  join(Y,Z)
+= { by axiom 1 }
+  join(Z,Y)
+
+Lemma 13: meet(b,join(c,d)) = zero
 Proof:
   have comp(b,join(c,d))
     by axiom 7
   hence meet(b,join(c,d)) = zero
     by axiom 8
 
-Lemma 12: join(meet(b,c),X) = X
+Lemma 14: meet(b,c) = zero
+Proof:
+  meet(b,c)
+= { by axiom 5 R->L }
+  meet(meet(b,c),join(meet(b,c),join(d,c)))
+= { by lemma 12 }
+  meet(meet(b,c),join(d,c))
+= { by axiom 1 }
+  meet(meet(b,c),join(c,d))
+= { by axiom 3 }
+  meet(join(c,d),meet(b,c))
+= { by axiom 3 R->L }
+  meet(join(c,d),meet(c,b))
+= { by axiom 3 R->L }
+  meet(meet(c,b),join(c,d))
+= { by axiom 6 R->L }
+  meet(c,meet(b,join(c,d)))
+= { by axiom 3 }
+  meet(c,meet(join(c,d),b))
+= { by axiom 3 }
+  meet(c,meet(b,join(c,d)))
+= { by lemma 13 }
+  meet(c,zero)
+= { by axiom 3 }
+  meet(zero,c)
+= { by axiom 9 }
+  zero
+
+Lemma 15: join(meet(b,c),X) = X
 Proof:
   join(meet(b,c),X)
-= { by axiom 5 R->L }
-  join(meet(b,meet(c,join(c,d))),X)
-= { by axiom 1 }
-  join(meet(b,meet(c,join(d,c))),X)
-= { by axiom 3 R->L }
-  join(meet(b,meet(join(d,c),c)),X)
-= { by axiom 6 }
-  join(meet(meet(b,join(d,c)),c),X)
-= { by axiom 1 R->L }
-  join(meet(meet(b,join(c,d)),c),X)
-= { by lemma 11 }
-  join(meet(zero,c),X)
-= { by axiom 9 }
+= { by lemma 14 }
   join(zero,X)
 = { by axiom 10 }
   X
 
+Lemma 16: join(X,join(Y,Z)) = join(Z,join(Y,X))
+Proof:
+  join(X,join(Y,Z))
+= { by axiom 1 R->L }
+  join(X,join(Z,Y))
+= { by axiom 1 R->L }
+  join(join(Z,Y),X)
+= { by axiom 2 R->L }
+  join(Z,join(Y,X))
+= { by axiom 1 }
+  join(Z,join(X,Y))
+= { by axiom 1 }
+  join(Z,join(Y,X))
+
 Goal 1: meet(join(a,meet(b,c)),join(a,meet(b,d))) = a
 Proof:
   meet(join(a,meet(b,c)),join(a,meet(b,d)))
-= { by lemma 12 R->L }
-  meet(join(a,meet(b,c)),join(join(meet(b,c),a),meet(b,d)))
-= { by axiom 1 R->L }
+= { by lemma 15 R->L }
+  meet(join(a,meet(b,c)),join(meet(b,c),join(a,meet(b,d))))
+= { by lemma 16 }
+  meet(join(a,meet(b,c)),join(meet(b,d),join(a,meet(b,c))))
+= { by axiom 1 }
   meet(join(a,meet(b,c)),join(join(a,meet(b,c)),meet(b,d)))
 = { by axiom 5 }
   join(a,meet(b,c))
 = { by axiom 1 }
   join(meet(b,c),a)
-= { by lemma 12 }
+= { by lemma 15 }
   a

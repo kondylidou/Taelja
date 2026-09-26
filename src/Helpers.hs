@@ -344,6 +344,20 @@ diffSpine a b
         , [(x, y)] <- [ p | p@(x, y) <- zip as bs, x /= y ] -> diffSpine x y
       _ -> []
 
+-- The subterms of a, with their contexts, where a last rewrite can turn a
+-- into b, root first.  Below a subterm the two share it has nothing to do, and
+-- where their symbols differ it must rewrite that node or one above it, since
+-- nothing below can change the symbol there.
+diffCtxs :: Term -> Term -> [(Term, Term -> Term)]
+diffCtxs a b
+  | a == b    = []
+  | otherwise = (a, id) : case (a, b) of
+      (App f as, App g bs)
+        | f == g, length as == length bs ->
+            [ (u, \x -> App f (take i as ++ [c x] ++ drop (i + 1) as))
+            | (i, (ai, bi)) <- zip [0 ..] (zip as bs), (u, c) <- diffCtxs ai bi ]
+      _ -> []
+
 termCtxs :: Term -> [(Term, Term -> Term)]
 termCtxs t = (t, id) : case t of
   App f ts -> [ (u, \x -> App f (take i ts ++ [c x] ++ drop (i + 1) ts))
@@ -706,6 +720,25 @@ topLevelArgs = walk (0 :: Int) []
 -- | Syntactic unification with occurs check.  Both terms share one variable
 -- space (used for the two sides of a goal equation, whose variables stem from
 -- an existential conjecture and may therefore be instantiated).
+-- Unification that binds only variables outside rigid, so the terms of an
+-- equation being proved stay as they are while the rules applied to them are
+-- instantiated.  Of two variables it binds the one that may move.
+unifyApart :: [String] -> Term -> Term -> Subst -> Maybe Subst
+unifyApart rigid s0 t0 = go [(s0, t0)]
+  where
+    go [] th = Just th
+    go ((s, t) : rest) th =
+      let s' = deepApplySubstTerm th s
+          t' = deepApplySubstTerm th t
+      in if s' == t' then go rest th else case (s', t') of
+        (Var x, _) | x `notElem` rigid -> bind x t' rest th
+        (_, Var y) | y `notElem` rigid -> bind y s' rest th
+        (App f as, App g bs) | f == g, length as == length bs -> go (zip as bs ++ rest) th
+        _ -> Nothing
+    bind x t rest th
+      | x `elem` termVars t = Nothing
+      | otherwise           = go rest ((x, t) : th)
+
 unifyTerms :: Term -> Term -> Subst -> Maybe Subst
 unifyTerms s0 t0 = go [(s0, t0)]
   where
