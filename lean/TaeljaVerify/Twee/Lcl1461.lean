@@ -94,8 +94,6 @@ theorem taelja_lemma15 : ∀ (x_ : α) (y_ : α), (big_V x_ (implies_ y_ x_)) = 
   calc big_V x_ (implies_ y_ x_) = big_V (implies_ y_ x_) x_ := by have h_rw := taelja_lemma8 (implies_ y_ x_) x_; rw [h_rw]
       _ = implies_ (implies_ (implies_ y_ x_) x_) x_ := by have h_rw := ax2 (implies_ y_ x_) x_; rw [h_rw]
       _ = implies_ (big_V y_ x_) x_ := by have h_rw := ax2 y_ x_; rw [h_rw]
-      _ = implies_ (big_V x_ y_) x_ := by have h_rw := taelja_lemma8 x_ y_; rw [h_rw]
-      _ = implies_ (big_V y_ x_) x_ := by have h_rw := taelja_lemma8 y_ x_; rw [h_rw]
 
 -- Lemma 16
 theorem taelja_lemma16 : (implies_ (not_ (not_ truth)) (not_ truth)) = (not_ truth) := by
@@ -160,9 +158,7 @@ theorem taelja_lemma24 : ∀ (x_ : α), (implies_ (not_ truth) x_) = truth := by
 -- Lemma 25
 theorem taelja_lemma25 : ∀ (x_ : α), (big_V (not_ truth) x_) = x_ := by
   intro x_
-  calc big_V (not_ truth) x_ = big_V x_ (not_ truth) := by have h_rw := taelja_lemma8 (not_ truth) x_; rw [h_rw]
-      _ = big_V (not_ truth) x_ := by have h_rw := taelja_lemma8 x_ (not_ truth); rw [h_rw]
-      _ = implies_ (implies_ (not_ truth) x_) x_ := by have h_rw := ax2 (not_ truth) x_; rw [h_rw]
+  calc big_V (not_ truth) x_ = implies_ (implies_ (not_ truth) x_) x_ := by have h_rw := ax2 (not_ truth) x_; rw [h_rw]
       _ = implies_ truth x_ := by have h_rw := taelja_lemma24 x_; rw [h_rw]
       _ = x_ := by first | (first | (exact ax1 x_) | (exact Eq.symm (ax1 x_))) | (have h_rw := ax1 x_; rw [h_rw])
 

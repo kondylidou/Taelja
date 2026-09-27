@@ -828,7 +828,8 @@ readTweeChain c l r = do
                                else ((q ia, dA, rA, iA), (q ib, dB, rB, iB))
           ma <- stepsFor x l mid
           mb <- maybe (return Nothing) (const (stepsFor y mid r)) ma
-          return ((\a b -> (l, a ++ b)) <$> ma <*> mb)
+          -- the two rewrites joined at this instance may go out and back
+          return ((\a b -> (l, cutLoops (\(_, _, t) -> t) l (a ++ b))) <$> ma <*> mb)
         [] -> do
           dbgFlag <- gets stDebug
           let shown p qs = p ++ " " ++ intercalate " or " [ ppLitI (uncurry Eq e) | Just e <- map premiseEq qs ]
@@ -866,7 +867,10 @@ stepsFor :: (Premise, Dir, Bool, (Term, Term)) -> Term -> Term -> AlgM (Maybe [(
 stepsFor (Given u, d, _, _) _ to = return (Just [(u, d, to)])
 stepsFor (Trivial _, _, _, _) _ _ = return (Just [])
 stepsFor (ByStep nm lit, d, atRoot, inst) from to = do
+  preds <- gets stPredicates
   let e = unitEquation lit
+      -- an equation between atoms is spliced, never stated as a lemma
+      atomEq = isAtomEquation preds lit
       variant a b = isJust (matchLit a b) && isJust (matchLit b a)
       instLit = maybe lit (`applySubst` lit) (matchLit (uncurry Eq e) (uncurry Eq inst))
   steps0 <- gets stTweeSteps
@@ -881,7 +885,8 @@ stepsFor (ByStep nm lit, d, atRoot, inst) from to = do
   case sub of
     Nothing -> return Nothing
     Just (stated, e', chain@(start, steps))
-      | atRoot && uses == 1 -> return (spliceAt d from to e' chain)
+      | atRoot && (uses == 1 || atomEq) -> return (spliceAt d from to e' chain)
+      | atomEq -> return Nothing
       | otherwise -> do
           n <- ensureNamed stated (EqChain start <$> mapM promoteChainStep steps)
           return (Just [(UnitEntry (Just n) (unrigidLit stated) Nothing Nothing, d, to)])
@@ -2421,8 +2426,10 @@ runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
       elecNameOf = Map.fromList [ (leUnit e, resolveSimplName (leName e)) | e <- piElectrons info ]
       literalRw = Map.fromList
         [ (lePos e, [ (b, steps) | (b, raw) <- literalRewrites thetaCtx (lePos e)
-                                 , Just steps <- [mapM named raw] ])
+                                 , Just steps <- [mapM named raw]
+                                 , not (any atomStep steps) ])
         | e <- piNuclei info ]
+      atomStep (_, _, (l, r), _) = isAtomEquation (predicateSymbols allUnits) (Eq l r)
       named (p, d, e, l) = (\nm -> (nm, d, e, l)) <$> (Map.lookup p (piUnitAt info) >>= (`Map.lookup` elecNameOf))
       -- a Twee proof's head rewrites, where E and Vampire rewrite the head by
       -- the demodulation chain folded into the nucleus (nucChain)
@@ -2431,7 +2438,8 @@ runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
         | otherwise = Map.fromList
             [ (lePos e, (start, steps)) | e <- piNuclei info
                                         , (Just start, raw) <- [headRewrites thetaCtx (lePos e)]
-                                        , Just steps@(_ : _) <- [mapM named raw] ]
+                                        , Just steps@(_ : _) <- [mapM named raw]
+                                        , not (any atomStep steps) ]
       -- every positive unit's literal, an equation or an atom, for the reading
       unitLitByTstpName = Map.fromList
         [ (unitNameStr n, convertLit tl)
@@ -2703,6 +2711,7 @@ runAlgorithm debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
         , stLiteralRewrites = literalRw
         , stHeadRewrites = headRw
         , stReadableUnits = readableUnits allUnits
+        , stPredicates = predicateSymbols allUnits
         , stUnreadSteps = Set.empty
         , stReadSteps = Map.empty
         , stGoalTemplate = goalLits'

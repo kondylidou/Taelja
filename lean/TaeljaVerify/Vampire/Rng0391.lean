@@ -247,9 +247,9 @@ theorem taelja_goal1 : c = d := by
   have h1 : product a d d := by first | (exact taelja_lemma30) | (first | apply taelja_lemma30 <;> first | rfl | assumption)
   have h2 : product a d b := by first | (exact taelja_lemma31) | (first | apply taelja_lemma31 <;> first | rfl | assumption)
   have h3 : b = d := by first | (exact ax5 b a d d h1 h2) | (first | (exact ax5 _ _ _ _ h1 h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h4 : b = a := by have h_rw := taelja_lemma27; rw [h_rw]; exact h3
-  have h5 : b = d := by have h_rw := taelja_lemma27; rw [←h_rw]; exact h4
-  have h6 : c = d := by have h_rw := taelja_lemma29; rw [←h_rw]; exact h5
+  have h4 : b = a := by have h_rw := taelja_lemma27; rw [h_rw] <;> exact h3
+  have h5 : b = d := by have h_rw := taelja_lemma27; rw [←h_rw] <;> exact h4
+  have h6 : c = d := by have h_rw := taelja_lemma29; rw [←h_rw] <;> exact h5
   exact h6
 
 end VampireRng0391

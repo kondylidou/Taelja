@@ -26,7 +26,7 @@ axiom ax3 : ∀ (a_ : α) (b_ : α) (c : α), (compose a_ (compose a b)) = b_ �
 -- Lemma 4
 theorem taelja_lemma4 : (compose g (compose a b)) = (compose (compose h a) b) := by
   have h1 : (compose g (compose a b)) = (compose (compose g a) b) := by first | (exact ax1 g a b) | (first | apply ax1 <;> first | rfl | assumption | (apply Eq.symm; apply ax1 <;> first | rfl | assumption))
-  have h2 : (compose g (compose a b)) = (compose (compose h a) b) := by have h_rw := ax2; rw [h_rw]; exact h1
+  have h2 : (compose g (compose a b)) = (compose (compose h a) b) := by have h_rw := ax2; rw [h_rw] <;> exact h1
   exact h2
 
 -- Goal 1

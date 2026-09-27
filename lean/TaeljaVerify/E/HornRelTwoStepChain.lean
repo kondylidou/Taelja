@@ -28,8 +28,8 @@ axiom ax3 : (f a) = b
 -- Goal 1
 theorem taelja_goal1 : p (g (f a)) := by
   have h1 : p c := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : p (g b) := by have h_rw := ax2; rw [h_rw]; exact h1
-  have h3 : p (g (f a)) := by have h_rw := ax3; rw [h_rw]; exact h2
+  have h2 : p (g b) := by have h_rw := ax2; rw [h_rw] <;> exact h1
+  have h3 : p (g (f a)) := by have h_rw := ax3; rw [h_rw] <;> exact h2
   exact h3
 
 end EHornRelTwoStepChain

@@ -1055,7 +1055,9 @@ def precise_hyp_rw(prev_lit, target_lit, rw_formula, direction, ref_name, var_ma
         arrow = ''
     if k is None:
         return None
-    return f'by have h_rw := {inst}; {rw_tactic(arrow, "h_rw", k, total)}; exact {prev_ref}'
+    # the rewrite may leave a = a, which rw closes by rfl, so exact runs only
+    # on a goal that remains
+    return f'by have h_rw := {inst}; {rw_tactic(arrow, "h_rw", k, total)} <;> exact {prev_ref}'
 
 
 # ─── Lean 4 code emitter ─────────────────────────────────────────────────────
@@ -1956,11 +1958,11 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                                 x_str = f'({x_str})'
                             if isinstance(y_inst_term, App) and y_inst_term.args:
                                 y_str = f'({y_str})'
-                            lines.append(f'have {hname} : {full_lit_str} := by have h_eq := {ref_name} {x_str} {y_str}; rw [h_eq]; exact {prev_inst}')
+                            lines.append(f'have {hname} : {full_lit_str} := by have h_eq := {ref_name} {x_str} {y_str}; rw [h_eq] <;> exact {prev_inst}')
                         else:
-                            lines.append(f'have {hname} : {full_lit_str} := ' + (f'fun {" ".join(svm[v] for v in new_vars)} => by rw [{ref_name}]; exact {prev_inst}' if lit_has_new_vars else f'by rw [{ref_name}]; exact {prev_inst}'))
+                            lines.append(f'have {hname} : {full_lit_str} := ' + (f'fun {" ".join(svm[v] for v in new_vars)} => by rw [{ref_name}] <;> exact {prev_inst}' if lit_has_new_vars else f'by rw [{ref_name}] <;> exact {prev_inst}'))
                     else:
-                        lines.append(f'have {hname} : {full_lit_str} := ' + (f'fun {" ".join(svm[v] for v in new_vars)} => by rw [{ref_name}]; exact {prev_inst}' if lit_has_new_vars else f'by rw [{ref_name}]; exact {prev_inst}'))
+                        lines.append(f'have {hname} : {full_lit_str} := ' + (f'fun {" ".join(svm[v] for v in new_vars)} => by rw [{ref_name}] <;> exact {prev_inst}' if lit_has_new_vars else f'by rw [{ref_name}] <;> exact {prev_inst}'))
                 else:
                     # LR rewrites the goal backward with the axiom RL.  The goal has 'b' where prev
                     # has 'a', and rw [← ref_name] replaces b by a, turning the goal into prev's
@@ -2012,7 +2014,7 @@ def emit_havehence(proof: HaveHenceProof, axiom_types, lemma_types, conclusion, 
                             # to name an eliminated witness.  Rewriting the goal lets `exact prev_copy`
                             # unify that `_`, while a standalone `have h_rw := prev_copy` gives Lean
                             # nothing to solve it against, as on LAT005-6/e.
-                            lines.append(f'have {hname} : {full_lit_str} := by rw [← {ref_name}]; exact {prev_copy}')
+                            lines.append(f'have {hname} : {full_lit_str} := by rw [← {ref_name}] <;> exact {prev_copy}')
                         else:
                             # The LHS is compound, as in f(f(x)) = x or a = b, so apply the rewrite
                             # forward into the hypothesis copy with the compound LHS as pattern.

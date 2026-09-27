@@ -25,7 +25,7 @@ axiom ax3 : p b → q b
 -- Goal 1
 theorem taelja_goal1 : q b := by
   have h1 : p a := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : p b := by have h_rw := ax1; rw [←h_rw]; exact h1
+  have h2 : p b := by have h_rw := ax1; rw [←h_rw] <;> exact h1
   have h3 : q b := by first | (exact ax3 h2) | (first | (exact ax3 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h3
 

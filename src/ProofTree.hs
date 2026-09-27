@@ -31,7 +31,7 @@ import Data.Ord (comparing)
 import Data.TPTP.Pretty ()
 import Prettyprinter (pretty)
 import Types
-import Helpers (applySubst, applySubstTerm, clauseInstance, witnessPrefix, deepApplySubstTerm, flipLit, litSubtermCtxs,
+import Helpers (applySubst, applySubstTerm, clauseInstance, dropVarEquations, witnessPrefix, deepApplySubstTerm, flipLit, litSubtermCtxs,
                 mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
                 unifyLits, unifyTerms)
 import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertFOFToClause, convertLit, declSymbols, isReservedTLit)
@@ -599,7 +599,7 @@ data Conjecture = Conjecture
   , cjGoals   :: [T.Literal] } -- the goal atoms, none for a negated conclusion
 
 readConjecture :: T.UnsortedFirstOrder -> Either String Conjecture
-readConjecture = conclusion [] . normalizeConjecture
+readConjecture = conclusion [] . normalizeConjecture . renameBoundApart
   where
     conclusion hs f = case f of
       T.Quantified T.Forall _ b     -> conclusion hs b
@@ -852,6 +852,48 @@ freeVars (T.Negated g)         = freeVars g
 freeVars (T.Connected l _ r)   = Set.union (freeVars l) (freeVars r)
 freeVars (T.Quantified _ vs b) = freeVars b `Set.difference` Set.fromList (map fst (toList vs))
 
+-- Each quantifier that rebinds a variable bound around it gets a fresh name,
+-- as the ! [X1] inside LCL684+1.001's ? [X1] does, so the clauses read once
+-- the quantifiers are stripped keep the two variables apart.
+renameBoundApart :: T.UnsortedFirstOrder -> T.UnsortedFirstOrder
+renameBoundApart f0 = snd (go Set.empty (allNames f0) f0)
+  where
+    go bound used f = case f of
+      T.Quantified q vs b ->
+        let (used', ren) = foldl fresh (used, Map.empty) [ v | (v, _) <- toList vs, Set.member v bound ]
+            vs'          = fmap (\(v, s) -> (Map.findWithDefault v v ren, s)) vs
+            (used'', b') = go (Set.union bound (Set.fromList (map fst (toList vs')))) used' (renameFree ren b)
+        in (used'', T.Quantified q vs' b')
+      T.Negated g -> T.Negated <$> go bound used g
+      T.Connected l c r ->
+        let (u1, l') = go bound used l
+            (u2, r') = go bound u1 r
+        in (u2, T.Connected l' c r')
+      _ -> (used, f)
+    fresh (used, ren) v@(T.Var t) =
+      let v' = head [ T.Var (t <> Text.pack ("_" ++ show i)) | i <- [1 :: Int ..]
+                    , Set.notMember (T.Var (t <> Text.pack ("_" ++ show i))) used ]
+      in (Set.insert v' used, Map.insert v v' ren)
+    -- the free occurrences, as an inner quantifier of the same name binds its own
+    renameFree ren f | Map.null ren = f
+    renameFree ren f = case f of
+      T.Atomic l -> T.Atomic (renameLit l)
+      T.Negated g -> T.Negated (renameFree ren g)
+      T.Connected l c r -> T.Connected (renameFree ren l) c (renameFree ren r)
+      T.Quantified q vs b ->
+        T.Quantified q vs (renameFree (foldr (Map.delete . fst) ren (toList vs)) b)
+      where
+        renameLit (T.Predicate p ts)  = T.Predicate p (map renameTerm ts)
+        renameLit (T.Equality a sg b) = T.Equality (renameTerm a) sg (renameTerm b)
+        renameTerm (T.Variable v)    = T.Variable (Map.findWithDefault v v ren)
+        renameTerm (T.Function g ts) = T.Function g (map renameTerm ts)
+        renameTerm t                 = t
+    allNames f = case f of
+      T.Quantified _ vs b -> Set.union (Set.fromList (map fst (toList vs))) (allNames b)
+      T.Negated g         -> allNames g
+      T.Connected l _ r   -> Set.union (allNames l) (allNames r)
+      _                   -> freeVars f
+
 -- The conjecture formulas of the proof.  Twee writes a clausal conjecture as
 -- a cnf unit, which is read as the disjunction of its literals.
 fofConjectures :: [T.Unit] -> [T.UnsortedFirstOrder]
@@ -869,9 +911,12 @@ clauseFormula ls = foldr1 (\a b -> T.Connected a T.Disjunction b)
 -- The clauses a conjecture grants as hypotheses, those of the antecedent and
 -- those of a negated conclusion, since ~G is proved by assuming G.  Nothing
 -- when there is no FOF conjecture.
+-- Each clause is granted also with its body equations on a variable dropped,
+-- as the prover's clausifier may state it (see dropVarEquations).
 conjectureHypotheses :: [T.Unit] -> Maybe ([Clause], [Clause])
 conjectureHypotheses units = listToMaybe
-  [ (cjHyps c, cjNegated c) | Right c <- map readConjecture (fofConjectures units) ]
+  [ (withDropped (cjHyps c), withDropped (cjNegated c)) | Right c <- map readConjecture (fofConjectures units) ]
+  where withDropped cs = nub (cs ++ map dropVarEquations cs)
 -- A unit the prover introduced itself, like E's introduced(definition).
 isIntroducedSrc :: Map.Map String T.Unit -> String -> Bool
 isIntroducedSrc unitMap name = case Map.lookup name unitMap of

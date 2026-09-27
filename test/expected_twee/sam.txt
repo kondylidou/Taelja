@@ -55,10 +55,6 @@ Proof:
   meet(meet(c,b),join(c,d))
 = { by axiom 6 R->L }
   meet(c,meet(b,join(c,d)))
-= { by axiom 3 }
-  meet(c,meet(join(c,d),b))
-= { by axiom 3 }
-  meet(c,meet(b,join(c,d)))
 = { by lemma 13 }
   meet(c,zero)
 = { by axiom 3 }
@@ -82,10 +78,6 @@ Proof:
 = { by axiom 1 R->L }
   join(join(Z,Y),X)
 = { by axiom 2 R->L }
-  join(Z,join(Y,X))
-= { by axiom 1 }
-  join(Z,join(X,Y))
-= { by axiom 1 }
   join(Z,join(Y,X))
 
 Goal 1: meet(join(a,meet(b,c)),join(a,meet(b,d))) = a

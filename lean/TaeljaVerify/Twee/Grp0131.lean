@@ -53,8 +53,8 @@ theorem taelja_lemma9 : ∀ (x : α), (inverse x) = x := by
 -- Lemma 10
 theorem taelja_lemma10 : product a b d := by
   have h1 : product (inverse a) (inverse b) d := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : product a (inverse b) d := by have h_rw := taelja_lemma9 a; rw [←h_rw]; exact h1
-  have h3 : product a b d := by have h_rw := taelja_lemma9 b; rw [←h_rw]; exact h2
+  have h2 : product a (inverse b) d := by have h_rw := taelja_lemma9 a; rw [←h_rw] <;> exact h1
+  have h3 : product a b d := by have h_rw := taelja_lemma9 b; rw [←h_rw] <;> exact h2
   exact h3
 
 -- Lemma 11

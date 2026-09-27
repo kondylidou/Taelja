@@ -84,7 +84,7 @@ theorem taelja_lemma15 : product c d identity := by
   have h2 : product b d (inverse a) := by first | (exact taelja_lemma13) | (first | apply taelja_lemma13 <;> first | rfl | assumption)
   have h3 : product a (inverse a) identity := by first | (exact ax6 a) | (first | apply ax6 <;> first | rfl | assumption)
   have h4 : product (multiply a b) d identity := by first | (exact ax7 d (inverse a) identity a b (multiply a b) h1 h2 h3) | (first | (exact ax7 _ _ _ _ _ _ h1 h2 h3) | (apply ax7 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h5 : product c d identity := by have h_rw := taelja_lemma14; rw [h_rw]; exact h4
+  have h5 : product c d identity := by have h_rw := taelja_lemma14; rw [h_rw] <;> exact h4
   exact h5
 
 -- Lemma 16
@@ -100,7 +100,7 @@ theorem taelja_goal1 : (inverse c) = d := by
   have h1 : product identity d (multiply identity d) := by first | (exact ax1 identity d) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : product identity d (inverse c) := by first | (exact taelja_lemma16) | (first | apply taelja_lemma16 <;> first | rfl | assumption)
   have h3 : (multiply identity d) = (inverse c) := by first | (exact ax3 (inverse c) identity d (multiply identity d) h1 h2) | (first | (exact ax3 _ _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h4 : d = (inverse c) := by have h_rw := taelja_lemma10 d; rw [←h_rw]; exact h3
+  have h4 : d = (inverse c) := by have h_rw := taelja_lemma10 d; rw [←h_rw] <;> exact h3
   exact h4.symm
 
 end EGrp0122

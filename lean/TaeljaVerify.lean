@@ -217,3 +217,8 @@ import TaeljaVerify.Twee.Grp0131
 import TaeljaVerify.Twee.Grp0123
 import TaeljaVerify.Twee.Hen0103
 import TaeljaVerify.Twee.Boo0061
+import TaeljaVerify.Twee.Puz1292
+import TaeljaVerify.E.Lcl6841001
+import TaeljaVerify.Twee.Kle1432
+import TaeljaVerify.Twee.Swb0052
+import TaeljaVerify.Vampire.Set8861

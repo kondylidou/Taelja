@@ -126,6 +126,7 @@ data AlgState = AlgState
   , stLiteralRewrites :: Map.Map String [(Literal, [(String, Dir, (Term, Term), Literal)])]  -- nucleus position -> the rewrites the proof makes to each of its body literals, by equation name and the instance applied
   , stHeadRewrites :: Map.Map String (Literal, [(String, Dir, (Term, Term), Literal)])  -- nucleus position -> its head under θ and the rewrites the proof makes to it before the clause is a unit
   , stReadableUnits :: Set.Set String  -- units whose derivation the translation reads step by step (see readableUnits)
+  , stPredicates :: Set.Set String  -- predicate symbols, so an equation Twee states between two atoms is never stated (see isAtomEquation)
   , stUnreadSteps :: Set.Set (String, (Term, Term))  -- Twee steps that could not be read, with the equation read, kept when a failed attempt is undone
   , stReadSteps :: Map.Map (String, (Term, Term)) (Term, [(UnitEntry, Dir, Term)])  -- Twee steps read, with the equation read, each its chain from its left side
   , stGoalTemplate :: [Literal]  -- the conjecture's own goal literals (shared free variables across conjuncts), consulted by emitGoalProof

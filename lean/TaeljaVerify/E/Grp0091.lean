@@ -106,7 +106,7 @@ theorem taelja_goal1 : a = c := by
   have h1 : product identity a (multiply identity a) := by first | (exact ax1 identity a) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : product identity a c := by first | (exact taelja_lemma17) | (first | apply taelja_lemma17 <;> first | rfl | assumption)
   have h3 : (multiply identity a) = c := by first | (exact ax3 c identity a (multiply identity a) h1 h2) | (first | (exact ax3 _ _ _ _ h1 h2) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h4 : a = c := by have h_rw := taelja_lemma10 a; rw [←h_rw]; exact h3
+  have h4 : a = c := by have h_rw := taelja_lemma10 a; rw [←h_rw] <;> exact h3
   exact h4
 
 end EGrp0091

@@ -96,10 +96,6 @@ Proof:
   implies(implies(implies(Y,X),X),X)
 = { by axiom 2 R->L }
   implies(big_V(Y,X),X)
-= { by lemma 8 R->L }
-  implies(big_V(X,Y),X)
-= { by lemma 8 R->L }
-  implies(big_V(Y,X),X)
 
 Lemma 16: implies(not(not(truth)),not(truth)) = not(truth)
 Proof:
@@ -201,10 +197,6 @@ Proof:
 
 Lemma 25: big_V(not(truth),X) = X
 Proof:
-  big_V(not(truth),X)
-= { by lemma 8 }
-  big_V(X,not(truth))
-= { by lemma 8 }
   big_V(not(truth),X)
 = { by axiom 2 }
   implies(implies(not(truth),X),X)

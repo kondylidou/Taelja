@@ -26,8 +26,8 @@ theorem taelja_goal1 : ∀ (x : α), ((f x) = a) → (g (h (f x))) = b := by
   intro x
   intro hyp1
   have h1 : (g a) = b := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption | (apply Eq.symm; apply ax1 <;> first | rfl | assumption))
-  have h2 : (g (f x)) = b := by have h_rw := hyp1; rw [h_rw]; exact h1
-  have h3 : (g (h (f x))) = b := by have h_rw := ax2 (f x); rw [h_rw]; exact h2
+  have h2 : (g (f x)) = b := by have h_rw := hyp1; rw [h_rw] <;> exact h1
+  have h3 : (g (h (f x))) = b := by have h_rw := ax2 (f x); rw [h_rw] <;> exact h2
   exact h3
 
 end EFofEquationalHypothesis

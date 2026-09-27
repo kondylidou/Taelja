@@ -30,13 +30,13 @@ axiom ax4 : ∀ (x : α), p x → q x → x = zero
 -- Lemma 5
 theorem taelja_lemma5 : q (g a) := by
   have h1 : q (f a) := by first | (exact ax3 a) | (first | apply ax3 <;> first | rfl | assumption)
-  have h2 : q (g a) := by have h_rw := ax1 a; rw [←h_rw]; exact h1
+  have h2 : q (g a) := by have h_rw := ax1 a; rw [←h_rw] <;> exact h1
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : (g a) = zero := by
   have h1 : p (f a) := by first | (exact ax2 a) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : p (g a) := by have h_rw := ax1 a; rw [←h_rw]; exact h1
+  have h2 : p (g a) := by have h_rw := ax1 a; rw [←h_rw] <;> exact h1
   have h3 : q (g a) := by first | (exact taelja_lemma5) | (first | apply taelja_lemma5 <;> first | rfl | assumption)
   have h4 : (g a) = zero := by first | (exact ax4 (g a) h2 h3) | (first | (exact ax4 _ h2 h3) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4

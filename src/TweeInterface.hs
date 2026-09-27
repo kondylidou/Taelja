@@ -15,6 +15,8 @@ module TweeInterface
   , timeoutSecsFromEnv
   , tweeRewritingSteps
   , readableUnits
+  , predicateSymbols
+  , isAtomEquation
   , tweableUnits
   , isRelHornAxiom
   , twoRewrites
@@ -48,6 +50,7 @@ import Types
 import Helpers (applySubstTerm, deepApplySubstTerm, diffCtxs, flipDir, isEqLit, litVars,
                 matchLit, rewriteTermAll, suffixVarsLit, termCtxs, termVars, unifyApart)
 import ProofTree (unitNameStr)
+import TptpConvert (declSymbols)
 
 -- A prover binary, looked up once per run.  The variable names it outright,
 -- otherwise bin/<name> in the current directory, otherwise <name> on the
@@ -597,6 +600,21 @@ readableUnits = foldl' add Set.empty
             && all (`Set.member` done) [ unitNameStr p | T.Parent (T.UnitSource p) _ <- ps ]
         readable _ = True
     add done _ = done
+
+-- The predicate symbols of a proof.  Twee reads an atom as a term, so one of
+-- its steps may equate two atoms that both hold, as SWB005+2's c34 states
+-- iext(uri_rdf_type,X2,uri_rdfs_Resource) = ip(uri_ex_p).  Such an equation is
+-- no first-order statement and is never stated or cited.
+predicateSymbols :: [T.Unit] -> Set.Set String
+predicateSymbols units = Set.fromList [ p | T.Unit _ d _ <- units, p <- snd (declSymbols d) ]
+
+isAtomEquation :: Set.Set String -> Literal -> Bool
+isAtomEquation preds (Eq l r) = atom l || atom r
+  where
+    atom (App f _) = Set.member f preds
+    atom (Const c) = Set.member c preds
+    atom _         = False
+isAtomEquation _ _ = False
 
 -- Twee's rewriting steps, each its conclusion and its two premises by name.
 -- Twee writes a step as one rewrite with each premise between the two sides of

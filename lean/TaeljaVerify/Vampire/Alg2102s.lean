@@ -260,7 +260,7 @@ theorem taelja_goal1 : (sK3 = (times sK1 sK2)) → (element sK1) → (element sK
   intro hyp1 hyp2 hyp3
   have h1 : (times (times sK1 sK2) (times (times sK1 sK2) (times sK1 sK2))) = (times sK1 sK2) := by first | (exact (taelja_lemma29 hyp1 hyp2 hyp3)) | (first | apply (taelja_lemma29 hyp1 hyp2 hyp3) <;> first | rfl | assumption | (apply Eq.symm; apply (taelja_lemma29 hyp1 hyp2 hyp3) <;> first | rfl | assumption))
   have h2 : element (times sK1 sK2) := by first | (exact ax4 _ _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem))
-  have h3 : element sK3 := by have h_rw := hyp1; rw [h_rw]; exact h2
+  have h3 : element sK3 := by have h_rw := hyp1; rw [h_rw] <;> exact h2
   exact h3
 
 end Alg2102

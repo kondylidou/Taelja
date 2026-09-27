@@ -46,8 +46,8 @@ axiom ax7 : ∀ (x : α) (y : α) (z : α), (c_Tarski_Oglb x y z) = (c_Tarski_Ol
 -- Lemma 8
 theorem taelja_lemma8 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) (tc_set t_a) := by
   have h1 : c_lessequals v_S v_A (tc_set t_a) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : c_lessequals v_S (c_Tarski_Opotype_Opset v_cl t_a tc_Product__Type_Ounit) (tc_set t_a) := by have h_rw := ax4; rw [←h_rw]; exact h1
-  have h3 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) (tc_set t_a) := by have h_rw := ax5 v_cl t_a; rw [h_rw]; exact h2
+  have h2 : c_lessequals v_S (c_Tarski_Opotype_Opset v_cl t_a tc_Product__Type_Ounit) (tc_set t_a) := by have h_rw := ax4; rw [←h_rw] <;> exact h1
+  have h3 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) (tc_set t_a) := by have h_rw := ax5 v_cl t_a; rw [h_rw] <;> exact h2
   exact h3
 
 -- Lemma 9

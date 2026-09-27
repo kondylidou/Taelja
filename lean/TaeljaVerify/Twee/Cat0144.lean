@@ -32,17 +32,17 @@ axiom ax5 : ∀ (y : α) (z : α), there_exists (compose y z) → (domain y) = (
 theorem taelja_lemma6 : (domain (codomain a)) = (codomain a) := by
   have h1 : there_exists (codomain a) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : there_exists a := by first | (exact ax4 a h1) | (first | (exact ax4 _ h1) | (apply ax4 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : there_exists (compose (codomain a) a) := by have h_rw := ax3 a; rw [h_rw]; exact h2
+  have h3 : there_exists (compose (codomain a) a) := by have h_rw := ax3 a; rw [h_rw] <;> exact h2
   have h4 : (domain (codomain a)) = (codomain a) := by first | (exact ax5 (codomain a) a h3) | (first | (exact ax5 _ _ h3) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h4
 
 -- Goal 1
 theorem taelja_goal1 : (codomain (codomain a)) = (codomain a) := by
   have h1 : there_exists (codomain a) := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
-  have h2 : there_exists (compose (codomain a) (domain (codomain a))) := by have h_rw := ax2 (codomain a); rw [h_rw]; exact h1
+  have h2 : there_exists (compose (codomain a) (domain (codomain a))) := by have h_rw := ax2 (codomain a); rw [h_rw] <;> exact h1
   have h3 : (domain (codomain a)) = (codomain (domain (codomain a))) := by first | (exact ax5 (codomain a) (domain (codomain a)) h2) | (first | (exact ax5 _ _ h2) | (apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax5 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h4 : (domain (codomain a)) = (codomain (codomain a)) := by have h_rw := taelja_lemma6; rw (config := { occs := .pos [2] }) [←h_rw]; exact h3
-  have h5 : (codomain a) = (codomain (codomain a)) := by have h_rw := taelja_lemma6; rw (config := { occs := .pos [1] }) [←h_rw]; exact h4
+  have h4 : (domain (codomain a)) = (codomain (codomain a)) := by have h_rw := taelja_lemma6; rw (config := { occs := .pos [2] }) [←h_rw] <;> exact h3
+  have h5 : (codomain a) = (codomain (codomain a)) := by have h_rw := taelja_lemma6; rw (config := { occs := .pos [1] }) [←h_rw] <;> exact h4
   exact h5.symm
 
 end TweeCat0144

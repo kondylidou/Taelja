@@ -1,0 +1,81 @@
+% SZS status Theorem
+
+% SZS output start CNFRefutation
+fof(c1, conjecture, iext(uri_rdf_type, uri_ex_s, uri_rdfs_Resource) & (iext(uri_rdf_type, uri_ex_s, uri_owl_Thing) & (iext(uri_rdf_type, uri_ex_p, uri_rdfs_Resource) & (iext(uri_rdf_type, uri_ex_p, uri_owl_Thing) & (iext(uri_rdf_type, uri_ex_p, uri_rdf_Property) & (iext(uri_rdf_type, uri_ex_p, uri_owl_ObjectProperty) & (iext(uri_rdf_type, uri_ex_o, uri_rdfs_Resource) & iext(uri_rdf_type, uri_ex_o, uri_owl_Thing))))))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SWB/SWB005+2.p', testcase_conclusion_fullish_005_Everything_is_a_Resource)).
+fof(c2, negated_conjecture, ~(iext(uri_rdf_type, uri_ex_s, uri_rdfs_Resource) & (iext(uri_rdf_type, uri_ex_s, uri_owl_Thing) & (iext(uri_rdf_type, uri_ex_p, uri_rdfs_Resource) & (iext(uri_rdf_type, uri_ex_p, uri_owl_Thing) & (iext(uri_rdf_type, uri_ex_p, uri_rdf_Property) & (iext(uri_rdf_type, uri_ex_p, uri_owl_ObjectProperty) & (iext(uri_rdf_type, uri_ex_o, uri_rdfs_Resource) & iext(uri_rdf_type, uri_ex_o, uri_owl_Thing)))))))), inference(negate_conjecture, [status(cth)], [c1])).
+cnf(c3, plain, ~iext(uri_rdf_type, uri_ex_o, uri_owl_Thing) | ~iext(uri_rdf_type, uri_ex_o, uri_rdfs_Resource) | ~iext(uri_rdf_type, uri_ex_p, uri_owl_ObjectProperty) | ~iext(uri_rdf_type, uri_ex_p, uri_rdf_Property) | ~iext(uri_rdf_type, uri_ex_p, uri_owl_Thing) | ~iext(uri_rdf_type, uri_ex_p, uri_rdfs_Resource) | ~iext(uri_rdf_type, uri_ex_s, uri_owl_Thing) | ~iext(uri_rdf_type, uri_ex_s, uri_rdfs_Resource), inference(clausify, [status(esa)], [c2])).
+cnf(c4, plain, ~iext(uri_rdf_type, uri_ex_s, uri_rdfs_Resource) | ~iext(uri_rdf_type, uri_ex_s, uri_owl_Thing) | ~iext(uri_rdf_type, uri_ex_p, uri_rdf_Property) | ~iext(uri_rdf_type, uri_ex_p, uri_rdfs_Resource) | ~iext(uri_rdf_type, uri_ex_p, uri_owl_Thing) | ~iext(uri_rdf_type, uri_ex_p, uri_owl_ObjectProperty) | ~iext(uri_rdf_type, uri_ex_o, uri_rdfs_Resource) | ~iext(uri_rdf_type, uri_ex_o, uri_owl_Thing), inference(clausify, [status(thm)], [c3])).
+cnf(c5, axiom, ir(X), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SWB/SWB005+2.p', simple_ir)).
+fof(c6, axiom, ![X2]: (ir(X2) <=> icext(uri_rdfs_Resource, X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SWB/SWB005+2.p', rdfs_ir_def)).
+fof(c7, plain, ![X2]: ((icext(uri_rdfs_Resource, X2) | ~ir(X2)) & (~icext(uri_rdfs_Resource, X2) | ir(X2))), inference(clausify, [status(esa)], [c6])).
+cnf(c8, plain, ~ir(X2) | icext(uri_rdfs_Resource, X2), inference(clausify, [status(thm)], [c7])).
+cnf(c9, plain, icext(uri_rdfs_Resource, uri_ex_s), inference(resolution, [status(thm)], [c5, c8])).
+fof(c10, axiom, ![C, X2]: (iext(uri_rdf_type, X2, C) <=> icext(C, X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SWB/SWB005+2.p', rdfs_cext_def)).
+fof(c11, plain, ![X2, C2]: ((icext(C2, X2) | ~iext(uri_rdf_type, X2, C2)) & (~icext(C2, X2) | iext(uri_rdf_type, X2, C2))), inference(clausify, [status(esa)], [c10])).
+cnf(c12, plain, ~icext(C2, X2) | iext(uri_rdf_type, X2, C2), inference(clausify, [status(thm)], [c11])).
+cnf(c13, plain, iext(uri_rdf_type, uri_ex_s, uri_rdfs_Resource), inference(resolution, [status(thm)], [c9, c12])).
+cnf(c14, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c15, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c14, c12])).
+fof(c16, axiom, ![X2]: (icext(uri_owl_Thing, X2) <=> ir(X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SWB/SWB005+2.p', owl_class_thing_ext)).
+fof(c17, plain, ![X2]: ((ir(X2) | ~icext(uri_owl_Thing, X2)) & (~ir(X2) | icext(uri_owl_Thing, X2))), inference(clausify, [status(esa)], [c16])).
+cnf(c18, plain, ~ir(X2) | icext(uri_owl_Thing, X2), inference(clausify, [status(thm)], [c17])).
+cnf(c19, plain, icext(uri_owl_Thing, X2), inference(resolution, [status(thm)], [c5, c18])).
+cnf(c20, plain, iext(uri_rdf_type, X2, uri_owl_Thing), inference(resolution, [status(thm)], [c19, c12])).
+cnf(c21, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource)=iext(uri_rdf_type, X3, uri_owl_Thing), inference(rewriting, [status(thm)], [c15, c20])).
+cnf(c22, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c23, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c22, c12])).
+cnf(c24, plain, iext(uri_rdf_type, uri_ex_s, uri_owl_Thing), inference(rewriting, [status(thm)], [c21, c23])).
+cnf(c25, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c26, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c25, c12])).
+cnf(c27, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c28, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c27, c12])).
+cnf(c29, axiom, iext(uri_ex_p, uri_ex_s, uri_ex_o), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SWB/SWB005+2.p', testcase_premise_fullish_005_Everything_is_a_Resource)).
+fof(c30, axiom, ![S, P, O]: (iext(P, S, O) => ip(P)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SWB/SWB005+2.p', simple_iext_property)).
+fof(c31, plain, ![P2]: (ip(P2) | ![S2]: ![O2]: ~iext(P2, S2, O2)), inference(clausify, [status(esa)], [c30])).
+cnf(c32, plain, ~iext(P2, S2, O2) | ip(P2), inference(clausify, [status(thm)], [c31])).
+cnf(c33, plain, ip(uri_ex_p), inference(resolution, [status(thm)], [c29, c32])).
+cnf(c34, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource)=ip(uri_ex_p), inference(rewriting, [status(thm)], [c28, c33])).
+cnf(c35, plain, ip(uri_ex_p), inference(rewriting, [status(thm)], [c26, c34])).
+fof(c36, axiom, ![P2]: (iext(uri_rdf_type, P2, uri_rdf_Property) <=> ip(P2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SWB/SWB005+2.p', rdf_type_ip)).
+fof(c37, plain, ![P2]: ((ip(P2) | ~iext(uri_rdf_type, P2, uri_rdf_Property)) & (~ip(P2) | iext(uri_rdf_type, P2, uri_rdf_Property))), inference(clausify, [status(esa)], [c36])).
+cnf(c38, plain, ~ip(P2) | iext(uri_rdf_type, P2, uri_rdf_Property), inference(clausify, [status(thm)], [c37])).
+cnf(c39, plain, iext(uri_rdf_type, uri_ex_p, uri_rdf_Property), inference(resolution, [status(thm)], [c35, c38])).
+cnf(c40, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c41, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c40, c12])).
+cnf(c42, plain, iext(uri_rdf_type, uri_ex_p, uri_rdf_Property)=iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(rewriting, [status(thm)], [c39, c41])).
+cnf(c43, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c44, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c43, c12])).
+cnf(c45, plain, iext(uri_rdf_type, uri_ex_p, uri_rdf_Property), inference(rewriting, [status(thm)], [c42, c44])).
+cnf(c46, plain, icext(uri_rdfs_Resource, uri_ex_p), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c47, plain, iext(uri_rdf_type, uri_ex_p, uri_rdfs_Resource), inference(resolution, [status(thm)], [c46, c12])).
+cnf(c48, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c49, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c48, c12])).
+cnf(c50, plain, iext(uri_rdf_type, uri_ex_p, uri_owl_Thing), inference(rewriting, [status(thm)], [c21, c49])).
+cnf(c51, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c52, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c51, c12])).
+cnf(c53, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c54, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c53, c12])).
+fof(c55, axiom, ![X2]: (icext(uri_owl_ObjectProperty, X2) <=> ip(X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SWB/SWB005+2.p', owl_class_objectproperty_ext)).
+fof(c56, plain, ![X2]: ((ip(X2) | ~icext(uri_owl_ObjectProperty, X2)) & (~ip(X2) | icext(uri_owl_ObjectProperty, X2))), inference(clausify, [status(esa)], [c55])).
+cnf(c57, plain, ~ip(X2) | icext(uri_owl_ObjectProperty, X2), inference(clausify, [status(thm)], [c56])).
+cnf(c58, plain, ~iext(uri_rdf_type, X2, uri_rdfs_Resource) | icext(uri_owl_ObjectProperty, uri_ex_p), inference(rewriting, [status(thm)], [c57, c34])).
+cnf(c59, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c60, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c59, c12])).
+cnf(c61, plain, ~iext(uri_rdf_type, X3, uri_rdfs_Resource) | iext(uri_rdf_type, X2, uri_rdfs_Resource)=icext(uri_owl_ObjectProperty, uri_ex_p), inference(rewriting, [status(thm)], [c58, c60])).
+cnf(c62, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource)=icext(uri_owl_ObjectProperty, uri_ex_p), inference(resolution, [status(thm)], [c54, c61])).
+cnf(c63, plain, icext(uri_owl_ObjectProperty, uri_ex_p), inference(rewriting, [status(thm)], [c52, c62])).
+cnf(c64, plain, iext(uri_rdf_type, uri_ex_p, uri_owl_ObjectProperty), inference(resolution, [status(thm)], [c63, c12])).
+cnf(c65, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c66, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c65, c12])).
+cnf(c67, plain, iext(uri_rdf_type, uri_ex_p, uri_owl_ObjectProperty)=iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(rewriting, [status(thm)], [c64, c66])).
+cnf(c68, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c69, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c68, c12])).
+cnf(c70, plain, iext(uri_rdf_type, uri_ex_p, uri_owl_ObjectProperty), inference(rewriting, [status(thm)], [c67, c69])).
+cnf(c71, plain, icext(uri_rdfs_Resource, uri_ex_o), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c72, plain, iext(uri_rdf_type, uri_ex_o, uri_rdfs_Resource), inference(resolution, [status(thm)], [c71, c12])).
+cnf(c73, plain, icext(uri_rdfs_Resource, X2), inference(resolution, [status(thm)], [c5, c8])).
+cnf(c74, plain, iext(uri_rdf_type, X2, uri_rdfs_Resource), inference(resolution, [status(thm)], [c73, c12])).
+cnf(c75, plain, iext(uri_rdf_type, uri_ex_o, uri_owl_Thing), inference(rewriting, [status(thm)], [c21, c74])).
+cnf(c76, plain, $false, inference(proved_conjecture, [status(thm)], [c4, c13, c24, c45, c47, c50, c70, c72, c75])).
+% SZS output end CNFRefutation
+

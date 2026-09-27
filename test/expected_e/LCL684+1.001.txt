@@ -1,0 +1,16 @@
+Axiom 1: r1(X,X)
+
+Goal 1: p201(esk1_0) /\ p101(esk1_0) /\ (r1(esk1_0,X) /\ r1(X,Y) /\ p201(Y) /\ p101(Y) => $false) => $false
+Proof:
+  have r1(esk1_0,esk1_0)
+    by axiom 1
+   and r1(esk1_0,esk1_0)
+    by axiom 1
+   and p201(esk1_0)
+    by assumption 1
+   and p101(esk1_0)
+    by assumption 2
+  hence $false
+    by assumption 3
+  hence p201(esk1_0) /\ p101(esk1_0) /\ (r1(esk1_0,X) /\ r1(X,Y) /\ p201(Y) /\ p101(Y) => $false) => $false
+    by discharge

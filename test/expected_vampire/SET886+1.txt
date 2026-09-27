@@ -1,0 +1,47 @@
+Axiom 1: unordered_pair(X,X) = singleton(X)
+Axiom 2: subset(unordered_pair(X,Y),singleton(Z)) => X = Z
+Axiom 3: unordered_pair(X,Y) = unordered_pair(Y,X)
+
+Lemma 4: subset(unordered_pair(sK2,sK3),singleton(sK4)) => sK2 = sK4
+Proof:
+  assume subset(unordered_pair(sK2,sK3),singleton(sK4))
+  hence sK2 = sK4
+    by axiom 2
+  hence subset(unordered_pair(sK2,sK3),singleton(sK4)) => sK2 = sK4
+    by discharge
+
+Lemma 5: subset(unordered_pair(sK2,sK3),singleton(sK4)) => subset(unordered_pair(sK3,sK4),singleton(sK4))
+Proof:
+  subset(unordered_pair(sK3,sK4),singleton(sK4))
+= { by lemma 4 R->L }
+  subset(unordered_pair(sK3,sK2),singleton(sK4))
+= { by axiom 3 }
+  subset(unordered_pair(sK2,sK3),singleton(sK4))
+= { by assumption 1 }
+  true
+  hence subset(unordered_pair(sK2,sK3),singleton(sK4)) => subset(unordered_pair(sK3,sK4),singleton(sK4))
+    by discharge
+
+Lemma 6: subset(unordered_pair(sK2,sK3),singleton(sK4)) => sK3 = sK4
+Proof:
+  have subset(unordered_pair(sK3,sK4),singleton(sK4))
+    by lemma 5
+  hence sK3 = sK4
+    by axiom 2
+  hence subset(unordered_pair(sK2,sK3),singleton(sK4)) => sK3 = sK4
+    by discharge
+
+Goal 1: subset(unordered_pair(sK2,sK3),singleton(sK4)) => unordered_pair(sK2,sK3) = singleton(sK4)
+Proof:
+  have unordered_pair(sK4,sK4) = unordered_pair(sK4,sK4)
+    by axiom 3
+  hence unordered_pair(sK4,sK2) = unordered_pair(sK4,sK4)
+    by rw lemma 4 R->L
+  hence unordered_pair(sK2,sK4) = unordered_pair(sK4,sK4)
+    by rw axiom 3 R->L
+  hence unordered_pair(sK2,sK3) = unordered_pair(sK4,sK4)
+    by rw lemma 6 R->L
+  hence unordered_pair(sK2,sK3) = singleton(sK4)
+    by rw axiom 1
+  hence subset(unordered_pair(sK2,sK3),singleton(sK4)) => unordered_pair(sK2,sK3) = singleton(sK4)
+    by discharge

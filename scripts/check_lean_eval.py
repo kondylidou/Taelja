@@ -22,11 +22,11 @@ PROVER_DIR = {"vampire": "Vampire", "e": "E", "twee": "Twee"}
 
 
 def to_camel(prob):
-    # mirror regen_lean_eval.make_module_name, since dots and dashes are not
-    # valid in Lean module names (MSC015-1.005 -> Msc0151005)
+    # mirror regen_lean_eval.to_camel, since dots, dashes and pluses are not
+    # valid in Lean module names (MSC015-1.005 -> Msc0151005, ALG018+1 -> Alg0181)
     import re
-    parts = re.split(r'[-_.]', prob)
-    return parts[0].capitalize() + "".join(parts[1:])
+    parts = re.split(r'[-_.+]', prob)
+    return "".join(p.capitalize() for p in parts if p)
 
 
 def check(module_rel):

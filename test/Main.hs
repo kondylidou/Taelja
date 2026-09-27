@@ -87,6 +87,15 @@ tweeBenchmarkNames =
   -- the lemma sub-run proves c20 only under its Skolem constants, so the
   -- Twee step c39 that rests on it is read at the instance its use needs
   , "BOO006-1"
+  -- the refutation closes with the hypothesis c4, which Twee's clausifier
+  -- states without the body equation C = D, so it is still a hypothesis
+  , "PUZ129+2"
+  -- the reading of nested Twee steps reaches true in Lemma 21 and goes out
+  -- and back to it, a loop the chain drops
+  , "KLE143+2"
+  -- Twee's c34 equates two atoms that both hold, which is no first-order
+  -- statement, so it is spliced where used and never stated as a lemma
+  , "SWB005+2"
   , "sam"
   , "ANA007-2"
   , "HEN005-6"
@@ -227,6 +236,9 @@ benchmarkNames =
   -- a hypothesis whose variable was eliminated at a witness must be rewritten
   -- at that same witness
   , "RNG039-1"
+  -- a rewrite that leaves unordered_pair(sK4,sK4) = unordered_pair(sK4,sK4),
+  -- which Lean's rw closes by rfl before the step's exact
+  , "SET886+1"
   , "PUZ011-1"        -- goal literals instantiated under one shared substitution
   , "NLP258-1"
   , "SWV818-1"
@@ -381,6 +393,7 @@ eBenchmarkNames =
   , "SWW967+1"        -- a re-proof citing the outer candidate lemma c_0_13, stated too
   , "SWW968+1"        -- E's condensation, named condense
   , "CSR117+1"        -- a conjunct proved twice and one never, and 55.67631 quoted
+  , "LCL684+1.001"    -- the conjecture's ! [X1] rebinds the X1 of ? [X1], renamed apart
   ]
 
 mkTest :: String -> String -> String -> TestTree

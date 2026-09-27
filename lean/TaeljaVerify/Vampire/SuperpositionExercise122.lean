@@ -23,7 +23,7 @@ axiom ax2 : ∀ (x : α), (f x) = c → (f x) = b
 theorem taelja_goal1 : b = c := by
   have h1 : (f (f c)) = c := by first | (exact ax1 c) | (first | apply ax1 <;> first | rfl | assumption | (apply Eq.symm; apply ax1 <;> first | rfl | assumption))
   have h2 : (f (f c)) = b := by first | (exact ax2 (f c) h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : c = b := by have h_rw := ax1 c; rw [←h_rw]; exact h2
+  have h3 : c = b := by have h_rw := ax1 c; rw [←h_rw] <;> exact h2
   exact h3.symm
 
 end VampireSuperpositionExercise122

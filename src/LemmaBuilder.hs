@@ -37,7 +37,7 @@ import Helpers
 import Debug (dbgScoped, subrunDepth)
 import ProofTree (classifyRole, conjectureHypotheses, headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
 import TptpConvert
-import TweeInterface (TweeBudget (..), callTwee, findProver, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
+import TweeInterface (TweeBudget (..), callTwee, findProver, isAtomEquation, predicateSymbols, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
 
 -- Flatten a T.Parent into the TSTP unit names it references
 flattenParents :: T.Parent -> [String]
@@ -84,7 +84,9 @@ findLemmaCandidates units =
         -- candidate with body atoms is inlined at every use instead.
         , null (bodyLitsOf decl)
         , Map.findWithDefault 0 (unitNameStr n) parentCounts >= 2
+        , not (maybe False (isAtomEquation preds . convertLit) (headLitOf decl))
         ]
+      preds = predicateSymbols units
   in [ (unitNameStr n, decl)
      | T.Unit n decl _ <- units
      , Set.member (unitNameStr n) candidateSet

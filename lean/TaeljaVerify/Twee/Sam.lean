@@ -71,8 +71,6 @@ theorem taelja_lemma14 : (meet b c) = zero := by
       _ = meet (join c d) (meet c b) := by have h_rw := ax3 b c; rw [h_rw]
       _ = meet (meet c b) (join c d) := by have h_rw := ax3 (join c d) (meet c b); rw [h_rw]
       _ = meet c (meet b (join c d)) := by have h_rw := ax6 b (join c d) c; rw [h_rw]
-      _ = meet c (meet (join c d) b) := by have h_rw := ax3 (join c d) b; rw [h_rw]
-      _ = meet c (meet b (join c d)) := by have h_rw := ax3 b (join c d); rw [h_rw]
       _ = meet c zero := by have h_rw := taelja_lemma13; rw [h_rw]
       _ = meet zero c := by have h_rw := ax3 zero c; rw [h_rw]
       _ = zero := by have h_rw := ax9 c; rw [h_rw]
@@ -89,8 +87,6 @@ theorem taelja_lemma16 : ∀ (x : α) (y : α) (z : α), (join x (join y z)) = (
   calc join x (join y z) = join x (join z y) := by have h_rw := ax1 z y; rw [h_rw]
       _ = join (join z y) x := by have h_rw := ax1 (join z y) x; rw [h_rw]
       _ = join z (join y x) := by have h_rw := ax2 y x z; rw [h_rw]
-      _ = join z (join x y) := by have h_rw := ax1 y x; rw [h_rw]
-      _ = join z (join y x) := by have h_rw := ax1 x y; rw [h_rw]
 
 -- Goal 1
 theorem taelja_goal1 : (meet (join a (meet b c)) (join a (meet b d))) = a := by

@@ -63,7 +63,7 @@ theorem taelja_lemma13 : c_lessequals (v_g v_x) (v_k v_x) t_b := by
   have h2 : class_OrderedGroup_Opordered__ab__group__add t_b := by first | (exact ax2 t_b h1) | (first | (exact ax2 _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   have h3 : c_lessequals c_0 (c_minus (v_k v_x) (v_g v_x) t_b) t_b := by first | (exact ax7) | (first | apply ax7 <;> first | rfl | assumption)
   have h4 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_k v_x) t_b := by first | (exact ax9 (v_g v_x) t_b c_0 (v_k v_x) h2 h3) | (first | (exact ax9 _ _ _ _ h2 h3) | (apply ax9 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h5 : c_lessequals (v_g v_x) (v_k v_x) t_b := by have h_rw := taelja_lemma12 (v_g v_x); rw [←h_rw]; exact h4
+  have h5 : c_lessequals (v_g v_x) (v_k v_x) t_b := by have h_rw := taelja_lemma12 (v_g v_x); rw [←h_rw] <;> exact h4
   exact h5
 
 -- Lemma 14
@@ -74,7 +74,7 @@ theorem taelja_lemma14 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_f v_x) t_b :
   have h4 : c_lessequals (v_k v_x) (v_f v_x) t_b := by first | (exact ax6) | (first | apply ax6 <;> first | rfl | assumption)
   have h5 : c_lessequals (v_g v_x) (v_k v_x) t_b := by first | (exact taelja_lemma13) | (first | apply taelja_lemma13 <;> first | rfl | assumption)
   have h6 : c_lessequals (v_g v_x) (v_f v_x) t_b := by first | (exact ax10 (v_g v_x) t_b (v_k v_x) (v_f v_x) h3 h4 h5) | (first | (exact ax10 _ _ _ _ h3 h4 h5) | (apply ax10 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h7 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_f v_x) t_b := by have h_rw := taelja_lemma12 (v_g v_x); rw [h_rw]; exact h6
+  have h7 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_f v_x) t_b := by have h_rw := taelja_lemma12 (v_g v_x); rw [h_rw] <;> exact h6
   exact h7
 
 -- Goal 1

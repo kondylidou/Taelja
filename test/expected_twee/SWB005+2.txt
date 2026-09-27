@@ -1,0 +1,82 @@
+Axiom 1: ir(X)
+Axiom 2: ir(Y) => icext(uri_rdfs_Resource,Y)
+Axiom 3: icext(Z,Y) => iext(uri_rdf_type,Y,Z)
+Axiom 4: ir(Y) => icext(uri_owl_Thing,Y)
+Axiom 5: iext(uri_ex_p,uri_ex_s,uri_ex_o)
+Axiom 6: iext(A,B,C) => ip(A)
+Axiom 7: ip(Y) => icext(uri_owl_ObjectProperty,Y)
+Axiom 8: ip(U) => iext(uri_rdf_type,U,uri_rdf_Property)
+
+Goal 1: iext(uri_rdf_type,uri_ex_s,uri_rdfs_Resource)
+Proof:
+  have ir(uri_ex_s)
+    by axiom 1
+  hence icext(uri_rdfs_Resource,uri_ex_s)
+    by axiom 2
+  hence iext(uri_rdf_type,uri_ex_s,uri_rdfs_Resource)
+    by axiom 3
+
+Goal 2: iext(uri_rdf_type,uri_ex_s,uri_owl_Thing)
+Proof:
+  have ir(uri_ex_s)
+    by axiom 1
+  hence icext(uri_owl_Thing,uri_ex_s)
+    by axiom 4
+  hence iext(uri_rdf_type,uri_ex_s,uri_owl_Thing)
+    by axiom 3
+
+Goal 3: iext(uri_rdf_type,uri_ex_p,uri_rdfs_Resource)
+Proof:
+  have ir(uri_ex_p)
+    by axiom 1
+  hence icext(uri_rdfs_Resource,uri_ex_p)
+    by axiom 2
+  hence iext(uri_rdf_type,uri_ex_p,uri_rdfs_Resource)
+    by axiom 3
+
+Goal 4: iext(uri_rdf_type,uri_ex_p,uri_owl_Thing)
+Proof:
+  have ir(uri_ex_p)
+    by axiom 1
+  hence icext(uri_owl_Thing,uri_ex_p)
+    by axiom 4
+  hence iext(uri_rdf_type,uri_ex_p,uri_owl_Thing)
+    by axiom 3
+
+Goal 5: iext(uri_rdf_type,uri_ex_p,uri_rdf_Property)
+Proof:
+  have iext(uri_ex_p,uri_ex_s,uri_ex_o)
+    by axiom 5
+  hence ip(uri_ex_p)
+    by axiom 6
+  hence iext(uri_rdf_type,uri_ex_p,uri_rdf_Property)
+    by axiom 8
+
+Goal 6: iext(uri_rdf_type,uri_ex_p,uri_owl_ObjectProperty)
+Proof:
+  have iext(uri_ex_p,uri_ex_s,uri_ex_o)
+    by axiom 5
+  hence ip(uri_ex_p)
+    by axiom 6
+  hence icext(uri_owl_ObjectProperty,uri_ex_p)
+    by axiom 7
+  hence iext(uri_rdf_type,uri_ex_p,uri_owl_ObjectProperty)
+    by axiom 3
+
+Goal 7: iext(uri_rdf_type,uri_ex_o,uri_rdfs_Resource)
+Proof:
+  have ir(uri_ex_o)
+    by axiom 1
+  hence icext(uri_rdfs_Resource,uri_ex_o)
+    by axiom 2
+  hence iext(uri_rdf_type,uri_ex_o,uri_rdfs_Resource)
+    by axiom 3
+
+Goal 8: iext(uri_rdf_type,uri_ex_o,uri_owl_Thing)
+Proof:
+  have ir(uri_ex_o)
+    by axiom 1
+  hence icext(uri_owl_Thing,uri_ex_o)
+    by axiom 4
+  hence iext(uri_rdf_type,uri_ex_o,uri_owl_Thing)
+    by axiom 3

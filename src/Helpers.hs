@@ -230,6 +230,21 @@ litSubtermCtxs lit = case lit of
 -- hold for every value, which is more than the step gives, so the variable is
 -- bound here to the value the next step takes and the chain states the
 -- instance the proof uses.
+-- A chain that passes through one term twice proves nothing between the two
+-- visits, so the steps between are dropped.  Joining the instances of two
+-- derivations can go out and back, as on sam, where c17 ends by rewriting
+-- meet(X2,X4) by commutativity and c18 applies it again, and at X2 = b,
+-- X4 = join(c,d) the second swap undoes the first.
+cutLoops :: (s -> Term) -> Term -> [s] -> [s]
+cutLoops termOf start steps = case reverse (snd (foldl add ([start], []) steps)) of
+  []  -> steps   -- a chain from a term back to itself is kept as it is
+  cut -> cut
+  where
+    -- the terms visited and the steps kept, newest first
+    add (seen, kept) s = case lookup (termOf s) (zip seen [0 :: Int ..]) of
+      Just i  -> (drop i seen, drop i kept)
+      Nothing -> (termOf s : seen, s : kept)
+
 tightenChainVars :: Term -> [(RwStep, Term)] -> (Term, [(RwStep, Term)])
 tightenChainVars start steps =
   (apply start, [ (st, apply t) | (st, t) <- steps ])
@@ -508,6 +523,22 @@ clauseKey (Clause bs mh) = minimum (map keyOf orders)
     keyOf body = show (Clause (map (ren body) body) (fmap (ren body) mh))
     ren body   = renameLit (zip (nub (concatMap litVars body ++ maybe [] litVars mh))
                                 [ "v" ++ show i | i <- [0 :: Int ..] ])
+
+-- A clause with a body equation X = t, the variable X not in t, holds
+-- exactly when its instance under X := t does, whose body keeps t = t, true
+-- by reflexivity.  Clausifiers drop such equations, as Twee writes PUZ129+2's
+-- grocer(C) & property1(D,healthy,pos) & C = D => $false as
+-- property1(D,healthy,pos) & grocer(D) => $false.  A witness variable stands
+-- for a Skolem term and is kept.
+dropVarEquations :: Clause -> Clause
+dropVarEquations c@(Clause bs mh) =
+  case [ (i, v, t) | (i, Eq a b) <- zip [0 :: Int ..] bs
+                   , (Var v, t) <- [(a, b), (b, a)]
+                   , not (isWitnessVar v), v `notElem` termVars t ] of
+    (i, v, t) : _ ->
+      let s = [(v, t)]
+      in dropVarEquations (Clause [ applySubst s l | (j, l) <- zip [0 ..] bs, j /= i ] (fmap (applySubst s) mh))
+    [] -> c
 
 -- The second clause is an instance of the first, the body literals matched
 -- in any order.

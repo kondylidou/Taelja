@@ -30,7 +30,7 @@ theorem taelja_goal1 : (f a) = c := by
   have x : α := taelja_elem
   have h1 : q a x := by first | (exact ax1 x) | (first | apply ax1 <;> first | rfl | assumption)
   have h2 : (f a) = (g x) := by first | (exact ax3 a x h1) | (first | (exact ax3 _ _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  have h3 : (f a) = c := by have h_rw := ax2 x; rw [←h_rw]; exact h2
+  have h3 : (f a) = c := by have h_rw := ax2 x; rw [←h_rw] <;> exact h2
   exact h3
 
 end VampireHornExampleElimVarRw

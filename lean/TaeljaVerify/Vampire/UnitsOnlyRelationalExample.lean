@@ -23,7 +23,7 @@ axiom ax2 : ∀ (x : α), p (f x)
 -- Goal 1
 theorem taelja_goal1 : p a := by
   have h1 : p (f a) := by first | (exact ax2 a) | (first | apply ax2 <;> first | rfl | assumption)
-  have h2 : p a := by have h_rw := ax1 a; rw [←h_rw]; exact h1
+  have h2 : p a := by have h_rw := ax1 a; rw [←h_rw] <;> exact h1
   exact h2
 
 end VampireUnitsOnlyRelationalExample
