@@ -366,9 +366,6 @@ eBenchmarkNames =
   -- an implication under an existential quantifier, read as the disjunction
   -- ~A | B, so the proof assumes A and ~B and derives $false
   , "SYN339+1"
-  -- p <=> p states one implication twice, so its Horn reading assumes p and
-  -- derives p, and the refusal names what the proof really lacks
-  , "SYN390+1"
   -- a hypothesis promising a witness, big_r(Y) => ? [Z] : big_q(Y,Z), which
   -- is a Horn clause at the term the prover's Skolemization named
   , "SYN359+1"
@@ -385,10 +382,7 @@ eBenchmarkNames =
   , "LCL414+1"
   , "PUZ128+1"        -- ? [X] : (C & ~D), the negation of a universal clause
   , "SYN946+1"        -- a disjunctive conclusion p(Y) | r(Z), proved by contradiction
-  , "SYN915+1"        -- refused, the conjecture is $true
-  , "SYO561_2"        -- refused, "Apple" != "Microsoft" holds by distinct objects
   , "PHI011+1"        -- csr(er(csr(csr(..),..)),..) reuses a unit, renamed apart per step
-  , "SYN973+1"        -- refused, the conjecture simplifies to $true before clausification
   , "LCL902+1"        -- symbols such as '==>' and '>=', which Twee prints infix
   , "SWW967+1"        -- a re-proof citing the outer candidate lemma c_0_13, stated too
   , "SWW968+1"        -- E's condensation, named condense

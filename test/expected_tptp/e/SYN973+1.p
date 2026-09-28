@@ -1,1 +1,0 @@
-translation failed; unsupported proof, the prover reduced the conjecture to a truth constant by formula simplification, outside the supported calculus of resolution, superposition, demodulation and equality resolution

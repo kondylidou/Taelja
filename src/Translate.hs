@@ -268,13 +268,39 @@ translateMode debug (T.TSTP _ units0) = do
             Const c -> Set.notMember c problemSyms
             Var _   -> False
           grants g c = maybe False witnessNamed (clauseInstanceSubst g c)
+          -- A prover may name one witness by a Skolem constant per literal,
+          -- as Twee's clausifier writes SYN956+1's ? [X] : (a(X) => b(X)) as
+          -- ~a(x2) | b(x), which a clause granted for one witness does not
+          -- cover.  Each occurrence of a witness variable then stands apart.
+          grantsSplit g c = grants (splitWitnesses g) c
+          splitWitnesses (Clause bs mh) =
+            let (bs', n) = foldl (\(acc, k) l -> let (l', k') = splitLit k l in (acc ++ [l'], k')) ([], 0 :: Int) bs
+            in Clause bs' (fmap (fst . splitLit n) mh)
+          splitLit k l = case l of
+            Eq a b  -> let (a', k1) = splitTerm k a; (b', k2) = splitTerm k1 b in (Eq a' b', k2)
+            Rel p ts -> let (ts', k') = foldl (\(acc, j) t -> let (t', j') = splitTerm j t in (acc ++ [t'], j')) ([], k) ts
+                        in (Rel p ts', k')
+            _        -> (l, k)
+          splitTerm k t = case t of
+            Var v | isWitnessVar v -> (Var (v ++ "_" ++ show k), k + 1)
+            App f ts -> let (ts', k') = foldl (\(acc, j) u -> let (u', j') = splitTerm j u in (acc ++ [u'], j')) ([], k) ts
+                        in (App f ts', k')
+            _        -> (t, k)
       case conjectureHypotheses units of
         Just (ante, cons) -> let granted = ante ++ cons in
           forM_ [ e | e <- origLeaves, leHyp e ] $ \e ->
             case convertDeclToClause (leDecl e) of
               Just c | not (any (\g -> grants g c) granted) ->
-                error ("unsupported conjecture, its negation yields the positive clause "
-                       ++ leUnit e ++ " from a negative position, so its proof is a case split")
+                error ("unsupported conjecture, " ++ refusal (leUnit e) c)
+                where
+                  refusal u c'
+                    | any (\g -> grantsSplit g c') granted =
+                        "the prover states an existential hypothesis as " ++ u
+                        ++ " with a Skolem constant for each literal, where the conjecture grants it for one witness"
+                    | null (body c') =
+                        "its negation yields the positive clause " ++ u ++ " from a negative position, so its proof is a case split"
+                    | otherwise =
+                        "its negation yields the clause " ++ u ++ ", which the conjecture does not grant"
               _ -> return ()
         Nothing -> return ()
       case (Map.null validCands, buildProofInfo modUnits) of

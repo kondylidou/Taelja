@@ -31,7 +31,7 @@ import Data.Ord (comparing)
 import Data.TPTP.Pretty ()
 import Prettyprinter (pretty)
 import Types
-import Helpers (applySubst, applySubstTerm, clauseInstance, dropVarEquations, witnessPrefix, deepApplySubstTerm, flipLit, litSubtermCtxs,
+import Helpers (applySubst, applySubstTerm, clauseInstance, dropVarEquations, variantKey, witnessPrefix, deepApplySubstTerm, flipLit, litSubtermCtxs,
                 mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
                 unifyLits, unifyTerms)
 import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertFOFToClause, convertLit, declSymbols, isReservedTLit)
@@ -299,24 +299,43 @@ replayNested outerD d0 ds = do
   -- variables with the conditions an earlier step brought along
   let units = [ Clause (map (suffixVarsLit sfx) bs) (fmap (suffixVarsLit sfx) mh)
               | (i, Clause bs mh) <- zip [1 :: Int ..] units0, let sfx = "_s" ++ show i ]
-  listToMaybe
-    [ (prov, map (clauseToDecl . instC σ) chain)
-    -- Condense the resolvent before simplifying it.  A Horn premise brings its
-    -- own body literals along, and one of them may already be present in the
-    -- other clause.  The prover merges the duplicates with E's cn and removes
-    -- the survivor with a unit.  Resolving one copy first leaves the other
-    -- behind, as on MGT006-1.
-    | (prov, r0) <- resolvents c0 c1
-    , let r = cn r0
-    , chain <- chains r (init units)
-    , final0 <- simplifyBy (last chain) (last units)
-    , final <- final0 : eqResolutions final0
-    , Just σ <- [matchClause final outer] ]
+      steps = init units
+      -- the replay, from the clause at step k to the printed clause, first in
+      -- the order of every combination tried in turn.  Different rewrites
+      -- often reach one clause, and a clause met again at the same step after
+      -- its replay failed is not replayed again, which keeps the first replay
+      -- found and cuts the repetition that made ALG210+2/E run for minutes.
+      walk failed k r
+        | Set.member key failed = (Nothing, failed)
+        | otherwise = case result of
+            (Nothing, f) -> (Nothing, Set.insert key f)
+            found        -> found
+        where
+          key = (k, variantKey r)
+          result
+            | k == length steps =
+                ( listToMaybe [ ([r], σ) | final0 <- simplifyBy r (last units)
+                                         , final <- final0 : eqResolutions final0
+                                         , Just σ <- [matchClause final outer] ]
+                , failed )
+            -- an equality resolution the prover folded in, as E's er inside
+            -- csr(er(...)), may precede any simplification
+            | otherwise = firstOf failed [ r' | r1 <- r : eqResolutions r, r' <- simplifyBy r1 (steps !! k) ]
+          firstOf f [] = (Nothing, f)
+          firstOf f (r' : rs) = case walk f (k + 1) r' of
+            (Just (chain, σ), f') -> (Just (r : chain, σ), f')
+            (Nothing, f')         -> firstOf f' rs
+      tryFrom _ [] = Nothing
+      tryFrom failed ((prov, r) : rest) = case walk failed (0 :: Int) r of
+        (Just (chain, σ), _) -> Just (prov, map (clauseToDecl . instC σ) chain)
+        (Nothing, failed')   -> tryFrom failed' rest
+  -- Condense the resolvent before simplifying it.  A Horn premise brings its
+  -- own body literals along, and one of them may already be present in the
+  -- other clause.  The prover merges the duplicates with E's cn and removes
+  -- the survivor with a unit.  Resolving one copy first leaves the other
+  -- behind, as on MGT006-1.
+  tryFrom Set.empty [ (prov, cn r0) | (prov, r0) <- resolvents c0 c1 ]
   where
-    -- an equality resolution the prover folded in, as E's er inside
-    -- csr(er(...)), may precede any simplification
-    chains r []       = [[r]]
-    chains r (u : us) = [ r : rest | r1 <- r : eqResolutions r, r' <- simplifyBy r1 u, rest <- chains r' us ]
     eqResolutions (Clause bs mh) =
       [ instC σ (Clause (before ++ after) mh)
       | (before, Eq s t : after) <- zip (inits bs) (tails bs)
@@ -697,7 +716,10 @@ readConjecture = conclusion [] . normalizeConjecture . renameBoundApart
       T.Connected l T.Equivalence r -> (++) <$> hypotheses (T.Connected l T.Implication r)
                                            <*> hypotheses (T.Connected r T.Implication l)
       T.Negated (T.Connected l T.Implication r) -> (++) <$> hypotheses l <*> hypotheses (T.Negated r)
-      T.Quantified T.Exists _ b     -> hypotheses b
+      -- an existential hypothesis promises a witness, which the prover's
+      -- Skolemization names, so its variable is a witness variable
+      T.Quantified T.Exists vs b    ->
+        hypotheses (renameFreeVars (Map.fromList [ (v, T.Var (Text.pack witnessPrefix <> t)) | (v@(T.Var t), _) <- toList vs ]) b)
       _ -> hypClause ("its hypothesis " ++ render f ++ " is not a Horn clause") f
     -- A hypothesis may promise a witness, as SYN359+1's
     -- big_r(Y) => ? [Z] : big_q(Y,Z) does, and Skolemized it is a Horn clause.
@@ -737,11 +759,17 @@ readConjecture = conclusion [] . normalizeConjecture . renameBoundApart
       T.Quantified T.Forall _ b     -> goalAtoms ex b
       T.Atomic a | isReservedTLit a -> Left (refused ("its conclusion " ++ render f ++ " is a truth constant, not an atom"))
       T.Atomic a                    -> Right [a]
-      T.Connected l T.Conjunction r -> (++) <$> goalAtoms ex l <*> goalAtoms ex r
+      -- a $true conjunct states nothing to prove
+      T.Connected l T.Conjunction r
+        | reservedAtom l == Just T.Tautology -> goalAtoms ex r
+        | reservedAtom r == Just T.Tautology -> goalAtoms ex l
+        | otherwise -> (++) <$> goalAtoms ex l <*> goalAtoms ex r
       T.Connected _ T.Disjunction _
         | maybe False (any tautological) (collectDisjuncts f) -> Left (refused ("its conclusion " ++ render f ++ " is a tautology"))
         | not (isJust (convertFOFToClause f)) -> Left (refused ("its conclusion has the disjunction " ++ render f ++ ", so its proof is a case split"))
       T.Connected _ T.Equivalence _ -> Left (refused ("its conclusion has the equivalence " ++ render f ++ ", two implications with different hypotheses"))
+      T.Negated _
+        | ex -> Left (refused ("its conclusion has the negation " ++ render f ++ " under an existential quantifier, so its proof is a case split"))
       _ | ex        -> Left (refused ("its conclusion has the implication " ++ render f ++ " under an existential quantifier, so its proof is a case split"))
         | isJust (convertFOFToClause f) -> Left (refused ("its conclusion has the conjunct " ++ render f ++ ", an implication with its own hypotheses"))
         | otherwise -> Left (refused ("its conclusion has the conjunct " ++ render f ++ ", which is not an atom"))
@@ -862,7 +890,7 @@ renameBoundApart f0 = snd (go Set.empty (allNames f0) f0)
       T.Quantified q vs b ->
         let (used', ren) = foldl fresh (used, Map.empty) [ v | (v, _) <- toList vs, Set.member v bound ]
             vs'          = fmap (\(v, s) -> (Map.findWithDefault v v ren, s)) vs
-            (used'', b') = go (Set.union bound (Set.fromList (map fst (toList vs')))) used' (renameFree ren b)
+            (used'', b') = go (Set.union bound (Set.fromList (map fst (toList vs')))) used' (renameFreeVars ren b)
         in (used'', T.Quantified q vs' b')
       T.Negated g -> T.Negated <$> go bound used g
       T.Connected l c r ->
@@ -874,25 +902,28 @@ renameBoundApart f0 = snd (go Set.empty (allNames f0) f0)
       let v' = head [ T.Var (t <> Text.pack ("_" ++ show i)) | i <- [1 :: Int ..]
                     , Set.notMember (T.Var (t <> Text.pack ("_" ++ show i))) used ]
       in (Set.insert v' used, Map.insert v v' ren)
-    -- the free occurrences, as an inner quantifier of the same name binds its own
-    renameFree ren f | Map.null ren = f
-    renameFree ren f = case f of
-      T.Atomic l -> T.Atomic (renameLit l)
-      T.Negated g -> T.Negated (renameFree ren g)
-      T.Connected l c r -> T.Connected (renameFree ren l) c (renameFree ren r)
-      T.Quantified q vs b ->
-        T.Quantified q vs (renameFree (foldr (Map.delete . fst) ren (toList vs)) b)
-      where
-        renameLit (T.Predicate p ts)  = T.Predicate p (map renameTerm ts)
-        renameLit (T.Equality a sg b) = T.Equality (renameTerm a) sg (renameTerm b)
-        renameTerm (T.Variable v)    = T.Variable (Map.findWithDefault v v ren)
-        renameTerm (T.Function g ts) = T.Function g (map renameTerm ts)
-        renameTerm t                 = t
     allNames f = case f of
       T.Quantified _ vs b -> Set.union (Set.fromList (map fst (toList vs))) (allNames b)
       T.Negated g         -> allNames g
       T.Connected l _ r   -> Set.union (allNames l) (allNames r)
       _                   -> freeVars f
+
+-- The free occurrences of variables renamed, as an inner quantifier of the
+-- same name binds its own.
+renameFreeVars :: Map.Map T.Var T.Var -> T.UnsortedFirstOrder -> T.UnsortedFirstOrder
+renameFreeVars ren f | Map.null ren = f
+renameFreeVars ren f = case f of
+  T.Atomic l -> T.Atomic (renameLit l)
+  T.Negated g -> T.Negated (renameFreeVars ren g)
+  T.Connected l c r -> T.Connected (renameFreeVars ren l) c (renameFreeVars ren r)
+  T.Quantified q vs b ->
+    T.Quantified q vs (renameFreeVars (foldr (Map.delete . fst) ren (toList vs)) b)
+  where
+    renameLit (T.Predicate p ts)  = T.Predicate p (map renameTerm ts)
+    renameLit (T.Equality a sg b) = T.Equality (renameTerm a) sg (renameTerm b)
+    renameTerm (T.Variable v)    = T.Variable (Map.findWithDefault v v ren)
+    renameTerm (T.Function g ts) = T.Function g (map renameTerm ts)
+    renameTerm t                 = t
 
 -- The conjecture formulas of the proof.  Twee writes a clausal conjecture as
 -- a cnf unit, which is read as the disjunction of its literals.

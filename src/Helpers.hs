@@ -512,6 +512,14 @@ isEqChain :: ProofBlock -> Bool
 isEqChain (EqChain {}) = True
 isEqChain _            = False
 
+-- A clause's text with its variables named by first occurrence, the same for
+-- two variants that list their literals in one order.
+variantKey :: Clause -> String
+variantKey (Clause bs mh) = show (Clause (map ren bs) (fmap ren mh))
+  where
+    ren = renameLit (zip (nub (concatMap litVars bs ++ maybe [] litVars mh))
+                         [ "v" ++ show i | i <- [0 :: Int ..] ])
+
 -- A clause's text with its variables named by first occurrence and its body
 -- in the order that gives the smallest text, so variants and reorderings get
 -- the same key.  A body of more than six literals keeps its order.
