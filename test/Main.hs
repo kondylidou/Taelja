@@ -163,6 +163,8 @@ handcraftedNames =
   -- The second has a lemma over a variable of sort person and a premise over
   -- one of sort city
   , "tff_nato"
+  -- NATO with one-place predicates, the example of the talk
+  , "tff_nato_short"
   , "tff_typed_lemma"
   -- a FOF axiom ? [X] : (p(X) & r(X)) gives two clauses, so two axioms, through
   -- a Skolem definition that the TPTP output cites, and the conjecture is

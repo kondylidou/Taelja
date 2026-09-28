@@ -181,6 +181,7 @@ import TaeljaVerify.E.Syn5901
 import TaeljaVerify.E.Syn9821
 import TaeljaVerify.Vampire.TptpImplicationConjecture
 import TaeljaVerify.Vampire.TffNato
+import TaeljaVerify.Vampire.TffNatoShort
 import TaeljaVerify.Vampire.TffTypedLemma
 import TaeljaVerify.Vampire.FofSkolemDefinition
 import TaeljaVerify.Vampire.Alg0181
