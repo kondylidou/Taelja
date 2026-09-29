@@ -1,12 +1,12 @@
-Axiom 1: p => q
-Axiom 2: q => r
+Axiom 1: p
+Axiom 2: p => q
+Axiom 3: q => r
 
-Goal 1: p => r
+Goal 1: r
 Proof:
-  assume p
-  hence q
+  have p
     by axiom 1
-  hence r
+  hence q
     by axiom 2
-  hence p => r
-    by discharge
+  hence r
+    by axiom 3

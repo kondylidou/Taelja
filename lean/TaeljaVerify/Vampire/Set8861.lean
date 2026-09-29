@@ -22,40 +22,38 @@ axiom subset : α → α → Prop
 -- Axiom 1
 axiom ax1 : ∀ (x : α), (unordered_pair x x) = (singleton x)
 -- Axiom 2
-axiom ax2 : ∀ (x : α) (y : α) (z : α), subset (unordered_pair x y) (singleton z) → x = z
+axiom ax2 : subset (unordered_pair sK2 sK3) (singleton sK4)
 -- Axiom 3
-axiom ax3 : ∀ (x : α) (y : α), (unordered_pair x y) = (unordered_pair y x)
-
--- Lemma 4
-theorem taelja_lemma4 : (subset (unordered_pair sK2 sK3) (singleton sK4)) → sK2 = sK4 := by
-  intro hyp1
-  have h1 : subset (unordered_pair sK2 sK3) (singleton sK4) := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
-  have h2 : sK2 = sK4 := by first | (exact ax2 sK2 sK3 sK4 h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
-  exact h2
+axiom ax3 : ∀ (x : α) (y : α) (z : α), subset (unordered_pair x y) (singleton z) → x = z
+-- Axiom 4
+axiom ax4 : ∀ (x : α) (y : α), (unordered_pair x y) = (unordered_pair y x)
 
 -- Lemma 5
-theorem taelja_lemma5 : (subset (unordered_pair sK2 sK3) (singleton sK4)) → subset (unordered_pair sK3 sK4) (singleton sK4) := by
-  intro hyp1
-  have h_rw := (taelja_lemma4 hyp1)
-  rw (config := { occs := .pos [1] }) [← h_rw]
-  have h_rw := ax3 sK3 sK2
-  rw [h_rw]
-  apply hyp1 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+theorem taelja_lemma5 : sK2 = sK4 := by
+  have h1 : subset (unordered_pair sK2 sK3) (singleton sK4) := by first | (exact ax2) | (first | apply ax2 <;> first | rfl | assumption)
+  have h2 : sK2 = sK4 := by first | (exact ax3 sK2 sK3 sK4 h1) | (first | (exact ax3 _ _ _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+  exact h2
 
 -- Lemma 6
-theorem taelja_lemma6 : (subset (unordered_pair sK2 sK3) (singleton sK4)) → sK3 = sK4 := by
-  intro hyp1
-  have h1 : subset (unordered_pair sK3 sK4) (singleton sK4) := by first | (exact (taelja_lemma5 hyp1)) | (first | apply (taelja_lemma5 hyp1) <;> first | rfl | assumption)
-  have h2 : sK3 = sK4 := by first | (exact ax2 sK3 sK4 sK4 h1) | (first | (exact ax2 _ _ _ h1) | (apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
+theorem taelja_lemma6 : subset (unordered_pair sK3 sK4) (singleton sK4) := by
+  have h_rw := taelja_lemma5
+  rw (config := { occs := .pos [1] }) [← h_rw]
+  have h_rw := ax4 sK3 sK2
+  rw [h_rw]
+  apply ax2 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact taelja_elem)
+
+-- Lemma 7
+theorem taelja_lemma7 : sK3 = sK4 := by
+  have h1 : subset (unordered_pair sK3 sK4) (singleton sK4) := by first | (exact taelja_lemma6) | (first | apply taelja_lemma6 <;> first | rfl | assumption)
+  have h2 : sK3 = sK4 := by first | (exact ax3 sK3 sK4 sK4 h1) | (first | (exact ax3 _ _ _ h1) | (apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)) | (apply Eq.symm; apply ax3 <;> (first | assumption | rfl | exact Eq.symm (by assumption) | exact Eq.trans (by assumption) (by assumption) | exact Eq.trans (Eq.symm (by assumption)) (by assumption) | exact Eq.trans (by assumption) (Eq.symm (by assumption)) | exact Eq.trans (Eq.symm (by assumption)) (Eq.symm (by assumption)) | exact taelja_elem)))
   exact h2
 
 -- Goal 1
-theorem taelja_goal1 : (subset (unordered_pair sK2 sK3) (singleton sK4)) → (unordered_pair sK2 sK3) = (singleton sK4) := by
-  intro hyp1
-  have h1 : (unordered_pair sK4 sK4) = (unordered_pair sK4 sK4) := by first | (exact ax3 sK4 sK4) | (first | apply ax3 <;> first | rfl | assumption | (apply Eq.symm; apply ax3 <;> first | rfl | assumption))
-  have h2 : (unordered_pair sK4 sK2) = (unordered_pair sK4 sK4) := by have h_rw := (taelja_lemma4 hyp1); rw [h_rw] <;> exact h1
-  have h3 : (unordered_pair sK2 sK4) = (unordered_pair sK4 sK4) := by have h_rw := ax3 sK2 sK4; rw [h_rw] <;> exact h2
-  have h4 : (unordered_pair sK2 sK3) = (unordered_pair sK4 sK4) := by have h_rw := (taelja_lemma6 hyp1); rw [h_rw] <;> exact h3
+theorem taelja_goal1 : (unordered_pair sK2 sK3) = (singleton sK4) := by
+  have h1 : (unordered_pair sK4 sK4) = (unordered_pair sK4 sK4) := by first | (exact ax4 sK4 sK4) | (first | apply ax4 <;> first | rfl | assumption | (apply Eq.symm; apply ax4 <;> first | rfl | assumption))
+  have h2 : (unordered_pair sK4 sK2) = (unordered_pair sK4 sK4) := by have h_rw := taelja_lemma5; rw [h_rw] <;> exact h1
+  have h3 : (unordered_pair sK2 sK4) = (unordered_pair sK4 sK4) := by have h_rw := ax4 sK2 sK4; rw [h_rw] <;> exact h2
+  have h4 : (unordered_pair sK2 sK3) = (unordered_pair sK4 sK4) := by have h_rw := taelja_lemma7; rw [h_rw] <;> exact h3
   have h5 : (unordered_pair sK2 sK3) = (singleton sK4) := by have h_rw := ax1 sK4; rw [←h_rw] <;> exact h4
   exact h5
 

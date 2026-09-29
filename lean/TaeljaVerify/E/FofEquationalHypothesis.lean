@@ -11,6 +11,7 @@ noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 -- Constants
 axiom a : α
 axiom b : α
+axiom esk1_0 : α
 
 axiom f : α → α
 axiom g : α → α
@@ -19,15 +20,15 @@ axiom h : α → α
 -- Axiom 1
 axiom ax1 : (g a) = b
 -- Axiom 2
-axiom ax2 : ∀ (x : α), (h x) = x
+axiom ax2 : (f esk1_0) = a
+-- Axiom 3
+axiom ax3 : ∀ (x : α), (h x) = x
 
 -- Goal 1
-theorem taelja_goal1 : ∀ (x : α), ((f x) = a) → (g (h (f x))) = b := by
-  intro x
-  intro hyp1
+theorem taelja_goal1 : (g (h (f esk1_0))) = b := by
   have h1 : (g a) = b := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption | (apply Eq.symm; apply ax1 <;> first | rfl | assumption))
-  have h2 : (g (f x)) = b := by have h_rw := hyp1; rw [h_rw] <;> exact h1
-  have h3 : (g (h (f x))) = b := by have h_rw := ax2 (f x); rw [h_rw] <;> exact h2
+  have h2 : (g (f esk1_0)) = b := by have h_rw := ax2; rw [h_rw] <;> exact h1
+  have h3 : (g (h (f esk1_0))) = b := by have h_rw := ax3 (f esk1_0); rw [h_rw] <;> exact h2
   exact h3
 
 end EFofEquationalHypothesis

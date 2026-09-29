@@ -9,6 +9,7 @@ axiom taelja_nonempty : Nonempty α
 noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 -- Constants
+axiom sK0 : α
 axiom sK1 : α
 axiom ze : α
 
@@ -21,9 +22,11 @@ axiom ax1 : ∀ (x : α), (plus ze x) = x
 axiom ax2 : ∀ (x : α), (plus (neg x) x) = ze
 -- Axiom 3
 axiom ax3 : ∀ (x : α) (y : α) (z : α), (plus (plus x y) z) = (plus x (plus y z))
+-- Axiom 4
+axiom ax4 : sK1 = (plus sK0 sK1)
 
--- Lemma 4
-theorem taelja_lemma4 : ∀ (x : α) (y : α), (plus x y) = (plus (neg (neg x)) y) := by
+-- Lemma 5
+theorem taelja_lemma5 : ∀ (x : α) (y : α), (plus x y) = (plus (neg (neg x)) y) := by
   intro x y
   calc plus x y = plus ze (plus x y) := by first | (first | (exact ax1 (plus x y)) | (exact Eq.symm (ax1 (plus x y)))) | (have h_rw := ax1 (plus x y); rw [h_rw])
       _ = plus (plus (neg (neg x)) (neg x)) (plus x y) := by have h_rw := ax2 (neg x); rw [h_rw]
@@ -32,25 +35,23 @@ theorem taelja_lemma4 : ∀ (x : α) (y : α), (plus x y) = (plus (neg (neg x)) 
       _ = plus (neg (neg x)) (plus ze y) := by have h_rw := ax2 x; rw [h_rw]
       _ = plus (neg (neg x)) y := by first | (first | (exact ax1 y) | (exact Eq.symm (ax1 y))) | (have h_rw := ax1 y; rw [h_rw])
 
--- Lemma 5
-theorem taelja_lemma5 : ∀ (x : α) (y : α), (plus (neg x) (plus x y)) = y := by
+-- Lemma 6
+theorem taelja_lemma6 : ∀ (x : α) (y : α), (plus (neg x) (plus x y)) = y := by
   intro x y
   calc plus (neg x) (plus x y) = plus (plus (neg x) x) y := by have h_rw := ax3 (neg x) x y; rw [h_rw]
       _ = plus ze y := by have h_rw := ax2 x; rw [h_rw]
       _ = y := by first | (first | (exact ax1 y) | (exact Eq.symm (ax1 y))) | (have h_rw := ax1 y; rw [h_rw])
 
 -- Goal 1
-theorem taelja_goal1 : ∀ (x : α), (sK1 = (plus x sK1)) → x = ze := by
-  intro x
-  intro hyp1
-  calc x = plus (neg (neg x)) (plus (neg x) x) := by first | (first | (exact taelja_lemma5 (neg x) x) | (exact Eq.symm (taelja_lemma5 (neg x) x))) | (have h_rw := taelja_lemma5 (neg x) x; rw [h_rw])
-      _ = plus (neg (neg x)) ze := by have h_rw := ax2 x; rw [h_rw]
-      _ = plus x ze := by have h_rw := taelja_lemma4 x ze; rw [h_rw]
-      _ = plus x (plus (neg (neg sK1)) (neg sK1)) := by have h_rw := ax2 (neg sK1); rw [h_rw]
-      _ = plus x (plus sK1 (neg sK1)) := by have h_rw := taelja_lemma4 sK1 (neg sK1); rw [h_rw]
-      _ = plus (plus x sK1) (neg sK1) := by have h_rw := ax3 x sK1 (neg sK1); rw [h_rw]
-      _ = plus sK1 (neg sK1) := by have h_rw := hyp1; rw (config := { occs := .pos [3] }) [h_rw]
-      _ = plus (neg (neg sK1)) (neg sK1) := by have h_rw := taelja_lemma4 sK1 (neg sK1); rw [h_rw]
+theorem taelja_goal1 : sK0 = ze := by
+  calc sK0 = plus (neg (neg sK0)) (plus (neg sK0) sK0) := by first | (first | (exact taelja_lemma6 (neg sK0) sK0) | (exact Eq.symm (taelja_lemma6 (neg sK0) sK0))) | (have h_rw := taelja_lemma6 (neg sK0) sK0; rw [h_rw])
+      _ = plus (neg (neg sK0)) ze := by have h_rw := ax2 sK0; rw [h_rw]
+      _ = plus sK0 ze := by have h_rw := taelja_lemma5 sK0 ze; rw [h_rw]
+      _ = plus sK0 (plus (neg (neg sK1)) (neg sK1)) := by have h_rw := ax2 (neg sK1); rw [h_rw]
+      _ = plus sK0 (plus sK1 (neg sK1)) := by have h_rw := taelja_lemma5 sK1 (neg sK1); rw [h_rw]
+      _ = plus (plus sK0 sK1) (neg sK1) := by have h_rw := ax3 sK0 sK1 (neg sK1); rw [h_rw]
+      _ = plus sK1 (neg sK1) := by have h_rw := ax4; rw (config := { occs := .pos [3] }) [h_rw]
+      _ = plus (neg (neg sK1)) (neg sK1) := by have h_rw := taelja_lemma5 sK1 (neg sK1); rw [h_rw]
       _ = ze := by have h_rw := ax2 (neg sK1); rw [h_rw]
 
 end VampireAgdaVampireZeUniq

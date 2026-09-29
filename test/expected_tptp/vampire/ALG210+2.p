@@ -103,5 +103,6 @@ fof(s67, plain, times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2))) = tim
 fof(lemma_32, lemma, times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2))) = times(sK1,sK2), inference(rewrite, [status(thm), assumptions([f18, f19, f17])], [lemma_21, s67])).
 fof(s68, plain, element(times(sK1,sK2)), inference(mp, [status(thm), assumptions([f18, f19, f17])], [axiom_7, lemma_32])).
 fof(s69, plain, element(sK3), inference(rewrite, [status(thm), assumptions([f17, f18, f19])], [f17, s68])).
-fof(f3, theorem, ! [X0, X1, X2]: ((element(X0) & element(X1) & X2 = times(X0, X1)) => element(X2)), inference(implies, [status(thm), discharge(implies, [f17, f19, f18])], [s69, f17, f19, f18])).
+fof(discharged, plain, ((sK3 = times(sK1,sK2) & element(sK1) & element(sK2)) => element(sK3)), inference(implies, [status(thm), discharge(implies, [f17, f19, f18])], [s69, f17, f19, f18])).
+fof(f3, theorem, ! [X0, X1, X2]: ((element(X0) & element(X1) & X2 = times(X0, X1)) => element(X2)), inference(generalization, [status(thm)], [discharged, f11])).
 % SZS output end Proof

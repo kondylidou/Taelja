@@ -4,7 +4,7 @@ import Control.Monad (when)
 import Control.DeepSeq (force)
 import Control.Exception (SomeException, evaluate, try)
 import System.Environment (getArgs)
-import System.Exit (exitFailure)
+import System.Exit (exitFailure, exitSuccess)
 import System.IO (hPutStrLn, stderr)
 
 import qualified Data.Text.IO as TIO
@@ -20,6 +20,7 @@ import TptpEmitter (emitTptp)
 import qualified Data.Text as Text
 import Helpers (extractSzsBlock)
 import Debug (dumpProofTree, dumpInferenceRules)
+import HornProblem (hornProblem, loadProblem)
 
 main :: IO ()
 main = do
@@ -28,10 +29,19 @@ main = do
       files = filter ((/= "--") . take 2) args
       debug = "--debug" `elem` flags
       render = if "--tptp" `elem` flags then emitTptp else emit
-      known = ["--debug", "--tptp", "--no-fallback"]
+      known = ["--debug", "--tptp", "--no-fallback", "--horn-problem", "--lenient"]
   inputFile <- case files of
     [f] | all (`elem` known) flags -> return f
-    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--tptp] [--no-fallback] <proof-file>" >> exitFailure
+    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--tptp] [--no-fallback] <proof-file> | taelja --horn-problem [--lenient] <problem-file>" >> exitFailure
+  -- Is the problem Horn as written?  Prints "horn" or the first offending unit.
+  when ("--horn-problem" `elem` flags) $ do
+    r <- loadProblem inputFile
+    case r of
+      Left err -> hPutStrLn stderr err >> exitFailure
+      Right units -> case hornProblem ("--lenient" `elem` flags) units of
+        Nothing     -> putStrLn "horn"
+        Just reason -> putStrLn ("not horn: " ++ reason)
+    exitSuccess
   when ("--no-fallback" `elem` flags) disableFallback
   raw <- TIO.readFile inputFile
   let contents = Text.pack (extractSzsBlock (Text.unpack raw))

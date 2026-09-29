@@ -1,7 +1,7 @@
 module Emitter (emit, applyRenaming, pruneUnusedLemmas, axiomRenaming, blockRenaming) where
 
 import Data.Char (toUpper)
-import Data.List (intercalate, isPrefixOf, nub, partition)
+import Data.List (intercalate, nub, partition)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import Types
@@ -10,56 +10,23 @@ import Helpers
 cap :: String -> String
 cap s = toUpper (head s) : tail s
 
+-- The hypotheses of a conjecture are unit clauses of the problem, listed
+-- with the axioms and cited like them, and the goal is the conclusion.  The
+-- TPTP output keeps them apart as assumptions, since a checker reads it
+-- against the problem.
 emit :: StructuredProof -> String
 emit sp0 = unlines $ concat
   [ axiomLines (axioms sp)
   , [ "" | not (null (axioms sp)) ]
-  , concatMap (lemmaLines hyps (lemmaDeps (lemmas sp))) (lemmas sp)
-  , intercalate [""] (zipWith (goalLines hyps) [1..] (goals sp))
+  , concatMap lemmaLines (lemmas sp)
+  , intercalate [""] (zipWith goalLines [1..] (goals sp))
   ]
   where
-    hypNames = Map.keysSet (inHypotheses (spInput sp0))
-    negated  = inNegated (spInput sp0)
-    -- the hypotheses in the order the goal states them, the antecedent's
-    -- first, named assumption 1, 2, ... in that order
-    hyps0    = [ ax | ax <- axioms sp0, Set.member (axiomName ax) hypNames ]
-    (negHyps0, anteHyps0) = partition ((`elem` negated) . axiomName) hyps0
-    hyps     = [ setAxName ("assumption " ++ show i) ax | (i, ax) <- zip [1 :: Int ..] (anteHyps0 ++ negHyps0) ]
-    assumptionNames = Map.fromList (zip (map axiomName (anteHyps0 ++ negHyps0)) (map axiomName hyps))
-    sp       = renumberAxioms (pruneUnusedLemmas (dropHypotheses assumptionNames sp0))
-
-renameAxiomVars :: [(String, String)] -> Axiom -> Axiom
-renameAxiomVars r (AUnit n l)                 = AUnit n (renameLit r l)
-renameAxiomVars r (ANucleus n (Clause bs mh)) = ANucleus n (Clause (map (renameLit r) bs) (fmap (renameLit r) mh))
-
-setAxName :: String -> Axiom -> Axiom
-setAxName n (AUnit _ l)    = AUnit n l
-setAxName n (ANucleus _ c) = ANucleus n c
-
--- The assumptions each lemma rests on, through the lemmas it cites.
-lemmaDeps :: [(String, Literal, ProofBlock)] -> Map.Map String [String]
-lemmaDeps ls = fixpoint (Map.fromList [ (n, direct b) | (n, _, b) <- ls ])
-  where
-    direct b = nub [ r | r <- blockRefNames b, "assumption " `isPrefixOf` r ]
-    fixpoint m =
-      let m' = Map.fromList [ (n, nub (direct b ++ concat [ Map.findWithDefault [] r m | r <- blockRefNames b ]))
-                            | (n, _, b) <- ls ]
-      in if m' == m then m else fixpoint m'
-
-axiomName :: Axiom -> String
-axiomName (AUnit n _)    = n
-axiomName (ANucleus n _) = n
+    sp = renumberAxioms (pruneUnusedLemmas sp0)
 
 axiomVars :: Axiom -> [String]
 axiomVars (AUnit _ l)                 = litVars l
 axiomVars (ANucleus _ (Clause bs mh)) = concatMap litVars bs ++ maybe [] litVars mh
-
--- The hypotheses of an implication conjecture are assumed in the goal's proof
--- rather than listed as axioms, and a step citing one names the assumption.
-dropHypotheses :: Map.Map String String -> StructuredProof -> StructuredProof
-dropHypotheses names sp =
-  (applyRenaming names sp)
-    { axioms = [ ax | ax <- axioms sp, Map.notMember (axiomName ax) names ] }
 
 -- Renumber axioms to close the gaps left by lemma promotion, and update every
 -- reference in lemma and goal blocks.
@@ -105,93 +72,31 @@ prettyVarNames = ["X", "Y", "Z", "A", "B", "C", "U", "V", "W"]
 blockRenaming :: Literal -> ProofBlock -> [(String, String)]
 blockRenaming lit block = zip (nub (litVars lit ++ blockVars block)) prettyVarNames
 
--- A lemma that rests on assumptions of the goal states them, as the goal
--- does, and discharges them.
-lemmaLines :: [Axiom] -> Map.Map String [String] -> (String, Literal, ProofBlock) -> [String]
-lemmaLines hyps0 deps (name, lit, block) =
-  (cap name ++ ": " ++ stated) :
+lemmaLines :: (String, Literal, ProofBlock) -> [String]
+lemmaLines (name, lit, block) =
+  (cap name ++ ": " ++ ppLiteral (renameLit renaming lit)) :
   "Proof:" :
-  blockLines (map (renameAxiomVars renaming) hyps) (renameBlock renaming block) ++
-  [ l | not (null used), l <- ["  hence " ++ stated, "    by discharge"] ] ++
+  blockLines (renameBlock renaming block) ++
   [""]
   where
-    hyps     = hypsApart lit block hyps0
-    used     = [ ax | ax <- hyps, axiomName ax `elem` Map.findWithDefault [] name deps ]
-    renaming = zip (nub (litVars lit ++ concatMap axiomVars used ++ blockShownVars block ++ blockVars block)) prettyVarNames
-    stated   = (if null used then "" else intercalate " /\\ " (map ppHyp used) ++ " => ")
-               ++ ppLiteral (renameLit renaming lit)
-    ppHyp (AUnit _ l)    = ppLiteral (renameLit renaming l)
-    ppHyp (ANucleus _ c) = "(" ++ ppClauseWith renaming c ++ ")"
+    renaming = zip (nub (litVars lit ++ blockShownVars block ++ blockVars block)) prettyVarNames
 
--- A goal under hypotheses is stated as the conjecture was, H1 /\ H2 => G, and
--- its proof ends by discharging them.  When the conclusion is a negation the
--- hypotheses it supplied are the negated conjuncts and the block derives
--- $false.
-goalLines :: [Axiom] -> Int -> (Literal, ProofBlock) -> [String]
-goalLines hyps0 n (lit, block) =
-  ("Goal " ++ show n ++ ": " ++ stated) :
+goalLines :: Int -> (Literal, ProofBlock) -> [String]
+goalLines n (lit, block) =
+  ("Goal " ++ show n ++ ": " ++ ppLiteral (renameLit renaming lit)) :
   "Proof:" :
-  blockLines (map (renameAxiomVars renaming) hyps) (renameBlock renaming block) ++
-  [ l | not (null hyps), l <- ["  hence " ++ stated, "    by discharge"] ]
+  blockLines (renameBlock renaming block)
   where
-    hyps     = hypsApart lit block hyps0
-    stated   = ppHyps hyps ++ ppLiteral (renameLit renaming lit)
-    renaming = zip (nub (litVars lit ++ concatMap axiomVars hyps ++ blockShownVars block ++ blockVars block)) prettyVarNames
-    ppHyps hs | null hs   = ""
-              | otherwise = intercalate " /\\ " (map ppHyp hs) ++ " => "
-    ppHyp (AUnit _ l)    = ppLiteral (renameLit renaming l)
-    ppHyp (ANucleus _ c) = "(" ++ ppClauseWith renaming c ++ ")"
+    renaming = zip (nub (litVars lit ++ blockShownVars block ++ blockVars block)) prettyVarNames
 
--- A hypothesis is a clause of its own, so its variables are bound within it.
--- One sharing a name with a variable of the conclusion would read as the
--- conclusion's, and the statement would claim more than it proves, as
--- f(sK0) /\ (f(X) => $false) => g(X) did on SYN408+1.  The conjecture may
--- share a variable between a hypothesis and the conclusion, as in
--- r(X,sK1) => t(X), and the proof shows which it is.  A variable the proof
--- keeps, in a term of the hypothesis the proof states, is the statement's,
--- and one the proof only uses instantiated belongs to the hypothesis alone.
--- A variable generalizeGoals made from a Skolem term stands for the same term
--- in the conclusion and in the hypotheses, so it is shared by construction.
-hypsApart :: Literal -> ProofBlock -> [Axiom] -> [Axiom]
-hypsApart lit block hyps0 =
-  [ renameAxiomVars [ (v, v ++ "_h" ++ show i)
-                    | v <- axiomVars ax, v `elem` litVars lit, not (shared ax v) ] ax
-  | (i, ax) <- zip [1 :: Int ..] hyps0 ]
-  where
-    shared _  v | "Sk_" `isPrefixOf` v = True
-    shared ax v = any (\t -> notVarTerm t && v `elem` termVars t && t `elem` blockTerms)
-                      (concatMap litTerms (axLits ax))
-    axLits (AUnit _ l)                 = [l]
-    axLits (ANucleus _ (Clause bs mh)) = bs ++ maybe [] (: []) mh
-    litTerms l = concatMap subTerms (foldLiteralTerms (: []) l) ++ [atomTermOf l]
-    atomTermOf l = case l of { Rel nm as -> App nm as; NRel nm as -> App nm as; _ -> Var "" }
-    subTerms t = t : case t of { App _ ts -> concatMap subTerms ts; _ -> [] }
-    notVarTerm t = case t of { Var _ -> False; _ -> True }
-    -- the line stating the conclusion itself is not a use of a hypothesis,
-    -- as SYN929+1/E's hence p(X) beside the hypothesis p(X) => $false
-    blockTerms = case block of
-      HaveHence ls    -> concatMap litTerms (filter (/= lit) (map lineLit ls))
-      EqChain st sts  -> concatMap subTerms (st : map snd sts)
-    lineLit (Have x _)  = x
-    lineLit (And x _)   = x
-    lineLit (Hence x _) = x
+blockLines :: ProofBlock -> [String]
+blockLines (HaveHence ls)    = concatMap renderLine ls
+blockLines (EqChain s steps) = renderEqChain s steps
 
-blockLines :: [Axiom] -> ProofBlock -> [String]
-blockLines hyps (HaveHence ls) = concatMap (renderLine hyps) ls
-blockLines _ (EqChain s steps) = renderEqChain s steps
-
--- A hypothesis is assumed where the proof states it exactly as assumed, and
--- an instance of it, one with the goal's variables in place of its own, is a
--- step citing the assumption like an axiom.  The hypotheses arrive renamed
--- like the block.
-renderLine :: [Axiom] -> ProofLine -> [String]
-renderLine hyps (Have lit nm)
-  | "assumption " `isPrefixOf` nm
-  , or [ l == lit | AUnit n l <- hyps, n == nm ]
-  = ["  assume " ++ ppLiteral lit]
-renderLine _ (Have  lit nm) = ["  have "  ++ ppLiteral lit, "    by " ++ nm]
-renderLine _ (And   lit nm) = ["   and "  ++ ppLiteral lit, "    by " ++ nm]
-renderLine _ (Hence lit j)  = ["  hence " ++ ppLiteral lit, "    " ++ ppJust j]
+renderLine :: ProofLine -> [String]
+renderLine (Have  lit nm) = ["  have "  ++ ppLiteral lit, "    by " ++ nm]
+renderLine (And   lit nm) = ["   and "  ++ ppLiteral lit, "    by " ++ nm]
+renderLine (Hence lit j)  = ["  hence " ++ ppLiteral lit, "    " ++ ppJust j]
 
 ppJust :: Justification -> String
 ppJust (ByAxiom nm)        = "by " ++ nm

@@ -9,18 +9,19 @@ two forms: `have … and … hence … by axiom N` blocks (one block per
 hyperresolution step) and equality chains
 (`t1 = { by axiom 1 } t2 = { by lemma 3 R->L } t3`). Every step cites a
 concrete axiom or lemma. Derived clauses that the input proof uses more than
-once are introduced as named lemmas with their own proofs. A conjecture of the
-form `H => G` is stated as such, and its proof begins with `assume H`.
+once are introduced as named lemmas with their own proofs. The hypotheses of
+a conjecture `H1 & ... & Hn => G` are unit clauses, listed with the axioms,
+and `G` is the goal.
 
-Taelja covers the Horn fragment: the refutation must use resolution,
-superposition, demodulation and equality resolution on Horn clauses, and the
-conjecture must be an implication whose hypotheses are Horn clauses and whose
-conclusion is a conjunction of atoms, or the negation of one. Anything else,
-a non-Horn clause, another inference rule, or a disjunction in the
-conclusion say, is refused with a message naming it.
-
-**This file covers the tool itself. See `ARTIFACT.md` for reproducing the
-paper's evaluation.**
+Taelja covers the Horn fragment, decided on the problem as written: every
+axiom is a Horn clause, a universally closed `A1 & ... & An => B`, an atom, a
+disjunction with at most one positive literal, or a negated conjunction, and
+the conjecture is a Horn clause whose hypotheses are atoms and whose
+conclusion is an atom, a conjunction of atoms, or one under an existential
+quantifier. The refutation must use resolution, superposition, demodulation
+and equality resolution on Horn clauses; a non-Horn clause, another inference
+rule, or a conjecture outside the fragment is refused with a message naming
+it.
 
 ## Example
 
@@ -144,4 +145,34 @@ cabal test
 Golden tests translate stored prover outputs for all three provers
 (`test/baseline_{vampire,e,twee}/`) and compare against
 `test/expected_{vampire,e,twee}/`. Each golden also has a Lean module under
+`lean/TaeljaVerify/`.
+
+## Running the evaluation
+
+The evaluation runs over the TPTP problems that are Horn as written. From
+this directory, with the TPTP library unpacked at `/path/to/TPTP-v9.2.1`:
+
+```
+python3 scripts/select_horn.py /path/to/TPTP-v9.2.1 --jobs 8 --output-dir eval_out
+python3 scripts/eval.py bin/vampire /path/to/TPTP-v9.2.1 \
+  --eprover /opt/homebrew/bin/eprover --twee bin/twee --jobs 8 --output-dir eval_out \
+  --list eval_out/horn_cnf.txt --list eval_out/horn_fof.txt --list eval_out/horn_tff.txt
+python3 scripts/regen_lean_eval.py
+python3 scripts/check_lean_eval.py --jobs 3
+```
+
+The first command writes the problem lists, one per format, judging each FOF
+and TFF problem with `taelja --horn-problem <problem.p>` and reading the CNF
+categories off the SPC field. The second runs E, Twee and Vampire on them
+and translates every proof, writing `eval_out/<category>/<problem>/<prover>/`
+and `eval_out/results.csv`; `--skip-done` resumes an interrupted run. The
+last two translate every translated proof to Lean and check it:
+`regen_lean_eval.py` writes a module under `lean/TaeljaVerify/` for every
+translated proof and deletes the modules of proofs no longer translated, and
+`check_lean_eval.py` runs `lake env lean` on each module by itself, since one
+`lake build` stops scheduling modules once some fail and under-reports, and
+records the verdicts in the `lean` column of `results.csv` and in
+`eval_out/lean_failing.txt`. (`eval.py --lean` checks each proof right after
+translation without the project context; it is a quick check, not the one
+the paper reports.) The scripts only write under `eval_out/` and
 `lean/TaeljaVerify/`.

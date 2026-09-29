@@ -25,8 +25,9 @@ import System.IO (hPutStrLn, stderr)
 import Types
 import Helpers
 import PropRes (expandPropRes)
+import Conjecture (conjectureHypotheses)
 import ProofTree
-  ( buildProofInfo, conjectureHypotheses, inlineAtomCongruences, headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, unitNameStr
+  ( buildProofInfo, inlineAtomCongruences, headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, unitNameStr
   , resolveCopySource
   )
 import TptpConvert
@@ -142,7 +143,7 @@ translateUntyped debug tstp = do
 -- inside a lemma is still listed.
 translateMode :: Bool -> T.TSTP -> IO (Either String StructuredProof)
 translateMode debug (T.TSTP _ units0) = do
-  let units = expandPropRes (inlineAtomCongruences units0)
+  let units = expandPropRes (inlineAtomCongruences (map dedupLiterals units0))
   depth <- subrunDepth
   when (depth == 0) clearLemmaCache
   case buildProofInfo units of
@@ -394,7 +395,9 @@ generalizeGoals sp
     isHyp ax = Set.member (axiomDisplayName ax) hypNames
     axSyms (AUnit _ l)                 = litSymbols l
     axSyms (ANucleus _ (Clause bs mh)) = concatMap litSymbols bs ++ maybe [] litSymbols mh
-    used  = Set.fromList (concatMap axSyms (filter (not . isHyp) (axioms sp))
+    -- A hypothesis is listed as an axiom, so a fresh constant it mentions is
+    -- fixed by it and stays: generalizing it would quantify the axiom.
+    used  = Set.fromList (concatMap axSyms (axioms sp)
                           ++ concat [ litSymbols l ++ blockSymbols b | (_, l, b) <- lemmas sp ]
                           ++ concat [ fs ++ ps | T.Unit _ d ann <- inUnits (spInput sp), isInputAnn ann
                                                , let (fs, ps) = declSymbols d ])

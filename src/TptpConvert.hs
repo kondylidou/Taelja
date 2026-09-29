@@ -12,10 +12,11 @@ module TptpConvert
   , collectDisjuncts
   , collectDisjunct
   , eraseSorts
+  , dedupLiterals
   , declSymbols
   ) where
 
-import Data.List (partition)
+import Data.List (nub, partition)
 import Data.List.NonEmpty (NonEmpty (..), toList)
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
@@ -59,6 +60,30 @@ eraseSorts (T.TSTP szs units) = T.TSTP szs (concatMap erase units)
     untyped (T.Negated f)           = T.Negated (untyped f)
     untyped (T.Connected l c r)     = T.Connected (untyped l) c (untyped r)
     untyped (T.Quantified q vs f)   = T.Quantified q (fmap (\(v, _) -> (v, T.Unsorted ())) vs) (untyped f)
+
+-- A clause with a repeated literal stated once, as duplicate literal
+-- elimination leaves it.  E and Vampire clausify SYN046+1's negated
+-- conjecture to p | p and ~p | q | q | ~p before removing the duplicates,
+-- and every reading of a clause here counts literals, so the repeated
+-- literal would make p | p no unit and ~p | q | q | ~p no Horn clause.  A
+-- cnf clause keeps its form; a clause Vampire writes as a fof disjunction is
+-- rebuilt as one under its quantifier prefix.  Any other unit is untouched.
+dedupLiterals :: T.Unit -> T.Unit
+dedupLiterals u@(T.Unit n d a) = case d of
+  T.Formula r (T.CNF (T.Clause lits))
+    | ls <- toList lits, ls' <- nub ls, length ls' < length ls
+    , (x : xs) <- ls' -> T.Unit n (T.Formula r (T.CNF (T.Clause (x :| xs)))) a
+  T.Formula r (T.FOF f)
+    | Just pairs <- collectDisjuncts f, pairs' <- nub pairs, length pairs' < length pairs ->
+        T.Unit n (T.Formula r (T.FOF (prefix f (disjunction pairs')))) a
+  _ -> u
+  where
+    prefix (T.Quantified q vs b) g = T.Quantified q vs (prefix b g)
+    prefix _ g                     = g
+    disjunction ps = foldr1 (\l r -> T.Connected l T.Disjunction r) (map lit ps)
+    lit (T.Positive, l) = T.Atomic l
+    lit (T.Negative, l) = T.Negated (T.Atomic l)
+dedupLiterals u = u
 
 -- The body of a Horn clause, its negative literals in positive form.  For
 -- ~p(X) \/ q(X) this is [p(X)].

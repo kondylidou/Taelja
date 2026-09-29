@@ -1,8 +1,0 @@
-Goal 1: p(X) /\ (p(esk2_0) => $false) => $false
-Proof:
-  have p(esk2_0)
-    by assumption 1
-  hence $false
-    by assumption 2
-  hence p(X) /\ (p(esk2_0) => $false) => $false
-    by discharge

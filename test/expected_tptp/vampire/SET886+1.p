@@ -13,5 +13,6 @@ fof(s3, plain, unordered_pair(sK4,sK2) = unordered_pair(sK4,sK4), inference(rewr
 fof(s4, plain, unordered_pair(sK2,sK4) = unordered_pair(sK4,sK4), inference(rewrite, [status(thm), assumptions([f23])], [f1, s3])).
 fof(s5, plain, unordered_pair(sK2,sK3) = unordered_pair(sK4,sK4), inference(rewrite, [status(thm), assumptions([f23])], [lemma_7, s4])).
 fof(s6, plain, unordered_pair(sK2,sK3) = singleton(sK4), inference(rewrite, [status(thm), assumptions([f23])], [f8, s5])).
-fof(f6, theorem, ! [X0, X1, X2]: (subset(unordered_pair(X0, X1), singleton(X2)) => unordered_pair(X0, X1) = singleton(X2)), inference(implies, [status(thm), discharge(implies, [f23])], [s6, f23])).
+fof(discharged, plain, (subset(unordered_pair(sK2,sK3),singleton(sK4)) => unordered_pair(sK2,sK3) = singleton(sK4)), inference(implies, [status(thm), discharge(implies, [f23])], [s6, f23])).
+fof(f6, theorem, ! [X0, X1, X2]: (subset(unordered_pair(X0, X1), singleton(X2)) => unordered_pair(X0, X1) = singleton(X2)), inference(generalization, [status(thm)], [discharged, f16])).
 % SZS output end Proof

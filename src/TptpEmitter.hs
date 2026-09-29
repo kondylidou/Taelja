@@ -97,7 +97,7 @@ emitTptp sp0 = unlines $
     -- term again here, since a TPTP formula cannot hold a fixed variable,
     -- and the final theorem generalizes over it
     reSk = inGeneralized input
-    skolemVars = map fst reSk
+    skolemVars = generalizedSyms
     reSkLit  = mapLiteralTerms (subVars reSk)
     subVars s (Var v)    = fromMaybe (Var v) (lookup v s)
     subVars s (App f ts) = App f (map (subVars s) ts)
@@ -121,7 +121,15 @@ emitTptp sp0 = unlines $
       [ u | u@(T.Unit _ d (Just (T.Introduced _ _, _))) <- inUnits input
           , let (fs, _) = declSymbols d
           , any (`elem` (generalizedSyms ++ goalSkolems)) [ s | s <- fs, Set.notMember s fileSyms ] ]
-    generalizedSyms = nub (concatMap (termSymbols . snd) (inGeneralized input))
+    -- The prover's fresh symbols the theorem generalizes over: those of the
+    -- goals and the assumed hypotheses that the problem does not state and
+    -- no other axiom fixes.  The text keeps them as constants.
+    generalizedSyms = nub $
+      concatMap (termSymbols . snd) (inGeneralized input)
+      ++ [ s | s <- concatMap (litSymbols . fst) (goals sp1)
+                    ++ concat [ axSyms ax | ax <- axioms sp1, isJust (lookup (axiomName ax) assumed) ]
+             , Set.notMember s fileSyms
+             , s `notElem` concat [ axSyms ax | ax <- axioms sp1, not (isJust (lookup (axiomName ax) assumed)) ] ]
     -- The symbols an introduced definition defines, which GDV wants named in
     -- its info as new_symbols(definition, [...]) and E and Vampire leave out.
     -- They are the symbols of the unit that no input unit has.

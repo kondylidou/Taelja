@@ -1,41 +1,40 @@
-Axiom 1: genlmt(c_tptp_spindlecollectormt,c_tptp_member3633_mt)
-Axiom 2: mtvisible(X) /\ genlmt(X,Y) => mtvisible(Y)
-Axiom 3: genlmt(c_tptp_member3633_mt,c_tptp_spindleheadmt)
-Axiom 4: genlmt(c_tptp_spindleheadmt,c_cyclistsmt)
-Axiom 5: mtvisible(c_cyclistsmt) => runningshorts(c_tptprunningshorts)
-Axiom 6: genlmt(c_tptp_spindlecollectormt,c_tptp_member2701_mt)
-Axiom 7: mtvisible(c_tptp_member2701_mt) /\ runningshorts(Z) => tptpofobject(Z,f_tptpquantityfn_2(n_756))
+Axiom 1: mtvisible(c_tptp_spindlecollectormt)
+Axiom 2: genlmt(c_tptp_spindlecollectormt,c_tptp_member3633_mt)
+Axiom 3: mtvisible(X) /\ genlmt(X,Y) => mtvisible(Y)
+Axiom 4: genlmt(c_tptp_member3633_mt,c_tptp_spindleheadmt)
+Axiom 5: genlmt(c_tptp_spindleheadmt,c_cyclistsmt)
+Axiom 6: mtvisible(c_cyclistsmt) => runningshorts(c_tptprunningshorts)
+Axiom 7: genlmt(c_tptp_spindlecollectormt,c_tptp_member2701_mt)
+Axiom 8: mtvisible(c_tptp_member2701_mt) /\ runningshorts(Z) => tptpofobject(Z,f_tptpquantityfn_2(n_756))
 
-Lemma 8: mtvisible(c_tptp_spindlecollectormt) => runningshorts(c_tptprunningshorts)
+Lemma 9: runningshorts(c_tptprunningshorts)
 Proof:
-  assume mtvisible(c_tptp_spindlecollectormt)
-   and genlmt(c_tptp_spindlecollectormt,c_tptp_member3633_mt)
+  have mtvisible(c_tptp_spindlecollectormt)
     by axiom 1
+   and genlmt(c_tptp_spindlecollectormt,c_tptp_member3633_mt)
+    by axiom 2
   hence mtvisible(c_tptp_member3633_mt)
-    by axiom 2
-   and genlmt(c_tptp_member3633_mt,c_tptp_spindleheadmt)
     by axiom 3
-  hence mtvisible(c_tptp_spindleheadmt)
-    by axiom 2
-   and genlmt(c_tptp_spindleheadmt,c_cyclistsmt)
+   and genlmt(c_tptp_member3633_mt,c_tptp_spindleheadmt)
     by axiom 4
-  hence mtvisible(c_cyclistsmt)
-    by axiom 2
-  hence runningshorts(c_tptprunningshorts)
+  hence mtvisible(c_tptp_spindleheadmt)
+    by axiom 3
+   and genlmt(c_tptp_spindleheadmt,c_cyclistsmt)
     by axiom 5
-  hence mtvisible(c_tptp_spindlecollectormt) => runningshorts(c_tptprunningshorts)
-    by discharge
-
-Goal 1: mtvisible(c_tptp_spindlecollectormt) => tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))
-Proof:
-  assume mtvisible(c_tptp_spindlecollectormt)
-   and genlmt(c_tptp_spindlecollectormt,c_tptp_member2701_mt)
+  hence mtvisible(c_cyclistsmt)
+    by axiom 3
+  hence runningshorts(c_tptprunningshorts)
     by axiom 6
-  hence mtvisible(c_tptp_member2701_mt)
-    by axiom 2
-   and runningshorts(c_tptprunningshorts)
-    by lemma 8
-  hence tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))
+
+Goal 1: tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))
+Proof:
+  have mtvisible(c_tptp_spindlecollectormt)
+    by axiom 1
+   and genlmt(c_tptp_spindlecollectormt,c_tptp_member2701_mt)
     by axiom 7
-  hence mtvisible(c_tptp_spindlecollectormt) => tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))
-    by discharge
+  hence mtvisible(c_tptp_member2701_mt)
+    by axiom 3
+   and runningshorts(c_tptprunningshorts)
+    by lemma 9
+  hence tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))
+    by axiom 8

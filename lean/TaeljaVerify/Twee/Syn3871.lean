@@ -10,10 +10,12 @@ noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 axiom p : Prop
 
+-- Axiom 1
+axiom ax1 : p
+
 -- Goal 1
-theorem taelja_goal1 : (p) → p := by
-  intro hyp1
-  have h1 : p := by first | (exact hyp1) | (first | apply hyp1 <;> first | rfl | assumption)
+theorem taelja_goal1 : p := by
+  have h1 : p := by first | (exact ax1) | (first | apply ax1 <;> first | rfl | assumption)
   exact h1
 
 end TweeSyn3871

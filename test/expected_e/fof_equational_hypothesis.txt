@@ -1,13 +1,12 @@
 Axiom 1: g(a) = b
-Axiom 2: h(X) = X
+Axiom 2: f(esk1_0) = a
+Axiom 3: h(X) = X
 
-Goal 1: f(X) = a => g(h(f(X))) = b
+Goal 1: g(h(f(esk1_0))) = b
 Proof:
   have g(a) = b
     by axiom 1
-  hence g(f(X)) = b
-    by rw assumption 1 R->L
-  hence g(h(f(X))) = b
+  hence g(f(esk1_0)) = b
     by rw axiom 2 R->L
-  hence f(X) = a => g(h(f(X))) = b
-    by discharge
+  hence g(h(f(esk1_0))) = b
+    by rw axiom 3 R->L

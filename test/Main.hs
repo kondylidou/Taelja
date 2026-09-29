@@ -87,9 +87,6 @@ tweeBenchmarkNames =
   -- the lemma sub-run proves c20 only under its Skolem constants, so the
   -- Twee step c39 that rests on it is read at the instance its use needs
   , "BOO006-1"
-  -- the refutation closes with the hypothesis c4, which Twee's clausifier
-  -- states without the body equation C = D, so it is still a hypothesis
-  , "PUZ129+2"
   -- the reading of nested Twee steps reaches true in Lemma 21 and goes out
   -- and back to it, a loop the chain drops
   , "KLE143+2"
@@ -129,18 +126,12 @@ tweeBenchmarkNames =
   , "SWV818-1"
   , "SWV819-1"
   , "SET865-2"        -- goal clause mixing a disequality with a negative atom
-  , "KLE057+1"        -- a conjecture written G <= H, negated by Twee's negate_conjecture
-  , "CSR032+1"        -- ? [X] : (A => B(X)) read as A => ? [X] : B(X)
   , "CSR031+1"        -- a conjecture ~A that Twee writes as a cnf unit
   , "SYN387+1"        -- a cnf conjecture p | ~p, read as p => p
-  -- a negated conclusion whose closing clause is read from the clause itself,
-  -- as its source is the whole negated formula
-  , "SYN362+1"
   , "LCL133-1"        -- goal x = y, whose symbols come only through implies(truth,X) = X
   , "ANA133-1"        -- symbols such as '+' that Twee prints infix, given aliases for the call
   , "LCL897-10"       -- the symbol ' = =>', quoted in the text
   , "LCL902+1"        -- an instance of c31 rewritten by c17 at a variable position
-  , "SEU303+1"        -- Twee's equation between atoms, read as the term equation it comes from
   ]
 
 handcraftedNames :: [String]
@@ -170,12 +161,6 @@ handcraftedNames =
   -- a Skolem definition that the TPTP output cites, and the conjecture is
   -- existential
   , "fof_skolem_definition"
-  -- a conjecture concluding a negation, proved by assuming the negated
-  -- conjuncts and deriving $false from an axiom with head $false
-  , "ALG018+1"
-  -- a hypothesis ? [Y] : r(X,Y) reaches its clause through Vampire's
-  -- skolemisation step, which also cites the Skolem definition it introduced
-  , "fof_skolem_hypothesis"
   -- two goal atoms with one predicate, each taking its own instance from the
   -- negated conjecture clause
   , "fof_existential_goals"
@@ -244,20 +229,9 @@ benchmarkNames =
   , "PUZ011-1"        -- goal literals instantiated under one shared substitution
   , "NLP258-1"
   , "SWV818-1"
-  , "CSR051+1"        -- ? [X] : (A => B(X)) read as A => ? [X] : B(X)
   -- ? [X0] : ! [X1] : G, whose Skolem function term for X1 is the variable
   -- again in the stated goal
   , "GRP656+1"
-  , "ALG203+1"        -- a negated disequality ~(a != b) in a clause, read as a = b
-  -- a superposition of a derived equation into an axiom, replayed as a
-  -- rewrite of the axiom's head
-  , "SEU303+1"
-  -- a hypothesis clause whose body equation the prover wrote the other way
-  -- round and whose head stands next to a disequality
-  , "KLE129+1"
-  -- the drinker, ? [Y] : ! [X] : (f(Y) => f(X)), read as f(Y) => f(X) with the
-  -- hypothesis closed and the goal universal
-  , "SYN048+1"
   ]
 
 -- Benchmarks for which an E prover output exists.
@@ -335,13 +309,9 @@ eBenchmarkNames =
   -- a goal clause whose literals mix a disequality with negative atoms,
   -- X1 != v_x(X1) | ~c_in(X1,v_S,tc_set(t_a)), states two goals
   , "SET864-2"
-  -- an implication conjecture whose hypothesis is a Horn clause, which E
-  -- prints with its literals reordered
-  , "fof_reordered_hypothesis"
   -- an implication conjecture whose hypothesis is an equation, used as a
   -- rewrite in the goal chain
   , "fof_equational_hypothesis"
-  , "ALG018+1"        -- a conjecture concluding a negation, see the Vampire list
   -- E abbreviates the negated conjecture's conjuncts as ~epred <=> ! [X] (~a | ~b),
   -- which unfolds to the existential goals a and b
   , "SYN577-1"
@@ -350,46 +320,16 @@ eBenchmarkNames =
   -- chain of resolutions
   , "e_cdclpropres"
   , "CSR026+3"        -- the same step over seven clauses, a chain through a lemma
-  -- the same step where the goal is existential, so the chain must state the
-  -- instantiation the propositional step leaves out
-  , "CSR057+3"
-  -- a disjunctive conclusion, which is the negation of the conjunction of
-  -- the disjuncts' negations, so those are assumed and $false derived
-  , "SYN346+1"
-  -- a disjunct whose negation is a clause only once the negation is pushed
-  -- inward, ~ ! [Y] : (~ r1(X,Y) | p5(Y)) stating ? [Y] : (r1(X,Y) & ~ p5(Y))
-  , "LCL646+1.001"
-  -- the same where a disjunct is an existential, so the witness it promises
-  -- is named
-  , "SYN378+1"
-  -- a conjunct of the negated conclusion stating two clauses, where
-  -- ! [X] : ((p(X) | r(X)) & q(X)) negates to ? [X] : (~ (p(X) | r(X)) & ~ q(X))
-  , "SYN379+1"
-  -- an implication under an existential quantifier, read as the disjunction
-  -- ~A | B, so the proof assumes A and ~B and derives $false
-  , "SYN339+1"
-  -- a hypothesis promising a witness, big_r(Y) => ? [Z] : big_q(Y,Z), which
-  -- is a Horn clause at the term the prover's Skolemization named
-  , "SYN359+1"
-  -- the same with a conjunctive conclusion, one clause per conjunct
-  , "SYN729+1"
   -- one source formula stating two axioms with the same body and different
   -- heads, which must keep their own numbers or a step cites the other one
   , "MGT001+1"
   -- a hypothesis the conjecture grants, which is stated and not proved, so it
   -- is no lemma candidate
   , "LCL888+1"
-  -- a negated conjunction whose one negated conjunct is the goal, with E's
-  -- negation step nested in a fof_simplification
-  , "LCL414+1"
-  , "PUZ128+1"        -- ? [X] : (C & ~D), the negation of a universal clause
-  , "SYN946+1"        -- a disjunctive conclusion p(Y) | r(Z), proved by contradiction
-  , "PHI011+1"        -- csr(er(csr(csr(..),..)),..) reuses a unit, renamed apart per step
   , "LCL902+1"        -- symbols such as '==>' and '>=', which Twee prints infix
   , "SWW967+1"        -- a re-proof citing the outer candidate lemma c_0_13, stated too
   , "SWW968+1"        -- E's condensation, named condense
   , "CSR117+1"        -- a conjunct proved twice and one never, and 55.67631 quoted
-  , "LCL684+1.001"    -- the conjecture's ! [X1] rebinds the X1 of ? [X1], renamed apart
   ]
 
 mkTest :: String -> String -> String -> TestTree

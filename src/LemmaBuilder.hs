@@ -35,7 +35,8 @@ import Helpers
   , renameRefsBlock, unitEquation
   )
 import Debug (dbgScoped, subrunDepth)
-import ProofTree (classifyRole, conjectureHypotheses, headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
+import Conjecture (conjectureHypotheses)
+import ProofTree (classifyRole, headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, lookupDecl, resolveCopySource, resolveSourceName, unitNameStr)
 import TptpConvert
 import TweeInterface (TweeBudget (..), callTwee, findProver, isAtomEquation, predicateSymbols, runProverCapped, sanitizeId, timeoutSecsFromEnv, toTptpTerm, withTempInput)
 
