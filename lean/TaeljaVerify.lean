@@ -82,6 +82,7 @@ import TaeljaVerify.Twee.ThesisExampleBothLemmasCnf
 import TaeljaVerify.Twee.Col0831
 import TaeljaVerify.Twee.Syn1401
 import TaeljaVerify.Twee.Syn5531
+import TaeljaVerify.Twee.Kle1371
 import TaeljaVerify.Twee.Lcl1261
 import TaeljaVerify.Twee.Col0081
 import TaeljaVerify.Twee.Col0101
@@ -94,6 +95,7 @@ import TaeljaVerify.Twee.Col0221
 import TaeljaVerify.E.Ana0232
 import TaeljaVerify.E.Col0034
 import TaeljaVerify.E.Csr0263
+import TaeljaVerify.E.Lcl8881
 import TaeljaVerify.Twee.Kle1371s
 import TaeljaVerify.E.Syn7291s
 import TaeljaVerify.E.Syn3591s
@@ -173,6 +175,7 @@ import TaeljaVerify.E.Syn9821
 import TaeljaVerify.Vampire.TptpImplicationConjecture
 import TaeljaVerify.Vampire.TffNato
 import TaeljaVerify.Vampire.TffNatoShort
+import TaeljaVerify.Vampire.Hen0093
 import TaeljaVerify.Vampire.TffTypedLemma
 import TaeljaVerify.Vampire.FofSkolemDefinition
 -- Eval benchmark imports
@@ -198,3 +201,4 @@ import TaeljaVerify.Twee.Boo0061
 import TaeljaVerify.Twee.Kle1432
 import TaeljaVerify.Twee.Swb0052
 import TaeljaVerify.Vampire.Set8861
+import TaeljaVerify.Vampire.Alg2102
