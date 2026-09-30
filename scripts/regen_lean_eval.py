@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Generate Lean verification files for all taelja=ok entries in eval_out.
+"""Collect the Lean files of all taelja=ok entries in eval_out into the Lean
+library under lean/.  eval.py has Taelja write each proof as taelja.lean, in
+a namespace of its own, beside taelja.txt.
 
 Usage
   python3 scripts/regen_lean_eval.py [--only-new] [--limit N]
@@ -7,11 +9,10 @@ Usage
   --only-new   skip files that already exist
   --limit N    process at most N files (for testing)
 """
-import subprocess, sys, re, csv, argparse
+import sys, re, csv, argparse
 from pathlib import Path
 
 TAELJA = Path(__file__).resolve().parent.parent
-SCRIPT  = TAELJA / "scripts" / "taelja2lean.py"
 EVAL    = TAELJA / "eval_out"
 LEAN    = TAELJA / "lean" / "TaeljaVerify"
 RESULTS = EVAL / "results.csv"
@@ -29,11 +30,6 @@ def to_camel(name: str) -> str:
     """ANA009-2 → Ana0092,  ALG440-1 → Alg4401,  ALG018+1 → Alg0181"""
     parts = re.split(r'[-_.+]', name)  # MSC015-1.005 -> Msc0151005 (dots and pluses are not valid in Lean names)
     return ''.join(p.capitalize() for p in parts if p)
-
-
-def make_namespace(category: str, prover: str, problem: str) -> str:
-    """e.g. HeqVampireAna0092"""
-    return category.capitalize() + PROVER_DIR[prover] + to_camel(problem)
 
 
 def main():
@@ -60,14 +56,13 @@ def main():
         prob   = row["problem"]           # ANA009-2
         prover = row["prover"]            # vampire / e / twee
 
-        txt_path = EVAL / cat / prob / prover / "taelja.txt"
-        if not txt_path.exists():
-            errors.append(f"MISSING taelja.txt: {txt_path}")
+        lean_path = EVAL / cat / prob / prover / "taelja.lean"
+        if not lean_path.exists():
+            errors.append(f"MISSING taelja.lean (rerun eval.py): {lean_path}")
             continue
 
         prover_dir = PROVER_DIR[prover]
         camel      = to_camel(prob)
-        ns         = make_namespace(cat, prover, prob)
         out_dir    = LEAN / cat / prover_dir
         out_path   = out_dir / f"{camel}.lean"
 
@@ -75,16 +70,7 @@ def main():
             continue
 
         out_dir.mkdir(parents=True, exist_ok=True)
-
-        result = subprocess.run(
-            [sys.executable, str(SCRIPT), "--namespace", ns, str(txt_path)],
-            capture_output=True, text=True,
-        )
-        if result.returncode != 0:
-            errors.append(f"SCRIPT ERROR {prob}/{prover}: {result.stderr[:200]}")
-            continue
-
-        out_path.write_text(result.stdout)
+        out_path.write_text(lean_path.read_text())
         generated.append(f"TaeljaVerify.{cat}.{prover_dir}.{camel}")
 
     # Rewrite TaeljaVerify.lean with all imports

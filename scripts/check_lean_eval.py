@@ -84,7 +84,7 @@ def main():
           f"fail={sum(v=='fail' for v in verdict.values())} "
           f"missing={sum(v=='missing' for v in verdict.values())}")
     print(f"{'cat':4} {'prover':8} {'ok':>5} {'fail':>5}")
-    for c in ("HNE", "HEQ", "UEQ"):
+    for c in ("HNE", "HEQ", "UEQ", "FOF", "TFF"):
         for pr in ("vampire", "e", "twee"):
             sub = [v for (cc, _, pp), v in verdict.items() if cc == c and pp == pr]
             print(f"{c:4} {pr:8} {sum(v=='ok' for v in sub):5} {sum(v!='ok' for v in sub):5}")

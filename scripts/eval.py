@@ -30,8 +30,8 @@ Output layout
   <out>/<category>/<stem>/<prover>/proof.tstp
   <out>/<category>/<stem>/<prover>/taelja.txt
   <out>/<category>/<stem>/<prover>/taelja.err   (if any)
-  <out>/<category>/<stem>/<prover>/lean.lean     (if --lean given and taelja ok)
-  <out>/<category>/<stem>/<prover>/lean.err      (if lean check failed)
+  <out>/<category>/<stem>/<prover>/taelja.lean   (the proof as a Lean file, if taelja ok)
+  <out>/<category>/<stem>/<prover>/lean.err      (if --lean given and the check failed)
   <out>/results.csv
 
 prove is ok, timeout or fail.
@@ -99,8 +99,19 @@ def find_twee():
     return shutil.which('twee')
 
 
-def taelja2lean_script():
-    return str(SCRIPT_DIR / 'taelja2lean.py')
+PROVER_DIR = {'vampire': 'Vampire', 'e': 'E', 'twee': 'Twee'}
+
+
+def lean_module(problem):
+    """ANA009-2 -> Ana0092, ALG018+1 -> Alg0181, MSC015-1.005 -> Msc0151005.
+    Dots, dashes and pluses are not valid in Lean names."""
+    return ''.join(p.capitalize() for p in re.split(r'[-_.+]', problem) if p)
+
+
+def lean_namespace(category, prover, problem):
+    """The namespace of a proof's Lean file, e.g. HeqVampireAna0092, which is
+    its own so that regen_lean_eval.py can put the files into one library."""
+    return category.capitalize() + PROVER_DIR[prover] + lean_module(problem)
 
 def taelja_project_root():
     """Project root where bin/twee lives, needed as cwd for Taelja."""
@@ -337,14 +348,17 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
     # Skip if already fully processed (proof.tstp + taelja.txt both exist).  A
     # cached Taelja timeout is not a result, it depends on the machine's load,
     # so such a row runs Taelja again on the cached proof.
+    # A translated proof without its Lean file is translated again too, which
+    # is how results from before Taelja wrote that file get one.
     if skip_done and (out / 'proof.tstp').exists() and (out / 'taelja.txt').exists() \
-            and _read_taelja_status(out, p_file) != 'timeout':
+            and _read_taelja_status(out, p_file) != 'timeout' \
+            and (_read_taelja_status(out, p_file) != 'ok' or (out / 'taelja.lean').exists()):
         prove_status, tstp = _read_prove_status(out, prover_name)
         result['prove'] = prove_status
         if prove_status == 'ok':
             result['taelja'] = _read_taelja_status(out, p_file)
             if result['taelja'] == 'ok' and lean_bin:
-                lean_out = out / 'lean.lean'
+                lean_out = out / 'taelja.lean'
                 lean_err = out / 'lean.err'
                 if lean_out.exists() and not lean_err.exists():
                     result['lean'] = 'ok'
@@ -398,11 +412,17 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
     tstp_path = out / 'proof.tstp'
     taelja_cwd = taelja_project_root()
     twee_env = {'TAELJA_TWEE_TIMEOUT': '60'}
+    # the same run writes the proof as a Lean file, which Lean checks later
+    lean_file = (out / 'taelja.lean').resolve()
+    if lean_file.exists():
+        lean_file.unlink()
+    args = [f'--lean-out={lean_file}',
+            f'--namespace={lean_namespace(category, prover_name, stem)}', str(tstp_path)]
     if taelja:
-        rc, proof, err = run([taelja, str(tstp_path)], timeout=taelja_timeout,
+        rc, proof, err = run([taelja] + args, timeout=taelja_timeout,
                              cwd=taelja_cwd, extra_env=twee_env)
     else:
-        rc, proof, err = run(['cabal', 'run', 'taelja', '--', str(tstp_path)],
+        rc, proof, err = run(['cabal', 'run', 'taelja', '--'] + args,
                              timeout=taelja_timeout, cwd=taelja_cwd, extra_env=twee_env)
 
     (out / 'taelja.txt').write_text(proof)
@@ -430,7 +450,7 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
 
     # 3. Lean verification (optional)
     if result['taelja'] == 'ok' and lean_bin:
-        result['lean'] = _run_lean(proof, out, lean_bin)
+        result['lean'] = _run_lean(out, lean_bin)
 
     return result
 
@@ -443,27 +463,19 @@ def _check_cached_timeout(out):
     return 'fail'
 
 
-def _run_lean(taelja_proof, out_dir, lean_bin):
-    """Translate taelja proof to Lean 4 and verify it. Returns 'ok' or 'fail'."""
-    import sys
-    t2l = taelja2lean_script()
-    rc, lean_src, err = run([sys.executable, t2l], timeout=10,
-                             stdin_text=taelja_proof)
-    if rc != 0 or not lean_src.strip():
-        (out_dir / 'lean.err').write_text(f'taelja2lean failed: {err}')
+def _run_lean(out_dir, lean_bin):
+    """Check the Lean file Taelja wrote for the proof. Returns 'ok' or 'fail'."""
+    lean_file = out_dir / 'taelja.lean'
+    if not lean_file.exists():
+        (out_dir / 'lean.err').write_text('taelja wrote no Lean file')
         return 'fail'
-
-    lean_file = out_dir / 'lean.lean'
-    lean_file.write_text(lean_src)
-
-    rc2, _, lean_err = run([lean_bin, str(lean_file)], timeout=30)
-    if rc2 == 0:
+    rc, lean_out, lean_err = run([lean_bin, str(lean_file)], timeout=120)
+    if rc == 0 and 'error' not in lean_out + lean_err:
         if (out_dir / 'lean.err').exists():
             (out_dir / 'lean.err').unlink()
         return 'ok'
-    else:
-        (out_dir / 'lean.err').write_text(lean_err[:2000])
-        return 'fail'
+    (out_dir / 'lean.err').write_text((lean_out + lean_err)[:2000])
+    return 'fail'
 
 
 def main():

@@ -116,6 +116,7 @@ cabal build
 cabal run taelja -- <proof-file.tstp>
 cabal run taelja -- --debug <proof-file.tstp>
 cabal run taelja -- --tptp <proof-file.tstp>
+cabal run taelja -- --lean <proof-file.tstp>
 ```
 
 `--debug` additionally prints the parsed units, the refutation proof tree,
@@ -128,13 +129,25 @@ the last step of its block, and no step derives $false.
 ## Checking a proof with Lean
 
 ```
-cabal run taelja -- proof.tstp > proof.txt
-python3 scripts/taelja2lean.py proof.txt > proof.lean
-cd lean && lake env lean proof.lean
+cabal run taelja -- --lean proof.tstp > proof.lean
+cd lean && lake env lean ../proof.lean
 ```
 
-Each theorem in the generated file mirrors one lemma or goal of the
-structured proof.
+`--lean` prints the proof as a Lean 4 file. Every symbol is declared over one
+uninterpreted nonempty sort, every axiom is a Lean axiom, and every lemma and
+goal is a theorem whose proof follows the block line by line. A have or hence
+line applies the statement it cites to explicit arguments and to the lines it
+rests on, and a rewrite is congruence at the rewritten subterm with the cited
+equation instantiated explicitly. No search tactic is used, so Lean accepts
+the file only if each step is the inference the proof says it is. A body
+equation that the instance turns into `t = t` is closed by `rfl`, which is
+equality resolution. A step that cannot be stated this way is left as the
+undefined name `taelja_step_not_justified`, which Lean rejects.
+
+The declarations are in the namespace `TaeljaProof`, or the one given with
+`--namespace=NAME`. `--lean-out=FILE` writes the Lean file beside the output
+otherwise requested, from the same run. The file imports nothing, so plain
+`lean proof.lean` checks it as well.
 
 ## Testing
 
@@ -144,8 +157,11 @@ cabal test
 
 Golden tests translate stored prover outputs for all three provers
 (`test/baseline_{vampire,e,twee}/`) and compare against
-`test/expected_{vampire,e,twee}/`. Each golden also has a Lean module under
-`lean/TaeljaVerify/`.
+`test/expected_{vampire,e,twee}/`. The Lean group prints each of them with
+`--lean` and compares against its module under `lean/TaeljaVerify/`, so the
+modules Lean checks are what the translator prints, and
+`lean/TaeljaVerify.lean` imports exactly them. `cd lean && lake build` checks
+them all.
 
 ## Running the evaluation
 
@@ -165,14 +181,14 @@ The first command writes the problem lists, one per format, judging each FOF
 and TFF problem with `taelja --horn-problem <problem.p>` and reading the CNF
 categories off the SPC field. The second runs E, Twee and Vampire on them
 and translates every proof, writing `eval_out/<category>/<problem>/<prover>/`
-and `eval_out/results.csv`; `--skip-done` resumes an interrupted run. The
-last two translate every translated proof to Lean and check it:
-`regen_lean_eval.py` writes a module under `lean/TaeljaVerify/` for every
-translated proof and deletes the modules of proofs no longer translated, and
-`check_lean_eval.py` runs `lake env lean` on each module by itself, since one
-`lake build` stops scheduling modules once some fail and under-reports, and
-records the verdicts in the `lean` column of `results.csv` and in
-`eval_out/lean_failing.txt`. (`eval.py --lean` checks each proof right after
-translation without the project context; it is a quick check, not the one
-the paper reports.) The scripts only write under `eval_out/` and
-`lean/TaeljaVerify/`.
+and `eval_out/results.csv`; `--skip-done` resumes an interrupted run. Each
+translation also writes the proof as a Lean file, `taelja.lean`, beside
+`taelja.txt`. The last two commands check those files:
+`regen_lean_eval.py` copies the file of every translated proof to a module
+under `lean/TaeljaVerify/` and deletes the modules of proofs no longer
+translated, and `check_lean_eval.py` runs `lake env lean` on each module by
+itself, since one `lake build` stops scheduling modules once some fail and
+under-reports, and records the verdicts in the `lean` column of
+`results.csv` and in `eval_out/lean_failing.txt`. (`eval.py --lean PATH`
+checks each file right after translation instead.) The scripts only write
+under `eval_out/` and `lean/TaeljaVerify/`.

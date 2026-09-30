@@ -12,12 +12,18 @@ import Test.Tasty.Golden
 import Test.Tasty.Golden.Advanced (goldenTest)
 import System.Process (readProcessWithExitCode)
 
+import Data.Char (isAlphaNum, isDigit, isUpper, ord, toLower, toUpper)
+import Data.List (isInfixOf, nub)
+
 import Translate (translate)
 import Emitter (emit)
 import TptpEmitter (emitTptp)
+import LeanEmitter (emitLean)
 import Helpers (extractSzsBlock)
-import Types (StructuredProof)
+import Types
 import qualified Data.Text as Text
+import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy.Encoding as TLE
 
 main :: IO ()
 main = do
@@ -35,6 +41,8 @@ tests = testGroup "Taelja"
   , testGroup "Twee"        (map (mkTest "expected_twee"    "baseline_twee")    tweeBenchmarkNames)
   , testGroup "Twee, no fallback" (map mkReadTest tweeReadNames)
   , testGroup "TPTP"        (map mkTptpTest tptpNames)
+  , testGroup "Lean"        (leanRootTest : map mkLeanTest leanNames)
+  , testGroup "Lean, steps"  leanStepTests
   ]
 
 -- Every proof of the suite printed as a TPTP derivation by --tptp.
@@ -333,6 +341,95 @@ eBenchmarkNames =
   , "CSR117+1"        -- a conjunct proved twice and one never, and 55.67631 quoted
   ]
 
+-- Every proof of the suite printed as a Lean file by --lean.  The golden is
+-- the module of the Lean project under lean/, so what Lean checks there is
+-- what the translator prints, and lean/TaeljaVerify.lean imports exactly
+-- these modules.
+leanNames :: [(String, String)]
+leanNames = nub tptpNames
+
+proverDir :: String -> String
+proverDir (c : cs) = toUpper c : cs
+proverDir []       = []
+
+-- The Lean module of a proof.  A TPTP name keeps its domain and numbers with
+-- the separator spelled, so that MGT001+1 and MGT001-1 get modules of their
+-- own, and any other name is put in camel case.
+leanModule :: String -> String
+leanModule name = case name of
+  (a : b : c : rest)
+    | all isUpper [a, b, c]
+    , (num, sep : version) <- span isDigit rest
+    , length num == 3, not (null version), all (\x -> isDigit x || x == '.') version ->
+        a : map toLower [b, c] ++ num ++ separator sep ++ map (\x -> if x == '.' then 'v' else x) version
+  _ -> concatMap capitalize (splitWords name)
+  where
+    separator '-' = ""
+    separator '+' = "p"
+    separator '_' = "t"
+    separator x   = "c" ++ show (ord x)
+    capitalize (x : xs) = toUpper x : xs
+    capitalize []       = []
+    splitWords w = case break (not . isAlphaNum) w of
+      (x, [])       -> [x]
+      (x, _ : more) -> x : splitWords more
+
+mkLeanTest :: (String, String) -> TestTree
+mkLeanTest (prover, name) = goldenVsString (prover ++ "/" ++ name)
+  ("lean/TaeljaVerify/" ++ proverDir prover ++ "/" ++ leanModule name ++ ".lean")
+  (runEncoded utf8 (emitLean (proverDir prover ++ leanModule name)) ("test/baseline_" ++ prover ++ "/" ++ name ++ ".tstp"))
+
+leanRootTest :: TestTree
+leanRootTest = goldenVsString "TaeljaVerify.lean" "lean/TaeljaVerify.lean" $ return $ utf8 $ unlines $
+  [ "-- The root of the `TaeljaVerify` library: one module per proof of the test"
+  , "-- suite, as `taelja --lean` prints it.  The test suite keeps this file and"
+  , "-- the modules up to date (cabal test --test-options=--accept)."
+  , "import TaeljaVerify.Basic" ]
+  ++ [ "import TaeljaVerify." ++ proverDir prover ++ "." ++ leanModule name | (prover, name) <- leanNames ]
+
+-- The Lean file states a step only when it is the inference the proof says
+-- it is, and otherwise leaves a name Lean does not know.  Each pair below is
+-- a small proof and a variant with one wrong step.
+leanStepTests :: [TestTree]
+leanStepTests =
+  [ stated   "have and hence"                 [Have pa "axiom 1", Hence qa (ByAxiom "axiom 2")]
+  , unstated "have by an axiom stating another fact" [Have pb "axiom 1", Hence qa (ByAxiom "axiom 2")]
+  , unstated "hence without its premise"      [Hence qa (ByAxiom "axiom 2")]
+  , unstated "hence of another instance"      [Have pa "axiom 1", Hence (Rel "q" [b]) (ByAxiom "axiom 2")]
+  , unstated "block ending on another fact"   [Have pa "axiom 1"]
+  , statedFor pa   "rewrite of the line before"    [Have pfa "axiom 4", Hence pa (ByRw "axiom 3" (Just LR))]
+  , unstatedFor pa "rewrite in the wrong direction" [Have pfa "axiom 4", Hence pa (ByRw "axiom 3" (Just RL))]
+  , unstatedFor pb "rewrite into another term"     [Have pfa "axiom 4", Hence pb (ByRw "axiom 3" Nothing)]
+  , statedFor (Rel "r" [c])   "body equation closed by reflexivity" [Have (Rel "r" [c]) "axiom 5"]
+  , unstatedFor (Rel "r" [a]) "body equation that is not reflexive" [Have (Rel "r" [a]) "axiom 5"]
+  , chainTest True  "chain of two steps" [(step, f a), (step, a)]
+  , chainTest False "chain step that is two rewrites" [(step, a)]
+  , chainTest False "chain step in the wrong direction" [(step { rwDir = RL }, f a), (step, a)]
+  ]
+  where
+    a = Const "a"; b = Const "b"; c = Const "c"
+    f t = App "f" [t]
+    x = Var "X"
+    pa = Rel "p" [a]; pb = Rel "p" [b]; qa = Rel "q" [a]; pfa = Rel "p" [f a]
+    step = RwStep "axiom 3" (f x, x) LR
+    proofOf goal blk = StructuredProof
+      { axioms = [ AUnit "axiom 1" pa
+                 , ANucleus "axiom 2" (Clause [Rel "p" [x]] (Just (Rel "q" [x])))
+                 , AUnit "axiom 3" (Eq (f x) x)
+                 , AUnit "axiom 4" pfa
+                 , ANucleus "axiom 5" (Clause [Eq x c] (Just (Rel "r" [x]))) ]
+      , lemmas = [], goals = [(goal, blk)], spInput = emptyInput }
+    holds goal blk = not ("taelja_step_not_justified" `isInfixOf` emitLean "" (proofOf goal blk))
+    check want name goal blk = goldenTest name (return want) (return (holds goal blk))
+      (\w got -> return (if w == got then Nothing
+                          else Just (if w then "a correct step is not stated" else "a wrong step is stated")))
+      (const (return ()))
+    statedFor goal name ls   = check True name goal (HaveHence ls)
+    unstatedFor goal name ls = check False name goal (HaveHence ls)
+    stated   = statedFor qa
+    unstated = unstatedFor qa
+    chainTest want name steps = check want name (Eq (f (f a)) a) (EqChain (f (f a)) steps)
+
 mkTest :: String -> String -> String -> TestTree
 mkTest expectedDir prover name = goldenVsString name
   ("test/" ++ expectedDir ++ "/" ++ name ++ ".txt")
@@ -360,7 +457,14 @@ mkTptpTest (prover, name) = goldenVsString (prover ++ "/" ++ name)
   (run emitTptp ("test/baseline_" ++ prover ++ "/" ++ name ++ ".tstp"))
 
 run :: (StructuredProof -> String) -> FilePath -> IO LBS.ByteString
-run render path = do
+run = runEncoded LBS.pack
+
+-- A Lean file is not ASCII, so it is compared as UTF-8.
+utf8 :: String -> LBS.ByteString
+utf8 = TLE.encodeUtf8 . TL.pack
+
+runEncoded :: (String -> LBS.ByteString) -> (StructuredProof -> String) -> FilePath -> IO LBS.ByteString
+runEncoded encode render path = do
   raw <- TIO.readFile path
   let contents = Text.pack (extractSzsBlock (Text.unpack raw))
   case eitherResult (feed (parseTSTP contents) mempty) of
@@ -368,4 +472,4 @@ run render path = do
     Right tstp -> do
       result <- catch (translate False tstp >>= \msp -> evaluate (force (either (++ "\n") render msp)))
                       (\e -> return (show (e :: SomeException)))
-      return (LBS.pack result)
+      return (encode result)

@@ -5,7 +5,7 @@ import Control.DeepSeq (force)
 import Control.Exception (SomeException, evaluate, try)
 import System.Environment (getArgs)
 import System.Exit (exitFailure, exitSuccess)
-import System.IO (hPutStrLn, stderr)
+import System.IO (IOMode (WriteMode), hPutStr, hPutStrLn, hSetEncoding, stderr, stdout, utf8, withFile)
 
 import qualified Data.Text.IO as TIO
 import qualified Data.TPTP as T
@@ -17,6 +17,9 @@ import Translate (translate)
 import TweeInterface (disableFallback)
 import Emitter (emit)
 import TptpEmitter (emitTptp)
+import LeanEmitter (emitLean)
+import Data.List (isPrefixOf, stripPrefix)
+import Data.Maybe (listToMaybe, mapMaybe)
 import qualified Data.Text as Text
 import Helpers (extractSzsBlock)
 import Debug (dumpProofTree, dumpInferenceRules)
@@ -24,15 +27,27 @@ import HornProblem (hornProblem, loadProblem)
 
 main :: IO ()
 main = do
+  -- a Lean file is not ASCII, so the output is UTF-8 whatever the locale
+  hSetEncoding stdout utf8
   args <- getArgs
   let flags = filter ((== "--") . take 2) args
       files = filter ((/= "--") . take 2) args
       debug = "--debug" `elem` flags
-      render = if "--tptp" `elem` flags then emitTptp else emit
-      known = ["--debug", "--tptp", "--no-fallback", "--horn-problem", "--lenient"]
+      -- the namespace of the Lean file, which several files imported
+      -- together must each have their own
+      namespace = maybe "" id (listToMaybe (mapMaybe (stripPrefix "--namespace=") flags))
+      lean = emitLean namespace
+      render | "--tptp" `elem` flags = emitTptp
+             | "--lean" `elem` flags = lean
+             | otherwise             = emit
+      -- the Lean file written beside the requested output, from the same run
+      leanOut = listToMaybe (mapMaybe (stripPrefix "--lean-out=") flags)
+      known = ["--debug", "--tptp", "--lean", "--no-fallback", "--horn-problem", "--lenient"]
+      valued = ["--namespace=", "--lean-out="]
+      knownFlag f = f `elem` known || any (`isPrefixOf` f) valued
   inputFile <- case files of
-    [f] | all (`elem` known) flags -> return f
-    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--tptp] [--no-fallback] <proof-file> | taelja --horn-problem [--lenient] <problem-file>" >> exitFailure
+    [f] | all knownFlag flags -> return f
+    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--tptp | --lean] [--namespace=NAME] [--lean-out=FILE] [--no-fallback] <proof-file> | taelja --horn-problem [--lenient] <problem-file>" >> exitFailure
   -- Is the problem Horn as written?  Prints "horn" or the first offending unit.
   when ("--horn-problem" `elem` flags) $ do
     r <- loadProblem inputFile
@@ -67,9 +82,13 @@ main = do
         -- fails lazily on constructs outside the Horn fragment, so printing as
         -- we go could leave a truncated proof that looks complete.
         Right sp -> do
-          r <- try (evaluate (force (render sp)))
+          r <- try (evaluate (force (render sp, fmap (const (lean sp)) leanOut)))
           case r of
             Left e -> do
               hPutStrLn stderr ("translate: " ++ show (e :: SomeException))
               exitFailure
-            Right out -> putStr out
+            Right (out, leanFile) -> do
+              case (leanOut, leanFile) of
+                (Just path, Just text) -> withFile path WriteMode (\h -> hSetEncoding h utf8 >> hPutStr h text)
+                _                      -> return ()
+              putStr out

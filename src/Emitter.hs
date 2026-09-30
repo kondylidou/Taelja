@@ -1,4 +1,4 @@
-module Emitter (emit, applyRenaming, pruneUnusedLemmas, axiomRenaming, blockRenaming) where
+module Emitter (emit, finalProof, applyRenaming, pruneUnusedLemmas, axiomRenaming, blockRenaming) where
 
 import Data.Char (toUpper)
 import Data.List (intercalate, nub, partition)
@@ -22,7 +22,12 @@ emit sp0 = unlines $ concat
   , intercalate [""] (zipWith goalLines [1..] (goals sp))
   ]
   where
-    sp = renumberAxioms (pruneUnusedLemmas sp0)
+    sp = finalProof sp0
+
+-- The proof as every output states it: without the lemmas nothing cites and
+-- with axioms and lemmas numbered in order.
+finalProof :: StructuredProof -> StructuredProof
+finalProof = renumberAxioms . pruneUnusedLemmas
 
 axiomVars :: Axiom -> [String]
 axiomVars (AUnit _ l)                 = litVars l
