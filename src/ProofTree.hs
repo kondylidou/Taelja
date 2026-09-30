@@ -33,27 +33,11 @@ import Helpers (applySubst, applySubstTerm, clauseInstance, variantKey, deepAppl
                 mapLiteralTerms, matchLit, matchLitWith, matchTerms, suffixVarsLit,
                 unifyLits, unifyTerms)
 import Conjecture
-import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertLit, declSymbols, isReservedTLit)
+import TptpConvert (clauseToDecl, collectDisjuncts, convertDeclToClause, convertLit, declSymbols, isReservedTLit, usesTheory)
 data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
   deriving (Show)
--- A declaration with a distinct object, "Apple" say, in a term.
-usesDistinctObjects :: T.Declaration -> Bool
-usesDistinctObjects d = case d of
-  T.Formula _ (T.CNF (T.Clause lits)) -> any (litHas . snd) (toList lits)
-  T.Formula _ (T.FOF f)               -> formulaHas f
-  _                                   -> False
-  where
-    formulaHas (T.Atomic l)         = litHas l
-    formulaHas (T.Negated g)        = formulaHas g
-    formulaHas (T.Connected l _ r)  = formulaHas l || formulaHas r
-    formulaHas (T.Quantified _ _ b) = formulaHas b
-    litHas (T.Predicate _ ts) = any termHas ts
-    litHas (T.Equality a _ b) = termHas a || termHas b
-    termHas (T.DistinctTerm _) = True
-    termHas (T.Function _ ts)  = any termHas ts
-    termHas _                  = False
 -- A negated_conjecture clause that has a positive literal and only copies an
 -- input is a hypothesis the conjecture granted, listed with the axioms.  An
 -- implication conjecture negates into its hypotheses plus the negated
@@ -122,7 +106,7 @@ buildProofInfo allUnits = do
   -- distinct objects are unequal by a theory fact, not by an inference
   mapM_ (\n -> Left ("unsupported proof, unit " ++ n
                      ++ " uses distinct objects, whose inequality is a theory fact outside the calculus"))
-        (take 1 [ unitNameStr n | T.Unit n d _ <- allUnits, usesDistinctObjects d ])
+        (take 1 [ unitNameStr n | T.Unit n d _ <- allUnits, usesTheory d ])
   conjecture <- mapM readConjecture (listToMaybe (fofConjectures allUnits))
   -- a refutation whose leaves have no atom was found by simplifying the
   -- formulas before clausification, as E's fof_simplification of

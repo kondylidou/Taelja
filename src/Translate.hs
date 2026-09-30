@@ -25,7 +25,7 @@ import System.IO (hPutStrLn, stderr)
 import Types
 import Helpers
 import PropRes (expandPropRes)
-import Conjecture (conjectureHypotheses)
+import Conjecture (conjectureHypotheses, expandSimplifiedConjecture)
 import ProofTree
   ( buildProofInfo, inlineAtomCongruences, headLitOf, isDerivedUnit, isFileSrc, isOrigAxiomDecl, isPositiveUnitFormula, unitNameStr
   , resolveCopySource
@@ -143,7 +143,7 @@ translateUntyped debug tstp = do
 -- inside a lemma is still listed.
 translateMode :: Bool -> T.TSTP -> IO (Either String StructuredProof)
 translateMode debug (T.TSTP _ units0) = do
-  let units = expandPropRes (inlineAtomCongruences (map dedupLiterals units0))
+  let units = expandPropRes (expandSimplifiedConjecture (inlineAtomCongruences (map dedupLiterals units0)))
   depth <- subrunDepth
   when (depth == 0) clearLemmaCache
   case buildProofInfo units of

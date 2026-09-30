@@ -22,7 +22,7 @@ import System.Directory (doesFileExist)
 import System.Environment (lookupEnv)
 import System.FilePath (takeDirectory, (</>))
 
-import TptpConvert (collectDisjuncts, convertFOFToClause, eraseSorts, isReservedTLit)
+import TptpConvert (collectDisjuncts, convertFOFToClause, eraseSorts, isReservedTLit, usesTheory)
 
 -- The units of a problem file with its includes spliced in.  An include is
 -- relative to the TPTP root, the directory above Problems, or to $TPTP.
@@ -59,11 +59,17 @@ loadProblem file = do
       return (if ok then x : rest else rest)
 
 -- Nothing when the problem is Horn as written, else the unit and the reason.
+-- A problem that rests on the theory of distinct objects is outside too,
+-- since their inequality is a theory fact and not an inference of the
+-- calculus.
 hornProblem :: Bool -> [T.Unit] -> Maybe String
-hornProblem lenient units = case [ r | u <- units, Just r <- [offending u] ] of
+hornProblem lenient units = case [ r | u <- units, Just r <- [theory u, offending u] ] of
   []      -> Nothing
   (r : _) -> Just r
   where
+    theory (T.Unit n d _)
+      | usesTheory d = Just (name n ++ ": uses distinct objects, a theory fact outside the calculus")
+    theory _ = Nothing
     hasConjecture = not (null [ () | T.Unit _ (T.Formula (T.Standard T.Conjecture) _) _ <- units ])
     offending (T.Unit n (T.Formula (T.Standard T.Conjecture) form) _) = case form of
       T.FOF f | conjectureOk f -> Nothing
@@ -132,6 +138,8 @@ hornConjecture f = case stripForall f of
     conclusion g = case g of
       T.Quantified _ _ b -> conclusion b
       T.Negated b        -> Refute <$> atoms b
+      -- a disequality s != t is the negated atom ~(s = t)
+      T.Atomic (T.Equality l T.Negative r) -> Just (Refute [T.Equality l T.Positive r])
       _                  -> Derive <$> atoms g
     atoms g = case g of
       T.Connected l T.Conjunction r -> (++) <$> atoms l <*> atoms r

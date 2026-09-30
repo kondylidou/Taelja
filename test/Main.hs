@@ -238,6 +238,7 @@ benchmarkNames =
 eBenchmarkNames :: [String]
 eBenchmarkNames =
   [ "GRP001-5"
+  , "SYN973+1"        -- E simplifies ~(p(z) => p(z)) to ~$true; the resolution of the clauses is put back
   , "COL003-4"
   , "LCL146-1"
   , "e_unit_source_axiom"

@@ -9,6 +9,7 @@
 module Conjecture
   ( Conjecture (..)
   , readConjecture
+  , expandSimplifiedConjecture
   , conjectureHypotheses
   , fofConjectures
   , clauseFormula
@@ -24,7 +25,7 @@ import Data.TPTP.Pretty ()
 import Prettyprinter (pretty)
 import Types
 import Helpers (dropVarEquations)
-import TptpConvert (convertLit)
+import TptpConvert (clauseToDecl, convertLit)
 import HornProblem (HornGoal (..), hornConjecture)
 data Conjecture = Conjecture
   { cjHyps    :: [Clause]      -- the antecedent's clauses
@@ -39,6 +40,70 @@ readConjecture f0 = case hornConjecture f of
   where
     f = renameBoundApart f0
     unit l = Clause [] (Just (convertLit l))
+
+-- E simplifies the negation of a conjecture whose conclusion is one of its
+-- hypotheses, as ~(p(z) => p(z)) on SYN973+1, to ~$true before clausifying,
+-- and the refutation then has no inference to read.  Clausified instead, the
+-- negated conjecture is the hypotheses and the negated conclusion, and each
+-- goal atom resolves with the hypothesis that states it, as Vampire's proof
+-- of the same problem shows.  Those steps are put back here: the simplified
+-- unit is derived by resolution from the clauses, which carry the
+-- negated_conjecture role as E's own clausal form would.
+expandSimplifiedConjecture :: [T.Unit] -> [T.Unit]
+expandSimplifiedConjecture units = go Set.empty units
+  where
+    conjecture = listToMaybe
+      [ (n, f) | T.Unit n (T.Formula (T.Standard T.Conjecture) (T.FOF f)) _ <- units ]
+    go _ [] = []
+    go rewritten (u@(T.Unit n d (Just (src, _))) : rest)
+      | T.Inference (T.Atom rule) _ _ <- src
+      , rule == Text.pack "fof_simplification"
+      , isNegatedTruth d
+      , Just (cn, f) <- conjecture
+      , Right c <- readConjecture f
+      , gs@(_ : _) <- map convertLit (cjGoals c)
+      , all (\g -> Clause [] (Just g) `elem` cjHyps c) gs
+      = expansion n cn gs ++ go (Set.insert (unitName n) rewritten) rest
+      -- a unit that only copies the simplified one, as E's fof_nnf,
+      -- split_conjunct and cn steps do, is dropped, since the resolution
+      -- already derives $false and a clausification step is no inference
+      | isTruthConstant d
+      , T.Inference _ _ ps <- src
+      , names@(_ : _) <- [ unitName pn | T.Parent (T.UnitSource pn) _ <- ps ]
+      , all (`Set.member` rewritten) names
+      = go (Set.insert (unitName n) rewritten) rest
+      | otherwise = u : go rewritten rest
+    go rewritten (u : rest) = u : go rewritten rest
+    expansion n cn gs =
+      [ T.Unit (mkName (hypName i)) (negConj (clauseToDecl (Clause [] (Just g)))) (Just (negation, Nothing))
+      | (i, g) <- zip [1 :: Int ..] gs ]
+      ++ [ T.Unit (mkName goalName) (negConj (clauseToDecl (Clause gs Nothing))) (Just (negation, Nothing)) ]
+      ++ [ T.Unit (stepName i) (clauseToDecl (Clause (drop i gs) Nothing))
+                  (Just (resolution (if i == 1 then mkName goalName else mkName (base ++ "_r" ++ show (i - 1)))
+                                    (mkName (hypName i)), Nothing))
+         | i <- [1 .. length gs] ]
+      where
+        base = unitName n
+        hypName i  = base ++ "_h" ++ show i
+        goalName   = base ++ "_g"
+        stepName i = if i == length gs then n else mkName (base ++ "_r" ++ show i)
+        negation   = T.Inference (T.Atom (Text.pack "assume_negation"))
+                                 [T.Status (T.Standard T.CTH)] [parentOf cn]
+        resolution l r = T.Inference (T.Atom (Text.pack "resolution"))
+                                     [T.Status (T.Standard T.THM)] [parentOf l, parentOf r]
+        negConj (T.Formula _ e) = T.Formula (T.Standard T.NegatedConjecture) e
+        negConj e               = e
+    isNegatedTruth (T.Formula _ (T.FOF (T.Negated (T.Atomic (T.Predicate (T.Reserved (T.Standard T.Tautology)) []))))) = True
+    isNegatedTruth _ = False
+    isTruthConstant d = isNegatedTruth d || case d of
+      T.Formula _ (T.CNF (T.Clause lits)) ->
+        toList lits == [(T.Positive, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])]
+      T.Formula _ (T.FOF (T.Atomic (T.Predicate (T.Reserved (T.Standard T.Falsum)) []))) -> True
+      _ -> False
+    mkName nm  = Left (T.Atom (Text.pack nm))
+    parentOf nm = T.Parent (T.UnitSource nm) []
+    unitName (Left (T.Atom t)) = Text.unpack t
+    unitName (Right k)         = show k
 
 freeVars :: T.FirstOrder s -> Set.Set T.Var
 freeVars (T.Atomic l)          = Set.fromList (litV l)

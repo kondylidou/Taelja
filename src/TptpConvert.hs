@@ -14,6 +14,7 @@ module TptpConvert
   , eraseSorts
   , dedupLiterals
   , declSymbols
+  , usesTheory
   ) where
 
 import Data.List (nub, partition)
@@ -60,6 +61,27 @@ eraseSorts (T.TSTP szs units) = T.TSTP szs (concatMap erase units)
     untyped (T.Negated f)           = T.Negated (untyped f)
     untyped (T.Connected l c r)     = T.Connected (untyped l) c (untyped r)
     untyped (T.Quantified q vs f)   = T.Quantified q (fmap (\(v, _) -> (v, T.Unsorted ())) vs) (untyped f)
+
+-- A declaration that rests on the theory of distinct objects: a term "Apple"
+-- or the predicate $distinct.  Such objects are unequal by a theory fact, not
+-- by an inference of the calculus.
+usesTheory :: T.Declaration -> Bool
+usesTheory d = case d of
+  T.Formula _ (T.CNF (T.Clause lits)) -> any (litHas . snd) (toList lits)
+  T.Formula _ (T.FOF f)               -> formulaHas f
+  T.Formula _ (T.TFF0 f)              -> formulaHas f
+  _                                   -> False
+  where
+    formulaHas (T.Atomic l)         = litHas l
+    formulaHas (T.Negated g)        = formulaHas g
+    formulaHas (T.Connected l _ r)  = formulaHas l || formulaHas r
+    formulaHas (T.Quantified _ _ b) = formulaHas b
+    litHas (T.Predicate (T.Reserved (T.Standard T.Distinct)) _) = True
+    litHas (T.Predicate _ ts) = any termHas ts
+    litHas (T.Equality a _ b) = termHas a || termHas b
+    termHas (T.DistinctTerm _) = True
+    termHas (T.Function _ ts)  = any termHas ts
+    termHas _                  = False
 
 -- A clause with a repeated literal stated once, as duplicate literal
 -- elimination leaves it.  E and Vampire clausify SYN046+1's negated

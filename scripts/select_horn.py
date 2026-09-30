@@ -66,19 +66,25 @@ def form_of(p_file):
     return None
 
 
+UNKNOWN = {}
+
+
 def is_horn(taelja, p_file, tptp_dir):
-    """True, False, or None when the problem could not be read."""
+    """True, False, or None when the problem could not be read, with the
+    reason kept in UNKNOWN."""
     env = dict(os.environ, TPTP=str(tptp_dir))
     try:
         r = subprocess.run([taelja, '--horn-problem', str(p_file)],
-                           cwd=tptp_dir, env=env, capture_output=True, text=True, timeout=120)
+                           cwd=tptp_dir, env=env, capture_output=True, text=True, timeout=900)
     except subprocess.TimeoutExpired:
+        UNKNOWN[str(p_file)] = 'timeout'
         return None
     out = (r.stdout + r.stderr).strip()
     if out == 'horn':
         return True
     if out.startswith('not horn:'):
         return False
+    UNKNOWN[str(p_file)] = out.splitlines()[0][:160] if out else 'no output'
     return None
 
 
@@ -142,6 +148,11 @@ def main():
             for p in sorted(horn[form]):
                 f.write(f'{form}\t{p.relative_to(tptp)}\n')
         print(f'{len(horn[form])} {form} Horn problems written to {out / fname}')
+    if UNKNOWN:
+        with open(out / 'unknown.txt', 'w') as f:
+            for p, why in sorted(UNKNOWN.items()):
+                f.write(f'{Path(p).relative_to(tptp)}\t{why}\n')
+        print(f'{len(UNKNOWN)} problems could not be read, listed in {out / "unknown.txt"}')
 
 
 if __name__ == '__main__':
