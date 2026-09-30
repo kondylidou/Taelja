@@ -178,6 +178,13 @@ def strip_twee_preamble(output):
     return output
 
 
+def launch_failed(out):
+    """The prover process could not be started, as with a TPTP directory that
+    does not exist.  Such a run says nothing about the problem and is redone."""
+    err_file = out / 'prover.err'
+    return err_file.exists() and err_file.read_text().startswith('[Errno')
+
+
 def prover_emit_failed(stdout):
     """Prover reported a proof (status marker) but failed to emit usable
     proof clauses, e.g. Twee crashing in its proof output component."""
@@ -349,7 +356,7 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
     # the prover binary, so it is re-run.
     proof_tstp = out / 'proof.tstp'
     cached_status = None
-    if proof_tstp.exists():
+    if proof_tstp.exists() and not launch_failed(out):
         tstp = proof_tstp.read_text()
         if prover_succeeded(prover_name, tstp):
             cached_status = 'ok'
@@ -368,8 +375,12 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
         if prover_name == 'twee':
             tstp = strip_twee_preamble(tstp)
         proof_tstp.write_text(tstp)
+        # the error file belongs to this run, so one left by an earlier run
+        # goes when this run printed nothing
         if err.strip():
             (out / 'prover.err').write_text(err)
+        elif (out / 'prover.err').exists():
+            (out / 'prover.err').unlink()
         if rc == -1:
             prove_status = 'timeout'
         elif prover_succeeded(prover_name, tstp):
@@ -504,7 +515,12 @@ def main():
         print(f"lean:     {lean_bin}")
     print(f"timeouts: prover={args.timeout}s  taelja={taelja_timeout}s")
 
-    tptp = Path(args.tptp_dir)
+    # The provers run with the TPTP directory as their working directory, so
+    # it is made absolute, and a wrong path stops the run here.  Otherwise
+    # cached results would be reported while every new run fails to start.
+    tptp = Path(args.tptp_dir).resolve()
+    if not (tptp / 'Problems').is_dir():
+        raise SystemExit(f"error: no Problems/ directory under {tptp}")
     out  = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
 
@@ -522,6 +538,10 @@ def main():
             cat = classify_problem(p)
             if cat:
                 problems.append((p, cat))
+
+    missing = [str(p) for p, _ in problems if not p.exists()]
+    if missing:
+        raise SystemExit(f"error: {len(missing)} listed problems do not exist, the first is {missing[0]}")
 
     categories = [c for c in CATEGORIES + ['FOF', 'TFF'] if any(cat == c for _, cat in problems)]
     for c in categories:

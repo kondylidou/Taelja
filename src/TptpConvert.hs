@@ -204,6 +204,9 @@ collectDisjuncts (T.Connected body T.Implication hd) =
   (++) <$> collectImplBody body <*> collectDisjuncts hd
   where
     collectImplBody (T.Quantified T.Forall _ b) = collectImplBody b
+    -- a hypothesis s != t is the positive literal s = t of the clause, so
+    -- SWW959+1's (X != a & X != b & p(X)) => q(X) has three positive literals
+    collectImplBody (T.Atomic (T.Equality l T.Negative r)) = Just [(T.Positive, T.Equality l T.Positive r)]
     collectImplBody (T.Atomic lit)              = Just [(T.Negative, lit)]
     collectImplBody (T.Connected l T.Conjunction r) =
       (++) <$> collectImplBody l <*> collectImplBody r
