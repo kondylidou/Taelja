@@ -179,6 +179,10 @@ benchmarkNames =
   -- a Twee chain rewriting by zero = divide(zero,X), whose fresh variable the
   -- next step fixes
   [ "HEN009-3"
+  -- ? [X0] : ! [X1] : ..., whose refutation rewrites inside the Skolem term
+  -- sK0(W): the goals are stated at the witness rd(X,X) that those rewrites
+  -- lead to, and a lemma proves W equal to it
+  , "GRP658+1"
   -- a candidate lemma whose sub-proof must read its own conjecture and not
   -- the outer one
   , "ALG210+2"

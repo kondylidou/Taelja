@@ -250,7 +250,7 @@ translateMode debug (T.TSTP _ units0) = do
                    , Just c <- [convertDeclToClause (leDecl e)]
                    , any (`clauseInstance` c) cons ]
             _ -> []
-          withInput sp = checkChains (tightenChains (generalizeGoals (negationGoal (sp { spInput = input }))))
+          withInput sp = checkChains (tightenChains (generalizeGoals (skolemWitnesses (negationGoal (sp { spInput = input })))))
       -- A hypothesis the proof assumed must be granted by the conjecture, or
       -- the emitted theorem would be stronger than the conjecture states.  A
       -- positive clause from a negative position of the conjecture, as
@@ -384,26 +384,190 @@ tightenChains sp = sp
     tighten (EqChain start steps) = uncurry EqChain (tightenChainVars start steps)
     tighten b                      = b
 
+-- The symbols the problem, the axioms and the lemmas state, which a Skolem
+-- symbol of the negated conjecture is not among.
+statedSymbols :: StructuredProof -> Set.Set String
+statedSymbols sp = Set.fromList $
+  concatMap axSyms (axioms sp)
+  ++ concat [ litSymbols l ++ blockSymbols b | (_, l, b) <- lemmas sp ]
+  ++ concat [ fs ++ ps | T.Unit _ d ann <- inUnits (spInput sp), isInputAnn ann
+                       , let (fs, ps) = declSymbols d ]
+  where
+    axSyms (AUnit _ l)                 = litSymbols l
+    axSyms (ANucleus _ (Clause bs mh)) = concatMap litSymbols bs ++ maybe [] litSymbols mh
+    isInputAnn Nothing                = True
+    isInputAnn (Just (T.File _ _, _)) = True
+    isInputAnn _                      = False
+
+-- A conjecture ? [X] : ! [Y] : G negates to the clause ~G with Y a Skolem
+-- term f(X), and the refutation uses it at one instance, the witness W for X
+-- and f(W) for Y.  Read with f(W) as a variable, the proof of G at that
+-- instance is a direct proof of the conjecture, which is what generalizeGoals
+-- does.  The refutation may however rewrite inside the argument of f, as
+-- GRP658+1/Vampire does, and then two things fail: the chain passes through
+-- f(W') for other terms W', which no single variable for f(W) accounts for,
+-- and the witness the clause was used at may itself mention f, so that it is
+-- no witness free of Y.
+--
+-- Both are settled by what those rewrites show.  Every term headed by f is
+-- read as one variable Y, which every step outside f survives, since no
+-- axiom or lemma mentions f, and which turns a step inside f into no step.
+-- The steps inside f, read on the argument alone, are equations between the
+-- arguments f took, and so lead from the witness W to an argument free of f,
+-- here rd(X,X).  That one is the witness the proof states: a lemma proves W
+-- equal to it by those steps, and each goal is stated at it and proved by
+-- rewriting it to W with the lemma and then following the proof as read.
+-- When no argument free of f is reached, the proof is left as it is, and the
+-- check of its chains then fails.
+skolemWitnesses :: StructuredProof -> StructuredProof
+skolemWitnesses sp0 = foldl liftSymbol sp0 skolemFunctions
+  where
+    stated = statedSymbols sp0
+    skolemFunctions = nub
+      [ f | (l, _) <- goals sp0, t <- foldLiteralTerms subterms l
+          , App f (_ : _) <- [t], Set.notMember f stated ]
+    subterms t = t : case t of { App _ ts -> concatMap subterms ts; _ -> [] }
+
+    liftSymbol sp f
+      | all (`elem` goalTerms) blockTerms = sp      -- nothing is rewritten below f
+      | [App _ ws] <- skolemTerms
+      , Just found <- mapM (witness ws) (zip [0 ..] ws) =
+          let needed  = [ (w, (lemmaName i, u, path)) | (i, (w, Just (u, path))) <- zip [(0 :: Int) ..] (zip ws found) ]
+              chosen  = [ maybe w (\(u, _) -> u) m | (w, m) <- zip ws found ]
+              newLemmas = [ (n, Eq (erase w) u, EqChain (erase w) path) | (w, (n, u, path)) <- needed ]
+          in sp { lemmas  = lemmas sp ++ newLemmas
+                , goals   = [ restate needed l b | (l, b) <- goals sp ]
+                , spInput = (spInput sp) { inGeneralized = inGeneralized (spInput sp) ++ [(yName, App f chosen)] } }
+      | otherwise = sp
+      where
+        yName = "Sk_" ++ f
+        y     = Var yName
+        lemmaName i = "lemma " ++ f ++ " witness " ++ show i
+        headed t = case t of { App g _ -> g == f; _ -> False }
+        -- the outermost terms headed by f
+        outer t | headed t          = [t]
+                | App _ ts <- t     = concatMap outer ts
+                | otherwise         = []
+        -- every term headed by f read as the one variable
+        erase t | headed t      = y
+                | App g ts <- t = App g (map erase ts)
+                | otherwise     = t
+        mentions t = not (null (outer t))
+        goalTerms  = nub (concat [ foldLiteralTerms outer l | (l, _) <- goals sp ])
+        blockTerms = nub (concat [ concatMap outer (blockTerms' b) | (_, b) <- goals sp ])
+        blockTerms' (HaveHence ls)    = concat [ foldLiteralTerms (: []) (lineLit' ln) | ln <- ls ]
+        blockTerms' (EqChain s steps) = s : map snd steps
+        lineLit' (Have l _)  = l
+        lineLit' (And l _)   = l
+        lineLit' (Hence l _) = l
+        -- the Skolem term of the conjecture: with it a variable and its
+        -- arguments the witnesses, the goals no longer mention f
+        skolemTerms =
+          [ t | t@(App _ ws) <- goalTerms
+              , all (\(l, _) -> not (any mentions (foldLiteralTerms (: []) (mapLiteralTerms (generalize t ws) l)))) (goals sp) ]
+        generalize t ws u
+          | u == t        = y
+          | u `elem` ws   = Var "\0witness"
+          | App g ts <- u = App g (map (generalize t ws) ts)
+          | otherwise     = u
+        -- the equations between the arguments f took at one place, from the
+        -- chain steps that rewrite inside f, each in both directions
+        edges = concat
+          [ [ (i, erase a, erase b, rw'), (i, erase b, erase a, rw' { rwDir = flipDir (rwDir rw) }) ]
+          | (_, EqChain s steps) <- goals sp
+          , (prev, (rw, cur)) <- zip (s : map snd steps) steps
+          , (i, a, b) <- inside prev cur
+          , erase a /= erase b
+          , let rw' = rw { rwEq = (erase (fst (rwEq rw)), erase (snd (rwEq rw))) } ]
+        inside a b
+          | a == b = []
+          | App g as <- a, App h bs <- b, g == h, length as == length bs =
+              if g == f then [ (i, x, x') | (i, (x, x')) <- zip [(0 :: Int) ..] (zip as bs), x /= x' ]
+                        else concat (zipWith inside as bs)
+          | otherwise = []
+        -- a witness free of f stays; any other is led by those equations to
+        -- an argument that is
+        witness _ (i, w)
+          | not (mentions w) = Just Nothing
+          | otherwise        = Just <$> search [(erase w, [])] [erase w]
+          where
+            search [] _ = Nothing
+            search ((t, path) : queue) seen
+              | yName `notElem` termVars t = Just (t, reverse path)
+              | otherwise =
+                  let next = [ (b, (rw, b) : path) | (j, a, b, rw) <- edges, j == i, a == t, b `notElem` seen ]
+                  in search (queue ++ next) (seen ++ map fst next)
+        -- A goal at the chosen witnesses.  Its term is rewritten occurrence
+        -- by occurrence, from the chosen witness to the one the proof used
+        -- before the proof's own steps and back after them.
+        restate needed lit blk = case blk of
+          EqChain s steps ->
+            let core   = [ (rw { rwEq = (erase (fst (rwEq rw)), erase (snd (rwEq rw))) }, erase t)
+                         | (prev, (rw, t)) <- zip (s : map snd steps) steps, erase prev /= erase t ]
+                final  = if null steps then s else snd (last steps)
+                into   = [ (RwStep n (erase w, u) RL, t) | (n, w, u, t) <- drop 1 (stages s) ]
+                back   = [ (RwStep n (erase w, u) LR, t) | (n, w, u, t) <- reverse (init (stages final)) ]
+            in (mapLiteralTerms chosenTerm lit, EqChain (chosenTerm s) (into ++ core ++ back))
+          HaveHence ls ->
+            let erased = dropRepeats [ mapLine (mapLiteralTerms erase) ln | ln <- ls ]
+                lastLit = lineLit' (last ls)
+                back = [ Hence l (ByRw n (Just LR)) | (n, l) <- reverse (init (litStages lastLit)) ]
+            in (mapLiteralTerms chosenTerm lit, HaveHence (erased ++ (if null ls then [] else back)))
+          where
+            occurrence t = lookup t [ (w, (n, u)) | (w, (n, u, _)) <- needed ]
+            -- the term with its first k witness occurrences as the proof
+            -- used them and the others as chosen, and the occurrence count
+            render k t = let (t', n) = go (0 :: Int) t in (t', n)
+              where
+                go c u
+                  | headed u = (y, c)
+                  | Just (_, chosenU) <- occurrence u = (if c < k then erase u else chosenU, c + 1)
+                  | App g ts <- u =
+                      let (ts', c') = foldl (\(acc, c0) x -> let (x', c1) = go c0 x in (acc ++ [x'], c1)) ([], c) ts
+                      in (App g ts', c')
+                  | otherwise = (u, c)
+            chosenTerm t = fst (render 0 t)
+            -- the k-th witness occurrence in order, as lemma name and sides
+            nth k t = listToMaybe (drop k (occurrences t))
+            occurrences u
+              | headed u = []
+              | Just (n, chosenU) <- occurrence u = [(n, u, chosenU)]
+              | App _ ts <- u = concatMap occurrences ts
+              | otherwise = []
+            -- stage k has the first k occurrences rewritten, and is reached
+            -- from stage k - 1 by the lemma of occurrence k - 1
+            stages t = [ (n, w, u, fst (render k t))
+                       | k <- [0 .. snd (render 0 t)]
+                       , let (n, w, u) = if k == 0 then ("", t, t) else fromMaybe ("", t, t) (nth (k - 1) t) ]
+            litStages l = case l of
+              Eq a b   -> [ (n, rebuild2 Eq t) | (n, _, _, t) <- stages (App "\0eq" [a, b]) ]
+              Rel p ts -> [ (n, Rel p (args t)) | (n, _, _, t) <- stages (App "\0rel" ts) ]
+              _        -> [("", l)]
+            rebuild2 c t = case args t of { [a, b] -> c a b; _ -> c t t }
+            args t = case t of { App _ ts -> ts; _ -> [] }
+            mapLine g ln = case ln of
+              Have l n  -> Have (g l) n
+              And l n   -> And (g l) n
+              Hence l j -> Hence (g l) j
+            -- a rewrite inside f is no step once f is a variable
+            dropRepeats (a : b@(Hence l (ByRw _ _)) : rest)
+              | lineLit' a == l = dropRepeats (a : rest)
+              | otherwise       = a : dropRepeats (b : rest)
+            dropRepeats (a : rest) = a : dropRepeats rest
+            dropRepeats []         = []
+
 generalizeGoals :: StructuredProof -> StructuredProof
 generalizeGoals sp
   | null fresh = sp
   | otherwise  = sp { axioms = map renAx (axioms sp)
                     , goals  = [ (applyTermSubstLit sub l, applyTermSubstBlock sub b) | (l, b) <- goals sp ]
-                    , spInput = (spInput sp) { inGeneralized = [ (v, t) | (t, Var v) <- sub ] } }
+                    , spInput = (spInput sp) { inGeneralized = inGeneralized (spInput sp) ++ [ (v, t) | (t, Var v) <- sub ] } }
   where
     hypNames = Map.keysSet (inHypotheses (spInput sp))
     isHyp ax = Set.member (axiomDisplayName ax) hypNames
-    axSyms (AUnit _ l)                 = litSymbols l
-    axSyms (ANucleus _ (Clause bs mh)) = concatMap litSymbols bs ++ maybe [] litSymbols mh
     -- A hypothesis is listed as an axiom, so a fresh constant it mentions is
     -- fixed by it and stays: generalizing it would quantify the axiom.
-    used  = Set.fromList (concatMap axSyms (axioms sp)
-                          ++ concat [ litSymbols l ++ blockSymbols b | (_, l, b) <- lemmas sp ]
-                          ++ concat [ fs ++ ps | T.Unit _ d ann <- inUnits (spInput sp), isInputAnn ann
-                                               , let (fs, ps) = declSymbols d ])
-    isInputAnn Nothing                      = True
-    isInputAnn (Just (T.File _ _, _))       = True
-    isInputAnn _                            = False
+    used  = statedSymbols sp
     skolemHeaded t = case t of
       Const c -> Set.notMember c used && not (isRigidConst c)
       App f _ -> Set.notMember f used

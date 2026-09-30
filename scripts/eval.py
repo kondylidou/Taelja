@@ -3,15 +3,19 @@
 Taelja evaluation pipeline for Vampire, E and Twee.
 
 Usage
-  python eval.py <vampire> <tptp_dir> [options]
+  python eval.py <tptp_dir> [options]
 
 Required
-  vampire     Path to Vampire binary
   tptp_dir    Path to TPTP directory (contains Problems/)
 
 Optional
+  --vampire PATH    Path to Vampire binary
   --eprover PATH    Path to E prover binary
-  --twee PATH       Path to Twee binary (bin/twee if omitted)
+  --twee PATH       Path to Twee binary
+                    Each prover is looked up like Taelja looks up Twee and E:
+                    the path given, else $TAELJA_VAMPIRE, $TAELJA_EPROVER or
+                    $TAELJA_TWEE, else bin/vampire, bin/eprover or bin/twee
+                    in this repository, else on the PATH.
   --output-dir DIR  Output directory (default eval_out)
   --timeout SEC     Per-prover timeout in seconds (default 60)
   --taelja-timeout SEC  Taelja timeout in seconds (default 60)
@@ -79,6 +83,18 @@ def classify_problem(p_file):
     except OSError:
         pass
     return None
+
+
+def find_prover(given, env_var, exe):
+    """The prover binary: the path given, else the one the variable names,
+    else bin/<exe> in this repository, else <exe> on the PATH."""
+    import shutil
+    candidates = [given, os.environ.get(env_var), str(SCRIPT_DIR.parent / 'bin' / exe)]
+    for c in candidates:
+        if c and Path(c).is_file():
+            return str(Path(c).resolve())
+    found = shutil.which(exe)
+    return str(Path(found).resolve()) if found else None
 
 
 def find_taelja():
@@ -480,11 +496,10 @@ def _run_lean(out_dir, lean_bin):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('vampire',  help='Path to Vampire binary')
     parser.add_argument('tptp_dir', help='Path to TPTP directory (contains Problems/)')
+    parser.add_argument('--vampire',     default=None, metavar='PATH')
     parser.add_argument('--eprover',     default=None, metavar='PATH')
-    parser.add_argument('--twee',        default=None, metavar='PATH',
-                        help='Path to Twee binary (Twee not used unless this is given)')
+    parser.add_argument('--twee',        default=None, metavar='PATH')
     parser.add_argument('--output-dir',  default='eval_out')
     parser.add_argument('--timeout',     type=int, default=60,
                         help='Per-prover timeout in seconds (default: 60)')
@@ -499,18 +514,17 @@ def main():
                         help='Path to lean binary; verify each taelja proof with Lean 4')
     args = parser.parse_args()
 
-    # Resolve all binaries to absolute paths so cwd changes don't break them
-    provers = {'vampire': str(Path(args.vampire).resolve())}
-    if args.eprover:
-        provers['e'] = str(Path(args.eprover).resolve())
-    twee_path = args.twee
-    if twee_path is None:
-        # auto-detect bin/twee relative to this repo, as documented
-        candidate = Path(__file__).resolve().parent.parent / 'bin' / 'twee'
-        if candidate.exists():
-            twee_path = str(candidate)
-    if twee_path:
-        provers['twee'] = str(Path(twee_path).resolve())
+    # Each prover is found like Taelja finds Twee and E, and made absolute so
+    # that a change of working directory does not lose it.
+    provers = {}
+    for name, given, env_var, exe in (('vampire', args.vampire, 'TAELJA_VAMPIRE', 'vampire'),
+                                      ('e', args.eprover, 'TAELJA_EPROVER', 'eprover'),
+                                      ('twee', args.twee, 'TAELJA_TWEE', 'twee')):
+        path = find_prover(given, env_var, exe)
+        if path is None:
+            raise SystemExit(f"error: no {exe} found. Give --{'eprover' if name == 'e' else name} PATH, "
+                             f"set {env_var}, put it at bin/{exe} or on the PATH")
+        provers[name] = path
 
     taelja = find_taelja()
     if taelja:
