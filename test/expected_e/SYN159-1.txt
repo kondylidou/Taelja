@@ -84,23 +84,21 @@ Proof:
   hence p2(a,e,e)
     by axiom 20
 
-Lemma 52: m3(X,X,X)
+Lemma 52: p1(X,X,X)
 Proof:
   have p0(b,X)
     by axiom 8
   hence p1(X,X,X)
     by axiom 23
+
+Lemma 53: m3(X,X,X)
+Proof:
+  have p1(X,X,X)
+    by lemma 52
   hence n2(X)
     by axiom 24
   hence m3(X,X,X)
     by axiom 25
-
-Lemma 53: p1(X,X,X)
-Proof:
-  have p0(b,X)
-    by axiom 8
-  hence p1(X,X,X)
-    by axiom 23
 
 Lemma 54: m2(b)
 Proof:
@@ -207,7 +205,7 @@ Proof:
   hence k4(e)
     by axiom 22
    and m3(a,a,a)
-    by lemma 52
+    by lemma 53
   hence n4(a,a)
     by axiom 26
 
@@ -230,14 +228,14 @@ Proof:
 Lemma 65: q2(e,e,e)
 Proof:
   have p1(e,e,e)
-    by lemma 53
+    by lemma 52
   hence q2(e,e,e)
     by axiom 29
 
 Lemma 66: n4(a,e)
 Proof:
   have m3(e,e,e)
-    by lemma 52
+    by lemma 53
    and p2(a,e,e)
     by lemma 51
   hence p3(a,e,e)
@@ -286,7 +284,7 @@ Proof:
    and q2(e,e,e)
     by lemma 65
    and m3(e,e,e)
-    by lemma 52
+    by lemma 53
   hence q4(e,e)
     by axiom 36
    and n4(a,e)

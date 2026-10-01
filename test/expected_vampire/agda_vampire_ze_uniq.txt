@@ -3,23 +3,7 @@ Axiom 2: plus(neg(X),X) = ze
 Axiom 3: plus(plus(X,Y),Z) = plus(X,plus(Y,Z))
 Axiom 4: sK1 = plus(sK0,sK1)
 
-Lemma 5: plus(X,Y) = plus(neg(neg(X)),Y)
-Proof:
-  plus(X,Y)
-= { by axiom 1 R->L }
-  plus(ze,plus(X,Y))
-= { by axiom 2 R->L }
-  plus(plus(neg(neg(X)),neg(X)),plus(X,Y))
-= { by axiom 3 }
-  plus(neg(neg(X)),plus(neg(X),plus(X,Y)))
-= { by axiom 3 R->L }
-  plus(neg(neg(X)),plus(plus(neg(X),X),Y))
-= { by axiom 2 }
-  plus(neg(neg(X)),plus(ze,Y))
-= { by axiom 1 }
-  plus(neg(neg(X)),Y)
-
-Lemma 6: plus(neg(X),plus(X,Y)) = Y
+Lemma 5: plus(neg(X),plus(X,Y)) = Y
 Proof:
   plus(neg(X),plus(X,Y))
 = { by axiom 3 R->L }
@@ -29,24 +13,40 @@ Proof:
 = { by axiom 1 }
   Y
 
+Lemma 6: plus(X,Y) = plus(neg(neg(X)),Y)
+Proof:
+  plus(X,Y)
+= { by lemma 5 R->L }
+  plus(neg(neg(X)),plus(neg(X),plus(X,Y)))
+= { by lemma 5 }
+  plus(neg(neg(X)),Y)
+
+Lemma 7: sK1 = neg(plus(neg(sK1),sK0))
+Proof:
+  sK1
+= { by lemma 5 R->L }
+  plus(neg(plus(neg(sK1),sK0)),plus(plus(neg(sK1),sK0),sK1))
+= { by axiom 3 }
+  plus(neg(plus(neg(sK1),sK0)),plus(neg(sK1),plus(sK0,sK1)))
+= { by axiom 4 R->L }
+  plus(neg(plus(neg(sK1),sK0)),plus(neg(sK1),sK1))
+= { by axiom 2 }
+  plus(neg(plus(neg(sK1),sK0)),ze)
+= { by lemma 6 }
+  plus(neg(neg(neg(plus(neg(sK1),sK0)))),ze)
+= { by axiom 2 R->L }
+  plus(neg(neg(neg(plus(neg(sK1),sK0)))),plus(neg(neg(plus(neg(sK1),sK0))),neg(plus(neg(sK1),sK0))))
+= { by lemma 5 }
+  neg(plus(neg(sK1),sK0))
+
 Goal 1: sK0 = ze
 Proof:
   sK0
+= { by lemma 5 R->L }
+  plus(neg(neg(sK1)),plus(neg(sK1),sK0))
 = { by lemma 6 R->L }
-  plus(neg(neg(sK0)),plus(neg(sK0),sK0))
-= { by axiom 2 }
-  plus(neg(neg(sK0)),ze)
-= { by lemma 5 R->L }
-  plus(sK0,ze)
-= { by axiom 2 R->L }
-  plus(sK0,plus(neg(neg(sK1)),neg(sK1)))
-= { by lemma 5 R->L }
-  plus(sK0,plus(sK1,neg(sK1)))
-= { by axiom 3 R->L }
-  plus(plus(sK0,sK1),neg(sK1))
-= { by axiom 4 R->L }
-  plus(sK1,neg(sK1))
-= { by lemma 5 }
-  plus(neg(neg(sK1)),neg(sK1))
+  plus(sK1,plus(neg(sK1),sK0))
+= { by lemma 7 }
+  plus(neg(plus(neg(sK1),sK0)),plus(neg(sK1),sK0))
 = { by axiom 2 }
   ze

@@ -37,10 +37,9 @@ theorem taelja_lemma7 : ∀ (x y : α), zero = divide (divide x y) x := by
 
 -- Lemma 8
 theorem taelja_lemma8 : less_equal (divide (divide a a) zero) zero := by
-  have x : α := taelja_elem
-  have h1 : less_equal (divide (divide a a) (divide (divide a x) a)) (divide (divide a (divide a x)) a) := ax3 a a (divide a x)
-  have h2 : less_equal (divide (divide a a) (divide (divide a x) a)) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide a a) (divide (divide a x) a)) t) (taelja_lemma7 a (divide a x))) h1
-  have h3 : less_equal (divide (divide a a) zero) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide a a) t) zero) (taelja_lemma7 a x)) h2
+  have h1 : less_equal (divide (divide a a) (divide (divide a a) a)) (divide (divide a (divide a a)) a) := ax3 a a (divide a a)
+  have h2 : less_equal (divide (divide a a) (divide (divide a a) a)) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide a a) (divide (divide a a) a)) t) (taelja_lemma7 a (divide a a))) h1
+  have h3 : less_equal (divide (divide a a) zero) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide a a) t) zero) (taelja_lemma7 a a)) h2
   exact h3
 
 -- Lemma 9

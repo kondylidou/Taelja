@@ -8,11 +8,11 @@ Lemma 6: op_e = op_c
 Proof:
   op_e
 = { by axiom 4 }
-  mult(mult(rd(op_c,mult(unit,X)),X),unit)
+  mult(mult(rd(op_c,mult(unit,op_e)),op_e),unit)
 = { by axiom 3 }
-  mult(rd(op_c,mult(unit,X)),X)
+  mult(rd(op_c,mult(unit,op_e)),op_e)
 = { by axiom 2 }
-  mult(rd(op_c,X),X)
+  mult(rd(op_c,op_e),op_e)
 = { by axiom 1 }
   op_c
 

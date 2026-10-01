@@ -60,23 +60,21 @@ Proof:
   hence s1(X)
     by axiom 11
 
-Lemma 48: m3(X,X,X)
+Lemma 48: p1(X,X,X)
 Proof:
   have p0(b,X)
     by axiom 8
   hence p1(X,X,X)
     by axiom 23
+
+Lemma 49: m3(X,X,X)
+Proof:
+  have p1(X,X,X)
+    by lemma 48
   hence n2(X)
     by axiom 24
   hence m3(X,X,X)
     by axiom 25
-
-Lemma 49: p1(X,X,X)
-Proof:
-  have p0(b,X)
-    by axiom 8
-  hence p1(X,X,X)
-    by axiom 23
 
 Lemma 50: m2(b)
 Proof:
@@ -192,7 +190,7 @@ Proof:
 Lemma 61: q2(e,e,e)
 Proof:
   have p1(e,e,e)
-    by lemma 49
+    by lemma 48
   hence q2(e,e,e)
     by axiom 27
 
@@ -223,7 +221,7 @@ Proof:
   hence k4(e)
     by axiom 22
    and m3(e,e,e)
-    by lemma 48
+    by lemma 49
   hence n4(e,e)
     by axiom 26
 
@@ -266,7 +264,7 @@ Proof:
    and q2(e,e,e)
     by lemma 61
    and m3(e,e,e)
-    by lemma 48
+    by lemma 49
   hence q4(e,e)
     by axiom 34
    and n4(e,e)

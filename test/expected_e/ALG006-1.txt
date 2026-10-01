@@ -2,96 +2,128 @@ Axiom 1: difference(difference(X,Y),Z) = difference(difference(X,Z),difference(Y
 Axiom 2: difference(X,difference(Y,X)) = X
 Axiom 3: difference(X,difference(X,Y)) = difference(Y,difference(Y,X))
 
-Lemma 4: difference(X,difference(Y,Y)) = X
+Lemma 4: difference(difference(X,Y),Y) = difference(X,Y)
+Proof:
+  difference(difference(X,Y),Y)
+= { by axiom 2 R->L }
+  difference(difference(X,Y),difference(Y,difference(X,Y)))
+= { by axiom 2 }
+  difference(X,Y)
+
+Lemma 5: difference(X,X) = difference(difference(Y,Y),X)
+Proof:
+  difference(X,X)
+= { by axiom 2 R->L }
+  difference(X,difference(X,difference(Y,X)))
+= { by axiom 3 }
+  difference(difference(Y,X),difference(difference(Y,X),X))
+= { by lemma 4 }
+  difference(difference(Y,X),difference(Y,X))
+= { by axiom 1 R->L }
+  difference(difference(Y,Y),X)
+
+Lemma 6: difference(difference(X,X),difference(Y,Y)) = difference(Y,Y)
+Proof:
+  difference(difference(X,X),difference(Y,Y))
+= { by lemma 5 R->L }
+  difference(difference(Y,Y),difference(Y,Y))
+= { by axiom 1 R->L }
+  difference(difference(Y,Y),Y)
+= { by lemma 4 }
+  difference(Y,Y)
+
+Lemma 7: difference(X,X) = difference(Y,Y)
+Proof:
+  difference(X,X)
+= { by lemma 6 R->L }
+  difference(difference(Y,Y),difference(X,X))
+= { by lemma 6 R->L }
+  difference(difference(Y,Y),difference(difference(Y,Y),difference(X,X)))
+= { by axiom 3 R->L }
+  difference(difference(X,X),difference(difference(X,X),difference(Y,Y)))
+= { by lemma 6 }
+  difference(difference(X,X),difference(Y,Y))
+= { by lemma 6 }
+  difference(Y,Y)
+
+Lemma 8: difference(difference(X,X),Y) = difference(X,X)
+Proof:
+  difference(difference(X,X),Y)
+= { by lemma 7 }
+  difference(difference(Y,Y),Y)
+= { by lemma 4 }
+  difference(Y,Y)
+= { by lemma 7 }
+  difference(X,X)
+
+Lemma 9: difference(X,difference(Y,Y)) = X
 Proof:
   difference(X,difference(Y,Y))
-= { by axiom 2 R->L }
-  difference(X,difference(Y,difference(Y,difference(Z,Y))))
-= { by axiom 3 R->L }
-  difference(X,difference(difference(Z,Y),difference(difference(Z,Y),Y)))
-= { by axiom 2 R->L }
-  difference(X,difference(difference(Z,Y),difference(difference(Z,Y),difference(Y,difference(Z,Y)))))
-= { by axiom 2 }
-  difference(X,difference(difference(Z,Y),difference(Z,Y)))
-= { by axiom 2 R->L }
-  difference(X,difference(difference(Z,Y),difference(difference(Z,Y),difference(X,difference(Z,Y)))))
-= { by axiom 3 R->L }
-  difference(X,difference(difference(X,difference(Z,Y)),difference(difference(X,difference(Z,Y)),difference(Z,Y))))
-= { by axiom 2 R->L }
-  difference(X,difference(difference(X,difference(Z,Y)),difference(difference(X,difference(Z,Y)),difference(difference(Z,Y),difference(X,difference(Z,Y))))))
-= { by axiom 2 }
-  difference(X,difference(difference(X,difference(Z,Y)),difference(X,difference(Z,Y))))
-= { by axiom 2 R->L }
-  difference(X,difference(difference(X,difference(Z,Y)),difference(difference(X,difference(Z,Y)),difference(X,difference(X,difference(Z,Y))))))
-= { by axiom 3 R->L }
-  difference(X,difference(difference(X,difference(X,difference(Z,Y))),difference(difference(X,difference(X,difference(Z,Y))),difference(X,difference(Z,Y)))))
-= { by axiom 2 R->L }
-  difference(X,difference(difference(X,difference(X,difference(Z,Y))),difference(difference(X,difference(X,difference(Z,Y))),difference(difference(X,difference(Z,Y)),difference(X,difference(X,difference(Z,Y)))))))
-= { by axiom 2 }
-  difference(X,difference(difference(X,difference(X,difference(Z,Y))),difference(X,difference(X,difference(Z,Y)))))
-= { by axiom 3 }
-  difference(X,difference(difference(X,difference(X,difference(Z,Y))),difference(difference(Z,Y),difference(difference(Z,Y),X))))
-= { by axiom 3 }
-  difference(X,difference(difference(difference(Z,Y),difference(difference(Z,Y),X)),difference(difference(Z,Y),difference(difference(Z,Y),X))))
-= { by axiom 2 R->L }
-  difference(X,difference(difference(difference(Z,Y),difference(difference(Z,Y),X)),difference(difference(difference(Z,Y),difference(difference(Z,Y),X)),difference(difference(difference(Z,Y),X),difference(difference(Z,Y),difference(difference(Z,Y),X))))))
-= { by axiom 2 }
-  difference(X,difference(difference(difference(Z,Y),difference(difference(Z,Y),X)),difference(difference(difference(Z,Y),difference(difference(Z,Y),X)),difference(difference(Z,Y),X))))
-= { by axiom 3 }
-  difference(X,difference(difference(difference(Z,Y),X),difference(difference(difference(Z,Y),X),difference(difference(Z,Y),difference(difference(Z,Y),X)))))
-= { by axiom 2 }
-  difference(X,difference(difference(difference(Z,Y),X),difference(difference(Z,Y),X)))
-= { by axiom 2 R->L }
-  difference(X,difference(difference(difference(Z,Y),X),difference(difference(difference(Z,Y),X),difference(X,difference(difference(Z,Y),X)))))
-= { by axiom 2 }
-  difference(X,difference(difference(difference(Z,Y),X),difference(difference(difference(Z,Y),X),X)))
-= { by axiom 3 }
-  difference(X,difference(X,difference(X,difference(difference(Z,Y),X))))
-= { by axiom 2 }
+= { by lemma 7 R->L }
   difference(X,difference(X,X))
 = { by axiom 2 }
   X
 
-Lemma 5: difference(difference(X,Y),X) = difference(X,X)
+Lemma 10: difference(difference(X,Y),X) = difference(X,X)
 Proof:
   difference(difference(X,Y),X)
 = { by axiom 1 }
   difference(difference(X,X),difference(Y,X))
-= { by axiom 2 R->L }
-  difference(difference(X,X),difference(difference(Y,X),difference(X,difference(Y,X))))
-= { by axiom 2 }
-  difference(difference(X,X),difference(difference(Y,X),X))
-= { by axiom 1 R->L }
-  difference(difference(X,difference(Y,X)),X)
-= { by axiom 2 }
+= { by lemma 8 }
   difference(X,X)
+
+Lemma 11: difference(difference(X,difference(Y,Z)),Y) = difference(X,Y)
+Proof:
+  difference(difference(X,difference(Y,Z)),Y)
+= { by axiom 1 }
+  difference(difference(X,Y),difference(difference(Y,Z),Y))
+= { by lemma 4 R->L }
+  difference(difference(X,Y),difference(difference(difference(Y,Z),Y),Y))
+= { by axiom 1 R->L }
+  difference(difference(X,difference(difference(Y,Z),Y)),Y)
+= { by lemma 10 }
+  difference(difference(X,difference(Y,Y)),Y)
+= { by lemma 9 }
+  difference(X,Y)
+
+Lemma 12: difference(X,difference(X,difference(difference(Y,X),Z))) = difference(X,X)
+Proof:
+  difference(X,difference(X,difference(difference(Y,X),Z)))
+= { by axiom 2 R->L }
+  difference(difference(X,difference(Y,X)),difference(X,difference(difference(Y,X),Z)))
+= { by lemma 11 R->L }
+  difference(difference(difference(X,difference(difference(Y,X),Z)),difference(Y,X)),difference(X,difference(difference(Y,X),Z)))
+= { by lemma 10 }
+  difference(difference(X,difference(difference(Y,X),Z)),difference(X,difference(difference(Y,X),Z)))
+= { by axiom 1 R->L }
+  difference(difference(X,X),difference(difference(Y,X),Z))
+= { by lemma 8 }
+  difference(X,X)
+
+Lemma 13: difference(X,difference(difference(Y,X),Z)) = X
+Proof:
+  difference(X,difference(difference(Y,X),Z))
+= { by lemma 9 R->L }
+  difference(difference(X,difference(difference(Y,X),Z)),difference(X,X))
+= { by lemma 10 R->L }
+  difference(difference(X,difference(difference(Y,X),Z)),difference(difference(X,difference(difference(Y,X),Z)),X))
+= { by axiom 3 R->L }
+  difference(X,difference(X,difference(X,difference(difference(Y,X),Z))))
+= { by lemma 12 }
+  difference(X,difference(X,X))
+= { by axiom 2 }
+  X
 
 Goal 1: difference(difference(a,c),b) = difference(difference(a,b),c)
 Proof:
   difference(difference(a,c),b)
-= { by lemma 4 R->L }
-  difference(difference(difference(a,c),b),difference(difference(difference(a,b),c),difference(difference(a,b),c)))
-= { by lemma 5 R->L }
-  difference(difference(difference(a,c),b),difference(difference(difference(difference(a,b),c),b),difference(difference(a,b),c)))
+= { by axiom 2 R->L }
+  difference(difference(difference(a,c),b),difference(c,difference(difference(a,c),b)))
+= { by lemma 13 }
+  difference(difference(difference(a,c),b),c)
 = { by axiom 1 }
-  difference(difference(difference(a,c),b),difference(difference(difference(difference(a,c),difference(b,c)),b),difference(difference(a,b),c)))
-= { by axiom 1 }
-  difference(difference(difference(a,c),b),difference(difference(difference(difference(a,c),b),difference(difference(b,c),b)),difference(difference(a,b),c)))
-= { by lemma 5 }
-  difference(difference(difference(a,c),b),difference(difference(difference(difference(a,c),b),difference(b,b)),difference(difference(a,b),c)))
+  difference(difference(difference(a,c),c),difference(b,c))
 = { by lemma 4 }
-  difference(difference(difference(a,c),b),difference(difference(difference(a,c),b),difference(difference(a,b),c)))
-= { by axiom 3 R->L }
-  difference(difference(difference(a,b),c),difference(difference(difference(a,b),c),difference(difference(a,c),b)))
-= { by lemma 4 R->L }
-  difference(difference(difference(a,b),c),difference(difference(difference(difference(a,b),c),difference(c,c)),difference(difference(a,c),b)))
-= { by lemma 5 R->L }
-  difference(difference(difference(a,b),c),difference(difference(difference(difference(a,b),c),difference(difference(c,b),c)),difference(difference(a,c),b)))
+  difference(difference(a,c),difference(b,c))
 = { by axiom 1 R->L }
-  difference(difference(difference(a,b),c),difference(difference(difference(difference(a,b),difference(c,b)),c),difference(difference(a,c),b)))
-= { by axiom 1 R->L }
-  difference(difference(difference(a,b),c),difference(difference(difference(difference(a,c),b),c),difference(difference(a,c),b)))
-= { by lemma 5 }
-  difference(difference(difference(a,b),c),difference(difference(difference(a,c),b),difference(difference(a,c),b)))
-= { by lemma 4 }
   difference(difference(a,b),c)

@@ -20,6 +20,7 @@ import TaeljaVerify.Vampire.TffTypedLemma
 import TaeljaVerify.Vampire.FofSkolemDefinition
 import TaeljaVerify.Vampire.FofExistentialGoals
 import TaeljaVerify.Vampire.Hen0093
+import TaeljaVerify.Vampire.Grp4511
 import TaeljaVerify.Vampire.Grp658p1
 import TaeljaVerify.Vampire.Alg210p2
 import TaeljaVerify.Vampire.Ana0232
@@ -73,6 +74,7 @@ import TaeljaVerify.Vampire.Nlp2581
 import TaeljaVerify.Vampire.Swv8181
 import TaeljaVerify.Vampire.Grp656p1
 import TaeljaVerify.E.Grp0015
+import TaeljaVerify.E.Grp1171
 import TaeljaVerify.E.Syn973p1
 import TaeljaVerify.E.Col0034
 import TaeljaVerify.E.Lcl1461

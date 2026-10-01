@@ -174,20 +174,19 @@ theorem taelja_lemma51 : p2 a e e := by
   exact h4
 
 -- Lemma 52
-theorem taelja_lemma52 : ∀ (x : α), m3 x x x := by
-  intro x
-  have h1 : p0 b x := ax8 x
-  have h2 : p1 x x x := ax23 b x h1
-  have h3 : n2 x := ax24 x x x h2
-  have h4 : m3 x x x := ax25 x h3
-  exact h4
-
--- Lemma 53
-theorem taelja_lemma53 : ∀ (x : α), p1 x x x := by
+theorem taelja_lemma52 : ∀ (x : α), p1 x x x := by
   intro x
   have h1 : p0 b x := ax8 x
   have h2 : p1 x x x := ax23 b x h1
   exact h2
+
+-- Lemma 53
+theorem taelja_lemma53 : ∀ (x : α), m3 x x x := by
+  intro x
+  have h1 : p1 x x x := taelja_lemma52 x
+  have h2 : n2 x := ax24 x x x h1
+  have h3 : m3 x x x := ax25 x h2
+  exact h3
 
 -- Lemma 54
 theorem taelja_lemma54 : m2 b := by
@@ -267,7 +266,7 @@ theorem taelja_lemma62 : n4 a a := by
   have h10 : q1 a a a := taelja_lemma60
   have h11 : r3 a e a := taelja_lemma61
   have h12 : k4 e := ax22 a a h9 h10 h11
-  have h13 : m3 a a a := taelja_lemma52 a
+  have h13 : m3 a a a := taelja_lemma53 a
   have h14 : n4 a a := ax26 e a h12 h13
   exact h14
 
@@ -286,13 +285,13 @@ theorem taelja_lemma64 : p1 a e a := by
 
 -- Lemma 65
 theorem taelja_lemma65 : q2 e e e := by
-  have h1 : p1 e e e := taelja_lemma53 e
+  have h1 : p1 e e e := taelja_lemma52 e
   have h2 : q2 e e e := ax29 e h1
   exact h2
 
 -- Lemma 66
 theorem taelja_lemma66 : n4 a e := by
-  have h1 : m3 e e e := taelja_lemma52 e
+  have h1 : m3 e e e := taelja_lemma53 e
   have h2 : p2 a e e := taelja_lemma51
   have h3 : p3 a e e := ax27 e e e a h1 h2
   have h4 : n4 a a := taelja_lemma62
@@ -324,7 +323,7 @@ theorem taelja_goal1 : n5 a e := by
   have h5 : m2 b := taelja_lemma54
   have h6 : k3 a a e := ax35 e b a b h3 h4 h4
   have h7 : q2 e e e := taelja_lemma65
-  have h8 : m3 e e e := taelja_lemma52 e
+  have h8 : m3 e e e := taelja_lemma53 e
   have h9 : q4 e e := ax36 a e e e e h6 h7 h8
   have h10 : n4 a e := taelja_lemma66
   have h11 : p4 e e e := taelja_lemma67

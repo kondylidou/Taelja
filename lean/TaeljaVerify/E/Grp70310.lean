@@ -30,11 +30,10 @@ axiom ax5 : ∀ (x y : α), mult op_c (mult x y) = mult (mult op_c x) y
 
 -- Lemma 6
 theorem taelja_lemma6 : op_e = op_c := by
-  have x : α := taelja_elem
-  calc op_e = mult (mult (rd op_c (mult unit x)) x) unit := ax4 unit x
-      _ = mult (rd op_c (mult unit x)) x := ax3 (mult (rd op_c (mult unit x)) x)
-      _ = mult (rd op_c x) x := congrArg (fun t : α => mult (rd op_c t) x) (ax2 x)
-      _ = op_c := ax1 op_c x
+  calc op_e = mult (mult (rd op_c (mult unit op_e)) op_e) unit := ax4 unit op_e
+      _ = mult (rd op_c (mult unit op_e)) op_e := ax3 (mult (rd op_c (mult unit op_e)) op_e)
+      _ = mult (rd op_c op_e) op_e := congrArg (fun t : α => mult (rd op_c t) op_e) (ax2 op_e)
+      _ = op_c := ax1 op_c op_e
 
 -- Goal 1
 theorem taelja_goal1 : mult op_e (mult x2 x3) = mult (mult op_e x2) x3 := by

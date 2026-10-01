@@ -4,38 +4,60 @@ Axiom 3: mult(mult(Z,X),mult(Y,Z)) = mult(mult(Z,mult(X,Y)),Z)
 Axiom 4: ld(X,mult(X,Y)) = Y
 Axiom 5: rd(mult(X,Y),Y) = X
 
-Lemma 6: mult(ld(X,X),Y) = Y
+Lemma 6: mult(mult(X,Y),mult(ld(Y,Z),X)) = mult(mult(X,Z),X)
+Proof:
+  mult(mult(X,Y),mult(ld(Y,Z),X))
+= { by axiom 3 }
+  mult(mult(X,mult(Y,ld(Y,Z))),X)
+= { by axiom 2 }
+  mult(mult(X,Z),X)
+
+Lemma 7: mult(mult(X,Y),X) = mult(mult(X,rd(Y,Z)),mult(Z,X))
+Proof:
+  mult(mult(X,Y),X)
+= { by axiom 1 R->L }
+  mult(mult(X,mult(rd(Y,Z),Z)),X)
+= { by axiom 3 R->L }
+  mult(mult(X,rd(Y,Z)),mult(Z,X))
+
+Lemma 8: mult(ld(X,X),Y) = Y
 Proof:
   mult(ld(X,X),Y)
+= { by axiom 1 R->L }
+  mult(ld(mult(rd(X,X),X),X),Y)
 = { by axiom 4 R->L }
-  ld(mult(Y,X),mult(mult(Y,X),mult(ld(X,X),Y)))
+  ld(mult(Y,mult(rd(X,X),X)),mult(mult(Y,mult(rd(X,X),X)),mult(ld(mult(rd(X,X),X),X),Y)))
+= { by lemma 6 }
+  ld(mult(Y,mult(rd(X,X),X)),mult(mult(Y,X),Y))
+= { by lemma 7 }
+  ld(mult(Y,mult(rd(X,X),X)),mult(mult(Y,rd(X,X)),mult(X,Y)))
 = { by axiom 3 }
-  ld(mult(Y,X),mult(mult(Y,mult(X,ld(X,X))),Y))
-= { by axiom 2 }
-  ld(mult(Y,X),mult(mult(Y,X),Y))
+  ld(mult(Y,mult(rd(X,X),X)),mult(mult(Y,mult(rd(X,X),X)),Y))
 = { by axiom 4 }
   Y
 
 Goal 1: mult(X,ld(Y,Y)) = X
 Proof:
   mult(X,ld(Y,Y))
-= { by axiom 5 R->L }
-  rd(mult(mult(X,ld(Y,Y)),ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y)))),ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y))))
-= { by axiom 2 }
-  rd(mult(X,ld(Y,Y)),ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y))))
-= { by axiom 5 R->L }
-  rd(mult(X,ld(Y,Y)),rd(mult(ld(mult(X,ld(Y,Y)),mult(X,ld(Y,Y))),Z),Z))
-= { by lemma 6 }
-  rd(mult(X,ld(Y,Y)),rd(Z,Z))
+= { by lemma 8 R->L }
+  mult(mult(ld(Y,Y),X),ld(Y,Y))
 = { by lemma 6 R->L }
-  rd(mult(X,ld(Y,Y)),rd(mult(ld(Y,Y),Z),Z))
+  mult(mult(ld(Y,Y),Y),mult(ld(Y,X),ld(Y,Y)))
+= { by lemma 8 }
+  mult(Y,mult(ld(Y,X),ld(Y,Y)))
+= { by axiom 5 R->L }
+  rd(mult(mult(Y,mult(ld(Y,X),ld(Y,Y))),Y),Y)
+= { by axiom 3 R->L }
+  rd(mult(mult(Y,ld(Y,X)),mult(ld(Y,Y),Y)),Y)
+= { by lemma 8 }
+  rd(mult(mult(Y,ld(Y,X)),Y),Y)
 = { by axiom 5 }
-  rd(mult(X,ld(Y,Y)),ld(Y,Y))
-= { by axiom 5 }
+  mult(Y,ld(Y,X))
+= { by axiom 2 }
   X
 
 Goal 2: mult(ld(X,X),Y) = Y
 Proof:
   mult(ld(X,X),Y)
-= { by lemma 6 }
+= { by lemma 8 }
   Y

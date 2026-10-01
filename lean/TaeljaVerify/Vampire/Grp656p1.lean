@@ -24,28 +24,42 @@ axiom ax4 : ∀ (x y : α), ld x (mult x y) = y
 axiom ax5 : ∀ (x y : α), rd (mult x y) y = x
 
 -- Lemma 6
-theorem taelja_lemma6 : ∀ (x y : α), mult (ld x x) y = y := by
+theorem taelja_lemma6 : ∀ (x y z : α), mult (mult x y) (mult (ld y z) x) = mult (mult x z) x := by
+  intro x y z
+  calc mult (mult x y) (mult (ld y z) x) = mult (mult x (mult y (ld y z))) x := ax3 x y (ld y z)
+      _ = mult (mult x z) x := congrArg (fun t : α => mult (mult x t) x) (ax2 y z)
+
+-- Lemma 7
+theorem taelja_lemma7 : ∀ (x y z : α), mult (mult x y) x = mult (mult x (rd y z)) (mult z x) := by
+  intro x y z
+  calc mult (mult x y) x = mult (mult x (mult (rd y z) z)) x := congrArg (fun t : α => mult (mult x t) x) (Eq.symm (ax1 y z))
+      _ = mult (mult x (rd y z)) (mult z x) := Eq.symm (ax3 x (rd y z) z)
+
+-- Lemma 8
+theorem taelja_lemma8 : ∀ (x y : α), mult (ld x x) y = y := by
   intro x y
-  calc mult (ld x x) y = ld (mult y x) (mult (mult y x) (mult (ld x x) y)) := Eq.symm (ax4 (mult y x) (mult (ld x x) y))
-      _ = ld (mult y x) (mult (mult y (mult x (ld x x))) y) := congrArg (fun t : α => ld (mult y x) t) (ax3 y x (ld x x))
-      _ = ld (mult y x) (mult (mult y x) y) := congrArg (fun t : α => ld (mult y x) (mult (mult y t) y)) (ax2 x x)
-      _ = y := ax4 (mult y x) y
+  calc mult (ld x x) y = mult (ld (mult (rd x x) x) x) y := congrArg (fun t : α => mult (ld t x) y) (Eq.symm (ax1 x x))
+      _ = ld (mult y (mult (rd x x) x)) (mult (mult y (mult (rd x x) x)) (mult (ld (mult (rd x x) x) x) y)) := Eq.symm (ax4 (mult y (mult (rd x x) x)) (mult (ld (mult (rd x x) x) x) y))
+      _ = ld (mult y (mult (rd x x) x)) (mult (mult y x) y) := congrArg (fun t : α => ld (mult y (mult (rd x x) x)) t) (taelja_lemma6 y (mult (rd x x) x) x)
+      _ = ld (mult y (mult (rd x x) x)) (mult (mult y (rd x x)) (mult x y)) := congrArg (fun t : α => ld (mult y (mult (rd x x) x)) t) (taelja_lemma7 y x x)
+      _ = ld (mult y (mult (rd x x) x)) (mult (mult y (mult (rd x x) x)) y) := congrArg (fun t : α => ld (mult y (mult (rd x x) x)) t) (ax3 y (rd x x) x)
+      _ = y := ax4 (mult y (mult (rd x x) x)) y
 
 -- Goal 1
 theorem taelja_goal1 : ∀ (x y : α), mult x (ld y y) = x := by
   intro x y
-  have z : α := taelja_elem
-  calc mult x (ld y y) = rd (mult (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y)))) (ld (mult x (ld y y)) (mult x (ld y y))) := Eq.symm (ax5 (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y))))
-      _ = rd (mult x (ld y y)) (ld (mult x (ld y y)) (mult x (ld y y))) := congrArg (fun t : α => rd t (ld (mult x (ld y y)) (mult x (ld y y)))) (ax2 (mult x (ld y y)) (mult x (ld y y)))
-      _ = rd (mult x (ld y y)) (rd (mult (ld (mult x (ld y y)) (mult x (ld y y))) z) z) := congrArg (fun t : α => rd (mult x (ld y y)) t) (Eq.symm (ax5 (ld (mult x (ld y y)) (mult x (ld y y))) z))
-      _ = rd (mult x (ld y y)) (rd z z) := congrArg (fun t : α => rd (mult x (ld y y)) (rd t z)) (taelja_lemma6 (mult x (ld y y)) z)
-      _ = rd (mult x (ld y y)) (rd (mult (ld y y) z) z) := congrArg (fun t : α => rd (mult x (ld y y)) (rd t z)) (Eq.symm (taelja_lemma6 y z))
-      _ = rd (mult x (ld y y)) (ld y y) := congrArg (fun t : α => rd (mult x (ld y y)) t) (ax5 (ld y y) z)
-      _ = x := ax5 x (ld y y)
+  calc mult x (ld y y) = mult (mult (ld y y) x) (ld y y) := congrArg (fun t : α => mult t (ld y y)) (Eq.symm (taelja_lemma8 y x))
+      _ = mult (mult (ld y y) y) (mult (ld y x) (ld y y)) := Eq.symm (taelja_lemma6 (ld y y) y x)
+      _ = mult y (mult (ld y x) (ld y y)) := congrArg (fun t : α => mult t (mult (ld y x) (ld y y))) (taelja_lemma8 y y)
+      _ = rd (mult (mult y (mult (ld y x) (ld y y))) y) y := Eq.symm (ax5 (mult y (mult (ld y x) (ld y y))) y)
+      _ = rd (mult (mult y (ld y x)) (mult (ld y y) y)) y := congrArg (fun t : α => rd t y) (Eq.symm (ax3 y (ld y x) (ld y y)))
+      _ = rd (mult (mult y (ld y x)) y) y := congrArg (fun t : α => rd (mult (mult y (ld y x)) t) y) (taelja_lemma8 y y)
+      _ = mult y (ld y x) := ax5 (mult y (ld y x)) y
+      _ = x := ax2 y x
 
 -- Goal 2
 theorem taelja_goal2 : ∀ (x y : α), mult (ld x x) y = y := by
   intro x y
-  calc mult (ld x x) y = y := taelja_lemma6 x y
+  calc mult (ld x x) y = y := taelja_lemma8 x y
 
 end VampireGrp656p1

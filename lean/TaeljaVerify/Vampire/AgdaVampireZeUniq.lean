@@ -25,32 +25,33 @@ axiom ax3 : ∀ (x y z : α), plus (plus x y) z = plus x (plus y z)
 axiom ax4 : sK1 = plus sK0 sK1
 
 -- Lemma 5
-theorem taelja_lemma5 : ∀ (x y : α), plus x y = plus (neg (neg x)) y := by
-  intro x y
-  calc plus x y = plus ze (plus x y) := Eq.symm (ax1 (plus x y))
-      _ = plus (plus (neg (neg x)) (neg x)) (plus x y) := congrArg (fun t : α => plus t (plus x y)) (Eq.symm (ax2 (neg x)))
-      _ = plus (neg (neg x)) (plus (neg x) (plus x y)) := ax3 (neg (neg x)) (neg x) (plus x y)
-      _ = plus (neg (neg x)) (plus (plus (neg x) x) y) := congrArg (fun t : α => plus (neg (neg x)) t) (Eq.symm (ax3 (neg x) x y))
-      _ = plus (neg (neg x)) (plus ze y) := congrArg (fun t : α => plus (neg (neg x)) (plus t y)) (ax2 x)
-      _ = plus (neg (neg x)) y := congrArg (fun t : α => plus (neg (neg x)) t) (ax1 y)
-
--- Lemma 6
-theorem taelja_lemma6 : ∀ (x y : α), plus (neg x) (plus x y) = y := by
+theorem taelja_lemma5 : ∀ (x y : α), plus (neg x) (plus x y) = y := by
   intro x y
   calc plus (neg x) (plus x y) = plus (plus (neg x) x) y := Eq.symm (ax3 (neg x) x y)
       _ = plus ze y := congrArg (fun t : α => plus t y) (ax2 x)
       _ = y := ax1 y
 
+-- Lemma 6
+theorem taelja_lemma6 : ∀ (x y : α), plus x y = plus (neg (neg x)) y := by
+  intro x y
+  calc plus x y = plus (neg (neg x)) (plus (neg x) (plus x y)) := Eq.symm (taelja_lemma5 (neg x) (plus x y))
+      _ = plus (neg (neg x)) y := congrArg (fun t : α => plus (neg (neg x)) t) (taelja_lemma5 x y)
+
+-- Lemma 7
+theorem taelja_lemma7 : sK1 = neg (plus (neg sK1) sK0) := by
+  calc sK1 = plus (neg (plus (neg sK1) sK0)) (plus (plus (neg sK1) sK0) sK1) := Eq.symm (taelja_lemma5 (plus (neg sK1) sK0) sK1)
+      _ = plus (neg (plus (neg sK1) sK0)) (plus (neg sK1) (plus sK0 sK1)) := congrArg (fun t : α => plus (neg (plus (neg sK1) sK0)) t) (ax3 (neg sK1) sK0 sK1)
+      _ = plus (neg (plus (neg sK1) sK0)) (plus (neg sK1) sK1) := congrArg (fun t : α => plus (neg (plus (neg sK1) sK0)) (plus (neg sK1) t)) (Eq.symm (ax4))
+      _ = plus (neg (plus (neg sK1) sK0)) ze := congrArg (fun t : α => plus (neg (plus (neg sK1) sK0)) t) (ax2 sK1)
+      _ = plus (neg (neg (neg (plus (neg sK1) sK0)))) ze := taelja_lemma6 (neg (plus (neg sK1) sK0)) ze
+      _ = plus (neg (neg (neg (plus (neg sK1) sK0)))) (plus (neg (neg (plus (neg sK1) sK0))) (neg (plus (neg sK1) sK0))) := congrArg (fun t : α => plus (neg (neg (neg (plus (neg sK1) sK0)))) t) (Eq.symm (ax2 (neg (plus (neg sK1) sK0))))
+      _ = neg (plus (neg sK1) sK0) := taelja_lemma5 (neg (neg (plus (neg sK1) sK0))) (neg (plus (neg sK1) sK0))
+
 -- Goal 1
 theorem taelja_goal1 : sK0 = ze := by
-  calc sK0 = plus (neg (neg sK0)) (plus (neg sK0) sK0) := Eq.symm (taelja_lemma6 (neg sK0) sK0)
-      _ = plus (neg (neg sK0)) ze := congrArg (fun t : α => plus (neg (neg sK0)) t) (ax2 sK0)
-      _ = plus sK0 ze := Eq.symm (taelja_lemma5 sK0 ze)
-      _ = plus sK0 (plus (neg (neg sK1)) (neg sK1)) := congrArg (fun t : α => plus sK0 t) (Eq.symm (ax2 (neg sK1)))
-      _ = plus sK0 (plus sK1 (neg sK1)) := congrArg (fun t : α => plus sK0 t) (Eq.symm (taelja_lemma5 sK1 (neg sK1)))
-      _ = plus (plus sK0 sK1) (neg sK1) := Eq.symm (ax3 sK0 sK1 (neg sK1))
-      _ = plus sK1 (neg sK1) := congrArg (fun t : α => plus t (neg sK1)) (Eq.symm (ax4))
-      _ = plus (neg (neg sK1)) (neg sK1) := taelja_lemma5 sK1 (neg sK1)
-      _ = ze := ax2 (neg sK1)
+  calc sK0 = plus (neg (neg sK1)) (plus (neg sK1) sK0) := Eq.symm (taelja_lemma5 (neg sK1) sK0)
+      _ = plus sK1 (plus (neg sK1) sK0) := Eq.symm (taelja_lemma6 sK1 (plus (neg sK1) sK0))
+      _ = plus (neg (plus (neg sK1) sK0)) (plus (neg sK1) sK0) := congrArg (fun t : α => plus t (plus (neg sK1) sK0)) (taelja_lemma7)
+      _ = ze := ax2 (plus (neg sK1) sK0)
 
 end VampireAgdaVampireZeUniq

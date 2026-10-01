@@ -6,11 +6,11 @@ Axiom 5: times(times(X,Y),Z) = times(Y,times(Z,X))
 Axiom 6: element(sK2)
 Axiom 7: times(X,Y) = X /\ times(X,X) = Y => element(X)
 
-Lemma 8: times(sK1,sK0(sK1)) = sK1
+Lemma 8: sK1 = times(sK1,sK0(sK1))
 Proof:
   have element(sK1)
     by axiom 2
-  hence times(sK1,sK0(sK1)) = sK1
+  hence sK1 = times(sK1,sK0(sK1))
     by axiom 3
 
 Lemma 9: times(sK1,sK1) = sK0(sK1)
@@ -20,42 +20,31 @@ Proof:
   hence times(sK1,sK1) = sK0(sK1)
     by axiom 4
 
-Lemma 10: times(sK1,X) = times(sK1,times(X,sK0(sK1)))
+Lemma 10: times(sK1,times(X,sK1)) = times(sK0(sK1),X)
+Proof:
+  times(sK1,times(X,sK1))
+= { by axiom 5 R->L }
+  times(times(sK1,sK1),X)
+= { by lemma 9 }
+  times(sK0(sK1),X)
+
+Lemma 11: sK1 = times(sK0(sK1),sK1)
+Proof:
+  sK1
+= { by lemma 8 }
+  times(sK1,sK0(sK1))
+= { by lemma 9 R->L }
+  times(sK1,times(sK1,sK1))
+= { by lemma 10 }
+  times(sK0(sK1),sK1)
+
+Lemma 12: times(sK1,X) = times(sK1,times(X,sK0(sK1)))
 Proof:
   times(sK1,X)
-= { by lemma 8 R->L }
-  times(times(sK1,sK0(sK1)),X)
-= { by lemma 9 R->L }
-  times(times(sK1,times(sK1,sK1)),X)
-= { by axiom 5 R->L }
-  times(times(times(sK1,sK1),sK1),X)
-= { by lemma 9 }
+= { by lemma 11 }
   times(times(sK0(sK1),sK1),X)
 = { by axiom 5 }
   times(sK1,times(X,sK0(sK1)))
-
-Lemma 11: times(sK1,sK1) = sK0(sK1)
-Proof:
-  have element(sK1)
-    by axiom 2
-  hence times(sK1,sK1) = sK0(sK1)
-    by axiom 4
-
-Lemma 12: times(X,times(Y,sK3)) = times(sK1,times(sK2,times(X,Y)))
-Proof:
-  times(X,times(Y,sK3))
-= { by axiom 1 }
-  times(X,times(Y,times(sK1,sK2)))
-= { by axiom 5 R->L }
-  times(times(times(sK1,sK2),X),Y)
-= { by axiom 5 }
-  times(times(sK2,times(X,sK1)),Y)
-= { by axiom 5 }
-  times(times(X,sK1),times(Y,sK2))
-= { by axiom 5 }
-  times(sK1,times(times(Y,sK2),X))
-= { by axiom 5 }
-  times(sK1,times(sK2,times(X,Y)))
 
 Lemma 13: times(sK2,times(X,sK1)) = times(sK3,X)
 Proof:
@@ -65,227 +54,148 @@ Proof:
 = { by axiom 1 R->L }
   times(sK3,X)
 
-Lemma 14: sK1 = times(sK1,sK0(sK1))
+Lemma 14: times(X,times(Y,sK3)) = times(sK1,times(sK2,times(X,Y)))
 Proof:
-  have element(sK1)
-    by axiom 2
-  hence sK1 = times(sK1,sK0(sK1))
-    by axiom 3
+  times(X,times(Y,sK3))
+= { by axiom 5 R->L }
+  times(times(sK3,X),Y)
+= { by lemma 13 R->L }
+  times(times(sK2,times(X,sK1)),Y)
+= { by axiom 5 }
+  times(times(X,sK1),times(Y,sK2))
+= { by axiom 5 }
+  times(sK1,times(times(Y,sK2),X))
+= { by axiom 5 }
+  times(sK1,times(sK2,times(X,Y)))
 
-Lemma 15: times(sK1,sK0(sK1)) = sK1
+Lemma 15: times(sK0(sK1),times(X,sK1)) = times(sK1,X)
 Proof:
-  have element(sK1)
-    by axiom 2
-  hence times(sK1,sK0(sK1)) = sK1
-    by axiom 3
+  times(sK0(sK1),times(X,sK1))
+= { by axiom 5 R->L }
+  times(times(sK1,sK0(sK1)),X)
+= { by lemma 8 R->L }
+  times(sK1,X)
 
-Lemma 16: times(sK1,sK1) = sK0(sK1)
+Lemma 16: times(X,times(Y,times(Z,A))) = times(Z,times(A,times(X,Y)))
 Proof:
-  have element(sK1)
-    by axiom 2
-  hence times(sK1,sK1) = sK0(sK1)
-    by axiom 4
+  times(X,times(Y,times(Z,A)))
+= { by axiom 5 R->L }
+  times(times(times(Z,A),X),Y)
+= { by axiom 5 }
+  times(times(A,times(X,Z)),Y)
+= { by axiom 5 }
+  times(times(X,Z),times(Y,A))
+= { by axiom 5 }
+  times(Z,times(times(Y,A),X))
+= { by axiom 5 }
+  times(Z,times(A,times(X,Y)))
 
 Lemma 17: times(X,times(sK1,Y)) = times(Y,times(sK1,X))
 Proof:
   times(X,times(sK1,Y))
 = { by lemma 15 R->L }
-  times(X,times(times(sK1,sK0(sK1)),Y))
-= { by axiom 5 }
   times(X,times(sK0(sK1),times(Y,sK1)))
-= { by axiom 5 R->L }
-  times(times(times(Y,sK1),X),sK0(sK1))
-= { by axiom 5 }
-  times(times(sK1,times(X,Y)),sK0(sK1))
-= { by axiom 5 }
-  times(times(X,Y),times(sK0(sK1),sK1))
-= { by axiom 5 }
-  times(Y,times(times(sK0(sK1),sK1),X))
 = { by lemma 16 R->L }
-  times(Y,times(times(times(sK1,sK1),sK1),X))
-= { by axiom 5 }
-  times(Y,times(times(sK1,times(sK1,sK1)),X))
-= { by lemma 16 }
-  times(Y,times(times(sK1,sK0(sK1)),X))
-= { by lemma 15 }
+  times(Y,times(sK1,times(X,sK0(sK1))))
+= { by lemma 12 R->L }
   times(Y,times(sK1,X))
 
-Lemma 18: times(sK1,sK0(sK1)) = sK1
-Proof:
-  have element(sK1)
-    by axiom 2
-  hence times(sK1,sK0(sK1)) = sK1
-    by axiom 3
-
-Lemma 19: times(sK1,sK1) = sK0(sK1)
-Proof:
-  have element(sK1)
-    by axiom 2
-  hence times(sK1,sK1) = sK0(sK1)
-    by axiom 4
-
-Lemma 20: sK1 = times(sK0(sK1),sK1)
-Proof:
-  sK1
-= { by lemma 18 R->L }
-  times(sK1,sK0(sK1))
-= { by lemma 19 R->L }
-  times(sK1,times(sK1,sK1))
-= { by axiom 5 R->L }
-  times(times(sK1,sK1),sK1)
-= { by lemma 19 }
-  times(sK0(sK1),sK1)
-
-Lemma 21: sK2 = times(sK2,sK0(sK2))
+Lemma 18: sK2 = times(sK2,sK0(sK2))
 Proof:
   have element(sK2)
     by axiom 6
   hence sK2 = times(sK2,sK0(sK2))
     by axiom 3
 
-Lemma 22: times(sK1,sK1) = sK0(sK1)
-Proof:
-  have element(sK1)
-    by axiom 2
-  hence times(sK1,sK1) = sK0(sK1)
-    by axiom 4
-
-Lemma 23: times(sK1,times(X,sK1)) = times(sK0(sK1),X)
-Proof:
-  times(sK1,times(X,sK1))
-= { by axiom 5 R->L }
-  times(times(sK1,sK1),X)
-= { by lemma 22 }
-  times(sK0(sK1),X)
-
-Lemma 24: times(sK1,sK0(sK1)) = sK1
-Proof:
-  have element(sK1)
-    by axiom 2
-  hence times(sK1,sK0(sK1)) = sK1
-    by axiom 3
-
-Lemma 25: times(sK1,times(sK0(sK1),times(X,Y))) = times(X,times(Y,sK1))
+Lemma 19: times(sK1,times(sK0(sK1),times(X,Y))) = times(X,times(Y,sK1))
 Proof:
   times(sK1,times(sK0(sK1),times(X,Y)))
-= { by axiom 5 R->L }
-  times(times(times(X,Y),sK1),sK0(sK1))
-= { by axiom 5 }
-  times(times(Y,times(sK1,X)),sK0(sK1))
-= { by axiom 5 }
-  times(times(sK1,X),times(sK0(sK1),Y))
-= { by axiom 5 }
-  times(X,times(times(sK0(sK1),Y),sK1))
-= { by axiom 5 }
+= { by lemma 16 }
   times(X,times(Y,times(sK1,sK0(sK1))))
-= { by lemma 24 }
+= { by lemma 8 R->L }
   times(X,times(Y,sK1))
 
-Lemma 26: times(sK1,sK1) = sK0(sK1)
-Proof:
-  have element(sK1)
-    by axiom 2
-  hence times(sK1,sK1) = sK0(sK1)
-    by axiom 4
-
-Lemma 27: times(sK1,times(sK1,times(X,Y))) = times(X,times(Y,sK0(sK1)))
+Lemma 20: times(sK1,times(sK1,times(X,Y))) = times(X,times(Y,sK0(sK1)))
 Proof:
   times(sK1,times(sK1,times(X,Y)))
-= { by axiom 5 R->L }
-  times(times(times(X,Y),sK1),sK1)
-= { by axiom 5 }
-  times(times(Y,times(sK1,X)),sK1)
-= { by axiom 5 }
-  times(times(sK1,X),times(sK1,Y))
-= { by axiom 5 }
-  times(X,times(times(sK1,Y),sK1))
-= { by axiom 5 }
+= { by lemma 16 }
   times(X,times(Y,times(sK1,sK1)))
-= { by lemma 26 }
+= { by lemma 9 }
   times(X,times(Y,sK0(sK1)))
 
-Lemma 28: times(sK1,sK1) = sK0(sK1)
-Proof:
-  have element(sK1)
-    by axiom 2
-  hence times(sK1,sK1) = sK0(sK1)
-    by axiom 4
-
-Lemma 29: times(sK3,sK1) = times(sK2,sK0(sK1))
+Lemma 21: times(sK3,sK1) = times(sK2,sK0(sK1))
 Proof:
   times(sK3,sK1)
-= { by axiom 1 }
-  times(times(sK1,sK2),sK1)
-= { by axiom 5 }
+= { by lemma 13 R->L }
   times(sK2,times(sK1,sK1))
-= { by lemma 28 }
+= { by lemma 9 }
   times(sK2,sK0(sK1))
 
-Lemma 30: times(sK2,sK2) = sK0(sK2)
+Lemma 22: times(sK2,sK2) = sK0(sK2)
 Proof:
   have element(sK2)
     by axiom 6
   hence times(sK2,sK2) = sK0(sK2)
     by axiom 4
 
-Lemma 31: times(sK2,times(X,sK2)) = times(sK0(sK2),X)
+Lemma 23: times(sK2,times(X,sK2)) = times(sK0(sK2),X)
 Proof:
   times(sK2,times(X,sK2))
 = { by axiom 5 R->L }
   times(times(sK2,sK2),X)
-= { by lemma 30 }
+= { by lemma 22 }
   times(sK0(sK2),X)
 
-Lemma 32: times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2))) = times(sK1,sK2)
+Lemma 24: times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2))) = times(sK1,sK2)
 Proof:
   times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2)))
 = { by axiom 1 R->L }
   times(times(sK1,sK2),times(times(sK1,sK2),sK3))
-= { by lemma 12 }
+= { by lemma 14 }
   times(sK1,times(sK2,times(times(sK1,sK2),times(sK1,sK2))))
 = { by axiom 1 R->L }
   times(sK1,times(sK2,times(sK3,times(sK1,sK2))))
 = { by lemma 13 R->L }
   times(sK1,times(sK2,times(sK2,times(times(sK1,sK2),sK1))))
-= { by lemma 25 R->L }
+= { by lemma 19 R->L }
   times(sK1,times(sK2,times(sK1,times(sK0(sK1),times(sK2,times(sK1,sK2))))))
-= { by lemma 31 }
+= { by lemma 23 }
   times(sK1,times(sK2,times(sK1,times(sK0(sK1),times(sK0(sK2),sK1)))))
-= { by lemma 25 }
+= { by lemma 19 }
   times(sK1,times(sK2,times(sK0(sK2),times(sK1,sK1))))
-= { by lemma 11 }
+= { by lemma 9 }
   times(sK1,times(sK2,times(sK0(sK2),sK0(sK1))))
-= { by lemma 12 R->L }
+= { by lemma 14 R->L }
   times(sK0(sK2),times(sK0(sK1),sK3))
-= { by lemma 23 R->L }
-  times(sK0(sK2),times(sK1,times(sK3,sK1)))
-= { by lemma 29 }
-  times(sK0(sK2),times(sK1,times(sK2,sK0(sK1))))
 = { by lemma 10 R->L }
+  times(sK0(sK2),times(sK1,times(sK3,sK1)))
+= { by lemma 21 }
+  times(sK0(sK2),times(sK1,times(sK2,sK0(sK1))))
+= { by lemma 12 R->L }
   times(sK0(sK2),times(sK1,sK2))
 = { by lemma 17 }
   times(sK2,times(sK1,sK0(sK2)))
-= { by lemma 10 }
+= { by lemma 12 }
   times(sK2,times(sK1,times(sK0(sK2),sK0(sK1))))
-= { by lemma 11 R->L }
+= { by lemma 9 R->L }
   times(sK2,times(sK1,times(sK0(sK2),times(sK1,sK1))))
 = { by lemma 17 R->L }
   times(sK2,times(sK1,times(sK1,times(sK1,sK0(sK2)))))
 = { by lemma 17 R->L }
   times(sK2,times(times(sK1,sK0(sK2)),times(sK1,sK1)))
-= { by lemma 11 }
+= { by lemma 9 }
   times(sK2,times(times(sK1,sK0(sK2)),sK0(sK1)))
-= { by lemma 27 R->L }
+= { by lemma 20 R->L }
   times(sK1,times(sK1,times(sK2,times(sK1,sK0(sK2)))))
 = { by lemma 17 R->L }
   times(sK1,times(sK1,times(sK0(sK2),times(sK1,sK2))))
-= { by lemma 27 }
+= { by lemma 20 }
   times(sK0(sK2),times(times(sK1,sK2),sK0(sK1)))
 = { by axiom 5 }
   times(sK0(sK2),times(sK2,times(sK0(sK1),sK1)))
-= { by lemma 20 R->L }
+= { by lemma 11 R->L }
   times(sK0(sK2),times(sK2,sK1))
-= { by lemma 14 }
+= { by lemma 8 }
   times(sK0(sK2),times(sK2,times(sK1,sK0(sK1))))
 = { by lemma 17 }
   times(sK0(sK2),times(sK0(sK1),times(sK1,sK2)))
@@ -297,17 +207,17 @@ Proof:
   times(times(sK0(sK1),times(sK1,sK0(sK2))),sK2)
 = { by lemma 17 R->L }
   times(times(sK0(sK2),times(sK1,sK0(sK1))),sK2)
-= { by lemma 14 R->L }
+= { by lemma 8 R->L }
   times(times(sK0(sK2),sK1),sK2)
 = { by axiom 5 }
   times(sK1,times(sK2,sK0(sK2)))
-= { by lemma 21 R->L }
+= { by lemma 18 R->L }
   times(sK1,sK2)
 
 Goal 1: element(sK3)
 Proof:
   have times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2))) = times(sK1,sK2)
-    by lemma 32
+    by lemma 24
   hence element(times(sK1,sK2))
     by axiom 7
   hence element(sK3)

@@ -33,77 +33,64 @@ axiom ax6 : ∀ (x y : α), greatest_lower_bound x (least_upper_bound x y) = x
 axiom ax7 : ∀ (x y z : α), multiply x (greatest_lower_bound y z) = greatest_lower_bound (multiply x y) (multiply x z)
 
 -- Lemma 8
-theorem taelja_lemma8 : ∀ (x y : α), x = y := by
+theorem taelja_lemma8 : ∀ (x y : α), multiply (inverse x) (multiply x y) = y := by
   intro x y
-  calc x = multiply identity x := Eq.symm (ax2 x)
-      _ = multiply (multiply (inverse (inverse x)) (inverse x)) x := congrArg (fun t : α => multiply t x) (Eq.symm (ax1 (inverse x)))
-      _ = multiply (inverse (inverse x)) (multiply (inverse x) x) := ax3 (inverse (inverse x)) (inverse x) x
-      _ = multiply (inverse (inverse x)) identity := congrArg (fun t : α => multiply (inverse (inverse x)) t) (ax1 x)
-      _ = multiply (inverse (inverse x)) (multiply identity identity) := congrArg (fun t : α => multiply (inverse (inverse x)) t) (Eq.symm (ax2 identity))
-      _ = multiply (inverse (inverse x)) (multiply (multiply (inverse x) x) identity) := congrArg (fun t : α => multiply (inverse (inverse x)) (multiply t identity)) (Eq.symm (ax1 x))
-      _ = multiply (inverse (inverse x)) (multiply (inverse x) (multiply x identity)) := congrArg (fun t : α => multiply (inverse (inverse x)) t) (ax3 (inverse x) x identity)
-      _ = multiply (multiply (inverse (inverse x)) (inverse x)) (multiply x identity) := Eq.symm (ax3 (inverse (inverse x)) (inverse x) (multiply x identity))
-      _ = multiply identity (multiply x identity) := congrArg (fun t : α => multiply t (multiply x identity)) (ax1 (inverse x))
-      _ = multiply x identity := ax2 (multiply x identity)
-      _ = multiply x (greatest_lower_bound identity (least_upper_bound identity (inverse x))) := congrArg (fun t : α => multiply x t) (Eq.symm (ax6 identity (inverse x)))
-      _ = multiply x (greatest_lower_bound identity (inverse x)) := congrArg (fun t : α => multiply x (greatest_lower_bound identity t)) (ax5 (inverse x))
-      _ = greatest_lower_bound (multiply x identity) (multiply x (inverse x)) := ax7 x identity (inverse x)
-      _ = greatest_lower_bound (multiply identity (multiply x identity)) (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound t (multiply x (inverse x))) (Eq.symm (ax2 (multiply x identity)))
-      _ = greatest_lower_bound (multiply (multiply (inverse (inverse x)) (inverse x)) (multiply x identity)) (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound (multiply t (multiply x identity)) (multiply x (inverse x))) (Eq.symm (ax1 (inverse x)))
-      _ = greatest_lower_bound (multiply (inverse (inverse x)) (multiply (inverse x) (multiply x identity))) (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound t (multiply x (inverse x))) (ax3 (inverse (inverse x)) (inverse x) (multiply x identity))
-      _ = greatest_lower_bound (multiply (inverse (inverse x)) (multiply (multiply (inverse x) x) identity)) (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound (multiply (inverse (inverse x)) t) (multiply x (inverse x))) (Eq.symm (ax3 (inverse x) x identity))
-      _ = greatest_lower_bound (multiply (inverse (inverse x)) (multiply identity identity)) (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound (multiply (inverse (inverse x)) (multiply t identity)) (multiply x (inverse x))) (ax1 x)
-      _ = greatest_lower_bound (multiply (inverse (inverse x)) identity) (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound (multiply (inverse (inverse x)) t) (multiply x (inverse x))) (ax2 identity)
-      _ = greatest_lower_bound (multiply (inverse (inverse x)) (multiply (inverse x) x)) (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound (multiply (inverse (inverse x)) t) (multiply x (inverse x))) (Eq.symm (ax1 x))
-      _ = greatest_lower_bound (multiply (multiply (inverse (inverse x)) (inverse x)) x) (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound t (multiply x (inverse x))) (Eq.symm (ax3 (inverse (inverse x)) (inverse x) x))
-      _ = greatest_lower_bound (multiply identity x) (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound (multiply t x) (multiply x (inverse x))) (ax1 (inverse x))
-      _ = greatest_lower_bound x (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound t (multiply x (inverse x))) (ax2 x)
-      _ = greatest_lower_bound x (multiply identity (multiply x (inverse x))) := congrArg (fun t : α => greatest_lower_bound x t) (Eq.symm (ax2 (multiply x (inverse x))))
-      _ = greatest_lower_bound x (multiply (multiply (inverse (inverse x)) (inverse x)) (multiply x (inverse x))) := congrArg (fun t : α => greatest_lower_bound x (multiply t (multiply x (inverse x)))) (Eq.symm (ax1 (inverse x)))
-      _ = greatest_lower_bound x (multiply (inverse (inverse x)) (multiply (inverse x) (multiply x (inverse x)))) := congrArg (fun t : α => greatest_lower_bound x t) (ax3 (inverse (inverse x)) (inverse x) (multiply x (inverse x)))
-      _ = greatest_lower_bound x (multiply (inverse (inverse x)) (multiply (multiply (inverse x) x) (inverse x))) := congrArg (fun t : α => greatest_lower_bound x (multiply (inverse (inverse x)) t)) (Eq.symm (ax3 (inverse x) x (inverse x)))
-      _ = greatest_lower_bound x (multiply (inverse (inverse x)) (multiply identity (inverse x))) := congrArg (fun t : α => greatest_lower_bound x (multiply (inverse (inverse x)) (multiply t (inverse x)))) (ax1 x)
-      _ = greatest_lower_bound x (multiply (inverse (inverse x)) (inverse x)) := congrArg (fun t : α => greatest_lower_bound x (multiply (inverse (inverse x)) t)) (ax2 (inverse x))
-      _ = greatest_lower_bound x identity := congrArg (fun t : α => greatest_lower_bound x t) (ax1 (inverse x))
-      _ = greatest_lower_bound identity x := Eq.symm (ax4 identity x)
+  calc multiply (inverse x) (multiply x y) = multiply (multiply (inverse x) x) y := Eq.symm (ax3 (inverse x) x y)
+      _ = multiply identity y := congrArg (fun t : α => multiply t y) (ax1 x)
+      _ = y := ax2 y
+
+-- Lemma 9
+theorem taelja_lemma9 : ∀ (x y : α), multiply (inverse (inverse x)) y = multiply x y := by
+  intro x y
+  calc multiply (inverse (inverse x)) y = multiply (inverse (inverse x)) (multiply (inverse x) (multiply x y)) := congrArg (fun t : α => multiply (inverse (inverse x)) t) (Eq.symm (taelja_lemma8 x y))
+      _ = multiply x y := taelja_lemma8 (inverse x) (multiply x y)
+
+-- Lemma 10
+theorem taelja_lemma10 : ∀ (x : α), multiply x identity = x := by
+  intro x
+  calc multiply x identity = multiply (inverse (inverse x)) identity := Eq.symm (taelja_lemma9 x identity)
+      _ = multiply (inverse (inverse x)) (multiply (inverse x) x) := congrArg (fun t : α => multiply (inverse (inverse x)) t) (Eq.symm (ax1 x))
+      _ = x := taelja_lemma8 (inverse x) x
+
+-- Lemma 11
+theorem taelja_lemma11 : ∀ (x : α), inverse (inverse x) = x := by
+  intro x
+  calc inverse (inverse x) = multiply (inverse (inverse x)) identity := Eq.symm (taelja_lemma10 (inverse (inverse x)))
+      _ = multiply x identity := taelja_lemma9 x identity
+      _ = x := taelja_lemma10 x
+
+-- Lemma 12
+theorem taelja_lemma12 : ∀ (x y : α), multiply x (multiply (inverse x) y) = y := by
+  intro x y
+  calc multiply x (multiply (inverse x) y) = multiply (inverse (inverse x)) (multiply (inverse x) y) := congrArg (fun t : α => multiply t (multiply (inverse x) y)) (Eq.symm (taelja_lemma11 x))
+      _ = y := taelja_lemma8 (inverse x) y
+
+-- Lemma 13
+theorem taelja_lemma13 : ∀ (x : α), greatest_lower_bound x identity = identity := by
+  intro x
+  calc greatest_lower_bound x identity = greatest_lower_bound identity x := Eq.symm (ax4 identity x)
       _ = greatest_lower_bound identity (least_upper_bound identity x) := congrArg (fun t : α => greatest_lower_bound identity t) (Eq.symm (ax5 x))
       _ = identity := ax6 identity x
-      _ = greatest_lower_bound identity (least_upper_bound identity y) := Eq.symm (ax6 identity y)
-      _ = greatest_lower_bound identity y := congrArg (fun t : α => greatest_lower_bound identity t) (ax5 y)
-      _ = greatest_lower_bound y identity := ax4 identity y
-      _ = greatest_lower_bound y (multiply (inverse (inverse y)) (inverse y)) := congrArg (fun t : α => greatest_lower_bound y t) (Eq.symm (ax1 (inverse y)))
-      _ = greatest_lower_bound y (multiply (inverse (inverse y)) (multiply identity (inverse y))) := congrArg (fun t : α => greatest_lower_bound y (multiply (inverse (inverse y)) t)) (Eq.symm (ax2 (inverse y)))
-      _ = greatest_lower_bound y (multiply (inverse (inverse y)) (multiply (multiply (inverse y) y) (inverse y))) := congrArg (fun t : α => greatest_lower_bound y (multiply (inverse (inverse y)) (multiply t (inverse y)))) (Eq.symm (ax1 y))
-      _ = greatest_lower_bound y (multiply (inverse (inverse y)) (multiply (inverse y) (multiply y (inverse y)))) := congrArg (fun t : α => greatest_lower_bound y (multiply (inverse (inverse y)) t)) (ax3 (inverse y) y (inverse y))
-      _ = greatest_lower_bound y (multiply (multiply (inverse (inverse y)) (inverse y)) (multiply y (inverse y))) := congrArg (fun t : α => greatest_lower_bound y t) (Eq.symm (ax3 (inverse (inverse y)) (inverse y) (multiply y (inverse y))))
-      _ = greatest_lower_bound y (multiply identity (multiply y (inverse y))) := congrArg (fun t : α => greatest_lower_bound y (multiply t (multiply y (inverse y)))) (ax1 (inverse y))
-      _ = greatest_lower_bound y (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound y t) (ax2 (multiply y (inverse y)))
-      _ = greatest_lower_bound (multiply identity y) (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound t (multiply y (inverse y))) (Eq.symm (ax2 y))
-      _ = greatest_lower_bound (multiply (multiply (inverse (inverse y)) (inverse y)) y) (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound (multiply t y) (multiply y (inverse y))) (Eq.symm (ax1 (inverse y)))
-      _ = greatest_lower_bound (multiply (inverse (inverse y)) (multiply (inverse y) y)) (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound t (multiply y (inverse y))) (ax3 (inverse (inverse y)) (inverse y) y)
-      _ = greatest_lower_bound (multiply (inverse (inverse y)) identity) (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound (multiply (inverse (inverse y)) t) (multiply y (inverse y))) (ax1 y)
-      _ = greatest_lower_bound (multiply (inverse (inverse y)) (multiply identity identity)) (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound (multiply (inverse (inverse y)) t) (multiply y (inverse y))) (Eq.symm (ax2 identity))
-      _ = greatest_lower_bound (multiply (inverse (inverse y)) (multiply (multiply (inverse y) y) identity)) (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound (multiply (inverse (inverse y)) (multiply t identity)) (multiply y (inverse y))) (Eq.symm (ax1 y))
-      _ = greatest_lower_bound (multiply (inverse (inverse y)) (multiply (inverse y) (multiply y identity))) (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound (multiply (inverse (inverse y)) t) (multiply y (inverse y))) (ax3 (inverse y) y identity)
-      _ = greatest_lower_bound (multiply (multiply (inverse (inverse y)) (inverse y)) (multiply y identity)) (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound t (multiply y (inverse y))) (Eq.symm (ax3 (inverse (inverse y)) (inverse y) (multiply y identity)))
-      _ = greatest_lower_bound (multiply identity (multiply y identity)) (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound (multiply t (multiply y identity)) (multiply y (inverse y))) (ax1 (inverse y))
-      _ = greatest_lower_bound (multiply y identity) (multiply y (inverse y)) := congrArg (fun t : α => greatest_lower_bound t (multiply y (inverse y))) (ax2 (multiply y identity))
-      _ = multiply y (greatest_lower_bound identity (inverse y)) := Eq.symm (ax7 y identity (inverse y))
-      _ = multiply y (greatest_lower_bound identity (least_upper_bound identity (inverse y))) := congrArg (fun t : α => multiply y (greatest_lower_bound identity t)) (Eq.symm (ax5 (inverse y)))
-      _ = multiply y identity := congrArg (fun t : α => multiply y t) (ax6 identity (inverse y))
-      _ = multiply identity (multiply y identity) := Eq.symm (ax2 (multiply y identity))
-      _ = multiply (multiply (inverse (inverse y)) (inverse y)) (multiply y identity) := congrArg (fun t : α => multiply t (multiply y identity)) (Eq.symm (ax1 (inverse y)))
-      _ = multiply (inverse (inverse y)) (multiply (inverse y) (multiply y identity)) := ax3 (inverse (inverse y)) (inverse y) (multiply y identity)
-      _ = multiply (inverse (inverse y)) (multiply (multiply (inverse y) y) identity) := congrArg (fun t : α => multiply (inverse (inverse y)) t) (Eq.symm (ax3 (inverse y) y identity))
-      _ = multiply (inverse (inverse y)) (multiply identity identity) := congrArg (fun t : α => multiply (inverse (inverse y)) (multiply t identity)) (ax1 y)
-      _ = multiply (inverse (inverse y)) identity := congrArg (fun t : α => multiply (inverse (inverse y)) t) (ax2 identity)
-      _ = multiply (inverse (inverse y)) (multiply (inverse y) y) := congrArg (fun t : α => multiply (inverse (inverse y)) t) (Eq.symm (ax1 y))
-      _ = multiply (multiply (inverse (inverse y)) (inverse y)) y := Eq.symm (ax3 (inverse (inverse y)) (inverse y) y)
-      _ = multiply identity y := congrArg (fun t : α => multiply t y) (ax1 (inverse y))
-      _ = y := ax2 y
+
+-- Lemma 14
+theorem taelja_lemma14 : ∀ (x y : α), greatest_lower_bound x y = x := by
+  intro x y
+  calc greatest_lower_bound x y = greatest_lower_bound x (multiply x (multiply (inverse x) y)) := congrArg (fun t : α => greatest_lower_bound x t) (Eq.symm (taelja_lemma12 x y))
+      _ = greatest_lower_bound (multiply x (multiply (inverse x) y)) x := Eq.symm (ax4 (multiply x (multiply (inverse x) y)) x)
+      _ = greatest_lower_bound (multiply x (multiply (inverse x) y)) (multiply x identity) := congrArg (fun t : α => greatest_lower_bound (multiply x (multiply (inverse x) y)) t) (Eq.symm (taelja_lemma10 x))
+      _ = multiply x (greatest_lower_bound (multiply (inverse x) y) identity) := Eq.symm (ax7 x (multiply (inverse x) y) identity)
+      _ = multiply x identity := congrArg (fun t : α => multiply x t) (taelja_lemma13 (multiply (inverse x) y))
+      _ = x := taelja_lemma10 x
+
+-- Lemma 15
+theorem taelja_lemma15 : ∀ (x y : α), x = y := by
+  intro x y
+  calc x = greatest_lower_bound x y := Eq.symm (taelja_lemma14 x y)
+      _ = greatest_lower_bound y x := Eq.symm (ax4 y x)
+      _ = y := taelja_lemma14 y x
 
 -- Goal 1
 theorem taelja_goal1 : multiply a b = multiply b a := by
-  calc multiply a b = multiply b a := taelja_lemma8 (multiply a b) (multiply b a)
+  calc multiply a b = multiply b a := taelja_lemma15 (multiply a b) (multiply b a)
 
 end EGrp1921

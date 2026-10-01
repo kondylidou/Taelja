@@ -1,0 +1,42 @@
+Axiom 1: inverse(X) = divide(divide(Y,Y),X)
+Axiom 2: multiply(X,Y) = divide(X,divide(divide(Z,Z),Y))
+Axiom 3: divide(divide(divide(X,X),divide(X,divide(Y,divide(divide(divide(X,X),X),Z)))),Z) = Y
+
+Lemma 4: multiply(X,Y) = divide(X,inverse(Y))
+Proof:
+  multiply(X,Y)
+= { by axiom 2 }
+  divide(X,divide(divide(X,X),Y))
+= { by axiom 1 R->L }
+  divide(X,inverse(Y))
+
+Lemma 5: divide(X,X) = divide(inverse(multiply(Y,divide(inverse(Y),Z))),Z)
+Proof:
+  divide(X,X)
+= { by axiom 3 R->L }
+  divide(divide(divide(Y,Y),divide(Y,divide(divide(X,X),divide(divide(divide(Y,Y),Y),Z)))),Z)
+= { by axiom 1 R->L }
+  divide(inverse(divide(Y,divide(divide(X,X),divide(divide(divide(Y,Y),Y),Z)))),Z)
+= { by axiom 1 R->L }
+  divide(inverse(divide(Y,divide(divide(X,X),divide(inverse(Y),Z)))),Z)
+= { by axiom 1 R->L }
+  divide(inverse(divide(Y,inverse(divide(inverse(Y),Z)))),Z)
+= { by lemma 4 R->L }
+  divide(inverse(multiply(Y,divide(inverse(Y),Z))),Z)
+
+Lemma 6: divide(X,X) = multiply(inverse(Y),Y)
+Proof:
+  divide(X,X)
+= { by lemma 5 }
+  divide(inverse(multiply(inverse(Y),divide(inverse(inverse(Y)),inverse(Y)))),inverse(Y))
+= { by lemma 5 R->L }
+  divide(inverse(Y),inverse(Y))
+= { by lemma 4 R->L }
+  multiply(inverse(Y),Y)
+
+Goal 1: multiply(inverse(a1),a1) = multiply(inverse(b1),b1)
+Proof:
+  have divide(X,X) = multiply(inverse(a1),a1)
+    by lemma 6
+  hence multiply(inverse(b1),b1) = multiply(inverse(a1),a1)
+    by rw lemma 6

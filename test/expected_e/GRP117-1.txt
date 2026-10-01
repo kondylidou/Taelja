@@ -1,0 +1,45 @@
+Axiom 1: multiply(X,multiply(multiply(X,multiply(multiply(X,Y),Z)),multiply(identity,multiply(Z,Z)))) = Y
+
+Lemma 2: multiply(multiply(X,Y),multiply(identity,Z)) = multiply(X,multiply(Y,Z))
+Proof:
+  multiply(multiply(X,Y),multiply(identity,Z))
+= { by axiom 1 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,multiply(multiply(X,Y),multiply(identity,Z))),multiply(identity,multiply(multiply(identity,Z),multiply(identity,Z))))),multiply(identity,multiply(multiply(identity,multiply(multiply(identity,Z),multiply(identity,Z))),multiply(identity,multiply(multiply(identity,Z),multiply(identity,Z)))))))
+= { by axiom 1 }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,multiply(multiply(X,Y),multiply(identity,Z))),multiply(identity,multiply(multiply(identity,Z),multiply(identity,Z))))),Z))
+= { by axiom 1 }
+  multiply(X,multiply(Y,Z))
+
+Lemma 3: multiply(X,multiply(X,multiply(X,multiply(multiply(Y,Z),multiply(Z,Z))))) = Y
+Proof:
+  multiply(X,multiply(X,multiply(X,multiply(multiply(Y,Z),multiply(Z,Z)))))
+= { by lemma 2 R->L }
+  multiply(X,multiply(X,multiply(multiply(X,multiply(Y,Z)),multiply(identity,multiply(Z,Z)))))
+= { by lemma 2 R->L }
+  multiply(X,multiply(X,multiply(multiply(X,multiply(Y,Z)),multiply(multiply(identity,Z),multiply(identity,Z)))))
+= { by lemma 2 R->L }
+  multiply(X,multiply(X,multiply(multiply(multiply(X,Y),multiply(identity,Z)),multiply(multiply(identity,Z),multiply(identity,Z)))))
+= { by lemma 2 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,Y),multiply(identity,Z))),multiply(identity,multiply(multiply(identity,Z),multiply(identity,Z)))))
+= { by axiom 1 }
+  Y
+
+Lemma 4: multiply(multiply(X,multiply(Y,Y)),Y) = X
+Proof:
+  multiply(multiply(X,multiply(Y,Y)),Y)
+= { by lemma 3 R->L }
+  multiply(multiply(X,multiply(Y,Y)),multiply(multiply(X,multiply(Y,Y)),multiply(multiply(X,multiply(Y,Y)),multiply(multiply(X,multiply(Y,Y)),multiply(multiply(Y,Y),multiply(Y,Y))))))
+= { by lemma 3 }
+  X
+
+Goal 1: multiply(a,identity) = a
+Proof:
+  multiply(a,identity)
+= { by lemma 4 R->L }
+  multiply(a,multiply(multiply(identity,multiply(a,a)),a))
+= { by lemma 2 R->L }
+  multiply(a,multiply(multiply(multiply(identity,a),multiply(identity,a)),a))
+= { by lemma 2 R->L }
+  multiply(multiply(a,multiply(multiply(identity,a),multiply(identity,a))),multiply(identity,a))
+= { by lemma 4 }
+  a

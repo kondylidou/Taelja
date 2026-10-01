@@ -69,38 +69,46 @@ theorem taelja_lemma13 : multiply identity b = inverse a := by
   exact h3
 
 -- Lemma 14
-theorem taelja_lemma14 : product b a identity := by
-  have h1 : product (inverse a) a identity := ax9 a
-  have h2 : product (multiply identity b) a identity := Eq.mpr (congrArg (fun t : α => product t a identity) (taelja_lemma13)) h1
-  have h3 : product b a identity := Eq.mpr (congrArg (fun t : α => product t a identity) (Eq.symm (taelja_lemma10 b))) h2
-  exact h3
+theorem taelja_lemma14 : inverse a = b := by
+  calc inverse a = multiply identity b := Eq.symm (taelja_lemma13)
+      _ = b := taelja_lemma10 b
 
 -- Lemma 15
-theorem taelja_lemma15 : multiply identity (inverse b) = c := by
+theorem taelja_lemma15 : product b a identity := by
+  have h1 : product (inverse a) a identity := ax9 a
+  have h2 : product b a identity := Eq.mpr (congrArg (fun t : α => product t a identity) (Eq.symm (taelja_lemma14))) h1
+  exact h2
+
+-- Lemma 16
+theorem taelja_lemma16 : multiply identity (inverse b) = c := by
   have h1 : product identity (inverse b) (multiply identity (inverse b)) := ax1 identity (inverse b)
   have h2 : product identity (inverse b) c := taelja_lemma11
   have h3 : multiply identity (inverse b) = c := ax3 identity (inverse b) (multiply identity (inverse b)) c h1 h2
   exact h3
 
--- Lemma 16
-theorem taelja_lemma16 : product identity a (inverse b) := by
+-- Lemma 17
+theorem taelja_lemma17 : inverse b = c := by
+  calc inverse b = multiply identity (inverse b) := Eq.symm (taelja_lemma10 (inverse b))
+      _ = c := taelja_lemma16
+
+-- Lemma 18
+theorem taelja_lemma18 : product identity a (inverse b) := by
   have h1 : product (inverse b) b identity := ax9 b
-  have h2 : product b a identity := taelja_lemma14
+  have h2 : product b a identity := taelja_lemma15
   have h3 : product (inverse b) identity (inverse b) := ax5 (inverse b)
   have h4 : product identity a (inverse b) := ax7 (inverse b) b identity a identity (inverse b) h1 h2 h3
   exact h4
 
--- Lemma 17
-theorem taelja_lemma17 : product identity a c := by
-  have h1 : product identity a (inverse b) := taelja_lemma16
-  have h2 : product identity a (multiply identity (inverse b)) := Eq.mpr (congrArg (fun t : α => product identity a t) (taelja_lemma10 (inverse b))) h1
-  have h3 : product identity a c := Eq.mpr (congrArg (fun t : α => product identity a t) (Eq.symm (taelja_lemma15))) h2
-  exact h3
+-- Lemma 19
+theorem taelja_lemma19 : product identity a c := by
+  have h1 : product identity a (inverse b) := taelja_lemma18
+  have h2 : product identity a c := Eq.mpr (congrArg (fun t : α => product identity a t) (Eq.symm (taelja_lemma17))) h1
+  exact h2
 
 -- Goal 1
 theorem taelja_goal1 : a = c := by
   have h1 : product identity a (multiply identity a) := ax1 identity a
-  have h2 : product identity a c := taelja_lemma17
+  have h2 : product identity a c := taelja_lemma19
   have h3 : multiply identity a = c := ax3 identity a (multiply identity a) c h1 h2
   have h4 : a = c := Eq.mp (congrArg (fun t : α => t = c) (taelja_lemma10 a)) h3
   exact h4
