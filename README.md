@@ -125,9 +125,9 @@ cd lean && lake build
 
 The test suite translates the prover outputs stored in
 `test/baseline_{e,twee,vampire}/` and compares each result with its reference
-output: the structured proof in `test/expected_{e,twee,vampire}/`, the TPTP
-derivation in `test/expected_tptp/`, and the Lean file in
-`lean/TaeljaVerify/`. The second command verifies the Lean reference files.
+output: the structured proof in `test/expected_{e,twee,vampire}/` and the
+Lean file in `lean/TaeljaVerify/`. The second command verifies the Lean
+reference files.
 
 ## Evaluation
 
