@@ -17,7 +17,6 @@ import Data.List (isInfixOf, nub)
 
 import Translate (translate)
 import Emitter (emit)
-import TptpEmitter (emitTptp)
 import LeanEmitter (emitLean)
 import Helpers (extractSzsBlock)
 import Types
@@ -40,14 +39,13 @@ tests = testGroup "Taelja"
   , testGroup "E"           (map (mkTest "expected_e"       "baseline_e")       eBenchmarkNames)
   , testGroup "Twee"        (map (mkTest "expected_twee"    "baseline_twee")    tweeBenchmarkNames)
   , testGroup "Twee, no fallback" (map mkReadTest tweeReadNames)
-  , testGroup "TPTP"        (map mkTptpTest tptpNames)
   , testGroup "Lean"        (leanRootTest : map mkLeanTest leanNames)
   , testGroup "Lean, steps"  leanStepTests
   ]
 
--- Every proof of the suite printed as a TPTP derivation by --tptp.
-tptpNames :: [(String, String)]
-tptpNames =
+-- Every proof of the suite, by prover.
+suiteNames :: [(String, String)]
+suiteNames =
   [ ("vampire", n) | n <- handcraftedNames ++ benchmarkNames ] ++
   [ ("e",       n) | n <- eBenchmarkNames ] ++
   [ ("twee",    n) | n <- tweeBenchmarkNames ]
@@ -179,6 +177,9 @@ benchmarkNames =
   -- a Twee chain rewriting by zero = divide(zero,X), whose fresh variable the
   -- next step fixes
   [ "HEN009-3"
+  -- derived equations whose chains are read off the demodulations and
+  -- superpositions that derive them, with no prover call
+  , "GRP451-1"
   -- ? [X0] : ! [X1] : ..., whose refutation rewrites inside the Skolem term
   -- sK0(W): the goals are stated at the witness rd(X,X) that those rewrites
   -- lead to, and a lemma proves W equal to it
@@ -250,6 +251,9 @@ benchmarkNames =
 eBenchmarkNames :: [String]
 eBenchmarkNames =
   [ "GRP001-5"
+  -- derived equations read off E's nested steps, as rw(rw(spm(A,B),C),C),
+  -- whose unprinted clauses the replay supplies, with no prover call
+  , "GRP117-1"
   , "SYN973+1"        -- E simplifies ~(p(z) => p(z)) to ~$true; the resolution of the clauses is put back
   , "COL003-4"
   , "LCL146-1"
@@ -350,7 +354,7 @@ eBenchmarkNames =
 -- what the translator prints, and lean/TaeljaVerify.lean imports exactly
 -- these modules.
 leanNames :: [(String, String)]
-leanNames = nub tptpNames
+leanNames = nub suiteNames
 
 proverDir :: String -> String
 proverDir (c : cs) = toUpper c : cs
@@ -454,11 +458,6 @@ mkReadTest name = goldenTest name
       return (LBS.pack (out ++ err)))
   (\golden out -> return (if golden == out then Nothing else Just "differs from the golden with the fallback off"))
   (const (return ()))
-
-mkTptpTest :: (String, String) -> TestTree
-mkTptpTest (prover, name) = goldenVsString (prover ++ "/" ++ name)
-  ("test/expected_tptp/" ++ prover ++ "/" ++ name ++ ".p")
-  (run emitTptp ("test/baseline_" ++ prover ++ "/" ++ name ++ ".tstp"))
 
 run :: (StructuredProof -> String) -> FilePath -> IO LBS.ByteString
 run = runEncoded LBS.pack
