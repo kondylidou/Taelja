@@ -54,11 +54,9 @@ theorem taelja_lemma8 : sK3 = sK4 := by
 
 -- Goal 1
 theorem taelja_goal1 : unordered_pair sK2 sK3 = singleton sK4 := by
-  have h1 : unordered_pair sK4 sK4 = unordered_pair sK4 sK4 := ax4 sK4 sK4
-  have h2 : unordered_pair sK4 sK2 = unordered_pair sK4 sK4 := Eq.mp (congrArg (fun t : α => unordered_pair sK4 t = unordered_pair sK4 sK4) (Eq.symm (taelja_lemma6))) h1
-  have h3 : unordered_pair sK2 sK4 = unordered_pair sK4 sK4 := Eq.mp (congrArg (fun t : α => t = unordered_pair sK4 sK4) (Eq.symm (ax4 sK2 sK4))) h2
-  have h4 : unordered_pair sK2 sK3 = unordered_pair sK4 sK4 := Eq.mp (congrArg (fun t : α => unordered_pair sK2 t = unordered_pair sK4 sK4) (Eq.symm (taelja_lemma8))) h3
-  have h5 : unordered_pair sK2 sK3 = singleton sK4 := Eq.mp (congrArg (fun t : α => unordered_pair sK2 sK3 = t) (ax1 sK4)) h4
-  exact h5
+  calc unordered_pair sK2 sK3 = unordered_pair sK2 sK4 := congrArg (fun t : α => unordered_pair sK2 t) (taelja_lemma8)
+      _ = unordered_pair sK4 sK2 := ax4 sK2 sK4
+      _ = unordered_pair sK4 sK4 := congrArg (fun t : α => unordered_pair sK4 t) (taelja_lemma6)
+      _ = singleton sK4 := ax1 sK4
 
 end VampireSet886p1

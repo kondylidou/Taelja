@@ -21,9 +21,9 @@ axiom ax2 : a = b
 
 -- Goal 1
 theorem taelja_goal1 : h (f b) a = h a (f b) := by
-  calc h (f b) a = h b a := congrArg (fun t : α => h t a) (ax1 b)
-      _ = h a a := congrArg (fun t : α => h t a) (Eq.symm (ax2))
-      _ = h a b := congrArg (fun t : α => h a t) (ax2)
-      _ = h a (f b) := congrArg (fun t : α => h a t) (Eq.symm (ax1 b))
+  calc h (f b) a = h (f b) b := congrArg (fun t : α => h (f b) t) (ax2)
+      _ = h b b := congrArg (fun t : α => h t b) (ax1 b)
+      _ = h b (f b) := congrArg (fun t : α => h b t) (Eq.symm (ax1 b))
+      _ = h a (f b) := congrArg (fun t : α => h t (f b)) (Eq.symm (ax2))
 
 end VampireKrympaExample5Nonparallel

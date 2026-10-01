@@ -88,12 +88,8 @@ theorem taelja_lemma20 : ∀ (y : α), product multiplicative_identity (add mult
   have h3 : product additive_identity y (multiply additive_identity y) := ax8 additive_identity y
   have h4 : sum multiplicative_identity (multiply additive_identity y) (add multiplicative_identity (multiply additive_identity y)) := ax1 multiplicative_identity (multiply additive_identity y)
   have h5 : product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity (multiply additive_identity y)) := ax10 multiplicative_identity additive_identity multiplicative_identity y (add multiplicative_identity y) (multiply additive_identity y) (add multiplicative_identity (multiply additive_identity y)) h1 h2 h3 h4
-  have h6 : product multiplicative_identity (add y multiplicative_identity) (add multiplicative_identity (multiply additive_identity y)) := Eq.mp (congrArg (fun t : α => product multiplicative_identity t (add multiplicative_identity (multiply additive_identity y))) (Eq.symm (taelja_lemma17 y multiplicative_identity))) h5
-  have h7 : product multiplicative_identity (add y multiplicative_identity) (add (multiply additive_identity y) multiplicative_identity) := Eq.mp (congrArg (fun t : α => product multiplicative_identity (add y multiplicative_identity) t) (Eq.symm (taelja_lemma17 (multiply additive_identity y) multiplicative_identity))) h6
-  have h8 : product multiplicative_identity (add multiplicative_identity y) (add (multiply additive_identity y) multiplicative_identity) := Eq.mp (congrArg (fun t : α => product multiplicative_identity t (add (multiply additive_identity y) multiplicative_identity)) (Eq.symm (taelja_lemma17 multiplicative_identity y))) h7
-  have h9 : product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity (multiply additive_identity y)) := Eq.mp (congrArg (fun t : α => product multiplicative_identity (add multiplicative_identity y) t) (Eq.symm (taelja_lemma17 multiplicative_identity (multiply additive_identity y)))) h8
-  have h10 : product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity (multiply y additive_identity)) := Eq.mp (congrArg (fun t : α => product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity t)) (Eq.symm (taelja_lemma19 y additive_identity))) h9
-  exact h10
+  have h6 : product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity (multiply y additive_identity)) := Eq.mp (congrArg (fun t : α => product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity t)) (Eq.symm (taelja_lemma19 y additive_identity))) h5
+  exact h6
 
 -- Lemma 21
 theorem taelja_lemma21 : ∀ (y : α), add multiplicative_identity (multiply y additive_identity) = add y multiplicative_identity := by

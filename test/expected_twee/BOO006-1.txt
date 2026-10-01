@@ -58,14 +58,6 @@ Proof:
     by axiom 1
   hence product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,multiply(additive_identity,X)))
     by axiom 10
-  hence product(multiplicative_identity,add(X,multiplicative_identity),add(multiplicative_identity,multiply(additive_identity,X)))
-    by rw lemma 17 R->L
-  hence product(multiplicative_identity,add(X,multiplicative_identity),add(multiply(additive_identity,X),multiplicative_identity))
-    by rw lemma 17 R->L
-  hence product(multiplicative_identity,add(multiplicative_identity,X),add(multiply(additive_identity,X),multiplicative_identity))
-    by rw lemma 17 R->L
-  hence product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,multiply(additive_identity,X)))
-    by rw lemma 17 R->L
   hence product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,multiply(X,additive_identity)))
     by rw lemma 19 R->L
 

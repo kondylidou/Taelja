@@ -17,7 +17,8 @@ axiom ax1 : ∀ (x : α), x = v_ta
 
 -- Goal 1
 theorem taelja_goal1 : v_s = v_t := by
-  calc v_s = v_ta := ax1 v_s
-      _ = v_t := Eq.symm (ax1 v_t)
+  have h1 : v_t = v_ta := ax1 v_t
+  have h2 : v_t = v_s := Eq.mp (congrArg (fun t : α => v_t = t) (Eq.symm (ax1 v_s))) h1
+  exact Eq.symm (h2)
 
 end ESwv8181

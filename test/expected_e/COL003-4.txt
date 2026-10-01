@@ -2,28 +2,42 @@ Axiom 1: apply(apply(w,X),Y) = apply(apply(X,Y),Y)
 Axiom 2: apply(apply(apply(b,X),Y),Z) = apply(X,apply(Y,Z))
 Axiom 3: apply(X,fixed_pt) = apply(fixed_pt,apply(X,fixed_pt)) => fixed_point(X)
 
-Lemma 4: apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt) = apply(fixed_pt,apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt))
+Lemma 4: apply(apply(w,apply(b,X)),Y) = apply(X,apply(Y,Y))
+Proof:
+  apply(apply(w,apply(b,X)),Y)
+= { by axiom 1 }
+  apply(apply(apply(b,X),Y),Y)
+= { by axiom 2 }
+  apply(X,apply(Y,Y))
+
+Lemma 5: apply(apply(w,w),X) = apply(apply(X,X),X)
+Proof:
+  apply(apply(w,w),X)
+= { by axiom 1 }
+  apply(apply(w,X),X)
+= { by axiom 1 }
+  apply(apply(X,X),X)
+
+Lemma 6: apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt) = apply(fixed_pt,apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt))
 Proof:
   apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt)
 = { by axiom 2 }
   apply(apply(apply(b,apply(w,w)),apply(apply(b,w),b)),apply(b,fixed_pt))
 = { by axiom 2 }
   apply(apply(w,w),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
-= { by axiom 1 }
-  apply(apply(w,apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
-= { by axiom 1 }
-  apply(apply(apply(apply(apply(b,w),b),apply(b,fixed_pt)),apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
 = { by axiom 2 }
-  apply(apply(apply(w,apply(b,apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
+  apply(apply(w,w),apply(w,apply(b,apply(b,fixed_pt))))
 = { by axiom 1 }
-  apply(apply(apply(apply(b,apply(b,fixed_pt)),apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
+  apply(apply(w,apply(w,apply(b,apply(b,fixed_pt)))),apply(w,apply(b,apply(b,fixed_pt))))
+= { by axiom 1 }
+  apply(apply(apply(w,apply(b,apply(b,fixed_pt))),apply(w,apply(b,apply(b,fixed_pt)))),apply(w,apply(b,apply(b,fixed_pt))))
+= { by lemma 4 }
+  apply(apply(apply(b,fixed_pt),apply(apply(w,apply(b,apply(b,fixed_pt))),apply(w,apply(b,apply(b,fixed_pt))))),apply(w,apply(b,apply(b,fixed_pt))))
 = { by axiom 2 }
-  apply(apply(apply(b,fixed_pt),apply(apply(apply(apply(b,w),b),apply(b,fixed_pt)),apply(apply(apply(b,w),b),apply(b,fixed_pt)))),apply(apply(apply(b,w),b),apply(b,fixed_pt)))
-= { by axiom 2 }
-  apply(fixed_pt,apply(apply(apply(apply(apply(b,w),b),apply(b,fixed_pt)),apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt))))
-= { by axiom 1 R->L }
-  apply(fixed_pt,apply(apply(w,apply(apply(apply(b,w),b),apply(b,fixed_pt))),apply(apply(apply(b,w),b),apply(b,fixed_pt))))
-= { by axiom 1 R->L }
+  apply(fixed_pt,apply(apply(apply(w,apply(b,apply(b,fixed_pt))),apply(w,apply(b,apply(b,fixed_pt)))),apply(w,apply(b,apply(b,fixed_pt)))))
+= { by lemma 5 R->L }
+  apply(fixed_pt,apply(apply(w,w),apply(w,apply(b,apply(b,fixed_pt)))))
+= { by axiom 2 R->L }
   apply(fixed_pt,apply(apply(w,w),apply(apply(apply(b,w),b),apply(b,fixed_pt))))
 = { by axiom 2 R->L }
   apply(fixed_pt,apply(apply(apply(b,apply(w,w)),apply(apply(b,w),b)),apply(b,fixed_pt)))
@@ -33,6 +47,6 @@ Proof:
 Goal 1: fixed_point(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b))
 Proof:
   have apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt) = apply(fixed_pt,apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt))
-    by lemma 4
+    by lemma 6
   hence fixed_point(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b))
     by axiom 3

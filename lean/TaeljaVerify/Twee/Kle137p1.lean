@@ -34,15 +34,8 @@ axiom ax7 : ∀ (x y z : α), leq x (addition (multiplication y x) z) → leq x 
 
 -- Lemma 8
 theorem taelja_lemma8 : addition x0 (addition x0 (addition (multiplication one x0) one)) = addition x0 (addition (multiplication one x0) one) := by
-  calc addition x0 (addition x0 (addition (multiplication one x0) one)) = addition x0 (addition x0 (addition (multiplication one (multiplication one x0)) one)) := congrArg (fun t : α => addition x0 (addition x0 (addition t one))) (Eq.symm (ax4 (multiplication one x0)))
-      _ = addition x0 (addition (multiplication one x0) (addition (multiplication one (multiplication one x0)) one)) := congrArg (fun t : α => addition x0 (addition t (addition (multiplication one (multiplication one x0)) one))) (Eq.symm (ax4 x0))
-      _ = addition (multiplication one x0) (addition (multiplication one x0) (addition (multiplication one (multiplication one x0)) one)) := congrArg (fun t : α => addition t (addition (multiplication one x0) (addition (multiplication one (multiplication one x0)) one))) (Eq.symm (ax4 x0))
-      _ = addition (multiplication one x0) (addition (multiplication one x0) (addition (multiplication one x0) one)) := congrArg (fun t : α => addition (multiplication one x0) (addition (multiplication one x0) (addition t one))) (ax4 (multiplication one x0))
-      _ = addition (addition (multiplication one x0) (multiplication one x0)) (addition (multiplication one x0) one) := ax5 (multiplication one x0) (multiplication one x0) (addition (multiplication one x0) one)
-      _ = addition (multiplication one x0) (addition (multiplication one x0) one) := congrArg (fun t : α => addition t (addition (multiplication one x0) one)) (ax2 (multiplication one x0))
-      _ = addition (multiplication one x0) (addition (multiplication one (multiplication one x0)) one) := congrArg (fun t : α => addition (multiplication one x0) (addition t one)) (Eq.symm (ax4 (multiplication one x0)))
-      _ = addition x0 (addition (multiplication one (multiplication one x0)) one) := congrArg (fun t : α => addition t (addition (multiplication one (multiplication one x0)) one)) (ax4 x0)
-      _ = addition x0 (addition (multiplication one x0) one) := congrArg (fun t : α => addition x0 (addition t one)) (ax4 (multiplication one x0))
+  calc addition x0 (addition x0 (addition (multiplication one x0) one)) = addition (addition x0 x0) (addition (multiplication one x0) one) := ax5 x0 x0 (addition (multiplication one x0) one)
+      _ = addition x0 (addition (multiplication one x0) one) := congrArg (fun t : α => addition t (addition (multiplication one x0) one)) (ax2 x0)
 
 -- Lemma 9
 theorem taelja_lemma9 : leq x0 (addition x0 (addition (multiplication one x0) one)) := by
@@ -53,24 +46,10 @@ theorem taelja_lemma9 : leq x0 (addition x0 (addition (multiplication one x0) on
 -- Lemma 10
 theorem taelja_lemma10 : leq x0 (addition (multiplication (addition one one) x0) one) := by
   have h1 : leq x0 (addition x0 (addition (multiplication one x0) one)) := taelja_lemma9
-  have h2 : leq x0 (addition x0 (addition (multiplication one (multiplication one x0)) one)) := Eq.mpr (congrArg (fun t : α => leq x0 (addition x0 (addition t one))) (ax4 (multiplication one x0))) h1
-  have h3 : leq x0 (addition x0 (addition (multiplication one (multiplication (addition one one) x0)) one)) := Eq.mpr (congrArg (fun t : α => leq x0 (addition x0 (addition (multiplication one (multiplication t x0)) one))) (ax2 one)) h2
-  have h4 : leq x0 (addition (multiplication one x0) (addition (multiplication one (multiplication (addition one one) x0)) one)) := Eq.mpr (congrArg (fun t : α => leq x0 (addition t (addition (multiplication one (multiplication (addition one one) x0)) one))) (ax4 x0)) h3
-  have h5 : leq x0 (addition (multiplication (addition one one) x0) (addition (multiplication one (multiplication (addition one one) x0)) one)) := Eq.mpr (congrArg (fun t : α => leq x0 (addition (multiplication t x0) (addition (multiplication one (multiplication (addition one one) x0)) one))) (ax2 one)) h4
-  have h6 : leq (multiplication one x0) (addition (multiplication (addition one one) x0) (addition (multiplication one (multiplication (addition one one) x0)) one)) := Eq.mpr (congrArg (fun t : α => leq t (addition (multiplication (addition one one) x0) (addition (multiplication one (multiplication (addition one one) x0)) one))) (ax4 x0)) h5
-  have h7 : leq (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) (addition (multiplication one (multiplication (addition one one) x0)) one)) := Eq.mpr (congrArg (fun t : α => leq (multiplication t x0) (addition (multiplication (addition one one) x0) (addition (multiplication one (multiplication (addition one one) x0)) one))) (ax2 one)) h6
-  have h8 : leq (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) one)) := Eq.mpr (congrArg (fun t : α => leq (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) (addition t one))) (Eq.symm (ax4 (multiplication (addition one one) x0)))) h7
-  have h9 : leq (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) (addition one one))) := Eq.mpr (congrArg (fun t : α => leq (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) t))) (ax2 one)) h8
-  have h10 : leq (multiplication (addition one one) x0) (addition (addition (multiplication (addition one one) x0) (multiplication (addition one one) x0)) (addition one one)) := Eq.mpr (congrArg (fun t : α => leq (multiplication (addition one one) x0) t) (Eq.symm (ax5 (multiplication (addition one one) x0) (multiplication (addition one one) x0) (addition one one)))) h9
-  have h11 : leq (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) (addition one one)) := Eq.mpr (congrArg (fun t : α => leq (multiplication (addition one one) x0) (addition t (addition one one))) (Eq.symm (ax2 (multiplication (addition one one) x0)))) h10
-  have h12 : leq (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) one) := Eq.mpr (congrArg (fun t : α => leq (multiplication (addition one one) x0) (addition (multiplication (addition one one) x0) t)) (Eq.symm (ax2 one))) h11
-  have h13 : leq (multiplication (addition one one) x0) (addition (multiplication one (multiplication (addition one one) x0)) one) := Eq.mpr (congrArg (fun t : α => leq (multiplication (addition one one) x0) (addition t one)) (ax4 (multiplication (addition one one) x0))) h12
-  have h14 : leq (multiplication (addition one one) x0) (addition (multiplication (addition one one) (multiplication (addition one one) x0)) one) := Eq.mpr (congrArg (fun t : α => leq (multiplication (addition one one) x0) (addition (multiplication t (multiplication (addition one one) x0)) one)) (ax2 one)) h13
-  have h15 : leq (multiplication one x0) (addition (multiplication (addition one one) (multiplication (addition one one) x0)) one) := Eq.mpr (congrArg (fun t : α => leq (multiplication t x0) (addition (multiplication (addition one one) (multiplication (addition one one) x0)) one)) (Eq.symm (ax2 one))) h14
-  have h16 : leq x0 (addition (multiplication (addition one one) (multiplication (addition one one) x0)) one) := Eq.mpr (congrArg (fun t : α => leq t (addition (multiplication (addition one one) (multiplication (addition one one) x0)) one)) (Eq.symm (ax4 x0))) h15
-  have h17 : leq x0 (addition (multiplication (addition one one) (multiplication one x0)) one) := Eq.mpr (congrArg (fun t : α => leq x0 (addition (multiplication (addition one one) (multiplication t x0)) one)) (Eq.symm (ax2 one))) h16
-  have h18 : leq x0 (addition (multiplication (addition one one) x0) one) := Eq.mpr (congrArg (fun t : α => leq x0 (addition (multiplication (addition one one) t) one)) (Eq.symm (ax4 x0))) h17
-  exact h18
+  have h2 : leq x0 (addition (addition x0 (multiplication one x0)) one) := Eq.mpr (congrArg (fun t : α => leq x0 t) (Eq.symm (ax5 x0 (multiplication one x0) one))) h1
+  have h3 : leq x0 (addition (addition (multiplication one x0) (multiplication one x0)) one) := Eq.mpr (congrArg (fun t : α => leq x0 (addition (addition t (multiplication one x0)) one)) (ax4 x0)) h2
+  have h4 : leq x0 (addition (multiplication (addition one one) x0) one) := Eq.mpr (congrArg (fun t : α => leq x0 (addition t one)) (ax3 one one x0)) h3
+  exact h4
 
 -- Lemma 11
 theorem taelja_lemma11 : leq x0 (multiplication (strong_iteration (addition one one)) one) := by

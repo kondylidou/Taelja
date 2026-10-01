@@ -106,21 +106,23 @@ theorem taelja_lemma18 : sK2 = times sK2 (sK0 sK2) := by
   exact h2
 
 -- Lemma 19
-theorem taelja_lemma19 : ∀ (x y : α), times sK1 (times (sK0 sK1) (times x y)) = times x (times y sK1) := by
+theorem taelja_lemma19 : ∀ (x y : α), times sK3 (times x y) = times sK1 (times x (times sK2 y)) := by
+  intro x y
+  calc times sK3 (times x y) = times sK2 (times (times x y) sK1) := Eq.symm (taelja_lemma13 (times x y))
+      _ = times sK2 (times y (times sK1 x)) := congrArg (fun t : α => times sK2 t) (ax5 x y sK1)
+      _ = times sK1 (times x (times sK2 y)) := taelja_lemma16 sK2 y sK1 x
+
+-- Lemma 20
+theorem taelja_lemma20 : ∀ (x y : α), times sK1 (times (sK0 sK1) (times x y)) = times x (times y sK1) := by
   intro x y
   calc times sK1 (times (sK0 sK1) (times x y)) = times x (times y (times sK1 (sK0 sK1))) := taelja_lemma16 sK1 (sK0 sK1) x y
       _ = times x (times y sK1) := congrArg (fun t : α => times x (times y t)) (Eq.symm (taelja_lemma8))
 
--- Lemma 20
-theorem taelja_lemma20 : ∀ (x y : α), times sK1 (times sK1 (times x y)) = times x (times y (sK0 sK1)) := by
+-- Lemma 21
+theorem taelja_lemma21 : ∀ (x y : α), times sK1 (times sK1 (times x y)) = times x (times y (sK0 sK1)) := by
   intro x y
   calc times sK1 (times sK1 (times x y)) = times x (times y (times sK1 sK1)) := taelja_lemma16 sK1 sK1 x y
       _ = times x (times y (sK0 sK1)) := congrArg (fun t : α => times x (times y t)) (taelja_lemma9)
-
--- Lemma 21
-theorem taelja_lemma21 : times sK3 sK1 = times sK2 (sK0 sK1) := by
-  calc times sK3 sK1 = times sK2 (times sK1 sK1) := Eq.symm (taelja_lemma13 sK1)
-      _ = times sK2 (sK0 sK1) := congrArg (fun t : α => times sK2 t) (taelja_lemma9)
 
 -- Lemma 22
 theorem taelja_lemma22 : times sK2 sK2 = sK0 sK2 := by
@@ -136,38 +138,51 @@ theorem taelja_lemma23 : ∀ (x : α), times sK2 (times x sK2) = times (sK0 sK2)
 
 -- Lemma 24
 theorem taelja_lemma24 : times (times sK1 sK2) (times (times sK1 sK2) (times sK1 sK2)) = times sK1 sK2 := by
-  calc times (times sK1 sK2) (times (times sK1 sK2) (times sK1 sK2)) = times (times sK1 sK2) (times (times sK1 sK2) sK3) := congrArg (fun t : α => times (times sK1 sK2) (times (times sK1 sK2) t)) (Eq.symm (ax1))
-      _ = times sK1 (times sK2 (times (times sK1 sK2) (times sK1 sK2))) := taelja_lemma14 (times sK1 sK2) (times sK1 sK2)
-      _ = times sK1 (times sK2 (times sK3 (times sK1 sK2))) := congrArg (fun t : α => times sK1 (times sK2 (times t (times sK1 sK2)))) (Eq.symm (ax1))
-      _ = times sK1 (times sK2 (times sK2 (times (times sK1 sK2) sK1))) := congrArg (fun t : α => times sK1 (times sK2 t)) (Eq.symm (taelja_lemma13 (times sK1 sK2)))
-      _ = times sK1 (times sK2 (times sK1 (times (sK0 sK1) (times sK2 (times sK1 sK2))))) := congrArg (fun t : α => times sK1 (times sK2 t)) (Eq.symm (taelja_lemma19 sK2 (times sK1 sK2)))
-      _ = times sK1 (times sK2 (times sK1 (times (sK0 sK1) (times (sK0 sK2) sK1)))) := congrArg (fun t : α => times sK1 (times sK2 (times sK1 (times (sK0 sK1) t)))) (taelja_lemma23 sK1)
-      _ = times sK1 (times sK2 (times (sK0 sK2) (times sK1 sK1))) := congrArg (fun t : α => times sK1 (times sK2 t)) (taelja_lemma19 (sK0 sK2) sK1)
-      _ = times sK1 (times sK2 (times (sK0 sK2) (sK0 sK1))) := congrArg (fun t : α => times sK1 (times sK2 (times (sK0 sK2) t))) (taelja_lemma9)
-      _ = times (sK0 sK2) (times (sK0 sK1) sK3) := Eq.symm (taelja_lemma14 (sK0 sK2) (sK0 sK1))
-      _ = times (sK0 sK2) (times sK1 (times sK3 sK1)) := congrArg (fun t : α => times (sK0 sK2) t) (Eq.symm (taelja_lemma10 sK3))
-      _ = times (sK0 sK2) (times sK1 (times sK2 (sK0 sK1))) := congrArg (fun t : α => times (sK0 sK2) (times sK1 t)) (taelja_lemma21)
+  calc times (times sK1 sK2) (times (times sK1 sK2) (times sK1 sK2)) = times (times sK1 sK2) (times sK2 (times (times sK1 sK2) sK1)) := congrArg (fun t : α => times (times sK1 sK2) t) (ax5 sK1 sK2 (times sK1 sK2))
+      _ = times sK2 (times (times sK2 (times (times sK1 sK2) sK1)) sK1) := ax5 sK1 sK2 (times sK2 (times (times sK1 sK2) sK1))
+      _ = times sK2 (times (times (times sK1 sK2) sK1) (times sK1 sK2)) := congrArg (fun t : α => times sK2 t) (ax5 sK2 (times (times sK1 sK2) sK1) sK1)
+      _ = times sK2 (times sK1 (times (times sK1 sK2) (times sK1 sK2))) := congrArg (fun t : α => times sK2 t) (ax5 (times sK1 sK2) sK1 (times sK1 sK2))
+      _ = times sK2 (times sK1 (times sK2 (times (times sK1 sK2) sK1))) := congrArg (fun t : α => times sK2 (times sK1 t)) (ax5 sK1 sK2 (times sK1 sK2))
+      _ = times sK2 (times sK1 (times sK2 (times sK2 (times sK1 sK1)))) := congrArg (fun t : α => times sK2 (times sK1 (times sK2 t))) (ax5 sK1 sK2 sK1)
+      _ = times sK2 (times sK1 (times sK2 (times sK3 sK1))) := congrArg (fun t : α => times sK2 (times sK1 (times sK2 t))) (taelja_lemma13 sK1)
+      _ = times sK2 (times (times (times sK3 sK1) sK1) sK2) := congrArg (fun t : α => times sK2 t) (Eq.symm (ax5 (times sK3 sK1) sK1 sK2))
+      _ = times (sK0 sK2) (times (times sK3 sK1) sK1) := taelja_lemma23 (times (times sK3 sK1) sK1)
+      _ = times (sK0 sK2) (times sK1 (times sK1 sK3)) := congrArg (fun t : α => times (sK0 sK2) t) (ax5 sK3 sK1 sK1)
+      _ = times sK1 (times sK3 (times (sK0 sK2) sK1)) := taelja_lemma16 (sK0 sK2) sK1 sK1 sK3
+      _ = times sK1 (times sK3 (times sK2 (times sK1 sK2))) := congrArg (fun t : α => times sK1 (times sK3 t)) (Eq.symm (taelja_lemma23 sK1))
+      _ = times sK1 (times sK1 (times sK2 (times sK3 sK2))) := congrArg (fun t : α => times sK1 t) (Eq.symm (taelja_lemma16 sK1 sK2 sK3 sK2))
+      _ = times sK1 (times sK1 (times (sK0 sK2) sK3)) := congrArg (fun t : α => times sK1 (times sK1 t)) (taelja_lemma23 sK3)
+      _ = times (sK0 sK2) (times sK3 (sK0 sK1)) := taelja_lemma21 (sK0 sK2) sK3
+      _ = times (sK0 sK2) (times sK2 (times (sK0 sK1) sK1)) := congrArg (fun t : α => times (sK0 sK2) t) (Eq.symm (taelja_lemma13 (sK0 sK1)))
+      _ = times (sK0 sK2) (times sK1 (times (sK0 sK1) (times sK2 (sK0 sK1)))) := congrArg (fun t : α => times (sK0 sK2) t) (Eq.symm (taelja_lemma20 sK2 (sK0 sK1)))
+      _ = times (sK0 sK2) (times sK3 (times (sK0 sK1) (sK0 sK1))) := congrArg (fun t : α => times (sK0 sK2) t) (Eq.symm (taelja_lemma19 (sK0 sK1) (sK0 sK1)))
+      _ = times (sK0 sK2) (times sK1 (times sK1 (times sK3 (sK0 sK1)))) := congrArg (fun t : α => times (sK0 sK2) t) (Eq.symm (taelja_lemma21 sK3 (sK0 sK1)))
+      _ = times (sK0 sK2) (times sK1 (times (times (sK0 sK1) sK1) sK3)) := congrArg (fun t : α => times (sK0 sK2) (times sK1 t)) (Eq.symm (ax5 (sK0 sK1) sK1 sK3))
+      _ = times (sK0 sK2) (times sK1 (times sK2 (times sK1 (times (sK0 sK1) sK1)))) := congrArg (fun t : α => times (sK0 sK2) t) (taelja_lemma14 sK1 (times (sK0 sK1) sK1))
+      _ = times (sK0 sK2) (times sK1 (times sK2 (times (sK0 sK1) (sK0 sK1)))) := congrArg (fun t : α => times (sK0 sK2) (times sK1 (times sK2 t))) (taelja_lemma10 (sK0 sK1))
+      _ = times (sK0 sK2) (times (sK0 sK1) (times (sK0 sK1) (times sK1 sK2))) := congrArg (fun t : α => times (sK0 sK2) t) (Eq.symm (taelja_lemma16 (sK0 sK1) (sK0 sK1) sK1 sK2))
+      _ = times (sK0 sK2) (times (sK0 sK1) (times (times sK2 (sK0 sK1)) sK1)) := congrArg (fun t : α => times (sK0 sK2) (times (sK0 sK1) t)) (Eq.symm (ax5 sK2 (sK0 sK1) sK1))
+      _ = times (sK0 sK2) (times sK1 (times sK2 (sK0 sK1))) := congrArg (fun t : α => times (sK0 sK2) t) (taelja_lemma15 (times sK2 (sK0 sK1)))
       _ = times (sK0 sK2) (times sK1 sK2) := congrArg (fun t : α => times (sK0 sK2) t) (Eq.symm (taelja_lemma12 sK2))
-      _ = times sK2 (times sK1 (sK0 sK2)) := taelja_lemma17 (sK0 sK2) sK2
-      _ = times sK2 (times sK1 (times (sK0 sK2) (sK0 sK1))) := congrArg (fun t : α => times sK2 t) (taelja_lemma12 (sK0 sK2))
-      _ = times sK2 (times sK1 (times (sK0 sK2) (times sK1 sK1))) := congrArg (fun t : α => times sK2 (times sK1 (times (sK0 sK2) t))) (Eq.symm (taelja_lemma9))
-      _ = times sK2 (times sK1 (times sK1 (times sK1 (sK0 sK2)))) := congrArg (fun t : α => times sK2 (times sK1 t)) (Eq.symm (taelja_lemma17 sK1 (sK0 sK2)))
-      _ = times sK2 (times (times sK1 (sK0 sK2)) (times sK1 sK1)) := congrArg (fun t : α => times sK2 t) (Eq.symm (taelja_lemma17 (times sK1 (sK0 sK2)) sK1))
-      _ = times sK2 (times (times sK1 (sK0 sK2)) (sK0 sK1)) := congrArg (fun t : α => times sK2 (times (times sK1 (sK0 sK2)) t)) (taelja_lemma9)
-      _ = times sK1 (times sK1 (times sK2 (times sK1 (sK0 sK2)))) := Eq.symm (taelja_lemma20 sK2 (times sK1 (sK0 sK2)))
-      _ = times sK1 (times sK1 (times (sK0 sK2) (times sK1 sK2))) := congrArg (fun t : α => times sK1 (times sK1 t)) (Eq.symm (taelja_lemma17 (sK0 sK2) sK2))
-      _ = times (sK0 sK2) (times (times sK1 sK2) (sK0 sK1)) := taelja_lemma20 (sK0 sK2) (times sK1 sK2)
-      _ = times (sK0 sK2) (times sK2 (times (sK0 sK1) sK1)) := congrArg (fun t : α => times (sK0 sK2) t) (ax5 sK1 sK2 (sK0 sK1))
-      _ = times (sK0 sK2) (times sK2 sK1) := congrArg (fun t : α => times (sK0 sK2) (times sK2 t)) (Eq.symm (taelja_lemma11))
-      _ = times (sK0 sK2) (times sK2 (times sK1 (sK0 sK1))) := congrArg (fun t : α => times (sK0 sK2) (times sK2 t)) (taelja_lemma8)
-      _ = times (sK0 sK2) (times (sK0 sK1) (times sK1 sK2)) := congrArg (fun t : α => times (sK0 sK2) t) (taelja_lemma17 sK2 (sK0 sK1))
-      _ = times (sK0 sK2) (times (times sK2 (sK0 sK1)) sK1) := congrArg (fun t : α => times (sK0 sK2) t) (Eq.symm (ax5 sK2 (sK0 sK1) sK1))
-      _ = times (times sK1 (sK0 sK2)) (times sK2 (sK0 sK1)) := Eq.symm (ax5 sK1 (sK0 sK2) (times sK2 (sK0 sK1)))
-      _ = times (times (sK0 sK1) (times sK1 (sK0 sK2))) sK2 := Eq.symm (ax5 (sK0 sK1) (times sK1 (sK0 sK2)) sK2)
-      _ = times (times (sK0 sK2) (times sK1 (sK0 sK1))) sK2 := congrArg (fun t : α => times t sK2) (Eq.symm (taelja_lemma17 (sK0 sK2) (sK0 sK1)))
-      _ = times (times (sK0 sK2) sK1) sK2 := congrArg (fun t : α => times (times (sK0 sK2) t) sK2) (Eq.symm (taelja_lemma8))
-      _ = times sK1 (times sK2 (sK0 sK2)) := ax5 (sK0 sK2) sK1 sK2
-      _ = times sK1 sK2 := congrArg (fun t : α => times sK1 t) (Eq.symm (taelja_lemma18))
+      _ = times (sK0 sK2) sK3 := congrArg (fun t : α => times (sK0 sK2) t) (Eq.symm (ax1))
+      _ = times (sK0 sK2) (times sK1 sK2) := congrArg (fun t : α => times (sK0 sK2) t) (ax1)
+      _ = times (times sK2 (sK0 sK2)) sK1 := Eq.symm (ax5 sK2 (sK0 sK2) sK1)
+      _ = times sK2 sK1 := congrArg (fun t : α => times t sK1) (Eq.symm (taelja_lemma18))
+      _ = times sK2 (times sK1 (sK0 sK1)) := congrArg (fun t : α => times sK2 t) (taelja_lemma8)
+      _ = times (sK0 sK1) (times sK1 sK2) := Eq.symm (taelja_lemma17 (sK0 sK1) sK2)
+      _ = times (sK0 sK1) (times sK1 (times sK2 (sK0 sK2))) := congrArg (fun t : α => times (sK0 sK1) (times sK1 t)) (taelja_lemma18)
+      _ = times sK2 (times (sK0 sK2) (times (sK0 sK1) sK1)) := Eq.symm (taelja_lemma16 sK2 (sK0 sK2) (sK0 sK1) sK1)
+      _ = times sK2 (times (sK0 sK2) sK1) := congrArg (fun t : α => times sK2 (times (sK0 sK2) t)) (Eq.symm (taelja_lemma11))
+      _ = times sK1 (times (sK0 sK1) (times sK2 (sK0 sK2))) := Eq.symm (taelja_lemma20 sK2 (sK0 sK2))
+      _ = times sK1 (times (sK0 sK1) sK2) := congrArg (fun t : α => times sK1 (times (sK0 sK1) t)) (Eq.symm (taelja_lemma18))
+      _ = times sK1 (times sK1 (times sK2 sK1)) := congrArg (fun t : α => times sK1 t) (Eq.symm (taelja_lemma10 sK2))
+      _ = times sK3 (times sK1 sK1) := Eq.symm (taelja_lemma19 sK1 sK1)
+      _ = times sK1 (times sK1 sK3) := taelja_lemma17 sK3 sK1
+      _ = times sK1 (times sK2 (times sK1 sK1)) := taelja_lemma14 sK1 sK1
+      _ = times sK1 (times sK2 (sK0 sK1)) := congrArg (fun t : α => times sK1 (times sK2 t)) (taelja_lemma9)
+      _ = times sK1 sK2 := Eq.symm (taelja_lemma12 sK2)
+      _ = sK3 := Eq.symm (ax1)
+      _ = times sK1 sK2 := ax1
 
 -- Goal 1
 theorem taelja_goal1 : element sK3 := by

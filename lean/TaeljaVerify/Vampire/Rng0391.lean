@@ -165,9 +165,7 @@ theorem taelja_goal1 : c = d := by
   have h1 : product a d d := taelja_lemma26
   have h2 : product a d b := taelja_lemma27
   have h3 : b = d := ax5 a d d b h1 h2
-  have h4 : b = a := Eq.mp (congrArg (fun t : α => b = t) (Eq.symm (taelja_lemma25))) h3
-  have h5 : b = d := Eq.mp (congrArg (fun t : α => b = t) (taelja_lemma25)) h4
-  have h6 : c = d := Eq.mp (congrArg (fun t : α => t = d) (taelja_lemma15)) h5
-  exact h6
+  have h4 : c = d := Eq.mp (congrArg (fun t : α => t = d) (taelja_lemma15)) h3
+  exact h4
 
 end VampireRng0391

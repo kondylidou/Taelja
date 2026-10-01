@@ -142,13 +142,17 @@ Proof:
   not(big_hat(x,y))
 = { by axiom 5 }
   not(not(big_V(not(x),not(y))))
+= { by axiom 6 }
+  not(not(implies(implies(not(x),not(y)),not(y))))
 = { by lemma 17 R->L }
-  not(implies(big_V(not(x),not(y)),not(truth)))
+  not(implies(implies(implies(not(x),not(y)),not(y)),not(truth)))
 = { by lemma 17 R->L }
-  implies(implies(big_V(not(x),not(y)),not(truth)),not(truth))
-= { by axiom 3 R->L }
-  implies(implies(not(truth),big_V(not(x),not(y))),big_V(not(x),not(y)))
+  implies(implies(implies(implies(not(x),not(y)),not(y)),not(truth)),not(truth))
+= { by axiom 3 }
+  implies(implies(not(truth),implies(implies(not(x),not(y)),not(y))),implies(implies(not(x),not(y)),not(y)))
 = { by lemma 12 }
-  implies(truth,big_V(not(x),not(y)))
+  implies(truth,implies(implies(not(x),not(y)),not(y)))
 = { by axiom 1 }
+  implies(implies(not(x),not(y)),not(y))
+= { by axiom 6 R->L }
   big_V(not(x),not(y))

@@ -24,23 +24,34 @@ axiom ax2 : ∀ (x y z : α), apply_ (apply_ (apply_ b x) y) z = apply_ x (apply
 axiom ax3 : ∀ (x : α), apply_ x fixed_pt = apply_ fixed_pt (apply_ x fixed_pt) → fixed_point x
 
 -- Lemma 4
-theorem taelja_lemma4 : apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt = apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) := by
+theorem taelja_lemma4 : ∀ (x y : α), apply_ (apply_ w (apply_ b x)) y = apply_ x (apply_ y y) := by
+  intro x y
+  calc apply_ (apply_ w (apply_ b x)) y = apply_ (apply_ (apply_ b x) y) y := ax1 (apply_ b x) y
+      _ = apply_ x (apply_ y y) := ax2 x y y
+
+-- Lemma 5
+theorem taelja_lemma5 : ∀ (x : α), apply_ (apply_ w w) x = apply_ (apply_ x x) x := by
+  intro x
+  calc apply_ (apply_ w w) x = apply_ (apply_ w x) x := ax1 w x
+      _ = apply_ (apply_ x x) x := ax1 x x
+
+-- Lemma 6
+theorem taelja_lemma6 : apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt = apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) := by
   calc apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt = apply_ (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b)) (apply_ b fixed_pt) := ax2 (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b)) b fixed_pt
       _ = apply_ (apply_ w w) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := ax2 (apply_ w w) (apply_ (apply_ b w) b) (apply_ b fixed_pt)
-      _ = apply_ (apply_ w (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := ax1 w (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))
-      _ = apply_ (apply_ (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := ax1 (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))
-      _ = apply_ (apply_ (apply_ w (apply_ b (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := congrArg (fun t : α => apply_ (apply_ t (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (ax2 w b (apply_ b fixed_pt))
-      _ = apply_ (apply_ (apply_ (apply_ b (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := congrArg (fun t : α => apply_ t (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (ax1 (apply_ b (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)))
-      _ = apply_ (apply_ (apply_ b fixed_pt) (apply_ (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) := congrArg (fun t : α => apply_ t (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (ax2 (apply_ b fixed_pt) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)))
-      _ = apply_ fixed_pt (apply_ (apply_ (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) := ax2 fixed_pt (apply_ (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))
-      _ = apply_ fixed_pt (apply_ (apply_ w (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) := congrArg (fun t : α => apply_ fixed_pt t) (Eq.symm (ax1 (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt)) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))))
-      _ = apply_ fixed_pt (apply_ (apply_ w w) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) := congrArg (fun t : α => apply_ fixed_pt t) (Eq.symm (ax1 w (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))))
+      _ = apply_ (apply_ w w) (apply_ w (apply_ b (apply_ b fixed_pt))) := congrArg (fun t : α => apply_ (apply_ w w) t) (ax2 w b (apply_ b fixed_pt))
+      _ = apply_ (apply_ w (apply_ w (apply_ b (apply_ b fixed_pt)))) (apply_ w (apply_ b (apply_ b fixed_pt))) := ax1 w (apply_ w (apply_ b (apply_ b fixed_pt)))
+      _ = apply_ (apply_ (apply_ w (apply_ b (apply_ b fixed_pt))) (apply_ w (apply_ b (apply_ b fixed_pt)))) (apply_ w (apply_ b (apply_ b fixed_pt))) := ax1 (apply_ w (apply_ b (apply_ b fixed_pt))) (apply_ w (apply_ b (apply_ b fixed_pt)))
+      _ = apply_ (apply_ (apply_ b fixed_pt) (apply_ (apply_ w (apply_ b (apply_ b fixed_pt))) (apply_ w (apply_ b (apply_ b fixed_pt))))) (apply_ w (apply_ b (apply_ b fixed_pt))) := congrArg (fun t : α => apply_ t (apply_ w (apply_ b (apply_ b fixed_pt)))) (taelja_lemma4 (apply_ b fixed_pt) (apply_ w (apply_ b (apply_ b fixed_pt))))
+      _ = apply_ fixed_pt (apply_ (apply_ (apply_ w (apply_ b (apply_ b fixed_pt))) (apply_ w (apply_ b (apply_ b fixed_pt)))) (apply_ w (apply_ b (apply_ b fixed_pt)))) := ax2 fixed_pt (apply_ (apply_ w (apply_ b (apply_ b fixed_pt))) (apply_ w (apply_ b (apply_ b fixed_pt)))) (apply_ w (apply_ b (apply_ b fixed_pt)))
+      _ = apply_ fixed_pt (apply_ (apply_ w w) (apply_ w (apply_ b (apply_ b fixed_pt)))) := congrArg (fun t : α => apply_ fixed_pt t) (Eq.symm (taelja_lemma5 (apply_ w (apply_ b (apply_ b fixed_pt)))))
+      _ = apply_ fixed_pt (apply_ (apply_ w w) (apply_ (apply_ (apply_ b w) b) (apply_ b fixed_pt))) := congrArg (fun t : α => apply_ fixed_pt (apply_ (apply_ w w) t)) (Eq.symm (ax2 w b (apply_ b fixed_pt)))
       _ = apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b)) (apply_ b fixed_pt)) := congrArg (fun t : α => apply_ fixed_pt t) (Eq.symm (ax2 (apply_ w w) (apply_ (apply_ b w) b) (apply_ b fixed_pt)))
       _ = apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) := congrArg (fun t : α => apply_ fixed_pt t) (Eq.symm (ax2 (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b)) b fixed_pt))
 
 -- Goal 1
 theorem taelja_goal1 : fixed_point (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) := by
-  have h1 : apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt = apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) := taelja_lemma4
+  have h1 : apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt = apply_ fixed_pt (apply_ (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) fixed_pt) := taelja_lemma6
   have h2 : fixed_point (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) := ax3 (apply_ (apply_ b (apply_ (apply_ b (apply_ w w)) (apply_ (apply_ b w) b))) b) h1
   exact h2
 

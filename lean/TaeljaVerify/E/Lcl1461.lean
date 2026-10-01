@@ -120,10 +120,12 @@ theorem taelja_lemma17 : ∀ (z : α), implies z (not_ truth) = not_ z := by
 -- Goal 1
 theorem taelja_goal1 : not_ (big_hat x y) = big_V (not_ x) (not_ y) := by
   calc not_ (big_hat x y) = not_ (not_ (big_V (not_ x) (not_ y))) := congrArg (fun t : α => not_ t) (ax5 x y)
-      _ = not_ (implies (big_V (not_ x) (not_ y)) (not_ truth)) := congrArg (fun t : α => not_ t) (Eq.symm (taelja_lemma17 (big_V (not_ x) (not_ y))))
-      _ = implies (implies (big_V (not_ x) (not_ y)) (not_ truth)) (not_ truth) := Eq.symm (taelja_lemma17 (implies (big_V (not_ x) (not_ y)) (not_ truth)))
-      _ = implies (implies (not_ truth) (big_V (not_ x) (not_ y))) (big_V (not_ x) (not_ y)) := Eq.symm (ax3 (not_ truth) (big_V (not_ x) (not_ y)))
-      _ = implies truth (big_V (not_ x) (not_ y)) := congrArg (fun t : α => implies t (big_V (not_ x) (not_ y))) (taelja_lemma12 (big_V (not_ x) (not_ y)))
-      _ = big_V (not_ x) (not_ y) := ax1 (big_V (not_ x) (not_ y))
+      _ = not_ (not_ (implies (implies (not_ x) (not_ y)) (not_ y))) := congrArg (fun t : α => not_ (not_ t)) (ax6 (not_ x) (not_ y))
+      _ = not_ (implies (implies (implies (not_ x) (not_ y)) (not_ y)) (not_ truth)) := congrArg (fun t : α => not_ t) (Eq.symm (taelja_lemma17 (implies (implies (not_ x) (not_ y)) (not_ y))))
+      _ = implies (implies (implies (implies (not_ x) (not_ y)) (not_ y)) (not_ truth)) (not_ truth) := Eq.symm (taelja_lemma17 (implies (implies (implies (not_ x) (not_ y)) (not_ y)) (not_ truth)))
+      _ = implies (implies (not_ truth) (implies (implies (not_ x) (not_ y)) (not_ y))) (implies (implies (not_ x) (not_ y)) (not_ y)) := ax3 (implies (implies (not_ x) (not_ y)) (not_ y)) (not_ truth)
+      _ = implies truth (implies (implies (not_ x) (not_ y)) (not_ y)) := congrArg (fun t : α => implies t (implies (implies (not_ x) (not_ y)) (not_ y))) (taelja_lemma12 (implies (implies (not_ x) (not_ y)) (not_ y)))
+      _ = implies (implies (not_ x) (not_ y)) (not_ y) := ax1 (implies (implies (not_ x) (not_ y)) (not_ y))
+      _ = big_V (not_ x) (not_ y) := Eq.symm (ax6 (not_ x) (not_ y))
 
 end ELcl1461

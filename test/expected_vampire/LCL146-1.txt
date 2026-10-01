@@ -85,22 +85,36 @@ Proof:
 = { by axiom 1 }
   implies(not(not(X)),X)
 
+Lemma 14: truth = implies(X,not(not(X)))
+Proof:
+  truth
+= { by axiom 4 R->L }
+  implies(implies(not(not(not(X))),not(X)),implies(X,not(not(X))))
+= { by lemma 13 R->L }
+  implies(truth,implies(X,not(not(X))))
+= { by axiom 1 }
+  implies(X,not(not(X)))
+
 Goal 1: not(big_hat(x,y)) = big_V(not(x),not(y))
 Proof:
   not(big_hat(x,y))
 = { by axiom 6 }
   not(not(big_V(not(x),not(y))))
+= { by axiom 5 }
+  not(not(implies(implies(not(x),not(y)),not(y))))
+= { by axiom 3 }
+  not(not(implies(implies(not(y),not(x)),not(x))))
 = { by axiom 1 R->L }
-  implies(truth,not(not(big_V(not(x),not(y)))))
-= { by axiom 4 R->L }
-  implies(implies(implies(not(not(not(big_V(not(x),not(y))))),not(big_V(not(x),not(y)))),implies(big_V(not(x),not(y)),not(not(big_V(not(x),not(y)))))),not(not(big_V(not(x),not(y)))))
-= { by lemma 13 R->L }
-  implies(implies(truth,implies(big_V(not(x),not(y)),not(not(big_V(not(x),not(y)))))),not(not(big_V(not(x),not(y)))))
-= { by axiom 1 }
-  implies(implies(big_V(not(x),not(y)),not(not(big_V(not(x),not(y))))),not(not(big_V(not(x),not(y)))))
+  implies(truth,not(not(implies(implies(not(y),not(x)),not(x)))))
+= { by lemma 14 }
+  implies(implies(implies(implies(not(y),not(x)),not(x)),not(not(implies(implies(not(y),not(x)),not(x))))),not(not(implies(implies(not(y),not(x)),not(x)))))
 = { by axiom 3 R->L }
-  implies(implies(not(not(big_V(not(x),not(y)))),big_V(not(x),not(y))),big_V(not(x),not(y)))
+  implies(implies(not(not(implies(implies(not(y),not(x)),not(x)))),implies(implies(not(y),not(x)),not(x))),implies(implies(not(y),not(x)),not(x)))
 = { by lemma 13 R->L }
-  implies(truth,big_V(not(x),not(y)))
+  implies(truth,implies(implies(not(y),not(x)),not(x)))
 = { by axiom 1 }
+  implies(implies(not(y),not(x)),not(x))
+= { by axiom 3 R->L }
+  implies(implies(not(x),not(y)),not(y))
+= { by axiom 5 R->L }
   big_V(not(x),not(y))

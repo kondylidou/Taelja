@@ -107,7 +107,17 @@ Proof:
   hence sK2 = times(sK2,sK0(sK2))
     by axiom 3
 
-Lemma 19: times(sK1,times(sK0(sK1),times(X,Y))) = times(X,times(Y,sK1))
+Lemma 19: times(sK3,times(X,Y)) = times(sK1,times(X,times(sK2,Y)))
+Proof:
+  times(sK3,times(X,Y))
+= { by lemma 13 R->L }
+  times(sK2,times(times(X,Y),sK1))
+= { by axiom 5 }
+  times(sK2,times(Y,times(sK1,X)))
+= { by lemma 16 }
+  times(sK1,times(X,times(sK2,Y)))
+
+Lemma 20: times(sK1,times(sK0(sK1),times(X,Y))) = times(X,times(Y,sK1))
 Proof:
   times(sK1,times(sK0(sK1),times(X,Y)))
 = { by lemma 16 }
@@ -115,21 +125,13 @@ Proof:
 = { by lemma 8 R->L }
   times(X,times(Y,sK1))
 
-Lemma 20: times(sK1,times(sK1,times(X,Y))) = times(X,times(Y,sK0(sK1)))
+Lemma 21: times(sK1,times(sK1,times(X,Y))) = times(X,times(Y,sK0(sK1)))
 Proof:
   times(sK1,times(sK1,times(X,Y)))
 = { by lemma 16 }
   times(X,times(Y,times(sK1,sK1)))
 = { by lemma 9 }
   times(X,times(Y,sK0(sK1)))
-
-Lemma 21: times(sK3,sK1) = times(sK2,sK0(sK1))
-Proof:
-  times(sK3,sK1)
-= { by lemma 13 R->L }
-  times(sK2,times(sK1,sK1))
-= { by lemma 9 }
-  times(sK2,sK0(sK1))
 
 Lemma 22: times(sK2,sK2) = sK0(sK2)
 Proof:
@@ -149,69 +151,95 @@ Proof:
 Lemma 24: times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2))) = times(sK1,sK2)
 Proof:
   times(times(sK1,sK2),times(times(sK1,sK2),times(sK1,sK2)))
-= { by axiom 1 R->L }
-  times(times(sK1,sK2),times(times(sK1,sK2),sK3))
-= { by lemma 14 }
-  times(sK1,times(sK2,times(times(sK1,sK2),times(sK1,sK2))))
-= { by axiom 1 R->L }
-  times(sK1,times(sK2,times(sK3,times(sK1,sK2))))
-= { by lemma 13 R->L }
-  times(sK1,times(sK2,times(sK2,times(times(sK1,sK2),sK1))))
-= { by lemma 19 R->L }
-  times(sK1,times(sK2,times(sK1,times(sK0(sK1),times(sK2,times(sK1,sK2))))))
+= { by axiom 5 }
+  times(times(sK1,sK2),times(sK2,times(times(sK1,sK2),sK1)))
+= { by axiom 5 }
+  times(sK2,times(times(sK2,times(times(sK1,sK2),sK1)),sK1))
+= { by axiom 5 }
+  times(sK2,times(times(times(sK1,sK2),sK1),times(sK1,sK2)))
+= { by axiom 5 }
+  times(sK2,times(sK1,times(times(sK1,sK2),times(sK1,sK2))))
+= { by axiom 5 }
+  times(sK2,times(sK1,times(sK2,times(times(sK1,sK2),sK1))))
+= { by axiom 5 }
+  times(sK2,times(sK1,times(sK2,times(sK2,times(sK1,sK1)))))
+= { by lemma 13 }
+  times(sK2,times(sK1,times(sK2,times(sK3,sK1))))
+= { by axiom 5 R->L }
+  times(sK2,times(times(times(sK3,sK1),sK1),sK2))
 = { by lemma 23 }
-  times(sK1,times(sK2,times(sK1,times(sK0(sK1),times(sK0(sK2),sK1)))))
-= { by lemma 19 }
-  times(sK1,times(sK2,times(sK0(sK2),times(sK1,sK1))))
-= { by lemma 9 }
-  times(sK1,times(sK2,times(sK0(sK2),sK0(sK1))))
-= { by lemma 14 R->L }
-  times(sK0(sK2),times(sK0(sK1),sK3))
-= { by lemma 10 R->L }
-  times(sK0(sK2),times(sK1,times(sK3,sK1)))
+  times(sK0(sK2),times(times(sK3,sK1),sK1))
+= { by axiom 5 }
+  times(sK0(sK2),times(sK1,times(sK1,sK3)))
+= { by lemma 16 }
+  times(sK1,times(sK3,times(sK0(sK2),sK1)))
+= { by lemma 23 R->L }
+  times(sK1,times(sK3,times(sK2,times(sK1,sK2))))
+= { by lemma 16 R->L }
+  times(sK1,times(sK1,times(sK2,times(sK3,sK2))))
+= { by lemma 23 }
+  times(sK1,times(sK1,times(sK0(sK2),sK3)))
 = { by lemma 21 }
+  times(sK0(sK2),times(sK3,sK0(sK1)))
+= { by lemma 13 R->L }
+  times(sK0(sK2),times(sK2,times(sK0(sK1),sK1)))
+= { by lemma 20 R->L }
+  times(sK0(sK2),times(sK1,times(sK0(sK1),times(sK2,sK0(sK1)))))
+= { by lemma 19 R->L }
+  times(sK0(sK2),times(sK3,times(sK0(sK1),sK0(sK1))))
+= { by lemma 21 R->L }
+  times(sK0(sK2),times(sK1,times(sK1,times(sK3,sK0(sK1)))))
+= { by axiom 5 R->L }
+  times(sK0(sK2),times(sK1,times(times(sK0(sK1),sK1),sK3)))
+= { by lemma 14 }
+  times(sK0(sK2),times(sK1,times(sK2,times(sK1,times(sK0(sK1),sK1)))))
+= { by lemma 10 }
+  times(sK0(sK2),times(sK1,times(sK2,times(sK0(sK1),sK0(sK1)))))
+= { by lemma 16 R->L }
+  times(sK0(sK2),times(sK0(sK1),times(sK0(sK1),times(sK1,sK2))))
+= { by axiom 5 R->L }
+  times(sK0(sK2),times(sK0(sK1),times(times(sK2,sK0(sK1)),sK1)))
+= { by lemma 15 }
   times(sK0(sK2),times(sK1,times(sK2,sK0(sK1))))
 = { by lemma 12 R->L }
   times(sK0(sK2),times(sK1,sK2))
-= { by lemma 17 }
-  times(sK2,times(sK1,sK0(sK2)))
-= { by lemma 12 }
-  times(sK2,times(sK1,times(sK0(sK2),sK0(sK1))))
-= { by lemma 9 R->L }
-  times(sK2,times(sK1,times(sK0(sK2),times(sK1,sK1))))
-= { by lemma 17 R->L }
-  times(sK2,times(sK1,times(sK1,times(sK1,sK0(sK2)))))
-= { by lemma 17 R->L }
-  times(sK2,times(times(sK1,sK0(sK2)),times(sK1,sK1)))
-= { by lemma 9 }
-  times(sK2,times(times(sK1,sK0(sK2)),sK0(sK1)))
-= { by lemma 20 R->L }
-  times(sK1,times(sK1,times(sK2,times(sK1,sK0(sK2)))))
-= { by lemma 17 R->L }
-  times(sK1,times(sK1,times(sK0(sK2),times(sK1,sK2))))
-= { by lemma 20 }
-  times(sK0(sK2),times(times(sK1,sK2),sK0(sK1)))
-= { by axiom 5 }
-  times(sK0(sK2),times(sK2,times(sK0(sK1),sK1)))
-= { by lemma 11 R->L }
-  times(sK0(sK2),times(sK2,sK1))
-= { by lemma 8 }
-  times(sK0(sK2),times(sK2,times(sK1,sK0(sK1))))
-= { by lemma 17 }
-  times(sK0(sK2),times(sK0(sK1),times(sK1,sK2)))
+= { by axiom 1 R->L }
+  times(sK0(sK2),sK3)
+= { by axiom 1 }
+  times(sK0(sK2),times(sK1,sK2))
 = { by axiom 5 R->L }
-  times(sK0(sK2),times(times(sK2,sK0(sK1)),sK1))
-= { by axiom 5 R->L }
-  times(times(sK1,sK0(sK2)),times(sK2,sK0(sK1)))
-= { by axiom 5 R->L }
-  times(times(sK0(sK1),times(sK1,sK0(sK2))),sK2)
-= { by lemma 17 R->L }
-  times(times(sK0(sK2),times(sK1,sK0(sK1))),sK2)
-= { by lemma 8 R->L }
-  times(times(sK0(sK2),sK1),sK2)
-= { by axiom 5 }
-  times(sK1,times(sK2,sK0(sK2)))
+  times(times(sK2,sK0(sK2)),sK1)
 = { by lemma 18 R->L }
+  times(sK2,sK1)
+= { by lemma 8 }
+  times(sK2,times(sK1,sK0(sK1)))
+= { by lemma 17 R->L }
+  times(sK0(sK1),times(sK1,sK2))
+= { by lemma 18 }
+  times(sK0(sK1),times(sK1,times(sK2,sK0(sK2))))
+= { by lemma 16 R->L }
+  times(sK2,times(sK0(sK2),times(sK0(sK1),sK1)))
+= { by lemma 11 R->L }
+  times(sK2,times(sK0(sK2),sK1))
+= { by lemma 20 R->L }
+  times(sK1,times(sK0(sK1),times(sK2,sK0(sK2))))
+= { by lemma 18 R->L }
+  times(sK1,times(sK0(sK1),sK2))
+= { by lemma 10 R->L }
+  times(sK1,times(sK1,times(sK2,sK1)))
+= { by lemma 19 R->L }
+  times(sK3,times(sK1,sK1))
+= { by lemma 17 }
+  times(sK1,times(sK1,sK3))
+= { by lemma 14 }
+  times(sK1,times(sK2,times(sK1,sK1)))
+= { by lemma 9 }
+  times(sK1,times(sK2,sK0(sK1)))
+= { by lemma 12 R->L }
+  times(sK1,sK2)
+= { by axiom 1 R->L }
+  sK3
+= { by axiom 1 }
   times(sK1,sK2)
 
 Goal 1: element(sK3)

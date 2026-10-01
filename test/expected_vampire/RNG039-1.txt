@@ -181,9 +181,5 @@ Proof:
     by lemma 27
   hence b = d
     by axiom 5
-  hence b = a
-    by rw lemma 25 R->L
-  hence b = d
-    by rw lemma 25
   hence c = d
     by rw lemma 15

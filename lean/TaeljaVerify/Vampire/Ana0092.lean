@@ -49,18 +49,12 @@ theorem taelja_lemma8 : ∀ (x : α), c_plus x (c_uminus x t_b) t_b = c_0 := by
   have h3 : c_plus x (c_uminus x t_b) t_b = c_0 := ax5 t_b x h2
   exact h3
 
--- Lemma 9
-theorem taelja_lemma9 : ∀ (x : α), c_lessequals (c_plus (v_lb v_x) x t_b) (c_plus (v_f v_x) x t_b) t_b := by
-  intro x
-  have h1 : c_lessequals (v_lb v_x) (v_f v_x) t_b := ax1 v_x
-  have h2 : class_OrderedGroup_Opordered__ab__semigroup__add__imp__le t_b := taelja_lemma7
-  have h3 : c_lessequals (c_plus (v_lb v_x) x t_b) (c_plus (v_f v_x) x t_b) t_b := ax6 (v_lb v_x) (v_f v_x) t_b x h1 h2
-  exact h3
-
 -- Goal 1
 theorem taelja_goal1 : c_lessequals c_0 (c_plus (v_f v_x) (c_uminus (v_lb v_x) t_b) t_b) t_b := by
-  have h1 : c_lessequals (c_plus (v_lb v_x) (c_uminus (v_lb v_x) t_b) t_b) (c_plus (v_f v_x) (c_uminus (v_lb v_x) t_b) t_b) t_b := taelja_lemma9 (c_uminus (v_lb v_x) t_b)
-  have h2 : c_lessequals c_0 (c_plus (v_f v_x) (c_uminus (v_lb v_x) t_b) t_b) t_b := Eq.mpr (congrArg (fun t : α => c_lessequals t (c_plus (v_f v_x) (c_uminus (v_lb v_x) t_b) t_b) t_b) (Eq.symm (taelja_lemma8 (v_lb v_x)))) h1
-  exact h2
+  have h1 : c_lessequals (v_lb v_x) (v_f v_x) t_b := ax1 v_x
+  have h2 : class_OrderedGroup_Opordered__ab__semigroup__add__imp__le t_b := taelja_lemma7
+  have h3 : c_lessequals (c_plus (v_lb v_x) (c_uminus (v_lb v_x) t_b) t_b) (c_plus (v_f v_x) (c_uminus (v_lb v_x) t_b) t_b) t_b := ax6 (v_lb v_x) (v_f v_x) t_b (c_uminus (v_lb v_x) t_b) h1 h2
+  have h4 : c_lessequals c_0 (c_plus (v_f v_x) (c_uminus (v_lb v_x) t_b) t_b) t_b := Eq.mp (congrArg (fun t : α => c_lessequals t (c_plus (v_f v_x) (c_uminus (v_lb v_x) t_b) t_b) t_b) (taelja_lemma8 (v_lb v_x))) h3
+  exact h4
 
 end VampireAna0092

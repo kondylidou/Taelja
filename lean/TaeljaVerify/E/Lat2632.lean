@@ -48,20 +48,15 @@ theorem taelja_lemma8 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual
   have h3 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) (tc_set t_a) := Eq.mp (congrArg (fun t : α => c_lessequals v_S t (tc_set t_a)) (Eq.symm (ax5 v_cl t_a))) h2
   exact h3
 
--- Lemma 9
-theorem taelja_lemma9 : c_in (c_Tarski_Olub v_S (c_Tarski_Odual v_cl t_a) t_a) (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) t_a := by
+-- Goal 1
+theorem taelja_goal1 : c_in (c_Tarski_Oglb v_S v_cl t_a) v_A t_a := by
   have h1 : c_in (c_Tarski_Odual v_cl t_a) c_Tarski_OCompleteLattice (tc_Tarski_Opotype_Opotype__ext__type t_a tc_Product__Type_Ounit) := ax3
   have h2 : c_in (c_Tarski_Odual v_cl t_a) c_Tarski_OPartialOrder (tc_Tarski_Opotype_Opotype__ext__type t_a tc_Product__Type_Ounit) := ax2
   have h3 : c_lessequals v_S (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) (tc_set t_a) := taelja_lemma8
   have h4 : c_in (c_Tarski_Olub v_S (c_Tarski_Odual v_cl t_a) t_a) (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) t_a := ax6 (c_Tarski_Odual v_cl t_a) t_a v_S h1 h2 h3
-  exact h4
-
--- Goal 1
-theorem taelja_goal1 : c_in (c_Tarski_Oglb v_S v_cl t_a) v_A t_a := by
-  have h1 : c_in (c_Tarski_Olub v_S (c_Tarski_Odual v_cl t_a) t_a) (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) t_a := taelja_lemma9
-  have h2 : c_in (c_Tarski_Oglb v_S v_cl t_a) (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) t_a := Eq.mpr (congrArg (fun t : α => c_in t (c_Tarski_Opotype_Opset (c_Tarski_Odual v_cl t_a) t_a tc_Product__Type_Ounit) t_a) (ax7 v_S v_cl t_a)) h1
-  have h3 : c_in (c_Tarski_Oglb v_S v_cl t_a) (c_Tarski_Opotype_Opset v_cl t_a tc_Product__Type_Ounit) t_a := Eq.mpr (congrArg (fun t : α => c_in (c_Tarski_Oglb v_S v_cl t_a) t t_a) (Eq.symm (ax5 v_cl t_a))) h2
-  have h4 : c_in (c_Tarski_Oglb v_S v_cl t_a) v_A t_a := Eq.mpr (congrArg (fun t : α => c_in (c_Tarski_Oglb v_S v_cl t_a) t t_a) (ax4)) h3
-  exact h4
+  have h5 : c_in (c_Tarski_Olub v_S (c_Tarski_Odual v_cl t_a) t_a) (c_Tarski_Opotype_Opset v_cl t_a tc_Product__Type_Ounit) t_a := Eq.mp (congrArg (fun t : α => c_in (c_Tarski_Olub v_S (c_Tarski_Odual v_cl t_a) t_a) t t_a) (ax5 v_cl t_a)) h4
+  have h6 : c_in (c_Tarski_Olub v_S (c_Tarski_Odual v_cl t_a) t_a) v_A t_a := Eq.mp (congrArg (fun t : α => c_in (c_Tarski_Olub v_S (c_Tarski_Odual v_cl t_a) t_a) t t_a) (Eq.symm (ax4))) h5
+  have h7 : c_in (c_Tarski_Oglb v_S v_cl t_a) v_A t_a := Eq.mp (congrArg (fun t : α => c_in t v_A t_a) (Eq.symm (ax7 v_S v_cl t_a))) h6
+  exact h7
 
 end ELat2632
