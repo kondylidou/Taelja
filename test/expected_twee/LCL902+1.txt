@@ -80,7 +80,7 @@ Proof:
   hence >=(+(x17,==>(x17,1)),1)
     by axiom 4
   hence >=(+(==>(x17,1),x17),1)
-    by rw axiom 7 R->L
+    by rw axiom 7
   hence >=(x17,==>(==>(x17,1),1))
     by axiom 8
    and >=(==>(==>(x17,1),1),x17)

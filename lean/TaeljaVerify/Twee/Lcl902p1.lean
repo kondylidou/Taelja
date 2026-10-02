@@ -90,7 +90,7 @@ theorem taelja_lemma17 : op_gt_eq (op_eq_eq_gt (op_eq_eq_gt x17 n_1) n_1) x17 :=
 theorem taelja_goal1 : op_eq_eq_gt (op_eq_eq_gt x17 n_1) n_1 = x17 := by
   have h1 : op_gt_eq (op_eq_eq_gt x17 n_1) (op_eq_eq_gt x17 n_1) := ax3 (op_eq_eq_gt x17 n_1)
   have h2 : op_gt_eq (op_plus x17 (op_eq_eq_gt x17 n_1)) n_1 := ax4 (op_eq_eq_gt x17 n_1) x17 n_1 h1
-  have h3 : op_gt_eq (op_plus (op_eq_eq_gt x17 n_1) x17) n_1 := Eq.mp (congrArg (fun t : α => op_gt_eq t n_1) (Eq.symm (ax7 (op_eq_eq_gt x17 n_1) x17))) h2
+  have h3 : op_gt_eq (op_plus (op_eq_eq_gt x17 n_1) x17) n_1 := Eq.mp (congrArg (fun t : α => op_gt_eq t n_1) (ax7 x17 (op_eq_eq_gt x17 n_1))) h2
   have h4 : op_gt_eq x17 (op_eq_eq_gt (op_eq_eq_gt x17 n_1) n_1) := ax8 (op_eq_eq_gt x17 n_1) x17 n_1 h3
   have h5 : op_gt_eq (op_eq_eq_gt (op_eq_eq_gt x17 n_1) n_1) x17 := taelja_lemma17
   have h6 : op_eq_eq_gt (op_eq_eq_gt x17 n_1) n_1 = x17 := ax9 (op_eq_eq_gt (op_eq_eq_gt x17 n_1) n_1) x17 h5 h4

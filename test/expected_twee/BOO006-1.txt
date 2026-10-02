@@ -59,7 +59,7 @@ Proof:
   hence product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,multiply(additive_identity,X)))
     by axiom 10
   hence product(multiplicative_identity,add(multiplicative_identity,X),add(multiplicative_identity,multiply(X,additive_identity)))
-    by rw lemma 19 R->L
+    by rw lemma 19
 
 Lemma 21: add(multiplicative_identity,multiply(X,additive_identity)) = add(X,multiplicative_identity)
 Proof:
@@ -85,7 +85,7 @@ Proof:
   hence product(additive_identity,add(multiplicative_identity,X),multiply(additive_identity,X))
     by axiom 7
   hence product(additive_identity,add(multiplicative_identity,X),multiply(X,additive_identity))
-    by rw lemma 19 R->L
+    by rw lemma 19
 
 Lemma 23: multiply(additive_identity,add(X,multiplicative_identity)) = multiply(X,additive_identity)
 Proof:

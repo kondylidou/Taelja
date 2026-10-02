@@ -1,0 +1,17 @@
+% SZS output start Proof
+cnf(single_axiom, axiom, multiply(X1, multiply(multiply(X1, multiply(multiply(X1, X2), X3)), multiply(identity, multiply(X3, X3)))) = X2, file('Problems/GRP/GRP117-1.p', single_axiom)).
+fof(s1, plain, ! [X,Y,Z] : multiply(multiply(X,Y),multiply(identity,Z)) = multiply(X,multiply(multiply(X,multiply(multiply(X,multiply(multiply(X,Y),multiply(identity,Z))),multiply(identity,multiply(multiply(identity,Z),multiply(identity,Z))))),multiply(identity,multiply(multiply(identity,multiply(multiply(identity,Z),multiply(identity,Z))),multiply(identity,multiply(multiply(identity,Z),multiply(identity,Z))))))), inference(instantiate, [status(thm)], [single_axiom])).
+fof(s2, plain, ! [X,Y,Z] : multiply(multiply(X,Y),multiply(identity,Z)) = multiply(X,multiply(multiply(X,multiply(multiply(X,multiply(multiply(X,Y),multiply(identity,Z))),multiply(identity,multiply(multiply(identity,Z),multiply(identity,Z))))),Z)), inference(rewrite, [status(thm)], [single_axiom, s1])).
+fof(lemma_2, lemma, ! [X,Y,Z] : multiply(multiply(X,Y),multiply(identity,Z)) = multiply(X,multiply(Y,Z)), inference(rewrite, [status(thm)], [single_axiom, s2])).
+fof(s3, plain, ! [X,Y,Z] : multiply(X,multiply(X,multiply(X,multiply(multiply(Y,Z),multiply(Z,Z))))) = multiply(X,multiply(X,multiply(multiply(X,multiply(Y,Z)),multiply(identity,multiply(Z,Z))))), inference(instantiate, [status(thm)], [lemma_2])).
+fof(s4, plain, ! [X,Y,Z] : multiply(X,multiply(X,multiply(X,multiply(multiply(Y,Z),multiply(Z,Z))))) = multiply(X,multiply(X,multiply(multiply(X,multiply(Y,Z)),multiply(multiply(identity,Z),multiply(identity,Z))))), inference(rewrite, [status(thm)], [lemma_2, s3])).
+fof(s5, plain, ! [X,Y,Z] : multiply(X,multiply(X,multiply(X,multiply(multiply(Y,Z),multiply(Z,Z))))) = multiply(X,multiply(X,multiply(multiply(multiply(X,Y),multiply(identity,Z)),multiply(multiply(identity,Z),multiply(identity,Z))))), inference(rewrite, [status(thm)], [lemma_2, s4])).
+fof(s6, plain, ! [X,Y,Z] : multiply(X,multiply(X,multiply(X,multiply(multiply(Y,Z),multiply(Z,Z))))) = multiply(X,multiply(multiply(X,multiply(multiply(X,Y),multiply(identity,Z))),multiply(identity,multiply(multiply(identity,Z),multiply(identity,Z))))), inference(rewrite, [status(thm)], [lemma_2, s5])).
+fof(lemma_3, lemma, ! [X,Y,Z] : multiply(X,multiply(X,multiply(X,multiply(multiply(Y,Z),multiply(Z,Z))))) = Y, inference(rewrite, [status(thm)], [single_axiom, s6])).
+fof(s7, plain, ! [X,Y] : multiply(multiply(X,multiply(Y,Y)),Y) = multiply(multiply(X,multiply(Y,Y)),multiply(multiply(X,multiply(Y,Y)),multiply(multiply(X,multiply(Y,Y)),multiply(multiply(X,multiply(Y,Y)),multiply(multiply(Y,Y),multiply(Y,Y)))))), inference(instantiate, [status(thm)], [lemma_3])).
+fof(lemma_4, lemma, ! [X,Y] : multiply(multiply(X,multiply(Y,Y)),Y) = X, inference(rewrite, [status(thm)], [lemma_3, s7])).
+fof(s8, plain, multiply(a,identity) = multiply(a,multiply(multiply(identity,multiply(a,a)),a)), inference(instantiate, [status(thm)], [lemma_4])).
+fof(s9, plain, multiply(a,identity) = multiply(a,multiply(multiply(multiply(identity,a),multiply(identity,a)),a)), inference(rewrite, [status(thm)], [lemma_2, s8])).
+fof(s10, plain, multiply(a,identity) = multiply(multiply(a,multiply(multiply(identity,a),multiply(identity,a))),multiply(identity,a)), inference(rewrite, [status(thm)], [lemma_2, s9])).
+fof(goal_1, theorem, multiply(a,identity) = a, inference(rewrite, [status(thm)], [lemma_4, s10])).
+% SZS output end Proof
