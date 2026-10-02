@@ -217,8 +217,7 @@ theorem taelja_goal17 : s__capability s__Flooding__t s__located__m s__Copenhagen
 
 -- Goal 18
 theorem taelja_goal18 : to_int op_55_dot_67631 = to_int op_55_dot_75695 := by
-  have h1 : to_int op_55_dot_67631 = n_55 := ax22
-  have h2 : to_int op_55_dot_67631 = to_int op_55_dot_75695 := Eq.mp (congrArg (fun t : α => to_int op_55_dot_67631 = t) (Eq.symm (ax28))) h1
-  exact h2
+  calc to_int op_55_dot_67631 = n_55 := ax22
+      _ = to_int op_55_dot_75695 := Eq.symm (ax28)
 
 end ECsr117p1

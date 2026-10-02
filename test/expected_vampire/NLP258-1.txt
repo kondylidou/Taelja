@@ -23,7 +23,7 @@ Axiom 22: jules_forename(X,Y) => forename(X,Y)
 Axiom 23: smoke(X,Y) => event(X,Y)
 Axiom 24: be(X,Y,Z,Z) /\ man(X,Z) /\ state(X,Y) /\ smoke(A,B) /\ present(A,B) /\ agent(A,B,Z) /\ event(A,B) /\ forename(X,C) /\ jules_forename(X,C) /\ of(X,C,Z) /\ accessible_world(X,A) /\ proposition(X,A) /\ proposition(X,U) /\ accessible_world(X,U) /\ think_believe_consider(X,V) /\ present(X,V) /\ event(X,V) /\ theme(X,V,U) /\ agent(X,W,X1) /\ agent(X,V,X1) /\ man(X,X1) /\ of(X,X2,X1) /\ vincent_forename(X,X2) /\ forename(X,X2) /\ theme(X,W,A) /\ event(X,W) /\ present(X,W) /\ think_believe_consider(X,W) /\ actual_world(X) => man(U,skf4(U))
 
-Lemma 25: present(skc12,skf2(X))
+Lemma 25: man(skc12,skc15)
 Proof:
   have accessible_world(skc8,skc12)
     by axiom 2
@@ -31,21 +31,22 @@ Proof:
     by axiom 4
   hence man(skc12,skc15)
     by axiom 3
+
+Lemma 26: present(skc12,skf2(X))
+Proof:
+  have man(skc12,skc15)
+    by lemma 25
   hence present(skc12,skf2(X))
     by axiom 5
 
-Lemma 26: smoke(skc12,skf2(X))
+Lemma 27: smoke(skc12,skf2(X))
 Proof:
-  have accessible_world(skc8,skc12)
-    by axiom 2
-   and man(skc8,skc15)
-    by axiom 4
-  hence man(skc12,skc15)
-    by axiom 3
+  have man(skc12,skc15)
+    by lemma 25
   hence smoke(skc12,skf2(X))
     by axiom 6
 
-Lemma 27: agent(skc12,skf2(skc10),skc10)
+Lemma 28: agent(skc12,skf2(skc10),skc10)
 Proof:
   have accessible_world(skc8,skc12)
     by axiom 2
@@ -56,21 +57,21 @@ Proof:
   hence agent(skc12,skf2(skc10),skc10)
     by axiom 7
 
-Lemma 28: event(skc12,skf2(skc10))
+Lemma 29: event(skc12,skf2(skc10))
 Proof:
   have smoke(skc12,skf2(skc10))
-    by lemma 26
+    by lemma 27
   hence event(skc12,skf2(skc10))
     by axiom 23
 
-Lemma 29: forename(skc8,skc11)
+Lemma 30: forename(skc8,skc11)
 Proof:
   have jules_forename(skc8,skc11)
     by axiom 14
   hence forename(skc8,skc11)
     by axiom 22
 
-Lemma 30: forename(skc8,skc14)
+Lemma 31: forename(skc8,skc14)
 Proof:
   have vincent_forename(skc8,skc14)
     by axiom 16
@@ -80,14 +81,14 @@ Proof:
 Goal 1: event(skc12,skf2(skf4(skc12)))
 Proof:
   have smoke(skc12,skf2(skf4(skc12)))
-    by lemma 26
+    by lemma 27
   hence event(skc12,skf2(skf4(skc12)))
     by axiom 23
 
 Goal 2: event(skc12,skf2(skc10))
 Proof:
   have smoke(skc12,skf2(skc10))
-    by lemma 26
+    by lemma 27
   hence event(skc12,skf2(skc10))
     by axiom 23
 
@@ -111,15 +112,15 @@ Proof:
    and state(skc8,skc9)
     by axiom 19
    and smoke(skc12,skf2(skc10))
-    by lemma 26
-   and present(skc12,skf2(skc10))
-    by lemma 25
-   and agent(skc12,skf2(skc10),skc10)
     by lemma 27
-   and event(skc12,skf2(skc10))
+   and present(skc12,skf2(skc10))
+    by lemma 26
+   and agent(skc12,skf2(skc10),skc10)
     by lemma 28
-   and forename(skc8,skc11)
+   and event(skc12,skf2(skc10))
     by lemma 29
+   and forename(skc8,skc11)
+    by lemma 30
    and jules_forename(skc8,skc11)
     by axiom 14
    and of(skc8,skc11,skc10)
@@ -151,7 +152,7 @@ Proof:
    and vincent_forename(skc8,skc14)
     by axiom 16
    and forename(skc8,skc14)
-    by lemma 30
+    by lemma 31
    and theme(skc8,skc13,skc12)
     by axiom 12
    and event(skc8,skc13)
@@ -180,17 +181,17 @@ Proof:
 Goal 7: smoke(skc12,skf2(skc10))
 Proof:
   have smoke(skc12,skf2(skc10))
-    by lemma 26
+    by lemma 27
 
 Goal 8: present(skc12,skf2(skc10))
 Proof:
   have present(skc12,skf2(skc10))
-    by lemma 25
+    by lemma 26
 
 Goal 9: forename(skc8,skc11)
 Proof:
   have forename(skc8,skc11)
-    by lemma 29
+    by lemma 30
 
 Goal 10: jules_forename(skc8,skc11)
 Proof:
@@ -215,12 +216,12 @@ Proof:
 Goal 14: smoke(skc12,skf2(skf4(skc12)))
 Proof:
   have smoke(skc12,skf2(skf4(skc12)))
-    by lemma 26
+    by lemma 27
 
 Goal 15: present(skc12,skf2(skf4(skc12)))
 Proof:
   have present(skc12,skf2(skf4(skc12)))
-    by lemma 25
+    by lemma 26
 
 Goal 16: state(skc8,skc9)
 Proof:
@@ -270,7 +271,7 @@ Proof:
 Goal 25: forename(skc8,skc14)
 Proof:
   have forename(skc8,skc14)
-    by lemma 30
+    by lemma 31
 
 Goal 26: actual_world(skc8)
 Proof:

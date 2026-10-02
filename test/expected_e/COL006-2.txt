@@ -46,65 +46,65 @@ Proof:
 = { by lemma 7 R->L }
   apply(apply(apply(s,X),apply(apply(s,k),A)),Z)
 
-Lemma 9: apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt) = apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt))
+Lemma 9: apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),X)),Y) = apply(Y,Y)
 Proof:
-  apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt)
-= { by axiom 1 }
-  apply(apply(apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k))),fixed_pt),apply(apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k)),fixed_pt))
-= { by axiom 2 }
-  apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k)),fixed_pt))
-= { by axiom 1 }
-  apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(k,apply(apply(s,s),apply(s,k))),fixed_pt),apply(apply(apply(s,apply(k,s)),k),fixed_pt)))
-= { by axiom 2 }
-  apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(s,apply(k,s)),k),fixed_pt)))
-= { by axiom 1 }
-  apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(k,s),fixed_pt),apply(k,fixed_pt))))
-= { by axiom 2 }
-  apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
-= { by lemma 6 }
-  apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
-= { by lemma 8 }
-  apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
-= { by axiom 1 }
-  apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),s)),apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt)))))
+  apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),X)),Y)
 = { by lemma 6 R->L }
-  apply(apply(apply(s,apply(apply(s,k),s)),apply(apply(s,k),s)),apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt)))))
+  apply(apply(apply(s,apply(apply(s,k),s)),apply(apply(s,k),X)),Y)
 = { by lemma 7 }
-  apply(apply(apply(apply(s,k),s),apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt))))),apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt)))))
+  apply(apply(apply(apply(s,k),s),Y),Y)
 = { by lemma 4 }
-  apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt)))),apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt)))))
-= { by axiom 1 R->L }
-  apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt)))),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
-= { by lemma 8 R->L }
-  apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
-= { by lemma 8 R->L }
-  apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
-= { by axiom 1 }
-  apply(apply(apply(s,apply(k,fixed_pt)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))),apply(apply(apply(s,k),k),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))
-= { by axiom 1 }
-  apply(apply(apply(k,fixed_pt),apply(apply(apply(s,k),k),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))),apply(apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))),apply(apply(apply(s,k),k),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))))
-= { by axiom 2 }
-  apply(fixed_pt,apply(apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))),apply(apply(apply(s,k),k),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))))
-= { by lemma 5 R->L }
-  apply(fixed_pt,apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))
-= { by lemma 6 R->L }
-  apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))
-= { by axiom 2 R->L }
-  apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(k,s),fixed_pt),apply(k,fixed_pt)))))
-= { by axiom 1 R->L }
-  apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(s,apply(k,s)),k),fixed_pt))))
-= { by axiom 2 R->L }
-  apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(k,apply(apply(s,s),apply(s,k))),fixed_pt),apply(apply(apply(s,apply(k,s)),k),fixed_pt))))
-= { by axiom 1 R->L }
-  apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k)),fixed_pt)))
-= { by axiom 2 R->L }
-  apply(fixed_pt,apply(apply(apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k))),fixed_pt),apply(apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k)),fixed_pt)))
-= { by axiom 1 R->L }
-  apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt))
+  apply(Y,Y)
 
 Goal 1: fixed_point(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))))
 Proof:
-  have apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt) = apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt))
+  have apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),s)),apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt))))) = apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt)))),apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt)))))
     by lemma 9
+  hence apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),s)),apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt))))) = apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt)))),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
+    by rw axiom 1 R->L
+  hence apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),apply(s,apply(k,fixed_pt)))),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
+    by rw axiom 1 R->L
+  hence apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
+    by rw lemma 8 R->L
+  hence apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),s)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
+    by rw lemma 8 R->L
+  hence apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(apply(apply(s,apply(s,apply(k,fixed_pt))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))
+    by rw lemma 8 R->L
+  hence apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(apply(apply(s,apply(k,fixed_pt)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))),apply(apply(apply(s,k),k),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))
+    by rw axiom 1
+  hence apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(apply(apply(k,fixed_pt),apply(apply(apply(s,k),k),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))),apply(apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))),apply(apply(apply(s,k),k),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))))
+    by rw axiom 1
+  hence apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))),apply(apply(apply(s,k),k),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))))
+    by rw axiom 2
+  hence apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))
+    by rw lemma 5 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(s,apply(s,apply(s,k))),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))
+    by rw lemma 6 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))))
+    by rw lemma 6 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(k,s),fixed_pt),apply(k,fixed_pt)))))
+    by rw axiom 2 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(s,apply(k,s)),k),fixed_pt))))
+    by rw axiom 1 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(k,apply(apply(s,s),apply(s,k))),fixed_pt),apply(apply(apply(s,apply(k,s)),k),fixed_pt))))
+    by rw axiom 2 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k)),fixed_pt)))
+    by rw axiom 1 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k))),fixed_pt),apply(apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k)),fixed_pt)))
+    by rw axiom 2 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt))
+    by rw axiom 1 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(k,s),fixed_pt),apply(k,fixed_pt)))) = apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt))
+    by rw axiom 2 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(apply(apply(s,apply(k,s)),k),fixed_pt))) = apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt))
+    by rw axiom 1 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(k,apply(apply(s,s),apply(s,k))),fixed_pt),apply(apply(apply(s,apply(k,s)),k),fixed_pt))) = apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt))
+    by rw axiom 2 R->L
+  hence apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k)),fixed_pt)) = apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt))
+    by rw axiom 1 R->L
+  hence apply(apply(apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k))),fixed_pt),apply(apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k)),fixed_pt)) = apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt))
+    by rw axiom 2 R->L
+  hence apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt) = apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt))
+    by rw axiom 1 R->L
   hence fixed_point(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))))
     by axiom 3

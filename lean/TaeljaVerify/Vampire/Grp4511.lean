@@ -47,8 +47,8 @@ theorem taelja_lemma6 : ∀ (x y : α), divide x x = multiply (inverse y) y := b
 -- Goal 1
 theorem taelja_goal1 : multiply (inverse a1) a1 = multiply (inverse b1) b1 := by
   have x : α := taelja_elem
-  have h1 : divide x x = multiply (inverse a1) a1 := taelja_lemma6 x a1
-  have h2 : multiply (inverse b1) b1 = multiply (inverse a1) a1 := Eq.mp (congrArg (fun t : α => t = multiply (inverse a1) a1) (taelja_lemma6 x b1)) h1
-  exact Eq.symm (h2)
+  have h1 : multiply (inverse a1) a1 = divide x x := Eq.symm (taelja_lemma6 x a1)
+  have h2 : multiply (inverse a1) a1 = multiply (inverse b1) b1 := Eq.mp (congrArg (fun t : α => multiply (inverse a1) a1 = t) (taelja_lemma6 x b1)) h1
+  exact h2
 
 end VampireGrp4511

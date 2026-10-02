@@ -51,23 +51,20 @@ axiom ax15 : ∀ (x y z w x1 x2 x3 x4 x5 : α), r x y z → r w x1 x2 → r x3 x
 -- Lemma 16
 theorem taelja_lemma16 : ∀ (x y : α), v x x y x = u x x y := by
   intro x y
-  have h1 : u x x y = v x x x y := ax8 x y
-  have h2 : u x x y = v x x y x := Eq.mp (congrArg (fun t : α => u x x y = t) (ax7 x y)) h1
-  exact Eq.symm (h2)
+  calc v x x y x = v x x x y := Eq.symm (ax7 x y)
+      _ = u x x y := Eq.symm (ax8 x y)
 
 -- Lemma 17
 theorem taelja_lemma17 : ∀ (x y : α), v x y x x = u x x y := by
   intro x y
-  have h1 : v x x y x = u x x y := taelja_lemma16 x y
-  have h2 : v x y x x = u x x y := Eq.mp (congrArg (fun t : α => t = u x x y) (ax6 x y)) h1
-  exact h2
+  calc v x y x x = v x x y x := Eq.symm (ax6 x y)
+      _ = u x x y := taelja_lemma16 x y
 
 -- Lemma 18
 theorem taelja_lemma18 : ∀ (x y : α), v x y y y = u y y x := by
   intro x y
-  have h1 : v y x y y = u y y x := taelja_lemma17 y x
-  have h2 : v x y y y = u y y x := Eq.mp (congrArg (fun t : α => t = u y y x) (ax5 y x)) h1
-  exact h2
+  calc v x y y y = v y x y y := Eq.symm (ax5 y x)
+      _ = u y y x := taelja_lemma17 y x
 
 -- Lemma 19
 theorem taelja_lemma19 : r (u a b b) (u b a a) (u a a a) := by

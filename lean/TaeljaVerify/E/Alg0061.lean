@@ -54,7 +54,7 @@ theorem taelja_lemma7 : ∀ (x y : α), difference x x = difference y y := by
 -- Lemma 8
 theorem taelja_lemma8 : ∀ (x y : α), difference (difference x x) y = difference x x := by
   intro x y
-  calc difference (difference x x) y = difference (difference y y) y := congrArg (fun t : α => difference t y) (taelja_lemma7 x y)
+  calc difference (difference x x) y = difference (difference y y) y := congrArg (fun t : α => difference t y) (Eq.symm (taelja_lemma7 y x))
       _ = difference y y := taelja_lemma4 y y
       _ = difference x x := taelja_lemma7 y x
 

@@ -36,7 +36,7 @@ Proof:
 
 Goal 1: multiply(inverse(a1),a1) = multiply(inverse(b1),b1)
 Proof:
-  have divide(X,X) = multiply(inverse(a1),a1)
+  have multiply(inverse(a1),a1) = divide(X,X)
     by lemma 6
-  hence multiply(inverse(b1),b1) = multiply(inverse(a1),a1)
+  hence multiply(inverse(a1),a1) = multiply(inverse(b1),b1)
     by rw lemma 6

@@ -26,12 +26,16 @@ axiom ax3 : ∀ (x : α), p x → q x → x = zero
 -- Axiom 4
 axiom ax4 : ∀ (x : α), f x = g x
 
--- Goal 1
-theorem taelja_goal1 : g a = zero := by
+-- Lemma 5
+theorem taelja_lemma5 : f a = zero := by
   have h1 : p (f a) := ax2 a
   have h2 : q (f a) := ax1 a
   have h3 : f a = zero := ax3 (f a) h1 h2
-  have h4 : g a = zero := Eq.mp (congrArg (fun t : α => t = zero) (ax4 a)) h3
-  exact h4
+  exact h3
+
+-- Goal 1
+theorem taelja_goal1 : g a = zero := by
+  calc g a = f a := Eq.symm (ax4 a)
+      _ = zero := taelja_lemma5
 
 end EHornExampleEqHeadInlined

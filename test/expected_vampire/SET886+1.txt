@@ -19,27 +19,23 @@ Proof:
   hence sK2 = sK4
     by axiom 3
 
-Lemma 7: subset(unordered_pair(sK3,sK4),singleton(sK4))
+Lemma 7: sK3 = sK4
 Proof:
-  subset(unordered_pair(sK3,sK4),singleton(sK4))
-= { by lemma 6 R->L }
-  subset(unordered_pair(sK3,sK2),singleton(sK4))
-= { by axiom 4 }
-  subset(unordered_pair(sK2,sK3),singleton(sK4))
-= { by axiom 2 }
-  true
-
-Lemma 8: sK3 = sK4
-Proof:
-  have subset(unordered_pair(sK3,sK4),singleton(sK4))
-    by lemma 7
+  have subset(unordered_pair(sK2,sK3),unordered_pair(sK4,sK4))
+    by lemma 5
+  hence subset(unordered_pair(sK4,sK3),unordered_pair(sK4,sK4))
+    by rw lemma 6
+  hence subset(unordered_pair(sK3,sK4),unordered_pair(sK4,sK4))
+    by rw axiom 4 R->L
+  hence subset(unordered_pair(sK3,sK4),singleton(sK4))
+    by rw axiom 1
   hence sK3 = sK4
     by axiom 3
 
 Goal 1: unordered_pair(sK2,sK3) = singleton(sK4)
 Proof:
   unordered_pair(sK2,sK3)
-= { by lemma 8 }
+= { by lemma 7 }
   unordered_pair(sK2,sK4)
 = { by axiom 4 }
   unordered_pair(sK4,sK2)

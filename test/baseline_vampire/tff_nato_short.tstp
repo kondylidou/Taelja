@@ -5,11 +5,12 @@
 tff(type_def_5, type, country: $tType).
 tff(func_def_0, type, sweden: country).
 tff(func_def_1, type, germany: country).
+tff(func_def_2, type, liechtenstein: country).
 tff(pred_def_1, type, nato: country > $o).
-tff(pred_def_2, type, attacked: country > $o).
+tff(pred_def_2, type, attacked: (country * country) > $o).
 tff(pred_def_3, type, protects: (country * country) > $o).
 tff(f1,axiom,(
-  ! [X0 : country,X1 : country] : ((nato(X0) & nato(X1) & attacked(X1)) => protects(X0,X1))),
+  ! [X0 : country,X1 : country,X2 : country] : ((nato(X0) & nato(X1) & attacked(X2,X1)) => protects(X0,X1))),
   file('test/input/tff_nato_short.p',unknown)).
 tff(f2,axiom,(
   nato(sweden)),
@@ -18,7 +19,7 @@ tff(f3,axiom,(
   nato(germany)),
   file('test/input/tff_nato_short.p',unknown)).
 tff(f4,axiom,(
-  attacked(germany)),
+  attacked(liechtenstein,germany)),
   file('test/input/tff_nato_short.p',unknown)).
 tff(f5,conjecture,(
   protects(sweden,germany)),
@@ -30,13 +31,13 @@ tff(f7,plain,(
   ~protects(sweden,germany)),
   inference(flattening,[],[f6])).
 tff(f8,plain,(
-  ! [X0 : country,X1 : country] : (protects(X0,X1) | (~nato(X0) | ~nato(X1) | ~attacked(X1)))),
+  ! [X0 : country,X1 : country,X2 : country] : (protects(X0,X1) | (~nato(X0) | ~nato(X1) | ~attacked(X2,X1)))),
   inference(ennf_transformation,[],[f1])).
 tff(f9,plain,(
-  ! [X0 : country,X1 : country] : (protects(X0,X1) | ~nato(X0) | ~nato(X1) | ~attacked(X1))),
+  ! [X0 : country,X1 : country,X2 : country] : (protects(X0,X1) | ~nato(X0) | ~nato(X1) | ~attacked(X2,X1))),
   inference(flattening,[],[f8])).
 tff(f10,plain,(
-  ( ! [X0 : country,X1 : country] : (protects(X0,X1) | ~nato(X0) | ~nato(X1) | ~attacked(X1)) )),
+  ( ! [X2 : country,X0 : country,X1 : country] : (~attacked(X2,X1) | ~nato(X0) | ~nato(X1) | protects(X0,X1)) )),
   inference(cnf_transformation,[],[f9])).
 tff(f11,plain,(
   nato(sweden)),
@@ -45,30 +46,30 @@ tff(f12,plain,(
   nato(germany)),
   inference(cnf_transformation,[],[f3])).
 tff(f13,plain,(
-  attacked(germany)),
+  attacked(liechtenstein,germany)),
   inference(cnf_transformation,[],[f4])).
 tff(f14,plain,(
   ~protects(sweden,germany)),
   inference(cnf_transformation,[],[f7])).
 tff(f15,plain,(
-  ~nato(sweden) | ~nato(germany) | ~attacked(germany)),
-  inference(resolution,[],[f10,f14])).
+  ( ! [X0 : country] : (~nato(X0) | ~nato(germany) | protects(X0,germany)) )),
+  inference(resolution,[],[f10,f13])).
 tff(f16,plain,(
-  ~nato(germany) | ~attacked(germany)),
-  inference(forward_subsumption_resolution,[],[f15,f11])).
+  ( ! [X0 : country] : (protects(X0,germany) | ~nato(X0)) )),
+  inference(forward_subsumption_resolution,[],[f15,f12])).
 tff(f17,plain,(
-  ~attacked(germany)),
-  inference(forward_subsumption_resolution,[],[f16,f12])).
+  ~nato(sweden)),
+  inference(resolution,[],[f16,f14])).
 tff(f18,plain,(
   $false),
-  inference(forward_subsumption_resolution,[],[f17,f13])).
+  inference(forward_subsumption_resolution,[],[f17,f11])).
 % SZS output end Proof for tff_nato_short
 % ------------------------------
 % Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
 % Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
 % CaDiCaL version: 2.1.3
 % Termination reason: Refutation
-% Time elapsed: 0.005 s
+% Time elapsed: 0.012 s
 % Peak memory usage: 7 MB
 % ------------------------------
 % ------------------------------

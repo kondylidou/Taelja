@@ -65,105 +65,111 @@ theorem taelja_lemma15 : b = c := by
   exact h3
 
 -- Lemma 16
-theorem taelja_lemma16 : ∀ (x : α), multiply x c = c := by
+theorem taelja_lemma16 : ∀ (x : α), b = multiply x b := by
   intro x
   have h1 : product a b c := ax4
   have h2 : product a b (multiply x b) := taelja_lemma13 x
   have h3 : multiply x b = c := ax5 a b c (multiply x b) h1 h2
-  have h4 : multiply x c = c := Eq.mp (congrArg (fun t : α => multiply x t = c) (taelja_lemma15)) h3
-  exact h4
+  have h4 : multiply x b = b := Eq.mp (congrArg (fun t : α => multiply x b = t) (Eq.symm (taelja_lemma15))) h3
+  exact Eq.symm (h4)
 
 -- Lemma 17
-theorem taelja_lemma17 : ∀ (x : α), b = multiply x b := by
-  intro x
-  calc b = c := taelja_lemma15
-      _ = multiply x c := Eq.symm (taelja_lemma16 x)
-      _ = multiply x b := congrArg (fun t : α => multiply x t) (Eq.symm (taelja_lemma15))
-
--- Lemma 18
-theorem taelja_lemma18 : product (add a b) b b := by
+theorem taelja_lemma17 : product (add a b) b b := by
   have h1 : product (add a b) b (multiply (add a b) b) := ax7 (add a b) b
-  have h2 : product (add a b) b b := Eq.mpr (congrArg (fun t : α => product (add a b) b t) (taelja_lemma17 (add a b))) h1
+  have h2 : product (add a b) b b := Eq.mpr (congrArg (fun t : α => product (add a b) b t) (taelja_lemma16 (add a b))) h1
   exact h2
 
--- Lemma 19
-theorem taelja_lemma19 : product (add a b) b additive_identity := by
+-- Lemma 18
+theorem taelja_lemma18 : product (add a b) b additive_identity := by
   have h1 : product (add a b) b (add c b) := ax6
   have h2 : product (add a b) b (add b b) := Eq.mpr (congrArg (fun t : α => product (add a b) b (add t b)) (taelja_lemma15)) h1
   have h3 : product (add a b) b additive_identity := Eq.mpr (congrArg (fun t : α => product (add a b) b t) (Eq.symm (ax1 b))) h2
   exact h3
 
--- Lemma 20
-theorem taelja_lemma20 : additive_identity = b := by
-  have h1 : product (add a b) b b := taelja_lemma18
-  have h2 : product (add a b) b additive_identity := taelja_lemma19
+-- Lemma 19
+theorem taelja_lemma19 : additive_identity = b := by
+  have h1 : product (add a b) b b := taelja_lemma17
+  have h2 : product (add a b) b additive_identity := taelja_lemma18
   have h3 : additive_identity = b := ax5 (add a b) b b additive_identity h1 h2
   exact h3
 
--- Lemma 21
-theorem taelja_lemma21 : product b a (multiply a d) := by
+-- Lemma 20
+theorem taelja_lemma20 : product b a (multiply a d) := by
   have h1 : product (multiply a b) a (multiply a d) := ax9 a
-  have h2 : product b a (multiply a d) := Eq.mp (congrArg (fun t : α => product t a (multiply a d)) (Eq.symm (taelja_lemma17 a))) h1
+  have h2 : product b a (multiply a d) := Eq.mp (congrArg (fun t : α => product t a (multiply a d)) (Eq.symm (taelja_lemma16 a))) h1
   exact h2
 
--- Lemma 22
-theorem taelja_lemma22 : multiply a d = d := by
+-- Lemma 21
+theorem taelja_lemma21 : multiply a d = d := by
   have h1 : product b a d := ax10
-  have h2 : product b a (multiply a d) := taelja_lemma21
+  have h2 : product b a (multiply a d) := taelja_lemma20
   have h3 : multiply a d = d := ax5 b a d (multiply a d) h1 h2
   exact h3
 
--- Lemma 23
-theorem taelja_lemma23 : product a d d := by
+-- Lemma 22
+theorem taelja_lemma22 : product a d d := by
   have h1 : product a d (multiply a d) := ax7 a d
-  have h2 : product a d d := Eq.mpr (congrArg (fun t : α => product a d t) (Eq.symm (taelja_lemma22))) h1
+  have h2 : product a d d := Eq.mpr (congrArg (fun t : α => product a d t) (Eq.symm (taelja_lemma21))) h1
   exact h2
 
--- Lemma 24
-theorem taelja_lemma24 : product a d a := by
+-- Lemma 23
+theorem taelja_lemma23 : product a d a := by
   have h1 : product a (multiply b a) (multiply a a) := ax3 a a
   have h2 : product a d (multiply a a) := Eq.mpr (congrArg (fun t : α => product a t (multiply a a)) (Eq.symm (ax8))) h1
   have h3 : product a d a := Eq.mpr (congrArg (fun t : α => product a d t) (Eq.symm (ax2 a))) h2
   exact h3
 
--- Lemma 25
-theorem taelja_lemma25 : a = d := by
-  have h1 : product a d d := taelja_lemma23
-  have h2 : product a d a := taelja_lemma24
+-- Lemma 24
+theorem taelja_lemma24 : a = d := by
+  have h1 : product a d d := taelja_lemma22
+  have h2 : product a d a := taelja_lemma23
   have h3 : a = d := ax5 a d d a h1 h2
   exact h3
 
+-- Lemma 25
+theorem taelja_lemma25 : product b a (multiply a d) := by
+  have h1 : product (multiply a b) a (multiply a d) := ax9 a
+  have h2 : product b a (multiply a d) := Eq.mp (congrArg (fun t : α => product t a (multiply a d)) (Eq.symm (taelja_lemma16 a))) h1
+  exact h2
+
 -- Lemma 26
-theorem taelja_lemma26 : product a d d := by
-  have h1 : product a (multiply b d) (multiply additive_identity d) := ax3 d additive_identity
-  have h2 : product d (multiply b d) (multiply additive_identity d) := Eq.mpr (congrArg (fun t : α => product t (multiply b d) (multiply additive_identity d)) (Eq.symm (taelja_lemma25))) h1
-  have h3 : product d (multiply additive_identity d) (multiply additive_identity d) := Eq.mpr (congrArg (fun t : α => product d (multiply t d) (multiply additive_identity d)) (taelja_lemma20)) h2
-  have h4 : product d (multiply additive_identity d) (multiply additive_identity a) := Eq.mpr (congrArg (fun t : α => product d (multiply additive_identity d) (multiply additive_identity t)) (taelja_lemma25)) h3
-  have h5 : product d (multiply additive_identity d) (multiply b a) := Eq.mpr (congrArg (fun t : α => product d (multiply additive_identity d) (multiply t a)) (Eq.symm (taelja_lemma20))) h4
-  have h6 : product d (multiply additive_identity d) d := Eq.mpr (congrArg (fun t : α => product d (multiply additive_identity d) t) (Eq.symm (ax8))) h5
-  have h7 : product d (multiply additive_identity a) d := Eq.mpr (congrArg (fun t : α => product d (multiply additive_identity t) d) (taelja_lemma25)) h6
-  have h8 : product d (multiply b a) d := Eq.mpr (congrArg (fun t : α => product d (multiply t a) d) (Eq.symm (taelja_lemma20))) h7
-  have h9 : product d d d := Eq.mpr (congrArg (fun t : α => product d t d) (Eq.symm (ax8))) h8
-  have h10 : product a d d := Eq.mpr (congrArg (fun t : α => product t d d) (taelja_lemma25)) h9
-  exact h10
+theorem taelja_lemma26 : multiply a d = d := by
+  have h1 : product b a d := ax10
+  have h2 : product b a (multiply a d) := taelja_lemma25
+  have h3 : multiply a d = d := ax5 b a d (multiply a d) h1 h2
+  exact h3
 
 -- Lemma 27
-theorem taelja_lemma27 : product a d b := by
+theorem taelja_lemma27 : ∀ (x : α), add x b = x := by
+  intro x
+  calc add x b = add x additive_identity := congrArg (fun t : α => add x t) (Eq.symm (taelja_lemma19))
+      _ = x := ax11 x
+
+-- Lemma 28
+theorem taelja_lemma28 : product a d d := by
+  have h1 : product a d (multiply a d) := ax7 a d
+  have h2 : product a d d := Eq.mpr (congrArg (fun t : α => product a d t) (Eq.symm (taelja_lemma26))) h1
+  exact h2
+
+-- Lemma 29
+theorem taelja_lemma29 : product a a b := by
   have h1 : product (add a b) a (add a d) := ax12
-  have h2 : product (add d b) a (add a d) := Eq.mpr (congrArg (fun t : α => product (add t b) a (add a d)) (Eq.symm (taelja_lemma25))) h1
-  have h3 : product (add d b) d (add a d) := Eq.mpr (congrArg (fun t : α => product (add d b) t (add a d)) (Eq.symm (taelja_lemma25))) h2
-  have h4 : product (add d b) d (add d d) := Eq.mpr (congrArg (fun t : α => product (add d b) d (add t d)) (Eq.symm (taelja_lemma25))) h3
-  have h5 : product (add d additive_identity) d (add d d) := Eq.mpr (congrArg (fun t : α => product (add d t) d (add d d)) (taelja_lemma20)) h4
-  have h6 : product d d (add d d) := Eq.mpr (congrArg (fun t : α => product t d (add d d)) (Eq.symm (ax11 d))) h5
-  have h7 : product d d additive_identity := Eq.mpr (congrArg (fun t : α => product d d t) (Eq.symm (ax1 d))) h6
-  have h8 : product d d b := Eq.mpr (congrArg (fun t : α => product d d t) (Eq.symm (taelja_lemma20))) h7
-  have h9 : product a d b := Eq.mpr (congrArg (fun t : α => product t d b) (taelja_lemma25)) h8
-  exact h9
+  have h2 : product a a (add a d) := Eq.mpr (congrArg (fun t : α => product t a (add a d)) (Eq.symm (taelja_lemma27 a))) h1
+  have h3 : product a a (add a a) := Eq.mpr (congrArg (fun t : α => product a a (add a t)) (taelja_lemma24)) h2
+  have h4 : product a a additive_identity := Eq.mpr (congrArg (fun t : α => product a a t) (Eq.symm (ax1 a))) h3
+  have h5 : product a a b := Eq.mpr (congrArg (fun t : α => product a a t) (Eq.symm (taelja_lemma19))) h4
+  exact h5
+
+-- Lemma 30
+theorem taelja_lemma30 : product a d b := by
+  have h1 : product a a b := taelja_lemma29
+  have h2 : product a d b := Eq.mp (congrArg (fun t : α => product a t b) (taelja_lemma24)) h1
+  exact h2
 
 -- Goal 1
 theorem taelja_goal1 : c = d := by
-  have h1 : product a d d := taelja_lemma26
-  have h2 : product a d b := taelja_lemma27
+  have h1 : product a d d := taelja_lemma28
+  have h2 : product a d b := taelja_lemma30
   have h3 : b = d := ax5 a d d b h1 h2
   have h4 : c = d := Eq.mp (congrArg (fun t : α => t = d) (taelja_lemma15)) h3
   exact h4

@@ -40,21 +40,17 @@ theorem taelja_lemma6 : sK2 = sK4 := by
   exact h3
 
 -- Lemma 7
-theorem taelja_lemma7 : subset (unordered_pair sK3 sK4) (singleton sK4) := by
-  have h1 : subset (unordered_pair sK2 sK3) (singleton sK4) := ax2
-  have h2 : subset (unordered_pair sK3 sK2) (singleton sK4) := Eq.mpr (congrArg (fun t : α => subset t (singleton sK4)) (ax4 sK3 sK2)) h1
-  have h3 : subset (unordered_pair sK3 sK4) (singleton sK4) := Eq.mpr (congrArg (fun t : α => subset (unordered_pair sK3 t) (singleton sK4)) (Eq.symm (taelja_lemma6))) h2
-  exact h3
-
--- Lemma 8
-theorem taelja_lemma8 : sK3 = sK4 := by
-  have h1 : subset (unordered_pair sK3 sK4) (singleton sK4) := taelja_lemma7
-  have h2 : sK3 = sK4 := ax3 sK3 sK4 sK4 h1
-  exact h2
+theorem taelja_lemma7 : sK3 = sK4 := by
+  have h1 : subset (unordered_pair sK2 sK3) (unordered_pair sK4 sK4) := taelja_lemma5
+  have h2 : subset (unordered_pair sK4 sK3) (unordered_pair sK4 sK4) := Eq.mp (congrArg (fun t : α => subset (unordered_pair t sK3) (unordered_pair sK4 sK4)) (taelja_lemma6)) h1
+  have h3 : subset (unordered_pair sK3 sK4) (unordered_pair sK4 sK4) := Eq.mp (congrArg (fun t : α => subset t (unordered_pair sK4 sK4)) (Eq.symm (ax4 sK3 sK4))) h2
+  have h4 : subset (unordered_pair sK3 sK4) (singleton sK4) := Eq.mp (congrArg (fun t : α => subset (unordered_pair sK3 sK4) t) (ax1 sK4)) h3
+  have h5 : sK3 = sK4 := ax3 sK3 sK4 sK4 h4
+  exact h5
 
 -- Goal 1
 theorem taelja_goal1 : unordered_pair sK2 sK3 = singleton sK4 := by
-  calc unordered_pair sK2 sK3 = unordered_pair sK2 sK4 := congrArg (fun t : α => unordered_pair sK2 t) (taelja_lemma8)
+  calc unordered_pair sK2 sK3 = unordered_pair sK2 sK4 := congrArg (fun t : α => unordered_pair sK2 t) (taelja_lemma7)
       _ = unordered_pair sK4 sK2 := ax4 sK2 sK4
       _ = unordered_pair sK4 sK4 := congrArg (fun t : α => unordered_pair sK4 t) (taelja_lemma6)
       _ = singleton sK4 := ax1 sK4

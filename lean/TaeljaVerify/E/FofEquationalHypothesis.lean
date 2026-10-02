@@ -25,9 +25,8 @@ axiom ax3 : ∀ (x : α), h x = x
 
 -- Goal 1
 theorem taelja_goal1 : g (h (f esk1_0)) = b := by
-  have h1 : g a = b := ax1
-  have h2 : g (f esk1_0) = b := Eq.mp (congrArg (fun t : α => g t = b) (Eq.symm (ax2))) h1
-  have h3 : g (h (f esk1_0)) = b := Eq.mp (congrArg (fun t : α => g t = b) (Eq.symm (ax3 (f esk1_0)))) h2
-  exact h3
+  calc g (h (f esk1_0)) = g (f esk1_0) := congrArg (fun t : α => g t) (ax3 (f esk1_0))
+      _ = g a := congrArg (fun t : α => g t) (ax2)
+      _ = b := ax1
 
 end EFofEquationalHypothesis

@@ -87,58 +87,61 @@ axiom ax23 : ∀ (x y : α), smoke x y → event x y
 axiom ax24 : ∀ (x y z u v w x1 x2 x3 x4 x5 : α), be x y z z → man x z → state x y → smoke u v → present u v → agent u v z → event u v → forename x w → jules_forename x w → of x w z → accessible_world x u → proposition x u → proposition x x1 → accessible_world x x1 → think_believe_consider x x2 → present x x2 → event x x2 → theme x x2 x1 → agent x x3 x4 → agent x x2 x4 → man x x4 → of x x5 x4 → vincent_forename x x5 → forename x x5 → theme x x3 u → event x x3 → present x x3 → think_believe_consider x x3 → actual_world x → man x1 (skf4 x1)
 
 -- Lemma 25
-theorem taelja_lemma25 : ∀ (x : α), present skc12 (skf2 x) := by
-  intro x
+theorem taelja_lemma25 : man skc12 skc15 := by
   have h1 : accessible_world skc8 skc12 := ax2
   have h2 : man skc8 skc15 := ax4
   have h3 : man skc12 skc15 := ax3 skc8 skc12 skc15 h1 h2
-  have h4 : present skc12 (skf2 x) := ax5 skc15 x h3
-  exact h4
+  exact h3
 
 -- Lemma 26
-theorem taelja_lemma26 : ∀ (x : α), smoke skc12 (skf2 x) := by
+theorem taelja_lemma26 : ∀ (x : α), present skc12 (skf2 x) := by
   intro x
-  have h1 : accessible_world skc8 skc12 := ax2
-  have h2 : man skc8 skc15 := ax4
-  have h3 : man skc12 skc15 := ax3 skc8 skc12 skc15 h1 h2
-  have h4 : smoke skc12 (skf2 x) := ax6 skc15 x h3
-  exact h4
+  have h1 : man skc12 skc15 := taelja_lemma25
+  have h2 : present skc12 (skf2 x) := ax5 skc15 x h1
+  exact h2
 
 -- Lemma 27
-theorem taelja_lemma27 : agent skc12 (skf2 skc10) skc10 := by
+theorem taelja_lemma27 : ∀ (x : α), smoke skc12 (skf2 x) := by
+  intro x
+  have h1 : man skc12 skc15 := taelja_lemma25
+  have h2 : smoke skc12 (skf2 x) := ax6 skc15 x h1
+  exact h2
+
+-- Lemma 28
+theorem taelja_lemma28 : agent skc12 (skf2 skc10) skc10 := by
   have h1 : accessible_world skc8 skc12 := ax2
   have h2 : man skc8 skc10 := ax1
   have h3 : man skc12 skc10 := ax3 skc8 skc12 skc10 h1 h2
   have h4 : agent skc12 (skf2 skc10) skc10 := ax7 skc10 h3
   exact h4
 
--- Lemma 28
-theorem taelja_lemma28 : event skc12 (skf2 skc10) := by
-  have h1 : smoke skc12 (skf2 skc10) := taelja_lemma26 skc10
+-- Lemma 29
+theorem taelja_lemma29 : event skc12 (skf2 skc10) := by
+  have h1 : smoke skc12 (skf2 skc10) := taelja_lemma27 skc10
   have h2 : event skc12 (skf2 skc10) := ax23 skc12 (skf2 skc10) h1
   exact h2
 
--- Lemma 29
-theorem taelja_lemma29 : forename skc8 skc11 := by
+-- Lemma 30
+theorem taelja_lemma30 : forename skc8 skc11 := by
   have h1 : jules_forename skc8 skc11 := ax14
   have h2 : forename skc8 skc11 := ax22 skc8 skc11 h1
   exact h2
 
--- Lemma 30
-theorem taelja_lemma30 : forename skc8 skc14 := by
+-- Lemma 31
+theorem taelja_lemma31 : forename skc8 skc14 := by
   have h1 : vincent_forename skc8 skc14 := ax16
   have h2 : forename skc8 skc14 := ax21 skc8 skc14 h1
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : event skc12 (skf2 (skf4 skc12)) := by
-  have h1 : smoke skc12 (skf2 (skf4 skc12)) := taelja_lemma26 (skf4 skc12)
+  have h1 : smoke skc12 (skf2 (skf4 skc12)) := taelja_lemma27 (skf4 skc12)
   have h2 : event skc12 (skf2 (skf4 skc12)) := ax23 skc12 (skf2 (skf4 skc12)) h1
   exact h2
 
 -- Goal 2
 theorem taelja_goal2 : event skc12 (skf2 skc10) := by
-  have h1 : smoke skc12 (skf2 skc10) := taelja_lemma26 skc10
+  have h1 : smoke skc12 (skf2 skc10) := taelja_lemma27 skc10
   have h2 : event skc12 (skf2 skc10) := ax23 skc12 (skf2 skc10) h1
   exact h2
 
@@ -155,11 +158,11 @@ theorem taelja_goal4 : agent skc12 (skf2 (skf4 skc12)) (skf4 skc12) := by
   have h1 : be skc8 skc9 skc10 skc10 := ax20
   have h2 : man skc8 skc10 := ax1
   have h3 : state skc8 skc9 := ax19
-  have h4 : smoke skc12 (skf2 skc10) := taelja_lemma26 skc10
-  have h5 : present skc12 (skf2 skc10) := taelja_lemma25 skc10
-  have h6 : agent skc12 (skf2 skc10) skc10 := taelja_lemma27
-  have h7 : event skc12 (skf2 skc10) := taelja_lemma28
-  have h8 : forename skc8 skc11 := taelja_lemma29
+  have h4 : smoke skc12 (skf2 skc10) := taelja_lemma27 skc10
+  have h5 : present skc12 (skf2 skc10) := taelja_lemma26 skc10
+  have h6 : agent skc12 (skf2 skc10) skc10 := taelja_lemma28
+  have h7 : event skc12 (skf2 skc10) := taelja_lemma29
+  have h8 : forename skc8 skc11 := taelja_lemma30
   have h9 : jules_forename skc8 skc11 := ax14
   have h10 : of skc8 skc11 skc10 := ax15
   have h11 : accessible_world skc8 skc12 := ax2
@@ -175,7 +178,7 @@ theorem taelja_goal4 : agent skc12 (skf2 (skf4 skc12)) (skf4 skc12) := by
   have h21 : man skc8 skc15 := ax4
   have h22 : of skc8 skc14 skc15 := ax17
   have h23 : vincent_forename skc8 skc14 := ax16
-  have h24 : forename skc8 skc14 := taelja_lemma30
+  have h24 : forename skc8 skc14 := taelja_lemma31
   have h25 : theme skc8 skc13 skc12 := ax12
   have h26 : event skc8 skc13 := ax9
   have h27 : present skc8 skc13 := ax10
@@ -197,17 +200,17 @@ theorem taelja_goal6 : be skc8 skc9 skc10 skc10 := by
 
 -- Goal 7
 theorem taelja_goal7 : smoke skc12 (skf2 skc10) := by
-  have h1 : smoke skc12 (skf2 skc10) := taelja_lemma26 skc10
+  have h1 : smoke skc12 (skf2 skc10) := taelja_lemma27 skc10
   exact h1
 
 -- Goal 8
 theorem taelja_goal8 : present skc12 (skf2 skc10) := by
-  have h1 : present skc12 (skf2 skc10) := taelja_lemma25 skc10
+  have h1 : present skc12 (skf2 skc10) := taelja_lemma26 skc10
   exact h1
 
 -- Goal 9
 theorem taelja_goal9 : forename skc8 skc11 := by
-  have h1 : forename skc8 skc11 := taelja_lemma29
+  have h1 : forename skc8 skc11 := taelja_lemma30
   exact h1
 
 -- Goal 10
@@ -232,12 +235,12 @@ theorem taelja_goal13 : proposition skc8 skc12 := by
 
 -- Goal 14
 theorem taelja_goal14 : smoke skc12 (skf2 (skf4 skc12)) := by
-  have h1 : smoke skc12 (skf2 (skf4 skc12)) := taelja_lemma26 (skf4 skc12)
+  have h1 : smoke skc12 (skf2 (skf4 skc12)) := taelja_lemma27 (skf4 skc12)
   exact h1
 
 -- Goal 15
 theorem taelja_goal15 : present skc12 (skf2 (skf4 skc12)) := by
-  have h1 : present skc12 (skf2 (skf4 skc12)) := taelja_lemma25 (skf4 skc12)
+  have h1 : present skc12 (skf2 (skf4 skc12)) := taelja_lemma26 (skf4 skc12)
   exact h1
 
 -- Goal 16
@@ -287,7 +290,7 @@ theorem taelja_goal24 : vincent_forename skc8 skc14 := by
 
 -- Goal 25
 theorem taelja_goal25 : forename skc8 skc14 := by
-  have h1 : forename skc8 skc14 := taelja_lemma30
+  have h1 : forename skc8 skc14 := taelja_lemma31
   exact h1
 
 -- Goal 26

@@ -2,7 +2,7 @@ Axiom 1: X = v_ta
 
 Goal 1: v_s = v_t
 Proof:
-  have v_t = v_ta
+  have v_ta = v_t
     by axiom 1
-  hence v_t = v_s
+  hence v_s = v_t
     by rw axiom 1 R->L

@@ -9,27 +9,28 @@ axiom taelja_nonempty : Nonempty α
 noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 axiom germany : α
+axiom liechtenstein : α
 axiom sweden : α
 
-axiom attacked : α → Prop
+axiom attacked : α → α → Prop
 axiom nato : α → Prop
 axiom protects : α → α → Prop
 
 -- Axiom 1
-axiom ax1 : attacked germany
+axiom ax1 : nato sweden
 -- Axiom 2
 axiom ax2 : nato germany
 -- Axiom 3
-axiom ax3 : nato sweden
+axiom ax3 : attacked liechtenstein germany
 -- Axiom 4
-axiom ax4 : ∀ (x y : α), nato x → nato y → attacked y → protects x y
+axiom ax4 : ∀ (x y z : α), nato x → nato y → attacked z y → protects x y
 
 -- Goal 1
 theorem taelja_goal1 : protects sweden germany := by
-  have h1 : nato sweden := ax3
+  have h1 : nato sweden := ax1
   have h2 : nato germany := ax2
-  have h3 : attacked germany := ax1
-  have h4 : protects sweden germany := ax4 sweden germany h1 h2 h3
+  have h3 : attacked liechtenstein germany := ax3
+  have h4 : protects sweden germany := ax4 sweden germany liechtenstein h1 h2 h3
   exact h4
 
 end VampireTffNatoShort

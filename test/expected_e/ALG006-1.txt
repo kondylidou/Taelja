@@ -49,7 +49,7 @@ Proof:
 Lemma 8: difference(difference(X,X),Y) = difference(X,X)
 Proof:
   difference(difference(X,X),Y)
-= { by lemma 7 }
+= { by lemma 7 R->L }
   difference(difference(Y,Y),Y)
 = { by lemma 4 }
   difference(Y,Y)

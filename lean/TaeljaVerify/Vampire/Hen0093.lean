@@ -130,114 +130,113 @@ theorem taelja_lemma22 : zero = divide c a := by
       _ = divide c a := congrArg (fun t : α => divide t a) (taelja_lemma21)
 
 -- Lemma 23
-theorem taelja_lemma23 : less_equal (divide (divide b c) d) zero := by
-  have h1 : less_equal (divide (divide b c) (divide identity c)) (divide (divide b identity) c) := ax5 b c identity
-  have h2 : less_equal (divide (divide b c) d) (divide (divide b identity) c) := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide b c) t) (divide (divide b identity) c)) (Eq.symm (ax10))) h1
-  have h3 : less_equal (divide (divide b c) d) (divide zero c) := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide b c) d) (divide t c)) (taelja_lemma12 b)) h2
-  have h4 : less_equal (divide (divide b c) d) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide b c) d) t) (taelja_lemma11 c)) h3
-  exact h4
-
--- Lemma 24
-theorem taelja_lemma24 : less_equal (divide c c) zero := by
-  have h1 : less_equal (divide c (divide a b)) zero := taelja_lemma17
-  have h2 : less_equal (divide c c) zero := Eq.mp (congrArg (fun t : α => less_equal (divide c t) zero) (taelja_lemma21)) h1
-  exact h2
-
--- Lemma 25
-theorem taelja_lemma25 : divide c c = zero := by
-  have h1 : less_equal zero (divide c c) := ax1 (divide c c)
-  have h2 : less_equal (divide c c) zero := taelja_lemma24
-  have h3 : divide c c = zero := ax6 zero (divide c c) h1 h2
-  exact h3
-
--- Lemma 26
-theorem taelja_lemma26 : less_equal (divide d (divide b c)) zero := by
-  have h1 : less_equal (divide (divide identity c) (divide b c)) (divide (divide identity b) c) := ax5 identity c b
-  have h2 : less_equal (divide d (divide b c)) (divide (divide identity b) c) := Eq.mpr (congrArg (fun t : α => less_equal (divide t (divide b c)) (divide (divide identity b) c)) (Eq.symm (ax10))) h1
-  have h3 : less_equal (divide d (divide b c)) (divide c c) := Eq.mpr (congrArg (fun t : α => less_equal (divide d (divide b c)) (divide t c)) (Eq.symm (ax8))) h2
-  have h4 : less_equal (divide d (divide b c)) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide d (divide b c)) t) (Eq.symm (taelja_lemma25))) h3
-  exact h4
-
--- Lemma 27
-theorem taelja_lemma27 : less_equal (divide b c) d := by
-  have h1 : less_equal zero (divide (divide b c) d) := ax1 (divide (divide b c) d)
-  have h2 : less_equal (divide (divide b c) d) zero := taelja_lemma23
-  have h3 : divide (divide b c) d = zero := ax6 zero (divide (divide b c) d) h1 h2
-  have h4 : less_equal (divide b c) d := ax7 (divide b c) d h3
-  exact h4
-
--- Lemma 28
-theorem taelja_lemma28 : divide (divide b (divide c a)) (divide d a) = divide c a := by
+theorem taelja_lemma23 : divide (divide b (divide c a)) (divide d a) = zero := by
   have h1 : less_equal (divide b (divide c a)) (divide d a) := taelja_lemma19
   have h2 : divide (divide b (divide c a)) (divide d a) = zero := ax2 (divide b (divide c a)) (divide d a) h1
-  have h3 : divide (divide b (divide c a)) (divide d a) = divide c a := Eq.mp (congrArg (fun t : α => divide (divide b (divide c a)) (divide d a) = t) (taelja_lemma22)) h2
-  exact h3
+  exact h2
 
--- Lemma 29
-theorem taelja_lemma29 : less_equal (divide (divide b zero) (divide d a)) (divide (divide b (divide d a)) (divide zero (divide d a))) := by
-  have h1 : less_equal zero (divide (divide b (divide d a)) (divide zero (divide d a))) := ax1 (divide (divide b (divide d a)) (divide zero (divide d a)))
-  have h2 : less_equal (divide c a) (divide (divide b (divide d a)) (divide zero (divide d a))) := Eq.mpr (congrArg (fun t : α => less_equal t (divide (divide b (divide d a)) (divide zero (divide d a)))) (Eq.symm (taelja_lemma22))) h1
-  have h3 : less_equal (divide (divide b (divide c a)) (divide d a)) (divide (divide b (divide d a)) (divide zero (divide d a))) := Eq.mpr (congrArg (fun t : α => less_equal t (divide (divide b (divide d a)) (divide zero (divide d a)))) (taelja_lemma28)) h2
-  have h4 : less_equal (divide (divide b zero) (divide d a)) (divide (divide b (divide d a)) (divide zero (divide d a))) := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide b t) (divide d a)) (divide (divide b (divide d a)) (divide zero (divide d a)))) (taelja_lemma22)) h3
+-- Lemma 24
+theorem taelja_lemma24 : less_equal (divide (divide b zero) (divide d a)) (divide (divide b (divide d a)) (divide zero (divide d a))) := by
+  have h1 : less_equal zero (divide (divide b (divide d a)) zero) := ax1 (divide (divide b (divide d a)) zero)
+  have h2 : less_equal (divide (divide b (divide c a)) (divide d a)) (divide (divide b (divide d a)) zero) := Eq.mp (congrArg (fun t : α => less_equal t (divide (divide b (divide d a)) zero)) (Eq.symm (taelja_lemma23))) h1
+  have h3 : less_equal (divide (divide b zero) (divide d a)) (divide (divide b (divide d a)) zero) := Eq.mp (congrArg (fun t : α => less_equal (divide (divide b t) (divide d a)) (divide (divide b (divide d a)) zero)) (Eq.symm (taelja_lemma22))) h2
+  have h4 : less_equal (divide (divide b zero) (divide d a)) (divide (divide b (divide d a)) (divide zero (divide d a))) := Eq.mp (congrArg (fun t : α => less_equal (divide (divide b zero) (divide d a)) (divide (divide b (divide d a)) t)) (taelja_lemma11 (divide d a))) h3
   exact h4
 
--- Lemma 30
-theorem taelja_lemma30 : zero = divide (divide b zero) (divide d a) := by
-  calc zero = divide c a := taelja_lemma22
-      _ = divide (divide b (divide c a)) (divide d a) := Eq.symm (taelja_lemma28)
-      _ = divide (divide b zero) (divide d a) := congrArg (fun t : α => divide (divide b t) (divide d a)) (Eq.symm (taelja_lemma22))
-
--- Lemma 31
-theorem taelja_lemma31 : less_equal (divide b (divide d a)) zero := by
+-- Lemma 25
+theorem taelja_lemma25 : less_equal (divide b (divide d a)) zero := by
   have h1 : less_equal (divide (divide b (divide d a)) (divide zero (divide d a))) (divide (divide b zero) (divide d a)) := ax5 b (divide d a) zero
-  have h2 : less_equal (divide (divide b zero) (divide d a)) (divide (divide b (divide d a)) (divide zero (divide d a))) := taelja_lemma29
+  have h2 : less_equal (divide (divide b zero) (divide d a)) (divide (divide b (divide d a)) (divide zero (divide d a))) := taelja_lemma24
   have h3 : divide (divide b zero) (divide d a) = divide (divide b (divide d a)) (divide zero (divide d a)) := ax6 (divide (divide b (divide d a)) (divide zero (divide d a))) (divide (divide b zero) (divide d a)) h1 h2
-  have h4 : zero = divide (divide b (divide d a)) (divide zero (divide d a)) := Eq.mp (congrArg (fun t : α => t = divide (divide b (divide d a)) (divide zero (divide d a))) (Eq.symm (taelja_lemma30))) h3
-  have h5 : zero = divide (divide b (divide d a)) zero := Eq.mp (congrArg (fun t : α => zero = divide (divide b (divide d a)) t) (Eq.symm (taelja_lemma11 (divide d a)))) h4
-  have h6 : less_equal (divide b (divide d a)) zero := ax7 (divide b (divide d a)) zero (Eq.symm (h5))
-  exact h6
+  have h4 : divide (divide b zero) (divide d a) = divide (divide b (divide d a)) zero := Eq.mp (congrArg (fun t : α => divide (divide b zero) (divide d a) = divide (divide b (divide d a)) t) (Eq.symm (taelja_lemma11 (divide d a)))) h3
+  have h5 : divide (divide b (divide c a)) (divide d a) = divide (divide b (divide d a)) zero := Eq.mp (congrArg (fun t : α => divide (divide b t) (divide d a) = divide (divide b (divide d a)) zero) (taelja_lemma22)) h4
+  have h6 : zero = divide (divide b (divide d a)) zero := Eq.mp (congrArg (fun t : α => t = divide (divide b (divide d a)) zero) (taelja_lemma23)) h5
+  have h7 : less_equal (divide b (divide d a)) zero := ax7 (divide b (divide d a)) zero (Eq.symm (h6))
+  exact h7
 
--- Lemma 32
-theorem taelja_lemma32 : less_equal (divide d a) b := by
+-- Lemma 26
+theorem taelja_lemma26 : less_equal (divide d a) b := by
   have h1 : less_equal zero (divide (divide d a) b) := ax1 (divide (divide d a) b)
   have h2 : less_equal (divide (divide d a) b) zero := taelja_lemma13 d
   have h3 : divide (divide d a) b = zero := ax6 zero (divide (divide d a) b) h1 h2
   have h4 : less_equal (divide d a) b := ax7 (divide d a) b h3
   exact h4
 
--- Lemma 33
-theorem taelja_lemma33 : divide b c = d := by
-  have h1 : less_equal zero (divide d (divide b c)) := ax1 (divide d (divide b c))
-  have h2 : less_equal (divide d (divide b c)) zero := taelja_lemma26
-  have h3 : divide d (divide b c) = zero := ax6 zero (divide d (divide b c)) h1 h2
-  have h4 : less_equal d (divide b c) := ax7 d (divide b c) h3
-  have h5 : less_equal (divide b c) d := taelja_lemma27
-  have h6 : divide b c = d := ax6 d (divide b c) h4 h5
-  exact h6
+-- Lemma 27
+theorem taelja_lemma27 : less_equal (divide (divide b c) d) zero := by
+  have h1 : less_equal (divide (divide b c) (divide identity c)) (divide (divide b identity) c) := ax5 b c identity
+  have h2 : less_equal (divide (divide b c) d) (divide (divide b identity) c) := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide b c) t) (divide (divide b identity) c)) (Eq.symm (ax10))) h1
+  have h3 : less_equal (divide (divide b c) d) (divide zero c) := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide b c) d) (divide t c)) (taelja_lemma12 b)) h2
+  have h4 : less_equal (divide (divide b c) d) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide b c) d) t) (taelja_lemma11 c)) h3
+  exact h4
 
--- Lemma 34
-theorem taelja_lemma34 : divide d a = b := by
+-- Lemma 28
+theorem taelja_lemma28 : less_equal (divide c c) zero := by
+  have h1 : less_equal (divide c (divide a b)) zero := taelja_lemma17
+  have h2 : less_equal (divide c c) zero := Eq.mp (congrArg (fun t : α => less_equal (divide c t) zero) (taelja_lemma21)) h1
+  exact h2
+
+-- Lemma 29
+theorem taelja_lemma29 : divide c c = zero := by
+  have h1 : less_equal zero (divide c c) := ax1 (divide c c)
+  have h2 : less_equal (divide c c) zero := taelja_lemma28
+  have h3 : divide c c = zero := ax6 zero (divide c c) h1 h2
+  exact h3
+
+-- Lemma 30
+theorem taelja_lemma30 : less_equal (divide d (divide b c)) zero := by
+  have h1 : less_equal (divide (divide identity c) (divide b c)) (divide (divide identity b) c) := ax5 identity c b
+  have h2 : less_equal (divide d (divide b c)) (divide (divide identity b) c) := Eq.mpr (congrArg (fun t : α => less_equal (divide t (divide b c)) (divide (divide identity b) c)) (Eq.symm (ax10))) h1
+  have h3 : less_equal (divide d (divide b c)) (divide c c) := Eq.mpr (congrArg (fun t : α => less_equal (divide d (divide b c)) (divide t c)) (Eq.symm (ax8))) h2
+  have h4 : less_equal (divide d (divide b c)) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide d (divide b c)) t) (Eq.symm (taelja_lemma29))) h3
+  exact h4
+
+-- Lemma 31
+theorem taelja_lemma31 : less_equal (divide b c) d := by
+  have h1 : less_equal zero (divide (divide b c) d) := ax1 (divide (divide b c) d)
+  have h2 : less_equal (divide (divide b c) d) zero := taelja_lemma27
+  have h3 : divide (divide b c) d = zero := ax6 zero (divide (divide b c) d) h1 h2
+  have h4 : less_equal (divide b c) d := ax7 (divide b c) d h3
+  exact h4
+
+-- Lemma 32
+theorem taelja_lemma32 : divide d a = b := by
   have h1 : less_equal zero (divide b (divide d a)) := ax1 (divide b (divide d a))
-  have h2 : less_equal (divide b (divide d a)) zero := taelja_lemma31
+  have h2 : less_equal (divide b (divide d a)) zero := taelja_lemma25
   have h3 : divide b (divide d a) = zero := ax6 zero (divide b (divide d a)) h1 h2
   have h4 : less_equal b (divide d a) := ax7 b (divide d a) h3
-  have h5 : less_equal (divide d a) b := taelja_lemma32
+  have h5 : less_equal (divide d a) b := taelja_lemma26
   have h6 : divide d a = b := ax6 b (divide d a) h4 h5
+  exact h6
+
+-- Lemma 33
+theorem taelja_lemma33 : less_equal b d := by
+  have h1 : less_equal (divide d a) d := ax9 d a
+  have h2 : less_equal b d := Eq.mpr (congrArg (fun t : α => less_equal t d) (Eq.symm (taelja_lemma32))) h1
+  exact h2
+
+-- Lemma 34
+theorem taelja_lemma34 : divide b c = d := by
+  have h1 : less_equal zero (divide d (divide b c)) := ax1 (divide d (divide b c))
+  have h2 : less_equal (divide d (divide b c)) zero := taelja_lemma30
+  have h3 : divide d (divide b c) = zero := ax6 zero (divide d (divide b c)) h1 h2
+  have h4 : less_equal d (divide b c) := ax7 d (divide b c) h3
+  have h5 : less_equal (divide b c) d := taelja_lemma31
+  have h6 : divide b c = d := ax6 d (divide b c) h4 h5
   exact h6
 
 -- Lemma 35
 theorem taelja_lemma35 : less_equal b (divide b c) := by
-  have h1 : less_equal (divide d a) d := ax9 d a
-  have h2 : less_equal b d := Eq.mpr (congrArg (fun t : α => less_equal t d) (Eq.symm (taelja_lemma34))) h1
-  have h3 : less_equal b (divide b c) := Eq.mpr (congrArg (fun t : α => less_equal b t) (taelja_lemma33)) h2
-  exact h3
+  have h1 : less_equal b d := taelja_lemma33
+  have h2 : less_equal b (divide b c) := Eq.mp (congrArg (fun t : α => less_equal b t) (Eq.symm (taelja_lemma34))) h1
+  exact h2
 
 -- Goal 1
 theorem taelja_goal1 : b = d := by
   have h1 : less_equal (divide b c) b := ax9 b c
   have h2 : less_equal b (divide b c) := taelja_lemma35
   have h3 : b = divide b c := ax6 (divide b c) b h1 h2
-  have h4 : b = d := Eq.mp (congrArg (fun t : α => b = t) (taelja_lemma33)) h3
+  have h4 : b = d := Eq.mp (congrArg (fun t : α => b = t) (taelja_lemma34)) h3
   exact h4
 
 end VampireHen0093

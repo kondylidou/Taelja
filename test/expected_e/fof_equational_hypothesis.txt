@@ -4,9 +4,10 @@ Axiom 3: h(X) = X
 
 Goal 1: g(h(f(esk1_0))) = b
 Proof:
-  have g(a) = b
-    by axiom 1
-  hence g(f(esk1_0)) = b
-    by rw axiom 2 R->L
-  hence g(h(f(esk1_0))) = b
-    by rw axiom 3 R->L
+  g(h(f(esk1_0)))
+= { by axiom 3 }
+  g(f(esk1_0))
+= { by axiom 2 }
+  g(a)
+= { by axiom 1 }
+  b

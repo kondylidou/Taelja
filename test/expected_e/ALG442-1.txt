@@ -16,24 +16,27 @@ Axiom 15: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) => r(m(X,A,U),m(Y,B,V),m(Z,C,W))
 
 Lemma 16: v(X,X,Y,X) = u(X,X,Y)
 Proof:
-  have u(X,X,Y) = v(X,X,X,Y)
-    by axiom 8
-  hence u(X,X,Y) = v(X,X,Y,X)
-    by rw axiom 7
+  v(X,X,Y,X)
+= { by axiom 7 R->L }
+  v(X,X,X,Y)
+= { by axiom 8 R->L }
+  u(X,X,Y)
 
 Lemma 17: v(X,Y,X,X) = u(X,X,Y)
 Proof:
-  have v(X,X,Y,X) = u(X,X,Y)
-    by lemma 16
-  hence v(X,Y,X,X) = u(X,X,Y)
-    by rw axiom 6
+  v(X,Y,X,X)
+= { by axiom 6 R->L }
+  v(X,X,Y,X)
+= { by lemma 16 }
+  u(X,X,Y)
 
 Lemma 18: v(X,Y,Y,Y) = u(Y,Y,X)
 Proof:
-  have v(Y,X,Y,Y) = u(Y,Y,X)
-    by lemma 17
-  hence v(X,Y,Y,Y) = u(Y,Y,X)
-    by rw axiom 5
+  v(X,Y,Y,Y)
+= { by axiom 5 R->L }
+  v(Y,X,Y,Y)
+= { by lemma 17 }
+  u(Y,Y,X)
 
 Lemma 19: r(u(a,b,b),u(b,a,a),u(a,a,a))
 Proof:

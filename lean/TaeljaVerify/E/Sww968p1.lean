@@ -151,7 +151,14 @@ theorem taelja_lemma26 : pred_attacker (tuple_client_A_in_2 (tuple_client_A_in_6
   exact h10
 
 -- Lemma 27
-theorem taelja_lemma27 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by
+theorem taelja_lemma27 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := by
+  have h1 : pred_attacker constr_CONST_0x30 := ax1
+  have h2 : pred_attacker (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30)) := Eq.mp (congrArg (fun t : α => pred_attacker t) (Eq.symm (ax8 constr_CONST_0x30 constr_CONST_0x30))) h1
+  have h3 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := Eq.mp (congrArg (fun t : α => pred_attacker (constr_tuple_2_get_0x30_bitstring t)) (Eq.symm (ax9 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) h2
+  exact h3
+
+-- Lemma 28
+theorem taelja_lemma28 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by
   intro x
   have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := ax18 x
   have h2 : pred_attacker (name_Na x) := ax19 name_A name_B (name_Na x) h1
@@ -161,8 +168,8 @@ theorem taelja_lemma27 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (tuple
   have h6 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := ax12 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) h5
   exact h6
 
--- Lemma 28
-theorem taelja_lemma28 : ∀ (x : α), pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by
+-- Lemma 29
+theorem taelja_lemma29 : ∀ (x : α), pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by
   intro x
   have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := ax18 x
   have h2 : pred_attacker (name_Na x) := ax19 name_A name_B (name_Na x) h1
@@ -171,8 +178,8 @@ theorem taelja_lemma28 : ∀ (x : α), pred_attacker (tuple_client_A_in_6 (tuple
   have h5 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := ax7 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h4
   exact h5
 
--- Lemma 29
-theorem taelja_lemma29 : ∀ (x : α), pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by
+-- Lemma 30
+theorem taelja_lemma30 : ∀ (x : α), pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by
   intro x
   have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := ax18 x
   have h2 : pred_attacker (name_Na x) := ax19 name_A name_B (name_Na x) h1
@@ -180,16 +187,16 @@ theorem taelja_lemma29 : ∀ (x : α), pred_attacker (tuple_client_A_in_4 (tuple
   have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := ax11 (tuple_client_A_in_2 (name_Na x)) h3
   exact h4
 
--- Lemma 30
-theorem taelja_lemma30 : ∀ (x : α), pred_attacker (tuple_client_A_in_2 (name_Na x)) := by
+-- Lemma 31
+theorem taelja_lemma31 : ∀ (x : α), pred_attacker (tuple_client_A_in_2 (name_Na x)) := by
   intro x
   have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := ax18 x
   have h2 : pred_attacker (name_Na x) := ax19 name_A name_B (name_Na x) h1
   have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := ax10 (name_Na x) h2
   exact h3
 
--- Lemma 31
-theorem taelja_lemma31 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 constr_CONST_0x30)) := by
+-- Lemma 32
+theorem taelja_lemma32 : pred_attacker name_objective2 := by
   have x : α := taelja_elem
   have h1 : pred_eq_bitstring_bitstring (tuple_succ (name_Na0x27 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) x)) (constr_cbc_dec_1 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := ax13 (tuple_succ (name_Na0x27 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) x)) (constr_cbc_dec_1 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))
   have h2 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := taelja_lemma23
@@ -200,71 +207,27 @@ theorem taelja_lemma31 : pred_attacker (tuple_client_A_out_10 (constr_enc name_o
   have h7 : pred_eq_bitstring_bitstring (name_Na x) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) name_Kas)) := ax13 (name_Na x) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) name_Kas))
   have h8 : pred_attacker (tuple_client_A_in_2 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) := taelja_lemma26
   have h9 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) := ax14 (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) x (tuple_client_A_in_6 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) h1 h2 h3 h4 h5 h6 h7 h8
-  have h10 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30)))) := Eq.mp (congrArg (fun t : α => pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring t)))) (ax9 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) h9
-  have h11 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 constr_CONST_0x30)) := Eq.mp (congrArg (fun t : α => pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 t))) (ax8 constr_CONST_0x30 constr_CONST_0x30)) h10
-  exact h11
-
--- Lemma 32
-theorem taelja_lemma32 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) := by
-  have h1 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 constr_CONST_0x30)) := taelja_lemma31
-  have h2 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30)))) := Eq.mpr (congrArg (fun t : α => pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 t))) (ax8 constr_CONST_0x30 constr_CONST_0x30)) h1
-  have h3 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) := Eq.mpr (congrArg (fun t : α => pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring t)))) (ax9 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) h2
-  exact h3
-
--- Lemma 33
-theorem taelja_lemma33 : pred_attacker (constr_enc name_objective2 constr_CONST_0x30) := by
-  have h1 : pred_attacker (tuple_client_A_out_10 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) := taelja_lemma32
-  have h2 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := ax15 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) h1
-  have h3 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30))) := Eq.mp (congrArg (fun t : α => pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring t))) (ax9 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) h2
-  have h4 : pred_attacker (constr_enc name_objective2 constr_CONST_0x30) := Eq.mp (congrArg (fun t : α => pred_attacker (constr_enc name_objective2 t)) (ax8 constr_CONST_0x30 constr_CONST_0x30)) h3
-  exact h4
-
--- Lemma 34
-theorem taelja_lemma34 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by
-  have h1 : pred_attacker (constr_enc name_objective2 constr_CONST_0x30) := taelja_lemma33
-  have h2 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30))) := Eq.mpr (congrArg (fun t : α => pred_attacker (constr_enc name_objective2 t)) (ax8 constr_CONST_0x30 constr_CONST_0x30)) h1
-  have h3 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := Eq.mpr (congrArg (fun t : α => pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring t))) (ax9 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) h2
-  exact h3
-
--- Lemma 35
-theorem taelja_lemma35 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := by
-  have h1 : pred_attacker constr_CONST_0x30 := ax1
-  have h2 : pred_attacker (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30)) := Eq.mp (congrArg (fun t : α => pred_attacker t) (Eq.symm (ax8 constr_CONST_0x30 constr_CONST_0x30))) h1
-  have h3 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := Eq.mp (congrArg (fun t : α => pred_attacker (constr_tuple_2_get_0x30_bitstring t)) (Eq.symm (ax9 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) h2
-  exact h3
-
--- Lemma 36
-theorem taelja_lemma36 : pred_attacker (constr_dec (constr_enc name_objective2 constr_CONST_0x30) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := by
-  have h1 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := taelja_lemma34
-  have h2 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := taelja_lemma35
-  have h3 : pred_attacker (constr_dec (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := ax17 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) h1 h2
-  have h4 : pred_attacker (constr_dec (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := Eq.mp (congrArg (fun t : α => pred_attacker (constr_dec (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring t)) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) (ax9 constr_CONST_0x30 constr_CONST_0x30 name_Kas)) h3
-  have h5 : pred_attacker (constr_dec (constr_enc name_objective2 constr_CONST_0x30) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := Eq.mp (congrArg (fun t : α => pred_attacker (constr_dec (constr_enc name_objective2 t) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) (ax8 constr_CONST_0x30 constr_CONST_0x30)) h4
-  exact h5
-
--- Lemma 37
-theorem taelja_lemma37 : pred_attacker name_objective2 := by
-  have h1 : pred_attacker (constr_dec (constr_enc name_objective2 constr_CONST_0x30) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := taelja_lemma36
-  have h2 : pred_attacker (constr_dec (constr_enc name_objective2 constr_CONST_0x30) (constr_tuple_2_get_0x30_bitstring (tuple_2 constr_CONST_0x30 constr_CONST_0x30))) := Eq.mpr (congrArg (fun t : α => pred_attacker (constr_dec (constr_enc name_objective2 constr_CONST_0x30) (constr_tuple_2_get_0x30_bitstring t))) (Eq.symm (ax9 constr_CONST_0x30 constr_CONST_0x30 name_Kas))) h1
-  have h3 : pred_attacker (constr_dec (constr_enc name_objective2 constr_CONST_0x30) constr_CONST_0x30) := Eq.mpr (congrArg (fun t : α => pred_attacker (constr_dec (constr_enc name_objective2 constr_CONST_0x30) t)) (Eq.symm (ax8 constr_CONST_0x30 constr_CONST_0x30))) h2
-  have h4 : pred_attacker name_objective2 := Eq.mpr (congrArg (fun t : α => pred_attacker t) (Eq.symm (ax16 name_objective2 constr_CONST_0x30))) h3
-  exact h4
+  have h10 : pred_attacker (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := ax15 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) h9
+  have h11 : pred_attacker (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) := taelja_lemma27
+  have h12 : pred_attacker (constr_dec (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) := ax17 (constr_enc name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)) h10 h11
+  have h13 : pred_attacker name_objective2 := Eq.mp (congrArg (fun t : α => pred_attacker t) (ax16 name_objective2 (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (constr_cbc_enc_2 constr_CONST_0x30 constr_CONST_0x30 name_Kas) name_Kas)))) h12
+  exact h13
 
 -- Goal 1
 theorem taelja_goal1 : pred_attacker (tuple_2 name_objective1 name_objective2) := by
   have x : α := taelja_elem
   have y : α := taelja_elem
   have h1 : pred_eq_bitstring_bitstring (tuple_succ (name_Na0x27 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y)) (constr_cbc_dec_1 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas))) := ax13 (tuple_succ (name_Na0x27 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y)) (constr_cbc_dec_1 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas)))
-  have h2 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := taelja_lemma27 x
+  have h2 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := taelja_lemma28 x
   have h3 : pred_eq_bitstring_bitstring name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas)) := ax13 name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas))
-  have h4 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := taelja_lemma28 x
-  have h5 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := taelja_lemma29 x
+  have h4 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := taelja_lemma29 x
+  have h5 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := taelja_lemma30 x
   have h6 : pred_eq_bitstring_bitstring name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (name_Na x) name_Kas)) := ax13 name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (name_Na x) name_Kas))
   have h7 : pred_eq_bitstring_bitstring (name_Na y) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (name_Na x) name_Kas)) := ax13 (name_Na y) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (name_Na x) name_Kas))
-  have h8 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := taelja_lemma30 x
+  have h8 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := taelja_lemma31 x
   have h9 : pred_attacker (tuple_client_A_out_9 name_objective1) := ax20 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h1 h2 h3 h4 h5 h6 h7 h8
   have h10 : pred_attacker name_objective1 := ax21 name_objective1 h9
-  have h11 : pred_attacker name_objective2 := taelja_lemma37
+  have h11 : pred_attacker name_objective2 := taelja_lemma32
   have h12 : pred_attacker (tuple_2 name_objective1 name_objective2) := ax22 name_objective1 name_objective2 h10 h11
   exact h12
 

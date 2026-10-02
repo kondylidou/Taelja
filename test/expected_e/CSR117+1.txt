@@ -154,7 +154,8 @@ Proof:
 
 Goal 18: to_int('55.67631') = to_int('55.75695')
 Proof:
-  have to_int('55.67631') = 55
-    by axiom 22
-  hence to_int('55.67631') = to_int('55.75695')
-    by rw axiom 28 R->L
+  to_int('55.67631')
+= { by axiom 22 }
+  55
+= { by axiom 28 R->L }
+  to_int('55.75695')
