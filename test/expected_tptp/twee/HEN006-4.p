@@ -28,12 +28,11 @@ fof(lemma_13, lemma, divide(divide(b,d),b) = zero, inference(mp, [status(thm)], 
 fof(s14, plain, less_equal(zero,divide(divide(a,d),divide(b,d))), inference(instantiate, [status(thm)], [c8])).
 fof(lemma_14, lemma, zero = divide(divide(a,d),divide(b,d)), inference(mp, [status(thm)], [c9, s14, lemma_12])).
 fof(s15, plain, less_equal(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)), inference(instantiate, [status(thm)], [c2])).
-fof(lemma_15, lemma, divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)) = zero, inference(mp, [status(thm)], [c3, s15])).
-fof(s16, plain, divide(divide(a,d),b) = divide(divide(divide(a,d),b),zero), inference(instantiate, [status(thm)], [lemma_10])).
-fof(s17, plain, divide(divide(a,d),b) = divide(divide(divide(a,d),b),divide(divide(b,d),b)), inference(rewrite, [status(thm)], [lemma_13, s16])).
-fof(s18, plain, divide(divide(a,d),b) = divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero), inference(rewrite, [status(thm)], [lemma_10, s17])).
-fof(s19, plain, divide(divide(a,d),b) = divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(zero,b)), inference(rewrite, [status(thm)], [c13, s18])).
-fof(s20, plain, divide(divide(a,d),b) = divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)), inference(rewrite, [status(thm)], [lemma_14, s19])).
-fof(lemma_16, lemma, divide(divide(a,d),b) = zero, inference(rewrite, [status(thm)], [lemma_15, s20])).
-fof(goal_1, theorem, less_equal(divide(a,d),b), inference(mp, [status(thm)], [c21, lemma_16])).
+fof(s16, plain, divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)) = zero, inference(mp, [status(thm)], [c3, s15])).
+fof(s17, plain, divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(zero,b)) = zero, inference(rewrite, [status(thm)], [lemma_14, s16])).
+fof(s18, plain, divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero) = zero, inference(rewrite, [status(thm)], [c13, s17])).
+fof(s19, plain, divide(divide(divide(a,d),b),divide(divide(b,d),b)) = zero, inference(rewrite, [status(thm)], [lemma_10, s18])).
+fof(s20, plain, divide(divide(divide(a,d),b),zero) = zero, inference(rewrite, [status(thm)], [lemma_13, s19])).
+fof(s21, plain, divide(divide(a,d),b) = zero, inference(rewrite, [status(thm)], [lemma_10, s20])).
+fof(goal_1, theorem, less_equal(divide(a,d),b), inference(mp, [status(thm)], [c21, s21])).
 % SZS output end Proof

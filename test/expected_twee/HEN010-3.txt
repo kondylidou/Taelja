@@ -21,11 +21,10 @@ Proof:
 
 Lemma 9: less_equal(divide(divide(X,X),divide(zero,X)),zero)
 Proof:
-  less_equal(divide(divide(X,X),divide(zero,X)),zero)
-= { by lemma 7 R->L }
-  less_equal(divide(divide(X,X),divide(zero,X)),divide(divide(X,zero),X))
-= { by axiom 2 }
-  true
+  have less_equal(divide(divide(X,X),divide(zero,X)),divide(divide(X,zero),X))
+    by axiom 2
+  hence less_equal(divide(divide(X,X),divide(zero,X)),zero)
+    by rw lemma 7
 
 Lemma 10: less_equal(divide(X,X),zero)
 Proof:
@@ -129,11 +128,10 @@ Proof:
 
 Lemma 18: less_equal(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),zero)
 Proof:
-  less_equal(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),zero)
-= { by lemma 11 R->L }
-  less_equal(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),divide(divide(identity,a),divide(identity,a)))
-= { by axiom 2 }
-  true
+  have less_equal(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),divide(divide(identity,a),divide(identity,a)))
+    by axiom 2
+  hence less_equal(divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a))),zero)
+    by rw lemma 11
 
 Lemma 19: zero = divide(divide(identity,divide(identity,a)),divide(a,divide(identity,a)))
 Proof:
@@ -193,11 +191,10 @@ Proof:
 
 Lemma 23: less_equal(divide(identity,a),divide(divide(identity,a),divide(identity,divide(identity,a))))
 Proof:
-  less_equal(divide(identity,a),divide(divide(identity,a),divide(identity,divide(identity,a))))
-= { by lemma 22 }
-  less_equal(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),divide(identity,divide(identity,a))))
-= { by axiom 3 }
-  true
+  have less_equal(divide(divide(divide(identity,a),divide(identity,divide(identity,a))),a),divide(divide(identity,a),divide(identity,divide(identity,a))))
+    by axiom 3
+  hence less_equal(divide(identity,a),divide(divide(identity,a),divide(identity,divide(identity,a))))
+    by rw lemma 22 R->L
 
 Goal 1: divide(identity,a) = divide(divide(identity,a),divide(identity,divide(identity,a)))
 Proof:

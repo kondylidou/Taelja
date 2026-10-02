@@ -44,11 +44,10 @@ Proof:
 
 Lemma 12: less_equal(divide(divide(a,d),divide(b,d)),zero)
 Proof:
-  less_equal(divide(divide(a,d),divide(b,d)),zero)
-= { by lemma 11 R->L }
-  less_equal(divide(divide(a,d),divide(b,d)),divide(divide(a,b),d))
-= { by axiom 1 }
-  true
+  have less_equal(divide(divide(a,d),divide(b,d)),divide(divide(a,b),d))
+    by axiom 1
+  hence less_equal(divide(divide(a,d),divide(b,d)),zero)
+    by rw lemma 11
 
 Lemma 13: divide(divide(b,d),b) = zero
 Proof:
@@ -66,32 +65,21 @@ Proof:
   hence zero = divide(divide(a,d),divide(b,d))
     by axiom 5
 
-Lemma 15: divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)) = zero
+Goal 1: less_equal(divide(a,d),b)
 Proof:
   have less_equal(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b))
     by axiom 1
   hence divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b)) = zero
     by axiom 2
-
-Lemma 16: divide(divide(a,d),b) = zero
-Proof:
-  divide(divide(a,d),b)
-= { by lemma 10 R->L }
-  divide(divide(divide(a,d),b),zero)
-= { by lemma 13 R->L }
-  divide(divide(divide(a,d),b),divide(divide(b,d),b))
-= { by lemma 10 R->L }
-  divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero)
-= { by axiom 6 R->L }
-  divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(zero,b))
-= { by lemma 14 }
-  divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(divide(divide(a,d),divide(b,d)),b))
-= { by lemma 15 }
-  zero
-
-Goal 1: less_equal(divide(a,d),b)
-Proof:
-  have divide(divide(a,d),b) = zero
-    by lemma 16
+  hence divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),divide(zero,b)) = zero
+    by rw lemma 14 R->L
+  hence divide(divide(divide(divide(a,d),b),divide(divide(b,d),b)),zero) = zero
+    by rw axiom 6
+  hence divide(divide(divide(a,d),b),divide(divide(b,d),b)) = zero
+    by rw lemma 10
+  hence divide(divide(divide(a,d),b),zero) = zero
+    by rw lemma 13
+  hence divide(divide(a,d),b) = zero
+    by rw lemma 10
   hence less_equal(divide(a,d),b)
     by axiom 9

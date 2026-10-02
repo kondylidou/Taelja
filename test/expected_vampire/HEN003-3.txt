@@ -14,13 +14,12 @@ Proof:
 
 Lemma 8: less_equal(divide(divide(a,a),zero),zero)
 Proof:
-  less_equal(divide(divide(a,a),zero),zero)
-= { by lemma 7 }
-  less_equal(divide(divide(a,a),divide(divide(a,a),a)),zero)
-= { by lemma 7 }
-  less_equal(divide(divide(a,a),divide(divide(a,a),a)),divide(divide(a,divide(a,a)),a))
-= { by axiom 3 }
-  true
+  have less_equal(divide(divide(a,a),divide(divide(a,a),a)),divide(divide(a,divide(a,a)),a))
+    by axiom 3
+  hence less_equal(divide(divide(a,a),divide(divide(a,a),a)),zero)
+    by rw lemma 7 R->L
+  hence less_equal(divide(divide(a,a),zero),zero)
+    by rw lemma 7 R->L
 
 Lemma 9: less_equal(divide(a,a),zero)
 Proof:

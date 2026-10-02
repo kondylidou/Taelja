@@ -78,32 +78,7 @@ Proof:
   hence forename(skc8,skc14)
     by axiom 21
 
-Goal 1: event(skc12,skf2(skf4(skc12)))
-Proof:
-  have smoke(skc12,skf2(skf4(skc12)))
-    by lemma 27
-  hence event(skc12,skf2(skf4(skc12)))
-    by axiom 23
-
-Goal 2: event(skc12,skf2(skc10))
-Proof:
-  have smoke(skc12,skf2(skc10))
-    by lemma 27
-  hence event(skc12,skf2(skc10))
-    by axiom 23
-
-Goal 3: agent(skc12,skf2(skc10),skc10)
-Proof:
-  have accessible_world(skc8,skc12)
-    by axiom 2
-   and man(skc8,skc10)
-    by axiom 1
-  hence man(skc12,skc10)
-    by axiom 3
-  hence agent(skc12,skf2(skc10),skc10)
-    by axiom 7
-
-Goal 4: agent(skc12,skf2(skf4(skc12)),skf4(skc12))
+Goal 1: agent(skc12,skf2(skf4(skc12)),skf4(skc12))
 Proof:
   have be(skc8,skc9,skc10,skc10)
     by axiom 20
@@ -168,65 +143,82 @@ Proof:
   hence agent(skc12,skf2(skf4(skc12)),skf4(skc12))
     by axiom 7
 
-Goal 5: man(skc8,skc10)
+Goal 2: man(skc8,skc10)
 Proof:
   have man(skc8,skc10)
     by axiom 1
 
-Goal 6: be(skc8,skc9,skc10,skc10)
+Goal 3: be(skc8,skc9,skc10,skc10)
 Proof:
   have be(skc8,skc9,skc10,skc10)
     by axiom 20
 
-Goal 7: smoke(skc12,skf2(skc10))
+Goal 4: smoke(skc12,skf2(skc10))
 Proof:
   have smoke(skc12,skf2(skc10))
     by lemma 27
 
-Goal 8: present(skc12,skf2(skc10))
+Goal 5: present(skc12,skf2(skc10))
 Proof:
   have present(skc12,skf2(skc10))
     by lemma 26
 
-Goal 9: forename(skc8,skc11)
+Goal 6: agent(skc12,skf2(skc10),skc10)
+Proof:
+  have agent(skc12,skf2(skc10),skc10)
+    by lemma 28
+
+Goal 7: event(skc12,skf2(skc10))
+Proof:
+  have event(skc12,skf2(skc10))
+    by lemma 29
+
+Goal 8: forename(skc8,skc11)
 Proof:
   have forename(skc8,skc11)
     by lemma 30
 
-Goal 10: jules_forename(skc8,skc11)
+Goal 9: jules_forename(skc8,skc11)
 Proof:
   have jules_forename(skc8,skc11)
     by axiom 14
 
-Goal 11: of(skc8,skc11,skc10)
+Goal 10: of(skc8,skc11,skc10)
 Proof:
   have of(skc8,skc11,skc10)
     by axiom 15
 
-Goal 12: accessible_world(skc8,skc12)
+Goal 11: accessible_world(skc8,skc12)
 Proof:
   have accessible_world(skc8,skc12)
     by axiom 2
 
-Goal 13: proposition(skc8,skc12)
+Goal 12: proposition(skc8,skc12)
 Proof:
   have proposition(skc8,skc12)
     by axiom 13
 
-Goal 14: smoke(skc12,skf2(skf4(skc12)))
+Goal 13: smoke(skc12,skf2(skf4(skc12)))
 Proof:
   have smoke(skc12,skf2(skf4(skc12)))
     by lemma 27
 
-Goal 15: present(skc12,skf2(skf4(skc12)))
+Goal 14: present(skc12,skf2(skf4(skc12)))
 Proof:
   have present(skc12,skf2(skf4(skc12)))
     by lemma 26
 
-Goal 16: state(skc8,skc9)
+Goal 15: state(skc8,skc9)
 Proof:
   have state(skc8,skc9)
     by axiom 19
+
+Goal 16: event(skc12,skf2(skf4(skc12)))
+Proof:
+  have smoke(skc12,skf2(skf4(skc12)))
+    by lemma 27
+  hence event(skc12,skf2(skf4(skc12)))
+    by axiom 23
 
 Goal 17: think_believe_consider(skc8,skc13)
 Proof:

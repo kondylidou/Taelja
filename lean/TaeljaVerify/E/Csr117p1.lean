@@ -72,15 +72,15 @@ axiom ax10 : ∀ (x : α), s__City x → s__GeopoliticalArea x
 -- Axiom 11
 axiom ax11 : is_instance s__Copenhagen s__CoastalCitiesClass
 -- Axiom 12
-axiom ax12 : ∀ (x : α), is_instance x s__CoastalCitiesClass → s__City x → s__orientation x (esk15_1 x) s__Near
+axiom ax12 : ∀ (x : α), is_instance x s__CoastalCitiesClass → s__City x → s__Sea (esk15_1 x)
 -- Axiom 13
-axiom ax13 : ∀ (x y : α), s__WaterArea x → s__City y → s__orientation y x s__Near → s__capability s__Flooding__t s__located__m y
+axiom ax13 : ∀ (x : α), s__Sea x → s__BodyOfWater x
 -- Axiom 14
-axiom ax14 : ∀ (x : α), is_instance x s__CoastalCitiesClass → s__City x → s__Sea (esk15_1 x)
+axiom ax14 : ∀ (x : α), s__BodyOfWater x → s__WaterArea x
 -- Axiom 15
-axiom ax15 : ∀ (x : α), s__Sea x → s__BodyOfWater x
+axiom ax15 : ∀ (x : α), is_instance x s__CoastalCitiesClass → s__City x → s__orientation x (esk15_1 x) s__Near
 -- Axiom 16
-axiom ax16 : ∀ (x : α), s__BodyOfWater x → s__WaterArea x
+axiom ax16 : ∀ (x y : α), s__WaterArea x → s__City y → s__orientation y x s__Near → s__capability s__Flooding__t s__located__m y
 -- Axiom 17
 axiom ax17 : s__SymbolicString copenhagen
 -- Axiom 18
@@ -112,25 +112,25 @@ axiom ax29 : latlong s__Moscow op_55_dot_75695 op_37_dot_614975 moscow ru
 theorem taelja_lemma30 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s__Near := by
   have h1 : is_instance s__Copenhagen s__CoastalCitiesClass := ax11
   have h2 : s__City s__Copenhagen := ax9
-  have h3 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s__Near := ax12 s__Copenhagen h1 h2
+  have h3 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s__Near := ax15 s__Copenhagen h1 h2
   exact h3
 
 -- Goal 1
-theorem taelja_goal1 : s__Object s__Denmark := by
-  have h1 : s__Nation s__Denmark := ax1
-  have h2 : s__GeopoliticalArea s__Denmark := ax4 s__Denmark h1
-  have h3 : s__GeographicArea s__Denmark := ax5 s__Denmark h2
-  have h4 : s__Region s__Denmark := ax6 s__Denmark h3
-  have h5 : s__Object s__Denmark := ax7 s__Denmark h4
-  exact h5
-
--- Goal 2
-theorem taelja_goal2 : s__Object s__Copenhagen := by
+theorem taelja_goal1 : s__Object s__Copenhagen := by
   have h1 : s__City s__Copenhagen := ax9
   have h2 : s__GeopoliticalArea s__Copenhagen := ax10 s__Copenhagen h1
   have h3 : s__GeographicArea s__Copenhagen := ax5 s__Copenhagen h2
   have h4 : s__Region s__Copenhagen := ax6 s__Copenhagen h3
   have h5 : s__Object s__Copenhagen := ax7 s__Copenhagen h4
+  exact h5
+
+-- Goal 2
+theorem taelja_goal2 : s__Object s__Denmark := by
+  have h1 : s__Nation s__Denmark := ax1
+  have h2 : s__GeopoliticalArea s__Denmark := ax4 s__Denmark h1
+  have h3 : s__GeographicArea s__Denmark := ax5 s__Denmark h2
+  have h4 : s__Region s__Denmark := ax6 s__Denmark h3
+  have h5 : s__Object s__Denmark := ax7 s__Denmark h4
   exact h5
 
 -- Goal 3
@@ -207,12 +207,12 @@ theorem taelja_goal16 : latlong s__Moscow op_55_dot_75695 op_37_dot_614975 mosco
 theorem taelja_goal17 : s__capability s__Flooding__t s__located__m s__Copenhagen := by
   have h1 : is_instance s__Copenhagen s__CoastalCitiesClass := ax11
   have h2 : s__City s__Copenhagen := ax9
-  have h3 : s__Sea (esk15_1 s__Copenhagen) := ax14 s__Copenhagen h1 h2
-  have h4 : s__BodyOfWater (esk15_1 s__Copenhagen) := ax15 (esk15_1 s__Copenhagen) h3
-  have h5 : s__WaterArea (esk15_1 s__Copenhagen) := ax16 (esk15_1 s__Copenhagen) h4
+  have h3 : s__Sea (esk15_1 s__Copenhagen) := ax12 s__Copenhagen h1 h2
+  have h4 : s__BodyOfWater (esk15_1 s__Copenhagen) := ax13 (esk15_1 s__Copenhagen) h3
+  have h5 : s__WaterArea (esk15_1 s__Copenhagen) := ax14 (esk15_1 s__Copenhagen) h4
   have h6 : s__City s__Copenhagen := ax9
   have h7 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s__Near := taelja_lemma30
-  have h8 : s__capability s__Flooding__t s__located__m s__Copenhagen := ax13 (esk15_1 s__Copenhagen) s__Copenhagen h5 h6 h7
+  have h8 : s__capability s__Flooding__t s__located__m s__Copenhagen := ax16 (esk15_1 s__Copenhagen) s__Copenhagen h5 h6 h7
   exact h8
 
 -- Goal 18

@@ -42,8 +42,7 @@ Proof:
 
 Goal 1: product(c,d,identity)
 Proof:
-  product(c,d,identity)
-= { by lemma 11 }
-  product(c,c,identity)
-= { by axiom 7 }
-  true
+  have product(c,c,identity)
+    by axiom 7
+  hence product(c,d,identity)
+    by rw lemma 11 R->L

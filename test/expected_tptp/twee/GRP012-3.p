@@ -21,9 +21,8 @@ fof(s8, plain, product(inverse(multiply(inverse(b),inverse(a))),inverse(inverse(
 fof(s9, plain, product(multiply(inverse(b),inverse(a)),identity,multiply(inverse(b),inverse(a))), inference(instantiate, [status(thm)], [c5])).
 fof(s10, plain, product(identity,inverse(inverse(multiply(inverse(b),inverse(a)))),multiply(inverse(b),inverse(a))), inference(mp, [status(thm)], [c6, s7, s8, s9])).
 fof(s11, plain, product(identity,inverse(inverse(multiply(inverse(b),inverse(a)))),inverse(inverse(multiply(inverse(b),inverse(a))))), inference(instantiate, [status(thm)], [c14])).
-fof(lemma_12, lemma, multiply(inverse(b),inverse(a)) = inverse(inverse(multiply(inverse(b),inverse(a)))), inference(mp, [status(thm)], [c10, s10, s11])).
-fof(s12, plain, inverse(multiply(a,b)) = inverse(multiply(a,multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a)))))), inference(instantiate, [status(thm)], [lemma_11])).
-fof(s13, plain, inverse(multiply(a,b)) = inverse(multiply(a,multiply(inverse(a),inverse(multiply(inverse(b),inverse(a)))))), inference(rewrite, [status(thm)], [lemma_9, s12])).
-fof(s14, plain, inverse(multiply(a,b)) = inverse(inverse(multiply(inverse(b),inverse(a)))), inference(rewrite, [status(thm)], [lemma_9, s13])).
-fof(goal_1, theorem, inverse(multiply(a,b)) = multiply(inverse(b),inverse(a)), inference(rewrite, [status(thm)], [lemma_12, s14])).
+fof(s12, plain, multiply(inverse(b),inverse(a)) = inverse(inverse(multiply(inverse(b),inverse(a)))), inference(mp, [status(thm)], [c10, s10, s11])).
+fof(s13, plain, multiply(inverse(b),inverse(a)) = inverse(multiply(a,multiply(inverse(a),inverse(multiply(inverse(b),inverse(a)))))), inference(rewrite, [status(thm)], [lemma_9, s12])).
+fof(s14, plain, multiply(inverse(b),inverse(a)) = inverse(multiply(a,multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a)))))), inference(rewrite, [status(thm)], [lemma_9, s13])).
+fof(goal_1, theorem, inverse(multiply(a,b)) = multiply(inverse(b),inverse(a)), inference(rewrite, [status(thm)], [lemma_11, s14])).
 % SZS output end Proof

@@ -88,7 +88,7 @@ theorem taelja_lemma20 : ∀ (y : α), product multiplicative_identity (add mult
   have h3 : product additive_identity y (multiply additive_identity y) := ax8 additive_identity y
   have h4 : sum multiplicative_identity (multiply additive_identity y) (add multiplicative_identity (multiply additive_identity y)) := ax1 multiplicative_identity (multiply additive_identity y)
   have h5 : product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity (multiply additive_identity y)) := ax10 multiplicative_identity additive_identity multiplicative_identity y (add multiplicative_identity y) (multiply additive_identity y) (add multiplicative_identity (multiply additive_identity y)) h1 h2 h3 h4
-  have h6 : product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity (multiply y additive_identity)) := Eq.mp (congrArg (fun t : α => product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity t)) (taelja_lemma19 additive_identity y)) h5
+  have h6 : product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity (multiply y additive_identity)) := Eq.mp (congrArg (fun t : α => product multiplicative_identity (add multiplicative_identity y) (add multiplicative_identity t)) (Eq.symm (taelja_lemma19 y additive_identity))) h5
   exact h6
 
 -- Lemma 21
@@ -108,7 +108,7 @@ theorem taelja_lemma22 : ∀ (y : α), product additive_identity (add multiplica
   have h3 : sum multiplicative_identity y (add multiplicative_identity y) := ax1 multiplicative_identity y
   have h4 : sum additive_identity (multiply additive_identity y) (multiply additive_identity y) := ax13 (multiply additive_identity y)
   have h5 : product additive_identity (add multiplicative_identity y) (multiply additive_identity y) := ax7 additive_identity multiplicative_identity additive_identity y (multiply additive_identity y) (add multiplicative_identity y) (multiply additive_identity y) h1 h2 h3 h4
-  have h6 : product additive_identity (add multiplicative_identity y) (multiply y additive_identity) := Eq.mp (congrArg (fun t : α => product additive_identity (add multiplicative_identity y) t) (taelja_lemma19 additive_identity y)) h5
+  have h6 : product additive_identity (add multiplicative_identity y) (multiply y additive_identity) := Eq.mp (congrArg (fun t : α => product additive_identity (add multiplicative_identity y) t) (Eq.symm (taelja_lemma19 y additive_identity))) h5
   exact h6
 
 -- Lemma 23
@@ -139,70 +139,65 @@ theorem taelja_lemma25 : ∀ (y : α), product (add y multiplicative_identity) (
   exact h2
 
 -- Lemma 26
-theorem taelja_lemma26 : ∀ (y : α), multiply (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity) = inverse (add y multiplicative_identity) := by
-  intro y
-  have h1 : product (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity) (multiply (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity)) := ax8 (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity)
-  have h2 : product (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity) (inverse (add y multiplicative_identity)) := taelja_lemma24 y
-  have h3 : multiply (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity) = inverse (add y multiplicative_identity) := ax9 (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity) (multiply (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity)) (inverse (add y multiplicative_identity)) h1 h2
-  exact h3
-
--- Lemma 27
-theorem taelja_lemma27 : ∀ (y : α), additive_identity = multiply (inverse (add y multiplicative_identity)) (add y multiplicative_identity) := by
+theorem taelja_lemma26 : ∀ (y : α), additive_identity = multiply (inverse (add y multiplicative_identity)) (add y multiplicative_identity) := by
   intro y
   have h1 : product (add y multiplicative_identity) (inverse (add y multiplicative_identity)) additive_identity := ax14 (add y multiplicative_identity)
   have h2 : product (add y multiplicative_identity) (inverse (add y multiplicative_identity)) (multiply (inverse (add y multiplicative_identity)) (add y multiplicative_identity)) := taelja_lemma25 y
   have h3 : additive_identity = multiply (inverse (add y multiplicative_identity)) (add y multiplicative_identity) := ax9 (add y multiplicative_identity) (inverse (add y multiplicative_identity)) additive_identity (multiply (inverse (add y multiplicative_identity)) (add y multiplicative_identity)) h1 h2
   exact h3
 
--- Lemma 28
-theorem taelja_lemma28 : ∀ (y : α), inverse (add y multiplicative_identity) = additive_identity := by
+-- Lemma 27
+theorem taelja_lemma27 : ∀ (y : α), inverse (add y multiplicative_identity) = additive_identity := by
   intro y
-  calc inverse (add y multiplicative_identity) = multiply (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity) := Eq.symm (taelja_lemma26 y)
-      _ = multiply (inverse (add y multiplicative_identity)) (add multiplicative_identity (multiply (add y multiplicative_identity) additive_identity)) := congrArg (fun t : α => multiply (inverse (add y multiplicative_identity)) t) (Eq.symm (taelja_lemma21 (add y multiplicative_identity)))
-      _ = multiply (inverse (add y multiplicative_identity)) (add multiplicative_identity (multiply additive_identity (add y multiplicative_identity))) := congrArg (fun t : α => multiply (inverse (add y multiplicative_identity)) (add multiplicative_identity t)) (taelja_lemma19 (add y multiplicative_identity) additive_identity)
-      _ = multiply (inverse (add y multiplicative_identity)) (add multiplicative_identity (multiply y additive_identity)) := congrArg (fun t : α => multiply (inverse (add y multiplicative_identity)) (add multiplicative_identity t)) (taelja_lemma23 y)
-      _ = multiply (inverse (add y multiplicative_identity)) (add y multiplicative_identity) := congrArg (fun t : α => multiply (inverse (add y multiplicative_identity)) t) (taelja_lemma21 y)
-      _ = additive_identity := Eq.symm (taelja_lemma27 y)
+  have h1 : product (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity) (multiply (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity)) := ax8 (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity)
+  have h2 : product (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity) (inverse (add y multiplicative_identity)) := taelja_lemma24 y
+  have h3 : multiply (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity) = inverse (add y multiplicative_identity) := ax9 (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity) (multiply (inverse (add y multiplicative_identity)) (add (add y multiplicative_identity) multiplicative_identity)) (inverse (add y multiplicative_identity)) h1 h2
+  have h4 : multiply (inverse (add y multiplicative_identity)) (add multiplicative_identity (multiply (add y multiplicative_identity) additive_identity)) = inverse (add y multiplicative_identity) := Eq.mp (congrArg (fun t : α => multiply (inverse (add y multiplicative_identity)) t = inverse (add y multiplicative_identity)) (Eq.symm (taelja_lemma21 (add y multiplicative_identity)))) h3
+  have h5 : multiply (inverse (add y multiplicative_identity)) (add multiplicative_identity (multiply additive_identity (add y multiplicative_identity))) = inverse (add y multiplicative_identity) := Eq.mp (congrArg (fun t : α => multiply (inverse (add y multiplicative_identity)) (add multiplicative_identity t) = inverse (add y multiplicative_identity)) (taelja_lemma19 (add y multiplicative_identity) additive_identity)) h4
+  have h6 : multiply (inverse (add y multiplicative_identity)) (add multiplicative_identity (multiply y additive_identity)) = inverse (add y multiplicative_identity) := Eq.mp (congrArg (fun t : α => multiply (inverse (add y multiplicative_identity)) (add multiplicative_identity t) = inverse (add y multiplicative_identity)) (taelja_lemma23 y)) h5
+  have h7 : multiply (inverse (add y multiplicative_identity)) (add y multiplicative_identity) = inverse (add y multiplicative_identity) := Eq.mp (congrArg (fun t : α => multiply (inverse (add y multiplicative_identity)) t = inverse (add y multiplicative_identity)) (taelja_lemma21 y)) h6
+  have h8 : additive_identity = inverse (add y multiplicative_identity) := Eq.mp (congrArg (fun t : α => t = inverse (add y multiplicative_identity)) (Eq.symm (taelja_lemma26 y))) h7
+  exact Eq.symm (h8)
 
--- Lemma 29
-theorem taelja_lemma29 : sum (inverse (add x multiplicative_identity)) (multiply additive_identity (add x multiplicative_identity)) (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) := by
+-- Lemma 28
+theorem taelja_lemma28 : sum (inverse (add x multiplicative_identity)) (multiply additive_identity (add x multiplicative_identity)) (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) := by
   have h1 : sum (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity) (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) := ax1 (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)
   have h2 : sum (inverse (add x multiplicative_identity)) (multiply additive_identity (add x multiplicative_identity)) (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) := Eq.mp (congrArg (fun t : α => sum (inverse (add x multiplicative_identity)) t (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity))) (Eq.symm (taelja_lemma19 additive_identity (add x multiplicative_identity)))) h1
   exact h2
 
--- Lemma 30
-theorem taelja_lemma30 : sum (multiply additive_identity (add x multiplicative_identity)) additive_identity (add additive_identity (multiply additive_identity (add x multiplicative_identity))) := by
+-- Lemma 29
+theorem taelja_lemma29 : sum (multiply additive_identity (add x multiplicative_identity)) additive_identity (add additive_identity (multiply additive_identity (add x multiplicative_identity))) := by
   have h1 : sum additive_identity (multiply additive_identity (add x multiplicative_identity)) (add additive_identity (multiply additive_identity (add x multiplicative_identity))) := ax1 additive_identity (multiply additive_identity (add x multiplicative_identity))
   have h2 : sum (multiply additive_identity (add x multiplicative_identity)) additive_identity (add additive_identity (multiply additive_identity (add x multiplicative_identity))) := ax2 additive_identity (multiply additive_identity (add x multiplicative_identity)) (add additive_identity (multiply additive_identity (add x multiplicative_identity))) h1
   exact h2
 
--- Lemma 31
-theorem taelja_lemma31 : add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity) = inverse (add x multiplicative_identity) := by
+-- Lemma 30
+theorem taelja_lemma30 : add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity) = inverse (add x multiplicative_identity) := by
   have h1 : sum (inverse (add x multiplicative_identity)) additive_identity (inverse (add x multiplicative_identity)) := ax5 (inverse (add x multiplicative_identity))
   have h2 : sum (inverse (add x multiplicative_identity)) (add x multiplicative_identity) multiplicative_identity := ax15 (add x multiplicative_identity)
   have h3 : product additive_identity (add x multiplicative_identity) (multiply additive_identity (add x multiplicative_identity)) := ax8 additive_identity (add x multiplicative_identity)
-  have h4 : sum (inverse (add x multiplicative_identity)) (multiply additive_identity (add x multiplicative_identity)) (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) := taelja_lemma29
+  have h4 : sum (inverse (add x multiplicative_identity)) (multiply additive_identity (add x multiplicative_identity)) (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) := taelja_lemma28
   have h5 : product (inverse (add x multiplicative_identity)) multiplicative_identity (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) := ax10 (inverse (add x multiplicative_identity)) additive_identity (inverse (add x multiplicative_identity)) (add x multiplicative_identity) multiplicative_identity (multiply additive_identity (add x multiplicative_identity)) (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) h1 h2 h3 h4
   have h6 : product (inverse (add x multiplicative_identity)) multiplicative_identity (inverse (add x multiplicative_identity)) := ax6 (inverse (add x multiplicative_identity))
   have h7 : add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity) = inverse (add x multiplicative_identity) := ax9 (inverse (add x multiplicative_identity)) multiplicative_identity (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) (inverse (add x multiplicative_identity)) h5 h6
   exact h7
 
--- Lemma 32
-theorem taelja_lemma32 : multiply additive_identity (add x multiplicative_identity) = add additive_identity (multiply additive_identity (add x multiplicative_identity)) := by
+-- Lemma 31
+theorem taelja_lemma31 : multiply additive_identity (add x multiplicative_identity) = add additive_identity (multiply additive_identity (add x multiplicative_identity)) := by
   have h1 : sum (multiply additive_identity (add x multiplicative_identity)) additive_identity (multiply additive_identity (add x multiplicative_identity)) := ax5 (multiply additive_identity (add x multiplicative_identity))
-  have h2 : sum (multiply additive_identity (add x multiplicative_identity)) additive_identity (add additive_identity (multiply additive_identity (add x multiplicative_identity))) := taelja_lemma30
+  have h2 : sum (multiply additive_identity (add x multiplicative_identity)) additive_identity (add additive_identity (multiply additive_identity (add x multiplicative_identity))) := taelja_lemma29
   have h3 : multiply additive_identity (add x multiplicative_identity) = add additive_identity (multiply additive_identity (add x multiplicative_identity)) := ax3 (multiply additive_identity (add x multiplicative_identity)) additive_identity (multiply additive_identity (add x multiplicative_identity)) (add additive_identity (multiply additive_identity (add x multiplicative_identity))) h1 h2
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : product x additive_identity additive_identity := by
   have h1 : product x additive_identity (multiply x additive_identity) := ax8 x additive_identity
-  have h2 : product x additive_identity (multiply additive_identity (add x multiplicative_identity)) := Eq.mpr (congrArg (fun t : α => product x additive_identity t) (taelja_lemma23 x)) h1
-  have h3 : product x additive_identity (add additive_identity (multiply additive_identity (add x multiplicative_identity))) := Eq.mpr (congrArg (fun t : α => product x additive_identity t) (Eq.symm (taelja_lemma32))) h2
-  have h4 : product x additive_identity (add (inverse (add x multiplicative_identity)) (multiply additive_identity (add x multiplicative_identity))) := Eq.mpr (congrArg (fun t : α => product x additive_identity (add t (multiply additive_identity (add x multiplicative_identity)))) (taelja_lemma28 x)) h3
-  have h5 : product x additive_identity (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) := Eq.mpr (congrArg (fun t : α => product x additive_identity (add (inverse (add x multiplicative_identity)) t)) (taelja_lemma19 (add x multiplicative_identity) additive_identity)) h4
-  have h6 : product x additive_identity (inverse (add x multiplicative_identity)) := Eq.mpr (congrArg (fun t : α => product x additive_identity t) (Eq.symm (taelja_lemma31))) h5
-  have h7 : product x additive_identity additive_identity := Eq.mpr (congrArg (fun t : α => product x additive_identity t) (Eq.symm (taelja_lemma28 x))) h6
+  have h2 : product x additive_identity (multiply additive_identity (add x multiplicative_identity)) := Eq.mp (congrArg (fun t : α => product x additive_identity t) (Eq.symm (taelja_lemma23 x))) h1
+  have h3 : product x additive_identity (add additive_identity (multiply additive_identity (add x multiplicative_identity))) := Eq.mp (congrArg (fun t : α => product x additive_identity t) (taelja_lemma31)) h2
+  have h4 : product x additive_identity (add (inverse (add x multiplicative_identity)) (multiply additive_identity (add x multiplicative_identity))) := Eq.mp (congrArg (fun t : α => product x additive_identity (add t (multiply additive_identity (add x multiplicative_identity)))) (Eq.symm (taelja_lemma27 x))) h3
+  have h5 : product x additive_identity (add (inverse (add x multiplicative_identity)) (multiply (add x multiplicative_identity) additive_identity)) := Eq.mp (congrArg (fun t : α => product x additive_identity (add (inverse (add x multiplicative_identity)) t)) (Eq.symm (taelja_lemma19 (add x multiplicative_identity) additive_identity))) h4
+  have h6 : product x additive_identity (inverse (add x multiplicative_identity)) := Eq.mp (congrArg (fun t : α => product x additive_identity t) (taelja_lemma30)) h5
+  have h7 : product x additive_identity additive_identity := Eq.mp (congrArg (fun t : α => product x additive_identity t) (taelja_lemma27 x)) h6
   exact h7
 
 end TweeBoo0061

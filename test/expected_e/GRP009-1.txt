@@ -58,11 +58,10 @@ Proof:
 
 Lemma 15: product(b,a,identity)
 Proof:
-  product(b,a,identity)
-= { by lemma 14 R->L }
-  product(inverse(a),a,identity)
-= { by axiom 9 }
-  true
+  have product(inverse(a),a,identity)
+    by axiom 9
+  hence product(b,a,identity)
+    by rw lemma 14
 
 Lemma 16: multiply(identity,inverse(b)) = c
 Proof:
@@ -81,7 +80,7 @@ Proof:
 = { by lemma 16 }
   c
 
-Lemma 18: product(identity,a,inverse(b))
+Lemma 18: product(identity,a,c)
 Proof:
   have product(inverse(b),b,identity)
     by axiom 9
@@ -91,21 +90,15 @@ Proof:
     by axiom 5
   hence product(identity,a,inverse(b))
     by axiom 7
-
-Lemma 19: product(identity,a,c)
-Proof:
-  product(identity,a,c)
-= { by lemma 17 R->L }
-  product(identity,a,inverse(b))
-= { by lemma 18 }
-  true
+  hence product(identity,a,c)
+    by rw lemma 17
 
 Goal 1: a = c
 Proof:
   have product(identity,a,multiply(identity,a))
     by axiom 1
    and product(identity,a,c)
-    by lemma 19
+    by lemma 18
   hence multiply(identity,a) = c
     by axiom 3
   hence a = c

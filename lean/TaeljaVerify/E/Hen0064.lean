@@ -40,20 +40,15 @@ theorem taelja_lemma9 : divide (divide a b) d = zero := by
   have h2 : divide (divide a b) d = zero := ax3 (divide a b) d h1
   exact h2
 
--- Lemma 10
-theorem taelja_lemma10 : less_equal (divide (divide a d) (divide b d)) zero := by
-  have h1 : less_equal (divide (divide a d) (divide b d)) (divide (divide a b) d) := ax4 a d b
-  have h2 : less_equal (divide (divide a d) (divide b d)) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide a d) (divide b d)) t) (Eq.symm (taelja_lemma9))) h1
-  exact h2
-
 -- Goal 1
 theorem taelja_goal1 : less_equal (divide a d) b := by
-  have h1 : less_equal (divide (divide a d) (divide b d)) zero := taelja_lemma10
-  have h2 : less_equal zero (divide (divide a d) (divide b d)) := ax1 (divide (divide a d) (divide b d))
-  have h3 : divide (divide a d) (divide b d) = zero := ax5 (divide (divide a d) (divide b d)) zero h1 h2
-  have h4 : less_equal (divide a d) (divide b d) := ax6 (divide a d) (divide b d) h3
-  have h5 : less_equal (divide b d) b := ax7 b d
-  have h6 : less_equal (divide a d) b := ax8 (divide a d) (divide b d) b h4 h5
-  exact h6
+  have h1 : less_equal (divide (divide a d) (divide b d)) (divide (divide a b) d) := ax4 a d b
+  have h2 : less_equal (divide (divide a d) (divide b d)) zero := Eq.mp (congrArg (fun t : α => less_equal (divide (divide a d) (divide b d)) t) (taelja_lemma9)) h1
+  have h3 : less_equal zero (divide (divide a d) (divide b d)) := ax1 (divide (divide a d) (divide b d))
+  have h4 : divide (divide a d) (divide b d) = zero := ax5 (divide (divide a d) (divide b d)) zero h2 h3
+  have h5 : less_equal (divide a d) (divide b d) := ax6 (divide a d) (divide b d) h4
+  have h6 : less_equal (divide b d) b := ax7 b d
+  have h7 : less_equal (divide a d) b := ax8 (divide a d) (divide b d) b h5 h6
+  exact h7
 
 end EHen0064

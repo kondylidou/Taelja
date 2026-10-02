@@ -9,11 +9,11 @@ Axiom 8: int(esk17_0)
 Axiom 9: s__City(s__Copenhagen)
 Axiom 10: s__City(X) => s__GeopoliticalArea(X)
 Axiom 11: is_instance(s__Copenhagen,s__CoastalCitiesClass)
-Axiom 12: is_instance(X,s__CoastalCitiesClass) /\ s__City(X) => s__orientation(X,esk15_1(X),s__Near)
-Axiom 13: s__WaterArea(Y) /\ s__City(Z) /\ s__orientation(Z,Y,s__Near) => s__capability(s__Flooding__t,s__located__m,Z)
-Axiom 14: is_instance(X,s__CoastalCitiesClass) /\ s__City(X) => s__Sea(esk15_1(X))
-Axiom 15: s__Sea(X) => s__BodyOfWater(X)
-Axiom 16: s__BodyOfWater(X) => s__WaterArea(X)
+Axiom 12: is_instance(X,s__CoastalCitiesClass) /\ s__City(X) => s__Sea(esk15_1(X))
+Axiom 13: s__Sea(X) => s__BodyOfWater(X)
+Axiom 14: s__BodyOfWater(X) => s__WaterArea(X)
+Axiom 15: is_instance(X,s__CoastalCitiesClass) /\ s__City(X) => s__orientation(X,esk15_1(X),s__Near)
+Axiom 16: s__WaterArea(Y) /\ s__City(Z) /\ s__orientation(Z,Y,s__Near) => s__capability(s__Flooding__t,s__located__m,Z)
 Axiom 17: s__SymbolicString(copenhagen)
 Axiom 18: s__SymbolicString(dk)
 Axiom 19: real('55.67631')
@@ -35,22 +35,9 @@ Proof:
    and s__City(s__Copenhagen)
     by axiom 9
   hence s__orientation(s__Copenhagen,esk15_1(s__Copenhagen),s__Near)
-    by axiom 12
+    by axiom 15
 
-Goal 1: s__Object(s__Denmark)
-Proof:
-  have s__Nation(s__Denmark)
-    by axiom 1
-  hence s__GeopoliticalArea(s__Denmark)
-    by axiom 4
-  hence s__GeographicArea(s__Denmark)
-    by axiom 5
-  hence s__Region(s__Denmark)
-    by axiom 6
-  hence s__Object(s__Denmark)
-    by axiom 7
-
-Goal 2: s__Object(s__Copenhagen)
+Goal 1: s__Object(s__Copenhagen)
 Proof:
   have s__City(s__Copenhagen)
     by axiom 9
@@ -61,6 +48,19 @@ Proof:
   hence s__Region(s__Copenhagen)
     by axiom 6
   hence s__Object(s__Copenhagen)
+    by axiom 7
+
+Goal 2: s__Object(s__Denmark)
+Proof:
+  have s__Nation(s__Denmark)
+    by axiom 1
+  hence s__GeopoliticalArea(s__Denmark)
+    by axiom 4
+  hence s__GeographicArea(s__Denmark)
+    by axiom 5
+  hence s__Region(s__Denmark)
+    by axiom 6
+  hence s__Object(s__Denmark)
     by axiom 7
 
 Goal 3: real('55.67631')
@@ -140,17 +140,17 @@ Proof:
    and s__City(s__Copenhagen)
     by axiom 9
   hence s__Sea(esk15_1(s__Copenhagen))
-    by axiom 14
+    by axiom 12
   hence s__BodyOfWater(esk15_1(s__Copenhagen))
-    by axiom 15
+    by axiom 13
   hence s__WaterArea(esk15_1(s__Copenhagen))
-    by axiom 16
+    by axiom 14
    and s__City(s__Copenhagen)
     by axiom 9
    and s__orientation(s__Copenhagen,esk15_1(s__Copenhagen),s__Near)
     by lemma 30
   hence s__capability(s__Flooding__t,s__located__m,s__Copenhagen)
-    by axiom 13
+    by axiom 16
 
 Goal 18: to_int('55.67631') = to_int('55.75695')
 Proof:

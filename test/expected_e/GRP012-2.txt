@@ -47,11 +47,10 @@ Proof:
 
 Lemma 14: product(b,d,inverse(a))
 Proof:
-  product(b,d,inverse(a))
-= { by lemma 13 R->L }
-  product(b,d,multiply(b,d))
-= { by axiom 1 }
-  true
+  have product(b,d,multiply(b,d))
+    by axiom 1
+  hence product(b,d,inverse(a))
+    by rw lemma 13
 
 Lemma 15: c = multiply(a,b)
 Proof:

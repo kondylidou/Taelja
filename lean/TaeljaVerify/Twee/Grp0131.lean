@@ -65,7 +65,7 @@ theorem taelja_lemma11 : d = c := by
 -- Goal 1
 theorem taelja_goal1 : product c d identity := by
   have h1 : product c c identity := ax7 c
-  have h2 : product c d identity := Eq.mpr (congrArg (fun t : α => product c t identity) (taelja_lemma11)) h1
+  have h2 : product c d identity := Eq.mp (congrArg (fun t : α => product c t identity) (Eq.symm (taelja_lemma11))) h1
   exact h2
 
 end TweeGrp0131

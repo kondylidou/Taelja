@@ -28,17 +28,11 @@ axiom ax2 : c_PropLog_Osat c_emptyset v_p t_a
 -- Axiom 3
 axiom ax3 : ∀ (x y z u : α), c_PropLog_Osat c_emptyset x y → c_in x (c_PropLog_Othms (c_minus (c_PropLog_Ohyps x z y) (c_PropLog_Ohyps x u y) (tc_set (tc_PropLog_Opl y))) y) (tc_PropLog_Opl y)
 
--- Lemma 4
-theorem taelja_lemma4 : ∀ (x y : α), c_in v_p (c_PropLog_Othms (c_minus (c_PropLog_Ohyps v_p x t_a) (c_PropLog_Ohyps v_p y t_a) (tc_set (tc_PropLog_Opl t_a))) t_a) (tc_PropLog_Opl t_a) := by
-  intro x y
-  have h1 : c_PropLog_Osat c_emptyset v_p t_a := ax2
-  have h2 : c_in v_p (c_PropLog_Othms (c_minus (c_PropLog_Ohyps v_p x t_a) (c_PropLog_Ohyps v_p y t_a) (tc_set (tc_PropLog_Opl t_a))) t_a) (tc_PropLog_Opl t_a) := ax3 v_p t_a x y h1
-  exact h2
-
 -- Goal 1
 theorem taelja_goal1 : c_in v_p (c_PropLog_Othms c_emptyset t_a) (tc_PropLog_Opl t_a) := by
-  have h1 : c_in v_p (c_PropLog_Othms (c_minus (c_PropLog_Ohyps v_p v_p t_a) (c_PropLog_Ohyps v_p v_p t_a) (tc_set (tc_PropLog_Opl t_a))) t_a) (tc_PropLog_Opl t_a) := taelja_lemma4 v_p v_p
-  have h2 : c_in v_p (c_PropLog_Othms c_emptyset t_a) (tc_PropLog_Opl t_a) := Eq.mpr (congrArg (fun t : α => c_in v_p (c_PropLog_Othms t t_a) (tc_PropLog_Opl t_a)) (Eq.symm (ax1 (c_PropLog_Ohyps v_p v_p t_a) (tc_PropLog_Opl t_a)))) h1
-  exact h2
+  have h1 : c_PropLog_Osat c_emptyset v_p t_a := ax2
+  have h2 : c_in v_p (c_PropLog_Othms (c_minus (c_PropLog_Ohyps v_p v_p t_a) (c_PropLog_Ohyps v_p v_p t_a) (tc_set (tc_PropLog_Opl t_a))) t_a) (tc_PropLog_Opl t_a) := ax3 v_p t_a v_p v_p h1
+  have h3 : c_in v_p (c_PropLog_Othms c_emptyset t_a) (tc_PropLog_Opl t_a) := Eq.mp (congrArg (fun t : α => c_in v_p (c_PropLog_Othms t t_a) (tc_PropLog_Opl t_a)) (ax1 (c_PropLog_Ohyps v_p v_p t_a) (tc_PropLog_Opl t_a))) h2
+  exact h3
 
 end TweeLcl4312

@@ -33,39 +33,39 @@ axiom ax2 : ∀ (x : α), class_Ring__and__Field_Oordered__idom x → class_Orde
 -- Axiom 3
 axiom ax3 : ∀ (x : α), class_Ring__and__Field_Oordered__idom x → class_OrderedGroup_Ocomm__monoid__add x
 -- Axiom 4
-axiom ax4 : ∀ (x : α), class_OrderedGroup_Olordered__ab__group__abs x → class_LOrder_Ojoin__semilorder x
+axiom ax4 : ∀ (x : α), class_OrderedGroup_Olordered__ab__group__abs x → class_OrderedGroup_Opordered__ab__group__add x
 -- Axiom 5
-axiom ax5 : ∀ (x : α), class_LOrder_Ojoin__semilorder x → class_Orderings_Oorder x
+axiom ax5 : ∀ (x : α), class_OrderedGroup_Olordered__ab__group__abs x → class_LOrder_Ojoin__semilorder x
 -- Axiom 6
-axiom ax6 : c_lessequals c_0 (c_minus (v_f v_x) (v_k v_x) t_b) t_b
+axiom ax6 : ∀ (x : α), class_LOrder_Ojoin__semilorder x → class_Orderings_Oorder x
 -- Axiom 7
-axiom ax7 : ∀ (x y : α), class_OrderedGroup_Ocomm__monoid__add x → c_plus c_0 y x = y
+axiom ax7 : c_lessequals c_0 (c_minus (v_f v_x) (v_k v_x) t_b) t_b
 -- Axiom 8
-axiom ax8 : ∀ (x y z u : α), class_OrderedGroup_Opordered__ab__group__add x → c_lessequals y (c_minus z u x) x → c_lessequals (c_plus y u x) z x
+axiom ax8 : ∀ (x y : α), class_OrderedGroup_Ocomm__monoid__add x → c_plus c_0 y x = y
 -- Axiom 9
-axiom ax9 : c_lessequals (v_g v_x) (v_k v_x) t_b
+axiom ax9 : ∀ (x y z u : α), class_OrderedGroup_Opordered__ab__group__add x → c_lessequals y (c_minus z u x) x → c_lessequals (c_plus y u x) z x
 -- Axiom 10
-axiom ax10 : ∀ (x y z u : α), class_Orderings_Oorder x → c_lessequals y z x → c_lessequals u y x → c_lessequals u z x
+axiom ax10 : c_lessequals (v_g v_x) (v_k v_x) t_b
 -- Axiom 11
-axiom ax11 : ∀ (x y z u : α), class_OrderedGroup_Opordered__ab__group__add x → c_lessequals (c_plus y z x) u x → c_lessequals y (c_minus u z x) x
+axiom ax11 : ∀ (x y z u : α), class_Orderings_Oorder x → c_lessequals y z x → c_lessequals u y x → c_lessequals u z x
 -- Axiom 12
-axiom ax12 : ∀ (x : α), class_OrderedGroup_Olordered__ab__group__abs x → class_OrderedGroup_Opordered__ab__group__add x
+axiom ax12 : ∀ (x y z u : α), class_OrderedGroup_Opordered__ab__group__add x → c_lessequals (c_plus y z x) u x → c_lessequals y (c_minus u z x) x
 
 -- Lemma 13
 theorem taelja_lemma13 : ∀ (x : α), c_plus c_0 x t_b = x := by
   intro x
   have h1 : class_Ring__and__Field_Oordered__idom t_b := ax1
   have h2 : class_OrderedGroup_Ocomm__monoid__add t_b := ax3 t_b h1
-  have h3 : c_plus c_0 x t_b = x := ax7 t_b x h2
+  have h3 : c_plus c_0 x t_b = x := ax8 t_b x h2
   exact h3
 
 -- Lemma 14
 theorem taelja_lemma14 : c_lessequals (v_k v_x) (v_f v_x) t_b := by
   have h1 : class_Ring__and__Field_Oordered__idom t_b := ax1
   have h2 : class_OrderedGroup_Olordered__ab__group__abs t_b := ax2 t_b h1
-  have h3 : class_OrderedGroup_Opordered__ab__group__add t_b := ax12 t_b h2
-  have h4 : c_lessequals c_0 (c_minus (v_f v_x) (v_k v_x) t_b) t_b := ax6
-  have h5 : c_lessequals (c_plus c_0 (v_k v_x) t_b) (v_f v_x) t_b := ax8 t_b c_0 (v_f v_x) (v_k v_x) h3 h4
+  have h3 : class_OrderedGroup_Opordered__ab__group__add t_b := ax4 t_b h2
+  have h4 : c_lessequals c_0 (c_minus (v_f v_x) (v_k v_x) t_b) t_b := ax7
+  have h5 : c_lessequals (c_plus c_0 (v_k v_x) t_b) (v_f v_x) t_b := ax9 t_b c_0 (v_f v_x) (v_k v_x) h3 h4
   have h6 : c_lessequals (v_k v_x) (v_f v_x) t_b := Eq.mp (congrArg (fun t : α => c_lessequals t (v_f v_x) t_b) (taelja_lemma13 (v_k v_x))) h5
   exact h6
 
@@ -73,11 +73,11 @@ theorem taelja_lemma14 : c_lessequals (v_k v_x) (v_f v_x) t_b := by
 theorem taelja_lemma15 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_f v_x) t_b := by
   have h1 : class_Ring__and__Field_Oordered__idom t_b := ax1
   have h2 : class_OrderedGroup_Olordered__ab__group__abs t_b := ax2 t_b h1
-  have h3 : class_LOrder_Ojoin__semilorder t_b := ax4 t_b h2
-  have h4 : class_Orderings_Oorder t_b := ax5 t_b h3
+  have h3 : class_LOrder_Ojoin__semilorder t_b := ax5 t_b h2
+  have h4 : class_Orderings_Oorder t_b := ax6 t_b h3
   have h5 : c_lessequals (v_k v_x) (v_f v_x) t_b := taelja_lemma14
-  have h6 : c_lessequals (v_g v_x) (v_k v_x) t_b := ax9
-  have h7 : c_lessequals (v_g v_x) (v_f v_x) t_b := ax10 t_b (v_k v_x) (v_f v_x) (v_g v_x) h4 h5 h6
+  have h6 : c_lessequals (v_g v_x) (v_k v_x) t_b := ax10
+  have h7 : c_lessequals (v_g v_x) (v_f v_x) t_b := ax11 t_b (v_k v_x) (v_f v_x) (v_g v_x) h4 h5 h6
   have h8 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_f v_x) t_b := Eq.mp (congrArg (fun t : α => c_lessequals t (v_f v_x) t_b) (Eq.symm (taelja_lemma13 (v_g v_x)))) h7
   exact h8
 
@@ -85,9 +85,9 @@ theorem taelja_lemma15 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_f v_x) t_b :
 theorem taelja_goal1 : c_lessequals c_0 (c_minus (v_f v_x) (v_g v_x) t_b) t_b := by
   have h1 : class_Ring__and__Field_Oordered__idom t_b := ax1
   have h2 : class_OrderedGroup_Olordered__ab__group__abs t_b := ax2 t_b h1
-  have h3 : class_OrderedGroup_Opordered__ab__group__add t_b := ax12 t_b h2
+  have h3 : class_OrderedGroup_Opordered__ab__group__add t_b := ax4 t_b h2
   have h4 : c_lessequals (c_plus c_0 (v_g v_x) t_b) (v_f v_x) t_b := taelja_lemma15
-  have h5 : c_lessequals c_0 (c_minus (v_f v_x) (v_g v_x) t_b) t_b := ax11 t_b c_0 (v_g v_x) (v_f v_x) h3 h4
+  have h5 : c_lessequals c_0 (c_minus (v_f v_x) (v_g v_x) t_b) t_b := ax12 t_b c_0 (v_g v_x) (v_f v_x) h3 h4
   exact h5
 
 end EAna0272

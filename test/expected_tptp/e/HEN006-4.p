@@ -9,10 +9,10 @@ cnf(zero_is_smallest, axiom, less_equal(zero, X1), file('/home/user/Desktop/TPTP
 cnf(quotient_smaller_than_numerator, axiom, less_equal(divide(X1, X2), X1), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_smaller_than_numerator)).
 fof(lemma_9, lemma, divide(divide(a,b),d) = zero, inference(mp, [status(thm)], [quotient_less_equal1, a_divide_b_LE_d])).
 fof(s1, plain, less_equal(divide(divide(a,d),divide(b,d)),divide(divide(a,b),d)), inference(instantiate, [status(thm)], [quotient_property])).
-fof(lemma_10, lemma, less_equal(divide(divide(a,d),divide(b,d)),zero), inference(rewrite, [status(thm)], [lemma_9, s1])).
-fof(s2, plain, less_equal(zero,divide(divide(a,d),divide(b,d))), inference(instantiate, [status(thm)], [zero_is_smallest])).
-fof(s3, plain, divide(divide(a,d),divide(b,d)) = zero, inference(mp, [status(thm)], [less_equal_and_equal, lemma_10, s2])).
-fof(s4, plain, less_equal(divide(a,d),divide(b,d)), inference(mp, [status(thm)], [quotient_less_equal2, s3])).
-fof(s5, plain, less_equal(divide(b,d),b), inference(instantiate, [status(thm)], [quotient_smaller_than_numerator])).
-fof(goal_1, theorem, less_equal(divide(a,d),b), inference(mp, [status(thm)], [transitivity_of_less_equal, s4, s5])).
+fof(s2, plain, less_equal(divide(divide(a,d),divide(b,d)),zero), inference(rewrite, [status(thm)], [lemma_9, s1])).
+fof(s3, plain, less_equal(zero,divide(divide(a,d),divide(b,d))), inference(instantiate, [status(thm)], [zero_is_smallest])).
+fof(s4, plain, divide(divide(a,d),divide(b,d)) = zero, inference(mp, [status(thm)], [less_equal_and_equal, s2, s3])).
+fof(s5, plain, less_equal(divide(a,d),divide(b,d)), inference(mp, [status(thm)], [quotient_less_equal2, s4])).
+fof(s6, plain, less_equal(divide(b,d),b), inference(instantiate, [status(thm)], [quotient_smaller_than_numerator])).
+fof(goal_1, theorem, less_equal(divide(a,d),b), inference(mp, [status(thm)], [transitivity_of_less_equal, s5, s6])).
 % SZS output end Proof

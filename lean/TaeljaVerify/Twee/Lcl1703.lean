@@ -25,16 +25,11 @@ axiom ax2 : ∀ (x y : α), axiom_ (implies x (or_ y x))
 -- Axiom 3
 axiom ax3 : ∀ (x : α), axiom_ x → theorem_ x
 
--- Lemma 4
-theorem taelja_lemma4 : axiom_ (implies q (implies p q)) := by
-  have h1 : axiom_ (implies q (or_ (not_ p) q)) := ax2 q (not_ p)
-  have h2 : axiom_ (implies q (implies p q)) := Eq.mpr (congrArg (fun t : α => axiom_ (implies q t)) (ax1 p q)) h1
-  exact h2
-
 -- Goal 1
 theorem taelja_goal1 : theorem_ (implies q (implies p q)) := by
-  have h1 : axiom_ (implies q (implies p q)) := taelja_lemma4
-  have h2 : theorem_ (implies q (implies p q)) := ax3 (implies q (implies p q)) h1
-  exact h2
+  have h1 : axiom_ (implies q (or_ (not_ p) q)) := ax2 q (not_ p)
+  have h2 : axiom_ (implies q (implies p q)) := Eq.mp (congrArg (fun t : α => axiom_ (implies q t)) (Eq.symm (ax1 p q))) h1
+  have h3 : theorem_ (implies q (implies p q)) := ax3 (implies q (implies p q)) h2
+  exact h3
 
 end TweeLcl1703

@@ -28,9 +28,9 @@ fof(s10, plain, inverse(b) = multiply(identity,inverse(b)), inference(instantiat
 fof(lemma_17, lemma, inverse(b) = c, inference(rewrite, [status(thm)], [lemma_16, s10])).
 fof(s11, plain, product(inverse(b),b,identity), inference(instantiate, [status(thm)], [left_inverse])).
 fof(s12, plain, product(inverse(b),identity,inverse(b)), inference(instantiate, [status(thm)], [right_identity])).
-fof(lemma_18, lemma, product(identity,a,inverse(b)), inference(mp, [status(thm)], [associativity2, s11, lemma_15, s12])).
-fof(lemma_19, lemma, product(identity,a,c), inference(rewrite, [status(thm)], [lemma_17, lemma_18])).
-fof(s13, plain, product(identity,a,multiply(identity,a)), inference(instantiate, [status(thm)], [total_function1])).
-fof(s14, plain, multiply(identity,a) = c, inference(mp, [status(thm)], [total_function2, s13, lemma_19])).
-fof(goal_1, theorem, a = c, inference(rewrite, [status(thm)], [lemma_10, s14])).
+fof(s13, plain, product(identity,a,inverse(b)), inference(mp, [status(thm)], [associativity2, s11, lemma_15, s12])).
+fof(lemma_18, lemma, product(identity,a,c), inference(rewrite, [status(thm)], [lemma_17, s13])).
+fof(s14, plain, product(identity,a,multiply(identity,a)), inference(instantiate, [status(thm)], [total_function1])).
+fof(s15, plain, multiply(identity,a) = c, inference(mp, [status(thm)], [total_function2, s14, lemma_18])).
+fof(goal_1, theorem, a = c, inference(rewrite, [status(thm)], [lemma_10, s15])).
 % SZS output end Proof

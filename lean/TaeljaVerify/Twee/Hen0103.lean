@@ -47,7 +47,7 @@ theorem taelja_lemma8 : ∀ (x : α), divide zero x = zero := by
 theorem taelja_lemma9 : ∀ (x : α), less_equal (divide (divide x x) (divide zero x)) zero := by
   intro x
   have h1 : less_equal (divide (divide x x) (divide zero x)) (divide (divide x zero) x) := ax2 x x zero
-  have h2 : less_equal (divide (divide x x) (divide zero x)) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide x x) (divide zero x)) t) (Eq.symm (taelja_lemma7 x zero))) h1
+  have h2 : less_equal (divide (divide x x) (divide zero x)) zero := Eq.mp (congrArg (fun t : α => less_equal (divide (divide x x) (divide zero x)) t) (taelja_lemma7 x zero)) h1
   exact h2
 
 -- Lemma 10
@@ -130,7 +130,7 @@ theorem taelja_lemma17 : less_equal (divide (divide (divide (divide identity a) 
 -- Lemma 18
 theorem taelja_lemma18 : less_equal (divide (divide identity (divide identity a)) (divide a (divide identity a))) zero := by
   have h1 : less_equal (divide (divide identity (divide identity a)) (divide a (divide identity a))) (divide (divide identity a) (divide identity a)) := ax2 identity (divide identity a) a
-  have h2 : less_equal (divide (divide identity (divide identity a)) (divide a (divide identity a))) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide identity (divide identity a)) (divide a (divide identity a))) t) (Eq.symm (taelja_lemma11 (divide identity a)))) h1
+  have h2 : less_equal (divide (divide identity (divide identity a)) (divide a (divide identity a))) zero := Eq.mp (congrArg (fun t : α => less_equal (divide (divide identity (divide identity a)) (divide a (divide identity a))) t) (taelja_lemma11 (divide identity a))) h1
   exact h2
 
 -- Lemma 19
@@ -174,7 +174,7 @@ theorem taelja_lemma22 : divide identity a = divide (divide (divide identity a) 
 -- Lemma 23
 theorem taelja_lemma23 : less_equal (divide identity a) (divide (divide identity a) (divide identity (divide identity a))) := by
   have h1 : less_equal (divide (divide (divide identity a) (divide identity (divide identity a))) a) (divide (divide identity a) (divide identity (divide identity a))) := ax3 (divide (divide identity a) (divide identity (divide identity a))) a
-  have h2 : less_equal (divide identity a) (divide (divide identity a) (divide identity (divide identity a))) := Eq.mpr (congrArg (fun t : α => less_equal t (divide (divide identity a) (divide identity (divide identity a)))) (taelja_lemma22)) h1
+  have h2 : less_equal (divide identity a) (divide (divide identity a) (divide identity (divide identity a))) := Eq.mp (congrArg (fun t : α => less_equal t (divide (divide identity a) (divide identity (divide identity a)))) (Eq.symm (taelja_lemma22))) h1
   exact h2
 
 -- Goal 1

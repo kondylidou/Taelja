@@ -69,7 +69,7 @@ theorem taelja_lemma13 : multiply b d = inverse a := by
 -- Lemma 14
 theorem taelja_lemma14 : product b d (inverse a) := by
   have h1 : product b d (multiply b d) := ax1 b d
-  have h2 : product b d (inverse a) := Eq.mpr (congrArg (fun t : α => product b d t) (Eq.symm (taelja_lemma13))) h1
+  have h2 : product b d (inverse a) := Eq.mp (congrArg (fun t : α => product b d t) (taelja_lemma13)) h1
   exact h2
 
 -- Lemma 15

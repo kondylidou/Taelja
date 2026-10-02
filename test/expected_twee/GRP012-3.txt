@@ -46,7 +46,7 @@ Proof:
   hence multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a)))) = b
     by axiom 5
 
-Lemma 12: multiply(inverse(b),inverse(a)) = inverse(inverse(multiply(inverse(b),inverse(a))))
+Goal 1: inverse(multiply(a,b)) = multiply(inverse(b),inverse(a))
 Proof:
   have product(multiply(inverse(b),inverse(a)),inverse(multiply(inverse(b),inverse(a))),identity)
     by axiom 2
@@ -60,15 +60,9 @@ Proof:
     by axiom 6
   hence multiply(inverse(b),inverse(a)) = inverse(inverse(multiply(inverse(b),inverse(a))))
     by axiom 5
-
-Goal 1: inverse(multiply(a,b)) = multiply(inverse(b),inverse(a))
-Proof:
-  inverse(multiply(a,b))
-= { by lemma 11 R->L }
-  inverse(multiply(a,multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))))))
-= { by lemma 9 }
-  inverse(multiply(a,multiply(inverse(a),inverse(multiply(inverse(b),inverse(a))))))
-= { by lemma 9 }
-  inverse(inverse(multiply(inverse(b),inverse(a))))
-= { by lemma 12 R->L }
-  multiply(inverse(b),inverse(a))
+  hence multiply(inverse(b),inverse(a)) = inverse(multiply(a,multiply(inverse(a),inverse(multiply(inverse(b),inverse(a))))))
+    by rw lemma 9 R->L
+  hence multiply(inverse(b),inverse(a)) = inverse(multiply(a,multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))))))
+    by rw lemma 9 R->L
+  hence multiply(inverse(b),inverse(a)) = inverse(multiply(a,b))
+    by rw lemma 11

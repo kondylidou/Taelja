@@ -67,99 +67,64 @@ theorem taelja_lemma18 : ∀ (x y : α), v x y y y = u y y x := by
       _ = u y y x := taelja_lemma17 y x
 
 -- Lemma 19
-theorem taelja_lemma19 : r (u a b b) (u b a a) (u a a a) := by
+theorem taelja_lemma19 : r (u a b b) (u a a b) a := by
   have h1 : r a b a := ax11
   have h2 : r b a a := ax2
   have h3 : r b a a := ax2
   have h4 : r (u a b b) (u b a a) (u a a a) := ax14 a b a b a a b a a h1 h2 h2
-  exact h4
+  have h5 : r (u a b b) (u b a a) a := Eq.mp (congrArg (fun t : α => r (u a b b) (u b a a) t) (ax4 a)) h4
+  have h6 : r (u a b b) (u a a b) a := Eq.mp (congrArg (fun t : α => r (u a b b) t a) (Eq.symm (ax13 a b))) h5
+  exact h6
 
 -- Lemma 20
-theorem taelja_lemma20 : r (u a b b) (u a a b) a := by
-  have h1 : r (u a b b) (u b a a) (u a a a) := taelja_lemma19
-  have h2 : r (u a b b) (u b a a) a := Eq.mpr (congrArg (fun t : α => r (u a b b) (u b a a) t) (Eq.symm (ax4 a))) h1
-  have h3 : r (u a b b) (u a a b) a := Eq.mpr (congrArg (fun t : α => r (u a b b) t a) (ax13 a b)) h2
-  exact h3
-
--- Lemma 21
-theorem taelja_lemma21 : r (u a a b) (u a a a) (u b b a) := by
+theorem taelja_lemma20 : r (u a a b) a (u a b b) := by
   have h1 : r a a b := ax9
   have h2 : r a a b := ax9
   have h3 : r b a a := ax2
   have h4 : r (u a a b) (u a a a) (u b b a) := ax14 a a b a a b b a a h1 h1 h3
-  exact h4
+  have h5 : r (u a a b) a (u b b a) := Eq.mp (congrArg (fun t : α => r (u a a b) t (u b b a)) (ax4 a)) h4
+  have h6 : r (u a a b) a (u a b b) := Eq.mp (congrArg (fun t : α => r (u a a b) a t) (ax13 b a)) h5
+  exact h6
+
+-- Lemma 21
+theorem taelja_lemma21 : r (u a a b) (u a a b) (u a a b) := by
+  have h1 : r a a b := ax9
+  have h2 : r a b a := ax11
+  have h3 : r b a a := ax2
+  have h4 : r (u a a b) (u a b a) (u b a a) := ax14 a a b a b a b a a h1 h2 h3
+  have h5 : r (u a a b) (u a b a) (u a a b) := Eq.mp (congrArg (fun t : α => r (u a a b) (u a b a) t) (Eq.symm (ax13 a b))) h4
+  have h6 : r (u a a b) (u a a b) (u a a b) := Eq.mp (congrArg (fun t : α => r (u a a b) t (u a a b)) (Eq.symm (ax12 a b))) h5
+  exact h6
 
 -- Lemma 22
-theorem taelja_lemma22 : r (u a a b) a (u a b b) := by
-  have h1 : r (u a a b) (u a a a) (u b b a) := taelja_lemma21
-  have h2 : r (u a a b) a (u b b a) := Eq.mpr (congrArg (fun t : α => r (u a a b) t (u b b a)) (Eq.symm (ax4 a))) h1
-  have h3 : r (u a a b) a (u a b b) := Eq.mpr (congrArg (fun t : α => r (u a a b) a t) (Eq.symm (ax13 b a))) h2
-  exact h3
-
--- Lemma 23
-theorem taelja_lemma23 : r (v a a a b) (v b b a a) (v a a b a) := by
+theorem taelja_lemma22 : r (u a b b) (v b b a a) a := by
   have h1 : r a b a := ax11
   have h2 : r a b a := ax11
   have h3 : r a a b := ax9
   have h4 : r b a a := ax2
   have h5 : r (v a a a b) (v b b a a) (v a a b a) := ax10 a b a a b a a a b b a a h1 h1 h3 h4
-  exact h5
+  have h6 : r (u a a b) (v b b a a) (v a a b a) := Eq.mp (congrArg (fun t : α => r t (v b b a a) (v a a b a)) (Eq.symm (ax8 a b))) h5
+  have h7 : r (u a a b) (v b b a a) (u a a b) := Eq.mp (congrArg (fun t : α => r (u a a b) (v b b a a) t) (taelja_lemma16 a b)) h6
+  have h8 : r (u a a b) (u a a b) (u a a b) := taelja_lemma21
+  have h9 : r (u a b b) (u a a b) a := taelja_lemma19
+  have h10 : r (m (u a a b) (u a a b) (u a b b)) (m (v b b a a) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := ax15 (u a a b) (v b b a a) (u a a b) (u a a b) (u a a b) (u a a b) (u a b b) (u a a b) a h7 h8 h9
+  have h11 : r (m (u a a b) (u a a b) (u a b b)) (v b b a a) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r (m (u a a b) (u a a b) (u a b b)) t (m (u a a b) (u a a b) a)) (ax3 (v b b a a) (u a a b))) h10
+  have h12 : r (u a b b) (v b b a a) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r t (v b b a a) (m (u a a b) (u a a b) a)) (ax1 (u a a b) (u a b b))) h11
+  have h13 : r (u a b b) (v b b a a) a := Eq.mp (congrArg (fun t : α => r (u a b b) (v b b a a) t) (ax1 (u a a b) a)) h12
+  exact h13
 
--- Lemma 24
-theorem taelja_lemma24 : r (u a a b) (u a b a) (u b a a) := by
-  have h1 : r a a b := ax9
-  have h2 : r a b a := ax11
-  have h3 : r b a a := ax2
-  have h4 : r (u a a b) (u a b a) (u b a a) := ax14 a a b a b a b a a h1 h2 h3
-  exact h4
-
--- Lemma 25
-theorem taelja_lemma25 : r (u a a b) (v b b a a) (u a a b) := by
-  have h1 : r (v a a a b) (v b b a a) (v a a b a) := taelja_lemma23
-  have h2 : r (u a a b) (v b b a a) (v a a b a) := Eq.mpr (congrArg (fun t : α => r t (v b b a a) (v a a b a)) (ax8 a b)) h1
-  have h3 : r (u a a b) (v b b a a) (u a a b) := Eq.mpr (congrArg (fun t : α => r (u a a b) (v b b a a) t) (Eq.symm (taelja_lemma16 a b))) h2
-  exact h3
-
--- Lemma 26
-theorem taelja_lemma26 : r (u a a b) (u a a b) (u a a b) := by
-  have h1 : r (u a a b) (u a b a) (u b a a) := taelja_lemma24
-  have h2 : r (u a a b) (u a b a) (u a a b) := Eq.mpr (congrArg (fun t : α => r (u a a b) (u a b a) t) (ax13 a b)) h1
-  have h3 : r (u a a b) (u a a b) (u a a b) := Eq.mpr (congrArg (fun t : α => r (u a a b) t (u a a b)) (ax12 a b)) h2
-  exact h3
-
--- Lemma 27
-theorem taelja_lemma27 : r (m (u a a b) (u a a b) (u a b b)) (v b b a a) (m (u a a b) (u a a b) a) := by
-  have h1 : r (u a a b) (v b b a a) (u a a b) := taelja_lemma25
-  have h2 : r (u a a b) (u a a b) (u a a b) := taelja_lemma26
-  have h3 : r (u a b b) (u a a b) a := taelja_lemma20
-  have h4 : r (m (u a a b) (u a a b) (u a b b)) (m (v b b a a) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := ax15 (u a a b) (v b b a a) (u a a b) (u a a b) (u a a b) (u a a b) (u a b b) (u a a b) a h1 h2 h3
-  have h5 : r (m (u a a b) (u a a b) (u a b b)) (v b b a a) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r (m (u a a b) (u a a b) (u a b b)) t (m (u a a b) (u a a b) a)) (ax3 (v b b a a) (u a a b))) h4
-  exact h5
-
--- Lemma 28
-theorem taelja_lemma28 : r (u a b b) (v b b a a) a := by
-  have h1 : r (m (u a a b) (u a a b) (u a b b)) (v b b a a) (m (u a a b) (u a a b) a) := taelja_lemma27
-  have h2 : r (u a b b) (v b b a a) (m (u a a b) (u a a b) a) := Eq.mpr (congrArg (fun t : α => r t (v b b a a) (m (u a a b) (u a a b) a)) (Eq.symm (ax1 (u a a b) (u a b b)))) h1
-  have h3 : r (u a b b) (v b b a a) a := Eq.mpr (congrArg (fun t : α => r (u a b b) (v b b a a) t) (Eq.symm (ax1 (u a a b) a))) h2
-  exact h3
-
--- Lemma 29
-theorem taelja_lemma29 : r (u a a a) (u a a b) (u b b a) := by
+-- Lemma 23
+theorem taelja_lemma23 : r a (u a a b) (u a b b) := by
   have h1 : r a a b := ax9
   have h2 : r a a b := ax9
   have h3 : r a b a := ax11
   have h4 : r (u a a a) (u a a b) (u b b a) := ax14 a a b a a b a b a h1 h1 h3
-  exact h4
+  have h5 : r a (u a a b) (u b b a) := Eq.mp (congrArg (fun t : α => r t (u a a b) (u b b a)) (ax4 a)) h4
+  have h6 : r a (u a a b) (u a b b) := Eq.mp (congrArg (fun t : α => r a (u a a b) t) (ax13 b a)) h5
+  exact h6
 
--- Lemma 30
-theorem taelja_lemma30 : r a (u a a b) (u a b b) := by
-  have h1 : r (u a a a) (u a a b) (u b b a) := taelja_lemma29
-  have h2 : r a (u a a b) (u b b a) := Eq.mpr (congrArg (fun t : α => r t (u a a b) (u b b a)) (Eq.symm (ax4 a))) h1
-  have h3 : r a (u a a b) (u a b b) := Eq.mpr (congrArg (fun t : α => r a (u a a b) t) (Eq.symm (ax13 b a))) h2
-  exact h3
-
--- Lemma 31
-theorem taelja_lemma31 : r (m a a (u a a b)) (m (u a a b) (u a a b) a) (v a a b b) := by
+-- Lemma 24
+theorem taelja_lemma24 : r (u a a b) a (v a a b b) := by
   have h1 : r a b a := ax11
   have h2 : r a b a := ax11
   have h3 : r a a b := ax9
@@ -167,42 +132,32 @@ theorem taelja_lemma31 : r (m a a (u a a b)) (m (u a a b) (u a a b) a) (v a a b 
   have h5 : r (v a a a a) (v b b a a) (v a a b b) := ax10 a b a a b a a a b a a b h1 h1 h3 h3
   have h6 : r (u a a a) (v b b a a) (v a a b b) := Eq.mp (congrArg (fun t : α => r t (v b b a a) (v a a b b)) (taelja_lemma18 a a)) h5
   have h7 : r a (v b b a a) (v a a b b) := Eq.mp (congrArg (fun t : α => r t (v b b a a) (v a a b b)) (ax4 a)) h6
-  have h8 : r (u a b b) (v b b a a) a := taelja_lemma28
-  have h9 : r (u a b b) (u a a b) a := taelja_lemma20
+  have h8 : r (u a b b) (v b b a a) a := taelja_lemma22
+  have h9 : r (u a b b) (u a a b) a := taelja_lemma19
   have h10 : r (m a (u a b b) (u a b b)) (m (v b b a a) (v b b a a) (u a a b)) (m (v a a b b) a a) := ax15 a (v b b a a) (v a a b b) (u a b b) (v b b a a) a (u a b b) (u a a b) a h7 h8 h9
   have h11 : r a (m (v b b a a) (v b b a a) (u a a b)) (m (v a a b b) a a) := Eq.mp (congrArg (fun t : α => r t (m (v b b a a) (v b b a a) (u a a b)) (m (v a a b b) a a)) (ax3 a (u a b b))) h10
   have h12 : r a (m (v b b a a) (v b b a a) (u a a b)) (v a a b b) := Eq.mp (congrArg (fun t : α => r a (m (v b b a a) (v b b a a) (u a a b)) t) (ax3 (v a a b b) a)) h11
   have h13 : r a (u a a b) (v a a b b) := Eq.mp (congrArg (fun t : α => r a t (v a a b b)) (ax1 (v b b a a) (u a a b))) h12
-  have h14 : r a (u a a b) (u a b b) := taelja_lemma30
-  have h15 : r (u a a b) a (u a b b) := taelja_lemma22
+  have h14 : r a (u a a b) (u a b b) := taelja_lemma23
+  have h15 : r (u a a b) a (u a b b) := taelja_lemma20
   have h16 : r (m a a (u a a b)) (m (u a a b) (u a a b) a) (m (v a a b b) (u a b b) (u a b b)) := ax15 a (u a a b) (v a a b b) a (u a a b) (u a b b) (u a a b) a (u a b b) h13 h14 h15
   have h17 : r (m a a (u a a b)) (m (u a a b) (u a a b) a) (v a a b b) := Eq.mp (congrArg (fun t : α => r (m a a (u a a b)) (m (u a a b) (u a a b) a) t) (ax3 (v a a b b) (u a b b))) h16
-  exact h17
+  have h18 : r (u a a b) (m (u a a b) (u a a b) a) (v a a b b) := Eq.mp (congrArg (fun t : α => r t (m (u a a b) (u a a b) a) (v a a b b)) (ax1 a (u a a b))) h17
+  have h19 : r (u a a b) a (v a a b b) := Eq.mp (congrArg (fun t : α => r (u a a b) t (v a a b b)) (ax1 (u a a b) a)) h18
+  exact h19
 
--- Lemma 32
-theorem taelja_lemma32 : r (u a a b) a (v a a b b) := by
-  have h1 : r (m a a (u a a b)) (m (u a a b) (u a a b) a) (v a a b b) := taelja_lemma31
-  have h2 : r (u a a b) (m (u a a b) (u a a b) a) (v a a b b) := Eq.mpr (congrArg (fun t : α => r t (m (u a a b) (u a a b) a) (v a a b b)) (Eq.symm (ax1 a (u a a b)))) h1
-  have h3 : r (u a a b) a (v a a b b) := Eq.mpr (congrArg (fun t : α => r (u a a b) t (v a a b b)) (Eq.symm (ax1 (u a a b) a))) h2
-  exact h3
-
--- Lemma 33
-theorem taelja_lemma33 : r (u a a b) (u b b a) (u a a a) := by
+-- Lemma 25
+theorem taelja_lemma25 : r (u a a b) (u a b b) a := by
   have h1 : r a b a := ax11
   have h2 : r a b a := ax11
   have h3 : r b a a := ax2
   have h4 : r (u a a b) (u b b a) (u a a a) := ax14 a b a a b a b a a h1 h1 h3
-  exact h4
+  have h5 : r (u a a b) (u b b a) a := Eq.mp (congrArg (fun t : α => r (u a a b) (u b b a) t) (ax4 a)) h4
+  have h6 : r (u a a b) (u a b b) a := Eq.mp (congrArg (fun t : α => r (u a a b) t a) (ax13 b a)) h5
+  exact h6
 
--- Lemma 34
-theorem taelja_lemma34 : r (u a a b) (u a b b) a := by
-  have h1 : r (u a a b) (u b b a) (u a a a) := taelja_lemma33
-  have h2 : r (u a a b) (u b b a) a := Eq.mpr (congrArg (fun t : α => r (u a a b) (u b b a) t) (Eq.symm (ax4 a))) h1
-  have h3 : r (u a a b) (u a b b) a := Eq.mpr (congrArg (fun t : α => r (u a a b) t a) (Eq.symm (ax13 b a))) h2
-  exact h3
-
--- Lemma 35
-theorem taelja_lemma35 : r (v a a b b) (u a a b) a := by
+-- Lemma 26
+theorem taelja_lemma26 : r (v a a b b) (u a a b) a := by
   have h1 : r a b a := ax11
   have h2 : r a b a := ax11
   have h3 : r b a a := ax2
@@ -210,31 +165,16 @@ theorem taelja_lemma35 : r (v a a b b) (u a a b) a := by
   have h5 : r (v a a b b) (v b b a a) (v a a a a) := ax10 a b a a b a b a a b a a h1 h1 h3 h3
   have h6 : r (v a a b b) (v b b a a) (u a a a) := Eq.mp (congrArg (fun t : α => r (v a a b b) (v b b a a) t) (taelja_lemma18 a a)) h5
   have h7 : r (v a a b b) (v b b a a) a := Eq.mp (congrArg (fun t : α => r (v a a b b) (v b b a a) t) (ax4 a)) h6
-  have h8 : r (u a b b) (v b b a a) a := taelja_lemma28
-  have h9 : r (u a b b) (u a a b) a := taelja_lemma20
+  have h8 : r (u a b b) (v b b a a) a := taelja_lemma22
+  have h9 : r (u a b b) (u a a b) a := taelja_lemma19
   have h10 : r (m (v a a b b) (u a b b) (u a b b)) (m (v b b a a) (v b b a a) (u a a b)) (m a a a) := ax15 (v a a b b) (v b b a a) a (u a b b) (v b b a a) a (u a b b) (u a a b) a h7 h8 h9
   have h11 : r (v a a b b) (m (v b b a a) (v b b a a) (u a a b)) (m a a a) := Eq.mp (congrArg (fun t : α => r t (m (v b b a a) (v b b a a) (u a a b)) (m a a a)) (ax3 (v a a b b) (u a b b))) h10
   have h12 : r (v a a b b) (m (v b b a a) (v b b a a) (u a a b)) a := Eq.mp (congrArg (fun t : α => r (v a a b b) (m (v b b a a) (v b b a a) (u a a b)) t) (ax1 a a)) h11
   have h13 : r (v a a b b) (u a a b) a := Eq.mp (congrArg (fun t : α => r (v a a b b) t a) (ax1 (v b b a a) (u a a b))) h12
   exact h13
 
--- Lemma 36
-theorem taelja_lemma36 : r (u a a a) (u a b b) (u b a a) := by
-  have h1 : r a a b := ax9
-  have h2 : r a b a := ax11
-  have h3 : r a b a := ax11
-  have h4 : r (u a a a) (u a b b) (u b a a) := ax14 a a b a b a a b a h1 h2 h2
-  exact h4
-
--- Lemma 37
-theorem taelja_lemma37 : r a (u a b b) (u a a b) := by
-  have h1 : r (u a a a) (u a b b) (u b a a) := taelja_lemma36
-  have h2 : r a (u a b b) (u b a a) := Eq.mpr (congrArg (fun t : α => r t (u a b b) (u b a a)) (Eq.symm (ax4 a))) h1
-  have h3 : r a (u a b b) (u a a b) := Eq.mpr (congrArg (fun t : α => r a (u a b b) t) (ax13 a b)) h2
-  exact h3
-
--- Lemma 38
-theorem taelja_lemma38 : r (u a b b) (u a a b) (u a a b) := by
+-- Lemma 27
+theorem taelja_lemma27 : r (u a b b) (u a a b) (u a a b) := by
   have h1 : r a a b := ax9
   have h2 : r a b a := ax11
   have h3 : r b a a := ax2
@@ -242,55 +182,32 @@ theorem taelja_lemma38 : r (u a b b) (u a a b) (u a a b) := by
   have h5 : r (v a a b b) (v a b a a) (v b a a a) := ax10 a a b a b a b a a b a a h1 h2 h3 h3
   have h6 : r (v a a b b) (v a b a a) (u a a b) := Eq.mp (congrArg (fun t : α => r (v a a b b) (v a b a a) t) (taelja_lemma18 b a)) h5
   have h7 : r (v a a b b) (u a a b) (u a a b) := Eq.mp (congrArg (fun t : α => r (v a a b b) t (u a a b)) (taelja_lemma17 a b)) h6
-  have h8 : r (v a a b b) (u a a b) a := taelja_lemma35
-  have h9 : r (u a b b) (u a a b) a := taelja_lemma20
+  have h8 : r (v a a b b) (u a a b) a := taelja_lemma26
+  have h9 : r (u a b b) (u a a b) a := taelja_lemma19
   have h10 : r (m (v a a b b) (v a a b b) (u a b b)) (m (u a a b) (u a a b) (u a a b)) (m (u a a b) a a) := ax15 (v a a b b) (u a a b) (u a a b) (v a a b b) (u a a b) a (u a b b) (u a a b) a h7 h8 h9
   have h11 : r (m (v a a b b) (v a a b b) (u a b b)) (u a a b) (m (u a a b) a a) := Eq.mp (congrArg (fun t : α => r (m (v a a b b) (v a a b b) (u a b b)) t (m (u a a b) a a)) (ax1 (u a a b) (u a a b))) h10
   have h12 : r (m (v a a b b) (v a a b b) (u a b b)) (u a a b) (u a a b) := Eq.mp (congrArg (fun t : α => r (m (v a a b b) (v a a b b) (u a b b)) (u a a b) t) (ax3 (u a a b) a)) h11
   have h13 : r (u a b b) (u a a b) (u a a b) := Eq.mp (congrArg (fun t : α => r t (u a a b) (u a a b)) (ax1 (v a a b b) (u a b b))) h12
   exact h13
 
--- Lemma 39
-theorem taelja_lemma39 : r (v b b a a) (m a a (u a b b)) (m (u a b b) (u a b b) a) := by
-  have h1 : r b a a := ax2
-  have h2 : r b a a := ax2
-  have h3 : r a a b := ax9
-  have h4 : r a a b := ax9
-  have h5 : r (v b b a a) (v a a a a) (v a a b b) := ax10 b a a b a a a a b a a b h1 h1 h3 h3
-  have h6 : r (v b b a a) (u a a a) (v a a b b) := Eq.mp (congrArg (fun t : α => r (v b b a a) t (v a a b b)) (taelja_lemma18 a a)) h5
-  have h7 : r (v b b a a) a (v a a b b) := Eq.mp (congrArg (fun t : α => r (v b b a a) t (v a a b b)) (ax4 a)) h6
-  have h8 : r (u a a b) a (v a a b b) := taelja_lemma32
-  have h9 : r (u a a b) a (u a b b) := taelja_lemma22
-  have h10 : r (m (v b b a a) (u a a b) (u a a b)) (m a a a) (m (v a a b b) (v a a b b) (u a b b)) := ax15 (v b b a a) a (v a a b b) (u a a b) a (v a a b b) (u a a b) a (u a b b) h7 h8 h9
-  have h11 : r (v b b a a) (m a a a) (m (v a a b b) (v a a b b) (u a b b)) := Eq.mp (congrArg (fun t : α => r t (m a a a) (m (v a a b b) (v a a b b) (u a b b))) (ax3 (v b b a a) (u a a b))) h10
-  have h12 : r (v b b a a) a (m (v a a b b) (v a a b b) (u a b b)) := Eq.mp (congrArg (fun t : α => r (v b b a a) t (m (v a a b b) (v a a b b) (u a b b))) (ax1 a a)) h11
-  have h13 : r (v b b a a) a (u a b b) := Eq.mp (congrArg (fun t : α => r (v b b a a) a t) (ax1 (v a a b b) (u a b b))) h12
-  have h14 : r (u a a b) a (u a b b) := taelja_lemma22
-  have h15 : r (u a a b) (u a b b) a := taelja_lemma34
-  have h16 : r (m (v b b a a) (u a a b) (u a a b)) (m a a (u a b b)) (m (u a b b) (u a b b) a) := ax15 (v b b a a) a (u a b b) (u a a b) a (u a b b) (u a a b) (u a b b) a h13 h14 h15
-  have h17 : r (v b b a a) (m a a (u a b b)) (m (u a b b) (u a b b) a) := Eq.mp (congrArg (fun t : α => r t (m a a (u a b b)) (m (u a b b) (u a b b) a)) (ax3 (v b b a a) (u a a b))) h16
-  exact h17
+-- Lemma 28
+theorem taelja_lemma28 : r a (u a b b) a := by
+  have h1 : r a a b := ax9
+  have h2 : r a b a := ax11
+  have h3 : r a b a := ax11
+  have h4 : r (u a a a) (u a b b) (u b a a) := ax14 a a b a b a a b a h1 h2 h2
+  have h5 : r a (u a b b) (u b a a) := Eq.mp (congrArg (fun t : α => r t (u a b b) (u b a a)) (ax4 a)) h4
+  have h6 : r a (u a b b) (u a a b) := Eq.mp (congrArg (fun t : α => r a (u a b b) t) (Eq.symm (ax13 a b))) h5
+  have h7 : r (u a b b) (u a a b) (u a a b) := taelja_lemma27
+  have h8 : r (u a b b) (u a a b) a := taelja_lemma19
+  have h9 : r (m a (u a b b) (u a b b)) (m (u a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := ax15 a (u a b b) (u a a b) (u a b b) (u a a b) (u a a b) (u a b b) (u a a b) a h6 h7 h8
+  have h10 : r a (m (u a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r t (m (u a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a)) (ax3 a (u a b b))) h9
+  have h11 : r a (u a b b) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r a t (m (u a a b) (u a a b) a)) (ax3 (u a b b) (u a a b))) h10
+  have h12 : r a (u a b b) a := Eq.mp (congrArg (fun t : α => r a (u a b b) t) (ax1 (u a a b) a)) h11
+  exact h12
 
--- Lemma 40
-theorem taelja_lemma40 : r (v b b a a) (u a b b) a := by
-  have h1 : r (v b b a a) (m a a (u a b b)) (m (u a b b) (u a b b) a) := taelja_lemma39
-  have h2 : r (v b b a a) (u a b b) (m (u a b b) (u a b b) a) := Eq.mpr (congrArg (fun t : α => r (v b b a a) t (m (u a b b) (u a b b) a)) (Eq.symm (ax1 a (u a b b)))) h1
-  have h3 : r (v b b a a) (u a b b) a := Eq.mpr (congrArg (fun t : α => r (v b b a a) (u a b b) t) (Eq.symm (ax1 (u a b b) a))) h2
-  exact h3
-
--- Lemma 41
-theorem taelja_lemma41 : r a (u a b b) a := by
-  have h1 : r a (u a b b) (u a a b) := taelja_lemma37
-  have h2 : r (u a b b) (u a a b) (u a a b) := taelja_lemma38
-  have h3 : r (u a b b) (u a a b) a := taelja_lemma20
-  have h4 : r (m a (u a b b) (u a b b)) (m (u a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := ax15 a (u a b b) (u a a b) (u a b b) (u a a b) (u a a b) (u a b b) (u a a b) a h1 h2 h3
-  have h5 : r a (m (u a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r t (m (u a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a)) (ax3 a (u a b b))) h4
-  have h6 : r a (u a b b) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r a t (m (u a a b) (u a a b) a)) (ax3 (u a b b) (u a a b))) h5
-  have h7 : r a (u a b b) a := Eq.mp (congrArg (fun t : α => r a (u a b b) t) (ax1 (u a a b) a)) h6
-  exact h7
-
--- Lemma 42
-theorem taelja_lemma42 : r (m (u a a b) (u a a b) (u a b b)) (v a a b b) (m (u a a b) (u a a b) a) := by
+-- Lemma 29
+theorem taelja_lemma29 : r (u a b b) (v a a b b) a := by
   have h1 : r a a b := ax9
   have h2 : r b a a := ax2
   have h3 : r a b a := ax11
@@ -298,36 +215,26 @@ theorem taelja_lemma42 : r (m (u a a b) (u a a b) (u a b b)) (v a a b b) (m (u a
   have h5 : r (v a b a a) (v a a b b) (v b a a a) := ax10 a a b b a a a b a a b a h1 h2 h3 h3
   have h6 : r (v a b a a) (v a a b b) (u a a b) := Eq.mp (congrArg (fun t : α => r (v a b a a) (v a a b b) t) (taelja_lemma18 b a)) h5
   have h7 : r (u a a b) (v a a b b) (u a a b) := Eq.mp (congrArg (fun t : α => r t (v a a b b) (u a a b)) (taelja_lemma17 a b)) h6
-  have h8 : r (u a a b) (u a a b) (u a a b) := taelja_lemma26
-  have h9 : r (u a b b) (u a a b) a := taelja_lemma20
+  have h8 : r (u a a b) (u a a b) (u a a b) := taelja_lemma21
+  have h9 : r (u a b b) (u a a b) a := taelja_lemma19
   have h10 : r (m (u a a b) (u a a b) (u a b b)) (m (v a a b b) (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := ax15 (u a a b) (v a a b b) (u a a b) (u a a b) (u a a b) (u a a b) (u a b b) (u a a b) a h7 h8 h9
   have h11 : r (m (u a a b) (u a a b) (u a b b)) (v a a b b) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r (m (u a a b) (u a a b) (u a b b)) t (m (u a a b) (u a a b) a)) (ax3 (v a a b b) (u a a b))) h10
-  exact h11
+  have h12 : r (u a b b) (v a a b b) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r t (v a a b b) (m (u a a b) (u a a b) a)) (ax1 (u a a b) (u a b b))) h11
+  have h13 : r (u a b b) (v a a b b) a := Eq.mp (congrArg (fun t : α => r (u a b b) (v a a b b) t) (ax1 (u a a b) a)) h12
+  exact h13
 
--- Lemma 43
-theorem taelja_lemma43 : r (u a b b) (v a a b b) a := by
-  have h1 : r (m (u a a b) (u a a b) (u a b b)) (v a a b b) (m (u a a b) (u a a b) a) := taelja_lemma42
-  have h2 : r (u a b b) (v a a b b) (m (u a a b) (u a a b) a) := Eq.mpr (congrArg (fun t : α => r t (v a a b b) (m (u a a b) (u a a b) a)) (Eq.symm (ax1 (u a a b) (u a b b)))) h1
-  have h3 : r (u a b b) (v a a b b) a := Eq.mpr (congrArg (fun t : α => r (u a b b) (v a a b b) t) (Eq.symm (ax1 (u a a b) a))) h2
-  exact h3
-
--- Lemma 44
-theorem taelja_lemma44 : r (u a b b) (u a a a) (u b a a) := by
+-- Lemma 30
+theorem taelja_lemma30 : r (u a b b) a (u a a b) := by
   have h1 : r a a b := ax9
   have h2 : r b a a := ax2
   have h3 : r b a a := ax2
   have h4 : r (u a b b) (u a a a) (u b a a) := ax14 a a b b a a b a a h1 h2 h2
-  exact h4
+  have h5 : r (u a b b) a (u b a a) := Eq.mp (congrArg (fun t : α => r (u a b b) t (u b a a)) (ax4 a)) h4
+  have h6 : r (u a b b) a (u a a b) := Eq.mp (congrArg (fun t : α => r (u a b b) a t) (Eq.symm (ax13 a b))) h5
+  exact h6
 
--- Lemma 45
-theorem taelja_lemma45 : r (u a b b) a (u a a b) := by
-  have h1 : r (u a b b) (u a a a) (u b a a) := taelja_lemma44
-  have h2 : r (u a b b) a (u b a a) := Eq.mpr (congrArg (fun t : α => r (u a b b) t (u b a a)) (Eq.symm (ax4 a))) h1
-  have h3 : r (u a b b) a (u a a b) := Eq.mpr (congrArg (fun t : α => r (u a b b) a t) (ax13 a b)) h2
-  exact h3
-
--- Lemma 46
-theorem taelja_lemma46 : r (v b b a a) (m (u a a b) (u a a b) a) (m a a (u a a b)) := by
+-- Lemma 31
+theorem taelja_lemma31 : r (v b b a a) a a := by
   have h1 : r b a a := ax2
   have h2 : r b a a := ax2
   have h3 : r a b a := ax11
@@ -335,57 +242,65 @@ theorem taelja_lemma46 : r (v b b a a) (m (u a a b) (u a a b) a) (m a a (u a a b
   have h5 : r (v b b a a) (v a a b b) (v a a a a) := ax10 b a a b a a a b a a b a h1 h1 h3 h3
   have h6 : r (v b b a a) (v a a b b) (u a a a) := Eq.mp (congrArg (fun t : α => r (v b b a a) (v a a b b) t) (taelja_lemma18 a a)) h5
   have h7 : r (v b b a a) (v a a b b) a := Eq.mp (congrArg (fun t : α => r (v b b a a) (v a a b b) t) (ax4 a)) h6
-  have h8 : r (u a b b) (v a a b b) a := taelja_lemma43
-  have h9 : r (u a b b) (u a a b) a := taelja_lemma20
+  have h8 : r (u a b b) (v a a b b) a := taelja_lemma29
+  have h9 : r (u a b b) (u a a b) a := taelja_lemma19
   have h10 : r (m (v b b a a) (u a b b) (u a b b)) (m (v a a b b) (v a a b b) (u a a b)) (m a a a) := ax15 (v b b a a) (v a a b b) a (u a b b) (v a a b b) a (u a b b) (u a a b) a h7 h8 h9
   have h11 : r (v b b a a) (m (v a a b b) (v a a b b) (u a a b)) (m a a a) := Eq.mp (congrArg (fun t : α => r t (m (v a a b b) (v a a b b) (u a a b)) (m a a a)) (ax3 (v b b a a) (u a b b))) h10
   have h12 : r (v b b a a) (m (v a a b b) (v a a b b) (u a a b)) a := Eq.mp (congrArg (fun t : α => r (v b b a a) (m (v a a b b) (v a a b b) (u a a b)) t) (ax1 a a)) h11
   have h13 : r (v b b a a) (u a a b) a := Eq.mp (congrArg (fun t : α => r (v b b a a) t a) (ax1 (v a a b b) (u a a b))) h12
-  have h14 : r (u a b b) (u a a b) a := taelja_lemma20
-  have h15 : r (u a b b) a (u a a b) := taelja_lemma45
+  have h14 : r (u a b b) (u a a b) a := taelja_lemma19
+  have h15 : r (u a b b) a (u a a b) := taelja_lemma30
   have h16 : r (m (v b b a a) (u a b b) (u a b b)) (m (u a a b) (u a a b) a) (m a a (u a a b)) := ax15 (v b b a a) (u a a b) a (u a b b) (u a a b) a (u a b b) a (u a a b) h13 h14 h15
   have h17 : r (v b b a a) (m (u a a b) (u a a b) a) (m a a (u a a b)) := Eq.mp (congrArg (fun t : α => r t (m (u a a b) (u a a b) a) (m a a (u a a b))) (ax3 (v b b a a) (u a b b))) h16
-  exact h17
+  have h18 : r (v b b a a) a (m a a (u a a b)) := Eq.mp (congrArg (fun t : α => r (v b b a a) t (m a a (u a a b))) (ax1 (u a a b) a)) h17
+  have h19 : r (v b b a a) a (u a a b) := Eq.mp (congrArg (fun t : α => r (v b b a a) a t) (ax1 a (u a a b))) h18
+  have h20 : r (u a b b) (u a a b) (u a a b) := taelja_lemma27
+  have h21 : r (u a b b) (u a a b) a := taelja_lemma19
+  have h22 : r (m (v b b a a) (u a b b) (u a b b)) (m a (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := ax15 (v b b a a) a (u a a b) (u a b b) (u a a b) (u a a b) (u a b b) (u a a b) a h19 h20 h21
+  have h23 : r (v b b a a) (m a (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r t (m a (u a a b) (u a a b)) (m (u a a b) (u a a b) a)) (ax3 (v b b a a) (u a b b))) h22
+  have h24 : r (v b b a a) a (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r (v b b a a) t (m (u a a b) (u a a b) a)) (ax3 a (u a a b))) h23
+  have h25 : r (v b b a a) a a := Eq.mp (congrArg (fun t : α => r (v b b a a) a t) (ax1 (u a a b) a)) h24
+  exact h25
 
--- Lemma 47
-theorem taelja_lemma47 : r (v b b a a) a (u a a b) := by
-  have h1 : r (v b b a a) (m (u a a b) (u a a b) a) (m a a (u a a b)) := taelja_lemma46
-  have h2 : r (v b b a a) a (m a a (u a a b)) := Eq.mpr (congrArg (fun t : α => r (v b b a a) t (m a a (u a a b))) (Eq.symm (ax1 (u a a b) a))) h1
-  have h3 : r (v b b a a) a (u a a b) := Eq.mpr (congrArg (fun t : α => r (v b b a a) a t) (Eq.symm (ax1 a (u a a b)))) h2
-  exact h3
-
--- Lemma 48
-theorem taelja_lemma48 : r (v b b a a) a a := by
-  have h1 : r (v b b a a) a (u a a b) := taelja_lemma47
-  have h2 : r (u a b b) (u a a b) (u a a b) := taelja_lemma38
-  have h3 : r (u a b b) (u a a b) a := taelja_lemma20
-  have h4 : r (m (v b b a a) (u a b b) (u a b b)) (m a (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := ax15 (v b b a a) a (u a a b) (u a b b) (u a a b) (u a a b) (u a b b) (u a a b) a h1 h2 h3
-  have h5 : r (v b b a a) (m a (u a a b) (u a a b)) (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r t (m a (u a a b) (u a a b)) (m (u a a b) (u a a b) a)) (ax3 (v b b a a) (u a b b))) h4
-  have h6 : r (v b b a a) a (m (u a a b) (u a a b) a) := Eq.mp (congrArg (fun t : α => r (v b b a a) t (m (u a a b) (u a a b) a)) (ax3 a (u a a b))) h5
-  have h7 : r (v b b a a) a a := Eq.mp (congrArg (fun t : α => r (v b b a a) a t) (ax1 (u a a b) a)) h6
-  exact h7
-
--- Lemma 49
-theorem taelja_lemma49 : r b b a := by
-  have h1 : r (v b b a a) (u a b b) a := taelja_lemma40
-  have h2 : r a (u a b b) a := taelja_lemma41
-  have h3 : r a b a := ax11
-  have h4 : r (m (v b b a a) a a) (m (u a b b) (u a b b) b) (m a a a) := ax15 (v b b a a) (u a b b) a a (u a b b) a a b a h1 h2 h3
-  have h5 : r (v b b a a) (m (u a b b) (u a b b) b) (m a a a) := Eq.mp (congrArg (fun t : α => r t (m (u a b b) (u a b b) b) (m a a a)) (ax3 (v b b a a) a)) h4
-  have h6 : r (v b b a a) (m (u a b b) (u a b b) b) a := Eq.mp (congrArg (fun t : α => r (v b b a a) (m (u a b b) (u a b b) b) t) (ax1 a a)) h5
-  have h7 : r (v b b a a) b a := Eq.mp (congrArg (fun t : α => r (v b b a a) t a) (ax1 (u a b b) b)) h6
-  have h8 : r (v b b a a) a a := taelja_lemma48
-  have h9 : r b a a := ax2
-  have h10 : r (m (v b b a a) (v b b a a) b) (m b a a) (m a a a) := ax15 (v b b a a) b a (v b b a a) a a b a a h7 h8 h9
-  have h11 : r (m (v b b a a) (v b b a a) b) b (m a a a) := Eq.mp (congrArg (fun t : α => r (m (v b b a a) (v b b a a) b) t (m a a a)) (ax3 b a)) h10
-  have h12 : r (m (v b b a a) (v b b a a) b) b a := Eq.mp (congrArg (fun t : α => r (m (v b b a a) (v b b a a) b) b t) (ax1 a a)) h11
-  have h13 : r b b a := Eq.mp (congrArg (fun t : α => r t b a) (ax1 (v b b a a) b)) h12
-  exact h13
+-- Lemma 32
+theorem taelja_lemma32 : r b b a := by
+  have h1 : r b a a := ax2
+  have h2 : r b a a := ax2
+  have h3 : r a a b := ax9
+  have h4 : r a a b := ax9
+  have h5 : r (v b b a a) (v a a a a) (v a a b b) := ax10 b a a b a a a a b a a b h1 h1 h3 h3
+  have h6 : r (v b b a a) (u a a a) (v a a b b) := Eq.mp (congrArg (fun t : α => r (v b b a a) t (v a a b b)) (taelja_lemma18 a a)) h5
+  have h7 : r (v b b a a) a (v a a b b) := Eq.mp (congrArg (fun t : α => r (v b b a a) t (v a a b b)) (ax4 a)) h6
+  have h8 : r (u a a b) a (v a a b b) := taelja_lemma24
+  have h9 : r (u a a b) a (u a b b) := taelja_lemma20
+  have h10 : r (m (v b b a a) (u a a b) (u a a b)) (m a a a) (m (v a a b b) (v a a b b) (u a b b)) := ax15 (v b b a a) a (v a a b b) (u a a b) a (v a a b b) (u a a b) a (u a b b) h7 h8 h9
+  have h11 : r (v b b a a) (m a a a) (m (v a a b b) (v a a b b) (u a b b)) := Eq.mp (congrArg (fun t : α => r t (m a a a) (m (v a a b b) (v a a b b) (u a b b))) (ax3 (v b b a a) (u a a b))) h10
+  have h12 : r (v b b a a) a (m (v a a b b) (v a a b b) (u a b b)) := Eq.mp (congrArg (fun t : α => r (v b b a a) t (m (v a a b b) (v a a b b) (u a b b))) (ax1 a a)) h11
+  have h13 : r (v b b a a) a (u a b b) := Eq.mp (congrArg (fun t : α => r (v b b a a) a t) (ax1 (v a a b b) (u a b b))) h12
+  have h14 : r (u a a b) a (u a b b) := taelja_lemma20
+  have h15 : r (u a a b) (u a b b) a := taelja_lemma25
+  have h16 : r (m (v b b a a) (u a a b) (u a a b)) (m a a (u a b b)) (m (u a b b) (u a b b) a) := ax15 (v b b a a) a (u a b b) (u a a b) a (u a b b) (u a a b) (u a b b) a h13 h14 h15
+  have h17 : r (v b b a a) (m a a (u a b b)) (m (u a b b) (u a b b) a) := Eq.mp (congrArg (fun t : α => r t (m a a (u a b b)) (m (u a b b) (u a b b) a)) (ax3 (v b b a a) (u a a b))) h16
+  have h18 : r (v b b a a) (u a b b) (m (u a b b) (u a b b) a) := Eq.mp (congrArg (fun t : α => r (v b b a a) t (m (u a b b) (u a b b) a)) (ax1 a (u a b b))) h17
+  have h19 : r (v b b a a) (u a b b) a := Eq.mp (congrArg (fun t : α => r (v b b a a) (u a b b) t) (ax1 (u a b b) a)) h18
+  have h20 : r a (u a b b) a := taelja_lemma28
+  have h21 : r a b a := ax11
+  have h22 : r (m (v b b a a) a a) (m (u a b b) (u a b b) b) (m a a a) := ax15 (v b b a a) (u a b b) a a (u a b b) a a b a h19 h20 h21
+  have h23 : r (v b b a a) (m (u a b b) (u a b b) b) (m a a a) := Eq.mp (congrArg (fun t : α => r t (m (u a b b) (u a b b) b) (m a a a)) (ax3 (v b b a a) a)) h22
+  have h24 : r (v b b a a) (m (u a b b) (u a b b) b) a := Eq.mp (congrArg (fun t : α => r (v b b a a) (m (u a b b) (u a b b) b) t) (ax1 a a)) h23
+  have h25 : r (v b b a a) b a := Eq.mp (congrArg (fun t : α => r (v b b a a) t a) (ax1 (u a b b) b)) h24
+  have h26 : r (v b b a a) a a := taelja_lemma31
+  have h27 : r b a a := ax2
+  have h28 : r (m (v b b a a) (v b b a a) b) (m b a a) (m a a a) := ax15 (v b b a a) b a (v b b a a) a a b a a h25 h26 h27
+  have h29 : r (m (v b b a a) (v b b a a) b) b (m a a a) := Eq.mp (congrArg (fun t : α => r (m (v b b a a) (v b b a a) b) t (m a a a)) (ax3 b a)) h28
+  have h30 : r (m (v b b a a) (v b b a a) b) b a := Eq.mp (congrArg (fun t : α => r (m (v b b a a) (v b b a a) b) b t) (ax1 a a)) h29
+  have h31 : r b b a := Eq.mp (congrArg (fun t : α => r t b a) (ax1 (v b b a a) b)) h30
+  exact h31
 
 -- Goal 1
 theorem taelja_goal1 : r a a a := by
   have h1 : r b a a := ax2
-  have h2 : r b b a := taelja_lemma49
+  have h2 : r b b a := taelja_lemma32
   have h3 : r a b a := ax11
   have h4 : r (m b b a) (m a b b) (m a a a) := ax15 b a a b b a a b a h1 h2 h3
   have h5 : r (m b b a) a (m a a a) := Eq.mp (congrArg (fun t : α => r (m b b a) t (m a a a)) (ax3 a b)) h4

@@ -32,28 +32,26 @@ fof(s2, plain, smoke(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [
 fof(lemma_29, lemma, event(skc12,skf2(skc10)), inference(mp, [status(thm)], [f1, s2])).
 fof(lemma_30, lemma, forename(skc8,skc11), inference(mp, [status(thm)], [f30, f80])).
 fof(lemma_31, lemma, forename(skc8,skc14), inference(mp, [status(thm)], [f29, f76])).
-fof(s3, plain, smoke(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_27])).
-fof(goal_1, theorem, event(skc12,skf2(skf4(skc12))), inference(mp, [status(thm)], [f1, s3])).
-fof(s4, plain, smoke(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_27])).
-fof(goal_2, theorem, event(skc12,skf2(skc10)), inference(mp, [status(thm)], [f1, s4])).
-fof(s5, plain, man(skc12,skc10), inference(mp, [status(thm)], [f52, f84, f82])).
-fof(goal_3, theorem, agent(skc12,skf2(skc10),skc10), inference(mp, [status(thm)], [f94, s5])).
-fof(s6, plain, smoke(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_27])).
-fof(s7, plain, present(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_26])).
-fof(s8, plain, man(skc12,skf4(skc12)), inference(mp, [status(thm)], [f95, f90, f82, f83, s6, s7, lemma_28, lemma_29, lemma_30, f80, f89, f84, f85, f85, f84, f79, f78, f77, f88, f87, f87, f74, f86, f76, lemma_31, f88, f77, f78, f79, f73])).
-fof(goal_4, theorem, agent(skc12,skf2(skf4(skc12)),skf4(skc12)), inference(mp, [status(thm)], [f94, s8])).
-fof(goal_5, theorem, man(skc8,skc10), inference(instantiate, [status(thm)], [f82])).
-fof(goal_6, theorem, be(skc8,skc9,skc10,skc10), inference(instantiate, [status(thm)], [f90])).
-fof(goal_7, theorem, smoke(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_27])).
-fof(goal_8, theorem, present(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_26])).
-fof(goal_9, theorem, forename(skc8,skc11), inference(instantiate, [status(thm)], [lemma_30])).
-fof(goal_10, theorem, jules_forename(skc8,skc11), inference(instantiate, [status(thm)], [f80])).
-fof(goal_11, theorem, of(skc8,skc11,skc10), inference(instantiate, [status(thm)], [f89])).
-fof(goal_12, theorem, accessible_world(skc8,skc12), inference(instantiate, [status(thm)], [f84])).
-fof(goal_13, theorem, proposition(skc8,skc12), inference(instantiate, [status(thm)], [f85])).
-fof(goal_14, theorem, smoke(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_27])).
-fof(goal_15, theorem, present(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_26])).
-fof(goal_16, theorem, state(skc8,skc9), inference(instantiate, [status(thm)], [f83])).
+fof(s3, plain, smoke(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_27])).
+fof(s4, plain, present(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_26])).
+fof(s5, plain, man(skc12,skf4(skc12)), inference(mp, [status(thm)], [f95, f90, f82, f83, s3, s4, lemma_28, lemma_29, lemma_30, f80, f89, f84, f85, f85, f84, f79, f78, f77, f88, f87, f87, f74, f86, f76, lemma_31, f88, f77, f78, f79, f73])).
+fof(goal_1, theorem, agent(skc12,skf2(skf4(skc12)),skf4(skc12)), inference(mp, [status(thm)], [f94, s5])).
+fof(goal_2, theorem, man(skc8,skc10), inference(instantiate, [status(thm)], [f82])).
+fof(goal_3, theorem, be(skc8,skc9,skc10,skc10), inference(instantiate, [status(thm)], [f90])).
+fof(goal_4, theorem, smoke(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_27])).
+fof(goal_5, theorem, present(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_26])).
+fof(goal_6, theorem, agent(skc12,skf2(skc10),skc10), inference(instantiate, [status(thm)], [lemma_28])).
+fof(goal_7, theorem, event(skc12,skf2(skc10)), inference(instantiate, [status(thm)], [lemma_29])).
+fof(goal_8, theorem, forename(skc8,skc11), inference(instantiate, [status(thm)], [lemma_30])).
+fof(goal_9, theorem, jules_forename(skc8,skc11), inference(instantiate, [status(thm)], [f80])).
+fof(goal_10, theorem, of(skc8,skc11,skc10), inference(instantiate, [status(thm)], [f89])).
+fof(goal_11, theorem, accessible_world(skc8,skc12), inference(instantiate, [status(thm)], [f84])).
+fof(goal_12, theorem, proposition(skc8,skc12), inference(instantiate, [status(thm)], [f85])).
+fof(goal_13, theorem, smoke(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_27])).
+fof(goal_14, theorem, present(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_26])).
+fof(goal_15, theorem, state(skc8,skc9), inference(instantiate, [status(thm)], [f83])).
+fof(s6, plain, smoke(skc12,skf2(skf4(skc12))), inference(instantiate, [status(thm)], [lemma_27])).
+fof(goal_16, theorem, event(skc12,skf2(skf4(skc12))), inference(mp, [status(thm)], [f1, s6])).
 fof(goal_17, theorem, think_believe_consider(skc8,skc13), inference(instantiate, [status(thm)], [f79])).
 fof(goal_18, theorem, present(skc8,skc13), inference(instantiate, [status(thm)], [f78])).
 fof(goal_19, theorem, event(skc8,skc13), inference(instantiate, [status(thm)], [f77])).

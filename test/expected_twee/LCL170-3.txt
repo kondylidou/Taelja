@@ -2,17 +2,11 @@ Axiom 1: implies(X,Y) = or(not(X),Y)
 Axiom 2: axiom(implies(Z,or(A,Z)))
 Axiom 3: axiom(B) => theorem(B)
 
-Lemma 4: axiom(implies(q,implies(p,q)))
-Proof:
-  axiom(implies(q,implies(p,q)))
-= { by axiom 1 }
-  axiom(implies(q,or(not(p),q)))
-= { by axiom 2 }
-  true
-
 Goal 1: theorem(implies(q,implies(p,q)))
 Proof:
-  have axiom(implies(q,implies(p,q)))
-    by lemma 4
+  have axiom(implies(q,or(not(p),q)))
+    by axiom 2
+  hence axiom(implies(q,implies(p,q)))
+    by rw axiom 1 R->L
   hence theorem(implies(q,implies(p,q)))
     by axiom 3

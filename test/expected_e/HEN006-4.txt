@@ -14,18 +14,12 @@ Proof:
   hence divide(divide(a,b),d) = zero
     by axiom 3
 
-Lemma 10: less_equal(divide(divide(a,d),divide(b,d)),zero)
-Proof:
-  less_equal(divide(divide(a,d),divide(b,d)),zero)
-= { by lemma 9 R->L }
-  less_equal(divide(divide(a,d),divide(b,d)),divide(divide(a,b),d))
-= { by axiom 4 }
-  true
-
 Goal 1: less_equal(divide(a,d),b)
 Proof:
-  have less_equal(divide(divide(a,d),divide(b,d)),zero)
-    by lemma 10
+  have less_equal(divide(divide(a,d),divide(b,d)),divide(divide(a,b),d))
+    by axiom 4
+  hence less_equal(divide(divide(a,d),divide(b,d)),zero)
+    by rw lemma 9
    and less_equal(zero,divide(divide(a,d),divide(b,d)))
     by axiom 1
   hence divide(divide(a,d),divide(b,d)) = zero

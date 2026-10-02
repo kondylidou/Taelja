@@ -43,8 +43,8 @@ theorem taelja_lemma9 : divide a b = zero := by
 -- Lemma 10
 theorem taelja_lemma10 : less_equal (divide (divide a c) (divide b c)) zero := by
   have h1 : less_equal (divide (divide a c) (divide b c)) (divide (divide a b) c) := ax5 a c b
-  have h2 : less_equal (divide (divide a c) (divide b c)) (divide zero c) := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide a c) (divide b c)) (divide t c)) (Eq.symm (taelja_lemma9))) h1
-  have h3 : less_equal (divide (divide a c) (divide b c)) zero := Eq.mpr (congrArg (fun t : α => less_equal (divide (divide a c) (divide b c)) t) (Eq.symm (ax3 c))) h2
+  have h2 : less_equal (divide (divide a c) (divide b c)) (divide zero c) := Eq.mp (congrArg (fun t : α => less_equal (divide (divide a c) (divide b c)) (divide t c)) (taelja_lemma9)) h1
+  have h3 : less_equal (divide (divide a c) (divide b c)) zero := Eq.mp (congrArg (fun t : α => less_equal (divide (divide a c) (divide b c)) t) (ax3 c)) h2
   exact h3
 
 -- Lemma 11

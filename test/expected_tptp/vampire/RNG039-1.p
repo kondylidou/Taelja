@@ -18,32 +18,32 @@ fof(lemma_14, lemma, product(a,b,b), inference(rewrite, [status(thm)], [f24, s2]
 fof(lemma_15, lemma, b = c, inference(mp, [status(thm)], [f17, f59, lemma_14])).
 fof(s3, plain, ! [X] : multiply(X,b) = c, inference(mp, [status(thm)], [f17, f59, lemma_13])).
 fof(lemma_16, lemma, ! [X] : b = multiply(X,b), inference(rewrite, [status(thm)], [lemma_15, s3])).
-fof(s4, plain, product(add(a,b),b,multiply(add(a,b),b)), inference(instantiate, [status(thm)], [f3])).
-fof(lemma_17, lemma, product(add(a,b),b,b), inference(rewrite, [status(thm)], [lemma_16, s4])).
-fof(s5, plain, product(add(a,b),b,add(b,b)), inference(rewrite, [status(thm)], [lemma_15, f54])).
-fof(lemma_18, lemma, product(add(a,b),b,additive_identity), inference(rewrite, [status(thm)], [f22, s5])).
-fof(lemma_19, lemma, additive_identity = b, inference(mp, [status(thm)], [f17, lemma_17, lemma_18])).
-fof(s6, plain, product(multiply(a,b),a,multiply(a,d)), inference(instantiate, [status(thm)], [f46])).
-fof(lemma_20, lemma, product(b,a,multiply(a,d)), inference(rewrite, [status(thm)], [lemma_16, s6])).
-fof(lemma_21, lemma, multiply(a,d) = d, inference(mp, [status(thm)], [f17, f60, lemma_20])).
-fof(s7, plain, product(a,d,multiply(a,d)), inference(instantiate, [status(thm)], [f3])).
-fof(lemma_22, lemma, product(a,d,d), inference(rewrite, [status(thm)], [lemma_21, s7])).
+fof(s4, plain, product(add(a,b),b,add(b,b)), inference(rewrite, [status(thm)], [lemma_15, f54])).
+fof(lemma_17, lemma, product(add(a,b),b,additive_identity), inference(rewrite, [status(thm)], [f22, s4])).
+fof(s5, plain, product(add(a,b),b,multiply(add(a,b),b)), inference(instantiate, [status(thm)], [f3])).
+fof(s6, plain, product(add(a,b),b,b), inference(rewrite, [status(thm)], [lemma_16, s5])).
+fof(lemma_18, lemma, additive_identity = b, inference(mp, [status(thm)], [f17, s6, lemma_17])).
+fof(s7, plain, product(multiply(a,b),a,multiply(a,d)), inference(instantiate, [status(thm)], [f46])).
+fof(lemma_19, lemma, product(b,a,multiply(a,d)), inference(rewrite, [status(thm)], [lemma_16, s7])).
+fof(lemma_20, lemma, multiply(a,d) = d, inference(mp, [status(thm)], [f17, f60, lemma_19])).
 fof(s8, plain, product(a,multiply(b,a),multiply(a,a)), inference(instantiate, [status(thm)], [f33])).
 fof(s9, plain, product(a,d,multiply(a,a)), inference(rewrite, [status(thm)], [f26, s8])).
-fof(lemma_23, lemma, product(a,d,a), inference(rewrite, [status(thm)], [f24, s9])).
-fof(lemma_24, lemma, a = d, inference(mp, [status(thm)], [f17, lemma_22, lemma_23])).
-fof(s10, plain, product(multiply(a,b),a,multiply(a,d)), inference(instantiate, [status(thm)], [f46])).
-fof(lemma_25, lemma, product(b,a,multiply(a,d)), inference(rewrite, [status(thm)], [lemma_16, s10])).
-fof(lemma_26, lemma, multiply(a,d) = d, inference(mp, [status(thm)], [f17, f60, lemma_25])).
-fof(s11, plain, ! [X] : add(X,b) = add(X,additive_identity), inference(instantiate, [status(thm)], [lemma_19])).
-fof(lemma_27, lemma, ! [X] : add(X,b) = X, inference(rewrite, [status(thm)], [f21, s11])).
-fof(s12, plain, product(a,d,multiply(a,d)), inference(instantiate, [status(thm)], [f3])).
-fof(lemma_28, lemma, product(a,d,d), inference(rewrite, [status(thm)], [lemma_26, s12])).
-fof(s13, plain, product(a,a,add(a,d)), inference(rewrite, [status(thm)], [lemma_27, f57])).
-fof(s14, plain, product(a,a,add(a,a)), inference(rewrite, [status(thm)], [lemma_24, s13])).
-fof(s15, plain, product(a,a,additive_identity), inference(rewrite, [status(thm)], [f22, s14])).
-fof(lemma_29, lemma, product(a,a,b), inference(rewrite, [status(thm)], [lemma_19, s15])).
-fof(lemma_30, lemma, product(a,d,b), inference(rewrite, [status(thm)], [lemma_24, lemma_29])).
-fof(s16, plain, b = d, inference(mp, [status(thm)], [f17, lemma_28, lemma_30])).
-fof(goal_1, theorem, c = d, inference(rewrite, [status(thm)], [lemma_15, s16])).
+fof(lemma_21, lemma, product(a,d,a), inference(rewrite, [status(thm)], [f24, s9])).
+fof(s10, plain, product(a,d,multiply(a,d)), inference(instantiate, [status(thm)], [f3])).
+fof(s11, plain, product(a,d,d), inference(rewrite, [status(thm)], [lemma_20, s10])).
+fof(lemma_22, lemma, a = d, inference(mp, [status(thm)], [f17, s11, lemma_21])).
+fof(s12, plain, product(multiply(a,b),a,multiply(a,d)), inference(instantiate, [status(thm)], [f46])).
+fof(lemma_23, lemma, product(b,a,multiply(a,d)), inference(rewrite, [status(thm)], [lemma_16, s12])).
+fof(lemma_24, lemma, multiply(a,d) = d, inference(mp, [status(thm)], [f17, f60, lemma_23])).
+fof(s13, plain, ! [X] : add(X,b) = add(X,additive_identity), inference(instantiate, [status(thm)], [lemma_18])).
+fof(lemma_25, lemma, ! [X] : add(X,b) = X, inference(rewrite, [status(thm)], [f21, s13])).
+fof(s14, plain, product(a,a,add(a,d)), inference(rewrite, [status(thm)], [lemma_25, f57])).
+fof(s15, plain, product(a,a,add(a,a)), inference(rewrite, [status(thm)], [lemma_22, s14])).
+fof(s16, plain, product(a,a,additive_identity), inference(rewrite, [status(thm)], [f22, s15])).
+fof(s17, plain, product(a,a,b), inference(rewrite, [status(thm)], [lemma_18, s16])).
+fof(lemma_26, lemma, product(a,d,b), inference(rewrite, [status(thm)], [lemma_22, s17])).
+fof(s18, plain, product(a,d,multiply(a,d)), inference(instantiate, [status(thm)], [f3])).
+fof(s19, plain, product(a,d,d), inference(rewrite, [status(thm)], [lemma_24, s18])).
+fof(s20, plain, b = d, inference(mp, [status(thm)], [f17, s19, lemma_26])).
+fof(goal_1, theorem, c = d, inference(rewrite, [status(thm)], [lemma_15, s20])).
 % SZS output end Proof

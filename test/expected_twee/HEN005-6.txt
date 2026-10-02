@@ -16,13 +16,12 @@ Proof:
 
 Lemma 10: less_equal(divide(divide(a,c),divide(b,c)),zero)
 Proof:
-  less_equal(divide(divide(a,c),divide(b,c)),zero)
-= { by axiom 3 R->L }
-  less_equal(divide(divide(a,c),divide(b,c)),divide(zero,c))
-= { by lemma 9 R->L }
-  less_equal(divide(divide(a,c),divide(b,c)),divide(divide(a,b),c))
-= { by axiom 5 }
-  true
+  have less_equal(divide(divide(a,c),divide(b,c)),divide(divide(a,b),c))
+    by axiom 5
+  hence less_equal(divide(divide(a,c),divide(b,c)),divide(zero,c))
+    by rw lemma 9
+  hence less_equal(divide(divide(a,c),divide(b,c)),zero)
+    by rw axiom 3
 
 Lemma 11: divide(b,c) = zero
 Proof:

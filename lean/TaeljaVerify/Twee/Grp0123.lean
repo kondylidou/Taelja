@@ -64,21 +64,17 @@ theorem taelja_lemma11 : multiply (multiply b (multiply (inverse b) (inverse a))
   have h3 : multiply (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) = b := ax5 (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) (multiply (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a)))) b h1 h2
   exact h3
 
--- Lemma 12
-theorem taelja_lemma12 : multiply (inverse b) (inverse a) = inverse (inverse (multiply (inverse b) (inverse a))) := by
+-- Goal 1
+theorem taelja_goal1 : inverse (multiply a b) = multiply (inverse b) (inverse a) := by
   have h1 : product (multiply (inverse b) (inverse a)) (inverse (multiply (inverse b) (inverse a))) identity := ax2 (multiply (inverse b) (inverse a))
   have h2 : product (inverse (multiply (inverse b) (inverse a))) (inverse (inverse (multiply (inverse b) (inverse a)))) identity := ax2 (inverse (multiply (inverse b) (inverse a)))
   have h3 : product (multiply (inverse b) (inverse a)) identity (multiply (inverse b) (inverse a)) := ax3 (multiply (inverse b) (inverse a))
   have h4 : product identity (inverse (inverse (multiply (inverse b) (inverse a)))) (multiply (inverse b) (inverse a)) := ax4 (multiply (inverse b) (inverse a)) (inverse (multiply (inverse b) (inverse a))) identity (inverse (inverse (multiply (inverse b) (inverse a)))) identity (multiply (inverse b) (inverse a)) h1 h2 h3
   have h5 : product identity (inverse (inverse (multiply (inverse b) (inverse a)))) (inverse (inverse (multiply (inverse b) (inverse a)))) := ax6 (inverse (inverse (multiply (inverse b) (inverse a))))
   have h6 : multiply (inverse b) (inverse a) = inverse (inverse (multiply (inverse b) (inverse a))) := ax5 identity (inverse (inverse (multiply (inverse b) (inverse a)))) (multiply (inverse b) (inverse a)) (inverse (inverse (multiply (inverse b) (inverse a)))) h4 h5
-  exact h6
-
--- Goal 1
-theorem taelja_goal1 : inverse (multiply a b) = multiply (inverse b) (inverse a) := by
-  calc inverse (multiply a b) = inverse (multiply a (multiply (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))))) := congrArg (fun t : α => inverse (multiply a t)) (Eq.symm (taelja_lemma11))
-      _ = inverse (multiply a (multiply (inverse a) (inverse (multiply (inverse b) (inverse a))))) := congrArg (fun t : α => inverse (multiply a (multiply t (inverse (multiply (inverse b) (inverse a)))))) (taelja_lemma9 b (inverse a))
-      _ = inverse (inverse (multiply (inverse b) (inverse a))) := congrArg (fun t : α => inverse t) (taelja_lemma9 a (inverse (multiply (inverse b) (inverse a))))
-      _ = multiply (inverse b) (inverse a) := Eq.symm (taelja_lemma12)
+  have h7 : multiply (inverse b) (inverse a) = inverse (multiply a (multiply (inverse a) (inverse (multiply (inverse b) (inverse a))))) := Eq.mp (congrArg (fun t : α => multiply (inverse b) (inverse a) = inverse t) (Eq.symm (taelja_lemma9 a (inverse (multiply (inverse b) (inverse a)))))) h6
+  have h8 : multiply (inverse b) (inverse a) = inverse (multiply a (multiply (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))))) := Eq.mp (congrArg (fun t : α => multiply (inverse b) (inverse a) = inverse (multiply a (multiply t (inverse (multiply (inverse b) (inverse a)))))) (Eq.symm (taelja_lemma9 b (inverse a)))) h7
+  have h9 : multiply (inverse b) (inverse a) = inverse (multiply a b) := Eq.mp (congrArg (fun t : α => multiply (inverse b) (inverse a) = inverse (multiply a t)) (taelja_lemma11)) h8
+  exact Eq.symm (h9)
 
 end TweeGrp0123

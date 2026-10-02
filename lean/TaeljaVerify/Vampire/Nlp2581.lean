@@ -134,27 +134,7 @@ theorem taelja_lemma31 : forename skc8 skc14 := by
   exact h2
 
 -- Goal 1
-theorem taelja_goal1 : event skc12 (skf2 (skf4 skc12)) := by
-  have h1 : smoke skc12 (skf2 (skf4 skc12)) := taelja_lemma27 (skf4 skc12)
-  have h2 : event skc12 (skf2 (skf4 skc12)) := ax23 skc12 (skf2 (skf4 skc12)) h1
-  exact h2
-
--- Goal 2
-theorem taelja_goal2 : event skc12 (skf2 skc10) := by
-  have h1 : smoke skc12 (skf2 skc10) := taelja_lemma27 skc10
-  have h2 : event skc12 (skf2 skc10) := ax23 skc12 (skf2 skc10) h1
-  exact h2
-
--- Goal 3
-theorem taelja_goal3 : agent skc12 (skf2 skc10) skc10 := by
-  have h1 : accessible_world skc8 skc12 := ax2
-  have h2 : man skc8 skc10 := ax1
-  have h3 : man skc12 skc10 := ax3 skc8 skc12 skc10 h1 h2
-  have h4 : agent skc12 (skf2 skc10) skc10 := ax7 skc10 h3
-  exact h4
-
--- Goal 4
-theorem taelja_goal4 : agent skc12 (skf2 (skf4 skc12)) (skf4 skc12) := by
+theorem taelja_goal1 : agent skc12 (skf2 (skf4 skc12)) (skf4 skc12) := by
   have h1 : be skc8 skc9 skc10 skc10 := ax20
   have h2 : man skc8 skc10 := ax1
   have h3 : state skc8 skc9 := ax19
@@ -188,65 +168,81 @@ theorem taelja_goal4 : agent skc12 (skf2 (skf4 skc12)) (skf4 skc12) := by
   have h31 : agent skc12 (skf2 (skf4 skc12)) (skf4 skc12) := ax7 (skf4 skc12) h30
   exact h31
 
--- Goal 5
-theorem taelja_goal5 : man skc8 skc10 := by
+-- Goal 2
+theorem taelja_goal2 : man skc8 skc10 := by
   have h1 : man skc8 skc10 := ax1
   exact h1
 
--- Goal 6
-theorem taelja_goal6 : be skc8 skc9 skc10 skc10 := by
+-- Goal 3
+theorem taelja_goal3 : be skc8 skc9 skc10 skc10 := by
   have h1 : be skc8 skc9 skc10 skc10 := ax20
   exact h1
 
--- Goal 7
-theorem taelja_goal7 : smoke skc12 (skf2 skc10) := by
+-- Goal 4
+theorem taelja_goal4 : smoke skc12 (skf2 skc10) := by
   have h1 : smoke skc12 (skf2 skc10) := taelja_lemma27 skc10
   exact h1
 
--- Goal 8
-theorem taelja_goal8 : present skc12 (skf2 skc10) := by
+-- Goal 5
+theorem taelja_goal5 : present skc12 (skf2 skc10) := by
   have h1 : present skc12 (skf2 skc10) := taelja_lemma26 skc10
   exact h1
 
--- Goal 9
-theorem taelja_goal9 : forename skc8 skc11 := by
+-- Goal 6
+theorem taelja_goal6 : agent skc12 (skf2 skc10) skc10 := by
+  have h1 : agent skc12 (skf2 skc10) skc10 := taelja_lemma28
+  exact h1
+
+-- Goal 7
+theorem taelja_goal7 : event skc12 (skf2 skc10) := by
+  have h1 : event skc12 (skf2 skc10) := taelja_lemma29
+  exact h1
+
+-- Goal 8
+theorem taelja_goal8 : forename skc8 skc11 := by
   have h1 : forename skc8 skc11 := taelja_lemma30
   exact h1
 
--- Goal 10
-theorem taelja_goal10 : jules_forename skc8 skc11 := by
+-- Goal 9
+theorem taelja_goal9 : jules_forename skc8 skc11 := by
   have h1 : jules_forename skc8 skc11 := ax14
   exact h1
 
--- Goal 11
-theorem taelja_goal11 : of skc8 skc11 skc10 := by
+-- Goal 10
+theorem taelja_goal10 : of skc8 skc11 skc10 := by
   have h1 : of skc8 skc11 skc10 := ax15
   exact h1
 
--- Goal 12
-theorem taelja_goal12 : accessible_world skc8 skc12 := by
+-- Goal 11
+theorem taelja_goal11 : accessible_world skc8 skc12 := by
   have h1 : accessible_world skc8 skc12 := ax2
   exact h1
 
--- Goal 13
-theorem taelja_goal13 : proposition skc8 skc12 := by
+-- Goal 12
+theorem taelja_goal12 : proposition skc8 skc12 := by
   have h1 : proposition skc8 skc12 := ax13
   exact h1
 
--- Goal 14
-theorem taelja_goal14 : smoke skc12 (skf2 (skf4 skc12)) := by
+-- Goal 13
+theorem taelja_goal13 : smoke skc12 (skf2 (skf4 skc12)) := by
   have h1 : smoke skc12 (skf2 (skf4 skc12)) := taelja_lemma27 (skf4 skc12)
   exact h1
 
--- Goal 15
-theorem taelja_goal15 : present skc12 (skf2 (skf4 skc12)) := by
+-- Goal 14
+theorem taelja_goal14 : present skc12 (skf2 (skf4 skc12)) := by
   have h1 : present skc12 (skf2 (skf4 skc12)) := taelja_lemma26 (skf4 skc12)
   exact h1
 
--- Goal 16
-theorem taelja_goal16 : state skc8 skc9 := by
+-- Goal 15
+theorem taelja_goal15 : state skc8 skc9 := by
   have h1 : state skc8 skc9 := ax19
   exact h1
+
+-- Goal 16
+theorem taelja_goal16 : event skc12 (skf2 (skf4 skc12)) := by
+  have h1 : smoke skc12 (skf2 (skf4 skc12)) := taelja_lemma27 (skf4 skc12)
+  have h2 : event skc12 (skf2 (skf4 skc12)) := ax23 skc12 (skf2 (skf4 skc12)) h1
+  exact h2
 
 -- Goal 17
 theorem taelja_goal17 : think_believe_consider skc8 skc13 := by
