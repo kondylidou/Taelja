@@ -3,8 +3,8 @@
 
 FOF and TFF theorem problems are kept when `taelja --horn-problem` finds them
 Horn before any clausification. CNF problems are read off their SPC tag as
-HNE, HEQ or UEQ. TFF with arithmetic, polymorphism, extended forms or the
-modal $ki encoding is skipped, as Taelja reads plain first-order clauses only.
+HNE, HEQ or UEQ. TFF with arithmetic, polymorphism or extended forms is skipped,
+as Taelja reads plain first-order clauses only.
 
 Usage
   python3 scripts/select_horn.py <tptp_dir> [--taelja PATH] [--jobs N] [--limit N]
@@ -39,8 +39,6 @@ def form_of(p_file):
                 if line.startswith('% SPC'):
                     for form, pat in FORMS.items():
                         if pat.match(line):
-                            if form == 'TFF' and '$ki' in Path(p_file).read_text(errors='ignore'):
-                                return None
                             return form
                     for cat, pat in SPC_PATTERNS.items():
                         if pat.search(line):

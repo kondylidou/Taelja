@@ -47,7 +47,7 @@ module TptpConvert
 
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.Char (isAsciiLower, isAsciiUpper, isDigit)
-import Data.List (intercalate, isInfixOf, isPrefixOf, nub, partition)
+import Data.List (intercalate, isInfixOf, isPrefixOf, nub, partition, tails)
 import Data.List.NonEmpty (NonEmpty (..), toList)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -342,7 +342,7 @@ parseProof = parseTptp . Text.pack . extractSzsBlock
 -- surround it with text that is not TSTP, and rewrite the forms the parser
 -- cannot read. Text without markers is kept whole.
 extractSzsBlock :: String -> String
-extractSzsBlock txt = dropIntroducedParents $ typedClausesAsFormulas $ dropDistinctTypings $
+extractSzsBlock txt = dropIntroducedParents $ typedClausesAsFormulas $ quoteDollarTypings $ dropDistinctTypings $
   case break isStart (lines txt) of
     (_, [])        -> txt
     (_, startLine : rest) ->
@@ -364,6 +364,20 @@ dropDistinctTypings :: String -> String
 dropDistinctTypings = unlines . filter (not . distinctTyping) . lines
   where
     distinctTyping l = "tff(" `isPrefixOf` l && ", type, \"" `isInfixOf` l
+
+-- Quote a declared name that E writes as a dollar word, as in
+-- tff(d, type, $ki_local_world: '$ki_world'). The parser reads a declared name
+-- only as a plain or quoted word, and the rest of the proof quotes it.
+quoteDollarTypings :: String -> String
+quoteDollarTypings = unlines . map fix . lines
+  where
+    key = ", type, $"
+    fix l = case [ i | (i, t) <- zip [0 ..] (tails l), key `isPrefixOf` t ] of
+      (i : _) | "tff(" `isPrefixOf` l ->
+        let (before, rest) = splitAt (i + length key - 1) l
+            (nm, after)    = break (`elem` ": ") rest
+        in before ++ "'" ++ nm ++ "'" ++ after
+      _ -> l
 
 -- Read E's tcf units, which the parser does not know, as tff. A tcf is a tff
 -- whose formula is a clause.
