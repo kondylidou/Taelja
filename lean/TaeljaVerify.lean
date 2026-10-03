@@ -1,13 +1,13 @@
 -- The root of the `TaeljaVerify` library: one module per proof of the test
 -- suite, as `taelja --lean` prints it.  The test suite keeps this file and
 -- the modules up to date (cabal test --test-options=--accept).
-import TaeljaVerify.Basic
 import TaeljaVerify.Vampire.AgdaVampireZeUniq
 import TaeljaVerify.Vampire.TestRlSafety
 import TaeljaVerify.Vampire.TestEqSymmetry
 import TaeljaVerify.Vampire.TestNonunitSingle
 import TaeljaVerify.Vampire.TestNonunitChain
 import TaeljaVerify.Vampire.TestSplitDerivedUnit
+import TaeljaVerify.Vampire.TestTrivialBodyAtom
 import TaeljaVerify.Vampire.TestInstantiationsNoGround
 import TaeljaVerify.Vampire.TestPrelemmatizeSymEq
 import TaeljaVerify.Vampire.TestEqchainInHavehence
@@ -73,6 +73,7 @@ import TaeljaVerify.Vampire.Puz0111
 import TaeljaVerify.Vampire.Nlp2581
 import TaeljaVerify.Vampire.Swv8181
 import TaeljaVerify.Vampire.Grp656p1
+import TaeljaVerify.Vampire.Grp1951
 import TaeljaVerify.E.Grp0015
 import TaeljaVerify.E.Grp1171
 import TaeljaVerify.E.Syn973p1
@@ -144,6 +145,7 @@ import TaeljaVerify.E.Lcl902p1
 import TaeljaVerify.E.Sww967p1
 import TaeljaVerify.E.Sww968p1
 import TaeljaVerify.E.Csr117p1
+import TaeljaVerify.E.Grp656p1
 import TaeljaVerify.Twee.Kle137p1
 import TaeljaVerify.Twee.Grp1361
 import TaeljaVerify.Twee.Col0427
@@ -191,3 +193,5 @@ import TaeljaVerify.Twee.Lcl1331
 import TaeljaVerify.Twee.Ana1331
 import TaeljaVerify.Twee.Lcl89710
 import TaeljaVerify.Twee.Lcl902p1
+import TaeljaVerify.Twee.Grp654p1
+import TaeljaVerify.Twee.Grp655p1

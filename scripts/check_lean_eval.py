@@ -1,63 +1,61 @@
 #!/usr/bin/env python3
-"""Check every eval Lean module individually with `lake env lean`.
+"""Check each eval Lean module on its own with `lake env lean`.
 
-`lake build` of the aggregate target stops scheduling modules once some fail,
-so its failure list is incomplete.  This checks each module of the current
-taelja=ok rows on its own, records the verdict in results.csv's `lean` column
-and prints per-category and prover counts.
+`lake build` of the whole library stops after failures, so its failure list
+is incomplete. For every taelja=ok row this checks the module that
+regen_lean_eval.py copied, records the verdict in results.csv's lean column
+and as lean.ok or lean.err beside the proof (which eval.py reads on a rerun),
+lists failures in eval_out/lean_failing.txt and prints counts.
 
 Usage
   python3 scripts/check_lean_eval.py [--jobs N] [--limit N]
 """
-import argparse, csv, subprocess, sys
+import argparse, csv, sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+from eval import ALL_CATEGORIES, PROVER_DIR, lean_module, read_results, record_lean, run
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
-EVAL = ROOT / "eval_out"
-RESULTS = EVAL / "results.csv"
 LEAN = ROOT / "lean"
-PROVER_DIR = {"vampire": "Vampire", "e": "E", "twee": "Twee"}
-
-
-def to_camel(prob):
-    # mirror regen_lean_eval.to_camel, since dots, dashes and pluses are not
-    # valid in Lean module names (MSC015-1.005 -> Msc0151005, ALG018+1 -> Alg0181)
-    import re
-    parts = re.split(r'[-_.+]', prob)
-    return "".join(p.capitalize() for p in parts if p)
+TIMEOUT = 600  # seconds per module
 
 
 def check(module_rel):
-    r = subprocess.run(["lake", "env", "lean", module_rel], cwd=LEAN,
-                       capture_output=True, text=True)
-    out = (r.stdout + r.stderr)
-    return r.returncode == 0 and "error" not in out, out
+    """Check one Lean module, returning whether Lean accepts it and Lean's output."""
+    rc, out, err = run(["lake", "env", "lean", module_rel], timeout=TIMEOUT, cwd=str(LEAN))
+    if rc == -1:
+        return False, f"error: no verdict within {TIMEOUT} s"
+    return rc == 0 and "error" not in out + err, out + err
 
 
 def main():
+    """Check the Lean module of every translated proof and record the verdicts."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--jobs", type=int, default=6)
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--output-dir", default="eval_out", help="the evaluation directory")
     args = ap.parse_args()
+    evaldir = (ROOT / args.output_dir).resolve()
 
-    rows = list(csv.DictReader(open(RESULTS)))
+    rows = read_results(evaldir)
     todo = [r for r in rows if r["taelja"] == "ok"]
     if args.limit:
         todo = todo[: args.limit]
 
-    def task(r):
-        rel = f"TaeljaVerify/{r['category']}/{PROVER_DIR[r['prover']]}/{to_camel(r['problem'])}.lean"
+    def check_row(r):
+        """The verdict on the module of one row."""
+        rel = f"TaeljaVerify/{r['category']}/{PROVER_DIR[r['prover']]}/{lean_module(r['problem'])}.lean"
         if not (LEAN / rel).exists():
             return r, "missing", ""
         ok, out = check(rel)
-        return r, ("ok" if ok else "fail"), out
+        return r, record_lean(evaldir / r["category"] / r["problem"] / r["prover"], ok, out), out
 
     verdict = {}
     failing = []
     with ThreadPoolExecutor(max_workers=args.jobs) as ex:
-        futs = [ex.submit(task, r) for r in todo]
+        futs = [ex.submit(check_row, r) for r in todo]
         for i, f in enumerate(as_completed(futs), 1):
             r, v, out = f.result()
             key = (r["category"], r["problem"], r["prover"])
@@ -72,11 +70,11 @@ def main():
         key = (r["category"], r["problem"], r["prover"])
         if key in verdict:
             r["lean"] = verdict[key]
-    with open(RESULTS, "w", newline="") as f:
+    with open(evaldir / "results.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=rows[0].keys())
         w.writeheader(); w.writerows(rows)
 
-    (EVAL / "lean_failing.txt").write_text(
+    (evaldir / "lean_failing.txt").write_text(
         "\n".join(f"{c}/{p}/{pr}\t{msg}" for (c, p, pr), msg in sorted(failing)) + "\n")
 
     print(f"\nchecked {len(todo)} modules: "
@@ -84,11 +82,11 @@ def main():
           f"fail={sum(v=='fail' for v in verdict.values())} "
           f"missing={sum(v=='missing' for v in verdict.values())}")
     print(f"{'cat':4} {'prover':8} {'ok':>5} {'fail':>5}")
-    for c in ("HNE", "HEQ", "UEQ", "FOF", "TFF"):
+    for c in ALL_CATEGORIES:
         for pr in ("vampire", "e", "twee"):
             sub = [v for (cc, _, pp), v in verdict.items() if cc == c and pp == pr]
             print(f"{c:4} {pr:8} {sum(v=='ok' for v in sub):5} {sum(v!='ok' for v in sub):5}")
-    print(f"failing list: {EVAL / 'lean_failing.txt'}")
+    print(f"failing list: {evaldir / 'lean_failing.txt'}")
 
 
 if __name__ == "__main__":

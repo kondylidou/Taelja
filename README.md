@@ -70,10 +70,10 @@ cabal build
 ```
 
 Taelja invokes Twee to reconstruct rewrite steps that the input proof does not
-justify, and E to prove shared clauses as lemmas. The provers are not
-distributed with Taelja. The evaluation additionally requires Vampire, which
-its script looks up in the same way. The options `--vampire`, `--eprover`,
-and `--twee` of that script name a binary explicitly.
+justify. Twee is not distributed with Taelja. The evaluation additionally
+requires E and Vampire, which its script looks up in the same way. The options
+`--vampire`, `--eprover`, and `--twee` of that script name a binary
+explicitly.
 
 | Prover  | Source | Lookup order |
 |---------|--------|--------------|
@@ -81,7 +81,7 @@ and `--twee` of that script name a binary explicitly.
 | E       | <https://www.eprover.org/> | `TAELJA_EPROVER`, `bin/eprover`, `PATH` |
 | Vampire | <https://github.com/vprover/vampire> | `TAELJA_VAMPIRE`, `bin/vampire`, `PATH` |
 
-All invocations of Twee and E within one run share a time budget of
+All invocations of Twee within one run share a time budget of
 `TAELJA_FALLBACK_TIMEOUT` seconds (default: 30). Taelja has been tested with
 Twee 2.7, E 3.2.5, and Vampire 5.0.1.
 
@@ -98,7 +98,7 @@ cabal run taelja -- [options] proof.tstp
 | `--lean` | Print the proof as a Lean 4 file. |
 | `--namespace=NAME` | Set the namespace of the Lean file (default: `TaeljaProof`). |
 | `--lean-out=FILE` | Additionally write the Lean file to `FILE`. |
-| `--no-fallback` | Do not invoke Twee or E. |
+| `--no-fallback` | Do not invoke Twee. |
 | `--debug` | Additionally print the proof tree and the matching traces. |
 
 The command `taelja --horn-problem problem.p` reports whether a problem
@@ -123,10 +123,10 @@ cabal test
 cd lean && lake build
 ```
 
-The test suite translates the prover outputs stored in
-`test/baseline_{e,twee,vampire}/` and compares each result with its reference
-output: the structured proof in `test/expected_{e,twee,vampire}/` and the
-Lean file in `lean/TaeljaVerify/`. The second command verifies the Lean
+The test suite translates the proofs in `test/baseline_*/` and compares the
+text, Lean and TPTP output with the reference files in `test/expected_*/`,
+`lean/TaeljaVerify/` and `test/expected_tptp/`. A missing reference file is
+an error, and each test has 30 seconds. The second command checks the Lean
 reference files.
 
 ## Evaluation
@@ -145,10 +145,10 @@ python3 scripts/check_lean_eval.py --jobs 3
 1. `select_horn.py` determines the Horn problems and writes one list per
    input format.
 2. `eval.py` runs the three provers on these problems and translates every
-   proof. The results are written to
-   `eval_out/<category>/<problem>/<prover>/` and summarized in
-   `eval_out/results.csv`. The option `--skip-done` resumes an interrupted
-   run.
+   proof twice, with the fallback and with `--no-fallback`. The results are
+   written to `eval_out/<category>/<problem>/<prover>/` and summarized in
+   `eval_out/results.csv`, whose columns `taelja` and `nofallback` give the
+   two outcomes. The option `--skip-done` resumes an interrupted run.
 3. `regen_lean_eval.py` collects the Lean file of every translated proof in
    `lean/TaeljaVerify/`.
 4. `check_lean_eval.py` verifies each of these files with Lean and records

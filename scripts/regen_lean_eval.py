@@ -1,49 +1,37 @@
 #!/usr/bin/env python3
-"""Collect the Lean files of all taelja=ok entries in eval_out into the Lean
-library under lean/.  eval.py has Taelja write each proof as taelja.lean, in
-a namespace of its own, beside taelja.txt.
+"""Copy the taelja.lean of every taelja=ok row in eval_out into
+lean/TaeljaVerify/ and list them as imports in lean/TaeljaVerifyEval.lean.
 
 Usage
   python3 scripts/regen_lean_eval.py [--only-new] [--limit N]
 
-  --only-new   skip files that already exist
-  --limit N    process at most N files (for testing)
+  --only-new   skip modules that already exist and keep earlier imports.
+               Without it, every eval module not copied in this run is
+               deleted, so --limit alone prunes the rest.
+  --limit N    process at most N rows (for testing)
 """
-import sys, re, csv, argparse
+import sys, argparse
 from pathlib import Path
 
+from eval import ALL_CATEGORIES, PROVER_DIR, lean_module, read_results
+
 TAELJA = Path(__file__).resolve().parent.parent
-EVAL    = TAELJA / "eval_out"
 LEAN    = TAELJA / "lean" / "TaeljaVerify"
-RESULTS = EVAL / "results.csv"
-ROOT_LEAN = TAELJA / "lean" / "TaeljaVerify.lean"
-# The eval modules are generated from eval_out and not shipped, so their
-# imports go to a file of their own, which .gitignore covers, and the tracked
-# TaeljaVerify.lean keeps the suite's own modules only.
+# Eval modules are generated and not tracked, so their imports go to a
+# git-ignored file of their own, apart from the suite's TaeljaVerify.lean.
 EVAL_LEAN = TAELJA / "lean" / "TaeljaVerifyEval.lean"
-
-PROVER_DIR = {"vampire": "Vampire", "e": "E", "twee": "Twee"}
-CATEGORIES = ("HEQ", "HNE", "UEQ", "FOF", "TFF")
-
-
-def to_camel(name: str) -> str:
-    """ANA009-2 → Ana0092,  ALG440-1 → Alg4401,  ALG018+1 → Alg0181"""
-    parts = re.split(r'[-_.+]', name)  # MSC015-1.005 -> Msc0151005 (dots and pluses are not valid in Lean names)
-    return ''.join(p.capitalize() for p in parts if p)
 
 
 def main():
+    """Copy the Lean files of the translated proofs and rewrite the import list."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--only-new", action="store_true")
     parser.add_argument("--limit", type=int, default=None)
+    parser.add_argument("--output-dir", default="eval_out", help="the evaluation directory")
     args = parser.parse_args()
+    evaldir = (TAELJA / args.output_dir).resolve()
 
-    # Read results.csv and collect taelja=ok rows
-    rows = []
-    with open(RESULTS) as f:
-        for row in csv.DictReader(f):
-            if row["taelja"] == "ok":
-                rows.append(row)
+    rows = [row for row in read_results(evaldir) if row["taelja"] == "ok"]
 
     if args.limit:
         rows = rows[: args.limit]
@@ -56,13 +44,13 @@ def main():
         prob   = row["problem"]           # ANA009-2
         prover = row["prover"]            # vampire / e / twee
 
-        lean_path = EVAL / cat / prob / prover / "taelja.lean"
+        lean_path = evaldir / cat / prob / prover / "taelja.lean"
         if not lean_path.exists():
             errors.append(f"MISSING taelja.lean (rerun eval.py): {lean_path}")
             continue
 
         prover_dir = PROVER_DIR[prover]
-        camel      = to_camel(prob)
+        camel      = lean_module(prob)
         out_dir    = LEAN / cat / prover_dir
         out_path   = out_dir / f"{camel}.lean"
 
@@ -73,10 +61,8 @@ def main():
         out_path.write_text(lean_path.read_text())
         generated.append(f"TaeljaVerify.{cat}.{prover_dir}.{camel}")
 
-    # Rewrite TaeljaVerify.lean with all imports
-    # Keep existing non-eval imports (Vampire/, E/, Twee/ at top level), add eval ones.
+    # Rewrite TaeljaVerifyEval.lean, keeping whatever precedes the marker line
     existing = EVAL_LEAN.read_text().splitlines() if EVAL_LEAN.exists() else []
-    # Keep lines up to and including the last non-eval import block
     eval_marker = "-- Eval benchmark imports"
     base_lines = []
     for line in existing:
@@ -84,21 +70,21 @@ def main():
             break
         base_lines.append(line)
 
-    # The import list mirrors the current taelja=ok rows exactly.  Modules of
-    # results no longer ok are dropped and their stale .lean files deleted, so the
-    # Lean build is a faithful census.
+    # Without --only-new the imports are exactly the modules copied in this
+    # run and other module files are deleted, so the Lean build counts the
+    # translated proofs exactly.
     if args.only_new:
         kept = set(
             line.strip().removeprefix("import ")
             for line in existing
-            if any(line.startswith(f"import TaeljaVerify.{c}.") for c in CATEGORIES)
+            if any(line.startswith(f"import TaeljaVerify.{c}.") for c in ALL_CATEGORIES)
         )
     else:
         kept = set()
     all_eval_imports = sorted(kept | set(generated))
     if not args.only_new:
         wanted = set(all_eval_imports)
-        for cat in CATEGORIES:
+        for cat in ALL_CATEGORIES:
             for pdir in PROVER_DIR.values():
                 for f in (LEAN / cat / pdir).glob("*.lean"):
                     if f"TaeljaVerify.{cat}.{pdir}.{f.stem}" not in wanted:

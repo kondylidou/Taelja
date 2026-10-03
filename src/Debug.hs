@@ -1,159 +1,44 @@
+-- Debug output for --debug, printed on stderr. It shows the proof tree, the
+-- inference rules of the input proof and trace lines from the translation.
 module Debug
-  ( dumpTSTP
-  , dumpProofInfo
-  , dumpProofTree
+  ( dumpProofTree
   , dumpInferenceRules
-  , ppLitI
-  , ppClauseI
-  , ppDir
-  , ppSimplChain
   , dbg
   , dbgScoped
-  , subrunDepth
   ) where
 
-import Data.List (intercalate, nub, sort, sortBy)
+import Data.List (intercalate, nub, sort)
 import Control.Exception (finally)
 import Data.IORef (IORef, newIORef, readIORef, modifyIORef')
 import System.IO.Unsafe (unsafePerformIO)
-import Data.List.NonEmpty (NonEmpty, toList)
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
-import Data.Ord (comparing)
-import qualified Data.Set as Set
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
+import Data.TPTP.Pretty ()
+import Prettyprinter (pretty)
 
-import ProofTree (unitNameStr, demodRuleNames)
-import qualified Helpers as H
 import System.IO (hPutStrLn, stderr)
-import Types (ProofInfo(..), LeafEntry(..), LeafRole(..), Dir(..), Literal(..), Clause(..))
+import Helpers (padRight)
+import ProofTree (RuleReading (..), inferenceReading)
+import TptpConvert (unitNameStr)
+import Types (ProofInfo(..), LeafEntry(..), LeafRole(..))
 
-ppTerm :: T.Term -> String
-ppTerm (T.Variable (T.Var v))                   = Text.unpack v
-ppTerm (T.Function (T.Defined (T.Atom f)) [])   = Text.unpack f
-ppTerm (T.Function (T.Defined (T.Atom f)) args) =
-  Text.unpack f ++ "(" ++ intercalate ", " (map ppTerm args) ++ ")"
-ppTerm (T.Function (T.Reserved (T.Standard f)) args) =
-  "$" ++ Text.unpack (T.name f)
-  ++ (if null args then "" else "(" ++ intercalate ", " (map ppTerm args) ++ ")")
-ppTerm (T.Function (T.Reserved (T.Extended t)) args) =
-  "$" ++ Text.unpack t
-  ++ (if null args then "" else "(" ++ intercalate ", " (map ppTerm args) ++ ")")
-ppTerm (T.Number (T.IntegerConstant n))      = show n
-ppTerm (T.Number (T.RationalConstant n d))   = show n ++ "/" ++ show d
-ppTerm (T.Number (T.RealConstant r))         = show r
-ppTerm (T.DistinctTerm (T.DistinctObject t)) = "\"" ++ Text.unpack t ++ "\""
-
-ppLit :: T.Literal -> String
-ppLit (T.Predicate (T.Defined (T.Atom n)) [])   = Text.unpack n
-ppLit (T.Predicate (T.Defined (T.Atom n)) args) =
-  Text.unpack n ++ "(" ++ intercalate ", " (map ppTerm args) ++ ")"
-ppLit (T.Predicate (T.Reserved (T.Standard p)) args) =
-  "$" ++ Text.unpack (T.name p)
-  ++ (if null args then "" else "(" ++ intercalate ", " (map ppTerm args) ++ ")")
-ppLit (T.Predicate (T.Reserved (T.Extended t)) args) =
-  "$" ++ Text.unpack t
-  ++ (if null args then "" else "(" ++ intercalate ", " (map ppTerm args) ++ ")")
-ppLit (T.Equality l T.Positive r) = ppTerm l ++ " = " ++ ppTerm r
-ppLit (T.Equality l T.Negative r) = ppTerm l ++ " != " ++ ppTerm r
-
-ppClause :: T.Clause -> String
-ppClause (T.Clause lits) =
-  let ls  = toList lits
-      pos = [ppLit l | (T.Positive, l) <- ls, not (isReserved l)]
-      neg = [ppLit l | (T.Negative, l) <- ls]
-  in case (neg, pos) of
-    ([], []) -> "bot"
-    ([], _)  -> intercalate " | " pos
-    (_, [])  -> intercalate ", " neg ++ " -> bot"
-    (_, _)   -> intercalate ", " neg ++ " -> " ++ intercalate " | " pos
-
-isReserved :: T.Literal -> Bool
-isReserved (T.Predicate (T.Reserved _) _) = True
-isReserved _                              = False
-
-ppFOF :: T.UnsortedFirstOrder -> String
-ppFOF (T.Atomic lit)                          = ppLit lit
-ppFOF (T.Negated f)                           = "~" ++ ppFOF f
-ppFOF (T.Quantified T.Forall vs body)         = "![" ++ ppVars vs ++ "]: " ++ ppFOF body
-ppFOF (T.Quantified T.Exists vs body)         = "?[" ++ ppVars vs ++ "]: " ++ ppFOF body
-ppFOF (T.Connected l T.Conjunction r)         = ppFOF l ++ " & " ++ ppFOF r
-ppFOF (T.Connected l T.Disjunction r)         = ppFOF l ++ " | " ++ ppFOF r
-ppFOF (T.Connected l T.Implication r)         = ppFOF l ++ " => " ++ ppFOF r
-ppFOF (T.Connected l T.Equivalence r)         = ppFOF l ++ " <=> " ++ ppFOF r
-ppFOF (T.Connected l _ r)                     = ppFOF l ++ " ? " ++ ppFOF r
-
-ppVars :: NonEmpty (T.Var, b) -> String
-ppVars vs = intercalate ", " [Text.unpack v | (T.Var v, _) <- toList vs]
-
+-- A clause or formula as TPTP writes it.
 ppDecl :: T.Declaration -> String
-ppDecl (T.Formula _ (T.CNF cl)) = ppClause cl
-ppDecl (T.Formula _ (T.FOF f))  = ppFOF f
-ppDecl d                        = show d
+ppDecl (T.Formula _ f) = show (pretty f)
+ppDecl d               = show (pretty d)
 
-roleStr :: T.Declaration -> String
-roleStr (T.Formula (T.Standard r) _) = show r
-roleStr _                            = "?"
-
-annStr :: Maybe T.Annotation -> String
-annStr Nothing          = "input"
-annStr (Just (src, _)) = show src
-
-dumpTSTP :: [T.Unit] -> IO ()
-dumpTSTP units = do
-  putStrLn ("Parsed " ++ show (length units) ++ " units")
-  putStrLn ""
-  mapM_ go units
-  where
-    go (T.Unit name decl source) = do
-      putStr   (unitNameStr name ++ " [" ++ roleStr decl ++ "]")
-      putStrLn (" <- " ++ annStr source)
-      putStrLn ("  " ++ ppDecl decl)
-      putStrLn ""
-    go (T.Include path _) = putStrLn ("include(" ++ show path ++ ")")
-
--- Raw TPTP view with goal literals, nodes by position and simplification chains.
--- The algorithm trace goes to stderr from translate under debug.
-dumpProofInfo :: ProofInfo -> IO ()
-dumpProofInfo info = do
-  putStrLn ("Goal literals [" ++ show (length (piGoalLits info)) ++ "]:")
-  mapM_ (\l -> putStrLn ("  " ++ ppLit l)) (piGoalLits info)
-  putStrLn ""
-  let allEntries = piElectrons info ++ piNuclei info
-  putStrLn ("Nodes by position [" ++ show (length allEntries) ++ "]:")
-  mapM_ ppEntry (sortBy (comparing lePos) allEntries)
-  putStrLn ""
-  let withSimpl = filter (not . null . leSimpl) allEntries
-  putStrLn ("Simpl[pos] chains [" ++ show (length withSimpl) ++ "]:")
-  if null withSimpl
-    then putStrLn "  (none)"
-    else mapM_ ppSimpl withSimpl
-  where
-    ppEntry e = putStrLn $
-      "  pos=" ++ (if null (lePos e) then "ε" else lePos e)
-      ++ "  [" ++ ppRole (leRole e) ++ "]"
-      ++ "  " ++ leName e
-      ++ ": " ++ ppDecl (leDecl e)
-    ppSimpl e = putStrLn $
-      "  pos=" ++ (if null (lePos e) then "ε" else lePos e)
-      ++ " (" ++ leName e ++ "): "
-      ++ intercalate ", " [nm ++ "(" ++ ppDirS d ++ ")" | (nm, d) <- leSimpl e]
-    ppRole OrigAxiom     = "axiom"
-    ppRole NegConjecture = "goal"
-    ppRole Derived       = "derived"
-    ppDirS LR = "L→R"
-    ppDirS RL = "R→L"
-
--- Proof tree reconstructed from bit-string positions (left=provider, right=consumer).
+-- Prints the proof tree, rebuilt from node positions. A child's position adds
+-- one digit to its parent's, 0 for the provider and 1 for the consumer.
 dumpProofTree :: ProofInfo -> IO ()
 dumpProofTree info = do
-  putStrLn "Proof tree (left=provider, right=consumer):"
+  hPutStrLn stderr "Proof tree (left=provider, right=consumer):"
   let allEntries = piElectrons info ++ piNuclei info
       byPos = Map.fromListWith (++) [(lePos e, [e]) | e <- allEntries]
   go byPos "" "" ""
   where
-    -- go nodeMap currentPos linePrefix lastChildPrefix
+    -- linePrefix draws this node's line and contPrefix the lines below it
     go :: Map String [LeafEntry] -> String -> String -> String -> IO ()
     go byPos pos linePrefix contPrefix = do
       let entries  = Map.findWithDefault [] pos byPos
@@ -162,7 +47,7 @@ dumpProofTree info = do
             []  -> "(internal)"
             [e] -> nodeLabel e
             es  -> intercalate " | " (map nodeLabel es)
-      putStrLn (linePrefix ++ label)
+      hPutStrLn stderr (linePrefix ++ label)
       let n = length children
       mapM_ (\(i, child) ->
         let isLast     = i == n - 1
@@ -173,7 +58,7 @@ dumpProofTree info = do
 
     childPositions :: Map String [LeafEntry] -> String -> [String]
     childPositions byPos pos =
-      sortBy (comparing id)
+      sort
         [ c | c0 <- ['0'..'9']
             , let c = pos ++ [c0]
             , Map.member c byPos ]
@@ -182,104 +67,53 @@ dumpProofTree info = do
     nodeLabel e =
       "[" ++ role ++ "] "
       ++ ppDecl (leDecl e)
-      ++ simplSuffix
       where
         role = case leRole e of
                  OrigAxiom     -> "axiom"
                  NegConjecture -> "goal"
                  Derived       -> "derived"
-        simplSuffix
-          | null (leSimpl e) = ""
-          | otherwise = "  {simpl: "
-              ++ intercalate ", " [nm ++ "(" ++ d ++ ")" | (nm, dir) <- leSimpl e
-                                  , let d = case dir of LR -> "L→R"; RL -> "R→L"]
-              ++ "}"
 
--- Inference rules classified by Waldmann's proof categories.
--- "unclassified" must be empty for his conversion proof to hold.
+-- Prints the inference rules of the proof, grouped by how the translation
+-- reads them, so a rule it copies or refuses stands out.
 dumpInferenceRules :: [T.Unit] -> IO ()
 dumpInferenceRules units = do
-  let ruleNames = sort $ nub
-        [ Text.unpack rule
-        | T.Unit _ _ (Just (T.Inference (T.Atom rule) _ _, _)) <- units ]
-      bucket nm
-        | Set.member (Text.pack nm) demodRuleNames     = "demodulation"
-        | Set.member (Text.pack nm) resolutionRules    = "resolution"
-        | Set.member (Text.pack nm) eqResolutionRules  = "eq-resolution"
-        | Set.member (Text.pack nm) condensationRules  = "condensation"
-        | Set.member (Text.pack nm) preprocessingRules = "preprocessing"
-        | otherwise                                    = "unclassified"
-      grouped = foldr (\nm m -> Map.insertWith (++) (bucket nm) [nm] m)
-                      Map.empty ruleNames
-      showBucket k = putStrLn $ "  " ++ pad k ++ "  " ++
+  let unitMap = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n _ _) <- units ]
+      inferences src = case src of
+        T.Inference (T.Atom rule) _ ps -> (rule, ps) : concat [ inferences s | T.Parent s _ <- ps ]
+        _                              -> []
+      reading (rule, ps) = case inferenceReading unitMap rule ps of
+        TreeStep    -> "tree step"
+        RewriteStep -> "rewrite step"
+        Copy        -> "copy"
+        Refused _   -> "refused"
+      grouped = Map.map (nub . sort) $ Map.fromListWith (++)
+        [ (reading inf, [Text.unpack (fst inf)])
+        | T.Unit _ _ (Just (src, _)) <- units, inf <- inferences src ]
+      ruleNames = nub (concat (Map.elems grouped))
+      showBucket k = hPutStrLn stderr $ "  " ++ padRight 14 k ++ "  " ++
         maybe "(none)" (intercalate ", " . sort) (Map.lookup k grouped)
-      pad s = s ++ replicate (14 - length s) ' '
-  putStrLn ("Inference rules [" ++ show (length ruleNames) ++ "]:")
-  mapM_ showBucket ["demodulation", "resolution", "eq-resolution",
-                    "condensation", "preprocessing", "unclassified"]
-  where
-    resolutionRules = Set.fromList $ map Text.pack
-      [ "resolution", "binary_resolution", "hyper_resolution"
-      , "hyperresolution", "ur_resolution", "superposition"
-      , "subsumption_resolution" ]
-    eqResolutionRules = Set.fromList $ map Text.pack
-      [ "trivial_inequality_removal", "equality_resolution" ]
-    condensationRules = Set.fromList $ map Text.pack
-      [ "cn", "condensation", "duplicate_literal_removal" ]
-    preprocessingRules = Set.fromList $ map Text.pack
-      [ "cnf_transformation", "ennf_transformation", "ennf_negation_normalization"
-      , "flattening", "negated_conjecture", "rectify", "skolemize"
-      , "variable_rename", "definition_folding"
-      , "pure_predicate_removal", "predicate_definition_introduction"
-      , "unused_predicate_definition_removal" ]
+  hPutStrLn stderr ("Inference rules [" ++ show (length ruleNames) ++ "]:")
+  mapM_ showBucket ["tree step", "rewrite step", "copy", "refused"]
 
-ppLitI :: Literal -> String
-ppLitI (Eq  a b)   = H.ppTerm a ++ " = " ++ H.ppTerm b
-ppLitI (NEq a b)   = H.ppTerm a ++ " ≠ " ++ H.ppTerm b
-ppLitI (Rel p [])  = p
-ppLitI (Rel p ts)  = p ++ "(" ++ intercalate "," (map H.ppTerm ts) ++ ")"
-ppLitI (NRel p []) = "¬" ++ p
-ppLitI (NRel p ts) = "¬" ++ p ++ "(" ++ intercalate "," (map H.ppTerm ts) ++ ")"
-
-ppClauseI :: Clause -> String
-ppClauseI (Clause [] Nothing)  = "⊥"
-ppClauseI (Clause bs Nothing)  = intercalate ", " (map ppLitI bs) ++ " → ⊥"
-ppClauseI (Clause [] (Just h)) = ppLitI h
-ppClauseI (Clause bs (Just h)) = intercalate ", " (map ppLitI bs) ++ " → " ++ ppLitI h
-
-ppDir :: Dir -> String
-ppDir LR = "L→R"
-ppDir RL = "R→L"
-
-ppSimplChain :: [(String, Dir)] -> String
-ppSimplChain [] = "(none)"
-ppSimplChain ss = intercalate ", " [n ++ "(" ++ ppDir d ++ ")" | (n, d) <- ss]
-
--- Nesting depth of recursive sub-translations.  A sub-run reuses E's clause
--- names and position strings, so a flat trace cannot tell which run a name
--- belongs to.  Every debug line is tagged with its depth, and the lemma
--- builder reads it to keep prover re-proofs to the outermost run.
+-- Nesting depth of recursive sub-translations. Sub-runs reuse clause names
+-- and positions, so each debug line is tagged with its depth.
 {-# NOINLINE debugDepthRef #-}
 debugDepthRef :: IORef Int
 debugDepthRef = unsafePerformIO (newIORef 0)
 
-subrunDepth :: IO Int
-subrunDepth = readIORef debugDepthRef
-
+-- Prints a trace line tagged with the nesting depth when debugging is on.
 dbg :: Bool -> String -> IO ()
 dbg True  msg = do
   d <- readIORef debugDepthRef
   hPutStrLn stderr ("[d" ++ show d ++ "] " ++ msg)
 dbg False _   = return ()
 
--- Run an action one debug level deeper, with enter and exit markers naming
--- the sub-run so nested lemma translations can be told apart.
+-- Runs an action one level deeper, between enter and exit markers.
 dbgScoped :: Bool -> String -> IO a -> IO a
 dbgScoped debug label act = do
   modifyIORef' debugDepthRef (+ 1)
   dbg debug ("[subrun-enter] " ++ label)
-  -- a sub-run that throws still leaves its level, or every later run in the
-  -- process would count as nested
+  -- restore the depth even if the sub-run throws
   r <- act `finally` modifyIORef' debugDepthRef (subtract 1)
   dbg debug ("[subrun-exit] " ++ label)
   return r

@@ -1,44 +1,53 @@
 #!/usr/bin/env python3
-"""Check every translated proof of the evaluation with GDV.
+"""Verify every translated proof of the evaluation with GDV.
 
-For each taelja=ok row, print the TPTP derivation with --tptp and run GDV
-against the problem.  A GaveUp is retried, since GDV's syntax check over the
-network is flaky.  Writes one line per row to gdv_results.csv in eval_out and
-prints a summary.
+For each taelja=ok row of results.csv, print the proof with taelja --tptp, run
+GDV on it against the problem under $TPTP, write the verdict to
+gdv_results.csv beside results.csv and print the counts. GDV is found like
+eval.py finds the provers (--gdv, $GDV, bin/GDV, then the PATH).
 
-Usage: gdv_eval.py [--jobs N] [--limit N] [--category FOF]
+Usage: gdv_eval.py [--gdv PATH] [--output-dir eval_out] [--jobs N] [--limit N] [--category FOF]
 """
-import argparse, csv, subprocess, sys, os, tempfile
+import argparse, csv, os, tempfile, shutil
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from eval import find_prover, find_taelja, read_results, run
+
 ROOT = Path(__file__).resolve().parent.parent
-EVAL = ROOT / 'eval_out'
 TPTP = Path(os.environ.get('TPTP', str(Path.home() / 'Desktop' / 'TPTP-v9.2.1')))
-GDV = os.environ.get('GDV', str(Path(os.environ.get('GDV_DIR', '')) / 'GDV'))
 
 
-def status_of(taelja, row, tries=3):
-    d = EVAL / row['category'] / row['problem'] / row['prover']
+def status_of(gdv, taelja, evaldir, row, tries=3):
+    """GDV's verdict on the TPTP derivation of one row."""
+    d = evaldir / row['category'] / row['problem'] / row['prover']
     problem = TPTP / 'Problems' / row['problem'][:3] / (row['problem'] + '.p')
-    out = subprocess.run([taelja, '--tptp', str(d / 'proof.tstp')],
-                         capture_output=True, text=True, timeout=300)
-    if out.returncode != 0 or not out.stdout.strip():
+    # from the project root, as eval.py runs Taelja, so bin/twee is found
+    rc, derivation, _ = run([taelja, '--tptp', str(d / 'proof.tstp')], timeout=300, cwd=str(ROOT))
+    if rc != 0 or not derivation.strip():
         return 'NoDerivation'
     with tempfile.NamedTemporaryFile('w', suffix='.p', delete=False) as tmp:
-        tmp.write(out.stdout)
+        tmp.write(derivation)
         path = tmp.name
     try:
         for _ in range(tries):
-            r = subprocess.run([GDV, '-r', '-l', '-q1', '-t', '300', '-p', str(problem), path],
-                               capture_output=True, text=True, timeout=1800,
-                               env={**os.environ, 'TPTP': str(TPTP)})
-            szs = [l.split('% SZS status ')[1].strip() for l in r.stdout.splitlines()
+            # GDV names its obligation files after the steps, in /tmp by
+            # default, so each run gets its own directory (-k) or parallel
+            # runs overwrite each other's.
+            work = tempfile.mkdtemp(prefix='gdv-')
+            try:
+                _, report, _ = run([gdv, '-r', '-l', '-q1', '-t', '300', '-k', work,
+                                    '-p', str(problem), path],
+                                   timeout=1800, extra_env={'TPTP': str(TPTP)})
+            finally:
+                shutil.rmtree(work, ignore_errors=True)
+            szs = [l.split('% SZS status ')[1].strip() for l in report.splitlines()
                    if l.startswith('% SZS status ')]
             s = szs[-1] if szs else 'NoStatus'
-            # GaveUp is GDV's flaky syntax check, and a step counted as not
-            # verified is often its prover timing out under load
-            if s not in ('GaveUp', 'NoStatus') and 'not verified' not in s:
+            # GaveUp means GDV's online syntax check failed, and a run that
+            # printed no status failed too, so only these are retried. An
+            # unverified step is GDV's verdict and stands.
+            if s not in ('GaveUp', 'NoStatus'):
                 return s
         return s
     finally:
@@ -46,38 +55,47 @@ def status_of(taelja, row, tries=3):
 
 
 def main():
+    """Check every translated proof with GDV and write gdv_results.csv."""
     p = argparse.ArgumentParser()
+    p.add_argument('--gdv', help='the GDV binary')
+    p.add_argument('--output-dir', default='eval_out', help='the evaluation directory')
     p.add_argument('--jobs', type=int, default=2)
     p.add_argument('--limit', type=int)
     p.add_argument('--category')
     args = p.parse_args()
-    taelja = subprocess.run(['cabal', 'list-bin', 'taelja'], capture_output=True,
-                            text=True, cwd=ROOT).stdout.split()[-1]
-    rows = [r for r in csv.DictReader(open(EVAL / 'results.csv')) if r['taelja'] == 'ok']
+    gdv = find_prover(args.gdv, 'GDV', 'GDV')
+    if gdv is None:
+        raise SystemExit('error: no GDV found. Give --gdv PATH, set GDV, put it at bin/GDV or on the PATH')
+    taelja = find_taelja()
+    if taelja is None:
+        raise SystemExit('error: no taelja binary found; run cabal build first')
+    evaldir = (ROOT / args.output_dir).resolve()
+    rows = [r for r in read_results(evaldir) if r['taelja'] == 'ok']
     if args.category:
         rows = [r for r in rows if r['category'] == args.category]
     if args.limit:
         rows = rows[:args.limit]
-    out = open(EVAL / 'gdv_results.csv', 'w', newline='')
+    out = open(evaldir / 'gdv_results.csv', 'w', newline='')
     w = csv.writer(out); w.writerow(['category', 'problem', 'prover', 'gdv'])
     done = {'n': 0}
 
-    def run(r):
+    def check_row(r):
+        """The verdict on one row, or the error a check raised."""
         try:
-            s = status_of(taelja, r)
+            s = status_of(gdv, taelja, evaldir, r)
         except Exception as e:
             s = f'error {type(e).__name__}'
         return r, s
 
     with ThreadPoolExecutor(args.jobs) as ex:
-        for r, s in ex.map(run, rows):
+        for r, s in ex.map(check_row, rows):
             w.writerow([r['category'], r['problem'], r['prover'], s]); out.flush()
             done['n'] += 1
             if done['n'] % 100 == 0:
                 print(f"{done['n']}/{len(rows)}", flush=True)
     out.close()
     import collections
-    c = collections.Counter(row[3] for row in csv.reader(open(EVAL / 'gdv_results.csv')) if row[0] != 'category')
+    c = collections.Counter(row[3] for row in csv.reader(open(evaldir / 'gdv_results.csv')) if row[0] != 'category')
     print(c)
 
 

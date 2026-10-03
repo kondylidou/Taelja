@@ -1,42 +1,49 @@
+-- The data types all modules share, from terms, literals and Horn clauses to
+-- proof blocks, the translated proof and the state of the translation.
 module Types where
 
+import Control.DeepSeq (NFData)
+import GHC.Generics (Generic)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.TPTP as T
 
+-- A first-order term, a variable, a constant or a function application.
 data Term
   = Var   String
   | Const String
   | App   String [Term]
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Generic)
 
+-- A literal, an equation or a predicate atom, either positive or negated.
 data Literal
   = Eq   Term Term       -- s = t
   | NEq  Term Term       -- s ≠ t
   | Rel  String [Term]   -- P(t̄)
   | NRel String [Term]   -- ¬P(t̄)
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Generic)
 
--- A Horn clause ¬L1 ∨ ... ∨ ¬Ln ∨ L0.  The body holds L1 to Ln with their signs
--- stripped, and the head is Just L0, or Nothing for a goal clause.
+-- A Horn clause L1 ∧ ... ∧ Ln → L0. The head is Nothing for a goal clause.
 data Clause = Clause
   { body :: [Literal]
   , hd   :: Maybe Literal
-  } deriving (Eq, Show)
+  } deriving (Eq, Show, Generic)
 
+-- A substitution, binding variable names to terms.
 type Subst = [(String, Term)]
 
 -- Direction of an equation used as a rewrite rule.
-data Dir = LR | RL deriving (Eq, Show)
+data Dir = LR | RL deriving (Eq, Show, Generic)
 
--- One rewrite step, with the equation used, its direction and the result.
+-- One rewrite step, with the name of the equation, the equation and its direction.
 data RwStep = RwStep
   { rwName :: String
   , rwEq   :: (Term, Term)
   , rwDir  :: Dir
-  } deriving (Show)
+  } deriving (Show, Generic)
 
--- An entry in the working unit set, with its name if assigned, literal, stored proof and position.
+-- An electron of the working set, with its name once it has one, its
+-- literal, its proof if derived, and its position in the proof tree.
 data UnitEntry = UnitEntry
   { ueName  :: Maybe String
   , ueUnit  :: Literal
@@ -44,38 +51,44 @@ data UnitEntry = UnitEntry
   , uePos   :: Maybe String
   } deriving (Show)
 
--- A Horn axiom as encoded for Twee with ifeq and pair.  haCnfId is its name in
--- the CNF file sent to Twee, haDispName its name in the emitted proof, haHead
--- its relational head and haBodies its body, empty for a unit.
-data HornAxiomEntry = HornAxiomEntry
-  { haCnfId    :: String
-  , haDispName :: Maybe String
-  , haHead     :: Literal
-  , haBodies   :: [Literal]
-  } deriving (Show)
-
--- EqChain is only for pure equational goals. Everything else uses HaveHence.
+-- A proof as have/hence lines or as an equality chain. A chain proves an
+-- equation, or an atom by rewriting it to true.
 data ProofBlock
   = HaveHence [ProofLine]
   | EqChain   Term [(RwStep, Term)]
-  deriving (Show)
+  deriving (Show, Generic)
 
+-- One line of a have/hence proof, a literal and what it follows from.
 data ProofLine
   = Have  Literal String        -- have L  by name
   | And   Literal String        --  and L  by name
   | Hence Literal Justification -- hence L by ...
-  deriving (Show)
+  deriving (Show, Generic)
 
+-- Why a hence line holds, with the direction a rewrite uses its equation in.
 data Justification
   = ByAxiom String
-  | ByRw    String (Maybe Dir)
+  | ByRw    String Dir
   | ByContradiction         -- the conclusion follows from a derived $false
-  deriving (Show)
+  deriving (Show, Generic)
 
+-- An input axiom under its display name, a unit fact or a nucleus clause.
 data Axiom
   = AUnit    String Literal
   | ANucleus String Clause
-  deriving (Show)
+  deriving (Show, Generic)
+
+-- Forcing a proof fully makes an error inside it surface where it is caught,
+-- not later when the proof is printed.
+instance NFData Term
+instance NFData Literal
+instance NFData Clause
+instance NFData Dir
+instance NFData RwStep
+instance NFData ProofBlock
+instance NFData ProofLine
+instance NFData Justification
+instance NFData Axiom
 
 -- The translated proof, with axioms in input order, lemmas and goal proofs.
 data StructuredProof = StructuredProof
@@ -85,84 +98,72 @@ data StructuredProof = StructuredProof
   , spInput :: ProofInput
   } deriving (Show)
 
--- The input problem behind a proof, kept for the TPTP output.  Axiom display
--- names map to the input units they came from, the hypotheses an implication
--- conjecture assumed map to the clause that states them, and the conjecture
--- is its input unit.
+-- The input problem behind a proof, kept for the TPTP output.
 data ProofInput = ProofInput
-  { inAxiomUnits :: Map.Map String T.Unit
-  , inHypotheses :: Map.Map String String
+  { inAxiomUnits :: Map.Map String T.Unit  -- axiom display name to its source unit
+  , inHypotheses :: Map.Map String String  -- hypothesis display name to its clause's unit
   , inConjecture :: Maybe T.Unit
   , inAxiomLeaves :: Map.Map String String  -- axiom display name to its clause's unit
   , inGeneralized :: [(String, Term)]       -- goal variable to the Skolem term it replaced
-  , inNegated     :: [String]  -- hypotheses from a negated conclusion, so the goal is their negation
-  , inUnits      :: [T.Unit]  -- every unit of the input proof
-  , inTyped      :: [T.Unit]  -- the units as read when the proof is typed, else empty
+  , inNegated     :: [String]  -- hypotheses from a negated conclusion, whose negation is the goal
+  , inUnits      :: [T.Unit]  -- every unit of the proof, after preprocessing
+  , inTyped      :: [T.Unit]  -- the units as read if the proof is typed, else empty
   } deriving (Show)
 
+-- A proof input with nothing recorded.
 emptyInput :: ProofInput
 emptyInput = ProofInput Map.empty Map.empty Nothing Map.empty [] [] [] []
 
+-- The state the translation threads through the algorithm.
 data AlgState = AlgState
-  { stDebug      :: Bool  -- gate for per-goal warnings (a stage's result may be superseded)
-  , stProverAllowed :: Bool  -- whether find_elec may call a prover, false during the cheap phase
+  { stDebug      :: Bool  -- whether debug traces are printed
   , stUnits      :: [UnitEntry]
-  , stHornAxioms :: [HornAxiomEntry]  -- original Horn axioms for Twee fallback calls
   , stLemmas     :: [(String, Literal, ProofBlock)]
   , stGoals      :: [(Literal, ProofBlock)]
   , stCounter    :: Int
-  , stAxNuclei   :: [(String, Clause)] -- original axiom nuclei (name, clause) for goal justification search
-  , stReprove    :: String -> IO (Maybe (Literal, ProofBlock, [(String, Literal, ProofBlock)], [Axiom]))
-    -- Axioms a re-proof had to state that the input tree never used, given
-    -- outer numbers as they arrive and appended to the emitted axiom list.
-  , stExtraAxioms :: [Axiom]
-    -- The emitted axiom list as fixed before the algorithm ran.  Numbering the
-    -- extras consults it so the two never collide.
-  , stBaseAxioms  :: [Axiom]
-  , stNameToPos  :: Map.Map String String        -- TSTP unit name -> tree position of its electron
-  , stEqByName   :: Map.Map String (Term, Term)  -- TSTP unit name -> its unit equation
-  , stTweeSteps  :: [(String, String, String)]  -- a Twee rewriting step: its conclusion and its two premises, as TSTP names
-  , stUnitLitByName :: Map.Map String Literal  -- TSTP unit name -> its literal, for a positive unit, equation or atom
-  , stLiteralRewrites :: Map.Map String [(Literal, [(String, Dir, (Term, Term), Literal)])]  -- nucleus position -> the rewrites the proof makes to each of its body literals, by equation name and the instance applied
-  , stHeadRewrites :: Map.Map String (Literal, [(String, Dir, (Term, Term), Literal)])  -- nucleus position -> its head under θ and the rewrites the proof makes to it before the clause is a unit
-  , stReadableUnits :: Set.Set String  -- units whose derivation the translation reads step by step (see readableUnits)
-  , stPredicates :: Set.Set String  -- predicate symbols, so an equation Twee states between two atoms is never stated (see isAtomEquation)
-  , stUnreadSteps :: Set.Set (String, (Term, Term))  -- Twee steps that could not be read, with the equation read, kept when a failed attempt is undone
-  , stReadSteps :: Map.Map (String, (Term, Term)) (Term, [(UnitEntry, Dir, Term)])  -- Twee steps read, with the equation read, each its chain from its left side
-  , stGoalTemplate :: [Literal]  -- the conjecture's own goal literals (shared free variables across conjuncts), consulted by emitGoalProof
-  , stCandLemmas :: Map.Map String [(String, Literal, ProofBlock)]  -- a candidate lemma's display name -> its entries, sub-lemmas first
+  , stAxNuclei   :: [(String, Clause)] -- axiom nuclei with a display name, with their clauses
+  , stNameToPos  :: Map.Map String String        -- TSTP unit name to the tree position of its electron
+  , stEquationSteps  :: [(String, String, String)]  -- equation steps as (conclusion, premise, premise), a clause inside a nested step named <unit>_stepK
+  , stUnitLitByName :: Map.Map String Literal  -- the literal of each positive unit, by its name in stEquationSteps
+  , stUnitUses :: Map.Map String Int  -- TSTP unit name to the number of inferences that use it
+  , stLiteralRewrites :: Map.Map String [(Literal, [(String, Dir, (Term, Term), Literal)])]  -- nucleus position to the rewrites the proof makes to each body atom
+  , stHeadRewrites :: Map.Map String (Literal, [(String, Dir, (Term, Term), Literal)])  -- nucleus position to its head under θ and the rewrites made to it before the clause is a unit
+  , stReadableUnits :: Set.Set String  -- units whose whole derivation can be read step by step (see readableUnits)
+  , stPredicates :: Set.Set String  -- predicate symbols, so an equation between atoms is never a lemma (see isAtomEquation)
+  , stUnreadSteps :: Set.Set (String, (Term, Term))  -- premise steps that failed to read, kept when a failed attempt is undone
+  , stReadSteps :: Map.Map (String, (Term, Term)) (Term, [(UnitEntry, Dir, Term)])  -- premise steps already read, with their chains
+  , stGoalTemplate :: [Literal]  -- the goal literals, whose shared variables every proved goal must ground consistently
   , stNegationConj :: Bool  -- the conjecture concludes a negation, proved by deriving $false
-  , stClosing :: Maybe ProofBlock  -- the derivation of $false from the goal nucleus's premises, for such a conjecture
-      -- stReprove re-proves the derived unit at a tree position from its
-      -- ancestry.  Only top-level runs use it, and it returns Nothing elsewhere.
+  , stClosing :: Maybe ProofBlock  -- for such a conjecture, the derivation of $false that closes the proof
   }
 
+-- Where a clause of the proof tree comes from.
 data LeafRole
-  = OrigAxiom     -- file-sourced clause (not the negated conjecture)
-  | NegConjecture -- the negated conjecture / goal
-  | Derived       -- derived via inference (includes Twee rewriting steps)
+  = OrigAxiom     -- an input clause, a conjecture hypothesis or a prover definition
+  | NegConjecture -- a clause of the negated conjecture, the goal
+  | Derived       -- the conclusion of an inference
   deriving (Show, Eq)
 
+-- A clause of the proof tree, a leaf or an inner node.
 data LeafEntry = LeafEntry
-  { lePos     :: String          -- bit-string position in the expanded tree
+  { lePos     :: String          -- its position in the tree, a string of child indices
   , leUnit    :: String          -- the unit's own name
-  , leName    :: String          -- resolved source name
-  , leDecl    :: T.Declaration   -- raw TPTP declaration (for clause conversion)
-  , leSrcDecl :: T.Declaration   -- source declaration, the same as leDecl for Derived and NegConjecture
+  , leName    :: String          -- its source unit's name, its own when derived or a negated conjecture
+  , leDecl    :: T.Declaration   -- the clause as the proof prints it
+  , leSrcDecl :: T.Declaration   -- the source's statement if Horn or the negated conjecture, else leDecl
   , leRole    :: LeafRole
-  , leHyp     :: Bool            -- an axiom that an implication conjecture assumed
-  , leSimpl   :: [(String, Dir)] -- the demodulation chain at this position, outermost first
+  , leHyp     :: Bool            -- a hypothesis of the conjecture
   } deriving (Show)
 
 -- Everything the algorithm needs, extracted once from the proof tree.
 data ProofInfo = ProofInfo
-  { piElectrons :: [LeafEntry]  -- positive unit nodes (leaf + inner), DFS position order
-  , piNuclei    :: [LeafEntry]  -- non-positive-unit nodes (incl. NegConjecture), position order
-  , piGoalLits  :: [T.Literal]  -- goal literals from the negated conjecture
+  { piElectrons :: [LeafEntry]  -- the positive unit clauses, leaves and inner nodes, by position
+  , piNuclei    :: [LeafEntry]  -- every other clause, the negated conjecture included, by position
+  , piGoalLits  :: [T.Literal]  -- the goal literals, from the conjecture or else from a clause stating its negation
   , piDeclAt    :: Map.Map String T.Declaration
-      -- the clause at each position on an entry's ancestor chain and at their
-      -- siblings, read from the full tree and used to trace θ from the root
+      -- the clause at each ancestor of an entry and its sibling, for tracing θ
   , piUnitAt    :: Map.Map String String
-      -- the proof unit at each of those positions, so a unit the tree uses
-      -- twice is known at both though its entry keeps only the first
+      -- the unit at each of those positions, also at repeat uses that have no entry
+  , piRuleAt    :: Map.Map String String
+      -- the rule of the step that concludes the clause at each of them
   } deriving (Show)

@@ -1,27 +1,18 @@
 #!/usr/bin/env python3
-"""Find the FOF and TFF theorem problems of a TPTP library that are Horn as
-written, for an eval run over them.
+"""List the TPTP problems that are Horn as written, for eval.py --list.
 
-The fragment is decided on the problem as stated, before any prover runs and
-without clausifying: every axiom must be a Horn clause as written, a
-universally closed A1 & ... & An => B, an atom, a disjunction with at most one
-positive literal, or a negated conjunction, and the conjecture a Horn clause
-whose hypotheses are atoms and whose conclusion is an atom, a conjunction of
-atoms, or one under an existential quantifier.  `taelja --horn-problem` makes
-that judgement, includes resolved against the TPTP root.  TPTP's SPC field
-marks CNF problems as Horn, and those are read off it.  TFF problems with
-arithmetic, the polymorphic and extended forms, and the modal problems
-encoded with $ki symbols are left out, since Taelja has no arithmetic and
-reads plain first-order clauses only.
+FOF and TFF theorem problems are kept when `taelja --horn-problem` finds them
+Horn before any clausification. CNF problems are read off their SPC tag as
+HNE, HEQ or UEQ. TFF with arithmetic, polymorphism, extended forms or the
+modal $ki encoding is skipped, as Taelja reads plain first-order clauses only.
 
 Usage
   python3 scripts/select_horn.py <tptp_dir> [--taelja PATH] [--jobs N] [--limit N]
                                  [--output-dir eval_out]
 
-Writes <output-dir>/horn_fof.txt and <output-dir>/horn_tff.txt, one problem
-per line as CATEGORY<TAB>Problems/DOM/NAME.p, for eval.py --list, and
-<output-dir>/horn_cnf.txt with the HNE, HEQ and UEQ problems read off the
-SPC tag, so one eval run can take all of them.
+Writes horn_fof.txt, horn_tff.txt and horn_cnf.txt to the output directory,
+one CATEGORY<TAB>Problems/DOM/NAME.p per line, and unknown.txt for problems
+taelja could not judge.
 """
 import argparse
 import os
@@ -31,15 +22,11 @@ import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+from eval import SPC_PATTERNS, find_taelja
+
 FORMS = {
     'FOF': re.compile(r'^% SPC\s*:\s*FOF_THM_'),
     'TFF': re.compile(r'^% SPC\s*:\s*TF0_THM_.*_NAR\s*$'),
-}
-
-CNF_CATEGORIES = {
-    'HNE': re.compile(r'^% SPC\s*:\s*\w+_UNS_\w+_NEQ_HRN'),
-    'HEQ': re.compile(r'^% SPC\s*:\s*\w+_UNS_\w+_[SP]EQ_HRN'),
-    'UEQ': re.compile(r'^% SPC\s*:\s*\w+_UNS_\w+_PEQ_UEQ'),
 }
 
 
@@ -55,8 +42,8 @@ def form_of(p_file):
                             if form == 'TFF' and '$ki' in Path(p_file).read_text(errors='ignore'):
                                 return None
                             return form
-                    for cat, pat in CNF_CATEGORIES.items():
-                        if pat.match(line):
+                    for cat, pat in SPC_PATTERNS.items():
+                        if pat.search(line):
                             return cat
                     return None
                 if not line.startswith('%') and line.strip():
@@ -89,6 +76,7 @@ def is_horn(taelja, p_file, tptp_dir):
 
 
 def main():
+    """Select the Horn problems of a TPTP library and write one list per format."""
     ap = argparse.ArgumentParser()
     ap.add_argument('tptp_dir')
     ap.add_argument('--taelja', default=None, help='the taelja binary, default: cabal list-bin taelja')
@@ -98,11 +86,7 @@ def main():
     args = ap.parse_args()
 
     tptp = Path(args.tptp_dir).resolve()
-    taelja = args.taelja
-    if not taelja:
-        r = subprocess.run(['cabal', 'list-bin', 'taelja'], capture_output=True, text=True,
-                           cwd=Path(__file__).resolve().parent.parent)
-        taelja = r.stdout.strip().splitlines()[-1] if r.returncode == 0 and r.stdout.strip() else None
+    taelja = args.taelja or find_taelja()
     if not taelja or not Path(taelja).exists():
         sys.exit('no taelja binary found, pass --taelja')
     out = Path(args.output_dir)

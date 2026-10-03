@@ -1,107 +1,123 @@
+-- Shared helpers on terms, literals, clauses and proof blocks. They cover
+-- substitution, matching, unification, rewriting, printing symbols and
+-- cleaning prover output before it is parsed.
 module Helpers where
 
 import Control.Applicative ((<|>))
-import Data.Char (isAlphaNum)
-import Data.List ((\\), inits, intercalate, isInfixOf, isPrefixOf, isSuffixOf, nub, permutations, tails)
+import Control.Exception (SomeAsyncException, SomeException, fromException, throwIO, try)
+import Data.Bifunctor (bimap)
+import Data.Char (isAlphaNum, isAsciiLower, isAsciiUpper, isDigit, toUpper)
+import Data.Function (on)
+import Data.List ((\\), groupBy, inits, intercalate, isPrefixOf, isSuffixOf, nub, partition, permutations, sortOn, tails)
 import Data.Maybe (fromMaybe, isJust, listToMaybe)
+import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
+
 import Types
 
+-- The variables of a term, in order of appearance.
 termVars :: Term -> [String]
 termVars (Var x)    = [x]
 termVars (Const _)  = []
 termVars (App _ ts) = concatMap termVars ts
 
+-- The variables of a literal, in order of appearance.
 litVars :: Literal -> [String]
 litVars = foldLiteralTerms termVars
 
-termConsts :: Term -> [String]
-termConsts (Const c)  = [c]
-termConsts (Var _)    = []
-termConsts (App _ ts) = concatMap termConsts ts
-
--- Theorem 1's fresh constants.  θ grounds every variable the proof leaves
--- unbound to one of these, so a body atom is ground when its nucleus is
--- processed and no match can instantiate it.  When the derived head is stored
--- or a goal emitted they become variables again, and since they occur in no
--- axiom the fact holds for every value.
--- The prefix must not begin any symbol of a problem, or a real constant would
--- be turned into a variable when a derived fact is stored.  Benchmark names are
--- short or use the Isabelle prefixes c_, v_, t_ and tc_, so this one is safe.
+-- The prefix of Theorem 1's fresh constants, to which θ sends each variable no
+-- inference binds, so no match can instantiate it. They become variables
+-- again when a fact is stored or a goal printed, which is sound because no
+-- axiom mentions them. No problem symbol may start with this prefix.
 rigidPrefix :: String
 rigidPrefix = "taelja_rigid_"
 
+-- Whether a constant is one of the fresh constants of Theorem 1.
 isRigidConst :: String -> Bool
 isRigidConst = (rigidPrefix `isPrefixOf`)
 
--- A groundness test counts both variables and fresh constants as open.
-termFree :: Term -> [String]
-termFree (Var x)    = [x]
-termFree (Const c)  = [c | isRigidConst c]
-termFree (App _ ts) = concatMap termFree ts
+-- Variables and fresh constants, which a groundness test treats as open.
+termOpen :: Term -> [String]
+termOpen (Var x)    = [x]
+termOpen (Const c)  = [c | isRigidConst c]
+termOpen (App _ ts) = concatMap termOpen ts
 
-litFree :: Literal -> [String]
-litFree = foldLiteralTerms termFree
+-- The variables and fresh constants of a literal.
+litOpen :: Literal -> [String]
+litOpen = foldLiteralTerms termOpen
 
+-- Fresh constants back to the variables they stand for.
 unrigidTerm :: Term -> Term
 unrigidTerm (Const c) | isRigidConst c = Var (drop (length rigidPrefix) c)
 unrigidTerm (App f ts) = App f (map unrigidTerm ts)
 unrigidTerm t = t
 
+-- The fresh constants of a literal back to their variables.
 unrigidLit :: Literal -> Literal
 unrigidLit = mapLiteralTerms unrigidTerm
 
+-- The fresh constants of a block back to their variables.
 unrigidBlock :: ProofBlock -> ProofBlock
-unrigidBlock (HaveHence ls) = HaveHence (map go ls)
-  where
-    go (Have lit nm) = Have  (unrigidLit lit) nm
-    go (And  lit nm) = And   (unrigidLit lit) nm
-    go (Hence lit j) = Hence (unrigidLit lit) j
-unrigidBlock (EqChain start steps) =
-  EqChain (unrigidTerm start)
-          [ (RwStep nm (unrigidTerm l, unrigidTerm r) d, unrigidTerm cur)
-          | (RwStep nm (l, r) d, cur) <- steps ]
+unrigidBlock = mapBlockTerms unrigidTerm
 
+-- The results of a function on each argument term of a literal, joined.
 foldLiteralTerms :: (Term -> [a]) -> Literal -> [a]
 foldLiteralTerms f (Eq l r)    = f l ++ f r
 foldLiteralTerms f (NEq l r)   = f l ++ f r
 foldLiteralTerms f (Rel _ ts)  = concatMap f ts
 foldLiteralTerms f (NRel _ ts) = concatMap f ts
 
+-- A literal with a function applied to each of its argument terms.
 mapLiteralTerms :: (Term -> Term) -> Literal -> Literal
 mapLiteralTerms f (Eq l r)    = Eq  (f l) (f r)
 mapLiteralTerms f (NEq l r)   = NEq (f l) (f r)
 mapLiteralTerms f (Rel n ts)  = Rel n  (map f ts)
 mapLiteralTerms f (NRel n ts) = NRel n (map f ts)
 
+-- Map over the terms a block prints. The equations a chain cites are left
+-- alone, since their variables are their own.
+mapShownTerms :: (Term -> Term) -> ProofBlock -> ProofBlock
+mapShownTerms f (HaveHence ls)    = HaveHence (map (mapLineLit (mapLiteralTerms f)) ls)
+mapShownTerms f (EqChain s steps) = EqChain (f s) [ (rw, f t) | (rw, t) <- steps ]
+
+-- Map over every term of a block, including the equations a chain cites.
+mapBlockTerms :: (Term -> Term) -> ProofBlock -> ProofBlock
+mapBlockTerms f blk@(HaveHence _) = mapShownTerms f blk
+mapBlockTerms f (EqChain s steps) =
+  EqChain (f s) [ (rw { rwEq = bimap f f (rwEq rw) }, f t) | (rw, t) <- steps ]
+
+-- Every term of a block in order, including the equations a chain cites.
+blockTerms :: ProofBlock -> [Term]
+blockTerms (HaveHence ls)    = blockShownTerms (HaveHence ls)
+blockTerms (EqChain s steps) = s : concat [ [l, r, t] | (RwStep _ (l, r) _, t) <- steps ]
+
+-- The terms a block prints, in order.
+blockShownTerms :: ProofBlock -> [Term]
+blockShownTerms (HaveHence ls)    = concatMap (foldLiteralTerms pure . lineLit) ls
+blockShownTerms (EqChain s steps) = s : map snd steps
+
+-- A proof line with a function applied to its literal.
+mapLineLit :: (Literal -> Literal) -> ProofLine -> ProofLine
+mapLineLit f (Have  lit nm) = Have  (f lit) nm
+mapLineLit f (And   lit nm) = And   (f lit) nm
+mapLineLit f (Hence lit j)  = Hence (f lit) j
+
+-- Applies a substitution to a term once, without chasing bound values.
 applySubstTerm :: Subst -> Term -> Term
 applySubstTerm subst (Var x)    = fromMaybe (Var x) (lookup x subst)
 applySubstTerm _     (Const c)  = Const c
 applySubstTerm subst (App f ts) = App f (map (applySubstTerm subst) ts)
 
-applySubst :: Subst -> Literal -> Literal
-applySubst subst = mapLiteralTerms (applySubstTerm subst)
+-- Applies a substitution to a literal once.
+applySubstLit :: Subst -> Literal -> Literal
+applySubstLit subst = mapLiteralTerms (applySubstTerm subst)
 
-applySubstLine :: Subst -> ProofLine -> ProofLine
-applySubstLine subst (Have  lit nm) = Have  (applySubst subst lit) nm
-applySubstLine subst (And   lit nm) = And   (applySubst subst lit) nm
-applySubstLine subst (Hence lit j)  = Hence (applySubst subst lit) j
-
-applySubstBlock :: Subst -> ProofBlock -> ProofBlock
-applySubstBlock subst (HaveHence ls)    = HaveHence (map (applySubstLine subst) ls)
-applySubstBlock subst (EqChain s steps) =
-  EqChain (applySubstTerm subst s) (map applyStep steps)
-  where
-    applyStep (RwStep nm (l, r) d, cur) =
-      (RwStep nm (applySubstTerm subst l, applySubstTerm subst r) d, applySubstTerm subst cur)
-
--- Instantiate a stored proof block under the substitution matching its head
--- onto the requested literal.  Block variables absent from the head are local
--- to the block, and a plain substitution would capture any that share a name
--- with its range.  In SYN163-1 this turned p1(X2,X2_e,a) into the false
--- p1(X2_e,X2_e,a).  Clashing locals are renamed apart first.
+-- Instantiate a stored block by the substitution that matched its head.
+-- Block variables not in the head are local, and those named like a variable
+-- in σ's range are renamed first so σ does not capture them.
 instantiateBlock :: Literal -> Subst -> ProofBlock -> ProofBlock
 instantiateBlock hd σ block =
-  applySubstBlock σ (renameBlock renaming block)
+  mapBlockTerms (applySubstTerm σ) (renameBlock renaming block)
   where
     headVars  = nub (litVars hd)
     locals    = filter (`notElem` headVars) (blockVars block)
@@ -112,32 +128,39 @@ instantiateBlock hd σ block =
                            , not (any (sfx `isSuffixOf`) involved) ]
     renaming  = [ (v, v ++ suffix) | v <- clashing ]
 
--- Replace constants in a term, leaving variables alone, to undo Skolemization.
+-- Replace constants by terms, as when undoing Skolemization.
 applyConstSubstTerm :: [(String, Term)] -> Term -> Term
 applyConstSubstTerm s (Const c)   = fromMaybe (Const c) (lookup c s)
 applyConstSubstTerm s (App f ts)  = App f (map (applyConstSubstTerm s) ts)
 applyConstSubstTerm _ t           = t
 
+-- Replace constants by terms in a literal.
 applyConstSubstLit :: [(String, Term)] -> Literal -> Literal
 applyConstSubstLit s = mapLiteralTerms (applyConstSubstTerm s)
 
--- The function and constant symbols of a term, a literal and a block.
+-- A string padded with spaces to the width.
+padRight :: Int -> String -> String
+padRight n s = s ++ replicate (n - length s) ' '
+
+-- A term and all its subterms, root first.
+subterms :: Term -> [Term]
+subterms t = t : case t of { App _ ts -> concatMap subterms ts; _ -> [] }
+
+-- The function and constant symbols of a term.
 termSymbols :: Term -> [String]
 termSymbols (Const c)  = [c]
 termSymbols (Var _)    = []
 termSymbols (App f ts) = f : concatMap termSymbols ts
 
+-- The function and constant symbols of a literal.
 litSymbols :: Literal -> [String]
 litSymbols = foldLiteralTerms termSymbols
 
-blockSymbols :: ProofBlock -> [String]
-blockSymbols (HaveHence ls)    = nub (concatMap lineSyms ls)
-  where
-    lineSyms (Have  lit _) = litSymbols lit
-    lineSyms (And   lit _) = litSymbols lit
-    lineSyms (Hence lit _) = litSymbols lit
-blockSymbols (EqChain s steps) = nub (termSymbols s ++ concatMap stepSyms steps)
-  where stepSyms (RwStep _ (l, r) _, cur) = termSymbols l ++ termSymbols r ++ termSymbols cur
+-- The function symbols of a literal with its predicate in front.
+litNames :: Literal -> [String]
+litNames (Rel n ts)  = n : concatMap termSymbols ts
+litNames (NRel n ts) = n : concatMap termSymbols ts
+litNames l           = litSymbols l
 
 -- Replace every maximal subterm listed, outermost first.
 applyTermSubstTerm :: [(Term, Term)] -> Term -> Term
@@ -147,36 +170,21 @@ applyTermSubstTerm s t = case lookup t s of
     App f ts -> App f (map (applyTermSubstTerm s) ts)
     _        -> t
 
+-- Replace every maximal subterm listed in a literal.
 applyTermSubstLit :: [(Term, Term)] -> Literal -> Literal
 applyTermSubstLit s = mapLiteralTerms (applyTermSubstTerm s)
 
+-- Replace every maximal subterm listed in a block, cited equations included.
 applyTermSubstBlock :: [(Term, Term)] -> ProofBlock -> ProofBlock
-applyTermSubstBlock s (HaveHence ls) = HaveHence (map go ls)
-  where
-    go (Have lit nm)  = Have  (applyTermSubstLit s lit) nm
-    go (And lit nm)   = And   (applyTermSubstLit s lit) nm
-    go (Hence lit j)  = Hence (applyTermSubstLit s lit) j
-applyTermSubstBlock s (EqChain start steps) =
-  EqChain (applyTermSubstTerm s start)
-          [ (RwStep nm (applyTermSubstTerm s l, applyTermSubstTerm s r) d, applyTermSubstTerm s cur)
-          | (RwStep nm (l, r) d, cur) <- steps ]
+applyTermSubstBlock s = mapBlockTerms (applyTermSubstTerm s)
 
+-- Replace constants by terms in a block, cited equations included.
 applyConstSubstBlock :: [(String, Term)] -> ProofBlock -> ProofBlock
-applyConstSubstBlock s (HaveHence ls) = HaveHence (map go ls)
-  where
-    go (Have lit nm)  = Have  (applyConstSubstLit s lit) nm
-    go (And  lit nm)  = And   (applyConstSubstLit s lit) nm
-    go (Hence lit j)  = Hence (applyConstSubstLit s lit) j
-applyConstSubstBlock s (EqChain start steps) =
-  EqChain (applyConstSubstTerm s start)
-          [ (RwStep nm (applyConstSubstTerm s l, applyConstSubstTerm s r) d, applyConstSubstTerm s cur)
-          | (RwStep nm (l, r) d, cur) <- steps ]
+applyConstSubstBlock s = mapBlockTerms (applyConstSubstTerm s)
 
--- Fails if a shared variable has conflicting bindings.
--- Extends a substitution and composes as it goes, applying each new binding
--- inside the existing ranges and those inside the new term, so one pass of
--- the result is complete.  Otherwise X ↦ X'_e then X'_e ↦ e left a dangling
--- X'_e and printed an instance as a general lemma, as in SYN179-1.
+-- Add bindings to a substitution, composing them so one application resolves
+-- every variable. Otherwise X ↦ Y then Y ↦ e would leave Y in place and print
+-- an instance as a general lemma. Fails when a variable gets two values.
 extendSubst :: Subst -> Subst -> Maybe Subst
 extendSubst base []           = Just base
 extendSubst base ((x,t):rest) =
@@ -185,33 +193,42 @@ extendSubst base ((x,t):rest) =
     Nothing -> extendSubst ((x, t1) : [ (y, applySubstTerm [(x, t1)] u) | (y, u) <- base ]) rest
     Just t' -> if t1 == t' then extendSubst base rest else Nothing
 
--- threads an existing substitution so multiple patterns can share bindings
-matchTerm :: Term -> Term -> Subst -> Maybe Subst
-matchTerm (Var x)    t     s = case lookup x s of
-  Nothing -> Just ((x, t) : s)
-  Just t' -> if t == t' then Just s else Nothing
-matchTerm (Const c)  (Const d)  s | c == d               = Just s
-matchTerm (App f ts) (App g us) s | f == g, length ts == length us =
-  foldl (\ms (p, u) -> ms >>= matchTerm p u) (Just s) (zip ts us)
-matchTerm _          _          _ = Nothing
+-- Matching that threads a substitution, so several patterns share bindings.
+matchTermWith :: Term -> Term -> Subst -> Maybe Subst
+matchTermWith = matchTermIf (const True)
 
-matchTerms :: Term -> Term -> Maybe Subst
-matchTerms pat tgt = matchTerm pat tgt []
+-- Matching that binds only the pattern variables the predicate allows. Any
+-- other variable must meet itself in the target.
+matchTermIf :: (String -> Bool) -> Term -> Term -> Subst -> Maybe Subst
+matchTermIf bindable (Var x) t s
+  | bindable x = case lookup x s of
+      Nothing -> Just ((x, t) : s)
+      Just t' -> if t == t' then Just s else Nothing
+matchTermIf _ (Var x) (Var y) s | x == y = Just s
+matchTermIf _ (Const c) (Const d) s | c == d = Just s
+matchTermIf bindable (App f ts) (App g us) s | f == g, length ts == length us =
+  foldl (\ms (p, u) -> ms >>= matchTermIf bindable p u) (Just s) (zip ts us)
+matchTermIf _ _ _ _ = Nothing
 
+-- Matches a pattern term against a target, starting from no bindings.
+matchTerm :: Term -> Term -> Maybe Subst
+matchTerm pat tgt = matchTermWith pat tgt []
+
+-- Matches a pattern literal against a target, starting from no bindings.
 matchLit :: Literal -> Literal -> Maybe Subst
 matchLit pat tgt = matchLitWith pat tgt []
 
--- matchLit threading an existing substitution
+-- matchLit from a given substitution. Only positive literals match.
 matchLitWith :: Literal -> Literal -> Subst -> Maybe Subst
 matchLitWith (Eq  l1 r1) (Eq  l2 r2) s
-  = matchTerm l1 l2 s >>= matchTerm r1 r2
+  = matchTermWith l1 l2 s >>= matchTermWith r1 r2
 matchLitWith (Rel n1 ts1) (Rel n2 ts2) s
   | n1 == n2, length ts1 == length ts2
-  = foldl (\ms (p, u) -> ms >>= matchTerm p u) (Just s) (zip ts1 ts2)
+  = foldl (\ms (p, u) -> ms >>= matchTermWith p u) (Just s) (zip ts1 ts2)
 matchLitWith _ _ _ = Nothing
 
--- Every subterm of a literal together with a function that rebuilds the
--- literal with that subterm replaced.
+-- Every subterm of a literal, with a function that puts another term in its
+-- place.
 litSubtermCtxs :: Literal -> [(Term, Term -> Literal)]
 litSubtermCtxs lit = case lit of
   Eq  l r   -> [ (u, (`Eq` r) . c) | (u, c) <- termCtxs l ]
@@ -224,82 +241,69 @@ litSubtermCtxs lit = case lit of
     argCtxs ts = [ (u, \x -> take i ts ++ [c x] ++ drop (i + 1) ts)
                  | (i, t) <- zip [0 ..] ts, (u, c) <- termCtxs t ]
 
--- An equation whose right side has a variable its left side lacks, such as
--- zero = divide(zero,X), brings that variable into the line it rewrites, and
--- the next step then uses it at one value.  Read on its own the line would
--- hold for every value, which is more than the step gives, so the variable is
--- bound here to the value the next step takes and the chain states the
--- instance the proof uses.
--- A chain that passes through one term twice proves nothing between the two
--- visits, so the steps between are dropped.  Joining the instances of two
--- derivations can go out and back, as on sam, where c17 ends by rewriting
--- meet(X2,X4) by commutativity and c18 applies it again, and at X2 = b,
--- X4 = join(c,d) the second swap undoes the first.
+-- Drop the steps between two visits of the same term in a chain. Joining two
+-- derivations can produce such a loop, when one step undoes another. A chain
+-- from a term back to itself has no steps left, as s = s holds by reflexivity.
 cutLoops :: (s -> Term) -> Term -> [s] -> [s]
-cutLoops termOf start steps = case reverse (snd (foldl add ([start], []) steps)) of
-  []  -> steps   -- a chain from a term back to itself is kept as it is
-  cut -> cut
+cutLoops termOf start steps = reverse (snd (foldl add ([start], []) steps))
   where
     -- the terms visited and the steps kept, newest first
     add (seen, kept) s = case lookup (termOf s) (zip seen [0 :: Int ..]) of
       Just i  -> (drop i seen, drop i kept)
       Nothing -> (termOf s : seen, s : kept)
 
+-- An equation with a variable only on its right side, such as
+-- zero = divide(zero,X), brings that variable into the chain, and a later
+-- step uses it at one value. Left free, the line would claim more than that
+-- step gives, so the variable is bound to the value the step uses.
 tightenChainVars :: Term -> [(RwStep, Term)] -> (Term, [(RwStep, Term)])
 tightenChainVars start steps =
   (apply start, [ (st, apply t) | (st, t) <- steps ])
   where
     terms    = start : map snd steps
-    -- the chain states an equation between its first and last term, so the
-    -- variables of both belong to the statement and stay as they are
+    -- the variables of the first and last term belong to the stated
+    -- equation and are never bound
     stmtVars = termVars start ++ termVars (last terms)
     local v  = v `notElem` stmtVars
     apply    = deepApplySubstTerm sigma
-    -- only a chain that carries a variable of its own can need this
-    sigma | all (`elem` stmtVars) (concatMap termVars terms) = []
+    sigma | all (all (`elem` stmtVars) . termVars) terms = []
           | otherwise = foldl bind [] [0 .. length steps - 1]
 
-    -- A step rewrites one subterm, so the line and the next one differ there.
-    -- When the cited equation does not take the one into the other as they
-    -- stand, the variables the chain brought along are bound to the values
-    -- the step takes them at.
+    -- When the cited equation does not take a line to the next as they
+    -- stand, bind the chain's own variables so that it does.
     bind acc i =
       let prev = deepApplySubstTerm acc (terms !! i)
           cur  = deepApplySubstTerm acc (terms !! (i + 1))
           RwStep _ (l, r) dir = fst (steps !! i)
           (l0, r0) = if dir == LR then (l, r) else (r, l)
-          -- the equation's variables are its own, so they are renamed apart
-          -- from the line's, which may use the same names
+          -- rename the equation's variables apart from the line's
           apart = [ (v, Var (v ++ "_ax")) | v <- nub (termVars l0 ++ termVars r0) ]
           (lhs, rhs) = (applySubstTerm apart l0, applySubstTerm apart r0)
       in case diffSpine prev cur of
            [] -> acc
            pairs
-             | not (any local (concat [ termVars x ++ termVars y | (x, y) <- pairs ])) -> acc
+             | not (any (any local) [ termVars x ++ termVars y | (x, y) <- pairs ]) -> acc
              | any (uncurry (rewrites lhs rhs)) pairs -> acc
              | otherwise -> case concat [ fixup lhs rhs x y | (x, y) <- pairs ] of
                  (rho : _) -> acc ++ rho
                  []        -> acc
 
-    -- The equation takes x to y as it stands.  Its own variables may be
-    -- instantiated here, since it holds for every value of them, while a
-    -- variable of the line is one the step is fixing and not free to move.
+    -- The equation takes x to y as they stand. Only the equation's own
+    -- variables may be instantiated, not the line's.
     rewrites lhs rhs x y = or
       [ True
-      | Just s  <- [matchTerms lhs x]
-      , Just s2 <- [matchTerms (applySubstTerm s rhs) y]
+      | Just s  <- [matchTerm lhs x]
+      , Just s2 <- [matchTerm (applySubstTerm s rhs) y]
       , all (\(v, t) -> t == Var v || v `notElem` (termVars x ++ stmtVars)) s2 ]
 
-    -- the equation applies once the chain's own variables take the values
-    -- unifying it with the step demands
+    -- bindings of the chain's own variables under which the equation
+    -- applies, found by unifying it with the step
     fixup lhs rhs x y =
       [ rho
       | Just s1 <- [unifyTerms lhs x []]
       , Just s2 <- [unifyTerms (deepApplySubstTerm s1 rhs) (deepApplySubstTerm s1 y) s1]
-      -- the value must be one the chain states, never a variable of the
-      -- equation, which stands for nothing outside its own step
-      -- resolve the unifier so a value stated through the equation's own
-      -- variable comes out as the term the chain has there
+      -- Values may use only the chain's variables, since an equation's
+      -- variable means nothing outside its own step.
       , let s2' = [ (v, deepApplySubstTerm s2 t) | (v, t) <- s2 ]
       , let rho = [ b | b@(v, t) <- orient s2'
                       , local v, t /= Var v, v `elem` (termVars x ++ termVars y)
@@ -307,37 +311,41 @@ tightenChainVars start steps =
       , not (null rho)
       , rewrites lhs rhs (deepApplySubstTerm rho x) (deepApplySubstTerm rho y) ]
 
-    -- unification may bind the line's variable to the statement's or the
-    -- other way round, and only the line's may be bound
+    -- of two variables, bind the chain's own one, never the statement's
     orient rho = [ case t of
                      Var w | not (local v), local w -> (w, Var v)
                      _                              -> (v, t)
                  | (v, t) <- rho ]
 
--- A printed chain step is justified when the equation it cites, as the
--- proof states it, takes the line into the next one, at one subterm or at
--- every occurrence of one instance, in either orientation.  The equation's
--- own variables are free and its names are renamed apart from the line's.
-chainStepJustified :: (Term, Term) -> Term -> Term -> Bool
-chainStepJustified (l0, r0) prev cur =
+-- Whether the cited equation, in the cited direction, takes a chain line to
+-- the next at one subterm or at every occurrence of one instance.
+chainStepJustified :: Dir -> (Term, Term) -> Term -> Term -> Bool
+chainStepJustified dir (l0, r0) prev cur =
   case diffSpine prev cur of
     []    -> True
-    pairs -> or [ once lhs rhs x y | (lhs, rhs) <- [(l, r), (r, l)], (x, y) <- pairs ]
-             || or [ everywhere lhs rhs | (lhs, rhs) <- [(l, r), (r, l)] ]
+    pairs -> or [ once lhs rhs x y | (x, y) <- pairs ] || everywhere lhs rhs
   where
     apart = [ (v, Var (v ++ "_ax")) | v <- nub (termVars l0 ++ termVars r0) ]
     (l, r) = (applySubstTerm apart l0, applySubstTerm apart r0)
+    (lhs, rhs) = case dir of { LR -> (l, r); RL -> (r, l) }
     lineVs = termVars prev ++ termVars cur
-    once lhs rhs x y = or
+    once a b x y = or
       [ True
-      | Just s  <- [matchTerms lhs x]
-      , Just s2 <- [matchTerms (applySubstTerm s rhs) y]
+      | Just s  <- [matchTerm a x]
+      , Just s2 <- [matchTerm (applySubstTerm s b) y]
       , all (\(v, t) -> t == Var v || v `notElem` lineVs) s2 ]
-    everywhere lhs rhs = or
-      [ replaceAllTerm (applySubstTerm s lhs) (applySubstTerm s rhs) prev == cur
-      | (u, _) <- termCtxs prev, Just s <- [matchTerms lhs u]
-      , null (termVars (applySubstTerm s rhs) \\ termVars (applySubstTerm s lhs)) ]
+    everywhere a b = or
+      [ replaceAllTerm (applySubstTerm s a) (applySubstTerm s b) prev == cur
+      | (u, _) <- termCtxs prev, Just s <- [matchTerm a u]
+      , null (termVars (applySubstTerm s b) \\ termVars (applySubstTerm s a)) ]
 
+-- Runs the actions in order and returns the first Just, without running the
+-- rest.
+firstJustM :: Monad m => [m (Maybe a)] -> m (Maybe a)
+firstJustM []         = return Nothing
+firstJustM (m : more) = m >>= maybe (firstJustM more) (return . Just)
+
+-- Every occurrence of one subterm replaced by another.
 replaceAllTerm :: Term -> Term -> Term -> Term
 replaceAllTerm a b t
   | t == a    = b
@@ -345,11 +353,28 @@ replaceAllTerm a b t
       App f ts -> App f (map (replaceAllTerm a b) ts)
       _        -> t
 
--- The subterm pairs on the way from two terms down to the smallest pair
--- holding every difference between them, root first, and none when they
--- are equal.  A step rewrites one subterm, which is one of these pairs, and
--- not always the smallest, since the replacement may share structure with
--- the redex, as apply(apply(w,w),X) to apply(apply(w,X),X) does.
+-- The subterm at a place, a path of argument indices from the root.
+termAt :: [Int] -> Term -> Term
+termAt (i : path) (App _ ts) = termAt path (ts !! i)
+termAt _ t                   = t
+
+-- A term with the subterm at a place replaced.
+putTermAt :: [Int] -> Term -> Term -> Term
+putTermAt [] new _ = new
+putTermAt (i : path) new (App f ts) = App f (take i ts ++ [putTermAt path new (ts !! i)] ++ drop (i + 1) ts)
+putTermAt _ _ t = t
+
+-- The places of every occurrence of a subterm.
+placesOf :: Term -> Term -> [[Int]]
+placesOf v t
+  | t == v        = [[]]
+  | App _ ts <- t = [ i : path | (i, ti) <- zip [0 ..] ts, path <- placesOf v ti ]
+  | otherwise     = []
+
+-- The subterm pairs from the roots of two terms down to the smallest pair
+-- holding every difference. A one-step rewrite is at one of these pairs, but
+-- not always the smallest, since the replacement can share structure with
+-- the redex.
 diffSpine :: Term -> Term -> [(Term, Term)]
 diffSpine a b
   | a == b = []
@@ -359,10 +384,9 @@ diffSpine a b
         , [(x, y)] <- [ p | p@(x, y) <- zip as bs, x /= y ] -> diffSpine x y
       _ -> []
 
--- The subterms of a, with their contexts, where a last rewrite can turn a
--- into b, root first.  Below a subterm the two share it has nothing to do, and
--- where their symbols differ it must rewrite that node or one above it, since
--- nothing below can change the symbol there.
+-- The subterms of a, with their contexts, where one rewrite might turn a into
+-- b, root first. Equal subterms are skipped, and the search stops where the
+-- head symbols differ, since no rewrite below can change that symbol.
 diffCtxs :: Term -> Term -> [(Term, Term -> Term)]
 diffCtxs a b
   | a == b    = []
@@ -373,20 +397,22 @@ diffCtxs a b
             | (i, (ai, bi)) <- zip [0 ..] (zip as bs), (u, c) <- diffCtxs ai bi ]
       _ -> []
 
+-- Every subterm of a term with a function that puts another term in its
+-- place, root first.
 termCtxs :: Term -> [(Term, Term -> Term)]
 termCtxs t = (t, id) : case t of
   App f ts -> [ (u, \x -> App f (take i ts ++ [c x] ++ drop (i + 1) ts))
               | (i, ti) <- zip [0 ..] ts, (u, c) <- termCtxs ti ]
   _        -> []
 
--- Apply σ to a fixed point, so X→f(Y) with Y→c resolves to X→f(c).
+-- Apply a triangular substitution until nothing changes, so with X ↦ f(Y)
+-- and Y ↦ c, X becomes f(c).
 deepApplySubstTerm :: Subst -> Term -> Term
 deepApplySubstTerm s t =
   let t' = applySubstTerm s t
   in if t' == t then t else deepApplySubstTerm s t'
 
--- Rename every variable of a literal by appending a suffix, so a unit and a
--- goal literal do not clash when unified.
+-- Append a suffix to every variable of a literal, to rename it apart.
 suffixVarsLit :: String -> Literal -> Literal
 suffixVarsLit suf = mapLiteralTerms go
   where
@@ -394,25 +420,103 @@ suffixVarsLit suf = mapLiteralTerms go
     go (Const c)  = Const c
     go (App f ts) = App f (map go ts)
 
-rewriteTerm :: Term -> (Term, Term) -> Dir -> Maybe Term
-rewriteTerm t (l, r) dir = tryRoot <|> trySubs
-  where
-    (lhs, rhs) = if dir == LR then (l, r) else (r, l)
-    tryRoot    = applySubstTerm <$> matchTerms lhs t <*> pure rhs
-    trySubs    = case t of
-      App f ts -> App f <$> rewriteFirst ts
-      _        -> Nothing
-    rewriteFirst []     = Nothing
-    rewriteFirst (u:us) = case rewriteTerm u (l, r) dir of
-      Just u' -> Just (u' : us)
-      Nothing -> (u :) <$> rewriteFirst us
+-- Whether two literals are the same up to renaming of variables.
+variantLit :: Literal -> Literal -> Bool
+variantLit a b = isJust (matchLit a b) && isJust (matchLit b a)
 
--- all matching positions, not just leftmost
+-- Whether a unit can be cited, because it has a name or a proof.
+isCitable :: UnitEntry -> Bool
+isCitable u = isJust (ueName u) || isJust (ueProof u)
+
+-- A name as an unquoted TPTP atom, since any other id would make Twee's
+-- input unparseable. Other characters become underscores, and an x is
+-- prefixed unless the name starts with a lowercase letter.
+sanitizeId :: String -> String
+sanitizeId nm =
+  let body = map (\c -> if isAsciiLower c || isAsciiUpper c || isDigit c || c == '_' then c else '_') nm
+  in case body of
+       (c : _) | isAsciiLower c -> body
+       _                        -> 'x' : body
+
+-- The name an axiom is cited by.
+axiomName :: Axiom -> String
+axiomName (AUnit n _)    = n
+axiomName (ANucleus n _) = n
+
+-- The names axiom 1, axiom 2, ... that are not taken.
+freeAxiomNames :: (String -> Bool) -> [String]
+freeAxiomNames taken = [ nm | i <- [1 :: Int ..], let nm = "axiom " ++ show i, not (taken nm) ]
+
+-- The position of the provider beside a consumer at a right child.
+providerSibling :: String -> Maybe String
+providerSibling pos
+  | not (null pos), last pos == '1' = Just (init pos ++ "0")
+  | otherwise                       = Nothing
+
+-- A name with underscores appended until the predicate leaves it free.
+underscoreApart :: (String -> Bool) -> String -> String
+underscoreApart taken x = head [ y | y <- iterate (++ "_") x, not (taken y) ]
+
+-- A literal with each variable frozen into a constant named prefix ++ name,
+-- and the map that turns the constants back into the variables. The prefix
+-- gets underscores until no taken symbol starts with it.
+freezeLitVars :: String -> [String] -> Literal -> (Literal, [(String, Term)])
+freezeLitVars base taken lit =
+  let prefix = underscoreApart (\p -> any (p `isPrefixOf`) taken) base
+      pairs  = [ (v, prefix ++ v) | v <- nub (litVars lit) ]
+  in (applySubstLit [ (v, Const c) | (v, c) <- pairs ] lit, [ (c, Var v) | (v, c) <- pairs ])
+
+-- An axiom as a clause. A unit axiom is a clause with an empty body.
+axiomClause :: Axiom -> Clause
+axiomClause (AUnit _ l)    = Clause [] (Just l)
+axiomClause (ANucleus _ c) = c
+
+-- The literals of an axiom, its body and then its head.
+axiomLits :: Axiom -> [Literal]
+axiomLits ax = let Clause bs mh = axiomClause ax in bs ++ maybe [] pure mh
+
+-- A word with its first letter upper case.
+capitalize :: String -> String
+capitalize (c : cs) = toUpper c : cs
+capitalize []       = []
+
+-- Each element of a list with the others, in order.
+picks :: [a] -> [(a, [a])]
+picks xs = [ (x, before ++ after) | (before, x : after) <- zip (inits xs) (tails xs) ]
+
+-- A clause with a suffix on every variable, so it shares none with another.
+suffixVarsClause :: String -> Clause -> Clause
+suffixVarsClause suf (Clause bs mh) = Clause (map (suffixVarsLit suf) bs) (fmap (suffixVarsLit suf) mh)
+
+-- A clause with a substitution applied all the way down.
+instClause :: Subst -> Clause -> Clause
+instClause σ (Clause bs mh) = Clause (map inst bs) (fmap inst mh)
+  where inst = mapLiteralTerms (deepApplySubstTerm σ)
+
+-- The resolvents of the first clause's head with each body atom of the
+-- second, instantiated. The two clauses must share no variable.
+resolveHead :: Clause -> Clause -> [Clause]
+resolveHead x y = case hd x of
+  Nothing -> []
+  Just h  -> [ instClause σ (Clause (body x ++ rest) (hd y))
+             | (l, rest) <- picks (body y), Just σ <- [unifyLits h l []] ]
+
+-- Whether a term is not a variable.
+notVar :: Term -> Bool
+notVar (Var _) = False
+notVar _       = True
+
+-- A clause's literals, each with whether it is the head.
+polLits :: Clause -> [(Bool, Literal)]
+polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
+
+-- Every term one rewrite of t with the equation in the given direction can
+-- give, at the root or at any subterm.
 rewriteTermAll :: Term -> (Term, Term) -> Dir -> [Term]
 rewriteTermAll t (l, r) dir = rootResult ++ subResults
   where
     (lhs, rhs) = if dir == LR then (l, r) else (r, l)
-    rootResult = case matchTerms lhs t of
+    rootResult = case matchTerm lhs t of
       Just σ  -> [applySubstTerm σ rhs]
       Nothing -> []
     subResults = case t of
@@ -422,40 +526,40 @@ rewriteTermAll t (l, r) dir = rootResult ++ subResults
                   ]
       _ -> []
 
-rewriteLit :: Literal -> (Term, Term) -> Dir -> Maybe Literal
-rewriteLit lit eq dir = case lit of
-  Eq  l r   -> ((`Eq`  r) <$> rewriteTerm l eq dir)
-           <|> (Eq  l   <$> rewriteTerm r eq dir)
-  NEq l r   -> ((`NEq` r) <$> rewriteTerm l eq dir)
-           <|> (NEq l   <$> rewriteTerm r eq dir)
-  Rel  n ts -> Rel  n <$> rewriteFirst ts
-  NRel n ts -> NRel n <$> rewriteFirst ts
-  where
-    rewriteFirst []     = Nothing
-    rewriteFirst (u:us) = case rewriteTerm u eq dir of
-      Just u' -> Just (u' : us)
-      Nothing -> (u :) <$> rewriteFirst us
+-- Whether an equation may rewrite from its first side to its second. A
+-- variable side may, at an instance, unless the other side contains it, since
+-- no simplification ordering puts a term above one that contains it.
+rewritesFrom :: Term -> Term -> Bool
+rewritesFrom (Var x) rhs = x `notElem` termVars rhs
+rewritesFrom _       _   = True
 
--- all single-step rewriting positions (not just leftmost)
-rewriteLitAll :: Literal -> (Term, Term) -> Dir -> [Literal]
-rewriteLitAll lit eq dir = case lit of
-  Eq  l r -> [Eq  l' r  | l' <- rewriteTermAll l eq dir]
-          ++ [Eq  l  r' | r' <- rewriteTermAll r eq dir]
-  NEq l r -> [NEq l' r  | l' <- rewriteTermAll l eq dir]
-          ++ [NEq l  r' | r' <- rewriteTermAll r eq dir]
-  Rel  n ts -> map (Rel  n) (rewriteListAll ts)
-  NRel n ts -> map (NRel n) (rewriteListAll ts)
+-- Like try, but rethrows asynchronous exceptions such as an outside timeout
+-- or Ctrl-C.
+trySync :: IO a -> IO (Either SomeException a)
+trySync act = try act >>= either passAsync (return . Right)
   where
-    rewriteListAll []     = []
-    rewriteListAll (t:ts) = [t' : ts | t' <- rewriteTermAll t eq dir]
-                         ++ [t : ts' | ts' <- rewriteListAll ts]
+    passAsync e = case fromException e :: Maybe SomeAsyncException of
+      Just _  -> throwIO e
+      Nothing -> return (Left e)
 
--- A proof block with no steps (nothing established).
 -- A positive atom as the term Twee rewrites (p(t) as a term, p as a constant).
 atomTerm :: Literal -> Term
 atomTerm (Rel n [])  = Const n
 atomTerm (Rel n as)  = App n as
 atomTerm l           = error ("atomTerm: not a positive atom: " ++ show l)
+
+-- A term of a relational chain read back as the atom it stands for.
+termAtom :: Term -> Maybe Literal
+termAtom (App p ts) = Just (Rel p ts)
+termAtom (Const p)  = Just (Rel p [])
+termAtom (Var _)    = Nothing
+
+-- The atoms of a relational chain, without the closing true.
+atomTerms :: Term -> [(RwStep, Term)] -> [Term]
+atomTerms s steps = s : [ t | (_, t) <- dropLastTrue steps ]
+  where dropLastTrue xs = case reverse xs of
+          (_, Const "true") : rest -> reverse rest
+          _                        -> xs
 
 -- The equation a chain step rewrites with, either an equation or the P = true
 -- encoding of a positive atom.
@@ -463,9 +567,7 @@ unitEquation :: Literal -> (Term, Term)
 unitEquation (Eq a b) = (a, b)
 unitEquation l        = (atomTerm l, Const "true")
 
--- Unification of two literals.  Equality is symmetric, so two equations unify
--- if either orientation does, and a goal c1 = c2 is not flagged against a
--- conjecture written c2 = c1.
+-- Unify two positive literals, trying equations both ways round.
 unifyLits :: Literal -> Literal -> Subst -> Maybe Subst
 unifyLits (Eq a b) (Eq c d) σ =
   (unifyTerms a c σ >>= unifyTerms b d) <|> (unifyTerms a d σ >>= unifyTerms b c)
@@ -473,19 +575,19 @@ unifyLits (Rel n as) (Rel m bs) σ | n == m, length as == length bs =
   foldr (\(a, b) acc -> acc >>= unifyTerms a b) (Just σ) (zip as bs)
 unifyLits _ _ _ = Nothing
 
+-- The opposite direction.
 flipDir :: Dir -> Dir
 flipDir LR = RL
 flipDir RL = LR
 
--- The contradiction derived when the axioms alone are inconsistent, from which
--- every goal follows.
+-- $false as a literal. A proof derives it to refute the assumption of a
+-- negated conjecture, or when the axioms are contradictory and every goal
+-- follows from it.
 falsumLit :: Literal
 falsumLit = Rel "$false" []
 
--- The fact a block ends on establishes the literal it is stored under, up to
--- orientation and instantiation.  A block whose last line states something
--- else proves nothing about that literal, as ALG210+2's candidate lemmas did
--- when their sub-proof only restated the assumption they rest on.
+-- Whether a block ends on the literal, or on a fact it is an instance of in
+-- either orientation. A chain from an atom to true ends on that atom.
 blockConcludes :: Literal -> ProofBlock -> Bool
 blockConcludes lit blk = case blk of
   HaveHence ls -> case reverse ls of
@@ -496,141 +598,122 @@ blockConcludes lit blk = case blk of
                     || (t == Const "true" && isRelLit lit && start == atomTerm lit)
     []           -> False
   where
-    ok l = isJust (matchLit l lit) || isJust (matchLit (flipLit l) lit)
-    isRelLit (Rel _ _) = True
-    isRelLit _         = False
-    lineLit (Have l _)  = l
-    lineLit (And l _)   = l
-    lineLit (Hence l _) = l
+    ok l = isJust (matchLitEither l lit [])
 
+-- A literal as a term, sign dropped and = read as a function symbol.
+litTerm :: Literal -> Term
+litTerm (Rel n as)  = App n as
+litTerm (NRel n as) = App n as
+litTerm (Eq l r)    = App "=" [l, r]
+litTerm (NEq l r)   = App "=" [l, r]
+
+-- A positive literal as a term, so it can be matched, unified or rewritten
+-- like one.
+litAsTerm :: Literal -> Maybe Term
+litAsTerm l | isEqLit l || isRelLit l = Just (litTerm l)
+            | otherwise               = Nothing
+
+-- Undo litAsTerm, taking the kind of literal and its predicate from the first
+-- argument.
+termAsLit :: Literal -> Term -> Literal
+termAsLit (Eq _ _) (App "=" [l, r]) = Eq l r
+termAsLit (Rel n _) (App _ as)      = Rel n as
+termAsLit lit _                     = lit
+
+-- The literal a proof line states.
+lineLit :: ProofLine -> Literal
+lineLit (Have l _)  = l
+lineLit (And l _)   = l
+lineLit (Hence l _) = l
+
+-- Whether a block has no lines or no steps.
 isEmptyBlock :: ProofBlock -> Bool
 isEmptyBlock (HaveHence []) = True
 isEmptyBlock (EqChain _ []) = True
 isEmptyBlock _              = False
 
+-- Whether a block is an equality chain.
 isEqChain :: ProofBlock -> Bool
 isEqChain (EqChain {}) = True
 isEqChain _            = False
 
--- A clause's text with its variables named by first occurrence, the same for
--- two variants that list their literals in one order.
+-- A clause's text with variables named by first occurrence, so variants that
+-- list their literals in the same order get the same key.
 variantKey :: Clause -> String
 variantKey (Clause bs mh) = show (Clause (map ren bs) (fmap ren mh))
   where
     ren = renameLit (zip (nub (concatMap litVars bs ++ maybe [] litVars mh))
                          [ "v" ++ show i | i <- [0 :: Int ..] ])
 
--- A clause's text with its variables named by first occurrence and its body
--- in the order that gives the smallest text, so variants and reorderings get
--- the same key.  A body of more than six literals keeps its order.
+-- Like variantKey, but the same for every order of the body. The body is
+-- sorted by the shape of each literal, its variables blanked, and the order
+-- giving the smallest text is chosen among literals of the same shape.
 clauseKey :: Clause -> String
-clauseKey (Clause bs mh) = minimum (map keyOf orders)
+clauseKey (Clause bs mh) =
+  minimum [ variantKey (Clause (concat body) mh) | body <- mapM permutations (groupBy ((==) `on` shape) (sortOn shape bs)) ]
   where
-    orders | length bs <= 6 = permutations bs
-           | otherwise      = [bs]
-    keyOf body = show (Clause (map (ren body) body) (fmap (ren body) mh))
-    ren body   = renameLit (zip (nub (concatMap litVars body ++ maybe [] litVars mh))
-                                [ "v" ++ show i | i <- [0 :: Int ..] ])
+    shape l = show (renameLit [ (v, "_") | v <- litVars l ] l)
 
--- A clause with a body equation X = t, the variable X not in t, holds
--- exactly when its instance under X := t does, whose body keeps t = t, true
--- by reflexivity.  Clausifiers drop such equations, as Twee writes PUZ129+2's
--- grocer(C) & property1(D,healthy,pos) & C = D => $false as
--- property1(D,healthy,pos) & grocer(D) => $false.  A witness variable stands
--- for a Skolem term and is kept.
-dropVarEquations :: Clause -> Clause
-dropVarEquations c@(Clause bs mh) =
-  case [ (i, v, t) | (i, Eq a b) <- zip [0 :: Int ..] bs
-                   , (Var v, t) <- [(a, b), (b, a)]
-                   , not (isWitnessVar v), v `notElem` termVars t ] of
-    (i, v, t) : _ ->
-      let s = [(v, t)]
-      in dropVarEquations (Clause [ applySubst s l | (j, l) <- zip [0 ..] bs, j /= i ] (fmap (applySubst s) mh))
-    [] -> c
+-- Whether two clauses are instances of each other, so equal up to renaming.
+variantClause :: Clause -> Clause -> Bool
+variantClause a b = clauseInstance a b && clauseInstance b a
 
--- The second clause is an instance of the first, the body literals matched
--- in any order.
+-- Whether the second clause is an instance of the first.
 clauseInstance :: Clause -> Clause -> Bool
 clauseInstance c1 c2 = isJust (clauseInstanceSubst c1 c2)
 
--- The prefix of a variable standing for the witness of an existential
--- conclusion a hypothesis of the conjecture promises, as SYN359+1's
--- big_r(Y) => ? [Z] : big_q(Y,Z) does.  The conjecture grants the clause only
--- at a witness the prover named, so the substitution is checked at these
--- variables where the clause is granted.
-witnessPrefix :: String
-witnessPrefix = "Wit_"
-
-isWitnessVar :: String -> Bool
-isWitnessVar = (witnessPrefix `isPrefixOf`)
-
--- The matching substitution when the second clause is an instance of the
--- first, the body literals matched in any order.
+-- The substitution making the second clause an instance of the first, with
+-- body literals matched in any order and equations either way round.
 clauseInstanceSubst :: Clause -> Clause -> Maybe Subst
 clauseInstanceSubst (Clause bs1 h1) (Clause bs2 h2) =
   if length bs1 /= length bs2 then Nothing else (do
     σ <- case (h1, h2) of
-      (Just a, Just b)   -> matchEither a b []
+      (Just a, Just b)   -> matchLitEither a b []
       (Nothing, Nothing) -> Just []
       _                  -> Nothing
     bodies bs1 bs2 σ)
   where
     bodies [] [] σ = Just σ
     bodies (a : as) bs σ = listToMaybe
-      [ σ'' | (b, rest) <- picks bs, Just σ' <- [matchEither a b σ], Just σ'' <- [bodies as rest σ'] ]
+      [ σ'' | (b, rest) <- picks bs, Just σ' <- [matchLitEither a b σ], Just σ'' <- [bodies as rest σ'] ]
     bodies _ _ _ = Nothing
-    picks xs = [ (x, before ++ after) | (before, x : after) <- zip (inits xs) (tails xs) ]
-    -- an equation is the same literal either way round
-    matchEither a b σ = matchLitWith a b σ <|> matchLitWith (flipLit a) b σ
 
--- Flip an equation, used to try both orientations while matching.
+-- Extend a substitution so the second literal is an instance of the first,
+-- with an equation matched either way round.
+matchLitEither :: Literal -> Literal -> Subst -> Maybe Subst
+matchLitEither a b σ = matchLitWith a b σ <|> matchLitWith (flipLit a) b σ
+
+-- An equation or disequation the other way round.
 flipLit :: Literal -> Literal
-flipLit (Eq l r) = Eq r l
-flipLit x        = x
+flipLit (Eq l r)  = Eq r l
+flipLit (NEq l r) = NEq r l
+flipLit x         = x
 
+-- Renames the variables of a term by the given pairs.
 renameTerm :: [(String, String)] -> Term -> Term
 renameTerm r (Var x)    = maybe (Var x) Var (lookup x r)
 renameTerm _ (Const c)  = Const c
 renameTerm r (App f ts) = App f (map (renameTerm r) ts)
 
+-- Renames the variables of a literal.
 renameLit :: [(String, String)] -> Literal -> Literal
 renameLit r = mapLiteralTerms (renameTerm r)
 
-renameProofLine :: [(String, String)] -> ProofLine -> ProofLine
-renameProofLine r (Have  lit nm) = Have  (renameLit r lit) nm
-renameProofLine r (And   lit nm) = And   (renameLit r lit) nm
-renameProofLine r (Hence lit j)  = Hence (renameLit r lit) j
-
+-- Renames the variables of a block, cited equations included.
 renameBlock :: [(String, String)] -> ProofBlock -> ProofBlock
-renameBlock r (HaveHence ls)    = HaveHence (map (renameProofLine r) ls)
-renameBlock r (EqChain s steps) = EqChain (renameTerm r s) (map renameStep steps)
-  where renameStep (RwStep nm (l, ri) d, cur) =
-          (RwStep nm (renameTerm r l, renameTerm r ri) d, renameTerm r cur)
+renameBlock r = mapBlockTerms (renameTerm r)
 
-lineVars :: ProofLine -> [String]
-lineVars (Have  lit _) = litVars lit
-lineVars (And   lit _) = litVars lit
-lineVars (Hence lit _) = litVars lit
-
+-- The variables of a block, cited equations included.
 blockVars :: ProofBlock -> [String]
-blockVars (HaveHence ls)    = nub (concatMap lineVars ls)
-blockVars (EqChain s steps) = nub (termVars s ++ concatMap stepVars steps)
-  where stepVars (RwStep _ (l, r) _, cur) = termVars l ++ termVars r ++ termVars cur
+blockVars = nub . concatMap termVars . blockTerms
 
--- The variables a block prints, in order.  A chain step's cited equation is
--- printed by name only, so its variables are not among them and should not
--- take a display name before those that are.
+-- The variables a block prints, in order. A chain cites its equations by
+-- name only, so their variables are left out and do not use up the first
+-- display names.
 blockShownVars :: ProofBlock -> [String]
-blockShownVars (HaveHence ls)    = nub (concatMap lineVars ls)
-blockShownVars (EqChain s steps) = nub (termVars s ++ concatMap (termVars . snd) steps)
+blockShownVars = nub . concatMap termVars . blockShownTerms
 
--- Node count, where smaller means a simpler rewrite candidate.
-termSize :: Term -> Int
-termSize (Var _)    = 1
-termSize (Const _)  = 1
-termSize (App _ ts) = 1 + sum (map termSize ts)
-
--- Names (axioms, lemmas, "assumption", ...) cited anywhere in a block.
+-- The names a block cites, such as axioms, lemmas and hypotheses.
 blockRefNames :: ProofBlock -> [String]
 blockRefNames (HaveHence ls)    = concatMap lineRef ls
   where
@@ -641,7 +724,7 @@ blockRefNames (HaveHence ls)    = concatMap lineRef ls
     lineRef (Hence _ ByContradiction) = []
 blockRefNames (EqChain _ steps) = [ rwName rw | (rw, _) <- steps ]
 
--- Rename cited names throughout a block.
+-- A block with each name it cites renamed.
 renameRefsBlock :: (String -> String) -> ProofBlock -> ProofBlock
 renameRefsBlock ren (HaveHence ls) = HaveHence (map go ls)
   where
@@ -653,115 +736,50 @@ renameRefsBlock ren (HaveHence ls) = HaveHence (map go ls)
 renameRefsBlock ren (EqChain s steps) =
   EqChain s [ (rw { rwName = ren (rwName rw) }, t) | (rw, t) <- steps ]
 
+-- Adds a line to the end of a have/hence block. A chain cannot take one.
 appendLine :: ProofBlock -> ProofLine -> ProofBlock
 appendLine (HaveHence ls) l = HaveHence (ls ++ [l])
 appendLine (EqChain {})   _ = error "appendLine: cannot extend EqChain"
 
+-- A term as the proof prints it.
 ppTerm :: Term -> String
 ppTerm (Var x)    = x
 ppTerm (Const c)  = ppSymbol c
 ppTerm (App f ts) = ppSymbol f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 
--- A symbol as printed.  A word or an operator name, as LCL's ==>, reads back
--- unquoted.  Anything else, as LCL897-10's ' = =>' or CSR117+1's 55.67631,
--- is quoted as in TPTP.  A defined symbol such as $false stays as it is.
+-- A symbol as printed. Words, operators such as ==> and defined symbols such
+-- as $false stay bare, and anything else is quoted as in TPTP.
 ppSymbol :: String -> String
 ppSymbol f
   | all (\c -> isAlphaNum c || c == '_') f || all (`elem` "+*/^<>=-%&|~") f = f
   | ('$' : rest) <- f, all (\c -> isAlphaNum c || c == '_') rest = f
-  | otherwise = "'" ++ concatMap esc f ++ "'"
+  | otherwise = quoted f
+
+-- A literal as the text output writes it, with ~ and !=.
+ppLiteral :: Literal -> String
+ppLiteral (Eq l r)    = ppTerm l ++ " = " ++ ppTerm r
+ppLiteral (NEq l r)   = ppTerm l ++ " != " ++ ppTerm r
+ppLiteral (Rel n [])  = ppSymbol n
+ppLiteral (Rel n ts)  = ppSymbol n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+ppLiteral (NRel n []) = "~" ++ ppSymbol n
+ppLiteral (NRel n ts) = "~" ++ ppSymbol n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+
+-- A clause as the text output writes it, body => head, with $false for no head.
+ppClause :: Clause -> String
+ppClause (Clause [] Nothing)  = "$false"
+ppClause (Clause [] (Just h)) = ppLiteral h
+ppClause (Clause bs mh)       = intercalate " /\\ " (map ppLiteral bs) ++ " => " ++ maybe "$false" ppLiteral mh
+
+-- A single-quoted TPTP atom, with its quotes and backslashes escaped.
+quoted :: String -> String
+quoted s = "'" ++ concatMap esc s ++ "'"
   where
-    esc '\'' = "\\'"
-    esc '\\' = "\\\\"
-    esc c    = [c]
+    esc c | c `elem` "'\\" = ['\\', c]
+          | otherwise      = [c]
 
--- True for units internal to the Twee encoding that must not appear in a proof,
--- namely the Skolemized premises prem_N, the ifeq_axiom sentinel and any unit
--- without a display name.
-isInternalUnit :: UnitEntry -> Bool
-isInternalUnit ue = case ueName ue of
-  Just nm -> isPrefixOf "prem_" nm || nm == "ifeq_axiom"
-  Nothing -> True
-
--- | Restrict prover output to its SZS output block when there is one.  Twee
--- 2.7 with --formal-proof wraps the block in a readable preamble and trailer
--- that are not TSTP and make the file unparseable.  Without markers the text
--- is returned unchanged.
-extractSzsBlock :: String -> String
-extractSzsBlock txt = dropIntroducedParents $ typedClausesAsFormulas $ dropDistinctTypings $
-  case break isStart (lines txt) of
-    (_, [])        -> txt
-    (_, startLine : rest) ->
-      let (body, restEnd) = break isEnd rest
-          endLine = take 1 restEnd
-      in if any isUnit body
-           then unlines (startLine : body ++ endLine)
-           -- A TPTP solution file lists the proof as clean units at the top
-           -- and repeats the raw output below as comments.  Its only SZS
-           -- marker is in that commented copy, so cutting to it would keep no
-           -- unit at all.  The clean units are the proof.
-           else txt
-  where
-    isStart l = "SZS output start" `isInfixOf` l
-    isEnd   l = "SZS output end"   `isInfixOf` l
-    isUnit  l = any (`isPrefixOf` dropWhile (== ' ') l) ["cnf(", "fof(", "tff(", "tcf("]
-
--- E declares a distinct object with a type, tff(d, type, "Apple": $i), which
--- is not TPTP and which the parser rejects, and a distinct object needs no
--- declaration, so those lines are dropped.
-dropDistinctTypings :: String -> String
-dropDistinctTypings = unlines . filter (not . distinctTyping) . lines
-  where
-    distinctTyping l = "tff(" `isPrefixOf` l && ", type, \"" `isInfixOf` l
-
--- E writes typed clauses as tcf units, which the parser does not know, and a
--- tcf is a tff whose formula is a clause, so they are read as tff.
-typedClausesAsFormulas :: String -> String
-typedClausesAsFormulas = unlines . map fix . lines
-  where
-    fix l | "tcf(" `isPrefixOf` l = "tff(" ++ drop 4 l
-          | otherwise             = l
-
--- The parser reads introduced(kind, [info]) only, while Vampire and current
--- TPTP also write a third list of parents, so that list is dropped.
-dropIntroducedParents :: String -> String
-dropIntroducedParents = go
-  where
-    key = "introduced("
-    go [] = []
-    go s@(c : cs)
-      | key `isPrefixOf` s =
-          let (inner, rest) = balanced (drop (length key) s)
-          in key ++ intercalate "," (take 2 (topLevelArgs inner)) ++ ")" ++ go rest
-      | otherwise = c : go cs
-    -- the text up to the parenthesis closing an open one, and what follows it
-    balanced = walk (0 :: Int)
-      where
-        walk _ [] = ([], [])
-        walk d (x : xs)
-          | x == ')' && d == 0 = ([], xs)
-          | x `elem` "([" = first (x :) (walk (d + 1) xs)
-          | x `elem` ")]" = first (x :) (walk (d - 1) xs)
-          | otherwise     = first (x :) (walk d xs)
-        first f (a, b) = (f a, b)
-
--- The arguments of a term's text, split at the commas outside brackets.
-topLevelArgs :: String -> [String]
-topLevelArgs = walk (0 :: Int) []
-  where
-    walk _ acc [] = [reverse acc]
-    walk d acc (x : xs)
-      | x == ',' && d == 0 = reverse acc : walk d [] xs
-      | x `elem` "([" = walk (d + 1) (x : acc) xs
-      | x `elem` ")]" = walk (d - 1) (x : acc) xs
-      | otherwise     = walk d (x : acc) xs
-
--- | Syntactic unification with occurs check.  Both terms share one variable
--- space (used for the two sides of a goal equation, whose variables stem from
--- an existential conjecture and may therefore be instantiated).
--- Unification that binds only variables outside rigid, so the terms of an
--- equation being proved stay as they are while the rules applied to them are
--- instantiated.  Of two variables it binds the one that may move.
+-- Unification that never binds a variable in rigid, so the equation being
+-- proved keeps its variables while the premises applied to it are
+-- instantiated.
 unifyApart :: [String] -> Term -> Term -> Subst -> Maybe Subst
 unifyApart rigid s0 t0 = go [(s0, t0)]
   where
@@ -778,49 +796,48 @@ unifyApart rigid s0 t0 = go [(s0, t0)]
       | x `elem` termVars t = Nothing
       | otherwise           = go rest ((x, t) : th)
 
+-- Unification with occurs check. The result is triangular, so apply it with
+-- deepApplySubstTerm.
 unifyTerms :: Term -> Term -> Subst -> Maybe Subst
-unifyTerms s0 t0 = go [(s0, t0)]
-  where
-    go [] θ = Just θ
-    go ((s, t) : rest) θ =
-      let s' = deepApplySubstTerm θ s
-          t' = deepApplySubstTerm θ t
-      in if s' == t' then go rest θ else case (s', t') of
-        (Var x, _) -> bind x t' rest θ
-        (_, Var y) -> bind y s' rest θ
-        (App f as, App g bs) | f == g, length as == length bs -> go (zip as bs ++ rest) θ
-        _ -> Nothing
-    bind x t rest θ
-      | x `elem` termVars t = Nothing
-      | otherwise           = go rest ((x, t) : θ)
+unifyTerms = unifyApart []
 
+-- Whether a literal is an equation.
 isEqLit :: Literal -> Bool
 isEqLit (Eq _ _) = True
 isEqLit _        = False
 
-dirFlag :: Dir -> Maybe Dir
-dirFlag LR = Nothing
-dirFlag RL = Just RL
+-- Whether a literal is a positive atom.
+isRelLit :: Literal -> Bool
+isRelLit (Rel _ _) = True
+isRelLit _         = False
 
-findEqByName :: String -> [UnitEntry] -> Maybe (Term, Term)
-findEqByName nm units = listToMaybe
-  [ (l, r) | ue <- units, ueName ue == Just nm, Eq l r <- [ueUnit ue] ]
+-- An axiom under another display name.
+renameAxiom :: String -> Axiom -> Axiom
+renameAxiom n (AUnit _ l)    = AUnit n l
+renameAxiom n (ANucleus _ c) = ANucleus n c
 
-applyRwLine :: ProofBlock -> (RwStep, Literal) -> ProofBlock
-applyRwLine b (rw, c) = appendLine b (Hence c (ByRw (rwName rw) (dirFlag (rwDir rw))))
-
--- Length of common prefix of two strings.
-commonPrefixLen :: String -> String -> Int
-commonPrefixLen s1 s2 = length $ takeWhile id $ zipWith (==) s1 s2
-
--- Replay a demodulation chain, given outermost first and replayed innermost
--- first.  Every step must name a known equation and apply, or the replay
--- does not reproduce the prover's rewriting and the result is Nothing.
-rwChain :: (String -> Maybe (Term, Term)) -> Literal -> [(String, Dir)] -> Maybe (Literal, [(RwStep, Literal)])
-rwChain eqOf start chain = go start [] (reverse chain)
+-- Renames the lemmas and every citation in lemma and goal blocks. The axiom
+-- list itself is left as it is.
+renameCitations :: Map.Map String String -> StructuredProof -> StructuredProof
+renameCitations mapping sp0 = sp0
+  { lemmas = [(ren n, lit, renBlock b) | (n, lit, b) <- lemmas sp0]
+  , goals  = [(lit, renBlock b)        | (lit, b)    <- goals sp0]
+  }
   where
-    go cur acc [] = Just (cur, reverse acc)
-    go cur acc ((nm, dir) : rest) = do
-      (l, r) <- eqOf nm
-      cur'   <- rewriteLit cur (l, r) dir
-      go cur' ((RwStep nm (l, r) dir, cur') : acc) rest
+    ren nm   = Map.findWithDefault nm nm mapping
+    renBlock = renameRefsBlock ren
+
+-- Drops the lemmas no goal needs, directly or through other lemmas.
+dropUnusedLemmas :: StructuredProof -> StructuredProof
+dropUnusedLemmas = fixpoint prune
+  where
+    prune sp0 =
+      let refs            = allRefs sp0
+          (kept, dropped) = partition (\(nm, _, _) -> Set.member nm refs) (lemmas sp0)
+      in (sp0 { lemmas = kept }, not (null dropped))
+    allRefs sp0 = Set.fromList $
+      concatMap (blockRefNames . snd) (goals sp0) ++
+      concatMap (\(_, _, b) -> blockRefNames b) (lemmas sp0)
+    fixpoint f x =
+      let (x', changed) = f x
+      in if changed then fixpoint f x' else x'

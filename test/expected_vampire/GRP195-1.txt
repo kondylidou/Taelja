@@ -1,0 +1,52 @@
+Axiom 1: multiply(multiply(X,Y),Z) = multiply(X,multiply(Y,Z))
+Axiom 2: multiply(X,multiply(Y,Y)) = multiply(Y,multiply(Y,X))
+
+Lemma 3: multiply(X,multiply(Y,multiply(Y,Z))) = multiply(Y,multiply(Y,multiply(X,Z)))
+Proof:
+  multiply(X,multiply(Y,multiply(Y,Z)))
+= { by axiom 1 R->L }
+  multiply(X,multiply(multiply(Y,Y),Z))
+= { by axiom 1 R->L }
+  multiply(multiply(X,multiply(Y,Y)),Z)
+= { by axiom 2 }
+  multiply(multiply(Y,multiply(Y,X)),Z)
+= { by axiom 1 }
+  multiply(Y,multiply(multiply(Y,X),Z))
+= { by axiom 1 }
+  multiply(Y,multiply(Y,multiply(X,Z)))
+
+Lemma 4: multiply(X,multiply(Y,multiply(Z,Z))) = multiply(Z,multiply(Z,multiply(X,Y)))
+Proof:
+  multiply(X,multiply(Y,multiply(Z,Z)))
+= { by axiom 1 R->L }
+  multiply(multiply(X,Y),multiply(Z,Z))
+= { by axiom 2 }
+  multiply(Z,multiply(Z,multiply(X,Y)))
+
+Goal 1: multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b))))))) = multiply(a,multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))))
+Proof:
+  multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b)))))))
+= { by axiom 1 R->L }
+  multiply(a,multiply(b,multiply(a,multiply(b,multiply(multiply(a,b),multiply(a,b))))))
+= { by axiom 2 }
+  multiply(a,multiply(b,multiply(a,multiply(multiply(a,b),multiply(multiply(a,b),b)))))
+= { by axiom 1 }
+  multiply(a,multiply(b,multiply(a,multiply(multiply(a,b),multiply(a,multiply(b,b))))))
+= { by axiom 1 }
+  multiply(a,multiply(b,multiply(a,multiply(a,multiply(b,multiply(a,multiply(b,b)))))))
+= { by axiom 1 R->L }
+  multiply(a,multiply(b,multiply(multiply(a,a),multiply(b,multiply(a,multiply(b,b))))))
+= { by axiom 1 R->L }
+  multiply(a,multiply(multiply(b,multiply(a,a)),multiply(b,multiply(a,multiply(b,b)))))
+= { by axiom 1 R->L }
+  multiply(multiply(a,multiply(b,multiply(a,a))),multiply(b,multiply(a,multiply(b,b))))
+= { by lemma 4 }
+  multiply(multiply(a,multiply(a,multiply(a,b))),multiply(b,multiply(a,multiply(b,b))))
+= { by axiom 1 }
+  multiply(a,multiply(multiply(a,multiply(a,b)),multiply(b,multiply(a,multiply(b,b)))))
+= { by axiom 1 }
+  multiply(a,multiply(a,multiply(multiply(a,b),multiply(b,multiply(a,multiply(b,b))))))
+= { by axiom 1 }
+  multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(a,multiply(b,b)))))))
+= { by lemma 3 R->L }
+  multiply(a,multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))))

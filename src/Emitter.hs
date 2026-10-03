@@ -1,21 +1,25 @@
-module Emitter (emit, finalProof, applyRenaming, pruneUnusedLemmas, axiomRenaming, blockRenaming) where
+-- The structured proof as plain text, with the axioms, the lemmas and one
+-- proof per goal. Unused lemmas are dropped, axioms and lemmas are numbered
+-- and variables get readable names. The Lean and TPTP outputs reuse some of
+-- these steps.
+module Emitter
+  ( emitText
+  , finalProof
+  , dropAndNumberLemmas
+  , axiomRenaming
+  , blockRenaming
+  ) where
 
-import Data.Char (toUpper)
-import Data.List (intercalate, nub, partition)
+import Data.List (intercalate, nub)
 import qualified Data.Map.Strict as Map
-import qualified Data.Set as Set
 import Types
 import Helpers
 
-cap :: String -> String
-cap s = toUpper (head s) : tail s
-
--- The hypotheses of a conjecture are unit clauses of the problem, listed
--- with the axioms and cited like them, and the goal is the conclusion.  The
--- TPTP output keeps them apart as assumptions, since a checker reads it
--- against the problem.
-emit :: StructuredProof -> String
-emit sp0 = unlines $ concat
+-- The plain-text proof, with axioms, lemmas and one proof per goal. Hypotheses
+-- of the conjecture are listed and cited as axioms here, while the TPTP
+-- output keeps them apart as assumptions.
+emitText :: StructuredProof -> String
+emitText sp0 = unlines $ concat
   [ axiomLines (axioms sp)
   , [ "" | not (null (axioms sp)) ]
   , concatMap lemmaLines (lemmas sp)
@@ -24,92 +28,83 @@ emit sp0 = unlines $ concat
   where
     sp = finalProof sp0
 
--- The proof as every output states it: without the lemmas nothing cites and
--- with axioms and lemmas numbered in order.
+-- The proof the text and Lean outputs print, with unused lemmas dropped and
+-- axioms and lemmas numbered in order.
 finalProof :: StructuredProof -> StructuredProof
-finalProof = renumberAxioms . pruneUnusedLemmas
+finalProof = renumberAxioms . dropAndNumberLemmas
 
-axiomVars :: Axiom -> [String]
-axiomVars (AUnit _ l)                 = litVars l
-axiomVars (ANucleus _ (Clause bs mh)) = concatMap litVars bs ++ maybe [] litVars mh
-
--- Renumber axioms to close the gaps left by lemma promotion, and update every
--- reference in lemma and goal blocks.
+-- Numbers the axioms 1, 2, ... and updates every citation of them.
 renumberAxioms :: StructuredProof -> StructuredProof
 renumberAxioms sp =
-  let oldNames = [ case ax of AUnit n _ -> n; ANucleus n _ -> n
+  let oldNames = [ axiomName ax
                  | ax <- axioms sp ]
       renaming  = Map.fromList (zip oldNames
                     ["axiom " ++ show i | i <- [(1 :: Int) ..]])
-      newAxioms = zipWith setName [(1 :: Int) ..] (axioms sp)
-      setName i (AUnit    _ lit) = AUnit    ("axiom " ++ show i) lit
-      setName i (ANucleus _ cls) = ANucleus ("axiom " ++ show i) cls
-  in (applyRenaming renaming sp) { axioms = newAxioms }
+      newAxioms = zipWith (\i -> renameAxiom ("axiom " ++ show i)) [(1 :: Int) ..] (axioms sp)
+  in (renameCitations renaming sp) { axioms = newAxioms }
 
--- A single global renaming covers all axiom entries so that a variable shared
--- across multiple axioms (including non-unit clauses) gets the same display name.
+-- One line per axiom. All axioms share one variable renaming, so a variable
+-- prints the same in each.
 axiomLines :: [Axiom] -> [String]
 axiomLines entries = map ppEntry entries
   where
     globalRenaming = axiomRenaming entries
-    ppEntry (AUnit n l)    = cap n ++ ": " ++ ppLiteral (renameLit globalRenaming l)
-    ppEntry (ANucleus n c) = cap n ++ ": " ++ ppClauseWith globalRenaming c
+    ppEntry (AUnit n l)    = capitalize n ++ ": " ++ ppLiteral (renameLit globalRenaming l)
+    ppEntry (ANucleus n (Clause bs mh)) = capitalize n ++ ": " ++ ppClause (Clause (map (renameLit globalRenaming) bs) (fmap (renameLit globalRenaming) mh))
 
+-- The readable name of each axiom variable, in order of first occurrence.
 axiomRenaming :: [Axiom] -> [(String, String)]
-axiomRenaming entries = zip (nub (concatMap axiomVars entries)) prettyVarNames
+axiomRenaming entries = zip (nub (concatMap litVars (concatMap axiomLits entries))) prettyVarNames
 
-ppClauseWith :: [(String, String)] -> Clause -> String
-ppClauseWith renaming (Clause bodyLits mHead) =
-  ppBodies renamedBody ++ " => " ++ maybe "$false" ppLiteral renamedHead
-  where
-    renamedBody  = map (renameLit renaming) bodyLits
-    renamedHead  = fmap (renameLit renaming) mHead
-    ppBodies []  = "(empty)"
-    ppBodies [l] = ppLiteral l
-    ppBodies ls  = intercalate " /\\ " (map ppLiteral ls)
-
+-- Readable variable names, handed out in this order.
 prettyVarNames :: [String]
 prettyVarNames = ["X", "Y", "Z", "A", "B", "C", "U", "V", "W"]
               ++ ["X" ++ show n | n <- [(1 :: Int)..]]
 
--- Variable names are local to each block.  The same name may mean different
--- things in different lemmas, as is usual in mathematics.
+-- The readable name of each variable of a statement and its proof block, in
+-- order of first occurrence. Names are local to a block, so one name may mean
+-- different things in different lemmas.
 blockRenaming :: Literal -> ProofBlock -> [(String, String)]
-blockRenaming lit block = zip (nub (litVars lit ++ blockVars block)) prettyVarNames
+blockRenaming lit block = zip (nub (litVars lit ++ blockShownVars block ++ blockVars block)) prettyVarNames
 
+-- A lemma with its proof, in variable names of its own.
 lemmaLines :: (String, Literal, ProofBlock) -> [String]
 lemmaLines (name, lit, block) =
-  (cap name ++ ": " ++ ppLiteral (renameLit renaming lit)) :
+  (capitalize name ++ ": " ++ ppLiteral (renameLit renaming lit)) :
   "Proof:" :
   blockLines (renameBlock renaming block) ++
   [""]
   where
-    renaming = zip (nub (litVars lit ++ blockShownVars block ++ blockVars block)) prettyVarNames
+    renaming = blockRenaming lit block
 
+-- The nth goal with its proof, in variable names of its own.
 goalLines :: Int -> (Literal, ProofBlock) -> [String]
 goalLines n (lit, block) =
   ("Goal " ++ show n ++ ": " ++ ppLiteral (renameLit renaming lit)) :
   "Proof:" :
   blockLines (renameBlock renaming block)
   where
-    renaming = zip (nub (litVars lit ++ blockShownVars block ++ blockVars block)) prettyVarNames
+    renaming = blockRenaming lit block
 
+-- The printed lines of a proof block.
 blockLines :: ProofBlock -> [String]
 blockLines (HaveHence ls)    = concatMap renderLine ls
 blockLines (EqChain s steps) = renderEqChain s steps
 
+-- A have, and or hence line, with its justification on the line below.
 renderLine :: ProofLine -> [String]
 renderLine (Have  lit nm) = ["  have "  ++ ppLiteral lit, "    by " ++ nm]
 renderLine (And   lit nm) = ["   and "  ++ ppLiteral lit, "    by " ++ nm]
 renderLine (Hence lit j)  = ["  hence " ++ ppLiteral lit, "    " ++ ppJust j]
 
+-- The justification of a hence line. A rewrite right to left is marked R->L.
 ppJust :: Justification -> String
 ppJust (ByAxiom nm)        = "by " ++ nm
-ppJust (ByRw nm Nothing)   = "by rw " ++ nm
-ppJust (ByRw nm (Just RL)) = "by rw " ++ nm ++ " R->L"
-ppJust (ByRw nm (Just LR)) = "by rw " ++ nm
+ppJust (ByRw nm RL) = "by rw " ++ nm ++ " R->L"
+ppJust (ByRw nm LR) = "by rw " ++ nm
 ppJust ByContradiction     = "by contradiction"
 
+-- An equational chain, one term per line with the cited equation in between.
 renderEqChain :: Term -> [(RwStep, Term)] -> [String]
 renderEqChain s steps =
   ("  " ++ ppTerm s) : concatMap renderStep steps
@@ -121,43 +116,12 @@ renderEqChain s steps =
     dirStr LR = ""
     dirStr RL = " R->L"
 
-ppLiteral :: Literal -> String
-ppLiteral (Eq l r)    = ppTerm l ++ " = " ++ ppTerm r
-ppLiteral (NEq l r)   = ppTerm l ++ " != " ++ ppTerm r
-ppLiteral (Rel n [])  = ppSymbol n
-ppLiteral (Rel n ts)  = ppSymbol n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
-ppLiteral (NRel n []) = "~" ++ ppSymbol n
-ppLiteral (NRel n ts) = "~" ++ ppSymbol n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
-
-
--- Apply a name→name mapping throughout lemma and goal proof blocks.
-applyRenaming :: Map.Map String String -> StructuredProof -> StructuredProof
-applyRenaming mapping sp0 = sp0
-  { lemmas = [(ren n, lit, renBlock b) | (n, lit, b) <- lemmas sp0]
-  , goals  = [(lit, renBlock b)        | (lit, b)    <- goals sp0]
-  }
+-- Drops unused lemmas and numbers the rest after the axioms.
+dropAndNumberLemmas :: StructuredProof -> StructuredProof
+dropAndNumberLemmas sp = renumber (dropUnusedLemmas sp)
   where
-    ren nm   = Map.findWithDefault nm nm mapping
-    renBlock = renameRefsBlock ren
-
-pruneUnusedLemmas :: StructuredProof -> StructuredProof
-pruneUnusedLemmas sp = renumber (fixpoint prune sp)
-  where
-    prune sp0 =
-      let refs            = allRefs sp0
-          (kept, dropped) = partition (\(nm, _, _) -> Set.member nm refs) (lemmas sp0)
-      in (sp0 { lemmas = kept }, not (null dropped))
-
-    allRefs sp0 = Set.fromList $
-      concatMap (blockRefNames . snd) (goals sp0) ++
-      concatMap (\(_, _, b) -> blockRefNames b) (lemmas sp0)
-
-    fixpoint f x =
-      let (x', changed) = f x
-      in if changed then fixpoint f x' else x'
-
     renumber sp0 =
       let lemmaNames = map (\(n, _, _) -> n) (lemmas sp0)
           axCount    = length (axioms sp0)
           mapping    = Map.fromList (zip lemmaNames ["lemma " ++ show k | k <- [axCount+1..]])
-      in applyRenaming mapping sp0
+      in renameCitations mapping sp0

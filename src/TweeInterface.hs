@@ -1,103 +1,81 @@
+-- Twee as the rewrite fallback. A goal and the units relevant to it go to
+-- Twee as a TPTP problem, and its proof comes back as a chain of rewrites by
+-- those units. One time budget covers all Twee calls of a run.
 module TweeInterface
-  ( findProver
-  , disableFallback
+  ( disableFallback
   , startFallbackBudget
   , fallbackBudgetSpent
-  , toTptpTerm
-  , HornAxiomEntry (..)
-  , sanitizeId
-  , parseTweeChain
-  , callTweeRelLemma
   , callTwee
   , TweeBudget (..)
-  , runProverCapped
-  , withTempInput
-  , timeoutSecsFromEnv
-  , tweeRewritingSteps
-  , readableUnits
-  , predicateSymbols
-  , isAtomEquation
-  , tweableUnits
-  , isRelHornAxiom
-  , twoRewrites
-  , spliceAt
-  , reverseChain
   ) where
 
 import Control.Applicative ((<|>))
-import Data.Char (isAsciiLower, isAsciiUpper, isDigit, toUpper)
-import Data.List (foldl', intercalate, isInfixOf, isPrefixOf, nub, sortBy)
-import Data.Maybe (fromMaybe, isJust, listToMaybe, mapMaybe)
-import qualified Data.Map.Strict as Map
-import qualified Data.Set as Set
-import Control.Exception (SomeException, bracket, try)
-import Data.IORef (IORef, newIORef, readIORef, modifyIORef', writeIORef)
-import GHC.Clock (getMonotonicTime)
+import Control.Exception (bracket)
 import Control.Monad (when)
-import System.IO.Unsafe (unsafePerformIO)
+import Data.Char (isAsciiLower, isAsciiUpper, isDigit)
+import Data.IORef (IORef, modifyIORef', newIORef, readIORef, writeIORef)
+import Data.List (isInfixOf, isPrefixOf, nub, sortBy)
+import Data.Maybe (fromMaybe, isNothing, listToMaybe)
+import Data.Ord (comparing)
+import qualified Data.Map.Strict as Map
+import GHC.Clock (getMonotonicTime)
 import System.Directory (doesFileExist, findExecutable, getTemporaryDirectory, removeFile)
 import System.Environment (lookupEnv)
-import System.Exit (ExitCode)
 import System.IO (hClose, hPutStr, hPutStrLn, openTempFile, stderr)
+import System.IO.Unsafe (unsafePerformIO)
 import System.Process (readProcessWithExitCode)
 import System.Timeout (timeout)
 import Text.Read (readMaybe)
 
-import qualified Data.TPTP as T
-import qualified Data.Text as Text
-
 import Types
-import Helpers (applySubstTerm, deepApplySubstTerm, diffCtxs, flipDir, isEqLit, litVars,
-                matchLit, rewriteTermAll, suffixVarsLit, termCtxs, termVars, unifyApart)
-import ProofTree (unitNameStr)
-import TptpConvert (declSymbols)
+import Helpers (atomTerm, isEqLit, isRelLit, litNames, litVars, notVar, rewriteTermAll, sanitizeId, trySync, unitEquation)
+import TptpConvert (isLowerWord, tptpLiteral)
 
--- A prover binary, looked up once per run.  The variable names it outright,
--- otherwise bin/<name> in the current directory, otherwise <name> on the
--- PATH.  Without one its calls answer nothing, and a warning says so once.
-{-# NOINLINE proverBinRef #-}
-proverBinRef :: IORef (Map.Map String (Maybe FilePath))
-proverBinRef = unsafePerformIO (newIORef Map.empty)
+-- Twee's binary, cached after the first lookup.
+{-# NOINLINE tweeBinary #-}
+tweeBinary :: IORef (Maybe (Maybe FilePath))
+tweeBinary = unsafePerformIO (newIORef Nothing)
 
--- Whether a prover may be asked at all.  --no-fallback turns them off, so a
--- proof is translated from what the input proof states and nothing else.
+-- Whether Twee may be called at all. --no-fallback turns it off, so the
+-- translation uses only what the input proof states.
 {-# NOINLINE fallbackEnabled #-}
 fallbackEnabled :: IORef Bool
 fallbackEnabled = unsafePerformIO (newIORef True)
 
+-- Turns Twee off for the run, as --no-fallback asks.
 disableFallback :: IO ()
 disableFallback = writeIORef fallbackEnabled False
 
-findProver :: String -> String -> String -> IO (Maybe FilePath)
-findProver var exe what = do
+-- Finds Twee, at TAELJA_TWEE if that names an existing file, else at bin/twee
+-- in the current directory, else on the PATH. If none exists, a warning is
+-- printed once and every Twee call answers nothing. With the fallback off
+-- there is no Twee.
+findTwee :: IO (Maybe FilePath)
+findTwee = do
   enabled <- readIORef fallbackEnabled
-  if not enabled then return Nothing else findProverOn var exe what
-
-findProverOn :: String -> String -> String -> IO (Maybe FilePath)
-findProverOn var exe what = do
-  cached <- Map.lookup exe <$> readIORef proverBinRef
+  cached  <- readIORef tweeBinary
   case cached of
-    Just found -> return found
-    Nothing -> do
-      env    <- lookupEnv var
+    _ | not enabled -> return Nothing
+    Just found      -> return found
+    Nothing         -> do
+      env    <- lookupEnv "TAELJA_TWEE"
       envOk  <- maybe (return False) doesFileExist env
-      local  <- doesFileExist ("bin/" ++ exe)
-      onPath <- findExecutable exe
+      local  <- doesFileExist "bin/twee"
+      onPath <- findExecutable "twee"
       let found = (if envOk then env else Nothing)
-                  <|> (if local then Just ("bin/" ++ exe) else Nothing) <|> onPath
-      when (found == Nothing) $ hPutStrLn stderr $
-        "taelja: no " ++ exe ++ " found, so " ++ what ++ " are off.  Set " ++ var
-        ++ ", put it at bin/" ++ exe ++ " or on the PATH"
-        ++ maybe "" (\p -> " (" ++ var ++ " is " ++ p ++ ", which does not exist)") env
-      modifyIORef' proverBinRef (Map.insert exe found)
+                  <|> (if local then Just "bin/twee" else Nothing) <|> onPath
+      when (isNothing found) $ hPutStrLn stderr $
+        "taelja: no twee found, so rewrite fallbacks are off.  Set TAELJA_TWEE"
+        ++ ", put it at bin/twee or on the PATH"
+        ++ maybe "" (\p -> " (TAELJA_TWEE is " ++ p ++ ", which does not exist)") env
+      writeIORef tweeBinary (Just found)
       return found
 
--- Run a prover with a hard wall-clock cap.  Twee's --max-time and E's
--- --soft-cpu-limit are not reliable stopping points (Twee has been observed
--- running for many minutes past --max-time), so the child is terminated on
--- timeout (readProcessWithExitCode's cleanup) and Nothing is returned.
-runProverCapped :: Int -> FilePath -> [String] -> IO (Maybe String)
-runProverCapped secs bin args = do
+-- Run Twee for at most secs or what is left of the run's budget, whichever
+-- is smaller. Twee's own --max-time can overrun by minutes, so on timeout
+-- the process is killed and the answer is Nothing.
+runCapped :: Int -> FilePath -> [String] -> IO (Maybe String)
+runCapped secs bin args = do
   deadline <- readIORef fallbackDeadline
   now      <- getMonotonicTime
   let remaining = deadline - now
@@ -105,26 +83,27 @@ runProverCapped secs bin args = do
     then writeIORef fallbackExhausted True >> return Nothing
     else do
       let cap = min secs (ceiling remaining)
-      r <- timeout (cap * 1000000)
-             (try (readProcessWithExitCode bin args "")
-                :: IO (Either SomeException (ExitCode, String, String)))
+      r <- timeout (cap * 1000000) (trySync (readProcessWithExitCode bin args ""))
       now' <- getMonotonicTime
       when (now' >= deadline) $ writeIORef fallbackExhausted True
       return $ case r of
         Just (Right (_, out, _)) -> Just out
         _                        -> Nothing
 
--- One budget for all the Twee and E calls of a run, so that a run's length
--- is Taelja's own work plus this, and a run that spends it says so.  A
--- top-level translation starts it, and sub-runs share it.
+-- One deadline for all Twee calls of a run, so a run takes at most Taelja's
+-- own work plus this budget. The top-level translation starts it and
+-- sub-runs share it.
 {-# NOINLINE fallbackDeadline #-}
 fallbackDeadline :: IORef Double
 fallbackDeadline = unsafePerformIO (newIORef 0)
 
+-- Whether a Twee call of this run has reached the deadline.
 {-# NOINLINE fallbackExhausted #-}
 fallbackExhausted :: IORef Bool
 fallbackExhausted = unsafePerformIO (newIORef False)
 
+-- Starts the run's Twee budget from TAELJA_FALLBACK_TIMEOUT, 30 seconds by
+-- default, and clears the answer cache. Returns the budget in seconds.
 startFallbackBudget :: IO Int
 startFallbackBudget = do
   writeIORef tweeCache Map.empty
@@ -134,59 +113,55 @@ startFallbackBudget = do
   writeIORef fallbackExhausted False
   return secs
 
+-- Whether the run's Twee budget ran out.
 fallbackBudgetSpent :: IO Bool
 fallbackBudgetSpent = readIORef fallbackExhausted
 
--- Seconds from an environment variable, with a default when it is unset or
--- unreadable.  Clamped to at least 1, since zero or less would fail at once or
--- disable the wall-clock kill.
+-- Seconds from an environment variable, or the default when it is unset or
+-- unreadable. At least 1, since zero would fail at once and a negative
+-- value would disable the wall-clock kill.
 timeoutSecsFromEnv :: String -> Int -> IO Int
 timeoutSecsFromEnv var def = max 1 . fromMaybe def . (>>= readMaybe) <$> lookupEnv var
 
--- Call Twee on a problem, with the configured --max-time plus a wall-clock
--- margin.  Each input gets a fresh temp file so concurrent runs never collide.
--- A goal's own chain gets the full budget, and speculative internal calls get
--- a small one capped at it, so a failing call cannot eat the whole run.
+-- The time limit of one Twee call. A goal's chain gets TAELJA_TWEE_TIMEOUT,
+-- and a speculative internal call the smaller TAELJA_TWEE_INTERNAL_TIMEOUT,
+-- so failed guesses cannot eat the whole run.
 data TweeBudget = GoalBudget | InternalBudget deriving (Eq, Show)
 
+-- Twee's output for a problem, empty when there is none. The translation
+-- asks the same questions many times, so answers are cached per problem and
+-- time limit until a new budget starts. A call cut short is cached as no
+-- answer, or it would be retried until the budget is gone.
 runTwee :: TweeBudget -> String -> String -> IO String
 runTwee budget tag input = do
   goalSecs <- timeoutSecsFromEnv "TAELJA_TWEE_TIMEOUT" 15
   secs <- case budget of
     GoalBudget     -> return goalSecs
     InternalBudget -> min goalSecs <$> timeoutSecsFromEnv "TAELJA_TWEE_INTERNAL_TIMEOUT" 5
-  cache <- readIORef tweeCache
-  case Map.lookup (input, secs) cache of
+  cached <- Map.lookup (input, secs) <$> readIORef tweeCache
+  out <- case cached of
     Just out -> return out
     Nothing  -> do
-      mBin <- findProver "TAELJA_TWEE" "twee" "rewrite fallbacks"
-      mOut <- case mBin of
+      mBin <- findTwee
+      out <- case mBin of
         Nothing  -> return Nothing
-        Just bin -> withTempInput tag input $ \tmpFile -> do
-          let maxTime = show secs
-          runProverCapped (secs + 5) bin
-            ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", maxTime, tmpFile]
-      -- an answer the budget cut short is remembered as empty for the rest
-      -- of this translation, or the same question would be asked again until
-      -- the budget is gone, and the cache is cleared when a new budget starts
-      let out = fromMaybe "" mOut
+        Just bin -> withTempInput tag input $ \path -> runCapped (secs + 5) bin
+                      ["--no-colour", "--formal-proof", "--no-lemmas", "--multi", "--max-time", show secs, path]
       modifyIORef' tweeCache (Map.insert (input, secs) out)
-      -- TAELJA_TWEE_DEBUG=1 dumps every distinct call (input and output)
-      dumpEnv <- lookupEnv "TAELJA_TWEE_DEBUG"
-      when (dumpEnv == Just "1") $
-        hPutStrLn stderr ("[twee " ++ tag ++ "] input:\n" ++ input ++ "[twee " ++ tag ++ "] output:\n" ++ out)
       return out
+  -- TAELJA_TWEE_DEBUG=1 prints every call's input and output
+  dumpEnv <- lookupEnv "TAELJA_TWEE_DEBUG"
+  when (dumpEnv == Just "1") $
+    hPutStrLn stderr ("[twee " ++ tag ++ "] input:\n" ++ input ++ "[twee " ++ tag ++ "] output:\n" ++ fromMaybe "" out)
+  return (fromMaybe "" out)
 
--- Process-wide result cache.  The translation retries the same sub-problems
--- many times (a large proof can produce thousands of calls with only ~10%
--- distinct inputs), and Twee is deterministic on a given input and time
--- budget, so repeat calls are served from memory.
+-- Twee's answers by problem and time limit, cleared when a budget starts.
 {-# NOINLINE tweeCache #-}
-tweeCache :: IORef (Map.Map (String, Int) String)
+tweeCache :: IORef (Map.Map (String, Int) (Maybe String))
 tweeCache = unsafePerformIO (newIORef Map.empty)
 
--- Write a prover input to a fresh temp file, run the action, remove the file
--- (also when the action throws, e.g. the wall-clock timeout).
+-- Run an action on the problem written to a fresh temp file, so concurrent
+-- runs never collide. The file is removed even when the action throws.
 withTempInput :: String -> String -> (FilePath -> IO a) -> IO a
 withTempInput tag input act = do
   tmpDir <- getTemporaryDirectory
@@ -198,194 +173,36 @@ withTempInput tag input act = do
     removeFile
     act
 
--- A symbol the prover would read back as something other than what we wrote.
--- An unquoted name starting uppercase comes back as a VARIABLE, and a
--- negative integer does not parse at all, so a call containing one would
--- either fail obscurely or return a wrong chain.  Such calls are refused.
--- Quoting cannot rescue a name containing a quote or a backslash, since that
--- would need escaping that the prover's own reader may not round-trip.
-tptpSafeName :: String -> Bool
-tptpSafeName [] = False
-tptpSafeName nm = bareName nm || not (any (`elem` "'\\") nm)
-
--- Names that need no quotes.
--- A name needs no quoting when it is a lower word, which is not read back as
--- a variable or a number.  A string of digits is quoted, since Taelja has no
--- arithmetic and a constant such as LCL's '0' is an atom, which Twee must
--- see as the same symbol in the axioms and in the goal.
-bareName :: String -> Bool
-bareName []       = False
-bareName (c : cs) = isAsciiLower c
-                && all (\ch -> isAsciiLower ch || isAsciiUpper ch || isDigit ch || ch == '_') cs
-
-tptpSafeTerm :: Term -> Bool
-tptpSafeTerm (Var _)    = True
-tptpSafeTerm (Const f)  = tptpSafeName f
-tptpSafeTerm (App f ts) = tptpSafeName f && all tptpSafeTerm ts
-
-tptpSafeLit :: Literal -> Bool
-tptpSafeLit (Eq a b)    = tptpSafeTerm a && tptpSafeTerm b
-tptpSafeLit (NEq a b)   = tptpSafeTerm a && tptpSafeTerm b
-tptpSafeLit (Rel n as)  = tptpSafeName n && all tptpSafeTerm as
-tptpSafeLit (NRel n as) = tptpSafeName n && all tptpSafeTerm as
-
-notVarTerm :: Term -> Bool
-notVarTerm (Var _) = False
-notVarTerm _       = True
-
--- A functor that cannot be written bare is emitted as a TPTP quoted atom,
--- which is how the input proofs themselves write '+' and friends.
-tptpAtom :: String -> String
-tptpAtom nm | bareName nm = nm
-            | otherwise   = "'" ++ nm ++ "'"
-
-toTptpTerm :: Term -> String
-toTptpTerm (Var [])       = []
-toTptpTerm (Var (c:cs))   = toUpper c : cs
-toTptpTerm (Const f)      = tptpAtom f
-toTptpTerm (App f ts)     = tptpAtom f ++ "(" ++ intercalate "," (map toTptpTerm ts) ++ ")"
-
-toCnfAxiom :: String -> Term -> Term -> String
-toCnfAxiom name l r =
-  "cnf(" ++ name ++ ", axiom, " ++ toTptpTerm l ++ " = " ++ toTptpTerm r ++ ")."
-
-toCnfNegGoal :: String -> Term -> Term -> String
-toCnfNegGoal name l r =
-  "cnf(" ++ name ++ ", negated_conjecture, " ++ toTptpTerm l ++ " != " ++ toTptpTerm r ++ ")."
-
--- The ifeq selector axiom ifeq(X,X,Y,Z) = Y.
-ifeqSelectorAxiom :: String
-ifeqSelectorAxiom = "cnf(ifeq_axiom, axiom, ifeq(X,X,Y,Z) = Y)."
-
--- A relational literal as a term for the ifeq and pair encoding.  The caller
--- passes only relational Horn axioms.
-litRelTerm :: Literal -> Term
-litRelTerm (Rel n []) = Const n
-litRelTerm (Rel n as) = App n as
-litRelTerm l          = error ("litRelTerm: not a relational atom: " ++ show l)
-
--- Right-nested pair encoding of a non-empty list of terms.
-nestRightPair :: [Term] -> Term
-nestRightPair []     = error "nestRightPair: empty list"
-nestRightPair [t]    = t
-nestRightPair (t:ts) = App "pair" [t, nestRightPair ts]
-
--- Encode a Horn clause with a relational head as a CNF axiom.  A unit becomes
--- head = true, and a clause with bodies b1 to bn becomes
--- ifeq(pair(b1,..,bn), pair(true,..,true), head, true) = true.
-toIfeqCnfHorn :: String -> Literal -> [Literal] -> String
-toIfeqCnfHorn name headLit [] =
-  "cnf(" ++ sanitizeId name ++ ", axiom, " ++ toTptpTerm (litRelTerm headLit) ++ " = true)."
-toIfeqCnfHorn name headLit bodies =
-  let bodyTs  = map litRelTerm bodies
-      bodyEnc = nestRightPair bodyTs
-      trueEnc = nestRightPair (replicate (length bodies) (Const "true"))
-      headT   = litRelTerm headLit
-      ifeqT   = App "ifeq" [bodyEnc, trueEnc, headT, Const "true"]
-  in "cnf(" ++ sanitizeId name ++ ", axiom, " ++ toTptpTerm ifeqT ++ " = true)."
-
--- Call Twee to prove a Skolemized relational goal from unit ancestors plus
--- Horn axioms (given as HornAxiomEntry descriptors, encoded as ifeq+pair CNF).
--- Returns the rewrite chain from goalTerm to "true", or Nothing if unprovable.
-callTweeRelLemma :: TweeBudget -> [UnitEntry] -> [HornAxiomEntry] -> Literal
-                 -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTweeRelLemma budget units0 hornAxioms0 goalLit0 =
-  withAliases units0 goalLit0 hornAxioms0 $ \units' goal' horns' -> callTweeRelLemmaPlain budget units' horns' goal'
-
-callTweeRelLemmaPlain :: TweeBudget -> [UnitEntry] -> [HornAxiomEntry] -> Literal
-                      -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTweeRelLemmaPlain budget units hornAxioms goalLit
-  | not (tptpSafeLit goalLit) = return Nothing
-  | otherwise = do
-  let goalTerm  = litRelTerm goalLit
-      relUnits  = relevantUnits goalLit (filter (tptpSafeLit . ueUnit) units)
-      indexed   = zip [(0::Int)..] relUnits
-      -- The index keeps ids apart.  Sanitizing alone maps "axiom 3" and
-      -- "axiom_3" to one id, and a replayed step would cite the wrong axiom.
-      mkId i ue = maybe "anon" sanitizeId (ueName ue) ++ "_" ++ show i
-      toAxiom (i, ue) = case ueUnit ue of
-        Eq a b   -> Just (toCnfAxiom (mkId i ue) a b)
-        Rel n as -> Just (toCnfAxiom (mkId i ue) (relTerm n as) (Const "true"))
-        _        -> Nothing
-      unitAxioms = mapMaybe toAxiom indexed
-      needIfeq   = not (all (null . haBodies) hornAxioms)
-      ifeqAxioms = [ifeqSelectorAxiom | needIfeq]
-      hornCnfs   = [ toIfeqCnfHorn (haCnfId ha) (haHead ha) (haBodies ha)
-                   | ha <- hornAxioms ]
-      negGoal    = toCnfNegGoal "goal" goalTerm (Const "true")
-      unitIdToUe = Map.fromList [(mkId i ue, ue) | (i, ue) <- indexed]
-      hornIdToUe = Map.fromList
-        [ (sanitizeId (haCnfId ha), UnitEntry (haDispName ha) (haHead ha) Nothing Nothing)
-        | ha <- hornAxioms ]
-      -- Sentinel for ifeq_axiom so parseTweeChain's directChain doesn't abort
-      -- when it encounters this step.  Filtered out downstream via isPrem check.
-      ifeqSentinelUe = UnitEntry (Just "ifeq_axiom") (Eq (Var "X") (Var "Y")) Nothing Nothing
-      idToUe     = Map.unions [unitIdToUe, hornIdToUe, Map.singleton "ifeq_axiom" ifeqSentinelUe]
-      input      = unlines (unitAxioms ++ ifeqAxioms ++ hornCnfs ++ [negGoal])
-  out <- runTwee budget "rel_lemma" input
-  return (parseTweeChain idToUe out goalTerm (Const "true"))
-  where
-    relTerm n [] = Const n
-    relTerm n as = App n as
-
--- An unquoted TPTP atom, a lowercase letter followed by letters, digits or
--- underscores.  Anything else would make the generated input unparseable and
--- silently fail every call that includes it.
-sanitizeId :: String -> String
-sanitizeId nm =
-  let body = map (\c -> if isAsciiLower c || isAsciiUpper c || isDigit c || c == '_' then c else '_') nm
-  in case body of
-       (c : _) | isAsciiLower c -> body
-       _                        -> 'x' : body
-
--- Keep only units whose symbols are reachable from the goal's symbols through
--- the axioms.  Unrelated equations would inflate Twee's critical-pair search.
+-- Keep the units whose symbols are reachable from the goal's through other
+-- units, since unrelated equations only widen Twee's search. An equation
+-- with a bare variable side rewrites any term, so it is always kept and its
+-- symbols count as reachable.
 relevantUnits :: Literal -> [UnitEntry] -> [UnitEntry]
 relevantUnits goal units =
     filter keep units
   where
-    -- An equation with a bare variable on one side rewrites every term, so it
-    -- bears on any goal even when it shares no symbol with one.  SWV818-1
-    -- proves v_s = v_t from X = v_ta, whose only symbol is v_ta.
     keep u = universal (ueUnit u)
              || any (`elem` finalSyms) (litSyms (ueUnit u))
     universal (Eq (Var _) _) = True
     universal (Eq _ (Var _)) = True
     universal _              = False
-    litSyms (Eq l r)    = nub (termSyms l ++ termSyms r)
-    litSyms (Rel n as)  = n : concatMap termSyms as
-    litSyms _           = []
-    termSyms (Const c)  = [c]
-    termSyms (Var _)    = []
-    termSyms (App f ts) = f : concatMap termSyms ts
+    -- only positive units go to Twee, so only their symbols count
+    litSyms l | isEqLit l || isRelLit l = litNames l
+              | otherwise               = []
     allUnitSyms = map (litSyms . ueUnit) units
     expand syms =
       let newSyms = nub (syms ++ concat (filter (any (`elem` syms)) allUnitSyms))
       in if newSyms == syms then syms else expand newSyms
-    -- the symbols of the universal equations are reachable from any goal,
-    -- since such an equation rewrites any term into one with them, as x = y
-    -- on LCL133-1 follows only through implies(truth,X) = X
     finalSyms = expand (litSyms goal ++ concat [ litSyms (ueUnit u) | u <- units, universal (ueUnit u) ])
 
--- Parse a term from Twee's readable proof format.  Variables start uppercase,
--- and constants and functions start lowercase or with an underscore.
+-- Parse a term of Twee's proof output. Variables start uppercase, and other
+-- symbols lowercase or with an underscore.
 parseTweeTerm :: String -> Maybe (Term, String)
 parseTweeTerm [] = Nothing
 parseTweeTerm s  =
   let s' = dropWhile (== ' ') s
   in case s' of
        [] -> Nothing
-       -- a quoted atom, as emitted by tptpAtom and echoed back by the prover
-       ('\'':more) ->
-         case break (== '\'') more of
-           (nm, '\'':rest) | not (null nm) ->
-             case rest of
-               '(':args ->
-                 case parseTweeArgList args of
-                   Just (as, rest') -> Just (App nm as, rest')
-                   Nothing          -> Nothing
-               _ -> Just (Const nm, rest)
-           _ -> Nothing
        (c:_)
          | isAsciiUpper c ->
              let (nm, rest) = span isTweeIdChar s'
@@ -402,6 +219,7 @@ parseTweeTerm s  =
   where
     isTweeIdChar x = isAsciiLower x || isAsciiUpper x || isDigit x || x == '_'
 
+-- The arguments of a Twee term up to its closing parenthesis, and the rest.
 parseTweeArgList :: String -> Maybe ([Term], String)
 parseTweeArgList s = go [] (dropWhile (== ' ') s)
   where
@@ -413,11 +231,10 @@ parseTweeArgList s = go [] (dropWhile (== ' ') s)
           ')':more -> Just (acc ++ [t], more)
           _        -> Nothing
 
--- Parse Twee's --formal-proof output into a rewrite chain, trying two ways in
--- order.  The first uses Twee's intermediate terms verbatim, which works for
--- ground proofs.  The second keeps Twee's axioms and directions but re-derives
--- each term from the stored equations, which handles renamed variables in
--- non-ground proofs.  It follows only Twee's stated direction.
+-- Read Twee's --formal-proof output as a rewrite chain between l and r.
+-- directChain takes Twee's terms verbatim, which works for ground proofs.
+-- guidedChain replays only the cited units and directions and recomputes
+-- each term, which copes with variables Twee renamed.
 parseTweeChain
   :: Map.Map String UnitEntry
   -> String        -- Twee's stdout
@@ -429,7 +246,6 @@ parseTweeChain idToUe output l r =
     Just (startStr, rawSteps) ->
       directChain startStr rawSteps <|> guidedChain rawSteps
   where
-    -- First, read Twee's intermediate terms verbatim.
     directChain startStr rawSteps =
       let mStart = fst <$> parseTweeTerm startStr
           mChain = sequence
@@ -443,7 +259,6 @@ parseTweeChain idToUe output l r =
              | start == r && (null chain || lastTerm chain == l) -> Just (r, chain)
            _ -> Nothing
 
-    -- Second, replay guided by the stored equations, which handles renaming.
     guidedChain rawSteps =
       let steps = [(nm, dir) | (nm, dir, _) <- rawSteps]
       in replayGuided steps l r <|> replayGuided steps r l
@@ -455,11 +270,10 @@ parseTweeChain idToUe output l r =
               case Map.lookup tid idToUe of
                 Nothing -> go cur rest
                 Just ue -> case ueUnit ue of
-                  -- The side used as the left-hand side must not be a bare
-                  -- variable.  The ifeq selector sentinel is X = Y, which
-                  -- would match every term and rewrite it to an unbound
-                  -- variable, inventing a step the proof never made.
-                  Eq a b | notVarTerm (if dir == LR then a else b) ->
+                  -- A rewrite from a bare variable, as by X = Y, would match
+                  -- every term and invent a step the proof never made, so
+                  -- such a step is skipped.
+                  Eq a b | notVar (if dir == LR then a else b) ->
                     listToMaybe
                       [ (ue, dir, t) : chain
                       | t <- rewriteTermAll cur (a, b) dir
@@ -497,39 +311,32 @@ parseTweeChain idToUe output l r =
            (startLine:rest) ->
              Just (dropWhile (== ' ') startLine, collectSteps rest)
 
+-- Asks Twee for a rewrite chain that proves the goal from the units. The
+-- answer gives the side the chain starts from and its steps.
 callTwee :: TweeBudget -> [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
 callTwee budget units goal =
-  withAliases units goal [] $ \units' goal' _ -> callTweePlain budget units' goal'
+  withAliases units goal $ \units' goal' -> callTweeUnaliased budget units' goal'
 
--- Twee prints a symbol that is not a plain name, as LCL's '+' or '==>', infix
--- in its proofs, where parseTweeTerm cannot read it back.  Such a symbol gets
--- a plain alias for the call and its own name again in the answer, in the
--- chain's terms and in the units it cites.
+-- Twee prints symbols that are not plain names, such as '==>', infix, and
+-- parseTweeTerm cannot read them back. They get plain aliases for the call,
+-- and the answer is renamed back.
 withAliases
-  :: [UnitEntry] -> Literal -> [HornAxiomEntry]
-  -> ([UnitEntry] -> Literal -> [HornAxiomEntry] -> IO (Maybe (Term, [(UnitEntry, Dir, Term)])))
+  :: [UnitEntry] -> Literal
+  -> ([UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)])))
   -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-withAliases units lit horns call
-  | null unplain = call units lit horns
+withAliases units lit call
+  | null unplain = call units lit
   | otherwise = do
       r <- call [ u { ueUnit = renLit fwd (ueUnit u) } | u <- units ] (renLit fwd lit)
-                [ h { haHead = renLit fwd (haHead h), haBodies = map (renLit fwd) (haBodies h) } | h <- horns ]
       return (fmap (\(t, ch) -> ( renTerm back t
                                 , [ (u { ueUnit = renLit back (ueUnit u) }, d, renTerm back x) | (u, d, x) <- ch ])) r)
   where
-    allLits = map ueUnit units ++ [lit] ++ concat [ haHead h : haBodies h | h <- horns ]
-    syms    = nub (concatMap symsOf allLits)
-    unplain = [ f | f <- syms, not (bareName f) ]
+    allLits = map ueUnit units ++ [lit]
+    syms    = nub (concatMap litNames allLits)
+    unplain = [ f | f <- syms, not (isLowerWord f) ]
     aliases = zip unplain [ a | i <- [1 :: Int ..], let a = "taelja_sym" ++ show i, a `notElem` syms ]
     fwd     = Map.fromList aliases
     back    = Map.fromList [ (a, f) | (f, a) <- aliases ]
-    symsOf (Rel n ts)  = n : concatMap termSyms ts
-    symsOf (NRel n ts) = n : concatMap termSyms ts
-    symsOf (Eq a b)    = termSyms a ++ termSyms b
-    symsOf (NEq a b)   = termSyms a ++ termSyms b
-    termSyms (Const c)  = [c]
-    termSyms (Var _)    = []
-    termSyms (App f ts) = f : concatMap termSyms ts
     ren m f = Map.findWithDefault f f m
     renTerm m (Const c)  = Const (ren m c)
     renTerm _ (Var v)    = Var v
@@ -539,163 +346,26 @@ withAliases units lit horns call
     renLit m (Eq a b)    = Eq (renTerm m a) (renTerm m b)
     renLit m (NEq a b)   = NEq (renTerm m a) (renTerm m b)
 
-callTweePlain :: TweeBudget -> [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTweePlain budget units goal@(Eq l r)
-  | not (tptpSafeLit goal) = return Nothing
-  | otherwise = do
-  let relUnits   = relevantUnits goal (filter (tptpSafeLit . ueUnit) units)
-      rawEqUnits = [(i, ue) | (i, ue) <- zip [(0::Int)..] relUnits, isEqLit (ueUnit ue)]
-      -- Put general (variable-containing) equations before ground ones so Twee's
-      -- proof strategy is consistent regardless of the prover's axiom ordering.
-      eqUnits = sortBy (\(_, u1) (_, u2) ->
-                  compare (null (litVars (ueUnit u1))) (null (litVars (ueUnit u2))))
-                rawEqUnits
-      -- The index keeps ids apart.  Sanitizing alone maps "axiom 3" and
-      -- "axiom_3" to one id, and a replayed step would cite the wrong axiom.
-      mkId i ue = maybe "anon" sanitizeId (ueName ue) ++ "_" ++ show i
-      idToUe  = Map.fromList [(mkId i ue, ue) | (i, ue) <- eqUnits]
-      axioms  = [ toCnfAxiom (mkId i ue) a b
-                | (i, ue) <- eqUnits, Eq a b <- [ueUnit ue] ]
-      negGoal = toCnfNegGoal "goal" l r
-      input   = unlines (axioms ++ [negGoal])
-  out <- runTwee budget "eq" input
-  return (parseTweeChain idToUe out l r)
-callTweePlain budget units goal@(Rel name args)
-  | not (tptpSafeLit goal) = return Nothing
-  | otherwise = do
-  let goalTerm  = if null args then Const name else App name args
-      indexed   = zip [(0::Int)..] (relevantUnits goal (filter (tptpSafeLit . ueUnit) units))
-      -- The index keeps ids apart.  Sanitizing alone maps "axiom 3" and
-      -- "axiom_3" to one id, and a replayed step would cite the wrong axiom.
-      mkId i ue = maybe "anon" sanitizeId (ueName ue) ++ "_" ++ show i
-      toAxiom (i, ue) = case ueUnit ue of
-        Eq a b   -> Just (toCnfAxiom (mkId i ue) a b)
-        Rel n as -> Just (toCnfAxiom (mkId i ue) (if null as then Const n else App n as) (Const "true"))
-        _        -> Nothing
-      axioms  = mapMaybe toAxiom indexed
-      negGoal = toCnfNegGoal "goal" goalTerm (Const "true")
-      input   = unlines (axioms ++ [negGoal])
-      idToUe  = Map.fromList [(mkId i ue, ue) | (i, ue) <- indexed, isEqLit (ueUnit ue) || isRelLit (ueUnit ue)]
-  out <- runTwee budget "horn" input
-  return (parseTweeChain idToUe out goalTerm (Const "true"))
+-- Ask Twee for the goal from the relevant units. An equation goes as it is,
+-- and an atom P(t) as P(t) = true.
+callTweeUnaliased :: TweeBudget -> [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
+callTweeUnaliased budget units goal = case goal of
+    -- Equations with variables go before ground ones, which makes Twee's
+    -- search less sensitive to the order of the input proof.
+    Eq l r  -> ask "eq" l r (sortBy (comparing (null . litVars . ueUnit . snd))
+                                    [ iu | iu@(_, u) <- indexed, isEqLit (ueUnit u) ])
+    Rel _ _ -> ask "horn" (atomTerm goal) (Const "true")
+                   [ iu | iu@(_, u) <- indexed, isEqLit (ueUnit u) || isRelLit (ueUnit u) ]
+    _       -> return Nothing
   where
-    isRelLit (Rel _ _) = True
-    isRelLit _         = False
-callTweePlain _ _ _ = return Nothing
+    indexed = zip [0 :: Int ..] (relevantUnits goal units)
+    -- The index keeps ids distinct, since sanitizing alone maps "axiom 3"
+    -- and "axiom_3" to the same id.
+    mkId i ue = maybe "anon" sanitizeId (ueName ue) ++ "_" ++ show i
+    ask tag l r us = do
+      let axioms = [ "cnf(" ++ mkId i ue ++ ", axiom, " ++ tptpLiteral (uncurry Eq (unitEquation (ueUnit ue))) ++ ")."
+                   | (i, ue) <- us ]
+          idToUe = Map.fromList [ (mkId i ue, ue) | (i, ue) <- us ]
+      out <- runTwee budget tag (unlines (axioms ++ ["cnf(goal, negated_conjecture, " ++ tptpLiteral (NEq l r) ++ ")."]))
+      return (parseTweeChain idToUe out l r)
 
--- The units whose whole derivation, down to input units, uses only steps the
--- translation reads from the proof: Twee's rewriting, read as two rewrites,
--- and resolution, which the nuclei replay.  A unit derived another way, as
--- E's rw and spm, needs the prover or a demodulation chain to be justified.
-readableUnits :: [T.Unit] -> Set.Set String
-readableUnits = foldl' add Set.empty
-  where
-    -- a unit's parents come before it in the proof
-    add done (T.Unit n _ src)
-      | readable src = Set.insert (unitNameStr n) done
-      | otherwise    = done
-      where
-        readable (Just (T.Inference (T.Atom rule) _ ps, _)) =
-          rule `elem` map Text.pack ["rewriting", "resolution"]
-            && all (`Set.member` done) [ unitNameStr p | T.Parent (T.UnitSource p) _ <- ps ]
-        readable _ = True
-    add done _ = done
-
--- The predicate symbols of a proof.  Twee reads an atom as a term, so one of
--- its steps may equate two atoms that both hold, as SWB005+2's c34 states
--- iext(uri_rdf_type,X2,uri_rdfs_Resource) = ip(uri_ex_p).  Such an equation is
--- no first-order statement and is never stated or cited.
-predicateSymbols :: [T.Unit] -> Set.Set String
-predicateSymbols units = Set.fromList [ p | T.Unit _ d _ <- units, p <- snd (declSymbols d) ]
-
-isAtomEquation :: Set.Set String -> Literal -> Bool
-isAtomEquation preds (Eq l r) = atom l || atom r
-  where
-    atom (App f _) = Set.member f preds
-    atom (Const c) = Set.member c preds
-    atom _         = False
-isAtomEquation _ _ = False
-
--- Twee's rewriting steps, each its conclusion and its two premises by name.
--- Twee writes a step as one rewrite with each premise between the two sides of
--- its conclusion, and twoRewrites reads that back.
-tweeRewritingSteps :: [T.Unit] -> [(String, String, String)]
-tweeRewritingSteps units =
-  [ (unitNameStr n, p1, p2)
-  | T.Unit n _ (Just (T.Inference (T.Atom rule) _ ps, _)) <- units
-  , rule == Text.pack "rewriting"
-  , [p1, p2] <- [[ unitNameStr pn | T.Parent (T.UnitSource pn) _ <- ps ]] ]
-
--- From one side of an equation to the other by one rewrite with each of two
--- equations.  Twee usually applies its premises in the order it lists them,
--- and sometimes the other way round, so both orders are read, the listed one
--- first.  The equations are renamed apart and their variables fixed by
--- unification, while the equation's own variables stay as they are.  An
--- equation variable no rewrite fixes may take any value, since the equation
--- holds for all of them, and it takes a leaf of the left side.  The result
--- says whether the chain runs from the right side, and for each rewrite, in
--- the order made, which premise it uses, its direction, and whether it
--- rewrites the whole term, and the instance of the premise it applies.
-twoRewrites :: Term -> Term -> (Term, Term) -> (Term, Term)
-            -> Maybe (Bool, (Int, Dir, Bool, (Term, Term)), (Int, Dir, Bool, (Term, Term)), Term)
-twoRewrites gl gr e1 e2 = listToMaybe
-  (  [ (False, (1, dA, rA, iA), (2, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gl gr e1 e2 ]
-  ++ [ (True,  (1, dA, rA, iA), (2, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gr gl e1 e2 ]
-  ++ [ (False, (2, dA, rA, iA), (1, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gl gr e2 e1 ]
-  ++ [ (True,  (2, dA, rA, iA), (1, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gr gl e2 e1 ] )
-  where
-    rigid = nub (termVars gl ++ termVars gr)
-    -- the value an unfixed variable takes, the smallest term at hand, so
-    -- the line stays no larger than the step needs
-    leaf = head ([ t | (t, _) <- termCtxs gl, isLeaf t ] ++ [gl])
-    isLeaf (App _ []) = True
-    isLeaf (App _ _)  = False
-    isLeaf _          = True
-    apart sfx (l, r) = case suffixVarsLit sfx (Eq l r) of
-      Eq l' r' -> (l', r')
-      _        -> (l, r)
-    ways (l, r) = [(LR, l, r), (RL, r, l)]
-    via start end ea eb = do
-      let ea' = apart "_t1" ea
-          eb' = apart "_t2" eb
-      (dA, fromA, toA) <- ways ea'
-      (i, (sub, ctx)) <- zip [0 :: Int ..] (termCtxs start)
-      Just s1 <- [unifyApart rigid fromA sub []]
-      let mid0 = deepApplySubstTerm s1 (ctx toA)
-      (dB, fromB, toB) <- ways eb'
-      -- the second rewrite is the last, so it works where mid0 and end differ
-      (k, (sub2, ctx2)) <- zip [0 :: Int ..] (diffCtxs mid0 end)
-      Just s2 <- [unifyApart rigid fromB sub2 s1]
-      Just s3 <- [unifyApart rigid (deepApplySubstTerm s2 (ctx2 toB)) end s2]
-      let mid1 = deepApplySubstTerm s3 mid0
-          inst (l, r) = (deepApplySubstTerm s3 l, deepApplySubstTerm s3 r)
-          (iA, iB) = (inst ea', inst eb')
-          fill = [ (v, leaf) | v <- nub (termVars mid1 ++ concatMap termVars [fst iA, snd iA, fst iB, snd iB])
-                             , v `notElem` rigid ]
-          filled (l, r) = (deepApplySubstTerm fill l, deepApplySubstTerm fill r)
-      return (dA, i == 0, filled iA, dB, k == 0, filled iB, deepApplySubstTerm fill mid1)
-
--- A derivation from pl to pr, instantiated to run from `from` to `to`, and
--- turned round when the equation was applied right to left.
-spliceAt :: Dir -> Term -> Term -> (Term, Term) -> (Term, [(UnitEntry, Dir, Term)])
-         -> Maybe [(UnitEntry, Dir, Term)]
-spliceAt d from to (pl, pr) (_, steps) = do
-  let (a, b, ordered) = case d of
-        LR -> (pl, pr, steps)
-        RL -> (pr, pl, reverseChain pl steps)
-  sigma <- matchLit (Eq a b) (Eq from to)
-  return [ (u, dir, applySubstTerm sigma t) | (u, dir, t) <- ordered ]
-
--- The same chain read backwards, from its last term to its first.
-reverseChain :: Term -> [(UnitEntry, Dir, Term)] -> [(UnitEntry, Dir, Term)]
-reverseChain start steps =
-  reverse [ (u, flipDir d, prev) | ((u, d, _), prev) <- zip steps (start : map (\(_, _, t) -> t) steps) ]
-
--- raw derived electrons with no proof are excluded since Twee cannot justify them later
-tweableUnits :: [UnitEntry] -> [UnitEntry]
-tweableUnits = filter (\u -> isJust (ueName u) || isJust (ueProof u))
-
--- Horn axioms that are purely relational (no equality heads or bodies).
--- Equality-headed/bodied axioms break the ifeq+pair Twee encoding.
-isRelHornAxiom :: HornAxiomEntry -> Bool
-isRelHornAxiom ha = not (isEqLit (haHead ha)) && not (any isEqLit (haBodies ha))

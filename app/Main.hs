@@ -1,3 +1,5 @@
+-- The taelja command. It reads a TSTP proof and prints the structured proof
+-- as text, TPTP or Lean, or reports whether a problem is in the Horn fragment.
 module Main where
 
 import Control.Monad (when)
@@ -9,78 +11,78 @@ import System.IO (IOMode (WriteMode), hPutStr, hPutStrLn, hSetEncoding, stderr, 
 
 import qualified Data.Text.IO as TIO
 import qualified Data.TPTP as T
-import Data.Attoparsec.Text (eitherResult, feed)
-import Data.TPTP.Parse.Text (parseTSTP)
 
 import ProofTree (buildProofInfo)
 import Translate (translate)
 import TweeInterface (disableFallback)
-import Emitter (emit)
+import Emitter (emitText)
 import TptpEmitter (emitTptp)
 import LeanEmitter (emitLean)
 import Data.List (isPrefixOf, stripPrefix)
-import Data.Maybe (listToMaybe, mapMaybe)
+import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import qualified Data.Text as Text
-import Helpers (extractSzsBlock)
+import TptpConvert (parseProof)
 import Debug (dumpProofTree, dumpInferenceRules)
-import HornProblem (hornProblem, loadProblem)
+import HornProblem (nonHornReason, loadProblem)
 
+-- Checks the flags, then either runs the Horn check or translates the proof
+-- and prints it in the chosen format.
 main :: IO ()
 main = do
-  -- a Lean file is not ASCII, so the output is UTF-8 whatever the locale
+  -- Lean output is not ASCII, so write UTF-8 whatever the locale
   hSetEncoding stdout utf8
+  hSetEncoding stderr utf8
   args <- getArgs
   let flags = filter ((== "--") . take 2) args
       files = filter ((/= "--") . take 2) args
       debug = "--debug" `elem` flags
-      -- the namespace of the Lean file, which several files imported
-      -- together must each have their own
-      namespace = maybe "" id (listToMaybe (mapMaybe (stripPrefix "--namespace=") flags))
+      -- Lean files imported together need distinct namespaces
+      namespace = fromMaybe "" (listToMaybe (mapMaybe (stripPrefix "--namespace=") flags))
       lean = emitLean namespace
       render | "--tptp" `elem` flags = emitTptp
              | "--lean" `elem` flags = lean
-             | otherwise             = emit
-      -- the Lean file written beside the requested output, from the same run
+             | otherwise             = emitText
+      -- also write the Lean file here, from the same run
       leanOut = listToMaybe (mapMaybe (stripPrefix "--lean-out=") flags)
-      known = ["--debug", "--tptp", "--lean", "--no-fallback", "--horn-problem", "--lenient"]
+      known = ["--debug", "--tptp", "--lean", "--no-fallback", "--horn-problem"]
       valued = ["--namespace=", "--lean-out="]
       knownFlag f = f `elem` known || any (`isPrefixOf` f) valued
   inputFile <- case files of
-    [f] | all knownFlag flags -> return f
-    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--tptp | --lean] [--namespace=NAME] [--lean-out=FILE] [--no-fallback] <proof-file> | taelja --horn-problem [--lenient] <problem-file>" >> exitFailure
-  -- Is the problem Horn as written?  Prints "horn" or the first offending unit.
+    [f] | all knownFlag flags, not (all (`elem` flags) ["--tptp", "--lean"]) -> return f
+    _ -> hPutStrLn stderr "Usage: taelja [--debug] [--tptp | --lean] [--namespace=NAME] [--lean-out=FILE] [--no-fallback] <proof-file> | taelja --horn-problem <problem-file>" >> exitFailure
+  -- --horn-problem only checks whether the problem is Horn as written and
+  -- prints "horn" or why the first offending unit is not.
   when ("--horn-problem" `elem` flags) $ do
     r <- loadProblem inputFile
     case r of
       Left err -> hPutStrLn stderr err >> exitFailure
-      Right units -> case hornProblem ("--lenient" `elem` flags) units of
+      Right units -> case nonHornReason units of
         Nothing     -> putStrLn "horn"
         Just reason -> putStrLn ("not horn: " ++ reason)
     exitSuccess
   when ("--no-fallback" `elem` flags) disableFallback
   raw <- TIO.readFile inputFile
-  let contents = Text.pack (extractSzsBlock (Text.unpack raw))
-  case eitherResult (feed (parseTSTP contents) mempty) of
+  case parseProof (Text.unpack raw) of
     Left err    -> hPutStrLn stderr ("Parse error: " ++ err) >> exitFailure
     Right tstp@(T.TSTP _ units) -> do
       when debug $ do
         case buildProofInfo units of
-          Left reason -> putStrLn ("No proof tree, " ++ reason)
+          Left reason -> hPutStrLn stderr ("No proof tree, " ++ reason)
           Right info  -> do
-            putStrLn "-- Proof tree"
+            hPutStrLn stderr "-- Proof tree"
             dumpProofTree info
-            putStrLn ""
-            putStrLn "-- Inference rules"
+            hPutStrLn stderr ""
+            hPutStrLn stderr "-- Inference rules"
             dumpInferenceRules units
-            putStrLn ""
+            hPutStrLn stderr ""
       msp <- translate debug tstp
       case msp of
         Left reason -> do
           hPutStrLn stderr ("translate: " ++ reason)
           exitFailure
-        -- Force the whole output before printing any of it.  Clause conversion
-        -- fails lazily on constructs outside the Horn fragment, so printing as
-        -- we go could leave a truncated proof that looks complete.
+        -- Force the whole output before printing any of it. Rendering can
+        -- fail lazily outside the Horn fragment, and printing as we go could
+        -- leave a truncated proof that looks complete.
         Right sp -> do
           r <- try (evaluate (force (render sp, fmap (const (lean sp)) leanOut)))
           case r of

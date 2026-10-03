@@ -1,0 +1,26 @@
+% SZS output start Proof for test_trivial_body_atom
+fof(f1,axiom,(
+  p(a)),
+  file('/home/user/Developer/Taelja/test/input/test_trivial_body_atom.p',unknown)).
+fof(f2,axiom,(
+  r(a)),
+  file('/home/user/Developer/Taelja/test/input/test_trivial_body_atom.p',unknown)).
+fof(f3,axiom,(
+  ( ! [X0,X1] : (~p(X0) | X0 != X1 | ~r(X1) | q(X0)) )),
+  file('/home/user/Developer/Taelja/test/input/test_trivial_body_atom.p',unknown)).
+fof(f4,negated_conjecture,(
+  ~q(a)),
+  file('/home/user/Developer/Taelja/test/input/test_trivial_body_atom.p',unknown)).
+fof(f5,plain,(
+  ( ! [X1] : (~r(X1) | ~p(X1) | q(X1)) )),
+  inference(equality_resolution,[],[f3])).
+fof(f6,plain,(
+  ~p(a) | q(a)),
+  inference(resolution,[],[f5,f2])).
+fof(f7,plain,(
+  q(a)),
+  inference(forward_subsumption_resolution,[],[f6,f1])).
+fof(f8,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f7,f4])).
+% SZS output end Proof for test_trivial_body_atom
