@@ -12,7 +12,7 @@ import Data.Maybe (listToMaybe, maybeToList)
 import qualified Data.Set as Set
 
 import Emitter (finalProof)
-import Helpers (applySubstTerm, atomTerms, axiomLits, axiomName, blockShownVars, matchTermIf, capitalize, falsumLit, flipLit, lineLit, litVars, mapLiteralTerms, mapShownTerms, termAtom, termVars, underscoreApart)
+import Helpers (applySubstTerm, atomTerms, axiomLits, axiomName, blockShownVars, matchTermIf, capitalize, falsumLit, flipLit, lineLit, litVars, mapLiteralTerms, termAtom, termVars, underscoreApart)
 import Types
 
 -- Whether a symbol is a function or a predicate.
@@ -349,7 +349,7 @@ unjustified why = [ "-- not justified: " ++ why, "exact taelja_step_not_justifie
 -- The tactic proof of a lemma or goal. It introduces the statement's
 -- variables and sets any other block variable to taelja_elem.
 proofLines :: Ctx -> Literal -> ProofBlock -> [String]
-proofLines ctx stmt blk0 =
+proofLines ctx stmt blk =
   [ "intro " ++ unwords (map (env Map.!) stmtVs) | not (null stmtVs) ]
   ++ [ "have " ++ env Map.! v ++ " : α := taelja_elem" | v <- blockVs ]
   ++ case blk of
@@ -357,26 +357,11 @@ proofLines ctx stmt blk0 =
        EqChain s steps -> chainProof ctx env hole stmt s steps
   where
     stmtVs  = nub (litVars stmt)
-    blk     = specialize stmtVs stmt blk0
     blockVs = nub (blockShownVars blk) \\ stmtVs
     env0    = bindVars (ctxUsed ctx) Map.empty (stmtVs ++ blockVs)
     hole    = head [ h | h <- "t" : [ "t" ++ show n | n <- [(1 :: Int) ..] ]
                        , h `Set.notMember` ctxUsed ctx, h `notElem` Map.elems env0 ]
     env     = Map.insert holeVar hole env0
-
--- Block variables missing from the statement are schematic, so the block
--- holds for any of their values. When the block ends on a fact more general
--- than the statement, they are instantiated to make it the statement.
-specialize :: [String] -> Literal -> ProofBlock -> ProofBlock
-specialize stmtVs stmt blk = case blk of
-  HaveHence ls | (l : _) <- reverse (map lineLit ls), Just s <- by l -> mapShownTerms (applySubstTerm s) blk
-  EqChain s steps | (Eq _ _) <- stmt, ((_, t) : _) <- reverse steps, Just sub <- by (Eq s t) ->
-    mapShownTerms (applySubstTerm sub) blk
-  _ -> blk
-  where
-    local v = v `notElem` stmtVs
-    by l | l == stmt || flipLit l == stmt = Nothing
-         | otherwise = listToMaybe [ s | (s, _) <- matchL local l stmt [], not (null s) ]
 
 -- The tactic proof of a have/hence block, one Lean have per line. The
 -- premises of a hence line are the last have or hence line and the and lines

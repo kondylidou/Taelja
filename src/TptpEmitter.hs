@@ -509,25 +509,17 @@ ppFormula _   (Raw s)        = s
 
 -- The steps of one block numbered from k, with the next free number and the
 -- name of the final step. A have or and line that only restates its fact gives
--- way to the fact unless it is last. The last step takes the block's name and
--- role, or a restate step does when it is not the statement up to orientation.
+-- way to the fact unless it is last. The last step states the block's literal
+-- up to orientation and takes its name and role, and an empty block proves a
+-- reflexive equation.
 blockSteps :: (String -> String) -> [(String, Literal)] -> Int -> Maybe String -> String -> Literal -> ProofBlock -> (Int, [Line], String)
 blockSteps fresh facts k mName role lit blk =
   case reverse steps of
-    Step own _ (LitFormula l) rule ps : earlier
-      | l == lit' || flipLit l == lit' ->
-          let name = fromMaybe own mName
-          in (k' - 1 + maybe 1 (const 0) mName, reverse (Step name role (LitFormula lit') rule ps : earlier), name)
-      | otherwise ->
-          let name = fromMaybe (stepName k') mName
-          in (k' + 1, steps ++ [Step name role (LitFormula lit') "restate" [stepName (k' - 1)]], name)
-    -- an empty block proves a reflexive equation, and anything else is
-    -- marked unproved
+    Step own _ (LitFormula _) rule ps : earlier ->
+      let name = fromMaybe own mName
+      in (k' - 1 + maybe 1 (const 0) mName, reverse (Step name role (LitFormula lit') rule ps : earlier), name)
     [] -> let name = fromMaybe (stepName k') mName
-              rule = case lit' of
-                Eq s t | s == t -> "reflexivity"
-                _               -> "unproved"
-          in (k' + 1, [Step name role (LitFormula lit') rule []], name)
+          in (k' + 1, [Step name role (LitFormula lit') "reflexivity" []], name)
     _ -> (k', steps, fromMaybe (stepName k') mName)
   where
     renaming    = blockRenaming lit blk

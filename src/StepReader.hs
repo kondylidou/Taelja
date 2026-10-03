@@ -18,7 +18,7 @@ import qualified Data.Text as Text
 import qualified Data.TPTP as T
 
 import Types
-import Helpers (applySubstTerm, deepApplySubstTerm, diffCtxs, flipDir, matchLit, placesOf,
+import Helpers (applySubstTerm, deepApplySubstTerm, diffCtxs, flipDir, matchLit, notVar, placesOf,
                 putTermAt, replaceAllTerm, suffixVarsLit, termAt, termCtxs, termVars, unifyApart)
 import ProofTree (coreInferenceNames, equationRuleNames)
 import TptpConvert (sourceParents, sourceRules, unitNameStr)
@@ -133,7 +133,7 @@ rewriteEveryOccurrence gl gr e1 e2 = listToMaybe (reading 1 e1 2 e2 ++ reading 2
       return (s1, placesOf v gl, placesOf v gr)
     -- a rewrite never applies at a variable of the premise
     rewrittenInPremise from to pl pr = do
-      w <- nub [ t | side <- [pl, pr], (t@(App _ _), _) <- termCtxs side ]
+      w <- nub [ t | side <- [pl, pr], (t, _) <- termCtxs side, notVar t ]
       Just s1 <- [unifyApart rigid from w []]
       let a = deepApplySubstTerm s1 from
           b = deepApplySubstTerm s1 to

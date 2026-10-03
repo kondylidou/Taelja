@@ -259,6 +259,7 @@ vampireBenchmarkNames =
   -- the stated goal
   , "GRP656+1"
   , "GRP195-1"        -- a chain that returns to an earlier term once its variables are bound
+  , "TOP050-1"        -- a step rewriting every occurrence of a constant in a premise
   ]
 
 -- The E proofs.

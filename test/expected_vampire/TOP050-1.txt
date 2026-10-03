@@ -1,0 +1,1516 @@
+Axiom 1: product(X,X) = X
+Axiom 2: product(product(X,Y),Y) = X
+Axiom 3: product(a22,a31) = a23
+Axiom 4: product(product(X,Y),Z) = product(product(X,Z),product(Y,Z))
+Axiom 5: product(a30,a23) = a31
+Axiom 6: product(a25,a23) = a26
+Axiom 7: product(a23,a21) = a24
+Axiom 8: product(a21,a25) = a22
+Axiom 9: product(a32,a21) = a1
+Axiom 10: product(a26,a1) = a27
+Axiom 11: product(a27,a21) = a28
+Axiom 12: product(a28,a3) = a29
+Axiom 13: product(a31,a3) = a32
+Axiom 14: product(a24,a3) = a25
+Axiom 15: product(a29,a1) = a30
+Axiom 16: product(a1,a31) = a2
+Axiom 17: product(a2,a25) = a3
+Axiom 18: product(a20,a29) = a21
+Axiom 19: product(a4,a11) = a5
+Axiom 20: product(a3,a29) = a4
+Axiom 21: product(a19,a11) = a20
+Axiom 22: product(a18,a15) = a19
+Axiom 23: product(a15,a5) = a16
+Axiom 24: product(a16,a19) = a17
+Axiom 25: product(a14,a17) = a15
+Axiom 26: product(a10,a7) = a11
+Axiom 27: product(a11,a5) = a12
+Axiom 28: product(a12,a19) = a13
+Axiom 29: product(a13,a7) = a14
+Axiom 30: product(a9,a17) = a10
+Axiom 31: product(a17,a9) = a18
+Axiom 32: product(a8,a5) = a9
+Axiom 33: product(a7,a19) = a8
+Axiom 34: product(a5,a15) = a6
+
+Lemma 35: a25 = product(a26,a23)
+Proof:
+  a25
+= { by axiom 2 R->L }
+  product(product(a25,a23),a23)
+= { by axiom 6 }
+  product(a26,a23)
+
+Lemma 36: product(product(X,a26),a23) = product(product(X,a23),a25)
+Proof:
+  product(product(X,a26),a23)
+= { by axiom 4 }
+  product(product(X,a23),product(a26,a23))
+= { by lemma 35 R->L }
+  product(product(X,a23),a25)
+
+Lemma 37: product(product(X,a23),a21) = product(product(X,a21),a24)
+Proof:
+  product(product(X,a23),a21)
+= { by axiom 4 }
+  product(product(X,a21),product(a23,a21))
+= { by axiom 7 }
+  product(product(X,a21),a24)
+
+Lemma 38: a28 = product(a29,a3)
+Proof:
+  a28
+= { by axiom 2 R->L }
+  product(product(a28,a3),a3)
+= { by axiom 12 }
+  product(a29,a3)
+
+Lemma 39: product(product(X,a31),a3) = product(product(X,a3),a32)
+Proof:
+  product(product(X,a31),a3)
+= { by axiom 4 }
+  product(product(X,a3),product(a31,a3))
+= { by axiom 13 }
+  product(product(X,a3),a32)
+
+Lemma 40: a24 = product(a25,a3)
+Proof:
+  a24
+= { by axiom 2 R->L }
+  product(product(a24,a3),a3)
+= { by axiom 14 }
+  product(a25,a3)
+
+Lemma 41: a21 = product(a22,a25)
+Proof:
+  a21
+= { by axiom 2 R->L }
+  product(product(a21,a25),a25)
+= { by axiom 8 }
+  product(a22,a25)
+
+Lemma 42: a26 = product(a27,a1)
+Proof:
+  a26
+= { by axiom 2 R->L }
+  product(product(a26,a1),a1)
+= { by axiom 10 }
+  product(a27,a1)
+
+Lemma 43: product(product(a27,X),a21) = product(a28,product(X,a21))
+Proof:
+  product(product(a27,X),a21)
+= { by axiom 4 }
+  product(product(a27,a21),product(X,a21))
+= { by axiom 11 }
+  product(a28,product(X,a21))
+
+Lemma 44: a32 = product(a1,a21)
+Proof:
+  a32
+= { by axiom 2 R->L }
+  product(product(a32,a21),a21)
+= { by axiom 9 }
+  product(a1,a21)
+
+Lemma 45: a22 = product(a23,a31)
+Proof:
+  a22
+= { by axiom 2 R->L }
+  product(product(a22,a31),a31)
+= { by axiom 3 }
+  product(a23,a31)
+
+Lemma 46: product(product(X,Y),X) = product(X,product(Y,X))
+Proof:
+  product(product(X,Y),X)
+= { by axiom 4 }
+  product(product(X,X),product(Y,X))
+= { by axiom 1 }
+  product(X,product(Y,X))
+
+Lemma 47: a30 = product(a31,a23)
+Proof:
+  a30
+= { by axiom 2 R->L }
+  product(product(a30,a23),a23)
+= { by axiom 5 }
+  product(a31,a23)
+
+Lemma 48: product(a26,a21) = product(a28,a32)
+Proof:
+  product(a26,a21)
+= { by lemma 42 }
+  product(product(a27,a1),a21)
+= { by lemma 43 }
+  product(a28,product(a1,a21))
+= { by lemma 44 R->L }
+  product(a28,a32)
+
+Lemma 49: product(a31,a22) = product(product(a29,a31),a2)
+Proof:
+  product(a31,a22)
+= { by lemma 45 }
+  product(a31,product(a23,a31))
+= { by lemma 46 R->L }
+  product(product(a31,a23),a31)
+= { by lemma 47 R->L }
+  product(a30,a31)
+= { by axiom 15 R->L }
+  product(product(a29,a1),a31)
+= { by axiom 4 }
+  product(product(a29,a31),product(a1,a31))
+= { by axiom 16 }
+  product(product(a29,a31),a2)
+
+Lemma 50: product(a25,a21) = product(product(a31,a25),a21)
+Proof:
+  product(a25,a21)
+= { by lemma 35 }
+  product(product(a26,a23),a21)
+= { by lemma 37 }
+  product(product(a26,a21),a24)
+= { by lemma 48 }
+  product(product(a28,a32),a24)
+= { by lemma 38 }
+  product(product(product(a29,a3),a32),a24)
+= { by lemma 39 R->L }
+  product(product(product(a29,a31),a3),a24)
+= { by lemma 40 }
+  product(product(product(a29,a31),a3),product(a25,a3))
+= { by axiom 4 R->L }
+  product(product(product(a29,a31),a25),a3)
+= { by axiom 17 R->L }
+  product(product(product(a29,a31),a25),product(a2,a25))
+= { by axiom 4 R->L }
+  product(product(product(a29,a31),a2),a25)
+= { by lemma 49 R->L }
+  product(product(a31,a22),a25)
+= { by axiom 4 }
+  product(product(a31,a25),product(a22,a25))
+= { by lemma 41 R->L }
+  product(product(a31,a25),a21)
+
+Lemma 51: a25 = product(a31,a25)
+Proof:
+  a25
+= { by axiom 2 R->L }
+  product(product(a25,a21),a21)
+= { by lemma 50 }
+  product(product(product(a31,a25),a21),a21)
+= { by axiom 2 }
+  product(a31,a25)
+
+Lemma 52: a31 = a25
+Proof:
+  a31
+= { by axiom 2 R->L }
+  product(product(a31,a25),a25)
+= { by lemma 51 R->L }
+  product(a25,a25)
+= { by axiom 1 }
+  a25
+
+Lemma 53: product(product(X,a30),a23) = product(product(X,a23),a31)
+Proof:
+  product(product(X,a30),a23)
+= { by axiom 4 }
+  product(product(X,a23),product(a30,a23))
+= { by axiom 5 }
+  product(product(X,a23),a31)
+
+Lemma 54: product(product(X,a25),a23) = product(product(X,a23),a26)
+Proof:
+  product(product(X,a25),a23)
+= { by axiom 4 }
+  product(product(X,a23),product(a25,a23))
+= { by axiom 6 }
+  product(product(X,a23),a26)
+
+Lemma 55: product(a22,a23) = product(a23,a30)
+Proof:
+  product(a22,a23)
+= { by lemma 45 }
+  product(product(a23,a31),a23)
+= { by lemma 46 }
+  product(a23,product(a31,a23))
+= { by lemma 47 R->L }
+  product(a23,a30)
+
+Lemma 56: product(a21,a23) = product(product(a23,a30),a26)
+Proof:
+  product(a21,a23)
+= { by lemma 41 }
+  product(product(a22,a25),a23)
+= { by lemma 54 }
+  product(product(a22,a23),a26)
+= { by lemma 55 }
+  product(product(a23,a30),a26)
+
+Lemma 57: a21 = a23
+Proof:
+  a21
+= { by axiom 2 R->L }
+  product(product(a21,a23),a23)
+= { by lemma 56 }
+  product(product(product(a23,a30),a26),a23)
+= { by lemma 36 }
+  product(product(product(a23,a30),a23),a25)
+= { by lemma 52 R->L }
+  product(product(product(a23,a30),a23),a31)
+= { by lemma 53 }
+  product(product(product(a23,a23),a31),a31)
+= { by axiom 2 }
+  product(a23,a23)
+= { by axiom 1 }
+  a23
+
+Lemma 58: a23 = product(a24,a21)
+Proof:
+  a23
+= { by axiom 2 R->L }
+  product(product(a23,a21),a21)
+= { by axiom 7 }
+  product(a24,a21)
+
+Lemma 59: a21 = a24
+Proof:
+  a21
+= { by axiom 1 R->L }
+  product(a21,a21)
+= { by lemma 57 }
+  product(a23,a21)
+= { by axiom 7 }
+  a24
+
+Lemma 60: a24 = product(a32,a24)
+Proof:
+  a24
+= { by lemma 40 }
+  product(a25,a3)
+= { by lemma 51 }
+  product(product(a31,a25),a3)
+= { by axiom 4 }
+  product(product(a31,a3),product(a25,a3))
+= { by axiom 13 }
+  product(a32,product(a25,a3))
+= { by lemma 40 R->L }
+  product(a32,a24)
+
+Lemma 61: a21 = a32
+Proof:
+  a21
+= { by lemma 59 }
+  a24
+= { by axiom 1 R->L }
+  product(a24,a24)
+= { by lemma 60 }
+  product(product(a32,a24),a24)
+= { by axiom 2 }
+  a32
+
+Lemma 62: a1 = a21
+Proof:
+  a1
+= { by axiom 9 R->L }
+  product(a32,a21)
+= { by lemma 61 R->L }
+  product(a21,a21)
+= { by axiom 1 }
+  a21
+
+Lemma 63: product(product(a26,X),a23) = product(a25,product(X,a23))
+Proof:
+  product(product(a26,X),a23)
+= { by axiom 4 }
+  product(product(a26,a23),product(X,a23))
+= { by lemma 35 R->L }
+  product(a25,product(X,a23))
+
+Lemma 64: a28 = product(a31,a32)
+Proof:
+  a28
+= { by axiom 11 R->L }
+  product(a27,a21)
+= { by lemma 57 }
+  product(a27,a23)
+= { by axiom 10 R->L }
+  product(product(a26,a1),a23)
+= { by lemma 63 }
+  product(a25,product(a1,a23))
+= { by lemma 57 R->L }
+  product(a25,product(a1,a21))
+= { by lemma 44 R->L }
+  product(a25,a32)
+= { by lemma 52 R->L }
+  product(a31,a32)
+
+Lemma 65: a2 = product(a3,a25)
+Proof:
+  a2
+= { by axiom 2 R->L }
+  product(product(a2,a25),a25)
+= { by axiom 17 }
+  product(a3,a25)
+
+Lemma 66: a2 = product(a3,a31)
+Proof:
+  a2
+= { by lemma 65 }
+  product(a3,a25)
+= { by lemma 52 R->L }
+  product(a3,a31)
+
+Lemma 67: product(a25,a2) = product(a24,a25)
+Proof:
+  product(a25,a2)
+= { by lemma 65 }
+  product(a25,product(a3,a25))
+= { by lemma 46 R->L }
+  product(product(a25,a3),a25)
+= { by lemma 40 R->L }
+  product(a24,a25)
+
+Lemma 68: a22 = product(a31,a2)
+Proof:
+  a22
+= { by lemma 45 }
+  product(a23,a31)
+= { by lemma 57 R->L }
+  product(a21,a31)
+= { by lemma 59 }
+  product(a24,a31)
+= { by lemma 52 }
+  product(a24,a25)
+= { by lemma 67 R->L }
+  product(a25,a2)
+= { by lemma 52 R->L }
+  product(a31,a2)
+
+Lemma 69: a31 = product(a32,a3)
+Proof:
+  a31
+= { by axiom 2 R->L }
+  product(product(a31,a3),a3)
+= { by axiom 13 }
+  product(a32,a3)
+
+Lemma 70: a29 = a22
+Proof:
+  a29
+= { by axiom 12 R->L }
+  product(a28,a3)
+= { by lemma 64 }
+  product(product(a31,a32),a3)
+= { by axiom 4 }
+  product(product(a31,a3),product(a32,a3))
+= { by lemma 69 R->L }
+  product(product(a31,a3),a31)
+= { by lemma 46 }
+  product(a31,product(a3,a31))
+= { by lemma 66 R->L }
+  product(a31,a2)
+= { by lemma 68 R->L }
+  a22
+
+Lemma 71: a29 = product(a30,a1)
+Proof:
+  a29
+= { by axiom 2 R->L }
+  product(product(a29,a1),a1)
+= { by axiom 15 }
+  product(a30,a1)
+
+Lemma 72: a30 = product(a31,a21)
+Proof:
+  a30
+= { by lemma 47 }
+  product(a31,a23)
+= { by lemma 57 R->L }
+  product(a31,a21)
+
+Lemma 73: a29 = a27
+Proof:
+  a29
+= { by lemma 71 }
+  product(a30,a1)
+= { by lemma 72 }
+  product(product(a31,a21),a1)
+= { by axiom 9 R->L }
+  product(product(a31,a21),product(a32,a21))
+= { by axiom 4 R->L }
+  product(product(a31,a32),a21)
+= { by lemma 64 R->L }
+  product(a28,a21)
+= { by axiom 11 R->L }
+  product(product(a27,a21),a21)
+= { by axiom 2 }
+  a27
+
+Lemma 74: a26 = a28
+Proof:
+  a26
+= { by axiom 6 R->L }
+  product(a25,a23)
+= { by lemma 57 R->L }
+  product(a25,a21)
+= { by lemma 52 R->L }
+  product(a31,a21)
+= { by lemma 61 }
+  product(a31,a32)
+= { by lemma 64 R->L }
+  a28
+
+Lemma 75: product(product(a25,X),a23) = product(a26,product(X,a23))
+Proof:
+  product(product(a25,X),a23)
+= { by axiom 4 }
+  product(product(a25,a23),product(X,a23))
+= { by axiom 6 }
+  product(a26,product(X,a23))
+
+Lemma 76: a21 = product(a26,product(a3,a21))
+Proof:
+  a21
+= { by lemma 57 }
+  a23
+= { by lemma 58 }
+  product(a24,a21)
+= { by lemma 57 }
+  product(a24,a23)
+= { by lemma 40 }
+  product(product(a25,a3),a23)
+= { by lemma 75 }
+  product(a26,product(a3,a23))
+= { by lemma 57 R->L }
+  product(a26,product(a3,a21))
+
+Lemma 77: a1 = product(a2,a31)
+Proof:
+  a1
+= { by axiom 2 R->L }
+  product(product(a1,a31),a31)
+= { by axiom 16 }
+  product(a2,a31)
+
+Lemma 78: product(a2,a3) = product(a3,a24)
+Proof:
+  product(a2,a3)
+= { by lemma 65 }
+  product(product(a3,a25),a3)
+= { by lemma 46 }
+  product(a3,product(a25,a3))
+= { by lemma 40 R->L }
+  product(a3,a24)
+
+Lemma 79: a3 = a21
+Proof:
+  a3
+= { by axiom 2 R->L }
+  product(product(a3,a21),a21)
+= { by lemma 57 }
+  product(product(a3,a21),a23)
+= { by lemma 58 }
+  product(product(a3,a21),product(a24,a21))
+= { by axiom 4 R->L }
+  product(product(a3,a24),a21)
+= { by lemma 61 }
+  product(product(a3,a24),a32)
+= { by lemma 78 R->L }
+  product(product(a2,a3),a32)
+= { by lemma 39 R->L }
+  product(product(a2,a31),a3)
+= { by lemma 77 R->L }
+  product(a1,a3)
+= { by lemma 62 }
+  product(a21,a3)
+= { by lemma 57 }
+  product(a23,a3)
+= { by axiom 3 R->L }
+  product(product(a22,a31),a3)
+= { by lemma 39 }
+  product(product(a22,a3),a32)
+= { by lemma 61 R->L }
+  product(product(a22,a3),a21)
+= { by lemma 70 R->L }
+  product(product(a29,a3),a21)
+= { by lemma 73 }
+  product(product(a27,a3),a21)
+= { by lemma 43 }
+  product(a28,product(a3,a21))
+= { by lemma 74 R->L }
+  product(a26,product(a3,a21))
+= { by lemma 76 R->L }
+  a21
+
+Lemma 80: product(product(X,a23),a31) = product(product(X,a31),a22)
+Proof:
+  product(product(X,a23),a31)
+= { by axiom 4 }
+  product(product(X,a31),product(a23,a31))
+= { by lemma 45 R->L }
+  product(product(X,a31),a22)
+
+Lemma 81: product(a26,X) = product(a30,X)
+Proof:
+  product(a26,X)
+= { by axiom 2 R->L }
+  product(product(product(a26,X),a21),a21)
+= { by lemma 57 }
+  product(product(product(a26,X),a23),a21)
+= { by lemma 63 }
+  product(product(a25,product(X,a23)),a21)
+= { by lemma 57 R->L }
+  product(product(a25,product(X,a21)),a21)
+= { by axiom 4 }
+  product(product(a25,a21),product(product(X,a21),a21))
+= { by axiom 2 }
+  product(product(a25,a21),X)
+= { by lemma 52 R->L }
+  product(product(a31,a21),X)
+= { by lemma 72 R->L }
+  product(a30,X)
+
+Lemma 82: product(a26,a31) = product(product(a25,a31),a22)
+Proof:
+  product(a26,a31)
+= { by axiom 5 R->L }
+  product(a26,product(a30,a23))
+= { by lemma 75 R->L }
+  product(product(a25,a30),a23)
+= { by lemma 53 }
+  product(product(a25,a23),a31)
+= { by lemma 80 }
+  product(product(a25,a31),a22)
+
+Lemma 83: a31 = a3
+Proof:
+  a31
+= { by axiom 1 R->L }
+  product(a31,a31)
+= { by lemma 52 }
+  product(a25,a31)
+= { by axiom 2 R->L }
+  product(product(product(a25,a31),a22),a22)
+= { by lemma 82 R->L }
+  product(product(a26,a31),a22)
+= { by lemma 80 R->L }
+  product(product(a26,a23),a31)
+= { by lemma 52 }
+  product(product(a26,a23),a25)
+= { by lemma 36 R->L }
+  product(product(a26,a26),a23)
+= { by axiom 1 }
+  product(a26,a23)
+= { by lemma 57 R->L }
+  product(a26,a21)
+= { by lemma 79 R->L }
+  product(a26,a3)
+= { by lemma 74 }
+  product(a28,a3)
+= { by lemma 79 }
+  product(a28,a21)
+= { by lemma 62 R->L }
+  product(a28,a1)
+= { by lemma 38 }
+  product(product(a29,a3),a1)
+= { by axiom 4 }
+  product(product(a29,a1),product(a3,a1))
+= { by axiom 15 }
+  product(a30,product(a3,a1))
+= { by lemma 62 }
+  product(a30,product(a3,a21))
+= { by lemma 81 R->L }
+  product(a26,product(a3,a21))
+= { by lemma 76 R->L }
+  a21
+= { by lemma 79 R->L }
+  a3
+
+Lemma 84: a31 = a29
+Proof:
+  a31
+= { by axiom 5 R->L }
+  product(a30,a23)
+= { by lemma 57 R->L }
+  product(a30,a21)
+= { by lemma 62 R->L }
+  product(a30,a1)
+= { by lemma 71 R->L }
+  a29
+
+Lemma 85: a29 = product(a21,a31)
+Proof:
+  a29
+= { by axiom 1 R->L }
+  product(a29,a29)
+= { by lemma 70 }
+  product(a22,a29)
+= { by lemma 68 }
+  product(product(a31,a2),a29)
+= { by lemma 52 }
+  product(product(a25,a2),a29)
+= { by lemma 70 }
+  product(product(a25,a2),a22)
+= { by lemma 67 }
+  product(product(a24,a25),a22)
+= { by axiom 8 R->L }
+  product(product(a24,a25),product(a21,a25))
+= { by axiom 4 R->L }
+  product(product(a24,a21),a25)
+= { by lemma 58 R->L }
+  product(a23,a25)
+= { by lemma 52 R->L }
+  product(a23,a31)
+= { by lemma 57 R->L }
+  product(a21,a31)
+
+Lemma 86: a31 = a2
+Proof:
+  a31
+= { by lemma 84 }
+  a29
+= { by lemma 85 }
+  product(a21,a31)
+= { by lemma 62 R->L }
+  product(a1,a31)
+= { by axiom 16 }
+  a2
+
+Lemma 87: a3 = a26
+Proof:
+  a3
+= { by lemma 79 }
+  a21
+= { by lemma 59 }
+  a24
+= { by lemma 40 }
+  product(a25,a3)
+= { by lemma 52 R->L }
+  product(a31,a3)
+= { by lemma 84 }
+  product(a29,a3)
+= { by lemma 73 }
+  product(a27,a3)
+= { by lemma 79 }
+  product(a27,a21)
+= { by lemma 62 R->L }
+  product(a27,a1)
+= { by lemma 42 R->L }
+  a26
+
+Lemma 88: a20 = product(a21,a29)
+Proof:
+  a20
+= { by axiom 2 R->L }
+  product(product(a20,a29),a29)
+= { by axiom 18 }
+  product(a21,a29)
+
+Lemma 89: a4 = a20
+Proof:
+  a4
+= { by axiom 20 R->L }
+  product(a3,a29)
+= { by lemma 79 }
+  product(a21,a29)
+= { by lemma 88 R->L }
+  a20
+
+Lemma 90: a19 = product(a20,a11)
+Proof:
+  a19
+= { by axiom 2 R->L }
+  product(product(a19,a11),a11)
+= { by axiom 21 }
+  product(a20,a11)
+
+Lemma 91: a5 = a19
+Proof:
+  a5
+= { by axiom 19 R->L }
+  product(a4,a11)
+= { by lemma 89 }
+  product(a20,a11)
+= { by lemma 90 R->L }
+  a19
+
+Lemma 92: a15 = product(a16,a5)
+Proof:
+  a15
+= { by axiom 2 R->L }
+  product(product(a15,a5),a5)
+= { by axiom 23 }
+  product(a16,a5)
+
+Lemma 93: a15 = a17
+Proof:
+  a15
+= { by lemma 92 }
+  product(a16,a5)
+= { by lemma 91 }
+  product(a16,a19)
+= { by axiom 24 }
+  a17
+
+Lemma 94: a14 = product(a15,a17)
+Proof:
+  a14
+= { by axiom 2 R->L }
+  product(product(a14,a17),a17)
+= { by axiom 25 }
+  product(a15,a17)
+
+Lemma 95: a15 = a14
+Proof:
+  a15
+= { by axiom 1 R->L }
+  product(a15,a15)
+= { by lemma 93 }
+  product(a15,a17)
+= { by lemma 94 R->L }
+  a14
+
+Lemma 96: a11 = product(a12,a5)
+Proof:
+  a11
+= { by axiom 2 R->L }
+  product(product(a11,a5),a5)
+= { by axiom 27 }
+  product(a12,a5)
+
+Lemma 97: a11 = a13
+Proof:
+  a11
+= { by lemma 96 }
+  product(a12,a5)
+= { by lemma 91 }
+  product(a12,a19)
+= { by axiom 28 }
+  a13
+
+Lemma 98: a10 = product(a11,a7)
+Proof:
+  a10
+= { by axiom 2 R->L }
+  product(product(a10,a7),a7)
+= { by axiom 26 }
+  product(a11,a7)
+
+Lemma 99: a15 = a10
+Proof:
+  a15
+= { by lemma 95 }
+  a14
+= { by axiom 29 R->L }
+  product(a13,a7)
+= { by lemma 97 R->L }
+  product(a11,a7)
+= { by lemma 98 R->L }
+  a10
+
+Lemma 100: a15 = a9
+Proof:
+  a15
+= { by axiom 1 R->L }
+  product(a15,a15)
+= { by lemma 93 }
+  product(a15,a17)
+= { by lemma 99 }
+  product(a10,a17)
+= { by axiom 30 R->L }
+  product(product(a9,a17),a17)
+= { by axiom 2 }
+  a9
+
+Lemma 101: a5 = a17
+Proof:
+  a5
+= { by lemma 91 }
+  a19
+= { by axiom 22 R->L }
+  product(a18,a15)
+= { by lemma 100 }
+  product(a18,a9)
+= { by axiom 31 R->L }
+  product(product(a17,a9),a9)
+= { by axiom 2 }
+  a17
+
+Lemma 102: a5 = a15
+Proof:
+  a5
+= { by lemma 101 }
+  a17
+= { by lemma 93 R->L }
+  a15
+
+Lemma 103: a8 = product(a9,a5)
+Proof:
+  a8
+= { by axiom 2 R->L }
+  product(product(a8,a5),a5)
+= { by axiom 32 }
+  product(a9,a5)
+
+Lemma 104: a5 = a8
+Proof:
+  a5
+= { by lemma 102 }
+  a15
+= { by lemma 95 }
+  a14
+= { by lemma 94 }
+  product(a15,a17)
+= { by lemma 101 R->L }
+  product(a15,a5)
+= { by lemma 100 }
+  product(a9,a5)
+= { by lemma 103 R->L }
+  a8
+
+Lemma 105: a7 = product(a8,a19)
+Proof:
+  a7
+= { by axiom 2 R->L }
+  product(product(a7,a19),a19)
+= { by axiom 33 }
+  product(a8,a19)
+
+Lemma 106: a16 = product(a17,a19)
+Proof:
+  a16
+= { by axiom 2 R->L }
+  product(product(a16,a19),a19)
+= { by axiom 24 }
+  product(a17,a19)
+
+Lemma 107: a16 = product(a17,a5)
+Proof:
+  a16
+= { by lemma 106 }
+  product(a17,a19)
+= { by lemma 91 R->L }
+  product(a17,a5)
+
+Lemma 108: a8 = a16
+Proof:
+  a8
+= { by axiom 33 R->L }
+  product(a7,a19)
+= { by lemma 91 R->L }
+  product(a7,a5)
+= { by lemma 105 }
+  product(product(a8,a19),a5)
+= { by axiom 4 }
+  product(product(a8,a5),product(a19,a5))
+= { by axiom 32 }
+  product(a9,product(a19,a5))
+= { by lemma 100 R->L }
+  product(a15,product(a19,a5))
+= { by lemma 92 }
+  product(product(a16,a5),product(a19,a5))
+= { by axiom 4 R->L }
+  product(product(a16,a19),a5)
+= { by axiom 24 }
+  product(a17,a5)
+= { by lemma 107 R->L }
+  a16
+
+Lemma 109: product(product(X,a17),a19) = product(product(X,a19),a16)
+Proof:
+  product(product(X,a17),a19)
+= { by axiom 4 }
+  product(product(X,a19),product(a17,a19))
+= { by lemma 106 R->L }
+  product(product(X,a19),a16)
+
+Lemma 110: a16 = product(a14,a5)
+Proof:
+  a16
+= { by axiom 1 R->L }
+  product(a16,a16)
+= { by axiom 23 R->L }
+  product(product(a15,a5),a16)
+= { by lemma 91 }
+  product(product(a15,a19),a16)
+= { by lemma 109 R->L }
+  product(product(a15,a17),a19)
+= { by lemma 94 R->L }
+  product(a14,a19)
+= { by lemma 91 R->L }
+  product(a14,a5)
+
+Lemma 111: product(product(X,a7),a19) = product(product(X,a19),a8)
+Proof:
+  product(product(X,a7),a19)
+= { by axiom 4 }
+  product(product(X,a19),product(a7,a19))
+= { by axiom 33 }
+  product(product(X,a19),a8)
+
+Lemma 112: a13 = product(a14,a7)
+Proof:
+  a13
+= { by axiom 2 R->L }
+  product(product(a13,a7),a7)
+= { by axiom 29 }
+  product(a14,a7)
+
+Lemma 113: a18 = product(a19,a15)
+Proof:
+  a18
+= { by axiom 2 R->L }
+  product(product(a18,a15),a15)
+= { by axiom 22 }
+  product(a19,a15)
+
+Lemma 114: a5 = a12
+Proof:
+  a5
+= { by lemma 104 }
+  a8
+= { by lemma 108 }
+  a16
+= { by lemma 110 }
+  product(a14,a5)
+= { by lemma 102 }
+  product(a14,a15)
+= { by lemma 94 }
+  product(product(a15,a17),a15)
+= { by lemma 46 }
+  product(a15,product(a17,a15))
+= { by lemma 102 R->L }
+  product(a5,product(a17,a15))
+= { by lemma 102 R->L }
+  product(a5,product(a17,a5))
+= { by lemma 107 R->L }
+  product(a5,a16)
+= { by axiom 23 R->L }
+  product(a5,product(a15,a5))
+= { by lemma 91 }
+  product(a19,product(a15,a5))
+= { by lemma 91 }
+  product(a19,product(a15,a19))
+= { by lemma 46 R->L }
+  product(product(a19,a15),a19)
+= { by lemma 113 R->L }
+  product(a18,a19)
+= { by axiom 31 R->L }
+  product(product(a17,a9),a19)
+= { by axiom 4 }
+  product(product(a17,a19),product(a9,a19))
+= { by lemma 106 R->L }
+  product(a16,product(a9,a19))
+= { by lemma 91 R->L }
+  product(a16,product(a9,a5))
+= { by lemma 103 R->L }
+  product(a16,a8)
+= { by lemma 110 }
+  product(product(a14,a5),a8)
+= { by lemma 91 }
+  product(product(a14,a19),a8)
+= { by lemma 111 R->L }
+  product(product(a14,a7),a19)
+= { by lemma 112 R->L }
+  product(a13,a19)
+= { by axiom 28 R->L }
+  product(product(a12,a19),a19)
+= { by axiom 2 }
+  a12
+
+Lemma 115: a3 = a5
+Proof:
+  a3
+= { by lemma 83 R->L }
+  a31
+= { by lemma 84 }
+  a29
+= { by lemma 85 }
+  product(a21,a31)
+= { by lemma 84 }
+  product(a21,a29)
+= { by lemma 88 R->L }
+  a20
+= { by axiom 2 R->L }
+  product(product(a20,a5),a5)
+= { by lemma 114 }
+  product(product(a20,a5),a12)
+= { by axiom 27 R->L }
+  product(product(a20,a5),product(a11,a5))
+= { by axiom 4 R->L }
+  product(product(a20,a11),a5)
+= { by lemma 90 R->L }
+  product(a19,a5)
+= { by lemma 91 R->L }
+  product(a5,a5)
+= { by axiom 1 }
+  a5
+
+Goal 1: tuple(a1,a30,a31,a2,a24,a25,a3,a28,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a12,a13,a20,a21,a22,a23,a26,a27) = tuple(a2,a31,a32,a3,a25,a26,a4,a29,a30,a5,a11,a12,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a28)
+Proof:
+  tuple(a1,a30,a31,a2,a24,a25,a3,a28,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a12,a13,a20,a21,a22,a23,a26,a27)
+= { by lemma 114 R->L }
+  tuple(a1,a30,a31,a2,a24,a25,a3,a28,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a26,a27)
+= { by lemma 74 R->L }
+  tuple(a1,a30,a31,a2,a24,a25,a3,a26,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a26,a27)
+= { by lemma 87 R->L }
+  tuple(a1,a30,a31,a2,a24,a25,a3,a3,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a26,a27)
+= { by lemma 87 R->L }
+  tuple(a1,a30,a31,a2,a24,a25,a3,a3,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a27)
+= { by lemma 73 R->L }
+  tuple(a1,a30,a31,a2,a24,a25,a3,a3,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a29)
+= { by lemma 84 R->L }
+  tuple(a1,a30,a31,a2,a24,a25,a3,a3,a31,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a29)
+= { by lemma 84 R->L }
+  tuple(a1,a30,a31,a2,a24,a25,a3,a3,a31,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a31)
+= { by lemma 83 }
+  tuple(a1,a30,a3,a2,a24,a25,a3,a3,a31,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a31)
+= { by lemma 83 }
+  tuple(a1,a30,a3,a2,a24,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a31)
+= { by lemma 83 }
+  tuple(a1,a30,a3,a2,a24,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a3)
+= { by lemma 59 R->L }
+  tuple(a1,a30,a3,a2,a21,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a3)
+= { by lemma 79 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a3)
+= { by lemma 79 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a22,a23,a3,a3)
+= { by lemma 57 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a22,a21,a3,a3)
+= { by lemma 79 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a22,a3,a3,a3)
+= { by lemma 70 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a29,a3,a3,a3)
+= { by lemma 84 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a31,a3,a3,a3)
+= { by lemma 83 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a3,a3,a3,a3)
+= { by lemma 95 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a15,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a3,a3,a3,a3)
+= { by lemma 102 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a5,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a3,a3,a3,a3)
+= { by lemma 102 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a5,a5,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a3,a5,a5,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a3,a3,a5,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a13,a20,a3,a3,a3,a3,a3)
+= { by lemma 97 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 96 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(a12,a5),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by axiom 1 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(a12,product(a5,a5)),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 91 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(a12,product(a19,a5)),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by axiom 27 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(product(a11,a5),product(a19,a5)),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by axiom 4 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(product(a11,a19),a5),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 104 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(product(a11,a19),a8),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 111 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(product(a11,a7),a19),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 98 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(a10,a19),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by axiom 30 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(product(a9,a17),a19),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 109 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(product(a9,a19),a16),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 91 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(product(a9,a5),a16),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 103 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(a8,a16),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 108 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,product(a8,a8),a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by axiom 1 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a8,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 104 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3)
+= { by lemma 96 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(a12,a5),a20,a3,a3,a3,a3,a3)
+= { by axiom 1 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(a12,product(a5,a5)),a20,a3,a3,a3,a3,a3)
+= { by lemma 91 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(a12,product(a19,a5)),a20,a3,a3,a3,a3,a3)
+= { by axiom 27 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(product(a11,a5),product(a19,a5)),a20,a3,a3,a3,a3,a3)
+= { by axiom 4 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(product(a11,a19),a5),a20,a3,a3,a3,a3,a3)
+= { by lemma 104 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(product(a11,a19),a8),a20,a3,a3,a3,a3,a3)
+= { by lemma 111 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(product(a11,a7),a19),a20,a3,a3,a3,a3,a3)
+= { by lemma 98 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(a10,a19),a20,a3,a3,a3,a3,a3)
+= { by axiom 30 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(product(a9,a17),a19),a20,a3,a3,a3,a3,a3)
+= { by lemma 109 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(product(a9,a19),a16),a20,a3,a3,a3,a3,a3)
+= { by lemma 91 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(product(a9,a5),a16),a20,a3,a3,a3,a3,a3)
+= { by lemma 103 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(a8,a16),a20,a3,a3,a3,a3,a3)
+= { by lemma 108 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,product(a8,a8),a20,a3,a3,a3,a3,a3)
+= { by axiom 1 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a8,a20,a3,a3,a3,a3,a3)
+= { by lemma 104 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a5,a20,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a5,a20,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by axiom 31 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,product(a17,a9),a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 100 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,product(a17,a15),a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 93 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,product(a15,a15),a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by axiom 1 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a15,a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 102 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a5,a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 93 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a15,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 102 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a5,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 99 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a15,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 102 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a5,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 100 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a15,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 102 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a5,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3)
+= { by lemma 89 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a4,a3,a3,a3,a3,a3)
+= { by axiom 20 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,product(a3,a29),a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a4,a3,a3,a3,a3,a3)
+= { by lemma 84 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,product(a3,a31),a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a4,a3,a3,a3,a3,a3)
+= { by lemma 66 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a2,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a4,a3,a3,a3,a3,a3)
+= { by lemma 86 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a31,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a4,a3,a3,a3,a3,a3)
+= { by lemma 83 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a4,a3,a3,a3,a3,a3)
+= { by axiom 20 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,product(a3,a29),a3,a3,a3,a3,a3)
+= { by lemma 84 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,product(a3,a31),a3,a3,a3,a3,a3)
+= { by lemma 66 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a2,a3,a3,a3,a3,a3)
+= { by lemma 86 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a31,a3,a3,a3,a3,a3)
+= { by lemma 83 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 91 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a5,a8,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a3,a8,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 104 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a3,a5,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a3,a3,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 105 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,product(a8,a19),a3,a3,a3,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 104 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,product(a5,a19),a3,a3,a3,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 91 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,product(a5,a5),a3,a3,a3,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a5,a3,a3,a3,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a3,a3,a3,a3,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 108 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a3,a3,a3,a3,a3,a8,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 104 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a3,a3,a3,a3,a3,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 34 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,product(a5,a15),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 102 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,product(a5,a5),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 R->L }
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 72 }
+  tuple(a1,product(a31,a21),a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 52 }
+  tuple(a1,product(a25,a21),a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 50 }
+  tuple(a1,product(product(a31,a25),a21),a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 57 }
+  tuple(a1,product(product(a31,a25),a23),a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 54 }
+  tuple(a1,product(product(a31,a23),a26),a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 57 R->L }
+  tuple(a1,product(product(a31,a21),a26),a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 72 R->L }
+  tuple(a1,product(a30,a26),a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 81 R->L }
+  tuple(a1,product(a26,a26),a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 }
+  tuple(a1,a26,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 87 R->L }
+  tuple(a1,a3,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 52 R->L }
+  tuple(a1,a3,a3,a2,a3,a31,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 83 }
+  tuple(a1,a3,a3,a2,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 86 R->L }
+  tuple(a1,a3,a3,a31,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 83 }
+  tuple(a1,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 62 }
+  tuple(a21,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 79 R->L }
+  tuple(a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 83 R->L }
+  tuple(a31,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 86 }
+  tuple(a2,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 79 }
+  tuple(a2,a3,a21,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 61 }
+  tuple(a2,a3,a32,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 83 R->L }
+  tuple(a2,a3,a32,a3,a31,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 52 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 87 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a26,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,product(a26,a26),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 81 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,product(a30,a26),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 72 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,product(product(a31,a21),a26),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 57 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,product(product(a31,a23),a26),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 54 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,product(product(a31,a25),a23),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 57 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,product(product(a31,a25),a21),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 50 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,product(a25,a21),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 52 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,product(a31,a21),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 72 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,product(a5,a5),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 102 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,product(a5,a15),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 34 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 104 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a8,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 108 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,product(a5,a5),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 91 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,product(a5,a19),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 104 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,product(a8,a19),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 105 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 104 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 91 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 83 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a31,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 86 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a2,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 66 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,product(a3,a31),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 84 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,product(a3,a29),a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 20 }
+  tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a4,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 83 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a31,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a4,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 86 }
+  tuple(a2,a3,a32,a3,a25,a3,a2,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a4,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 66 }
+  tuple(a2,a3,a32,a3,a25,a3,product(a3,a31),a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a4,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 84 }
+  tuple(a2,a3,a32,a3,a25,a3,product(a3,a29),a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a4,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 20 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a4,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 89 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 102 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a15,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 100 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 102 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a15,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 99 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 102 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a15,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 93 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a3,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a5,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 102 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a15,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,product(a15,a15),a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 93 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,product(a17,a15),a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 100 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,product(a17,a9),a3,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 31 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a3,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a5,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a5,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 104 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a8,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(a8,a8),a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 108 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(a8,a16),a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 103 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(product(a9,a5),a16),a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 91 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(product(a9,a19),a16),a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 109 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(product(a9,a17),a19),a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 30 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(a10,a19),a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 98 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(product(a11,a7),a19),a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 111 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(product(a11,a19),a8),a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 104 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(product(a11,a19),a5),a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 4 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(product(a11,a5),product(a19,a5)),a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 27 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(a12,product(a19,a5)),a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 91 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(a12,product(a5,a5)),a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,product(a12,a5),a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 96 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 104 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a8,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(a8,a8),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 108 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(a8,a16),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 103 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(product(a9,a5),a16),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 91 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(product(a9,a19),a16),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 109 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(product(a9,a17),a19),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 30 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(a10,a19),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 98 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(product(a11,a7),a19),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 111 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(product(a11,a19),a8),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 104 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(product(a11,a19),a5),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 4 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(product(a11,a5),product(a19,a5)),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 27 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(a12,product(a19,a5)),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 91 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(a12,product(a5,a5)),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by axiom 1 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,product(a12,a5),a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 96 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a11,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 97 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a11,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a3,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a11,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a5,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a11,a3,a6,a5,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a5,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a11,a5,a6,a5,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a5,a3,a3,a3,a3,a3,a3)
+= { by lemma 115 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a5,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a5,a3,a3,a3,a3,a3,a3)
+= { by lemma 102 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a5,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a15,a3,a3,a3,a3,a3,a3)
+= { by lemma 102 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a15,a3,a3,a3,a3,a3,a3)
+= { by lemma 95 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a3,a3,a3,a3,a3)
+= { by lemma 83 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a31,a3,a3,a3,a3)
+= { by lemma 84 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a29,a3,a3,a3,a3)
+= { by lemma 70 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a22,a3,a3,a3,a3)
+= { by lemma 79 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a22,a21,a3,a3,a3)
+= { by lemma 57 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a22,a23,a3,a3,a3)
+= { by lemma 79 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a22,a23,a21,a3,a3)
+= { by lemma 79 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a21,a3,a3)
+= { by lemma 59 }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a3,a3)
+= { by lemma 83 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a31,a3)
+= { by lemma 83 R->L }
+  tuple(a2,a3,a32,a3,a25,a3,a4,a31,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a31,a3)
+= { by lemma 83 R->L }
+  tuple(a2,a31,a32,a3,a25,a3,a4,a31,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a31,a3)
+= { by lemma 84 }
+  tuple(a2,a31,a32,a3,a25,a3,a4,a31,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a29,a3)
+= { by lemma 84 }
+  tuple(a2,a31,a32,a3,a25,a3,a4,a29,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a29,a3)
+= { by lemma 73 }
+  tuple(a2,a31,a32,a3,a25,a3,a4,a29,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a3)
+= { by lemma 87 }
+  tuple(a2,a31,a32,a3,a25,a3,a4,a29,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a26)
+= { by lemma 87 }
+  tuple(a2,a31,a32,a3,a25,a26,a4,a29,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a26)
+= { by lemma 74 }
+  tuple(a2,a31,a32,a3,a25,a26,a4,a29,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a28)
+= { by lemma 114 }
+  tuple(a2,a31,a32,a3,a25,a26,a4,a29,a30,a5,a11,a12,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a28)

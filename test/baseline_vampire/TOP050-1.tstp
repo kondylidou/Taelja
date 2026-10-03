@@ -1,0 +1,1178 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Refutation found. Thanks to Tanya!
+% SZS status Unsatisfiable for TOP050-1
+% SZS output start Proof for TOP050-1
+fof(f1,axiom,(
+  ( ! [X0] : (product(X0,X0) = X0) )),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f2,axiom,(
+  ( ! [X0,X1] : (product(product(X0,X1),X1) = X0) )),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f3,axiom,(
+  ( ! [X2,X0,X1] : (product(product(X0,X1),X2) = product(product(X0,X2),product(X1,X2))) )),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f4,axiom,(
+  product(a1,a31) = a2),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f5,axiom,(
+  product(a2,a25) = a3),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f6,axiom,(
+  product(a3,a29) = a4),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f7,axiom,(
+  product(a4,a11) = a5),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f8,axiom,(
+  product(a5,a15) = a6),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f9,axiom,(
+  product(a7,a19) = a8),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f10,axiom,(
+  product(a8,a5) = a9),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f11,axiom,(
+  product(a9,a17) = a10),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f12,axiom,(
+  product(a10,a7) = a11),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f13,plain,(
+  a11 = product(a10,a7)),
+  inference(reorient_equations,[],[f12])).
+fof(f14,axiom,(
+  product(a11,a5) = a12),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f15,axiom,(
+  product(a12,a19) = a13),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f16,axiom,(
+  product(a13,a7) = a14),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f17,axiom,(
+  product(a14,a17) = a15),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f18,plain,(
+  a15 = product(a14,a17)),
+  inference(reorient_equations,[],[f17])).
+fof(f19,axiom,(
+  product(a15,a5) = a16),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f20,axiom,(
+  product(a16,a19) = a17),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f21,plain,(
+  a17 = product(a16,a19)),
+  inference(reorient_equations,[],[f20])).
+fof(f22,axiom,(
+  product(a17,a9) = a18),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f23,axiom,(
+  product(a18,a15) = a19),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f24,plain,(
+  a19 = product(a18,a15)),
+  inference(reorient_equations,[],[f23])).
+fof(f25,axiom,(
+  product(a19,a11) = a20),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f26,axiom,(
+  product(a20,a29) = a21),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f27,axiom,(
+  product(a21,a25) = a22),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f28,axiom,(
+  product(a22,a31) = a23),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f29,axiom,(
+  product(a23,a21) = a24),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f30,axiom,(
+  product(a24,a3) = a25),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f31,plain,(
+  a25 = product(a24,a3)),
+  inference(reorient_equations,[],[f30])).
+fof(f32,axiom,(
+  product(a25,a23) = a26),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f33,axiom,(
+  product(a26,a1) = a27),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f34,axiom,(
+  product(a27,a21) = a28),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f35,axiom,(
+  product(a28,a3) = a29),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f36,plain,(
+  a29 = product(a28,a3)),
+  inference(reorient_equations,[],[f35])).
+fof(f37,axiom,(
+  product(a29,a1) = a30),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f38,axiom,(
+  product(a30,a23) = a31),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f39,plain,(
+  a31 = product(a30,a23)),
+  inference(reorient_equations,[],[f38])).
+fof(f40,axiom,(
+  product(a31,a3) = a32),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f41,axiom,(
+  product(a32,a21) = a1),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f42,plain,(
+  a1 = product(a32,a21)),
+  inference(reorient_equations,[],[f41])).
+fof(f43,negated_conjecture,(
+  tuple(a1,a30,a31,a2,a24,a25,a3,a28,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a12,a13,a20,a21,a22,a23,a26,a27) != tuple(a2,a31,a32,a3,a25,a26,a4,a29,a30,a5,a11,a12,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a28)),
+  file('Problems/TOP/TOP050-1.p',unknown)).
+fof(f45,plain,(
+  a1 = product(a2,a31)),
+  inference(superposition,[],[f2,f4])).
+fof(f46,plain,(
+  a31 = product(a32,a3)),
+  inference(superposition,[],[f2,f40])).
+fof(f47,plain,(
+  a2 = product(a3,a25)),
+  inference(superposition,[],[f2,f5])).
+fof(f48,plain,(
+  a25 = product(a26,a23)),
+  inference(superposition,[],[f2,f32])).
+fof(f50,plain,(
+  a29 = product(a30,a1)),
+  inference(superposition,[],[f2,f37])).
+fof(f52,plain,(
+  a11 = product(a12,a5)),
+  inference(superposition,[],[f2,f14])).
+fof(f54,plain,(
+  a15 = product(a16,a5)),
+  inference(superposition,[],[f2,f19])).
+fof(f55,plain,(
+  a7 = product(a8,a19)),
+  inference(superposition,[],[f2,f9])).
+fof(f56,plain,(
+  a19 = product(a20,a11)),
+  inference(superposition,[],[f2,f25])).
+fof(f57,plain,(
+  a8 = product(a9,a5)),
+  inference(superposition,[],[f2,f10])).
+fof(f58,plain,(
+  a9 = product(a10,a17)),
+  inference(superposition,[],[f2,f11])).
+fof(f59,plain,(
+  a17 = product(a18,a9)),
+  inference(superposition,[],[f2,f22])).
+fof(f60,plain,(
+  a10 = product(a11,a7)),
+  inference(superposition,[],[f2,f13])).
+fof(f61,plain,(
+  a12 = product(a13,a19)),
+  inference(superposition,[],[f2,f15])).
+fof(f62,plain,(
+  a13 = product(a14,a7)),
+  inference(superposition,[],[f2,f16])).
+fof(f63,plain,(
+  a14 = product(a15,a17)),
+  inference(superposition,[],[f2,f18])).
+fof(f64,plain,(
+  a16 = product(a17,a19)),
+  inference(superposition,[],[f2,f21])).
+fof(f65,plain,(
+  a18 = product(a19,a15)),
+  inference(superposition,[],[f2,f24])).
+fof(f66,plain,(
+  a20 = product(a21,a29)),
+  inference(superposition,[],[f2,f26])).
+fof(f67,plain,(
+  a21 = product(a22,a25)),
+  inference(superposition,[],[f2,f27])).
+fof(f68,plain,(
+  a22 = product(a23,a31)),
+  inference(superposition,[],[f2,f28])).
+fof(f69,plain,(
+  a23 = product(a24,a21)),
+  inference(superposition,[],[f2,f29])).
+fof(f70,plain,(
+  a24 = product(a25,a3)),
+  inference(superposition,[],[f2,f31])).
+fof(f71,plain,(
+  a26 = product(a27,a1)),
+  inference(superposition,[],[f2,f33])).
+fof(f72,plain,(
+  a27 = product(a28,a21)),
+  inference(superposition,[],[f2,f34])).
+fof(f73,plain,(
+  a28 = product(a29,a3)),
+  inference(superposition,[],[f2,f36])).
+fof(f74,plain,(
+  a30 = product(a31,a23)),
+  inference(superposition,[],[f2,f39])).
+fof(f75,plain,(
+  a32 = product(a1,a21)),
+  inference(superposition,[],[f2,f42])).
+fof(f77,plain,(
+  ( ! [X0,X1] : (product(product(X0,X1),X0) = product(X0,product(X1,X0))) )),
+  inference(superposition,[],[f3,f1])).
+fof(f81,plain,(
+  ( ! [X0] : (product(product(a31,X0),a3) = product(a32,product(X0,a3))) )),
+  inference(superposition,[],[f3,f40])).
+fof(f84,plain,(
+  ( ! [X0] : (product(product(a25,X0),a23) = product(a26,product(X0,a23))) )),
+  inference(superposition,[],[f3,f32])).
+fof(f86,plain,(
+  ( ! [X0] : (product(product(a29,X0),a1) = product(a30,product(X0,a1))) )),
+  inference(superposition,[],[f3,f37])).
+fof(f88,plain,(
+  ( ! [X0] : (product(product(a11,X0),a5) = product(a12,product(X0,a5))) )),
+  inference(superposition,[],[f3,f14])).
+fof(f93,plain,(
+  ( ! [X0] : (product(product(a8,X0),a5) = product(a9,product(X0,a5))) )),
+  inference(superposition,[],[f3,f10])).
+fof(f108,plain,(
+  ( ! [X0] : (product(product(a27,X0),a21) = product(a28,product(X0,a21))) )),
+  inference(superposition,[],[f3,f34])).
+fof(f112,plain,(
+  ( ! [X2,X0,X1] : (product(product(X1,product(X0,X2)),X2) = product(product(X1,X2),X0)) )),
+  inference(superposition,[],[f3,f2])).
+fof(f114,plain,(
+  ( ! [X0] : (product(product(X0,a1),a31) = product(product(X0,a31),a2)) )),
+  inference(superposition,[],[f3,f4])).
+fof(f115,plain,(
+  ( ! [X0] : (product(product(X0,a31),a3) = product(product(X0,a3),a32)) )),
+  inference(superposition,[],[f3,f40])).
+fof(f116,plain,(
+  ( ! [X0] : (product(product(X0,a2),a25) = product(product(X0,a25),a3)) )),
+  inference(superposition,[],[f3,f5])).
+fof(f118,plain,(
+  ( ! [X0] : (product(product(X0,a25),a23) = product(product(X0,a23),a26)) )),
+  inference(superposition,[],[f3,f32])).
+fof(f122,plain,(
+  ( ! [X0] : (product(product(X0,a11),a5) = product(product(X0,a5),a12)) )),
+  inference(superposition,[],[f3,f14])).
+fof(f125,plain,(
+  ( ! [X0] : (product(product(X0,a7),a19) = product(product(X0,a19),a8)) )),
+  inference(superposition,[],[f3,f9])).
+fof(f137,plain,(
+  ( ! [X0] : (product(product(X0,a21),a25) = product(product(X0,a25),a22)) )),
+  inference(superposition,[],[f3,f27])).
+fof(f139,plain,(
+  ( ! [X0] : (product(product(X0,a23),a21) = product(product(X0,a21),a24)) )),
+  inference(superposition,[],[f3,f29])).
+fof(f144,plain,(
+  ( ! [X0] : (product(product(X0,a30),a23) = product(product(X0,a23),a31)) )),
+  inference(superposition,[],[f3,f39])).
+fof(f145,plain,(
+  ( ! [X0] : (product(product(X0,a32),a21) = product(product(X0,a21),a1)) )),
+  inference(superposition,[],[f3,f42])).
+fof(f151,plain,(
+  ( ! [X0] : (product(product(X0,a32),a3) = product(product(X0,a3),a31)) )),
+  inference(superposition,[],[f3,f46])).
+fof(f157,plain,(
+  ( ! [X0] : (product(product(X0,a26),a23) = product(product(X0,a23),a25)) )),
+  inference(superposition,[],[f3,f48])).
+fof(f158,plain,(
+  ( ! [X0] : (product(product(a26,X0),a23) = product(a25,product(X0,a23))) )),
+  inference(superposition,[],[f3,f48])).
+fof(f177,plain,(
+  ( ! [X0] : (product(product(a16,X0),a5) = product(a15,product(X0,a5))) )),
+  inference(superposition,[],[f3,f54])).
+fof(f207,plain,(
+  ( ! [X0] : (product(product(X0,a17),a19) = product(product(X0,a19),a16)) )),
+  inference(superposition,[],[f3,f64])).
+fof(f208,plain,(
+  ( ! [X0] : (product(product(a17,X0),a19) = product(a16,product(X0,a19))) )),
+  inference(superposition,[],[f3,f64])).
+fof(f216,plain,(
+  ( ! [X0] : (product(product(X0,a22),a25) = product(product(X0,a25),a21)) )),
+  inference(superposition,[],[f3,f67])).
+fof(f219,plain,(
+  ( ! [X0] : (product(product(X0,a23),a31) = product(product(X0,a31),a22)) )),
+  inference(superposition,[],[f3,f68])).
+fof(f222,plain,(
+  ( ! [X0] : (product(product(X0,a24),a21) = product(product(X0,a21),a23)) )),
+  inference(superposition,[],[f3,f69])).
+fof(f225,plain,(
+  ( ! [X0] : (product(product(X0,a25),a3) = product(product(X0,a3),a24)) )),
+  inference(superposition,[],[f3,f70])).
+fof(f249,plain,(
+  product(a31,product(a23,a31)) = product(a30,a31)),
+  inference(superposition,[],[f77,f74])).
+fof(f253,plain,(
+  product(a25,product(a3,a25)) = product(a24,a25)),
+  inference(superposition,[],[f77,f70])).
+fof(f255,plain,(
+  product(a3,product(a25,a3)) = product(a2,a3)),
+  inference(superposition,[],[f77,f47])).
+fof(f265,plain,(
+  product(a15,product(a17,a15)) = product(a14,a15)),
+  inference(superposition,[],[f77,f63])).
+fof(f269,plain,(
+  product(a19,product(a15,a19)) = product(a18,a19)),
+  inference(superposition,[],[f77,f65])).
+fof(f295,plain,(
+  product(a23,product(a31,a23)) = product(a22,a23)),
+  inference(superposition,[],[f77,f68])).
+fof(f320,plain,(
+  product(a22,a23) = product(a23,a30)),
+  inference(forward_demodulation,[],[f295,f74])).
+fof(f328,plain,(
+  product(a2,a3) = product(a3,a24)),
+  inference(forward_demodulation,[],[f255,f70])).
+fof(f330,plain,(
+  product(a25,a2) = product(a24,a25)),
+  inference(forward_demodulation,[],[f253,f47])).
+fof(f331,plain,(
+  product(a30,a31) = product(a31,a22)),
+  inference(forward_demodulation,[],[f249,f68])).
+fof(f396,plain,(
+  product(a24,a23) = product(a26,product(a3,a23))),
+  inference(superposition,[],[f84,f70])).
+fof(f434,plain,(
+  product(a30,product(a3,a1)) = product(a28,a1)),
+  inference(superposition,[],[f86,f73])).
+fof(f575,plain,(
+  product(a7,a5) = product(a9,product(a19,a5))),
+  inference(superposition,[],[f93,f55])).
+fof(f984,plain,(
+  product(a28,product(a1,a21)) = product(a26,a21)),
+  inference(superposition,[],[f108,f71])).
+fof(f996,plain,(
+  product(a26,a21) = product(a28,a32)),
+  inference(forward_demodulation,[],[f984,f75])).
+fof(f1084,plain,(
+  product(a30,a31) = product(product(a29,a31),a2)),
+  inference(superposition,[],[f114,f37])).
+fof(f1104,plain,(
+  product(a31,a22) = product(product(a29,a31),a2)),
+  inference(forward_demodulation,[],[f1084,f331])).
+fof(f1129,plain,(
+  product(a1,a3) = product(product(a2,a3),a32)),
+  inference(superposition,[],[f115,f45])).
+fof(f1130,plain,(
+  product(a23,a3) = product(product(a22,a3),a32)),
+  inference(superposition,[],[f115,f28])).
+fof(f1153,plain,(
+  product(a1,a3) = product(product(a3,a24),a32)),
+  inference(forward_demodulation,[],[f1129,f328])).
+fof(f1238,plain,(
+  product(product(a22,a25),a23) = product(product(a23,a30),a26)),
+  inference(superposition,[],[f118,f320])).
+fof(f1253,plain,(
+  product(a21,a23) = product(product(a23,a30),a26)),
+  inference(forward_demodulation,[],[f1238,f67])).
+fof(f1382,plain,(
+  product(a19,a5) = product(product(a20,a5),a12)),
+  inference(superposition,[],[f122,f56])).
+fof(f1538,plain,(
+  product(product(a11,a19),a8) = product(a10,a19)),
+  inference(superposition,[],[f125,f60])).
+fof(f1541,plain,(
+  product(a13,a19) = product(product(a14,a19),a8)),
+  inference(superposition,[],[f125,f62])).
+fof(f1561,plain,(
+  a12 = product(product(a14,a19),a8)),
+  inference(forward_demodulation,[],[f1541,f61])).
+fof(f2040,plain,(
+  product(product(a24,a21),a25) = product(product(a25,a2),a22)),
+  inference(superposition,[],[f137,f330])).
+fof(f2051,plain,(
+  product(a23,a25) = product(product(a25,a2),a22)),
+  inference(forward_demodulation,[],[f2040,f69])).
+fof(f2136,plain,(
+  product(a25,a21) = product(product(a26,a21),a24)),
+  inference(superposition,[],[f139,f48])).
+fof(f2349,plain,(
+  ( ! [X0] : (product(X0,a23) = product(product(product(X0,a30),a23),a31)) )),
+  inference(superposition,[],[f144,f2])).
+fof(f2356,plain,(
+  product(a26,product(a30,a23)) = product(product(a25,a23),a31)),
+  inference(superposition,[],[f84,f144])).
+fof(f2371,plain,(
+  product(a26,product(a30,a23)) = product(product(a25,a31),a22)),
+  inference(forward_demodulation,[],[f2356,f219])).
+fof(f2378,plain,(
+  ( ! [X0] : (product(X0,a23) = product(product(product(X0,a30),a31),a22)) )),
+  inference(forward_demodulation,[],[f2349,f219])).
+fof(f2381,plain,(
+  product(a26,a31) = product(product(a25,a31),a22)),
+  inference(forward_demodulation,[],[f2371,f39])).
+fof(f6505,plain,(
+  product(product(a31,a22),a25) = product(product(product(a29,a31),a25),a3)),
+  inference(superposition,[],[f116,f1104])).
+fof(f6519,plain,(
+  product(product(a31,a22),a25) = product(product(product(a29,a31),a3),a24)),
+  inference(forward_demodulation,[],[f6505,f225])).
+fof(f6522,plain,(
+  product(product(a31,a22),a25) = product(product(product(a29,a3),a32),a24)),
+  inference(forward_demodulation,[],[f6519,f115])).
+fof(f6524,plain,(
+  product(product(a31,a22),a25) = product(product(a28,a32),a24)),
+  inference(forward_demodulation,[],[f6522,f73])).
+fof(f6526,plain,(
+  product(product(a26,a21),a24) = product(product(a31,a22),a25)),
+  inference(forward_demodulation,[],[f6524,f996])).
+fof(f6528,plain,(
+  product(product(a26,a21),a24) = product(product(a31,a25),a21)),
+  inference(forward_demodulation,[],[f6526,f216])).
+fof(f6529,plain,(
+  product(a25,a21) = product(product(a31,a25),a21)),
+  inference(forward_demodulation,[],[f6528,f2136])).
+fof(f6839,plain,(
+  product(a25,a31) = product(product(a26,a31),a22)),
+  inference(superposition,[],[f2,f2381])).
+fof(f7271,plain,(
+  product(a31,a25) = product(product(a25,a21),a21)),
+  inference(superposition,[],[f2,f6529])).
+fof(f7287,plain,(
+  a25 = product(a31,a25)),
+  inference(forward_demodulation,[],[f7271,f2])).
+fof(f7340,plain,(
+  product(a25,a3) = product(a32,product(a25,a3))),
+  inference(superposition,[],[f81,f7287])).
+fof(f7343,plain,(
+  a31 = product(a25,a25)),
+  inference(superposition,[],[f2,f7287])).
+fof(f7359,plain,(
+  a31 = a25),
+  inference(forward_demodulation,[],[f7343,f1])).
+fof(f7362,plain,(
+  a24 = product(a32,a24)),
+  inference(forward_demodulation,[],[f7340,f70])).
+fof(f7373,plain,(
+  product(a26,a23) = product(product(a26,a23),a25)),
+  inference(superposition,[],[f157,f1])).
+fof(f7379,plain,(
+  product(product(a21,a23),a23) = product(product(product(a23,a30),a23),a25)),
+  inference(superposition,[],[f157,f1253])).
+fof(f7425,plain,(
+  product(product(a21,a23),a23) = product(product(product(a23,a30),a23),a31)),
+  inference(forward_demodulation,[],[f7379,f7359])).
+fof(f7431,plain,(
+  product(a26,a23) = product(product(a26,a23),a31)),
+  inference(forward_demodulation,[],[f7373,f7359])).
+fof(f7449,plain,(
+  product(product(a21,a23),a23) = product(product(product(a23,a30),a31),a22)),
+  inference(forward_demodulation,[],[f7425,f219])).
+fof(f7455,plain,(
+  product(a26,a23) = product(product(a26,a31),a22)),
+  inference(forward_demodulation,[],[f7431,f219])).
+fof(f7465,plain,(
+  product(a23,a23) = product(product(a21,a23),a23)),
+  inference(forward_demodulation,[],[f7449,f2378])).
+fof(f7468,plain,(
+  product(a26,a23) = product(a25,a31)),
+  inference(forward_demodulation,[],[f7455,f6839])).
+fof(f7478,plain,(
+  a21 = product(a23,a23)),
+  inference(forward_demodulation,[],[f7465,f2])).
+fof(f7481,plain,(
+  product(a26,a23) = product(a31,a31)),
+  inference(forward_demodulation,[],[f7468,f7359])).
+fof(f7488,plain,(
+  a21 = a23),
+  inference(forward_demodulation,[],[f7478,f1])).
+fof(f7490,plain,(
+  a31 = product(a26,a23)),
+  inference(forward_demodulation,[],[f7481,f1])).
+fof(f7496,plain,(
+  a31 = product(a26,a21)),
+  inference(forward_demodulation,[],[f7490,f7488])).
+fof(f7497,plain,(
+  a24 = product(a21,a21)),
+  inference(superposition,[],[f29,f7488])).
+fof(f7498,plain,(
+  a26 = product(a25,a21)),
+  inference(superposition,[],[f32,f7488])).
+fof(f7499,plain,(
+  a31 = product(a30,a21)),
+  inference(superposition,[],[f39,f7488])).
+fof(f7502,plain,(
+  a22 = product(a21,a31)),
+  inference(superposition,[],[f68,f7488])).
+fof(f7503,plain,(
+  a30 = product(a31,a21)),
+  inference(superposition,[],[f74,f7488])).
+fof(f7507,plain,(
+  ( ! [X0] : (product(product(X0,a25),a21) = product(product(X0,a21),a26)) )),
+  inference(superposition,[],[f118,f7488])).
+fof(f7508,plain,(
+  ( ! [X0] : (product(product(X0,a21),a24) = product(product(X0,a21),a21)) )),
+  inference(superposition,[],[f139,f7488])).
+fof(f7517,plain,(
+  product(a24,a21) = product(a26,product(a3,a21))),
+  inference(superposition,[],[f396,f7488])).
+fof(f7527,plain,(
+  a23 = product(a26,product(a3,a21))),
+  inference(forward_demodulation,[],[f7517,f69])).
+fof(f7532,plain,(
+  ( ! [X0] : (product(product(X0,a21),a24) = X0) )),
+  inference(forward_demodulation,[],[f7508,f2])).
+fof(f7533,plain,(
+  ( ! [X0] : (product(product(X0,a31),a21) = product(product(X0,a21),a26)) )),
+  inference(forward_demodulation,[],[f7507,f7359])).
+fof(f7538,plain,(
+  a26 = product(a31,a21)),
+  inference(forward_demodulation,[],[f7498,f7359])).
+fof(f7539,plain,(
+  a21 = a24),
+  inference(forward_demodulation,[],[f7497,f1])).
+fof(f7540,plain,(
+  a21 = product(a26,product(a3,a21))),
+  inference(forward_demodulation,[],[f7527,f7488])).
+fof(f7545,plain,(
+  product(a27,a23) = product(a25,product(a1,a23))),
+  inference(superposition,[],[f158,f33])).
+fof(f7564,plain,(
+  ( ! [X0] : (product(product(product(a26,X0),a21),a24) = product(product(a25,product(X0,a23)),a21)) )),
+  inference(superposition,[],[f139,f158])).
+fof(f7586,plain,(
+  ( ! [X0] : (product(product(product(a26,X0),a21),a24) = product(product(a25,product(X0,a21)),a21)) )),
+  inference(forward_demodulation,[],[f7564,f7488])).
+fof(f7602,plain,(
+  product(a27,a21) = product(a25,product(a1,a21))),
+  inference(forward_demodulation,[],[f7545,f7488])).
+fof(f7611,plain,(
+  ( ! [X0] : (product(product(a25,a21),X0) = product(product(product(a26,X0),a21),a24)) )),
+  inference(forward_demodulation,[],[f7586,f112])).
+fof(f7621,plain,(
+  product(a27,a21) = product(a25,a32)),
+  inference(forward_demodulation,[],[f7602,f75])).
+fof(f7623,plain,(
+  ( ! [X0] : (product(a26,X0) = product(product(a25,a21),X0)) )),
+  inference(forward_demodulation,[],[f7611,f7532])).
+fof(f7630,plain,(
+  product(a27,a21) = product(a31,a32)),
+  inference(forward_demodulation,[],[f7621,f7359])).
+fof(f7632,plain,(
+  ( ! [X0] : (product(a26,X0) = product(product(a31,a21),X0)) )),
+  inference(forward_demodulation,[],[f7623,f7359])).
+fof(f7636,plain,(
+  a28 = product(a31,a32)),
+  inference(forward_demodulation,[],[f7630,f34])).
+fof(f7637,plain,(
+  ( ! [X0] : (product(a26,X0) = product(a30,X0)) )),
+  inference(forward_demodulation,[],[f7632,f7503])).
+fof(f7647,plain,(
+  a2 = product(a3,a31)),
+  inference(superposition,[],[f47,f7359])).
+fof(f7649,plain,(
+  a24 = product(a31,a3)),
+  inference(superposition,[],[f70,f7359])).
+fof(f7661,plain,(
+  product(a31,a2) = product(a24,a31)),
+  inference(superposition,[],[f330,f7359])).
+fof(f7670,plain,(
+  product(a31,a21) = product(product(a31,a31),a21)),
+  inference(superposition,[],[f6529,f7359])).
+fof(f7672,plain,(
+  product(a31,a21) = product(product(a31,a21),a26)),
+  inference(forward_demodulation,[],[f7670,f7533])).
+fof(f7679,plain,(
+  product(a31,a2) = product(a21,a31)),
+  inference(forward_demodulation,[],[f7661,f7539])).
+fof(f7684,plain,(
+  a21 = product(a31,a3)),
+  inference(forward_demodulation,[],[f7649,f7539])).
+fof(f7687,plain,(
+  a30 = product(a30,a26)),
+  inference(forward_demodulation,[],[f7672,f7503])).
+fof(f7690,plain,(
+  a22 = product(a31,a2)),
+  inference(forward_demodulation,[],[f7679,f7502])).
+fof(f7692,plain,(
+  a30 = product(a26,a26)),
+  inference(forward_demodulation,[],[f7687,f7637])).
+fof(f7693,plain,(
+  a26 = a30),
+  inference(forward_demodulation,[],[f7692,f1])).
+fof(f8044,plain,(
+  product(a28,a3) = product(product(a31,a3),a31)),
+  inference(superposition,[],[f151,f7636])).
+fof(f8045,plain,(
+  product(a28,a21) = product(product(a31,a21),a1)),
+  inference(superposition,[],[f145,f7636])).
+fof(f8056,plain,(
+  product(a30,a1) = product(a28,a21)),
+  inference(forward_demodulation,[],[f8045,f7503])).
+fof(f8057,plain,(
+  product(a28,a3) = product(a31,product(a3,a31))),
+  inference(forward_demodulation,[],[f8044,f77])).
+fof(f8059,plain,(
+  a27 = product(a30,a1)),
+  inference(forward_demodulation,[],[f8056,f72])).
+fof(f8060,plain,(
+  product(a28,a3) = product(a31,a2)),
+  inference(forward_demodulation,[],[f8057,f7647])).
+fof(f8062,plain,(
+  a29 = a27),
+  inference(forward_demodulation,[],[f8059,f50])).
+fof(f8063,plain,(
+  a22 = product(a28,a3)),
+  inference(forward_demodulation,[],[f8060,f7690])).
+fof(f8064,plain,(
+  a29 = a22),
+  inference(forward_demodulation,[],[f8063,f36])).
+fof(f8130,plain,(
+  ( ! [X0] : (product(a28,product(X0,a21)) = product(product(a29,X0),a21)) )),
+  inference(superposition,[],[f108,f8062])).
+fof(f8205,plain,(
+  product(a23,a25) = product(product(a25,a2),a29)),
+  inference(superposition,[],[f2051,f8064])).
+fof(f8208,plain,(
+  product(a23,a31) = product(product(a31,a2),a29)),
+  inference(forward_demodulation,[],[f8205,f7359])).
+fof(f8222,plain,(
+  product(a23,a31) = product(a22,a29)),
+  inference(forward_demodulation,[],[f8208,f7690])).
+fof(f8230,plain,(
+  product(a23,a31) = product(a29,a29)),
+  inference(forward_demodulation,[],[f8222,f8064])).
+fof(f8234,plain,(
+  a29 = product(a23,a31)),
+  inference(forward_demodulation,[],[f8230,f1])).
+fof(f8236,plain,(
+  a29 = product(a21,a31)),
+  inference(forward_demodulation,[],[f8234,f7488])).
+fof(f8558,plain,(
+  a32 = product(a24,a24)),
+  inference(superposition,[],[f2,f7362])).
+fof(f8577,plain,(
+  a24 = a32),
+  inference(forward_demodulation,[],[f8558,f1])).
+fof(f8587,plain,(
+  a21 = a32),
+  inference(forward_demodulation,[],[f8577,f7539])).
+fof(f8666,plain,(
+  a1 = product(a21,a21)),
+  inference(superposition,[],[f42,f8587])).
+fof(f8678,plain,(
+  product(a23,a3) = product(product(a22,a3),a21)),
+  inference(superposition,[],[f1130,f8587])).
+fof(f8680,plain,(
+  product(a1,a3) = product(product(a3,a24),a21)),
+  inference(superposition,[],[f1153,f8587])).
+fof(f8683,plain,(
+  a28 = product(a31,a21)),
+  inference(superposition,[],[f7636,f8587])).
+fof(f8686,plain,(
+  a26 = a28),
+  inference(forward_demodulation,[],[f8683,f7538])).
+fof(f8689,plain,(
+  product(a1,a3) = product(product(a3,a21),a23)),
+  inference(forward_demodulation,[],[f8680,f222])).
+fof(f8691,plain,(
+  product(a23,a3) = product(product(a29,a3),a21)),
+  inference(forward_demodulation,[],[f8678,f8064])).
+fof(f8700,plain,(
+  a1 = a21),
+  inference(forward_demodulation,[],[f8666,f1])).
+fof(f8702,plain,(
+  product(a1,a3) = product(product(a3,a21),a21)),
+  inference(forward_demodulation,[],[f8689,f7488])).
+fof(f8704,plain,(
+  product(a23,a3) = product(a28,product(a3,a21))),
+  inference(forward_demodulation,[],[f8691,f8130])).
+fof(f8709,plain,(
+  a3 = product(a1,a3)),
+  inference(forward_demodulation,[],[f8702,f2])).
+fof(f8710,plain,(
+  product(a23,a3) = product(a26,product(a3,a21))),
+  inference(forward_demodulation,[],[f8704,f8686])).
+fof(f8714,plain,(
+  a3 = product(a21,a3)),
+  inference(forward_demodulation,[],[f8709,f8700])).
+fof(f8715,plain,(
+  a21 = product(a23,a3)),
+  inference(forward_demodulation,[],[f8710,f7540])).
+fof(f8718,plain,(
+  a21 = product(a21,a3)),
+  inference(forward_demodulation,[],[f8715,f7488])).
+fof(f8721,plain,(
+  a3 = a21),
+  inference(forward_demodulation,[],[f8718,f8714])).
+fof(f8732,plain,(
+  product(a17,a5) = product(a15,product(a19,a5))),
+  inference(superposition,[],[f177,f21])).
+fof(f8878,plain,(
+  a2 = product(a21,a31)),
+  inference(superposition,[],[f4,f8700])).
+fof(f8881,plain,(
+  a29 = product(a30,a21)),
+  inference(superposition,[],[f50,f8700])).
+fof(f8882,plain,(
+  a26 = product(a27,a21)),
+  inference(superposition,[],[f71,f8700])).
+fof(f8898,plain,(
+  product(a28,a21) = product(a30,product(a3,a21))),
+  inference(superposition,[],[f434,f8700])).
+fof(f8909,plain,(
+  product(a28,a21) = product(a26,product(a3,a21))),
+  inference(forward_demodulation,[],[f8898,f7637])).
+fof(f8925,plain,(
+  a26 = product(a27,a3)),
+  inference(forward_demodulation,[],[f8882,f8721])).
+fof(f8926,plain,(
+  a31 = a29),
+  inference(forward_demodulation,[],[f8881,f7499])).
+fof(f8929,plain,(
+  a2 = a29),
+  inference(forward_demodulation,[],[f8878,f8236])).
+fof(f8934,plain,(
+  a21 = product(a28,a21)),
+  inference(forward_demodulation,[],[f8909,f7540])).
+fof(f8947,plain,(
+  a26 = product(a29,a3)),
+  inference(forward_demodulation,[],[f8925,f8062])).
+fof(f8949,plain,(
+  a31 = a2),
+  inference(forward_demodulation,[],[f8929,f8926])).
+fof(f8953,plain,(
+  a3 = product(a28,a3)),
+  inference(forward_demodulation,[],[f8934,f8721])).
+fof(f8961,plain,(
+  a26 = product(a31,a3)),
+  inference(forward_demodulation,[],[f8947,f8926])).
+fof(f8965,plain,(
+  a3 = product(a26,a3)),
+  inference(forward_demodulation,[],[f8953,f8686])).
+fof(f8968,plain,(
+  a21 = a26),
+  inference(forward_demodulation,[],[f8961,f7684])).
+fof(f8973,plain,(
+  a3 = a26),
+  inference(forward_demodulation,[],[f8968,f8721])).
+fof(f9040,plain,(
+  product(a3,a29) = a20),
+  inference(superposition,[],[f66,f8721])).
+fof(f9074,plain,(
+  a31 = product(a26,a3)),
+  inference(superposition,[],[f7496,f8721])).
+fof(f9075,plain,(
+  a31 = a3),
+  inference(forward_demodulation,[],[f9074,f8965])).
+fof(f9108,plain,(
+  a4 = a20),
+  inference(forward_demodulation,[],[f9040,f6])).
+fof(f9478,plain,(
+  a4 = product(a3,a31)),
+  inference(superposition,[],[f6,f8926])).
+fof(f9483,plain,(
+  a20 = product(a21,a31)),
+  inference(superposition,[],[f66,f8926])).
+fof(f9524,plain,(
+  a29 = a20),
+  inference(forward_demodulation,[],[f9483,f8236])).
+fof(f9529,plain,(
+  a2 = a4),
+  inference(forward_demodulation,[],[f9478,f7647])).
+fof(f9548,plain,(
+  a31 = a20),
+  inference(forward_demodulation,[],[f9524,f8926])).
+fof(f9551,plain,(
+  a31 = a4),
+  inference(forward_demodulation,[],[f9529,f8949])).
+fof(f9565,plain,(
+  a3 = a20),
+  inference(forward_demodulation,[],[f9548,f9075])).
+fof(f9568,plain,(
+  a3 = a4),
+  inference(forward_demodulation,[],[f9551,f9075])).
+fof(f10411,plain,(
+  product(a4,a11) = a19),
+  inference(superposition,[],[f56,f9108])).
+fof(f10432,plain,(
+  a5 = a19),
+  inference(forward_demodulation,[],[f10411,f7])).
+fof(f12039,plain,(
+  product(a14,a19) = product(product(a15,a19),a16)),
+  inference(superposition,[],[f207,f63])).
+fof(f12040,plain,(
+  product(a10,a19) = product(product(a9,a19),a16)),
+  inference(superposition,[],[f207,f11])).
+fof(f12100,plain,(
+  product(a10,a5) = product(product(a9,a5),a16)),
+  inference(forward_demodulation,[],[f12040,f10432])).
+fof(f12101,plain,(
+  product(a14,a5) = product(product(a15,a5),a16)),
+  inference(forward_demodulation,[],[f12039,f10432])).
+fof(f12124,plain,(
+  product(a10,a5) = product(a8,a16)),
+  inference(forward_demodulation,[],[f12100,f57])).
+fof(f12125,plain,(
+  product(a14,a5) = product(a16,a16)),
+  inference(forward_demodulation,[],[f12101,f19])).
+fof(f12137,plain,(
+  a16 = product(a14,a5)),
+  inference(forward_demodulation,[],[f12125,f1])).
+fof(f12247,plain,(
+  product(a18,a19) = product(a16,product(a9,a19))),
+  inference(superposition,[],[f208,f22])).
+fof(f12311,plain,(
+  product(a18,a5) = product(a16,product(a9,a5))),
+  inference(forward_demodulation,[],[f12247,f10432])).
+fof(f12324,plain,(
+  product(a18,a5) = product(a16,a8)),
+  inference(forward_demodulation,[],[f12311,f57])).
+fof(f12328,plain,(
+  a8 = product(a7,a5)),
+  inference(superposition,[],[f9,f10432])).
+fof(f12329,plain,(
+  a13 = product(a12,a5)),
+  inference(superposition,[],[f15,f10432])).
+fof(f12330,plain,(
+  a17 = product(a16,a5)),
+  inference(superposition,[],[f21,f10432])).
+fof(f12335,plain,(
+  a16 = product(a17,a5)),
+  inference(superposition,[],[f64,f10432])).
+fof(f12352,plain,(
+  product(a5,product(a15,a5)) = product(a18,a5)),
+  inference(superposition,[],[f269,f10432])).
+fof(f12368,plain,(
+  a12 = product(product(a14,a5),a8)),
+  inference(superposition,[],[f1561,f10432])).
+fof(f12371,plain,(
+  a12 = product(a16,a8)),
+  inference(forward_demodulation,[],[f12368,f12137])).
+fof(f12383,plain,(
+  product(a5,product(a15,a5)) = product(a16,a8)),
+  inference(forward_demodulation,[],[f12352,f12324])).
+fof(f12393,plain,(
+  a15 = a17),
+  inference(forward_demodulation,[],[f12330,f54])).
+fof(f12394,plain,(
+  a11 = a13),
+  inference(forward_demodulation,[],[f12329,f52])).
+fof(f12399,plain,(
+  a12 = product(a5,product(a15,a5))),
+  inference(forward_demodulation,[],[f12383,f12371])).
+fof(f12405,plain,(
+  a12 = product(a5,a16)),
+  inference(forward_demodulation,[],[f12399,f19])).
+fof(f12705,plain,(
+  a14 = product(a15,a15)),
+  inference(superposition,[],[f63,f12393])).
+fof(f12741,plain,(
+  a15 = a14),
+  inference(forward_demodulation,[],[f12705,f1])).
+fof(f12988,plain,(
+  a14 = product(a11,a7)),
+  inference(superposition,[],[f16,f12394])).
+fof(f13007,plain,(
+  a10 = a14),
+  inference(forward_demodulation,[],[f12988,f60])).
+fof(f13011,plain,(
+  a15 = a10),
+  inference(forward_demodulation,[],[f13007,f12741])).
+fof(f13596,plain,(
+  a9 = product(a15,a17)),
+  inference(superposition,[],[f58,f13011])).
+fof(f13613,plain,(
+  a9 = product(a15,a15)),
+  inference(forward_demodulation,[],[f13596,f12393])).
+fof(f13620,plain,(
+  a15 = a9),
+  inference(forward_demodulation,[],[f13613,f1])).
+fof(f13823,plain,(
+  a18 = product(a17,a15)),
+  inference(superposition,[],[f22,f13620])).
+fof(f13825,plain,(
+  a8 = product(a15,a5)),
+  inference(superposition,[],[f57,f13620])).
+fof(f13826,plain,(
+  a17 = product(a18,a15)),
+  inference(superposition,[],[f59,f13620])).
+fof(f13838,plain,(
+  product(a7,a5) = product(a15,product(a19,a5))),
+  inference(superposition,[],[f575,f13620])).
+fof(f13843,plain,(
+  product(a7,a5) = product(a17,a5)),
+  inference(forward_demodulation,[],[f13838,f8732])).
+fof(f13853,plain,(
+  a19 = a17),
+  inference(forward_demodulation,[],[f13826,f24])).
+fof(f13855,plain,(
+  a18 = product(a15,a15)),
+  inference(forward_demodulation,[],[f13823,f12393])).
+fof(f13859,plain,(
+  a16 = product(a7,a5)),
+  inference(forward_demodulation,[],[f13843,f12335])).
+fof(f13867,plain,(
+  a5 = a17),
+  inference(forward_demodulation,[],[f13853,f10432])).
+fof(f13869,plain,(
+  a15 = a18),
+  inference(forward_demodulation,[],[f13855,f1])).
+fof(f13872,plain,(
+  a8 = a16),
+  inference(forward_demodulation,[],[f13859,f12328])).
+fof(f14214,plain,(
+  a14 = product(a15,a5)),
+  inference(superposition,[],[f63,f13867])).
+fof(f14237,plain,(
+  a5 = a15),
+  inference(superposition,[],[f12393,f13867])).
+fof(f14260,plain,(
+  a8 = a14),
+  inference(forward_demodulation,[],[f14214,f13825])).
+fof(f14287,plain,(
+  a15 = a8),
+  inference(forward_demodulation,[],[f14260,f12741])).
+fof(f14307,plain,(
+  a5 = a8),
+  inference(forward_demodulation,[],[f14287,f14237])).
+fof(f15133,plain,(
+  a6 = product(a5,a5)),
+  inference(superposition,[],[f8,f14237])).
+fof(f15151,plain,(
+  product(a14,a5) = product(a5,product(a17,a5))),
+  inference(superposition,[],[f265,f14237])).
+fof(f15168,plain,(
+  product(a5,a16) = product(a14,a5)),
+  inference(forward_demodulation,[],[f15151,f12335])).
+fof(f15184,plain,(
+  a5 = a6),
+  inference(forward_demodulation,[],[f15133,f1])).
+fof(f15192,plain,(
+  a16 = product(a5,a16)),
+  inference(forward_demodulation,[],[f15168,f12137])).
+fof(f15211,plain,(
+  a12 = a16),
+  inference(forward_demodulation,[],[f15192,f12405])).
+fof(f15225,plain,(
+  a8 = a12),
+  inference(forward_demodulation,[],[f15211,f13872])).
+fof(f15232,plain,(
+  a5 = a12),
+  inference(forward_demodulation,[],[f15225,f14307])).
+fof(f15778,plain,(
+  a7 = product(a5,a19)),
+  inference(superposition,[],[f55,f14307])).
+fof(f15785,plain,(
+  product(a10,a19) = product(product(a11,a19),a5)),
+  inference(superposition,[],[f1538,f14307])).
+fof(f15790,plain,(
+  product(a10,a19) = product(a12,product(a19,a5))),
+  inference(forward_demodulation,[],[f15785,f88])).
+fof(f15797,plain,(
+  a7 = product(a5,a5)),
+  inference(forward_demodulation,[],[f15778,f10432])).
+fof(f15802,plain,(
+  product(a12,product(a5,a5)) = product(a10,a5)),
+  inference(forward_demodulation,[],[f15790,f10432])).
+fof(f15809,plain,(
+  a5 = a7),
+  inference(forward_demodulation,[],[f15797,f1])).
+fof(f15813,plain,(
+  product(a12,product(a5,a5)) = product(a8,a16)),
+  inference(forward_demodulation,[],[f15802,f12124])).
+fof(f15818,plain,(
+  product(a12,product(a5,a5)) = product(a8,a8)),
+  inference(forward_demodulation,[],[f15813,f13872])).
+fof(f15822,plain,(
+  a8 = product(a12,product(a5,a5))),
+  inference(forward_demodulation,[],[f15818,f1])).
+fof(f15824,plain,(
+  a8 = product(a12,a5)),
+  inference(forward_demodulation,[],[f15822,f1])).
+fof(f15826,plain,(
+  a11 = a8),
+  inference(forward_demodulation,[],[f15824,f52])).
+fof(f15828,plain,(
+  a11 = a5),
+  inference(forward_demodulation,[],[f15826,f14307])).
+fof(f17411,plain,(
+  tuple(a1,a30,a31,a2,a24,a25,a3,a28,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a26,a27) != tuple(a2,a31,a32,a3,a25,a26,a4,a29,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a28)),
+  inference(superposition,[],[f43,f15232])).
+fof(f17422,plain,(
+  product(a19,a5) = product(product(a20,a5),a5)),
+  inference(superposition,[],[f1382,f15232])).
+fof(f17423,plain,(
+  a20 = product(a19,a5)),
+  inference(forward_demodulation,[],[f17422,f2])).
+fof(f17434,plain,(
+  tuple(a1,a30,a31,a2,a24,a25,a3,a26,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a26,a27) != tuple(a2,a31,a32,a3,a25,a26,a4,a29,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a26)),
+  inference(forward_demodulation,[],[f17411,f8686])).
+fof(f17436,plain,(
+  a20 = product(a5,a5)),
+  inference(forward_demodulation,[],[f17423,f10432])).
+fof(f17445,plain,(
+  tuple(a1,a30,a31,a2,a24,a25,a3,a3,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a27) != tuple(a2,a31,a32,a3,a25,a3,a4,a29,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a3)),
+  inference(forward_demodulation,[],[f17434,f8973])).
+fof(f17447,plain,(
+  a5 = a20),
+  inference(forward_demodulation,[],[f17436,f1])).
+fof(f17454,plain,(
+  tuple(a1,a30,a31,a2,a24,a25,a3,a3,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a29) != tuple(a2,a31,a32,a3,a25,a3,a4,a29,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a29,a3)),
+  inference(forward_demodulation,[],[f17445,f8062])).
+fof(f17455,plain,(
+  a3 = a5),
+  inference(forward_demodulation,[],[f17447,f9565])).
+fof(f17460,plain,(
+  tuple(a1,a30,a31,a2,a24,a25,a3,a3,a31,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a31) != tuple(a2,a31,a32,a3,a25,a3,a4,a31,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a31,a3)),
+  inference(forward_demodulation,[],[f17454,f8926])).
+fof(f17463,plain,(
+  tuple(a1,a30,a3,a2,a24,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a3,a3)),
+  inference(forward_demodulation,[],[f17460,f9075])).
+fof(f17464,plain,(
+  tuple(a1,a30,a3,a2,a21,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a21,a22,a23,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a21,a3,a3)),
+  inference(forward_demodulation,[],[f17463,f7539])).
+fof(f17465,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a22,a23,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a22,a23,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17464,f8721])).
+fof(f17466,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a22,a21,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a22,a21,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17465,f7488])).
+fof(f17467,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a22,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a22,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17466,f8721])).
+fof(f17468,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a29,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a29,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17467,f8064])).
+fof(f17469,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a31,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a31,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17468,f8926])).
+fof(f17470,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17469,f9075])).
+fof(f17471,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a15,a15,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a15,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17470,f12741])).
+fof(f17472,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a5,a5,a5,a6,a7,a18,a19,a8,a9,a16,a17,a5,a13,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a5,a11,a5,a6,a5,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a5,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17471,f14237])).
+fof(f17473,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a13,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a11,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17472,f17455])).
+fof(f17474,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a11,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a11,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a11,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a11,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17473,f12394])).
+fof(f17475,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a5,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a5,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a5,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a5,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17474,f15828])).
+fof(f17476,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a18,a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a18,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17475,f17455])).
+fof(f17477,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a15,a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a15,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17476,f13869])).
+fof(f17478,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a5,a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a5,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17477,f14237])).
+fof(f17479,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a17,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a17,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17478,f17455])).
+fof(f17480,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a15,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a15,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17479,f12393])).
+fof(f17481,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a5,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17480,f14237])).
+fof(f17482,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a10,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a10,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17481,f17455])).
+fof(f17483,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a15,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a15,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17482,f13011])).
+fof(f17484,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a5,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17483,f14237])).
+fof(f17485,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a9,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a9,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17484,f17455])).
+fof(f17486,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a15,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a15,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17485,f13620])).
+fof(f17487,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a5,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17486,f14237])).
+fof(f17488,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a20,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a20,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17487,f17455])).
+fof(f17489,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a4,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a4,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a4,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a4,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17488,f9108])).
+fof(f17490,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a19,a8,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a19,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17489,f9568])).
+fof(f17491,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a5,a8,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17490,f10432])).
+fof(f17492,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a3,a8,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a8,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17491,f17455])).
+fof(f17493,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a3,a5,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17492,f14307])).
+fof(f17494,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a7,a3,a3,a3,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a7,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17493,f17455])).
+fof(f17495,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a5,a3,a3,a3,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17494,f15809])).
+fof(f17496,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a3,a3,a3,a3,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a16,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17495,f17455])).
+fof(f17497,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a3,a3,a3,a3,a3,a8,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a8,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17496,f13872])).
+fof(f17498,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a3,a3,a3,a3,a3,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17497,f14307])).
+fof(f17499,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a6,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a6,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17498,f17455])).
+fof(f17500,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a5,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17499,f15184])).
+fof(f17501,plain,(
+  tuple(a1,a30,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a30,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17500,f17455])).
+fof(f17502,plain,(
+  tuple(a1,a26,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a26,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17501,f7693])).
+fof(f17503,plain,(
+  tuple(a1,a3,a3,a2,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a25,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17502,f8973])).
+fof(f17504,plain,(
+  tuple(a1,a3,a3,a2,a3,a31,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a31,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17503,f7359])).
+fof(f17505,plain,(
+  tuple(a1,a3,a3,a2,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a32,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17504,f9075])).
+fof(f17506,plain,(
+  tuple(a1,a3,a3,a2,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a21,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17505,f8587])).
+fof(f17507,plain,(
+  tuple(a1,a3,a3,a2,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a2,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17506,f8721])).
+fof(f17508,plain,(
+  tuple(a1,a3,a3,a31,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a31,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17507,f8949])).
+fof(f17509,plain,(
+  tuple(a1,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17508,f9075])).
+fof(f17510,plain,(
+  tuple(a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a21,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17509,f8700])).
+fof(f17511,plain,(
+  tuple(a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3) != tuple(a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3,a3)),
+  inference(forward_demodulation,[],[f17510,f8721])).
+fof(f17512,plain,(
+  $false),
+  inference(trivial_inequality_removal,[],[f17511])).
+% SZS output end Proof for TOP050-1
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.152 s
+% Peak memory usage: 15 MB
+% ------------------------------
+% ------------------------------

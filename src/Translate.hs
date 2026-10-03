@@ -210,7 +210,7 @@ translateWithLemmas debug (T.TSTP _ units0) = do
 -- The finishing passes over the translated proof, run right to left. Unused
 -- lemmas are dropped early, so they are neither generalized nor checked.
 finalize :: StructuredProof -> StructuredProof
-finalize = checkChains . tightenChains . generalizeGoals . cutDetours . skolemWitnesses
+finalize = checkBlockEnds . checkChains . cutChainLoops . generalizeGoals . cutDetours . skolemWitnesses
          . dropUnusedLemmas . falsumGoalForNegation
 
 -- A conjecture concluding a negation is proved by deriving $false from the
@@ -222,6 +222,20 @@ falsumGoalForNegation sp
       b : _ -> sp { goals = [(falsumLit, b)] }
       []    | null (goals sp) -> sp
             | otherwise       -> error "the derivation of $false from the negated conclusion is not shown"
+
+-- Every lemma and goal block ends on its own statement, up to orientation, so
+-- the outputs print each as proved. A chain for an atom ends in true.
+checkBlockEnds :: StructuredProof -> StructuredProof
+checkBlockEnds sp = case [ n | (n, l, b) <- blocks, not (endsOn l b) ] of
+    []    -> sp
+    n : _ -> error ("the proof of " ++ n ++ " does not end on its statement")
+  where
+    blocks = lemmas sp ++ [ (ppLiteral l, l, b) | (l, b) <- goals sp ]
+    endsOn l (HaveHence ls@(_ : _)) = lineLit (last ls) `elem` [l, flipLit l]
+    endsOn l (EqChain s steps)
+      | isRelLit l, (_, Const "true") : _ <- reverse steps = s == atomTerm l
+      | otherwise = Eq s (if null steps then s else snd (last steps)) `elem` [l, flipLit l]
+    endsOn _ _ = False
 
 -- Every printed rewrite, in a chain or a hence line, must follow from the
 -- equation it cites in the direction it cites. A lemma can state a stored
@@ -257,19 +271,16 @@ checkChains sp = case [ (n, nm, shown) | (n, blk) <- blocks, (nm, shown) <- take
     stated' (Hence l _) = Just l
     stated' (And _ _)   = Nothing
 
--- In every equality chain, binds each variable a step brings in to the value
--- the next step needs. By now the blocks state variables in place of
--- Theorem 1's fresh constants.
-tightenChains :: StructuredProof -> StructuredProof
-tightenChains sp = sp
-  { lemmas = [ (n, l, tighten b) | (n, l, b) <- lemmas sp ]
-  , goals  = [ (l, tighten b)    | (l, b)    <- goals sp ] }
+-- Cuts the loops of every equality chain. Once the blocks state variables in
+-- place of Theorem 1's fresh constants, two terms of a chain may be equal, and
+-- the steps between them derive nothing.
+cutChainLoops :: StructuredProof -> StructuredProof
+cutChainLoops sp = sp
+  { lemmas = [ (n, l, cut b) | (n, l, b) <- lemmas sp ]
+  , goals  = [ (l, cut b)    | (l, b)    <- goals sp ] }
   where
-    -- binding can make two terms of the chain equal, and the steps between
-    -- them are then a loop
-    tighten (EqChain start steps) = let (s, st) = (start, steps)
-                                    in EqChain s (cutLoops snd s st)
-    tighten b                      = b
+    cut (EqChain start steps) = EqChain start (cutLoops snd start steps)
+    cut b                     = b
 
 -- The input proof may rewrite a fact and later rewrite it back. Rewrite
 -- lines that lead from a fact back to itself derive nothing and are dropped.
