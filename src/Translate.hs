@@ -1123,8 +1123,11 @@ citeOrSpliceIn ctxs (prev, (rw, cur)) = do
       around = listToMaybe [ rebuild | (sub, rebuild) <- ctxs prev, sub == from, rebuild to == cur ]
   spliced <- case (Map.lookup nm lits, around) of
     (Just lit, Just rebuild) | once -> do
-      chain <- readPremiseStep nm (unitEquation lit)
-      return (map (\(u, d, t) -> (u, d, rebuild t)) <$> (chain >>= instantiateChain (rwDir rw) from to (unitEquation lit)))
+      -- read as the general equation, or else at the instance the step
+      -- applies, when the proof derived the equation's premises only there
+      let readAt e = (>>= instantiateChain (rwDir rw) from to e) <$> readPremiseStep nm e
+      chain <- readAt (unitEquation lit) >>= maybe (readAt (rwEq rw)) (return . Just)
+      return (map (\(u, d, t) -> (u, d, rebuild t)) <$> chain)
     _ -> return Nothing
   case spliced of
     Just triples -> mapM nameChainStep triples
@@ -1513,8 +1516,7 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
   -- no clause when it negates a universal (KLE137+1/Twee). The leaf's own
   -- clause is then the nucleus, with body equations oriented as the goals
   -- state them, since the prover may have turned them round.
-  let leafCls = orientToGoals <$> convertDeclToClause (leDecl entry)
-      orientToGoals (Clause bs mh) = Clause (map orientLit bs) mh
+  let leafCls = (\(Clause bs mh) -> Clause (map orientLit bs) mh) <$> convertDeclToClause (leDecl entry)
       orientLit l@(Eq a b)
         | statesGoal goalLits l        = l
         | statesGoal goalLits (Eq b a) = Eq b a
@@ -2188,7 +2190,7 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
       proveOpenGoals tweeProver
       open3 <- openGoalsOf goalLits
       unless (null open3) $
-        error ("goal(s) could not be proved: "
+        throwError ("goal(s) could not be proved: "
                ++ intercalate ", " (map ppLiteral open3)
                ++ " (neither the input proof nor the prover gives a proof of it)")
       -- A negated conclusion is proved by deriving $false from its conjuncts,

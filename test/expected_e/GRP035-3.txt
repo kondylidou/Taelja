@@ -1,0 +1,94 @@
+Axiom 1: subgroup_member(b)
+Axiom 2: subgroup_member(a)
+Axiom 3: product(X,Y,multiply(X,Y))
+Axiom 4: product(a,b,c)
+Axiom 5: product(X,Y,Z) /\ product(X,Y,A) => Z = A
+Axiom 6: product(X,inverse(X),identity)
+Axiom 7: subgroup_member(X) /\ subgroup_member(Y) /\ product(X,inverse(Y),Z) => subgroup_member(Z)
+Axiom 8: product(identity,X,X)
+Axiom 9: product(inverse(X),X,identity)
+Axiom 10: product(X,identity,X)
+Axiom 11: product(X,Y,Z) /\ product(Y,A,B) /\ product(X,B,C) => product(Z,A,C)
+
+Lemma 12: inverse(inverse(b)) = multiply(inverse(inverse(b)),identity)
+Proof:
+  have product(inverse(inverse(b)),identity,inverse(inverse(b)))
+    by axiom 10
+   and product(inverse(inverse(b)),identity,multiply(inverse(inverse(b)),identity))
+    by axiom 3
+  hence inverse(inverse(b)) = multiply(inverse(inverse(b)),identity)
+    by axiom 5
+
+Lemma 13: product(identity,b,inverse(inverse(b)))
+Proof:
+  have product(inverse(inverse(b)),inverse(b),identity)
+    by axiom 9
+   and product(inverse(b),b,identity)
+    by axiom 9
+   and product(inverse(inverse(b)),identity,multiply(inverse(inverse(b)),identity))
+    by axiom 3
+  hence product(identity,b,multiply(inverse(inverse(b)),identity))
+    by axiom 11
+  hence product(identity,b,inverse(inverse(b)))
+    by rw lemma 12 R->L
+
+Lemma 14: subgroup_member(inverse(b))
+Proof:
+  have subgroup_member(b)
+    by axiom 1
+   and subgroup_member(b)
+    by axiom 1
+   and product(b,inverse(b),identity)
+    by axiom 6
+  hence subgroup_member(identity)
+    by axiom 7
+   and subgroup_member(b)
+    by axiom 1
+   and product(identity,inverse(b),inverse(b))
+    by axiom 8
+  hence subgroup_member(inverse(b))
+    by axiom 7
+
+Lemma 15: multiply(identity,b) = inverse(inverse(b))
+Proof:
+  have product(identity,b,multiply(identity,b))
+    by axiom 3
+   and product(identity,b,inverse(inverse(b)))
+    by lemma 13
+  hence multiply(identity,b) = inverse(inverse(b))
+    by axiom 5
+
+Lemma 16: b = multiply(identity,b)
+Proof:
+  have product(identity,b,b)
+    by axiom 8
+   and product(identity,b,multiply(identity,b))
+    by axiom 3
+  hence b = multiply(identity,b)
+    by axiom 5
+
+Lemma 17: c = multiply(a,b)
+Proof:
+  have product(a,b,c)
+    by axiom 4
+   and product(a,b,multiply(a,b))
+    by axiom 3
+  hence c = multiply(a,b)
+    by axiom 5
+
+Goal 1: subgroup_member(c)
+Proof:
+  have subgroup_member(a)
+    by axiom 2
+   and subgroup_member(inverse(b))
+    by lemma 14
+   and product(a,inverse(inverse(b)),multiply(a,inverse(inverse(b))))
+    by axiom 3
+  hence subgroup_member(multiply(a,inverse(inverse(b))))
+    by axiom 7
+  hence subgroup_member(multiply(a,multiply(identity,b)))
+    by rw lemma 15 R->L
+  hence subgroup_member(multiply(a,b))
+    by rw lemma 16 R->L
+  hence subgroup_member(c)
+    by rw lemma 17 R->L

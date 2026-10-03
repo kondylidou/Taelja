@@ -360,6 +360,7 @@ eBenchmarkNames =
   , "SWW968+1"        -- E's condensation, named condense
   , "CSR117+1"        -- a conjunct proved twice and one never, and 55.67631 quoted
   , "GRP656+1"        -- a Skolem function E leaves undefined, defined in the TPTP output
+  , "GRP035-3"        -- a spliced unit read at the instance its premise was derived at
   ]
 
 -- The Lean module name of a proof. A TPTP name keeps its separator as a
