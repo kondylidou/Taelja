@@ -267,7 +267,7 @@ tightenChains sp = sp
   where
     -- binding can make two terms of the chain equal, and the steps between
     -- them are then a loop
-    tighten (EqChain start steps) = let (s, st) = tightenChainVars start steps
+    tighten (EqChain start steps) = let (s, st) = (start, steps)
                                     in EqChain s (cutLoops snd s st)
     tighten b                      = b
 
@@ -1528,73 +1528,7 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
           Nothing -> do
             liftIO $ dbg debug $ "[skip] pos=" ++ pos ++ " (" ++ leName entry ++ ")"
                 ++ "  body=[" ++ intercalate ", " (map ppLiteral bodyLits) ++ "] — no matching electron found"
-            -- retry with the body grounded, by the goal the head matches or,
-            -- for a headless clause, by the sibling electron
-            case mHead of
-              -- a headless clause with one body atom, grounded by the sibling
-              -- electron so a rewriting match can be found
-              Nothing -> case bodyLits of
-                [singleLit] -> do
-                  case providerSibling pos of
-                    Nothing -> return False
-                    Just sp -> do
-                      allUnits <- gets stUnits
-                      case listToMaybe [u | u <- allUnits, uePos u == Just sp] of
-                        Nothing  -> return False
-                        Just sib -> case matchLit singleLit (ueUnit sib) of
-                          Nothing    -> return False
-                          Just σ_sib -> do
-                            let bodyLitsG = [applySubstLit σ_sib singleLit]
-                            mResult2 <- findElecs prover (\_ _ -> True) bodyLitsG [] elecs pos
-                            case mResult2 of
-                              Just (theta, [(ki, σi, rwi)]) -> do
-                                -- the body atom answers one goal, not
-                                -- necessarily the first
-                                let answers gl = orRestore $ do
-                                      let gl' = applySubstLit σ_sib (applySubstLit theta gl)
-                                      blk <- goalBlock gl' ki σi rwi
-                                      return (if blockConcludes gl' blk then Just (gl', blk) else Nothing)
-                                answered <- firstJustM (map answers goalLits)
-                                case answered of
-                                  Just (gl', blk) -> emitGoalProof gl' blk >> return True
-                                  Nothing         -> return False
-                              _ -> return False
-                _ -> return False
-              Just hl ->
-                case listToMaybe [σ | gl <- goalLits, Just σ <- [matchLit hl gl]] of
-                  Nothing   -> return False
-                  Just σ_gl -> do
-                    -- σ_gl grounds the abstract body, since bodyLits already
-                    -- carries θ_local and would not fit the grounded head
-                    let bodyLitsG = map (applySubstLit σ_gl) bodyLitsAbs
-                        headLitG  = applySubstLit σ_gl hl
-                    let coherentG theta' m = resolutionCoherent bodyLitsAbs hl (matchedPremises m) (applySubstLit theta' headLitG)
-                    mResult2R <- findElecs prover coherentG bodyLitsG [] elecs pos
-                    case mResult2R of
-                      Nothing -> return False
-                      Just (theta, matched) -> do
-                        blk <- nucleusBlock bodyLitsAbs matched mAxName theta headLitG
-                        let headInst = applySubstLit theta headLitG
-                            -- only a ground proof is stored from this retry,
-                            -- the main path stores the general ones
-                            proofToStore = if null (litOpen headInst) then Just blk else Nothing
-                        when (isJust mAxName) $ do
-                          addUnit (UnitEntry Nothing (unrigidLit headInst) (fmap unrigidBlock proofToStore) (Just pos))
-                          case (proofToStore, blk) of
-                            (Just _, EqChain {}) -> void (ensureNamed (unrigidLit headInst) (return (unrigidBlock blk)))
-                            _ -> return ()
-                        -- a named nucleus proves the goal itself, an unnamed
-                        -- one needs a named axiom that justifies it
-                        case (mAxName, listToMaybe [gl | gl <- goalLits, isJust (matchLit headInst gl)]) of
-                          (Nothing, Just gl) -> do
-                            mBlk <- justifyByAxiom prover headInst pos
-                            case mBlk of
-                              Just blk' -> emitGoalProof gl blk' >> return True
-                              Nothing   -> return False
-                          (Just _, Just gl) -> do
-                            emitGoalProof gl blk
-                            return True
-                          _ -> return False
+            return False
           Just (theta, matched)  ->
             case mHead of
               -- ⊥ from a clause other than the negated conjecture means the

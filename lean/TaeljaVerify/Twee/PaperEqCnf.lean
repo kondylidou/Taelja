@@ -14,15 +14,15 @@ axiom f : α → α
 axiom g : α → α
 
 -- Axiom 1
-axiom ax1 : ∀ (x : α), g x = f x
+axiom ax1 : ∀ (x : α), f x = x
 -- Axiom 2
-axiom ax2 : ∀ (x : α), f x = x
+axiom ax2 : ∀ (x : α), g x = f x
 
 -- Lemma 3
 theorem taelja_lemma3 : ∀ (x : α), g x = x := by
   intro x
-  calc g x = f x := ax1 x
-      _ = x := ax2 x
+  calc g x = f x := ax2 x
+      _ = x := ax1 x
 
 -- Goal 1
 theorem taelja_goal1 : g (g a) = a := by

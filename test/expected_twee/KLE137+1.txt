@@ -1,17 +1,17 @@
-Axiom 1: multiplication(X,one) = X
-Axiom 2: addition(Y,Y) = Y
-Axiom 3: multiplication(addition(Y,Z),A) = addition(multiplication(Y,A),multiplication(Z,A))
-Axiom 4: multiplication(one,Y) = Y
-Axiom 5: addition(Y,addition(Z,B)) = addition(addition(Y,Z),B)
-Axiom 6: addition(Y,Z) = Z => leq(Y,Z)
-Axiom 7: leq(A,addition(multiplication(Y,A),Z)) => leq(A,multiplication(strong_iteration(Y),Z))
+Axiom 1: multiplication(addition(X,Y),Z) = addition(multiplication(X,Z),multiplication(Y,Z))
+Axiom 2: multiplication(one,X) = X
+Axiom 3: addition(X,addition(Y,A)) = addition(addition(X,Y),A)
+Axiom 4: addition(X,X) = X
+Axiom 5: addition(X,Y) = Y => leq(X,Y)
+Axiom 6: leq(Z,addition(multiplication(X,Z),Y)) => leq(Z,multiplication(strong_iteration(X),Y))
+Axiom 7: multiplication(B,one) = B
 
 Lemma 8: addition(X,addition(X,addition(multiplication(one,X),one))) = addition(X,addition(multiplication(one,X),one))
 Proof:
   addition(X,addition(X,addition(multiplication(one,X),one)))
-= { by axiom 5 }
+= { by axiom 3 }
   addition(addition(X,X),addition(multiplication(one,X),one))
-= { by axiom 2 }
+= { by axiom 4 }
   addition(X,addition(multiplication(one,X),one))
 
 Goal 1: leq(X,strong_iteration(one))
@@ -19,16 +19,16 @@ Proof:
   have addition(X,addition(X,addition(multiplication(one,X),one))) = addition(X,addition(multiplication(one,X),one))
     by lemma 8
   hence leq(X,addition(X,addition(multiplication(one,X),one)))
-    by axiom 6
+    by axiom 5
   hence leq(X,addition(addition(X,multiplication(one,X)),one))
-    by rw axiom 5
+    by rw axiom 3
   hence leq(X,addition(addition(multiplication(one,X),multiplication(one,X)),one))
-    by rw axiom 4 R->L
+    by rw axiom 2 R->L
   hence leq(X,addition(multiplication(addition(one,one),X),one))
-    by rw axiom 3 R->L
+    by rw axiom 1 R->L
   hence leq(X,multiplication(strong_iteration(addition(one,one)),one))
-    by axiom 7
+    by axiom 6
   hence leq(X,strong_iteration(addition(one,one)))
-    by rw axiom 1
+    by rw axiom 7
   hence leq(X,strong_iteration(one))
-    by rw axiom 2
+    by rw axiom 4

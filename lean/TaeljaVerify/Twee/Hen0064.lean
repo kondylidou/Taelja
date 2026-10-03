@@ -18,76 +18,76 @@ axiom divide : α → α → α
 axiom less_equal : α → α → Prop
 
 -- Axiom 1
-axiom ax1 : ∀ (x y z : α), less_equal (divide (divide x y) (divide z y)) (divide (divide x z) y)
+axiom ax1 : ∀ (x y : α), less_equal (divide x y) x
 -- Axiom 2
-axiom ax2 : ∀ (x y : α), less_equal x y → divide x y = zero
+axiom ax2 : ∀ (x : α), less_equal zero x
 -- Axiom 3
-axiom ax3 : less_equal (divide a b) d
+axiom ax3 : ∀ (x : α), divide zero x = zero
 -- Axiom 4
-axiom ax4 : ∀ (x : α), less_equal zero x
+axiom ax4 : ∀ (x y z : α), less_equal (divide (divide x y) (divide z y)) (divide (divide x z) y)
 -- Axiom 5
 axiom ax5 : ∀ (x y : α), less_equal x y → less_equal y x → x = y
 -- Axiom 6
-axiom ax6 : ∀ (x : α), divide zero x = zero
+axiom ax6 : ∀ (x : α), divide x x = zero
 -- Axiom 7
-axiom ax7 : ∀ (x y : α), less_equal (divide x y) x
+axiom ax7 : ∀ (x y : α), divide x y = zero → less_equal x y
 -- Axiom 8
-axiom ax8 : ∀ (x : α), divide x x = zero
+axiom ax8 : ∀ (x y : α), less_equal x y → divide x y = zero
 -- Axiom 9
-axiom ax9 : ∀ (x y : α), divide x y = zero → less_equal x y
+axiom ax9 : less_equal (divide a b) d
 
 -- Lemma 10
 theorem taelja_lemma10 : ∀ (x : α), divide x zero = x := by
   intro x
-  have h1 : less_equal zero (divide (divide x (divide x zero)) (divide zero (divide x zero))) := ax4 (divide (divide x (divide x zero)) (divide zero (divide x zero)))
-  have h2 : less_equal (divide (divide x zero) (divide x zero)) (divide (divide x (divide x zero)) (divide zero (divide x zero))) := Eq.mp (congrArg (fun t : α => less_equal t (divide (divide x (divide x zero)) (divide zero (divide x zero)))) (Eq.symm (ax8 (divide x zero)))) h1
-  have h3 : less_equal (divide (divide x (divide x zero)) (divide zero (divide x zero))) (divide (divide x zero) (divide x zero)) := ax1 x (divide x zero) zero
+  have h1 : less_equal zero (divide (divide x (divide x zero)) (divide zero (divide x zero))) := ax2 (divide (divide x (divide x zero)) (divide zero (divide x zero)))
+  have h2 : less_equal (divide (divide x zero) (divide x zero)) (divide (divide x (divide x zero)) (divide zero (divide x zero))) := Eq.mp (congrArg (fun t : α => less_equal t (divide (divide x (divide x zero)) (divide zero (divide x zero)))) (Eq.symm (ax6 (divide x zero)))) h1
+  have h3 : less_equal (divide (divide x (divide x zero)) (divide zero (divide x zero))) (divide (divide x zero) (divide x zero)) := ax4 x (divide x zero) zero
   have h4 : divide (divide x zero) (divide x zero) = divide (divide x (divide x zero)) (divide zero (divide x zero)) := ax5 (divide (divide x zero) (divide x zero)) (divide (divide x (divide x zero)) (divide zero (divide x zero))) h2 h3
-  have h5 : zero = divide (divide x (divide x zero)) (divide zero (divide x zero)) := Eq.mp (congrArg (fun t : α => t = divide (divide x (divide x zero)) (divide zero (divide x zero))) (ax8 (divide x zero))) h4
-  have h6 : zero = divide (divide x (divide x zero)) zero := Eq.mp (congrArg (fun t : α => zero = divide (divide x (divide x zero)) t) (ax6 (divide x zero))) h5
-  have h7 : less_equal (divide x (divide x zero)) zero := ax9 (divide x (divide x zero)) zero (Eq.symm (h6))
-  have h8 : less_equal zero (divide x (divide x zero)) := ax4 (divide x (divide x zero))
+  have h5 : zero = divide (divide x (divide x zero)) (divide zero (divide x zero)) := Eq.mp (congrArg (fun t : α => t = divide (divide x (divide x zero)) (divide zero (divide x zero))) (ax6 (divide x zero))) h4
+  have h6 : zero = divide (divide x (divide x zero)) zero := Eq.mp (congrArg (fun t : α => zero = divide (divide x (divide x zero)) t) (ax3 (divide x zero))) h5
+  have h7 : less_equal (divide x (divide x zero)) zero := ax7 (divide x (divide x zero)) zero (Eq.symm (h6))
+  have h8 : less_equal zero (divide x (divide x zero)) := ax2 (divide x (divide x zero))
   have h9 : divide x (divide x zero) = zero := ax5 (divide x (divide x zero)) zero h7 h8
-  have h10 : less_equal x (divide x zero) := ax9 x (divide x zero) h9
-  have h11 : less_equal (divide x zero) x := ax7 x zero
+  have h10 : less_equal x (divide x zero) := ax7 x (divide x zero) h9
+  have h11 : less_equal (divide x zero) x := ax1 x zero
   have h12 : divide x zero = x := ax5 (divide x zero) x h11 h10
   exact h12
 
 -- Lemma 11
 theorem taelja_lemma11 : divide (divide a b) d = zero := by
-  have h1 : less_equal (divide a b) d := ax3
-  have h2 : divide (divide a b) d = zero := ax2 (divide a b) d h1
+  have h1 : less_equal (divide a b) d := ax9
+  have h2 : divide (divide a b) d = zero := ax8 (divide a b) d h1
   exact h2
 
 -- Lemma 12
 theorem taelja_lemma12 : less_equal (divide (divide a d) (divide b d)) zero := by
-  have h1 : less_equal (divide (divide a d) (divide b d)) (divide (divide a b) d) := ax1 a d b
+  have h1 : less_equal (divide (divide a d) (divide b d)) (divide (divide a b) d) := ax4 a d b
   have h2 : less_equal (divide (divide a d) (divide b d)) zero := Eq.mp (congrArg (fun t : α => less_equal (divide (divide a d) (divide b d)) t) (taelja_lemma11)) h1
   exact h2
 
 -- Lemma 13
 theorem taelja_lemma13 : divide (divide b d) b = zero := by
-  have h1 : less_equal (divide b d) b := ax7 b d
-  have h2 : divide (divide b d) b = zero := ax2 (divide b d) b h1
+  have h1 : less_equal (divide b d) b := ax1 b d
+  have h2 : divide (divide b d) b = zero := ax8 (divide b d) b h1
   exact h2
 
 -- Lemma 14
 theorem taelja_lemma14 : zero = divide (divide a d) (divide b d) := by
-  have h1 : less_equal zero (divide (divide a d) (divide b d)) := ax4 (divide (divide a d) (divide b d))
+  have h1 : less_equal zero (divide (divide a d) (divide b d)) := ax2 (divide (divide a d) (divide b d))
   have h2 : less_equal (divide (divide a d) (divide b d)) zero := taelja_lemma12
   have h3 : zero = divide (divide a d) (divide b d) := ax5 zero (divide (divide a d) (divide b d)) h1 h2
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : less_equal (divide a d) b := by
-  have h1 : less_equal (divide (divide (divide a d) b) (divide (divide b d) b)) (divide (divide (divide a d) (divide b d)) b) := ax1 (divide a d) b (divide b d)
-  have h2 : divide (divide (divide (divide a d) b) (divide (divide b d) b)) (divide (divide (divide a d) (divide b d)) b) = zero := ax2 (divide (divide (divide a d) b) (divide (divide b d) b)) (divide (divide (divide a d) (divide b d)) b) h1
+  have h1 : less_equal (divide (divide (divide a d) b) (divide (divide b d) b)) (divide (divide (divide a d) (divide b d)) b) := ax4 (divide a d) b (divide b d)
+  have h2 : divide (divide (divide (divide a d) b) (divide (divide b d) b)) (divide (divide (divide a d) (divide b d)) b) = zero := ax8 (divide (divide (divide a d) b) (divide (divide b d) b)) (divide (divide (divide a d) (divide b d)) b) h1
   have h3 : divide (divide (divide (divide a d) b) (divide (divide b d) b)) (divide zero b) = zero := Eq.mp (congrArg (fun t : α => divide (divide (divide (divide a d) b) (divide (divide b d) b)) (divide t b) = zero) (Eq.symm (taelja_lemma14))) h2
-  have h4 : divide (divide (divide (divide a d) b) (divide (divide b d) b)) zero = zero := Eq.mp (congrArg (fun t : α => divide (divide (divide (divide a d) b) (divide (divide b d) b)) t = zero) (ax6 b)) h3
+  have h4 : divide (divide (divide (divide a d) b) (divide (divide b d) b)) zero = zero := Eq.mp (congrArg (fun t : α => divide (divide (divide (divide a d) b) (divide (divide b d) b)) t = zero) (ax3 b)) h3
   have h5 : divide (divide (divide a d) b) (divide (divide b d) b) = zero := Eq.mp (congrArg (fun t : α => t = zero) (taelja_lemma10 (divide (divide (divide a d) b) (divide (divide b d) b)))) h4
   have h6 : divide (divide (divide a d) b) zero = zero := Eq.mp (congrArg (fun t : α => divide (divide (divide a d) b) t = zero) (taelja_lemma13)) h5
   have h7 : divide (divide a d) b = zero := Eq.mp (congrArg (fun t : α => t = zero) (taelja_lemma10 (divide (divide a d) b))) h6
-  have h8 : less_equal (divide a d) b := ax9 (divide a d) b h7
+  have h8 : less_equal (divide a d) b := ax7 (divide a d) b h7
   exact h8
 
 end TweeHen0064

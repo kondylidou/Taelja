@@ -17,29 +17,29 @@ axiom domain : α → α
 axiom there_exists : α → Prop
 
 -- Axiom 1
-axiom ax1 : there_exists (codomain a)
+axiom ax1 : ∀ (x : α), compose (codomain x) x = x
 -- Axiom 2
-axiom ax2 : ∀ (x : α), compose x (domain x) = x
+axiom ax2 : there_exists (codomain a)
 -- Axiom 3
-axiom ax3 : ∀ (x : α), compose (codomain x) x = x
+axiom ax3 : ∀ (x : α), there_exists (codomain x) → there_exists x
 -- Axiom 4
-axiom ax4 : ∀ (x : α), there_exists (codomain x) → there_exists x
+axiom ax4 : ∀ (x y : α), there_exists (compose x y) → domain x = codomain y
 -- Axiom 5
-axiom ax5 : ∀ (x y : α), there_exists (compose x y) → domain x = codomain y
+axiom ax5 : ∀ (x : α), compose x (domain x) = x
 
 -- Lemma 6
 theorem taelja_lemma6 : domain (codomain a) = codomain a := by
-  have h1 : there_exists (codomain a) := ax1
-  have h2 : there_exists a := ax4 a h1
-  have h3 : there_exists (compose (codomain a) a) := Eq.mp (congrArg (fun t : α => there_exists t) (Eq.symm (ax3 a))) h2
-  have h4 : domain (codomain a) = codomain a := ax5 (codomain a) a h3
+  have h1 : there_exists (codomain a) := ax2
+  have h2 : there_exists a := ax3 a h1
+  have h3 : there_exists (compose (codomain a) a) := Eq.mp (congrArg (fun t : α => there_exists t) (Eq.symm (ax1 a))) h2
+  have h4 : domain (codomain a) = codomain a := ax4 (codomain a) a h3
   exact h4
 
 -- Goal 1
 theorem taelja_goal1 : codomain (codomain a) = codomain a := by
-  have h1 : there_exists (codomain a) := ax1
-  have h2 : there_exists (compose (codomain a) (domain (codomain a))) := Eq.mp (congrArg (fun t : α => there_exists t) (Eq.symm (ax2 (codomain a)))) h1
-  have h3 : domain (codomain a) = codomain (domain (codomain a)) := ax5 (codomain a) (domain (codomain a)) h2
+  have h1 : there_exists (codomain a) := ax2
+  have h2 : there_exists (compose (codomain a) (domain (codomain a))) := Eq.mp (congrArg (fun t : α => there_exists t) (Eq.symm (ax5 (codomain a)))) h1
+  have h3 : domain (codomain a) = codomain (domain (codomain a)) := ax4 (codomain a) (domain (codomain a)) h2
   have h4 : domain (codomain a) = codomain (codomain a) := Eq.mp (congrArg (fun t : α => domain (codomain a) = codomain t) (taelja_lemma6)) h3
   have h5 : codomain a = codomain (codomain a) := Eq.mp (congrArg (fun t : α => t = codomain (codomain a)) (taelja_lemma6)) h4
   exact Eq.symm (h5)

@@ -235,10 +235,12 @@ explainStatus clauses =
 
 -- The inferences of the tree, root first, each as the literals of its
 -- conclusion at p and of its premises at p0 and p1, or p1 alone. Variables
--- are renamed apart by position as v@p.
+-- are renamed apart by position as v@p. Twee reads an atom P as the equation
+-- P = true, so it rewrites atoms with equations between atoms. An inference
+-- with such an equation is replayed in that reading.
 treeInferences :: Map.Map String Clause -> [(String, ([(Bool, Literal)], [[(Bool, Literal)]]))]
 treeInferences clauses =
-  [ (p, (litsAt p, map litsAt kids))
+  [ (p, atomsAsEquations (litsAt p, map litsAt kids))
   | (p, kids) <- sortBy (comparing (\(p, _) -> (length p, p)))
                    [ (p, kids) | p <- Map.keys clauses
                                , let kids = filter (`Map.member` clauses) [p ++ "0", p ++ "1"]
@@ -248,6 +250,14 @@ treeInferences clauses =
     apart p (Var v)    = Var (varAt p v)
     apart p (App f ts) = App f (map (apart p) ts)
     apart _ t          = t
+    preds = Set.fromList [ n | c <- Map.elems clauses, (_, Rel n _) <- polLits c ]
+    atomic t = case t of { App f _ -> Set.member f preds; Const c -> Set.member c preds; _ -> False }
+    atomsAsEquations inf@(parent, kids)
+      | or [ atomic s || atomic t | (_, Eq s t) <- parent ++ concat kids ] =
+          (map asEquation parent, map (map asEquation) kids)
+      | otherwise = inf
+    asEquation (b, l@(Rel _ _)) = (b, Eq (atomTerm l) (Const "true"))
+    asEquation bl               = bl
 
 -- Variable v renamed apart for position p.
 varAt :: String -> String -> String
@@ -304,17 +314,11 @@ unifyInTree a b s = case (walk s a, walk s b) of
 explain :: ([(Bool, Literal)], [[(Bool, Literal)]]) -> TreeSubst -> [TreeSubst]
 explain inf s = concat (take 1 [ ss | (_, ss) <- explainTiers inf s, not (null ss) ])
 
--- The explanations of an inference in three tiers, strict, rewritten and
--- loose, starting with the one that replays it most closely.
+-- The explanations of an inference in two tiers, strict and rewritten,
+-- starting with the one that replays it most closely.
 explainTiers :: ([(Bool, Literal)], [[(Bool, Literal)]]) -> TreeSubst -> [(String, [TreeSubst])]
-explainTiers (parent, kids) s = [("strict", strict), ("rewritten", rewritten), ("loose", loose)]
+explainTiers (parent, kids) s = [("strict", strict), ("rewritten", rewritten)]
   where
-    -- A prover may fold a rewrite into a step and print one atom unrewritten,
-    -- so no replay reproduces the clause. The other literals still fix the
-    -- premise's variables, which would otherwise all stay free.
-    loose = concat [ coverLoose result parent s1
-                   | (pairs, result) <- premiseCombinations kids
-                   , Just s1 <- [foldM (\acc (a, b) -> unifyInTree a b acc) s pairs] ]
     strict = [ s2 | (pairs, result) <- premiseCombinations kids
                   , Just s1 <- [foldM (\acc (a, b) -> unifyInTree a b acc) s pairs]
                   , s2 <- cover result parent s1 ]
@@ -432,23 +436,6 @@ matchInTree rigid = go
       (App f as, App g bs) | f == g, length as == length bs ->
         foldM (\acc (a, b) -> go a b acc) s (zip as bs)
       _ -> Nothing
-
--- Like cover, but one literal on each side may go unmatched, the one a folded
--- simplification rewrote. The assembled step is still checked by
--- resolutionCoherent and by Lean, so a wrong binding cannot slip through.
-coverLoose :: [(Bool, Literal)] -> [(Bool, Literal)] -> TreeSubst -> [TreeSubst]
-coverLoose result parent s0 = go result [] False s0
-  where
-    idxParent = zip [0 :: Int ..] parent
-    rigid = rigidVars s0 parent
-    go [] hit _ s
-      | length [ () | (i, _) <- idxParent, i `notElem` hit ] <= 1 = [s]
-      | otherwise = []
-    go ((sign, l) : ls) hit skipped s =
-      [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
-            , s' <- matchOriented rigid l p s
-            , s'' <- go ls (i : hit) skipped s' ]
-      ++ [ s'' | not skipped, s'' <- go ls hit True s ]
 
 -- A literal and, for an equation, its flip.
 orientations :: Literal -> [Literal]

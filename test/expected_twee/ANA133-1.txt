@@ -1,185 +1,185 @@
-Axiom 1: d(+(X,Y)) = +(d(X),d(Y))
-Axiom 2: +(Z,+(A,B)) = +(+(Z,A),B)
-Axiom 3: +(C,minus(C)) = zero
-Axiom 4: +(zero,C) = C
-Axiom 5: +(C,U) = +(U,C)
-Axiom 6: times(C,U) = times(U,C)
-Axiom 7: times(one,C) = C
-Axiom 8: times(C,+(U,V)) = +(times(C,U),times(C,V))
-Axiom 9: times(zero,C) = zero
-Axiom 10: d(times(X,W)) = +(times(X,d(W)),times(W,d(X)))
-Axiom 11: d(one) = zero
-Axiom 12: d(zero) = zero
-Axiom 13: d(x) = one
-Axiom 14: d(cos(X)) = minus(times(sin(X),d(X)))
-Axiom 15: d(sin(X)) = times(cos(X),d(X))
+Axiom 1: times(one,X) = X
+Axiom 2: d(x) = one
+Axiom 3: times(X,Y) = times(Y,X)
+Axiom 4: d(sin(Z)) = times(cos(Z),d(Z))
+Axiom 5: +(zero,X) = X
+Axiom 6: +(X,Y) = +(Y,X)
+Axiom 7: +(X,minus(X)) = zero
+Axiom 8: +(A,+(B,C)) = +(+(A,B),C)
+Axiom 9: d(cos(Z)) = minus(times(sin(Z),d(Z)))
+Axiom 10: d(zero) = zero
+Axiom 11: d(+(Z,U)) = +(d(Z),d(U))
+Axiom 12: d(times(Z,V)) = +(times(Z,d(V)),times(V,d(Z)))
+Axiom 13: times(zero,X) = zero
+Axiom 14: times(X,+(Y,W)) = +(times(X,Y),times(X,W))
+Axiom 15: d(one) = zero
 
-Lemma 16: +(X,+(minus(X),Y)) = Y
-Proof:
-  +(X,+(minus(X),Y))
-= { by axiom 2 }
-  +(+(X,minus(X)),Y)
-= { by axiom 3 }
-  +(zero,Y)
-= { by axiom 4 }
-  Y
-
-Lemma 17: +(X,zero) = X
-Proof:
-  +(X,zero)
-= { by axiom 5 }
-  +(zero,X)
-= { by axiom 4 }
-  X
-
-Lemma 18: minus(minus(X)) = X
-Proof:
-  minus(minus(X))
-= { by lemma 16 R->L }
-  +(X,+(minus(X),minus(minus(X))))
-= { by axiom 3 }
-  +(X,zero)
-= { by lemma 17 }
-  X
-
-Lemma 19: times(X,one) = X
-Proof:
-  times(X,one)
-= { by axiom 6 }
-  times(one,X)
-= { by axiom 7 }
-  X
-
-Lemma 20: times(X,zero) = zero
-Proof:
-  times(X,zero)
-= { by axiom 6 }
-  times(zero,X)
-= { by axiom 9 }
-  zero
-
-Lemma 21: times(X,minus(one)) = minus(X)
-Proof:
-  times(X,minus(one))
-= { by lemma 16 R->L }
-  +(minus(X),+(minus(minus(X)),times(X,minus(one))))
-= { by lemma 18 R->L }
-  +(minus(X),+(minus(minus(X)),times(minus(minus(X)),minus(one))))
-= { by lemma 19 R->L }
-  +(minus(X),+(times(minus(minus(X)),one),times(minus(minus(X)),minus(one))))
-= { by axiom 8 R->L }
-  +(minus(X),times(minus(minus(X)),+(one,minus(one))))
-= { by axiom 3 }
-  +(minus(X),times(minus(minus(X)),zero))
-= { by lemma 20 }
-  +(minus(X),zero)
-= { by lemma 17 }
-  minus(X)
-
-Lemma 22: +(d(X),d(minus(X))) = zero
-Proof:
-  +(d(X),d(minus(X)))
-= { by axiom 1 R->L }
-  d(+(X,minus(X)))
-= { by axiom 3 }
-  d(zero)
-= { by axiom 12 }
-  zero
-
-Lemma 23: d(cos(x)) = minus(sin(x))
-Proof:
-  d(cos(x))
-= { by axiom 14 }
-  minus(times(sin(x),d(x)))
-= { by axiom 6 R->L }
-  minus(times(d(x),sin(x)))
-= { by axiom 13 }
-  minus(times(one,sin(x)))
-= { by axiom 7 }
-  minus(sin(x))
-
-Lemma 24: d(sin(x)) = cos(x)
+Lemma 16: d(sin(x)) = cos(x)
 Proof:
   d(sin(x))
-= { by axiom 15 }
+= { by axiom 4 }
   times(cos(x),d(x))
-= { by axiom 6 }
+= { by axiom 3 }
   times(d(x),cos(x))
-= { by axiom 13 }
+= { by axiom 2 }
   times(one,cos(x))
-= { by axiom 7 }
+= { by axiom 1 }
   cos(x)
+
+Lemma 17: +(X,+(minus(X),Y)) = Y
+Proof:
+  +(X,+(minus(X),Y))
+= { by axiom 8 }
+  +(+(X,minus(X)),Y)
+= { by axiom 7 }
+  +(zero,Y)
+= { by axiom 5 }
+  Y
+
+Lemma 18: +(X,zero) = X
+Proof:
+  +(X,zero)
+= { by axiom 6 }
+  +(zero,X)
+= { by axiom 5 }
+  X
+
+Lemma 19: minus(minus(X)) = X
+Proof:
+  minus(minus(X))
+= { by lemma 17 R->L }
+  +(X,+(minus(X),minus(minus(X))))
+= { by axiom 7 }
+  +(X,zero)
+= { by lemma 18 }
+  X
+
+Lemma 20: d(cos(x)) = minus(sin(x))
+Proof:
+  d(cos(x))
+= { by axiom 9 }
+  minus(times(sin(x),d(x)))
+= { by axiom 3 R->L }
+  minus(times(d(x),sin(x)))
+= { by axiom 2 }
+  minus(times(one,sin(x)))
+= { by axiom 1 }
+  minus(sin(x))
+
+Lemma 21: +(d(X),d(minus(X))) = zero
+Proof:
+  +(d(X),d(minus(X)))
+= { by axiom 11 R->L }
+  d(+(X,minus(X)))
+= { by axiom 7 }
+  d(zero)
+= { by axiom 10 }
+  zero
+
+Lemma 22: times(X,one) = X
+Proof:
+  times(X,one)
+= { by axiom 3 }
+  times(one,X)
+= { by axiom 1 }
+  X
+
+Lemma 23: times(X,zero) = zero
+Proof:
+  times(X,zero)
+= { by axiom 3 }
+  times(zero,X)
+= { by axiom 13 }
+  zero
+
+Lemma 24: times(X,minus(one)) = minus(X)
+Proof:
+  times(X,minus(one))
+= { by lemma 17 R->L }
+  +(minus(X),+(minus(minus(X)),times(X,minus(one))))
+= { by lemma 19 R->L }
+  +(minus(X),+(minus(minus(X)),times(minus(minus(X)),minus(one))))
+= { by lemma 22 R->L }
+  +(minus(X),+(times(minus(minus(X)),one),times(minus(minus(X)),minus(one))))
+= { by axiom 14 R->L }
+  +(minus(X),times(minus(minus(X)),+(one,minus(one))))
+= { by axiom 7 }
+  +(minus(X),times(minus(minus(X)),zero))
+= { by lemma 23 }
+  +(minus(X),zero)
+= { by lemma 18 }
+  minus(X)
 
 Goal 1: d(+(minus(d(d(cos(x)))),times(d(d(d(cos(x)))),x))) = times(x,cos(x))
 Proof:
   d(+(minus(d(d(cos(x)))),times(d(d(d(cos(x)))),x)))
-= { by lemma 21 R->L }
-  d(+(times(d(d(cos(x))),minus(one)),times(d(d(d(cos(x)))),x)))
-= { by axiom 1 }
-  +(d(times(d(d(cos(x))),minus(one))),d(times(d(d(d(cos(x)))),x)))
-= { by axiom 10 }
-  +(+(times(d(d(cos(x))),d(minus(one))),times(minus(one),d(d(d(cos(x)))))),d(times(d(d(d(cos(x)))),x)))
-= { by axiom 4 R->L }
-  +(+(times(d(d(cos(x))),+(zero,d(minus(one)))),times(minus(one),d(d(d(cos(x)))))),d(times(d(d(d(cos(x)))),x)))
-= { by axiom 11 R->L }
-  +(+(times(d(d(cos(x))),+(d(one),d(minus(one)))),times(minus(one),d(d(d(cos(x)))))),d(times(d(d(d(cos(x)))),x)))
-= { by lemma 22 }
-  +(+(times(d(d(cos(x))),zero),times(minus(one),d(d(d(cos(x)))))),d(times(d(d(d(cos(x)))),x)))
-= { by lemma 20 }
-  +(+(zero,times(minus(one),d(d(d(cos(x)))))),d(times(d(d(d(cos(x)))),x)))
-= { by axiom 4 }
-  +(times(minus(one),d(d(d(cos(x))))),d(times(d(d(d(cos(x)))),x)))
-= { by axiom 6 }
-  +(times(d(d(d(cos(x)))),minus(one)),d(times(d(d(d(cos(x)))),x)))
-= { by lemma 21 }
-  +(minus(d(d(d(cos(x))))),d(times(d(d(d(cos(x)))),x)))
-= { by axiom 5 }
-  +(d(times(d(d(d(cos(x)))),x)),minus(d(d(d(cos(x))))))
-= { by axiom 10 }
-  +(+(times(d(d(d(cos(x)))),d(x)),times(x,d(d(d(d(cos(x))))))),minus(d(d(d(cos(x))))))
-= { by axiom 13 }
-  +(+(times(d(d(d(cos(x)))),one),times(x,d(d(d(d(cos(x))))))),minus(d(d(d(cos(x))))))
-= { by lemma 19 }
-  +(+(d(d(d(cos(x)))),times(x,d(d(d(d(cos(x))))))),minus(d(d(d(cos(x))))))
-= { by axiom 2 R->L }
-  +(d(d(d(cos(x)))),+(times(x,d(d(d(d(cos(x)))))),minus(d(d(d(cos(x)))))))
-= { by axiom 5 }
-  +(d(d(d(cos(x)))),+(minus(d(d(d(cos(x))))),times(x,d(d(d(d(cos(x))))))))
-= { by lemma 16 }
-  times(x,d(d(d(d(cos(x))))))
-= { by lemma 18 R->L }
-  times(x,d(minus(minus(d(d(d(cos(x))))))))
-= { by lemma 17 R->L }
-  times(x,d(minus(+(minus(d(d(d(cos(x))))),zero))))
-= { by axiom 3 R->L }
-  times(x,d(minus(+(minus(d(d(d(cos(x))))),+(+(minus(minus(d(d(d(cos(x)))))),d(cos(x))),minus(+(minus(minus(d(d(d(cos(x)))))),d(cos(x)))))))))
-= { by axiom 2 R->L }
-  times(x,d(minus(+(minus(d(d(d(cos(x))))),+(minus(minus(d(d(d(cos(x)))))),+(d(cos(x)),minus(+(minus(minus(d(d(d(cos(x)))))),d(cos(x))))))))))
-= { by lemma 16 }
-  times(x,d(minus(+(d(cos(x)),minus(+(minus(minus(d(d(d(cos(x)))))),d(cos(x))))))))
-= { by axiom 5 }
-  times(x,d(minus(+(d(cos(x)),minus(+(d(cos(x)),minus(minus(d(d(d(cos(x))))))))))))
-= { by lemma 18 }
-  times(x,d(minus(+(d(cos(x)),minus(+(d(cos(x)),d(d(d(cos(x))))))))))
-= { by axiom 1 R->L }
-  times(x,d(minus(+(d(cos(x)),minus(d(+(cos(x),d(d(cos(x))))))))))
-= { by lemma 23 }
-  times(x,d(minus(+(d(cos(x)),minus(d(+(cos(x),d(minus(sin(x))))))))))
 = { by lemma 24 R->L }
-  times(x,d(minus(+(d(cos(x)),minus(d(+(d(sin(x)),d(minus(sin(x))))))))))
-= { by lemma 22 }
-  times(x,d(minus(+(d(cos(x)),minus(d(zero))))))
+  d(+(times(d(d(cos(x))),minus(one)),times(d(d(d(cos(x)))),x)))
+= { by axiom 11 }
+  +(d(times(d(d(cos(x))),minus(one))),d(times(d(d(d(cos(x)))),x)))
 = { by axiom 12 }
-  times(x,d(minus(+(d(cos(x)),minus(zero)))))
-= { by axiom 4 R->L }
-  times(x,d(minus(+(d(cos(x)),+(zero,minus(zero))))))
-= { by axiom 3 }
-  times(x,d(minus(+(d(cos(x)),zero))))
-= { by lemma 17 }
-  times(x,d(minus(d(cos(x)))))
+  +(+(times(d(d(cos(x))),d(minus(one))),times(minus(one),d(d(d(cos(x)))))),d(times(d(d(d(cos(x)))),x)))
+= { by axiom 5 R->L }
+  +(+(times(d(d(cos(x))),+(zero,d(minus(one)))),times(minus(one),d(d(d(cos(x)))))),d(times(d(d(d(cos(x)))),x)))
+= { by axiom 15 R->L }
+  +(+(times(d(d(cos(x))),+(d(one),d(minus(one)))),times(minus(one),d(d(d(cos(x)))))),d(times(d(d(d(cos(x)))),x)))
+= { by lemma 21 }
+  +(+(times(d(d(cos(x))),zero),times(minus(one),d(d(d(cos(x)))))),d(times(d(d(d(cos(x)))),x)))
 = { by lemma 23 }
-  times(x,d(minus(minus(sin(x)))))
-= { by lemma 18 }
-  times(x,d(sin(x)))
+  +(+(zero,times(minus(one),d(d(d(cos(x)))))),d(times(d(d(d(cos(x)))),x)))
+= { by axiom 5 }
+  +(times(minus(one),d(d(d(cos(x))))),d(times(d(d(d(cos(x)))),x)))
+= { by axiom 3 }
+  +(times(d(d(d(cos(x)))),minus(one)),d(times(d(d(d(cos(x)))),x)))
 = { by lemma 24 }
+  +(minus(d(d(d(cos(x))))),d(times(d(d(d(cos(x)))),x)))
+= { by axiom 6 }
+  +(d(times(d(d(d(cos(x)))),x)),minus(d(d(d(cos(x))))))
+= { by axiom 12 }
+  +(+(times(d(d(d(cos(x)))),d(x)),times(x,d(d(d(d(cos(x))))))),minus(d(d(d(cos(x))))))
+= { by axiom 2 }
+  +(+(times(d(d(d(cos(x)))),one),times(x,d(d(d(d(cos(x))))))),minus(d(d(d(cos(x))))))
+= { by lemma 22 }
+  +(+(d(d(d(cos(x)))),times(x,d(d(d(d(cos(x))))))),minus(d(d(d(cos(x))))))
+= { by axiom 8 R->L }
+  +(d(d(d(cos(x)))),+(times(x,d(d(d(d(cos(x)))))),minus(d(d(d(cos(x)))))))
+= { by axiom 6 }
+  +(d(d(d(cos(x)))),+(minus(d(d(d(cos(x))))),times(x,d(d(d(d(cos(x))))))))
+= { by lemma 17 }
+  times(x,d(d(d(d(cos(x))))))
+= { by lemma 19 R->L }
+  times(x,d(minus(minus(d(d(d(cos(x))))))))
+= { by lemma 18 R->L }
+  times(x,d(minus(+(minus(d(d(d(cos(x))))),zero))))
+= { by axiom 7 R->L }
+  times(x,d(minus(+(minus(d(d(d(cos(x))))),+(+(minus(minus(d(d(d(cos(x)))))),d(cos(x))),minus(+(minus(minus(d(d(d(cos(x)))))),d(cos(x)))))))))
+= { by axiom 8 R->L }
+  times(x,d(minus(+(minus(d(d(d(cos(x))))),+(minus(minus(d(d(d(cos(x)))))),+(d(cos(x)),minus(+(minus(minus(d(d(d(cos(x)))))),d(cos(x))))))))))
+= { by lemma 17 }
+  times(x,d(minus(+(d(cos(x)),minus(+(minus(minus(d(d(d(cos(x)))))),d(cos(x))))))))
+= { by axiom 6 }
+  times(x,d(minus(+(d(cos(x)),minus(+(d(cos(x)),minus(minus(d(d(d(cos(x))))))))))))
+= { by lemma 19 }
+  times(x,d(minus(+(d(cos(x)),minus(+(d(cos(x)),d(d(d(cos(x))))))))))
+= { by axiom 11 R->L }
+  times(x,d(minus(+(d(cos(x)),minus(d(+(cos(x),d(d(cos(x))))))))))
+= { by lemma 20 }
+  times(x,d(minus(+(d(cos(x)),minus(d(+(cos(x),d(minus(sin(x))))))))))
+= { by lemma 16 R->L }
+  times(x,d(minus(+(d(cos(x)),minus(d(+(d(sin(x)),d(minus(sin(x))))))))))
+= { by lemma 21 }
+  times(x,d(minus(+(d(cos(x)),minus(d(zero))))))
+= { by axiom 10 }
+  times(x,d(minus(+(d(cos(x)),minus(zero)))))
+= { by axiom 5 R->L }
+  times(x,d(minus(+(d(cos(x)),+(zero,minus(zero))))))
+= { by axiom 7 }
+  times(x,d(minus(+(d(cos(x)),zero))))
+= { by lemma 18 }
+  times(x,d(minus(d(cos(x)))))
+= { by lemma 20 }
+  times(x,d(minus(minus(sin(x)))))
+= { by lemma 19 }
+  times(x,d(sin(x)))
+= { by lemma 16 }
   times(x,cos(x))

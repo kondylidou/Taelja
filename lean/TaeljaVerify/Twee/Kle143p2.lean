@@ -18,103 +18,103 @@ axiom strong_iteration : α → α
 axiom leq : α → α → Prop
 
 -- Axiom 1
-axiom ax1 : ∀ (x y : α), addition x y = addition y x
+axiom ax1 : ∀ (x : α), addition x x = x
 -- Axiom 2
-axiom ax2 : ∀ (x y z : α), multiplication x (addition y z) = addition (multiplication x y) (multiplication x z)
+axiom ax2 : ∀ (x y z : α), addition x (addition y z) = addition (addition x y) z
 -- Axiom 3
-axiom ax3 : ∀ (x : α), multiplication x one = x
+axiom ax3 : ∀ (x y : α), addition x y = y → leq x y
 -- Axiom 4
-axiom ax4 : ∀ (x : α), strong_iteration x = addition (multiplication x (strong_iteration x)) one
+axiom ax4 : ∀ (x y : α), addition x y = addition y x
 -- Axiom 5
-axiom ax5 : ∀ (x y z : α), addition x (addition y z) = addition (addition x y) z
+axiom ax5 : ∀ (x : α), strong_iteration x = addition (multiplication x (strong_iteration x)) one
 -- Axiom 6
-axiom ax6 : ∀ (x : α), addition x x = x
+axiom ax6 : ∀ (x : α), multiplication x one = x
 -- Axiom 7
-axiom ax7 : ∀ (x y : α), addition x y = y → leq x y
+axiom ax7 : ∀ (x y z : α), multiplication x (addition y z) = addition (multiplication x y) (multiplication x z)
 -- Axiom 8
-axiom ax8 : ∀ (x : α), addition x zero = x
+axiom ax8 : ∀ (x y z : α), multiplication x (multiplication y z) = multiplication (multiplication x y) z
 -- Axiom 9
-axiom ax9 : ∀ (x : α), multiplication zero x = zero
+axiom ax9 : ∀ (x : α), multiplication one x = x
 -- Axiom 10
 axiom ax10 : ∀ (x y z : α), multiplication (addition x y) z = addition (multiplication x z) (multiplication y z)
 -- Axiom 11
-axiom ax11 : ∀ (x : α), multiplication one x = x
+axiom ax11 : ∀ (x y z : α), leq x (addition (multiplication y x) z) → leq x (multiplication (strong_iteration y) z)
 -- Axiom 12
-axiom ax12 : ∀ (x y z : α), multiplication x (multiplication y z) = multiplication (multiplication x y) z
+axiom ax12 : ∀ (x : α), multiplication zero x = zero
 -- Axiom 13
-axiom ax13 : ∀ (x y z : α), leq x (addition (multiplication y x) z) → leq x (multiplication (strong_iteration y) z)
+axiom ax13 : ∀ (x : α), addition x zero = x
 
 -- Lemma 14
-theorem taelja_lemma14 : ∀ (x y : α), multiplication x (addition y one) = addition x (multiplication x y) := by
+theorem taelja_lemma14 : ∀ (x y : α), addition x (addition x y) = addition x y := by
   intro x y
-  calc multiplication x (addition y one) = addition (multiplication x y) (multiplication x one) := ax2 x y one
-      _ = addition (multiplication x one) (multiplication x y) := Eq.symm (ax1 (multiplication x one) (multiplication x y))
-      _ = addition x (multiplication x y) := congrArg (fun t : α => addition t (multiplication x y)) (ax3 x)
+  calc addition x (addition x y) = addition (addition x x) y := ax2 x x y
+      _ = addition x y := congrArg (fun t : α => addition t y) (ax1 x)
 
 -- Lemma 15
-theorem taelja_lemma15 : ∀ (x : α), addition one (multiplication x (strong_iteration x)) = strong_iteration x := by
-  intro x
-  calc addition one (multiplication x (strong_iteration x)) = addition (multiplication x (strong_iteration x)) one := ax1 one (multiplication x (strong_iteration x))
-      _ = strong_iteration x := Eq.symm (ax4 x)
+theorem taelja_lemma15 : ∀ (x y : α), multiplication x (addition y one) = addition x (multiplication x y) := by
+  intro x y
+  calc multiplication x (addition y one) = addition (multiplication x y) (multiplication x one) := ax7 x y one
+      _ = addition (multiplication x one) (multiplication x y) := Eq.symm (ax4 (multiplication x one) (multiplication x y))
+      _ = addition x (multiplication x y) := congrArg (fun t : α => addition t (multiplication x y)) (ax6 x)
 
 -- Lemma 16
-theorem taelja_lemma16 : ∀ (x y : α), addition x (addition x y) = addition x y := by
-  intro x y
-  calc addition x (addition x y) = addition (addition x x) y := ax5 x x y
-      _ = addition x y := congrArg (fun t : α => addition t y) (ax6 x)
+theorem taelja_lemma16 : ∀ (x : α), addition one (multiplication x (strong_iteration x)) = strong_iteration x := by
+  intro x
+  calc addition one (multiplication x (strong_iteration x)) = addition (multiplication x (strong_iteration x)) one := ax4 one (multiplication x (strong_iteration x))
+      _ = strong_iteration x := Eq.symm (ax5 x)
 
 -- Lemma 17
 theorem taelja_lemma17 : ∀ (x y : α), addition (multiplication x (strong_iteration y)) x = multiplication x (strong_iteration y) := by
   intro x y
-  calc addition (multiplication x (strong_iteration y)) x = addition x (multiplication x (strong_iteration y)) := ax1 (multiplication x (strong_iteration y)) x
-      _ = multiplication x (addition (strong_iteration y) one) := Eq.symm (taelja_lemma14 x (strong_iteration y))
-      _ = multiplication x (addition one (strong_iteration y)) := congrArg (fun t : α => multiplication x t) (ax1 (strong_iteration y) one)
-      _ = multiplication x (addition one (addition one (multiplication y (strong_iteration y)))) := congrArg (fun t : α => multiplication x (addition one t)) (Eq.symm (taelja_lemma15 y))
-      _ = multiplication x (addition one (multiplication y (strong_iteration y))) := congrArg (fun t : α => multiplication x t) (taelja_lemma16 one (multiplication y (strong_iteration y)))
-      _ = multiplication x (strong_iteration y) := congrArg (fun t : α => multiplication x t) (taelja_lemma15 y)
+  calc addition (multiplication x (strong_iteration y)) x = addition x (multiplication x (strong_iteration y)) := ax4 (multiplication x (strong_iteration y)) x
+      _ = multiplication x (addition (strong_iteration y) one) := Eq.symm (taelja_lemma15 x (strong_iteration y))
+      _ = multiplication x (addition one (strong_iteration y)) := congrArg (fun t : α => multiplication x t) (ax4 (strong_iteration y) one)
+      _ = multiplication x (addition one (addition one (multiplication y (strong_iteration y)))) := congrArg (fun t : α => multiplication x (addition one t)) (Eq.symm (taelja_lemma16 y))
+      _ = multiplication x (addition one (multiplication y (strong_iteration y))) := congrArg (fun t : α => multiplication x t) (taelja_lemma14 one (multiplication y (strong_iteration y)))
+      _ = multiplication x (strong_iteration y) := congrArg (fun t : α => multiplication x t) (taelja_lemma16 y)
 
 -- Lemma 18
 theorem taelja_lemma18 : ∀ (x y : α), addition x (multiplication x (multiplication y (strong_iteration y))) = multiplication x (strong_iteration y) := by
   intro x y
-  calc addition x (multiplication x (multiplication y (strong_iteration y))) = multiplication x (addition (multiplication y (strong_iteration y)) one) := Eq.symm (taelja_lemma14 x (multiplication y (strong_iteration y)))
-      _ = multiplication x (addition one (multiplication y (strong_iteration y))) := congrArg (fun t : α => multiplication x t) (ax1 (multiplication y (strong_iteration y)) one)
-      _ = multiplication x (strong_iteration y) := congrArg (fun t : α => multiplication x t) (taelja_lemma15 y)
+  calc addition x (multiplication x (multiplication y (strong_iteration y))) = multiplication x (addition (multiplication y (strong_iteration y)) one) := Eq.symm (taelja_lemma15 x (multiplication y (strong_iteration y)))
+      _ = multiplication x (addition one (multiplication y (strong_iteration y))) := congrArg (fun t : α => multiplication x t) (ax4 (multiplication y (strong_iteration y)) one)
+      _ = multiplication x (strong_iteration y) := congrArg (fun t : α => multiplication x t) (taelja_lemma16 y)
 
 -- Goal 1
 theorem taelja_goal1 : ∀ (x : α), leq (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration x) := by
   intro x
-  have h1 : addition (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration zero)) = addition (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration zero) := taelja_lemma16 (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration zero)
-  have h2 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration zero)) := ax7 (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration zero)) h1
-  have h3 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication (addition one (multiplication x (strong_iteration x))) (strong_iteration x)) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication t (strong_iteration x)) (strong_iteration zero))) (Eq.symm (taelja_lemma15 x))) h2
+  have h1 : addition (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration zero)) = addition (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration zero) := taelja_lemma14 (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration zero)
+  have h2 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration zero)) := ax3 (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration zero)) h1
+  have h3 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication (addition one (multiplication x (strong_iteration x))) (strong_iteration x)) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication t (strong_iteration x)) (strong_iteration zero))) (Eq.symm (taelja_lemma16 x))) h2
   have h4 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) (multiplication (addition one (multiplication x (strong_iteration x))) (multiplication x (strong_iteration x)))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition t (strong_iteration zero))) (Eq.symm (taelja_lemma18 (addition one (multiplication x (strong_iteration x))) x))) h3
   have h5 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) (addition (multiplication one (multiplication x (strong_iteration x))) (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) t) (strong_iteration zero))) (ax10 one (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x)))) h4
-  have h6 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) (addition (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) (addition t (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) (strong_iteration zero))) (ax11 (multiplication x (strong_iteration x)))) h5
-  have h7 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) (multiplication (multiplication x (strong_iteration x)) (addition (multiplication x (strong_iteration x)) one))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) t) (strong_iteration zero))) (Eq.symm (taelja_lemma14 (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) h6
-  have h8 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (addition (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (addition (multiplication x (strong_iteration x)) one)))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition t (strong_iteration zero))) (Eq.symm (ax5 one (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (addition (multiplication x (strong_iteration x)) one))))) h7
-  have h9 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (addition (multiplication x (strong_iteration x)) (addition (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x)))))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (addition (multiplication x (strong_iteration x)) t)) (strong_iteration zero))) (taelja_lemma14 (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x)))) h8
-  have h10 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (addition (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one t) (strong_iteration zero))) (taelja_lemma16 (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) h9
+  have h6 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) (addition (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) (addition t (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) (strong_iteration zero))) (ax9 (multiplication x (strong_iteration x)))) h5
+  have h7 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) (multiplication (multiplication x (strong_iteration x)) (addition (multiplication x (strong_iteration x)) one))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition (addition one (multiplication x (strong_iteration x))) t) (strong_iteration zero))) (Eq.symm (taelja_lemma15 (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) h6
+  have h8 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (addition (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (addition (multiplication x (strong_iteration x)) one)))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition t (strong_iteration zero))) (Eq.symm (ax2 one (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (addition (multiplication x (strong_iteration x)) one))))) h7
+  have h9 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (addition (multiplication x (strong_iteration x)) (addition (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x)))))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (addition (multiplication x (strong_iteration x)) t)) (strong_iteration zero))) (taelja_lemma15 (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x)))) h8
+  have h10 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (addition (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one t) (strong_iteration zero))) (taelja_lemma14 (multiplication x (strong_iteration x)) (multiplication (multiplication x (strong_iteration x)) (multiplication x (strong_iteration x))))) h9
   have h11 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (multiplication (multiplication x (strong_iteration x)) (strong_iteration x))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one t) (strong_iteration zero))) (taelja_lemma18 (multiplication x (strong_iteration x)) x)) h10
-  have h12 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (multiplication x (multiplication (strong_iteration x) (strong_iteration x)))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one t) (strong_iteration zero))) (Eq.symm (ax12 x (strong_iteration x) (strong_iteration x)))) h11
-  have h13 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition one (addition (multiplication x (multiplication (strong_iteration x) (strong_iteration x))) (strong_iteration zero))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) t) (Eq.symm (ax5 one (multiplication x (multiplication (strong_iteration x) (strong_iteration x))) (strong_iteration zero)))) h12
-  have h14 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition one (addition (strong_iteration zero) (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition one t)) (ax1 (multiplication x (multiplication (strong_iteration x) (strong_iteration x))) (strong_iteration zero))) h13
-  have h15 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (strong_iteration zero)) (multiplication x (multiplication (strong_iteration x) (strong_iteration x)))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) t) (ax5 one (strong_iteration zero) (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) h14
-  have h16 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (addition one (multiplication zero (strong_iteration zero)))) (multiplication x (multiplication (strong_iteration x) (strong_iteration x)))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one t) (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) (Eq.symm (taelja_lemma15 zero))) h15
-  have h17 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (multiplication zero (strong_iteration zero))) (multiplication x (multiplication (strong_iteration x) (strong_iteration x)))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition t (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) (taelja_lemma16 one (multiplication zero (strong_iteration zero)))) h16
-  have h18 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (strong_iteration zero) (multiplication x (multiplication (strong_iteration x) (strong_iteration x)))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition t (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) (taelja_lemma15 zero)) h17
-  have h19 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication x (multiplication (strong_iteration x) (strong_iteration x))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) t) (ax1 (strong_iteration zero) (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) h18
-  have h20 : leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) (strong_iteration zero)) := ax13 (multiplication (strong_iteration x) (strong_iteration x)) x (strong_iteration zero) h19
-  have h21 : leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) (addition one (multiplication zero (strong_iteration zero)))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) t)) (Eq.symm (taelja_lemma15 zero))) h20
-  have h22 : leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) (addition one zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) (addition one t))) (ax9 (strong_iteration zero))) h21
-  have h23 : leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) one) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) t)) (ax8 one)) h22
-  have h24 : leq (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration x) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) t) (ax3 (strong_iteration x))) h23
+  have h12 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (multiplication x (multiplication (strong_iteration x) (strong_iteration x)))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one t) (strong_iteration zero))) (Eq.symm (ax8 x (strong_iteration x) (strong_iteration x)))) h11
+  have h13 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition one (addition (multiplication x (multiplication (strong_iteration x) (strong_iteration x))) (strong_iteration zero))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) t) (Eq.symm (ax2 one (multiplication x (multiplication (strong_iteration x) (strong_iteration x))) (strong_iteration zero)))) h12
+  have h14 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition one (addition (strong_iteration zero) (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition one t)) (ax4 (multiplication x (multiplication (strong_iteration x) (strong_iteration x))) (strong_iteration zero))) h13
+  have h15 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (strong_iteration zero)) (multiplication x (multiplication (strong_iteration x) (strong_iteration x)))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) t) (ax2 one (strong_iteration zero) (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) h14
+  have h16 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (addition one (multiplication zero (strong_iteration zero)))) (multiplication x (multiplication (strong_iteration x) (strong_iteration x)))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one t) (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) (Eq.symm (taelja_lemma16 zero))) h15
+  have h17 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (addition one (multiplication zero (strong_iteration zero))) (multiplication x (multiplication (strong_iteration x) (strong_iteration x)))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition t (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) (taelja_lemma14 one (multiplication zero (strong_iteration zero)))) h16
+  have h18 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (strong_iteration zero) (multiplication x (multiplication (strong_iteration x) (strong_iteration x)))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (addition t (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) (taelja_lemma16 zero)) h17
+  have h19 : leq (multiplication (strong_iteration x) (strong_iteration x)) (addition (multiplication x (multiplication (strong_iteration x) (strong_iteration x))) (strong_iteration zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) t) (ax4 (strong_iteration zero) (multiplication x (multiplication (strong_iteration x) (strong_iteration x))))) h18
+  have h20 : leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) (strong_iteration zero)) := ax11 (multiplication (strong_iteration x) (strong_iteration x)) x (strong_iteration zero) h19
+  have h21 : leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) (addition one (multiplication zero (strong_iteration zero)))) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) t)) (Eq.symm (taelja_lemma16 zero))) h20
+  have h22 : leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) (addition one zero)) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) (addition one t))) (ax12 (strong_iteration zero))) h21
+  have h23 : leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) one) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) (multiplication (strong_iteration x) t)) (ax13 one)) h22
+  have h24 : leq (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration x) := Eq.mp (congrArg (fun t : α => leq (multiplication (strong_iteration x) (strong_iteration x)) t) (ax6 (strong_iteration x))) h23
   exact h24
 
 -- Goal 2
 theorem taelja_goal2 : ∀ (x : α), leq (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x)) := by
   intro x
-  have h1 : addition (strong_iteration x) (addition (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x))) = addition (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x)) := taelja_lemma16 (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x))
-  have h2 : leq (strong_iteration x) (addition (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x))) := ax7 (strong_iteration x) (addition (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x))) h1
-  have h3 : leq (strong_iteration x) (addition (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration x)) := Eq.mp (congrArg (fun t : α => leq (strong_iteration x) t) (Eq.symm (ax1 (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration x)))) h2
+  have h1 : addition (strong_iteration x) (addition (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x))) = addition (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x)) := taelja_lemma14 (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x))
+  have h2 : leq (strong_iteration x) (addition (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x))) := ax3 (strong_iteration x) (addition (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x))) h1
+  have h3 : leq (strong_iteration x) (addition (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration x)) := Eq.mp (congrArg (fun t : α => leq (strong_iteration x) t) (Eq.symm (ax4 (multiplication (strong_iteration x) (strong_iteration x)) (strong_iteration x)))) h2
   have h4 : leq (strong_iteration x) (multiplication (strong_iteration x) (strong_iteration x)) := Eq.mp (congrArg (fun t : α => leq (strong_iteration x) t) (taelja_lemma17 (strong_iteration x) x)) h3
   exact h4
 

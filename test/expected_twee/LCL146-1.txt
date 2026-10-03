@@ -1,186 +1,186 @@
 Axiom 1: implies(truth,X) = X
-Axiom 2: big_V(Y,Z) = implies(implies(Y,Z),Z)
-Axiom 3: implies(implies(Y,A),A) = implies(implies(A,Y),Y)
-Axiom 4: implies(implies(Y,A),implies(implies(A,B),implies(Y,B))) = truth
-Axiom 5: implies(implies(not(Y),not(A)),implies(A,Y)) = truth
-Axiom 6: big_hat(Y,A) = not(big_V(not(Y),not(A)))
+Axiom 2: big_hat(Y,Z) = not(big_V(not(Y),not(Z)))
+Axiom 3: implies(implies(not(Y),not(Z)),implies(Z,Y)) = truth
+Axiom 4: big_V(Y,A) = implies(implies(Y,A),A)
+Axiom 5: implies(implies(Y,Z),Z) = implies(implies(Z,Y),Y)
+Axiom 6: implies(implies(Y,Z),implies(implies(Z,B),implies(Y,B))) = truth
 
-Lemma 7: implies(X,big_V(X,Y)) = truth
+Lemma 7: big_V(X,Y) = big_V(Y,X)
+Proof:
+  big_V(X,Y)
+= { by axiom 4 }
+  implies(implies(X,Y),Y)
+= { by axiom 5 }
+  implies(implies(Y,X),X)
+= { by axiom 4 R->L }
+  big_V(Y,X)
+
+Lemma 8: implies(implies(not(X),not(truth)),X) = truth
+Proof:
+  implies(implies(not(X),not(truth)),X)
+= { by axiom 1 R->L }
+  implies(implies(not(X),not(truth)),implies(truth,X))
+= { by axiom 3 }
+  truth
+
+Lemma 9: big_V(X,implies(not(X),not(truth))) = X
+Proof:
+  big_V(X,implies(not(X),not(truth)))
+= { by lemma 7 }
+  big_V(implies(not(X),not(truth)),X)
+= { by axiom 4 }
+  implies(implies(implies(not(X),not(truth)),X),X)
+= { by lemma 8 }
+  implies(truth,X)
+= { by axiom 1 }
+  X
+
+Lemma 10: implies(X,big_V(X,Y)) = truth
 Proof:
   implies(X,big_V(X,Y))
-= { by axiom 2 }
+= { by axiom 4 }
   implies(X,implies(implies(X,Y),Y))
 = { by axiom 1 R->L }
   implies(X,implies(implies(X,Y),implies(truth,Y)))
 = { by axiom 1 R->L }
   implies(implies(truth,X),implies(implies(X,Y),implies(truth,Y)))
-= { by axiom 4 }
+= { by axiom 6 }
   truth
 
-Lemma 8: big_V(X,Y) = big_V(Y,X)
+Lemma 11: implies(implies(X,Y),implies(X,big_V(Y,Z))) = truth
 Proof:
-  big_V(X,Y)
-= { by axiom 2 }
-  implies(implies(X,Y),Y)
-= { by axiom 3 }
-  implies(implies(Y,X),X)
-= { by axiom 2 R->L }
-  big_V(Y,X)
+  implies(implies(X,Y),implies(X,big_V(Y,Z)))
+= { by axiom 1 R->L }
+  implies(implies(X,Y),implies(truth,implies(X,big_V(Y,Z))))
+= { by lemma 10 R->L }
+  implies(implies(X,Y),implies(implies(Y,big_V(Y,Z)),implies(X,big_V(Y,Z))))
+= { by axiom 6 }
+  truth
 
-Lemma 9: big_V(X,truth) = truth
+Lemma 12: big_V(X,truth) = truth
 Proof:
   big_V(X,truth)
 = { by axiom 1 R->L }
   implies(truth,big_V(X,truth))
-= { by lemma 8 R->L }
+= { by lemma 7 R->L }
   implies(truth,big_V(truth,X))
-= { by lemma 7 }
+= { by lemma 10 }
   truth
 
-Lemma 10: implies(X,truth) = truth
+Lemma 13: implies(X,truth) = truth
 Proof:
   implies(X,truth)
-= { by lemma 9 R->L }
+= { by lemma 12 R->L }
   implies(X,big_V(X,truth))
-= { by lemma 7 }
+= { by lemma 10 }
   truth
 
-Lemma 11: implies(X,implies(Y,X)) = truth
+Lemma 14: implies(X,implies(Y,X)) = truth
 Proof:
   implies(X,implies(Y,X))
 = { by axiom 1 R->L }
   implies(implies(truth,X),implies(Y,X))
 = { by axiom 1 R->L }
   implies(truth,implies(implies(truth,X),implies(Y,X)))
-= { by lemma 10 R->L }
+= { by lemma 13 R->L }
   implies(implies(Y,truth),implies(implies(truth,X),implies(Y,X)))
-= { by axiom 4 }
+= { by axiom 6 }
   truth
 
-Lemma 12: big_V(X,implies(Y,X)) = implies(Y,X)
+Lemma 15: big_V(X,implies(Y,X)) = implies(Y,X)
 Proof:
   big_V(X,implies(Y,X))
-= { by axiom 2 }
+= { by axiom 4 }
   implies(implies(X,implies(Y,X)),implies(Y,X))
-= { by lemma 11 }
+= { by lemma 14 }
   implies(truth,implies(Y,X))
 = { by axiom 1 }
   implies(Y,X)
 
-Lemma 13: implies(implies(not(X),not(truth)),X) = truth
-Proof:
-  implies(implies(not(X),not(truth)),X)
-= { by axiom 1 R->L }
-  implies(implies(not(X),not(truth)),implies(truth,X))
-= { by axiom 5 }
-  truth
-
-Lemma 14: big_V(X,implies(not(X),not(truth))) = X
-Proof:
-  big_V(X,implies(not(X),not(truth)))
-= { by lemma 8 }
-  big_V(implies(not(X),not(truth)),X)
-= { by axiom 2 }
-  implies(implies(implies(not(X),not(truth)),X),X)
-= { by lemma 13 }
-  implies(truth,X)
-= { by axiom 1 }
-  X
-
-Lemma 15: big_V(X,implies(Y,X)) = implies(big_V(Y,X),X)
+Lemma 16: big_V(X,implies(Y,X)) = implies(big_V(Y,X),X)
 Proof:
   big_V(X,implies(Y,X))
-= { by lemma 8 R->L }
+= { by lemma 7 R->L }
   big_V(implies(Y,X),X)
-= { by axiom 2 }
+= { by axiom 4 }
   implies(implies(implies(Y,X),X),X)
-= { by axiom 2 R->L }
+= { by axiom 4 R->L }
   implies(big_V(Y,X),X)
 
-Lemma 16: implies(not(not(truth)),not(truth)) = not(truth)
+Lemma 17: implies(not(not(truth)),not(truth)) = not(truth)
 Proof:
   implies(not(not(truth)),not(truth))
-= { by lemma 12 R->L }
+= { by lemma 15 R->L }
   big_V(not(truth),implies(not(not(truth)),not(truth)))
-= { by lemma 14 }
+= { by lemma 9 }
   not(truth)
 
-Lemma 17: big_V(not(truth),not(not(truth))) = truth
+Lemma 18: big_V(not(truth),not(not(truth))) = truth
 Proof:
   big_V(not(truth),not(not(truth)))
-= { by lemma 8 }
+= { by lemma 7 }
   big_V(not(not(truth)),not(truth))
-= { by axiom 2 }
+= { by axiom 4 }
   implies(implies(not(not(truth)),not(truth)),not(truth))
-= { by lemma 13 }
+= { by lemma 8 }
   truth
 
-Lemma 18: implies(not(truth),not(not(truth))) = not(not(truth))
+Lemma 19: implies(not(truth),not(not(truth))) = not(not(truth))
 Proof:
   implies(not(truth),not(not(truth)))
-= { by lemma 12 R->L }
+= { by lemma 15 R->L }
   big_V(not(not(truth)),implies(not(truth),not(not(truth))))
-= { by lemma 15 }
+= { by lemma 16 }
   implies(big_V(not(truth),not(not(truth))),not(not(truth)))
-= { by lemma 17 }
+= { by lemma 18 }
   implies(truth,not(not(truth)))
 = { by axiom 1 }
   not(not(truth))
 
-Lemma 19: big_V(not(not(truth)),not(not(not(truth)))) = truth
+Lemma 20: big_V(not(not(truth)),not(not(not(truth)))) = truth
 Proof:
   big_V(not(not(truth)),not(not(not(truth))))
-= { by lemma 8 }
+= { by lemma 7 }
   big_V(not(not(not(truth))),not(not(truth)))
-= { by axiom 2 }
+= { by axiom 4 }
   implies(implies(not(not(not(truth))),not(not(truth))),not(not(truth)))
-= { by lemma 18 R->L }
+= { by lemma 19 R->L }
   implies(implies(not(not(not(truth))),not(not(truth))),implies(not(truth),not(not(truth))))
-= { by axiom 5 }
+= { by axiom 3 }
   truth
 
-Lemma 20: implies(not(not(truth)),not(not(not(truth)))) = not(not(not(truth)))
+Lemma 21: implies(not(not(truth)),not(not(not(truth)))) = not(not(not(truth)))
 Proof:
   implies(not(not(truth)),not(not(not(truth))))
-= { by lemma 12 R->L }
+= { by lemma 15 R->L }
   big_V(not(not(not(truth))),implies(not(not(truth)),not(not(not(truth)))))
-= { by lemma 15 }
+= { by lemma 16 }
   implies(big_V(not(not(truth)),not(not(not(truth)))),not(not(not(truth))))
-= { by lemma 19 }
+= { by lemma 20 }
   implies(truth,not(not(not(truth))))
 = { by axiom 1 }
   not(not(not(truth)))
 
-Lemma 21: implies(not(not(not(truth))),not(truth)) = truth
+Lemma 22: implies(not(not(not(truth))),not(truth)) = truth
 Proof:
   implies(not(not(not(truth))),not(truth))
-= { by lemma 20 R->L }
+= { by lemma 21 R->L }
   implies(implies(not(not(truth)),not(not(not(truth)))),not(truth))
-= { by lemma 16 R->L }
+= { by lemma 17 R->L }
   implies(implies(not(not(truth)),not(not(not(truth)))),implies(not(not(truth)),not(truth)))
-= { by axiom 5 }
+= { by axiom 3 }
   truth
 
-Lemma 22: not(not(truth)) = truth
+Lemma 23: not(not(truth)) = truth
 Proof:
   not(not(truth))
 = { by axiom 1 R->L }
   implies(truth,not(not(truth)))
 = { by axiom 1 R->L }
   implies(truth,implies(truth,not(not(truth))))
-= { by lemma 21 R->L }
+= { by lemma 22 R->L }
   implies(implies(not(not(not(truth))),not(truth)),implies(truth,not(not(truth))))
-= { by axiom 5 }
-  truth
-
-Lemma 23: implies(implies(X,Y),implies(X,big_V(Y,Z))) = truth
-Proof:
-  implies(implies(X,Y),implies(X,big_V(Y,Z)))
-= { by axiom 1 R->L }
-  implies(implies(X,Y),implies(truth,implies(X,big_V(Y,Z))))
-= { by lemma 7 R->L }
-  implies(implies(X,Y),implies(implies(Y,big_V(Y,Z)),implies(X,big_V(Y,Z))))
-= { by axiom 4 }
+= { by axiom 3 }
   truth
 
 Lemma 24: implies(not(truth),X) = truth
@@ -188,17 +188,17 @@ Proof:
   implies(not(truth),X)
 = { by axiom 1 R->L }
   implies(truth,implies(not(truth),X))
-= { by lemma 10 R->L }
+= { by lemma 13 R->L }
   implies(implies(not(X),truth),implies(not(truth),X))
-= { by lemma 22 R->L }
+= { by lemma 23 R->L }
   implies(implies(not(X),not(not(truth))),implies(not(truth),X))
-= { by axiom 5 }
+= { by axiom 3 }
   truth
 
 Lemma 25: big_V(not(truth),X) = X
 Proof:
   big_V(not(truth),X)
-= { by axiom 2 }
+= { by axiom 4 }
   implies(implies(not(truth),X),X)
 = { by lemma 24 }
   implies(truth,X)
@@ -212,13 +212,13 @@ Proof:
   implies(implies(truth,not(implies(X,not(truth)))),X)
 = { by lemma 25 R->L }
   implies(implies(truth,not(implies(X,not(truth)))),big_V(not(truth),X))
-= { by lemma 22 R->L }
+= { by lemma 23 R->L }
   implies(implies(not(not(truth)),not(implies(X,not(truth)))),big_V(not(truth),X))
-= { by lemma 8 }
+= { by lemma 7 }
   implies(implies(not(not(truth)),not(implies(X,not(truth)))),big_V(X,not(truth)))
-= { by axiom 2 }
+= { by axiom 4 }
   implies(implies(not(not(truth)),not(implies(X,not(truth)))),implies(implies(X,not(truth)),not(truth)))
-= { by axiom 5 }
+= { by axiom 3 }
   truth
 
 Lemma 27: implies(X,implies(not(X),not(truth))) = truth
@@ -228,7 +228,7 @@ Proof:
   implies(truth,implies(X,implies(not(X),not(truth))))
 = { by lemma 26 R->L }
   implies(implies(not(implies(not(X),not(truth))),not(X)),implies(X,implies(not(X),not(truth))))
-= { by axiom 5 }
+= { by axiom 3 }
   truth
 
 Lemma 28: implies(not(X),not(truth)) = X
@@ -238,9 +238,9 @@ Proof:
   implies(truth,implies(not(X),not(truth)))
 = { by lemma 27 R->L }
   implies(implies(X,implies(not(X),not(truth))),implies(not(X),not(truth)))
-= { by axiom 2 R->L }
+= { by axiom 4 R->L }
   big_V(X,implies(not(X),not(truth)))
-= { by lemma 14 }
+= { by lemma 9 }
   X
 
 Lemma 29: implies(not(not(X)),X) = truth
@@ -248,11 +248,11 @@ Proof:
   implies(not(not(X)),X)
 = { by axiom 1 R->L }
   implies(implies(truth,not(not(X))),X)
-= { by lemma 22 R->L }
+= { by lemma 23 R->L }
   implies(implies(not(not(truth)),not(not(X))),X)
 = { by lemma 28 R->L }
   implies(implies(not(not(truth)),not(not(X))),implies(not(X),not(truth)))
-= { by axiom 5 }
+= { by axiom 3 }
   truth
 
 Lemma 30: implies(big_V(not(X),not(Y)),not(big_hat(X,Y))) = truth
@@ -262,27 +262,27 @@ Proof:
   implies(truth,implies(big_V(not(X),not(Y)),not(big_hat(X,Y))))
 = { by lemma 29 R->L }
   implies(implies(not(not(big_hat(X,Y))),big_hat(X,Y)),implies(big_V(not(X),not(Y)),not(big_hat(X,Y))))
-= { by axiom 6 }
+= { by axiom 2 }
   implies(implies(not(not(big_hat(X,Y))),not(big_V(not(X),not(Y)))),implies(big_V(not(X),not(Y)),not(big_hat(X,Y))))
-= { by axiom 5 }
+= { by axiom 3 }
   truth
 
 Lemma 31: big_V(big_V(not(X),not(Y)),implies(big_hat(X,Y),not(truth))) = big_V(not(X),not(Y))
 Proof:
   big_V(big_V(not(X),not(Y)),implies(big_hat(X,Y),not(truth)))
-= { by axiom 6 }
+= { by axiom 2 }
   big_V(big_V(not(X),not(Y)),implies(not(big_V(not(X),not(Y))),not(truth)))
-= { by lemma 14 }
+= { by lemma 9 }
   big_V(not(X),not(Y))
 
 Lemma 32: big_V(implies(X,Y),implies(not(Y),not(X))) = implies(X,Y)
 Proof:
   big_V(implies(X,Y),implies(not(Y),not(X)))
-= { by lemma 8 }
+= { by lemma 7 }
   big_V(implies(not(Y),not(X)),implies(X,Y))
-= { by axiom 2 }
+= { by axiom 4 }
   implies(implies(implies(not(Y),not(X)),implies(X,Y)),implies(X,Y))
-= { by axiom 5 }
+= { by axiom 3 }
   implies(truth,implies(X,Y))
 = { by axiom 1 }
   implies(X,Y)
@@ -294,11 +294,11 @@ Proof:
   implies(not(X),big_V(implies(X,Y),implies(not(Y),not(X))))
 = { by axiom 1 R->L }
   implies(truth,implies(not(X),big_V(implies(X,Y),implies(not(Y),not(X)))))
-= { by lemma 8 R->L }
+= { by lemma 7 R->L }
   implies(truth,implies(not(X),big_V(implies(not(Y),not(X)),implies(X,Y))))
-= { by lemma 11 R->L }
+= { by lemma 14 R->L }
   implies(implies(not(X),implies(not(Y),not(X))),implies(not(X),big_V(implies(not(Y),not(X)),implies(X,Y))))
-= { by lemma 23 }
+= { by lemma 11 }
   truth
 
 Lemma 34: implies(not(big_hat(X,Y)),big_V(not(X),not(Y))) = truth
@@ -308,11 +308,11 @@ Proof:
   implies(not(big_hat(X,Y)),big_V(big_V(not(X),not(Y)),implies(big_hat(X,Y),not(truth))))
 = { by axiom 1 R->L }
   implies(truth,implies(not(big_hat(X,Y)),big_V(big_V(not(X),not(Y)),implies(big_hat(X,Y),not(truth)))))
-= { by lemma 8 R->L }
+= { by lemma 7 R->L }
   implies(truth,implies(not(big_hat(X,Y)),big_V(implies(big_hat(X,Y),not(truth)),big_V(not(X),not(Y)))))
 = { by lemma 33 R->L }
   implies(implies(not(big_hat(X,Y)),implies(big_hat(X,Y),not(truth))),implies(not(big_hat(X,Y)),big_V(implies(big_hat(X,Y),not(truth)),big_V(not(X),not(Y)))))
-= { by lemma 23 }
+= { by lemma 11 }
   truth
 
 Goal 1: not(big_hat(x,y)) = big_V(not(x),not(y))
@@ -322,11 +322,11 @@ Proof:
   implies(truth,not(big_hat(x,y)))
 = { by lemma 30 R->L }
   implies(implies(big_V(not(x),not(y)),not(big_hat(x,y))),not(big_hat(x,y)))
-= { by axiom 2 R->L }
+= { by axiom 4 R->L }
   big_V(big_V(not(x),not(y)),not(big_hat(x,y)))
-= { by lemma 8 }
+= { by lemma 7 }
   big_V(not(big_hat(x,y)),big_V(not(x),not(y)))
-= { by axiom 2 }
+= { by axiom 4 }
   implies(implies(not(big_hat(x,y)),big_V(not(x),not(y))),big_V(not(x),not(y)))
 = { by lemma 34 }
   implies(truth,big_V(not(x),not(y)))

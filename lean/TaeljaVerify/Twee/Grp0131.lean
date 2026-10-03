@@ -19,52 +19,52 @@ axiom inverse : α → α
 axiom product : α → α → α → Prop
 
 -- Axiom 1
-axiom ax1 : product (inverse a) (inverse b) d
+axiom ax1 : ∀ (x : α), product x x identity
 -- Axiom 2
-axiom ax2 : ∀ (x : α), product x (inverse x) identity
+axiom ax2 : product (inverse a) (inverse b) d
 -- Axiom 3
-axiom ax3 : ∀ (x y z : α), product (inverse x) (inverse y) z → product x z y
+axiom ax3 : ∀ (x : α), product x (inverse x) identity
 -- Axiom 4
-axiom ax4 : ∀ (x : α), product x identity x
+axiom ax4 : ∀ (x y z : α), product (inverse x) (inverse y) z → product x z y
 -- Axiom 5
-axiom ax5 : ∀ (x y z u : α), product x y z → product x y u → z = u
+axiom ax5 : ∀ (x : α), product x identity x
 -- Axiom 6
-axiom ax6 : product a b c
+axiom ax6 : ∀ (x y z u : α), product x y z → product x y u → z = u
 -- Axiom 7
-axiom ax7 : ∀ (x : α), product x x identity
+axiom ax7 : product a b c
 
 -- Lemma 8
 theorem taelja_lemma8 : ∀ (x : α), product x identity (inverse x) := by
   intro x
-  have h1 : product (inverse x) (inverse (inverse x)) identity := ax2 (inverse x)
-  have h2 : product x identity (inverse x) := ax3 x (inverse x) identity h1
+  have h1 : product (inverse x) (inverse (inverse x)) identity := ax3 (inverse x)
+  have h2 : product x identity (inverse x) := ax4 x (inverse x) identity h1
   exact h2
 
 -- Lemma 9
 theorem taelja_lemma9 : ∀ (x : α), inverse x = x := by
   intro x
-  have h1 : product x identity x := ax4 x
+  have h1 : product x identity x := ax5 x
   have h2 : product x identity (inverse x) := taelja_lemma8 x
-  have h3 : inverse x = x := ax5 x identity (inverse x) x h2 h1
+  have h3 : inverse x = x := ax6 x identity (inverse x) x h2 h1
   exact h3
 
 -- Lemma 10
 theorem taelja_lemma10 : product a b d := by
-  have h1 : product (inverse a) (inverse b) d := ax1
+  have h1 : product (inverse a) (inverse b) d := ax2
   have h2 : product a (inverse b) d := Eq.mp (congrArg (fun t : α => product t (inverse b) d) (taelja_lemma9 a)) h1
   have h3 : product a b d := Eq.mp (congrArg (fun t : α => product a t d) (taelja_lemma9 b)) h2
   exact h3
 
 -- Lemma 11
 theorem taelja_lemma11 : d = c := by
-  have h1 : product a b c := ax6
+  have h1 : product a b c := ax7
   have h2 : product a b d := taelja_lemma10
-  have h3 : d = c := ax5 a b d c h2 h1
+  have h3 : d = c := ax6 a b d c h2 h1
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : product c d identity := by
-  have h1 : product c c identity := ax7 c
+  have h1 : product c c identity := ax1 c
   have h2 : product c d identity := Eq.mp (congrArg (fun t : α => product c t identity) (Eq.symm (taelja_lemma11))) h1
   exact h2
 

@@ -17,37 +17,37 @@ axiom strong_iteration : α → α
 axiom leq : α → α → Prop
 
 -- Axiom 1
-axiom ax1 : ∀ (x : α), multiplication x one = x
+axiom ax1 : ∀ (x y z : α), multiplication (addition x y) z = addition (multiplication x z) (multiplication y z)
 -- Axiom 2
-axiom ax2 : ∀ (x : α), addition x x = x
+axiom ax2 : ∀ (x : α), multiplication one x = x
 -- Axiom 3
-axiom ax3 : ∀ (x y z : α), multiplication (addition x y) z = addition (multiplication x z) (multiplication y z)
+axiom ax3 : ∀ (x y z : α), addition x (addition y z) = addition (addition x y) z
 -- Axiom 4
-axiom ax4 : ∀ (x : α), multiplication one x = x
+axiom ax4 : ∀ (x : α), addition x x = x
 -- Axiom 5
-axiom ax5 : ∀ (x y z : α), addition x (addition y z) = addition (addition x y) z
+axiom ax5 : ∀ (x y : α), addition x y = y → leq x y
 -- Axiom 6
-axiom ax6 : ∀ (x y : α), addition x y = y → leq x y
+axiom ax6 : ∀ (x y z : α), leq x (addition (multiplication y x) z) → leq x (multiplication (strong_iteration y) z)
 -- Axiom 7
-axiom ax7 : ∀ (x y z : α), leq x (addition (multiplication y x) z) → leq x (multiplication (strong_iteration y) z)
+axiom ax7 : ∀ (x : α), multiplication x one = x
 
 -- Lemma 8
 theorem taelja_lemma8 : ∀ (x : α), addition x (addition x (addition (multiplication one x) one)) = addition x (addition (multiplication one x) one) := by
   intro x
-  calc addition x (addition x (addition (multiplication one x) one)) = addition (addition x x) (addition (multiplication one x) one) := ax5 x x (addition (multiplication one x) one)
-      _ = addition x (addition (multiplication one x) one) := congrArg (fun t : α => addition t (addition (multiplication one x) one)) (ax2 x)
+  calc addition x (addition x (addition (multiplication one x) one)) = addition (addition x x) (addition (multiplication one x) one) := ax3 x x (addition (multiplication one x) one)
+      _ = addition x (addition (multiplication one x) one) := congrArg (fun t : α => addition t (addition (multiplication one x) one)) (ax4 x)
 
 -- Goal 1
 theorem taelja_goal1 : ∀ (x : α), leq x (strong_iteration one) := by
   intro x
   have h1 : addition x (addition x (addition (multiplication one x) one)) = addition x (addition (multiplication one x) one) := taelja_lemma8 x
-  have h2 : leq x (addition x (addition (multiplication one x) one)) := ax6 x (addition x (addition (multiplication one x) one)) h1
-  have h3 : leq x (addition (addition x (multiplication one x)) one) := Eq.mp (congrArg (fun t : α => leq x t) (ax5 x (multiplication one x) one)) h2
-  have h4 : leq x (addition (addition (multiplication one x) (multiplication one x)) one) := Eq.mp (congrArg (fun t : α => leq x (addition (addition t (multiplication one x)) one)) (Eq.symm (ax4 x))) h3
-  have h5 : leq x (addition (multiplication (addition one one) x) one) := Eq.mp (congrArg (fun t : α => leq x (addition t one)) (Eq.symm (ax3 one one x))) h4
-  have h6 : leq x (multiplication (strong_iteration (addition one one)) one) := ax7 x (addition one one) one h5
-  have h7 : leq x (strong_iteration (addition one one)) := Eq.mp (congrArg (fun t : α => leq x t) (ax1 (strong_iteration (addition one one)))) h6
-  have h8 : leq x (strong_iteration one) := Eq.mp (congrArg (fun t : α => leq x (strong_iteration t)) (ax2 one)) h7
+  have h2 : leq x (addition x (addition (multiplication one x) one)) := ax5 x (addition x (addition (multiplication one x) one)) h1
+  have h3 : leq x (addition (addition x (multiplication one x)) one) := Eq.mp (congrArg (fun t : α => leq x t) (ax3 x (multiplication one x) one)) h2
+  have h4 : leq x (addition (addition (multiplication one x) (multiplication one x)) one) := Eq.mp (congrArg (fun t : α => leq x (addition (addition t (multiplication one x)) one)) (Eq.symm (ax2 x))) h3
+  have h5 : leq x (addition (multiplication (addition one one) x) one) := Eq.mp (congrArg (fun t : α => leq x (addition t one)) (Eq.symm (ax1 one one x))) h4
+  have h6 : leq x (multiplication (strong_iteration (addition one one)) one) := ax6 x (addition one one) one h5
+  have h7 : leq x (strong_iteration (addition one one)) := Eq.mp (congrArg (fun t : α => leq x t) (ax7 (strong_iteration (addition one one)))) h6
+  have h8 : leq x (strong_iteration one) := Eq.mp (congrArg (fun t : α => leq x (strong_iteration t)) (ax4 one)) h7
   exact h8
 
 end TweeKle137p1

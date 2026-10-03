@@ -15,13 +15,13 @@ axiom m : α
 axiom apply_ : α → α → α
 
 -- Axiom 1
-axiom ax1 : ∀ (x : α), apply_ m x = apply_ x x
+axiom ax1 : ∀ (x y z : α), apply_ (apply_ (apply_ b x) y) z = apply_ x (apply_ y z)
 -- Axiom 2
-axiom ax2 : ∀ (x y z : α), apply_ (apply_ (apply_ b x) y) z = apply_ x (apply_ y z)
+axiom ax2 : ∀ (x : α), apply_ m x = apply_ x x
 
 -- Goal 1
 theorem taelja_goal1 : apply_ m (apply_ (apply_ b combinator) m) = apply_ combinator (apply_ m (apply_ (apply_ b combinator) m)) := by
-  calc apply_ m (apply_ (apply_ b combinator) m) = apply_ (apply_ (apply_ b combinator) m) (apply_ (apply_ b combinator) m) := ax1 (apply_ (apply_ b combinator) m)
-      _ = apply_ combinator (apply_ m (apply_ (apply_ b combinator) m)) := ax2 combinator m (apply_ (apply_ b combinator) m)
+  calc apply_ m (apply_ (apply_ b combinator) m) = apply_ (apply_ (apply_ b combinator) m) (apply_ (apply_ b combinator) m) := ax2 (apply_ (apply_ b combinator) m)
+      _ = apply_ combinator (apply_ m (apply_ (apply_ b combinator) m)) := ax1 combinator m (apply_ (apply_ b combinator) m)
 
 end TweeCol0171

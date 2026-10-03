@@ -1,127 +1,127 @@
-Axiom 1: addition(X,Y) = addition(Y,X)
-Axiom 2: multiplication(X,addition(Z,A)) = addition(multiplication(X,Z),multiplication(X,A))
-Axiom 3: multiplication(B,one) = B
-Axiom 4: strong_iteration(X) = addition(multiplication(X,strong_iteration(X)),one)
-Axiom 5: addition(X,addition(Z,C)) = addition(addition(X,Z),C)
-Axiom 6: addition(X,X) = X
-Axiom 7: addition(X,Z) = Z => leq(X,Z)
-Axiom 8: addition(X,zero) = X
-Axiom 9: multiplication(zero,X) = zero
-Axiom 10: multiplication(addition(X,Z),C) = addition(multiplication(X,C),multiplication(Z,C))
-Axiom 11: multiplication(one,X) = X
-Axiom 12: multiplication(X,multiplication(Z,C)) = multiplication(multiplication(X,Z),C)
-Axiom 13: leq(C,addition(multiplication(X,C),Z)) => leq(C,multiplication(strong_iteration(X),Z))
+Axiom 1: addition(X,X) = X
+Axiom 2: addition(X,addition(Y,Z)) = addition(addition(X,Y),Z)
+Axiom 3: addition(X,Y) = Y => leq(X,Y)
+Axiom 4: addition(X,A) = addition(A,X)
+Axiom 5: strong_iteration(X) = addition(multiplication(X,strong_iteration(X)),one)
+Axiom 6: multiplication(B,one) = B
+Axiom 7: multiplication(X,addition(Y,C)) = addition(multiplication(X,Y),multiplication(X,C))
+Axiom 8: multiplication(X,multiplication(Y,Z)) = multiplication(multiplication(X,Y),Z)
+Axiom 9: multiplication(one,X) = X
+Axiom 10: multiplication(addition(X,Y),Z) = addition(multiplication(X,Z),multiplication(Y,Z))
+Axiom 11: leq(Z,addition(multiplication(X,Z),Y)) => leq(Z,multiplication(strong_iteration(X),Y))
+Axiom 12: multiplication(zero,X) = zero
+Axiom 13: addition(X,zero) = X
 
-Lemma 14: multiplication(X,addition(Y,one)) = addition(X,multiplication(X,Y))
-Proof:
-  multiplication(X,addition(Y,one))
-= { by axiom 2 }
-  addition(multiplication(X,Y),multiplication(X,one))
-= { by axiom 1 R->L }
-  addition(multiplication(X,one),multiplication(X,Y))
-= { by axiom 3 }
-  addition(X,multiplication(X,Y))
-
-Lemma 15: addition(one,multiplication(X,strong_iteration(X))) = strong_iteration(X)
-Proof:
-  addition(one,multiplication(X,strong_iteration(X)))
-= { by axiom 1 }
-  addition(multiplication(X,strong_iteration(X)),one)
-= { by axiom 4 R->L }
-  strong_iteration(X)
-
-Lemma 16: addition(X,addition(X,Y)) = addition(X,Y)
+Lemma 14: addition(X,addition(X,Y)) = addition(X,Y)
 Proof:
   addition(X,addition(X,Y))
-= { by axiom 5 }
+= { by axiom 2 }
   addition(addition(X,X),Y)
-= { by axiom 6 }
+= { by axiom 1 }
   addition(X,Y)
+
+Lemma 15: multiplication(X,addition(Y,one)) = addition(X,multiplication(X,Y))
+Proof:
+  multiplication(X,addition(Y,one))
+= { by axiom 7 }
+  addition(multiplication(X,Y),multiplication(X,one))
+= { by axiom 4 R->L }
+  addition(multiplication(X,one),multiplication(X,Y))
+= { by axiom 6 }
+  addition(X,multiplication(X,Y))
+
+Lemma 16: addition(one,multiplication(X,strong_iteration(X))) = strong_iteration(X)
+Proof:
+  addition(one,multiplication(X,strong_iteration(X)))
+= { by axiom 4 }
+  addition(multiplication(X,strong_iteration(X)),one)
+= { by axiom 5 R->L }
+  strong_iteration(X)
 
 Lemma 17: addition(multiplication(X,strong_iteration(Y)),X) = multiplication(X,strong_iteration(Y))
 Proof:
   addition(multiplication(X,strong_iteration(Y)),X)
-= { by axiom 1 }
+= { by axiom 4 }
   addition(X,multiplication(X,strong_iteration(Y)))
-= { by lemma 14 R->L }
-  multiplication(X,addition(strong_iteration(Y),one))
-= { by axiom 1 }
-  multiplication(X,addition(one,strong_iteration(Y)))
 = { by lemma 15 R->L }
+  multiplication(X,addition(strong_iteration(Y),one))
+= { by axiom 4 }
+  multiplication(X,addition(one,strong_iteration(Y)))
+= { by lemma 16 R->L }
   multiplication(X,addition(one,addition(one,multiplication(Y,strong_iteration(Y)))))
-= { by lemma 16 }
+= { by lemma 14 }
   multiplication(X,addition(one,multiplication(Y,strong_iteration(Y))))
-= { by lemma 15 }
+= { by lemma 16 }
   multiplication(X,strong_iteration(Y))
 
 Lemma 18: addition(X,multiplication(X,multiplication(Y,strong_iteration(Y)))) = multiplication(X,strong_iteration(Y))
 Proof:
   addition(X,multiplication(X,multiplication(Y,strong_iteration(Y))))
-= { by lemma 14 R->L }
+= { by lemma 15 R->L }
   multiplication(X,addition(multiplication(Y,strong_iteration(Y)),one))
-= { by axiom 1 }
+= { by axiom 4 }
   multiplication(X,addition(one,multiplication(Y,strong_iteration(Y))))
-= { by lemma 15 }
+= { by lemma 16 }
   multiplication(X,strong_iteration(Y))
 
 Goal 1: leq(multiplication(strong_iteration(X),strong_iteration(X)),strong_iteration(X))
 Proof:
   have addition(multiplication(strong_iteration(X),strong_iteration(X)),addition(multiplication(strong_iteration(X),strong_iteration(X)),strong_iteration(zero))) = addition(multiplication(strong_iteration(X),strong_iteration(X)),strong_iteration(zero))
-    by lemma 16
+    by lemma 14
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(multiplication(strong_iteration(X),strong_iteration(X)),strong_iteration(zero)))
-    by axiom 7
+    by axiom 3
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(multiplication(addition(one,multiplication(X,strong_iteration(X))),strong_iteration(X)),strong_iteration(zero)))
-    by rw lemma 15 R->L
+    by rw lemma 16 R->L
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(addition(one,multiplication(X,strong_iteration(X))),multiplication(addition(one,multiplication(X,strong_iteration(X))),multiplication(X,strong_iteration(X)))),strong_iteration(zero)))
     by rw lemma 18 R->L
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(addition(one,multiplication(X,strong_iteration(X))),addition(multiplication(one,multiplication(X,strong_iteration(X))),multiplication(multiplication(X,strong_iteration(X)),multiplication(X,strong_iteration(X))))),strong_iteration(zero)))
     by rw axiom 10
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(addition(one,multiplication(X,strong_iteration(X))),addition(multiplication(X,strong_iteration(X)),multiplication(multiplication(X,strong_iteration(X)),multiplication(X,strong_iteration(X))))),strong_iteration(zero)))
-    by rw axiom 11
+    by rw axiom 9
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(addition(one,multiplication(X,strong_iteration(X))),multiplication(multiplication(X,strong_iteration(X)),addition(multiplication(X,strong_iteration(X)),one))),strong_iteration(zero)))
-    by rw lemma 14 R->L
+    by rw lemma 15 R->L
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(one,addition(multiplication(X,strong_iteration(X)),multiplication(multiplication(X,strong_iteration(X)),addition(multiplication(X,strong_iteration(X)),one)))),strong_iteration(zero)))
-    by rw axiom 5 R->L
+    by rw axiom 2 R->L
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(one,addition(multiplication(X,strong_iteration(X)),addition(multiplication(X,strong_iteration(X)),multiplication(multiplication(X,strong_iteration(X)),multiplication(X,strong_iteration(X)))))),strong_iteration(zero)))
-    by rw lemma 14
+    by rw lemma 15
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(one,addition(multiplication(X,strong_iteration(X)),multiplication(multiplication(X,strong_iteration(X)),multiplication(X,strong_iteration(X))))),strong_iteration(zero)))
-    by rw lemma 16
+    by rw lemma 14
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(one,multiplication(multiplication(X,strong_iteration(X)),strong_iteration(X))),strong_iteration(zero)))
     by rw lemma 18
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(one,multiplication(X,multiplication(strong_iteration(X),strong_iteration(X)))),strong_iteration(zero)))
-    by rw axiom 12 R->L
+    by rw axiom 8 R->L
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(one,addition(multiplication(X,multiplication(strong_iteration(X),strong_iteration(X))),strong_iteration(zero))))
-    by rw axiom 5 R->L
+    by rw axiom 2 R->L
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(one,addition(strong_iteration(zero),multiplication(X,multiplication(strong_iteration(X),strong_iteration(X))))))
-    by rw axiom 1
+    by rw axiom 4
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(one,strong_iteration(zero)),multiplication(X,multiplication(strong_iteration(X),strong_iteration(X)))))
-    by rw axiom 5
+    by rw axiom 2
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(one,addition(one,multiplication(zero,strong_iteration(zero)))),multiplication(X,multiplication(strong_iteration(X),strong_iteration(X)))))
-    by rw lemma 15 R->L
+    by rw lemma 16 R->L
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(addition(one,multiplication(zero,strong_iteration(zero))),multiplication(X,multiplication(strong_iteration(X),strong_iteration(X)))))
-    by rw lemma 16
+    by rw lemma 14
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(strong_iteration(zero),multiplication(X,multiplication(strong_iteration(X),strong_iteration(X)))))
-    by rw lemma 15
+    by rw lemma 16
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),addition(multiplication(X,multiplication(strong_iteration(X),strong_iteration(X))),strong_iteration(zero)))
-    by rw axiom 1
+    by rw axiom 4
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),multiplication(strong_iteration(X),strong_iteration(zero)))
-    by axiom 13
+    by axiom 11
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),multiplication(strong_iteration(X),addition(one,multiplication(zero,strong_iteration(zero)))))
-    by rw lemma 15 R->L
+    by rw lemma 16 R->L
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),multiplication(strong_iteration(X),addition(one,zero)))
-    by rw axiom 9
+    by rw axiom 12
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),multiplication(strong_iteration(X),one))
-    by rw axiom 8
+    by rw axiom 13
   hence leq(multiplication(strong_iteration(X),strong_iteration(X)),strong_iteration(X))
-    by rw axiom 3
+    by rw axiom 6
 
 Goal 2: leq(strong_iteration(X),multiplication(strong_iteration(X),strong_iteration(X)))
 Proof:
   have addition(strong_iteration(X),addition(strong_iteration(X),multiplication(strong_iteration(X),strong_iteration(X)))) = addition(strong_iteration(X),multiplication(strong_iteration(X),strong_iteration(X)))
-    by lemma 16
+    by lemma 14
   hence leq(strong_iteration(X),addition(strong_iteration(X),multiplication(strong_iteration(X),strong_iteration(X))))
-    by axiom 7
+    by axiom 3
   hence leq(strong_iteration(X),addition(multiplication(strong_iteration(X),strong_iteration(X)),strong_iteration(X)))
-    by rw axiom 1 R->L
+    by rw axiom 4 R->L
   hence leq(strong_iteration(X),multiplication(strong_iteration(X),strong_iteration(X)))
     by rw lemma 17

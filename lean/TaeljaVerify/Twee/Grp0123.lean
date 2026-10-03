@@ -18,7 +18,7 @@ axiom multiply : α → α → α
 axiom product : α → α → α → Prop
 
 -- Axiom 1
-axiom ax1 : ∀ (x y : α), product x y (multiply x y)
+axiom ax1 : ∀ (x : α), product identity x x
 -- Axiom 2
 axiom ax2 : ∀ (x : α), product x (inverse x) identity
 -- Axiom 3
@@ -28,7 +28,7 @@ axiom ax4 : ∀ (x y z u v w : α), product x y z → product y u v → product 
 -- Axiom 5
 axiom ax5 : ∀ (x y z u : α), product x y z → product x y u → z = u
 -- Axiom 6
-axiom ax6 : ∀ (x : α), product identity x x
+axiom ax6 : ∀ (x y : α), product x y (multiply x y)
 -- Axiom 7
 axiom ax7 : ∀ (x y z u v w : α), product x y z → product y u v → product z u w → product x v w
 
@@ -36,22 +36,22 @@ axiom ax7 : ∀ (x y z u v w : α), product x y z → product y u v → product 
 theorem taelja_lemma8 : ∀ (x y : α), product x (multiply (inverse x) y) y := by
   intro x y
   have h1 : product x (inverse x) identity := ax2 x
-  have h2 : product (inverse x) y (multiply (inverse x) y) := ax1 (inverse x) y
-  have h3 : product identity y y := ax6 y
+  have h2 : product (inverse x) y (multiply (inverse x) y) := ax6 (inverse x) y
+  have h3 : product identity y y := ax1 y
   have h4 : product x (multiply (inverse x) y) y := ax7 x (inverse x) identity y (multiply (inverse x) y) y h1 h2 h3
   exact h4
 
 -- Lemma 9
 theorem taelja_lemma9 : ∀ (x y : α), multiply x (multiply (inverse x) y) = y := by
   intro x y
-  have h1 : product x (multiply (inverse x) y) (multiply x (multiply (inverse x) y)) := ax1 x (multiply (inverse x) y)
+  have h1 : product x (multiply (inverse x) y) (multiply x (multiply (inverse x) y)) := ax6 x (multiply (inverse x) y)
   have h2 : product x (multiply (inverse x) y) y := taelja_lemma8 x y
   have h3 : multiply x (multiply (inverse x) y) = y := ax5 x (multiply (inverse x) y) (multiply x (multiply (inverse x) y)) y h1 h2
   exact h3
 
 -- Lemma 10
 theorem taelja_lemma10 : product (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) b := by
-  have h1 : product b (multiply (inverse b) (inverse a)) (multiply b (multiply (inverse b) (inverse a))) := ax1 b (multiply (inverse b) (inverse a))
+  have h1 : product b (multiply (inverse b) (inverse a)) (multiply b (multiply (inverse b) (inverse a))) := ax6 b (multiply (inverse b) (inverse a))
   have h2 : product (multiply (inverse b) (inverse a)) (inverse (multiply (inverse b) (inverse a))) identity := ax2 (multiply (inverse b) (inverse a))
   have h3 : product b identity b := ax3 b
   have h4 : product (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) b := ax4 b (multiply (inverse b) (inverse a)) (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) identity b h1 h2 h3
@@ -59,7 +59,7 @@ theorem taelja_lemma10 : product (multiply b (multiply (inverse b) (inverse a)))
 
 -- Lemma 11
 theorem taelja_lemma11 : multiply (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) = b := by
-  have h1 : product (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) (multiply (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a)))) := ax1 (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a)))
+  have h1 : product (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) (multiply (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a)))) := ax6 (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a)))
   have h2 : product (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) b := taelja_lemma10
   have h3 : multiply (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) = b := ax5 (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))) (multiply (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a)))) b h1 h2
   exact h3
@@ -70,7 +70,7 @@ theorem taelja_goal1 : inverse (multiply a b) = multiply (inverse b) (inverse a)
   have h2 : product (inverse (multiply (inverse b) (inverse a))) (inverse (inverse (multiply (inverse b) (inverse a)))) identity := ax2 (inverse (multiply (inverse b) (inverse a)))
   have h3 : product (multiply (inverse b) (inverse a)) identity (multiply (inverse b) (inverse a)) := ax3 (multiply (inverse b) (inverse a))
   have h4 : product identity (inverse (inverse (multiply (inverse b) (inverse a)))) (multiply (inverse b) (inverse a)) := ax4 (multiply (inverse b) (inverse a)) (inverse (multiply (inverse b) (inverse a))) identity (inverse (inverse (multiply (inverse b) (inverse a)))) identity (multiply (inverse b) (inverse a)) h1 h2 h3
-  have h5 : product identity (inverse (inverse (multiply (inverse b) (inverse a)))) (inverse (inverse (multiply (inverse b) (inverse a)))) := ax6 (inverse (inverse (multiply (inverse b) (inverse a))))
+  have h5 : product identity (inverse (inverse (multiply (inverse b) (inverse a)))) (inverse (inverse (multiply (inverse b) (inverse a)))) := ax1 (inverse (inverse (multiply (inverse b) (inverse a))))
   have h6 : multiply (inverse b) (inverse a) = inverse (inverse (multiply (inverse b) (inverse a))) := ax5 identity (inverse (inverse (multiply (inverse b) (inverse a)))) (multiply (inverse b) (inverse a)) (inverse (inverse (multiply (inverse b) (inverse a)))) h4 h5
   have h7 : multiply (inverse b) (inverse a) = inverse (multiply a (multiply (inverse a) (inverse (multiply (inverse b) (inverse a))))) := Eq.mp (congrArg (fun t : α => multiply (inverse b) (inverse a) = inverse t) (Eq.symm (taelja_lemma9 a (inverse (multiply (inverse b) (inverse a)))))) h6
   have h8 : multiply (inverse b) (inverse a) = inverse (multiply a (multiply (multiply b (multiply (inverse b) (inverse a))) (inverse (multiply (inverse b) (inverse a))))) := Eq.mp (congrArg (fun t : α => multiply (inverse b) (inverse a) = inverse (multiply a (multiply t (inverse (multiply (inverse b) (inverse a)))))) (Eq.symm (taelja_lemma9 b (inverse a)))) h7

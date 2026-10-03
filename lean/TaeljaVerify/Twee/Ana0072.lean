@@ -23,24 +23,24 @@ axiom class_Ring__and__Field_Oordered__idom : α → Prop
 -- Axiom 1
 axiom ax1 : class_Ring__and__Field_Oordered__idom t_b
 -- Axiom 2
-axiom ax2 : ∀ (x y : α), class_Ring__and__Field_Oordered__idom x → y = c_times c_1 y x
+axiom ax2 : ∀ (x : α), class_Ring__and__Field_Oordered__idom x → class_Orderings_Oorder x
 -- Axiom 3
-axiom ax3 : ∀ (x : α), class_Ring__and__Field_Oordered__idom x → class_Orderings_Oorder x
+axiom ax3 : ∀ (x y : α), class_Orderings_Oorder x → c_lessequals y y x
 -- Axiom 4
-axiom ax4 : ∀ (x y : α), class_Orderings_Oorder x → c_lessequals y y x
+axiom ax4 : ∀ (x y : α), class_Ring__and__Field_Oordered__idom x → y = c_times c_1 y x
 
 -- Lemma 5
 theorem taelja_lemma5 : ∀ (x : α), x = c_times c_1 x t_b := by
   intro x
   have h1 : class_Ring__and__Field_Oordered__idom t_b := ax1
-  have h2 : x = c_times c_1 x t_b := ax2 t_b x h1
+  have h2 : x = c_times c_1 x t_b := ax4 t_b x h1
   exact h2
 
 -- Goal 1
 theorem taelja_goal1 : c_lessequals (c_HOL_Oabs (v_f (v_x c_1)) t_b) (c_times c_1 (c_HOL_Oabs (v_f (v_x c_1)) t_b) t_b) t_b := by
   have h1 : class_Ring__and__Field_Oordered__idom t_b := ax1
-  have h2 : class_Orderings_Oorder t_b := ax3 t_b h1
-  have h3 : c_lessequals (c_HOL_Oabs (v_f (v_x c_1)) t_b) (c_HOL_Oabs (v_f (v_x c_1)) t_b) t_b := ax4 t_b (c_HOL_Oabs (v_f (v_x c_1)) t_b) h2
+  have h2 : class_Orderings_Oorder t_b := ax2 t_b h1
+  have h3 : c_lessequals (c_HOL_Oabs (v_f (v_x c_1)) t_b) (c_HOL_Oabs (v_f (v_x c_1)) t_b) t_b := ax3 t_b (c_HOL_Oabs (v_f (v_x c_1)) t_b) h2
   have h4 : c_lessequals (c_HOL_Oabs (v_f (v_x c_1)) t_b) (c_times c_1 (c_HOL_Oabs (v_f (v_x c_1)) t_b) t_b) t_b := Eq.mp (congrArg (fun t : α => c_lessequals (c_HOL_Oabs (v_f (v_x c_1)) t_b) t t_b) (taelja_lemma5 (c_HOL_Oabs (v_f (v_x c_1)) t_b))) h3
   exact h4
 

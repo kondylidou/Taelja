@@ -14,13 +14,13 @@ axiom b : α
 axiom least_upper_bound : α → α → α
 
 -- Axiom 1
-axiom ax1 : least_upper_bound a b = a
+axiom ax1 : least_upper_bound a b = b
 -- Axiom 2
-axiom ax2 : least_upper_bound a b = b
+axiom ax2 : least_upper_bound a b = a
 
 -- Goal 1
 theorem taelja_goal1 : a = b := by
-  calc a = least_upper_bound a b := Eq.symm (ax1)
-      _ = b := ax2
+  calc a = least_upper_bound a b := Eq.symm (ax2)
+      _ = b := ax1
 
 end TweeGrp1361

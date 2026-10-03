@@ -1,28 +1,28 @@
-Axiom 1: there_exists(codomain(a))
-Axiom 2: compose(X,domain(X)) = X
-Axiom 3: compose(codomain(X),X) = X
-Axiom 4: there_exists(codomain(X)) => there_exists(X)
-Axiom 5: there_exists(compose(Y,Z)) => domain(Y) = codomain(Z)
+Axiom 1: compose(codomain(X),X) = X
+Axiom 2: there_exists(codomain(a))
+Axiom 3: there_exists(codomain(X)) => there_exists(X)
+Axiom 4: there_exists(compose(Y,Z)) => domain(Y) = codomain(Z)
+Axiom 5: compose(X,domain(X)) = X
 
 Lemma 6: domain(codomain(a)) = codomain(a)
 Proof:
   have there_exists(codomain(a))
-    by axiom 1
+    by axiom 2
   hence there_exists(a)
-    by axiom 4
+    by axiom 3
   hence there_exists(compose(codomain(a),a))
-    by rw axiom 3 R->L
+    by rw axiom 1 R->L
   hence domain(codomain(a)) = codomain(a)
-    by axiom 5
+    by axiom 4
 
 Goal 1: codomain(codomain(a)) = codomain(a)
 Proof:
   have there_exists(codomain(a))
-    by axiom 1
+    by axiom 2
   hence there_exists(compose(codomain(a),domain(codomain(a))))
-    by rw axiom 2 R->L
+    by rw axiom 5 R->L
   hence domain(codomain(a)) = codomain(domain(codomain(a)))
-    by axiom 5
+    by axiom 4
   hence domain(codomain(a)) = codomain(codomain(a))
     by rw lemma 6
   hence codomain(a) = codomain(codomain(a))

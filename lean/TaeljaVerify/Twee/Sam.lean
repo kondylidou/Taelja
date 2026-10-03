@@ -20,59 +20,59 @@ axiom meet : α → α → α
 axiom comp : α → α → Prop
 
 -- Axiom 1
-axiom ax1 : ∀ (x y : α), join x y = join y x
+axiom ax1 : ∀ (x : α), meet zero x = zero
 -- Axiom 2
-axiom ax2 : ∀ (x y z : α), join x (join y z) = join (join x y) z
+axiom ax2 : ∀ (x y : α), meet x y = meet y x
 -- Axiom 3
-axiom ax3 : ∀ (x y : α), meet x y = meet y x
+axiom ax3 : comp b (join c d)
 -- Axiom 4
-axiom ax4 : ∀ (x y : α), join x (meet x y) = x
+axiom ax4 : ∀ (x y : α), comp x y → meet x y = zero
 -- Axiom 5
-axiom ax5 : ∀ (x y : α), meet x (join x y) = x
+axiom ax5 : ∀ (x y z : α), meet x (meet y z) = meet (meet x y) z
 -- Axiom 6
-axiom ax6 : ∀ (x y z : α), meet x (meet y z) = meet (meet x y) z
+axiom ax6 : ∀ (x y : α), join x y = join y x
 -- Axiom 7
-axiom ax7 : comp b (join c d)
+axiom ax7 : ∀ (x y : α), join x (meet x y) = x
 -- Axiom 8
-axiom ax8 : ∀ (x y : α), comp x y → meet x y = zero
+axiom ax8 : ∀ (x y z : α), join x (join y z) = join (join x y) z
 -- Axiom 9
-axiom ax9 : ∀ (x : α), meet zero x = zero
+axiom ax9 : ∀ (x y : α), meet x (join x y) = x
 -- Axiom 10
 axiom ax10 : ∀ (x : α), join zero x = x
 
 -- Lemma 11
 theorem taelja_lemma11 : ∀ (x y : α), join (meet x y) y = y := by
   intro x y
-  calc join (meet x y) y = join y (meet x y) := ax1 (meet x y) y
-      _ = join y (meet y x) := congrArg (fun t : α => join y t) (ax3 x y)
-      _ = y := ax4 y x
+  calc join (meet x y) y = join y (meet x y) := ax6 (meet x y) y
+      _ = join y (meet y x) := congrArg (fun t : α => join y t) (ax2 x y)
+      _ = y := ax7 y x
 
 -- Lemma 12
 theorem taelja_lemma12 : ∀ (x y z : α), join (meet x y) (join z y) = join z y := by
   intro x y z
-  calc join (meet x y) (join z y) = join (meet x y) (join y z) := congrArg (fun t : α => join (meet x y) t) (ax1 z y)
-      _ = join (join (meet x y) y) z := ax2 (meet x y) y z
+  calc join (meet x y) (join z y) = join (meet x y) (join y z) := congrArg (fun t : α => join (meet x y) t) (ax6 z y)
+      _ = join (join (meet x y) y) z := ax8 (meet x y) y z
       _ = join y z := congrArg (fun t : α => join t z) (taelja_lemma11 x y)
-      _ = join z y := ax1 y z
+      _ = join z y := ax6 y z
 
 -- Lemma 13
 theorem taelja_lemma13 : meet b (join c d) = zero := by
-  have h1 : comp b (join c d) := ax7
-  have h2 : meet b (join c d) = zero := ax8 b (join c d) h1
+  have h1 : comp b (join c d) := ax3
+  have h2 : meet b (join c d) = zero := ax4 b (join c d) h1
   exact h2
 
 -- Lemma 14
 theorem taelja_lemma14 : meet b c = zero := by
-  calc meet b c = meet (meet b c) (join (meet b c) (join d c)) := Eq.symm (ax5 (meet b c) (join d c))
+  calc meet b c = meet (meet b c) (join (meet b c) (join d c)) := Eq.symm (ax9 (meet b c) (join d c))
       _ = meet (meet b c) (join d c) := congrArg (fun t : α => meet (meet b c) t) (taelja_lemma12 b c d)
-      _ = meet (meet b c) (join c d) := congrArg (fun t : α => meet (meet b c) t) (ax1 d c)
-      _ = meet (join c d) (meet b c) := ax3 (meet b c) (join c d)
-      _ = meet (join c d) (meet c b) := congrArg (fun t : α => meet (join c d) t) (Eq.symm (ax3 c b))
-      _ = meet (meet c b) (join c d) := Eq.symm (ax3 (meet c b) (join c d))
-      _ = meet c (meet b (join c d)) := Eq.symm (ax6 c b (join c d))
+      _ = meet (meet b c) (join c d) := congrArg (fun t : α => meet (meet b c) t) (ax6 d c)
+      _ = meet (join c d) (meet b c) := ax2 (meet b c) (join c d)
+      _ = meet (join c d) (meet c b) := congrArg (fun t : α => meet (join c d) t) (Eq.symm (ax2 c b))
+      _ = meet (meet c b) (join c d) := Eq.symm (ax2 (meet c b) (join c d))
+      _ = meet c (meet b (join c d)) := Eq.symm (ax5 c b (join c d))
       _ = meet c zero := congrArg (fun t : α => meet c t) (taelja_lemma13)
-      _ = meet zero c := ax3 c zero
-      _ = zero := ax9 c
+      _ = meet zero c := ax2 c zero
+      _ = zero := ax1 c
 
 -- Lemma 15
 theorem taelja_lemma15 : ∀ (x : α), join (meet b c) x = x := by
@@ -83,17 +83,17 @@ theorem taelja_lemma15 : ∀ (x : α), join (meet b c) x = x := by
 -- Lemma 16
 theorem taelja_lemma16 : ∀ (x y z : α), join x (join y z) = join z (join y x) := by
   intro x y z
-  calc join x (join y z) = join x (join z y) := congrArg (fun t : α => join x t) (Eq.symm (ax1 z y))
-      _ = join (join z y) x := Eq.symm (ax1 (join z y) x)
-      _ = join z (join y x) := Eq.symm (ax2 z y x)
+  calc join x (join y z) = join x (join z y) := congrArg (fun t : α => join x t) (Eq.symm (ax6 z y))
+      _ = join (join z y) x := Eq.symm (ax6 (join z y) x)
+      _ = join z (join y x) := Eq.symm (ax8 z y x)
 
 -- Goal 1
 theorem taelja_goal1 : meet (join a (meet b c)) (join a (meet b d)) = a := by
   calc meet (join a (meet b c)) (join a (meet b d)) = meet (join a (meet b c)) (join (meet b c) (join a (meet b d))) := congrArg (fun t : α => meet (join a (meet b c)) t) (Eq.symm (taelja_lemma15 (join a (meet b d))))
       _ = meet (join a (meet b c)) (join (meet b d) (join a (meet b c))) := congrArg (fun t : α => meet (join a (meet b c)) t) (taelja_lemma16 (meet b c) a (meet b d))
-      _ = meet (join a (meet b c)) (join (join a (meet b c)) (meet b d)) := congrArg (fun t : α => meet (join a (meet b c)) t) (ax1 (meet b d) (join a (meet b c)))
-      _ = join a (meet b c) := ax5 (join a (meet b c)) (meet b d)
-      _ = join (meet b c) a := ax1 a (meet b c)
+      _ = meet (join a (meet b c)) (join (join a (meet b c)) (meet b d)) := congrArg (fun t : α => meet (join a (meet b c)) t) (ax6 (meet b d) (join a (meet b c)))
+      _ = join a (meet b c) := ax9 (join a (meet b c)) (meet b d)
+      _ = join (meet b c) a := ax6 a (meet b c)
       _ = a := taelja_lemma15 a
 
 end TweeSam

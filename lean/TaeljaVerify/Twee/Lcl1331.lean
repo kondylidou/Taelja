@@ -17,20 +17,20 @@ axiom implies : α → α → α
 -- Axiom 1
 axiom ax1 : ∀ (z : α), implies truth z = z
 -- Axiom 2
-axiom ax2 : ∀ (z u : α), implies z u = implies u z
+axiom ax2 : ∀ (z u v : α), implies (implies z u) (implies (implies u v) (implies z v)) = truth
 -- Axiom 3
-axiom ax3 : ∀ (z u : α), implies (implies z u) u = implies (implies u z) z
+axiom ax3 : ∀ (z u : α), implies z u = implies u z
 -- Axiom 4
-axiom ax4 : ∀ (z u v : α), implies (implies z u) (implies (implies u v) (implies z v)) = truth
+axiom ax4 : ∀ (z u : α), implies (implies z u) u = implies (implies u z) z
 
 -- Lemma 5
 theorem taelja_lemma5 : ∀ (z : α), implies z z = z := by
   intro z
   calc implies z z = implies z (implies truth z) := congrArg (fun t : α => implies z t) (Eq.symm (ax1 z))
-      _ = implies (implies truth z) z := ax2 z (implies truth z)
-      _ = implies (implies z truth) truth := ax3 truth z
-      _ = implies truth (implies z truth) := ax2 (implies z truth) truth
-      _ = implies truth (implies truth z) := congrArg (fun t : α => implies truth t) (ax2 z truth)
+      _ = implies (implies truth z) z := ax3 z (implies truth z)
+      _ = implies (implies z truth) truth := ax4 truth z
+      _ = implies truth (implies z truth) := ax3 (implies z truth) truth
+      _ = implies truth (implies truth z) := congrArg (fun t : α => implies truth t) (ax3 z truth)
       _ = implies truth z := ax1 (implies truth z)
       _ = z := ax1 z
 
@@ -39,7 +39,7 @@ theorem taelja_lemma6 : ∀ (z u : α), implies z (implies z u) = truth := by
   intro z u
   calc implies z (implies z u) = implies z (implies (implies z u) (implies z u)) := congrArg (fun t : α => implies z t) (Eq.symm (taelja_lemma5 (implies z u)))
       _ = implies (implies z z) (implies (implies z u) (implies z u)) := congrArg (fun t : α => implies t (implies (implies z u) (implies z u))) (Eq.symm (taelja_lemma5 z))
-      _ = truth := ax4 z z u
+      _ = truth := ax2 z z u
 
 -- Goal 1
 theorem taelja_goal1 : x = y := by

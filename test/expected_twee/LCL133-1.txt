@@ -1,20 +1,20 @@
 Axiom 1: implies(truth,X) = X
-Axiom 2: implies(Y,Z) = implies(Z,Y)
-Axiom 3: implies(implies(Y,A),A) = implies(implies(A,Y),Y)
-Axiom 4: implies(implies(Y,A),implies(implies(A,B),implies(Y,B))) = truth
+Axiom 2: implies(implies(Y,Z),implies(implies(Z,A),implies(Y,A))) = truth
+Axiom 3: implies(Y,B) = implies(B,Y)
+Axiom 4: implies(implies(Y,Z),Z) = implies(implies(Z,Y),Y)
 
 Lemma 5: implies(X,X) = X
 Proof:
   implies(X,X)
 = { by axiom 1 R->L }
   implies(X,implies(truth,X))
-= { by axiom 2 }
-  implies(implies(truth,X),X)
 = { by axiom 3 }
+  implies(implies(truth,X),X)
+= { by axiom 4 }
   implies(implies(X,truth),truth)
-= { by axiom 2 }
+= { by axiom 3 }
   implies(truth,implies(X,truth))
-= { by axiom 2 }
+= { by axiom 3 }
   implies(truth,implies(truth,X))
 = { by axiom 1 }
   implies(truth,X)
@@ -28,7 +28,7 @@ Proof:
   implies(X,implies(implies(X,Y),implies(X,Y)))
 = { by lemma 5 R->L }
   implies(implies(X,X),implies(implies(X,Y),implies(X,Y)))
-= { by axiom 4 }
+= { by axiom 2 }
   truth
 
 Goal 1: x = y

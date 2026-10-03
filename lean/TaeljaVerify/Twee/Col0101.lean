@@ -15,13 +15,13 @@ axiom s2 : α
 axiom apply_ : α → α → α
 
 -- Axiom 1
-axiom ax1 : ∀ (x y z : α), apply_ (apply_ (apply_ s2 x) y) z = apply_ (apply_ x z) (apply_ y y)
+axiom ax1 : ∀ (x y z : α), apply_ (apply_ (apply_ b x) y) z = apply_ x (apply_ y z)
 -- Axiom 2
-axiom ax2 : ∀ (x y z : α), apply_ (apply_ (apply_ b x) y) z = apply_ x (apply_ y z)
+axiom ax2 : ∀ (x y z : α), apply_ (apply_ (apply_ s2 x) y) z = apply_ (apply_ x z) (apply_ y y)
 
 -- Goal 1
 theorem taelja_goal1 : apply_ (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) = apply_ combinator (apply_ (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator)))) := by
-  calc apply_ (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) = apply_ (apply_ (apply_ b combinator) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator)))) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) := ax1 (apply_ b combinator) (apply_ s2 (apply_ b combinator)) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator)))
-      _ = apply_ combinator (apply_ (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator)))) := ax2 combinator (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator)))
+  calc apply_ (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) = apply_ (apply_ (apply_ b combinator) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator)))) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) := ax2 (apply_ b combinator) (apply_ s2 (apply_ b combinator)) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator)))
+      _ = apply_ combinator (apply_ (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator)))) := ax1 combinator (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator))) (apply_ (apply_ s2 (apply_ b combinator)) (apply_ s2 (apply_ b combinator)))
 
 end TweeCol0101

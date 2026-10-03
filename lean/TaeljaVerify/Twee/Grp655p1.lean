@@ -15,19 +15,19 @@ axiom rd : α → α → α
 -- Axiom 1
 axiom ax1 : ∀ (x y : α), mult (rd x y) y = x
 -- Axiom 2
-axiom ax2 : ∀ (x y z : α), mult x (mult y (mult z y)) = mult (mult (mult x y) z) y
+axiom ax2 : ∀ (x y : α), rd (mult x y) y = x
 -- Axiom 3
 axiom ax3 : ∀ (x y : α), ld x (mult x y) = y
 -- Axiom 4
 axiom ax4 : ∀ (x y : α), mult x (ld x y) = y
 -- Axiom 5
-axiom ax5 : ∀ (x y : α), rd (mult x y) y = x
+axiom ax5 : ∀ (x y z : α), mult x (mult y (mult z y)) = mult (mult (mult x y) z) y
 
 -- Lemma 6
 theorem taelja_lemma6 : ∀ (x y z : α), ld (rd x y) (mult (mult x z) y) = mult y (mult z y) := by
   intro x y z
   calc ld (rd x y) (mult (mult x z) y) = ld (rd x y) (mult (mult (mult (rd x y) y) z) y) := congrArg (fun t : α => ld (rd x y) (mult (mult t z) y)) (Eq.symm (ax1 x y))
-      _ = ld (rd x y) (mult (rd x y) (mult y (mult z y))) := congrArg (fun t : α => ld (rd x y) t) (Eq.symm (ax2 (rd x y) y z))
+      _ = ld (rd x y) (mult (rd x y) (mult y (mult z y))) := congrArg (fun t : α => ld (rd x y) t) (Eq.symm (ax5 (rd x y) y z))
       _ = mult y (mult z y) := ax3 (rd x y) (mult y (mult z y))
 
 -- Lemma 7
@@ -51,8 +51,8 @@ theorem taelja_lemma9 : ∀ (x y : α), mult (ld x (rd x y)) y = ld y y := by
 -- Lemma 10
 theorem taelja_lemma10 : ∀ (x y z : α), rd (mult x (mult y (mult z y))) y = mult (mult x y) z := by
   intro x y z
-  calc rd (mult x (mult y (mult z y))) y = rd (mult (mult (mult x y) z) y) y := congrArg (fun t : α => rd t y) (ax2 x y z)
-      _ = mult (mult x y) z := ax5 (mult (mult x y) z) y
+  calc rd (mult x (mult y (mult z y))) y = rd (mult (mult (mult x y) z) y) y := congrArg (fun t : α => rd t y) (ax5 x y z)
+      _ = mult (mult x y) z := ax2 (mult (mult x y) z) y
 
 -- Lemma 11
 theorem taelja_lemma11 : ∀ (x y z : α), rd (mult x (mult y z)) y = mult (mult x y) (rd z y) := by
@@ -75,24 +75,24 @@ theorem taelja_lemma13 : ∀ (x y z : α), rd (mult (rd x y) z) y = mult x (rd (
 -- Lemma 14
 theorem taelja_lemma14 : ∀ (x y z : α), mult x (ld y (rd y z)) = rd x z := by
   intro x y z
-  calc mult x (ld y (rd y z)) = mult x (rd (mult (ld y (rd y z)) z) z) := congrArg (fun t : α => mult x t) (Eq.symm (ax5 (ld y (rd y z)) z))
+  calc mult x (ld y (rd y z)) = mult x (rd (mult (ld y (rd y z)) z) z) := congrArg (fun t : α => mult x t) (Eq.symm (ax2 (ld y (rd y z)) z))
       _ = mult x (rd (ld z z) z) := congrArg (fun t : α => mult x (rd t z)) (taelja_lemma9 y z)
       _ = rd (mult (rd x z) z) z := Eq.symm (taelja_lemma13 x z z)
-      _ = rd x z := ax5 (rd x z) z
+      _ = rd x z := ax2 (rd x z) z
 
 -- Lemma 15
 theorem taelja_lemma15 : ∀ (x y z : α), ld x (rd x y) = ld z (rd z y) := by
   intro x y z
-  calc ld x (rd x y) = rd (mult (ld x (rd x y)) y) y := Eq.symm (ax5 (ld x (rd x y)) y)
+  calc ld x (rd x y) = rd (mult (ld x (rd x y)) y) y := Eq.symm (ax2 (ld x (rd x y)) y)
       _ = rd (ld y y) y := congrArg (fun t : α => rd t y) (taelja_lemma9 x y)
       _ = rd (mult (ld z (rd z y)) y) y := congrArg (fun t : α => rd t y) (Eq.symm (taelja_lemma9 z y))
-      _ = ld z (rd z y) := ax5 (ld z (rd z y)) y
+      _ = ld z (rd z y) := ax2 (ld z (rd z y)) y
 
 -- Lemma 16
 theorem taelja_lemma16 : ∀ (x y : α), rd x (ld y x) = y := by
   intro x y
   calc rd x (ld y x) = rd (mult y (ld y x)) (ld y x) := congrArg (fun t : α => rd t (ld y x)) (Eq.symm (ax4 y x))
-      _ = y := ax5 y (ld y x)
+      _ = y := ax2 y (ld y x)
 
 -- Lemma 17
 theorem taelja_lemma17 : ∀ (x y z : α), ld x (rd x (ld y z)) = ld z y := by
@@ -109,7 +109,7 @@ theorem taelja_lemma18 : ∀ (x y z : α), rd x (ld y z) = mult x (ld z y) := by
 -- Lemma 19
 theorem taelja_lemma19 : ∀ (x y z : α), ld (mult x y) x = ld z (rd z y) := by
   intro x y z
-  calc ld (mult x y) x = ld (mult x y) (rd (mult x y) y) := congrArg (fun t : α => ld (mult x y) t) (Eq.symm (ax5 x y))
+  calc ld (mult x y) x = ld (mult x y) (rd (mult x y) y) := congrArg (fun t : α => ld (mult x y) t) (Eq.symm (ax2 x y))
       _ = ld z (rd z y) := taelja_lemma15 (mult x y) y z
 
 -- Lemma 20
@@ -134,7 +134,7 @@ theorem taelja_lemma22 : ∀ (x : α), rd x x = ld x x := by
   calc rd x x = ld x (mult x (rd x x)) := Eq.symm (ax3 x (rd x x))
       _ = ld x (rd (mult (rd x x) (mult x x)) x) := congrArg (fun t : α => ld x t) (Eq.symm (taelja_lemma12 x x x))
       _ = ld x (rd (mult (rd x (ld x x)) x) x) := congrArg (fun t : α => ld x (rd t x)) (Eq.symm (taelja_lemma21 x x))
-      _ = ld x (rd x (ld x x)) := congrArg (fun t : α => ld x t) (ax5 (rd x (ld x x)) x)
+      _ = ld x (rd x (ld x x)) := congrArg (fun t : α => ld x t) (ax2 (rd x (ld x x)) x)
       _ = ld x x := taelja_lemma17 x x x
 
 -- Lemma 23
@@ -172,7 +172,7 @@ theorem taelja_lemma27 : ∀ (x y : α), rd (rd x (ld y y)) (ld y y) = x := by
       _ = rd (rd x (ld (ld x (rd x y)) (ld x (rd x y)))) (rd y y) := congrArg (fun t : α => rd (rd x t) (rd y y)) (Eq.symm (taelja_lemma26 x y))
       _ = rd (mult x (ld (ld x (rd x y)) (ld x (rd x y)))) (rd y y) := congrArg (fun t : α => rd t (rd y y)) (taelja_lemma18 x (ld x (rd x y)) (ld x (rd x y)))
       _ = rd (mult x (rd y y)) (rd y y) := congrArg (fun t : α => rd (mult x t) (rd y y)) (taelja_lemma26 x y)
-      _ = x := ax5 x (rd y y)
+      _ = x := ax2 x (rd y y)
 
 -- Lemma 28
 theorem taelja_lemma28 : ∀ (x y z : α), mult (ld x (rd y z)) z = ld z (ld (rd x z) y) := by
@@ -183,7 +183,7 @@ theorem taelja_lemma28 : ∀ (x y z : α), mult (ld x (rd y z)) z = ld z (ld (rd
 -- Lemma 29
 theorem taelja_lemma29 : ∀ (x y z : α), mult x (mult (ld x y) (mult z (ld x y))) = mult (mult y z) (ld x y) := by
   intro x y z
-  calc mult x (mult (ld x y) (mult z (ld x y))) = mult (mult (mult x (ld x y)) z) (ld x y) := ax2 x (ld x y) z
+  calc mult x (mult (ld x y) (mult z (ld x y))) = mult (mult (mult x (ld x y)) z) (ld x y) := ax5 x (ld x y) z
       _ = mult (mult y z) (ld x y) := congrArg (fun t : α => mult (mult t z) (ld x y)) (ax4 x y)
 
 -- Lemma 30
@@ -241,12 +241,12 @@ theorem taelja_lemma34 : ∀ (x : α), ld (ld x x) (ld x x) = ld x x := by
       _ = mult (ld x x) (mult (rd x (rd (mult (ld x (mult x x)) (mult x x)) (ld x (mult x x)))) x) := congrArg (fun t : α => mult (ld x x) (mult (rd x t) x)) (Eq.symm (taelja_lemma18 (mult (ld x (mult x x)) (mult x x)) x (mult x x)))
       _ = mult (ld x x) (mult (rd x (rd (mult x (mult x x)) (ld x (mult x x)))) x) := congrArg (fun t : α => mult (ld x x) (mult (rd x (rd (mult t (mult x x)) (ld x (mult x x)))) x)) (ax3 x x)
       _ = mult (ld x x) (mult (rd x (rd (mult x (mult x x)) x)) x) := congrArg (fun t : α => mult (ld x x) (mult (rd x (rd (mult x (mult x x)) t)) x)) (ax3 x x)
-      _ = mult (ld x x) (mult (rd x (rd (mult (rd (mult x x) x) (mult x x)) x)) x) := congrArg (fun t : α => mult (ld x x) (mult (rd x (rd (mult t (mult x x)) x)) x)) (Eq.symm (ax5 x x))
+      _ = mult (ld x x) (mult (rd x (rd (mult (rd (mult x x) x) (mult x x)) x)) x) := congrArg (fun t : α => mult (ld x x) (mult (rd x (rd (mult t (mult x x)) x)) x)) (Eq.symm (ax2 x x))
       _ = mult (ld x x) (mult (rd x (rd (mult (rd (mult x x) (ld x x)) x) x)) x) := congrArg (fun t : α => mult (ld x x) (mult (rd x (rd t x)) x)) (Eq.symm (taelja_lemma21 (mult x x) x))
       _ = mult (ld x x) (mult (rd x (rd (mult (mult x x) x) x)) x) := congrArg (fun t : α => mult (ld x x) (mult (rd x (rd (mult t x) x)) x)) (taelja_lemma31 x)
-      _ = mult (ld x x) (mult (rd x (mult x x)) x) := congrArg (fun t : α => mult (ld x x) (mult (rd x t) x)) (ax5 (mult x x) x)
+      _ = mult (ld x x) (mult (rd x (mult x x)) x) := congrArg (fun t : α => mult (ld x x) (mult (rd x t) x)) (ax2 (mult x x) x)
       _ = mult (ld x x) (mult (rd x (mult x (mult (rd x x) x))) x) := congrArg (fun t : α => mult (ld x x) (mult (rd x (mult x t)) x)) (Eq.symm (ax1 x x))
-      _ = mult (ld x x) (rd (mult (mult (rd x (mult x (mult (rd x x) x))) x) (rd x x)) (rd x x)) := congrArg (fun t : α => mult (ld x x) t) (Eq.symm (ax5 (mult (rd x (mult x (mult (rd x x) x))) x) (rd x x)))
+      _ = mult (ld x x) (rd (mult (mult (rd x (mult x (mult (rd x x) x))) x) (rd x x)) (rd x x)) := congrArg (fun t : α => mult (ld x x) t) (Eq.symm (ax2 (mult (rd x (mult x (mult (rd x x) x))) x) (rd x x)))
       _ = mult (ld x x) (rd (rd (mult (rd x (mult x (mult (rd x x) x))) (mult x (mult (rd x x) x))) x) (rd x x)) := congrArg (fun t : α => mult (ld x x) (rd t (rd x x))) (Eq.symm (taelja_lemma10 (rd x (mult x (mult (rd x x) x))) x (rd x x)))
       _ = mult (ld x x) (rd (rd x x) (rd x x)) := congrArg (fun t : α => mult (ld x x) (rd (rd t x) (rd x x))) (ax1 x (mult x (mult (rd x x) x)))
       _ = mult (ld x x) (ld (rd x x) (rd x x)) := congrArg (fun t : α => mult (ld x x) t) (taelja_lemma22 (rd x x))
@@ -264,7 +264,7 @@ theorem taelja_lemma35 : ∀ (x y : α), ld (ld (ld x x) (ld y y)) (ld (ld x x) 
       _ = ld (ld (ld y y) (ld x (mult (rd x (ld y y)) (ld y y)))) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y)) := congrArg (fun t : α => ld (ld (ld y y) (ld x t)) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y))) (taelja_lemma18 (rd x (ld y y)) y y)
       _ = ld (ld (ld y y) (ld (ld (rd (mult y y) x) (mult y y)) (mult (rd x (ld y y)) (ld y y)))) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y)) := congrArg (fun t : α => ld (ld (ld y y) (ld t (mult (rd x (ld y y)) (ld y y)))) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y))) (Eq.symm (taelja_lemma25 (mult y y) x))
       _ = ld (ld (ld y y) (ld (ld (rd (mult y y) x) (rd (mult y y) (ld y y))) (mult (rd x (ld y y)) (ld y y)))) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y)) := congrArg (fun t : α => ld (ld (ld y y) (ld (ld (rd (mult y y) x) t) (mult (rd x (ld y y)) (ld y y)))) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y))) (Eq.symm (taelja_lemma31 y))
-      _ = ld (ld (ld y y) (ld (rd (mult (ld (rd (mult y y) x) (rd (mult y y) (ld y y))) (ld y y)) (ld y y)) (mult (rd x (ld y y)) (ld y y)))) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y)) := congrArg (fun t : α => ld (ld (ld y y) (ld t (mult (rd x (ld y y)) (ld y y)))) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y))) (Eq.symm (ax5 (ld (rd (mult y y) x) (rd (mult y y) (ld y y))) (ld y y)))
+      _ = ld (ld (ld y y) (ld (rd (mult (ld (rd (mult y y) x) (rd (mult y y) (ld y y))) (ld y y)) (ld y y)) (mult (rd x (ld y y)) (ld y y)))) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y)) := congrArg (fun t : α => ld (ld (ld y y) (ld t (mult (rd x (ld y y)) (ld y y)))) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y))) (Eq.symm (ax2 (ld (rd (mult y y) x) (rd (mult y y) (ld y y))) (ld y y)))
       _ = ld (mult (ld (mult (ld (rd (mult y y) x) (rd (mult y y) (ld y y))) (ld y y)) (rd x (ld y y))) (ld y y)) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y)) := congrArg (fun t : α => ld t (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y))) (taelja_lemma8 (ld y y) (mult (ld (rd (mult y y) x) (rd (mult y y) (ld y y))) (ld y y)) (rd x (ld y y)))
       _ = ld (mult (ld (ld (ld y y) (ld (rd (rd (mult y y) x) (ld y y)) (mult y y))) (rd x (ld y y))) (ld y y)) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y)) := congrArg (fun t : α => ld (mult (ld t (rd x (ld y y))) (ld y y)) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y))) (taelja_lemma28 (rd (mult y y) x) (mult y y) (ld y y))
       _ = ld (mult (ld (ld (ld y y) (ld (mult (rd (mult y y) x) (ld y y)) (mult y y))) (rd x (ld y y))) (ld y y)) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y)) := congrArg (fun t : α => ld (mult (ld (ld (ld y y) (ld t (mult y y))) (rd x (ld y y))) (ld y y)) (mult (ld (rd x (ld y y)) (rd x (ld y y))) (ld y y))) (taelja_lemma18 (rd (mult y y) x) y y)

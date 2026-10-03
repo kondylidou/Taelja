@@ -1,10 +1,10 @@
-Axiom 1: least_upper_bound(a,b) = a
-Axiom 2: least_upper_bound(a,b) = b
+Axiom 1: least_upper_bound(a,b) = b
+Axiom 2: least_upper_bound(a,b) = a
 
 Goal 1: a = b
 Proof:
   a
-= { by axiom 1 R->L }
+= { by axiom 2 R->L }
   least_upper_bound(a,b)
-= { by axiom 2 }
+= { by axiom 1 }
   b

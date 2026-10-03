@@ -1,12 +1,12 @@
-Axiom 1: g(X) = f(X)
-Axiom 2: f(Y) = Y
+Axiom 1: f(X) = X
+Axiom 2: g(Y) = f(Y)
 
 Lemma 3: g(X) = X
 Proof:
   g(X)
-= { by axiom 1 }
-  f(X)
 = { by axiom 2 }
+  f(X)
+= { by axiom 1 }
   X
 
 Goal 1: g(g(a)) = a

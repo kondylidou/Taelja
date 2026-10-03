@@ -1,15 +1,15 @@
 Axiom 1: s(a)
-Axiom 2: g(X) = f(X)
-Axiom 3: f(Y) = Y
-Axiom 4: g(Y) = Y => q(Y)
-Axiom 5: s(Y) /\ q(Y) => p(Y)
+Axiom 2: f(X) = X
+Axiom 3: g(Y) = f(Y)
+Axiom 4: g(X) = X => q(X)
+Axiom 5: s(X) /\ q(X) => p(X)
 
 Lemma 6: g(X) = X
 Proof:
   g(X)
-= { by axiom 2 }
-  f(X)
 = { by axiom 3 }
+  f(X)
+= { by axiom 2 }
   X
 
 Lemma 7: q(a)

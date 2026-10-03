@@ -20,136 +20,136 @@ axiom sin : α → α
 axiom times : α → α → α
 
 -- Axiom 1
-axiom ax1 : ∀ (y z : α), d (op_plus y z) = op_plus (d y) (d z)
+axiom ax1 : ∀ (y : α), times one y = y
 -- Axiom 2
-axiom ax2 : ∀ (y z u : α), op_plus y (op_plus z u) = op_plus (op_plus y z) u
+axiom ax2 : d x = one
 -- Axiom 3
-axiom ax3 : ∀ (y : α), op_plus y (minus y) = zero
+axiom ax3 : ∀ (y z : α), times y z = times z y
 -- Axiom 4
-axiom ax4 : ∀ (y : α), op_plus zero y = y
+axiom ax4 : ∀ (y : α), d (sin y) = times (cos y) (d y)
 -- Axiom 5
-axiom ax5 : ∀ (y z : α), op_plus y z = op_plus z y
+axiom ax5 : ∀ (y : α), op_plus zero y = y
 -- Axiom 6
-axiom ax6 : ∀ (y z : α), times y z = times z y
+axiom ax6 : ∀ (y z : α), op_plus y z = op_plus z y
 -- Axiom 7
-axiom ax7 : ∀ (y : α), times one y = y
+axiom ax7 : ∀ (y : α), op_plus y (minus y) = zero
 -- Axiom 8
-axiom ax8 : ∀ (y z u : α), times y (op_plus z u) = op_plus (times y z) (times y u)
+axiom ax8 : ∀ (y z u : α), op_plus y (op_plus z u) = op_plus (op_plus y z) u
 -- Axiom 9
-axiom ax9 : ∀ (y : α), times zero y = zero
+axiom ax9 : ∀ (y : α), d (cos y) = minus (times (sin y) (d y))
 -- Axiom 10
-axiom ax10 : ∀ (y z : α), d (times y z) = op_plus (times y (d z)) (times z (d y))
+axiom ax10 : d zero = zero
 -- Axiom 11
-axiom ax11 : d one = zero
+axiom ax11 : ∀ (y z : α), d (op_plus y z) = op_plus (d y) (d z)
 -- Axiom 12
-axiom ax12 : d zero = zero
+axiom ax12 : ∀ (y z : α), d (times y z) = op_plus (times y (d z)) (times z (d y))
 -- Axiom 13
-axiom ax13 : d x = one
+axiom ax13 : ∀ (y : α), times zero y = zero
 -- Axiom 14
-axiom ax14 : ∀ (y : α), d (cos y) = minus (times (sin y) (d y))
+axiom ax14 : ∀ (y z u : α), times y (op_plus z u) = op_plus (times y z) (times y u)
 -- Axiom 15
-axiom ax15 : ∀ (y : α), d (sin y) = times (cos y) (d y)
+axiom ax15 : d one = zero
 
 -- Lemma 16
-theorem taelja_lemma16 : ∀ (y z : α), op_plus y (op_plus (minus y) z) = z := by
-  intro y z
-  calc op_plus y (op_plus (minus y) z) = op_plus (op_plus y (minus y)) z := ax2 y (minus y) z
-      _ = op_plus zero z := congrArg (fun t : α => op_plus t z) (ax3 y)
-      _ = z := ax4 z
+theorem taelja_lemma16 : d (sin x) = cos x := by
+  calc d (sin x) = times (cos x) (d x) := ax4 x
+      _ = times (d x) (cos x) := ax3 (cos x) (d x)
+      _ = times one (cos x) := congrArg (fun t : α => times t (cos x)) (ax2)
+      _ = cos x := ax1 (cos x)
 
 -- Lemma 17
-theorem taelja_lemma17 : ∀ (y : α), op_plus y zero = y := by
-  intro y
-  calc op_plus y zero = op_plus zero y := ax5 y zero
-      _ = y := ax4 y
+theorem taelja_lemma17 : ∀ (y z : α), op_plus y (op_plus (minus y) z) = z := by
+  intro y z
+  calc op_plus y (op_plus (minus y) z) = op_plus (op_plus y (minus y)) z := ax8 y (minus y) z
+      _ = op_plus zero z := congrArg (fun t : α => op_plus t z) (ax7 y)
+      _ = z := ax5 z
 
 -- Lemma 18
-theorem taelja_lemma18 : ∀ (y : α), minus (minus y) = y := by
+theorem taelja_lemma18 : ∀ (y : α), op_plus y zero = y := by
   intro y
-  calc minus (minus y) = op_plus y (op_plus (minus y) (minus (minus y))) := Eq.symm (taelja_lemma16 y (minus (minus y)))
-      _ = op_plus y zero := congrArg (fun t : α => op_plus y t) (ax3 (minus y))
-      _ = y := taelja_lemma17 y
+  calc op_plus y zero = op_plus zero y := ax6 y zero
+      _ = y := ax5 y
 
 -- Lemma 19
-theorem taelja_lemma19 : ∀ (y : α), times y one = y := by
+theorem taelja_lemma19 : ∀ (y : α), minus (minus y) = y := by
   intro y
-  calc times y one = times one y := ax6 y one
-      _ = y := ax7 y
+  calc minus (minus y) = op_plus y (op_plus (minus y) (minus (minus y))) := Eq.symm (taelja_lemma17 y (minus (minus y)))
+      _ = op_plus y zero := congrArg (fun t : α => op_plus y t) (ax7 (minus y))
+      _ = y := taelja_lemma18 y
 
 -- Lemma 20
-theorem taelja_lemma20 : ∀ (y : α), times y zero = zero := by
-  intro y
-  calc times y zero = times zero y := ax6 y zero
-      _ = zero := ax9 y
+theorem taelja_lemma20 : d (cos x) = minus (sin x) := by
+  calc d (cos x) = minus (times (sin x) (d x)) := ax9 x
+      _ = minus (times (d x) (sin x)) := congrArg (fun t : α => minus t) (Eq.symm (ax3 (d x) (sin x)))
+      _ = minus (times one (sin x)) := congrArg (fun t : α => minus (times t (sin x))) (ax2)
+      _ = minus (sin x) := congrArg (fun t : α => minus t) (ax1 (sin x))
 
 -- Lemma 21
-theorem taelja_lemma21 : ∀ (y : α), times y (minus one) = minus y := by
+theorem taelja_lemma21 : ∀ (y : α), op_plus (d y) (d (minus y)) = zero := by
   intro y
-  calc times y (minus one) = op_plus (minus y) (op_plus (minus (minus y)) (times y (minus one))) := Eq.symm (taelja_lemma16 (minus y) (times y (minus one)))
-      _ = op_plus (minus y) (op_plus (minus (minus y)) (times (minus (minus y)) (minus one))) := congrArg (fun t : α => op_plus (minus y) (op_plus (minus (minus y)) (times t (minus one)))) (Eq.symm (taelja_lemma18 y))
-      _ = op_plus (minus y) (op_plus (times (minus (minus y)) one) (times (minus (minus y)) (minus one))) := congrArg (fun t : α => op_plus (minus y) (op_plus t (times (minus (minus y)) (minus one)))) (Eq.symm (taelja_lemma19 (minus (minus y))))
-      _ = op_plus (minus y) (times (minus (minus y)) (op_plus one (minus one))) := congrArg (fun t : α => op_plus (minus y) t) (Eq.symm (ax8 (minus (minus y)) one (minus one)))
-      _ = op_plus (minus y) (times (minus (minus y)) zero) := congrArg (fun t : α => op_plus (minus y) (times (minus (minus y)) t)) (ax3 one)
-      _ = op_plus (minus y) zero := congrArg (fun t : α => op_plus (minus y) t) (taelja_lemma20 (minus (minus y)))
-      _ = minus y := taelja_lemma17 (minus y)
+  calc op_plus (d y) (d (minus y)) = d (op_plus y (minus y)) := Eq.symm (ax11 y (minus y))
+      _ = d zero := congrArg (fun t : α => d t) (ax7 y)
+      _ = zero := ax10
 
 -- Lemma 22
-theorem taelja_lemma22 : ∀ (y : α), op_plus (d y) (d (minus y)) = zero := by
+theorem taelja_lemma22 : ∀ (y : α), times y one = y := by
   intro y
-  calc op_plus (d y) (d (minus y)) = d (op_plus y (minus y)) := Eq.symm (ax1 y (minus y))
-      _ = d zero := congrArg (fun t : α => d t) (ax3 y)
-      _ = zero := ax12
+  calc times y one = times one y := ax3 y one
+      _ = y := ax1 y
 
 -- Lemma 23
-theorem taelja_lemma23 : d (cos x) = minus (sin x) := by
-  calc d (cos x) = minus (times (sin x) (d x)) := ax14 x
-      _ = minus (times (d x) (sin x)) := congrArg (fun t : α => minus t) (Eq.symm (ax6 (d x) (sin x)))
-      _ = minus (times one (sin x)) := congrArg (fun t : α => minus (times t (sin x))) (ax13)
-      _ = minus (sin x) := congrArg (fun t : α => minus t) (ax7 (sin x))
+theorem taelja_lemma23 : ∀ (y : α), times y zero = zero := by
+  intro y
+  calc times y zero = times zero y := ax3 y zero
+      _ = zero := ax13 y
 
 -- Lemma 24
-theorem taelja_lemma24 : d (sin x) = cos x := by
-  calc d (sin x) = times (cos x) (d x) := ax15 x
-      _ = times (d x) (cos x) := ax6 (cos x) (d x)
-      _ = times one (cos x) := congrArg (fun t : α => times t (cos x)) (ax13)
-      _ = cos x := ax7 (cos x)
+theorem taelja_lemma24 : ∀ (y : α), times y (minus one) = minus y := by
+  intro y
+  calc times y (minus one) = op_plus (minus y) (op_plus (minus (minus y)) (times y (minus one))) := Eq.symm (taelja_lemma17 (minus y) (times y (minus one)))
+      _ = op_plus (minus y) (op_plus (minus (minus y)) (times (minus (minus y)) (minus one))) := congrArg (fun t : α => op_plus (minus y) (op_plus (minus (minus y)) (times t (minus one)))) (Eq.symm (taelja_lemma19 y))
+      _ = op_plus (minus y) (op_plus (times (minus (minus y)) one) (times (minus (minus y)) (minus one))) := congrArg (fun t : α => op_plus (minus y) (op_plus t (times (minus (minus y)) (minus one)))) (Eq.symm (taelja_lemma22 (minus (minus y))))
+      _ = op_plus (minus y) (times (minus (minus y)) (op_plus one (minus one))) := congrArg (fun t : α => op_plus (minus y) t) (Eq.symm (ax14 (minus (minus y)) one (minus one)))
+      _ = op_plus (minus y) (times (minus (minus y)) zero) := congrArg (fun t : α => op_plus (minus y) (times (minus (minus y)) t)) (ax7 one)
+      _ = op_plus (minus y) zero := congrArg (fun t : α => op_plus (minus y) t) (taelja_lemma23 (minus (minus y)))
+      _ = minus y := taelja_lemma18 (minus y)
 
 -- Goal 1
 theorem taelja_goal1 : d (op_plus (minus (d (d (cos x)))) (times (d (d (d (cos x)))) x)) = times x (cos x) := by
-  calc d (op_plus (minus (d (d (cos x)))) (times (d (d (d (cos x)))) x)) = d (op_plus (times (d (d (cos x))) (minus one)) (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => d (op_plus t (times (d (d (d (cos x)))) x))) (Eq.symm (taelja_lemma21 (d (d (cos x)))))
-      _ = op_plus (d (times (d (d (cos x))) (minus one))) (d (times (d (d (d (cos x)))) x)) := ax1 (times (d (d (cos x))) (minus one)) (times (d (d (d (cos x)))) x)
-      _ = op_plus (op_plus (times (d (d (cos x))) (d (minus one))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus t (d (times (d (d (d (cos x)))) x))) (ax10 (d (d (cos x))) (minus one))
-      _ = op_plus (op_plus (times (d (d (cos x))) (op_plus zero (d (minus one)))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus (op_plus (times (d (d (cos x))) t) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x))) (Eq.symm (ax4 (d (minus one))))
-      _ = op_plus (op_plus (times (d (d (cos x))) (op_plus (d one) (d (minus one)))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus (op_plus (times (d (d (cos x))) (op_plus t (d (minus one)))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x))) (Eq.symm (ax11))
-      _ = op_plus (op_plus (times (d (d (cos x))) zero) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus (op_plus (times (d (d (cos x))) t) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x))) (taelja_lemma22 one)
-      _ = op_plus (op_plus zero (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus (op_plus t (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x))) (taelja_lemma20 (d (d (cos x))))
-      _ = op_plus (times (minus one) (d (d (d (cos x))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus t (d (times (d (d (d (cos x)))) x))) (ax4 (times (minus one) (d (d (d (cos x))))))
-      _ = op_plus (times (d (d (d (cos x)))) (minus one)) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus t (d (times (d (d (d (cos x)))) x))) (ax6 (minus one) (d (d (d (cos x)))))
-      _ = op_plus (minus (d (d (d (cos x))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus t (d (times (d (d (d (cos x)))) x))) (taelja_lemma21 (d (d (d (cos x)))))
-      _ = op_plus (d (times (d (d (d (cos x)))) x)) (minus (d (d (d (cos x))))) := ax5 (minus (d (d (d (cos x))))) (d (times (d (d (d (cos x)))) x))
-      _ = op_plus (op_plus (times (d (d (d (cos x)))) (d x)) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x))))) := congrArg (fun t : α => op_plus t (minus (d (d (d (cos x)))))) (ax10 (d (d (d (cos x)))) x)
-      _ = op_plus (op_plus (times (d (d (d (cos x)))) one) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x))))) := congrArg (fun t : α => op_plus (op_plus (times (d (d (d (cos x)))) t) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x)))))) (ax13)
-      _ = op_plus (op_plus (d (d (d (cos x)))) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x))))) := congrArg (fun t : α => op_plus (op_plus t (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x)))))) (taelja_lemma19 (d (d (d (cos x)))))
-      _ = op_plus (d (d (d (cos x)))) (op_plus (times x (d (d (d (d (cos x)))))) (minus (d (d (d (cos x)))))) := Eq.symm (ax2 (d (d (d (cos x)))) (times x (d (d (d (d (cos x)))))) (minus (d (d (d (cos x))))))
-      _ = op_plus (d (d (d (cos x)))) (op_plus (minus (d (d (d (cos x))))) (times x (d (d (d (d (cos x))))))) := congrArg (fun t : α => op_plus (d (d (d (cos x)))) t) (ax5 (times x (d (d (d (d (cos x)))))) (minus (d (d (d (cos x))))))
-      _ = times x (d (d (d (d (cos x))))) := taelja_lemma16 (d (d (d (cos x)))) (times x (d (d (d (d (cos x))))))
-      _ = times x (d (minus (minus (d (d (d (cos x))))))) := congrArg (fun t : α => times x (d t)) (Eq.symm (taelja_lemma18 (d (d (d (cos x))))))
-      _ = times x (d (minus (op_plus (minus (d (d (d (cos x))))) zero))) := congrArg (fun t : α => times x (d (minus t))) (Eq.symm (taelja_lemma17 (minus (d (d (d (cos x)))))))
-      _ = times x (d (minus (op_plus (minus (d (d (d (cos x))))) (op_plus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x)))))))) := congrArg (fun t : α => times x (d (minus (op_plus (minus (d (d (d (cos x))))) t)))) (Eq.symm (ax3 (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x)))))
-      _ = times x (d (minus (op_plus (minus (d (d (d (cos x))))) (op_plus (minus (minus (d (d (d (cos x)))))) (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (minus (d (d (d (cos x))))) t)))) (Eq.symm (ax2 (minus (minus (d (d (d (cos x)))))) (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))))
-      _ = times x (d (minus (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))))) := congrArg (fun t : α => times x (d (minus t))) (taelja_lemma16 (minus (d (d (d (cos x))))) (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))))
-      _ = times x (d (minus (op_plus (d (cos x)) (minus (op_plus (d (cos x)) (minus (minus (d (d (d (cos x))))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus t))))) (ax5 (minus (minus (d (d (d (cos x)))))) (d (cos x)))
-      _ = times x (d (minus (op_plus (d (cos x)) (minus (op_plus (d (cos x)) (d (d (d (cos x))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus (op_plus (d (cos x)) t)))))) (taelja_lemma18 (d (d (d (cos x)))))
-      _ = times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (cos x) (d (d (cos x))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus t))))) (Eq.symm (ax1 (cos x) (d (d (cos x)))))
-      _ = times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (cos x) (d (minus (sin x))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (cos x) (d t)))))))) (taelja_lemma23)
-      _ = times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (d (sin x)) (d (minus (sin x))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus t (d (minus (sin x)))))))))) (Eq.symm (taelja_lemma24))
-      _ = times x (d (minus (op_plus (d (cos x)) (minus (d zero))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus (d t)))))) (taelja_lemma22 (sin x))
-      _ = times x (d (minus (op_plus (d (cos x)) (minus zero)))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus t))))) (ax12)
-      _ = times x (d (minus (op_plus (d (cos x)) (op_plus zero (minus zero))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) t)))) (Eq.symm (ax4 (minus zero)))
-      _ = times x (d (minus (op_plus (d (cos x)) zero))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) t)))) (ax3 zero)
-      _ = times x (d (minus (d (cos x)))) := congrArg (fun t : α => times x (d (minus t))) (taelja_lemma17 (d (cos x)))
-      _ = times x (d (minus (minus (sin x)))) := congrArg (fun t : α => times x (d (minus t))) (taelja_lemma23)
-      _ = times x (d (sin x)) := congrArg (fun t : α => times x (d t)) (taelja_lemma18 (sin x))
-      _ = times x (cos x) := congrArg (fun t : α => times x t) (taelja_lemma24)
+  calc d (op_plus (minus (d (d (cos x)))) (times (d (d (d (cos x)))) x)) = d (op_plus (times (d (d (cos x))) (minus one)) (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => d (op_plus t (times (d (d (d (cos x)))) x))) (Eq.symm (taelja_lemma24 (d (d (cos x)))))
+      _ = op_plus (d (times (d (d (cos x))) (minus one))) (d (times (d (d (d (cos x)))) x)) := ax11 (times (d (d (cos x))) (minus one)) (times (d (d (d (cos x)))) x)
+      _ = op_plus (op_plus (times (d (d (cos x))) (d (minus one))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus t (d (times (d (d (d (cos x)))) x))) (ax12 (d (d (cos x))) (minus one))
+      _ = op_plus (op_plus (times (d (d (cos x))) (op_plus zero (d (minus one)))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus (op_plus (times (d (d (cos x))) t) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x))) (Eq.symm (ax5 (d (minus one))))
+      _ = op_plus (op_plus (times (d (d (cos x))) (op_plus (d one) (d (minus one)))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus (op_plus (times (d (d (cos x))) (op_plus t (d (minus one)))) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x))) (Eq.symm (ax15))
+      _ = op_plus (op_plus (times (d (d (cos x))) zero) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus (op_plus (times (d (d (cos x))) t) (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x))) (taelja_lemma21 one)
+      _ = op_plus (op_plus zero (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus (op_plus t (times (minus one) (d (d (d (cos x)))))) (d (times (d (d (d (cos x)))) x))) (taelja_lemma23 (d (d (cos x))))
+      _ = op_plus (times (minus one) (d (d (d (cos x))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus t (d (times (d (d (d (cos x)))) x))) (ax5 (times (minus one) (d (d (d (cos x))))))
+      _ = op_plus (times (d (d (d (cos x)))) (minus one)) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus t (d (times (d (d (d (cos x)))) x))) (ax3 (minus one) (d (d (d (cos x)))))
+      _ = op_plus (minus (d (d (d (cos x))))) (d (times (d (d (d (cos x)))) x)) := congrArg (fun t : α => op_plus t (d (times (d (d (d (cos x)))) x))) (taelja_lemma24 (d (d (d (cos x)))))
+      _ = op_plus (d (times (d (d (d (cos x)))) x)) (minus (d (d (d (cos x))))) := ax6 (minus (d (d (d (cos x))))) (d (times (d (d (d (cos x)))) x))
+      _ = op_plus (op_plus (times (d (d (d (cos x)))) (d x)) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x))))) := congrArg (fun t : α => op_plus t (minus (d (d (d (cos x)))))) (ax12 (d (d (d (cos x)))) x)
+      _ = op_plus (op_plus (times (d (d (d (cos x)))) one) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x))))) := congrArg (fun t : α => op_plus (op_plus (times (d (d (d (cos x)))) t) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x)))))) (ax2)
+      _ = op_plus (op_plus (d (d (d (cos x)))) (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x))))) := congrArg (fun t : α => op_plus (op_plus t (times x (d (d (d (d (cos x))))))) (minus (d (d (d (cos x)))))) (taelja_lemma22 (d (d (d (cos x)))))
+      _ = op_plus (d (d (d (cos x)))) (op_plus (times x (d (d (d (d (cos x)))))) (minus (d (d (d (cos x)))))) := Eq.symm (ax8 (d (d (d (cos x)))) (times x (d (d (d (d (cos x)))))) (minus (d (d (d (cos x))))))
+      _ = op_plus (d (d (d (cos x)))) (op_plus (minus (d (d (d (cos x))))) (times x (d (d (d (d (cos x))))))) := congrArg (fun t : α => op_plus (d (d (d (cos x)))) t) (ax6 (times x (d (d (d (d (cos x)))))) (minus (d (d (d (cos x))))))
+      _ = times x (d (d (d (d (cos x))))) := taelja_lemma17 (d (d (d (cos x)))) (times x (d (d (d (d (cos x))))))
+      _ = times x (d (minus (minus (d (d (d (cos x))))))) := congrArg (fun t : α => times x (d t)) (Eq.symm (taelja_lemma19 (d (d (d (cos x))))))
+      _ = times x (d (minus (op_plus (minus (d (d (d (cos x))))) zero))) := congrArg (fun t : α => times x (d (minus t))) (Eq.symm (taelja_lemma18 (minus (d (d (d (cos x)))))))
+      _ = times x (d (minus (op_plus (minus (d (d (d (cos x))))) (op_plus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x)))))))) := congrArg (fun t : α => times x (d (minus (op_plus (minus (d (d (d (cos x))))) t)))) (Eq.symm (ax7 (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x)))))
+      _ = times x (d (minus (op_plus (minus (d (d (d (cos x))))) (op_plus (minus (minus (d (d (d (cos x)))))) (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (minus (d (d (d (cos x))))) t)))) (Eq.symm (ax8 (minus (minus (d (d (d (cos x)))))) (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))))
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))))) := congrArg (fun t : α => times x (d (minus t))) (taelja_lemma17 (minus (d (d (d (cos x))))) (op_plus (d (cos x)) (minus (op_plus (minus (minus (d (d (d (cos x)))))) (d (cos x))))))
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (op_plus (d (cos x)) (minus (minus (d (d (d (cos x))))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus t))))) (ax6 (minus (minus (d (d (d (cos x)))))) (d (cos x)))
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (op_plus (d (cos x)) (d (d (d (cos x))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus (op_plus (d (cos x)) t)))))) (taelja_lemma19 (d (d (d (cos x)))))
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (cos x) (d (d (cos x))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus t))))) (Eq.symm (ax11 (cos x) (d (d (cos x)))))
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (cos x) (d (minus (sin x))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (cos x) (d t)))))))) (taelja_lemma20)
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus (d (sin x)) (d (minus (sin x))))))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus (d (op_plus t (d (minus (sin x)))))))))) (Eq.symm (taelja_lemma16))
+      _ = times x (d (minus (op_plus (d (cos x)) (minus (d zero))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus (d t)))))) (taelja_lemma21 (sin x))
+      _ = times x (d (minus (op_plus (d (cos x)) (minus zero)))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) (minus t))))) (ax10)
+      _ = times x (d (minus (op_plus (d (cos x)) (op_plus zero (minus zero))))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) t)))) (Eq.symm (ax5 (minus zero)))
+      _ = times x (d (minus (op_plus (d (cos x)) zero))) := congrArg (fun t : α => times x (d (minus (op_plus (d (cos x)) t)))) (ax7 zero)
+      _ = times x (d (minus (d (cos x)))) := congrArg (fun t : α => times x (d (minus t))) (taelja_lemma18 (d (cos x)))
+      _ = times x (d (minus (minus (sin x)))) := congrArg (fun t : α => times x (d (minus t))) (taelja_lemma20)
+      _ = times x (d (sin x)) := congrArg (fun t : α => times x (d t)) (taelja_lemma19 (sin x))
+      _ = times x (cos x) := congrArg (fun t : α => times x t) (taelja_lemma16)
 
 end TweeAna1331
