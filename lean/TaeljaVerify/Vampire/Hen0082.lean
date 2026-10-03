@@ -27,42 +27,40 @@ axiom ax2 : ∀ (x y : α), less_equal x y → quotient x y zero
 -- Axiom 3
 axiom ax3 : ∀ (x y : α), quotient x y (divide x y)
 -- Axiom 4
-axiom ax4 : ∀ (x y z u : α), quotient x y z → quotient x y u → u = z
+axiom ax4 : quotient a c aQc
 -- Axiom 5
-axiom ax5 : quotient a c aQc
+axiom ax5 : quotient b c bQc
 -- Axiom 6
-axiom ax6 : quotient b c bQc
+axiom ax6 : ∀ (x : α), quotient zero x zero
 -- Axiom 7
-axiom ax7 : ∀ (x : α), quotient zero x zero
+axiom ax7 : ∀ (x y z u v w x1 x2 : α), quotient x y z → quotient u v y → quotient w v x → quotient w u x1 → quotient x1 v x2 → less_equal z x2
 -- Axiom 8
-axiom ax8 : ∀ (x y z u v w x1 x2 : α), quotient x y z → quotient u v y → quotient w v x → quotient w u x1 → quotient x1 v x2 → less_equal z x2
+axiom ax8 : ∀ (x : α), quotient x zero x
 -- Axiom 9
-axiom ax9 : ∀ (x : α), quotient x zero x
--- Axiom 10
-axiom ax10 : ∀ (x y z u v : α), quotient x y z → less_equal u y → quotient x v u → less_equal z v
+axiom ax9 : ∀ (x y z u v : α), quotient x y z → less_equal u y → quotient x v u → less_equal z v
 
--- Lemma 11
-theorem taelja_lemma11 : quotient a b zero := by
+-- Lemma 10
+theorem taelja_lemma10 : quotient a b zero := by
   have h1 : less_equal a b := ax1
   have h2 : quotient a b zero := ax2 a b h1
   exact h2
 
--- Lemma 12
-theorem taelja_lemma12 : less_equal (divide aQc bQc) zero := by
+-- Lemma 11
+theorem taelja_lemma11 : less_equal (divide aQc bQc) zero := by
   have h1 : quotient aQc bQc (divide aQc bQc) := ax3 aQc bQc
-  have h2 : quotient b c bQc := ax6
-  have h3 : quotient a c aQc := ax5
-  have h4 : quotient a b zero := taelja_lemma11
-  have h5 : quotient zero c zero := ax7 c
-  have h6 : less_equal (divide aQc bQc) zero := ax8 aQc bQc (divide aQc bQc) b c a zero zero h1 h2 h3 h4 h5
+  have h2 : quotient b c bQc := ax5
+  have h3 : quotient a c aQc := ax4
+  have h4 : quotient a b zero := taelja_lemma10
+  have h5 : quotient zero c zero := ax6 c
+  have h6 : less_equal (divide aQc bQc) zero := ax7 aQc bQc (divide aQc bQc) b c a zero zero h1 h2 h3 h4 h5
   exact h6
 
 -- Goal 1
 theorem taelja_goal1 : less_equal aQc bQc := by
-  have h1 : quotient aQc zero aQc := ax9 aQc
-  have h2 : less_equal (divide aQc bQc) zero := taelja_lemma12
+  have h1 : quotient aQc zero aQc := ax8 aQc
+  have h2 : less_equal (divide aQc bQc) zero := taelja_lemma11
   have h3 : quotient aQc bQc (divide aQc bQc) := ax3 aQc bQc
-  have h4 : less_equal aQc bQc := ax10 aQc zero aQc (divide aQc bQc) bQc h1 h2 h3
+  have h4 : less_equal aQc bQc := ax9 aQc zero aQc (divide aQc bQc) bQc h1 h2 h3
   exact h4
 
 end VampireHen0082

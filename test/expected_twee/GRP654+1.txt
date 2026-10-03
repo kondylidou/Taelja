@@ -1064,7 +1064,13 @@ Proof:
 = { by lemma 67 }
   mult(ld(X,X),x1(ld(X,X)))
 
-Goal 1: mult(ld(X,X),x1(ld(X,X))) = x1(ld(X,X))
+Goal 1: mult(X,ld(Y,Y)) = X
+Proof:
+  mult(X,ld(Y,Y))
+= { by lemma 62 }
+  X
+
+Goal 2: mult(ld(X,X),x1(ld(X,X))) = x1(ld(X,X))
 Proof:
   mult(ld(X,X),x1(ld(X,X)))
 = { by lemma 67 R->L }
@@ -1119,9 +1125,3 @@ Proof:
   ld(ld(X,X),x1(ld(X,X)))
 = { by lemma 67 }
   x1(ld(X,X))
-
-Goal 2: mult(X,ld(Y,Y)) = X
-Proof:
-  mult(X,ld(Y,Y))
-= { by lemma 62 }
-  X

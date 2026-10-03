@@ -22,13 +22,13 @@ axiom ax1 : ∀ (z : α), implies truth z = z
 -- Axiom 2
 axiom ax2 : ∀ (z u : α), implies (implies (not_ z) (not_ u)) (implies u z) = truth
 -- Axiom 3
-axiom ax3 : ∀ (z u : α), implies (implies z u) u = implies (implies u z) z
+axiom ax3 : ∀ (z u v : α), implies (implies z u) (implies (implies u v) (implies z v)) = truth
 -- Axiom 4
-axiom ax4 : ∀ (z u v : α), implies (implies z u) (implies (implies u v) (implies z v)) = truth
+axiom ax4 : ∀ (z u : α), implies (implies z u) u = implies (implies u z) z
 -- Axiom 5
-axiom ax5 : ∀ (z u : α), big_hat z u = not_ (big_V (not_ z) (not_ u))
+axiom ax5 : ∀ (z u : α), big_V z u = implies (implies z u) u
 -- Axiom 6
-axiom ax6 : ∀ (z u : α), big_V z u = implies (implies z u) u
+axiom ax6 : ∀ (z u : α), big_hat z u = not_ (big_V (not_ z) (not_ u))
 
 -- Lemma 7
 theorem taelja_lemma7 : ∀ (z : α), implies (implies (not_ z) (not_ truth)) z = truth := by
@@ -41,12 +41,12 @@ theorem taelja_lemma8 : ∀ (z u : α), implies z (implies (implies z u) u) = tr
   intro z u
   calc implies z (implies (implies z u) u) = implies z (implies (implies z u) (implies truth u)) := congrArg (fun t : α => implies z (implies (implies z u) t)) (Eq.symm (ax1 u))
       _ = implies (implies truth z) (implies (implies z u) (implies truth u)) := congrArg (fun t : α => implies t (implies (implies z u) (implies truth u))) (Eq.symm (ax1 z))
-      _ = truth := ax4 truth z u
+      _ = truth := ax3 truth z u
 
 -- Lemma 9
 theorem taelja_lemma9 : ∀ (z : α), implies (implies z truth) truth = truth := by
   intro z
-  calc implies (implies z truth) truth = implies (implies truth z) z := ax3 z truth
+  calc implies (implies z truth) truth = implies (implies truth z) z := ax4 z truth
       _ = implies truth (implies (implies truth z) z) := Eq.symm (ax1 (implies (implies truth z) z))
       _ = truth := taelja_lemma8 truth z
 
@@ -62,7 +62,7 @@ theorem taelja_lemma11 : ∀ (z u : α), implies z (implies u z) = truth := by
   calc implies z (implies u z) = implies (implies truth z) (implies u z) := congrArg (fun t : α => implies t (implies u z)) (Eq.symm (ax1 z))
       _ = implies truth (implies (implies truth z) (implies u z)) := Eq.symm (ax1 (implies (implies truth z) (implies u z)))
       _ = implies (implies u truth) (implies (implies truth z) (implies u z)) := congrArg (fun t : α => implies t (implies (implies truth z) (implies u z))) (Eq.symm (taelja_lemma10 u))
-      _ = truth := ax4 u truth z
+      _ = truth := ax3 u truth z
 
 -- Lemma 12
 theorem taelja_lemma12 : ∀ (z : α), implies (not_ truth) z = truth := by
@@ -71,14 +71,14 @@ theorem taelja_lemma12 : ∀ (z : α), implies (not_ truth) z = truth := by
       _ = implies (implies (implies (not_ z) (not_ truth)) z) (implies (not_ truth) z) := congrArg (fun t : α => implies t (implies (not_ truth) z)) (Eq.symm (taelja_lemma7 z))
       _ = implies truth (implies (implies (implies (not_ z) (not_ truth)) z) (implies (not_ truth) z)) := Eq.symm (ax1 (implies (implies (implies (not_ z) (not_ truth)) z) (implies (not_ truth) z)))
       _ = implies (implies (not_ truth) (implies (not_ z) (not_ truth))) (implies (implies (implies (not_ z) (not_ truth)) z) (implies (not_ truth) z)) := congrArg (fun t : α => implies t (implies (implies (implies (not_ z) (not_ truth)) z) (implies (not_ truth) z))) (Eq.symm (taelja_lemma11 (not_ truth) (not_ z)))
-      _ = truth := ax4 (not_ truth) (implies (not_ z) (not_ truth)) z
+      _ = truth := ax3 (not_ truth) (implies (not_ z) (not_ truth)) z
 
 -- Lemma 13
 theorem taelja_lemma13 : not_ (not_ truth) = truth := by
   calc not_ (not_ truth) = implies truth (not_ (not_ truth)) := Eq.symm (ax1 (not_ (not_ truth)))
       _ = implies (implies (implies (not_ (not_ truth)) (not_ truth)) (not_ truth)) (not_ (not_ truth)) := congrArg (fun t : α => implies t (not_ (not_ truth))) (Eq.symm (taelja_lemma7 (not_ truth)))
-      _ = implies (implies (implies (not_ truth) (not_ (not_ truth))) (not_ (not_ truth))) (not_ (not_ truth)) := congrArg (fun t : α => implies t (not_ (not_ truth))) (Eq.symm (ax3 (not_ truth) (not_ (not_ truth))))
-      _ = implies (implies (not_ (not_ truth)) (implies (not_ truth) (not_ (not_ truth)))) (implies (not_ truth) (not_ (not_ truth))) := ax3 (implies (not_ truth) (not_ (not_ truth))) (not_ (not_ truth))
+      _ = implies (implies (implies (not_ truth) (not_ (not_ truth))) (not_ (not_ truth))) (not_ (not_ truth)) := congrArg (fun t : α => implies t (not_ (not_ truth))) (Eq.symm (ax4 (not_ truth) (not_ (not_ truth))))
+      _ = implies (implies (not_ (not_ truth)) (implies (not_ truth) (not_ (not_ truth)))) (implies (not_ truth) (not_ (not_ truth))) := ax4 (implies (not_ truth) (not_ (not_ truth))) (not_ (not_ truth))
       _ = implies truth (implies (not_ truth) (not_ (not_ truth))) := congrArg (fun t : α => implies t (implies (not_ truth) (not_ (not_ truth)))) (taelja_lemma11 (not_ (not_ truth)) (not_ truth))
       _ = implies (not_ truth) (not_ (not_ truth)) := ax1 (implies (not_ truth) (not_ (not_ truth)))
       _ = truth := taelja_lemma12 (not_ (not_ truth))
@@ -90,7 +90,7 @@ theorem taelja_lemma14 : ∀ (z : α), implies (not_ (implies z (not_ truth))) z
       _ = implies (not_ (implies z (not_ truth))) (implies (implies (not_ truth) z) z) := congrArg (fun t : α => implies (not_ (implies z (not_ truth))) (implies t z)) (Eq.symm (taelja_lemma12 z))
       _ = implies (implies truth (not_ (implies z (not_ truth)))) (implies (implies (not_ truth) z) z) := congrArg (fun t : α => implies t (implies (implies (not_ truth) z) z)) (Eq.symm (ax1 (not_ (implies z (not_ truth)))))
       _ = implies (implies (not_ (not_ truth)) (not_ (implies z (not_ truth)))) (implies (implies (not_ truth) z) z) := congrArg (fun t : α => implies (implies t (not_ (implies z (not_ truth)))) (implies (implies (not_ truth) z) z)) (Eq.symm (taelja_lemma13))
-      _ = implies (implies (not_ (not_ truth)) (not_ (implies z (not_ truth)))) (implies (implies z (not_ truth)) (not_ truth)) := congrArg (fun t : α => implies (implies (not_ (not_ truth)) (not_ (implies z (not_ truth)))) t) (Eq.symm (ax3 z (not_ truth)))
+      _ = implies (implies (not_ (not_ truth)) (not_ (implies z (not_ truth)))) (implies (implies z (not_ truth)) (not_ truth)) := congrArg (fun t : α => implies (implies (not_ (not_ truth)) (not_ (implies z (not_ truth)))) t) (Eq.symm (ax4 z (not_ truth)))
       _ = truth := ax2 (not_ truth) (implies z (not_ truth))
 
 -- Lemma 15
@@ -105,7 +105,7 @@ theorem taelja_lemma16 : ∀ (z : α), implies (not_ z) (not_ truth) = z := by
   intro z
   calc implies (not_ z) (not_ truth) = implies truth (implies (not_ z) (not_ truth)) := Eq.symm (ax1 (implies (not_ z) (not_ truth)))
       _ = implies (implies z (implies (not_ z) (not_ truth))) (implies (not_ z) (not_ truth)) := congrArg (fun t : α => implies t (implies (not_ z) (not_ truth))) (Eq.symm (taelja_lemma15 z))
-      _ = implies (implies (implies (not_ z) (not_ truth)) z) z := Eq.symm (ax3 (implies (not_ z) (not_ truth)) z)
+      _ = implies (implies (implies (not_ z) (not_ truth)) z) z := Eq.symm (ax4 (implies (not_ z) (not_ truth)) z)
       _ = implies truth z := congrArg (fun t : α => implies t z) (taelja_lemma7 z)
       _ = z := ax1 z
 
@@ -113,19 +113,19 @@ theorem taelja_lemma16 : ∀ (z : α), implies (not_ z) (not_ truth) = z := by
 theorem taelja_lemma17 : ∀ (z : α), implies z (not_ truth) = not_ z := by
   intro z
   calc implies z (not_ truth) = implies (implies (not_ z) (not_ truth)) (not_ truth) := congrArg (fun t : α => implies t (not_ truth)) (Eq.symm (taelja_lemma16 z))
-      _ = implies (implies (not_ truth) (not_ z)) (not_ z) := Eq.symm (ax3 (not_ truth) (not_ z))
+      _ = implies (implies (not_ truth) (not_ z)) (not_ z) := Eq.symm (ax4 (not_ truth) (not_ z))
       _ = implies truth (not_ z) := congrArg (fun t : α => implies t (not_ z)) (taelja_lemma12 (not_ z))
       _ = not_ z := ax1 (not_ z)
 
 -- Goal 1
 theorem taelja_goal1 : not_ (big_hat x y) = big_V (not_ x) (not_ y) := by
-  calc not_ (big_hat x y) = not_ (not_ (big_V (not_ x) (not_ y))) := congrArg (fun t : α => not_ t) (ax5 x y)
-      _ = not_ (not_ (implies (implies (not_ x) (not_ y)) (not_ y))) := congrArg (fun t : α => not_ (not_ t)) (ax6 (not_ x) (not_ y))
+  calc not_ (big_hat x y) = not_ (not_ (big_V (not_ x) (not_ y))) := congrArg (fun t : α => not_ t) (ax6 x y)
+      _ = not_ (not_ (implies (implies (not_ x) (not_ y)) (not_ y))) := congrArg (fun t : α => not_ (not_ t)) (ax5 (not_ x) (not_ y))
       _ = not_ (implies (implies (implies (not_ x) (not_ y)) (not_ y)) (not_ truth)) := congrArg (fun t : α => not_ t) (Eq.symm (taelja_lemma17 (implies (implies (not_ x) (not_ y)) (not_ y))))
       _ = implies (implies (implies (implies (not_ x) (not_ y)) (not_ y)) (not_ truth)) (not_ truth) := Eq.symm (taelja_lemma17 (implies (implies (implies (not_ x) (not_ y)) (not_ y)) (not_ truth)))
-      _ = implies (implies (not_ truth) (implies (implies (not_ x) (not_ y)) (not_ y))) (implies (implies (not_ x) (not_ y)) (not_ y)) := ax3 (implies (implies (not_ x) (not_ y)) (not_ y)) (not_ truth)
+      _ = implies (implies (not_ truth) (implies (implies (not_ x) (not_ y)) (not_ y))) (implies (implies (not_ x) (not_ y)) (not_ y)) := ax4 (implies (implies (not_ x) (not_ y)) (not_ y)) (not_ truth)
       _ = implies truth (implies (implies (not_ x) (not_ y)) (not_ y)) := congrArg (fun t : α => implies t (implies (implies (not_ x) (not_ y)) (not_ y))) (taelja_lemma12 (implies (implies (not_ x) (not_ y)) (not_ y)))
       _ = implies (implies (not_ x) (not_ y)) (not_ y) := ax1 (implies (implies (not_ x) (not_ y)) (not_ y))
-      _ = big_V (not_ x) (not_ y) := Eq.symm (ax6 (not_ x) (not_ y))
+      _ = big_V (not_ x) (not_ y) := Eq.symm (ax5 (not_ x) (not_ y))
 
 end ELcl1461

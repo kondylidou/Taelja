@@ -28,7 +28,7 @@ import System.Timeout (timeout)
 import Text.Read (readMaybe)
 
 import Types
-import Helpers (atomTerm, isEqLit, isRelLit, litNames, litVars, notVar, rewriteTermAll, sanitizeId, trySync, unitEquation)
+import Helpers (atomTerm, foldLiteralTerms, isEqLit, isRelLit, litNames, mapLiteralTerms, litVars, notVar, rewriteTermAll, sanitizeId, trySync, unitEquation)
 import TptpConvert (isLowerWord, tptpLiteral)
 
 -- Twee's binary, cached after the first lookup.
@@ -319,32 +319,42 @@ callTwee budget units goal =
 
 -- Twee prints symbols that are not plain names, such as '==>', infix, and
 -- parseTweeTerm cannot read them back. They get plain aliases for the call,
--- and the answer is renamed back.
+-- as do Theorem 1's fresh constants, and the answer is renamed back.
 withAliases
   :: [UnitEntry] -> Literal
   -> ([UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)])))
   -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
 withAliases units lit call
-  | null unplain = call units lit
+  | null unplain && null freshNames = call units lit
   | otherwise = do
-      r <- call [ u { ueUnit = renLit fwd (ueUnit u) } | u <- units ] (renLit fwd lit)
-      return (fmap (\(t, ch) -> ( renTerm back t
-                                , [ (u { ueUnit = renLit back (ueUnit u) }, d, renTerm back x) | (u, d, x) <- ch ])) r)
+      r <- call [ u { ueUnit = onLit (ren fwd) toCall (ueUnit u) } | u <- units ] (onLit (ren fwd) toCall lit)
+      return (fmap (\(t, ch) -> ( fromCall t
+                                , [ (u { ueUnit = onLit (ren back) fromCall (ueUnit u) }, d, fromCall x) | (u, d, x) <- ch ])) r)
   where
-    allLits = map ueUnit units ++ [lit]
-    syms    = nub (concatMap litNames allLits)
-    unplain = [ f | f <- syms, not (isLowerWord f) ]
-    aliases = zip unplain [ a | i <- [1 :: Int ..], let a = "taelja_sym" ++ show i, a `notElem` syms ]
-    fwd     = Map.fromList aliases
-    back    = Map.fromList [ (a, f) | (f, a) <- aliases ]
+    allLits    = map ueUnit units ++ [lit]
+    syms       = nub (concatMap litNames allLits)
+    unplain    = [ f | f <- syms, not (isLowerWord f) ]
+    freshNames = nub (concatMap (foldLiteralTerms freshIn) allLits)
+    freshIn (Fresh x)  = [x]
+    freshIn (App _ ts) = concatMap freshIn ts
+    freshIn _          = []
+    names      = [ a | i <- [1 :: Int ..], let a = "taelja_sym" ++ show i, a `notElem` syms ]
+    aliases    = zip unplain names
+    freshAlias = Map.fromList (zip freshNames (drop (length unplain) names))
+    fwd        = Map.fromList aliases
+    back       = Map.fromList [ (a, f) | (f, a) <- aliases ]
+    freshBack  = Map.fromList [ (a, x) | (x, a) <- Map.toList freshAlias ]
     ren m f = Map.findWithDefault f f m
-    renTerm m (Const c)  = Const (ren m c)
-    renTerm _ (Var v)    = Var v
-    renTerm m (App f ts) = App (ren m f) (map (renTerm m) ts)
-    renLit m (Rel n ts)  = Rel (ren m n) (map (renTerm m) ts)
-    renLit m (NRel n ts) = NRel (ren m n) (map (renTerm m) ts)
-    renLit m (Eq a b)    = Eq (renTerm m a) (renTerm m b)
-    renLit m (NEq a b)   = NEq (renTerm m a) (renTerm m b)
+    toCall (Fresh x)  = Const (freshAlias Map.! x)
+    toCall (Const c)  = Const (ren fwd c)
+    toCall (App f ts) = App (ren fwd f) (map toCall ts)
+    toCall t          = t
+    fromCall (Const c) = maybe (Const (ren back c)) Fresh (Map.lookup c freshBack)
+    fromCall (App f ts) = App (ren back f) (map fromCall ts)
+    fromCall t          = t
+    onLit sym term (Rel n ts)  = Rel (sym n) (map term ts)
+    onLit sym term (NRel n ts) = NRel (sym n) (map term ts)
+    onLit _ term l             = mapLiteralTerms term l
 
 -- Ask Twee for the goal from the relevant units. An equation goes as it is,
 -- and an atom P(t) as P(t) = true.

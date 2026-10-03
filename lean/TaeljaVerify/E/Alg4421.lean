@@ -26,13 +26,13 @@ axiom ax3 : ∀ (x y : α), m x y y = x
 -- Axiom 4
 axiom ax4 : ∀ (x : α), u x x x = x
 -- Axiom 5
-axiom ax5 : ∀ (x y : α), v x y x x = v y x x x
+axiom ax5 : ∀ (x y : α), u x x y = v x x x y
 -- Axiom 6
-axiom ax6 : ∀ (x y : α), v x x y x = v x y x x
+axiom ax6 : ∀ (x y : α), v x x x y = v x x y x
 -- Axiom 7
-axiom ax7 : ∀ (x y : α), v x x x y = v x x y x
+axiom ax7 : ∀ (x y : α), v x x y x = v x y x x
 -- Axiom 8
-axiom ax8 : ∀ (x y : α), u x x y = v x x x y
+axiom ax8 : ∀ (x y : α), v x y x x = v y x x x
 -- Axiom 9
 axiom ax9 : r a a b
 -- Axiom 10
@@ -51,19 +51,19 @@ axiom ax15 : ∀ (x y z w x1 x2 x3 x4 x5 : α), r x y z → r w x1 x2 → r x3 x
 -- Lemma 16
 theorem taelja_lemma16 : ∀ (x y : α), v x x y x = u x x y := by
   intro x y
-  calc v x x y x = v x x x y := Eq.symm (ax7 x y)
-      _ = u x x y := Eq.symm (ax8 x y)
+  calc v x x y x = v x x x y := Eq.symm (ax6 x y)
+      _ = u x x y := Eq.symm (ax5 x y)
 
 -- Lemma 17
 theorem taelja_lemma17 : ∀ (x y : α), v x y x x = u x x y := by
   intro x y
-  calc v x y x x = v x x y x := Eq.symm (ax6 x y)
+  calc v x y x x = v x x y x := Eq.symm (ax7 x y)
       _ = u x x y := taelja_lemma16 x y
 
 -- Lemma 18
 theorem taelja_lemma18 : ∀ (x y : α), v x y y y = u y y x := by
   intro x y
-  calc v x y y y = v y x y y := Eq.symm (ax5 y x)
+  calc v x y y y = v y x y y := Eq.symm (ax8 y x)
       _ = u y y x := taelja_lemma17 y x
 
 -- Lemma 19
@@ -103,7 +103,7 @@ theorem taelja_lemma22 : r (u a b b) (v b b a a) a := by
   have h3 : r a a b := ax9
   have h4 : r b a a := ax2
   have h5 : r (v a a a b) (v b b a a) (v a a b a) := ax10 a b a a b a a a b b a a h1 h1 h3 h4
-  have h6 : r (u a a b) (v b b a a) (v a a b a) := Eq.mp (congrArg (fun t : α => r t (v b b a a) (v a a b a)) (Eq.symm (ax8 a b))) h5
+  have h6 : r (u a a b) (v b b a a) (v a a b a) := Eq.mp (congrArg (fun t : α => r t (v b b a a) (v a a b a)) (Eq.symm (ax5 a b))) h5
   have h7 : r (u a a b) (v b b a a) (u a a b) := Eq.mp (congrArg (fun t : α => r (u a a b) (v b b a a) t) (taelja_lemma16 a b)) h6
   have h8 : r (u a a b) (u a a b) (u a a b) := taelja_lemma21
   have h9 : r (u a b b) (u a a b) a := taelja_lemma19

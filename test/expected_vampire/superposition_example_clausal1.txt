@@ -1,13 +1,13 @@
 Axiom 1: f(X) = X
-Axiom 2: a = b
-Axiom 3: b = c
+Axiom 2: b = c
+Axiom 3: a = b
 
 Goal 1: c = a
 Proof:
   c
-= { by axiom 3 R->L }
-  b
 = { by axiom 2 R->L }
+  b
+= { by axiom 3 R->L }
   a
 
 Goal 2: f(d) = d

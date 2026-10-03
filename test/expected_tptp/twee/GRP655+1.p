@@ -164,11 +164,11 @@ fof(lemma_35, lemma, ! [X,Y] : ld(ld(ld(X,X),ld(Y,Y)),ld(ld(X,X),ld(Y,Y))) = ld(
 fof(s126, plain, ! [X,Y] : ld(X,X) = ld(ld(ld(X,X),ld(Y,Y)),ld(ld(X,X),ld(Y,Y))), inference(instantiate, [status(thm)], [lemma_35])).
 fof(s127, plain, ! [X,Y] : ld(X,X) = ld(ld(ld(Y,Y),ld(X,X)),ld(ld(Y,Y),ld(X,X))), inference(rewrite, [status(thm)], [lemma_23, s126])).
 fof(lemma_36, lemma, ! [X,Y] : ld(X,X) = ld(Y,Y), inference(rewrite, [status(thm)], [lemma_35, s127])).
-fof(s128, plain, ! [X] : mult(ld(X,X),x1(ld(X,X))) = mult(ld(x1(ld(X,X)),x1(ld(X,X))),x1(ld(X,X))), inference(instantiate, [status(thm)], [lemma_36])).
-fof(s129, plain, ! [X] : mult(ld(X,X),x1(ld(X,X))) = mult(rd(x1(ld(X,X)),x1(ld(X,X))),x1(ld(X,X))), inference(rewrite, [status(thm)], [lemma_22, s128])).
-fof(s130, plain, ! [X] : mult(ld(X,X),x1(ld(X,X))) = x1(ld(X,X)), inference(rewrite, [status(thm)], [c4, s129])).
-fof(s131, plain, ! [X] : mult(x1_2(ld(X,X)),ld(X,X)) = mult(x1_2(ld(X,X)),ld(x1_2(ld(X,X)),x1_2(ld(X,X)))), inference(instantiate, [status(thm)], [lemma_36])).
-fof(s132, plain, ! [X] : mult(x1_2(ld(X,X)),ld(X,X)) = x1_2(ld(X,X)), inference(rewrite, [status(thm)], [c9, s131])).
-fof(discharged, plain, (! [X] : mult(ld(X,X),x1(ld(X,X))) = x1(ld(X,X)) & ! [Y] : mult(x1_2(ld(Y,Y)),ld(Y,Y)) = x1_2(ld(Y,Y))), inference(conclude, [status(thm)], [s130, s132])).
+fof(s128, plain, ! [X] : mult(x1_2(ld(X,X)),ld(X,X)) = mult(x1_2(ld(X,X)),ld(x1_2(ld(X,X)),x1_2(ld(X,X)))), inference(instantiate, [status(thm)], [lemma_36])).
+fof(s129, plain, ! [X] : mult(x1_2(ld(X,X)),ld(X,X)) = x1_2(ld(X,X)), inference(rewrite, [status(thm)], [c9, s128])).
+fof(s130, plain, ! [X] : mult(ld(X,X),x1(ld(X,X))) = mult(ld(x1(ld(X,X)),x1(ld(X,X))),x1(ld(X,X))), inference(instantiate, [status(thm)], [lemma_36])).
+fof(s131, plain, ! [X] : mult(ld(X,X),x1(ld(X,X))) = mult(rd(x1(ld(X,X)),x1(ld(X,X))),x1(ld(X,X))), inference(rewrite, [status(thm)], [lemma_22, s130])).
+fof(s132, plain, ! [X] : mult(ld(X,X),x1(ld(X,X))) = x1(ld(X,X)), inference(rewrite, [status(thm)], [c4, s131])).
+fof(discharged, plain, (! [Y] : mult(x1_2(ld(Y,Y)),ld(Y,Y)) = x1_2(ld(Y,Y)) & ! [X] : mult(ld(X,X),x1(ld(X,X))) = x1(ld(X,X))), inference(conclude, [status(thm)], [s129, s132])).
 fof(c1, theorem, ? [X0]: ! [X1]: (mult(X1, X0) = X1 & mult(X0, X1) = X1), inference(generalization, [status(thm)], [discharged, skolem_definition, skolem_definition_2])).
 % SZS output end Proof

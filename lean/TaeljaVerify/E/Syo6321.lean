@@ -15,14 +15,11 @@ axiom f : α → α
 axiom s : α → α
 
 axiom E : α → α → Prop
-axiom epred2_0 : Prop
 
 -- Axiom 1
 axiom ax1 : ∀ (x : α), E (f x) (s n_0)
 -- Axiom 2
 axiom ax2 : ∀ (x : α), E (f (AP (s (s n_0)) x)) n_0
--- Axiom 3
-axiom ax3 : ∀ (x : α), E (f x) n_0 → epred2_0
 
 -- Goal 1
 theorem taelja_goal1 : ∀ (x : α), E (f (AP (s (s n_0)) x)) n_0 := by

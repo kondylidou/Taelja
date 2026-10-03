@@ -18,14 +18,14 @@ axiom f : α → α
 -- Axiom 1
 axiom ax1 : ∀ (x : α), f x = x
 -- Axiom 2
-axiom ax2 : a = b
+axiom ax2 : b = c
 -- Axiom 3
-axiom ax3 : b = c
+axiom ax3 : a = b
 
 -- Goal 1
 theorem taelja_goal1 : c = a := by
-  calc c = b := Eq.symm (ax3)
-      _ = a := Eq.symm (ax2)
+  calc c = b := Eq.symm (ax2)
+      _ = a := Eq.symm (ax3)
 
 -- Goal 2
 theorem taelja_goal2 : f d = d := by

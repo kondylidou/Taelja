@@ -1,5 +1,5 @@
-Axiom 1: f(X) = X
-Axiom 2: g(X) = f(X)
+Axiom 1: g(X) = f(X)
+Axiom 2: f(X) = X
 Axiom 3: g(X) = X => q(X)
 Axiom 4: s(a)
 Axiom 5: s(X) /\ q(X) => p(X)
@@ -7,9 +7,9 @@ Axiom 5: s(X) /\ q(X) => p(X)
 Lemma 6: g(X) = X
 Proof:
   g(X)
-= { by axiom 2 }
-  f(X)
 = { by axiom 1 }
+  f(X)
+= { by axiom 2 }
   X
 
 Lemma 7: q(a)

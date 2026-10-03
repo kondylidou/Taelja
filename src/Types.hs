@@ -8,11 +8,14 @@ import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.TPTP as T
 
--- A first-order term, a variable, a constant or a function application.
+-- A first-order term, a variable, a constant or a function application. A
+-- fresh constant of Theorem 1 stands for the variable it is named after, and
+-- no match can instantiate it.
 data Term
   = Var   String
   | Const String
   | App   String [Term]
+  | Fresh String
   deriving (Eq, Ord, Show, Generic)
 
 -- A literal, an equation or a predicate atom, either positive or negated.
@@ -125,7 +128,7 @@ data AlgState = AlgState
   , stNameToPos  :: Map.Map String String        -- TSTP unit name to the tree position of its electron
   , stEquationSteps  :: [(String, String, String)]  -- equation steps as (conclusion, premise, premise), a clause inside a nested step named <unit>_stepK
   , stUnitLitByName :: Map.Map String Literal  -- the literal of each positive unit, by its name in stEquationSteps
-  , stUnitUses :: Map.Map String Int  -- TSTP unit name to the number of inferences that use it
+  , stPremiseUses :: Map.Map String Int  -- TSTP unit name to how often it is a premise
   , stLiteralRewrites :: Map.Map String [(Literal, [(String, Dir, (Term, Term), Literal)])]  -- nucleus position to the rewrites the proof makes to each body atom
   , stHeadRewrites :: Map.Map String (Literal, [(String, Dir, (Term, Term), Literal)])  -- nucleus position to its head under θ and the rewrites made to it before the clause is a unit
   , stReadableUnits :: Set.Set String  -- units whose whole derivation can be read step by step (see readableUnits)

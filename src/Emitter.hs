@@ -5,13 +5,14 @@
 module Emitter
   ( emitText
   , finalProof
-  , dropAndNumberLemmas
+  , dropUnusedAndNumber
   , axiomRenaming
   , blockRenaming
   ) where
 
 import Data.List (intercalate, nub)
 import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 import Types
 import Helpers
 
@@ -31,7 +32,7 @@ emitText sp0 = unlines $ concat
 -- The proof the text and Lean outputs print, with unused lemmas dropped and
 -- axioms and lemmas numbered in order.
 finalProof :: StructuredProof -> StructuredProof
-finalProof = renumberAxioms . dropAndNumberLemmas
+finalProof = renumberAxioms . dropUnusedAndNumber
 
 -- Numbers the axioms 1, 2, ... and updates every citation of them.
 renumberAxioms :: StructuredProof -> StructuredProof
@@ -116,10 +117,13 @@ renderEqChain s steps =
     dirStr LR = ""
     dirStr RL = " R->L"
 
--- Drops unused lemmas and numbers the rest after the axioms.
-dropAndNumberLemmas :: StructuredProof -> StructuredProof
-dropAndNumberLemmas sp = renumber (dropUnusedLemmas sp)
+-- Drops the lemmas and axioms the proof does not use and numbers the lemmas
+-- after the axioms.
+dropUnusedAndNumber :: StructuredProof -> StructuredProof
+dropUnusedAndNumber sp =
+  renumber (pruned { axioms = [ ax | ax <- axioms pruned, Set.member (axiomName ax) (citedNames pruned) ] })
   where
+    pruned = dropUnusedLemmas sp
     renumber sp0 =
       let lemmaNames = map (\(n, _, _) -> n) (lemmas sp0)
           axCount    = length (axioms sp0)

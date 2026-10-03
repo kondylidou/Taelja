@@ -19,38 +19,31 @@ import Types
 termVars :: Term -> [String]
 termVars (Var x)    = [x]
 termVars (Const _)  = []
+termVars (Fresh _)  = []
 termVars (App _ ts) = concatMap termVars ts
 
 -- The variables of a literal, in order of appearance.
 litVars :: Literal -> [String]
 litVars = foldLiteralTerms termVars
 
--- The prefix of Theorem 1's fresh constants, to which θ sends each variable no
--- inference binds, so no match can instantiate it. They become variables
--- again when a fact is stored or a goal printed, which is sound because no
--- axiom mentions them. No problem symbol may start with this prefix.
-rigidPrefix :: String
-rigidPrefix = "taelja_rigid_"
-
--- Whether a constant is one of the fresh constants of Theorem 1.
-isRigidConst :: String -> Bool
-isRigidConst = (rigidPrefix `isPrefixOf`)
-
 -- Variables and fresh constants, which a groundness test treats as open.
 termOpen :: Term -> [String]
 termOpen (Var x)    = [x]
-termOpen (Const c)  = [c | isRigidConst c]
+termOpen (Fresh x)  = [x]
+termOpen (Const _)  = []
 termOpen (App _ ts) = concatMap termOpen ts
 
 -- The variables and fresh constants of a literal.
 litOpen :: Literal -> [String]
 litOpen = foldLiteralTerms termOpen
 
--- Fresh constants back to the variables they stand for.
+-- Fresh constants back to the variables they stand for. They become
+-- variables again when a fact is stored or a goal printed, which is sound
+-- because no axiom mentions them.
 unrigidTerm :: Term -> Term
-unrigidTerm (Const c) | isRigidConst c = Var (drop (length rigidPrefix) c)
+unrigidTerm (Fresh x)  = Var x
 unrigidTerm (App f ts) = App f (map unrigidTerm ts)
-unrigidTerm t = t
+unrigidTerm t          = t
 
 -- The fresh constants of a literal back to their variables.
 unrigidLit :: Literal -> Literal
@@ -106,6 +99,7 @@ mapLineLit f (Hence lit j)  = Hence (f lit) j
 applySubstTerm :: Subst -> Term -> Term
 applySubstTerm subst (Var x)    = fromMaybe (Var x) (lookup x subst)
 applySubstTerm _     (Const c)  = Const c
+applySubstTerm _     (Fresh x)  = Fresh x
 applySubstTerm subst (App f ts) = App f (map (applySubstTerm subst) ts)
 
 -- Applies a substitution to a literal once.
@@ -150,6 +144,7 @@ subterms t = t : case t of { App _ ts -> concatMap subterms ts; _ -> [] }
 termSymbols :: Term -> [String]
 termSymbols (Const c)  = [c]
 termSymbols (Var _)    = []
+termSymbols (Fresh _)  = []
 termSymbols (App f ts) = f : concatMap termSymbols ts
 
 -- The function and constant symbols of a literal.
@@ -206,6 +201,7 @@ matchTermIf bindable (Var x) t s
       Just t' -> if t == t' then Just s else Nothing
 matchTermIf _ (Var x) (Var y) s | x == y = Just s
 matchTermIf _ (Const c) (Const d) s | c == d = Just s
+matchTermIf _ (Fresh x) (Fresh y) s | x == y = Just s
 matchTermIf bindable (App f ts) (App g us) s | f == g, length ts == length us =
   foldl (\ms (p, u) -> ms >>= matchTermIf bindable p u) (Just s) (zip ts us)
 matchTermIf _ _ _ _ = Nothing
@@ -417,8 +413,8 @@ suffixVarsLit :: String -> Literal -> Literal
 suffixVarsLit suf = mapLiteralTerms go
   where
     go (Var x)    = Var (x ++ suf)
-    go (Const c)  = Const c
     go (App f ts) = App f (map go ts)
+    go t          = t
 
 -- Whether two literals are the same up to renaming of variables.
 variantLit :: Literal -> Literal -> Bool
@@ -552,7 +548,7 @@ atomTerm l           = error ("atomTerm: not a positive atom: " ++ show l)
 termAtom :: Term -> Maybe Literal
 termAtom (App p ts) = Just (Rel p ts)
 termAtom (Const p)  = Just (Rel p [])
-termAtom (Var _)    = Nothing
+termAtom _          = Nothing
 
 -- The atoms of a relational chain, without the closing true.
 atomTerms :: Term -> [(RwStep, Term)] -> [Term]
@@ -692,8 +688,8 @@ flipLit x         = x
 -- Renames the variables of a term by the given pairs.
 renameTerm :: [(String, String)] -> Term -> Term
 renameTerm r (Var x)    = maybe (Var x) Var (lookup x r)
-renameTerm _ (Const c)  = Const c
 renameTerm r (App f ts) = App f (map (renameTerm r) ts)
+renameTerm _ t          = t
 
 -- Renames the variables of a literal.
 renameLit :: [(String, String)] -> Literal -> Literal
@@ -744,6 +740,7 @@ appendLine (EqChain {})   _ = error "appendLine: cannot extend EqChain"
 -- A term as the proof prints it.
 ppTerm :: Term -> String
 ppTerm (Var x)    = x
+ppTerm (Fresh x)  = x
 ppTerm (Const c)  = ppSymbol c
 ppTerm (App f ts) = ppSymbol f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 
@@ -827,17 +824,19 @@ renameCitations mapping sp0 = sp0
     ren nm   = Map.findWithDefault nm nm mapping
     renBlock = renameRefsBlock ren
 
+-- The names the goal and lemma proofs cite.
+citedNames :: StructuredProof -> Set.Set String
+citedNames sp = Set.fromList $
+  concatMap (blockRefNames . snd) (goals sp) ++
+  concatMap (\(_, _, b) -> blockRefNames b) (lemmas sp)
+
 -- Drops the lemmas no goal needs, directly or through other lemmas.
 dropUnusedLemmas :: StructuredProof -> StructuredProof
 dropUnusedLemmas = fixpoint prune
   where
     prune sp0 =
-      let refs            = allRefs sp0
-          (kept, dropped) = partition (\(nm, _, _) -> Set.member nm refs) (lemmas sp0)
+      let (kept, dropped) = partition (\(nm, _, _) -> Set.member nm (citedNames sp0)) (lemmas sp0)
       in (sp0 { lemmas = kept }, not (null dropped))
-    allRefs sp0 = Set.fromList $
-      concatMap (blockRefNames . snd) (goals sp0) ++
-      concatMap (\(_, _, b) -> blockRefNames b) (lemmas sp0)
     fixpoint f x =
       let (x', changed) = f x
       in if changed then fixpoint f x' else x'

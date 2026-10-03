@@ -119,6 +119,7 @@ leanRefName n = case words n of
 -- The function symbols of a term.
 termSyms :: Term -> [Sym]
 termSyms (Var _)    = []
+termSyms (Fresh _)  = []
 termSyms (Const c)  = [(Fun, c, 0)]
 termSyms (App f ts) = (Fun, f, length ts) : concatMap termSyms ts
 
@@ -217,6 +218,7 @@ symName ctx s = Map.findWithDefault "taelja_undeclared_symbol" s (ctxNames ctx)
 -- A term in Lean syntax. An unbound variable gets a name Lean rejects.
 leanTerm :: Ctx -> Env -> Term -> String
 leanTerm _   env (Var v)    = Map.findWithDefault "taelja_unbound_variable" v env
+leanTerm ctx env (Fresh v)  = leanTerm ctx env (Var v)
 leanTerm ctx _   (Const c)  = symName ctx (Fun, c, 0)
 leanTerm ctx env (App f ts) = unwords (symName ctx (Fun, f, length ts) : map (leanArg ctx env) ts)
 

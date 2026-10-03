@@ -133,7 +133,15 @@ Proof:
   have latlong(s__Moscow,'55.75695','37.614975',moscow,ru)
     by axiom 29
 
-Goal 17: s__capability(s__Flooding__t,s__located__m,s__Copenhagen)
+Goal 17: to_int('55.67631') = to_int('55.75695')
+Proof:
+  to_int('55.67631')
+= { by axiom 22 }
+  55
+= { by axiom 28 R->L }
+  to_int('55.75695')
+
+Goal 18: s__capability(s__Flooding__t,s__located__m,s__Copenhagen)
 Proof:
   have is_instance(s__Copenhagen,s__CoastalCitiesClass)
     by axiom 11
@@ -151,11 +159,3 @@ Proof:
     by lemma 30
   hence s__capability(s__Flooding__t,s__located__m,s__Copenhagen)
     by axiom 16
-
-Goal 18: to_int('55.67631') = to_int('55.75695')
-Proof:
-  to_int('55.67631')
-= { by axiom 22 }
-  55
-= { by axiom 28 R->L }
-  to_int('55.75695')

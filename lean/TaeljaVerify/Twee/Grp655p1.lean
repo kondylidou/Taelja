@@ -306,16 +306,16 @@ theorem taelja_lemma36 : ∀ (x y : α), ld x x = ld y y := by
       _ = ld y y := taelja_lemma35 y x
 
 -- Goal 1
-theorem taelja_goal1 : ∀ (x y : α), mult (ld x x) y = y := by
+theorem taelja_goal1 : ∀ (x y : α), mult x (ld y y) = x := by
+  intro x y
+  calc mult x (ld y y) = mult x (ld x x) := congrArg (fun t : α => mult x t) (taelja_lemma36 y x)
+      _ = x := ax4 x x
+
+-- Goal 2
+theorem taelja_goal2 : ∀ (x y : α), mult (ld x x) y = y := by
   intro x y
   calc mult (ld x x) y = mult (ld y y) y := congrArg (fun t : α => mult t y) (taelja_lemma36 x y)
       _ = mult (rd y y) y := congrArg (fun t : α => mult t y) (Eq.symm (taelja_lemma22 y))
       _ = y := ax1 y y
-
--- Goal 2
-theorem taelja_goal2 : ∀ (x y : α), mult x (ld y y) = x := by
-  intro x y
-  calc mult x (ld y y) = mult x (ld x x) := congrArg (fun t : α => mult x t) (taelja_lemma36 y x)
-      _ = x := ax4 x x
 
 end TweeGrp655p1

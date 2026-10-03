@@ -1,14 +1,14 @@
-Axiom 1: f(b) = c
-Axiom 2: a = b
+Axiom 1: a = b
+Axiom 2: f(b) = c
 Axiom 3: f(X) = c => g(X) = c
 Axiom 4: g(a) = c => h(a) = c
 
 Lemma 5: f(a) = c
 Proof:
   f(a)
-= { by axiom 2 }
-  f(b)
 = { by axiom 1 }
+  f(b)
+= { by axiom 2 }
   c
 
 Goal 1: h(a) = c

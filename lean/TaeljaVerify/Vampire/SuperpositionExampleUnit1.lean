@@ -15,13 +15,13 @@ axiom c : α
 axiom f : α → α
 
 -- Axiom 1
-axiom ax1 : c = a
+axiom ax1 : b = a
 -- Axiom 2
-axiom ax2 : b = a
+axiom ax2 : c = a
 
 -- Goal 1
 theorem taelja_goal1 : f c = f b := by
-  calc f c = f a := congrArg (fun t : α => f t) (ax1)
-      _ = f b := congrArg (fun t : α => f t) (Eq.symm (ax2))
+  calc f c = f a := congrArg (fun t : α => f t) (ax2)
+      _ = f b := congrArg (fun t : α => f t) (Eq.symm (ax1))
 
 end VampireSuperpositionExampleUnit1

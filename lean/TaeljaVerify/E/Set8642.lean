@@ -38,17 +38,17 @@ theorem taelja_lemma6 : c_lessequals (c_Union v_c t_a) (v_x (c_Union v_c t_a)) (
   exact h2
 
 -- Goal 1
-theorem taelja_goal1 : c_in (c_Union v_c t_a) v_S (tc_set t_a) := by
-  have h1 : c_in (c_Union v_c t_a) v_S (tc_set t_a) := ax1
-  exact h1
-
--- Goal 2
-theorem taelja_goal2 : c_Union v_c t_a = v_x (c_Union v_c t_a) := by
+theorem taelja_goal1 : c_Union v_c t_a = v_x (c_Union v_c t_a) := by
   have h1 : c_in (c_Union v_c t_a) v_S (tc_set t_a) := ax1
   have h2 : c_in (v_x (c_Union v_c t_a)) v_S (tc_set t_a) := ax2 (c_Union v_c t_a) h1
   have h3 : c_in v_c (c_Zorn_Omaxchain v_S t_a) (tc_set (tc_set t_a)) := ax4
   have h4 : c_lessequals (c_Union v_c t_a) (v_x (c_Union v_c t_a)) (tc_set t_a) := taelja_lemma6
   have h5 : c_Union v_c t_a = v_x (c_Union v_c t_a) := ax5 (v_x (c_Union v_c t_a)) v_S t_a v_c h2 h3 h4
   exact h5
+
+-- Goal 2
+theorem taelja_goal2 : c_in (c_Union v_c t_a) v_S (tc_set t_a) := by
+  have h1 : c_in (c_Union v_c t_a) v_S (tc_set t_a) := ax1
+  exact h1
 
 end ESet8642

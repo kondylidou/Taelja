@@ -46,15 +46,7 @@ theorem taelja_lemma8 : c_lessequals (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a
   exact h5
 
 -- Goal 1
-theorem taelja_goal1 : c_in (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a) v_S (tc_set t_a) := by
-  have h1 : c_in (c_Zorn_OHausdorff__1 v_S t_a) (c_Zorn_Omaxchain v_S t_a) (tc_set (tc_set t_a)) := ax1 v_S t_a
-  have h2 : c_lessequals (c_Zorn_Omaxchain v_S t_a) (c_Zorn_Ochain v_S t_a) (tc_set (tc_set (tc_set t_a))) := ax2 v_S t_a
-  have h3 : c_in (c_Zorn_OHausdorff__1 v_S t_a) (c_Zorn_Ochain v_S t_a) (tc_set (tc_set t_a)) := ax3 (c_Zorn_OHausdorff__1 v_S t_a) (c_Zorn_Omaxchain v_S t_a) (tc_set (tc_set t_a)) (c_Zorn_Ochain v_S t_a) h1 h2
-  have h4 : c_in (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a) v_S (tc_set t_a) := ax4 (c_Zorn_OHausdorff__1 v_S t_a) h3
-  exact h4
-
--- Goal 2
-theorem taelja_goal2 : c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a = v_x (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a) := by
+theorem taelja_goal1 : c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a = v_x (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a) := by
   have h1 : c_in (c_Zorn_OHausdorff__1 v_S t_a) (c_Zorn_Omaxchain v_S t_a) (tc_set (tc_set t_a)) := ax1 v_S t_a
   have h2 : c_lessequals (c_Zorn_Omaxchain v_S t_a) (c_Zorn_Ochain v_S t_a) (tc_set (tc_set (tc_set t_a))) := ax2 v_S t_a
   have h3 : c_in (c_Zorn_OHausdorff__1 v_S t_a) (c_Zorn_Ochain v_S t_a) (tc_set (tc_set t_a)) := ax3 (c_Zorn_OHausdorff__1 v_S t_a) (c_Zorn_Omaxchain v_S t_a) (tc_set (tc_set t_a)) (c_Zorn_Ochain v_S t_a) h1 h2
@@ -64,5 +56,13 @@ theorem taelja_goal2 : c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a = v_x (c_Union
   have h7 : c_lessequals (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a) (v_x (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a)) (tc_set t_a) := taelja_lemma8
   have h8 : c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a = v_x (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a) := ax7 (v_x (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a)) v_S t_a (c_Zorn_OHausdorff__1 v_S t_a) h5 h6 h7
   exact h8
+
+-- Goal 2
+theorem taelja_goal2 : c_in (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a) v_S (tc_set t_a) := by
+  have h1 : c_in (c_Zorn_OHausdorff__1 v_S t_a) (c_Zorn_Omaxchain v_S t_a) (tc_set (tc_set t_a)) := ax1 v_S t_a
+  have h2 : c_lessequals (c_Zorn_Omaxchain v_S t_a) (c_Zorn_Ochain v_S t_a) (tc_set (tc_set (tc_set t_a))) := ax2 v_S t_a
+  have h3 : c_in (c_Zorn_OHausdorff__1 v_S t_a) (c_Zorn_Ochain v_S t_a) (tc_set (tc_set t_a)) := ax3 (c_Zorn_OHausdorff__1 v_S t_a) (c_Zorn_Omaxchain v_S t_a) (tc_set (tc_set t_a)) (c_Zorn_Ochain v_S t_a) h1 h2
+  have h4 : c_in (c_Union (c_Zorn_OHausdorff__1 v_S t_a) t_a) v_S (tc_set t_a) := ax4 (c_Zorn_OHausdorff__1 v_S t_a) h3
+  exact h4
 
 end TweeSet8652

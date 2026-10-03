@@ -1,5 +1,5 @@
-Axiom 1: multiply(inverse(X),X) = identity
-Axiom 2: multiply(identity,X) = X
+Axiom 1: multiply(identity,X) = X
+Axiom 2: multiply(inverse(X),X) = identity
 Axiom 3: multiply(multiply(X,Y),Z) = multiply(X,multiply(Y,Z))
 Axiom 4: greatest_lower_bound(X,Y) = greatest_lower_bound(Y,X)
 Axiom 5: least_upper_bound(identity,X) = X
@@ -11,9 +11,9 @@ Proof:
   multiply(inverse(X),multiply(X,Y))
 = { by axiom 3 R->L }
   multiply(multiply(inverse(X),X),Y)
-= { by axiom 1 }
-  multiply(identity,Y)
 = { by axiom 2 }
+  multiply(identity,Y)
+= { by axiom 1 }
   Y
 
 Lemma 9: multiply(inverse(inverse(X)),Y) = multiply(X,Y)
@@ -29,7 +29,7 @@ Proof:
   multiply(X,identity)
 = { by lemma 9 R->L }
   multiply(inverse(inverse(X)),identity)
-= { by axiom 1 R->L }
+= { by axiom 2 R->L }
   multiply(inverse(inverse(X)),multiply(inverse(X),X))
 = { by lemma 8 }
   X

@@ -2,10 +2,10 @@ Axiom 1: m(X,X,Y) = Y
 Axiom 2: r(b,a,a)
 Axiom 3: m(X,Y,Y) = X
 Axiom 4: u(X,X,X) = X
-Axiom 5: v(X,Y,X,X) = v(Y,X,X,X)
-Axiom 6: v(X,X,Y,X) = v(X,Y,X,X)
-Axiom 7: v(X,X,X,Y) = v(X,X,Y,X)
-Axiom 8: u(X,X,Y) = v(X,X,X,Y)
+Axiom 5: u(X,X,Y) = v(X,X,X,Y)
+Axiom 6: v(X,X,X,Y) = v(X,X,Y,X)
+Axiom 7: v(X,X,Y,X) = v(X,Y,X,X)
+Axiom 8: v(X,Y,X,X) = v(Y,X,X,X)
 Axiom 9: r(a,a,b)
 Axiom 10: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) /\ r(X1,X2,X3) => r(v(X,A,U,X1),v(Y,B,V,X2),v(Z,C,W,X3))
 Axiom 11: r(a,b,a)
@@ -17,15 +17,15 @@ Axiom 15: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) => r(m(X,A,U),m(Y,B,V),m(Z,C,W))
 Lemma 16: v(X,X,Y,X) = u(X,X,Y)
 Proof:
   v(X,X,Y,X)
-= { by axiom 7 R->L }
+= { by axiom 6 R->L }
   v(X,X,X,Y)
-= { by axiom 8 R->L }
+= { by axiom 5 R->L }
   u(X,X,Y)
 
 Lemma 17: v(X,Y,X,X) = u(X,X,Y)
 Proof:
   v(X,Y,X,X)
-= { by axiom 6 R->L }
+= { by axiom 7 R->L }
   v(X,X,Y,X)
 = { by lemma 16 }
   u(X,X,Y)
@@ -33,7 +33,7 @@ Proof:
 Lemma 18: v(X,Y,Y,Y) = u(Y,Y,X)
 Proof:
   v(X,Y,Y,Y)
-= { by axiom 5 R->L }
+= { by axiom 8 R->L }
   v(Y,X,Y,Y)
 = { by lemma 17 }
   u(Y,Y,X)
@@ -96,7 +96,7 @@ Proof:
   hence r(v(a,a,a,b),v(b,b,a,a),v(a,a,b,a))
     by axiom 10
   hence r(u(a,a,b),v(b,b,a,a),v(a,a,b,a))
-    by rw axiom 8 R->L
+    by rw axiom 5 R->L
   hence r(u(a,a,b),v(b,b,a,a),u(a,a,b))
     by rw lemma 16
    and r(u(a,a,b),u(a,a,b),u(a,a,b))

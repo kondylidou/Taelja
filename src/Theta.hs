@@ -221,9 +221,9 @@ thetaByPosition clauses = Map.mapWithKey thetaAt clauses
     thetaAt p c =
       [ (v, ground (walkDeep σ (Var (varAt p v))))
       | v <- nub (concatMap (litVars . snd) (polLits c)) ]
-    ground (Var x)    = Const (rigidPrefix ++ map (\ch -> if ch == '@' then '_' else ch) x)
-    ground (Const c)  = Const c
+    ground (Var x)    = Fresh (map (\ch -> if ch == '@' then '_' else ch) x)
     ground (App f ts) = App f (map ground ts)
+    ground t          = t
 
 -- How well each inference replays on its own, the first tier of explainTiers
 -- that explains it or "none". Anything but strict is where θ may lose a binding,
@@ -246,8 +246,8 @@ treeInferences clauses =
   where
     litsAt p = [ (b, mapLiteralTerms (apart p) l) | (b, l) <- polLits (clauses Map.! p) ]
     apart p (Var v)    = Var (varAt p v)
-    apart _ (Const c)  = Const c
     apart p (App f ts) = App f (map (apart p) ts)
+    apart _ t          = t
 
 -- Variable v renamed apart for position p.
 varAt :: String -> String -> String
@@ -293,6 +293,7 @@ unifyInTree a b s = case (walk s a, walk s b) of
   (Var x, t)              -> bind x t
   (t, Var y)              -> bind y t
   (Const c, Const d) | c == d -> Just s
+  (Fresh x, Fresh y) | x == y -> Just s
   (App f as, App g bs) | f == g, length as == length bs ->
     foldM (\acc (p, q) -> unifyInTree p q acc) s (zip as bs)
   _ -> Nothing
@@ -427,6 +428,7 @@ matchInTree rigid = go
       (Var x, Var y) | x == y -> Just s
       (Var x, t) | not (Set.member x rigid), not (occursIn s x t) -> Just (Map.insert x t s)
       (Const c, Const d) | c == d -> Just s
+      (Fresh x, Fresh y) | x == y -> Just s
       (App f as, App g bs) | f == g, length as == length bs ->
         foldM (\acc (a, b) -> go a b acc) s (zip as bs)
       _ -> Nothing

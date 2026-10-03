@@ -14,12 +14,12 @@ fof(lemma_8, lemma, c_lessequals(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_x(
 fof(s5, plain, c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a))), inference(instantiate, [status(thm)], [c2])).
 fof(s6, plain, c_lessequals(c_Zorn_Omaxchain(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(tc_set(t_a)))), inference(instantiate, [status(thm)], [c3])).
 fof(s7, plain, c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(t_a))), inference(mp, [status(thm)], [c4, s5, s6])).
-fof(goal_1, theorem, c_in(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_S,tc_set(t_a)), inference(mp, [status(thm)], [c7, s7])).
-fof(s8, plain, c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a))), inference(instantiate, [status(thm)], [c2])).
-fof(s9, plain, c_lessequals(c_Zorn_Omaxchain(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(tc_set(t_a)))), inference(instantiate, [status(thm)], [c3])).
-fof(s10, plain, c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(t_a))), inference(mp, [status(thm)], [c4, s8, s9])).
-fof(s11, plain, c_in(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_S,tc_set(t_a)), inference(mp, [status(thm)], [c7, s10])).
-fof(s12, plain, c_in(v_x(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a)),v_S,tc_set(t_a)), inference(mp, [status(thm)], [c9, s11])).
-fof(s13, plain, c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a))), inference(instantiate, [status(thm)], [c2])).
-fof(goal_2, theorem, c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a) = v_x(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a)), inference(mp, [status(thm)], [c16, s12, s13, lemma_8])).
+fof(s8, plain, c_in(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_S,tc_set(t_a)), inference(mp, [status(thm)], [c7, s7])).
+fof(s9, plain, c_in(v_x(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a)),v_S,tc_set(t_a)), inference(mp, [status(thm)], [c9, s8])).
+fof(s10, plain, c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a))), inference(instantiate, [status(thm)], [c2])).
+fof(goal_1, theorem, c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a) = v_x(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a)), inference(mp, [status(thm)], [c16, s9, s10, lemma_8])).
+fof(s11, plain, c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Omaxchain(v_S,t_a),tc_set(tc_set(t_a))), inference(instantiate, [status(thm)], [c2])).
+fof(s12, plain, c_lessequals(c_Zorn_Omaxchain(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(tc_set(t_a)))), inference(instantiate, [status(thm)], [c3])).
+fof(s13, plain, c_in(c_Zorn_OHausdorff__1(v_S,t_a),c_Zorn_Ochain(v_S,t_a),tc_set(tc_set(t_a))), inference(mp, [status(thm)], [c4, s11, s12])).
+fof(goal_2, theorem, c_in(c_Union(c_Zorn_OHausdorff__1(v_S,t_a),t_a),v_S,tc_set(t_a)), inference(mp, [status(thm)], [c7, s13])).
 % SZS output end Proof

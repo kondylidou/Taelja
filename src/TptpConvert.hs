@@ -43,6 +43,7 @@ module TptpConvert
   , tptpLitVars
   , unitNameOf
   , resolutionSource
+  , premiseUses
   ) where
 
 import Data.Attoparsec.Text (eitherResult, feed)
@@ -206,6 +207,7 @@ clauseToDecl (Clause bs mh) = T.Formula (T.Standard T.Plain) (T.CNF (T.Clause li
     toTLit (Eq l r)    = T.Equality (toTTerm l) T.Positive (toTTerm r)
     toTLit (NEq l r)   = T.Equality (toTTerm l) T.Negative (toTTerm r)
     toTTerm (Var v)    = T.Variable (T.Var (Text.pack v))
+    toTTerm (Fresh v)  = T.Variable (T.Var (Text.pack v))
     toTTerm (Const c)  = T.Function (T.Defined (T.Atom (Text.pack c))) []
     toTTerm (App f ts) = T.Function (T.Defined (T.Atom (Text.pack f))) (map toTTerm ts)
 
@@ -318,6 +320,7 @@ tptpSymbol s
 -- A term in TPTP syntax. A variable starts upper case, as TPTP requires.
 tptpTerm :: Term -> String
 tptpTerm (Var v)    = capitalize v
+tptpTerm (Fresh v)  = capitalize v
 tptpTerm (Const c)  = tptpSymbol c
 tptpTerm (App f []) = tptpSymbol f
 tptpTerm (App f ts) = tptpSymbol f ++ "(" ++ intercalate "," (map tptpTerm ts) ++ ")"
@@ -541,6 +544,12 @@ parentUnits :: T.Parent -> [String]
 parentUnits (T.Parent (T.UnitSource pn) _)  = [unitNameStr pn]
 parentUnits (T.Parent i@(T.Inference {}) _) = sourceParents i
 parentUnits _                               = []
+
+-- How often each unit is a premise, counting every occurrence in every
+-- inference, so a premise a step uses twice counts twice.
+premiseUses :: [T.Unit] -> Map.Map String Int
+premiseUses units = Map.fromListWith (+)
+  [ (p, 1) | T.Unit _ _ (Just (T.Inference _ _ ps, _)) <- units, p <- concatMap parentUnits ps ]
 
 -- The names of the units a unit's source cites, through nested inferences.
 unitParents :: T.Unit -> [String]

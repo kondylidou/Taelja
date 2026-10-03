@@ -28,7 +28,7 @@ import Helpers
   )
 import Debug (dbgScoped)
 import Conjecture (conjectureHypotheses)
-import ProofTree (classifyRole, resolveCopySource, resolveSourceName)
+import ProofTree (classifyRole, resolveCopySource)
 import TptpConvert
 import TweeInterface (TweeBudget (..), callTwee)
 import StepReader (isAtomEquation, reverseChain)
@@ -54,20 +54,14 @@ ancestorNamesOf unitMap rootName = go startFrontier Set.empty
 -- first-order and is left out.
 findLemmaCandidates :: [T.Unit] -> [(String, T.Declaration)]
 findLemmaCandidates units =
-  let parentCounts :: Map.Map String Int
-      parentCounts = Map.fromListWith (+)
-        [ (pname, 1)
-        | T.Unit _ _ (Just (T.Inference _ _ parents, _)) <- units
-        , pname <- concatMap parentUnits parents
-        ]
-      candidateSet = Set.fromList
+  let candidateSet = Set.fromList
         [ unitNameStr n
         | T.Unit n decl (Just (T.Inference {}, _)) <- units
         -- one positive literal, and no disequation, which no lemma states
         , maybe False (not . isTDisequality) (headLitOf decl)
         -- a lemma is a single literal, so a Horn clause is inlined instead
         , null (bodyLitsOf decl)
-        , Map.findWithDefault 0 (unitNameStr n) parentCounts >= 2
+        , Map.findWithDefault 0 (unitNameStr n) (premiseUses units) >= 2
         , not (maybe False (isAtomEquation preds . convertLit) (headLitOf decl))
         ]
       preds = predicateSymbols units
@@ -228,7 +222,7 @@ buildWithTwee unitMap tstp2name cname lit litSkolem undoMap = case litSkolem of
   where
     granted = maybe [] (uncurry (++)) (conjectureHypotheses (Map.elems unitMap))
     dispNameOf aname =
-      Map.lookup (resolveSourceName unitMap aname) tstp2name
+      Map.lookup (resolveCopySource unitMap aname) tstp2name
         <|> Map.lookup aname tstp2name
     -- An original axiom is an underived axiom or hypothesis, another
     -- underived clause that classifyRole reads as an axiom, such as one the

@@ -55,10 +55,10 @@ fof(s19, plain, capital_city(s__Copenhagen,s__Denmark), inference(instantiate, [
 fof(s20, plain, look_different(s__Copenhagen,s__Moscow), inference(instantiate, [status(thm)], [s__Copenhagen_not_s__Moscow])).
 fof(s21, plain, latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk), inference(instantiate, [status(thm)], [latlong_s__Copenhagen])).
 fof(s22, plain, latlong(s__Moscow,'55.75695','37.614975',moscow,ru), inference(instantiate, [status(thm)], [latlong_s__Moscow])).
-fof(s23, plain, s__Sea(esk15_1(s__Copenhagen)), inference(mp, [status(thm)], [axiom_12, copenhagen_coastal, s__Copenhagen_type])).
-fof(s24, plain, s__BodyOfWater(esk15_1(s__Copenhagen)), inference(mp, [status(thm)], [kb_SUMO_MILO_Domains_9679, s23])).
-fof(s25, plain, s__WaterArea(esk15_1(s__Copenhagen)), inference(mp, [status(thm)], [kb_SUMO_MILO_Domains_9582, s24])).
-fof(s26, plain, s__capability(s__Flooding__t,s__located__m,s__Copenhagen), inference(mp, [status(thm)], [flood_near_water, s25, s__Copenhagen_type, lemma_30])).
-fof(s27, plain, to_int('55.67631') = to_int('55.75695'), inference(rewrite, [status(thm)], ['55.75695_55', '55.67631_55'])).
-fof(where, theorem, ? [X2, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15]: (s__Object(X2) & s__Object(X6) & real(X7) & real(X8) & s__SymbolicString(X9) & s__SymbolicString(X10) & int(X11) & real(X12) & real(X13) & s__SymbolicString(X14) & s__SymbolicString(X15) & is_instance(X6, s__OECDMemberEconomiesClass) & capital_city(X2, X6) & look_different(X2, s__Moscow) & latlong(X2, X7, X8, X9, X10) & latlong(s__Moscow, X12, X13, X14, X15) & to_int(X7) = to_int(X12) & s__capability(s__Flooding__t, s__located__m, X2)), inference(conclude, [status(thm)], [s4, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s26, s27])).
+fof(s23, plain, to_int('55.67631') = to_int('55.75695'), inference(rewrite, [status(thm)], ['55.75695_55', '55.67631_55'])).
+fof(s24, plain, s__Sea(esk15_1(s__Copenhagen)), inference(mp, [status(thm)], [axiom_12, copenhagen_coastal, s__Copenhagen_type])).
+fof(s25, plain, s__BodyOfWater(esk15_1(s__Copenhagen)), inference(mp, [status(thm)], [kb_SUMO_MILO_Domains_9679, s24])).
+fof(s26, plain, s__WaterArea(esk15_1(s__Copenhagen)), inference(mp, [status(thm)], [kb_SUMO_MILO_Domains_9582, s25])).
+fof(s27, plain, s__capability(s__Flooding__t,s__located__m,s__Copenhagen), inference(mp, [status(thm)], [flood_near_water, s26, s__Copenhagen_type, lemma_30])).
+fof(where, theorem, ? [X2, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15]: (s__Object(X2) & s__Object(X6) & real(X7) & real(X8) & s__SymbolicString(X9) & s__SymbolicString(X10) & int(X11) & real(X12) & real(X13) & s__SymbolicString(X14) & s__SymbolicString(X15) & is_instance(X6, s__OECDMemberEconomiesClass) & capital_city(X2, X6) & look_different(X2, s__Moscow) & latlong(X2, X7, X8, X9, X10) & latlong(s__Moscow, X12, X13, X14, X15) & to_int(X7) = to_int(X12) & s__capability(s__Flooding__t, s__located__m, X2)), inference(conclude, [status(thm)], [s4, s8, s9, s10, s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s27])).
 % SZS output end Proof

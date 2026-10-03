@@ -204,7 +204,12 @@ theorem taelja_goal16 : latlong s__Moscow op_55_dot_75695 op_37_dot_614975 mosco
   exact h1
 
 -- Goal 17
-theorem taelja_goal17 : s__capability s__Flooding__t s__located__m s__Copenhagen := by
+theorem taelja_goal17 : to_int op_55_dot_67631 = to_int op_55_dot_75695 := by
+  calc to_int op_55_dot_67631 = n_55 := ax22
+      _ = to_int op_55_dot_75695 := Eq.symm (ax28)
+
+-- Goal 18
+theorem taelja_goal18 : s__capability s__Flooding__t s__located__m s__Copenhagen := by
   have h1 : is_instance s__Copenhagen s__CoastalCitiesClass := ax11
   have h2 : s__City s__Copenhagen := ax9
   have h3 : s__Sea (esk15_1 s__Copenhagen) := ax12 s__Copenhagen h1 h2
@@ -214,10 +219,5 @@ theorem taelja_goal17 : s__capability s__Flooding__t s__located__m s__Copenhagen
   have h7 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s__Near := taelja_lemma30
   have h8 : s__capability s__Flooding__t s__located__m s__Copenhagen := ax16 (esk15_1 s__Copenhagen) s__Copenhagen h5 h6 h7
   exact h8
-
--- Goal 18
-theorem taelja_goal18 : to_int op_55_dot_67631 = to_int op_55_dot_75695 := by
-  calc to_int op_55_dot_67631 = n_55 := ax22
-      _ = to_int op_55_dot_75695 := Eq.symm (ax28)
 
 end ECsr117p1

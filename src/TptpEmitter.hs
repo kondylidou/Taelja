@@ -18,7 +18,7 @@ import Data.TPTP.Pretty ()
 import Prettyprinter (pretty)
 import Types
 import Helpers
-import Emitter (axiomRenaming, blockRenaming, dropAndNumberLemmas)
+import Emitter (axiomRenaming, blockRenaming, dropUnusedAndNumber)
 import TptpConvert (convertDeclToClause, convertLit, declSymbols, isFileSourced, splitAtClosing, topLevelArgs, tptpLitVars, tptpLiteral, tptpSymbol, unitNameOf, unitNameStr, unitParents)
 
 -- One line of the derivation. An input unit is printed as read, with the
@@ -40,7 +40,7 @@ emitTptp sp0 = unlines $
   ++ map (ppLine env deps) allLines
   ++ ["% SZS output end Proof"]
   where
-    spNumbered   = dropAndNumberLemmas sp0
+    spNumbered   = dropUnusedAndNumber sp0
     input = spInput spNumbered
     -- A typed problem gives a typed proof. Type declarations come first,
     -- input units are printed in their typed form, and each variable gets
@@ -686,11 +686,11 @@ litSorts m lit = case lit of
     args f ts = concat (zipWith term (map Just (maybe [] fst (Map.lookup f m)) ++ repeat Nothing) ts)
     term (Just s) (Var v) = [(v, s)]
     term _ (Var _)        = []
-    term _ (Const _)      = []
     term _ (App f ts)     = args f ts
+    term _ _              = []
     eqn l r = let s = listToMaybe (mapMaybe resultSort [l, r])
               in term s l ++ term s r
     resultSort (App f _) = snd <$> Map.lookup f m
     resultSort (Const c) = snd <$> Map.lookup c m
-    resultSort (Var _)   = Nothing
+    resultSort _         = Nothing
 

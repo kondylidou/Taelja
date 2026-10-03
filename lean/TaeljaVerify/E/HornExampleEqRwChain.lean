@@ -17,9 +17,9 @@ axiom g : α → α
 axiom h : α → α
 
 -- Axiom 1
-axiom ax1 : f b = c
+axiom ax1 : a = b
 -- Axiom 2
-axiom ax2 : a = b
+axiom ax2 : f b = c
 -- Axiom 3
 axiom ax3 : ∀ (x : α), f x = c → g x = c
 -- Axiom 4
@@ -27,8 +27,8 @@ axiom ax4 : g a = c → h a = c
 
 -- Lemma 5
 theorem taelja_lemma5 : f a = c := by
-  calc f a = f b := congrArg (fun t : α => f t) (ax2)
-      _ = c := ax1
+  calc f a = f b := congrArg (fun t : α => f t) (ax1)
+      _ = c := ax2
 
 -- Goal 1
 theorem taelja_goal1 : h a = c := by

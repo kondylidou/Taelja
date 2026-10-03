@@ -7,14 +7,12 @@ cnf(c8, axiom, ~ class_Orderings_Olinorder(T2) | class_Orderings_Oorder(T2), fil
 cnf(c11, negated_conjecture, c_lessequals(c_0, c_minus(v_k(v_x), v_g(v_x), t_b), t_b), file('/home/user/Desktop/TPTP-v9.2.1/Problems/ANA/ANA023-2.p', cls_conjecture_1)).
 cnf(c12, axiom, ~ class_OrderedGroup_Opordered__ab__group__add(T_a) | ~ c_lessequals(V_a, c_minus(V_c, V_b, T_a), T_a) | c_lessequals(c_plus(V_a, V_b, T_a), V_c, T_a), file('/home/user/Desktop/TPTP-v9.2.1/Problems/ANA/ANA023-2.p', cls_OrderedGroup_Ocompare__rls__9_0)).
 cnf(c15, axiom, ~ class_Orderings_Oorder(T_a2) | ~ c_lessequals(V_y, V_z, T_a2) | ~ c_lessequals(V_x, V_y, T_a2) | c_lessequals(V_x, V_z, T_a2), file('/home/user/Desktop/TPTP-v9.2.1/Problems/ANA/ANA023-2.p', cls_Orderings_Oorder__class_Oorder__trans_0)).
-cnf(c16, axiom, ~ class_Ring__and__Field_Oordered__idom(T2) | class_OrderedGroup_Ocomm__monoid__add(T2), file('/home/user/Desktop/TPTP-v9.2.1/Problems/ANA/ANA023-2.p', clsrel_Ring__and__Field_Oordered__idom_23)).
-cnf(c18, axiom, ~ class_OrderedGroup_Ocomm__monoid__add(T_a2) | c_plus(c_0, V_y2, T_a2) = V_y2, file('/home/user/Desktop/TPTP-v9.2.1/Problems/ANA/ANA023-2.p', cls_OrderedGroup_Ocomm__monoid__add__class_Oaxioms_0)).
 cnf(c25, axiom, ~ class_OrderedGroup_Opordered__ab__group__add(T_a2) | ~ c_lessequals(c_plus(V_a2, V_b2, T_a2), V_c2, T_a2) | c_lessequals(V_a2, c_minus(V_c2, V_b2, T_a2), T_a2), file('/home/user/Desktop/TPTP-v9.2.1/Problems/ANA/ANA023-2.p', cls_OrderedGroup_Ocompare__rls__9_1)).
 fof(s1, plain, class_OrderedGroup_Opordered__ab__group__add(t_b), inference(mp, [status(thm)], [c3, c2])).
-fof(lemma_12, lemma, c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_k(v_x),t_b), inference(mp, [status(thm)], [c12, s1, c11])).
+fof(lemma_10, lemma, c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_k(v_x),t_b), inference(mp, [status(thm)], [c12, s1, c11])).
 fof(s2, plain, class_Orderings_Olinorder(t_b), inference(mp, [status(thm)], [c6, c2])).
 fof(s3, plain, class_Orderings_Oorder(t_b), inference(mp, [status(thm)], [c8, s2])).
-fof(lemma_13, lemma, c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_f(v_x),t_b), inference(mp, [status(thm)], [c15, s3, c5, lemma_12])).
+fof(lemma_11, lemma, c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_f(v_x),t_b), inference(mp, [status(thm)], [c15, s3, c5, lemma_10])).
 fof(s4, plain, class_OrderedGroup_Opordered__ab__group__add(t_b), inference(mp, [status(thm)], [c3, c2])).
-fof(goal_1, theorem, c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b), inference(mp, [status(thm)], [c25, s4, lemma_13])).
+fof(goal_1, theorem, c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b), inference(mp, [status(thm)], [c25, s4, lemma_11])).
 % SZS output end Proof

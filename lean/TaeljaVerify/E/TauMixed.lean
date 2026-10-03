@@ -19,17 +19,17 @@ axiom q : α → Prop
 -- Axiom 1
 axiom ax1 : q a
 -- Axiom 2
-axiom ax2 : ∀ (x : α), g x = f x
+axiom ax2 : ∀ (x : α), f x = x
 -- Axiom 3
-axiom ax3 : ∀ (x : α), f x = x
+axiom ax3 : ∀ (x : α), g x = f x
 -- Axiom 4
 axiom ax4 : ∀ (x : α), q x → g x = x → p (g a)
 
 -- Lemma 5
 theorem taelja_lemma5 : ∀ (x : α), g x = x := by
   intro x
-  calc g x = f x := ax2 x
-      _ = x := ax3 x
+  calc g x = f x := ax3 x
+      _ = x := ax2 x
 
 -- Goal 1
 theorem taelja_goal1 : p (g a) := by

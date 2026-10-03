@@ -444,7 +444,15 @@ Proof:
 = { by lemma 35 }
   ld(Y,Y)
 
-Goal 1: mult(ld(X,X),Y) = Y
+Goal 1: mult(X,ld(Y,Y)) = X
+Proof:
+  mult(X,ld(Y,Y))
+= { by lemma 36 }
+  mult(X,ld(X,X))
+= { by axiom 4 }
+  X
+
+Goal 2: mult(ld(X,X),Y) = Y
 Proof:
   mult(ld(X,X),Y)
 = { by lemma 36 }
@@ -453,11 +461,3 @@ Proof:
   mult(rd(Y,Y),Y)
 = { by axiom 1 }
   Y
-
-Goal 2: mult(X,ld(Y,Y)) = X
-Proof:
-  mult(X,ld(Y,Y))
-= { by lemma 36 }
-  mult(X,ld(X,X))
-= { by axiom 4 }
-  X

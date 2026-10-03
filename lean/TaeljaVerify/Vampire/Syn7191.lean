@@ -41,8 +41,6 @@ axiom f46 : α → α → α
 axiom f8 : α → α → α
 
 axiom p14 : α → α → Prop
-axiom p29 : α → α → Prop
-axiom p35 : α → α → Prop
 axiom p66 : α → α → Prop
 axiom p67 : α → α → Prop
 axiom p68 : α → α → Prop
@@ -60,20 +58,14 @@ axiom ax4 : ∀ (x : α), p14 x x
 -- Axiom 5
 axiom ax5 : ∀ (x y z : α), p14 x y → p14 x z → p14 z y
 -- Axiom 6
-axiom ax6 : ∀ (x : α), p29 x x
+axiom ax6 : ∀ (x y : α), p70 (f30 c88 x) (f38 c85 y)
 -- Axiom 7
-axiom ax7 : ∀ (x y : α), p70 (f30 c88 x) (f38 c85 y)
+axiom ax7 : ∀ (x y : α), p70 x y → p69 (f36 c86 y) x
 -- Axiom 8
-axiom ax8 : ∀ (x : α), p35 x x
--- Axiom 9
-axiom ax9 : ∀ (x y : α), p70 x y → p69 (f36 c86 y) x
--- Axiom 10
-axiom ax10 : ∀ (x y z u : α), p69 x y → p35 x z → p29 y u → p69 z u
--- Axiom 11
-axiom ax11 : ∀ (x y z u : α), p69 (f36 c86 (f38 x (f40 (f42 (f44 (f46 c87 y) z) x) u))) (f30 c88 (f32 c89 (f8 c75 c76))) → p67 (f16 c80 u) c82 → p66 (f12 c78 c77) y → p14 z (f23 (f26 c84 x) u) → p68 (f19 (f21 c83 c77) y) z
+axiom ax8 : ∀ (x y z u : α), p69 (f36 c86 (f38 x (f40 (f42 (f44 (f46 c87 y) z) x) u))) (f30 c88 (f32 c89 (f8 c75 c76))) → p67 (f16 c80 u) c82 → p66 (f12 c78 c77) y → p14 z (f23 (f26 c84 x) u) → p68 (f19 (f21 c83 c77) y) z
 
--- Lemma 12
-theorem taelja_lemma12 : p14 c81 (f23 (f26 c84 c85) c81) := by
+-- Lemma 9
+theorem taelja_lemma9 : p14 c81 (f23 (f26 c84 c85) c81) := by
   have h1 : p14 (f23 (f26 c84 c85) c81) (f23 (f26 c84 c85) c81) := ax4 (f23 (f26 c84 c85) c81)
   have h2 : p14 (f23 (f26 c84 c85) c81) c81 := ax3 c81
   have h3 : p14 c81 (f23 (f26 c84 c85) c81) := ax5 (f23 (f26 c84 c85) c81) (f23 (f26 c84 c85) c81) c81 h1 h2
@@ -81,12 +73,12 @@ theorem taelja_lemma12 : p14 c81 (f23 (f26 c84 c85) c81) := by
 
 -- Goal 1
 theorem taelja_goal1 : p68 (f19 (f21 c83 c77) c79) c81 := by
-  have h1 : p70 (f30 c88 (f32 c89 (f8 c75 c76))) (f38 c85 (f40 (f42 (f44 (f46 c87 c79) c81) c85) c81)) := ax7 (f32 c89 (f8 c75 c76)) (f40 (f42 (f44 (f46 c87 c79) c81) c85) c81)
-  have h2 : p69 (f36 c86 (f38 c85 (f40 (f42 (f44 (f46 c87 c79) c81) c85) c81))) (f30 c88 (f32 c89 (f8 c75 c76))) := ax9 (f30 c88 (f32 c89 (f8 c75 c76))) (f38 c85 (f40 (f42 (f44 (f46 c87 c79) c81) c85) c81)) h1
+  have h1 : p70 (f30 c88 (f32 c89 (f8 c75 c76))) (f38 c85 (f40 (f42 (f44 (f46 c87 c79) c81) c85) c81)) := ax6 (f32 c89 (f8 c75 c76)) (f40 (f42 (f44 (f46 c87 c79) c81) c85) c81)
+  have h2 : p69 (f36 c86 (f38 c85 (f40 (f42 (f44 (f46 c87 c79) c81) c85) c81))) (f30 c88 (f32 c89 (f8 c75 c76))) := ax7 (f30 c88 (f32 c89 (f8 c75 c76))) (f38 c85 (f40 (f42 (f44 (f46 c87 c79) c81) c85) c81)) h1
   have h3 : p67 (f16 c80 c81) c82 := ax2
   have h4 : p66 (f12 c78 c77) c79 := ax1
-  have h5 : p14 c81 (f23 (f26 c84 c85) c81) := taelja_lemma12
-  have h6 : p68 (f19 (f21 c83 c77) c79) c81 := ax11 c85 c79 c81 c81 h2 h3 h4 h5
+  have h5 : p14 c81 (f23 (f26 c84 c85) c81) := taelja_lemma9
+  have h6 : p68 (f19 (f21 c83 c77) c79) c81 := ax8 c85 c79 c81 c81 h2 h3 h4 h5
   exact h6
 
 end VampireSyn7191

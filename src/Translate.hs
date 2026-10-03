@@ -17,7 +17,6 @@ import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
 import Data.Ord (Down(..), comparing)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
-import qualified Data.Text as Text
 import qualified Data.TPTP as T
 import Data.IORef (IORef, modifyIORef', newIORef, readIORef)
 import System.CPUTime (getCPUTime)
@@ -27,7 +26,7 @@ import Types
 import Helpers
 import PropRes (expandPropRes)
 import Conjecture (concludesNegation, conjectureHypotheses, expandSimplifiedConjecture)
-import ProofTree (buildProofInfo, inlineAtomCongruences, resolveCopySource, equationSteps)
+import ProofTree (buildProofInfo, equationSteps, findRoot, inlineAtomCongruences, reachedNames, resolveCopySource)
 import TptpConvert
 import TweeInterface
 import StepReader
@@ -186,30 +185,27 @@ translateWithLemmas debug (T.TSTP _ units0) = do
                    , any (`clauseInstance` c) cons ]
             _ -> []
           withInput sp = finalize (sp { spInput = input })
-      -- Every hypothesis the proof uses must be granted by the conjecture,
-      -- or the proof would assume more than the conjecture gives. A positive
-      -- clause from a negative position, as ? [Y] : ! [X] : (p(Y) => p(X))
-      -- yields, makes the refutation a case split, which no Horn proof shows.
-      case conjectureHypotheses units of
-        Just (ante, cons) -> let granted = ante ++ cons in
-          forM_ [ e | e <- origLeaves, leHyp e ] $ \e ->
-            case convertDeclToClause (leDecl e) of
-              Just c | not (any (`clauseInstance` c) granted) ->
-                error ("unsupported conjecture, " ++ refusal (leUnit e) c)
-                where
-                  refusal u c'
-                    | null (body c') =
-                        "its negation yields the positive clause " ++ u ++ " from a negative position, so its proof is a case split"
-                    | otherwise =
-                        "its negation yields the clause " ++ u ++ ", which the conjecture does not grant"
-              _ -> return ()
-        Nothing -> return ()
-      if Map.null validCands
-        then translateTree debug origInfo units Map.empty origTstp2name (Just origAxioms) >>= traverse (evaluate . withInput)
-        else case buildProofInfo modUnits of
-          Right mainInfo ->
-            translateTree debug mainInfo modUnits validCands nameOverride (Just allAxioms) >>= traverse (evaluate . withInput)
-          Left reason -> return (Left ("the proof with its lemmas as inputs is no refutation, " ++ reason))
+          -- Every hypothesis the proof uses must be granted by the
+          -- conjecture, or the proof would assume more than the conjecture
+          -- gives. A positive clause from a negative position, as
+          -- ? [Y] : ! [X] : (p(Y) => p(X)) yields, makes the refutation a
+          -- case split, which no Horn proof shows.
+          ungranted =
+            [ if null (body c)
+                then "its negation yields the positive clause " ++ leUnit e ++ " from a negative position, so its proof is a case split"
+                else "its negation yields the clause " ++ leUnit e ++ ", which the conjecture does not grant"
+            | Just (ante, cons) <- [conjectureHypotheses units]
+            , e <- origLeaves, leHyp e
+            , Just c <- [convertDeclToClause (leDecl e)]
+            , not (any (`clauseInstance` c) (ante ++ cons)) ]
+      case ungranted of
+        why : _ -> return (Left ("unsupported conjecture, " ++ why))
+        [] | Map.null validCands ->
+               translateTree debug origInfo units Map.empty origTstp2name (Just origAxioms) >>= traverse (evaluate . withInput)
+           | otherwise -> case buildProofInfo modUnits of
+               Right mainInfo ->
+                 translateTree debug mainInfo modUnits validCands nameOverride (Just allAxioms) >>= traverse (evaluate . withInput)
+               Left reason -> return (Left ("the proof with its lemmas as inputs is no refutation, " ++ reason))
 
 -- The finishing passes over the translated proof, run right to left. Unused
 -- lemmas are dropped early, so they are neither generalized nor checked.
@@ -218,27 +214,14 @@ finalize = checkChains . tightenChains . generalizeGoals . cutDetours . skolemWi
          . dropUnusedLemmas . falsumGoalForNegation
 
 -- A conjecture concluding a negation is proved by deriving $false from the
--- negated formula, so that derivation is the only goal. Without a $false
--- goal, each goal block derives $false and then its atom by contradiction,
--- and the first one, cut at $false, is kept.
+-- negated formula, so that derivation is the only goal.
 falsumGoalForNegation :: StructuredProof -> StructuredProof
 falsumGoalForNegation sp
   | null (inNegated (spInput sp)) = sp
   | otherwise = case [ b | (l, b) <- goals sp, l == falsumLit ] of
       b : _ -> sp { goals = [(falsumLit, b)] }
-      []    -> case goals sp of
-        -- a block that never reaches $false proves an atom, not the negation
-        (_, blk) : _
-          | blk' <- dropContradiction blk, blockConcludes falsumLit blk' ->
-              sp { goals = [(falsumLit, blk')] }
-          | otherwise ->
-              error "the derivation of $false from the negated conclusion is not shown"
-        []           -> sp
-  where
-    dropContradiction (HaveHence ls) = HaveHence (reverse (dropWhile isContra (reverse ls)))
-    dropContradiction b              = b
-    isContra (Hence _ ByContradiction) = True
-    isContra _                         = False
+      []    | null (goals sp) -> sp
+            | otherwise       -> error "the derivation of $false from the negated conclusion is not shown"
 
 -- Every printed rewrite, in a chain or a hence line, must follow from the
 -- equation it cites in the direction it cites. A lemma can state a stored
@@ -457,8 +440,7 @@ generalizeGoals sp
     -- hypotheses are listed as axioms, so their symbols are among these
     stated = problemSymbols sp
     used   = Set.union stated (Set.fromList
-               [ case t of { App f _ -> f; Const c -> c; Var v -> v }
-               | t <- skolemTerms stated lemmaTerms, t `notElem` goalSkolems ])
+               [ f | t <- skolemTerms stated lemmaTerms, t `notElem` goalSkolems, f <- take 1 (termSymbols t) ])
     goalSkolems = skolemTerms stated goalTerms
     goalTerms  = [ t | (l, _) <- goals sp, t <- foldLiteralTerms (: []) l ]
     lemmaTerms = concat [ foldLiteralTerms (: []) l ++ blockTerms b | (_, l, b) <- lemmas sp ]
@@ -469,9 +451,9 @@ generalizeGoals sp
                   | App _ ts <- t  = concatMap maximal ts
                   | otherwise      = []
         skolemHeaded t = case t of
-          Const c -> Set.notMember c known && not (isRigidConst c)
+          Const c -> Set.notMember c known
           App f _ -> Set.notMember f known
-          Var _   -> False
+          _       -> False
     fresh = nub (skolemTerms used goalTerms)
     sub   = [ (t, Var (name i t)) | (i, t) <- zip [1 :: Int ..] fresh ]
     name _ (Const c)  = "Sk_" ++ c
@@ -859,8 +841,8 @@ premiseRewriteSteps (ByStep nm lit, d, atRoot, inst) from to = do
       -- the root and fails inside a term
       atomEq = isAtomEquation preds lit
       instLit = maybe lit (`applySubstLit` lit) (matchLit (uncurry Eq e) (uncurry Eq inst))
-  steps0 <- gets stEquationSteps
-  let uses = length [ () | (_, p1, p2) <- steps0, p <- [p1, p2], p == nm ]
+  -- a clause inside a nested inference is the premise of the next step only
+  uses <- gets (Map.findWithDefault 1 nm . stPremiseUses)
   general <- readPremiseStep nm e
   sub <- case general of
     Just chain -> return (Just (lit, e, chain))
@@ -1122,7 +1104,7 @@ citeOrSpliceIn :: Eq a => (a -> [(Term, Term -> a)]) -> (a, (RwStep, a)) -> AlgM
 citeOrSpliceIn ctxs (prev, (rw, cur)) = do
   steps <- gets stEquationSteps
   lits  <- gets stUnitLitByName
-  uses  <- gets stUnitUses
+  uses  <- gets stPremiseUses
   let nm = rwName rw
       (from, to) = case rwDir rw of { LR -> rwEq rw; RL -> (snd (rwEq rw), fst (rwEq rw)) }
       once = any (\(c, _, _) -> c == nm) steps && Map.findWithDefault 0 nm uses == 1
@@ -1382,6 +1364,17 @@ matchedPremise ki σi rw = case rw of
   -- lemma would state q(g(X)) while its proof shows q(g(a))
   _  -> applySubstLit σi (snd (last rw))
 
+-- The head a nucleus step concludes, as its cited premises derive it, so
+-- applying the axiom reproduces it. That is the head under theta, oriented as
+-- the premises derive it, or the derived head when the premises fix more of
+-- it than theta does.
+stepConclusion :: [Literal] -> Literal -> Subst -> [Literal] -> Literal
+stepConclusion bodyAbs headLit theta targets = case derivedHead bodyAbs headLit targets of
+  Just d -> fromMaybe d (find (isJust . matchLit d) [headInst, flipLit headInst])
+  Nothing -> headInst
+  where
+    headInst = applySubstLit theta headLit
+
 -- The block for one nucleus step. A premise t = t gets no line, the first
 -- other premise opens the block and the rest follow as and lines, then a
 -- named nucleus derives the head. Without premises the named axiom asserts
@@ -1401,15 +1394,9 @@ nucleusBlock bodyAbs matched mAxName theta headLit = case filter (not . isReflex
     blk1 <- makeBlock k1 σ1 rw1
     blk  <- foldM addAnd blk1 rest
     return $ case mAxName of
-      Just ax -> appendLine blk (Hence concl (ByAxiom ax))
+      Just ax -> appendLine blk (Hence (stepConclusion bodyAbs headLit theta (matchedPremises matched)) (ByAxiom ax))
       Nothing -> blk
   where
-    -- θ may orient an equational head either way, so it is printed as the
-    -- cited premises derive it, and applying the axiom reproduces it.
-    concl = case derivedHead bodyAbs headLit (matchedPremises matched) of
-      Just d | d == flipLit headInst -> d
-      _                              -> headInst
-      where headInst = applySubstLit theta headLit
     addAnd blk (ki, σi, rwi) = do
       let targ = matchedPremise ki σi rwi
       -- A non-ground, unrewritten premise from an electron with a proof cites
@@ -1611,9 +1598,12 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
           Just (theta, matched)  ->
             case mHead of
               -- ⊥ from a clause other than the negated conjecture means the
-              -- axioms are contradictory, and every goal follows from $false
+              -- axioms are contradictory, and every goal follows from $false.
+              -- The derivation of $false also closes a conjecture that
+              -- concludes a negation.
               Nothing | leRole entry /= NegConjecture, Just _ <- mAxName -> do
                 blk <- nucleusBlock bodyLitsAbs matched mAxName theta falsumLit
+                modify (\st -> st { stClosing = stClosing st <|> Just blk })
                 forM_ goalLits $ \gl ->
                   emitGoalProof gl (appendLine blk (Hence gl ByContradiction))
                 return True
@@ -1625,55 +1615,35 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
                     , Just chain@(EqChain {}) <- ueProof ki ->
                         emitGoalProof (applySubstLit theta gl) (instantiateBlock (ueUnit ki) σi chain) >> return True
                   _ -> do
-                    let pairs     = zip3 goalLits bodyLits matched
-                        unmatched = drop (length matched) goalLits
-                    if null pairs
-                      then return False
-                      else do
-                        forM_ (take 1 unmatched) $ \gl ->
-                          throwError ("translateNucleus: unmatched goal lit: " ++ ppLiteral (applySubstLit theta gl))
-                        forM_ pairs $ \(gl, bl, (ki, σi, rwi)) -> do
-                          -- theta binds the clause copy's variables, so the goal's
-                          -- existential variables are bound by matching the premise.
-                          -- A goal that does not match it, as with E's epred atoms
-                          -- (SYO632-1), becomes the body atom's instance.
-                          let gl0 = applySubstLit theta gl
-                              targ = matchedPremise ki σi rwi
-                              gl' = case matchLit gl0 targ of
-                                      Just ρ | not (null (litOpen gl0)) -> applySubstLit ρ gl0
-                                             | otherwise -> gl0
-                                      Nothing | gl0 /= targ -> applySubstLit theta bl
-                                      _ -> gl0
+                    -- Each goal is proved by a premise of its own that it
+                    -- matches, either way round. theta binds the clause copy's
+                    -- variables, so the goal's existential variables are bound
+                    -- by that match.
+                    -- Without such premises for all goals, the goal phase
+                    -- proves them.
+                    let assign [] _ = [[]]
+                        assign (gl : gls) ms =
+                          [ (applySubstLit ρ gl0, m) : rest
+                          | let gl0 = applySubstLit theta gl
+                          , (m@(ki, σi, rwi), ms') <- picks ms
+                          , Just ρ <- [matchLitEither gl0 (matchedPremise ki σi rwi) []]
+                          , rest <- assign gls ms' ]
+                    case assign goalLits matched of
+                      pairs : _ | not (null pairs) -> do
+                        forM_ pairs $ \(gl', (ki, σi, rwi)) -> do
                           blk <- goalBlock gl' ki σi rwi
                           emitGoalProof gl' blk
                         return True
+                      _ -> return False
               Just headLit -> do
                 blk <- nucleusBlock bodyLitsAbs matched mAxName theta headLit
                 -- the proof's later rewrites of the head come below, from
                 -- stHeadRewrites
-                let headInstA = applySubstLit theta headLit
-                    electronTargets = matchedPremises matched
-                    -- the head as the cited premises derive it, since θ may
-                    -- orient an equation either way (as in nucleusBlock)
-                    headInst = case derivedHead bodyLitsAbs headLit electronTargets of
-                      Just d | d == flipLit headInstA -> d
-                      _                               -> headInstA
-                    -- Two degenerate proofs are not stored. A stale target lacks
-                    -- a variable an equational head shares with the body, since
-                    -- the match grounded it (HEN006-4). A circular block cites
-                    -- the head itself as a premise.
-                    headVars = Set.fromList (litOpen headInst)
-                    bodyVarsInst = Set.fromList
-                      (concatMap (litOpen . applySubstLit theta) bodyLits)
-                    headBodyVars = headVars `Set.intersection` bodyVarsInst
-                    hasStaleTarget = isEqLit headLit
-                                  && not (Set.null headBodyVars)
-                                  && any (\t -> not (headBodyVars `Set.isSubsetOf`
-                                                     Set.fromList (litOpen t)))
-                                         electronTargets
+                let headInst = stepConclusion bodyLitsAbs headLit theta (matchedPremises matched)
+                    -- a circular block cites the head itself as a premise, so
+                    -- it is not stored
                     isCircular = headInst `elem` matchedPremises (filter (not . isReflexivityPremise) matched)
-                    proofToStore = if isCircular || hasStaleTarget
-                                   then Nothing else Just blk
+                    proofToStore = if isCircular then Nothing else Just blk
                 -- a nucleus without a display name cannot justify its head, so
                 -- the head is not stored
                 when (isJust mAxName) $ do
@@ -1707,8 +1677,6 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
                     _ -> return ()
                 -- An unnamed nucleus whose head is a goal cannot be cited, so a
                 -- named axiom justifies the goal, with headLit turned to match.
-                -- A ground head of a relational goal is skipped, so it does not
-                -- displace a named axiom's proof.
                 let orientedPair gl = case (headInst, gl) of
                       (Eq a b, Eq c d)
                         | a == c && b == d -> Just (gl, headLit)
@@ -1719,7 +1687,6 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
                       _                    -> Nothing
                     matchResult = listToMaybe
                       [ p | gl <- goalLits
-                          , isEqLit gl || not (null (litOpen headLit))
                           , Just p <- [orientedPair gl] ]
                 case (mAxName, matchResult) of
                   (Nothing, Just (gl, headLitOr)) | not (null matched) -> do
@@ -1741,9 +1708,9 @@ openGoalsOf goalLits = do
                     in isJust (unifyLits g e []) || isJust (unifyLits (flipLit g) e [])
   return (nub [ g | g <- goalLits, not (any (`proves` g) emitted) ])
 
--- The nucleus loop of Algorithm 1 translate_proof, in passes. A nucleus that
--- fails is retried after a pass derives new units. Returns the nuclei that
--- still fail.
+-- The nucleus loop of Algorithm 1 translate_proof, one pass in tree order,
+-- where each provider comes before its consumer. Returns the nuclei that
+-- fail.
 translateNuclei
   :: Prover
   -> Bool  -- debug
@@ -1764,26 +1731,8 @@ translateNuclei prover debug thetaCtx nuclei posToName goalLits = do
   when debug $ liftIO $ dbg True $ "θ = {"
     ++ intercalate ", " [ v ++ "@" ++ lePos e ++ "→" ++ ppTerm t
                         | e <- nuclei, (v, t) <- computeNucleusTheta thetaCtx e ] ++ "}"
-  go nuclei
+  processPass nuclei
   where
-    go [] = return []
-    go pending = do
-      open0 <- openGoalsOf goalLits
-      if null open0 then return [] else do
-        prevCount <- gets (length . stUnits)
-        failed    <- processPass pending
-        newCount  <- gets (length . stUnits)
-        open2     <- openGoalsOf goalLits
-        -- Nuclei go in position order, which need not be their dependency
-        -- order (Vampire's FOF proofs), so another pass runs while units are
-        -- derived and a goal is still open.
-        if newCount > prevCount && not (null open2) && not (null failed)
-          then do
-            liftIO $ dbg debug ("[pass] again for " ++ show (length failed) ++ " nuclei at "
-                                ++ unwords (map lePos failed))
-            go failed
-          else return failed
-
     processPass [] = return []
     processPass (entry : rest) = do
       open1 <- openGoalsOf goalLits
@@ -2149,23 +2098,20 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
               mProof = fmap (\(_, b, _, _) -> b) (Map.lookup (leName e) candLemmaMap)
         , lit `notElem` goalLits' ]
 
-      -- Equational file axioms that are no leaves of the tree. A Twee proof
-      -- may use an axiom only inside a rewriting chain, so for Twee they are
-      -- added as units. In a Vampire or E proof such an axiom is unused.
-      isTweeProof = any isTweeUnit allUnits
-        where
-          isTweeUnit (T.Unit _ _ (Just (T.Inference (T.Atom rule) _ _, _))) =
-            rule `elem` map Text.pack ["rewriting", "proved_conjecture"]
-          isTweeUnit _ = False
+      -- Equational file axioms the refutation reaches that are no leaves of
+      -- the tree, as when a proof uses an axiom only inside a rewriting
+      -- chain. They are added as units, and the output keeps those it cites.
       proofTreeAxNames = Set.fromList
         [ leName e | e <- piElectrons info ++ piNuclei info
                    , leRole e == OrigAxiom ]
-      bgEqPairs = if not isTweeProof then [] else
+      reached = Set.fromList (maybe [] (reachedNames unitMap) (findRoot allUnits))
+      bgEqPairs =
         nubBy (\(_, l1) (_, l2) -> l1 == l2)
         [ (unitNameStr n, clit)
         | u@(T.Unit n decl _) <- allUnits
         , hasAxiomRole decl
         , not (isDerivedUnit u)
+        , unitNameStr n `Set.member` reached
         , unitNameStr n `Set.notMember` proofTreeAxNames
         -- not already named by the outer proof, as an axiom used in a lemma is
         , unitNameStr n `Map.notMember` nameOverride
@@ -2210,8 +2156,7 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
         , stNameToPos  = nameToPos
         , stEquationSteps  = steps0
         , stUnitLitByName = unitLitByTstpName
-        , stUnitUses = Map.fromListWith (+)
-            [ (parent, 1 :: Int) | T.Unit _ _ (Just (src, _)) <- allUnits, parent <- nub (sourceParents src) ]
+        , stPremiseUses = premiseUses allUnits
         , stLiteralRewrites = literalRw
         , stHeadRewrites = headRw
         , stReadableUnits = readableUnits allUnits
@@ -2305,12 +2250,9 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
       -- with their proofs as premises and the closing clause as the rule.
       -- The proof of one conjunct alone proves nothing (SWW469_1).
       negation <- gets stNegationConj
-      gs0 <- gets stGoals
-      let derivesFalse (HaveHence ls) = or [ True | Hence l _ <- ls, l == falsumLit ]
-          derivesFalse _              = False
-      -- a goal block that already derives $false, from the contradiction
-      -- route, stays as it is
-      when (negation && not (any (derivesFalse . snd) gs0)) $ case closerName goalLits posToName of
+      -- the contradiction route may have recorded the derivation already
+      known <- gets stClosing
+      when (negation && isNothing known) $ case closerName goalLits posToName of
         Just ax -> do
           gs <- gets stGoals
           prems <- forM gs $ \(g, b) -> do

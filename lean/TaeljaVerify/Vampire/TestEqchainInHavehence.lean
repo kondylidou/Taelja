@@ -17,17 +17,17 @@ axiom h : α → α
 axiom p : α → Prop
 
 -- Axiom 1
-axiom ax1 : ∀ (x : α), f x = g x
+axiom ax1 : ∀ (x : α), g x = h x
 -- Axiom 2
-axiom ax2 : ∀ (x : α), g x = h x
+axiom ax2 : ∀ (x : α), f x = g x
 -- Axiom 3
 axiom ax3 : ∀ (x : α), f x = h x → p x
 
 -- Lemma 4
 theorem taelja_lemma4 : ∀ (x : α), f x = h x := by
   intro x
-  calc f x = g x := ax1 x
-      _ = h x := ax2 x
+  calc f x = g x := ax2 x
+      _ = h x := ax1 x
 
 -- Goal 1
 theorem taelja_goal1 : p a := by

@@ -697,7 +697,12 @@ theorem taelja_lemma76 : ∀ (x y : α), mult (ld x x) (mult (ld y y) (x1 (ld x 
       _ = mult (ld x x) (x1 (ld x x)) := congrArg (fun t : α => mult (ld x x) t) (taelja_lemma67 y (x1 (ld x x)))
 
 -- Goal 1
-theorem taelja_goal1 : ∀ (x : α), mult (ld x x) (x1 (ld x x)) = x1 (ld x x) := by
+theorem taelja_goal1 : ∀ (x y : α), mult x (ld y y) = x := by
+  intro x y
+  calc mult x (ld y y) = x := taelja_lemma62 x y
+
+-- Goal 2
+theorem taelja_goal2 : ∀ (x : α), mult (ld x x) (x1 (ld x x)) = x1 (ld x x) := by
   intro x
   calc mult (ld x x) (x1 (ld x x)) = ld (ld x x) (mult (ld x x) (x1 (ld x x))) := Eq.symm (taelja_lemma67 x (mult (ld x x) (x1 (ld x x))))
       _ = ld (ld x x) (mult (ld x x) (mult (ld x x) (x1 (ld x x)))) := congrArg (fun t : α => ld (ld x x) t) (Eq.symm (taelja_lemma76 x x))
@@ -725,10 +730,5 @@ theorem taelja_goal1 : ∀ (x : α), mult (ld x x) (x1 (ld x x)) = x1 (ld x x) :
       _ = ld (ld x (rd x (ld x x))) (x1 (ld x x)) := congrArg (fun t : α => ld t (x1 (ld x x))) (taelja_lemma71 (ld x x) (ld x x) x)
       _ = ld (ld x x) (x1 (ld x x)) := congrArg (fun t : α => ld (ld x t) (x1 (ld x x))) (taelja_lemma33 x x)
       _ = x1 (ld x x) := taelja_lemma67 x (x1 (ld x x))
-
--- Goal 2
-theorem taelja_goal2 : ∀ (x y : α), mult x (ld y y) = x := by
-  intro x y
-  calc mult x (ld y y) = x := taelja_lemma62 x y
 
 end TweeGrp654p1

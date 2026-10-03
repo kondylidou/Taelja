@@ -1,10 +1,10 @@
 Axiom 1: +(X,Y) = +(Y,X)
 Axiom 2: +(X,1) = 1
-Axiom 3: +(X,0) = X
-Axiom 4: >=(X,X)
-Axiom 5: >=(+(X,Y),Z) => >=(Y,==>(X,Z))
-Axiom 6: >=(X,0)
-Axiom 7: >=(A,B) /\ >=(B,A) => A = B
+Axiom 3: >=(X,X)
+Axiom 4: >=(+(X,Y),Z) => >=(Y,==>(X,Z))
+Axiom 5: >=(X,0)
+Axiom 6: >=(A,B) /\ >=(B,A) => A = B
+Axiom 7: +(X,0) = X
 Axiom 8: >=(C,U) => >=(+(C,V),+(U,V))
 Axiom 9: >=(W,X1) => >=(==>(X2,W),==>(X2,X1))
 Axiom 10: >=(X,==>(Y,Z)) => >=(+(Y,X),Z)
@@ -21,20 +21,20 @@ Proof:
 Lemma 13: >=(X,==>(1,1))
 Proof:
   have >=(1,1)
-    by axiom 4
+    by axiom 3
   hence >=(+(1,X),1)
     by rw lemma 12 R->L
   hence >=(X,==>(1,1))
-    by axiom 5
+    by axiom 4
 
 Lemma 14: 0 = ==>(1,1)
 Proof:
   have >=(==>(1,1),0)
-    by axiom 6
+    by axiom 5
    and >=(0,==>(1,1))
     by lemma 13
   hence 0 = ==>(1,1)
-    by axiom 7
+    by axiom 6
 
 Lemma 15: +(==>(1,1),X) = X
 Proof:
@@ -43,7 +43,7 @@ Proof:
   +(0,X)
 = { by axiom 1 R->L }
   +(X,0)
-= { by axiom 3 }
+= { by axiom 7 }
   X
 
 Lemma 16: >=(+(X,Y),Y)
@@ -83,14 +83,14 @@ Proof:
    and >=(+(X,==>(X,1)),1)
     by lemma 19
   hence 1 = +(X,==>(X,1))
-    by axiom 7
+    by axiom 6
 
 Lemma 21: +(==>(==>(X,1),X),==>(1,1)) = ==>(==>(X,1),X)
 Proof:
   +(==>(==>(X,1),X),==>(1,1))
 = { by lemma 14 R->L }
   +(==>(==>(X,1),X),0)
-= { by axiom 3 }
+= { by axiom 7 }
   ==>(==>(X,1),X)
 
 Lemma 22: ==>(==>(==>(X,1),X),X) = ==>(1,1)
@@ -106,12 +106,12 @@ Proof:
   have >=(+(==>(X,1),X),X)
     by lemma 16
   hence >=(X,==>(==>(X,1),X))
-    by axiom 5
+    by axiom 4
 
 Lemma 24: ==>(==>(X,1),X) = X
 Proof:
   have >=(==>(==>(==>(X,1),X),X),==>(==>(==>(X,1),X),X))
-    by axiom 4
+    by axiom 3
   hence >=(+(==>(==>(X,1),X),==>(==>(==>(X,1),X),X)),X)
     by axiom 10
   hence >=(+(==>(==>(X,1),X),==>(1,1)),X)
@@ -121,7 +121,7 @@ Proof:
    and >=(X,==>(==>(X,1),X))
     by lemma 23
   hence ==>(==>(X,1),X) = X
-    by axiom 7
+    by axiom 6
 
 Lemma 25: >=(X,==>(==>(X,1),1))
 Proof:
@@ -132,7 +132,7 @@ Proof:
   hence >=(+(==>(X,1),X),1)
     by rw axiom 1 R->L
   hence >=(X,==>(==>(X,1),1))
-    by axiom 5
+    by axiom 4
 
 Goal 1: ==>(==>(X,1),1) = X
 Proof:
@@ -143,4 +143,4 @@ Proof:
    and >=(X,==>(==>(X,1),1))
     by lemma 25
   hence ==>(==>(X,1),1) = X
-    by axiom 7
+    by axiom 6

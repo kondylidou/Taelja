@@ -11,12 +11,7 @@ Proof:
   hence c_lessequals(c_Union(v_c,t_a),v_x(c_Union(v_c,t_a)),tc_set(t_a))
     by axiom 3
 
-Goal 1: c_in(c_Union(v_c,t_a),v_S,tc_set(t_a))
-Proof:
-  have c_in(c_Union(v_c,t_a),v_S,tc_set(t_a))
-    by axiom 1
-
-Goal 2: c_Union(v_c,t_a) = v_x(c_Union(v_c,t_a))
+Goal 1: c_Union(v_c,t_a) = v_x(c_Union(v_c,t_a))
 Proof:
   have c_in(c_Union(v_c,t_a),v_S,tc_set(t_a))
     by axiom 1
@@ -28,3 +23,8 @@ Proof:
     by lemma 6
   hence c_Union(v_c,t_a) = v_x(c_Union(v_c,t_a))
     by axiom 5
+
+Goal 2: c_in(c_Union(v_c,t_a),v_S,tc_set(t_a))
+Proof:
+  have c_in(c_Union(v_c,t_a),v_S,tc_set(t_a))
+    by axiom 1

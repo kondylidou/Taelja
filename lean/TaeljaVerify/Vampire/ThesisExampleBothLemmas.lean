@@ -18,9 +18,9 @@ axiom q : α → Prop
 axiom s : α → Prop
 
 -- Axiom 1
-axiom ax1 : ∀ (x : α), f x = x
+axiom ax1 : ∀ (x : α), g x = f x
 -- Axiom 2
-axiom ax2 : ∀ (x : α), g x = f x
+axiom ax2 : ∀ (x : α), f x = x
 -- Axiom 3
 axiom ax3 : ∀ (x : α), g x = x → q x
 -- Axiom 4
@@ -31,8 +31,8 @@ axiom ax5 : ∀ (x : α), s x → q x → p x
 -- Lemma 6
 theorem taelja_lemma6 : ∀ (x : α), g x = x := by
   intro x
-  calc g x = f x := ax2 x
-      _ = x := ax1 x
+  calc g x = f x := ax1 x
+      _ = x := ax2 x
 
 -- Lemma 7
 theorem taelja_lemma7 : q a := by

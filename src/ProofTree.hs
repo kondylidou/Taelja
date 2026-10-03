@@ -6,13 +6,14 @@ module ProofTree
   ( buildProofInfo
   , classifyRole
   , inlineAtomCongruences
-  , resolveSourceName
   , resolveCopySource
   , equationSteps
   , equationRuleNames
   , coreInferenceNames
   , RuleReading (..)
   , inferenceReading
+  , findRoot
+  , reachedNames
   ) where
 import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map
@@ -50,7 +51,7 @@ buildProofInfo allUnits = do
   mapM_ (\n -> Left ("incomplete proof, it cites " ++ n ++ ", which it does not contain"))
         (take 1 [ n | n <- reachedNames unitMap root, Map.notMember n unitMap ])
   let tree    = buildProofTree allUnits root
-      resolve = resolveSourceName unitMap
+      resolve = resolveCopySource unitMap
       -- the clauses the conjecture grants as hypotheses
       granted = maybe [] (uncurry (++)) (conjectureHypotheses allUnits)
       leafRows  = gatherLeaves "" tree
@@ -573,7 +574,7 @@ classifyRole granted unitMap name decl
   | isIntroducedSrc unitMap resolvedNm                        = OrigAxiom
   | otherwise                                                 = Derived
   where
-    resolvedNm = resolveSourceName unitMap name
+    resolvedNm = resolveCopySource unitMap name
 
 -- Whether a declaration has the negated_conjecture role.
 isNegConj :: T.Declaration -> Bool
@@ -619,44 +620,24 @@ sourceNegates (T.Inference (T.Atom rule) _ ps) =
   isNegationRule rule || or [ sourceNegates s | T.Parent s _ <- ps ]
 sourceNegates _ = False
 
--- Traces back through copy steps only, unit references and one-parent
--- preprocessing like cnf_transformation. Unlike resolveSourceName, a genuine
--- inference stops the trace. Callers use it to tell whether a clause merely
--- copies an input.
+-- The unit a clause copies, traced back through unit references and steps
+-- like cnf_transformation that copy one premise. A definition the step cites
+-- is no premise, unless the step rests on it alone, as when E splits one. A
+-- core inference or the negation step stops the trace, so a clause traces to
+-- the input it copies or to itself.
 resolveCopySource :: Map.Map String T.Unit -> String -> String
 resolveCopySource unitMap = go
   where
     go name = case Map.lookup name unitMap of
       Just (T.Unit _ _ (Just (T.UnitSource parentName, _))) ->
         go (unitNameStr parentName)
-      -- a one-parent step, not counting the definition a Skolemization cites
       Just (T.Unit _ _ (Just (src@(T.Inference (T.Atom rule) _ ps), _)))
         | not (Set.member rule coreInferenceNames)
         , not (sourceNegates src)
-        , [pn] <- [ n | n <- concatMap parentUnits ps, not (Text.pack "skolem" `Text.isInfixOf` rule && isIntroducedSrc unitMap n) ]
+        , let prems = concatMap parentUnits ps
+        , [pn] <- case filter (not . isIntroducedSrc unitMap) prems of { [] -> prems; rest -> rest }
         -> go pn
       _ -> name
-
--- Traces back to an input unit through first parents. Stops at the negation
--- step and at Twee's rewriting and proved_conjecture steps.
-resolveSourceName :: Map.Map String T.Unit -> String -> String
-resolveSourceName unitMap = go
-  where
-    go name = case Map.lookup name unitMap of
-      -- bare unit references, as E copies axioms
-      Just (T.Unit _ _ (Just (T.UnitSource parentName, _))) ->
-        go (unitNameStr parentName)
-      Just (T.Unit _ _ (Just (src@(T.Inference (T.Atom rule) _ parents), _)))
-        | not (sourceNegates src)
-        , rule /= Text.pack "rewriting"        -- Twee creates new equations here
-        , rule /= Text.pack "proved_conjecture" -- Twee's terminal step
-        ->
-            case concatMap parentUnits parents of
-              (p:_) -> go p
-              []    -> name
-      Just (T.Unit n _ _) -> unitNameStr n
-      Just _               -> name
-      Nothing              -> name
 
 -- The rules whose steps become nodes of the proof tree. A unit derived by any
 -- other rule is a leaf and is traced back as a copy of its premise.
@@ -825,20 +806,22 @@ samePredicate (T.Predicate n1 _) (T.Predicate n2 _) = n1 == n2
 samePredicate (T.Equality {})    (T.Equality {})     = True
 samePredicate _ _                                    = False
 
--- Rewriting rules whose first premise firstParentProvides never takes as the
--- provider.
-consumerFirstRules :: Set.Set Text.Text
-consumerFirstRules = Set.fromList $ map Text.pack
+-- Rules that rewrite one premise with the other. Nearly every step lists the
+-- clause rewritten first, but superposition and Twee's rewriting do not always.
+rewriteRules :: Set.Set Text.Text
+rewriteRules = Set.fromList $ map Text.pack
   [ "superposition", "paramodulation", "spm"
-  , "forward_demodulation", "backward_demodulation" ]
+  , "forward_demodulation", "backward_demodulation"
+  , "rw", "definition_unfolding", "rewriting" ]
 
--- Whether the first premise of a binary step is the provider, at child 0. It
--- never is under consumerFirstRules. Otherwise a unit provides to a nucleus
--- and an equation to an atom, and the replayed resolvent decides between
--- nuclei.
+-- Whether the first premise of a binary step is the provider, at child 0. A
+-- rewriting step is read as its replay shows, and when the replay cannot tell,
+-- the clause rewritten is taken to come first. Otherwise a unit provides to a
+-- nucleus and an equation to an atom, and the replayed resolvent decides
+-- between nuclei.
 firstParentProvides :: Text.Text -> T.Declaration -> T.Declaration -> T.Declaration -> Bool
-firstParentProvides rule _ _ _
-  | Set.member rule consumerFirstRules = False
+firstParentProvides rule result d1 d2
+  | Set.member rule rewriteRules = maybe False not (consumerIsFirst result d1 d2)
 firstParentProvides _ _ d1 d2
   | isPositiveUnitFormula d1 && not (isPositiveUnitFormula d2) = True
   | isPositiveUnitFormula d2 && not (isPositiveUnitFormula d1) = False

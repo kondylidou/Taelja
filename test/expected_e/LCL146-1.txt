@@ -1,9 +1,9 @@
 Axiom 1: implies(truth,X) = X
 Axiom 2: implies(implies(not(X),not(Y)),implies(Y,X)) = truth
-Axiom 3: implies(implies(X,Y),Y) = implies(implies(Y,X),X)
-Axiom 4: implies(implies(X,Y),implies(implies(Y,Z),implies(X,Z))) = truth
-Axiom 5: big_hat(X,Y) = not(big_V(not(X),not(Y)))
-Axiom 6: big_V(X,Y) = implies(implies(X,Y),Y)
+Axiom 3: implies(implies(X,Y),implies(implies(Y,Z),implies(X,Z))) = truth
+Axiom 4: implies(implies(X,Y),Y) = implies(implies(Y,X),X)
+Axiom 5: big_V(X,Y) = implies(implies(X,Y),Y)
+Axiom 6: big_hat(X,Y) = not(big_V(not(X),not(Y)))
 
 Lemma 7: implies(implies(not(X),not(truth)),X) = truth
 Proof:
@@ -20,13 +20,13 @@ Proof:
   implies(X,implies(implies(X,Y),implies(truth,Y)))
 = { by axiom 1 R->L }
   implies(implies(truth,X),implies(implies(X,Y),implies(truth,Y)))
-= { by axiom 4 }
+= { by axiom 3 }
   truth
 
 Lemma 9: implies(implies(X,truth),truth) = truth
 Proof:
   implies(implies(X,truth),truth)
-= { by axiom 3 }
+= { by axiom 4 }
   implies(implies(truth,X),X)
 = { by axiom 1 R->L }
   implies(truth,implies(implies(truth,X),X))
@@ -50,7 +50,7 @@ Proof:
   implies(truth,implies(implies(truth,X),implies(Y,X)))
 = { by lemma 10 R->L }
   implies(implies(Y,truth),implies(implies(truth,X),implies(Y,X)))
-= { by axiom 4 }
+= { by axiom 3 }
   truth
 
 Lemma 12: implies(not(truth),X) = truth
@@ -64,7 +64,7 @@ Proof:
   implies(truth,implies(implies(implies(not(X),not(truth)),X),implies(not(truth),X)))
 = { by lemma 11 R->L }
   implies(implies(not(truth),implies(not(X),not(truth))),implies(implies(implies(not(X),not(truth)),X),implies(not(truth),X)))
-= { by axiom 4 }
+= { by axiom 3 }
   truth
 
 Lemma 13: not(not(truth)) = truth
@@ -74,9 +74,9 @@ Proof:
   implies(truth,not(not(truth)))
 = { by lemma 7 R->L }
   implies(implies(implies(not(not(truth)),not(truth)),not(truth)),not(not(truth)))
-= { by axiom 3 R->L }
+= { by axiom 4 R->L }
   implies(implies(implies(not(truth),not(not(truth))),not(not(truth))),not(not(truth)))
-= { by axiom 3 }
+= { by axiom 4 }
   implies(implies(not(not(truth)),implies(not(truth),not(not(truth)))),implies(not(truth),not(not(truth))))
 = { by lemma 11 }
   implies(truth,implies(not(truth),not(not(truth))))
@@ -96,7 +96,7 @@ Proof:
   implies(implies(truth,not(implies(X,not(truth)))),implies(implies(not(truth),X),X))
 = { by lemma 13 R->L }
   implies(implies(not(not(truth)),not(implies(X,not(truth)))),implies(implies(not(truth),X),X))
-= { by axiom 3 R->L }
+= { by axiom 4 R->L }
   implies(implies(not(not(truth)),not(implies(X,not(truth)))),implies(implies(X,not(truth)),not(truth)))
 = { by axiom 2 }
   truth
@@ -118,7 +118,7 @@ Proof:
   implies(truth,implies(not(X),not(truth)))
 = { by lemma 15 R->L }
   implies(implies(X,implies(not(X),not(truth))),implies(not(X),not(truth)))
-= { by axiom 3 R->L }
+= { by axiom 4 R->L }
   implies(implies(implies(not(X),not(truth)),X),X)
 = { by lemma 7 }
   implies(truth,X)
@@ -130,7 +130,7 @@ Proof:
   implies(X,not(truth))
 = { by lemma 16 R->L }
   implies(implies(not(X),not(truth)),not(truth))
-= { by axiom 3 R->L }
+= { by axiom 4 R->L }
   implies(implies(not(truth),not(X)),not(X))
 = { by lemma 12 }
   implies(truth,not(X))
@@ -140,19 +140,19 @@ Proof:
 Goal 1: not(big_hat(x,y)) = big_V(not(x),not(y))
 Proof:
   not(big_hat(x,y))
-= { by axiom 5 }
-  not(not(big_V(not(x),not(y))))
 = { by axiom 6 }
+  not(not(big_V(not(x),not(y))))
+= { by axiom 5 }
   not(not(implies(implies(not(x),not(y)),not(y))))
 = { by lemma 17 R->L }
   not(implies(implies(implies(not(x),not(y)),not(y)),not(truth)))
 = { by lemma 17 R->L }
   implies(implies(implies(implies(not(x),not(y)),not(y)),not(truth)),not(truth))
-= { by axiom 3 }
+= { by axiom 4 }
   implies(implies(not(truth),implies(implies(not(x),not(y)),not(y))),implies(implies(not(x),not(y)),not(y)))
 = { by lemma 12 }
   implies(truth,implies(implies(not(x),not(y)),not(y)))
 = { by axiom 1 }
   implies(implies(not(x),not(y)),not(y))
-= { by axiom 6 R->L }
+= { by axiom 5 R->L }
   big_V(not(x),not(y))

@@ -13,13 +13,13 @@ axiom b : α
 axiom c : α
 
 -- Axiom 1
-axiom ax1 : a = b
+axiom ax1 : b = c
 -- Axiom 2
-axiom ax2 : b = c
+axiom ax2 : a = b
 
 -- Goal 1
 theorem taelja_goal1 : a = c := by
-  calc a = b := ax1
-      _ = c := ax2
+  calc a = b := ax2
+      _ = c := ax1
 
 end VampirePureEquationalExample
