@@ -1,0 +1,489 @@
+Axiom 1: ld(X,mult(X,Y)) = Y
+Axiom 2: mult(X,mult(Y,mult(Z,Y))) = mult(mult(mult(X,Y),Z),Y)
+Axiom 3: mult(X,ld(X,Y)) = Y
+Axiom 4: rd(mult(X,Y),Y) = X
+Axiom 5: mult(rd(X,Y),Y) = X
+
+Lemma 6: mult(rd(X,Y),mult(Y,mult(Z,Y))) = mult(mult(X,Z),Y)
+Proof:
+  mult(rd(X,Y),mult(Y,mult(Z,Y)))
+= { by axiom 2 }
+  mult(mult(mult(rd(X,Y),Y),Z),Y)
+= { by axiom 5 }
+  mult(mult(X,Z),Y)
+
+Lemma 7: ld(rd(X,Y),mult(Z,Y)) = mult(Y,mult(ld(X,Z),Y))
+Proof:
+  ld(rd(X,Y),mult(Z,Y))
+= { by axiom 3 R->L }
+  ld(rd(X,Y),mult(mult(X,ld(X,Z)),Y))
+= { by lemma 6 R->L }
+  ld(rd(X,Y),mult(rd(X,Y),mult(Y,mult(ld(X,Z),Y))))
+= { by axiom 1 }
+  mult(Y,mult(ld(X,Z),Y))
+
+Lemma 8: mult(X,mult(ld(mult(Y,X),Y),X)) = X
+Proof:
+  mult(X,mult(ld(mult(Y,X),Y),X))
+= { by lemma 7 R->L }
+  ld(rd(mult(Y,X),X),mult(Y,X))
+= { by axiom 5 R->L }
+  ld(rd(mult(Y,X),X),mult(rd(mult(Y,X),X),X))
+= { by axiom 1 }
+  X
+
+Lemma 9: mult(ld(mult(X,Y),X),Y) = ld(Y,Y)
+Proof:
+  mult(ld(mult(X,Y),X),Y)
+= { by axiom 1 R->L }
+  ld(Y,mult(Y,mult(ld(mult(X,Y),X),Y)))
+= { by lemma 8 }
+  ld(Y,Y)
+
+Lemma 10: mult(X,mult(ld(Y,rd(Y,X)),X)) = X
+Proof:
+  mult(X,mult(ld(Y,rd(Y,X)),X))
+= { by lemma 7 R->L }
+  ld(rd(Y,X),mult(rd(Y,X),X))
+= { by axiom 1 }
+  X
+
+Lemma 11: mult(ld(X,rd(X,Y)),Y) = ld(Y,Y)
+Proof:
+  mult(ld(X,rd(X,Y)),Y)
+= { by axiom 1 R->L }
+  ld(Y,mult(Y,mult(ld(X,rd(X,Y)),Y)))
+= { by lemma 10 }
+  ld(Y,Y)
+
+Lemma 12: mult(mult(X,ld(Y,rd(Y,Z))),Z) = X
+Proof:
+  mult(mult(X,ld(Y,rd(Y,Z))),Z)
+= { by lemma 6 R->L }
+  mult(rd(X,Z),mult(Z,mult(ld(Y,rd(Y,Z)),Z)))
+= { by lemma 11 }
+  mult(rd(X,Z),mult(Z,ld(Z,Z)))
+= { by axiom 3 }
+  mult(rd(X,Z),Z)
+= { by axiom 5 }
+  X
+
+Lemma 13: mult(X,ld(Y,rd(Y,Z))) = rd(X,Z)
+Proof:
+  mult(X,ld(Y,rd(Y,Z)))
+= { by axiom 4 R->L }
+  rd(mult(mult(X,ld(Y,rd(Y,Z))),Z),Z)
+= { by lemma 12 }
+  rd(X,Z)
+
+Lemma 14: rd(X,ld(Y,X)) = Y
+Proof:
+  rd(X,ld(Y,X))
+= { by axiom 3 R->L }
+  rd(mult(Y,ld(Y,X)),ld(Y,X))
+= { by axiom 4 }
+  Y
+
+Lemma 15: rd(X,ld(Y,Z)) = mult(X,ld(Z,Y))
+Proof:
+  rd(X,ld(Y,Z))
+= { by lemma 13 R->L }
+  mult(X,ld(Z,rd(Z,ld(Y,Z))))
+= { by lemma 14 }
+  mult(X,ld(Z,Y))
+
+Lemma 16: rd(mult(X,mult(Y,Z)),Y) = mult(mult(X,Y),rd(Z,Y))
+Proof:
+  rd(mult(X,mult(Y,Z)),Y)
+= { by axiom 5 R->L }
+  rd(mult(X,mult(Y,mult(rd(Z,Y),Y))),Y)
+= { by axiom 2 }
+  rd(mult(mult(mult(X,Y),rd(Z,Y)),Y),Y)
+= { by axiom 4 }
+  mult(mult(X,Y),rd(Z,Y))
+
+Lemma 17: mult(X,rd(ld(Y,Z),Y)) = rd(mult(rd(X,Y),Z),Y)
+Proof:
+  mult(X,rd(ld(Y,Z),Y))
+= { by axiom 5 R->L }
+  mult(mult(rd(X,Y),Y),rd(ld(Y,Z),Y))
+= { by lemma 16 R->L }
+  rd(mult(rd(X,Y),mult(Y,ld(Y,Z))),Y)
+= { by axiom 3 }
+  rd(mult(rd(X,Y),Z),Y)
+
+Lemma 18: ld(ld(mult(X,Y),X),ld(Y,Y)) = Y
+Proof:
+  ld(ld(mult(X,Y),X),ld(Y,Y))
+= { by lemma 9 R->L }
+  ld(ld(mult(X,Y),X),mult(ld(mult(X,Y),X),Y))
+= { by axiom 1 }
+  Y
+
+Lemma 19: mult(X,mult(Y,mult(ld(Y,Y),Y))) = mult(X,mult(Y,Y))
+Proof:
+  mult(X,mult(Y,mult(ld(Y,Y),Y)))
+= { by axiom 2 }
+  mult(mult(mult(X,Y),ld(Y,Y)),Y)
+= { by axiom 1 R->L }
+  mult(mult(mult(X,ld(X,mult(X,Y))),ld(Y,Y)),Y)
+= { by lemma 15 R->L }
+  mult(mult(rd(X,ld(mult(X,Y),X)),ld(Y,Y)),Y)
+= { by axiom 1 R->L }
+  mult(mult(rd(X,ld(mult(X,Y),X)),ld(Y,Y)),ld(X,mult(X,Y)))
+= { by lemma 15 R->L }
+  rd(mult(rd(X,ld(mult(X,Y),X)),ld(Y,Y)),ld(mult(X,Y),X))
+= { by lemma 17 R->L }
+  mult(X,rd(ld(ld(mult(X,Y),X),ld(Y,Y)),ld(mult(X,Y),X)))
+= { by lemma 18 }
+  mult(X,rd(Y,ld(mult(X,Y),X)))
+= { by lemma 15 }
+  mult(X,mult(Y,ld(X,mult(X,Y))))
+= { by axiom 1 }
+  mult(X,mult(Y,Y))
+
+Lemma 20: mult(X,mult(ld(X,X),X)) = mult(X,X)
+Proof:
+  mult(X,mult(ld(X,X),X))
+= { by axiom 1 R->L }
+  ld(X,mult(X,mult(X,mult(ld(X,X),X))))
+= { by lemma 19 }
+  ld(X,mult(X,mult(X,X)))
+= { by axiom 1 }
+  mult(X,X)
+
+Lemma 21: mult(ld(X,X),X) = X
+Proof:
+  mult(ld(X,X),X)
+= { by axiom 1 R->L }
+  ld(X,mult(X,mult(ld(X,X),X)))
+= { by lemma 20 }
+  ld(X,mult(X,X))
+= { by axiom 1 }
+  X
+
+Lemma 22: ld(X,X) = rd(X,X)
+Proof:
+  ld(X,X)
+= { by axiom 4 R->L }
+  rd(mult(ld(X,X),X),X)
+= { by lemma 21 }
+  rd(X,X)
+
+Lemma 23: rd(X,rd(Y,Y)) = mult(X,rd(Y,Y))
+Proof:
+  rd(X,rd(Y,Y))
+= { by lemma 22 R->L }
+  rd(X,ld(Y,Y))
+= { by lemma 15 }
+  mult(X,ld(Y,Y))
+= { by lemma 22 }
+  mult(X,rd(Y,Y))
+
+Lemma 24: mult(mult(rd(X,mult(Y,Z)),Y),rd(Z,Y)) = rd(X,Y)
+Proof:
+  mult(mult(rd(X,mult(Y,Z)),Y),rd(Z,Y))
+= { by lemma 16 R->L }
+  rd(mult(rd(X,mult(Y,Z)),mult(Y,Z)),Y)
+= { by axiom 5 }
+  rd(X,Y)
+
+Lemma 25: rd(rd(X,Y),rd(Z,Y)) = mult(rd(X,mult(Y,Z)),Y)
+Proof:
+  rd(rd(X,Y),rd(Z,Y))
+= { by lemma 24 R->L }
+  rd(mult(mult(rd(X,mult(Y,Z)),Y),rd(Z,Y)),rd(Z,Y))
+= { by axiom 4 }
+  mult(rd(X,mult(Y,Z)),Y)
+
+Lemma 26: mult(rd(X,Y),rd(Y,Y)) = mult(rd(X,mult(Y,Y)),Y)
+Proof:
+  mult(rd(X,Y),rd(Y,Y))
+= { by lemma 23 R->L }
+  rd(rd(X,Y),rd(Y,Y))
+= { by lemma 25 }
+  mult(rd(X,mult(Y,Y)),Y)
+
+Lemma 27: mult(mult(X,rd(Y,Y)),rd(Y,Y)) = X
+Proof:
+  mult(mult(X,rd(Y,Y)),rd(Y,Y))
+= { by lemma 22 R->L }
+  mult(mult(X,rd(Y,Y)),ld(Y,Y))
+= { by lemma 22 R->L }
+  mult(mult(X,ld(Y,Y)),ld(Y,Y))
+= { by lemma 15 R->L }
+  rd(mult(X,ld(Y,Y)),ld(Y,Y))
+= { by axiom 4 }
+  X
+
+Lemma 28: mult(rd(X,X),rd(Y,mult(rd(X,X),Y))) = rd(Y,Y)
+Proof:
+  mult(rd(X,X),rd(Y,mult(rd(X,X),Y)))
+= { by lemma 27 R->L }
+  mult(rd(X,X),mult(mult(rd(Y,mult(rd(X,X),Y)),rd(X,X)),rd(X,X)))
+= { by lemma 25 R->L }
+  mult(rd(X,X),mult(rd(rd(Y,rd(X,X)),rd(Y,rd(X,X))),rd(X,X)))
+= { by lemma 22 R->L }
+  mult(rd(X,X),mult(ld(rd(Y,rd(X,X)),rd(Y,rd(X,X))),rd(X,X)))
+= { by lemma 7 R->L }
+  ld(rd(rd(Y,rd(X,X)),rd(X,X)),mult(rd(Y,rd(X,X)),rd(X,X)))
+= { by axiom 5 }
+  ld(rd(rd(Y,rd(X,X)),rd(X,X)),Y)
+= { by lemma 23 }
+  ld(mult(rd(Y,rd(X,X)),rd(X,X)),Y)
+= { by lemma 23 }
+  ld(mult(mult(Y,rd(X,X)),rd(X,X)),Y)
+= { by lemma 27 }
+  ld(Y,Y)
+= { by lemma 22 }
+  rd(Y,Y)
+
+Lemma 29: mult(X,ld(mult(Y,Z),Y)) = rd(X,Z)
+Proof:
+  mult(X,ld(mult(Y,Z),Y))
+= { by axiom 4 R->L }
+  mult(X,ld(mult(Y,Z),rd(mult(Y,Z),Z)))
+= { by lemma 13 }
+  rd(X,Z)
+
+Lemma 30: mult(X,rd(X,X)) = X
+Proof:
+  mult(X,rd(X,X))
+= { by lemma 22 R->L }
+  mult(X,ld(X,X))
+= { by axiom 3 }
+  X
+
+Lemma 31: mult(mult(X,rd(Y,Z)),Z) = mult(rd(X,Z),mult(Z,Y))
+Proof:
+  mult(mult(X,rd(Y,Z)),Z)
+= { by lemma 6 R->L }
+  mult(rd(X,Z),mult(Z,mult(rd(Y,Z),Z)))
+= { by axiom 5 }
+  mult(rd(X,Z),mult(Z,Y))
+
+Lemma 32: mult(mult(X,mult(Y,rd(Z,Z))),rd(Z,Z)) = mult(mult(X,rd(Z,Z)),mult(rd(Z,Z),Y))
+Proof:
+  mult(mult(X,mult(Y,rd(Z,Z))),rd(Z,Z))
+= { by lemma 23 R->L }
+  mult(mult(X,rd(Y,rd(Z,Z))),rd(Z,Z))
+= { by lemma 31 }
+  mult(rd(X,rd(Z,Z)),mult(rd(Z,Z),Y))
+= { by lemma 23 }
+  mult(mult(X,rd(Z,Z)),mult(rd(Z,Z),Y))
+
+Lemma 33: mult(rd(X,Y),mult(Y,Y)) = mult(mult(X,Y),rd(Y,Y))
+Proof:
+  mult(rd(X,Y),mult(Y,Y))
+= { by lemma 31 R->L }
+  mult(mult(X,rd(Y,Y)),Y)
+= { by lemma 23 R->L }
+  mult(rd(X,rd(Y,Y)),Y)
+= { by axiom 5 R->L }
+  mult(rd(X,rd(Y,Y)),mult(rd(Y,Y),Y))
+= { by lemma 30 R->L }
+  mult(rd(X,rd(Y,Y)),mult(rd(Y,Y),mult(Y,rd(Y,Y))))
+= { by lemma 6 }
+  mult(mult(X,Y),rd(Y,Y))
+
+Lemma 34: mult(mult(X,X),rd(X,X)) = mult(X,X)
+Proof:
+  mult(mult(X,X),rd(X,X))
+= { by lemma 33 R->L }
+  mult(rd(X,X),mult(X,X))
+= { by lemma 31 R->L }
+  mult(mult(X,rd(X,X)),X)
+= { by lemma 30 }
+  mult(X,X)
+
+Lemma 35: ld(X,rd(mult(rd(X,Y),Z),Y)) = rd(ld(Y,Z),Y)
+Proof:
+  ld(X,rd(mult(rd(X,Y),Z),Y))
+= { by lemma 17 R->L }
+  ld(X,mult(X,rd(ld(Y,Z),Y)))
+= { by axiom 1 }
+  rd(ld(Y,Z),Y)
+
+Lemma 36: ld(X,mult(mult(X,Y),rd(X,X))) = mult(rd(X,X),mult(Y,rd(X,X)))
+Proof:
+  ld(X,mult(mult(X,Y),rd(X,X)))
+= { by lemma 23 R->L }
+  ld(X,rd(mult(X,Y),rd(X,X)))
+= { by lemma 30 R->L }
+  ld(mult(X,rd(X,X)),rd(mult(X,Y),rd(X,X)))
+= { by axiom 4 R->L }
+  ld(mult(X,rd(X,X)),rd(mult(rd(mult(X,rd(X,X)),rd(X,X)),Y),rd(X,X)))
+= { by lemma 35 }
+  rd(ld(rd(X,X),Y),rd(X,X))
+= { by lemma 35 R->L }
+  ld(X,rd(mult(rd(X,rd(X,X)),Y),rd(X,X)))
+= { by lemma 23 }
+  ld(X,mult(mult(rd(X,rd(X,X)),Y),rd(X,X)))
+= { by lemma 23 }
+  ld(X,mult(mult(mult(X,rd(X,X)),Y),rd(X,X)))
+= { by axiom 2 R->L }
+  ld(X,mult(X,mult(rd(X,X),mult(Y,rd(X,X)))))
+= { by axiom 1 }
+  mult(rd(X,X),mult(Y,rd(X,X)))
+
+Lemma 37: mult(rd(X,mult(X,X)),X) = rd(X,X)
+Proof:
+  mult(rd(X,mult(X,X)),X)
+= { by lemma 26 R->L }
+  mult(rd(X,X),rd(X,X))
+= { by lemma 22 R->L }
+  mult(ld(X,X),rd(X,X))
+= { by lemma 9 R->L }
+  mult(mult(ld(mult(X,X),X),X),rd(X,X))
+= { by lemma 33 R->L }
+  mult(rd(ld(mult(X,X),X),X),mult(X,X))
+= { by lemma 31 R->L }
+  mult(mult(ld(mult(X,X),X),rd(X,X)),X)
+= { by lemma 23 R->L }
+  mult(rd(ld(mult(X,X),X),rd(X,X)),X)
+= { by lemma 29 R->L }
+  mult(rd(ld(mult(X,X),X),mult(X,ld(mult(X,X),X))),X)
+= { by lemma 25 R->L }
+  rd(rd(ld(mult(X,X),X),X),rd(ld(mult(X,X),X),X))
+= { by lemma 29 R->L }
+  rd(mult(ld(mult(X,X),X),ld(mult(X,X),X)),rd(ld(mult(X,X),X),X))
+= { by lemma 29 R->L }
+  rd(mult(ld(mult(X,X),X),ld(mult(X,X),X)),mult(ld(mult(X,X),X),ld(mult(X,X),X)))
+= { by lemma 22 R->L }
+  ld(mult(ld(mult(X,X),X),ld(mult(X,X),X)),mult(ld(mult(X,X),X),ld(mult(X,X),X)))
+= { by lemma 34 R->L }
+  ld(mult(ld(mult(X,X),X),ld(mult(X,X),X)),mult(mult(ld(mult(X,X),X),ld(mult(X,X),X)),rd(ld(mult(X,X),X),ld(mult(X,X),X))))
+= { by axiom 1 }
+  rd(ld(mult(X,X),X),ld(mult(X,X),X))
+= { by lemma 15 }
+  mult(ld(mult(X,X),X),ld(X,mult(X,X)))
+= { by axiom 1 }
+  mult(ld(mult(X,X),X),X)
+= { by lemma 9 }
+  ld(X,X)
+= { by lemma 22 }
+  rd(X,X)
+
+Lemma 38: mult(rd(X,mult(Y,mult(Z,Y))),Y) = rd(rd(X,Y),Z)
+Proof:
+  mult(rd(X,mult(Y,mult(Z,Y))),Y)
+= { by lemma 25 R->L }
+  rd(rd(X,Y),rd(mult(Z,Y),Y))
+= { by axiom 4 }
+  rd(rd(X,Y),Z)
+
+Lemma 39: mult(rd(mult(X,rd(Y,Y)),Z),rd(Y,Y)) = mult(X,ld(mult(mult(Y,Z),rd(Y,Y)),Y))
+Proof:
+  mult(rd(mult(X,rd(Y,Y)),Z),rd(Y,Y))
+= { by lemma 23 R->L }
+  mult(rd(rd(X,rd(Y,Y)),Z),rd(Y,Y))
+= { by lemma 38 R->L }
+  mult(mult(rd(X,mult(rd(Y,Y),mult(Z,rd(Y,Y)))),rd(Y,Y)),rd(Y,Y))
+= { by lemma 27 }
+  rd(X,mult(rd(Y,Y),mult(Z,rd(Y,Y))))
+= { by lemma 36 R->L }
+  rd(X,ld(Y,mult(mult(Y,Z),rd(Y,Y))))
+= { by lemma 15 }
+  mult(X,ld(mult(mult(Y,Z),rd(Y,Y)),Y))
+
+Lemma 40: mult(mult(rd(X,Y),rd(X,Y)),mult(rd(X,mult(Y,X)),Y)) = mult(rd(X,Y),rd(X,Y))
+Proof:
+  mult(mult(rd(X,Y),rd(X,Y)),mult(rd(X,mult(Y,X)),Y))
+= { by lemma 25 R->L }
+  mult(mult(rd(X,Y),rd(X,Y)),rd(rd(X,Y),rd(X,Y)))
+= { by lemma 34 }
+  mult(rd(X,Y),rd(X,Y))
+
+Lemma 41: mult(rd(X,X),rd(Y,Y)) = rd(X,X)
+Proof:
+  mult(rd(X,X),rd(Y,Y))
+= { by lemma 37 R->L }
+  mult(rd(X,X),mult(rd(Y,mult(Y,Y)),Y))
+= { by lemma 26 R->L }
+  mult(rd(X,X),mult(rd(Y,Y),rd(Y,Y)))
+= { by lemma 23 R->L }
+  mult(rd(X,X),rd(rd(Y,Y),rd(Y,Y)))
+= { by lemma 28 R->L }
+  mult(mult(rd(Y,Y),rd(X,mult(rd(Y,Y),X))),rd(rd(Y,Y),rd(Y,Y)))
+= { by lemma 29 R->L }
+  mult(mult(rd(Y,Y),mult(X,ld(mult(Y,mult(rd(Y,Y),X)),Y))),rd(rd(Y,Y),rd(Y,Y)))
+= { by lemma 30 R->L }
+  mult(mult(rd(Y,Y),mult(X,ld(mult(mult(Y,rd(Y,Y)),mult(rd(Y,Y),X)),Y))),rd(rd(Y,Y),rd(Y,Y)))
+= { by lemma 32 R->L }
+  mult(mult(rd(Y,Y),mult(X,ld(mult(mult(Y,mult(X,rd(Y,Y))),rd(Y,Y)),Y))),rd(rd(Y,Y),rd(Y,Y)))
+= { by lemma 39 R->L }
+  mult(mult(rd(Y,Y),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y))),rd(rd(Y,Y),rd(Y,Y)))
+= { by lemma 28 R->L }
+  mult(mult(rd(Y,Y),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y))),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(rd(Y,Y),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y)))))
+= { by lemma 27 R->L }
+  mult(mult(mult(mult(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y))),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(rd(Y,Y),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y)))))
+= { by lemma 32 R->L }
+  mult(mult(mult(mult(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),mult(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(rd(Y,Y),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y)))))
+= { by lemma 23 R->L }
+  mult(mult(mult(mult(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),rd(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(rd(Y,Y),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y)))))
+= { by lemma 23 R->L }
+  mult(mult(mult(rd(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),rd(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(rd(Y,Y),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y)))))
+= { by lemma 32 R->L }
+  mult(mult(mult(rd(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),rd(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))),mult(rd(rd(Y,Y),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y))),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))
+= { by lemma 40 }
+  mult(mult(rd(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),rd(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))
+= { by lemma 23 }
+  mult(mult(mult(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),rd(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))
+= { by lemma 23 }
+  mult(mult(mult(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),mult(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))))
+= { by lemma 32 }
+  mult(mult(mult(rd(Y,Y),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y)))),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y)))
+= { by lemma 27 }
+  mult(rd(Y,Y),mult(rd(mult(X,rd(Y,Y)),mult(X,rd(Y,Y))),rd(Y,Y)))
+= { by lemma 39 }
+  mult(rd(Y,Y),mult(X,ld(mult(mult(Y,mult(X,rd(Y,Y))),rd(Y,Y)),Y)))
+= { by lemma 32 }
+  mult(rd(Y,Y),mult(X,ld(mult(mult(Y,rd(Y,Y)),mult(rd(Y,Y),X)),Y)))
+= { by lemma 30 }
+  mult(rd(Y,Y),mult(X,ld(mult(Y,mult(rd(Y,Y),X)),Y)))
+= { by lemma 29 }
+  mult(rd(Y,Y),rd(X,mult(rd(Y,Y),X)))
+= { by lemma 28 }
+  rd(X,X)
+
+Lemma 42: mult(X,rd(Y,Y)) = X
+Proof:
+  mult(X,rd(Y,Y))
+= { by lemma 23 R->L }
+  rd(X,rd(Y,Y))
+= { by lemma 41 R->L }
+  rd(X,mult(rd(Y,Y),rd(X,X)))
+= { by lemma 23 R->L }
+  rd(X,rd(rd(Y,Y),rd(X,X)))
+= { by axiom 4 R->L }
+  rd(rd(mult(X,rd(X,X)),rd(X,X)),rd(rd(Y,Y),rd(X,X)))
+= { by lemma 25 }
+  mult(rd(mult(X,rd(X,X)),mult(rd(X,X),rd(Y,Y))),rd(X,X))
+= { by lemma 30 }
+  mult(rd(X,mult(rd(X,X),rd(Y,Y))),rd(X,X))
+= { by lemma 41 }
+  mult(rd(X,rd(X,X)),rd(X,X))
+= { by lemma 23 }
+  mult(mult(X,rd(X,X)),rd(X,X))
+= { by lemma 30 }
+  mult(X,rd(X,X))
+= { by lemma 30 }
+  X
+
+Goal 1: mult(X,rd(Y,Y)) = X
+Proof:
+  mult(X,rd(Y,Y))
+= { by lemma 42 }
+  X
+
+Goal 2: mult(rd(X,X),Y) = Y
+Proof:
+  mult(rd(X,X),Y)
+= { by lemma 42 R->L }
+  mult(rd(X,X),mult(Y,rd(X,X)))
+= { by lemma 36 R->L }
+  ld(X,mult(mult(X,Y),rd(X,X)))
+= { by lemma 42 }
+  ld(X,mult(X,Y))
+= { by axiom 1 }
+  Y

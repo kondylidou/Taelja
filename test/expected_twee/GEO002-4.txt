@@ -1,0 +1,110 @@
+Axiom 1: between(X,Y,extension(X,Y,Z,A))
+Axiom 2: equidistant(B,extension(C,B,U,V),U,V)
+Axiom 3: equidistant(C,B,W,W) => equalish(C,B)
+Axiom 4: between(C,B,V) /\ between(B,X1,V) => between(C,B,X1)
+Axiom 5: equalish(C,B) /\ between(U,X1,C) => between(U,X1,B)
+Axiom 6: between(C,U,V) /\ between(B,V,X1) => between(X1,U,outer_pasch(U,C,B,X1,V))
+Axiom 7: between(C,U,V) /\ between(B,V,X1) => between(C,outer_pasch(U,C,B,X1,V),B)
+
+Lemma 8: between(a,a,a)
+Proof:
+  have between(a,a,extension(a,a,X,Y))
+    by axiom 1
+   and between(a,a,extension(a,a,X,Y))
+    by axiom 1
+  hence between(a,a,a)
+    by axiom 4
+
+Lemma 9: between(a,a,extension(b,a,X,X))
+Proof:
+  have equidistant(a,extension(b,a,X,X),X,X)
+    by axiom 2
+  hence equalish(a,extension(b,a,X,X))
+    by axiom 3
+   and between(a,a,a)
+    by lemma 8
+  hence between(a,a,extension(b,a,X,X))
+    by axiom 5
+
+Lemma 10: between(b,a,a)
+Proof:
+  have between(b,a,extension(b,a,X,X))
+    by axiom 1
+   and between(a,a,extension(b,a,X,X))
+    by lemma 9
+  hence between(b,a,a)
+    by axiom 4
+
+Lemma 11: between(a,a,extension(b,a,X,X))
+Proof:
+  have equidistant(a,extension(b,a,X,X),X,X)
+    by axiom 2
+  hence equalish(a,extension(b,a,X,X))
+    by axiom 3
+   and between(a,a,a)
+    by lemma 8
+  hence between(a,a,extension(b,a,X,X))
+    by axiom 5
+
+Lemma 12: between(b,b,b)
+Proof:
+  have between(b,b,extension(b,b,X,Y))
+    by axiom 1
+   and between(b,b,extension(b,b,X,Y))
+    by axiom 1
+  hence between(b,b,b)
+    by axiom 4
+
+Lemma 13: between(b,b,extension(a,b,X,X))
+Proof:
+  have equidistant(b,extension(a,b,X,X),X,X)
+    by axiom 2
+  hence equalish(b,extension(a,b,X,X))
+    by axiom 3
+   and between(b,b,b)
+    by lemma 12
+  hence between(b,b,extension(a,b,X,X))
+    by axiom 5
+
+Lemma 14: between(b,outer_pasch(a,b,b,a,a),b)
+Proof:
+  have between(b,a,extension(b,a,X,X))
+    by axiom 1
+   and between(a,a,extension(b,a,X,X))
+    by lemma 11
+  hence between(b,a,a)
+    by axiom 4
+   and between(b,a,a)
+    by lemma 10
+  hence between(b,outer_pasch(a,b,b,a,a),b)
+    by axiom 7
+
+Lemma 15: between(a,b,outer_pasch(a,b,b,a,a))
+Proof:
+  have between(a,b,extension(a,b,X,X))
+    by axiom 1
+   and between(b,b,extension(a,b,X,X))
+    by lemma 13
+  hence between(a,b,b)
+    by axiom 4
+   and between(b,outer_pasch(a,b,b,a,a),b)
+    by lemma 14
+  hence between(a,b,outer_pasch(a,b,b,a,a))
+    by axiom 4
+
+Goal 1: between(a,a,b)
+Proof:
+  have between(b,a,extension(b,a,X,X))
+    by axiom 1
+   and between(a,a,extension(b,a,X,X))
+    by lemma 9
+  hence between(b,a,a)
+    by axiom 4
+   and between(b,a,a)
+    by lemma 10
+  hence between(a,a,outer_pasch(a,b,b,a,a))
+    by axiom 6
+   and between(a,b,outer_pasch(a,b,b,a,a))
+    by lemma 15
+  hence between(a,a,b)
+    by axiom 4

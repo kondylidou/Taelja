@@ -447,13 +447,10 @@ simplifyBy c (Clause ls Nothing) =
     , l' <- [l, flipLit l]
     , Just σ <- [matchLit l' h] ]
 
--- One demodulation step, rewriting a single redex at that occurrence or at
--- every occurrence of the same subterm. Provers record each application as
--- its own rw step, so nothing is iterated. No term ordering is needed, and a
--- permutative equation like u(X,X,Y) = u(Y,X,X) stays usable. A variable only
--- the right side of an equation has comes in free, and the prover fixes its
--- value, so a later rewrite may bind it. Any other variable of the clause
--- stays as it is.
+-- One demodulation step at one redex or at every occurrence of it. Provers
+-- record each application as its own rw step, so nothing is iterated and no
+-- term ordering is needed. A variable only the right side has comes in free,
+-- and a later rewrite may bind it to a ground term.
 rewriteOnce :: (Term, Term) -> Clause -> [Clause]
 rewriteOnce (lhs, rhs) (Clause bs mh) =
   [ Clause [ l | (False, l) <- ls' ] (listToMaybe [ l | (True, l) <- ls' ])
@@ -462,13 +459,15 @@ rewriteOnce (lhs, rhs) (Clause bs mh) =
   , (u, ctx) <- litSubtermCtxs lit
   , notVar u
   , Just s <- [unifyApart rigid lhs u []]
+  , and [ null (termVars (deepApplySubstTerm s (Var v))) | v <- vars, freeMark `isSuffixOf` v, v `elem` map fst s ]
   , let inst = deepApplySubstTerm s
         r = renameTerm [ (v, v ++ freeMark) | v <- termVars rhs, v `notElem` termVars lhs ] (inst rhs)
         at = mapLiteralTerms inst
   , ls' <- [ [ if j == i then (sg, at (ctx r)) else (sg, at m) | (j, (sg, m)) <- zip [0 :: Int ..] ls ]
            , [ (sg, mapLiteralTerms (replaceAllTerm (inst u) r) (at m)) | (sg, m) <- ls ] ] ]
   where
-    rigid = [ v | v <- concatMap litVars (bs ++ maybeToList mh), not (freeMark `isSuffixOf` v) ]
+    vars = nub (concatMap litVars (bs ++ maybeToList mh))
+    rigid = [ v | v <- vars, not (freeMark `isSuffixOf` v) ]
     freeMark = "_free"
 
 -- Condenses a clause by dropping duplicate body atoms and body equations t = t.
@@ -853,7 +852,7 @@ rewriteRules = Set.fromList $ map Text.pack
 -- between nuclei.
 firstParentProvides :: Text.Text -> T.Declaration -> T.Declaration -> T.Declaration -> Bool
 firstParentProvides rule result d1 d2
-  | Set.member rule rewriteRules = maybe False not (consumerIsFirst result d1 d2)
+  | Set.member rule rewriteRules = maybe False not (consumerIsFirst False result d1 d2)
 firstParentProvides _ _ d1 d2
   | isPositiveUnitFormula d1 && not (isPositiveUnitFormula d2) = True
   | isPositiveUnitFormula d2 && not (isPositiveUnitFormula d1) = False
@@ -863,7 +862,7 @@ firstParentProvides _ _ d1 d2
            (True,  False) -> True
            (False, True ) -> False
            _              -> True
-firstParentProvides _ result d1 d2 = case consumerIsFirst result d1 d2 of
+firstParentProvides _ result d1 d2 = case consumerIsFirst True result d1 d2 of
   -- the provider goes at p0 and the consumer at p1
   Just True  -> False
   Just False -> True
@@ -889,16 +888,17 @@ firstParentProvides _ result d1 d2 = case consumerIsFirst result d1 d2 of
 
 -- Whether the first premise of a binary resolution is the consumer, the one
 -- whose body atom the other's head resolves. If only one direction resolves,
--- that decides it, and otherwise the direction whose resolvent matches the
--- printed clause. Nothing when a premise is not Horn or the test is ambiguous.
-consumerIsFirst :: T.Declaration -> T.Declaration -> T.Declaration -> Maybe Bool
-consumerIsFirst result d1 d2 =
+-- that decides a resolution, and otherwise the direction whose resolvent
+-- matches the printed clause. Nothing when a premise is not Horn or the test
+-- is ambiguous.
+consumerIsFirst :: Bool -> T.Declaration -> T.Declaration -> T.Declaration -> Maybe Bool
+consumerIsFirst resolution result d1 d2 =
   case (convertDeclToClause result, convertDeclToClause d1, convertDeclToClause d2) of
     (Just r, Just c1, Just c2) ->
       let readings = resolvents c1 c2
           fits firstProvides = any (\(p, res) -> p == firstProvides && isJust (matchClause (condense res) r)) readings
       in case nub (map fst readings) of
-           [firstProvides] -> Just (not firstProvides)
+           [firstProvides] | resolution -> Just (not firstProvides)
            _ -> case (fits True, fits False) of
                   (True, False) -> Just False
                   (False, True) -> Just True

@@ -1,0 +1,32 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, divide(a, zero)!=a, file('TPTP/Problems/HEN/HEN004-6.p', prove_x_divide_zero_is_x)).
+cnf(c2, axiom, less_equal(divide(X, Y), X), file('TPTP/Problems/HEN/HEN004-6.p', quotient_smaller_than_numerator)).
+cnf(c3, axiom, less_equal(zero, X2), file('TPTP/Problems/HEN/HEN004-6.p', zero_is_smallest)).
+cnf(c4, axiom, less_equal(divide(divide(X2, Z), divide(Y2, Z)), divide(divide(X2, Y2), Z)), file('TPTP/Problems/HEN/HEN004-6.p', quotient_property)).
+cnf(c5, axiom, ~less_equal(X2, Y2) | ~less_equal(Y2, X2) | X2=Y2, file('TPTP/Problems/HEN/HEN004-6.p', less_equal_and_equal)).
+cnf(c6, axiom, ~less_equal(X2, Y2) | divide(X2, Y2)=zero, file('TPTP/Problems/HEN/HEN004-6.p', quotient_less_equal1)).
+cnf(c7, plain, divide(divide(a, zero), a)=zero, inference(resolution, [status(thm)], [c2, c6])).
+cnf(c8, plain, ~less_equal(divide(divide(a, a), zero), divide(divide(a, zero), a)) | ~less_equal(zero, divide(divide(a, a), zero)) | divide(divide(a, a), zero)=zero, inference(rewriting, [status(thm)], [c5, c7])).
+cnf(c9, axiom, divide(zero, X2)=zero, file('TPTP/Problems/HEN/HEN004-6.p', zero_divide_anything_is_zero)).
+cnf(c10, plain, ~less_equal(divide(divide(a, a), divide(zero, a)), divide(divide(a, zero), a)) | ~less_equal(zero, divide(divide(a, a), zero)) | divide(divide(a, a), zero)=zero, inference(rewriting, [status(thm)], [c8, c9])).
+cnf(c11, plain, ~less_equal(zero, divide(divide(a, a), zero)) | divide(divide(a, a), zero)=zero, inference(resolution, [status(thm)], [c4, c10])).
+cnf(c12, plain, divide(divide(a, a), zero)=zero, inference(resolution, [status(thm)], [c3, c11])).
+cnf(c13, plain, ~less_equal(divide(divide(a, zero), divide(a, zero)), divide(divide(a, a), zero)) | ~less_equal(zero, divide(divide(a, zero), divide(a, zero))) | divide(divide(a, zero), divide(a, zero))=zero, inference(rewriting, [status(thm)], [c5, c12])).
+cnf(c14, plain, ~less_equal(zero, divide(divide(a, zero), divide(a, zero))) | divide(divide(a, zero), divide(a, zero))=zero, inference(resolution, [status(thm)], [c4, c13])).
+cnf(c15, plain, divide(divide(a, zero), divide(a, zero))=zero, inference(resolution, [status(thm)], [c3, c14])).
+cnf(c16, plain, ~less_equal(divide(divide(a, divide(a, zero)), zero), divide(divide(a, zero), divide(a, zero))) | ~less_equal(zero, divide(divide(a, divide(a, zero)), zero)) | divide(divide(a, divide(a, zero)), zero)=zero, inference(rewriting, [status(thm)], [c5, c15])).
+cnf(c17, plain, ~less_equal(divide(divide(a, divide(a, zero)), divide(zero, divide(a, zero))), divide(divide(a, zero), divide(a, zero))) | ~less_equal(zero, divide(divide(a, divide(a, zero)), zero)) | divide(divide(a, divide(a, zero)), zero)=zero, inference(rewriting, [status(thm)], [c16, c9])).
+cnf(c18, plain, ~less_equal(zero, divide(divide(a, divide(a, zero)), zero)) | divide(divide(a, divide(a, zero)), zero)=zero, inference(resolution, [status(thm)], [c4, c17])).
+cnf(c19, plain, divide(divide(a, divide(a, zero)), zero)=zero, inference(resolution, [status(thm)], [c3, c18])).
+cnf(c20, axiom, divide(X2, Y2)!=zero | less_equal(X2, Y2), file('TPTP/Problems/HEN/HEN004-6.p', quotient_less_equal2)).
+cnf(c21, plain, less_equal(divide(a, divide(a, zero)), zero), inference(resolution, [status(thm)], [c19, c20])).
+cnf(c22, plain, ~less_equal(zero, divide(a, divide(a, zero))) | divide(a, divide(a, zero))=zero, inference(resolution, [status(thm)], [c21, c5])).
+cnf(c23, plain, divide(a, divide(a, zero))=zero, inference(resolution, [status(thm)], [c3, c22])).
+cnf(c24, plain, less_equal(a, divide(a, zero)), inference(resolution, [status(thm)], [c23, c20])).
+cnf(c25, plain, ~less_equal(divide(a, zero), a) | divide(a, zero)=a, inference(resolution, [status(thm)], [c24, c5])).
+cnf(c26, plain, divide(a, zero)=a, inference(resolution, [status(thm)], [c2, c25])).
+cnf(c27, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c26])).
+% SZS output end CNFRefutation
+

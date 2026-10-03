@@ -120,6 +120,8 @@ tweeBenchmarkNames =
   , "GRP007-1"
   , "ANA023-2"
   , "HEN006-4"
+  , "HEN004-6"        -- c8 rewrites the axiom X2 = Y2, which must not be read as the rewriter
+  , "GEO002-4"        -- c17 resolves two body atoms of c6 with one unit
   , "COL083-1"
   , "LCL126-1"
   , "SYN140-1"
@@ -363,6 +365,8 @@ eBenchmarkNames =
   , "GRP035-3"        -- a spliced unit read at the instance its premise was derived at
   , "HEN008-1"        -- a unit rewritten by a conditional equation whose condition is resolved after
   , "GRP415-1"        -- a rewrite that binds a variable an earlier rewrite brought in free
+  , "GRP430-1"        -- the same, where the binding is the constant a1
+  , "GRP655+2"        -- a long rw chain that brings in many free variables
   ]
 
 -- The Lean module name of a proof. A TPTP name keeps its separator as a

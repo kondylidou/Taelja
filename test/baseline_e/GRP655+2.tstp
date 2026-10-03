@@ -1,0 +1,2412 @@
+# Preprocessing class: FSSSSMSSSSSNFFN.
+# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
+# No SInE strategy applied
+# Search class: FUHPM-FFSF22-MFFFFFNN
+# Configuration: H----_102_C18_F1_PI_AE_CS_SP_PS_S0Y
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_6, negated_conjecture, (mult(esk1_0,rd(esk2_0,esk2_0))!=esk1_0|mult(rd(esk2_0,esk2_0),esk1_0)!=esk1_0)).
+#
+#cnf(i_0_2, plain, (ld(X1,mult(X1,X2))=X2)).
+#
+#cnf(i_0_1, plain, (mult(X1,ld(X1,X2))=X2)).
+#
+#cnf(i_0_3, plain, (mult(rd(X1,X2),X2)=X1)).
+#
+#cnf(i_0_4, plain, (rd(mult(X1,X2),X2)=X1)).
+#
+#cnf(i_0_5, plain, (mult(mult(mult(X1,X2),X3),X2)=mult(X1,mult(X2,mult(X3,X2))))).
+# Presaturation interreduction done
+#
+#cnf(i_0_6, negated_conjecture, (mult(esk1_0,rd(esk2_0,esk2_0))!=esk1_0|mult(rd(esk2_0,esk2_0),esk1_0)!=esk1_0)).
+#
+#cnf(i_0_2, plain, (ld(X1,mult(X1,X2))=X2)).
+#
+#cnf(i_0_1, plain, (mult(X1,ld(X1,X2))=X2)).
+#
+#cnf(i_0_3, plain, (mult(rd(X1,X2),X2)=X1)).
+#
+#cnf(i_0_4, plain, (rd(mult(X1,X2),X2)=X1)).
+#
+#cnf(i_0_5, plain, (mult(mult(mult(X1,X2),X3),X2)=mult(X1,mult(X2,mult(X3,X2))))).
+#
+#cnf(i_0_7, plain, (ld(rd(X1,X2),X1)=X2)).
+#
+#cnf(i_0_8, plain, (rd(X2,ld(X1,X2))=X1)).
+#
+#cnf(i_0_10, plain, (rd(mult(X1,mult(X2,mult(X3,X2))),X2)=mult(mult(X1,X2),X3))).
+#
+#cnf(i_0_22, plain, (rd(mult(X1,mult(X2,X3)),X2)=mult(mult(X1,X2),rd(X3,X2)))).
+#
+#cnf(i_0_13, plain, (mult(rd(X1,X2),mult(X2,mult(X3,X2)))=mult(mult(X1,X3),X2))).
+#
+#cnf(i_0_40, plain, (mult(mult(X1,rd(X3,X2)),X2)=mult(rd(X1,X2),mult(X2,X3)))).
+#
+#cnf(i_0_31, plain, (mult(mult(X1,X2),rd(ld(X2,X3),X2))=rd(mult(X1,X3),X2))).
+#
+#cnf(i_0_72, plain, (mult(X1,rd(ld(X2,X3),X2))=rd(mult(rd(X1,X2),X3),X2))).
+#
+#cnf(i_0_12, plain, (mult(mult(X1,mult(X2,mult(X3,X2))),X3)=mult(mult(X1,X2),mult(X3,mult(X2,X3))))).
+#
+#cnf(i_0_34, plain, (ld(rd(X1,X2),mult(mult(X1,X3),X2))=mult(X2,mult(X3,X2)))).
+#
+#cnf(i_0_119, plain, (ld(rd(X1,X2),mult(X3,X2))=mult(X2,mult(ld(X1,X3),X2)))).
+#
+#cnf(i_0_131, plain, (mult(X2,mult(ld(X1,rd(X1,X2)),X2))=X2)).
+#
+#cnf(i_0_132, plain, (mult(X2,mult(ld(mult(X1,X2),X1),X2))=X2)).
+#
+#cnf(i_0_144, plain, (mult(ld(X2,rd(X2,X1)),X1)=ld(X1,X1))).
+#
+#cnf(i_0_160, plain, (mult(ld(mult(X2,X1),X2),X1)=ld(X1,X1))).
+##
+#cnf(i_0_184, plain, (ld(ld(X1,rd(X1,X2)),ld(X2,X2))=X2)).
+#
+#cnf(i_0_188, plain, (mult(mult(X1,ld(X3,rd(X3,X2))),X2)=X1)).
+#
+#cnf(i_0_226, plain, (mult(X1,ld(X2,rd(X2,X3)))=rd(X1,X3))).
+#
+#cnf(i_0_262, plain, (rd(X1,ld(X3,X2))=mult(X1,ld(X2,X3)))).
+#
+#cnf(i_0_261, plain, (mult(X1,ld(mult(X2,X3),X2))=rd(X1,X3))).
+#
+#cnf(i_0_267, plain, (ld(mult(X1,ld(X3,X2)),X1)=ld(X2,X3))).
+##
+#cnf(i_0_198, plain, (ld(ld(mult(X1,X2),X1),ld(X2,X2))=X2)).
+#####
+#cnf(i_0_264, plain, (mult(mult(X1,ld(X2,X3)),ld(X3,X2))=X1)).
+###
+#cnf(i_0_185, plain, (rd(ld(X2,X2),X2)=ld(X1,rd(X1,X2)))).
+#
+#cnf(i_0_377, plain, (rd(X1,rd(ld(X3,X3),X3))=mult(X1,X3))).
+#
+#cnf(i_0_213, plain, (ld(ld(X1,X2),ld(X1,X2))=mult(ld(X2,X1),ld(X1,X2)))).
+###
+#cnf(i_0_9, plain, (ld(mult(mult(X1,X2),X3),mult(X1,mult(X2,mult(X3,X2))))=X2)).
+#
+#cnf(i_0_15, plain, (mult(X1,mult(X2,mult(ld(mult(X1,X2),X3),X2)))=mult(X3,X2))).
+#
+#cnf(i_0_199, plain, (rd(ld(X2,X2),X2)=ld(mult(X1,X2),X1))).
+#
+#cnf(i_0_252, plain, (ld(X1,rd(X1,X3))=ld(X2,rd(X2,X3)))).
+#
+#cnf(i_0_285, plain, (ld(X1,rd(X1,X3))=ld(mult(X2,X3),X2))).
+##
+#cnf(i_0_314, plain, (ld(mult(X1,X3),X1)=ld(mult(X2,X3),X2))).
+#################
+#cnf(i_0_80, plain, (ld(X1,rd(mult(rd(X1,X2),X3),X2))=rd(ld(X2,X3),X2))).
+#
+#cnf(i_0_134, plain, (mult(X2,mult(ld(X1,rd(X3,X2)),X2))=ld(rd(X1,X2),X3))).
+#
+#cnf(i_0_28, plain, (ld(mult(mult(X1,X2),rd(X3,X2)),mult(X1,mult(X2,X3)))=X2)).
+#
+#cnf(i_0_32, plain, (mult(mult(rd(X1,mult(X2,X3)),X2),rd(X3,X2))=rd(X1,X2))).
+####################
+#cnf(i_0_739, plain, (ld(X1,ld(rd(X2,X1),X3))=mult(ld(X2,rd(X3,X1)),X1))).
+#
+#cnf(i_0_837, plain, (rd(rd(X1,X2),rd(X3,X2))=mult(rd(X1,mult(X2,X3)),X2))).
+#
+#cnf(i_0_141, plain, (mult(X2,mult(ld(mult(X1,X2),X3),X2))=ld(X1,mult(X3,X2)))).
+#
+#cnf(i_0_946, plain, (ld(X1,ld(X2,mult(X3,X1)))=mult(ld(mult(X2,X1),X3),X1))).
+#
+#cnf(i_0_35, plain, (rd(mult(mult(X1,X3),X2),mult(X2,mult(X3,X2)))=rd(X1,X2))).
+#
+#cnf(i_0_48, plain, (ld(mult(X1,rd(X2,X3)),mult(rd(X1,X3),mult(X3,X2)))=X3)).
+#
+#cnf(i_0_324, plain, (mult(X1,mult(X3,mult(ld(X3,X3),X3)))=mult(X1,mult(X3,X3)))).
+#
+#cnf(i_0_1169, plain, (mult(X2,mult(ld(X2,X2),X2))=mult(X2,X2))).
+#
+#cnf(i_0_1208, plain, (mult(ld(X1,X1),X1)=X1)).
+#
+#cnf(i_0_1254, plain, (ld(X1,X1)=rd(X1,X1))).
+#
+#cnf(i_0_1279, plain, (mult(X1,rd(X1,X1))=X1)).
+#
+#cnf(i_0_1293, plain, (rd(X1,rd(X1,X1))=X1)).
+#
+#cnf(i_0_1281, plain, (rd(X1,rd(X2,X2))=mult(X1,rd(X2,X2)))).
+##
+#cnf(i_0_160, plain, (mult(ld(mult(X1,X2),X1),X2)=rd(X2,X2))).
+#
+#cnf(i_0_144, plain, (mult(ld(X1,rd(X1,X2)),X2)=rd(X2,X2))).
+#
+#cnf(i_0_1280, plain, (mult(X1,rd(rd(X2,X2),X2))=rd(X1,X2))).
+#
+#cnf(i_0_1283, plain, (ld(mult(X1,rd(X2,X2)),X1)=rd(X2,X2))).
+#
+#cnf(i_0_1285, plain, (rd(X1,rd(rd(X2,X2),X2))=mult(X1,X2))).
+#####
+#cnf(i_0_1311, plain, (mult(rd(X1,X1),mult(X1,X1))=mult(X1,X1))).
+###
+#cnf(i_0_1301, plain, (mult(rd(X1,X2),mult(X2,X2))=mult(mult(X1,X2),rd(X2,X2)))).
+#
+#cnf(i_0_1337, plain, (mult(rd(X1,X2),rd(X2,X2))=mult(rd(X1,mult(X2,X2)),X2))).
+##
+#cnf(i_0_58, plain, (mult(rd(rd(X1,rd(X2,X3)),X3),mult(X3,X2))=mult(X1,X3))).
+#
+#cnf(i_0_76, plain, (rd(mult(rd(rd(X1,rd(ld(X2,X3),X2)),X2),X3),X2)=X1)).
+##
+#cnf(i_0_1311, plain, (mult(mult(X1,X1),rd(X1,X1))=mult(X1,X1))).
+#
+#cnf(i_0_1849, plain, (mult(mult(X1,X1),X1)=mult(X1,mult(X1,X1)))).
+##
+#cnf(i_0_1828, plain, (rd(mult(X1,X1),mult(X1,X1))=rd(X1,X1))).
+#####
+#cnf(i_0_1944, plain, (mult(rd(X2,mult(X2,X2)),X2)=rd(X2,X2))).
+#
+#cnf(i_0_1967, plain, (rd(rd(X1,X1),X1)=rd(X1,mult(X1,X1)))).
+####
+#cnf(i_0_1983, plain, (mult(X1,rd(X2,mult(X2,X2)))=rd(X1,X2))).
+#
+#cnf(i_0_1285, plain, (rd(X1,rd(X2,mult(X2,X2)))=mult(X1,X2))).
+#####
+#cnf(i_0_1691, plain, (rd(rd(X1,rd(X2,X3)),X3)=rd(mult(X1,X3),mult(X3,X2)))).
+#
+#cnf(i_0_1903, plain, (mult(mult(X1,mult(X1,X1)),X1)=mult(X1,mult(X1,mult(X1,X1))))).
+#
+#cnf(i_0_2173, plain, (rd(mult(X1,rd(X2,X2)),X2)=rd(mult(X1,X2),mult(X2,X2)))).
+##
+#cnf(i_0_14, plain, (mult(X1,mult(ld(X1,X2),mult(X3,ld(X1,X2))))=mult(mult(X2,X3),ld(X1,X2)))).
+#
+#cnf(i_0_198, plain, (ld(ld(mult(X1,X2),X1),rd(X2,X2))=X2)).
+#
+#cnf(i_0_2359, plain, (ld(X2,rd(X2,X2))=rd(X2,mult(X2,X2)))).
+##
+#cnf(i_0_184, plain, (ld(ld(X1,rd(X1,X2)),rd(X2,X2))=X2)).
+#
+#cnf(i_0_1282, plain, (mult(mult(X1,rd(X2,X2)),rd(X2,X2))=X1)).
+############
+#cnf(i_0_1850, plain, (ld(mult(X1,X1),mult(X1,mult(X1,X1)))=X1)).
+####
+#cnf(i_0_2327, plain, (mult(mult(X2,X1),ld(X1,X2))=mult(X1,mult(ld(X1,X2),X2)))).
+#
+#cnf(i_0_2580, plain, (rd(rd(X1,mult(X1,X1)),X1)=rd(rd(X1,X1),mult(X1,X1)))).
+#
+#cnf(i_0_274, plain, (rd(X1,mult(X3,mult(ld(X2,X4),X3)))=mult(X1,ld(mult(X4,X3),rd(X2,X3))))).
+#
+#cnf(i_0_29, plain, (mult(mult(X1,rd(X2,X3)),rd(X3,rd(X2,X3)))=rd(mult(X1,X2),rd(X2,X3)))).
+#
+#cnf(i_0_42, plain, (mult(mult(X1,ld(X3,X2)),mult(ld(X2,X3),X3))=mult(mult(X1,X2),ld(X2,X3)))).
+#
+#cnf(i_0_1966, plain, (ld(rd(X1,mult(X1,X1)),rd(X1,X1))=X1)).
+############
+#cnf(i_0_199, plain, (rd(X1,mult(X1,X1))=ld(mult(X2,X1),X2))).
+#
+#cnf(i_0_2946, plain, (ld(ld(mult(X2,X1),X2),X1)=mult(X1,X1))).
+#
+#cnf(i_0_3019, plain, (ld(ld(X1,rd(X1,X2)),X2)=mult(X2,X2))).
+##
+#cnf(i_0_2945, plain, (mult(ld(mult(X2,X1),X2),mult(X1,X1))=X1)).
+##
+#cnf(i_0_3052, plain, (mult(ld(X1,rd(X1,X2)),mult(X2,X2))=X2)).
+##
+#cnf(i_0_3025, plain, (ld(ld(X2,X3),ld(X3,X2))=mult(ld(X3,X2),ld(X3,X2)))).
+#
+#cnf(i_0_3035, plain, (ld(X2,rd(X2,mult(X2,X2)))=rd(rd(X2,X2),mult(X2,X2)))).
+#
+#cnf(i_0_3040, plain, (ld(X3,ld(mult(X2,X3),X2))=rd(ld(mult(X2,X3),X2),X3))).
+#
+#cnf(i_0_86, plain, (rd(mult(rd(X1,rd(X2,X3)),X2),rd(X2,X3))=mult(X1,rd(X3,rd(X2,X3))))).
+#
+#cnf(i_0_92, plain, (ld(mult(X1,mult(X2,mult(X3,X2))),mult(mult(X1,X2),mult(X3,mult(X2,X3))))=X3)).
+##
+#cnf(i_0_185, plain, (rd(X1,mult(X1,X1))=ld(X2,rd(X2,X1)))).
+###################
+#cnf(i_0_3041, plain, (ld(X3,ld(X2,rd(X2,X3)))=rd(ld(X2,rd(X2,X3)),X3))).
+###
+#cnf(i_0_106, plain, (mult(mult(rd(X1,mult(X2,mult(X3,X2))),X2),mult(X3,mult(X2,X3)))=mult(X1,X3))).
+#
+#cnf(i_0_139, plain, (mult(ld(X2,X3),mult(ld(X1,X2),ld(X2,X3)))=ld(mult(X1,ld(X3,X2)),X3))).
+###############
+#cnf(i_0_3315, plain, (mult(mult(X1,X1),mult(X1,X1))=mult(X1,mult(X1,mult(X1,X1))))).
+####
+#cnf(i_0_720, plain, (ld(mult(X1,X2),rd(mult(X1,X3),X2))=rd(ld(X2,X3),X2))).
+##
+#cnf(i_0_4071, plain, (rd(ld(X2,rd(X1,X1)),X2)=ld(mult(X1,X2),rd(X1,X2)))).
+#
+#cnf(i_0_4077, plain, (rd(ld(X2,ld(X1,X3)),X2)=ld(mult(X1,X2),rd(X3,X2)))).
+#
+#cnf(i_0_4190, plain, (ld(mult(X1,X1),rd(X1,X1))=rd(rd(X1,X1),mult(X1,X1)))).
+#
+#cnf(i_0_11, plain, (mult(mult(mult(X1,mult(X2,mult(X3,X2))),X4),X2)=mult(mult(mult(X1,X2),X3),mult(X2,mult(X4,X2))))).
+#####
+#cnf(i_0_723, plain, (mult(ld(rd(X2,mult(X2,X2)),X3),X2)=mult(X2,mult(X3,X2)))).
+#
+#cnf(i_0_4472, plain, (ld(rd(X1,mult(X1,X1)),X2)=rd(mult(X1,mult(X2,X1)),X1))).
+###
+#cnf(i_0_766, plain, (ld(rd(rd(rd(X2,X1),X3),X1),X2)=mult(X1,mult(X3,X1)))).
+#
+#cnf(i_0_897, plain, (mult(ld(mult(X2,X1),rd(X3,X1)),X1)=ld(X1,ld(X2,X3)))).
+#
+#cnf(i_0_931, plain, (mult(rd(X1,mult(X2,mult(X3,X2))),X2)=rd(rd(X1,X2),X3))).
+#
+#cnf(i_0_4798, plain, (rd(rd(rd(X1,X2),X3),X2)=rd(X1,mult(X2,mult(X3,X2))))).
+#
+#cnf(i_0_4859, plain, (rd(mult(X1,X2),mult(X2,X2))=mult(rd(X1,mult(X2,X2)),X2))).
+#
+#cnf(i_0_4955, plain, (rd(rd(X1,X1),mult(X1,X1))=rd(X1,mult(X1,mult(X1,X1))))).
+#
+#cnf(i_0_2173, plain, (rd(mult(X1,rd(X2,X2)),X2)=mult(rd(X1,mult(X2,X2)),X2))).
+#
+#cnf(i_0_4190, plain, (ld(mult(X1,X1),rd(X1,X1))=rd(X1,mult(X1,mult(X1,X1))))).
+#
+#cnf(i_0_3035, plain, (ld(X1,rd(X1,mult(X1,X1)))=rd(X1,mult(X1,mult(X1,X1))))).
+#
+#cnf(i_0_2580, plain, (rd(rd(X1,mult(X1,X1)),X1)=rd(X1,mult(X1,mult(X1,X1))))).
+####
+#cnf(i_0_724, plain, (mult(ld(ld(X2,X3),X4),ld(X3,X2))=mult(ld(X3,X2),mult(X4,ld(X3,X2))))).
+##
+#cnf(i_0_753, plain, (rd(mult(X1,ld(rd(X3,X2),X4)),X2)=mult(mult(X1,X2),ld(X3,rd(X4,X2))))).
+###
+#cnf(i_0_937, plain, (mult(rd(mult(X1,X2),mult(X2,X3)),X2)=rd(X1,rd(X3,X2)))).
+#
+#cnf(i_0_5607, plain, (rd(X1,rd(ld(X2,X3),X2))=mult(rd(mult(X1,X2),X3),X2))).
+##
+#cnf(i_0_1076, plain, (rd(mult(X1,X3),mult(X3,mult(X2,X3)))=rd(rd(X1,X2),X3))).
+#
+#cnf(i_0_1300, plain, (mult(mult(X1,rd(X2,X2)),mult(X2,X2))=mult(mult(X1,X2),X2))).
+#
+#cnf(i_0_1632, plain, (mult(mult(rd(X1,mult(X2,X2)),X2),X2)=mult(X1,rd(X2,X2)))).
+#
+#cnf(i_0_1643, plain, (mult(mult(mult(X1,X2),X2),rd(X2,X2))=mult(X1,mult(X2,X2)))).
+#
+#cnf(i_0_6082, plain, (mult(mult(X1,mult(X2,X2)),X2)=mult(mult(X1,X2),mult(X2,X2)))).
+####
+#cnf(i_0_1847, plain, (mult(X1,rd(X2,mult(X2,mult(X2,X2))))=rd(X1,mult(X2,X2)))).
+####
+#cnf(i_0_2117, plain, (mult(rd(X1,mult(X1,X1)),rd(X1,X1))=rd(X1,mult(X1,X1)))).
+#####
+#cnf(i_0_754, plain, (mult(X1,ld(ld(rd(X3,X2),X4),X2))=rd(X1,mult(ld(X3,rd(X4,X2)),X2)))).
+#
+#cnf(i_0_757, plain, (mult(rd(X1,X2),ld(rd(X3,X2),X4))=mult(mult(X1,ld(X3,rd(X4,X2))),X2))).
+###
+#cnf(i_0_41, plain, (mult(rd(X1,X2),mult(X2,mult(X3,mult(X2,mult(X4,X2)))))=mult(mult(X1,mult(mult(X3,X2),X4)),X2))).
+##
+#cnf(i_0_2356, plain, (ld(rd(ld(mult(X2,X1),X2),X1),X1)=mult(X1,mult(X1,X1)))).
+#
+#cnf(i_0_2422, plain, (ld(rd(ld(X2,rd(X2,X1)),X1),X1)=mult(X1,mult(X1,X1)))).
+##
+#cnf(i_0_2796, plain, (mult(mult(X1,mult(X1,X1)),rd(X1,X1))=mult(X1,mult(X1,X1)))).
+#
+#cnf(i_0_2964, plain, (mult(X1,rd(ld(mult(X3,X2),X3),X2))=rd(X1,mult(X2,X2)))).
+#
+#cnf(i_0_2978, plain, (ld(rd(X1,X1),rd(X1,mult(X1,X1)))=rd(X1,mult(X1,X1)))).
+#
+#cnf(i_0_2989, plain, (ld(mult(X1,mult(X1,X1)),mult(X1,X1))=rd(X1,mult(X1,X1)))).
+#
+#cnf(i_0_2990, plain, (ld(rd(X1,X1),ld(mult(X2,X1),X2))=rd(X1,mult(X1,X1)))).
+##
+#cnf(i_0_2991, plain, (ld(rd(X1,X1),ld(X2,rd(X2,X1)))=rd(X1,mult(X1,X1)))).
+###
+#cnf(i_0_3057, plain, (mult(X1,rd(ld(X2,rd(X2,X3)),X3))=rd(X1,mult(X3,X3)))).
+#
+#cnf(i_0_3099, plain, (mult(mult(X1,mult(X2,X2)),rd(X2,X2))=mult(mult(X1,X2),X2))).
+######
+#cnf(i_0_960, plain, (rd(mult(X1,ld(X3,mult(X4,X2))),X2)=mult(mult(X1,X2),ld(mult(X3,X2),X4)))).
+#
+#cnf(i_0_963, plain, (mult(X1,ld(ld(X3,mult(X4,X2)),X2))=rd(X1,mult(ld(mult(X3,X2),X4),X2)))).
+#
+#cnf(i_0_966, plain, (mult(rd(X1,X2),ld(X3,mult(X4,X2)))=mult(mult(X1,ld(mult(X3,X2),X4)),X2))).
+#
+#cnf(i_0_43, plain, (mult(mult(mult(X1,X2),rd(X3,X2)),mult(X2,mult(X4,X2)))=mult(mult(mult(X1,mult(X2,X3)),X4),X2))).
+#
+#cnf(i_0_50, plain, (mult(mult(mult(rd(X1,X3),mult(X3,X2)),X4),X3)=mult(mult(X1,rd(X2,X3)),mult(X3,mult(X4,X3))))).
+##########
+#cnf(i_0_3319, plain, (rd(X1,rd(ld(mult(X3,X2),X3),X2))=mult(X1,mult(X2,X2)))).
+##
+#cnf(i_0_3543, plain, (mult(ld(mult(X3,X2),X3),rd(X2,X2))=ld(mult(X3,X2),X3))).
+###
+#cnf(i_0_3544, plain, (mult(ld(X3,rd(X3,X2)),rd(X2,X2))=ld(X3,rd(X3,X2)))).
+#######
+#cnf(i_0_1275, plain, (mult(ld(X2,rd(rd(X2,X1),X1)),X1)=ld(X1,mult(rd(X2,mult(X1,X2)),X1)))).
+#
+#cnf(i_0_1278, plain, (ld(X1,rd(mult(X2,X1),mult(X2,X1)))=mult(ld(mult(mult(X2,X1),X1),X2),X1))).
+#
+#cnf(i_0_51, plain, (mult(rd(X1,X2),mult(X2,mult(rd(X3,X2),mult(X2,X4))))=mult(mult(X1,mult(X3,rd(X4,X2))),X2))).
+#
+#cnf(i_0_54, plain, (mult(mult(rd(X1,X3),mult(X3,X2)),rd(X2,X3))=mult(X1,mult(rd(X2,X3),mult(X3,rd(X2,X3)))))).
+#####
+#cnf(i_0_3659, plain, (rd(X1,rd(ld(X3,rd(X3,X2)),X2))=mult(X1,mult(X2,X2)))).
+##
+#cnf(i_0_4049, plain, (ld(mult(rd(X1,X2),X3),rd(X1,X3))=rd(ld(X3,X2),X3))).
+######
+#cnf(i_0_4088, plain, (ld(mult(rd(mult(X1,X2),X3),X2),X1)=rd(ld(X2,X3),X2))).
+####
+#cnf(i_0_4122, plain, (mult(ld(ld(mult(X2,X3),X2),X4),X3)=mult(X3,mult(X4,X3)))).
+#
+#cnf(i_0_4123, plain, (mult(ld(ld(X2,rd(X2,X3)),X4),X3)=mult(X3,mult(X4,X3)))).
+###
+#cnf(i_0_1338, plain, (mult(ld(rd(X2,X2),X3),rd(X2,X2))=mult(rd(X2,X2),mult(X3,rd(X2,X2))))).
+###
+#cnf(i_0_55, plain, (mult(mult(X1,mult(mult(X2,X3),rd(X4,X3))),X3)=mult(rd(X1,X3),mult(X3,mult(X2,mult(X3,X4)))))).
+#
+#cnf(i_0_246, plain, (mult(X1,mult(ld(X2,rd(X2,X3)),rd(X4,X3)))=rd(mult(rd(X1,X3),X4),X3))).
+####
+#cnf(i_0_5013, plain, (mult(rd(rd(X1,X2),mult(X2,X2)),X2)=rd(X1,mult(X2,X2)))).
+#
+#cnf(i_0_10762, plain, (rd(rd(X1,mult(X2,X2)),X2)=rd(rd(X1,X2),mult(X2,X2)))).
+#####
+#cnf(i_0_5166, plain, (rd(X1,rd(X2,mult(X2,mult(X2,X2))))=mult(X1,mult(X2,X2)))).
+####
+#cnf(i_0_5316, plain, (mult(ld(mult(X1,X2),X1),rd(X3,X2))=rd(ld(X2,X3),X2))).
+###
+#cnf(i_0_5317, plain, (mult(ld(X1,rd(X1,X2)),rd(X3,X2))=rd(ld(X2,X3),X2))).
+####
+#cnf(i_0_1363, plain, (rd(X1,mult(rd(X2,mult(X3,X2)),X3))=mult(X1,mult(rd(X2,mult(X3,X2)),X3)))).
+#
+#cnf(i_0_1365, plain, (rd(X1,mult(ld(X2,X3),ld(X3,X2)))=mult(X1,mult(ld(X2,X3),ld(X3,X2))))).
+##
+#cnf(i_0_249, plain, (mult(X1,mult(X2,mult(ld(X3,rd(X3,X4)),X2)))=mult(rd(mult(X1,X2),X4),X2))).
+###
+#cnf(i_0_5340, plain, (mult(rd(X2,mult(X2,X2)),rd(X3,X2))=rd(ld(X2,X3),X2))).
+#
+#cnf(i_0_12081, plain, (rd(ld(X1,mult(X2,X1)),X1)=mult(rd(X1,mult(X1,X1)),X2))).
+##################
+#cnf(i_0_1880, plain, (ld(X1,ld(X2,mult(X1,mult(X1,X1))))=mult(ld(mult(X2,X1),mult(X1,X1)),X1))).
+#
+#cnf(i_0_1883, plain, (mult(mult(mult(X1,mult(X1,X1)),X2),X1)=mult(mult(X1,X1),mult(X1,mult(X2,X1))))).
+#
+#cnf(i_0_1894, plain, (ld(rd(X1,X2),mult(X2,mult(X2,X2)))=mult(X2,mult(ld(X1,mult(X2,X2)),X2)))).
+#
+#cnf(i_0_259, plain, (mult(mult(X1,X2),rd(ld(X3,rd(X3,X4)),X2))=rd(mult(X1,rd(X2,X4)),X2))).
+#
+#cnf(i_0_260, plain, (mult(X1,ld(mult(X2,mult(X3,X4)),mult(mult(X2,X3),rd(X4,X3))))=rd(X1,X3))).
+#####################
+#cnf(i_0_1964, plain, (mult(X1,mult(ld(rd(X1,X1),X2),X1))=rd(mult(X1,mult(mult(X2,X1),X1)),X1))).
+#
+#cnf(i_0_1987, plain, (ld(X1,rd(X1,mult(X1,mult(X1,X1))))=rd(rd(X1,mult(X1,X1)),mult(X1,X1)))).
+#
+#cnf(i_0_2000, plain, (mult(ld(rd(X1,X1),rd(X2,X1)),X1)=ld(X1,rd(mult(X1,mult(X2,X1)),X1)))).
+#
+#cnf(i_0_79, plain, (mult(X1,mult(X2,mult(rd(ld(X3,X4),X3),X2)))=mult(rd(mult(rd(mult(X1,X2),X3),X4),X3),X2))).
+#
+#cnf(i_0_84, plain, (mult(mult(X1,X2),rd(rd(ld(X3,X4),X3),X2))=rd(mult(X1,rd(mult(rd(X2,X3),X4),X3)),X2))).
+######################
+#cnf(i_0_2008, plain, (rd(rd(X1,mult(X1,X1)),rd(X2,X1))=mult(rd(rd(X1,X1),mult(X1,X2)),X1))).
+###
+#cnf(i_0_280, plain, (mult(mult(X1,X4),mult(ld(mult(X3,X4),X3),X2))=rd(mult(X1,mult(X2,X4)),X4))).
+######
+#cnf(i_0_7588, plain, (mult(rd(X1,mult(X2,X2)),rd(X2,X2))=rd(rd(X1,X2),X2))).
+############
+#cnf(i_0_9138, plain, (mult(ld(mult(X1,mult(X1,X1)),X1),X1)=rd(X1,mult(X1,X1)))).
+###
+#cnf(i_0_14541, plain, (ld(mult(X1,mult(X1,X1)),X1)=rd(X1,mult(X1,mult(X1,X1))))).
+#
+#cnf(i_0_2273, plain, (ld(X1,mult(mult(X2,X3),ld(X1,X2)))=mult(ld(X1,X2),mult(X3,ld(X1,X2))))).
+##
+#cnf(i_0_282, plain, (mult(X1,mult(X2,mult(ld(mult(X3,X4),X3),X2)))=mult(rd(mult(X1,X2),X4),X2))).
+####################
+#cnf(i_0_9969, plain, (ld(rd(ld(mult(X2,X1),X2),X1),X3)=mult(X1,mult(X1,X3)))).
+##
+#cnf(i_0_2552, plain, (mult(mult(X2,mult(ld(X2,X1),X1)),X2)=mult(X1,mult(X2,mult(ld(X2,X1),X2))))).
+#
+#cnf(i_0_2706, plain, (mult(X1,ld(mult(X3,X2),rd(X3,X2)))=rd(X1,mult(X2,mult(rd(X3,X3),X2))))).
+#
+#cnf(i_0_3218, plain, (rd(X1,mult(ld(X3,X2),ld(X3,X2)))=mult(X1,mult(ld(X2,X3),ld(X2,X3))))).
+############
+#cnf(i_0_10145, plain, (ld(rd(ld(X2,rd(X2,X1)),X1),X3)=mult(X1,mult(X1,X3)))).
+##
+#cnf(i_0_10263, plain, (mult(rd(X1,X1),mult(rd(X1,X1),X2))=ld(rd(X1,X1),X2))).
+#########
+#cnf(i_0_3855, plain, (mult(mult(X2,ld(X3,X1)),ld(X1,X2))=mult(X1,ld(mult(X3,ld(X2,X1)),X2)))).
+#
+#cnf(i_0_3889, plain, (ld(mult(rd(X1,X3),ld(X2,X1)),X2)=mult(ld(X1,X2),mult(X3,ld(X1,X2))))).
+#
+#cnf(i_0_4004, plain, (mult(mult(X1,X1),mult(X1,mult(X1,X1)))=mult(X1,mult(X1,mult(X1,mult(X1,X1)))))).
+#
+#cnf(i_0_292, plain, (mult(mult(X1,X2),rd(ld(mult(X3,X4),X3),X2))=rd(mult(X1,rd(X2,X4)),X2))).
+#
+#cnf(i_0_295, plain, (mult(X1,ld(mult(mult(X2,X4),X3),rd(X2,X3)))=rd(X1,mult(X3,mult(X4,X3))))).
+##########
+#cnf(i_0_12006, plain, (mult(rd(ld(X1,X2),mult(X1,X2)),X1)=rd(X1,mult(X1,X1)))).
+######
+#cnf(i_0_12138, plain, (mult(mult(rd(X1,mult(X1,X1)),X2),X1)=ld(X1,mult(X2,X1)))).
+##
+#cnf(i_0_15231, plain, (ld(rd(X1,mult(X1,mult(X1,X1))),X2)=mult(X1,mult(X1,X2)))).
+#####
+#cnf(i_0_4118, plain, (ld(X1,mult(mult(X1,X2),rd(X1,X1)))=mult(rd(X1,X1),mult(X2,rd(X1,X1))))).
+#
+#cnf(i_0_297, plain, (mult(X1,ld(mult(X2,mult(X3,mult(X4,X3))),mult(mult(X2,X3),X4)))=rd(X1,X3))).
+#
+#cnf(i_0_298, plain, (mult(X1,ld(mult(rd(X2,X4),mult(X4,X3)),mult(X2,rd(X3,X4))))=rd(X1,X4))).
+#################
+#cnf(i_0_16127, plain, (ld(rd(X1,X1),ld(rd(X1,X1),X2))=mult(rd(X1,X1),X2))).
+#####
+#cnf(i_0_4165, plain, (rd(mult(rd(X1,X2),rd(X3,X3)),X2)=rd(X1,mult(X2,mult(rd(X3,X3),X2))))).
+#
+#cnf(i_0_4232, plain, (rd(mult(rd(X1,X2),ld(X3,X4)),X2)=mult(X1,ld(mult(X3,X2),rd(X4,X2))))).
+#
+#cnf(i_0_302, plain, (mult(X1,ld(rd(mult(rd(X2,X3),X4),X3),X2))=mult(rd(mult(X1,X3),X4),X3))).
+#
+#cnf(i_0_98, plain, (mult(mult(mult(X1,X2),X3),mult(X2,mult(X3,X2)))=mult(X1,mult(X2,mult(mult(X3,mult(X2,X3)),X2))))).
+#
+#cnf(i_0_17586, plain, (mult(rd(ld(X1,ld(X1,X2)),X2),X1)=rd(X1,mult(X1,X1)))).
+####
+#cnf(i_0_17628, plain, (mult(rd(X2,mult(X1,mult(X1,X2))),X1)=rd(X1,mult(X1,X1)))).
+####
+#cnf(i_0_17669, plain, (ld(ld(mult(X1,X2),X1),rd(X3,X2))=rd(mult(X2,X3),X2))).
+####
+#cnf(i_0_17672, plain, (ld(ld(X1,rd(X1,X2)),rd(X3,X2))=rd(mult(X2,X3),X2))).
+######
+#cnf(i_0_17799, plain, (mult(mult(ld(mult(X3,X1),X3),X2),X1)=ld(X1,mult(X2,X1)))).
+#
+#cnf(i_0_17800, plain, (mult(mult(ld(X3,rd(X3,X1)),X2),X1)=ld(X1,mult(X2,X1)))).
+#
+#cnf(i_0_4278, plain, (rd(rd(ld(mult(X2,X1),X2),X1),X1)=ld(mult(mult(X2,X1),X1),rd(X2,X1)))).
+#
+#cnf(i_0_4279, plain, (rd(rd(ld(X2,rd(X2,X1)),X1),X1)=ld(mult(X2,X1),rd(rd(X2,X1),X1)))).
+#
+#cnf(i_0_4562, plain, (mult(X1,ld(X3,rd(X2,mult(X2,X2))))=rd(X1,rd(mult(X2,mult(X3,X2)),X2)))).
+#
+#cnf(i_0_101, plain, (mult(mult(X1,X2),mult(rd(X3,X2),mult(X2,rd(X3,X2))))=mult(mult(X1,mult(X2,X3)),rd(X3,X2)))).
+#
+#cnf(i_0_105, plain, (mult(mult(X1,ld(X2,X3)),mult(X2,mult(ld(X2,X3),X2)))=mult(mult(X1,mult(ld(X2,X3),X3)),X2))).
+####
+#cnf(i_0_20333, plain, (rd(X1,rd(mult(X2,mult(X1,X2)),X2))=rd(X2,mult(X2,X2)))).
+##########
+#cnf(i_0_22041, plain, (rd(mult(X1,rd(X2,X2)),mult(X2,X2))=rd(rd(X1,X2),X2))).
+##########
+#cnf(i_0_311, plain, (ld(mult(X1,mult(X3,mult(ld(X2,X4),X3))),X1)=ld(mult(X4,X3),rd(X2,X3)))).
+#
+#cnf(i_0_740, plain, (rd(ld(rd(X2,X1),X3),mult(ld(X2,rd(X3,X1)),X1))=X1)).
+###
+#cnf(i_0_1313, plain, (mult(rd(X1,X2),mult(rd(X1,mult(X2,X1)),X2))=rd(X1,X2))).
+#
+#cnf(i_0_1315, plain, (mult(ld(X1,X2),mult(ld(X1,X2),ld(X2,X1)))=ld(X1,X2))).
+####
+#cnf(i_0_1375, plain, (mult(mult(ld(X2,X3),ld(X3,X2)),ld(X3,X2))=ld(X3,X2))).
+##############
+#cnf(i_0_4924, plain, (rd(rd(X1,mult(X2,mult(X3,X2))),X3)=rd(rd(X1,X2),mult(X3,mult(X2,X3))))).
+#
+#cnf(i_0_4928, plain, (rd(rd(rd(X1,mult(X1,X1)),X2),X1)=rd(rd(X1,X1),mult(X1,mult(X2,X1))))).
+#
+#cnf(i_0_135, plain, (ld(rd(X1,X2),mult(X3,mult(X2,mult(X4,X2))))=mult(X2,mult(ld(X1,mult(mult(X3,X2),X4)),X2)))).
+#
+#cnf(i_0_136, plain, (ld(rd(X1,X2),mult(rd(X3,X2),mult(X2,X4)))=mult(X2,mult(ld(X1,mult(X3,rd(X4,X2))),X2)))).
+#######
+#cnf(i_0_1376, plain, (ld(mult(ld(X2,X3),ld(X3,X2)),ld(X3,X2))=ld(X3,X2))).
+################
+#cnf(i_0_5075, plain, (rd(rd(X1,X1),mult(X1,mult(X1,X1)))=rd(X1,mult(X1,mult(X1,mult(X1,X1)))))).
+#
+#cnf(i_0_140, plain, (ld(mult(mult(X1,X2),rd(X3,X2)),mult(X4,X2))=mult(X2,mult(ld(mult(X1,mult(X2,X3)),X4),X2)))).
+######
+#cnf(i_0_1397, plain, (mult(mult(rd(X1,mult(X3,X3)),X3),mult(X3,X3))=mult(X1,X3))).
+########
+#cnf(i_0_1532, plain, (mult(X2,mult(ld(X1,rd(X1,mult(X2,X2))),X2))=rd(X2,X2))).
+#
+#cnf(i_0_25879, plain, (mult(ld(X1,rd(X1,mult(X2,X2))),X2)=rd(X2,mult(X2,X2)))).
+######
+#cnf(i_0_26258, plain, (mult(ld(mult(X1,mult(X2,X2)),X1),X2)=rd(X2,mult(X2,X2)))).
+#
+#cnf(i_0_5323, plain, (ld(mult(ld(X2,X1),ld(X2,X1)),X3)=mult(ld(X1,X2),mult(ld(X1,X2),X3)))).
+####
+#cnf(i_0_354, plain, (mult(mult(X1,ld(mult(X2,X3),rd(X4,X3))),mult(X3,mult(ld(X4,X2),X3)))=X1)).
+########
+#cnf(i_0_1612, plain, (ld(rd(X1,X2),mult(mult(X1,X2),rd(X2,X2)))=mult(X2,X2))).
+################
+#cnf(i_0_360, plain, (mult(mult(X1,mult(X3,mult(ld(X2,X4),X3))),ld(mult(X4,X3),rd(X2,X3)))=X1)).
+#######
+#cnf(i_0_2041, plain, (mult(rd(X2,mult(X2,mult(X2,X2))),mult(X2,X2))=rd(X2,X2))).
+####
+#cnf(i_0_2525, plain, (ld(mult(X1,X2),mult(X2,mult(ld(X2,X1),X1)))=ld(X2,X1))).
+#
+#cnf(i_0_2526, plain, (mult(mult(X2,mult(ld(X2,X1),X1)),ld(X1,X2))=mult(X1,X2))).
+###
+#cnf(i_0_2531, plain, (ld(mult(X2,mult(ld(X2,X1),X1)),mult(X1,X2))=ld(X1,X2))).
+#####
+#cnf(i_0_2936, plain, (mult(ld(X2,X3),mult(ld(X3,X2),ld(X3,X2)))=ld(X3,X2))).
+#########################
+#cnf(i_0_3003, plain, (mult(ld(mult(X2,X1),X2),mult(X1,mult(X1,X1)))=mult(X1,X1))).
+##
+#cnf(i_0_5703, plain, (rd(X1,mult(rd(ld(X2,X3),X3),X2))=mult(X1,mult(rd(ld(X2,X3),X3),X2)))).
+####
+#cnf(i_0_445, plain, (ld(mult(X1,X3),X1)=ld(mult(X2,mult(X3,mult(X4,X3))),mult(mult(X2,X3),X4)))).
+##############
+#cnf(i_0_29080, plain, (ld(ld(mult(X1,X2),X1),mult(X2,X2))=mult(X2,mult(X2,X2)))).
+##
+#cnf(i_0_30276, plain, (ld(ld(X1,rd(X1,X2)),mult(X2,X2))=mult(X2,mult(X2,X2)))).
+######
+#cnf(i_0_5913, plain, (mult(mult(mult(X1,X2),X2),mult(X2,X2))=mult(X1,mult(X2,mult(X2,mult(X2,X2)))))).
+###
+#cnf(i_0_458, plain, (ld(mult(mult(X1,ld(X2,X3)),X2),mult(X1,mult(ld(X2,X3),X3)))=ld(X2,X3))).
+#####
+#cnf(i_0_3051, plain, (mult(ld(X2,rd(X2,X1)),mult(X1,mult(X1,X1)))=mult(X1,X1))).
+#############
+#cnf(i_0_3477, plain, (ld(mult(X1,rd(X3,X3)),mult(mult(X1,X3),X3))=mult(X3,X3))).
+##
+#cnf(i_0_3483, plain, (ld(mult(X1,mult(X2,X2)),mult(mult(X1,X2),X2))=rd(X2,X2))).
+#
+#cnf(i_0_6086, plain, (mult(mult(X1,mult(X2,X2)),mult(X2,X2))=mult(mult(X1,X2),mult(X2,mult(X2,X2))))).
+#########
+#cnf(i_0_3956, plain, (ld(mult(X1,X1),mult(X1,mult(X1,mult(X1,X1))))=mult(X1,X1))).
+#
+#cnf(i_0_3957, plain, (rd(mult(X1,mult(X1,mult(X1,X1))),mult(X1,X1))=mult(X1,X1))).
+###
+#cnf(i_0_4578, plain, (mult(rd(X1,mult(X1,mult(X1,X1))),mult(X1,X2))=ld(X1,X2))).
+#
+#cnf(i_0_32586, plain, (mult(rd(X1,mult(X1,mult(X1,X1))),X2)=ld(X1,ld(X1,X2)))).
+##
+#cnf(i_0_4960, plain, (ld(mult(rd(X1,mult(X2,X2)),X2),mult(X1,X2))=mult(X2,X2))).
+###################
+#cnf(i_0_5916, plain, (ld(mult(mult(X1,X2),X2),mult(X1,mult(X2,X2)))=rd(X2,X2))).
+##################
+#cnf(i_0_947, plain, (rd(ld(X2,mult(X3,X1)),mult(ld(mult(X2,X1),X3),X1))=X1)).
+#
+#cnf(i_0_33, plain, (rd(mult(X1,mult(mult(X2,X3),mult(X4,mult(X2,X3)))),X2)=mult(mult(mult(mult(X1,mult(X2,X3)),X4),X2),rd(X3,X2)))).
+############
+#cnf(i_0_10814, plain, (ld(rd(X1,mult(X2,X2)),rd(rd(X1,X2),X2))=rd(X2,X2))).
+####
+#cnf(i_0_11145, plain, (mult(rd(ld(mult(X1,X2),X1),X2),mult(X2,X3))=ld(X2,X3))).
+##
+#cnf(i_0_34755, plain, (ld(ld(mult(X2,mult(X3,X3)),X2),X3)=mult(X3,mult(X3,X3)))).
+#
+#cnf(i_0_34759, plain, (ld(ld(X2,rd(X2,mult(X3,X3))),X3)=mult(X3,mult(X3,X3)))).
+#
+#cnf(i_0_34785, plain, (mult(rd(ld(mult(X1,X2),X1),X2),X3)=ld(X2,ld(X2,X3)))).
+####
+#cnf(i_0_38, plain, (mult(mult(X1,rd(X2,X3)),rd(mult(X3,mult(X4,X3)),rd(X2,X3)))=rd(mult(X1,mult(mult(X2,X4),X3)),rd(X2,X3)))).
+#
+#cnf(i_0_46, plain, (mult(mult(rd(X1,rd(X3,X4)),mult(rd(X3,X4),X2)),X4)=mult(rd(mult(X1,rd(X2,rd(X3,X4))),X4),mult(X4,X3)))).
+####
+#cnf(i_0_35530, plain, (mult(rd(ld(X1,rd(X1,X2)),X2),X3)=ld(X2,ld(X2,X3)))).
+########
+#cnf(i_0_14375, plain, (ld(rd(rd(X2,X1),X1),rd(X2,mult(X1,X1)))=rd(X1,X1))).
+######
+#cnf(i_0_14450, plain, (ld(rd(rd(X1,X2),X2),mult(X1,rd(X2,X2)))=mult(X2,X2))).
+######
+#cnf(i_0_47, plain, (rd(mult(rd(X1,mult(X3,X4)),mult(mult(X3,X4),X2)),X3)=mult(mult(mult(X1,rd(X2,mult(X3,X4))),X3),rd(X4,X3)))).
+#
+#cnf(i_0_59, plain, (mult(mult(X1,mult(rd(X2,X3),mult(X4,rd(X2,X3)))),X3)=mult(rd(mult(mult(X1,rd(X2,X3)),X4),X3),mult(X3,X2)))).
+###
+#cnf(i_0_16128, plain, (rd(ld(rd(X1,X1),X2),mult(rd(X1,X1),X2))=rd(X1,X1))).
+##
+#cnf(i_0_17451, plain, (ld(X1,ld(rd(ld(X1,X2),mult(X1,X2)),X3))=mult(X1,X3))).
+#
+#cnf(i_0_38290, plain, (ld(rd(ld(X1,X2),mult(X1,X2)),X3)=mult(X1,mult(X1,X3)))).
+#
+#cnf(i_0_38782, plain, (ld(rd(ld(X1,ld(X1,X2)),X2),X3)=mult(X1,mult(X1,X3)))).
+#
+#cnf(i_0_38851, plain, (ld(rd(X2,mult(X1,mult(X1,X2))),X3)=mult(X1,mult(X1,X3)))).
+#
+#cnf(i_0_17456, plain, (mult(rd(ld(X1,X2),mult(X1,X2)),mult(X1,X1))=rd(X1,X1))).
+#
+#cnf(i_0_39429, plain, (mult(X1,rd(ld(X3,X4),mult(X3,X4)))=rd(X1,mult(X3,X3)))).
+#
+#cnf(i_0_39871, plain, (rd(X1,rd(ld(X3,X4),mult(X3,X4)))=mult(X1,mult(X3,X3)))).
+#
+#cnf(i_0_40074, plain, (mult(X1,rd(ld(X2,ld(X2,X3)),X3))=rd(X1,mult(X2,X2)))).
+#
+#cnf(i_0_40145, plain, (mult(X1,rd(X3,mult(X2,mult(X2,X3))))=rd(X1,mult(X2,X2)))).
+#
+#cnf(i_0_40460, plain, (rd(X1,rd(ld(X2,ld(X2,X3)),X3))=mult(X1,mult(X2,X2)))).
+#
+#cnf(i_0_40531, plain, (rd(X1,rd(X3,mult(X2,mult(X2,X3))))=mult(X1,mult(X2,X2)))).
+#####
+#cnf(i_0_20057, plain, (mult(rd(ld(X1,ld(X1,X2)),X2),mult(X1,X1))=rd(X1,X1))).
+#######
+#cnf(i_0_20278, plain, (mult(rd(X1,mult(X2,mult(X2,X1))),mult(X2,X2))=rd(X2,X2))).
+#
+#cnf(i_0_20496, plain, (ld(ld(mult(X1,X2),X1),rd(X2,mult(X2,X2)))=rd(X2,X2))).
+#
+#cnf(i_0_20685, plain, (ld(ld(X1,rd(X1,X2)),rd(X2,mult(X2,X2)))=rd(X2,X2))).
+##
+#cnf(i_0_20899, plain, (ld(ld(X2,X3),mult(ld(X3,X2),ld(X2,X3)))=ld(X3,X2))).
+##################
+#cnf(i_0_568, plain, (mult(X1,rd(ld(X4,rd(X4,X3)),X2))=rd(mult(rd(X1,X2),rd(X2,X3)),X2))).
+###
+#cnf(i_0_21294, plain, (mult(rd(X1,mult(X1,X1)),mult(X1,mult(X1,X1)))=mult(X1,X1))).
+###################
+#cnf(i_0_9831, plain, (ld(mult(rd(X1,X2),rd(X1,X1)),X1)=mult(rd(X1,X1),mult(X2,rd(X1,X1))))).
+###
+#cnf(i_0_593, plain, (ld(X1,rd(X1,X2))=ld(mult(X3,mult(X2,X4)),mult(mult(X3,X2),rd(X4,X2))))).
+##########################
+#cnf(i_0_263, plain, (mult(mult(X1,mult(ld(X2,X3),X4)),ld(X3,X2))=mult(mult(X1,ld(X2,X3)),mult(X4,ld(X3,X2))))).
+#####
+#cnf(i_0_26154, plain, (ld(X2,ld(ld(X1,rd(X1,mult(X2,X2))),X3))=mult(X2,X3))).
+#
+#cnf(i_0_45328, plain, (ld(ld(X2,rd(X2,mult(X1,X1))),X4)=mult(X1,mult(X1,X4)))).
+#
+#cnf(i_0_45656, plain, (ld(ld(mult(X1,mult(X2,X2)),X1),X4)=mult(X2,mult(X2,X4)))).
+##################
+#cnf(i_0_268, plain, (mult(mult(X1,ld(X3,X2)),mult(ld(X2,X3),mult(X4,ld(X2,X3))))=mult(mult(X1,X4),ld(X2,X3)))).
+#######################
+#cnf(i_0_10927, plain, (rd(rd(rd(X1,X2),X2),mult(X2,X2))=rd(X1,mult(X2,mult(X2,mult(X2,X2)))))).
+#
+#cnf(i_0_269, plain, (ld(mult(X1,ld(X3,X2)),mult(X4,ld(X2,X3)))=mult(ld(X2,X3),mult(ld(X1,X4),ld(X2,X3))))).
+#
+#cnf(i_0_272, plain, (mult(mult(X1,mult(X2,ld(X4,X3))),ld(X3,X4))=mult(mult(X1,ld(X4,X3)),mult(ld(X3,X4),X2)))).
+#####################
+#cnf(i_0_10944, plain, (rd(rd(X1,mult(X1,X1)),mult(X1,X1))=rd(X1,mult(X1,mult(X1,mult(X1,X1)))))).
+#
+#cnf(i_0_11507, plain, (rd(X1,mult(rd(X2,X3),rd(X3,X2)))=mult(X1,mult(rd(X2,X3),rd(X3,X2))))).
+##
+#cnf(i_0_622, plain, (mult(X1,rd(ld(mult(X4,X3),X4),X2))=rd(mult(rd(X1,X2),rd(X2,X3)),X2))).
+#
+#cnf(i_0_634, plain, (ld(X1,rd(X1,mult(X2,mult(X3,X2))))=ld(mult(mult(X4,X3),X2),rd(X4,X2)))).
+##########
+#cnf(i_0_31778, plain, (rd(mult(X1,mult(X1,X1)),mult(X1,mult(X1,X1)))=rd(X1,X1))).
+##############
+#cnf(i_0_637, plain, (ld(X1,rd(X1,X2))=ld(mult(X3,mult(X2,mult(X4,X2))),mult(mult(X3,X2),X4)))).
+#
+#cnf(i_0_638, plain, (ld(X1,rd(X1,X2))=ld(mult(rd(X3,X2),mult(X2,X4)),mult(X3,rd(X4,X2))))).
+########################
+#cnf(i_0_642, plain, (ld(X1,mult(rd(mult(X1,X2),X3),X2))=ld(rd(mult(rd(X4,X2),X3),X2),X4))).
+#
+#cnf(i_0_647, plain, (ld(mult(X1,mult(X2,X3)),mult(mult(X1,X2),rd(X3,X2)))=ld(mult(X4,X2),X4))).
+#####################
+#cnf(i_0_12192, plain, (rd(mult(rd(X1,X2),mult(X3,X2)),X2)=mult(X1,mult(rd(X2,mult(X2,X2)),X3)))).
+#
+#cnf(i_0_12193, plain, (rd(X1,mult(rd(X2,mult(X2,X2)),X3))=mult(rd(mult(X1,X2),mult(X3,X2)),X2))).
+##
+#cnf(i_0_299, plain, (mult(X1,ld(mult(mult(X2,X3),mult(X4,mult(X3,X4))),mult(X2,mult(X3,mult(X4,X3)))))=rd(X1,X4))).
+#
+#cnf(i_0_685, plain, (ld(mult(X1,mult(X2,mult(X3,X2))),X1)=ld(mult(mult(X4,X3),X2),rd(X4,X2)))).
+#########################
+#cnf(i_0_689, plain, (ld(mult(X1,X2),X1)=ld(mult(rd(X3,X2),mult(X2,X4)),mult(X3,rd(X4,X2))))).
+########################
+#cnf(i_0_693, plain, (ld(rd(mult(rd(X1,X2),X3),X2),X1)=ld(rd(mult(rd(X4,X2),X3),X2),X4))).
+########################
+#cnf(i_0_16215, plain, (ld(rd(X1,X1),mult(X2,rd(X1,X1)))=mult(mult(rd(X1,X1),X2),rd(X1,X1)))).
+#########
+#cnf(i_0_42626, plain, (ld(ld(mult(X1,X2),X1),ld(mult(X3,X2),X3))=rd(X2,X2))).
+##
+#cnf(i_0_42627, plain, (ld(ld(mult(X1,X2),X1),ld(X3,rd(X3,X2)))=rd(X2,X2))).
+####
+#cnf(i_0_42855, plain, (ld(ld(X1,rd(X1,X2)),ld(mult(X3,X2),X3))=rd(X2,X2))).
+##
+#cnf(i_0_42856, plain, (ld(ld(X1,rd(X1,X2)),ld(X3,rd(X3,X2)))=rd(X2,X2))).
+######
+#cnf(i_0_16221, plain, (ld(X1,rd(ld(rd(X1,X1),X2),X1))=rd(ld(X1,mult(rd(X1,X1),X2)),X1))).
+#
+#cnf(i_0_16259, plain, (ld(rd(X1,X1),mult(X1,mult(X2,X1)))=mult(rd(X1,X1),mult(mult(X1,X2),X1)))).
+################
+#cnf(i_0_1633, plain, (ld(mult(X1,rd(X2,X2)),mult(mult(X1,X2),rd(X2,X2)))=X2)).
+##
+#cnf(i_0_1672, plain, (ld(mult(rd(X1,mult(X2,X2)),X2),mult(X1,rd(X2,X2)))=X2)).
+#####
+#cnf(i_0_1904, plain, (ld(mult(X1,mult(X1,X1)),mult(X1,mult(X1,mult(X1,X1))))=X1)).
+#####
+#cnf(i_0_316, plain, (ld(mult(X1,mult(ld(X2,X3),mult(X4,ld(X2,X3)))),mult(mult(X1,ld(X2,X3)),X4))=ld(X3,X2))).
+####
+#cnf(i_0_2134, plain, (ld(rd(mult(X1,X3),mult(X3,X2)),rd(X1,rd(X2,X3)))=X3)).
+##################
+#cnf(i_0_16414, plain, (mult(mult(X1,ld(X2,X1)),rd(X1,X1))=mult(X1,ld(mult(X2,rd(X1,X1)),X1)))).
+#
+#cnf(i_0_16461, plain, (mult(X2,ld(mult(X2,ld(X1,X2)),X1))=mult(mult(X1,rd(X2,X2)),ld(X2,X1)))).
+#
+#cnf(i_0_317, plain, (ld(mult(mult(X1,ld(X4,X3)),mult(ld(X3,X4),X2)),mult(X1,mult(X2,ld(X4,X3))))=ld(X4,X3))).
+####################
+#cnf(i_0_4139, plain, (ld(ld(mult(X2,X1),rd(X2,X1)),ld(X1,rd(X2,X2)))=X1)).
+########
+#cnf(i_0_4206, plain, (ld(ld(mult(X2,X1),rd(X3,X1)),ld(X1,ld(X2,X3)))=X1)).
+########
+#cnf(i_0_4797, plain, (ld(rd(X1,mult(X2,mult(X3,X2))),rd(rd(X1,X2),X3))=X2)).
+############
+#cnf(i_0_17825, plain, (mult(mult(mult(X1,X2),X1),mult(X1,X1))=mult(X1,mult(mult(X2,X1),mult(X1,X1))))).
+########
+#cnf(i_0_6083, plain, (ld(mult(X1,mult(X2,X2)),mult(mult(X1,X2),mult(X2,X2)))=X2)).
+###################
+#cnf(i_0_728, plain, (ld(X1,rd(X1,mult(X2,mult(X4,X2))))=ld(mult(X3,X2),rd(rd(X3,X4),X2)))).
+#
+#cnf(i_0_746, plain, (ld(mult(X4,mult(ld(X2,rd(X3,X1)),X1)),X4)=ld(ld(rd(X2,X1),X3),X1))).
+###########
+#cnf(i_0_9914, plain, (ld(ld(ld(mult(X1,X2),X1),X3),mult(X2,mult(X3,X2)))=X2)).
+###
+#cnf(i_0_63206, plain, (ld(ld(ld(X3,X2),X2),mult(ld(X2,X3),X3))=ld(X2,X3))).
+#####
+#cnf(i_0_63447, plain, (ld(mult(ld(X3,X2),X2),ld(ld(X2,X3),X3))=ld(X2,X3))).
+#
+#cnf(i_0_63789, plain, (mult(mult(ld(X1,X2),X2),ld(X2,X1))=ld(ld(X2,X1),X1))).
+####
+#cnf(i_0_751, plain, (ld(X1,rd(X1,mult(ld(X2,rd(X3,X4)),X4)))=ld(ld(rd(X2,X4),X3),X4))).
+#########
+#cnf(i_0_10090, plain, (ld(ld(ld(X1,rd(X1,X2)),X3),mult(X2,mult(X3,X2)))=X2)).
+#
+#cnf(i_0_10761, plain, (ld(rd(rd(X1,X2),mult(X2,X2)),rd(X1,mult(X2,X2)))=X2)).
+##
+#cnf(i_0_12139, plain, (ld(mult(rd(X1,mult(X1,X1)),X2),ld(X1,mult(X2,X1)))=X1)).
+#####
+#cnf(i_0_12238, plain, (mult(rd(X1,mult(X1,X1)),ld(ld(X2,rd(X2,X1)),X3))=X3)).
+#######
+#cnf(i_0_20523, plain, (ld(ld(X3,X2),mult(X4,ld(X3,X2)))=mult(mult(ld(X2,X3),X4),ld(X3,X2)))).
+#
+#cnf(i_0_755, plain, (ld(mult(mult(X1,X2),ld(X3,rd(X4,X2))),mult(X1,ld(rd(X3,X2),X4)))=X2)).
+####
+#cnf(i_0_12239, plain, (mult(rd(X1,mult(X1,X1)),ld(ld(mult(X2,X1),X2),X3))=X3)).
+#####################
+#cnf(i_0_768, plain, (mult(X1,mult(ld(mult(X4,X3),X4),X1))=ld(rd(mult(rd(X2,X1),X3),X1),X2))).
+#
+#cnf(i_0_770, plain, (mult(X1,mult(ld(X4,rd(X4,X3)),X1))=ld(rd(mult(rd(X2,X1),X3),X1),X2))).
+###############
+#cnf(i_0_20509, plain, (ld(ld(mult(X1,X2),X1),mult(rd(X2,mult(X2,X2)),X3))=X3)).
+######
+#cnf(i_0_20577, plain, (rd(mult(mult(X2,X2),X3),mult(X2,X2))=mult(X2,mult(X2,rd(X3,mult(X2,X2)))))).
+#########
+#cnf(i_0_20698, plain, (ld(ld(X1,rd(X1,X2)),mult(rd(X2,mult(X2,X2)),X3))=X3)).
+##############
+#cnf(i_0_20816, plain, (ld(mult(ld(mult(X1,X2),X1),X3),ld(X2,mult(X3,X2)))=X2)).
+######
+#cnf(i_0_213, plain, (mult(ld(X1,X2),ld(X2,X1))=mult(ld(X2,X1),ld(X1,X2)))).
+##############
+#cnf(i_0_21095, plain, (ld(mult(ld(X1,rd(X1,X2)),X3),ld(X2,mult(X3,X2)))=X2)).
+#########
+#cnf(i_0_21418, plain, (ld(mult(X1,mult(X1,mult(X1,X1))),X1)=rd(X1,mult(X1,mult(X1,mult(X1,X1)))))).
+#
+#cnf(i_0_130, plain, (rd(mult(rd(X1,rd(X2,X3)),mult(X4,X3)),rd(X2,X3))=mult(X1,rd(mult(X3,mult(ld(X2,X4),X3)),rd(X2,X3))))).
+####
+#cnf(i_0_21633, plain, (ld(mult(X1,X1),rd(X1,mult(X1,X1)))=rd(X1,mult(X1,mult(X1,mult(X1,X1)))))).
+####################
+#cnf(i_0_30252, plain, (ld(X3,rd(ld(mult(X2,X3),X2),X3))=rd(ld(mult(X2,X3),X2),mult(X3,X3)))).
+####
+#cnf(i_0_30255, plain, (ld(X3,rd(ld(X2,rd(X2,X3)),X3))=rd(ld(X2,rd(X2,X3)),mult(X3,X3)))).
+###########
+#cnf(i_0_32680, plain, (rd(ld(X1,ld(X1,mult(X2,X3))),X2)=mult(ld(X1,ld(X1,X2)),rd(X3,X2)))).
+#
+#cnf(i_0_32685, plain, (mult(ld(X1,ld(X1,mult(X2,X2))),X2)=mult(ld(X1,ld(X1,X2)),mult(X2,X2)))).
+#
+#cnf(i_0_32730, plain, (ld(mult(X2,X1),rd(ld(X2,X1),X1))=rd(rd(X1,mult(X1,X1)),mult(X2,X2)))).
+#
+#cnf(i_0_32749, plain, (ld(X1,ld(X1,mult(X2,mult(X3,X2))))=mult(mult(ld(X1,ld(X1,X2)),X3),X2))).
+#
+#cnf(i_0_32909, plain, (ld(ld(X1,ld(X1,X2)),rd(X1,X2))=rd(ld(X2,mult(X1,mult(X1,X1))),X2))).
+#####
+#cnf(i_0_35554, plain, (ld(ld(X2,X1),ld(ld(X2,X1),X3))=mult(mult(ld(X1,X2),ld(X1,X2)),X3))).
+##
+#cnf(i_0_346, plain, (mult(ld(X2,X3),mult(ld(X1,mult(X4,ld(X3,X2))),ld(X2,X3)))=ld(mult(X1,ld(X3,X2)),X4))).
+###
+#cnf(i_0_35595, plain, (mult(mult(X3,mult(X3,mult(X3,X3))),X4)=mult(X3,mult(X3,mult(X3,mult(X3,X4)))))).
+############
+#cnf(i_0_36740, plain, (mult(X1,mult(X2,ld(X3,ld(X3,X2))))=mult(rd(mult(X1,X2),mult(X3,X3)),X2))).
+#######
+#cnf(i_0_38691, plain, (ld(rd(ld(rd(X1,X2),X2),X1),X3)=mult(rd(X1,X2),mult(rd(X1,X2),X3)))).
+#
+#cnf(i_0_38799, plain, (ld(rd(X2,mult(rd(X1,X2),X1)),X3)=mult(rd(X1,X2),mult(rd(X1,X2),X3)))).
+##
+#cnf(i_0_368, plain, (mult(X1,mult(ld(X4,X3),mult(mult(ld(X3,X4),X2),ld(X4,X3))))=mult(X1,mult(X2,ld(X4,X3))))).
+##
+#cnf(i_0_38590, plain, (mult(X1,mult(X1,mult(rd(ld(X1,X2),mult(X1,X2)),X3)))=X3)).
+###
+#cnf(i_0_78764, plain, (mult(X1,mult(rd(ld(X1,X2),mult(X1,X2)),X3))=ld(X1,X3))).
+#
+#cnf(i_0_79366, plain, (mult(rd(ld(X1,X2),mult(X1,X2)),X3)=ld(X1,ld(X1,X3)))).
+#
+#cnf(i_0_80515, plain, (mult(rd(ld(X1,ld(X1,X2)),X2),X3)=ld(X1,ld(X1,X3)))).
+#
+#cnf(i_0_80651, plain, (mult(rd(X2,mult(X1,mult(X1,X2))),X3)=ld(X1,ld(X1,X3)))).
+############
+#cnf(i_0_39983, plain, (mult(X1,rd(ld(rd(X2,X3),X3),X2))=rd(X1,mult(rd(X2,X3),rd(X2,X3))))).
+#
+#cnf(i_0_40093, plain, (rd(X1,mult(rd(X2,X3),rd(X2,X3)))=mult(X1,rd(X3,mult(rd(X2,X3),X2))))).
+#
+#cnf(i_0_40179, plain, (mult(mult(X2,mult(X2,X4)),mult(X2,X2))=mult(mult(X2,X2),mult(X4,mult(X2,X2))))).
+###############
+#cnf(i_0_40368, plain, (rd(X1,rd(ld(rd(X2,X3),X3),X2))=mult(X1,mult(rd(X2,X3),rd(X2,X3))))).
+#
+#cnf(i_0_40479, plain, (rd(X1,rd(X3,mult(rd(X2,X3),X2)))=mult(X1,mult(rd(X2,X3),rd(X2,X3))))).
+############################################
+#cnf(i_0_45525, plain, (mult(X2,mult(X2,mult(ld(X1,rd(X1,mult(X2,X2))),X3)))=X3)).
+###
+#cnf(i_0_84109, plain, (mult(ld(X2,rd(X2,mult(X1,X1))),X4)=ld(X1,ld(X1,X4)))).
+##
+#cnf(i_0_84997, plain, (mult(ld(mult(X1,mult(X2,X2)),X1),X4)=ld(X2,ld(X2,X4)))).
+##############
+#cnf(i_0_832, plain, (ld(mult(X2,mult(X3,ld(X2,X1))),mult(X1,mult(ld(X1,X2),X3)))=ld(X1,X2))).
+#######
+#cnf(i_0_1987, plain, (ld(X1,rd(X1,mult(X1,mult(X1,X1))))=rd(X1,mult(X1,mult(X1,mult(X1,X1)))))).
+##
+#cnf(i_0_48006, plain, (rd(X1,mult(X2,rd(X3,mult(X2,X3))))=mult(X1,mult(X2,rd(X3,mult(X2,X3)))))).
+##########
+#cnf(i_0_59175, plain, (ld(mult(mult(X1,X2),X2),rd(X1,X2))=rd(ld(mult(X1,X2),X1),mult(X2,X2)))).
+#
+#cnf(i_0_59176, plain, (ld(mult(X1,X2),rd(rd(X1,X2),X2))=rd(ld(X1,rd(X1,X2)),mult(X2,X2)))).
+####
+#cnf(i_0_844, plain, (mult(X2,mult(ld(X1,rd(X1,mult(X2,X3))),X2))=ld(mult(X4,rd(X3,X2)),X4))).
+#
+#cnf(i_0_849, plain, (ld(X1,rd(X1,rd(X2,X3)))=mult(X3,mult(ld(X4,rd(X4,mult(X3,X2))),X3)))).
+##############################
+#cnf(i_0_66202, plain, (mult(ld(mult(X4,X1),X4),ld(ld(X2,rd(X2,X1)),X3))=X3)).
+#######
+#cnf(i_0_66203, plain, (mult(ld(X4,rd(X4,X1)),ld(ld(X2,rd(X2,X1)),X3))=X3)).
+#########
+#cnf(i_0_66397, plain, (mult(ld(X2,ld(X2,X3)),mult(X2,X2))=ld(mult(X2,X2),mult(X3,mult(X2,X2))))).
+####
+#cnf(i_0_875, plain, (mult(mult(mult(X1,ld(X4,rd(X3,X2))),X2),ld(X3,rd(X4,X2)))=rd(X1,X2))).
+###############
+#cnf(i_0_67540, plain, (mult(ld(mult(X4,X1),X4),ld(ld(mult(X2,X1),X2),X3))=X3)).
+############
+#cnf(i_0_67541, plain, (mult(ld(X4,rd(X4,X1)),ld(ld(mult(X2,X1),X2),X3))=X3)).
+########
+#cnf(i_0_69137, plain, (ld(ld(mult(X1,X2),X1),mult(ld(mult(X4,X2),X4),X3))=X3)).
+#####
+#cnf(i_0_69138, plain, (ld(ld(mult(X1,X2),X1),mult(ld(X4,rd(X4,X2)),X3))=X3)).
+#######
+#cnf(i_0_73329, plain, (mult(ld(X1,ld(X1,X2)),rd(X1,X2))=rd(mult(ld(mult(X1,X1),X2),X1),X2))).
+##
+#cnf(i_0_885, plain, (mult(rd(rd(X1,mult(ld(mult(X2,X3),X2),X4)),X3),mult(X4,X3))=mult(X1,X3))).
+#
+#cnf(i_0_886, plain, (mult(rd(rd(X1,mult(ld(X2,rd(X2,X3)),X4)),X3),mult(X4,X3))=mult(X1,X3))).
+######
+#cnf(i_0_69769, plain, (ld(ld(X1,rd(X1,X2)),mult(ld(mult(X4,X2),X4),X3))=X3)).
+#######
+#cnf(i_0_69770, plain, (ld(ld(X1,rd(X1,X2)),mult(ld(X4,rd(X4,X2)),X3))=X3)).
+########################
+#cnf(i_0_75988, plain, (rd(mult(X1,mult(X1,mult(X1,X1))),X2)=mult(X1,mult(X1,mult(X1,rd(X1,X2)))))).
+#######
+#cnf(i_0_76789, plain, (rd(X1,mult(X3,ld(X4,ld(X4,X3))))=rd(mult(rd(X1,X3),mult(X4,X4)),X3))).
+#
+#cnf(i_0_77325, plain, (ld(X1,ld(X1,ld(X1,ld(X1,X2))))=ld(mult(X1,mult(X1,mult(X1,X1))),X2))).
+#######
+#cnf(i_0_80404, plain, (ld(rd(X1,X2),ld(rd(X1,X2),X3))=mult(rd(ld(rd(X1,X2),X2),X1),X3))).
+#
+#cnf(i_0_80546, plain, (mult(rd(ld(rd(X1,X2),X2),X1),X3)=mult(rd(X2,mult(rd(X1,X2),X1)),X3))).
+#
+#cnf(i_0_97351, plain, (rd(ld(rd(X1,X2),X2),X1)=rd(X2,mult(rd(X1,X2),X1)))).
+#
+#cnf(i_0_98183, plain, (rd(ld(X1,X2),mult(X1,X2))=rd(X2,mult(X1,mult(X1,X2))))).
+##
+#cnf(i_0_98560, plain, (rd(ld(X1,ld(X1,X3)),X3)=rd(X3,mult(X1,mult(X1,X3))))).
+##
+#cnf(i_0_98028, plain, (mult(rd(X2,mult(rd(X1,X2),X1)),X1)=ld(rd(X1,X2),X2))).
+#
+#cnf(i_0_81791, plain, (ld(ld(X2,ld(X2,X3)),rd(X1,X3))=rd(ld(X3,mult(X2,mult(X2,X1))),X3))).
+####
+#cnf(i_0_81823, plain, (ld(rd(X2,X1),ld(rd(X2,X1),X3))=mult(rd(X1,mult(rd(X2,X1),X2)),X3))).
+######
+#cnf(i_0_84890, plain, (ld(X2,ld(X2,rd(X3,mult(X2,X2))))=rd(ld(mult(X2,X2),X3),mult(X2,X2)))).
+####
+#cnf(i_0_903, plain, (ld(X1,ld(X4,rd(X4,X3)))=mult(ld(X2,rd(X2,mult(X1,mult(X3,X1)))),X1))).
+#
+#cnf(i_0_904, plain, (ld(X1,ld(mult(X4,X3),X4))=mult(ld(X2,rd(X2,mult(X1,mult(X3,X1)))),X1))).
+#############
+#cnf(i_0_86782, plain, (rd(X1,mult(X2,rd(rd(X4,X4),X2)))=mult(X1,mult(X2,rd(rd(X4,X4),X2))))).
+##
+#cnf(i_0_86787, plain, (rd(X1,mult(X2,rd(ld(X2,X4),X4)))=mult(X1,mult(X2,rd(ld(X2,X4),X4))))).
+###
+#cnf(i_0_4278, plain, (rd(rd(ld(mult(X1,X2),X1),X2),X2)=rd(ld(mult(X1,X2),X1),mult(X2,X2)))).
+###
+#cnf(i_0_87171, plain, (ld(mult(X1,mult(X1,X1)),rd(X1,X1))=rd(X1,mult(X1,mult(X1,mult(X1,X1)))))).
+#
+#cnf(i_0_4279, plain, (rd(rd(ld(X1,rd(X1,X2)),X2),X2)=rd(ld(X1,rd(X1,X2)),mult(X2,X2)))).
+#####
+#cnf(i_0_87706, plain, (rd(ld(ld(X1,X4),X1),mult(X1,X1))=mult(X1,rd(X1,mult(X4,mult(X1,X1)))))).
+####################
+#cnf(i_0_96772, plain, (ld(ld(X2,ld(X2,ld(X2,X3))),X2)=ld(X3,mult(X2,mult(X2,mult(X2,X2)))))).
+########
+#cnf(i_0_80404, plain, (ld(rd(X1,X2),ld(rd(X1,X2),X3))=mult(rd(X2,mult(rd(X1,X2),X1)),X3))).
+#
+#cnf(i_0_99401, plain, (ld(ld(rd(ld(X2,X1),X1),X1),X2)=mult(ld(X1,X2),rd(ld(X2,X1),X1)))).
+###
+#cnf(i_0_104391, plain, (ld(mult(X2,X2),ld(mult(X1,X2),X1))=rd(ld(mult(X1,X2),X1),mult(X2,X2)))).
+#
+#cnf(i_0_104393, plain, (ld(mult(X2,X2),ld(X1,rd(X1,X2)))=rd(ld(X1,rd(X1,X2)),mult(X2,X2)))).
+#####
+#cnf(i_0_104954, plain, (ld(ld(rd(X2,X1),X1),rd(X1,X2))=mult(ld(X1,rd(X1,X2)),rd(X2,X1)))).
+#####
+#cnf(i_0_105857, plain, (ld(ld(X1,X2),rd(X2,mult(X1,X2)))=mult(ld(X2,rd(X2,mult(X1,X2))),X1))).
+###############
+#cnf(i_0_1674, plain, (ld(X1,rd(X1,mult(X2,X2)))=rd(X2,mult(X2,mult(X2,X2))))).
+###########
+#cnf(i_0_896, plain, (ld(X1,ld(mult(mult(X2,X1),rd(X3,X1)),X4))=mult(ld(mult(X2,mult(X1,X3)),rd(X4,X1)),X1))).
+#
+#cnf(i_0_901, plain, (ld(ld(X1,X2),ld(mult(X3,ld(X2,X1)),X4))=mult(ld(X3,mult(X4,ld(X2,X1))),ld(X1,X2)))).
+#
+#cnf(i_0_930, plain, (rd(rd(X1,X2),mult(mult(X3,X2),rd(X4,X2)))=mult(rd(X1,mult(X2,mult(X3,mult(X2,X4)))),X2))).
+#
+#cnf(i_0_449, plain, (ld(mult(mult(X1,ld(X2,X3)),mult(X4,ld(X3,X2))),mult(X1,mult(ld(X2,X3),X4)))=ld(X2,X3))).
+#
+#cnf(i_0_450, plain, (ld(mult(mult(X1,X2),mult(mult(X3,X2),X4)),mult(X1,mult(X2,mult(X3,mult(X2,mult(X4,X2))))))=X2)).
+#
+#cnf(i_0_2950, plain, (rd(ld(mult(X3,X1),X3),X1)=ld(X2,rd(X2,mult(X1,X1))))).
+##
+#cnf(i_0_2951, plain, (rd(ld(mult(X3,X1),X3),X1)=ld(mult(X2,mult(X1,X1)),X2))).
+####
+#cnf(i_0_3059, plain, (ld(mult(X1,mult(X3,X3)),X1)=rd(ld(X2,rd(X2,X3)),X3))).
+#######
+#cnf(i_0_3174, plain, (ld(X1,rd(X1,mult(X2,X2)))=rd(ld(X3,rd(X3,X2)),X2))).
+#######
+#cnf(i_0_935, plain, (rd(mult(X1,ld(X3,X2)),mult(X4,ld(X3,X2)))=mult(rd(X1,mult(ld(X2,X3),X4)),ld(X2,X3)))).
+#
+#cnf(i_0_936, plain, (rd(mult(mult(X1,X2),rd(X3,X2)),rd(X4,X2))=mult(rd(mult(X1,mult(X2,X3)),mult(X2,X4)),X2))).
+##
+#cnf(i_0_451, plain, (ld(mult(mult(X1,X2),mult(X3,rd(X4,X2))),mult(X1,mult(X2,mult(rd(X3,X2),mult(X2,X4)))))=X2)).
+##
+#cnf(i_0_4188, plain, (rd(ld(X2,rd(X2,X1)),X1)=rd(X1,mult(X1,mult(X1,X1))))).
+####
+#cnf(i_0_4189, plain, (rd(ld(mult(X2,X1),X2),X1)=rd(X1,mult(X1,mult(X1,X1))))).
+#####
+#cnf(i_0_4581, plain, (ld(ld(mult(X3,X1),X3),X2)=rd(mult(X1,mult(X2,X1)),X1))).
+###
+#cnf(i_0_4582, plain, (ld(ld(X3,rd(X3,X1)),X2)=rd(mult(X1,mult(X2,X1)),X1))).
+########
+#cnf(i_0_953, plain, (ld(mult(X4,mult(ld(mult(X2,X1),X3),X1)),X4)=ld(ld(X2,mult(X3,X1)),X1))).
+#########################
+#cnf(i_0_958, plain, (ld(X1,rd(X1,mult(ld(mult(X2,X3),X4),X3)))=ld(ld(X2,mult(X4,X3)),X3))).
+###
+#cnf(i_0_469, plain, (ld(mult(mult(X1,mult(X2,mult(X3,X2))),X4),mult(mult(mult(X1,X2),X3),mult(X2,mult(X4,X2))))=X2)).
+#
+#cnf(i_0_470, plain, (ld(mult(mult(rd(X1,X3),mult(X3,X2)),X4),mult(mult(X1,rd(X2,X3)),mult(X3,mult(X4,X3))))=X3)).
+####
+#cnf(i_0_14653, plain, (rd(X1,mult(X1,mult(X1,X1)))=ld(mult(X2,mult(X1,X1)),X2))).
+###################
+#cnf(i_0_983, plain, (mult(ld(X1,X2),mult(ld(X2,X3),ld(X1,X2)))=ld(X1,mult(X3,ld(X1,X2))))).
+################
+#cnf(i_0_35332, plain, (rd(X3,mult(X2,mult(X2,X3)))=rd(ld(mult(X1,X2),X1),X2))).
+######
+#cnf(i_0_36559, plain, (rd(X3,mult(X2,mult(X2,X3)))=rd(ld(X1,rd(X1,X2)),X2))).
+#####
+#cnf(i_0_484, plain, (ld(mult(rd(X1,X3),mult(X3,X2)),mult(X1,mult(rd(X2,X3),mult(X3,rd(X2,X3)))))=rd(X2,X3))).
+########
+#cnf(i_0_41059, plain, (ld(X1,rd(X1,mult(X3,X3)))=rd(X2,mult(X3,mult(X3,X2))))).
+#
+#cnf(i_0_41717, plain, (ld(mult(X1,mult(X3,X3)),X1)=rd(X2,mult(X3,mult(X3,X2))))).
+##############
+#cnf(i_0_1017, plain, (ld(X1,ld(X2,mult(X3,mult(X1,mult(X4,X1)))))=mult(ld(mult(X2,X1),mult(mult(X3,X1),X4)),X1))).
+#
+#cnf(i_0_961, plain, (ld(mult(mult(X1,X2),ld(mult(X3,X2),X4)),mult(X1,ld(X3,mult(X4,X2))))=X2)).
+#
+#cnf(i_0_962, plain, (mult(mult(mult(X1,ld(mult(X4,X2),X3)),X2),ld(mult(X3,X2),X4))=rd(X1,X2))).
+#####################
+#cnf(i_0_1018, plain, (ld(X1,ld(X2,mult(rd(X3,X1),mult(X1,X4))))=mult(ld(mult(X2,X1),mult(X3,rd(X4,X1))),X1))).
+#
+#cnf(i_0_1025, plain, (ld(ld(mult(X1,X2),X1),ld(X3,rd(X4,X2)))=rd(ld(rd(X3,X2),X4),X2))).
+#
+#cnf(i_0_1026, plain, (ld(ld(X1,rd(X1,X2)),ld(X3,rd(X4,X2)))=rd(ld(rd(X3,X2),X4),X2))).
+#######################
+#cnf(i_0_1027, plain, (mult(ld(mult(X3,ld(X1,X2)),X1),ld(X1,X2))=ld(ld(X1,X2),ld(X3,X2)))).
+#
+#cnf(i_0_1276, plain, (mult(X1,mult(rd(mult(X2,X1),mult(X2,X1)),X1))=ld(X2,mult(mult(X2,X1),X1)))).
+#
+#cnf(i_0_1277, plain, (mult(X1,mult(mult(rd(X2,mult(X1,X2)),X1),X1))=ld(rd(rd(X2,X1),X1),X2))).
+##
+#cnf(i_0_985, plain, (mult(X1,mult(ld(X4,rd(X4,X3)),X1))=ld(X2,mult(rd(mult(X2,X1),X3),X1)))).
+##########
+#cnf(i_0_130744, plain, (mult(rd(X1,X1),rd(X2,mult(rd(X1,X1),X2)))=rd(X2,X2))).
+#
+#cnf(i_0_131812, plain, (ld(rd(X1,X1),rd(X2,X2))=rd(X2,mult(rd(X1,X1),X2)))).
+##
+#cnf(i_0_131813, plain, (rd(rd(X2,X2),rd(X2,mult(rd(X1,X1),X2)))=rd(X1,X1))).
+#
+#cnf(i_0_131934, plain, (rd(X1,rd(X3,mult(rd(X2,X2),X3)))=mult(X1,rd(X2,mult(rd(X3,X3),X2))))).
+##
+#cnf(i_0_132288, plain, (ld(X1,rd(X2,mult(rd(X1,X1),X2)))=mult(ld(X1,rd(rd(X2,X2),X1)),X1))).
+######
+#cnf(i_0_1286, plain, (mult(rd(X2,mult(X2,X2)),rd(X1,mult(X2,X1)))=ld(X1,rd(rd(X1,X2),X2)))).
+#
+#cnf(i_0_1290, plain, (mult(rd(X1,X1),mult(ld(X1,X2),rd(X1,X1)))=ld(X1,mult(X2,rd(X1,X1))))).
+#
+#cnf(i_0_986, plain, (mult(X1,mult(ld(mult(X4,X3),X4),X1))=ld(X2,mult(rd(mult(X2,X1),X3),X1)))).
+######################
+#cnf(i_0_1291, plain, (mult(ld(mult(X2,rd(X1,X1)),X1),rd(X1,X1))=ld(rd(X1,X1),ld(X2,X1)))).
+#
+#cnf(i_0_1294, plain, (mult(X1,mult(rd(X1,X1),mult(X2,rd(X1,X1))))=mult(mult(X1,X2),rd(X1,X1)))).
+#
+#cnf(i_0_1303, plain, (mult(rd(X2,X2),mult(ld(X1,X2),rd(X2,X2)))=ld(mult(X1,rd(X2,X2)),X2))).
+#######################
+#cnf(i_0_1339, plain, (mult(mult(X1,mult(rd(X2,X2),X3)),rd(X2,X2))=mult(mult(X1,rd(X2,X2)),mult(X3,rd(X2,X2))))).
+##
+#cnf(i_0_1343, plain, (ld(rd(X1,X1),ld(mult(X2,rd(X1,X1)),X3))=mult(ld(X2,mult(X3,rd(X1,X1))),rd(X1,X1)))).
+#
+#cnf(i_0_30, plain, (rd(mult(X1,mult(X2,mult(X3,mult(X4,X3)))),mult(mult(X2,X3),X4))=mult(mult(X1,mult(mult(X2,X3),X4)),rd(X3,mult(mult(X2,X3),X4))))).
+######################
+#cnf(i_0_1348, plain, (ld(mult(X1,rd(X2,X2)),mult(X3,rd(X2,X2)))=mult(rd(X2,X2),mult(ld(X1,X3),rd(X2,X2))))).
+#
+#cnf(i_0_1351, plain, (rd(mult(X1,rd(X2,X2)),mult(X3,rd(X2,X2)))=mult(rd(X1,mult(rd(X2,X2),X3)),rd(X2,X2)))).
+########################
+#cnf(i_0_1356, plain, (mult(mult(X1,mult(X2,rd(X3,X3))),rd(X3,X3))=mult(mult(X1,rd(X3,X3)),mult(rd(X3,X3),X2)))).
+#
+#cnf(i_0_1378, plain, (mult(ld(mult(X2,X1),ld(mult(X3,X1),X3)),X1)=ld(X1,ld(X2,rd(X1,X1))))).
+#
+#cnf(i_0_1381, plain, (mult(ld(mult(X1,X2),X1),mult(X2,mult(X3,X2)))=mult(mult(rd(X2,X2),X3),X2))).
+#
+#cnf(i_0_1031, plain, (ld(X1,ld(mult(X4,X3),X4))=mult(ld(mult(X2,mult(X1,mult(X3,X1))),X2),X1))).
+#
+#cnf(i_0_1033, plain, (ld(X1,ld(X4,rd(X4,X3)))=mult(ld(mult(X2,mult(X1,mult(X3,X1))),X2),X1))).
+##############
+#cnf(i_0_140866, plain, (ld(X1,mult(mult(X1,mult(X2,X1)),X1))=mult(mult(mult(rd(X1,X1),X2),X1),X1))).
+#######
+#cnf(i_0_1391, plain, (mult(X2,mult(ld(X1,ld(mult(X3,X2),X3)),X2))=ld(rd(X1,X2),rd(X2,X2)))).
+#
+#cnf(i_0_1431, plain, (mult(ld(mult(X2,X1),ld(X3,rd(X3,X1))),X1)=ld(X1,ld(X2,rd(X1,X1))))).
+#
+#cnf(i_0_1434, plain, (mult(ld(X1,rd(X1,X2)),mult(X2,mult(X3,X2)))=mult(mult(rd(X2,X2),X3),X2))).
+##
+#cnf(i_0_36, plain, (mult(rd(X1,X2),mult(mult(X2,mult(X3,X2)),mult(X4,mult(X2,mult(X3,X2)))))=mult(mult(mult(mult(X1,X3),X2),X4),mult(X2,mult(X3,X2))))).
+#####################
+#cnf(i_0_1444, plain, (mult(X2,mult(ld(X1,ld(X3,rd(X3,X2))),X2))=ld(rd(X1,X2),rd(X2,X2)))).
+##
+#cnf(i_0_1524, plain, (ld(mult(X1,mult(rd(X2,mult(X3,X2)),X3)),X1)=mult(rd(X2,mult(X3,X2)),X3))).
+#
+#cnf(i_0_37, plain, (mult(rd(X1,mult(X2,mult(X3,X2))),mult(mult(X2,mult(X3,X2)),mult(mult(X4,X3),X2)))=mult(mult(X1,rd(X4,X2)),mult(X2,mult(X3,X2))))).
+#
+#cnf(i_0_52, plain, (rd(mult(X1,mult(rd(X2,X4),mult(X4,X3))),mult(X2,rd(X3,X4)))=mult(mult(X1,mult(X2,rd(X3,X4))),rd(X4,mult(X2,rd(X3,X4)))))).
+######################
+#cnf(i_0_1527, plain, (ld(mult(X1,mult(ld(X2,X3),ld(X3,X2))),X1)=mult(ld(X2,X3),ld(X3,X2)))).
+##
+#cnf(i_0_247, plain, (mult(mult(X1,X4),mult(ld(X3,rd(X3,X4)),X2))=rd(mult(X1,mult(X2,X4)),X4))).
+#######################
+#cnf(i_0_1642, plain, (mult(mult(mult(X1,X2),rd(X3,X2)),mult(X2,X2))=mult(mult(mult(X1,mult(X2,X3)),X2),rd(X2,X2)))).
+#######################
+#cnf(i_0_81546, plain, (rd(X3,mult(X2,mult(X2,X3)))=rd(X1,mult(X2,mult(X2,X1))))).
+#
+#cnf(i_0_1682, plain, (mult(mult(mult(X1,X2),rd(X3,X2)),rd(X2,X2))=mult(rd(mult(X1,mult(X2,X3)),mult(X2,X2)),X2))).
+##
+#cnf(i_0_1864, plain, (mult(rd(ld(mult(X1,X2),X1),mult(X2,X2)),X2)=rd(ld(mult(X1,X2),X1),X2))).
+#######################
+#cnf(i_0_1865, plain, (mult(rd(ld(X1,rd(X1,X2)),mult(X2,X2)),X2)=rd(ld(X1,rd(X1,X2)),X2))).
+####
+#cnf(i_0_1111, plain, (ld(mult(X1,rd(X2,rd(X3,X2))),mult(rd(X1,rd(X3,X2)),X3))=rd(X3,X2))).
+#####################
+#cnf(i_0_1879, plain, (mult(X1,mult(ld(mult(X1,mult(X1,X1)),X2),X1))=ld(mult(X1,X1),mult(X2,X1)))).
+#
+#cnf(i_0_1891, plain, (mult(rd(X1,X2),mult(X2,mult(X2,mult(X2,X2))))=mult(mult(X1,X2),mult(X2,X2)))).
+#
+#cnf(i_0_1897, plain, (rd(mult(X1,mult(X2,mult(X2,X2))),mult(X2,X2))=mult(mult(X1,X2),rd(X2,X2)))).
+########################
+#cnf(i_0_1965, plain, (mult(ld(mult(X2,X1),rd(X1,mult(X1,X1))),X1)=ld(X1,ld(X2,rd(X1,X1))))).
+#
+#cnf(i_0_1968, plain, (mult(rd(X1,mult(X1,X1)),mult(X1,mult(X2,X1)))=mult(mult(rd(X1,X1),X2),X1))).
+#
+#cnf(i_0_1122, plain, (ld(mult(X1,rd(ld(mult(X2,X3),X2),X4)),mult(rd(X1,X4),rd(X4,X3)))=X4)).
+#
+#cnf(i_0_1123, plain, (ld(mult(X1,rd(ld(X2,rd(X2,X3)),X4)),mult(rd(X1,X4),rd(X4,X3)))=X4)).
+#####################
+#cnf(i_0_1979, plain, (mult(X2,mult(ld(X1,rd(X2,mult(X2,X2))),X2))=ld(rd(X1,X2),rd(X2,X2)))).
+###
+#cnf(i_0_607, plain, (mult(X1,rd(ld(X4,rd(X4,X3)),mult(X2,X3)))=rd(mult(rd(X1,mult(X2,X3)),X2),mult(X2,X3)))).
+#
+#cnf(i_0_639, plain, (ld(X1,rd(X1,X2))=ld(mult(mult(X3,X4),mult(X2,mult(X4,X2))),mult(X3,mult(X4,mult(X2,X4)))))).
+######################
+#cnf(i_0_2022, plain, (rd(mult(rd(X1,mult(X2,X1)),X2),rd(X1,X2))=mult(rd(X1,X2),rd(X2,mult(rd(X1,X2),X1))))).
+##
+#cnf(i_0_77, plain, (mult(X1,mult(rd(ld(X2,X3),X2),rd(mult(rd(X4,X2),X3),X2)))=rd(mult(rd(mult(rd(mult(rd(X1,X2),X3),X2),X4),X2),X3),X2))).
+#
+#cnf(i_0_78, plain, (mult(mult(rd(mult(X1,X3),X4),X3),mult(rd(ld(X3,X4),X3),X2))=rd(mult(rd(mult(X1,mult(rd(mult(X2,X3),X4),X3)),X3),X4),X3))).
+######################
+#cnf(i_0_2035, plain, (mult(X1,mult(X2,mult(rd(X3,mult(X3,X3)),X2)))=mult(rd(mult(X1,X2),X3),X2))).
+##########################
+#cnf(i_0_2063, plain, (mult(mult(X1,X2),rd(rd(X3,mult(X3,X3)),X2))=rd(mult(X1,rd(X2,X3)),X2))).
+#######################
+#cnf(i_0_2074, plain, (mult(rd(X1,mult(X2,X2)),mult(X2,mult(X2,X2)))=mult(mult(X1,X2),rd(X2,X2)))).
+###
+#cnf(i_0_655, plain, (mult(X1,rd(ld(mult(X4,X3),X4),mult(X2,X3)))=rd(mult(rd(X1,mult(X2,X3)),X2),mult(X2,X3)))).
+######################
+#cnf(i_0_2083, plain, (mult(rd(X1,mult(X2,mult(X2,X2))),mult(X2,X2))=mult(rd(X1,mult(X2,X2)),X2))).
+##
+#cnf(i_0_2086, plain, (mult(mult(X1,mult(rd(X2,mult(X2,X2)),X3)),X2)=mult(rd(X1,X2),mult(X3,X2)))).
+#
+#cnf(i_0_690, plain, (ld(mult(X1,X2),X1)=ld(mult(mult(X3,X4),mult(X2,mult(X4,X2))),mult(X3,mult(X4,mult(X2,X4)))))).
+#################################################
+#cnf(i_0_2107, plain, (mult(mult(X1,X3),mult(rd(X3,mult(X3,X3)),X2))=rd(mult(X1,mult(X2,X3)),X3))).
+#
+#cnf(i_0_99, plain, (mult(mult(mult(X1,X2),mult(X3,mult(X2,X3))),mult(X2,mult(X3,X2)))=mult(X1,mult(mult(X2,mult(X3,X2)),mult(X3,mult(X2,mult(X3,X2))))))).
+#
+#cnf(i_0_306, plain, (rd(mult(rd(X1,mult(X2,ld(X3,X4))),X2),mult(X2,ld(X3,X4)))=mult(X1,rd(ld(X4,X3),mult(X2,ld(X3,X4)))))).
+######################
+#cnf(i_0_2116, plain, (mult(rd(X1,mult(X1,mult(X1,mult(X1,X1)))),X1)=rd(X1,mult(X1,mult(X1,X1))))).
+##
+#cnf(i_0_318, plain, (ld(mult(mult(X1,X2),mult(ld(X3,X4),mult(X2,ld(X3,X4)))),mult(X1,mult(X2,mult(ld(X3,X4),X2))))=ld(X4,X3))).
+#
+#cnf(i_0_714, plain, (rd(mult(rd(X1,X2),rd(mult(rd(X2,X3),X4),X3)),X2)=mult(X1,rd(rd(ld(X3,X4),X3),X2)))).
+#####################
+#cnf(i_0_2129, plain, (rd(mult(X1,rd(X3,X3)),mult(rd(X3,X3),X2))=mult(rd(X1,mult(X2,rd(X3,X3))),rd(X3,X3)))).
+#
+#cnf(i_0_2131, plain, (rd(mult(X1,ld(X3,X4)),mult(ld(X3,X4),X2))=mult(rd(X1,mult(X2,ld(X4,X3))),ld(X4,X3)))).
+#
+#cnf(i_0_2132, plain, (ld(X1,ld(rd(mult(X2,X1),mult(X1,X3)),X4))=mult(ld(rd(X2,rd(X3,X1)),rd(X4,X1)),X1))).
+#
+#cnf(i_0_719, plain, (ld(mult(X1,mult(X2,X3)),rd(mult(mult(mult(X1,X2),rd(X3,X2)),X4),X2))=rd(ld(X2,X4),X2))).
+#
+#cnf(i_0_725, plain, (ld(X1,rd(rd(mult(rd(rd(X1,X2),X3),X4),X3),X2))=rd(ld(X2,rd(ld(X3,X4),X3)),X2))).
+#####################
+#cnf(i_0_2137, plain, (mult(X3,mult(ld(rd(X1,rd(X2,X3)),X4),X3))=ld(rd(mult(X1,X3),mult(X3,X2)),mult(X4,X3)))).
+#
+#cnf(i_0_2140, plain, (rd(rd(mult(X1,X3),mult(X3,X2)),rd(X4,X3))=mult(rd(rd(X1,rd(X2,X3)),mult(X3,X4)),X3))).
+#
+#cnf(i_0_2141, plain, (mult(rd(rd(X1,rd(X2,X3)),mult(X3,X3)),X3)=mult(rd(mult(X1,X3),mult(X3,X2)),rd(X3,X3)))).
+#
+#cnf(i_0_760, plain, (mult(X1,mult(ld(X2,mult(mult(X3,X1),rd(X4,X1))),X1))=ld(rd(X2,X1),mult(X3,mult(X1,X4))))).
+######################
+#cnf(i_0_2143, plain, (mult(mult(rd(X1,rd(X2,X3)),X3),rd(X3,X3))=mult(rd(mult(X1,X3),mult(X3,X2)),mult(X3,X3)))).
+#
+#cnf(i_0_2147, plain, (rd(rd(X1,X2),rd(mult(X3,X2),mult(X2,X4)))=mult(rd(X1,mult(X2,rd(X3,rd(X4,X2)))),X2))).
+#
+#cnf(i_0_2148, plain, (mult(rd(X1,X4),mult(X4,rd(X2,rd(X3,X4))))=mult(mult(X1,rd(mult(X2,X4),mult(X4,X3))),X4))).
+#
+#cnf(i_0_133, plain, (mult(mult(X2,mult(X3,X2)),mult(ld(X1,rd(X4,X2)),mult(X2,mult(X3,X2))))=ld(rd(X1,mult(X2,mult(X3,X2))),mult(mult(X4,X3),X2)))).
+#
+#cnf(i_0_138, plain, (mult(rd(ld(X2,X3),X2),rd(mult(rd(ld(X1,X4),X2),X3),X2))=ld(mult(rd(mult(X1,X2),X3),X2),rd(mult(rd(X4,X2),X3),X2)))).
+#####################
+#cnf(i_0_2151, plain, (rd(rd(X1,rd(mult(X2,X4),mult(X4,X3))),X4)=rd(mult(X1,X4),mult(X4,rd(X2,rd(X3,X4)))))).
+#
+#cnf(i_0_2160, plain, (rd(rd(X1,mult(mult(X2,X3),rd(X4,X3))),X3)=rd(mult(X1,X3),mult(X3,mult(X2,mult(X3,X4)))))).
+##
+#cnf(i_0_347, plain, (mult(mult(X1,mult(X2,ld(X3,X4))),rd(ld(X4,X3),mult(X2,ld(X3,X4))))=rd(mult(X1,X2),mult(X2,ld(X3,X4))))).
+########################
+#cnf(i_0_2172, plain, (rd(mult(X1,mult(X2,X2)),mult(X2,mult(X2,X2)))=mult(rd(X1,mult(X2,X2)),X2))).
+##
+#cnf(i_0_813, plain, (ld(mult(mult(X1,X2),mult(mult(X3,X2),rd(X4,X2))),mult(X1,mult(X2,mult(X3,mult(X2,X4)))))=X2)).
+#####################
+#cnf(i_0_2292, plain, (rd(X1,mult(ld(X2,X3),mult(X4,ld(X2,X3))))=mult(X1,ld(mult(mult(X3,X4),ld(X2,X3)),X2)))).
+####
+#cnf(i_0_821, plain, (ld(mult(X1,mult(X4,ld(X2,X3))),mult(mult(X1,ld(X2,X3)),mult(ld(X3,X2),X4)))=ld(X3,X2))).
+########################
+#cnf(i_0_822, plain, (ld(mult(mult(X1,mult(X2,mult(X3,X2))),rd(X4,X2)),mult(mult(mult(X1,X2),X3),mult(X2,X4)))=X2)).
+#
+#cnf(i_0_823, plain, (ld(mult(mult(rd(X1,X3),mult(X3,X2)),rd(X4,X3)),mult(mult(X1,rd(X2,X3)),mult(X3,X4)))=X3)).
+########################
+#cnf(i_0_830, plain, (ld(mult(rd(X1,X3),mult(X4,X3)),mult(X1,mult(ld(mult(X2,X3),X2),X4)))=ld(mult(X2,X3),X2))).
+#
+#cnf(i_0_831, plain, (ld(mult(rd(X1,X3),mult(X4,X3)),mult(X1,mult(ld(X2,rd(X2,X3)),X4)))=ld(X2,rd(X2,X3)))).
+########################
+#cnf(i_0_834, plain, (ld(mult(X1,mult(rd(X2,X3),mult(X3,rd(X2,X3)))),mult(mult(X1,rd(X2,X3)),mult(X3,X2)))=X3)).
+##################################################
+#cnf(i_0_1297, plain, (ld(mult(X1,mult(X2,rd(X1,X1))),mult(X1,mult(rd(X1,X1),X2)))=rd(X1,X1))).
+#
+#cnf(i_0_860, plain, (mult(mult(rd(X1,mult(X2,mult(X3,mult(X2,X4)))),X2),mult(mult(X3,X2),rd(X4,X2)))=rd(X1,X2))).
+########################
+#cnf(i_0_865, plain, (mult(mult(rd(X1,mult(ld(X2,X3),X4)),ld(X2,X3)),mult(X4,ld(X3,X2)))=mult(X1,ld(X3,X2)))).
+################################################
+#cnf(i_0_2560, plain, (mult(mult(X1,mult(X1,mult(X1,mult(X1,X1)))),X1)=mult(mult(X1,X1),mult(X1,mult(X1,mult(X1,X1)))))).
+###
+#cnf(i_0_1384, plain, (ld(mult(rd(X2,X2),rd(X3,X2)),mult(ld(mult(X1,X2),X1),mult(X2,X3)))=X2)).
+#################################################
+#cnf(i_0_1405, plain, (mult(ld(mult(X1,mult(X2,mult(X3,X2))),mult(mult(X1,X2),X3)),X2)=rd(X2,X2))).
+#
+#cnf(i_0_1406, plain, (mult(ld(mult(rd(X1,X3),mult(X3,X2)),mult(X1,rd(X2,X3))),X3)=rd(X3,X3))).
+######################
+#cnf(i_0_2581, plain, (mult(X2,mult(ld(X2,rd(X1,X2)),rd(X1,X2)))=mult(X1,ld(X2,rd(X1,X2))))).
+#
+#cnf(i_0_203089, plain, (ld(X1,mult(X2,ld(X1,rd(X2,X1))))=mult(ld(X1,rd(X2,X1)),rd(X2,X1)))).
+#
+#cnf(i_0_452, plain, (ld(mult(mult(X1,X2),mult(X3,mult(X4,mult(X2,X4)))),mult(X1,mult(X2,mult(mult(X3,X4),mult(X2,mult(X4,X2))))))=X2)).
+#
+#cnf(i_0_471, plain, (ld(mult(mult(mult(X1,X2),mult(X3,mult(X2,X3))),X4),mult(mult(X1,mult(X2,mult(X3,X2))),mult(X3,mult(X4,X3))))=X3)).
+########################
+#cnf(i_0_974, plain, (mult(X1,mult(ld(mult(X2,mult(X1,mult(X3,X1))),X4),X1))=ld(mult(mult(X2,X1),X3),mult(X4,X1)))).
+#
+#cnf(i_0_975, plain, (mult(X1,mult(ld(mult(rd(X2,X1),mult(X1,X3)),X4),X1))=ld(mult(X2,rd(X3,X1)),mult(X4,X1)))).
+#####################
+#cnf(i_0_2601, plain, (mult(ld(X1,X2),mult(ld(ld(X1,X2),X1),X1))=mult(X2,ld(ld(X1,X2),X1)))).
+##
+#cnf(i_0_2686, plain, (mult(X1,ld(mult(X3,X2),rd(rd(X3,X4),X2)))=rd(X1,mult(X2,mult(X4,X2))))).
+#
+#cnf(i_0_984, plain, (ld(X2,mult(rd(mult(rd(mult(X2,X1),X3),X4),X3),X1))=mult(X1,mult(rd(ld(X3,X4),X3),X1)))).
+#
+#cnf(i_0_991, plain, (ld(mult(X3,X2),mult(mult(X3,mult(X2,X1)),rd(X1,X2)))=mult(rd(X1,X2),mult(X2,rd(X1,X2))))).
+#################################################
+#cnf(i_0_1437, plain, (ld(mult(rd(X2,X2),rd(X3,X2)),mult(ld(X1,rd(X1,X2)),mult(X2,X3)))=X2)).
+##########################
+#cnf(i_0_1456, plain, (mult(ld(mult(X1,mult(X2,X3)),mult(mult(X1,X2),rd(X3,X2))),X2)=rd(X2,X2))).
+########################
+#cnf(i_0_1016, plain, (mult(mult(ld(X2,X1),ld(X2,X1)),mult(ld(X1,X2),ld(X3,X4)))=ld(ld(X1,X2),ld(X3,X4)))).
+#
+#cnf(i_0_1035, plain, (mult(ld(mult(mult(mult(X3,X1),rd(X2,X1)),mult(X1,X2)),X3),mult(X1,X2))=ld(mult(X1,X2),X1))).
+########################
+#cnf(i_0_1511, plain, (mult(ld(mult(X2,mult(X1,mult(rd(X3,X3),X1))),X2),X1)=ld(X1,rd(X3,X3)))).
+#
+#cnf(i_0_1108, plain, (mult(ld(mult(mult(X3,rd(X2,X1)),mult(X1,X2)),rd(X3,X1)),mult(X1,X2))=ld(mult(X1,X2),X1))).
+#########################
+#cnf(i_0_1119, plain, (ld(mult(X1,rd(rd(ld(X2,X3),X2),X4)),mult(rd(X1,X4),rd(mult(rd(X4,X2),X3),X2)))=X4)).
+#####################
+#cnf(i_0_3220, plain, (ld(mult(X1,mult(ld(X3,X2),ld(X3,X2))),X1)=mult(ld(X2,X3),ld(X2,X3)))).
+###
+#cnf(i_0_1127, plain, (ld(mult(mult(X1,mult(X2,X3)),rd(X4,X2)),mult(mult(mult(X1,X2),rd(X3,X2)),mult(X2,X4)))=X2)).
+######################
+#cnf(i_0_3311, plain, (mult(X2,rd(ld(mult(X1,X2),X1),mult(X2,X2)))=rd(X2,mult(X2,mult(X2,X2))))).
+#
+#cnf(i_0_3318, plain, (mult(X1,rd(ld(mult(X3,X2),X3),mult(X2,X2)))=rd(X1,mult(X2,mult(X2,X2))))).
+##
+#cnf(i_0_1136, plain, (ld(mult(X1,mult(mult(X2,X3),rd(X4,X3))),mult(rd(X1,X3),mult(X3,mult(X2,mult(X3,X4)))))=X3)).
+######################
+#cnf(i_0_3325, plain, (mult(ld(mult(X2,mult(X1,mult(X1,X1))),X2),X1)=rd(X1,mult(X1,mult(X1,X1))))).
+#
+#cnf(i_0_224179, plain, (ld(X1,ld(X1,rd(X2,mult(X2,X2))))=rd(rd(X2,mult(X1,mult(X1,X2))),X2))).
+##
+#cnf(i_0_1618, plain, (ld(mult(mult(X1,X2),rd(X2,X2)),rd(X1,X2))=ld(mult(X3,mult(X2,X2)),X3))).
+#
+#cnf(i_0_1625, plain, (ld(X1,rd(X1,mult(X2,X2)))=ld(mult(mult(X3,X2),rd(X2,X2)),rd(X3,X2)))).
+#######################
+#cnf(i_0_3343, plain, (ld(mult(X1,X1),rd(ld(mult(X2,X1),X2),X1))=rd(rd(ld(mult(X2,X1),X2),X1),mult(X1,X1)))).
+##
+#cnf(i_0_1631, plain, (mult(X1,ld(mult(mult(X2,X3),rd(X3,X3)),rd(X2,X3)))=rd(X1,mult(X3,X3)))).
+#####################
+#cnf(i_0_3344, plain, (ld(mult(X1,X1),rd(ld(X2,rd(X2,X1)),X1))=rd(rd(ld(X2,rd(X2,X1)),X1),mult(X1,X1)))).
+####
+#cnf(i_0_102, plain, (mult(mult(X1,mult(X2,mult(X3,mult(X2,mult(X4,X2))))),mult(mult(X3,X2),X4))=mult(mult(X1,X2),mult(mult(mult(X3,X2),X4),mult(X2,mult(mult(X3,X2),X4)))))).
+######################
+#cnf(i_0_3651, plain, (mult(X2,rd(ld(X1,rd(X1,X2)),mult(X2,X2)))=rd(X2,mult(X2,mult(X2,X2))))).
+#
+#cnf(i_0_3658, plain, (mult(X1,rd(ld(X3,rd(X3,X2)),mult(X2,X2)))=rd(X1,mult(X2,mult(X2,X2))))).
+#
+#cnf(i_0_103, plain, (mult(mult(X1,mult(X2,mult(rd(X3,X2),mult(X2,X4)))),mult(X3,rd(X4,X2)))=mult(mult(X1,X2),mult(mult(X3,rd(X4,X2)),mult(X2,mult(X3,rd(X4,X2))))))).
+##########
+#cnf(i_0_3917, plain, (mult(ld(X1,X2),mult(rd(X1,X1),ld(X1,X2)))=ld(mult(X1,ld(X2,X1)),X2))).
+############
+#cnf(i_0_3665, plain, (mult(ld(X2,rd(X2,mult(X1,mult(X1,X1)))),X1)=rd(X1,mult(X1,mult(X1,X1))))).
+###
+#cnf(i_0_108, plain, (mult(mult(X1,mult(mult(X2,mult(X3,X2)),mult(X4,mult(X2,mult(X3,X2))))),X3)=mult(mult(mult(mult(X1,X2),X3),mult(X2,mult(X4,X2))),mult(X3,mult(X2,X3))))).
+#
+#cnf(i_0_109, plain, (mult(mult(rd(X1,mult(X3,mult(X4,X3))),mult(mult(X3,mult(X4,X3)),X2)),X4)=mult(mult(mult(X1,rd(X2,mult(X3,mult(X4,X3)))),X3),mult(X4,mult(X3,X4))))).
+#########################
+#cnf(i_0_736, plain, (rd(ld(X2,mult(ld(X3,rd(X4,rd(X1,X2))),rd(X1,X2))),X2)=ld(X1,rd(ld(rd(X3,rd(X1,X2)),X4),X2)))).
+###
+#cnf(i_0_4052, plain, (ld(mult(mult(X1,rd(X2,X2)),X3),rd(X1,X3))=ld(mult(X2,X3),rd(X2,X3)))).
+#
+#cnf(i_0_4053, plain, (ld(mult(mult(X1,X1),X2),rd(mult(X1,X1),X2))=ld(mult(X1,X2),rd(X1,X2)))).
+#
+#cnf(i_0_4057, plain, (ld(mult(mult(X1,ld(X2,X3)),X4),rd(X1,X4))=ld(mult(X3,X4),rd(X2,X4)))).
+#
+#cnf(i_0_4064, plain, (ld(mult(ld(mult(X1,X2),X1),X3),rd(X2,X3))=rd(ld(X3,mult(X2,X2)),X3))).
+###
+#cnf(i_0_4065, plain, (ld(mult(ld(X1,rd(X1,X2)),X3),rd(X2,X3))=rd(ld(X3,mult(X2,X2)),X3))).
+#####
+#cnf(i_0_4171, plain, (ld(mult(rd(X2,X2),X1),rd(rd(X2,X2),X1))=ld(mult(X2,X1),rd(X2,X1)))).
+##
+#cnf(i_0_4224, plain, (mult(mult(X1,ld(mult(X3,X2),rd(X4,X2))),X2)=mult(rd(X1,X2),ld(X3,X4)))).
+#####
+#cnf(i_0_3895, plain, (ld(mult(mult(X1,rd(X3,X3)),ld(X2,X1)),X2)=mult(ld(X1,X2),mult(rd(X3,X3),ld(X1,X2))))).
+#
+#cnf(i_0_3896, plain, (ld(mult(mult(X1,ld(X3,X4)),ld(X2,X1)),X2)=mult(ld(X1,X2),mult(ld(X4,X3),ld(X1,X2))))).
+#
+#cnf(i_0_3953, plain, (ld(mult(X1,mult(X1,mult(X1,X1))),mult(X1,X1))=rd(mult(X1,X1),mult(X1,mult(X1,mult(X1,X1)))))).
+#
+#cnf(i_0_737, plain, (mult(X1,mult(X2,mult(mult(ld(X3,rd(X4,mult(X1,X2))),mult(X1,X2)),X2)))=mult(ld(rd(X3,mult(X1,X2)),X4),X2))).
+#######
+#cnf(i_0_4564, plain, (ld(mult(X1,rd(mult(X2,mult(X3,X2)),X2)),X1)=ld(X3,rd(X2,mult(X2,X2))))).
+#########
+#cnf(i_0_4574, plain, (mult(ld(X1,rd(X2,mult(X1,X1))),mult(X1,X1))=mult(rd(X1,mult(X1,X1)),X2))).
+###
+#cnf(i_0_4745, plain, (mult(ld(mult(X1,mult(X1,X1)),rd(X2,X1)),X1)=ld(X1,ld(mult(X1,X1),X2)))).
+#
+#cnf(i_0_4753, plain, (mult(ld(X1,mult(X2,rd(X1,X1))),rd(X1,X1))=ld(rd(X1,X1),ld(X1,X2)))).
+#
+#cnf(i_0_246935, plain, (ld(rd(X1,X1),ld(X1,rd(X1,X2)))=mult(rd(X1,X1),rd(rd(X1,X1),X2)))).
+###
+#cnf(i_0_3994, plain, (mult(mult(X1,X1),mult(X1,mult(X1,mult(X1,X1))))=mult(X1,mult(X1,mult(X1,mult(X1,mult(X1,X1))))))).
+#
+#cnf(i_0_758, plain, (mult(mult(X1,ld(X2,rd(X3,X1))),mult(X1,ld(rd(X3,X1),X2)))=mult(ld(rd(X2,X1),X3),ld(rd(X3,X1),X2)))).
+##
+#cnf(i_0_4759, plain, (mult(ld(X2,mult(X3,ld(X2,X1))),ld(X1,X2))=ld(ld(X1,X2),ld(X1,X3)))).
+###
+#cnf(i_0_4850, plain, (mult(rd(X1,mult(X2,mult(X2,mult(X2,X2)))),X2)=rd(rd(X1,X2),mult(X2,X2)))).
+######
+#cnf(i_0_4865, plain, (mult(rd(X1,mult(ld(X2,X3),X3)),ld(X2,X3))=rd(mult(X1,ld(X3,X2)),X2))).
+#####
+#cnf(i_0_4946, plain, (rd(X1,mult(X2,mult(rd(X3,mult(X3,X3)),X2)))=rd(mult(rd(X1,X2),X3),X2))).
+######
+#cnf(i_0_4073, plain, (ld(mult(X1,X2),rd(ld(rd(X3,X1),X4),X2))=rd(ld(X2,mult(ld(X3,rd(X4,X1)),X1)),X2))).
+#
+#cnf(i_0_252473, plain, (ld(mult(X1,X2),rd(rd(X1,X1),X2))=rd(ld(X2,rd(X1,mult(X1,X1))),X2))).
+#
+#cnf(i_0_4074, plain, (ld(mult(X1,X2),rd(ld(X3,mult(X4,X1)),X2))=rd(ld(X2,mult(ld(mult(X3,X1),X4),X1)),X2))).
+##
+#cnf(i_0_806, plain, (ld(mult(mult(mult(mult(X1,mult(X2,X3)),X4),X2),rd(X3,X2)),mult(X1,mult(mult(X2,X3),mult(X4,mult(X2,X3)))))=X2)).
+####
+#cnf(i_0_5132, plain, (ld(mult(X1,X2),mult(rd(X1,mult(X2,X2)),X2))=rd(X2,mult(X2,mult(X2,X2))))).
+#####
+#cnf(i_0_5464, plain, (mult(mult(X1,X3),ld(mult(X2,X3),rd(X5,X3)))=rd(mult(X1,ld(X2,X5)),X3))).
+##
+#cnf(i_0_5577, plain, (mult(rd(mult(X1,rd(X2,X3)),X2),rd(X2,X3))=rd(X1,rd(X3,rd(X2,X3))))).
+#
+#cnf(i_0_5627, plain, (mult(rd(mult(X1,mult(X1,X1)),mult(X1,X2)),X1)=rd(mult(X1,X1),rd(X2,X1)))).
+###
+#cnf(i_0_5637, plain, (mult(rd(X1,mult(rd(X1,X1),X2)),rd(X1,X1))=rd(X1,mult(X2,rd(X1,X1))))).
+#
+#cnf(i_0_5643, plain, (mult(rd(X2,mult(ld(X1,X2),X3)),ld(X1,X2))=rd(X1,mult(X3,ld(X2,X1))))).
+#
+#cnf(i_0_5695, plain, (mult(X1,ld(X2,mult(rd(mult(X2,X3),X4),X3)))=mult(rd(mult(X1,X3),X4),X3))).
+#
+#cnf(i_0_5705, plain, (ld(mult(X1,mult(rd(ld(X2,X3),X3),X2)),X1)=mult(rd(ld(X2,X3),X3),X2))).
+##
+#cnf(i_0_5746, plain, (rd(X1,rd(ld(mult(X3,X2),X3),mult(X2,X2)))=mult(X1,mult(X2,mult(X2,X2))))).
+###
+#cnf(i_0_4135, plain, (ld(X1,ld(ld(mult(X2,X1),rd(X2,X1)),X3))=mult(ld(ld(X1,rd(X2,X2)),rd(X3,X1)),X1))).
+#
+#cnf(i_0_807, plain, (ld(mult(mult(mult(X1,rd(X2,mult(X3,X4))),X3),rd(X4,X3)),mult(rd(X1,mult(X3,X4)),mult(mult(X3,X4),X2)))=X3)).
+##
+#cnf(i_0_5747, plain, (rd(X1,rd(ld(X3,rd(X3,X2)),mult(X2,X2)))=mult(X1,mult(X2,mult(X2,X2))))).
+###
+#cnf(i_0_5815, plain, (rd(mult(X1,X2),mult(X2,mult(X2,mult(X2,X2))))=rd(rd(X1,X2),mult(X2,X2)))).
+#############
+#cnf(i_0_5855, plain, (rd(mult(X1,mult(X1,X1)),mult(X1,mult(X2,X1)))=rd(rd(mult(X1,X1),X2),X1))).
+###
+#cnf(i_0_5865, plain, (rd(X1,mult(rd(X1,X1),mult(X2,rd(X1,X1))))=mult(rd(X1,X2),rd(X1,X1)))).
+#
+#cnf(i_0_4142, plain, (ld(ld(mult(X2,X1),rd(X2,X1)),mult(X3,X1))=mult(X1,mult(ld(ld(X1,rd(X2,X2)),X3),X1)))).
+#
+#cnf(i_0_4145, plain, (rd(ld(mult(X2,X1),rd(X2,X1)),rd(X3,X1))=mult(rd(ld(X1,rd(X2,X2)),mult(X1,X3)),X1))).
+#
+#cnf(i_0_4146, plain, (mult(rd(ld(X1,rd(X2,X2)),mult(X1,X1)),X1)=mult(ld(mult(X2,X1),rd(X2,X1)),rd(X1,X1)))).
+#
+#cnf(i_0_824, plain, (ld(mult(mult(mult(X1,X2),mult(X3,mult(X2,X3))),rd(X4,X3)),mult(mult(X1,mult(X2,mult(X3,X2))),mult(X3,X4)))=X3)).
+#########
+#cnf(i_0_5871, plain, (mult(X2,ld(mult(mult(X2,X3),ld(X1,X2)),X1))=mult(rd(X1,X3),ld(X2,X1)))).
+#
+#cnf(i_0_271916, plain, (ld(X1,mult(rd(X3,X2),ld(X1,X3)))=ld(mult(mult(X1,X2),ld(X3,X1)),X3))).
+#####
+#cnf(i_0_273130, plain, (ld(mult(X1,X2),rd(rd(X1,X3),X2))=ld(mult(X1,mult(X2,mult(X3,X2))),X1))).
+#####################
+#cnf(i_0_273227, plain, (ld(X1,mult(rd(X1,X2),rd(X1,X1)))=ld(mult(mult(X1,X2),rd(X1,X1)),X1))).
+######
+#cnf(i_0_252473, plain, (rd(ld(X2,rd(X1,mult(X1,X1))),X2)=ld(mult(X1,mult(X2,mult(X1,X2))),X1))).
+#
+#cnf(i_0_59176, plain, (rd(ld(X1,rd(X1,X2)),mult(X2,X2))=ld(mult(X1,mult(X2,mult(X2,X2))),X1))).
+#############
+#cnf(i_0_274143, plain, (ld(rd(X1,X1),ld(mult(X1,X2),X1))=mult(rd(X1,X1),rd(rd(X1,X1),X2)))).
+###
+#cnf(i_0_274306, plain, (ld(rd(mult(rd(X2,X1),X2),X1),X2)=mult(X1,mult(rd(X2,mult(X2,X2)),X1)))).
+####
+#cnf(i_0_30255, plain, (ld(X1,rd(ld(X2,rd(X2,X1)),X1))=ld(mult(X2,mult(X1,mult(X1,X1))),X2))).
+#
+#cnf(i_0_104393, plain, (ld(mult(X1,X1),ld(X2,rd(X2,X1)))=ld(mult(X2,mult(X1,mult(X1,X1))),X2))).
+##
+#cnf(i_0_4279, plain, (rd(rd(ld(X1,rd(X1,X2)),X2),X2)=ld(mult(X1,mult(X2,mult(X2,X2))),X1))).
+#####
+#cnf(i_0_272773, plain, (rd(X1,mult(ld(X2,X1),X1))=mult(rd(X2,X2),ld(X1,X2)))).
+###
+#cnf(i_0_4149, plain, (mult(mult(ld(X1,rd(X2,X2)),X1),rd(X1,X1))=mult(ld(mult(X2,X1),rd(X2,X1)),mult(X1,X1)))).
+###
+#cnf(i_0_277532, plain, (ld(rd(X1,mult(ld(X2,X1),X1)),rd(X2,X2))=ld(X2,X1))).
+###
+#cnf(i_0_277582, plain, (ld(rd(X1,X1),rd(X2,mult(ld(X1,X2),X2)))=ld(X2,X1))).
+#################
+#cnf(i_0_4167, plain, (ld(mult(rd(X2,X3),X1),rd(rd(X2,X3),X1))=rd(ld(X1,mult(rd(X2,mult(X3,X2)),X3)),X1))).
+#
+#cnf(i_0_4173, plain, (ld(mult(ld(X2,X3),X1),rd(ld(X2,X3),X1))=rd(ld(X1,mult(ld(X2,X3),ld(X3,X2))),X1))).
+#########################
+#cnf(i_0_4202, plain, (ld(X1,ld(ld(mult(X2,X1),rd(X3,X1)),X4))=mult(ld(ld(X1,ld(X2,X3)),rd(X4,X1)),X1))).
+#
+#cnf(i_0_4209, plain, (mult(X1,mult(ld(ld(X1,ld(X2,X3)),X4),X1))=ld(ld(mult(X2,X1),rd(X3,X1)),mult(X4,X1)))).
+##############
+#cnf(i_0_6081, plain, (mult(mult(X1,mult(X2,mult(X2,X2))),rd(X2,X2))=mult(mult(X1,X2),mult(X2,X2)))).
+#########
+#cnf(i_0_4212, plain, (rd(ld(mult(X2,X1),rd(X3,X1)),rd(X4,X1))=mult(rd(ld(X1,ld(X2,X3)),mult(X1,X4)),X1))).
+#
+#cnf(i_0_4213, plain, (mult(rd(ld(X1,ld(X2,X3)),mult(X1,X1)),X1)=mult(ld(mult(X2,X1),rd(X3,X1)),rd(X1,X1)))).
+#
+#cnf(i_0_4216, plain, (mult(mult(ld(X1,ld(X2,X3)),X1),rd(X1,X1))=mult(ld(mult(X2,X1),rd(X3,X1)),mult(X1,X1)))).
+#################
+#cnf(i_0_8491, plain, (mult(mult(X1,rd(X2,X2)),mult(X2,mult(X2,X2)))=mult(mult(X1,X2),mult(X2,X2)))).
+######
+#cnf(i_0_4235, plain, (rd(ld(X1,mult(X3,mult(ld(X2,X4),X3))),X1)=ld(mult(rd(X2,X3),X1),rd(mult(X4,X3),X1)))).
+#
+#cnf(i_0_4251, plain, (ld(mult(ld(X2,X3),X1),rd(ld(X3,X2),X1))=rd(ld(X1,mult(ld(X3,X2),ld(X3,X2))),X1))).
+##
+#cnf(i_0_838, plain, (mult(mult(rd(X1,mult(X2,X3)),X2),mult(rd(X3,X2),mult(X4,rd(X3,X2))))=mult(mult(rd(X1,X2),X4),rd(X3,X2)))).
+############
+#cnf(i_0_9844, plain, (ld(mult(X1,mult(X2,mult(rd(X3,X3),X2))),X1)=ld(mult(X3,X2),rd(X3,X2)))).
+##########
+#cnf(i_0_4262, plain, (rd(ld(X1,rd(ld(mult(X3,X2),X3),X2)),X1)=ld(mult(X2,X1),rd(ld(mult(X3,X2),X3),X1)))).
+#
+#cnf(i_0_4263, plain, (rd(ld(X1,rd(ld(X3,rd(X3,X2)),X2)),X1)=ld(mult(X2,X1),rd(ld(X3,rd(X3,X2)),X1)))).
+##
+#cnf(i_0_841, plain, (ld(mult(rd(X1,X2),rd(X4,rd(X3,X2))),mult(mult(rd(X1,mult(X2,X3)),X2),mult(rd(X3,X2),X4)))=rd(X3,X2))).
+#
+#cnf(i_0_845, plain, (ld(mult(mult(X1,rd(X2,X3)),mult(rd(X4,mult(X3,X2)),X3)),mult(X1,mult(rd(X2,X3),rd(X4,X3))))=rd(X2,X3))).
+########################
+#cnf(i_0_847, plain, (mult(rd(X1,rd(X2,X3)),mult(rd(X2,X3),rd(X4,X3)))=mult(mult(X1,mult(rd(X4,mult(X3,X2)),X3)),rd(X2,X3)))).
+#
+#cnf(i_0_848, plain, (mult(rd(X2,X3),mult(ld(X1,mult(rd(X4,mult(X3,X2)),X3)),rd(X2,X3)))=ld(rd(X1,rd(X2,X3)),rd(X4,X3)))).
+##########
+#cnf(i_0_12618, plain, (mult(rd(rd(X1,mult(X3,X3)),mult(X3,X3)),X3)=rd(X1,mult(X3,mult(X3,X3))))).
+#
+#cnf(i_0_297135, plain, (rd(rd(X1,mult(X2,X2)),mult(X2,X2))=rd(rd(X1,X2),mult(X2,mult(X2,X2))))).
+########
+#cnf(i_0_13125, plain, (ld(X1,rd(mult(X1,mult(mult(X2,X1),X1)),X1))=mult(ld(rd(X1,X1),X2),X1))).
+##
+#cnf(i_0_4547, plain, (ld(X1,rd(mult(X2,mult(mult(X3,X1),X2)),X2))=mult(ld(mult(rd(X2,mult(X2,X2)),X1),X3),X1))).
+#
+#cnf(i_0_299364, plain, (mult(ld(ld(X2,ld(X2,X1)),X3),X1)=ld(X1,mult(X2,mult(X2,mult(X3,X1)))))).
+#
+#cnf(i_0_4565, plain, (ld(mult(rd(X2,mult(X2,X2)),X1),rd(X3,X1))=rd(ld(X1,rd(mult(X2,mult(X3,X2)),X2)),X1))).
+###################
+#cnf(i_0_13353, plain, (rd(ld(X1,rd(mult(X1,mult(X2,X1)),X1)),X1)=ld(rd(X1,X1),rd(X2,X1)))).
+#
+#cnf(i_0_301449, plain, (ld(rd(X1,X1),rd(rd(X2,X1),X1))=rd(ld(X1,rd(mult(X1,X2),X1)),X1))).
+####
+#cnf(i_0_4572, plain, (mult(mult(X1,X1),mult(ld(X1,X2),mult(X1,X1)))=rd(mult(X1,mult(mult(X2,X1),mult(X1,X1))),X1))).
+#
+#cnf(i_0_302897, plain, (ld(X2,rd(rd(X3,X2),mult(X2,X2)))=rd(rd(ld(X2,X3),X2),mult(X2,X2)))).
+#
+#cnf(i_0_880, plain, (mult(mult(mult(mult(X1,mult(X2,X3)),rd(X4,mult(X2,X3))),X2),rd(X3,X2))=rd(mult(X1,mult(mult(X2,X3),X4)),X2))).
+#########################
+#cnf(i_0_887, plain, (ld(X1,mult(ld(X3,rd(X4,rd(X2,X1))),rd(X2,X1)))=mult(ld(X2,rd(ld(rd(X3,rd(X2,X1)),X4),X1)),X1))).
+#
+#cnf(i_0_1346, plain, (mult(mult(X1,rd(X2,X2)),mult(rd(X2,X2),mult(X3,rd(X2,X2))))=mult(mult(X1,X3),rd(X2,X2)))).
+###########
+#cnf(i_0_14832, plain, (mult(ld(X1,X2),mult(rd(X2,X2),ld(X1,X2)))=ld(X1,mult(X2,ld(X1,X2))))).
+#############
+#cnf(i_0_1352, plain, (ld(mult(mult(X1,rd(X2,X2)),mult(X3,rd(X2,X2))),mult(X1,mult(rd(X2,X2),X3)))=rd(X2,X2))).
+#
+#cnf(i_0_1353, plain, (mult(mult(rd(X1,mult(rd(X2,X2),X3)),rd(X2,X2)),mult(X3,rd(X2,X2)))=mult(X1,rd(X2,X2)))).
+###
+#cnf(i_0_15198, plain, (mult(X1,ld(X4,rd(ld(mult(X2,X3),X2),X3)))=rd(X1,mult(X3,mult(X3,X4))))).
+#
+#cnf(i_0_310098, plain, (rd(X1,mult(X5,rd(X5,mult(X3,X3))))=mult(X1,mult(X3,rd(X3,mult(X5,X5)))))).
+#######
+#cnf(i_0_15547, plain, (ld(X1,rd(X1,mult(X3,mult(rd(X2,X2),X3))))=ld(mult(X2,X3),rd(X2,X3)))).
+######
+#cnf(i_0_16045, plain, (mult(X1,ld(X4,rd(ld(X2,rd(X2,X3)),X3)))=rd(X1,mult(X3,mult(X3,X4))))).
+##
+#cnf(i_0_16176, plain, (mult(X1,ld(ld(rd(X2,X2),X3),rd(X2,X2)))=rd(X1,mult(rd(X2,X2),X3)))).
+##
+#cnf(i_0_4778, plain, (rd(X1,mult(rd(X2,X2),mult(X3,rd(X2,X2))))=mult(rd(mult(X1,rd(X2,X2)),X3),rd(X2,X2)))).
+#
+#cnf(i_0_4791, plain, (mult(rd(mult(X1,ld(X3,X2)),X4),ld(X3,X2))=mult(X1,ld(mult(mult(X3,X4),ld(X2,X3)),X2)))).
+#
+#cnf(i_0_4793, plain, (mult(X1,mult(ld(rd(rd(X2,X1),X3),X4),X1))=ld(rd(X2,mult(X1,mult(X3,X1))),mult(X4,X1)))).
+#
+#cnf(i_0_1357, plain, (ld(mult(X1,mult(X2,rd(X3,X3))),mult(mult(X1,rd(X3,X3)),mult(rd(X3,X3),X2)))=rd(X3,X3))).
+####################
+#cnf(i_0_17388, plain, (mult(X1,rd(X2,mult(X2,mult(X2,mult(X2,X2)))))=rd(X1,mult(X2,mult(X2,X2))))).
+##
+#cnf(i_0_4806, plain, (ld(X2,ld(rd(X1,mult(X2,mult(X3,X2))),X4))=mult(ld(rd(rd(X1,X2),X3),rd(X4,X2)),X2))).
+#
+#cnf(i_0_4815, plain, (mult(rd(X1,X2),mult(X2,rd(rd(X3,X2),X4)))=mult(mult(X1,rd(X3,mult(X2,mult(X4,X2)))),X2))).
+#
+#cnf(i_0_4821, plain, (rd(rd(X1,X2),rd(X3,mult(X2,mult(X4,X2))))=mult(rd(X1,mult(X2,rd(rd(X3,X2),X4))),X2))).
+#
+#cnf(i_0_1360, plain, (mult(rd(X1,X1),mult(ld(X2,mult(X3,rd(X1,X1))),rd(X1,X1)))=ld(mult(X2,rd(X1,X1)),X3))).
+#
+#cnf(i_0_1884, plain, (ld(mult(mult(X1,mult(X1,X1)),X2),mult(mult(X1,X1),mult(X1,mult(X2,X1))))=X1)).
+#############
+#cnf(i_0_17773, plain, (mult(rd(X1,mult(X1,X1)),mult(X2,mult(X1,X2)))=mult(ld(X1,mult(X2,X1)),X2))).
+#
+#cnf(i_0_322492, plain, (ld(X1,mult(mult(X2,mult(X1,X2)),X1))=mult(mult(ld(X1,mult(X2,X1)),X2),X1))).
+##########
+#cnf(i_0_1886, plain, (ld(mult(mult(X1,mult(X1,X1)),rd(X2,X1)),mult(mult(X1,X1),mult(X1,X2)))=X1)).
+#
+#cnf(i_0_1889, plain, (ld(mult(mult(X1,X2),mult(X2,X2)),mult(X1,mult(X2,mult(X2,mult(X2,X2)))))=X2)).
+#################
+#cnf(i_0_20447, plain, (mult(X1,ld(rd(X4,X3),ld(mult(X2,X3),X2)))=rd(X1,rd(mult(X3,X4),X3)))).
+#######
+#cnf(i_0_911, plain, (ld(rd(X1,X2),ld(mult(rd(X3,mult(X2,X1)),X2),X4))=mult(ld(rd(X3,X2),rd(X4,rd(X1,X2))),rd(X1,X2)))).
+##
+#cnf(i_0_20636, plain, (mult(X1,ld(rd(X4,X3),ld(X2,rd(X2,X3))))=rd(X1,rd(mult(X3,X4),X3)))).
+#####
+#cnf(i_0_20846, plain, (mult(mult(X1,mult(ld(mult(X3,X2),X3),X4)),X2)=mult(rd(X1,X2),mult(X4,X2)))).
+###########
+#cnf(i_0_20854, plain, (rd(rd(X1,X2),mult(ld(mult(X3,X2),X3),X4))=mult(rd(X1,mult(X4,X2)),X2))).
+####
+#cnf(i_0_4900, plain, (rd(rd(X1,mult(X2,mult(X3,X2))),rd(X4,X2))=mult(rd(rd(rd(X1,X2),X3),mult(X2,X4)),X2))).
+#
+#cnf(i_0_4901, plain, (mult(rd(rd(rd(X1,X2),X3),mult(X2,X2)),X2)=mult(rd(X1,mult(X2,mult(X3,X2))),rd(X2,X2)))).
+#
+#cnf(i_0_4904, plain, (mult(mult(rd(rd(X1,X2),X3),X2),rd(X2,X2))=mult(rd(X1,mult(X2,mult(X3,X2))),mult(X2,X2)))).
+#
+#cnf(i_0_915, plain, (ld(rd(X1,X2),rd(mult(mult(rd(X1,mult(X2,X3)),X2),X4),rd(X3,X2)))=rd(ld(rd(X3,X2),X4),rd(X3,X2)))).
+#
+#cnf(i_0_916, plain, (mult(rd(X3,X2),mult(ld(rd(X1,X2),X4),rd(X3,X2)))=ld(mult(rd(X1,mult(X2,X3)),X2),mult(X4,rd(X3,X2))))).
+###
+#cnf(i_0_20855, plain, (rd(rd(X1,mult(ld(mult(X3,X2),X3),X4)),X2)=rd(mult(X1,X2),mult(X4,X2)))).
+#
+#cnf(i_0_20906, plain, (mult(ld(mult(X1,X2),X1),mult(X3,mult(X2,X3)))=mult(ld(X2,mult(X3,X2)),X3))).
+####
+#cnf(i_0_21125, plain, (mult(mult(X1,mult(ld(X3,rd(X3,X2)),X4)),X2)=mult(rd(X1,X2),mult(X4,X2)))).
+############
+#cnf(i_0_21133, plain, (rd(rd(X1,X2),mult(ld(X3,rd(X3,X2)),X4))=mult(rd(X1,mult(X4,X2)),X2))).
+##
+#cnf(i_0_4907, plain, (rd(rd(rd(X1,mult(X2,mult(X3,X2))),X4),X2)=rd(rd(rd(X1,X2),X3),mult(X2,mult(X4,X2))))).
+##
+#cnf(i_0_921, plain, (rd(mult(rd(X1,mult(X2,X3)),X2),rd(X4,rd(X3,X2)))=mult(rd(rd(X1,X2),mult(rd(X3,X2),X4)),rd(X3,X2)))).
+######
+#cnf(i_0_21134, plain, (rd(rd(X1,mult(ld(X3,rd(X3,X2)),X4)),X2)=rd(mult(X1,X2),mult(X4,X2)))).
+#
+#cnf(i_0_21185, plain, (mult(ld(X1,rd(X1,X2)),mult(X3,mult(X2,X3)))=mult(ld(X2,mult(X3,X2)),X3))).
+##
+#cnf(i_0_21718, plain, (ld(X1,rd(X1,rd(mult(X3,mult(X2,X3)),X3)))=ld(X2,rd(X3,mult(X3,X3))))).
+##############
+#cnf(i_0_4918, plain, (rd(rd(X1,rd(X2,mult(X3,mult(X4,X3)))),X3)=rd(mult(X1,X3),mult(X3,rd(rd(X2,X3),X4))))).
+#
+#cnf(i_0_4921, plain, (rd(X1,mult(rd(X2,X3),mult(X3,rd(X2,X3))))=mult(rd(rd(X1,rd(X2,X3)),mult(X3,X2)),X3))).
+#
+#cnf(i_0_923, plain, (mult(mult(rd(X1,mult(rd(X2,X3),rd(X4,X3))),rd(X2,X3)),mult(rd(X4,mult(X3,X2)),X3))=rd(X1,rd(X2,X3)))).
+#
+#cnf(i_0_925, plain, (rd(rd(X1,rd(X2,X3)),mult(rd(X4,mult(X3,X2)),X3))=mult(rd(X1,mult(rd(X2,X3),rd(X4,X3))),rd(X2,X3)))).
+#####################
+#cnf(i_0_4926, plain, (rd(rd(rd(mult(X1,X3),mult(X3,X2)),X4),X3)=rd(rd(X1,rd(X2,X3)),mult(X3,mult(X4,X3))))).
+#
+#cnf(i_0_4934, plain, (rd(rd(mult(mult(X1,X2),rd(X3,X2)),X4),X2)=rd(mult(X1,mult(X2,X3)),mult(X2,mult(X4,X2))))).
+#
+#cnf(i_0_4936, plain, (rd(rd(ld(mult(X2,X1),rd(X2,X1)),X3),X1)=rd(ld(X1,rd(X2,X2)),mult(X1,mult(X3,X1))))).
+######
+#cnf(i_0_25055, plain, (ld(rd(X1,X1),rd(X1,mult(X1,mult(X1,X1))))=rd(X1,mult(X1,mult(X1,X1))))).
+#
+#cnf(i_0_25089, plain, (ld(rd(X2,X2),rd(ld(mult(X1,X2),X1),X2))=rd(ld(mult(X1,X2),X1),X2))).
+###########
+#cnf(i_0_25090, plain, (ld(rd(X2,X2),rd(ld(X1,rd(X1,X2)),X2))=rd(ld(X1,rd(X1,X2)),X2))).
+#####
+#cnf(i_0_4937, plain, (rd(rd(ld(mult(X2,X1),rd(X3,X1)),X4),X1)=rd(ld(X1,ld(X2,X3)),mult(X1,mult(X4,X1))))).
+###
+#cnf(i_0_1366, plain, (rd(mult(rd(ld(rd(mult(rd(X1,X2),X3),X2),X1),X2),X3),X2)=mult(rd(ld(X2,X3),X3),X2))).
+#
+#cnf(i_0_1367, plain, (mult(rd(ld(mult(X1,rd(X2,X3)),X1),X3),mult(X3,X2))=mult(mult(rd(X2,mult(X3,X2)),X3),X3))).
+######################
+#cnf(i_0_5022, plain, (rd(mult(X1,mult(X2,mult(X3,X2))),mult(X2,X2))=mult(rd(mult(mult(X1,X2),X3),mult(X2,X2)),X2))).
+#
+#cnf(i_0_5024, plain, (rd(mult(rd(X1,X3),mult(X3,X2)),mult(X3,X3))=mult(rd(mult(X1,rd(X2,X3)),mult(X3,X3)),X3))).
+##
+#cnf(i_0_1371, plain, (mult(mult(ld(mult(X1,mult(X2,X3)),X1),X2),rd(X3,X2))=rd(rd(mult(X2,X3),mult(X2,X3)),X2))).
+#############
+#cnf(i_0_27231, plain, (ld(rd(X1,mult(X2,X2)),mult(mult(X1,X2),X2))=mult(X2,mult(X2,mult(X2,X2))))).
+##
+#cnf(i_0_27251, plain, (ld(rd(rd(X1,X2),mult(X2,X2)),mult(X1,X2))=mult(X2,mult(X2,mult(X2,X2))))).
+#
+#cnf(i_0_27275, plain, (ld(rd(rd(X1,X2),X2),mult(X1,mult(X2,X2)))=mult(X2,mult(X2,mult(X2,X2))))).
+#
+#cnf(i_0_27304, plain, (ld(rd(ld(mult(X1,X2),X1),mult(X2,X2)),X2)=mult(X2,mult(X2,mult(X2,X2))))).
+#
+#cnf(i_0_27305, plain, (ld(ld(mult(X1,mult(X2,mult(X2,X2))),X1),X2)=mult(X2,mult(X2,mult(X2,X2))))).
+##
+#cnf(i_0_27395, plain, (ld(ld(mult(X2,X1),X2),mult(X1,mult(X1,X1)))=mult(X1,mult(X1,mult(X1,X1))))).
+###
+#cnf(i_0_5099, plain, (ld(X1,ld(mult(rd(X2,mult(X1,X1)),X1),X3))=mult(ld(mult(X2,rd(X1,X1)),rd(X3,X1)),X1))).
+##
+#cnf(i_0_1403, plain, (mult(mult(X2,mult(ld(X1,rd(X1,mult(X2,X3))),X2)),rd(X3,X2))=mult(rd(X3,mult(X2,X3)),X2))).
+###########
+#cnf(i_0_27396, plain, (ld(ld(X2,rd(X2,X1)),mult(X1,mult(X1,X1)))=mult(X1,mult(X1,mult(X1,X1))))).
+##########
+#cnf(i_0_5106, plain, (ld(mult(rd(X1,mult(X2,X2)),X2),mult(X3,X2))=mult(X2,mult(ld(mult(X1,rd(X2,X2)),X3),X2)))).
+#
+#cnf(i_0_5109, plain, (rd(mult(rd(X1,mult(X2,X2)),X2),rd(X3,X2))=mult(rd(mult(X1,rd(X2,X2)),mult(X2,X3)),X2))).
+#
+#cnf(i_0_5116, plain, (rd(rd(mult(rd(X1,mult(X2,X2)),X2),X3),X2)=rd(mult(X1,rd(X2,X2)),mult(X2,mult(X3,X2))))).
+#
+#cnf(i_0_1407, plain, (mult(ld(mult(mult(X1,X2),mult(X3,mult(X2,X3))),mult(X1,mult(X2,mult(X3,X2)))),X3)=rd(X3,X3))).
+##################
+#cnf(i_0_31413, plain, (ld(rd(X1,X2),mult(mult(X1,X2),mult(X2,X2)))=mult(X2,mult(X2,mult(X2,X2))))).
+#
+#cnf(i_0_31468, plain, (ld(mult(X1,rd(X2,X2)),rd(rd(X1,X2),X2))=rd(X2,mult(X2,mult(X2,X2))))).
+###
+#cnf(i_0_5121, plain, (rd(rd(X1,X2),mult(rd(X3,mult(X2,X2)),X2))=mult(rd(X1,mult(X2,mult(X3,rd(X2,X2)))),X2))).
+#
+#cnf(i_0_5123, plain, (mult(rd(X1,X3),mult(X3,mult(X2,rd(X3,X3))))=mult(mult(X1,mult(rd(X2,mult(X3,X3)),X3)),X3))).
+#
+#cnf(i_0_5127, plain, (rd(rd(X1,mult(rd(X2,mult(X3,X3)),X3)),X3)=rd(mult(X1,X3),mult(X3,mult(X2,rd(X3,X3)))))).
+##
+#cnf(i_0_447, plain, (ld(mult(mult(X1,mult(X2,mult(X3,X2))),rd(X4,X2)),mult(X1,mult(mult(X2,mult(X3,X2)),mult(mult(X4,X3),X2))))=mult(X2,mult(X3,X2)))).
+############
+#cnf(i_0_35206, plain, (mult(ld(X2,ld(X2,rd(X3,X3))),mult(X3,X3))=mult(ld(X2,ld(X2,X3)),X3))).
+###
+#cnf(i_0_35269, plain, (mult(ld(X2,ld(X2,mult(X3,X3))),rd(X3,X3))=mult(ld(X2,ld(X2,X3)),X3))).
+###
+#cnf(i_0_35353, plain, (mult(mult(ld(X2,ld(X2,X3)),X3),rd(X3,X3))=ld(X2,ld(X2,mult(X3,X3))))).
+###
+#cnf(i_0_5169, plain, (ld(mult(mult(X2,X2),X1),rd(rd(X2,X2),X1))=rd(ld(X1,rd(X2,mult(X2,mult(X2,X2)))),X1))).
+#
+#cnf(i_0_5175, plain, (ld(mult(X1,mult(X1,X1)),rd(X1,mult(X1,X1)))=rd(rd(X1,mult(X1,mult(X1,X1))),mult(X1,X1)))).
+#
+#cnf(i_0_5460, plain, (mult(mult(X1,X2),ld(rd(X2,X2),rd(X3,X2)))=rd(mult(X1,rd(mult(X2,mult(X3,X2)),X2)),X2))).
+##
+#cnf(i_0_461, plain, (ld(mult(mult(X1,X2),mult(X3,mult(mult(X2,mult(X4,X2)),X3))),mult(X1,mult(mult(X2,mult(X3,X2)),mult(X4,mult(X2,mult(X3,X2))))))=X2)).
+#################
+#cnf(i_0_37058, plain, (ld(mult(mult(X1,X2),X2),mult(X1,rd(X2,X2)))=rd(X2,mult(X2,mult(X2,X2))))).
+####
+#cnf(i_0_5488, plain, (mult(mult(X1,X3),ld(X2,rd(rd(X2,X3),X3)))=rd(mult(X1,mult(rd(X2,mult(X3,X2)),X3)),X3))).
+###
+#cnf(i_0_462, plain, (ld(mult(mult(mult(X1,rd(X2,mult(X3,mult(X4,X3)))),X3),X4),mult(rd(X1,mult(X3,mult(X4,X3))),mult(mult(X3,mult(X4,X3)),X2)))=X3)).
+###########
+#cnf(i_0_39167, plain, (mult(X1,ld(X4,rd(X2,mult(X3,mult(X3,X2)))))=rd(X1,mult(X3,mult(X3,X4))))).
+#####
+#cnf(i_0_43721, plain, (mult(X1,rd(ld(X2,rd(X2,mult(X3,X3))),X3))=rd(X1,mult(X3,mult(X3,X3))))).
+##########
+#cnf(i_0_485, plain, (ld(mult(mult(X1,X2),mult(X3,mult(X2,X3))),mult(X1,mult(mult(X2,mult(X3,X2)),mult(X3,mult(X2,mult(X3,X2))))))=mult(X2,mult(X3,X2)))).
+########################
+#cnf(i_0_942, plain, (rd(ld(X2,mult(ld(mult(X3,rd(X1,X2)),X4),rd(X1,X2))),X2)=ld(X1,rd(ld(X3,mult(X4,rd(X1,X2))),X2)))).
+#
+#cnf(i_0_943, plain, (mult(X1,mult(X2,mult(mult(ld(mult(X3,mult(X1,X2)),X4),mult(X1,X2)),X2)))=mult(ld(X3,mult(X4,mult(X1,X2))),X2))).
+######
+#cnf(i_0_45582, plain, (mult(X1,ld(X4,ld(X2,rd(X2,mult(X3,X3)))))=rd(X1,mult(X3,mult(X3,X4))))).
+##
+#cnf(i_0_45787, plain, (mult(X1,ld(X4,ld(mult(X2,mult(X3,X3)),X2)))=rd(X1,mult(X3,mult(X3,X4))))).
+#################
+#cnf(i_0_967, plain, (mult(mult(X1,ld(mult(X2,X1),X3)),mult(X1,ld(X3,mult(X2,X1))))=mult(ld(X2,mult(X3,X1)),ld(X3,mult(X2,X1))))).
+#######
+#cnf(i_0_47781, plain, (ld(mult(X1,mult(rd(X2,X3),rd(X3,X2))),X1)=mult(rd(X2,X3),rd(X3,X2)))).
+##
+#cnf(i_0_48550, plain, (mult(X1,rd(ld(mult(X2,mult(X3,X3)),X2),X3))=rd(X1,mult(X3,mult(X3,X3))))).
+############
+#cnf(i_0_5652, plain, (rd(X1,mult(X2,mult(rd(ld(X3,X4),X3),X2)))=rd(mult(rd(mult(rd(X1,X2),X3),X4),X3),X2))).
+#############################
+#cnf(i_0_990, plain, (mult(X1,mult(mult(ld(X3,rd(X4,mult(X2,X1))),mult(X2,X1)),X1))=ld(X2,mult(ld(rd(X3,mult(X2,X1)),X4),X1)))).
+##################
+#cnf(i_0_59135, plain, (mult(X1,ld(mult(mult(X1,X2),rd(X1,X1)),X1))=mult(rd(X1,X2),rd(X1,X1)))).
+######
+#cnf(i_0_1419, plain, (rd(mult(rd(ld(X1,mult(rd(mult(X1,X2),X3),X2)),X2),X3),X2)=mult(rd(ld(X2,X3),X3),X2))).
+#
+#cnf(i_0_1420, plain, (mult(rd(ld(X1,rd(X1,rd(X2,X3))),X3),mult(X3,X2))=mult(mult(rd(X2,mult(X3,X2)),X3),X3))).
+#########################
+#cnf(i_0_1424, plain, (mult(mult(ld(X1,rd(X1,mult(X2,X3))),X2),rd(X3,X2))=rd(rd(mult(X2,X3),mult(X2,X3)),X2))).
+##########
+#cnf(i_0_61483, plain, (rd(mult(X1,mult(mult(X2,X1),mult(X1,X1))),X1)=mult(mult(X1,X2),mult(X1,X1)))).
+#
+#cnf(i_0_401704, plain, (rd(mult(X1,mult(X2,mult(X1,X1))),X1)=mult(mult(X1,rd(X2,X1)),mult(X1,X1)))).
+#
+#cnf(i_0_61668, plain, (mult(X1,mult(mult(ld(X1,X2),X1),mult(X1,X1)))=mult(mult(X2,X1),mult(X1,X1)))).
+#####
+#cnf(i_0_402841, plain, (ld(X1,mult(mult(X2,X1),mult(X1,X1)))=mult(mult(ld(X1,X2),X1),mult(X1,X1)))).
+###########
+#cnf(i_0_61715, plain, (mult(mult(rd(X1,X1),mult(X1,X2)),mult(X1,X1))=mult(X1,mult(X2,mult(X1,X1))))).
+#
+#cnf(i_0_405053, plain, (mult(X1,mult(ld(X1,X3),mult(X1,X1)))=mult(mult(rd(X1,X1),X3),mult(X1,X1)))).
+##
+#cnf(i_0_406096, plain, (ld(X1,ld(X1,mult(mult(X1,X1),X2)))=mult(X1,mult(rd(X1,mult(X1,X1)),X2)))).
+#
+#cnf(i_0_406105, plain, (mult(mult(X1,X1),ld(X1,ld(X1,X2)))=mult(rd(X1,mult(X1,X1)),mult(X1,X2)))).
+#########
+#cnf(i_0_406411, plain, (ld(X1,ld(X1,rd(mult(X1,X1),X2)))=mult(X1,rd(rd(X1,mult(X1,X1)),X2)))).
+#################
+#cnf(i_0_63847, plain, (ld(ld(X2,X1),mult(ld(ld(X1,X2),X2),X1))=mult(X1,mult(ld(X1,X2),X1)))).
+###
+#cnf(i_0_408268, plain, (ld(X2,mult(rd(mult(X2,X1),X2),X1))=mult(X1,mult(rd(X2,mult(X2,X2)),X1)))).
+##############
+#cnf(i_0_1971, plain, (ld(mult(rd(X1,X1),rd(X2,X1)),mult(rd(X1,mult(X1,X1)),mult(X1,X2)))=X1)).
+##########################
+#cnf(i_0_64324, plain, (mult(ld(X1,X2),mult(X2,mult(ld(X2,X1),X2)))=mult(ld(ld(X2,X1),X1),X2))).
+##########
+#cnf(i_0_67912, plain, (mult(ld(rd(mult(rd(X4,X1),X3),X1),X4),X3)=mult(rd(X1,X3),mult(X1,X3)))).
+##
+#cnf(i_0_68198, plain, (ld(rd(mult(rd(X4,X1),mult(X3,X3)),X1),X4)=mult(X1,ld(X3,ld(X3,X1))))).
+###########
+#cnf(i_0_1003, plain, (ld(X1,mult(ld(mult(X3,rd(X2,X1)),X4),rd(X2,X1)))=mult(ld(X2,rd(ld(X3,mult(X4,rd(X2,X1))),X1)),X1))).
+#
+#cnf(i_0_1004, plain, (mult(X1,mult(mult(ld(mult(X3,mult(X2,X1)),X4),mult(X2,X1)),X1))=ld(X2,mult(ld(X3,mult(X4,mult(X2,X1))),X1)))).
+##
+#cnf(i_0_69150, plain, (ld(ld(mult(X1,X2),X1),ld(mult(X3,X2),X4))=rd(ld(X3,mult(X4,X2)),X2))).
+###########
+#cnf(i_0_69782, plain, (ld(ld(X1,rd(X1,X2)),ld(mult(X3,X2),X4))=rd(ld(X3,mult(X4,X2)),X2))).
+##########
+#cnf(i_0_6174, plain, (ld(X1,ld(X2,mult(mult(X3,X1),mult(X1,X1))))=mult(ld(mult(X2,X1),mult(X3,mult(X1,X1))),X1))).
+#
+#cnf(i_0_1015, plain, (mult(ld(mult(X3,rd(X1,X2)),mult(rd(X4,mult(X2,X1)),X2)),rd(X1,X2))=ld(rd(X1,X2),ld(X3,rd(X4,X2))))).
+######
+#cnf(i_0_71665, plain, (rd(X1,rd(X2,mult(X2,mult(X2,mult(X2,X2)))))=mult(X1,mult(X2,mult(X2,X2))))).
+##########
+#cnf(i_0_74102, plain, (ld(X2,mult(ld(X1,ld(X1,X2)),ld(X2,X1)))=rd(ld(X2,X1),mult(X1,X1)))).
+###
+#cnf(i_0_420354, plain, (mult(ld(X2,ld(X2,X1)),ld(X1,X2))=mult(X1,rd(ld(X1,X2),mult(X2,X2))))).
+##
+#cnf(i_0_421707, plain, (mult(ld(X1,ld(X1,rd(X1,X2))),X2)=mult(rd(X1,X2),rd(X2,mult(X1,X1))))).
+#
+#cnf(i_0_6177, plain, (mult(mult(mult(mult(X1,X2),mult(X2,X2)),X3),X2)=mult(mult(X1,mult(X2,X2)),mult(X2,mult(X3,X2))))).
+#
+#cnf(i_0_6199, plain, (ld(rd(X1,X2),mult(mult(X3,X2),mult(X2,X2)))=mult(X2,mult(ld(X1,mult(X3,mult(X2,X2))),X2)))).
+##
+#cnf(i_0_1036, plain, (mult(ld(mult(X3,mult(X1,mult(mult(X2,mult(X1,X2)),X1))),X3),mult(X1,mult(X2,X1)))=ld(mult(X1,mult(X2,X1)),X1))).
+#
+#cnf(i_0_2004, plain, (ld(rd(X1,X1),rd(mult(rd(X1,mult(X1,X1)),X2),X1))=rd(ld(X1,X2),X1))).
+#
+#cnf(i_0_74158, plain, (mult(X1,mult(mult(ld(X1,ld(X1,X2)),X3),X2))=ld(X1,mult(X2,mult(X3,X2))))).
+########
+#cnf(i_0_74264, plain, (mult(mult(ld(X1,ld(X1,rd(X2,X2))),X2),X2)=ld(X1,ld(X1,mult(X2,X2))))).
+#
+#cnf(i_0_428835, plain, (mult(ld(X1,ld(X1,rd(X2,X2))),X2)=mult(ld(X1,ld(X1,X2)),rd(X2,X2)))).
+##########
+#cnf(i_0_76199, plain, (rd(mult(X1,mult(X1,mult(X1,mult(X1,X2)))),X2)=mult(X1,mult(X1,mult(X1,X1))))).
+#####
+#cnf(i_0_1529, plain, (ld(mult(X1,mult(rd(X2,X2),mult(X3,rd(X2,X2)))),mult(mult(X1,rd(X2,X2)),X3))=rd(X2,X2))).
+#
+#cnf(i_0_76689, plain, (ld(X1,mult(rd(mult(X1,X2),mult(X3,X3)),X2))=mult(X2,ld(X3,ld(X3,X2))))).
+##############
+#cnf(i_0_81786, plain, (rd(ld(X2,mult(X3,mult(X3,mult(X1,X2)))),X2)=ld(ld(X3,ld(X3,X2)),X1))).
+##
+#cnf(i_0_82559, plain, (ld(mult(X1,rd(X3,mult(rd(X2,X3),X2))),X1)=mult(rd(X2,X3),rd(X2,X3)))).
+######
+#cnf(i_0_6599, plain, (mult(mult(X1,ld(rd(X2,X2),rd(X3,X2))),X2)=mult(rd(X1,X2),rd(mult(X2,mult(X3,X2)),X2)))).
+#
+#cnf(i_0_1530, plain, (ld(mult(mult(X1,rd(X3,X3)),mult(rd(X3,X3),X2)),mult(X1,mult(X2,rd(X3,X3))))=rd(X3,X3))).
+########
+#cnf(i_0_82571, plain, (ld(mult(X4,mult(rd(X2,X3),rd(X2,X3))),X4)=rd(X3,mult(rd(X2,X3),X2)))).
+##############
+#cnf(i_0_6628, plain, (mult(mult(X1,ld(X3,rd(rd(X3,X2),X2))),X2)=mult(rd(X1,X2),mult(rd(X3,mult(X2,X3)),X2)))).
+#
+#cnf(i_0_6637, plain, (mult(mult(rd(X1,X1),ld(X2,rd(X3,X1))),X1)=mult(rd(X1,mult(X1,X1)),ld(rd(X2,X1),X3)))).
+#######################
+#cnf(i_0_86502, plain, (ld(mult(X1,mult(X2,rd(X3,mult(X2,X3)))),X1)=mult(X2,rd(X3,mult(X2,X3))))).
+#####
+#cnf(i_0_2040, plain, (ld(mult(mult(X1,X2),rd(X2,X2)),mult(X1,mult(X2,mult(X2,X2))))=mult(X2,X2))).
+##################
+#cnf(i_0_90543, plain, (ld(mult(X1,X1),mult(mult(X1,X2),mult(X1,X1)))=mult(ld(X1,X2),mult(X1,X1)))).
+###########################
+#cnf(i_0_95938, plain, (mult(mult(X1,mult(X1,mult(X1,rd(X1,X2)))),X2)=mult(X1,mult(X1,mult(X1,X1))))).
+###
+#cnf(i_0_7703, plain, (rd(mult(X1,ld(X2,mult(X3,mult(X3,X3)))),X3)=mult(mult(X1,X3),ld(mult(X2,X3),mult(X3,X3))))).
+#
+#cnf(i_0_2058, plain, (ld(mult(X1,rd(rd(X2,mult(X2,X2)),X3)),mult(rd(X1,X3),rd(X3,X2)))=X3)).
+###########
+#cnf(i_0_96967, plain, (ld(mult(X1,mult(X1,mult(X1,X1))),mult(X1,X2))=ld(X1,ld(X1,ld(X1,X2))))).
+####
+#cnf(i_0_98448, plain, (mult(mult(X2,mult(X2,X3)),ld(ld(X2,X3),X2))=mult(X2,mult(X2,mult(X2,X2))))).
+#######
+#cnf(i_0_7743, plain, (rd(mult(X1,rd(mult(X2,X3),mult(X2,X3))),X3)=mult(mult(X1,X3),ld(mult(mult(X2,X3),X3),X2)))).
+#
+#cnf(i_0_7903, plain, (mult(X1,ld(ld(X2,mult(X3,mult(X3,X3))),X3))=rd(X1,mult(ld(mult(X2,X3),mult(X3,X3)),X3)))).
+#
+#cnf(i_0_7943, plain, (rd(X1,mult(ld(mult(mult(X2,X3),X3),X2),X3))=mult(X1,ld(rd(mult(X2,X3),mult(X2,X3)),X3)))).
+####
+#cnf(i_0_98603, plain, (rd(X1,mult(rd(X1,X2),mult(rd(X1,X2),X1)))=rd(X2,mult(rd(X1,X2),X1)))).
+#
+#cnf(i_0_98691, plain, (rd(X3,mult(ld(X1,X2),mult(ld(X1,X2),X3)))=mult(ld(X2,X1),ld(X2,X1)))).
+#################
+#cnf(i_0_98772, plain, (mult(rd(ld(X1,ld(X1,X2)),mult(X2,X2)),X2)=ld(X1,ld(X1,rd(X2,X2))))).
+#
+#cnf(i_0_451617, plain, (rd(ld(X1,ld(X1,rd(X2,X2))),X2)=rd(ld(X1,ld(X1,X2)),mult(X2,X2)))).
+#
+#cnf(i_0_8034, plain, (mult(rd(X1,X2),ld(X3,mult(X2,mult(X2,X2))))=mult(mult(X1,ld(mult(X3,X2),mult(X2,X2))),X2))).
+#
+#cnf(i_0_8075, plain, (mult(mult(X1,ld(mult(mult(X3,X2),X2),X3)),X2)=mult(rd(X1,X2),rd(mult(X3,X2),mult(X3,X2))))).
+#######################
+#cnf(i_0_8082, plain, (mult(mult(rd(X1,X1),ld(mult(X2,X1),X3)),X1)=mult(rd(X1,mult(X1,X1)),ld(X2,mult(X3,X1))))).
+###
+#cnf(i_0_1110, plain, (ld(mult(X1,rd(mult(X2,mult(X3,X2)),rd(X4,X2))),mult(rd(X1,rd(X4,X2)),mult(mult(X4,X3),X2)))=rd(X4,X2))).
+#
+#cnf(i_0_1113, plain, (ld(mult(X1,rd(ld(X2,X3),mult(X4,ld(X3,X2)))),mult(rd(X1,mult(X4,ld(X3,X2))),X4))=mult(X4,ld(X3,X2)))).
+######
+#cnf(i_0_99921, plain, (rd(X3,mult(rd(X1,X2),mult(rd(X1,X2),X3)))=rd(X2,mult(rd(X1,X2),X1)))).
+######
+#cnf(i_0_100233, plain, (ld(ld(mult(X2,X1),X2),mult(X3,mult(X1,X1)))=mult(mult(X1,X3),mult(X1,X1)))).
+#
+#cnf(i_0_100236, plain, (ld(ld(X2,rd(X2,X1)),mult(X3,mult(X1,X1)))=mult(mult(X1,X3),mult(X1,X1)))).
+#
+#cnf(i_0_100270, plain, (rd(mult(rd(X1,mult(X1,X1)),X2),mult(X1,X1))=ld(X1,rd(X2,mult(X1,X1))))).
+#
+#cnf(i_0_100905, plain, (ld(rd(X1,X1),ld(X2,rd(X2,mult(X1,X1))))=rd(X1,mult(X1,mult(X1,X1))))).
+########
+#cnf(i_0_8473, plain, (mult(mult(mult(mult(X1,X2),rd(X2,X2)),X3),X2)=mult(mult(X1,rd(X2,X2)),mult(X2,mult(X3,X2))))).
+####
+#cnf(i_0_101661, plain, (ld(rd(X1,X1),ld(mult(X2,mult(X1,X1)),X2))=rd(X1,mult(X1,mult(X1,X1))))).
+#######
+#cnf(i_0_102134, plain, (ld(mult(X1,mult(X2,rd(rd(X3,X3),X2))),X1)=mult(X2,rd(rd(X3,X3),X2)))).
+##
+#cnf(i_0_102488, plain, (ld(mult(X1,mult(X2,rd(ld(X2,X3),X3))),X1)=mult(X2,rd(ld(X2,X3),X3)))).
+####
+#cnf(i_0_104155, plain, (mult(X1,rd(X1,mult(mult(X1,X2),mult(X1,X1))))=rd(ld(X2,X1),mult(X1,X1)))).
+##
+#cnf(i_0_466670, plain, (ld(X1,rd(ld(X2,X1),mult(X1,X1)))=rd(X1,mult(mult(X1,X2),mult(X1,X1))))).
+#####
+#cnf(i_0_8905, plain, (ld(X1,mult(mult(X1,ld(X3,X2)),ld(X3,X2)))=mult(ld(X3,X2),rd(X1,mult(ld(X2,X3),X1))))).
+##
+#cnf(i_0_1143, plain, (ld(mult(X1,mult(rd(X2,X3),mult(X4,rd(X2,X3)))),mult(rd(mult(mult(X1,rd(X2,X3)),X4),X3),mult(X3,X2)))=X3)).
+#
+#cnf(i_0_1144, plain, (ld(mult(rd(X1,rd(X3,X4)),mult(rd(X3,X4),X2)),mult(rd(mult(X1,rd(X2,rd(X3,X4))),X4),mult(X4,X3)))=X4)).
+######
+#cnf(i_0_106171, plain, (ld(ld(X1,mult(X2,X1)),rd(rd(X2,X2),X1))=ld(X1,rd(X2,mult(X2,X2))))).
+#############################
+#cnf(i_0_110373, plain, (rd(X2,rd(ld(X3,rd(X3,mult(X2,X2))),X2))=mult(X2,mult(X2,mult(X2,X2))))).
+#####
+#cnf(i_0_110550, plain, (ld(ld(X3,rd(X2,mult(X3,mult(X3,X2)))),X3)=mult(X3,mult(X3,mult(X3,X3))))).
+#
+#cnf(i_0_110558, plain, (ld(ld(X3,ld(mult(X2,mult(X3,X3)),X2)),X3)=mult(X3,mult(X3,mult(X3,X3))))).
+#
+#cnf(i_0_110559, plain, (ld(ld(X3,ld(X2,rd(X2,mult(X3,X3)))),X3)=mult(X3,mult(X3,mult(X3,X3))))).
+#
+#cnf(i_0_110620, plain, (rd(ld(mult(X1,rd(X2,X3)),X1),rd(X2,X3))=rd(X3,mult(rd(X2,X3),X2)))).
+###############
+#cnf(i_0_111045, plain, (rd(X2,rd(ld(mult(X3,mult(X2,X2)),X3),X2))=mult(X2,mult(X2,mult(X2,X2))))).
+#############
+#cnf(i_0_9888, plain, (mult(rd(ld(rd(X2,X2),X3),mult(X2,X2)),X2)=rd(mult(rd(X2,X2),mult(X3,rd(X2,X2))),X2))).
+##
+#cnf(i_0_10255, plain, (mult(mult(ld(rd(X1,X1),X2),X1),rd(X1,X1))=mult(mult(rd(X1,X1),mult(X2,rd(X1,X1))),X1))).
+#########################
+#cnf(i_0_10300, plain, (mult(mult(X1,mult(ld(X1,X2),X1)),rd(X1,X1))=mult(rd(X1,X1),mult(mult(X2,X1),rd(X1,X1))))).
+#####################
+#cnf(i_0_112740, plain, (rd(ld(X4,rd(X4,rd(X2,X3))),rd(X2,X3))=rd(X3,mult(rd(X2,X3),X2)))).
+####
+#cnf(i_0_10755, plain, (ld(rd(rd(X2,X1),mult(X1,X1)),mult(X3,X1))=mult(X1,mult(ld(rd(X2,mult(X1,X1)),X3),X1)))).
+##
+#cnf(i_0_2138, plain, (ld(rd(X1,rd(X2,X3)),rd(mult(X1,X3),mult(X3,X2)))=ld(X4,rd(X4,X3)))).
+######################
+#cnf(i_0_10770, plain, (ld(X2,ld(rd(rd(X1,X2),mult(X2,X2)),X3))=mult(ld(rd(X1,mult(X2,X2)),rd(X3,X2)),X2))).
+#
+#cnf(i_0_10771, plain, (rd(rd(rd(X1,X2),mult(X2,X2)),rd(X3,X2))=mult(rd(rd(X1,mult(X2,X2)),mult(X2,X3)),X2))).
+#
+#cnf(i_0_2139, plain, (ld(rd(X1,rd(X2,X3)),rd(mult(X1,X3),mult(X3,X2)))=ld(mult(X4,X3),X4))).
+#
+#cnf(i_0_2142, plain, (mult(ld(rd(X1,rd(X2,X3)),rd(mult(X1,X3),mult(X3,X2))),X3)=rd(X3,X3))).
+#######################
+#cnf(i_0_10772, plain, (rd(rd(rd(rd(X1,X2),mult(X2,X2)),X3),X2)=rd(rd(X1,mult(X2,X2)),mult(X2,mult(X3,X2))))).
+##
+#cnf(i_0_2150, plain, (mult(X1,ld(rd(X2,rd(X3,X4)),rd(mult(X2,X4),mult(X4,X3))))=rd(X1,X4))).
+#####################
+#cnf(i_0_10787, plain, (mult(mult(X1,rd(rd(X3,X2),mult(X2,X2))),X2)=mult(rd(X1,X2),mult(X2,rd(X3,mult(X2,X2)))))).
+#
+#cnf(i_0_10793, plain, (rd(rd(X1,X2),rd(rd(X3,X2),mult(X2,X2)))=mult(rd(X1,mult(X2,rd(X3,mult(X2,X2)))),X2))).
+#
+#cnf(i_0_10794, plain, (rd(rd(X1,rd(rd(X3,X2),mult(X2,X2))),X2)=rd(mult(X1,X2),mult(X2,rd(X3,mult(X2,X2)))))).
+#
+#cnf(i_0_1619, plain, (mult(ld(mult(mult(X1,X2),rd(X2,X2)),rd(X1,X2)),mult(X2,X2))=rd(X2,X2))).
+#
+#cnf(i_0_90, plain, (mult(mult(mult(X1,mult(X2,mult(mult(X3,mult(X4,X3)),X2))),X3),mult(X4,mult(X3,X4)))=mult(mult(mult(mult(mult(X1,X2),X3),X4),mult(X3,mult(X2,X3))),mult(X4,mult(X3,X4))))).
+########################
+#cnf(i_0_97, plain, (rd(mult(X1,mult(mult(X2,X3),mult(X4,mult(X3,X4)))),mult(X2,mult(X3,mult(X4,X3))))=mult(mult(X1,mult(X2,mult(X3,mult(X4,X3)))),rd(X4,mult(X2,mult(X3,mult(X4,X3))))))).
+#
+#cnf(i_0_100, plain, (mult(mult(X1,mult(X2,mult(X3,X2))),mult(rd(X4,X2),mult(mult(X2,mult(X3,X2)),rd(X4,X2))))=mult(mult(X1,mult(mult(X2,mult(X3,X2)),mult(mult(X4,X3),X2))),rd(X4,X2)))).
+#########################
+#cnf(i_0_756, plain, (mult(mult(X1,X2),mult(ld(X3,rd(X4,X2)),mult(X2,ld(X3,rd(X4,X2)))))=mult(mult(X1,ld(rd(X3,X2),X4)),ld(X3,rd(X4,X2))))).
+#########
+#cnf(i_0_116218, plain, (ld(mult(X1,X1),ld(ld(mult(X3,X1),X3),X2))=mult(rd(X1,mult(X1,X1)),X2))).
+#####
+#cnf(i_0_117036, plain, (ld(mult(X1,X1),ld(ld(X3,rd(X3,X1)),X2))=mult(rd(X1,mult(X1,X1)),X2))).
+########################
+#cnf(i_0_121472, plain, (ld(ld(X1,X2),mult(X2,ld(ld(X1,X2),X1)))=mult(ld(ld(X1,X2),X1),X1))).
+######
+#cnf(i_0_121734, plain, (rd(X2,rd(rd(X3,mult(X2,mult(X2,X3))),X2))=mult(X2,mult(X2,mult(X2,X2))))).
+###
+#cnf(i_0_10928, plain, (rd(rd(rd(X1,X2),X2),mult(X2,mult(X2,X2)))=rd(X1,mult(X2,mult(X2,mult(X2,mult(X2,X2))))))).
+########################
+#cnf(i_0_11153, plain, (rd(mult(rd(X1,rd(X2,X3)),X3),rd(X2,X3))=rd(X1,rd(mult(rd(rd(X2,X3),X3),X2),X3)))).
+##
+#cnf(i_0_11988, plain, (mult(rd(mult(X1,rd(X2,X3)),X3),rd(X2,X3))=mult(X1,rd(mult(rd(rd(X2,X3),X3),X2),X3)))).
+#############
+#cnf(i_0_124099, plain, (ld(rd(X2,X2),rd(X3,mult(X2,mult(X2,X3))))=rd(X3,mult(X2,mult(X2,X3))))).
+##########
+#cnf(i_0_12063, plain, (mult(rd(ld(X1,X2),X1),rd(X1,rd(X2,X1)))=rd(mult(rd(X1,mult(X1,X1)),X2),rd(X2,X1)))).
+##
+#cnf(i_0_12071, plain, (ld(rd(ld(X1,X2),X1),rd(X1,rd(X2,X1)))=rd(mult(X1,mult(ld(X2,X1),X1)),rd(X2,X1)))).
+#######################
+#cnf(i_0_12133, plain, (ld(X1,ld(mult(rd(X1,mult(X1,X1)),X2),X3))=mult(ld(ld(X1,mult(X2,X1)),rd(X3,X1)),X1))).
+#
+#cnf(i_0_12146, plain, (mult(X1,mult(ld(ld(X1,mult(X2,X1)),X3),X1))=ld(mult(rd(X1,mult(X1,X1)),X2),mult(X3,X1)))).
+#
+#cnf(i_0_12150, plain, (rd(mult(rd(X1,mult(X1,X1)),X2),rd(X3,X1))=mult(rd(ld(X1,mult(X2,X1)),mult(X1,X3)),X1))).
+#
+#cnf(i_0_344, plain, (mult(mult(X1,ld(X2,X3)),mult(mult(X4,ld(X3,X2)),mult(ld(X2,X3),mult(X4,ld(X3,X2)))))=mult(mult(X1,mult(ld(X2,X3),X4)),mult(X4,ld(X3,X2))))).
+#
+#cnf(i_0_793, plain, (ld(mult(mult(X1,mult(mult(X2,X3),X4)),rd(X3,mult(mult(X2,X3),X4))),mult(X1,mult(X2,mult(X3,mult(X4,X3)))))=mult(mult(X2,X3),X4))).
+#####################
+#cnf(i_0_12153, plain, (mult(rd(ld(X1,mult(X2,X1)),mult(X1,X1)),X1)=mult(mult(rd(X1,mult(X1,X1)),X2),rd(X1,X1)))).
+#
+#cnf(i_0_517450, plain, (rd(ld(X1,mult(X2,X1)),mult(X1,X1))=mult(ld(X1,rd(X2,mult(X1,X1))),X1))).
+#
+#cnf(i_0_12156, plain, (mult(mult(ld(X1,mult(X2,X1)),X1),rd(X1,X1))=mult(mult(rd(X1,mult(X1,X1)),X2),mult(X1,X1)))).
+#
+#cnf(i_0_794, plain, (ld(mult(mult(X1,mult(X2,rd(X3,X4))),rd(X4,mult(X2,rd(X3,X4)))),mult(X1,mult(rd(X2,X4),mult(X4,X3))))=mult(X2,rd(X3,X4)))).
+#
+#cnf(i_0_808, plain, (ld(mult(mult(mult(X1,mult(X2,mult(mult(X3,X4),X2))),X3),rd(X4,X3)),mult(mult(X1,X2),mult(mult(X3,X4),mult(X2,mult(X3,X4)))))=X3)).
+########
+#cnf(i_0_129993, plain, (mult(ld(mult(X1,X2),X1),rd(X3,mult(X2,X3)))=ld(X3,rd(rd(X3,X2),X2)))).
+#####
+#cnf(i_0_129997, plain, (mult(ld(X1,rd(X1,X2)),rd(X3,mult(X2,X3)))=ld(X3,rd(rd(X3,X2),X2)))).
+########
+#cnf(i_0_12162, plain, (rd(rd(mult(rd(X1,mult(X1,X1)),X2),X3),X1)=rd(ld(X1,mult(X2,X1)),mult(X1,mult(X3,X1))))).
+#
+#cnf(i_0_12221, plain, (rd(ld(X1,mult(X2,mult(X1,mult(X3,X1)))),X1)=mult(rd(X1,mult(X1,X1)),mult(mult(X2,X1),X3)))).
+#
+#cnf(i_0_12224, plain, (rd(ld(X1,mult(rd(X2,X1),mult(X1,X3))),X1)=mult(rd(X1,mult(X1,X1)),mult(X2,rd(X3,X1))))).
+#
+#cnf(i_0_819, plain, (ld(mult(mult(mult(X1,X3),X2),rd(X4,mult(X2,mult(X3,X2)))),mult(rd(X1,X2),mult(mult(X2,mult(X3,X2)),X4)))=mult(X2,mult(X3,X2)))).
+#
+#cnf(i_0_827, plain, (ld(mult(rd(mult(rd(X1,X2),X3),X2),mult(rd(mult(X4,X2),X3),X2)),mult(X1,mult(rd(ld(X2,X3),X2),X4)))=rd(ld(X2,X3),X2))).
+#########
+#cnf(i_0_130207, plain, (ld(rd(X1,X1),rd(X2,mult(rd(X1,X1),X2)))=mult(rd(X1,X1),rd(X2,X2)))).
+##
+#cnf(i_0_131280, plain, (mult(ld(X4,mult(rd(mult(X4,X1),X3),X1)),X3)=mult(rd(X1,X3),mult(X1,X3)))).
+#########
+#cnf(i_0_131826, plain, (ld(mult(X3,rd(X2,mult(rd(X1,X1),X2))),X3)=rd(X1,mult(rd(X2,X2),X1)))).
+#
+#cnf(i_0_12227, plain, (mult(rd(X1,mult(X1,X1)),mult(X2,mult(X1,X1)))=mult(ld(X1,X2),mult(X1,X1)))).
+####
+#cnf(i_0_1762, plain, (mult(mult(X1,ld(mult(mult(X2,X4),ld(X3,X2)),X3)),mult(ld(X3,X2),mult(X4,ld(X3,X2))))=X1)).
+###############
+#cnf(i_0_132274, plain, (mult(X1,mult(rd(X1,mult(rd(X2,X2),X1)),X1))=ld(rd(rd(X2,X2),X1),X1))).
+#
+#cnf(i_0_539212, plain, (rd(rd(X2,mult(rd(X3,X3),X2)),X2)=rd(rd(X2,X2),mult(X2,rd(X3,X3))))).
+############
+#cnf(i_0_132302, plain, (rd(mult(X2,X2),mult(rd(X1,X1),mult(X2,X2)))=rd(X2,mult(rd(X1,X1),X2)))).
+#
+#cnf(i_0_132307, plain, (mult(rd(rd(X2,X2),mult(X2,rd(X1,X1))),X2)=rd(X2,mult(rd(X1,X1),X2)))).
+#
+#cnf(i_0_132310, plain, (rd(rd(X2,X2),mult(rd(X1,X1),rd(X2,X2)))=rd(X2,mult(rd(X1,X1),X2)))).
+#########
+#cnf(i_0_133922, plain, (mult(X2,rd(X3,mult(ld(mult(X1,X2),X1),X3)))=ld(X3,mult(mult(X3,X2),X2)))).
+#
+#cnf(i_0_133925, plain, (mult(X2,rd(X3,mult(ld(X1,rd(X1,X2)),X3)))=ld(X3,mult(mult(X3,X2),X2)))).
+#######
+#cnf(i_0_13225, plain, (mult(X1,mult(mult(X1,mult(ld(X1,X2),X1)),X1))=rd(mult(X1,mult(X2,mult(X1,mult(X1,X1)))),X1))).
+#################################################
+#cnf(i_0_14191, plain, (rd(mult(rd(X1,mult(X2,X3)),X3),mult(X2,X3))=rd(X1,rd(mult(X2,mult(mult(X2,X3),X3)),X3)))).
+##############################
+#cnf(i_0_143324, plain, (mult(X1,mult(mult(mult(rd(X1,X1),X2),X1),X1))=mult(mult(X1,mult(X2,X1)),X1))).
+###############################################
+#cnf(i_0_15141, plain, (mult(rd(mult(X1,mult(X2,X3)),X3),mult(X2,X3))=mult(X1,rd(mult(X2,mult(mult(X2,X3),X3)),X3)))).
+#########################
+#cnf(i_0_15180, plain, (rd(ld(X3,mult(X4,mult(X2,X2))),mult(X2,X2))=mult(X2,mult(X2,ld(mult(X3,mult(X2,X2)),X4))))).
+#######################
+#cnf(i_0_15183, plain, (rd(ld(rd(X3,mult(X2,X2)),X4),mult(X2,X2))=mult(X2,mult(X2,ld(X3,rd(X4,mult(X2,X2))))))).
+###############################################################################
+#cnf(i_0_869, plain, (mult(mult(rd(X1,mult(X2,mult(X3,mult(X4,X3)))),mult(mult(X2,X3),X4)),rd(X3,mult(mult(X2,X3),X4)))=rd(X1,mult(mult(X2,X3),X4)))).
+########################
+#cnf(i_0_870, plain, (mult(mult(rd(X1,mult(rd(X2,X4),mult(X4,X3))),mult(X2,rd(X3,X4))),rd(X4,mult(X2,rd(X3,X4))))=rd(X1,mult(X2,rd(X3,X4))))).
+#
+#cnf(i_0_884, plain, (mult(rd(mult(rd(rd(X1,mult(rd(ld(X2,X3),X2),X4)),X2),X3),X2),mult(rd(mult(X4,X2),X3),X2))=mult(rd(mult(X1,X2),X3),X2))).
+########################
+#cnf(i_0_1826, plain, (mult(rd(X1,X1),mult(ld(mult(X1,X1),X2),rd(X1,X1)))=ld(mult(X1,X1),mult(X2,rd(X1,X1))))).
+#
+#cnf(i_0_1827, plain, (mult(ld(mult(X2,rd(X1,X1)),mult(X1,X1)),rd(X1,X1))=ld(rd(X1,X1),ld(X2,mult(X1,X1))))).
+################
+#cnf(i_0_175514, plain, (mult(X1,rd(rd(ld(X1,X2),X1),mult(X1,X1)))=rd(rd(X2,X1),mult(X1,X1)))).
+#####
+#cnf(i_0_561935, plain, (rd(rd(mult(X1,X2),X1),mult(X1,X1))=mult(X1,rd(rd(X2,X1),mult(X1,X1))))).
+##
+#cnf(i_0_16731, plain, (mult(mult(X1,mult(X1,X1)),mult(X1,mult(X1,X1)))=mult(X1,mult(X1,mult(X1,mult(X1,mult(X1,X1))))))).
+#
+#cnf(i_0_1830, plain, (mult(mult(X1,X1),mult(rd(X1,X1),mult(X2,rd(X1,X1))))=mult(mult(mult(X1,X1),X2),rd(X1,X1)))).
+#########
+#cnf(i_0_176060, plain, (mult(rd(X1,mult(X2,rd(X1,X1))),rd(X1,X1))=rd(X1,mult(rd(X1,X1),X2)))).
+################
+#cnf(i_0_1833, plain, (ld(mult(mult(X1,X1),mult(X2,rd(X1,X1))),mult(mult(X1,X1),mult(rd(X1,X1),X2)))=rd(X1,X1))).
+#
+#cnf(i_0_1837, plain, (mult(mult(X1,rd(X2,X2)),mult(X2,mult(X2,mult(X2,X2))))=mult(mult(X1,X2),mult(X2,mult(X2,X2))))).
+########################
+#cnf(i_0_1841, plain, (mult(rd(X2,X2),mult(ld(X1,mult(X2,X2)),rd(X2,X2)))=ld(mult(X1,rd(X2,X2)),mult(X2,X2)))).
+####
+#cnf(i_0_176985, plain, (mult(rd(X1,mult(X3,ld(X2,X1))),ld(X2,X1))=rd(X2,mult(ld(X1,X2),X3)))).
+####################
+#cnf(i_0_17959, plain, (mult(rd(mult(X1,rd(X2,X2)),X3),rd(X2,X2))=mult(X1,ld(mult(mult(X2,X3),rd(X2,X2)),X2)))).
+#
+#cnf(i_0_1856, plain, (mult(mult(rd(X1,X2),rd(X1,X2)),mult(rd(X1,mult(X2,X1)),X2))=mult(rd(X1,X2),rd(X1,X2)))).
+######################
+#cnf(i_0_19124, plain, (rd(mult(rd(X1,mult(X1,X1)),rd(X2,X2)),X1)=rd(rd(X1,X1),mult(X1,mult(rd(X2,X2),X1))))).
+#
+#cnf(i_0_19317, plain, (rd(mult(rd(X1,mult(X1,X1)),ld(X2,X3)),X1)=mult(rd(X1,X1),ld(mult(X2,X1),rd(X3,X1))))).
+##
+#cnf(i_0_1860, plain, (mult(mult(ld(X1,X2),ld(X1,X2)),mult(ld(X1,X2),ld(X2,X1)))=mult(ld(X1,X2),ld(X1,X2)))).
+#######################
+#cnf(i_0_19611, plain, (mult(X1,ld(rd(ld(rd(X2,X2),X3),X2),X2))=mult(rd(mult(X1,X2),mult(rd(X2,X2),X3)),X2))).
+########
+#cnf(i_0_224634, plain, (rd(ld(X1,rd(X2,mult(X2,X2))),rd(X1,X2))=rd(X2,mult(X1,mult(X1,X2))))).
+####
+#cnf(i_0_224650, plain, (mult(X1,rd(rd(X2,mult(X1,mult(X1,X2))),X2))=ld(X1,rd(X2,mult(X2,X2))))).
+########
+#cnf(i_0_224743, plain, (rd(rd(X2,mult(X2,X2)),mult(X1,rd(X1,X2)))=rd(X2,mult(X1,mult(X1,X2))))).
+###
+#cnf(i_0_225036, plain, (ld(mult(mult(X3,X2),rd(X2,X2)),rd(X3,X2))=rd(X2,mult(X2,mult(X2,X2))))).
+##################################
+#cnf(i_0_233064, plain, (ld(mult(rd(X1,X1),ld(X2,rd(X1,X1))),X2)=mult(ld(rd(X1,X1),X2),X2))).
+########
+#cnf(i_0_234032, plain, (mult(ld(X1,rd(X2,mult(X1,mult(X1,X2)))),X1)=rd(X1,mult(X1,mult(X1,X1))))).
+########################
+#cnf(i_0_234036, plain, (mult(ld(X1,ld(X2,rd(X2,mult(X1,X1)))),X1)=rd(X1,mult(X1,mult(X1,X1))))).
+##################
+#cnf(i_0_234037, plain, (mult(ld(X1,ld(mult(X2,mult(X1,X1)),X2)),X1)=rd(X1,mult(X1,mult(X1,X1))))).
+##################
+#cnf(i_0_24203, plain, (rd(rd(rd(X1,X2),X3),mult(X2,mult(X3,X2)))=rd(X1,mult(X2,mult(mult(X3,mult(X2,X3)),X2))))).
+#
+#cnf(i_0_24437, plain, (rd(rd(X1,mult(X1,mult(X1,X1))),mult(X1,X1))=rd(rd(X1,X1),mult(X1,mult(X1,mult(X1,X1)))))).
+#
+#cnf(i_0_1369, plain, (ld(mult(mult(ld(mult(X1,mult(X2,mult(X3,X2))),X1),X2),X3),rd(mult(X2,mult(X3,X2)),mult(X2,mult(X3,X2))))=X2)).
+#
+#cnf(i_0_1401, plain, (mult(ld(mult(mult(X1,X3),X2),rd(X1,X2)),mult(X2,mult(X3,X2)))=rd(mult(X2,mult(X3,X2)),mult(X2,mult(X3,X2))))).
+########################
+#cnf(i_0_2478, plain, (mult(mult(X1,mult(rd(X2,mult(X3,X2)),X3)),mult(rd(X2,mult(X3,X2)),X3))=X1)).
+#
+#cnf(i_0_2483, plain, (mult(mult(X1,mult(ld(X2,X3),ld(X3,X2))),mult(ld(X2,X3),ld(X3,X2)))=X1)).
+##############
+#cnf(i_0_238594, plain, (ld(mult(rd(X2,X2),X3),rd(mult(X2,X2),X3))=rd(ld(X3,mult(X2,X2)),X3))).
+########
+#cnf(i_0_24934, plain, (ld(rd(X1,X2),mult(mult(X3,X2),rd(X2,X2)))=mult(X2,mult(ld(X1,mult(X3,rd(X2,X2))),X2)))).
+########################
+#cnf(i_0_25039, plain, (ld(ld(X2,X1),mult(ld(X1,X2),ld(X1,X2)))=mult(ld(X1,X2),mult(ld(X1,X2),ld(X1,X2))))).
+#
+#cnf(i_0_25297, plain, (rd(rd(X1,mult(X1,mult(X1,mult(X1,X1)))),X1)=rd(rd(X1,mult(X1,X1)),mult(X1,mult(X1,X1))))).
+#
+#cnf(i_0_25299, plain, (rd(rd(X1,mult(X1,X1)),mult(X1,mult(X1,X1)))=rd(X1,mult(X1,mult(X1,mult(X1,mult(X1,X1))))))).
+#
+#cnf(i_0_463, plain, (ld(mult(mult(mult(X1,mult(X2,mult(mult(X3,mult(X4,X3)),X2))),X3),X4),mult(mult(X1,X2),mult(mult(X3,mult(X4,X3)),mult(X2,mult(X3,mult(X4,X3))))))=X3)).
+#
+#cnf(i_0_965, plain, (mult(mult(X1,X2),mult(ld(mult(X3,X2),X4),mult(X2,ld(mult(X3,X2),X4))))=mult(mult(X1,ld(X3,mult(X4,X2))),ld(mult(X3,X2),X4)))).
+#######################
+#cnf(i_0_26573, plain, (mult(X1,ld(X4,mult(ld(X2,X3),ld(X2,X3))))=rd(X1,mult(ld(X3,X2),mult(ld(X3,X2),X4))))).
+#
+#cnf(i_0_970, plain, (mult(mult(X1,mult(X2,X1)),mult(ld(mult(mult(X3,X2),X1),X4),mult(X1,mult(X2,X1))))=mult(X1,mult(ld(X3,mult(mult(X4,X1),X2)),X1)))).
+##########################
+#cnf(i_0_1422, plain, (ld(mult(mult(ld(X1,rd(X1,mult(X2,mult(X3,X2)))),X2),X3),rd(mult(X2,mult(X3,X2)),mult(X2,mult(X3,X2))))=X2)).
+##################################################
+#cnf(i_0_2511, plain, (mult(rd(X1,mult(X1,mult(X1,mult(X1,X1)))),mult(X1,X1))=rd(X1,mult(X1,X1)))).
+################
+#cnf(i_0_257930, plain, (mult(rd(X1,mult(X2,mult(X2,X2))),rd(X2,X2))=rd(rd(X1,X2),mult(X2,X2)))).
+########
+#cnf(i_0_1013, plain, (mult(ld(mult(X3,mult(X1,mult(X2,X1))),rd(X4,X1)),mult(X1,mult(X2,X1)))=ld(mult(X1,mult(X2,X1)),ld(X3,mult(mult(X4,X2),X1))))).
+#
+#cnf(i_0_1022, plain, (ld(rd(ld(X1,X2),X1),ld(X3,rd(mult(rd(X4,X1),X2),X1)))=rd(mult(rd(ld(rd(mult(rd(X3,X1),X2),X1),X4),X1),X2),X1))).
+######################
+#cnf(i_0_30618, plain, (mult(mult(X1,mult(X2,mult(X2,mult(X2,X2)))),X2)=mult(mult(X1,mult(X2,mult(X2,X2))),mult(X2,X2)))).
+#
+#cnf(i_0_30621, plain, (mult(mult(X1,mult(X2,mult(X2,X2))),mult(X2,X2))=mult(mult(X1,X2),mult(X2,mult(X2,mult(X2,X2)))))).
+##
+#cnf(i_0_2553, plain, (ld(mult(X2,mult(ld(X2,X1),X1)),mult(X1,mult(X2,mult(ld(X2,X1),X2))))=X2)).
+########################
+#cnf(i_0_1513, plain, (rd(mult(rd(X1,mult(X2,rd(X3,X3))),X2),mult(X2,rd(X3,X3)))=mult(X1,rd(rd(X3,X3),mult(X2,rd(X3,X3)))))).
+#
+#cnf(i_0_1531, plain, (ld(mult(mult(X1,X2),mult(rd(X3,X3),mult(X2,rd(X3,X3)))),mult(X1,mult(X2,mult(rd(X3,X3),X2))))=rd(X3,X3))).
+######
+#cnf(i_0_3953, plain, (ld(mult(X1,mult(X1,mult(X1,X1))),mult(X1,X1))=rd(X1,mult(X1,mult(X1,X1))))).
+#############
+#cnf(i_0_274437, plain, (mult(ld(mult(X2,mult(X1,mult(X2,X1))),X2),X1)=ld(X1,rd(X2,mult(X2,X2))))).
+#########################
+#cnf(i_0_277929, plain, (ld(X1,rd(rd(X2,mult(ld(X1,X2),X2)),X1))=ld(mult(X2,X1),rd(X1,X1)))).
+#########
+#cnf(i_0_277930, plain, (ld(rd(rd(X2,mult(ld(X1,X2),X2)),X1),X1)=mult(X1,mult(ld(X1,X2),X1)))).
+#######
+#cnf(i_0_277941, plain, (mult(rd(X1,X1),rd(X2,mult(ld(X1,X2),X2)))=ld(rd(X1,X1),ld(X2,X1)))).
+####################################
+#cnf(i_0_35219, plain, (ld(ld(X3,rd(ld(X4,X5),mult(X3,X3))),X3)=mult(mult(X3,X3),mult(ld(X5,X4),mult(X3,X3))))).
+##
+#cnf(i_0_35268, plain, (mult(ld(X2,ld(X2,mult(X3,X3))),mult(X3,X3))=mult(ld(X2,ld(X2,X3)),mult(X3,mult(X3,X3))))).
+###
+#cnf(i_0_287435, plain, (rd(mult(X1,rd(X3,X3)),mult(X3,mult(X3,X3)))=rd(rd(X1,X3),mult(X3,X3)))).
+####################
+#cnf(i_0_35291, plain, (rd(ld(X2,ld(X2,ld(rd(X3,X4),X5))),X4)=mult(ld(X2,ld(X2,X4)),ld(X3,rd(X5,X4))))).
+#
+#cnf(i_0_35303, plain, (rd(ld(X2,ld(X2,ld(X3,mult(X4,X5)))),X5)=mult(ld(X2,ld(X2,X5)),ld(mult(X3,X5),X4)))).
+#
+#cnf(i_0_35327, plain, (ld(X2,ld(X2,mult(X3,mult(X3,mult(X3,X3)))))=mult(mult(ld(X2,ld(X2,X3)),X3),mult(X3,X3)))).
+#
+#cnf(i_0_1114, plain, (ld(mult(X1,rd(X2,mult(mult(X3,X2),X4))),mult(rd(X1,mult(mult(X3,X2),X4)),mult(X3,mult(X2,mult(X4,X2)))))=mult(mult(X3,X2),X4))).
+#
+#cnf(i_0_1115, plain, (ld(mult(X1,rd(X2,mult(X3,rd(X4,X2)))),mult(rd(X1,mult(X3,rd(X4,X2))),mult(rd(X3,X2),mult(X2,X4))))=mult(X3,rd(X4,X2)))).
+##################
+#cnf(i_0_307157, plain, (mult(ld(X1,X2),rd(X1,mult(ld(X2,X1),X1)))=ld(X1,mult(X2,ld(X1,X2))))).
+###
+#cnf(i_0_35391, plain, (mult(mult(X1,ld(X3,ld(X3,X4))),mult(X3,X3))=mult(rd(X1,mult(X3,X3)),mult(X4,mult(X3,X3))))).
+#
+#cnf(i_0_35790, plain, (mult(mult(X1,mult(mult(rd(X2,X2),X3),X2)),X2)=mult(rd(X1,X2),mult(mult(X2,mult(X3,X2)),X2)))).
+##
+#cnf(i_0_1145, plain, (ld(mult(mult(X1,X2),mult(rd(X3,X4),mult(X2,rd(X3,X4)))),mult(rd(mult(X1,mult(X2,mult(rd(X3,X4),X2))),X4),mult(X4,X3)))=X4)).
+#
+#cnf(i_0_2103, plain, (ld(mult(rd(X1,X2),mult(X3,X2)),mult(X1,mult(rd(X2,mult(X2,X2)),X3)))=rd(X2,mult(X2,X2)))).
+#####################
+#cnf(i_0_36056, plain, (mult(mult(X1,mult(mult(X1,X2),X1)),rd(X1,X1))=mult(X1,mult(mult(X1,mult(X2,X1)),rd(X1,X1))))).
+################################
+#cnf(i_0_310100, plain, (mult(X1,rd(mult(X2,ld(X4,ld(X4,X2))),X2))=rd(X1,mult(X4,rd(X4,X2))))).
+####
+#cnf(i_0_310395, plain, (ld(mult(X1,mult(X3,rd(X3,mult(X2,X2)))),X1)=mult(X2,rd(X2,mult(X3,X3))))).
+##################
+#cnf(i_0_2135, plain, (mult(rd(mult(X1,X3),mult(X3,X2)),mult(X3,mult(X4,X3)))=mult(mult(rd(X1,rd(X2,X3)),X4),X3))).
+######################
+#cnf(i_0_41085, plain, (ld(mult(X3,X3),rd(X2,mult(X3,mult(X3,X2))))=rd(rd(X2,mult(X3,mult(X3,X2))),mult(X3,X3)))).
+##
+#cnf(i_0_2136, plain, (ld(rd(X1,rd(X2,X3)),rd(mult(rd(mult(X1,X3),mult(X3,X2)),X4),X3))=rd(ld(X3,X4),X3))).
+#
+#cnf(i_0_2144, plain, (ld(mult(mult(X1,X2),rd(mult(X3,X2),mult(X2,X4))),mult(X1,mult(X2,rd(X3,rd(X4,X2)))))=X2)).
+#####
+#cnf(i_0_323006, plain, (mult(X1,mult(mult(ld(X1,mult(X2,X1)),X2),X1))=mult(mult(X2,mult(X1,X2)),X1))).
+#############
+#cnf(i_0_326094, plain, (rd(X1,rd(mult(X3,ld(X2,ld(X2,X3))),X3))=mult(X1,mult(X2,rd(X2,X3))))).
+######
+#cnf(i_0_2145, plain, (mult(mult(rd(X1,mult(X2,rd(X3,rd(X4,X2)))),X2),rd(mult(X3,X2),mult(X2,X4)))=rd(X1,X2))).
+##########
+#cnf(i_0_329295, plain, (rd(mult(ld(mult(X1,X2),X1),X3),mult(X2,X2))=ld(X2,rd(X3,mult(X2,X2))))).
+###############
+#cnf(i_0_2152, plain, (ld(mult(rd(X1,rd(X2,X3)),rd(X4,X3)),mult(rd(mult(X1,X3),mult(X3,X2)),mult(X3,X4)))=X3)).
+#
+#cnf(i_0_2153, plain, (mult(X1,mult(ld(X2,rd(mult(X3,X1),mult(X1,X4))),X1))=ld(rd(X2,X1),rd(X3,rd(X4,X1))))).
+#######################
+#cnf(i_0_44206, plain, (mult(rd(X1,X1),ld(X3,ld(X3,rd(X1,X1))))=ld(mult(mult(X1,mult(X3,X3)),rd(X1,X1)),X1))).
+##
+#cnf(i_0_1610, plain, (mult(mult(X1,X1),mult(ld(mult(mult(X2,X1),rd(X1,X1)),X3),mult(X1,X1)))=ld(rd(X2,X1),mult(X3,mult(X1,X1))))).
+######
+#cnf(i_0_337891, plain, (rd(mult(ld(X1,rd(X1,X2)),X3),mult(X2,X2))=ld(X2,rd(X3,mult(X2,X2))))).
+##########
+#cnf(i_0_344762, plain, (rd(X1,rd(ld(X4,rd(X4,mult(X3,X3))),X3))=mult(X1,mult(X3,mult(X3,X3))))).
+#
+#cnf(i_0_344763, plain, (rd(X1,rd(ld(mult(X4,mult(X3,X3)),X4),X3))=mult(X1,mult(X3,mult(X3,X3))))).
+#
+#cnf(i_0_344764, plain, (rd(X1,rd(rd(X4,mult(X3,mult(X3,X4))),X3))=mult(X1,mult(X3,mult(X3,X3))))).
+####
+#cnf(i_0_44211, plain, (ld(mult(mult(X1,rd(X2,X2)),rd(X1,X1)),X1)=mult(rd(X1,X1),mult(rd(X2,X2),rd(X1,X1))))).
+#
+#cnf(i_0_44219, plain, (ld(mult(mult(X1,ld(X3,X2)),rd(X1,X1)),X1)=mult(rd(X1,X1),mult(ld(X2,X3),rd(X1,X1))))).
+#
+#cnf(i_0_1611, plain, (ld(mult(X1,X1),ld(X2,mult(mult(X3,X1),rd(X1,X1))))=mult(ld(mult(X2,mult(X1,X1)),rd(X3,X1)),mult(X1,X1)))).
+#
+#cnf(i_0_1614, plain, (mult(mult(mult(mult(X1,X2),rd(X2,X2)),X3),mult(X2,X2))=mult(rd(X1,X2),mult(mult(X2,X2),mult(X3,mult(X2,X2)))))).
+############
+#cnf(i_0_350741, plain, (ld(rd(rd(X2,X2),mult(X2,mult(X2,X3))),X3)=mult(mult(X2,mult(X2,X3)),X3))).
+############
+#cnf(i_0_1615, plain, (ld(mult(mult(mult(X1,X2),rd(X2,X2)),X3),mult(rd(X1,X2),mult(mult(X2,X2),mult(X3,mult(X2,X2)))))=mult(X2,X2))).
+#
+#cnf(i_0_1617, plain, (ld(mult(mult(mult(X1,X2),rd(X2,X2)),rd(X3,mult(X2,X2))),mult(rd(X1,X2),mult(mult(X2,X2),X3)))=mult(X2,X2))).
+######
+#cnf(i_0_357372, plain, (mult(rd(rd(X2,X2),X3),mult(X3,rd(X2,X2)))=rd(ld(rd(X2,X2),X3),X3))).
+##################
+#cnf(i_0_1620, plain, (ld(mult(mult(X1,mult(X2,X2)),rd(X3,X2)),mult(X1,mult(mult(X2,X2),mult(mult(X3,X2),rd(X2,X2)))))=mult(X2,X2))).
+#
+#cnf(i_0_1622, plain, (mult(rd(X1,mult(X2,X2)),mult(mult(X2,X2),mult(mult(X3,X2),rd(X2,X2))))=mult(mult(X1,rd(X3,X2)),mult(X2,X2)))).
+####
+#cnf(i_0_359239, plain, (ld(rd(ld(X3,rd(X3,mult(X2,X2))),X2),X2)=mult(X2,mult(X2,mult(X2,X2))))).
+#
+#cnf(i_0_359240, plain, (ld(rd(ld(mult(X3,mult(X2,X2)),X3),X2),X2)=mult(X2,mult(X2,mult(X2,X2))))).
+#
+#cnf(i_0_359241, plain, (ld(rd(rd(X3,mult(X2,mult(X2,X3))),X2),X2)=mult(X2,mult(X2,mult(X2,X2))))).
+#########
+#cnf(i_0_360209, plain, (ld(ld(X1,rd(X1,mult(X2,mult(X2,X2)))),X2)=mult(X2,mult(X2,mult(X2,X2))))).
+#########
+#cnf(i_0_1623, plain, (ld(mult(X1,rd(mult(X2,X2),rd(X3,X2))),mult(rd(X1,rd(X3,X2)),mult(mult(X3,X2),rd(X2,X2))))=rd(X3,X2))).
+#
+#cnf(i_0_1624, plain, (ld(rd(X1,mult(X2,X2)),mult(mult(X3,X2),rd(X2,X2)))=mult(mult(X2,X2),mult(ld(X1,rd(X3,X2)),mult(X2,X2))))).
+########################
+#cnf(i_0_1627, plain, (rd(mult(X1,mult(mult(X2,X3),rd(X3,X3))),rd(X2,X3))=mult(mult(X1,rd(X2,X3)),rd(mult(X3,X3),rd(X2,X3))))).
+#
+#cnf(i_0_1629, plain, (ld(mult(mult(X1,rd(X2,X3)),rd(mult(X3,X3),rd(X2,X3))),mult(X1,mult(mult(X2,X3),rd(X3,X3))))=rd(X2,X3))).
+################
+#cnf(i_0_383625, plain, (mult(X1,rd(rd(X4,mult(X3,mult(X3,X4))),X3))=rd(X1,mult(X3,mult(X3,X3))))).
+########
+#cnf(i_0_1630, plain, (mult(mult(rd(X1,mult(mult(X2,X3),rd(X3,X3))),rd(X2,X3)),rd(mult(X3,X3),rd(X2,X3)))=rd(X1,rd(X2,X3)))).
+#
+#cnf(i_0_1647, plain, (mult(mult(X1,ld(X3,X2)),mult(ld(X2,X3),ld(X2,X3)))=mult(mult(X1,ld(X2,X3)),mult(ld(X2,X3),ld(X3,X2))))).
+#######################################################
+#cnf(i_0_4572, plain, (mult(mult(X1,X1),mult(ld(X1,X2),mult(X1,X1)))=mult(mult(X1,X2),mult(X1,X1)))).
+######
+#cnf(i_0_402223, plain, (rd(mult(X1,mult(X2,mult(X1,X1))),mult(X1,X1))=mult(rd(X1,X1),mult(X1,X2)))).
+#
+#cnf(i_0_693340, plain, (rd(mult(X1,mult(X2,X1)),mult(X1,X1))=mult(mult(X1,rd(X2,mult(X1,X1))),X1))).
+####
+#cnf(i_0_402555, plain, (mult(rd(X1,mult(X1,X1)),mult(mult(X1,X1),X2))=rd(mult(X1,mult(X2,X1)),X1))).
+###############
+#cnf(i_0_403662, plain, (rd(ld(ld(mult(X1,X2),X1),X3),mult(X2,X2))=mult(X2,rd(X3,mult(X2,X2))))).
+##
+#cnf(i_0_403669, plain, (rd(ld(ld(X1,rd(X1,X2)),X3),mult(X2,X2))=mult(X2,rd(X3,mult(X2,X2))))).
+###
+#cnf(i_0_403959, plain, (mult(mult(ld(X1,rd(X2,X1)),X1),mult(X1,X1))=ld(X1,mult(X2,mult(X1,X1))))).
+#
+#cnf(i_0_698393, plain, (rd(ld(X1,mult(X2,mult(X1,X1))),X1)=mult(ld(X1,rd(X2,X1)),mult(X1,X1)))).
+#############
+#cnf(i_0_95, plain, (mult(mult(X1,mult(X2,mult(mult(X3,X4),mult(X2,mult(X4,X2))))),mult(X3,mult(X4,mult(X2,X4))))=mult(mult(X1,X2),mult(mult(X3,mult(X4,mult(X2,X4))),mult(X2,mult(X3,mult(X4,mult(X2,X4)))))))).
+#
+#cnf(i_0_405360, plain, (ld(X1,mult(mult(rd(X1,X1),X2),mult(X1,X1)))=mult(ld(X1,X2),mult(X1,X1)))).
+##
+#cnf(i_0_406147, plain, (mult(X2,mult(X2,mult(ld(X2,ld(X2,X3)),X2)))=ld(X2,mult(mult(X2,X3),X2)))).
+#
+#cnf(i_0_702968, plain, (mult(X1,mult(ld(X1,ld(X1,X2)),X1))=mult(ld(mult(X1,X1),mult(X1,X2)),X1))).
+#
+#cnf(i_0_704791, plain, (ld(mult(ld(X2,X3),X2),rd(X2,X2))=ld(ld(X2,mult(mult(X2,X3),X2)),X2))).
+###
+#cnf(i_0_705323, plain, (mult(ld(mult(X1,X1),ld(X1,X2)),X1)=ld(mult(X1,mult(X1,X1)),mult(X2,X1)))).
+#
+#cnf(i_0_707098, plain, (ld(ld(X2,mult(ld(X2,X3),X2)),X2)=ld(mult(X3,X2),mult(X2,mult(X2,X2))))).
+#####
+#cnf(i_0_406211, plain, (mult(X1,mult(X1,mult(rd(X1,mult(X1,X1)),X2)))=ld(X1,mult(mult(X1,X1),X2)))).
+####
+#cnf(i_0_709316, plain, (ld(X1,rd(mult(X1,rd(X1,X3)),X1))=mult(X1,rd(X1,mult(X1,mult(X3,X1)))))).
+######
+#cnf(i_0_1648, plain, (mult(rd(X1,X1),mult(ld(mult(rd(X2,mult(X1,X1)),X1),X3),rd(X1,X1)))=ld(rd(X2,X1),mult(X3,rd(X1,X1))))).
+#
+#cnf(i_0_1649, plain, (ld(rd(X1,X1),ld(X2,mult(rd(X3,mult(X1,X1)),X1)))=mult(ld(mult(X2,rd(X1,X1)),rd(X3,X1)),rd(X1,X1)))).
+####
+#cnf(i_0_709362, plain, (ld(X1,mult(mult(X1,X1),rd(X2,X1)))=mult(X1,rd(mult(rd(X1,X1),X2),X1)))).
+#####
+#cnf(i_0_712430, plain, (ld(X1,rd(mult(X1,mult(X2,X1)),X1))=mult(X1,mult(X1,ld(mult(X1,X1),X2))))).
+#
+#cnf(i_0_2000, plain, (mult(ld(rd(X1,X1),rd(X2,X1)),X1)=mult(X1,mult(X1,ld(mult(X1,X1),X2))))).
+#########
+#cnf(i_0_407330, plain, (mult(rd(X1,mult(X1,X1)),mult(X1,mult(X1,X2)))=mult(mult(X1,X1),ld(X1,X2)))).
+##
+#cnf(i_0_715234, plain, (rd(mult(mult(X1,X1),ld(X1,X2)),X1)=mult(rd(X1,X1),rd(mult(X1,X2),X1)))).
+#
+#cnf(i_0_715349, plain, (ld(X1,mult(mult(X1,mult(X1,X2)),X1))=mult(X1,mult(X1,mult(ld(X1,X2),X1))))).
+#
+#cnf(i_0_715379, plain, (ld(X1,ld(X1,rd(mult(X1,X2),X1)))=mult(X1,ld(mult(X1,X1),rd(X2,X1))))).
+#
+#cnf(i_0_1652, plain, (mult(rd(X1,X2),mult(rd(X2,X2),mult(X3,rd(X2,X2))))=mult(mult(mult(rd(X1,mult(X2,X2)),X2),X3),rd(X2,X2)))).
+##########
+#cnf(i_0_718561, plain, (ld(X1,mult(ld(rd(X1,X1),X2),X1))=mult(X1,ld(mult(X1,X1),mult(X2,X1))))).
+###############
+#cnf(i_0_1655, plain, (ld(mult(mult(rd(X1,mult(X2,X2)),X2),mult(X3,rd(X2,X2))),mult(rd(X1,X2),mult(rd(X2,X2),X3)))=rd(X2,X2))).
+#
+#cnf(i_0_1658, plain, (ld(mult(mult(X1,rd(X2,X2)),rd(X3,X2)),mult(X1,mult(rd(X2,X2),mult(rd(X3,mult(X2,X2)),X2))))=rd(X2,X2))).
+##
+#cnf(i_0_407374, plain, (mult(mult(X1,X1),mult(ld(mult(X1,X1),X2),X1))=mult(mult(rd(X1,X1),X2),X1))).
+##
+#cnf(i_0_407556, plain, (mult(X1,mult(X1,rd(rd(X1,mult(X1,X1)),X2)))=ld(X1,rd(mult(X1,X1),X2)))).
+##
+#cnf(i_0_407908, plain, (ld(mult(ld(ld(X3,X2),X2),X3),ld(X2,X3))=ld(mult(X2,X3),rd(X3,X3)))).
+##################
+#cnf(i_0_1660, plain, (mult(mult(X1,rd(X2,X2)),mult(rd(X2,X2),mult(rd(X3,mult(X2,X2)),X2)))=mult(mult(X1,rd(X3,X2)),rd(X2,X2)))).
+#
+#cnf(i_0_1661, plain, (ld(mult(X1,mult(rd(X2,mult(X2,X3)),X2)),mult(rd(X1,rd(X3,X2)),mult(rd(X3,mult(X2,X2)),X2)))=rd(X3,X2))).
+########################
+#cnf(i_0_1662, plain, (mult(rd(X2,X2),mult(ld(X1,rd(X3,X2)),rd(X2,X2)))=ld(mult(X1,rd(X2,X2)),mult(rd(X3,mult(X2,X2)),X2)))).
+#
+#cnf(i_0_1665, plain, (rd(mult(X1,mult(rd(X2,mult(X3,X3)),X3)),rd(X2,X3))=mult(mult(X1,rd(X2,X3)),mult(rd(X3,mult(X3,X2)),X3)))).
+#####
+#cnf(i_0_422655, plain, (rd(mult(rd(X1,X2),rd(X2,mult(X1,X1))),X2)=ld(X1,ld(X1,rd(X1,X2))))).
+#
+#cnf(i_0_423043, plain, (mult(X1,mult(rd(X2,X1),rd(X1,mult(X2,X2))))=ld(rd(X2,X1),rd(X1,X1)))).
+#
+#cnf(i_0_732300, plain, (ld(rd(rd(X2,X2),X1),rd(X1,X1))=mult(X1,rd(ld(rd(X2,X2),X1),X1)))).
+###############
+#cnf(i_0_46563, plain, (rd(rd(X1,mult(X2,mult(X2,mult(X2,X2)))),X2)=rd(rd(X1,mult(X2,mult(X2,X2))),mult(X2,X2)))).
+#
+#cnf(i_0_46570, plain, (rd(rd(X1,mult(X2,mult(X2,X2))),mult(X2,X2))=rd(rd(X1,X2),mult(X2,mult(X2,mult(X2,X2)))))).
+#
+#cnf(i_0_1667, plain, (ld(mult(mult(X1,rd(X2,X3)),mult(rd(X3,mult(X3,X2)),X3)),mult(X1,mult(rd(X2,mult(X3,X3)),X3)))=rd(X2,X3))).
+#
+#cnf(i_0_1668, plain, (mult(mult(rd(X1,mult(rd(X2,mult(X3,X3)),X3)),rd(X2,X3)),mult(rd(X3,mult(X3,X2)),X3))=rd(X1,rd(X2,X3)))).
+#######################
+#cnf(i_0_46735, plain, (mult(rd(X1,mult(rd(X2,X2),X1)),rd(X2,X2))=mult(rd(X2,X2),mult(rd(X1,X1),rd(X2,X2))))).
+#
+#cnf(i_0_1675, plain, (mult(mult(X1,rd(X3,mult(rd(X2,X3),X2))),rd(X2,X3))=mult(rd(X1,rd(X2,X3)),mult(rd(X2,mult(X3,X2)),X3)))).
+##############
+#cnf(i_0_431136, plain, (mult(mult(X1,mult(X1,mult(X1,X3))),ld(X3,X1))=mult(X1,mult(X1,mult(X1,X1))))).
+#####################################
+#cnf(i_0_741, plain, (mult(X1,mult(mult(ld(X2,rd(X3,X1)),X1),mult(X4,mult(ld(X2,rd(X3,X1)),X1))))=mult(mult(ld(rd(X2,X1),X3),X4),mult(ld(X2,rd(X3,X1)),X1)))).
+#############
+#cnf(i_0_445470, plain, (mult(mult(X1,X3),ld(ld(X1,ld(X1,X3)),X1))=mult(X1,mult(X1,mult(X1,X1))))).
+##
+#cnf(i_0_451441, plain, (mult(ld(X1,ld(X1,rd(X2,X2))),rd(X2,X2))=rd(X2,mult(X1,mult(X1,X2))))).
+##########
+#cnf(i_0_747, plain, (ld(mult(mult(X1,mult(ld(X2,rd(X3,X4)),X4)),X4),mult(X1,mult(mult(ld(X2,rd(X3,X4)),X4),ld(rd(X2,X4),X3))))=mult(ld(X2,rd(X3,X4)),X4))).
+########################
+#cnf(i_0_749, plain, (mult(rd(X1,mult(ld(X2,rd(X3,X4)),X4)),mult(mult(ld(X2,rd(X3,X4)),X4),ld(rd(X2,X4),X3)))=mult(mult(X1,X4),mult(ld(X2,rd(X3,X4)),X4)))).
+#
+#cnf(i_0_750, plain, (mult(mult(ld(X2,rd(X3,X4)),X4),mult(ld(X1,X4),mult(ld(X2,rd(X3,X4)),X4)))=ld(rd(X1,mult(ld(X2,rd(X3,X4)),X4)),ld(rd(X2,X4),X3)))).
+########################
+#cnf(i_0_2279, plain, (ld(mult(X4,mult(ld(X1,X2),mult(X3,ld(X1,X2)))),X4)=ld(mult(mult(X2,X3),ld(X1,X2)),X1))).
+########################################
+#cnf(i_0_467811, plain, (rd(X1,mult(mult(X1,rd(X1,X2)),mult(X1,X1)))=ld(X1,rd(X2,mult(X1,X1))))).
+#
+#cnf(i_0_753761, plain, (ld(ld(X1,rd(X2,mult(X1,X1))),X1)=mult(mult(X1,rd(X1,X2)),mult(X1,X1)))).
+################################################
+#cnf(i_0_472303, plain, (ld(rd(rd(X3,X3),X2),ld(X2,mult(X3,X2)))=rd(mult(X3,mult(X2,X3)),X3))).
+##########
+#cnf(i_0_47244, plain, (mult(mult(X1,mult(X3,X3)),ld(X3,ld(X3,X2)))=rd(mult(X1,mult(X2,mult(X3,X3))),mult(X3,X3)))).
+##
+#cnf(i_0_2346, plain, (mult(mult(X2,ld(X3,mult(X4,ld(X2,X1)))),ld(X1,X2))=mult(X1,ld(mult(X3,ld(X2,X1)),X4)))).
+########################
+#cnf(i_0_2347, plain, (mult(mult(X2,ld(mult(X3,ld(X1,X2)),X4)),ld(X1,X2))=mult(X1,ld(X3,mult(X4,ld(X1,X2)))))).
+#
+#cnf(i_0_2921, plain, (mult(X1,mult(rd(X3,mult(X3,X3)),X1))=ld(rd(mult(rd(X2,X1),X3),X1),X2))).
+########################
+#cnf(i_0_2922, plain, (ld(X1,rd(X3,mult(X3,X3)))=mult(ld(mult(X2,mult(X1,mult(X3,X1))),X2),X1))).
+###################################################
+#cnf(i_0_2985, plain, (ld(mult(X2,mult(X1,mult(X3,X1))),mult(mult(X2,X1),X3))=rd(X1,mult(X1,X1)))).
+########################
+#cnf(i_0_2986, plain, (ld(mult(rd(X2,X1),mult(X1,X3)),mult(X2,rd(X3,X1)))=rd(X1,mult(X1,X1)))).
+#
+#cnf(i_0_784, plain, (rd(mult(rd(X1,mult(mult(X2,X3),rd(X4,X3))),mult(X2,mult(X3,X4))),mult(mult(X2,X3),rd(X4,X3)))=mult(X1,rd(X3,mult(mult(X2,X3),rd(X4,X3)))))).
+########################
+#cnf(i_0_828, plain, (ld(mult(ld(rd(X2,X1),X3),rd(X4,mult(ld(X2,rd(X3,X1)),X1))),mult(X1,mult(mult(ld(X2,rd(X3,X1)),X1),X4)))=mult(ld(X2,rd(X3,X1)),X1))).
+#######################
+#cnf(i_0_49148, plain, (ld(mult(rd(X3,X4),X2),rd(mult(X3,X4),X2))=rd(ld(X2,mult(X4,mult(rd(X3,X3),X4))),X2))).
+####################################
+#cnf(i_0_536868, plain, (mult(ld(mult(X3,X1),X3),mult(X2,mult(X1,X1)))=mult(ld(X1,X2),mult(X1,X1)))).
+##########
+#cnf(i_0_536869, plain, (mult(ld(X3,rd(X3,X1)),mult(X2,mult(X1,X1)))=mult(ld(X1,X2),mult(X1,X1)))).
+#############
+#cnf(i_0_541021, plain, (ld(rd(X1,mult(rd(X2,X2),X1)),mult(X1,X1))=mult(rd(X2,X2),mult(X1,X1)))).
+#
+#cnf(i_0_541867, plain, (rd(ld(mult(X1,X2),X1),rd(rd(X3,X3),X2))=rd(X2,mult(rd(X3,X3),X2)))).
+#
+#cnf(i_0_541875, plain, (rd(ld(X1,rd(X1,X2)),rd(rd(X3,X3),X2))=rd(X2,mult(rd(X3,X3),X2)))).
+#
+#cnf(i_0_542767, plain, (ld(rd(X1,mult(rd(X2,X2),X1)),rd(X1,X1))=mult(rd(X2,X2),rd(X1,X1)))).
+##########
+#cnf(i_0_562500, plain, (mult(rd(X1,X1),mult(X1,rd(X2,mult(X1,X1))))=rd(mult(X1,X2),mult(X1,X1)))).
+##
+#cnf(i_0_52357, plain, (rd(mult(rd(X1,mult(X1,X1)),mult(X2,X1)),X1)=mult(rd(X1,X1),mult(rd(X1,mult(X1,X1)),X2)))).
+#
+#cnf(i_0_52722, plain, (mult(X1,mult(X2,mult(ld(ld(X4,X2),X4),X2)))=rd(X1,rd(rd(X2,mult(X2,X2)),mult(X4,X4))))).
+##
+#cnf(i_0_851, plain, (mult(mult(X1,mult(rd(X2,mult(X3,X4)),X3)),rd(rd(X4,X3),mult(rd(X2,mult(X3,X4)),X3)))=rd(mult(X1,rd(X2,X3)),mult(rd(X2,mult(X3,X4)),X3)))).
+#####
+#cnf(i_0_568888, plain, (rd(X2,mult(ld(X1,X2),rd(ld(X2,X1),X1)))=ld(rd(ld(X2,X1),X1),X1))).
+############
+#cnf(i_0_571224, plain, (mult(mult(X1,mult(rd(X2,X2),X1)),rd(X1,X1))=mult(X1,mult(rd(X2,X2),X1)))).
+#
+#cnf(i_0_787878, plain, (mult(rd(X2,X2),rd(X1,X1))=rd(X2,X2))).
+#
+#cnf(i_0_788990, plain, (mult(X1,rd(X2,X2))=X1)).
+#
+#cnf(i_0_1281, plain, (rd(X1,rd(X2,X2))=X1)).
+#
+#cnf(i_0_4118, plain, (mult(rd(X1,X1),X2)=X2)).
+#
+#cnf(i_0_1300, plain, (mult(mult(X1,X2),X2)=mult(X1,mult(X2,X2)))).
+#
+#cnf(i_0_22041, plain, (rd(rd(X1,X2),X2)=rd(X1,mult(X2,X2)))).
+#
+#cnf(i_0_1338, plain, (ld(rd(X1,X1),X2)=X2)).
+##
+#cnf(i_0_3064, plain, (ld(ld(rd(X1,rd(X2,X3)),rd(mult(X1,X3),mult(X3,X2))),X3)=mult(X3,X3))).
+#
+# Proof found!
+# SZS status Theorem
+# SZS output start CNFRefutation
+fof(f05, axiom, ![X3, X1, X2]:(mult(X2,mult(X1,mult(X3,X1)))=mult(mult(mult(X2,X1),X3),X1)), file('Problems/GRP/GRP655+2.p', f05)).
+fof(f03, axiom, ![X1, X2]:(mult(rd(X2,X1),X1)=X2), file('Problems/GRP/GRP655+2.p', f03)).
+fof(f02, axiom, ![X1, X2]:(ld(X2,mult(X2,X1))=X1), file('Problems/GRP/GRP655+2.p', f02)).
+fof(f01, axiom, ![X1, X2]:(mult(X2,ld(X2,X1))=X1), file('Problems/GRP/GRP655+2.p', f01)).
+fof(f04, axiom, ![X1, X2]:(rd(mult(X2,X1),X1)=X2), file('Problems/GRP/GRP655+2.p', f04)).
+fof(goals, conjecture, ![X4, X5]:((mult(X4,rd(X5,X5))=X4&mult(rd(X5,X5),X4)=X4)), file('Problems/GRP/GRP655+2.p', goals)).
+fof(c_0_6, plain, ![X14, X15, X16]:(mult(X16,mult(X15,mult(X14,X15)))=mult(mult(mult(X16,X15),X14),X15)), inference(variable_rename,[status(thm)],[f05])).
+fof(c_0_7, plain, ![X10, X11]:(mult(rd(X11,X10),X10)=X11), inference(variable_rename,[status(thm)],[f03])).
+fof(c_0_8, plain, ![X8, X9]:(ld(X9,mult(X9,X8))=X8), inference(variable_rename,[status(thm)],[f02])).
+cnf(c_0_9, plain, (mult(X1,mult(X2,mult(X3,X2)))=mult(mult(mult(X1,X2),X3),X2)), inference(split_conjunct,[status(thm)],[c_0_6])).
+cnf(c_0_10, plain, (mult(rd(X1,X2),X2)=X1), inference(split_conjunct,[status(thm)],[c_0_7])).
+cnf(c_0_11, plain, (ld(X1,mult(X1,X2))=X2), inference(split_conjunct,[status(thm)],[c_0_8])).
+cnf(c_0_12, plain, (mult(rd(X1,X2),mult(X2,mult(X3,X2)))=mult(mult(X1,X3),X2)), inference(spm,[status(thm)],[c_0_9, c_0_10])).
+fof(c_0_13, plain, ![X6, X7]:(mult(X7,ld(X7,X6))=X6), inference(variable_rename,[status(thm)],[f01])).
+cnf(c_0_14, plain, (ld(rd(X1,X2),mult(mult(X1,X3),X2))=mult(X2,mult(X3,X2))), inference(spm,[status(thm)],[c_0_11, c_0_12])).
+cnf(c_0_15, plain, (mult(X1,ld(X1,X2))=X2), inference(split_conjunct,[status(thm)],[c_0_13])).
+fof(c_0_16, plain, ![X12, X13]:(rd(mult(X13,X12),X12)=X13), inference(variable_rename,[status(thm)],[f04])).
+cnf(c_0_17, plain, (ld(rd(X1,X2),mult(X3,X2))=mult(X2,mult(ld(X1,X3),X2))), inference(spm,[status(thm)],[c_0_14, c_0_15])).
+cnf(c_0_18, plain, (rd(mult(X1,X2),X2)=X1), inference(split_conjunct,[status(thm)],[c_0_16])).
+cnf(c_0_19, plain, (mult(X1,mult(ld(X2,rd(X2,X1)),X1))=X1), inference(spm,[status(thm)],[c_0_11, c_0_17])).
+cnf(c_0_20, plain, (rd(mult(X1,mult(X2,mult(X3,X2))),X2)=mult(mult(X1,X2),X3)), inference(spm,[status(thm)],[c_0_18, c_0_9])).
+cnf(c_0_21, plain, (ld(rd(X1,X2),X1)=X2), inference(spm,[status(thm)],[c_0_11, c_0_10])).
+cnf(c_0_22, plain, (mult(ld(X1,rd(X1,X2)),X2)=ld(X2,X2)), inference(spm,[status(thm)],[c_0_11, c_0_19])).
+cnf(c_0_23, plain, (rd(mult(X1,mult(X2,X3)),X2)=mult(mult(X1,X2),rd(X3,X2))), inference(spm,[status(thm)],[c_0_20, c_0_10])).
+cnf(c_0_24, plain, (mult(X1,mult(ld(mult(X2,X1),X2),X1))=X1), inference(spm,[status(thm)],[c_0_21, c_0_17])).
+cnf(c_0_25, plain, (mult(mult(X1,ld(X2,rd(X2,X3))),X3)=X1), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_12, c_0_22]), c_0_15]), c_0_10])).
+cnf(c_0_26, plain, (mult(mult(X1,X2),rd(ld(X2,X3),X2))=rd(mult(X1,X3),X2)), inference(spm,[status(thm)],[c_0_23, c_0_15])).
+cnf(c_0_27, plain, (mult(ld(mult(X1,X2),X1),X2)=ld(X2,X2)), inference(spm,[status(thm)],[c_0_11, c_0_24])).
+cnf(c_0_28, plain, (mult(X1,ld(X2,rd(X2,X3)))=rd(X1,X3)), inference(spm,[status(thm)],[c_0_18, c_0_25])).
+cnf(c_0_29, plain, (rd(X1,ld(X2,X1))=X2), inference(spm,[status(thm)],[c_0_18, c_0_15])).
+cnf(c_0_30, plain, (mult(X1,rd(ld(X2,X3),X2))=rd(mult(rd(X1,X2),X3),X2)), inference(spm,[status(thm)],[c_0_26, c_0_10])).
+cnf(c_0_31, plain, (ld(ld(mult(X1,X2),X1),ld(X2,X2))=X2), inference(spm,[status(thm)],[c_0_11, c_0_27])).
+cnf(c_0_32, plain, (rd(X1,ld(X2,X3))=mult(X1,ld(X3,X2))), inference(spm,[status(thm)],[c_0_28, c_0_29])).
+cnf(c_0_33, plain, (mult(X1,mult(X2,mult(ld(X2,X2),X2)))=mult(X1,mult(X2,X2))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_30, c_0_31]), c_0_32]), c_0_11]), c_0_32]), c_0_11]), c_0_32]), c_0_11]), c_0_9])).
+cnf(c_0_34, plain, (mult(X1,mult(ld(X1,X1),X1))=mult(X1,X1)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_11, c_0_33]), c_0_11])).
+cnf(c_0_35, plain, (mult(ld(X1,X1),X1)=X1), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_11, c_0_34]), c_0_11])).
+cnf(c_0_36, plain, (ld(X1,X1)=rd(X1,X1)), inference(spm,[status(thm)],[c_0_18, c_0_35])).
+cnf(c_0_37, plain, (mult(mult(X1,rd(X2,X3)),X3)=mult(rd(X1,X3),mult(X3,X2))), inference(spm,[status(thm)],[c_0_12, c_0_10])).
+cnf(c_0_38, plain, (mult(X1,rd(X1,X1))=X1), inference(spm,[status(thm)],[c_0_15, c_0_36])).
+cnf(c_0_39, plain, (rd(X1,rd(X2,X2))=mult(X1,rd(X2,X2))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_32, c_0_36]), c_0_36])).
+cnf(c_0_40, plain, (mult(mult(rd(X1,mult(X2,X3)),X2),rd(X3,X2))=rd(X1,X2)), inference(spm,[status(thm)],[c_0_23, c_0_10])).
+cnf(c_0_41, plain, (mult(rd(X1,X1),mult(X1,X1))=mult(X1,X1)), inference(spm,[status(thm)],[c_0_37, c_0_38])).
+cnf(c_0_42, plain, (mult(rd(X1,X2),mult(X2,X2))=mult(mult(X1,X2),rd(X2,X2))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_12, c_0_38]), c_0_10]), c_0_39]), c_0_37])).
+cnf(c_0_43, plain, (mult(X1,mult(ld(X2,rd(X3,X1)),X1))=ld(rd(X2,X1),X3)), inference(spm,[status(thm)],[c_0_17, c_0_10])).
+cnf(c_0_44, plain, (rd(rd(X1,X2),rd(X3,X2))=mult(rd(X1,mult(X2,X3)),X2)), inference(spm,[status(thm)],[c_0_18, c_0_40])).
+cnf(c_0_45, plain, (mult(mult(X1,ld(X2,X3)),ld(X3,X2))=X1), inference(spm,[status(thm)],[c_0_18, c_0_32])).
+cnf(c_0_46, plain, (ld(X1,rd(mult(rd(X1,X2),X3),X2))=rd(ld(X2,X3),X2)), inference(spm,[status(thm)],[c_0_11, c_0_30])).
+cnf(c_0_47, plain, (mult(mult(X1,X1),rd(X1,X1))=mult(X1,X1)), inference(rw,[status(thm)],[c_0_41, c_0_42])).
+cnf(c_0_48, plain, (mult(X1,mult(mult(rd(X2,mult(X1,X2)),X1),X1))=ld(rd(rd(X2,X1),X1),X2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_43, c_0_36]), c_0_44])).
+cnf(c_0_49, plain, (mult(mult(X1,rd(X2,X2)),rd(X2,X2))=X1), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_45, c_0_36]), c_0_36])).
+cnf(c_0_50, plain, (ld(mult(X1,X2),rd(mult(X1,X3),X2))=rd(ld(X2,X3),X2)), inference(spm,[status(thm)],[c_0_46, c_0_18])).
+cnf(c_0_51, plain, (mult(ld(rd(X1,X1),X2),rd(X1,X1))=mult(rd(X1,X1),mult(X2,rd(X1,X1)))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_46, c_0_39]), c_0_39]), c_0_9]), c_0_11]), c_0_39])).
+cnf(c_0_52, plain, (mult(rd(X1,mult(X2,mult(X3,X2))),X2)=rd(rd(X1,X2),X3)), inference(spm,[status(thm)],[c_0_44, c_0_18])).
+cnf(c_0_53, plain, (mult(mult(X1,mult(X2,rd(X3,X3))),rd(X3,X3))=mult(mult(X1,rd(X3,X3)),mult(rd(X3,X3),X2))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_37, c_0_39]), c_0_39])).
+cnf(c_0_54, plain, (mult(mult(rd(X1,X2),rd(X1,X2)),mult(rd(X1,mult(X2,X1)),X2))=mult(rd(X1,X2),rd(X1,X2))), inference(spm,[status(thm)],[c_0_47, c_0_44])).
+cnf(c_0_55, plain, (mult(rd(X1,X1),rd(X2,mult(rd(X1,X1),X2)))=rd(X2,X2)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_48, c_0_49]), c_0_39]), c_0_39]), c_0_49]), c_0_36])).
+cnf(c_0_56, plain, (ld(X1,mult(mult(X1,X2),rd(X1,X1)))=mult(rd(X1,X1),mult(X2,rd(X1,X1)))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_50, c_0_38]), c_0_39]), c_0_39]), c_0_51])).
+cnf(c_0_57, plain, (rd(X1,mult(rd(X2,X2),mult(X3,rd(X2,X2))))=mult(rd(mult(X1,rd(X2,X2)),X3),rd(X2,X2))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_49, c_0_52]), c_0_39])).
+cnf(c_0_58, plain, (rd(mult(X1,X1),mult(X1,X1))=rd(X1,X1)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_11, c_0_47]), c_0_36])).
+cnf(c_0_59, plain, (mult(X1,ld(mult(X2,X3),X2))=rd(X1,X3)), inference(spm,[status(thm)],[c_0_28, c_0_18])).
+cnf(c_0_60, plain, (mult(rd(X1,X2),rd(X2,X2))=mult(rd(X1,mult(X2,X2)),X2)), inference(spm,[status(thm)],[c_0_44, c_0_39])).
+cnf(c_0_61, plain, (mult(rd(mult(X1,X2),mult(X2,X3)),X2)=rd(X1,rd(X3,X2))), inference(spm,[status(thm)],[c_0_44, c_0_18])).
+cnf(c_0_62, plain, (mult(mult(X1,mult(rd(X2,X2),X1)),rd(X1,X1))=mult(X1,mult(rd(X2,X2),X1))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_53, c_0_54]), c_0_39]), c_0_39]), c_0_53]), c_0_49]), c_0_39]), c_0_39]), c_0_53]), c_0_49]), c_0_55])).
+cnf(c_0_63, plain, (mult(rd(mult(X1,rd(X2,X2)),X3),rd(X2,X2))=mult(X1,ld(mult(mult(X2,X3),rd(X2,X2)),X2))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_32, c_0_56]), c_0_57])).
+cnf(c_0_64, plain, (mult(rd(X1,mult(X1,X1)),X1)=rd(X1,X1)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_58, c_0_59]), c_0_44]), c_0_59]), c_0_39]), c_0_37]), c_0_42]), c_0_27]), c_0_36]), c_0_60]), c_0_32]), c_0_11]), c_0_27]), c_0_36])).
+fof(c_0_65, negated_conjecture, ~(![X4, X5]:((mult(X4,rd(X5,X5))=X4&mult(rd(X5,X5),X4)=X4))), inference(assume_negation,[status(cth)],[goals])).
+cnf(c_0_66, plain, (mult(rd(X1,mult(rd(X1,X1),X2)),rd(X1,X1))=rd(X1,mult(X2,rd(X1,X1)))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_61, c_0_38]), c_0_39])).
+cnf(c_0_67, plain, (mult(rd(X1,X1),rd(X2,X2))=rd(X1,X1)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_62, c_0_63]), c_0_53]), c_0_38]), c_0_59]), c_0_55]), c_0_39]), c_0_60]), c_0_64]), c_0_53]), c_0_38]), c_0_59]), c_0_55])).
+fof(c_0_68, negated_conjecture, (mult(esk1_0,rd(esk2_0,esk2_0))!=esk1_0|mult(rd(esk2_0,esk2_0),esk1_0)!=esk1_0), inference(fof_nnf,[status(thm)],[inference(skolemize,[status(esa)],[inference(variable_rename,[status(thm)],[inference(fof_nnf,[status(thm)],[c_0_65])])])])).
+cnf(c_0_69, plain, (mult(X1,rd(X2,X2))=X1), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_66, c_0_67]), c_0_39]), c_0_38]), c_0_38]), c_0_67]), c_0_39])).
+cnf(c_0_70, negated_conjecture, (mult(esk1_0,rd(esk2_0,esk2_0))!=esk1_0|mult(rd(esk2_0,esk2_0),esk1_0)!=esk1_0), inference(split_conjunct,[status(thm)],[c_0_68])).
+cnf(c_0_71, plain, (mult(rd(X1,X1),X2)=X2), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_56, c_0_69]), c_0_11]), c_0_69])).
+cnf(c_0_72, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_70, c_0_69])]), c_0_71])]), ['proof']).
+# SZS output end CNFRefutation

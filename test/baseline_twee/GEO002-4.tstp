@@ -1,0 +1,47 @@
+% SZS status Unsatisfiable
+
+% SZS output start CNFRefutation
+cnf(c1, negated_conjecture, ~between(a, a, b), file('TPTP/Problems/GEO/GEO002-4.p', prove_a_between_a_and_b)).
+cnf(c2, axiom, between(X, Y, extension(X, Y, W, V)), file('TPTP/Problems/GEO/GEO002-4.p', segment_construction1)).
+cnf(c3, axiom, equidistant(Y2, extension(X2, Y2, W2, V2), W2, V2), file('TPTP/Problems/GEO/GEO002-4.p', segment_construction2)).
+cnf(c4, axiom, ~equidistant(X2, Y2, Z, Z) | equalish(X2, Y2), file('TPTP/Problems/GEO/GEO002-4.p', identity_for_equidistance)).
+cnf(c5, plain, equalish(a, extension(b, a, X2, X2)), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c6, axiom, ~between(X2, Y2, V2) | ~between(Y2, Z2, V2) | between(X2, Y2, Z2), file('TPTP/Problems/GEO/GEO002-4.p', transitivity_for_betweeness)).
+cnf(c7, plain, ~between(a, a, extension(a, a, X3, X2)) | between(a, a, a), inference(resolution, [status(thm)], [c2, c6])).
+cnf(c8, plain, between(a, a, a), inference(resolution, [status(thm)], [c2, c7])).
+cnf(c9, axiom, ~equalish(X2, Y2) | ~between(W2, Z2, X2) | between(W2, Z2, Y2), file('TPTP/Problems/GEO/GEO002-4.p', between_substitution3)).
+cnf(c10, plain, ~equalish(a, extension(b, a, X2, X2)) | between(a, a, extension(b, a, X2, X2)), inference(resolution, [status(thm)], [c8, c9])).
+cnf(c11, plain, between(a, a, extension(b, a, X2, X2)), inference(resolution, [status(thm)], [c5, c10])).
+cnf(c12, plain, ~between(b, a, extension(b, a, X2, X2)) | between(b, a, a), inference(resolution, [status(thm)], [c11, c6])).
+cnf(c13, plain, between(b, a, a), inference(resolution, [status(thm)], [c2, c12])).
+cnf(c14, axiom, ~between(X2, W2, V2) | ~between(Y2, V2, Z2) | between(Z2, W2, outer_pasch(W2, X2, Y2, Z2, V2)), file('TPTP/Problems/GEO/GEO002-4.p', outer_pasch2)).
+cnf(c15, plain, between(a, a, outer_pasch(a, b, b, a, a)), inference(resolution, [status(thm)], [c13, c14])).
+cnf(c16, plain, equalish(a, extension(b, a, X2, X2)), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c17, plain, between(a, a, a), inference(resolution, [status(thm)], [c2, c6])).
+cnf(c18, plain, ~equalish(a, extension(b, a, X2, X2)) | between(a, a, extension(b, a, X2, X2)), inference(resolution, [status(thm)], [c17, c9])).
+cnf(c19, plain, between(a, a, extension(b, a, X2, X2)), inference(resolution, [status(thm)], [c16, c18])).
+cnf(c20, plain, ~between(a, a, extension(b, a, X2, X2)) | between(b, a, a), inference(resolution, [status(thm)], [c2, c6])).
+cnf(c21, plain, between(b, a, a), inference(resolution, [status(thm)], [c19, c20])).
+cnf(c22, plain, equalish(a, extension(b, a, X2, X2)), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c23, plain, between(a, a, a), inference(resolution, [status(thm)], [c2, c6])).
+cnf(c24, plain, ~equalish(a, extension(b, a, X2, X2)) | between(a, a, extension(b, a, X2, X2)), inference(resolution, [status(thm)], [c23, c9])).
+cnf(c25, plain, between(a, a, extension(b, a, X2, X2)), inference(resolution, [status(thm)], [c22, c24])).
+cnf(c26, plain, ~between(a, a, extension(b, a, X2, X2)) | between(b, a, a), inference(resolution, [status(thm)], [c2, c6])).
+cnf(c27, plain, between(b, a, a), inference(resolution, [status(thm)], [c25, c26])).
+cnf(c28, axiom, ~between(X2, W2, V2) | ~between(Y2, V2, Z2) | between(X2, outer_pasch(W2, X2, Y2, Z2, V2), Y2), file('TPTP/Problems/GEO/GEO002-4.p', outer_pasch1)).
+cnf(c29, plain, ~between(b, a, a) | between(b, outer_pasch(a, b, b, a, a), b), inference(resolution, [status(thm)], [c27, c28])).
+cnf(c30, plain, between(b, outer_pasch(a, b, b, a, a), b), inference(resolution, [status(thm)], [c21, c29])).
+cnf(c31, plain, equalish(b, extension(a, b, X2, X2)), inference(resolution, [status(thm)], [c3, c4])).
+cnf(c32, plain, ~between(b, b, extension(b, b, X3, X2)) | between(b, b, b), inference(resolution, [status(thm)], [c2, c6])).
+cnf(c33, plain, between(b, b, b), inference(resolution, [status(thm)], [c2, c32])).
+cnf(c34, plain, ~equalish(b, extension(a, b, X2, X2)) | between(b, b, extension(a, b, X2, X2)), inference(resolution, [status(thm)], [c33, c9])).
+cnf(c35, plain, between(b, b, extension(a, b, X2, X2)), inference(resolution, [status(thm)], [c31, c34])).
+cnf(c36, plain, ~between(a, b, extension(a, b, X2, X2)) | between(a, b, b), inference(resolution, [status(thm)], [c35, c6])).
+cnf(c37, plain, between(a, b, b), inference(resolution, [status(thm)], [c2, c36])).
+cnf(c38, plain, ~between(b, outer_pasch(a, b, b, a, a), b) | between(a, b, outer_pasch(a, b, b, a, a)), inference(resolution, [status(thm)], [c37, c6])).
+cnf(c39, plain, between(a, b, outer_pasch(a, b, b, a, a)), inference(resolution, [status(thm)], [c30, c38])).
+cnf(c40, plain, ~between(a, a, outer_pasch(a, b, b, a, a)) | between(a, a, b), inference(resolution, [status(thm)], [c39, c6])).
+cnf(c41, plain, between(a, a, b), inference(resolution, [status(thm)], [c15, c40])).
+cnf(c42, plain, $false, inference(proved_conjecture, [status(thm)], [c1, c41])).
+% SZS output end CNFRefutation
+

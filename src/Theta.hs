@@ -15,7 +15,7 @@ module Theta
 import Control.Applicative ((<|>))
 import Control.Monad (foldM)
 import Data.Bifunctor (first)
-import Data.List (nub, sortBy)
+import Data.List (inits, nub, sortBy, tails)
 import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
 import Data.Ord (comparing)
 import qualified Data.Map.Strict as Map
@@ -344,7 +344,7 @@ premiseCombinations kids = concat
     -- other at a variable position. The conclusion is still an instance of
     -- that premise, which recovers the instantiation.
     base [a, b] = resolve a b ++ resolve b a ++ superpose a b ++ superpose b a
-                  ++ [([], a), ([], b)]
+                  ++ resolveTwice a b ++ resolveTwice b a ++ [([], a), ([], b)]
     base _      = []
 
 -- The head literals and the body literals of a signed clause.
@@ -359,6 +359,16 @@ resolve x y =
   | h <- heads x
   , ((False, b), rest) <- picks y
   , b' <- orientations b ]
+
+-- Like resolve, but x's head resolves two body atoms of y that merged.
+resolveTwice :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
+resolveTwice x y =
+  [ ([(litTerm h, litTerm b'), (litTerm h, litTerm c')], [ (False, l) | l <- bodies x ] ++ before ++ rest)
+  | h <- heads x
+  , (before, (False, b) : after) <- zip (inits y) (tails y)
+  , ((False, c), rest) <- picks after
+  , b' <- orientations b
+  , c' <- orientations c ]
 
 -- x's equation head rewrites a non-variable subterm of y, at one occurrence
 -- or at every occurrence in the clause.
