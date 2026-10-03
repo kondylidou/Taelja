@@ -1,0 +1,65 @@
+Axiom 1: quotient(X,Y,divide(X,Y))
+Axiom 2: quotient(a,c,aQc)
+Axiom 3: quotient(X,Y,Z) /\ quotient(X,Y,A) => Z = A
+Axiom 4: less_equal(zero,X)
+Axiom 5: less_equal(X,Y) => quotient(X,Y,zero)
+Axiom 6: quotient(b,c,bQc)
+Axiom 7: less_equal(a,b)
+Axiom 8: quotient(X,Y,Z) /\ quotient(Y,A,B) /\ quotient(X,A,C) /\ quotient(C,B,U) /\ quotient(Z,A,V) => less_equal(U,V)
+Axiom 9: quotient(X,Y,zero) => less_equal(X,Y)
+Axiom 10: less_equal(X,Y) /\ less_equal(Y,X) => X = Y
+
+Lemma 11: quotient(zero,X,zero)
+Proof:
+  have less_equal(zero,X)
+    by axiom 4
+  hence quotient(zero,X,zero)
+    by axiom 5
+
+Lemma 12: less_equal(divide(divide(a,c),bQc),zero)
+Proof:
+  have less_equal(a,b)
+    by axiom 7
+  hence quotient(a,b,zero)
+    by axiom 5
+   and quotient(b,c,bQc)
+    by axiom 6
+   and quotient(a,c,divide(a,c))
+    by axiom 1
+   and quotient(divide(a,c),bQc,divide(divide(a,c),bQc))
+    by axiom 1
+   and quotient(zero,c,zero)
+    by lemma 11
+  hence less_equal(divide(divide(a,c),bQc),zero)
+    by axiom 8
+
+Lemma 13: aQc = divide(a,c)
+Proof:
+  have quotient(a,c,aQc)
+    by axiom 2
+   and quotient(a,c,divide(a,c))
+    by axiom 1
+  hence aQc = divide(a,c)
+    by axiom 3
+
+Lemma 14: zero = divide(divide(a,c),bQc)
+Proof:
+  have quotient(zero,divide(divide(a,c),bQc),zero)
+    by lemma 11
+  hence less_equal(zero,divide(divide(a,c),bQc))
+    by axiom 9
+   and less_equal(divide(divide(a,c),bQc),zero)
+    by lemma 12
+  hence zero = divide(divide(a,c),bQc)
+    by axiom 10
+
+Goal 1: less_equal(aQc,bQc)
+Proof:
+  have quotient(divide(a,c),bQc,divide(divide(a,c),bQc))
+    by axiom 1
+  hence quotient(divide(a,c),bQc,zero)
+    by rw lemma 14 R->L
+  hence quotient(aQc,bQc,zero)
+    by rw lemma 13 R->L
+  hence less_equal(aQc,bQc)
+    by axiom 9

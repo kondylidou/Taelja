@@ -21,15 +21,16 @@ import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Control.Applicative ((<|>))
 import Control.Monad (forM, guard, when)
-import Data.List (inits, nub, sortBy, tails)
+import Data.List (inits, isSuffixOf, nub, sortBy, tails)
 import Data.List.NonEmpty (toList)
-import Data.Maybe (catMaybes, fromMaybe, isJust, listToMaybe)
+import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe, maybeToList)
 import Data.Ord (comparing)
 import Data.TPTP.Pretty ()
 import Types
-import Helpers (applySubstLit, applySubstTerm, clauseInstance, variantKey, flipLit, litSubtermCtxs,
-                mapLiteralTerms, matchLit, matchLitWith, matchTerm, notVar, picks, polLits, replaceAllTerm,
-                rewritesFrom, suffixVarsLit, unifyTerms, instClause, resolveHead, suffixVarsClause)
+import Helpers (applySubstLit, clauseInstance, variantKey, flipLit, litSubtermCtxs, matchLitEither,
+                mapLiteralTerms, matchLit, matchLitWith, notVar, picks, polLits, replaceAllTerm,
+                rewritesFrom, suffixVarsLit, unifyTerms, instClause, resolveHead, suffixVarsClause,
+                deepApplySubstTerm, litVars, renameTerm, termVars, unifyApart)
 import Conjecture
 import TptpConvert
 
@@ -268,6 +269,8 @@ complementOfNegUnit _ = Nothing
 -- The equation steps of the proof, each as its conclusion and two premises.
 -- A nested or many-premise step is split at the clauses its replay finds, and
 -- the positive units among them are returned under new names <unit>_stepK.
+-- A clause that a conditional equation rewrote gives a unit once a step
+-- resolves its conditions, and that step reads as the rewrite itself.
 equationSteps :: [T.Unit] -> ([(String, String, String)], [(String, T.Declaration)])
 equationSteps units = (concatMap fst found, concatMap snd found)
   where
@@ -279,11 +282,32 @@ equationSteps units = (concatMap fst found, concatMap snd found)
     -- it derives a positive unit from two, since the same rules also derive
     -- nuclei and resolve a nucleus with a unit.
     unit p = maybe False isPositiveUnitFormula (Map.lookup p declOf)
+    -- a clause spm(U, P) with U a positive unit and P an equation with
+    -- conditions, the unit U rewritten by the head of P under its conditions.
+    -- Its head is no instance of P's head, which would make it P with a
+    -- condition resolved by U.
+    conditional c = listToMaybe
+      [ (u, p) | T.Unit _ dc (Just (src, _)) <- maybeToList (Map.lookup c unitOf)
+               , not (isPositiveUnitFormula dc), all equation (sourceRules src)
+               , Just (Clause _ (Just hc)) <- [convertDeclToClause dc]
+               , [q1, q2] <- [sourceParents src]
+               , (u, p) <- [(q1, q2), (q2, q1)], unit u
+               , Just (Clause (_ : _) (Just hp@(Eq _ _))) <- [Map.lookup p declOf >>= convertDeclToClause]
+               , isNothing (matchLitEither hp hc []) ]
+    -- a step on two units, or on a unit and a conditional rewrite's clause,
+    -- which then reads as that rewrite
+    onUnits isUnit (n, a, b)
+      | isUnit a && isUnit b = Just (n, a, b)
+      | Just (u, p) <- conditional a, isUnit b = Just (n, u, p)
+      | Just (u, p) <- conditional b, isUnit a = Just (n, u, p)
+      | otherwise = Nothing
+    unitOf = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n _ _) <- units ]
     stepsOf n d src = case sourceParents src of
       [p1, p2]
-        | all equation (sourceRules src)
-        , sourceRules src == [Text.pack "rewriting"] || (isPositiveUnitFormula d && unit p1 && unit p2)
+        | all equation (sourceRules src), sourceRules src == [Text.pack "rewriting"]
         -> Just ([(n, p1, p2)], [])
+        | all equation (sourceRules src), isPositiveUnitFormula d, Just s <- onUnits unit (n, p1, p2)
+        -> Just ([s], [])
       _ -> do
         (p0, (rule0, p1) : later@(_ : _)) <- inferenceSteps src
         ds <- mapM (`Map.lookup` declOf) (p0 : p1 : map snd later)
@@ -293,8 +317,8 @@ equationSteps units = (concatMap fst found, concatMap snd found)
               concls = inner ++ [d]
               steps  = (rule0, p0, p1) : [ (r, name (j - 1), p) | (j, (r, p)) <- zip [1 ..] later ]
           let unitAt p = unit p || or [ isPositiveUnitFormula c | (j, c) <- zip [0 ..] inner, name j == p ]
-          return ( [ (name j, a, b) | (j, (r, a, b)) <- zip [0 ..] steps
-                                    , equation r, isPositiveUnitFormula (concls !! j), unitAt a, unitAt b ]
+          return ( [ s | (j, (r, a, b)) <- zip [0 ..] steps
+                       , equation r, isPositiveUnitFormula (concls !! j), Just s <- [onUnits unitAt (name j, a, b)] ]
                  , [ (name j, c) | (j, c) <- zip [0 ..] inner, isPositiveUnitFormula c ] )
 
 -- The rules whose steps are read as rewrites with their premises.
@@ -426,7 +450,10 @@ simplifyBy c (Clause ls Nothing) =
 -- One demodulation step, rewriting a single redex at that occurrence or at
 -- every occurrence of the same subterm. Provers record each application as
 -- its own rw step, so nothing is iterated. No term ordering is needed, and a
--- permutative equation like u(X,X,Y) = u(Y,X,X) stays usable.
+-- permutative equation like u(X,X,Y) = u(Y,X,X) stays usable. A variable only
+-- the right side of an equation has comes in free, and the prover fixes its
+-- value, so a later rewrite may bind it. Any other variable of the clause
+-- stays as it is.
 rewriteOnce :: (Term, Term) -> Clause -> [Clause]
 rewriteOnce (lhs, rhs) (Clause bs mh) =
   [ Clause [ l | (False, l) <- ls' ] (listToMaybe [ l | (True, l) <- ls' ])
@@ -434,10 +461,15 @@ rewriteOnce (lhs, rhs) (Clause bs mh) =
   , (i, (_, lit)) <- zip [0 :: Int ..] ls
   , (u, ctx) <- litSubtermCtxs lit
   , notVar u
-  , Just s <- [matchTerm lhs u]
-  , let r = applySubstTerm s rhs
-  , ls' <- [ [ if j == i then (sg, ctx r) else (sg, m) | (j, (sg, m)) <- zip [0 :: Int ..] ls ]
-           , [ (sg, mapLiteralTerms (replaceAllTerm u r) m) | (sg, m) <- ls ] ] ]
+  , Just s <- [unifyApart rigid lhs u []]
+  , let inst = deepApplySubstTerm s
+        r = renameTerm [ (v, v ++ freeMark) | v <- termVars rhs, v `notElem` termVars lhs ] (inst rhs)
+        at = mapLiteralTerms inst
+  , ls' <- [ [ if j == i then (sg, at (ctx r)) else (sg, at m) | (j, (sg, m)) <- zip [0 :: Int ..] ls ]
+           , [ (sg, mapLiteralTerms (replaceAllTerm (inst u) r) (at m)) | (sg, m) <- ls ] ] ]
+  where
+    rigid = [ v | v <- concatMap litVars (bs ++ maybeToList mh), not (freeMark `isSuffixOf` v) ]
+    freeMark = "_free"
 
 -- Condenses a clause by dropping duplicate body atoms and body equations t = t.
 condense :: Clause -> Clause

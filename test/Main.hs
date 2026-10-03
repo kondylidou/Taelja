@@ -361,6 +361,8 @@ eBenchmarkNames =
   , "CSR117+1"        -- a conjunct proved twice and one never, and 55.67631 quoted
   , "GRP656+1"        -- a Skolem function E leaves undefined, defined in the TPTP output
   , "GRP035-3"        -- a spliced unit read at the instance its premise was derived at
+  , "HEN008-1"        -- a unit rewritten by a conditional equation whose condition is resolved after
+  , "GRP415-1"        -- a rewrite that binds a variable an earlier rewrite brought in free
   ]
 
 -- The Lean module name of a proof. A TPTP name keeps its separator as a
