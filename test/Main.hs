@@ -7,26 +7,25 @@ module Main where
 import Control.DeepSeq (force)
 import Control.Exception (evaluate)
 import qualified Data.ByteString.Lazy.Char8 as LBS
+import Data.Char (isAlphaNum, isDigit, isUpper, ord, toLower)
+import Data.List (isInfixOf, nub)
+import qualified Data.Text as Text
 import qualified Data.Text.IO as TIO
+import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy.Encoding as TLE
 import System.Environment (setEnv)
+import System.Process (readProcessWithExitCode)
 import Test.Tasty
 import Test.Tasty.Golden
 import Test.Tasty.Golden.Advanced (goldenTest)
-import System.Process (readProcessWithExitCode)
 
-import Data.Char (isAlphaNum, isDigit, isUpper, ord, toLower)
-import Data.List (isInfixOf, nub)
-
-import Translate (translate)
 import Emitter (emitText)
-import LeanEmitter (emitLean)
-import TptpEmitter (emitTptp)
 import Helpers (capitalize, trySync)
+import LeanEmitter (emitLean)
 import TptpConvert (parseProof)
+import TptpEmitter (emitTptp)
+import Translate (translate)
 import Types
-import qualified Data.Text as Text
-import qualified Data.Text.Lazy as TL
-import qualified Data.Text.Lazy.Encoding as TLE
 
 -- Runs the suite with small prover time limits and a 30 s timeout per test.
 main :: IO ()
@@ -45,10 +44,10 @@ main = do
 -- The golden tests by prover and output format, and the Lean step tests.
 tests :: TestTree
 tests = testGroup "Taelja"
-  [ testGroup "Handcrafted" (map (mkTextTest "expected_vampire" "baseline_vampire") handcraftedNames)
-  , testGroup "Vampire"     (map (mkTextTest "expected_vampire" "baseline_vampire") vampireBenchmarkNames)
-  , testGroup "E"           (map (mkTextTest "expected_e"       "baseline_e")       eBenchmarkNames)
-  , testGroup "Twee"        (map (mkTextTest "expected_twee"    "baseline_twee")    tweeBenchmarkNames)
+  [ testGroup "Handcrafted" (map (mkTextTest "vampire") handcraftedNames)
+  , testGroup "Vampire"     (map (mkTextTest "vampire") vampireBenchmarkNames)
+  , testGroup "E"           (map (mkTextTest "e")       eBenchmarkNames)
+  , testGroup "Twee"        (map (mkTextTest "twee")    tweeBenchmarkNames)
   , testGroup "No fallback" (map mkNoFallbackTest suiteNames)
   , testGroup "Lean"        (leanRootTest : map mkLeanTest suiteNames)
   , testGroup "TPTP"        (map mkTptpTest suiteNames)
@@ -397,7 +396,7 @@ leanModule name = case name of
 mkLeanTest :: (String, String) -> TestTree
 mkLeanTest (prover, name) = goldenVsString (prover ++ "/" ++ name)
   ("lean/TaeljaVerify/" ++ capitalize prover ++ "/" ++ leanModule name ++ ".lean")
-  (runEncoded utf8 (emitLean (capitalize prover ++ leanModule name)) ("test/baseline_" ++ prover ++ "/" ++ name ++ ".tstp"))
+  (runEncoded utf8 (emitLean (capitalize prover ++ leanModule name)) (baseline prover name))
 
 -- The root module of the Lean project, which imports every suite proof.
 leanRootTest :: TestTree
@@ -412,16 +411,16 @@ leanRootTest = goldenVsString "TaeljaVerify.lean" "lean/TaeljaVerify.lean" $ ret
 -- is a small proof, correct or with one wrong step.
 leanStepTests :: [TestTree]
 leanStepTests =
-  [ stated   "have and hence"                 [Have pa "axiom 1", Hence qa (ByAxiom "axiom 2")]
-  , unstated "have by an axiom stating another fact" [Have pb "axiom 1", Hence qa (ByAxiom "axiom 2")]
-  , unstated "hence without its premise"      [Hence qa (ByAxiom "axiom 2")]
-  , unstated "hence of another instance"      [Have pa "axiom 1", Hence (Rel "q" [b]) (ByAxiom "axiom 2")]
-  , unstated "block ending on another fact"   [Have pa "axiom 1"]
-  , statedFor pa   "rewrite of the line before"    [Have pfa "axiom 4", Hence pa (ByRw "axiom 3" LR)]
-  , unstatedFor pa "rewrite in the wrong direction" [Have pfa "axiom 4", Hence pa (ByRw "axiom 3" RL)]
-  , unstatedFor pb "rewrite into another term"     [Have pfa "axiom 4", Hence pb (ByRw "axiom 3" LR)]
-  , statedFor (Rel "r" [c])   "body equation closed by reflexivity" [Have (Rel "r" [c]) "axiom 5"]
-  , unstatedFor (Rel "r" [a]) "body equation that is not reflexive" [Have (Rel "r" [a]) "axiom 5"]
+  [ blockTest True  qa "have and hence"                        [Have pa "axiom 1", Hence qa (ByAxiom "axiom 2")]
+  , blockTest False qa "have by an axiom stating another fact" [Have pb "axiom 1", Hence qa (ByAxiom "axiom 2")]
+  , blockTest False qa "hence without its premise"             [Hence qa (ByAxiom "axiom 2")]
+  , blockTest False qa "hence of another instance"             [Have pa "axiom 1", Hence (Rel "q" [b]) (ByAxiom "axiom 2")]
+  , blockTest False qa "block ending on another fact"          [Have pa "axiom 1"]
+  , blockTest True  pa "rewrite of the line before"            [Have pfa "axiom 4", Hence pa (ByRw "axiom 3" LR)]
+  , blockTest False pa "rewrite in the wrong direction"        [Have pfa "axiom 4", Hence pa (ByRw "axiom 3" RL)]
+  , blockTest False pb "rewrite into another term"             [Have pfa "axiom 4", Hence pb (ByRw "axiom 3" LR)]
+  , blockTest True  (Rel "r" [c]) "body equation closed by reflexivity" [Have (Rel "r" [c]) "axiom 5"]
+  , blockTest False (Rel "r" [a]) "body equation that is not reflexive" [Have (Rel "r" [a]) "axiom 5"]
   , chainTest True  "chain of two steps" [(step, f a), (step, a)]
   , chainTest False "chain step that is two rewrites" [(step, a)]
   , chainTest False "chain step in the wrong direction" [(step { rwDir = RL }, f a), (step, a)]
@@ -443,21 +442,18 @@ leanStepTests =
                      in not (any (`isInfixOf` out) [ "taelja_step_not_justified"
                                                    , "taelja_unbound_variable"
                                                    , "taelja_undeclared_symbol" ])
+    -- the Lean output must state the block proving goal exactly when want holds
     check want name goal blk = goldenTest name (return want) (return (holds goal blk))
-      (\w got -> return (if w == got then Nothing
-                          else Just (if w then "a correct step is not stated" else "a wrong step is stated")))
+      (\_ got -> return (if want == got then Nothing
+                         else Just (if want then "a correct step is not stated" else "a wrong step is stated")))
       (const (return ()))
-    statedFor goal name ls   = check True name goal (HaveHence ls)
-    unstatedFor goal name ls = check False name goal (HaveHence ls)
-    stated   = statedFor qa
-    unstated = unstatedFor qa
+    blockTest want goal name ls = check want name goal (HaveHence ls)
     chainTest want name steps = check want name (Eq (f (f a)) a) (EqChain (f (f a)) steps)
 
 -- A proof translated to text and compared with its golden .txt file.
-mkTextTest :: String -> String -> String -> TestTree
-mkTextTest expectedDir prover name = goldenVsString name
-  ("test/" ++ expectedDir ++ "/" ++ name ++ ".txt")
-  (runAscii emitText ("test/" ++ prover ++ "/" ++ name ++ ".tstp"))
+mkTextTest :: String -> String -> TestTree
+mkTextTest prover name = goldenVsString name ("test/expected_" ++ prover ++ "/" ++ name ++ ".txt")
+  (runAscii emitText (baseline prover name))
 
 -- Each suite proof translated by the executable with --no-fallback must
 -- match its golden exactly, stderr included. The golden belongs to the
@@ -465,8 +461,7 @@ mkTextTest expectedDir prover name = goldenVsString name
 mkNoFallbackTest :: (String, String) -> TestTree
 mkNoFallbackTest (prover, name) = goldenTest (prover ++ "/" ++ name)
   (LBS.readFile ("test/expected_" ++ prover ++ "/" ++ name ++ ".txt"))
-  (do (_, out, err) <- readProcessWithExitCode "taelja"
-        ["--no-fallback", "test/baseline_" ++ prover ++ "/" ++ name ++ ".tstp"] ""
+  (do (_, out, err) <- readProcessWithExitCode "taelja" ["--no-fallback", baseline prover name] ""
       return (LBS.pack (out ++ err)))
   (\golden out -> return (if golden == out then Nothing else Just "differs from the golden with the fallback off"))
   (const (return ()))
@@ -476,7 +471,11 @@ mkNoFallbackTest (prover, name) = goldenTest (prover ++ "/" ++ name)
 mkTptpTest :: (String, String) -> TestTree
 mkTptpTest (prover, name) = goldenVsString (prover ++ "/" ++ name)
   ("test/expected_tptp/" ++ prover ++ "/" ++ name ++ ".p")
-  (runAscii emitTptp ("test/baseline_" ++ prover ++ "/" ++ name ++ ".tstp"))
+  (runAscii emitTptp (baseline prover name))
+
+-- The input proof of a suite proof.
+baseline :: String -> String -> FilePath
+baseline prover name = "test/baseline_" ++ prover ++ "/" ++ name ++ ".tstp"
 
 -- Translates and renders a proof file whose output is ASCII.
 runAscii :: (StructuredProof -> String) -> FilePath -> IO LBS.ByteString
@@ -487,16 +486,13 @@ utf8 :: String -> LBS.ByteString
 utf8 = TLE.encodeUtf8 . TL.pack
 
 -- Translates a proof file and renders it with the given encoding. A parse
--- error, a refusal or a crash fails the test.
+-- error, a refusal or a crash fails the test, so no golden records one.
 runEncoded :: (String -> LBS.ByteString) -> (StructuredProof -> String) -> FilePath -> IO LBS.ByteString
 runEncoded encode render path = do
   raw <- TIO.readFile path
-  case parseProof (Text.unpack raw) of
-    Left err   -> fail ("Parse error in " ++ path ++ ": " ++ err)
-    Right tstp -> do
-      -- a refusal or a crash fails the test, so no golden records one
-      result <- trySync (translate False tstp >>= evaluate . force . fmap render)
-      case result of
-        Right (Right out)   -> return (encode out)
-        Right (Left reason) -> fail ("translation failed: " ++ reason)
-        Left e              -> fail (show e)
+  tstp <- either (\err -> fail ("Parse error in " ++ path ++ ": " ++ err)) return (parseProof (Text.unpack raw))
+  result <- trySync (translate False tstp >>= evaluate . force . fmap render)
+  case result of
+    Right (Right out)   -> return (encode out)
+    Right (Left reason) -> fail ("translation failed: " ++ reason)
+    Left e              -> fail (show e)

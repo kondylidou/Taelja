@@ -5,7 +5,7 @@
 module PropRes (expandPropRes) where
 
 import Data.List (sortOn)
-import Data.Maybe (listToMaybe, mapMaybe, maybeToList)
+import Data.Maybe (listToMaybe, maybeToList)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
@@ -25,21 +25,17 @@ expandPropRes :: [T.Unit] -> [T.Unit]
 expandPropRes units = concatMap expand units
   where
     declOf = Map.fromList [ (unitNameStr n, d) | T.Unit n d _ <- units ]
-    expand u@(T.Unit n _ (Just (T.Inference (T.Atom rule) info ps, ann)))
+    -- a cdclpropres step that can be refuted becomes its resolutions, any other unit stays
+    expand (T.Unit n _ (Just (T.Inference (T.Atom rule) info ps, ann)))
       | rule == Text.pack "cdclpropres"
-      , prem@(_ : _) <- mapMaybe clauseOf [ unitNameStr pn | T.Parent (T.UnitSource pn) _ <- ps ]
+      , prem@(_ : _) <- [ (nm, c) | T.Parent (T.UnitSource pn) _ <- ps, let nm = unitNameStr pn
+                                  , Just c <- [Map.lookup nm declOf >>= convertDeclToClause] ]
       , Just steps   <- propRefute (unitNameStr n) prem
       = [ T.Unit (unitNameOf nm) (clauseToDecl c) (Just (resolutionSource [T.Status (T.Standard T.THM)] l r, Nothing))
         | (nm, l, r, c) <- init steps ]
-        ++ [ case last steps of
-               (_, l, r, _) -> T.Unit n (declOf Map.! unitNameStr n) (Just (resolutionSource info l r, ann)) ]
-      | otherwise = [u]
+        ++ [ T.Unit n (declOf Map.! unitNameStr n) (Just (resolutionSource info l r, ann))
+           | (_, l, r, _) <- [last steps] ]
     expand u = [u]
-
-    clauseOf nm = do
-      d <- Map.lookup nm declOf
-      c <- convertDeclToClause d
-      return (nm, c)
 
 -- Unit propagation over the cited clauses. Each step resolves with a unit,
 -- shortest resolvent first. E's refutation is propositional, so a resolvent
@@ -48,17 +44,15 @@ expandPropRes units = concatMap expand units
 propRefute :: String -> [(String, Clause)] -> Maybe [Step]
 propRefute base prem = go prem [] (Set.fromList (map (clauseKey . snd) prem)) (1 :: Int)
   where
-    known = Set.fromList [ t | (_, c) <- prem, t <- clauseTerms c, notVar t ]
-    clauseTerms (Clause bs mh) = concatMap (foldLiteralTerms subterms) (bs ++ maybeToList mh)
-    go avail steps seen i = case nextStep avail seen of
-      Nothing -> Nothing
-      Just (l, r, c)
-        | Clause [] Nothing <- c -> Just (reverse ((base, l, r, c) : steps))
-        | otherwise ->
-            let nm = base ++ "_pr" ++ show i
-            in go (avail ++ [(nm, c)]) ((nm, l, r, c) : steps)
-                  (Set.insert (clauseKey c) seen) (i + 1)
-
+    known = Set.fromList (concatMap (clauseTerms . snd) prem)
+    -- the subterms of a clause that are not variables
+    clauseTerms (Clause bs mh) = concatMap (filter notVar . foldLiteralTerms subterms) (bs ++ maybeToList mh)
+    go avail steps seen i = do
+      (l, r, c) <- nextStep avail seen
+      let nm = base ++ "_pr" ++ show i
+      case c of
+        Clause [] Nothing -> Just (reverse ((base, l, r, c) : steps))
+        _ -> go (avail ++ [(nm, c)]) ((nm, l, r, c) : steps) (Set.insert (clauseKey c) seen) (i + 1)
     nextStep avail seen = listToMaybe
       (sortOn (\(_, _, c) -> length (body c))
         [ (ln, rn, c)
@@ -66,10 +60,9 @@ propRefute base prem = go prem [] (Set.fromList (map (clauseKey . snd) prem)) (1
         , isUnitClause a || isUnitClause b
         , let b' = suffixVarsClause "_q" b
         , c <- resolveHead a b' ++ resolveHead b' a
-        , all (`Set.member` known) [ t | t <- clauseTerms c, notVar t ]
+        , all (`Set.member` known) (clauseTerms c)
         , Set.notMember (clauseKey c) seen ])
 
 -- Whether a clause has exactly one literal.
 isUnitClause :: Clause -> Bool
 isUnitClause (Clause bs mh) = length bs + length mh == 1
-

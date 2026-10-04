@@ -15,9 +15,8 @@ module Theta
 import Control.Applicative ((<|>))
 import Control.Monad (foldM)
 import Data.Bifunctor (first)
-import Data.List (inits, nub, sortBy, tails)
+import Data.List (inits, nub, sortOn, tails)
 import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
-import Data.Ord (comparing)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.TPTP as T
@@ -31,10 +30,10 @@ import TptpConvert (convertDeclToClause)
 -- θ over one proof tree, by position, with the clause it applies to there. It
 -- also records the rewriting positions and how each inference replayed.
 data ThetaCtx = ThetaCtx
-  { tcRewriteAt :: Set.Set String      -- positions concluded by a rewriting rule (equationRuleNames)
-  , tcTheta  :: Map.Map String Subst  -- θ|p at each position
-  , tcStatus  :: [(String, String)]     -- how well each inference replayed (see explainStatus)
-  , tcClauses :: Map.Map String Clause  -- the clause θ|p applies to at each position
+  { tcRewriteAt :: Set.Set String        -- positions concluded by a rewriting rule (equationRuleNames)
+  , tcTheta     :: Map.Map String Subst  -- θ|p at each position
+  , tcStatus    :: [(String, String)]    -- how well each inference replayed (see explainStatus)
+  , tcClauses   :: Map.Map String Clause -- the clause θ|p applies to at each position
   }
 
 -- Theorem 1's θ'_k, θ restricted to one nucleus in the variables of its
@@ -52,7 +51,7 @@ computeNucleusTheta ctx entry =
 thetaContext :: ProofInfo -> ThetaCtx
 thetaContext info = ThetaCtx
   { tcRewriteAt = Map.keysSet (Map.filter ((`elem` equationRuleNames) . Text.pack) (piRuleAt info))
-  , tcTheta    = thetaByPosition clauses
+  , tcTheta     = thetaByPosition clauses
   , tcStatus    = explainStatus clauses
   , tcClauses   = clauses
   }
@@ -219,7 +218,7 @@ thetaByPosition clauses = Map.mapWithKey thetaAt clauses
     -- constant, one per class of identified variables. computeNucleusTheta
     -- exempts head-only variables.
     thetaAt p c =
-      [ (v, ground (walkDeep σ (Var (varAt p v))))
+      [ (v, ground (walkDeep σ (Var (v ++ '@' : p))))
       | v <- nub (concatMap (litVars . snd) (polLits c)) ]
     ground (Var x)    = Fresh (map (\ch -> if ch == '@' then '_' else ch) x)
     ground (App f ts) = App f (map ground ts)
@@ -241,15 +240,11 @@ explainStatus clauses =
 treeInferences :: Map.Map String Clause -> [(String, ([(Bool, Literal)], [[(Bool, Literal)]]))]
 treeInferences clauses =
   [ (p, atomsAsEquations (litsAt p, map litsAt kids))
-  | (p, kids) <- sortBy (comparing (\(p, _) -> (length p, p)))
-                   [ (p, kids) | p <- Map.keys clauses
-                               , let kids = filter (`Map.member` clauses) [p ++ "0", p ++ "1"]
-                               , not (null kids) ] ]
+  | p <- sortOn (\q -> (length q, q)) (Map.keys clauses)
+  , let kids = filter (`Map.member` clauses) [p ++ "0", p ++ "1"]
+  , not (null kids) ]
   where
-    litsAt p = [ (b, mapLiteralTerms (apart p) l) | (b, l) <- polLits (clauses Map.! p) ]
-    apart p (Var v)    = Var (varAt p v)
-    apart p (App f ts) = App f (map (apart p) ts)
-    apart _ t          = t
+    litsAt p = [ (b, suffixVarsLit ('@' : p) l) | (b, l) <- polLits (clauses Map.! p) ]
     preds = Set.fromList [ n | c <- Map.elems clauses, (_, Rel n _) <- polLits c ]
     atomic t = case t of { App f _ -> Set.member f preds; Const c -> Set.member c preds; _ -> False }
     atomsAsEquations inf@(parent, kids)
@@ -258,10 +253,6 @@ treeInferences clauses =
       | otherwise = inf
     asEquation (b, l@(Rel _ _)) = (b, Eq (atomTerm l) (Const "true"))
     asEquation bl               = bl
-
--- Variable v renamed apart for position p.
-varAt :: String -> String -> String
-varAt p v = v ++ "@" ++ p
 
 -- Solves the inferences in order, backtracking over the explanations of each.
 -- An inference with no explanation on its own is dropped, so its step fails
@@ -347,15 +338,14 @@ premiseCombinations kids = concat
                   ++ resolveTwice a b ++ resolveTwice b a ++ [([], a), ([], b)]
     base _      = []
 
--- The head literals and the body literals of a signed clause.
-heads, bodies :: [(Bool, Literal)] -> [Literal]
-heads x  = [ l | (True, l) <- x ]
-bodies x = [ l | (False, l) <- x ]
+-- The head literals of a signed clause.
+heads :: [(Bool, Literal)] -> [Literal]
+heads x = [ l | (True, l) <- x ]
 
 -- x's head against a body atom of y, leaving x's body and the rest of y.
 resolve :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
 resolve x y =
-  [ ([(litTerm h, litTerm b')], [ (False, l) | l <- bodies x ] ++ rest)
+  [ ([(litTerm h, litTerm b')], filter (not . fst) x ++ rest)
   | h <- heads x
   , ((False, b), rest) <- picks y
   , b' <- orientations b ]
@@ -363,7 +353,7 @@ resolve x y =
 -- Like resolve, but x's head resolves two body atoms of y that merged.
 resolveTwice :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
 resolveTwice x y =
-  [ ([(litTerm h, litTerm b'), (litTerm h, litTerm c')], [ (False, l) | l <- bodies x ] ++ before ++ rest)
+  [ ([(litTerm h, litTerm b'), (litTerm h, litTerm c')], filter (not . fst) x ++ before ++ rest)
   | h <- heads x
   , (before, (False, b) : after) <- zip (inits y) (tails y)
   , ((False, c), rest) <- picks after
@@ -374,7 +364,7 @@ resolveTwice x y =
 -- or at every occurrence in the clause.
 superpose :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
 superpose x y = nub
-  [ ([(l, u)], [ (False, m) | m <- bodies x ] ++ y')
+  [ ([(l, u)], filter (not . fst) x ++ y')
   | Eq s t <- heads x
   , (l, r) <- [(s, t), (t, s)]
   , rewritesFrom l r
@@ -400,9 +390,7 @@ cover result parent s0
     hasPartner (sign, l) =
       or [ sign == sign' && not (null (matchOriented rigid l p s0)) | (sign', p) <- parent ]
       || (not sign && case l of { Eq a b -> isJust (unifyInTree a b s0); _ -> False })
-    go [] _ hit s
-      | Set.size hit == length parent = [s]
-      | otherwise = []
+    go [] _ hit s = [ s | Set.size hit == length parent ]
     go ((sign, l) : ls) n hit s
       | length parent - Set.size hit > n = []
       | otherwise =
@@ -419,9 +407,7 @@ coverRewritten (l, r) result parent s0 = go result (length result) Set.empty Fal
   where
     idxParent = zip [0 :: Int ..] parent
     rigid = rigidVars s0 parent
-    go [] _ hit used s
-      | used && Set.size hit == length parent = [s]
-      | otherwise = []
+    go [] _ hit used s = [ s | used, Set.size hit == length parent ]
     go ((sign, lit) : ls) n hit used s
       | length parent - Set.size hit > n = []
       | otherwise =
@@ -469,20 +455,15 @@ orientations l        = [l]
 derivedHead :: [Literal] -> Literal -> [Literal] -> Maybe Literal
 derivedHead bodyAbs headAbs targets
   | length bodyAbs /= length targets = Nothing
-  | otherwise = case foldM stepU Map.empty (zip bodyAbs' targets) of
-      Nothing -> Nothing
-      Just s  -> Just (mapLiteralTerms (walkDeep s) headAbs')
+  | otherwise = do
+      s <- foldM unifyBody Map.empty (zip (map ren bodyAbs) targets)
+      return (mapLiteralTerms (walkDeep s) (ren headAbs))
   where
     ren = suffixVarsLit "_dh"
-    bodyAbs' = map ren bodyAbs
-    headAbs' = ren headAbs
-    stepU s (b, t) = case (litAsTerm b, litAsTerm t) of
-      (Just tb, Just tt) -> case unifyInTree tb tt s of
-        Just s' -> Just s'
-        Nothing -> case t of
-          Eq l r -> litAsTerm (Eq r l) >>= \tt' -> unifyInTree tb tt' s
-          _      -> Nothing
-      _ -> Nothing
+    -- a body atom unifies with its premise, either way round for an equation
+    unifyBody s (b, t) = do
+      tb <- litAsTerm b
+      listToMaybe [ s' | t' <- orientations t, Just tt <- [litAsTerm t'], Just s' <- [unifyInTree tb tt s] ]
 
 -- Checks one assembled hyperresolution step before it is emitted, as the Lean
 -- check would. The rule's body atoms must unify with the matched electrons and

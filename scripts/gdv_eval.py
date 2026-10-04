@@ -8,7 +8,8 @@ eval.py finds the provers (--gdv, $GDV, bin/GDV, then the PATH).
 
 Usage: gdv_eval.py [--gdv PATH] [--output-dir eval_out] [--jobs N] [--limit N] [--category FOF]
 """
-import argparse, csv, os, tempfile, shutil
+import argparse, csv, os, tempfile
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -26,21 +27,17 @@ def status_of(gdv, taelja, evaldir, row, tries=3):
     rc, derivation, _ = run([taelja, '--tptp', str(d / 'proof.tstp')], timeout=300, cwd=str(ROOT))
     if rc != 0 or not derivation.strip():
         return 'NoDerivation'
-    with tempfile.NamedTemporaryFile('w', suffix='.p', delete=False) as tmp:
+    with tempfile.NamedTemporaryFile('w', suffix='.p') as tmp:
         tmp.write(derivation)
-        path = tmp.name
-    try:
+        tmp.flush()
         for _ in range(tries):
             # GDV names its obligation files after the steps, in /tmp by
             # default, so each run gets its own directory (-k) or parallel
             # runs overwrite each other's.
-            work = tempfile.mkdtemp(prefix='gdv-')
-            try:
+            with tempfile.TemporaryDirectory(prefix='gdv-', ignore_cleanup_errors=True) as work:
                 _, report, _ = run([gdv, '-r', '-l', '-q1', '-t', '300', '-k', work,
-                                    '-p', str(problem), path],
+                                    '-p', str(problem), tmp.name],
                                    timeout=1800, extra_env={'TPTP': str(TPTP)})
-            finally:
-                shutil.rmtree(work, ignore_errors=True)
             szs = [l.split('% SZS status ')[1].strip() for l in report.splitlines()
                    if l.startswith('% SZS status ')]
             s = szs[-1] if szs else 'NoStatus'
@@ -48,10 +45,8 @@ def status_of(gdv, taelja, evaldir, row, tries=3):
             # printed no status failed too, so only these are retried. An
             # unverified step is GDV's verdict and stands.
             if s not in ('GaveUp', 'NoStatus'):
-                return s
-        return s
-    finally:
-        os.unlink(path)
+                break
+    return s
 
 
 def main():
@@ -75,28 +70,25 @@ def main():
         rows = [r for r in rows if r['category'] == args.category]
     if args.limit:
         rows = rows[:args.limit]
-    out = open(evaldir / 'gdv_results.csv', 'w', newline='')
-    w = csv.writer(out); w.writerow(['category', 'problem', 'prover', 'gdv'])
-    done = {'n': 0}
 
     def check_row(r):
         """The verdict on one row, or the error a check raised."""
         try:
-            s = status_of(gdv, taelja, evaldir, r)
+            return r, status_of(gdv, taelja, evaldir, r)
         except Exception as e:
-            s = f'error {type(e).__name__}'
-        return r, s
+            return r, f'error {type(e).__name__}'
 
-    with ThreadPoolExecutor(args.jobs) as ex:
-        for r, s in ex.map(check_row, rows):
-            w.writerow([r['category'], r['problem'], r['prover'], s]); out.flush()
-            done['n'] += 1
-            if done['n'] % 100 == 0:
-                print(f"{done['n']}/{len(rows)}", flush=True)
-    out.close()
-    import collections
-    c = collections.Counter(row[3] for row in csv.reader(open(evaldir / 'gdv_results.csv')) if row[0] != 'category')
-    print(c)
+    counts = Counter()
+    with open(evaldir / 'gdv_results.csv', 'w', newline='') as out, ThreadPoolExecutor(args.jobs) as ex:
+        w = csv.writer(out)
+        w.writerow(['category', 'problem', 'prover', 'gdv'])
+        for i, (r, s) in enumerate(ex.map(check_row, rows), 1):
+            w.writerow([r['category'], r['problem'], r['prover'], s])
+            out.flush()
+            counts[s] += 1
+            if i % 100 == 0:
+                print(f"{i}/{len(rows)}", flush=True)
+    print(counts)
 
 
 if __name__ == '__main__':

@@ -32,32 +32,23 @@ def main():
     evaldir = (TAELJA / args.output_dir).resolve()
 
     rows = [row for row in read_results(evaldir) if row["taelja"] == "ok"]
-
     if args.limit:
         rows = rows[: args.limit]
 
     generated = []
     errors = []
-
     for row in rows:
-        cat    = row["category"]          # HEQ, HNE, UEQ, FOF, TFF
-        prob   = row["problem"]           # ANA009-2
-        prover = row["prover"]            # vampire / e / twee
-
+        # such as HEQ, ANA009-2 and vampire
+        cat, prob, prover = row["category"], row["problem"], row["prover"]
         lean_path = evaldir / cat / prob / prover / "taelja.lean"
         if not lean_path.exists():
             errors.append(f"MISSING taelja.lean (rerun eval.py): {lean_path}")
             continue
-
-        prover_dir = PROVER_DIR[prover]
-        camel      = lean_module(prob)
-        out_dir    = LEAN / cat / prover_dir
-        out_path   = out_dir / f"{camel}.lean"
-
+        prover_dir, camel = PROVER_DIR[prover], lean_module(prob)
+        out_path = LEAN / cat / prover_dir / f"{camel}.lean"
         if args.only_new and out_path.exists():
             continue
-
-        out_dir.mkdir(parents=True, exist_ok=True)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(lean_path.read_text())
         generated.append(f"TaeljaVerify.{cat}.{prover_dir}.{camel}")
 
@@ -73,28 +64,20 @@ def main():
     # Without --only-new the imports are exactly the modules copied in this
     # run and other module files are deleted, so the Lean build counts the
     # translated proofs exactly.
+    imports = set(generated)
     if args.only_new:
-        kept = set(
-            line.strip().removeprefix("import ")
-            for line in existing
-            if any(line.startswith(f"import TaeljaVerify.{c}.") for c in ALL_CATEGORIES)
-        )
+        imports |= {line.strip().removeprefix("import ") for line in existing
+                    if any(line.startswith(f"import TaeljaVerify.{c}.") for c in ALL_CATEGORIES)}
     else:
-        kept = set()
-    all_eval_imports = sorted(kept | set(generated))
-    if not args.only_new:
-        wanted = set(all_eval_imports)
         for cat in ALL_CATEGORIES:
             for pdir in PROVER_DIR.values():
                 for f in (LEAN / cat / pdir).glob("*.lean"):
-                    if f"TaeljaVerify.{cat}.{pdir}.{f.stem}" not in wanted:
+                    if f"TaeljaVerify.{cat}.{pdir}.{f.stem}" not in imports:
                         f.unlink()
 
-    new_content = "\n".join(base_lines).rstrip()
-    new_content = (new_content + "\n\n" if new_content else "") + f"{eval_marker}\n"
-    new_content += "\n".join(f"import {m}" for m in all_eval_imports)
-    new_content += "\n"
-    EVAL_LEAN.write_text(new_content)
+    head = "\n".join(base_lines).rstrip()
+    EVAL_LEAN.write_text((head + "\n\n" if head else "") + f"{eval_marker}\n"
+                         + "\n".join(f"import {m}" for m in sorted(imports)) + "\n")
 
     print(f"Generated {len(generated)} files. Build them with: lake build TaeljaVerifyEval")
     if errors:

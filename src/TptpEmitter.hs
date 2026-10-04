@@ -4,13 +4,14 @@
 -- conjecture is the final theorem and discharges the assumptions.
 module TptpEmitter (emitTptp) where
 
+import Control.Applicative ((<|>))
 import Control.Monad (foldM, guard)
 import Data.Char (isDigit)
 import Data.Foldable (toList)
-import Data.List.NonEmpty (nonEmpty)
-import Data.List (intercalate, isPrefixOf, nub, nubBy, sortOn, tails, union)
+import Data.List.NonEmpty (NonEmpty (..), nonEmpty)
+import Data.List (intercalate, isPrefixOf, nub, nubBy, partition, sortOn, tails, union)
 import qualified Data.Map.Strict as Map
-import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe, maybeToList)
+import Data.Maybe (fromMaybe, isJust, listToMaybe, mapMaybe, maybeToList)
 import qualified Data.Set as Set
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
@@ -19,7 +20,7 @@ import Prettyprinter (pretty)
 import Types
 import Helpers
 import Emitter (axiomRenaming, blockRenaming, dropUnusedAndNumber)
-import TptpConvert (convertDeclToClause, convertLit, declSymbols, isFileSourced, splitAtClosing, topLevelArgs, tptpLitVars, tptpLiteral, tptpSymbol, unitNameOf, unitNameStr, unitParents)
+import TptpConvert (convertDeclToClause, convertLit, declSymbols, formulaAtoms, isFileSourced, signedDisjunction, splitAtClosing, stripForall, topLevelArgs, tptpLitVars, tptpLiteral, tptpSymbol, unitNameOf, unitNameStr, unitParents)
 
 -- One line of the derivation. An input unit is printed as read, with the
 -- new_symbols info it needs. A step has a role, a rule and its parents.
@@ -37,7 +38,7 @@ emitTptp :: StructuredProof -> String
 emitTptp sp0 = unlines $
      ["% SZS output start Proof"]
   ++ typeLines
-  ++ map (ppLine env deps) allLines
+  ++ map (ppLine env (assumptionDeps allLines)) allLines
   ++ ["% SZS output end Proof"]
   where
     spNumbered   = dropUnusedAndNumber sp0
@@ -53,24 +54,22 @@ emitTptp sp0 = unlines $
     isTypeDecl (T.Typing _ _) = True
     isTypeDecl (T.Sort _ _)   = True
     isTypeDecl _              = False
-    typedUnit u = fromMaybe u (Map.lookup (unitNameStr (unitName u)) typedByName)
+    typedUnit u = fromMaybe u (Map.lookup (unitName u) typedByName)
     typedByName = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n (T.Formula _ _) _) <- typing ]
-    used  = Set.fromList (map (unitNameStr . unitName) (Map.elems (inAxiomUnits input))
-                          ++ Map.elems (inHypotheses input)
-                          ++ maybeToList (fmap (unitNameStr . unitName) (inConjecture input)))
+    used    = Set.fromList (Map.elems hyps ++ map unitName (Map.elems (inAxiomUnits input) ++ maybeToList conj))
     fresh n = if Set.member n used then "taelja_" ++ n else n
 
     -- An axiom whose clause matches its input unit is cited by that unit's
     -- name. A hypothesis is an assumption named after its clause's unit. Any
     -- other axiom keeps a name of its own.
-    hyps     = Map.keysSet (inHypotheses input)
+    hyps     = inHypotheses input
     axNames  = map axiomName (axioms spNumbered)
-    assumed  = [ (n, c) | n <- axNames, Just c <- [Map.lookup n (inHypotheses input)] ]
+    assumed  = [ (n, c) | n <- axNames, Just c <- [Map.lookup n hyps] ]
+    (hypAxioms, otherAxioms) = partition ((`Map.member` hyps) . axiomName) (axioms spNumbered)
     -- an axiom with no recorded unit is found by its clause among the input
     -- units
-    inputOf n = fmap canonical $ case Map.lookup n (inAxiomUnits input) of
-      Just u  -> Just u
-      Nothing -> listToMaybe [ u | u <- inUnits input, isInputUnit u, sameAsInput u n ]
+    inputOf n = canonical <$> (Map.lookup n (inAxiomUnits input)
+                               <|> listToMaybe [ u | u <- inUnits input, isInputUnit u, sameAsInput u n ])
     -- a unit that only copies its one parent, as E's renamed file clauses
     -- do, stands for that parent
     canonical u = case unitParents u of
@@ -81,7 +80,7 @@ emitTptp sp0 = unlines $
       _ -> u
     axTarget n
       | Just a <- lookup n assumed = a
-      | Just u <- inputOf n, sameAsInput u n = unitNameStr (unitName u)
+      | Just u <- inputOf n, sameAsInput u n = unitName u
       | otherwise = fresh (tptpName n)
     sameAsInput u n = case (axiomOf n, convertDeclToClause (unitDecl u)) of
       (Just a, Just c) -> variantClause (axiomClause a) c
@@ -91,61 +90,54 @@ emitTptp sp0 = unlines $
     -- A goal variable that replaced a Skolem term is that term again, since
     -- a TPTP step cannot hold a fixed variable. The final theorem generalizes
     -- over it.
-    restoreSkolems = inGeneralized input
-    restoreSkolemsLit  = mapLiteralTerms (subVars restoreSkolems)
-    subVars s (Var v)    = fromMaybe (Var v) (lookup v s)
-    subVars s (App f ts) = App f (map (subVars s) ts)
-    subVars _ t          = t
+    restoreSkolems    = applySubstTerm (inGeneralized input)
+    restoreSkolemsLit = mapLiteralTerms restoreSkolems
     sp  = renameCitations (Map.fromList ([ (n, axTarget n) | n <- axNames ]
                                        ++ [ (n, lemmaTarget n) | (n, _, _) <- lemmas spNumbered ])) spNumbered
-    axiomVarNames = axiomRenaming (axioms spNumbered)
 
     -- The input units behind the axioms and the prover's definitions, each
     -- with its ancestors, in the prover's order so parents come first.
-    inputLines = map (\(_, u) -> Input (typedUnit u) (newSymbols u)) $ sortOn (unitIndex . fst) $ nubBy (\a b -> fst a == fst b) $ concat
-      [ withParents u | n <- axNames, not (Set.member n hyps), Just u <- [inputOf n] ]
-      ++ concat [ withParents d | n <- axNames, dn <- definitionsBehind n, Just d <- [Map.lookup dn byName] ]
-      ++ concat [ withParents d | d <- proverSkolemDefs ]
+    inputLines = map (\(_, u) -> Input (typedUnit u) (newSymbols u)) $ sortOn (unitIndex . fst) $ nubBy (\a b -> fst a == fst b) $
+      concatMap withParents $
+           [ u | n <- axNames, Map.notMember n hyps, Just u <- [inputOf n] ]
+        ++ [ d | n <- axNames, dn <- definitionsBehind n, Just d <- [Map.lookup dn byName] ]
+        ++ proverSkolemDefs
     -- the prover's own definitions of the goals' Skolem symbols, which the
     -- generalization step cites
     proverSkolemDefs =
       [ u | u@(T.Unit _ d (Just (T.Introduced _ _, _))) <- inUnits input
-          , let (fs, _) = declSymbols d
-          , any (`elem` (generalizedSyms ++ goalSkolems)) [ s | s <- fs, Set.notMember s fileSyms ] ]
+          , any (`elem` (generalizedSyms ++ goalSkolems)) [ s | s <- fst (declSymbols d), Set.notMember s fileSyms ] ]
     -- The fresh symbols the theorem generalizes over. They come from the
     -- generalized terms, and from the goals and hypotheses when the problem
     -- and the other axioms do not mention them.
     generalizedSyms = nub $
       [ s | s <- concatMap (termSymbols . snd) (inGeneralized input), Set.notMember s fileSyms ]
-      ++ [ s | s <- concatMap (litSymbols . fst) (goals spNumbered)
-                    ++ concat [ axSyms ax | ax <- axioms spNumbered, isJust (lookup (axiomName ax) assumed) ]
-             , Set.notMember s fileSyms
-             , s `notElem` concat [ axSyms ax | ax <- axioms spNumbered, isNothing (lookup (axiomName ax) assumed) ] ]
+      ++ [ s | s <- goalSyms ++ concatMap axSyms hypAxioms, Set.notMember s fileSyms, s `notElem` otherAxSyms ]
+    goalSyms    = concatMap (litSymbols . fst) (goals spNumbered)
+    otherAxSyms = concatMap axSyms otherAxioms
     -- the symbols of the units read from the problem file
-    fileSyms = let ps = [ declSymbols d | u@(T.Unit _ d _) <- inUnits input, isFileSourced u ]
-               in Set.fromList (concatMap fst ps ++ concatMap snd ps)
+    fileSyms = Set.fromList [ s | u@(T.Unit _ d _) <- inUnits input, isFileSourced u, s <- symbolsOf d ]
+    symbolsOf = uncurry (++) . declSymbols
     unitIndex n = fromMaybe maxBound (Map.lookup n unitOrder)
-    unitOrder = Map.fromList (zip [ unitNameStr (unitName u) | u <- inUnits input ] [0 :: Int ..])
+    unitOrder = Map.fromList (zip (map unitName (inUnits input)) [0 :: Int ..])
     -- GDV wants a definition to list its new symbols in new_symbols(...),
     -- which E and Vampire leave out. A symbol is new in the first definition
     -- that mentions it, unless the problem has it.
     newSymbols u = case u of
       T.Unit n d (Just (T.Introduced _ _, _)) ->
-        let (fs, ps) = declSymbols d
-            earlier = Set.fromList $ concat
-              [ let (fs', ps') = declSymbols d' in fs' ++ ps'
-              | T.Unit n' d' (Just (T.Introduced _ _, _)) <- inUnits input
-              , unitIndex (unitNameStr n') < unitIndex (unitNameStr n) ]
+        let earlier = Set.fromList
+              [ s | T.Unit n' d' (Just (T.Introduced _ _, _)) <- inUnits input
+                  , unitIndex (unitNameStr n') < unitIndex (unitNameStr n), s <- symbolsOf d' ]
             isNew s = Set.notMember s fileSyms && Set.notMember s earlier
-        in newSymbolsInfo (nub (filter isNew (fs ++ ps)))
+        in newSymbolsInfo (nub (filter isNew (symbolsOf d)))
       _ -> ""
     -- the prover's definitions between an axiom's input unit and its clause,
     -- such as Vampire's Skolem definitions, which the clausify step cites
     definitionsBehind n =
-      nub [ unitNameStr (unitName u) | u@(T.Unit _ _ (Just (T.Introduced _ _, _))) <- unitsBehind n ]
+      nub [ unitName u | u@(T.Unit _ _ (Just (T.Introduced _ _, _))) <- unitsBehind n ]
     -- the prover's units between an axiom's input unit and its clause, with
     -- the definitions they cite
-    unitsBehind n = maybe [] (\leaf -> walk Set.empty [leaf]) (Map.lookup n (inAxiomLeaves input))
+    unitsBehind n = walk Set.empty (maybeToList (Map.lookup n (inAxiomLeaves input)))
       where
         walk _ [] = []
         walk seen (x : xs)
@@ -153,20 +145,16 @@ emitTptp sp0 = unlines $
           | otherwise = case Map.lookup x byName of
               Just u | not (isFileSourced u) -> u : walk (Set.insert x seen) (unitParents u ++ xs)
               _ -> walk (Set.insert x seen) xs
-    byName = Map.fromList [ (unitNameStr (unitName u), u) | u <- inUnits input ]
+    byName = Map.fromList [ (unitName u, u) | u <- inUnits input ]
     -- E and Twee Skolemize some axioms without defining the new symbols, so
     -- the clause does not follow from the axiom alone. For each Skolemizing
     -- step S behind an axiom A we print the definition A => S, which every
     -- model of A satisfies for some choice of the new symbols.
-    skolemStepsBehind n = case inputOf n of
-      Just root -> [ (root, u) | u <- unitsBehind n, esaStep u, not (null (skolemSyms u)) ]
-      Nothing   -> []
-    esaStep (T.Unit _ _ (Just (src, _))) = hasEsa src
-    esaStep _ = False
-    hasEsa (T.Inference _ infos ps) = any isEsa infos || or [ hasEsa src | T.Parent src _ <- ps ]
+    skolemStepsBehind n =
+      [ (root, u) | Just root <- [inputOf n], u@(T.Unit _ _ (Just (src, _))) <- unitsBehind n
+                  , hasEsa src, not (null (skolemSyms u)) ]
+    hasEsa (T.Inference _ infos ps) = T.Status (T.Standard T.ESA) `elem` infos || any hasEsa [ src | T.Parent src _ <- ps ]
     hasEsa _ = False
-    isEsa (T.Status (T.Standard T.ESA)) = True
-    isEsa _                             = False
     -- the function symbols a step brings in, absent from its parents, the
     -- problem and the prover's definitions
     skolemSyms u =
@@ -178,31 +166,28 @@ emitTptp sp0 = unlines $
              (T.Formula _ (T.FOF a), T.Formula _ (T.FOF b))   -> Just (T.FOF (T.Connected a T.Implication b))
              (T.Formula _ (T.TFF0 a), T.Formula _ (T.TFF0 b)) -> Just (T.TFF0 (T.Connected a T.Implication b))
              _                                                -> Nothing
-      let nm = fresh ("skolem_" ++ unitNameStr (unitName u))
-      return (nm, Input (T.Unit (unitNameOf nm) (T.Formula (T.Standard T.Plain) f)
-                                (Just (T.Introduced (T.Standard T.ByDefinition) Nothing, Nothing)))
-                        (newSymbolsInfo (skolemSyms u)))
+      let nm = fresh ("skolem_" ++ unitName u)
+      return (nm, Input (definitionUnit nm f) (newSymbolsInfo (skolemSyms u)))
     -- A symbol may be declared new only once, and a prover may Skolemize the
     -- same axiom twice, so a later step cites the definition already printed.
-    skolemChosen = pick Set.empty [ p | n <- axNames, isNothing (lookup n assumed), p <- skolemStepsBehind n ]
+    skolemChosen = pick Set.empty steps
       where
+        steps = [ p | n <- axNames, Map.notMember n hyps, p <- skolemStepsBehind n ]
         pick _ [] = []
         pick seen ((root, u) : rest)
           | any (`Set.notMember` seen) (skolemSyms u)
           , Just (nm, line) <- axiomSkolemDef root u
-          = (unitNameStr (unitName u), nm, Just line) : pick (foldr Set.insert seen (skolemSyms u)) rest
+          = (unitName u, nm, Just line) : pick (foldr Set.insert seen (skolemSyms u)) rest
           | Just nm <- lookup (Set.fromList (skolemSyms u)) declaredBy
-          = (unitNameStr (unitName u), nm, Nothing) : pick seen rest
+          = (unitName u, nm, Nothing) : pick seen rest
           | otherwise = pick seen rest
-        declaredBy = [ (Set.fromList (skolemSyms u), nm)
-                     | (root, u) <- [ p | n <- axNames, isNothing (lookup n assumed), p <- skolemStepsBehind n ]
-                     , Just (nm, _) <- [axiomSkolemDef root u] ]
+        declaredBy = [ (Set.fromList (skolemSyms u), nm) | (root, u) <- steps, Just (nm, _) <- [axiomSkolemDef root u] ]
+    -- the Skolem definitions the clausify step of an axiom cites
     skolemDefsBehind n =
-      nub [ (nm, ()) | (un, nm, _) <- skolemChosen
-                     , un `elem` map (unitNameStr . unitName . snd) (skolemStepsBehind n) ]
-    skolemAxLines = [ (nm, line) | (_, nm, Just line) <- skolemChosen ]
+      nub [ nm | (un, nm, _) <- skolemChosen, un `elem` map (unitName . snd) (skolemStepsBehind n) ]
+    -- a unit after its ancestors, each with its name
     withParents u = concat [ withParents p | n <- unitParents u, Just p <- [Map.lookup n byName] ]
-                    ++ [(unitNameStr (unitName u), u)]
+                    ++ [(unitName u, u)]
     axiomLines = concat
       [ case (lookup n assumed, inputOf n) of
           (Just a, _) -> [Assume a (axiomFormula ax)]
@@ -210,12 +195,12 @@ emitTptp sp0 = unlines $
             | sameAsInput u n -> []
             | otherwise ->
                 [Step (axTarget n) "plain" (axiomFormula ax) "clausify"
-                      (unitNameStr (unitName u) : definitionsBehind n ++ map fst (skolemDefsBehind n))]
+                      (unitName u : definitionsBehind n ++ skolemDefsBehind n)]
           (Nothing, Nothing) -> [Step (axTarget n) "axiom" (axiomFormula ax) "" []]
       | n <- axNames, Just ax <- [axiomOf n] ]
-    axiomFormula (AUnit _ l)    = LitFormula (renameLit axiomVarNames (restoreSkolemsLit l))
-    axiomFormula (ANucleus _ (Clause bs mh)) =
-      ClauseFormula (Clause (map (renameLit axiomVarNames . restoreSkolemsLit) bs) (fmap (renameLit axiomVarNames . restoreSkolemsLit) mh))
+    axiomFormula (AUnit _ l)                 = LitFormula (axiomLit l)
+    axiomFormula (ANucleus _ (Clause bs mh)) = ClauseFormula (Clause (map axiomLit bs) (fmap axiomLit mh))
+    axiomLit = renameLit (axiomRenaming (axioms spNumbered)) . restoreSkolemsLit
 
     -- the unit axioms and lemmas a have or and line may merely restate
     facts = [ (axTarget n, l) | AUnit n l <- axioms spNumbered ]
@@ -228,7 +213,7 @@ emitTptp sp0 = unlines $
     goalName i | goalRole == "plain" = Nothing
                | otherwise           = Just (fresh ("goal_" ++ show i))
     conj      = inConjecture input
-    conjName  = maybe "goal" (unitNameStr . unitName) conj
+    conjName  = maybe "goal" unitName conj
     conjAtom  = conj >>= conjLiteral . unitDecl
     -- When the only goal is the conjecture and there are no hypotheses, its
     -- last step is the theorem. A goal over fresh symbols is not, since its
@@ -242,35 +227,34 @@ emitTptp sp0 = unlines $
     blockResults = go 1 blocks
     go _ [] = []
     go k ((name, role, lit, blk) : rest) =
-      let (k', steps, final) = blockSteps fresh facts k name role (restoreSkolemsLit lit) (restoreSkolemsBlock blk)
+      let (k', steps, final) = blockSteps fresh facts k name role (restoreSkolemsLit lit) (mapShownTerms restoreSkolems blk)
       in (steps, final) : go k' rest
-    restoreSkolemsBlock = mapShownTerms (subVars restoreSkolems)
     stepLines  = concatMap fst blockResults
     goalFinals = map snd (drop (length (lemmas sp)) blockResults)
     theoremLine = case conj of
-      Just u | merged -> [ asTheorem (Verbatim (unitFormula (typedUnit u))) conjName (last stepLines) ]
+      Nothing -> []
       Just u
-        | null generalizedSyms, null conjSkolems ->
-            [ Step conjName "theorem" (Verbatim (unitFormula (typedUnit u)))
-                   (if null assumed then "conclude" else "implies")
-                   (goalFinals ++ map snd assumed) ]
+        | merged -> [ case last stepLines of
+                        Step _ _ _ rule ps -> Step conjName "theorem" stated rule ps
+                        l                  -> l ]
+        | null generalizedSyms, null conjSkolems -> [ discharge conjName "theorem" stated ]
         -- the discharged formula mentions the fresh symbols, and their
         -- definitions justify generalizing it to the conjecture
         | otherwise ->
-            [ Step (fresh "discharged") "plain" (Raw dischargedText)
-                   (if null assumed then "conclude" else "implies")
-                   (goalFinals ++ map snd assumed)
-            , Step conjName "theorem" (Verbatim (unitFormula (typedUnit u))) "generalization"
-                   (fresh "discharged" : [ unitNameStr (unitName d) | d <- conjSkolemDefs ]
-                    ++ [ unitNameStr (unitName d) | d <- proverSkolemDefs ]) ]
-      Nothing -> []
+            [ discharge (fresh "discharged") "plain" (Raw dischargedText)
+            , Step conjName "theorem" stated "generalization"
+                   (fresh "discharged" : map unitName (conjSkolemDefs ++ proverSkolemDefs)) ]
+        where
+          stated = Verbatim (unitFormula (typedUnit u))
+          discharge name role f = Step name role f (if null assumed then "conclude" else "implies")
+                                                   (goalFinals ++ map snd assumed)
     -- E and Twee do not define the Skolem symbols of the negated conjecture,
     -- so we print their definitions, as Vampire prints its own
     undefinedSkolems = nub (conjSkolems ++ [ f | f <- generalizedSyms, Set.notMember f definedSyms ])
     conjSkolemDefs = case conj of
       Just u | not (null undefinedSkolems) ->
         skolemDefinition fresh (typedUnit u) undefinedSkolems
-          (map restoreSkolemsLit ([ l | (l, _) <- goals spNumbered ] ++ [ l | ax@(AUnit _ l) <- axioms spNumbered, isJust (lookup (axiomName ax) assumed) ]))
+          (map restoreSkolemsLit (map fst (goals spNumbered) ++ [ l | AUnit _ l <- hypAxioms ]))
       _ -> []
     skolemDefLines = [ Input d (newSymbolsInfo [ f | f <- undefinedSkolems, f `elem` fst (declSymbols (unitDecl d)) ])
                      | d <- conjSkolemDefs ]
@@ -278,21 +262,16 @@ emitTptp sp0 = unlines $
     -- Skolem symbol of the negated conjecture. When the prover did not
     -- define it, we print a definition and the theorem generalizes over it.
     conjSkolems = [ f | f <- goalSkolems, Set.notMember f definedSyms ]
-    goalSkolems =
-      [ f | f <- nub (concatMap (litSymbols . fst) (goals spNumbered))
-          , Set.notMember f fileSyms
-          , f `notElem` concat [ axSyms ax | ax <- axioms spNumbered, isNothing (lookup (axiomName ax) assumed) ] ]
+    goalSkolems = [ f | f <- nub goalSyms, Set.notMember f fileSyms, f `notElem` otherAxSyms ]
     definedSyms = Set.fromList (concat [ fst (declSymbols d) | T.Unit _ d (Just (T.Introduced _ _, _)) <- inUnits input ])
     axSyms = concatMap litSymbols . axiomLits
     dischargedText =
-      let hs = [ ppFormula env (axiomFormula ax) | ax <- axioms spNumbered, isJust (lookup (axiomName ax) assumed) ]
+      let hs = map (ppFormula env . axiomFormula) hypAxioms
           gs = [ ppFormula env (LitFormula (renameLit (blockRenaming l b) (restoreSkolemsLit l))) | (l, b) <- goals sp ]
-          joined xs = case xs of { [x] -> x; _ -> "(" ++ intercalate " & " xs ++ ")" }
-      in if null hs then joined gs else "(" ++ joined hs ++ " => " ++ joined gs ++ ")"
-    allLines = skolemDefLines ++ inputLines ++ map snd skolemAxLines ++ axiomLines
+      in if null hs then conjunction gs else "(" ++ conjunction hs ++ " => " ++ conjunction gs ++ ")"
+    allLines = skolemDefLines ++ inputLines ++ [ line | (_, _, Just line) <- skolemChosen ] ++ axiomLines
             ++ (if merged then init stepLines else stepLines)
             ++ theoremLine
-    deps = assumptionDeps allLines
 
 -- Defines the Skolem symbols for the universal variables Xs of a conjecture
 -- ? [Ys] : ! [Xs] : M as ! [Ys] : ((? [Xs] : ~ M) => ~ M[Xs := sks(Ys)]),
@@ -306,10 +285,8 @@ skolemDefinition fresh conjU syms facts = case unitFormula conjU of
   _        -> []
   where
     units wrap fs =
-      [ T.Unit (unitNameOf (fresh name)) (T.Formula (T.Standard T.Plain) (wrap f'))
-               (Just (T.Introduced (T.Standard T.ByDefinition) Nothing, Nothing))
-      | (name, f') <- zip names' fs ]
-      where names' = "skolem_definition" : [ "skolem_definition_" ++ show k | k <- [2 :: Int ..] ]
+      [ definitionUnit (fresh name) (wrap f')
+      | (name, f') <- zip ("skolem_definition" : [ "skolem_definition_" ++ show k | k <- [2 :: Int ..] ]) fs ]
     -- the whole matrix, or else each of its conjuncts
     definitions :: T.FirstOrder s -> [T.FirstOrder s]
     definitions f = case define syms facts f of
@@ -320,20 +297,17 @@ skolemDefinition fresh conjU syms facts = case unitFormula conjU of
             -- each conjunct with the facts it matches and the Skolem
             -- symbols they mention
             parts   = [ (c, fs, ss) | c <- conjuncts m
-                                    , let atoms = [ l | a <- atomsIn c, Just l <- [safeLit a] ]
-                                          fs = [ l | l <- facts, any (\a -> any (\a' -> isJust (matchLit a' (unsign l))) [a, flipLit a]) atoms ]
+                                    , let atoms = safeAtoms c
+                                          fs = [ l | l <- facts, or [ isJust (matchLit a' (unsign l)) | a <- atoms, a' <- [a, flipLit a] ] ]
                                           ss = [ s' | s' <- syms, any ((s' `elem`) . litSymbols) fs ]
                                     , not (null ss) ]
             defined = concat [ ss | (_, _, ss) <- parts ]
-            defs    = [ define ss fs (T.quantified T.Exists ys (requantify vs c)) | (c, fs, ss) <- parts ]
+            defs    = [ define ss fs (T.quantified T.Exists ys (T.quantified T.Forall vs c)) | (c, fs, ss) <- parts ]
         in case sequence defs of
              Just ds | length parts > 1
                      , length defined == length (nub defined)
                      , all (`elem` defined) syms -> ds
              _ -> []
-    requantify vs c = case nonEmpty vs of
-      Just vs' -> T.Quantified T.Forall vs' c
-      Nothing  -> c
     conjuncts g = case g of
       T.Connected a T.Conjunction b -> conjuncts a ++ conjuncts b
       _                             -> [g]
@@ -343,11 +317,11 @@ skolemDefinition fresh conjU syms facts = case unitFormula conjU of
           (vs, m)  = universals f1
           names    = [ Text.unpack v | (T.Var v, _) <- vs ]
           ynames   = [ Text.unpack v | (T.Var v, _) <- ys ]
-      guard (not (null vs) && length (nub (names ++ ynames)) == length (names ++ ynames))
-      guard (all (`notElem` names ++ ynames) (boundIn m))
-      let atoms   = [ l | a <- atomsIn m, Just l <- [safeLit a] ]
-          relevant = [ l | l <- fs, any (`elem` ss) (litSymbols l) ]
-      σ <- listToMaybe (solve (names ++ ynames ++ boundIn m) atoms relevant [])
+          bound    = names ++ ynames
+      vs' <- nonEmpty vs
+      guard (length (nub bound) == length bound && all (`notElem` bound) (boundIn m))
+      let relevant = [ l | l <- fs, any (`elem` ss) (litSymbols l) ]
+      σ <- listToMaybe (solve (bound ++ boundIn m) (safeAtoms m) relevant [])
       -- each fixed X is a Skolem symbol applied to the values of Ys
       let witness a = listToMaybe [ y | y <- ynames, lookup y σ == Just a ]
           skolemOf (v, t) = case t of
@@ -358,7 +332,6 @@ skolemDefinition fresh conjU syms facts = case unitFormula conjU of
       let symbols = map (fst . snd) sks
       guard (length (nub symbols) == length symbols && all (`elem` symbols) ss)
       let unmapped = [ p | p@(T.Var v, _) <- vs, Text.unpack v `notElem` map fst sks ]
-      vs' <- nonEmpty vs
       return (T.quantified T.Forall ys
                 (T.Connected (T.Quantified T.Exists vs' (T.Negated m)) T.Implication
                              (T.quantified T.Exists unmapped (T.Negated (substFO sks m)))))
@@ -389,13 +362,9 @@ skolemDefinition fresh conjU syms facts = case unitFormula conjU of
       T.Negated b         -> boundIn b
       T.Atomic _          -> []
 
-    atomsIn :: T.FirstOrder s -> [T.Literal]
-    atomsIn g = case g of
-      T.Atomic l          -> [l]
-      T.Negated b         -> atomsIn b
-      T.Connected a _ b   -> atomsIn a ++ atomsIn b
-      T.Quantified _ _ b  -> atomsIn b
-
+    -- the atoms over defined symbols and variables, as unsigned literals
+    safeAtoms :: T.FirstOrder s -> [Literal]
+    safeAtoms g = mapMaybe safeLit (formulaAtoms g)
     safeLit l = case l of
       T.Predicate (T.Defined _) ts | all safeTerm ts -> Just (unsign (convertLit l))
       T.Equality a _ b | safeTerm a && safeTerm b     -> Just (unsign (convertLit l))
@@ -435,11 +404,10 @@ skolemDefinition fresh conjU syms facts = case unitFormula conjU of
         substT t = t
         applied (c, args) = T.Function (T.Defined (T.Atom (Text.pack c))) [ T.Variable (T.Var (Text.pack a)) | a <- args ]
 
--- A step turned into the theorem with the given formula and name. Other lines
--- stay as they are.
-asTheorem :: Formula -> String -> Line -> Line
-asTheorem f name (Step _ _ _ rule ps) = Step name "theorem" f rule ps
-asTheorem _ _ l = l
+-- A definition we add ourselves, as a unit introduced by definition.
+definitionUnit :: String -> T.Formula -> T.Unit
+definitionUnit nm f = T.Unit (unitNameOf nm) (T.Formula (T.Standard T.Plain) f)
+                             (Just (T.Introduced (T.Standard T.ByDefinition) Nothing, Nothing))
 
 -- The assumptions each line rests on, through its parents. An implies step
 -- discharges the assumptions among its parents.
@@ -481,14 +449,13 @@ ppLine env deps (Step n role f rule ps) =
   unitKeyword env ++ "(" ++ unitRef n ++ ", " ++ role ++ ", " ++ ppFormula env f ++ ann ++ ")."
   where
     ann | null rule = ""
-        | otherwise = ", inference(" ++ rule ++ ", [" ++ intercalate ", " info ++ "], ["
-                      ++ intercalate ", " (map unitRef ps) ++ "])"
+        | otherwise = ", inference(" ++ rule ++ ", [" ++ intercalate ", " ("status(thm)" : info) ++ "], [" ++ refs ps ++ "])"
     assumed = Map.findWithDefault [] n deps
     info
-      | rule == "implies" = ["status(thm)", "discharge(implies, [" ++ intercalate ", " (map unitRef onParents) ++ "])"]
-      | null assumed      = ["status(thm)"]
-      | otherwise         = ["status(thm)", "assumptions([" ++ intercalate ", " (map unitRef assumed) ++ "])"]
-    onParents = [ p | p <- ps, Map.lookup p deps == Just [p] ]
+      | rule == "implies" = ["discharge(implies, [" ++ refs [ p | p <- ps, Map.lookup p deps == Just [p] ] ++ "])"]
+      | null assumed      = []
+      | otherwise         = ["assumptions([" ++ refs assumed ++ "])"]
+    refs = intercalate ", " . map unitRef
 
 -- A unit name as TPTP writes it. Quoted names and integers stay as they are,
 -- and any other name is quoted when it needs to be.
@@ -501,12 +468,15 @@ unitRef n | not (null n) && all isDigit n = n
 unitKeyword :: SortEnv -> String
 unitKeyword = maybe "fof" (const "tff")
 
--- A formula of the derivation as TPTP text.
+-- A formula of the derivation as TPTP text. A clause is the closed implication
+-- from its body to its head or $false.
 ppFormula :: SortEnv -> Formula -> String
-ppFormula env (LitFormula lit)     = quantify env [lit] (tptpLiteral lit)
-ppFormula env (ClauseFormula c) = ppTptpClause env c
-ppFormula _   (Verbatim f)   = show (pretty f)
-ppFormula _   (Raw s)        = s
+ppFormula env (LitFormula lit) = quantify env [lit] (tptpLiteral lit)
+ppFormula env (ClauseFormula (Clause bs mh)) =
+  quantify env (bs ++ maybeToList mh) $
+    "(" ++ conjunction (map tptpLiteral bs) ++ " => " ++ maybe "$false" tptpLiteral mh ++ ")"
+ppFormula _ (Verbatim f) = show (pretty f)
+ppFormula _ (Raw s)      = s
 
 -- The steps of one block numbered from k, with the next free number and the
 -- name of the final step. A have or and line that only restates its fact gives
@@ -529,16 +499,16 @@ blockSteps fresh facts k mName role lit blk =
     stepName n  = fresh ("s" ++ show n)
     restatesFact lit0 nm = maybe False (variantLit lit0) (lookup nm facts)
 
-    rawSteps k0 (HaveHence ls) = loop k0 Nothing [] [] (zip ls (drop 1 (map Just ls) ++ [Nothing]))
+    rawSteps k0 (HaveHence ls) = loop k0 Nothing [] [] ls
       where
         -- cur is the line a hence continues from, extras the and lines since
         loop n _ _ acc [] = (n, reverse acc)
-        loop n cur extras acc ((l, next) : rest) = case l of
+        loop n cur extras acc (l : rest) = case l of
           Have lit0 nm
-            | restatesFact lit0 nm, isJust next -> loop n (Just nm) [] acc rest
+            | restatesFact lit0 nm, notLast -> loop n (Just nm) [] acc rest
             | otherwise -> loop (n + 1) (Just me) [] (plain lit0 "instantiate" [nm] : acc) rest
           And lit0 nm
-            | restatesFact lit0 nm, isJust next -> loop n cur (extras ++ [nm]) acc rest
+            | restatesFact lit0 nm, notLast -> loop n cur (extras ++ [nm]) acc rest
             | otherwise -> loop (n + 1) cur (extras ++ [me]) (plain lit0 "instantiate" [nm] : acc) rest
           Hence lit0 j ->
             let (rule, ps) = case j of
@@ -549,6 +519,7 @@ blockSteps fresh facts k mName role lit blk =
           where
             me = stepName n
             plain lit0 = Step me "plain" (LitFormula lit0)
+            notLast = not (null rest)
     rawSteps k0 (EqChain s chain)
       -- a relational chain ends in true, so read backwards each atom follows
       -- from the next by the equation between them
@@ -571,15 +542,10 @@ blockSteps fresh facts k mName role lit blk =
 
 -- The conjecture as a single literal, when it is one.
 conjLiteral :: T.Declaration -> Maybe Literal
-conjLiteral (T.Formula _ (T.CNF (T.Clause lits))) = case foldr (:) [] lits of
-  [(T.Positive, l)] -> Just (convertLit l)
-  _                 -> Nothing
-conjLiteral (T.Formula _ (T.FOF f)) = go f
-  where
-    go (T.Quantified T.Forall _ body) = go body
-    go (T.Atomic l)                   = Just (convertLit l)
-    go _                              = Nothing
-conjLiteral _ = Nothing
+conjLiteral d = case d of
+  T.Formula _ (T.CNF (T.Clause ((T.Positive, l) :| []))) -> Just (convertLit l)
+  T.Formula _ (T.FOF f) | T.Atomic l <- stripForall f    -> Just (convertLit l)
+  _                                                      -> Nothing
 
 -- The info that a definition brings in the symbols.
 newSymbolsInfo :: [String] -> String
@@ -588,22 +554,19 @@ newSymbolsInfo syms = "new_symbols(definition, [" ++ intercalate "," syms ++ "])
 -- The parser keeps at most two arguments of introduced, but current TPTP
 -- wants the kind, the info and the parents, so the missing lists are added.
 completeIntroduced :: String -> String -> String
-completeIntroduced info s = case breakOnLast ", introduced(" s of
-  Just (before, rest) ->
-    let (inner, after) = splitAtClosing rest
+completeIntroduced info s = case reverse [ i | (i, t) <- zip [0 ..] (tails s), key `isPrefixOf` t ] of
+  [] -> s
+  i : _ ->
+    let (inner, after) = splitAtClosing (drop (i + length key) s)
         args = map (dropWhile (== ' ')) (topLevelArgs inner)
         -- a missing or empty info list gets the unit's new_symbols info
         args' = case args of
           [k]        -> [k, "[" ++ info ++ "]"]
           [k, "[]"]  -> [k, "[" ++ info ++ "]"]
           _          -> args
-    in before ++ ", introduced(" ++ intercalate ", " (args' ++ replicate (3 - length args') "[]") ++ ")" ++ after
-  Nothing -> s
+    in take i s ++ key ++ intercalate ", " (args' ++ replicate (3 - length args') "[]") ++ ")" ++ after
   where
-    breakOnLast pat str =
-      case [ i | (i, t) <- zip [0 ..] (tails str), pat `isPrefixOf` t ] of
-        [] -> Nothing
-        is -> let i = last is in Just (take i str, drop (i + length pat) str)
+    key = ", introduced("
 
 -- Vampire writes file(path, unknown) when it lacks the unit's name. The
 -- problem has no unit of that name, so the name is dropped.
@@ -614,15 +577,14 @@ dropUnknownInfo u = u
 
 -- A unit read from the file, stated bare, or introduced by the prover.
 isInputUnit :: T.Unit -> Bool
-isInputUnit u@(T.Unit _ _ ann) = isFileSourced u || case ann of
-  Just (T.Introduced _ _, _) -> True
-  _                          -> False
-isInputUnit _ = False
+isInputUnit u = isFileSourced u || case u of
+  T.Unit _ _ (Just (T.Introduced _ _, _)) -> True
+  _                                       -> False
 
--- A unit's name, or the empty name for an include.
-unitName :: T.Unit -> T.UnitName
-unitName (T.Unit n _ _) = n
-unitName _              = Left (T.Atom mempty)
+-- A unit's name as written, or the empty name for an include.
+unitName :: T.Unit -> String
+unitName (T.Unit n _ _) = unitNameStr n
+unitName _              = ""
 
 -- A unit's declaration, or an empty atom for an include.
 unitDecl :: T.Unit -> T.Declaration
@@ -634,11 +596,8 @@ unitDecl _              = T.Formula (T.Standard T.Plain) (T.FOF (T.Atomic (T.Pre
 unitFormula :: T.Unit -> T.Formula
 unitFormula u = case unitDecl u of
   T.Formula _ (T.CNF (T.Clause lits)) ->
-    let fo (T.Positive, l) = T.Atomic l
-        fo (T.Negative, l) = T.Negated (T.Atomic l)
-        body = foldr1 (`T.Connected` T.Disjunction) (map fo (toList lits))
-        vars = nub [ Text.unpack v | (_, l) <- toList lits, T.Var v <- tptpLitVars l ]
-    in T.FOF (T.quantified T.Forall [ (T.Var (Text.pack v), T.Unsorted ()) | v <- vars ] body)
+    let vars = nub [ v | (_, l) <- toList lits, v <- tptpLitVars l ]
+    in T.FOF (T.quantified T.Forall [ (v, T.Unsorted ()) | v <- vars ] (signedDisjunction (toList lits)))
   T.Formula _ f -> f
   _             -> T.FOF (T.Atomic (T.Predicate (T.Defined (T.Atom mempty)) []))
 
@@ -647,14 +606,10 @@ tptpName :: String -> String
 tptpName s | all isDigit s = s
            | otherwise     = tptpSymbol (map (\c -> if c == ' ' then '_' else c) s)
 
--- A clause as the closed implication from its body to its head or $false.
-ppTptpClause :: SortEnv -> Clause -> String
-ppTptpClause env (Clause bs mh) =
-  quantify env (bs ++ maybeToList mh) $
-    "(" ++ ppBody bs ++ " => " ++ maybe "$false" tptpLiteral mh ++ ")"
-  where
-    ppBody [b] = tptpLiteral b
-    ppBody bs' = "(" ++ intercalate " & " (map tptpLiteral bs') ++ ")"
+-- Formulas joined by &, in parentheses unless there is only one.
+conjunction :: [String] -> String
+conjunction [x] = x
+conjunction xs  = "(" ++ intercalate " & " xs ++ ")"
 
 -- The universal closure over the literals' variables, each with its sort when
 -- the proof is typed.
@@ -678,7 +633,6 @@ litSorts m lit = case lit of
   where
     args f ts = concat (zipWith term (map Just (maybe [] fst (Map.lookup f m)) ++ repeat Nothing) ts)
     term (Just s) (Var v) = [(v, s)]
-    term _ (Var _)        = []
     term _ (App f ts)     = args f ts
     term _ _              = []
     eqn l r = let s = listToMaybe (mapMaybe resultSort [l, r])

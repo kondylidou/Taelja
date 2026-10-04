@@ -4,15 +4,15 @@
 -- step that cannot be built cites an undefined name and fails.
 module LeanEmitter (emitLean) where
 
-import Control.Monad (foldM, zipWithM)
-import Data.Char (isAlpha, isAlphaNum, isDigit, ord)
-import Data.List (intercalate, nub, zip4, (\\))
+import Control.Monad (foldM, guard, zipWithM)
+import Data.Char (isAlphaNum, isDigit, ord)
+import Data.List (intercalate, nub, (\\))
 import qualified Data.Map.Strict as Map
-import Data.Maybe (listToMaybe, maybeToList)
+import Data.Maybe (fromMaybe, listToMaybe, maybeToList)
 import qualified Data.Set as Set
 
 import Emitter (finalProof)
-import Helpers (applySubstTerm, atomTerms, axiomLits, axiomName, blockShownVars, matchTermIf, capitalize, falsumLit, flipLit, lineLit, litVars, mapLiteralTerms, termAtom, termVars, underscoreApart)
+import Helpers (applySubstTerm, atomTerms, axiomClause, axiomLits, axiomName, blockShownVars, matchTermIf, capitalize, falsumLit, flipLit, foldLiteralTerms, isEqLit, isRelLit, lineLit, litVars, mapLiteralTerms, termAtom, termVars, underscoreApart)
 import Types
 
 -- Whether a symbol is a function or a predicate.
@@ -61,13 +61,8 @@ emitLean namespace0 sp0 = unlines $
   ++ concat [ [ "-- " ++ capitalize n, "axiom " ++ refName r ++ " : " ++ refType ctx r ]
             | (n, r) <- axiomRefs ]
   ++ [ "" | not (null axiomRefs) ]
-  ++ concat [ [ "-- " ++ capitalize n
-              , "theorem " ++ leanRefName n ++ " : " ++ statement ctx lit ++ " := by" ]
-              ++ map ("  " ++) (proofLines ctx lit blk) ++ [""]
-            | (n, lit, blk) <- lemmas sp ]
-  ++ concat [ [ "-- Goal " ++ show i
-              , "theorem taelja_goal" ++ show i ++ " : " ++ statement ctx lit ++ " := by" ]
-              ++ map ("  " ++) (proofLines ctx lit blk) ++ [""]
+  ++ concat [ theorem (capitalize n) (leanRefName n) lit blk | (n, lit, blk) <- lemmas sp ]
+  ++ concat [ theorem ("Goal " ++ show i) ("taelja_goal" ++ show i) lit blk
             | (i, (lit, blk)) <- zip [(1 :: Int) ..] (goals sp) ]
   ++ [ "end " ++ namespace ]
   where
@@ -78,11 +73,14 @@ emitLean namespace0 sp0 = unlines $
       ++ concat [ litSyms lit ++ blockSyms lit blk | (_, lit, blk) <- lemmas sp ]
       ++ concat [ litSyms lit ++ blockSyms lit blk | (lit, blk) <- goals sp ]
     names = symbolNames syms
-    axiomRefs = [ (axiomName ax, axiomRef ax) | ax <- axioms sp ]
-    lemmaRefs = [ (n, mkRef (leanRefName n) [] (Just lit)) | (n, lit, _) <- lemmas sp ]
+    axiomRefs = [ (axiomName ax, mkRef (axiomName ax) (axiomClause ax)) | ax <- axioms sp ]
+    lemmaRefs = [ (n, mkRef n (Clause [] (Just lit))) | (n, lit, _) <- lemmas sp ]
     ctx = Ctx { ctxNames = names
               , ctxUsed  = Set.fromList (Map.elems names)
               , ctxRefs  = Map.fromList (axiomRefs ++ lemmaRefs) }
+    theorem title nm lit blk =
+      [ "-- " ++ title, "theorem " ++ nm ++ " : " ++ statement ctx lit ++ " := by" ]
+      ++ map ("  " ++) (proofLines ctx lit blk) ++ [""]
     symbolDecls =
       let decl s@(k, _, n) = "axiom " ++ names Map.! s ++ " : "
             ++ intercalate " → " (replicate n "α" ++ [if k == Fun then "α" else "Prop"])
@@ -91,14 +89,9 @@ emitLean namespace0 sp0 = unlines $
           preds  = [ s | s@(Pred, _, _) <- syms ]
       in concat [ map decl g ++ [""] | g <- [consts, funs, preds], not (null g) ]
 
--- An axiom as a citable statement under its Lean name.
-axiomRef :: Axiom -> Ref
-axiomRef (AUnit n l)                 = mkRef (leanRefName n) [] (Just l)
-axiomRef (ANucleus n (Clause bs mh)) = mkRef (leanRefName n) bs mh
-
--- A citable statement from a Lean name, a body and a head.
-mkRef :: String -> [Literal] -> Maybe Literal -> Ref
-mkRef nm bs mh = Ref nm (map ('?' :) vs) (map apart bs) (fmap apart mh)
+-- A clause as a citable statement, under the Lean form of its name.
+mkRef :: String -> Clause -> Ref
+mkRef n (Clause bs mh) = Ref (leanRefName n) (map ('?' :) vs) (map apart bs) (fmap apart mh)
   where
     vs    = nub (concatMap litVars (bs ++ maybeToList mh))
     apart = mapLiteralTerms rename
@@ -130,10 +123,9 @@ reservedAtom p = p == "$false" || p == "$true"
 -- The function and predicate symbols of a literal.
 litSyms :: Literal -> [Sym]
 litSyms l = case l of
-  Eq a b    -> termSyms a ++ termSyms b
-  NEq a b   -> termSyms a ++ termSyms b
   Rel p ts  -> atom p ts
   NRel p ts -> atom p ts
+  _         -> foldLiteralTerms termSyms l
   where atom p ts | reservedAtom p = []
                   | otherwise      = (Pred, p, length ts) : concatMap termSyms ts
 
@@ -144,7 +136,7 @@ blockSyms :: Literal -> ProofBlock -> [Sym]
 blockSyms _ (HaveHence ls) = concatMap (litSyms . lineLit) ls
 blockSyms stmt (EqChain s steps)
   | isProblemAtom stmt = concat [ litSyms a | t <- atomTerms s steps, Just a <- [termAtom t] ]
-  | otherwise   = concatMap termSyms (s : map snd steps)
+  | otherwise          = concatMap termSyms (s : map snd steps)
 
 -- A positive atom other than $false and $true.
 isProblemAtom :: Literal -> Bool
@@ -164,19 +156,15 @@ symbolNames = foldl add Map.empty
 -- and a name with other characters becomes op_ and its parts spelled out.
 identifier :: String -> String
 identifier n
-  | all plain n, (c : _) <- n, isAlpha c || c == '_' = n
-  | all plain n, (c : _) <- n, isDigit c             = "n_" ++ n
-  | otherwise = "op_" ++ intercalate "_" (words' n)
+  | (c : _) <- n, all plain n = if isDigit c then "n_" ++ n else n
+  | otherwise = "op_" ++ intercalate "_" (parts n)
   where
     plain c = c < '\128' && (isAlphaNum c || c == '_')
     -- plain runs stay, other characters become words or their code
-    words' [] = []
-    words' cs@(c : rest)
-      | plain c   = let (w, more) = span plain cs in w : words' more
-      | otherwise = spell c : words' rest
-    spell c = case lookup c symbolWords of
-      Just w  -> w
-      Nothing -> "c" ++ show (ord c)
+    parts [] = []
+    parts cs@(c : rest)
+      | plain c   = let (w, more) = span plain cs in w : parts more
+      | otherwise = fromMaybe ("c" ++ show (ord c)) (lookup c symbolWords) : parts rest
     symbolWords =
       [ ('+', "plus"), ('-', "minus"), ('*', "times"), ('/', "div"), ('^', "pow"), ('<', "lt")
       , ('>', "gt"), ('=', "eq"), (' ', "sp"), ('%', "mod"), ('&', "and"), ('|', "or")
@@ -264,10 +252,8 @@ refType ctx r = quantified (map (env Map.!) (refBinders r)) $
   intercalate " → " (map hyp (refBody r) ++ [maybe "False" (leanLiteral ctx env) (refHead r)])
   where
     env = bindVars (ctxUsed ctx) Map.empty (refBinders r)
-    hyp b = case b of
-      NEq _ _  -> "(" ++ leanLiteral ctx env b ++ ")"
-      NRel _ _ -> "(" ++ leanLiteral ctx env b ++ ")"
-      _        -> leanLiteral ctx env b
+    hyp b | isEqLit b || isRelLit b = leanLiteral ctx env b
+          | otherwise               = "(" ++ leanLiteral ctx env b ++ ")"
 
 -- Matching ---------------------------------------------------------------
 
@@ -339,6 +325,11 @@ rewrite ctx env r d comps = case refHead r of
     , Just ctxs <- [mapM (uncurry (abstract (x, y))) comps] ]
   _ -> Nothing
 
+-- The proof of an equation lifted into a shape, the hole marking the places
+-- it rewrites.
+congr :: Env -> String -> String -> String
+congr env shape eq = "congrArg (fun " ++ env Map.! holeVar ++ " : α => " ++ shape ++ ") (" ++ eq ++ ")"
+
 -- Proofs -----------------------------------------------------------------
 
 -- A step that cannot be built. It states the reason and cites an undefined
@@ -354,7 +345,7 @@ proofLines ctx stmt blk =
   ++ [ "have " ++ env Map.! v ++ " : α := taelja_elem" | v <- blockVs ]
   ++ case blk of
        HaveHence ls    -> haveHence ctx env stmt ls
-       EqChain s steps -> chainProof ctx env hole stmt s steps
+       EqChain s steps -> chainProof ctx env stmt s steps
   where
     stmtVs  = nub (litVars stmt)
     blockVs = nub (blockShownVars blk) \\ stmtVs
@@ -372,35 +363,38 @@ haveHence ctx env stmt = go (1 :: Int) Nothing []
     go _ cur _ [] = case cur of
       Just (h, l) | l == stmt         -> [ "exact " ++ h ]
                   | flipLit l == stmt -> [ "exact " ++ symm l h ]
-      Just (_, l) -> unjustified ("the block ends on " ++ leanLiteral ctx env l ++ ", which is not the statement")
+      Just (_, l) -> unjustified ("the block ends on " ++ lit l ++ ", which is not the statement")
       Nothing     -> unjustified "the block is empty"
-    go n cur extras (ln : rest) =
-      let h = localName ctx env ("h" ++ show n)
-          have l t = "have " ++ h ++ " : " ++ leanLiteral ctx env l ++ " := " ++ t
-      in case ln of
-        Have l nm -> case ref nm >>= \r -> applyRule r l [] of
-          Just t  -> have l t : go (n + 1) (Just (h, l)) [] rest
-          Nothing -> unjustified (nm ++ " does not state " ++ leanLiteral ctx env l)
-        And l nm -> case ref nm >>= \r -> applyRule r l [] of
-          Just t  -> have l t : go (n + 1) cur (extras ++ [(h, l)]) rest
-          Nothing -> unjustified (nm ++ " does not state " ++ leanLiteral ctx env l)
-        Hence l (ByAxiom nm) -> case ref nm >>= \r -> applyRule r l (maybeToList cur ++ extras) of
-          Just t  -> have l t : go (n + 1) (Just (h, l)) [] rest
-          Nothing -> unjustified (nm ++ " does not derive " ++ leanLiteral ctx env l ++ " from the lines before it")
-        Hence l (ByRw nm d) -> case (cur, ref nm) of
-          (Just (hp, lp), Just r)
-            | Just comps <- components lp l
-            , Just (eq, ctxs) <- rewrite ctx env r d comps
-            , Just shape <- rebuild lp ctxs ->
-                have l ("Eq.mp (congrArg (fun " ++ env Map.! holeVar ++ " : α => "
-                        ++ leanLiteral ctx env shape ++ ") (" ++ eq ++ ")) " ++ hp)
-                  : go (n + 1) (Just (h, l)) [] rest
-          _ -> unjustified (nm ++ " does not rewrite the line before into " ++ leanLiteral ctx env l)
-        Hence l ByContradiction -> case cur of
-          Just (hp, lp) | lp == falsumLit -> have l ("False.elim " ++ hp) : go (n + 1) (Just (h, l)) [] rest
-          _ -> unjustified "no contradiction was derived before this line"
-    ref nm = Map.lookup nm (ctxRefs ctx)
-    applyRule = applyClause ctx env
+    go n cur extras (ln : rest) = case proof of
+        Just t  -> ("have " ++ h ++ " : " ++ lit l ++ " := " ++ t) : next
+        Nothing -> unjustified why
+      where
+        h = localName ctx env ("h" ++ show n)
+        l = lineLit ln
+        -- an and line joins the premises, any other line starts them anew
+        next = case ln of
+          And {} -> go (n + 1) cur (extras ++ [(h, l)]) rest
+          _      -> go (n + 1) (Just (h, l)) [] rest
+        (proof, why) = case ln of
+          Have _ nm -> (cite nm [], nm ++ " does not state " ++ lit l)
+          And _ nm  -> (cite nm [], nm ++ " does not state " ++ lit l)
+          Hence _ (ByAxiom nm) ->
+            (cite nm (maybeToList cur ++ extras), nm ++ " does not derive " ++ lit l ++ " from the lines before it")
+          Hence _ (ByRw nm d) -> (rewritten nm d, nm ++ " does not rewrite the line before into " ++ lit l)
+          Hence _ ByContradiction -> (contradiction, "no contradiction was derived before this line")
+        cite nm prems = Map.lookup nm (ctxRefs ctx) >>= \r -> applyClause ctx env r l prems
+        rewritten nm d = do
+          (hp, lp) <- cur
+          r <- Map.lookup nm (ctxRefs ctx)
+          comps <- components lp l
+          (eq, ctxs) <- rewrite ctx env r d comps
+          shape <- rebuild lp ctxs
+          Just ("Eq.mp (" ++ congr env (lit shape) eq ++ ") " ++ hp)
+        contradiction = do
+          (hp, lp) <- cur
+          guard (lp == falsumLit)
+          Just ("False.elim " ++ hp)
+    lit = leanLiteral ctx env
     components lp l = case (lp, l) of
       (Eq a b, Eq c d)   -> Just [(a, c), (b, d)]
       (NEq a b, NEq c d) -> Just [(a, c), (b, d)]
@@ -453,18 +447,19 @@ localName ctx env = underscoreApart (\y -> Set.member y (ctxUsed ctx) || y `elem
 -- A chain proves an equation as a calc from one side to the other. For an
 -- atom it rewrites the atom into an instance of a stated fact, so the Lean
 -- proof runs backwards from that fact to the atom.
-chainProof :: Ctx -> Env -> String -> Literal -> Term -> [(RwStep, Term)] -> [String]
-chainProof ctx env hole stmt s steps = case stmt of
+chainProof :: Ctx -> Env -> Literal -> Term -> [(RwStep, Term)] -> [String]
+chainProof ctx env stmt s steps = case stmt of
   Eq a b
-    | null steps, a == b, s == a  -> [ "rfl" ]
-    | null steps -> unjustified "a chain without steps proves only s = s"
-    | not (null steps), (s, final) == (a, b) -> calc
-    | not (null steps), (s, final) == (b, a) -> "refine Eq.symm ?_" : calc
+    | null steps, a == b, s == a -> [ "rfl" ]
+    | null steps                 -> unjustified "a chain without steps proves only s = s"
+    | (s, final) == (a, b)       -> calc
+    | (s, final) == (b, a)       -> "refine Eq.symm ?_" : calc
     | otherwise -> unjustified ("the chain runs from " ++ leanTerm ctx env s ++ " to " ++ leanTerm ctx env final
                                 ++ ", which are not the sides of the statement")
-  _ | isProblemAtom stmt, ((rwLast, Const "true") : revSteps) <- reverse steps
+  _ | isProblemAtom stmt, ((rwLast, Const "true") : _) <- reverse steps
     , Just atoms <- mapM termAtom (atomTerms s steps), head atoms == stmt ->
-        relational (reverse revSteps) rwLast atoms
+        fromMaybe (unjustified "a step of the chain is not an instance of the statement it cites")
+                  (backwards rwLast atoms)
   _ -> unjustified "the chain does not prove the statement"
   where
     final = snd (last steps)
@@ -476,29 +471,22 @@ chainProof ctx env hole stmt s steps = case stmt of
     step prev (rw, cur) = do
       r <- ref (rwName rw)
       (eq, [shape]) <- rewrite ctx env r (rwDir rw) [(prev, cur)]
-      return (leanTerm ctx env cur ++ " := " ++ congruence (leanTerm ctx env shape) (shape == Var holeVar) eq)
-    congruence shape atRoot eq
-      | atRoot    = eq
-      | otherwise = "congrArg (fun " ++ hole ++ " : α => " ++ shape ++ ") (" ++ eq ++ ")"
-    relational rwSteps rwLast atoms =
-      let lastAtom = last atoms
-          start = do
-            r <- ref (rwName rwLast)
-            h <- refHead r
-            if not (null (refBody r)) then Nothing else listToMaybe
-              [ instantiate ctx env r sub | (sub, False) <- matchL isPattern h lastAtom [] ]
-          back (prevAtom, nextAtom, rw) = do
-            r <- ref (rwName rw)
-            (Rel p as, Rel q bs) <- Just (prevAtom, nextAtom)
-            if p /= q || length as /= length bs then Nothing else do
-              (eq, shapes) <- rewrite ctx env r (rwDir rw) (zip as bs)
-              return ("Eq.mpr (congrArg (fun " ++ hole ++ " : α => " ++ leanLiteral ctx env (Rel p shapes) ++ ") (" ++ eq ++ "))")
-      in case (start, mapM back (zip3 atoms (drop 1 atoms) (map fst rwSteps))) of
-           (Just t0, Just backs) ->
-             let names = [ localName ctx env ("h" ++ show i) | i <- [(1 :: Int) ..] ]
-                 facts = reverse atoms
-                 first = "have " ++ head names ++ " : " ++ leanLiteral ctx env (head facts) ++ " := " ++ t0
-                 rest  = [ "have " ++ n ++ " : " ++ leanLiteral ctx env a ++ " := " ++ b ++ " " ++ p
-                         | (n, p, a, b) <- zip4 (drop 1 names) names (drop 1 facts) (reverse backs) ]
-             in first : rest ++ [ "exact " ++ names !! (length facts - 1) ]
-           _ -> unjustified "a step of the chain is not an instance of the statement it cites"
+      Just (leanTerm ctx env cur ++ " := "
+            ++ (if shape == Var holeVar then eq else congr env (leanTerm ctx env shape) eq))
+    -- the atoms as haves from the fact the last step cites back to the
+    -- statement, each step rewriting an atom into the next
+    backwards rwLast atoms = do
+      r <- ref (rwName rwLast)
+      h <- refHead r
+      guard (null (refBody r))
+      t0 <- listToMaybe [ instantiate ctx env r sub | (sub, False) <- matchL isPattern h (last atoms) [] ]
+      backs <- mapM back (zip3 atoms (drop 1 atoms) (map fst steps))
+      let names  = [ localName ctx env ("h" ++ show i) | i <- [(1 :: Int) ..] ]
+          proofs = t0 : zipWith (\b p -> b ++ " " ++ p) (reverse backs) names
+      Just ([ "have " ++ n ++ " : " ++ leanLiteral ctx env a ++ " := " ++ t | (n, a, t) <- zip3 names (reverse atoms) proofs ]
+            ++ [ "exact " ++ names !! (length atoms - 1) ])
+    back (Rel p as, Rel q bs, rw) | p == q, length as == length bs = do
+      r <- ref (rwName rw)
+      (eq, shapes) <- rewrite ctx env r (rwDir rw) (zip as bs)
+      Just ("Eq.mpr (" ++ congr env (leanLiteral ctx env (Rel p shapes)) eq ++ ")")
+    back _ = Nothing

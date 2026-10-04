@@ -10,6 +10,7 @@ module StepReader
   ) where
 
 import Control.Applicative ((<|>))
+import Control.Monad (guard)
 import Data.Bifunctor (bimap)
 import Data.List (foldl', nub)
 import Data.Maybe (listToMaybe)
@@ -55,19 +56,17 @@ isAtomEquation _ _ = False
 -- From one side of an equation to the other by one rewrite with each
 -- premise, in either order. Only premise variables are bound, and one left
 -- free takes a leaf of the left side, as the premise holds for every value.
--- The result also gives the side the chain starts from and its middle term.
-twoRewrites :: Term -> Term -> (Term, Term) -> (Term, Term)
-            -> Maybe (Bool, (Int, Dir, Bool, (Term, Term)), (Int, Dir, Bool, (Term, Term)), Term)
+-- A chain found from the right side is read backwards.
+twoRewrites :: Term -> Term -> (Term, Term) -> (Term, Term) -> Maybe [(Int, Dir, Bool, (Term, Term), Term)]
 twoRewrites gl gr e1 e2 = listToMaybe
-  (  [ (False, (1, dA, rA, iA), (2, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gl gr e1 e2 ]
-  ++ [ (True,  (1, dA, rA, iA), (2, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gr gl e1 e2 ]
-  ++ [ (False, (2, dA, rA, iA), (1, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gl gr e2 e1 ]
-  ++ [ (True,  (2, dA, rA, iA), (1, dB, rB, iB), m) | (dA, rA, iA, dB, rB, iB, m) <- via gr gl e2 e1 ] )
+  [ chain | (ia, ea, ib, eb) <- [(1, e1, 2, e2), (2, e2, 1, e1)], back <- [False, True]
+          , chain <- via back ia ea ib eb ]
   where
     rigid = nub (termVars gl ++ termVars gr)
     leaf  = firstLeaf gl
-    via start end ea eb = do
-      let ea' = renameEqApart "_t1" ea
+    via back ia ea ib eb = do
+      let (start, end) = if back then (gr, gl) else (gl, gr)
+          ea' = renameEqApart "_t1" ea
           eb' = renameEqApart "_t2" eb
       (dA, fromA, toA) <- rewriteDirections ea'
       (i, (sub, ctx)) <- zip [0 :: Int ..] (termCtxs start)
@@ -84,7 +83,10 @@ twoRewrites gl gr e1 e2 = listToMaybe
           fill = [ (v, leaf) | v <- nub (termVars mid1 ++ concatMap termVars [fst iA, snd iA, fst iB, snd iB])
                              , v `notElem` rigid ]
           filled (l, r) = (deepApplySubstTerm fill l, deepApplySubstTerm fill r)
-      return (dA, i == 0, filled iA, dB, k == 0, filled iB, deepApplySubstTerm fill mid1)
+          mid = deepApplySubstTerm fill mid1
+      return $ if back
+        then [ (ib, flipDir dB, k == 0, filled iB, mid), (ia, flipDir dA, i == 0, filled iA, gr) ]
+        else [ (ia, dA, i == 0, filled iA, mid), (ib, dB, k == 0, filled iB, gr) ]
 
 -- From one side of an equation to the other when the step rewrote every
 -- occurrence of a term in an instance of one premise by the other, as E and
@@ -95,6 +97,8 @@ rewriteEveryOccurrence gl gr e1 e2 = listToMaybe (reading 1 e1 2 e2 ++ reading 2
   where
     rigid = nub (termVars gl ++ termVars gr)
     leaf  = firstLeaf gl
+    -- t with v put at the path, to fold over a list of places
+    put v t path = putTermAt path v t
     -- premise p is the one rewritten, by premise f
     reading iP p iF f = do
       let p' = renameEqApart "_t1" p
@@ -107,11 +111,10 @@ rewriteEveryOccurrence gl gr e1 e2 = listToMaybe (reading 1 e1 2 e2 ++ reading 2
       -- also occurs where nothing was rewritten.
       (s1, placesL, placesR) <- leftByRewrite to ++ rewrittenInPremise from to pl pr
       let u = deepApplySubstTerm s1 from
-          undone = foldl (\t path -> putTermAt path u t)
-      True <- [length placesL + length placesR >= 2]
-      True <- [all (\path -> termAt path gl /= u) placesL && all (\path -> termAt path gr /= u) placesR]
-      Just s2 <- [unifyApart rigid pl (undone gl placesL) s1]
-      Just s3 <- [unifyApart rigid pr (undone gr placesR) s2]
+      guard (length placesL + length placesR >= 2)
+      guard (all (\path -> termAt path gl /= u) placesL && all (\path -> termAt path gr /= u) placesR)
+      Just s2 <- [unifyApart rigid pl (foldl (put u) gl placesL) s1]
+      Just s3 <- [unifyApart rigid pr (foldl (put u) gr placesR) s2]
       let app = deepApplySubstTerm s3
           fill = [ (x, leaf) | x <- nub (concatMap (termVars . app) [u, fst p', snd p', fst f', snd f'])
                              , x `notElem` rigid ]
@@ -119,11 +122,11 @@ rewriteEveryOccurrence gl gr e1 e2 = listToMaybe (reading 1 e1 2 e2 ++ reading 2
           u'  = fin u
           instP = bimap fin fin p'
           instF = bimap fin fin f'
-          lefts  = drop 1 (scanl (\t path -> putTermAt path u' t) gl placesL)
+          lefts  = drop 1 (scanl (put u') gl placesL)
           midL   = last (gl : lefts)
-          midR   = foldl (\t path -> putTermAt path u' t) gr placesR
+          midR   = foldl (put u') gr placesR
           rights = drop 1 (scanl (\t path -> putTermAt path (termAt path gr) t) midR placesR)
-      True <- [fin pl == midL && fin pr == midR]
+      guard (fin pl == midL && fin pr == midR)
       return ( [ (iF, flipDir dF, null path, instF, t) | (path, t) <- zip placesL lefts ]
             ++ [ (iP, dP, True, instP, midR) ]
             ++ [ (iF, dF, null path, instF, t) | (path, t) <- zip placesR rights ] )
@@ -166,11 +169,7 @@ firstLeaf t = head ([ u | (u, _) <- termCtxs t, isLeaf u ] ++ [t])
 -- to the right. Each gives its premise (1 or 2), its direction, whether it is
 -- at the root, the premise instance and the term it rewrites to.
 stepRewrites :: Term -> Term -> (Term, Term) -> (Term, Term) -> Maybe [(Int, Dir, Bool, (Term, Term), Term)]
-stepRewrites gl gr e1 e2 = (inOrder <$> twoRewrites gl gr e1 e2) <|> rewriteEveryOccurrence gl gr e1 e2
-  where
-    inOrder (back, (ia, dA, rA, iA), (ib, dB, rB, iB), mid)
-      | back      = [ (ib, flipDir dB, rB, iB, mid), (ia, flipDir dA, rA, iA, gr) ]
-      | otherwise = [ (ia, dA, rA, iA, mid), (ib, dB, rB, iB, gr) ]
+stepRewrites gl gr e1 e2 = twoRewrites gl gr e1 e2 <|> rewriteEveryOccurrence gl gr e1 e2
 
 -- A chain from pl to pr, reversed when the equation is applied right to left
 -- and instantiated to run from `from` to `to`.

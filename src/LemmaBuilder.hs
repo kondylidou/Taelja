@@ -9,10 +9,11 @@ module LemmaBuilder
   , orderPrebuiltLemmas
   ) where
 
-import Control.Monad (foldM, when)
+import Control.Monad (guard, when)
 import Control.Applicative ((<|>))
 import Data.List (nub, stripPrefix)
 import Data.Maybe (isJust, listToMaybe, maybeToList)
+import Data.Traversable (mapAccumM)
 import Data.TPTP.Pretty (Pretty (..))
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -35,40 +36,34 @@ import StepReader (isAtomEquation, reverseChain)
 
 -- The names of every ancestor of rootName, itself excluded.
 ancestorNamesOf :: Map.Map String T.Unit -> String -> Set.Set String
-ancestorNamesOf unitMap rootName = go startFrontier Set.empty
+ancestorNamesOf unitMap rootName = go (parentsOf rootName) Set.empty
   where
     -- a bare reference, as E copies a unit, counts as a parent too
     parentsOf nm = maybe Set.empty (Set.fromList . unitParents) (Map.lookup nm unitMap)
-
-    startFrontier = parentsOf rootName
-
     go frontier seen = case Set.minView frontier of
       Nothing -> seen
       Just (nm, rest)
         | Set.member nm seen -> go rest seen
-        | otherwise          ->
-            go (Set.union rest (parentsOf nm)) (Set.insert nm seen)
+        | otherwise          -> go (Set.union rest (parentsOf nm)) (Set.insert nm seen)
 
 -- The lemma candidates in proof order, derived positive units cited as a
 -- parent at least twice. An equation with an atom as a side is not
 -- first-order and is left out.
 findLemmaCandidates :: [T.Unit] -> [(String, T.Declaration)]
 findLemmaCandidates units =
-  let candidateSet = Set.fromList
-        [ unitNameStr n
-        | T.Unit n decl (Just (T.Inference {}, _)) <- units
-        -- one positive literal, and no disequation, which no lemma states
-        , maybe False (not . isTDisequality) (headLitOf decl)
-        -- a lemma is a single literal, so a Horn clause is inlined instead
-        , null (bodyLitsOf decl)
-        , Map.findWithDefault 0 (unitNameStr n) (premiseUses units) >= 2
-        , not (maybe False (isAtomEquation preds . convertLit) (headLitOf decl))
-        ]
-      preds = predicateSymbols units
-  in [ (unitNameStr n, decl)
-     | T.Unit n decl _ <- units
-     , Set.member (unitNameStr n) candidateSet
-     ]
+  [ (unitNameStr n, decl) | T.Unit n decl _ <- units, Set.member (unitNameStr n) candidates ]
+  where
+    uses = premiseUses units
+    preds = predicateSymbols units
+    candidates = Set.fromList
+      [ unitNameStr n
+      | T.Unit n decl (Just (T.Inference {}, _)) <- units
+      -- one positive literal, and no disequation, which no lemma states
+      , maybe False (not . isTDisequality) (headLitOf decl)
+      -- a lemma is a single literal, so a Horn clause is inlined instead
+      , null (bodyLitsOf decl)
+      , Map.findWithDefault 0 (unitNameStr n) uses >= 2
+      , not (maybe False (isAtomEquation preds . convertLit) (headLitOf decl)) ]
 
 -- Turns the Skolem constants back into the candidate's variables. A sub-proof
 -- variable with the same name as one of them is renamed apart first.
@@ -108,13 +103,11 @@ buildCandidateLemma translateFn unitMap tstp2name debug (cname, cdecl) =
   case headLitOf cdecl of
     Nothing   -> return Nothing
     Just tlit -> do
-      let lit             = convertLit tlit
-          taken           = concat [ fs ++ ps | T.Unit _ d _ <- Map.elems unitMap, let (fs, ps) = declSymbols d ]
+      let lit = convertLit tlit
+          taken = concat [ fs ++ ps | T.Unit _ d _ <- Map.elems unitMap, let (fs, ps) = declSymbols d ]
           (litSkolem, undoMap) = freezeLitVars "skc_" taken lit
-      mFromSubDag <- buildFromSubDag translateFn unitMap tstp2name debug cname lit litSkolem undoMap
-      case mFromSubDag of
-        Just r  -> return (Just r)
-        Nothing -> buildWithTwee unitMap tstp2name cname lit litSkolem undoMap
+      fromSubDag <- buildFromSubDag translateFn unitMap tstp2name debug cname lit litSkolem undoMap
+      maybe (buildWithTwee unitMap tstp2name cname lit litSkolem undoMap) (return . Just) fromSubDag
 
 -- The candidate's own derivation as a refutation of ~B, so no prover is
 -- needed. The sub-problem is its ancestors, the candidate, its Skolemized
@@ -130,7 +123,8 @@ buildFromSubDag translateFn unitMap tstp2name debug cname lit litSkolem undoMap 
   let ancNames  = ancestorNamesOf unitMap cname
       -- the two units the sub-problem adds get names apart from its own,
       -- also once sanitized
-      ids       = Set.union (Set.insert cname ancNames) (Set.map sanitizeId (Set.insert cname ancNames))
+      own       = Set.insert cname ancNames
+      ids       = Set.union own (Set.map sanitizeId own)
       negName   = underscoreApart (`Set.member` ids) "negconj"
       botName   = underscoreApart (`Set.member` ids) "lemma_bot"
       -- The outer conjecture is left out, or the sub-run would take the
@@ -141,8 +135,7 @@ buildFromSubDag translateFn unitMap tstp2name debug cname lit litSkolem undoMap 
                       , not (isConjectureDecl d) ]
       keptNames = Set.fromList [ unitNameStr n | T.Unit n _ _ <- kept ]
       ancUnits  = [ if all (`Set.member` keptNames) (unitParents u) then u else makeFileSourced u | u <- kept ]
-      candUnit  = maybeToList (Map.lookup cname unitMap)
-      unitLines = map (show . pretty) (ancUnits ++ candUnit)
+      unitLines = map (show . pretty) (ancUnits ++ maybeToList (Map.lookup cname unitMap))
       negLine   = "cnf(" ++ negName ++ ", negated_conjecture, " ++ tptpLiteral (negLit litSkolem) ++ ")."
       botLine   = "cnf(" ++ botName ++ ", plain, $false, inference(resolution,[status(thm)],["
                   ++ cname ++ ", " ++ negName ++ "]))."
@@ -150,16 +143,14 @@ buildFromSubDag translateFn unitMap tstp2name debug cname lit litSkolem undoMap 
       -- E keeps several clausified copies of an axiom, and an ancestor
       -- may be one the outer proof did not name. It takes the outer name
       -- of its source, or the sub-run would number it afresh.
-      bySource  = Map.fromList
-        [ (resolveCopySource unitMap k, dn) | (k, dn) <- Map.toList tstp2name ]
+      bySource  = Map.fromList [ (resolveCopySource unitMap k, dn) | (k, dn) <- Map.toList tstp2name ]
       copyOverride = Map.fromList
         [ (aname, dn)
         | aname <- Set.toList ancNames
         , not (Map.member aname tstp2name)
-        , Just dn <- [Map.lookup (resolveCopySource unitMap aname) bySource]
-        ]
+        , Just dn <- [Map.lookup (resolveCopySource unitMap aname) bySource] ]
       -- the negation is the sub-run's goal, not an axiom, so it gets no name
-      nameOverride   = Map.unions [Map.singleton negName "", tstp2name, copyOverride]
+      nameOverride = Map.unions [Map.singleton negName "", tstp2name, copyOverride]
   when debug $ hPutStrLn stderr ("buildCandidateLemma: sub-DAG for " ++ cname ++ ":\n" ++ content)
   case parseTptp (Text.pack content) of
     -- the sub-problem is printed here, so a parse error is a bug and is
@@ -192,9 +183,8 @@ liftSubProof nameOverride cname lit undoMap sp = do
       -- others itself.
       outerNames = Set.fromList (filter (not . null) (Map.elems nameOverride))
       ownAxioms = [ a | a <- axioms sp, axiomName a `Set.notMember` outerNames ]
-  if isEmptyBlock blk' || not (blockConcludes lit blk')
-    then Nothing
-    else Just (lit, blk', lifted, ownAxioms)
+  guard (not (isEmptyBlock blk') && blockConcludes lit blk')
+  return (lit, blk', lifted, ownAxioms)
 
 -- The fallback for an equation whose ancestor axioms are all unit equations.
 -- Twee is asked for a chain from them.
@@ -208,12 +198,10 @@ buildWithTwee unitMap tstp2name cname lit litSkolem undoMap = case litSkolem of
     mChain <- callTwee InternalBudget units (Eq l r)
     return $ case mChain of
       Just (start, chain)
-        | not (null chain)
-        , all (isJust . ueName . (\(ue, _, _) -> ue)) chain ->
+        | not (null chain), all (\(ue, _, _) -> isJust (ueName ue)) chain ->
             -- a chain from r to l is reversed, so the lemma states the
             -- candidate as the proof cites it
-            let chain' | start == l = chain
-                       | otherwise  = reverseChain start chain
+            let chain' = if start == l then chain else reverseChain start chain
                 steps = [ (RwStep nm (unitEquation (ueUnit ue)) dir, cur)
                         | (ue, dir, cur) <- chain', Just nm <- [ueName ue] ]
             in Just (lit, deSkolemizeBlock undoMap (EqChain l steps), [], [])
@@ -221,9 +209,7 @@ buildWithTwee unitMap tstp2name cname lit litSkolem undoMap = case litSkolem of
   _ -> return Nothing
   where
     granted = maybe [] (uncurry (++)) (conjectureHypotheses (Map.elems unitMap))
-    dispNameOf aname =
-      Map.lookup (resolveCopySource unitMap aname) tstp2name
-        <|> Map.lookup aname tstp2name
+    dispNameOf aname = Map.lookup (resolveCopySource unitMap aname) tstp2name <|> Map.lookup aname tstp2name
     -- An original axiom is an underived axiom or hypothesis, another
     -- underived clause that classifyRole reads as an axiom, such as one the
     -- conjecture grants, or a clausified copy of a file axiom, which E marks
@@ -235,12 +221,11 @@ buildWithTwee unitMap tstp2name cname lit litSkolem undoMap = case litSkolem of
       , isOrigAncestor aname u adecl ]
     isOrigAncestor aname u adecl =
       (not (isDerivedUnit u) && hasAxiomRole adecl)
-        || (not (isDerivedUnit u) && classifyRole granted unitMap aname adecl == OrigAxiom
-            && isJust (dispNameOf aname))
-        || (isFileUnit unitMap copySrc
-            && maybe False hasAxiomRole (lookupDecl unitMap copySrc)
-            && isJust (dispNameOf aname))
-      where copySrc = resolveCopySource unitMap aname
+        || (not (isDerivedUnit u) && classifyRole granted unitMap aname adecl == OrigAxiom && named)
+        || (isFileUnit unitMap copySrc && maybe False hasAxiomRole (lookupDecl unitMap copySrc) && named)
+      where
+        named = isJust (dispNameOf aname)
+        copySrc = resolveCopySource unitMap aname
     unitEquationOf (aname, adecl)
       | isPositiveUnitFormula adecl
       , Just eq@(Eq _ _) <- convertLit <$> headLitOf adecl
@@ -264,13 +249,13 @@ buildAllCandidates
   -> [(String, T.Declaration)]
   -> IO [Maybe BuiltLemma]
 buildAllCandidates translateFn unitMap tstp2name debug cands =
-  reverse . snd <$> foldM buildOne ([], []) cands
+  snd <$> mapAccumM buildOne [] cands
   where
-    buildOne (done, acc) c = do
+    buildOne done c = do
       let unitMapC = foldr (Map.adjust makeFileSourced) unitMap done
           namesC   = foldr (\c' -> Map.insert c' ("lemma " ++ c')) tstp2name done
       v <- buildCandidateLemma translateFn unitMapC namesC debug c
-      return (if isJust v then done ++ [fst c] else done, v : acc)
+      return (if isJust v then done ++ [fst c] else done, v)
 
 -- The pre-built lemmas in the order the proof tree reaches them, given as
 -- (TSTP name, display name). Each follows the lemmas it cites, which the tree

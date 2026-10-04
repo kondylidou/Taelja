@@ -9,7 +9,7 @@ import Data.Bifunctor (bimap)
 import Data.Char (isAlphaNum, isAsciiLower, isAsciiUpper, isDigit, toUpper)
 import Data.Function (on)
 import Data.List ((\\), groupBy, inits, intercalate, isPrefixOf, isSuffixOf, nub, partition, permutations, sortOn, tails)
-import Data.Maybe (fromMaybe, isJust, listToMaybe)
+import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
@@ -26,16 +26,10 @@ termVars (App _ ts) = concatMap termVars ts
 litVars :: Literal -> [String]
 litVars = foldLiteralTerms termVars
 
--- Variables and fresh constants, which a groundness test treats as open.
-termOpen :: Term -> [String]
-termOpen (Var x)    = [x]
-termOpen (Fresh x)  = [x]
-termOpen (Const _)  = []
-termOpen (App _ ts) = concatMap termOpen ts
-
--- The variables and fresh constants of a literal.
+-- The variables and fresh constants of a literal, which a groundness test
+-- treats as open.
 litOpen :: Literal -> [String]
-litOpen = foldLiteralTerms termOpen
+litOpen = litVars . unrigidLit
 
 -- Fresh constants back to the variables they stand for. They become
 -- variables again when a fact is stored or a goal printed, which is sound
@@ -81,7 +75,7 @@ mapBlockTerms f (EqChain s steps) =
 
 -- Every term of a block in order, including the equations a chain cites.
 blockTerms :: ProofBlock -> [Term]
-blockTerms (HaveHence ls)    = blockShownTerms (HaveHence ls)
+blockTerms blk@(HaveHence _) = blockShownTerms blk
 blockTerms (EqChain s steps) = s : concat [ [l, r, t] | (RwStep _ (l, r) _, t) <- steps ]
 
 -- The terms a block prints, in order.
@@ -98,9 +92,8 @@ mapLineLit f (Hence lit j)  = Hence (f lit) j
 -- Applies a substitution to a term once, without chasing bound values.
 applySubstTerm :: Subst -> Term -> Term
 applySubstTerm subst (Var x)    = fromMaybe (Var x) (lookup x subst)
-applySubstTerm _     (Const c)  = Const c
-applySubstTerm _     (Fresh x)  = Fresh x
 applySubstTerm subst (App f ts) = App f (map (applySubstTerm subst) ts)
+applySubstTerm _     t          = t
 
 -- Applies a substitution to a literal once.
 applySubstLit :: Subst -> Literal -> Literal
@@ -114,12 +107,10 @@ instantiateBlock hd σ block =
   mapBlockTerms (applySubstTerm σ) (renameBlock renaming block)
   where
     headVars  = nub (litVars hd)
-    locals    = filter (`notElem` headVars) (blockVars block)
     rangeVars = nub (concatMap (termVars . snd) σ)
-    clashing  = filter (`elem` rangeVars) locals
+    clashing  = [ v | v <- blockVars block, v `notElem` headVars, v `elem` rangeVars ]
     involved  = nub (blockVars block ++ rangeVars ++ map fst σ)
-    suffix    = head [ sfx | n <- [1 :: Int ..], let sfx = concat (replicate n "_e")
-                           , not (any (sfx `isSuffixOf`) involved) ]
+    suffix    = head [ sfx | sfx <- iterate (++ "_e") "_e", not (any (sfx `isSuffixOf`) involved) ]
     renaming  = [ (v, v ++ suffix) | v <- clashing ]
 
 -- Replace constants by terms, as when undoing Skolemization.
@@ -159,11 +150,10 @@ litNames l           = litSymbols l
 
 -- Replace every maximal subterm listed, outermost first.
 applyTermSubstTerm :: [(Term, Term)] -> Term -> Term
-applyTermSubstTerm s t = case lookup t s of
-  Just t' -> t'
-  Nothing -> case t of
-    App f ts -> App f (map (applyTermSubstTerm s) ts)
-    _        -> t
+applyTermSubstTerm s t
+  | Just t' <- lookup t s = t'
+  | App f ts <- t         = App f (map (applyTermSubstTerm s) ts)
+  | otherwise             = t
 
 -- Replace every maximal subterm listed in a literal.
 applyTermSubstLit :: [(Term, Term)] -> Literal -> Literal
@@ -214,14 +204,12 @@ matchTerm pat tgt = matchTermWith pat tgt []
 matchLit :: Literal -> Literal -> Maybe Subst
 matchLit pat tgt = matchLitWith pat tgt []
 
--- matchLit from a given substitution. Only positive literals match.
+-- matchLit from a given substitution. Only positive literals match, and an
+-- atom matches as the term it would be.
 matchLitWith :: Literal -> Literal -> Subst -> Maybe Subst
-matchLitWith (Eq  l1 r1) (Eq  l2 r2) s
-  = matchTermWith l1 l2 s >>= matchTermWith r1 r2
-matchLitWith (Rel n1 ts1) (Rel n2 ts2) s
-  | n1 == n2, length ts1 == length ts2
-  = foldl (\ms (p, u) -> ms >>= matchTermWith p u) (Just s) (zip ts1 ts2)
-matchLitWith _ _ _ = Nothing
+matchLitWith (Eq l1 r1) (Eq l2 r2) s     = matchTermWith l1 l2 s >>= matchTermWith r1 r2
+matchLitWith (Rel n1 ts1) (Rel n2 ts2) s = matchTermWith (App n1 ts1) (App n2 ts2) s
+matchLitWith _ _ _                       = Nothing
 
 -- Every subterm of a literal, with a function that puts another term in its
 -- place.
@@ -254,21 +242,20 @@ chainStepJustified :: Dir -> (Term, Term) -> Term -> Term -> Bool
 chainStepJustified dir (l0, r0) prev cur =
   case diffSpine prev cur of
     []    -> True
-    pairs -> or [ once lhs rhs x y | (x, y) <- pairs ] || everywhere lhs rhs
+    pairs -> any (uncurry once) pairs || everywhere
   where
     apart = [ (v, Var (v ++ "_ax")) | v <- nub (termVars l0 ++ termVars r0) ]
     (l, r) = (applySubstTerm apart l0, applySubstTerm apart r0)
     (lhs, rhs) = case dir of { LR -> (l, r); RL -> (r, l) }
     lineVs = termVars prev ++ termVars cur
-    once a b x y = or
-      [ True
-      | Just s  <- [matchTerm a x]
-      , Just s2 <- [matchTerm (applySubstTerm s b) y]
-      , all (\(v, t) -> t == Var v || v `notElem` lineVs) s2 ]
-    everywhere a b = or
-      [ replaceAllTerm (applySubstTerm s a) (applySubstTerm s b) prev == cur
-      | (u, _) <- termCtxs prev, Just s <- [matchTerm a u]
-      , null (termVars (applySubstTerm s b) \\ termVars (applySubstTerm s a)) ]
+    once x y = or
+      [ all (\(v, t) -> t == Var v || v `notElem` lineVs) s2
+      | Just s <- [matchTerm lhs x], Just s2 <- [matchTerm (applySubstTerm s rhs) y] ]
+    everywhere = or
+      [ replaceAllTerm a b prev == cur
+      | u <- subterms prev, Just s <- [matchTerm lhs u]
+      , let (a, b) = (applySubstTerm s lhs, applySubstTerm s rhs)
+      , null (termVars b \\ termVars a) ]
 
 -- Runs the actions in order and returns the first Just, without running the
 -- rest.
@@ -279,10 +266,9 @@ firstJustM (m : more) = m >>= maybe (firstJustM more) (return . Just)
 -- Every occurrence of one subterm replaced by another.
 replaceAllTerm :: Term -> Term -> Term -> Term
 replaceAllTerm a b t
-  | t == a    = b
-  | otherwise = case t of
-      App f ts -> App f (map (replaceAllTerm a b) ts)
-      _        -> t
+  | t == a        = b
+  | App f ts <- t = App f (map (replaceAllTerm a b) ts)
+  | otherwise     = t
 
 -- The subterm at a place, a path of argument indices from the root.
 termAt :: [Int] -> Term -> Term
@@ -312,7 +298,7 @@ diffSpine a b
   | otherwise = (a, b) : case (a, b) of
       (App f as, App g bs)
         | f == g, length as == length bs
-        , [(x, y)] <- [ p | p@(x, y) <- zip as bs, x /= y ] -> diffSpine x y
+        , [(x, y)] <- filter (uncurry (/=)) (zip as bs) -> diffSpine x y
       _ -> []
 
 -- The subterms of a, with their contexts, where one rewrite might turn a into
@@ -381,8 +367,8 @@ freeAxiomNames taken = [ nm | i <- [1 :: Int ..], let nm = "axiom " ++ show i, n
 -- The position of the provider beside a consumer at a right child.
 providerSibling :: String -> Maybe String
 providerSibling pos
-  | not (null pos), last pos == '1' = Just (init pos ++ "0")
-  | otherwise                       = Nothing
+  | "1" `isSuffixOf` pos = Just (init pos ++ "0")
+  | otherwise            = Nothing
 
 -- A name with underscores appended until the predicate leaves it free.
 underscoreApart :: (String -> Bool) -> String -> String
@@ -427,10 +413,9 @@ instClause σ (Clause bs mh) = Clause (map inst bs) (fmap inst mh)
 -- The resolvents of the first clause's head with each body atom of the
 -- second, instantiated. The two clauses must share no variable.
 resolveHead :: Clause -> Clause -> [Clause]
-resolveHead x y = case hd x of
-  Nothing -> []
-  Just h  -> [ instClause σ (Clause (body x ++ rest) (hd y))
-             | (l, rest) <- picks (body y), Just σ <- [unifyLits h l []] ]
+resolveHead x y =
+  [ instClause σ (Clause (body x ++ rest) (hd y))
+  | Just h <- [hd x], (l, rest) <- picks (body y), Just σ <- [unifyLits h l []] ]
 
 -- Whether a term is not a variable.
 notVar :: Term -> Bool
@@ -442,20 +427,11 @@ polLits :: Clause -> [(Bool, Literal)]
 polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
 
 -- Every term one rewrite of t with the equation in the given direction can
--- give, at the root or at any subterm.
+-- give, at the root or at any subterm, root first.
 rewriteTermAll :: Term -> (Term, Term) -> Dir -> [Term]
-rewriteTermAll t (l, r) dir = rootResult ++ subResults
-  where
-    (lhs, rhs) = if dir == LR then (l, r) else (r, l)
-    rootResult = case matchTerm lhs t of
-      Just σ  -> [applySubstTerm σ rhs]
-      Nothing -> []
-    subResults = case t of
-      App f ts -> [ App f (take i ts ++ [u'] ++ drop (i+1) ts)
-                  | (i, u) <- zip [0..] ts
-                  , u' <- rewriteTermAll u (l, r) dir
-                  ]
-      _ -> []
+rewriteTermAll t (l, r) dir =
+  [ put (applySubstTerm σ rhs) | (u, put) <- termCtxs t, Just σ <- [matchTerm lhs u] ]
+  where (lhs, rhs) = if dir == LR then (l, r) else (r, l)
 
 -- Whether an equation may rewrite from its first side to its second. A
 -- variable side may, at an instance, unless the other side contains it, since
@@ -487,10 +463,10 @@ termAtom _          = Nothing
 
 -- The atoms of a relational chain, without the closing true.
 atomTerms :: Term -> [(RwStep, Term)] -> [Term]
-atomTerms s steps = s : [ t | (_, t) <- dropLastTrue steps ]
-  where dropLastTrue xs = case reverse xs of
-          (_, Const "true") : rest -> reverse rest
-          _                        -> xs
+atomTerms s steps = s : case reverse ts of
+    Const "true" : rest -> reverse rest
+    _                   -> ts
+  where ts = map snd steps
 
 -- The equation a chain step rewrites with, either an equation or the P = true
 -- encoding of a positive atom.
@@ -521,13 +497,11 @@ falsumLit = Rel "$false" []
 -- either orientation. A chain from an atom to true ends on that atom.
 blockConcludes :: Literal -> ProofBlock -> Bool
 blockConcludes lit blk = case blk of
-  HaveHence ls -> case reverse ls of
-    (l : _) -> ok (lineLit l)
-    []      -> False
-  EqChain start steps -> case reverse steps of
-    ((_, t) : _) -> ok (Eq start t)
-                    || (t == Const "true" && isRelLit lit && start == atomTerm lit)
-    []           -> False
+  HaveHence ls@(_ : _) -> ok (lineLit (last ls))
+  EqChain start steps@(_ : _) ->
+    let t = snd (last steps)
+    in ok (Eq start t) || (t == Const "true" && isRelLit lit && start == atomTerm lit)
+  _ -> False
   where
     ok l = isJust (matchLitEither l lit [])
 
@@ -599,25 +573,19 @@ clauseKey (Clause bs mh) =
 variantClause :: Clause -> Clause -> Bool
 variantClause a b = clauseInstance a b && clauseInstance b a
 
--- Whether the second clause is an instance of the first.
+-- Whether the second clause is an instance of the first, with body literals
+-- matched in any order and equations either way round.
 clauseInstance :: Clause -> Clause -> Bool
-clauseInstance c1 c2 = isJust (clauseInstanceSubst c1 c2)
-
--- The substitution making the second clause an instance of the first, with
--- body literals matched in any order and equations either way round.
-clauseInstanceSubst :: Clause -> Clause -> Maybe Subst
-clauseInstanceSubst (Clause bs1 h1) (Clause bs2 h2) =
-  if length bs1 /= length bs2 then Nothing else (do
-    σ <- case (h1, h2) of
+clauseInstance (Clause bs1 h1) (Clause bs2 h2) =
+  length bs1 == length bs2 && maybe False (bodies bs1 bs2) heads
+  where
+    heads = case (h1, h2) of
       (Just a, Just b)   -> matchLitEither a b []
       (Nothing, Nothing) -> Just []
       _                  -> Nothing
-    bodies bs1 bs2 σ)
-  where
-    bodies [] [] σ = Just σ
-    bodies (a : as) bs σ = listToMaybe
-      [ σ'' | (b, rest) <- picks bs, Just σ' <- [matchLitEither a b σ], Just σ'' <- [bodies as rest σ'] ]
-    bodies _ _ _ = Nothing
+    -- each literal of the first body matches a different one of the second
+    bodies [] bs _       = null bs
+    bodies (a : as) bs σ = or [ bodies as rest σ' | (b, rest) <- picks bs, Just σ' <- [matchLitEither a b σ] ]
 
 -- Extend a substitution so the second literal is an instance of the first,
 -- with an equation matched either way round.
@@ -693,18 +661,17 @@ ppTerm (App f ts) = ppSymbol f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
 -- as $false stay bare, and anything else is quoted as in TPTP.
 ppSymbol :: String -> String
 ppSymbol f
-  | all (\c -> isAlphaNum c || c == '_') f || all (`elem` "+*/^<>=-%&|~") f = f
-  | ('$' : rest) <- f, all (\c -> isAlphaNum c || c == '_') rest = f
+  | all word f || all (`elem` "+*/^<>=-%&|~") f = f
+  | ('$' : rest) <- f, all word rest = f
   | otherwise = quoted f
+  where word c = isAlphaNum c || c == '_'
 
 -- A literal as the text output writes it, with ~ and !=.
 ppLiteral :: Literal -> String
 ppLiteral (Eq l r)    = ppTerm l ++ " = " ++ ppTerm r
 ppLiteral (NEq l r)   = ppTerm l ++ " != " ++ ppTerm r
-ppLiteral (Rel n [])  = ppSymbol n
-ppLiteral (Rel n ts)  = ppSymbol n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
-ppLiteral (NRel n []) = "~" ++ ppSymbol n
-ppLiteral (NRel n ts) = "~" ++ ppSymbol n ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+ppLiteral l@(Rel _ _) = ppTerm (atomTerm l)
+ppLiteral (NRel n ts) = "~" ++ ppLiteral (Rel n ts)
 
 -- A clause as the text output writes it, body => head, with $false for no head.
 ppClause :: Clause -> String
@@ -777,11 +744,7 @@ citedNames sp = Set.fromList $
 
 -- Drops the lemmas no goal needs, directly or through other lemmas.
 dropUnusedLemmas :: StructuredProof -> StructuredProof
-dropUnusedLemmas = fixpoint prune
-  where
-    prune sp0 =
-      let (kept, dropped) = partition (\(nm, _, _) -> Set.member nm (citedNames sp0)) (lemmas sp0)
-      in (sp0 { lemmas = kept }, not (null dropped))
-    fixpoint f x =
-      let (x', changed) = f x
-      in if changed then fixpoint f x' else x'
+dropUnusedLemmas sp
+  | null dropped = sp
+  | otherwise    = dropUnusedLemmas sp { lemmas = kept }
+  where (kept, dropped) = partition (\(nm, _, _) -> Set.member nm (citedNames sp)) (lemmas sp)

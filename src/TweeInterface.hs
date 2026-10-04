@@ -12,6 +12,7 @@ module TweeInterface
 import Control.Applicative ((<|>))
 import Control.Exception (bracket)
 import Control.Monad (when)
+import Data.Bifunctor (first)
 import Data.Char (isAsciiLower, isAsciiUpper, isDigit)
 import Data.IORef (IORef, modifyIORef', newIORef, readIORef, writeIORef)
 import Data.List (isInfixOf, isPrefixOf, nub, sortBy)
@@ -139,7 +140,7 @@ runTwee budget tag input = do
     GoalBudget     -> return goalSecs
     InternalBudget -> min goalSecs <$> timeoutSecsFromEnv "TAELJA_TWEE_INTERNAL_TIMEOUT" 5
   cached <- Map.lookup (input, secs) <$> readIORef tweeCache
-  out <- case cached of
+  out <- fromMaybe "" <$> case cached of
     Just out -> return out
     Nothing  -> do
       mBin <- findTwee
@@ -152,8 +153,8 @@ runTwee budget tag input = do
   -- TAELJA_TWEE_DEBUG=1 prints every call's input and output
   dumpEnv <- lookupEnv "TAELJA_TWEE_DEBUG"
   when (dumpEnv == Just "1") $
-    hPutStrLn stderr ("[twee " ++ tag ++ "] input:\n" ++ input ++ "[twee " ++ tag ++ "] output:\n" ++ fromMaybe "" out)
-  return (fromMaybe "" out)
+    hPutStrLn stderr ("[twee " ++ tag ++ "] input:\n" ++ input ++ "[twee " ++ tag ++ "] output:\n" ++ out)
+  return out
 
 -- Twee's answers by problem and time limit, cleared when a budget starts.
 {-# NOINLINE tweeCache #-}
@@ -178,11 +179,9 @@ withTempInput tag input act = do
 -- with a bare variable side rewrites any term, so it is always kept and its
 -- symbols count as reachable.
 relevantUnits :: Literal -> [UnitEntry] -> [UnitEntry]
-relevantUnits goal units =
-    filter keep units
+relevantUnits goal units = filter keep units
   where
-    keep u = universal (ueUnit u)
-             || any (`elem` finalSyms) (litSyms (ueUnit u))
+    keep u = universal (ueUnit u) || any (`elem` finalSyms) (litSyms (ueUnit u))
     universal (Eq (Var _) _) = True
     universal (Eq _ (Var _)) = True
     universal _              = False
@@ -198,38 +197,25 @@ relevantUnits goal units =
 -- Parse a term of Twee's proof output. Variables start uppercase, and other
 -- symbols lowercase or with an underscore.
 parseTweeTerm :: String -> Maybe (Term, String)
-parseTweeTerm [] = Nothing
-parseTweeTerm s  =
-  let s' = dropWhile (== ' ') s
-  in case s' of
-       [] -> Nothing
-       (c:_)
-         | isAsciiUpper c ->
-             let (nm, rest) = span isTweeIdChar s'
-             in if null nm then Nothing else Just (Var nm, rest)
-         | isAsciiLower c || c == '_' ->
-             let (nm, rest) = span isTweeIdChar s'
-             in case rest of
-                  '(':more ->
-                    case parseTweeArgList more of
-                      Just (args, rest') -> Just (App nm args, rest')
-                      Nothing            -> Nothing
-                  _ -> Just (Const nm, rest)
-         | otherwise -> Nothing
-  where
-    isTweeIdChar x = isAsciiLower x || isAsciiUpper x || isDigit x || x == '_'
+parseTweeTerm s = case dropWhile (== ' ') s of
+  s'@(c : _)
+    | isAsciiUpper c -> Just (Var nm, rest)
+    | isAsciiLower c || c == '_' -> case rest of
+        '(' : more -> first (App nm) <$> parseTweeArgList more
+        _          -> Just (Const nm, rest)
+    where (nm, rest) = span (\x -> isAsciiLower x || isAsciiUpper x || isDigit x || x == '_') s'
+  _ -> Nothing
 
 -- The arguments of a Twee term up to its closing parenthesis, and the rest.
 parseTweeArgList :: String -> Maybe ([Term], String)
-parseTweeArgList s = go [] (dropWhile (== ' ') s)
+parseTweeArgList = go []
   where
-    go acc str = case parseTweeTerm str of
-      Nothing -> Nothing
-      Just (t, rest) ->
-        case dropWhile (== ' ') rest of
-          ',':more -> go (acc ++ [t]) (dropWhile (== ' ') more)
-          ')':more -> Just (acc ++ [t], more)
-          _        -> Nothing
+    go acc str = do
+      (t, rest) <- parseTweeTerm str
+      case dropWhile (== ' ') rest of
+        ',' : more -> go (acc ++ [t]) more
+        ')' : more -> Just (acc ++ [t], more)
+        _          -> Nothing
 
 -- Read Twee's --formal-proof output as a rewrite chain between l and r.
 -- directChain takes Twee's terms verbatim, which works for ground proofs.
@@ -240,98 +226,67 @@ parseTweeChain
   -> String        -- Twee's stdout
   -> Term -> Term  -- expected start and end of chain
   -> Maybe (Term, [(UnitEntry, Dir, Term)])
-parseTweeChain idToUe output l r =
-  case extractProof of
-    Nothing -> Nothing
-    Just (startStr, rawSteps) ->
-      directChain startStr rawSteps <|> guidedChain rawSteps
+parseTweeChain idToUe output l r = case dropWhile (not . isTermLine) afterProof of
+    startLine : rest -> let steps = collectSteps rest
+                        in directChain (skipSpaces startLine) steps <|> guidedChain steps
+    []               -> Nothing
   where
-    directChain startStr rawSteps =
-      let mStart = fst <$> parseTweeTerm startStr
-          mChain = sequence
-            [ case (Map.lookup nm idToUe, fst <$> parseTweeTerm termStr) of
-                (Just ue, Just t) -> Just (ue, dir, t)
-                _                 -> Nothing
-            | (nm, dir, termStr) <- rawSteps ]
-      in case (mStart, mChain) of
-           (Just start, Just chain)
-             | start == l && (null chain || lastTerm chain == r) -> Just (l, chain)
-             | start == r && (null chain || lastTerm chain == l) -> Just (r, chain)
-           _ -> Nothing
+    skipSpaces = dropWhile (== ' ')
+    afterProof = drop 1 (dropWhile (not . isPrefixOf "Proof:" . skipSpaces) (lines output))
+    isTermLine ln = case skipSpaces ln of
+      c : _ -> isAsciiLower c || isAsciiUpper c || c == '_'
+      []    -> False
 
-    guidedChain rawSteps =
-      let steps = [(nm, dir) | (nm, dir, _) <- rawSteps]
-      in replayGuided steps l r <|> replayGuided steps r l
+    -- each line citing a unit, with its direction and the term line after it
+    collectSteps [] = []
+    collectSteps (ln : lns) = case citation ln of
+      Just (nm, dir) -> case dropWhile (not . isTermLine) lns of
+        tl : rest -> (nm, dir, skipSpaces tl) : collectSteps rest
+        []        -> []
+      Nothing -> collectSteps lns
+    citation ln
+      | "by axiom" `isInfixOf` s, not (null nm) = Just (nm, if "R->L" `isInfixOf` s then RL else LR)
+      | otherwise                               = Nothing
+      where s  = dropWhile (/= '{') ln
+            nm = takeWhile (/= ')') (drop 1 (dropWhile (/= '(') s))
+
+    directChain startStr steps = case (fst <$> parseTweeTerm startStr, mapM readStep steps) of
+      (Just start, Just chain)
+        | start == l && endsAt r chain -> Just (l, chain)
+        | start == r && endsAt l chain -> Just (r, chain)
+      _ -> Nothing
+    readStep (nm, dir, termStr) = do
+      ue <- Map.lookup nm idToUe
+      (t, _) <- parseTweeTerm termStr
+      Just (ue, dir, t)
+    endsAt end chain = null chain || let (_, _, t) = last chain in t == end
+
+    guidedChain steps = replay l r <|> replay r l
       where
-        replayGuided steps start end = (start,) <$> go start steps
+        replay start end = (start,) <$> go start steps
           where
             go cur [] = if cur == end then Just [] else Nothing
-            go cur ((tid, dir):rest) =
-              case Map.lookup tid idToUe of
-                Nothing -> go cur rest
-                Just ue -> case ueUnit ue of
-                  -- A rewrite from a bare variable, as by X = Y, would match
-                  -- every term and invent a step the proof never made, so
-                  -- such a step is skipped.
-                  Eq a b | notVar (if dir == LR then a else b) ->
-                    listToMaybe
-                      [ (ue, dir, t) : chain
-                      | t <- rewriteTermAll cur (a, b) dir
-                      , Just chain <- [go t rest] ]
-                  _ -> go cur rest
-
-    lastTerm xs = let (_, _, t) = last xs in t
-
-    isTermLine l' =
-      let s = dropWhile (== ' ') l'
-      in not (null s) && (head s `elem` (['a'..'z'] ++ ['A'..'Z'] ++ "_"))
-
-    extractStep l' = case dropWhile (/= '{') l' of
-      s | "by axiom" `isInfixOf` s ->
-            let nm  = case dropWhile (/= '(') s of
-                        []      -> ""
-                        (_:r') -> takeWhile (/= ')') r'
-                dir = if "R->L" `isInfixOf` s then RL else LR
-            in if null nm then Nothing else Just (nm, dir)
-        | otherwise -> Nothing
-
-    collectSteps [] = []
-    collectSteps (l':ls) = case extractStep l' of
-      Just (nm, dir) ->
-        case dropWhile (not . isTermLine) ls of
-          []          -> []
-          (tl:rest) -> (nm, dir, dropWhile (== ' ') tl) : collectSteps rest
-      Nothing -> collectSteps ls
-
-    extractProof =
-      let ls         = lines output
-          afterProof = drop 1 (dropWhile (not . isPrefixOf "Proof:" . dropWhile (== ' ')) ls)
-      in case dropWhile (not . isTermLine) afterProof of
-           [] -> Nothing
-           (startLine:rest) ->
-             Just (dropWhile (== ' ') startLine, collectSteps rest)
+            go cur ((nm, dir, _) : rest) = case Map.lookup nm idToUe of
+              -- A rewrite from a bare variable, as by X = Y, would match
+              -- every term and invent a step the proof never made, so
+              -- such a step is skipped.
+              Just ue | Eq a b <- ueUnit ue, notVar (if dir == LR then a else b) ->
+                listToMaybe [ (ue, dir, t) : chain | t <- rewriteTermAll cur (a, b) dir, Just chain <- [go t rest] ]
+              _ -> go cur rest
 
 -- Asks Twee for a rewrite chain that proves the goal from the units. The
--- answer gives the side the chain starts from and its steps.
+-- answer gives the side the chain starts from and its steps. Twee prints
+-- symbols that are not plain names, such as '==>', infix, and parseTweeTerm
+-- cannot read them back. They get plain aliases for the call, as do
+-- Theorem 1's fresh constants, and the answer is renamed back.
 callTwee :: TweeBudget -> [UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-callTwee budget units goal =
-  withAliases units goal $ \units' goal' -> callTweeUnaliased budget units' goal'
-
--- Twee prints symbols that are not plain names, such as '==>', infix, and
--- parseTweeTerm cannot read them back. They get plain aliases for the call,
--- as do Theorem 1's fresh constants, and the answer is renamed back.
-withAliases
-  :: [UnitEntry] -> Literal
-  -> ([UnitEntry] -> Literal -> IO (Maybe (Term, [(UnitEntry, Dir, Term)])))
-  -> IO (Maybe (Term, [(UnitEntry, Dir, Term)]))
-withAliases units lit call
-  | null unplain && null freshNames = call units lit
-  | otherwise = do
-      r <- call [ u { ueUnit = onLit (ren fwd) toCall (ueUnit u) } | u <- units ] (onLit (ren fwd) toCall lit)
-      return (fmap (\(t, ch) -> ( fromCall t
-                                , [ (u { ueUnit = onLit (ren back) fromCall (ueUnit u) }, d, fromCall x) | (u, d, x) <- ch ])) r)
+callTwee budget units goal
+  | null unplain && null freshNames = callTweeUnaliased budget units goal
+  | otherwise = fmap renameBack <$>
+      callTweeUnaliased budget (map (onUnit (ren fwd) toCall) units) (onLit (ren fwd) toCall goal)
   where
-    allLits    = map ueUnit units ++ [lit]
+    renameBack (t, ch) = (fromCall t, [ (onUnit (ren back) fromCall u, d, fromCall x) | (u, d, x) <- ch ])
+    allLits    = map ueUnit units ++ [goal]
     syms       = nub (concatMap litNames allLits)
     unplain    = [ f | f <- syms, not (isLowerWord f) ]
     freshNames = nub (concatMap (foldLiteralTerms freshIn) allLits)
@@ -355,6 +310,7 @@ withAliases units lit call
     onLit sym term (Rel n ts)  = Rel (sym n) (map term ts)
     onLit sym term (NRel n ts) = NRel (sym n) (map term ts)
     onLit _ term l             = mapLiteralTerms term l
+    onUnit sym term u = u { ueUnit = onLit sym term (ueUnit u) }
 
 -- Ask Twee for the goal from the relevant units. An equation goes as it is,
 -- and an atom P(t) as P(t) = true.

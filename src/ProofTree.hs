@@ -21,7 +21,8 @@ import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Control.Applicative ((<|>))
 import Control.Monad (forM, guard, when)
-import Data.List (inits, isSuffixOf, nub, sortBy, tails)
+import Data.Bifunctor (bimap)
+import Data.List (inits, isSuffixOf, nub, partition, sortBy, tails)
 import Data.List.NonEmpty (toList)
 import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe, maybeToList)
 import Data.Ord (comparing)
@@ -52,14 +53,13 @@ buildProofInfo allUnits = do
   mapM_ (\n -> Left ("incomplete proof, it cites " ++ n ++ ", which it does not contain"))
         (take 1 [ n | n <- reachedNames unitMap root, Map.notMember n unitMap ])
   let tree    = buildProofTree allUnits root
-      resolve = resolveCopySource unitMap
       -- the clauses the conjecture grants as hypotheses
       granted = maybe [] (uncurry (++)) (conjectureHypotheses allUnits)
-      leafRows  = gatherLeaves "" tree
-      innerRows = gatherInner  "" tree
+      leafRows  = gatherLeaves tree
+      innerRows = gatherInner tree
       mkLeaf (pos, name, decl) =
         let srcName = if isNegConj decl then name
-                      else let r = resolve name
+                      else let r = resolveCopySource unitMap name
                            -- a clause from an introduced definition keeps its
                            -- own name, as the equivalence behind it is not Horn
                            in if isIntroducedSrc unitMap r && r /= name then name else r
@@ -89,15 +89,9 @@ buildProofInfo allUnits = do
         , leRole    = Derived
         , leHyp     = False
         }
-      byPos  = sortBy (comparing lePos)
-      leafEntries    = map mkLeaf  leafRows
-      innerEntries    = map mkInner innerRows
-      electrons = byPos $
-                    [e | e <- leafEntries, isPositiveUnitFormula (leDecl e)] ++
-                    [e | e <- innerEntries, isPositiveUnitFormula (leDecl e)]
-      nuclei    = byPos $
-                    [e | e <- leafEntries, not (isPositiveUnitFormula (leDecl e))] ++
-                    [e | e <- innerEntries, not (isPositiveUnitFormula (leDecl e))]
+      byPos = sortBy (comparing lePos)
+      (electrons, nuclei) = bimap byPos byPos $
+        partition (isPositiveUnitFormula . leDecl) (map mkLeaf leafRows ++ map mkInner innerRows)
   -- Only the clauses the refutation uses have to be Horn.
   mapM_ (\n -> Left ("unsupported proof, clause " ++ n ++ " is not Horn"))
         (take 1 [ n | (_, n, d) <- leafRows ++ innerRows, isNonHorn d ])
@@ -116,28 +110,27 @@ buildProofInfo allUnits = do
   -- closest derived all-negative clause.
   let byDepth = sortBy (comparing (\e -> (length (lePos e), lePos e)))
       negatedConclusion = maybe False (\c -> null (cjGoals c) && not (null (cjNegated c))) conjecture
+      clauseGoals =
+        -- the source's statement, or the clause's own when the source is no
+        -- negated conjunction of atoms, as with Twee's negate_conjecture
+        [ lits
+        | e <- byDepth [ e' | e' <- nuclei, leRole e' == NegConjecture ]
+        , let goalDecl = fromMaybe (leDecl e) (lookupDecl unitMap (leName e))
+        , Just lits <- [extractGoalLits goalDecl <|> extractGoalLits (leDecl e)]
+        ] ++
+        -- a UEQ problem states its negated conjecture as a disequality axiom
+        -- without the negated_conjecture role
+        [ lits
+        | e <- nuclei, leRole e == OrigAxiom
+        , Just lits <- [extractGoalLits (leDecl e)]
+        ] ++
+        [ lits
+        | negatedConclusion
+        , e <- byDepth [ e' | e' <- nuclei, leRole e' == Derived ]
+        , Just lits <- [extractGoalLits (leDecl e)]
+        ]
   rawGoalLits <- maybe (Left "no clause of the proof states the goal") Right
-            $ case extractConjectureGoals allUnits of
-    Just lits -> Just lits
-    Nothing   -> listToMaybe $
-      -- the source's statement, or the clause's own when the source is no
-      -- negated conjunction of atoms, as with Twee's negate_conjecture
-      [ lits
-      | e <- byDepth [ e' | e' <- nuclei, leRole e' == NegConjecture ]
-      , let goalDecl = fromMaybe (leDecl e) (lookupDecl unitMap (leName e))
-      , Just lits <- [extractGoalLits goalDecl <|> extractGoalLits (leDecl e)]
-      ] ++
-      -- a UEQ problem states its negated conjecture as a disequality axiom
-      -- without the negated_conjecture role
-      [ lits
-      | e <- nuclei, leRole e == OrigAxiom
-      , Just lits <- [extractGoalLits (leDecl e)]
-      ] ++
-      [ lits
-      | negatedConclusion
-      , e <- byDepth [ e' | e' <- nuclei, leRole e' == Derived ]
-      , Just lits <- [extractGoalLits (leDecl e)]
-      ]
+                   (extractConjectureGoals allUnits <|> listToMaybe clauseGoals)
   -- A goal atom that abbreviates an introduced formula stands for its atoms.
   -- If that formula is no conjunction of atoms, the goal is not Horn.
   let definedSymbols = Set.fromList [ n | T.Unit _ (T.Formula _ (T.FOF f)) (Just (T.Introduced _ _, _)) <- allUnits
@@ -155,7 +148,7 @@ buildProofInfo allUnits = do
     lits -> Right lits
   let -- every prefix of an entry position, plus the sibling of each prefix
       wanted = Set.toList $ Set.fromList $ concat
-        [ p : [ init p ++ [sib] | not (null p), let sib = if last p == '0' then '1' else '0' ]
+        [ p : [ init p ++ [if last p == '0' then '1' else '0'] | not (null p) ]
         | e <- electrons ++ nuclei
         , p <- inits (lePos e) ]
       nodes   = [ (p, t) | p <- wanted, Just t <- [nodeByPath tree p] ]
@@ -177,16 +170,11 @@ buildProofInfo allUnits = do
     , piRuleAt    = ruleAt
     }
 
--- Follows a position down the tree, numbering children as gatherLeaves and
--- gatherInner do. A unary node has its child at 1.
+-- Follows a position down the tree, numbering children as gatherRows does.
 nodeByPath :: ProofTree -> String -> Maybe ProofTree
 nodeByPath t [] = Just t
-nodeByPath (PTLeaf _ _) _ = Nothing
-nodeByPath (PTNode _ _ _ kids) (c : rest) =
-  case kids of
-    [k]  -> if c == '1' then nodeByPath k rest else Nothing
-    _ -> let i = fromEnum c - fromEnum '0'
-         in if i >= 0 && i < length kids then nodeByPath (kids !! i) rest else Nothing
+nodeByPath (PTNode _ _ _ kids) (c : rest) = lookup c (zip (childLabels kids) kids) >>= (`nodeByPath` rest)
+nodeByPath _ _ = Nothing
 
 -- The clause at a tree node.
 ptDeclOf :: ProofTree -> T.Declaration
@@ -202,69 +190,57 @@ ptNameOf (PTNode n _ _ _) = n
 -- with its provider first and its consumer second, and any other unit is a
 -- leaf. Every unit the root reaches is in the proof, as buildProofInfo checks.
 buildProofTree :: [T.Unit] -> String -> ProofTree
-buildProofTree allUnits root = expandedNodes Map.! root
+buildProofTree allUnits root = nodes Map.! root
   where
     units = Map.fromList [(unitNameStr n, (d, u)) | u@(T.Unit n d _) <- allUnits]
+    declOf n = fst (units Map.! n)
     -- One node per unit, so a shared clause is built once. The strict map
     -- forces only to WHNF, so children stay lazy, and as the proof is acyclic
     -- forcing them terminates.
-    expandedNodes :: Map.Map String ProofTree
-    expandedNodes = Map.mapWithKey buildNode units
-    expandMemo name = expandedNodes Map.! name
-    buildNode name (decl, u) = case coreParentNames u of
-      Nothing      -> PTLeaf name decl
-      Just parents ->
-        let rule = fromMaybe Text.empty (inferenceRuleName u)
-        in PTNode name decl rule (orderedChildren decl rule (unitStepRules u) parents)
+    nodes = Map.mapWithKey buildNode units
+    node n = nodes Map.! n
+    buildNode name (decl, u) = case u of
+      T.Unit _ _ (Just (src@(T.Inference (T.Atom rule) _ _), _))
+        | Set.member rule coreInferenceNames ->
+            PTNode name decl rule (orderedChildren decl rule (unitStepRules u) (sourceParents src))
+      _ -> PTLeaf name decl
     orderedChildren decl rule steps parents = case parents of
-      [p1n, p2n] ->
-        let d1 = declOf p1n; d2 = declOf p2n
-            (ln, rn) = if firstParentProvides rule decl d1 d2
-                       then (p1n, p2n) else (p2n, p1n)
-        in [expandMemo ln, expandMemo rn]
-      (p0:p1:p2:rest) ->
+      [p1, p2]
+        | firstParentProvides rule decl (declOf p1) (declOf p2) -> map node [p1, p2]
+        | otherwise                                             -> map node [p2, p1]
+      p0 : p1 : later@(_ : _) ->
         -- An inference of several steps, as E's cn(rw(spm(A,B),L)), where p0 and
         -- p1 combine first and each later premise simplifies. The clauses between
         -- are replayed into "?" nodes. Failing that, each is the complement of the
         -- last unit when the outer clause is ⊥, and the outer clause otherwise.
-        let eqs  = p1:p2:rest
+        let lastP = last later
+            lastD = declOf lastP
+            replayed = replayNested decl (declOf p0) (map declOf (p1 : later))
+            -- each step's own rule when the inference names one per step
+            ruleOfStep j = if length steps == length later + 1 then steps !! j else rule
             -- The last premise is the provider when it is a positive unit, or
             -- when the binary-step test against the last replayed clause says
             -- so, as for c_0_37 in csr(spm(c_0_35,c_0_36),c_0_37) on ANA027-2.
-            lastD = declOf (last eqs)
             lastIsProvider = isPositiveUnitFormula lastD
-              || maybe False (\(_, ds) -> not (firstParentProvides (ruleOfStep (length eqs - 1)) decl (last ds) lastD)) replayed
+              || maybe False (\(_, ds) -> not (firstParentProvides (ruleOfStep (length later)) decl (last ds) lastD)) replayed
+            -- The complement of the last unit. A provider equation has none,
+            -- since a ⊥ reached by rewriting with it does not determine the
+            -- clause before it.
             fallbackDecl
-              | declIsBottom decl, not lastIsProvider
-              = fromMaybe decl (complementOfNegUnit lastD)
-              | declIsBottom decl
-              = fromMaybe decl (complementOfPosUnit lastD)
+              | declIsBottom decl, T.Formula _ (T.CNF (T.Clause lits)) <- lastD =
+                  case (lastIsProvider, toList lits) of
+                    (False, [(T.Negative, lit)]) -> plainUnit T.Positive lit
+                    (True, [(T.Positive, lit@(T.Predicate (T.Defined _) _))]) -> plainUnit T.Negative lit
+                    _ -> decl
               | otherwise = decl
-            replayed = replayNested decl (declOf p0) (map declOf eqs)
-            innerDecls = maybe (replicate (length eqs - 1) fallbackDecl) snd replayed
-            p0Provides = maybe False fst replayed
-            -- each step's own rule when the inference names one per step
-            ruleOfStep j = if length steps == length eqs then steps !! j else rule
+            plainUnit sign lit = T.Formula (T.Standard T.Plain) (T.CNF (T.Clause (pure (sign, lit))))
+            innerDecls = maybe (replicate (length later) fallbackDecl) snd replayed
             first = PTNode "?" (head innerDecls) (ruleOfStep 0)
-                      (if p0Provides then [expandMemo p0, expandMemo p1]
-                                     else [expandMemo p1, expandMemo p0])
-            inner = foldl (\r (j, (eq, d)) -> PTNode "?" d (ruleOfStep j) [expandMemo eq, r])
-                          first (zip [1 ..] (zip (drop 1 (init eqs)) (drop 1 innerDecls)))
-        in if lastIsProvider
-           then [expandMemo (last eqs), inner]
-           else [inner, expandMemo (last eqs)]
-      _ -> map expandMemo parents
-    declOf n = fst (units Map.! n)
-
--- The positive unit L of a negative unit ~L. It stands in for an unreplayed
--- "?" clause that ~L resolves to ⊥.
-complementOfNegUnit :: T.Declaration -> Maybe T.Declaration
-complementOfNegUnit (T.Formula _ (T.CNF (T.Clause lits))) =
-  case toList lits of
-    [(T.Negative, lit)] ->
-      Just (T.Formula (T.Standard T.Plain) (T.CNF (T.Clause (pure (T.Positive, lit)))))
-    _ -> Nothing
-complementOfNegUnit _ = Nothing
+                      (map node (if maybe False fst replayed then [p0, p1] else [p1, p0]))
+            inner = foldl (\r (j, eq, d) -> PTNode "?" d (ruleOfStep j) [node eq, r])
+                          first (zip3 [1 ..] (init later) (drop 1 innerDecls))
+        in if lastIsProvider then [node lastP, inner] else [inner, node lastP]
+      _ -> map node parents
 
 -- The equation steps of the proof, each as its conclusion and two premises.
 -- A nested or many-premise step is split at the clauses its replay finds, and
@@ -274,25 +250,22 @@ complementOfNegUnit _ = Nothing
 equationSteps :: [T.Unit] -> ([(String, String, String)], [(String, T.Declaration)])
 equationSteps units = (concatMap fst found, concatMap snd found)
   where
-    declOf = Map.fromList [ (unitNameStr n, d) | T.Unit n d _ <- units ]
+    unitMap = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n _ _) <- units ]
     found = [ r | T.Unit n d (Just (src@(T.Inference {}), _)) <- units
                 , Just r <- [stepsOf (unitNameStr n) d src] ]
     equation r = r `elem` equationRuleNames
-    -- Every Twee rewriting step counts. An E or Vampire step counts only when
-    -- it derives a positive unit from two, since the same rules also derive
-    -- nuclei and resolve a nucleus with a unit.
-    unit p = maybe False isPositiveUnitFormula (Map.lookup p declOf)
+    unit p = maybe False isPositiveUnitFormula (lookupDecl unitMap p)
     -- a clause spm(U, P) with U a positive unit and P an equation with
     -- conditions, the unit U rewritten by the head of P under its conditions.
     -- Its head is no instance of P's head, which would make it P with a
     -- condition resolved by U.
     conditional c = listToMaybe
-      [ (u, p) | T.Unit _ dc (Just (src, _)) <- maybeToList (Map.lookup c unitOf)
+      [ (u, p) | T.Unit _ dc (Just (src, _)) <- maybeToList (Map.lookup c unitMap)
                , not (isPositiveUnitFormula dc), all equation (sourceRules src)
                , Just (Clause _ (Just hc)) <- [convertDeclToClause dc]
                , [q1, q2] <- [sourceParents src]
                , (u, p) <- [(q1, q2), (q2, q1)], unit u
-               , Just (Clause (_ : _) (Just hp@(Eq _ _))) <- [Map.lookup p declOf >>= convertDeclToClause]
+               , Just (Clause (_ : _) (Just hp@(Eq _ _))) <- [lookupDecl unitMap p >>= convertDeclToClause]
                , isNothing (matchLitEither hp hc []) ]
     -- a step on two units, or on a unit and a conditional rewrite's clause,
     -- which then reads as that rewrite
@@ -301,25 +274,26 @@ equationSteps units = (concatMap fst found, concatMap snd found)
       | Just (u, p) <- conditional a, isUnit b = Just (n, u, p)
       | Just (u, p) <- conditional b, isUnit a = Just (n, u, p)
       | otherwise = Nothing
-    unitOf = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n _ _) <- units ]
+    -- Every Twee rewriting step counts. An E or Vampire step counts only when
+    -- it derives a positive unit from two, since the same rules also derive
+    -- nuclei and resolve a nucleus with a unit.
     stepsOf n d src = case sourceParents src of
       [p1, p2]
-        | all equation (sourceRules src), sourceRules src == [Text.pack "rewriting"]
-        -> Just ([(n, p1, p2)], [])
+        | sourceRules src == [Text.pack "rewriting"] -> Just ([(n, p1, p2)], [])
         | all equation (sourceRules src), isPositiveUnitFormula d, Just s <- onUnits unit (n, p1, p2)
         -> Just ([s], [])
       _ -> do
         (p0, (rule0, p1) : later@(_ : _)) <- inferenceSteps src
-        ds <- mapM (`Map.lookup` declOf) (p0 : p1 : map snd later)
-        (_, inner) <- replayNested d (head ds) (tail ds)
-        if length inner /= length later then Nothing else do
-          let name j = if j < length inner then n ++ "_step" ++ show (j + 1) else n
-              concls = inner ++ [d]
-              steps  = (rule0, p0, p1) : [ (r, name (j - 1), p) | (j, (r, p)) <- zip [1 ..] later ]
-          let unitAt p = unit p || or [ isPositiveUnitFormula c | (j, c) <- zip [0 ..] inner, name j == p ]
-          return ( [ s | (j, (r, a, b)) <- zip [0 ..] steps
-                       , equation r, isPositiveUnitFormula (concls !! j), Just s <- [onUnits unitAt (name j, a, b)] ]
-                 , [ (name j, c) | (j, c) <- zip [0 ..] inner, isPositiveUnitFormula c ] )
+        d0 : ds <- mapM (lookupDecl unitMap) (p0 : p1 : map snd later)
+        (_, inner) <- replayNested d d0 ds
+        guard (length inner == length later)
+        let name j = if j < length inner then n ++ "_step" ++ show (j + 1) else n
+            steps = (rule0, p0, p1) : [ (r, name j, p) | (j, (r, p)) <- zip [0 ..] later ]
+            stepUnits = [ (name j, c) | (j, c) <- zip [0 ..] inner, isPositiveUnitFormula c ]
+            unitAt p = unit p || any ((== p) . fst) stepUnits
+        return ( [ s | (j, (r, a, b), c) <- zip3 [0 ..] steps (inner ++ [d])
+                     , equation r, isPositiveUnitFormula c, Just s <- [onUnits unitAt (name j, a, b)] ]
+               , stepUnits )
 
 -- The rules whose steps are read as rewrites with their premises.
 equationRuleNames :: [Text.Text]
@@ -354,12 +328,10 @@ replayNested :: T.Declaration -> T.Declaration -> [T.Declaration] -> Maybe (Bool
 replayNested outerD d0 ds = do
   outer <- convertDeclToClause outerD
   c0    <- convertDeclToClause d0
-  cs    <- mapM convertDeclToClause ds
-  (c1, units0) <- case cs of { (x : xs) -> Just (x, xs); [] -> Nothing }
+  c1 : units0 <- mapM convertDeclToClause ds
   -- each later premise is renamed apart, so a unit used twice, as c_0_8 on
   -- PHI011+1, shares no variables with conditions an earlier use brought in
-  let units = [ Clause (map (suffixVarsLit sfx) bs) (fmap (suffixVarsLit sfx) mh)
-              | (i, Clause bs mh) <- zip [1 :: Int ..] units0, let sfx = "_s" ++ show i ]
+  let units = [ suffixVarsClause ("_s" ++ show i) u | (i, u) <- zip [1 :: Int ..] units0 ]
       steps = init units
       -- The first replay from clause r at step k to the printed clause.
       -- Different rewrites often reach the same clause, so a clause that
@@ -386,7 +358,7 @@ replayNested outerD d0 ds = do
             (Just (chain, σ), f') -> (Just (r : chain, σ), f')
             (Nothing, f')         -> firstOf f' rs
       tryFrom _ [] = Nothing
-      tryFrom failed ((prov, r) : rest) = case walk failed (0 :: Int) r of
+      tryFrom failed ((prov, r) : rest) = case walk failed 0 r of
         (Just (chain, σ), _) -> Just (prov, map (clauseToDecl . instClause σ) chain)
         (Nothing, failed')   -> tryFrom failed' rest
   -- The resolvent is condensed before simplifying, since a premise may bring
@@ -406,25 +378,21 @@ resolvents a b =
   [ (True, r) | r <- headInto a b' ] ++ [ (False, r) | r <- headInto b' a ]
   where
     b' = suffixVarsClause "_q" b
-    headInto x y = resolveHead x y ++ case hd x of
-      Nothing -> []
-      Just h  ->
-        -- superposition of an equation head into any literal, at one
-        -- occurrence or at all of them, since a prover demodulating with the
-        -- equation replaces them all, as on LAT263-2
-        [ instClause σ (Clause (map (mapLiteralTerms free) (body x) ++ bodyY') hdY')
-           | Eq s t <- [h], (lhs, rhs0) <- [(s, t), (t, s)], rewritesFrom lhs rhs0
-           , let free = markFree lhs rhs0
-                 rhs = free rhs0
-           , (i, lit) <- zip [0 :: Int ..] (polLits y)
-           , (u, ctx) <- litSubtermCtxs (snd lit), notVar u
-           , Just σ <- [unifyTerms lhs u []]
-           , ys <- [ [ if j == i then (fst l, ctx rhs) else l
-                     | (j, l) <- zip [0 :: Int ..] (polLits y) ]
-                   , [ (sg, mapLiteralTerms (replaceAllTerm u rhs) m)
-                     | (sg, m) <- polLits y ] ]
-           , let bodyY' = [ l | (False, l) <- ys ]
-                 hdY'   = listToMaybe [ l | (True, l) <- ys ] ]
+    -- superposition of an equation head into any literal, at one occurrence
+    -- or at all of them, since a prover demodulating with the equation
+    -- replaces them all, as on LAT263-2
+    headInto x y = resolveHead x y ++
+      [ instClause σ (Clause (map (mapLiteralTerms free) (body x) ++ bodyY') hdY')
+      | Just (Eq s t) <- [hd x], (lhs, rhs0) <- [(s, t), (t, s)], rewritesFrom lhs rhs0
+      , let free = markFree lhs rhs0
+            rhs = free rhs0
+      , (i, (_, lit)) <- zip [0 :: Int ..] (polLits y)
+      , (u, ctx) <- litSubtermCtxs lit, notVar u
+      , Just σ <- [unifyTerms lhs u []]
+      , ys <- [ [ if j == i then (fst l, ctx rhs) else l | (j, l) <- zip [0 :: Int ..] (polLits y) ]
+              , [ (sg, mapLiteralTerms (replaceAllTerm u rhs) m) | (sg, m) <- polLits y ] ]
+      , let bodyY' = [ l | (False, l) <- ys ]
+            hdY'   = listToMaybe [ l | (True, l) <- ys ] ]
 
 -- One simplification step, as E's rw, sr, csr and cn perform it. A simplifier
 -- with a head resolves away a body atom of the clause and adds its own body,
@@ -454,10 +422,9 @@ simplifyBy c (Clause ls Nothing) =
 -- term ordering is needed. A variable only the right side has comes in free,
 -- and a later rewrite may bind it to a ground term.
 rewriteOnce :: (Term, Term) -> Clause -> [Clause]
-rewriteOnce (lhs, rhs) (Clause bs mh) =
+rewriteOnce (lhs, rhs) c =
   [ Clause [ l | (False, l) <- ls' ] (listToMaybe [ l | (True, l) <- ls' ])
-  | let ls = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
-  , (i, (_, lit)) <- zip [0 :: Int ..] ls
+  | (i, (_, lit)) <- zip [0 :: Int ..] ls
   , (u, ctx) <- litSubtermCtxs lit
   , notVar u
   , Just s <- [unifyApart rigid lhs u []]
@@ -468,7 +435,8 @@ rewriteOnce (lhs, rhs) (Clause bs mh) =
   , ls' <- [ [ if j == i then (sg, at (ctx r)) else (sg, at m) | (j, (sg, m)) <- zip [0 :: Int ..] ls ]
            , [ (sg, mapLiteralTerms (replaceAllTerm (inst u) r) (at m)) | (sg, m) <- ls ] ] ]
   where
-    vars = nub (concatMap litVars (bs ++ maybeToList mh))
+    ls = polLits c
+    vars = nub (concatMap (litVars . snd) ls)
     rigid = [ v | v <- vars, not (freeMark `isSuffixOf` v) ]
 
 -- Condenses a clause by dropping duplicate body atoms and body equations t = t.
@@ -485,10 +453,8 @@ condense (Clause bs mh) = Clause (nub [ l | l <- bs, not (trivial l) ]) mh
 matchClause :: Clause -> Clause -> Maybe Subst
 matchClause final outer
   | isJust (hd final) /= isJust (hd outer) = Nothing
-  | otherwise = listToMaybe (go (polLits final') [] [])
+  | otherwise = listToMaybe (go (polLits (suffixVarsClause "_f" final)) [] [])
   where
-    ren = suffixVarsLit "_f"
-    final' = Clause (map ren (body final)) (fmap ren (hd final))
     idxOuter = zip [0 :: Int ..] (polLits outer)
     go [] hit s
       | all ((`elem` hit) . fst) idxOuter = [s]
@@ -498,92 +464,59 @@ matchClause final outer
             , s' <- catMaybes [matchLitWith l p s, matchLitWith (flipLit l) p s]
             , s'' <- go ls (i : hit) s' ]
 
--- The negative unit ~L of a positive atom L, the converse of complementOfNegUnit. An
--- equation has none, since a ⊥ reached by rewriting with it does not
--- determine the clause before it.
-complementOfPosUnit :: T.Declaration -> Maybe T.Declaration
-complementOfPosUnit (T.Formula _ (T.CNF (T.Clause lits))) =
-  case toList lits of
-    [(T.Positive, lit@(T.Predicate (T.Defined _) _))] ->
-      Just (T.Formula (T.Standard T.Plain) (T.CNF (T.Clause (pure (T.Negative, lit)))))
-    _ -> Nothing
-complementOfPosUnit _ = Nothing
-
 -- The leaves with their positions. An electron is kept once, at its first
 -- position in depth-first order. A nucleus appears at every position, since
 -- each occurrence may see different electrons, and a shared inner node
--- re-emits its nuclei at the new position without being walked again.
-gatherLeaves :: String -> ProofTree -> [(String, String, T.Declaration)]
-gatherLeaves pos0 tree0 =
-    let (_, _, res) = go pos0 tree0 Set.empty Map.empty in res
+-- re-emits its nuclei at the new position.
+gatherLeaves :: ProofTree -> [(String, String, T.Declaration)]
+gatherLeaves = gatherRows (\(_, _, d) -> not (isPositiveUnitFormula d)) leaf
   where
-    -- seenElec holds the electrons met, seenInner each inner node's nucleus
-    -- leaves with positions relative to it.
-    go pos (PTLeaf n d) seenElec seenInner
-      | isPositiveUnitFormula d =
-          if Set.member n seenElec
-            then (seenElec, seenInner, [])
-            else (Set.insert n seenElec, seenInner, [(pos, n, d)])
-      | otherwise = (seenElec, seenInner, [(pos, n, d)])
-    go pos (PTNode n _ _ kids) seenElec seenInner
-      | n /= "?" =
-          case Map.lookup n seenInner of
-            Just stored ->
-              let reemit = [(pos ++ rel, nm, d) | (rel, nm, d) <- stored]
-              in (seenElec, seenInner, reemit)
-            Nothing ->
-              let (se', si', res) = goKids pos kids seenElec seenInner
-                  nucleiEntries =
-                    [(drop (length pos) p, nm, d)
-                    | (p, nm, d) <- res, not (isPositiveUnitFormula d)]
-                  si'' = Map.insert n nucleiEntries si'
-              in (se', si'', res)
-      | otherwise = goKids pos kids seenElec seenInner
-    goKids pos [k] seenElec seenInner =
-      go (pos ++ "1") k seenElec seenInner
-    goKids pos [l, r] seenElec seenInner =
-      let (se',  si',  ls) = go (pos ++ "0") l seenElec seenInner
-          (se'', si'', rs) = go (pos ++ "1") r se' si'
-      in (se'', si'', ls ++ rs)
-    goKids pos kids seenElec seenInner =
-      foldl (\(se, si, acc) (c, kid) ->
-               let (se', si', r) = go (pos ++ [c]) kid se si
-               in (se', si', acc ++ r))
-            (seenElec, seenInner, []) (zip ['0'..] kids)
+    leaf pos (PTLeaf n d) seen
+      | not (isPositiveUnitFormula d) = (seen, [(pos, n, d)])
+      | Set.member n seen             = (seen, [])
+      | otherwise                     = (Set.insert n seen, [(pos, n, d)])
+    leaf _ _ seen = (seen, [])
 
 -- The inner nodes with their positions, each named unit once but every "?"
 -- node, since each is a clause of its own. A named node met again re-emits
--- the "?" nodes below it without walking its subtree. Walking every path
--- would take 3 x 10^11 visits on BOO023-1.
-gatherInner :: String -> ProofTree -> [(String, String, T.Declaration)]
-gatherInner pos0 tree0 = let (_, _, res) = go pos0 tree0 Set.empty Map.empty in res
+-- the "?" nodes below it.
+gatherInner :: ProofTree -> [(String, String, T.Declaration)]
+gatherInner = gatherRows (\(_, n, _) -> n == "?") inner
   where
-    go _ (PTLeaf _ _) seen memo = (seen, memo, [])
-    go pos (PTNode n d rule kids) seen memo
-      | n /= "?", Just rel <- Map.lookup n memo =
-          (seen, memo, [ (pos ++ p, nm, dd) | (p, nm, dd) <- rel ])
-      | otherwise =
-          let (seen', memo', kidsRes) = goKids pos kids seen memo
-              (seen'', inner)         = addNode pos n d rule seen'
-              res   = kidsRes ++ inner
-              memo'' | n /= "?"  = Map.insert n [ (drop (length pos) p, nm, dd) | (p, nm, dd) <- res, nm == "?" ] memo'
-                     | otherwise = memo'
-          in  (seen'', memo'', res)
-    goKids pos [k] seen memo = go (pos ++ "1") k seen memo
-    goKids pos [l, r] seen memo =
-      let (seen',  memo',  ls) = go (pos ++ "0") l seen memo
-          (seen'', memo'', rs) = go (pos ++ "1") r seen' memo'
-      in  (seen'', memo'', ls ++ rs)
-    goKids pos kids seen memo =
-      foldl (\(s, m, acc) (c, kid) ->
-               let (s', m', res) = go (pos ++ [c]) kid s m
-               in  (s', m', acc ++ res))
-            (seen, memo, []) (zip ['0'..] kids)
-    addNode pos n d rule seen
+    inner pos (PTNode n d rule _) seen
       | rule == Text.pack "proved_conjecture" = (seen, [])
-      | n == "?"               = (seen, [(pos, n, d)])
-      | Set.member n seen      = (seen, [])
-      | otherwise              = (Set.insert n seen, [(pos, n, d)])
+      | n == "?"                              = (seen, [(pos, n, d)])
+      | Set.member n seen                     = (seen, [])
+      | otherwise                             = (Set.insert n seen, [(pos, n, d)])
+    inner _ _ seen = (seen, [])
+
+-- Walks the tree depth first and collects the rows emit gives for each node,
+-- after those of its children, threading the set of units met. A named node
+-- met again re-emits the rows below it that keep selects, at its new
+-- position, without walking its subtree. Walking every path would take
+-- 3 x 10^11 visits on BOO023-1.
+gatherRows :: ((String, String, T.Declaration) -> Bool)
+           -> (String -> ProofTree -> Set.Set String -> (Set.Set String, [(String, String, T.Declaration)]))
+           -> ProofTree -> [(String, String, T.Declaration)]
+gatherRows keep emit tree = let (_, _, rows) = go "" tree Set.empty Map.empty in rows
+  where
+    go pos t@(PTNode n _ _ kids) seen memo
+      | n /= "?", Just rel <- Map.lookup n memo =
+          (seen, memo, [ (pos ++ p, nm, d) | (p, nm, d) <- rel ])
+      | otherwise =
+          let walk (s, m, acc) (c, kid) = let (s', m', rs) = go (pos ++ [c]) kid s m in (s', m', acc ++ rs)
+              (seen', memo', below) = foldl walk (seen, memo, []) (zip (childLabels kids) kids)
+              (seen'', own) = emit pos t seen'
+              rows = below ++ own
+              memo'' | n /= "?"  = Map.insert n [ (drop (length pos) p, nm, d) | r@(p, nm, d) <- rows, keep r ] memo'
+                     | otherwise = memo'
+          in (seen'', memo'', rows)
+    go pos leaf seen memo = let (seen', rows) = emit pos leaf seen in (seen', memo, rows)
+
+-- The position digits of a node's children. A unary node has its child at 1.
+childLabels :: [ProofTree] -> String
+childLabels [_] = "1"
+childLabels _   = ['0' ..]
 
 -- The role of a leaf. Inputs, introduced definitions and the conjecture's
 -- hypotheses are axioms, the rest of the negated conjecture is the goal, and
@@ -592,21 +525,19 @@ classifyRole :: [Clause] -> Map.Map String T.Unit -> String -> T.Declaration -> 
 classifyRole granted unitMap name decl
   -- input positive units are axioms even when labeled negated_conjecture,
   -- as Vampire labels every input when proving the negation
-  | isPositiveUnitFormula decl && isFileUnit unitMap name     = OrigAxiom
-  | isPositiveUnitFormula decl && isFileUnit unitMap resolvedNm = OrigAxiom
-  | isConjHypothesis granted unitMap name decl                = OrigAxiom
-  | isNegConj decl                                           = NegConjecture
-  | maybe False isNegConj (lookupDecl unitMap resolvedNm)    = NegConjecture
-  -- a clause traced back to the conjecture is part of its negation
-  | maybe False isConjectureDecl (lookupDecl unitMap resolvedNm)   = NegConjecture
-  | isFileUnit unitMap name                                    = OrigAxiom
-  | isFileUnit unitMap resolvedNm                              = OrigAxiom
+  | isPositiveUnitFormula decl && fromFile    = OrigAxiom
+  | isConjHypothesis granted unitMap name decl = OrigAxiom
+  -- a clause traced back to the negated conjecture or to the conjecture is
+  -- part of the negation
+  | isNegConj decl || maybe False (\d -> isNegConj d || isConjectureDecl d) srcDecl = NegConjecture
   -- clauses from definitions the prover introduced, like E's epredN, count
-  -- as axioms
-  | isIntroducedSrc unitMap resolvedNm                        = OrigAxiom
-  | otherwise                                                 = Derived
+  -- as axioms too
+  | fromFile || isIntroducedSrc unitMap resolvedNm = OrigAxiom
+  | otherwise                                      = Derived
   where
     resolvedNm = resolveCopySource unitMap name
+    srcDecl    = lookupDecl unitMap resolvedNm
+    fromFile   = isFileUnit unitMap name || isFileUnit unitMap resolvedNm
 
 -- Whether a declaration has the negated_conjecture role.
 isNegConj :: T.Declaration -> Bool
@@ -756,38 +687,28 @@ inlineAtomCongruences units
   | otherwise      = map replaceIn units
   where
     unitMap = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n _ _) <- units ]
-    nameOf  = Map.fromList [ (unitNameStr n, n) | T.Unit n _ _ <- units ]
     predSyms = predicateSymbols units
     ruleOf nm = Map.lookup nm unitMap >>= inferenceRuleName
-    parentsOf (T.Unit _ _ (Just (T.Inference _ _ ps, _))) = [ unitNameStr n | T.Parent (T.UnitSource n) _ <- ps ]
-    parentsOf _ = []
+    isRefl p = ruleOf p == Just (Text.pack "reflexivity")
     isCongruenceEquation d = case headLitOf d of
       Just (T.Equality (T.Function (T.Defined (T.Atom f)) _) T.Positive (T.Function (T.Defined (T.Atom g)) _)) ->
         f == g && Set.member (Text.unpack f) predSyms && isPositiveUnitFormula d
       _ -> False
     -- the term equations an atom equation was built from, in order
     congr = Map.fromList
-      [ (nm, eqs) | (nm, u@(T.Unit _ d _)) <- Map.toList unitMap
-                  , ruleOf nm == Just (Text.pack "rewriting"), isCongruenceEquation d
-                  , Just eqs <- [built u] ]
-    built u = do
-      let ps = parentsOf u
-      guard (any (\p -> ruleOf p == Just (Text.pack "reflexivity")) ps)
-      return [ p | p <- ps, ruleOf p /= Just (Text.pack "reflexivity") ]
+      [ (nm, filter (not . isRefl) ps)
+      | (nm, T.Unit _ d (Just (T.Inference _ _ srcPs, _))) <- Map.toList unitMap
+      , ruleOf nm == Just (Text.pack "rewriting"), isCongruenceEquation d
+      , let ps = [ unitNameStr p | T.Parent (T.UnitSource p) _ <- srcPs ]
+      , any isRefl ps ]
     replaceIn u@(T.Unit n d (Just (T.Inference r info ps, extra))) =
       let ps' = concatMap swap ps
       in if ps' == ps then u else T.Unit n d (Just (T.Inference r info ps', extra))
     replaceIn u = u
     swap p@(T.Parent (T.UnitSource n) _) = case Map.lookup (unitNameStr n) congr of
-      Just eqs -> [ T.Parent (T.UnitSource e) [] | Just e <- map (`Map.lookup` nameOf) eqs ]
+      Just eqs -> [ T.Parent (T.UnitSource e) [] | Just (T.Unit e _ _) <- map (`Map.lookup` unitMap) eqs ]
       Nothing  -> [p]
     swap p = [p]
-
--- The premises of a unit derived by a core inference, Nothing for any other.
-coreParentNames :: T.Unit -> Maybe [String]
-coreParentNames (T.Unit _ _ (Just (src@(T.Inference (T.Atom rule) _ _), _)))
-  | Set.member rule coreInferenceNames = Just (sourceParents src)
-coreParentNames _ = Nothing
 
 -- The rule of each step of a unit's inference, the innermost first.
 unitStepRules :: T.Unit -> [Text.Text]
@@ -801,10 +722,7 @@ inferenceRuleName _ = Nothing
 
 -- The root of the refutation, the last unit that states $false.
 findRoot :: [T.Unit] -> Maybe String
-findRoot units =
-  case [unitNameStr n | T.Unit n decl _ <- units, declIsBottom decl] of
-    [] -> Nothing
-    rs -> Just (last rs)
+findRoot units = listToMaybe (reverse [ unitNameStr n | T.Unit n decl _ <- units, declIsBottom decl ])
 
 -- A clause with more than one positive literal, where a disequality counts as
 -- negative. A formula that is not a clause is not reported here.
@@ -815,28 +733,23 @@ isNonHorn d = case d of
   _                                   -> False
 
 -- Whether a positive literal of a declaration has the needle's predicate, or
--- is an equation when the needle is one.
+-- is an equation when the needle is one. In a formula it looks at the
+-- consequent of an implication and at both sides of any other connective.
 hasPositivePredicateOf :: T.Literal -> T.Declaration -> Bool
-hasPositivePredicateOf needle (T.Formula _ (T.CNF (T.Clause lits))) =
-  any (samePredicate needle) [l | (T.Positive, l) <- toList lits]
-hasPositivePredicateOf needle (T.Formula _ (T.FOF f)) = fofHasPositivePredicateOf needle f
-hasPositivePredicateOf _ _ = False
-
--- hasPositivePredicateOf for a formula. It looks at the consequent of an implication and
--- at both sides of any other connective.
-fofHasPositivePredicateOf :: T.Literal -> T.UnsortedFirstOrder -> Bool
-fofHasPositivePredicateOf needle (T.Quantified T.Forall _ body)    = fofHasPositivePredicateOf needle body
-fofHasPositivePredicateOf needle (T.Atomic lit)                    = samePredicate needle lit
-fofHasPositivePredicateOf needle (T.Connected _ T.Implication r)   = fofHasPositivePredicateOf needle r
-fofHasPositivePredicateOf needle (T.Connected l _ r)               =
-  fofHasPositivePredicateOf needle l || fofHasPositivePredicateOf needle r
-fofHasPositivePredicateOf _ _                                      = False
-
--- Whether two literals have the same predicate or are both equations.
-samePredicate :: T.Literal -> T.Literal -> Bool
-samePredicate (T.Predicate n1 _) (T.Predicate n2 _) = n1 == n2
-samePredicate (T.Equality {})    (T.Equality {})     = True
-samePredicate _ _                                    = False
+hasPositivePredicateOf needle decl = case decl of
+  T.Formula _ (T.CNF (T.Clause lits)) -> any samePredicate [ l | (T.Positive, l) <- toList lits ]
+  T.Formula _ (T.FOF f)               -> inFormula f
+  _                                   -> False
+  where
+    inFormula (T.Quantified T.Forall _ body)  = inFormula body
+    inFormula (T.Atomic lit)                  = samePredicate lit
+    inFormula (T.Connected _ T.Implication r) = inFormula r
+    inFormula (T.Connected l _ r)             = inFormula l || inFormula r
+    inFormula _                               = False
+    samePredicate lit = case (needle, lit) of
+      (T.Predicate n1 _, T.Predicate n2 _) -> n1 == n2
+      (T.Equality {}, T.Equality {})       -> True
+      _                                    -> False
 
 -- Rules that rewrite one premise with the other. Nearly every step lists the
 -- clause rewritten first, but superposition and Twee's rewriting do not always.
@@ -853,28 +766,25 @@ rewriteRules = Set.fromList $ map Text.pack
 -- between nuclei.
 firstParentProvides :: Text.Text -> T.Declaration -> T.Declaration -> T.Declaration -> Bool
 firstParentProvides rule result d1 d2
-  | Set.member rule rewriteRules = maybe False not (consumerIsFirst False result d1 d2)
-firstParentProvides _ _ d1 d2
-  | isPositiveUnitFormula d1 && not (isPositiveUnitFormula d2) = True
-  | isPositiveUnitFormula d2 && not (isPositiveUnitFormula d1) = False
-  | isPositiveUnitFormula d1 && isPositiveUnitFormula d2 =
-      let isEqLitOf d = case headLitOf d of { Just (T.Equality {}) -> True; _ -> False }
-      in case (isEqLitOf d1, isEqLitOf d2) of
-           (True,  False) -> True
-           (False, True ) -> False
-           _              -> True
-firstParentProvides _ result d1 d2 = case consumerIsFirst True result d1 d2 of
-  -- the provider goes at p0 and the consumer at p1
-  Just True  -> False
-  Just False -> True
-  -- Otherwise only a premise with a head can provide. When both have one,
-  -- the first provides unless the result still has its head predicate.
-  Nothing    -> case (posHead d1, posHead d2) of
-    (Just h1, Just _)  -> not (hasPositivePredicateOf h1 result)
-    (Just _, Nothing)  -> True
-    (Nothing, Just _)  -> False
-    (Nothing, Nothing) -> True  -- neither has a head, keep the given order
+  | Set.member rule rewriteRules = consumerIsFirst False result d1 d2 == Just False
+  | unit1 && not unit2 = True
+  | unit2 && not unit1 = False
+  -- of two units the first provides, unless only the second is an equation
+  | unit1 && unit2 = isEquation d1 || not (isEquation d2)
+  | otherwise = case consumerIsFirst True result d1 d2 of
+      -- the provider goes at p0 and the consumer at p1
+      Just firstConsumes -> not firstConsumes
+      -- Otherwise only a premise with a head can provide. When both have one,
+      -- the first provides unless the result still has its head predicate.
+      Nothing -> case (posHead d1, posHead d2) of
+        (Just h1, Just _)  -> not (hasPositivePredicateOf h1 result)
+        (Just _, Nothing)  -> True
+        (Nothing, Just _)  -> False
+        (Nothing, Nothing) -> True  -- neither has a head, keep the given order
   where
+    unit1 = isPositiveUnitFormula d1
+    unit2 = isPositiveUnitFormula d2
+    isEquation d = case headLitOf d of { Just (T.Equality {}) -> True; _ -> False }
     -- Like headLitOf, but a disequality counts as negative, so
     -- g(X) != X | q(X) has the head q(X).
     posHead (T.Formula _ (T.CNF (T.Clause lits))) =
@@ -893,16 +803,16 @@ firstParentProvides _ result d1 d2 = case consumerIsFirst True result d1 d2 of
 -- matches the printed clause. Nothing when a premise is not Horn or the test
 -- is ambiguous.
 consumerIsFirst :: Bool -> T.Declaration -> T.Declaration -> T.Declaration -> Maybe Bool
-consumerIsFirst resolution result d1 d2 =
-  case (convertDeclToClause result, convertDeclToClause d1, convertDeclToClause d2) of
-    (Just r, Just c1, Just c2) ->
-      let readings = resolvents c1 c2
-          fits firstProvides = any (\(p, res) -> p == firstProvides && isJust (matchClause (condense res) r)) readings
-      in case nub (map fst readings) of
-           [firstProvides] | resolution -> Just (not firstProvides)
-           _ -> case (fits True, fits False) of
-                  (True, False) -> Just False
-                  (False, True) -> Just True
-                  _             -> Nothing
-    _ -> Nothing
+consumerIsFirst resolution result d1 d2 = do
+  r  <- convertDeclToClause result
+  c1 <- convertDeclToClause d1
+  c2 <- convertDeclToClause d2
+  let readings = resolvents c1 c2
+      fits firstProvides = any (\(p, res) -> p == firstProvides && isJust (matchClause (condense res) r)) readings
+  case nub (map fst readings) of
+    [firstProvides] | resolution -> Just (not firstProvides)
+    _ -> case (fits True, fits False) of
+           (True, False) -> Just False
+           (False, True) -> Just True
+           _             -> Nothing
 

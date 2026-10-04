@@ -44,6 +44,8 @@ module TptpConvert
   , unitNameOf
   , resolutionSource
   , premiseUses
+  , formulaAtoms
+  , signedDisjunction
   ) where
 
 import Data.Attoparsec.Text (eitherResult, feed)
@@ -75,27 +77,28 @@ resolutionSource info l r =
 
 -- The function and predicate symbols of a cnf, fof or tff declaration.
 declSymbols :: T.Declaration -> ([String], [String])
-declSymbols (T.Formula _ (T.CNF (T.Clause lits))) = literalSymbols [ l | (_, l) <- toList lits ]
-declSymbols (T.Formula _ (T.FOF f))               = literalSymbols (atoms f)
-declSymbols (T.Formula _ (T.TFF0 f))              = literalSymbols (atoms f)
-declSymbols _                                     = ([], [])
-
--- The atoms of a formula, in order.
-atoms :: T.FirstOrder s -> [T.Literal]
-atoms (T.Atomic l)         = [l]
-atoms (T.Negated f)        = atoms f
-atoms (T.Connected l _ r)  = atoms l ++ atoms r
-atoms (T.Quantified _ _ f) = atoms f
-
--- The function and predicate symbols of a list of atoms.
-literalSymbols :: [T.Literal] -> ([String], [String])
-literalSymbols ls = (concatMap funcs ls, [ Text.unpack p | T.Predicate (T.Defined (T.Atom p)) _ <- ls ])
+declSymbols d = (concatMap funcs ls, [ Text.unpack p | T.Predicate (T.Defined (T.Atom p)) _ <- ls ])
   where
+    ls = declAtoms d
     funcs (T.Predicate _ ts) = concatMap termF ts
     funcs (T.Equality l _ r) = termF l ++ termF r
     termF (T.Function (T.Defined (T.Atom f)) ts) = Text.unpack f : concatMap termF ts
     termF (T.Function _ ts)                      = concatMap termF ts
     termF _                                      = []
+
+-- The atoms of a cnf, fof or tff declaration, in order.
+declAtoms :: T.Declaration -> [T.Literal]
+declAtoms (T.Formula _ (T.CNF (T.Clause lits))) = map snd (toList lits)
+declAtoms (T.Formula _ (T.FOF f))               = formulaAtoms f
+declAtoms (T.Formula _ (T.TFF0 f))              = formulaAtoms f
+declAtoms _                                     = []
+
+-- The atoms of a formula, in order.
+formulaAtoms :: T.FirstOrder s -> [T.Literal]
+formulaAtoms (T.Atomic l)         = [l]
+formulaAtoms (T.Negated f)        = formulaAtoms f
+formulaAtoms (T.Connected l _ r)  = formulaAtoms l ++ formulaAtoms r
+formulaAtoms (T.Quantified _ _ f) = formulaAtoms f
 
 -- Reads a monomorphic typed problem or proof as an untyped one. Every proof
 -- step already respects the sorts, so dropping type declarations and
@@ -106,26 +109,14 @@ eraseSorts (T.TSTP szs units) = T.TSTP szs (concatMap erase units)
   where
     erase (T.Unit _ (T.Typing _ _) _) = []
     erase (T.Unit _ (T.Sort _ _) _)   = []
-    erase (T.Unit n (T.Formula r (T.TFF0 f)) a) = [T.Unit n (T.Formula r (T.FOF (untyped f))) a]
+    erase (T.Unit n (T.Formula r (T.TFF0 f)) a) = [T.Unit n (T.Formula r (T.FOF (T.Unsorted () <$ f))) a]
     erase u = [u]
-    untyped (T.Atomic l)            = T.Atomic l
-    untyped (T.Negated f)           = T.Negated (untyped f)
-    untyped (T.Connected l c r)     = T.Connected (untyped l) c (untyped r)
-    untyped (T.Quantified q vs f)   = T.Quantified q (fmap (\(v, _) -> (v, T.Unsorted ())) vs) (untyped f)
 
 -- Whether a declaration uses distinct objects, a "quoted" term or $distinct.
 -- Their inequality is a theory fact, not an inference of the calculus.
 usesDistinctObjects :: T.Declaration -> Bool
-usesDistinctObjects d = case d of
-  T.Formula _ (T.CNF (T.Clause lits)) -> any (litHas . snd) (toList lits)
-  T.Formula _ (T.FOF f)               -> formulaHas f
-  T.Formula _ (T.TFF0 f)              -> formulaHas f
-  _                                   -> False
+usesDistinctObjects = any litHas . declAtoms
   where
-    formulaHas (T.Atomic l)         = litHas l
-    formulaHas (T.Negated g)        = formulaHas g
-    formulaHas (T.Connected l _ r)  = formulaHas l || formulaHas r
-    formulaHas (T.Quantified _ _ b) = formulaHas b
     litHas (T.Predicate (T.Reserved (T.Standard T.Distinct)) _) = True
     litHas (T.Predicate _ ts) = any termHas ts
     litHas (T.Equality a _ b) = termHas a || termHas b
@@ -144,14 +135,19 @@ dedupLiterals u@(T.Unit n d a) = case d of
     , (x : xs) <- ls' -> T.Unit n (T.Formula r (T.CNF (T.Clause (x :| xs)))) a
   T.Formula r (T.FOF f)
     | Just pairs <- collectDisjuncts f, pairs' <- nub pairs, length pairs' < length pairs ->
-        T.Unit n (T.Formula r (T.FOF (prefix f (foldr1 (`T.Connected` T.Disjunction) (map lit pairs'))))) a
+        T.Unit n (T.Formula r (T.FOF (prefix f (signedDisjunction pairs')))) a
   _ -> u
   where
     prefix (T.Quantified q vs b) g = T.Quantified q vs (prefix b g)
     prefix _ g                     = g
-    lit (T.Positive, l) = T.Atomic l
-    lit (T.Negative, l) = T.Negated (T.Atomic l)
 dedupLiterals u = u
+
+-- A non-empty list of signed literals as their disjunction.
+signedDisjunction :: [(T.Sign, T.Literal)] -> T.UnsortedFirstOrder
+signedDisjunction = foldr1 (`T.Connected` T.Disjunction) . map signed
+  where
+    signed (T.Positive, l) = T.Atomic l
+    signed (T.Negative, l) = T.Negated (T.Atomic l)
 
 -- The negative literals of a clause in positive form, [p(X)] for ~p(X) | q(X).
 -- A fof clause is read through collectDisjuncts as convertDeclToClause reads
@@ -200,7 +196,7 @@ clauseToDecl :: Clause -> T.Declaration
 clauseToDecl (Clause bs mh) = T.Formula (T.Standard T.Plain) (T.CNF (T.Clause lits))
   where
     lits = case [ (T.Negative, toTLit l) | l <- bs ] ++ [ (T.Positive, toTLit h) | Just h <- [mh] ] of
-      []       -> pure (T.Positive, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])
+      []       -> pure (T.Positive, truth T.Falsum)
       (x : xs) -> x :| xs
     toTLit (Rel n ts)  = T.Predicate (T.Defined (T.Atom (Text.pack n))) (map toTTerm ts)
     toTLit (NRel n ts) = T.Predicate (T.Defined (T.Atom (Text.pack n))) (map toTTerm ts)
@@ -211,21 +207,9 @@ clauseToDecl (Clause bs mh) = T.Formula (T.Standard T.Plain) (T.CNF (T.Clause li
     toTTerm (Const c)  = T.Function (T.Defined (T.Atom (Text.pack c))) []
     toTTerm (App f ts) = T.Function (T.Defined (T.Atom (Text.pack f))) (map toTTerm ts)
 
--- A Horn clause from its body and positive literals. A disequality moves to the
--- body as an equation, and more than one other literal gives Nothing.
-hornClause :: [Literal] -> [Literal] -> Maybe Clause
-hornClause body hs =
-  let (neqs, others) = partition isNEq hs
-      body'          = body ++ [Eq s t | NEq s t <- neqs]
-  in case others of
-       []  -> Just (Clause body' Nothing)
-       [h] -> Just (Clause body' (Just h))
-       _   -> Nothing
-
--- Whether a literal is a disequality.
-isNEq :: Literal -> Bool
-isNEq (NEq _ _) = True
-isNEq _         = False
+-- The truth constant $true or $false as an atom.
+truth :: T.Predicate -> T.Literal
+truth c = T.Predicate (T.Reserved (T.Standard c)) []
 
 -- Whether a TPTP literal is a disequality s != t.
 isTDisequality :: T.Literal -> Bool
@@ -248,19 +232,27 @@ convertFOFToClause fof = collectDisjuncts fof >>= signedToClause
 
 -- A disjunction of signed literals as a Horn clause. False literals ($false,
 -- ~$true) are dropped. A true literal makes the clause a tautology, and other
--- reserved predicates are not interpreted, so both give Nothing.
+-- reserved predicates are not interpreted, so both give Nothing. A positive
+-- disequality moves to the body as an equation, and more than one other
+-- positive literal gives Nothing.
 signedToClause :: [(T.Sign, T.Literal)] -> Maybe Clause
 signedToClause ls
   | any isTrue ls = Nothing
   | any (isReservedTLit . snd) rest = Nothing
-  | otherwise = hornClause [ convertLit l | (T.Negative, l) <- rest ] [ convertLit l | (T.Positive, l) <- rest ]
+  | otherwise = case others of
+      []  -> Just (Clause body Nothing)
+      [h] -> Just (Clause body (Just h))
+      _   -> Nothing
   where
     rest = filter (not . isFalse) ls
+    (neqs, others) = partition isNEq [ convertLit l | (T.Positive, l) <- rest ]
+    body = [ convertLit l | (T.Negative, l) <- rest ] ++ [ Eq s t | NEq s t <- neqs ]
+    isNEq (NEq _ _) = True
+    isNEq _         = False
     isTrue (T.Positive, l)  = l == truth T.Tautology
     isTrue (T.Negative, l)  = l == truth T.Falsum
     isFalse (T.Positive, l) = l == truth T.Falsum
     isFalse (T.Negative, l) = l == truth T.Tautology
-    truth c = T.Predicate (T.Reserved (T.Standard c)) []
 
 -- The signed literals of a formula read as one clause under its universal
 -- prefix. Nothing when it is not a clause.
@@ -278,17 +270,10 @@ collectDisjuncts (T.Negated (T.Quantified T.Exists _ body)) = collectDisjuncts (
 collectDisjuncts (T.Negated (T.Negated f))       = collectDisjuncts f
 collectDisjuncts (T.Connected l T.Disjunction r) =
   (++) <$> disjunctLiterals l <*> disjunctLiterals r
+-- A => B is ~A | B. An antecedent ! [X] : p(X) has no reading, since
+-- ~p(X) | q would state the stronger (? [X] : p(X)) => q.
 collectDisjuncts (T.Connected body T.Implication hd) =
-  (++) <$> collectImplBody body <*> collectDisjuncts hd
-  where
-    -- an antecedent s != t is the positive literal s = t of the clause
-    collectImplBody (T.Atomic (T.Equality l T.Negative r)) = Just [(T.Positive, T.Equality l T.Positive r)]
-    collectImplBody (T.Atomic lit)              = Just [(T.Negative, lit)]
-    collectImplBody (T.Connected l T.Conjunction r) =
-      (++) <$> collectImplBody l <*> collectImplBody r
-    -- Anything else is read as its negation. ! [X] : p(X) has no reading,
-    -- since ~p(X) | q would state the stronger (? [X] : p(X)) => q.
-    collectImplBody f = collectDisjuncts (T.Negated f)
+  (++) <$> collectDisjuncts (T.Negated body) <*> collectDisjuncts hd
 collectDisjuncts _ = Nothing
 
 -- The signed literals of one disjunct. A disequality s != t here is the
@@ -312,10 +297,9 @@ isLowerWord []       = False
 -- A symbol in TPTP syntax. Lower words and defined symbols such as $false
 -- stay bare, and anything else is quoted, as in '+'.
 tptpSymbol :: String -> String
-tptpSymbol s@('$' : _) = s
 tptpSymbol s
-  | isLowerWord s = s
-  | otherwise     = quoted s
+  | "$" `isPrefixOf` s || isLowerWord s = s
+  | otherwise                           = quoted s
 
 -- A term in TPTP syntax. A variable starts upper case, as TPTP requires.
 tptpTerm :: Term -> String
@@ -342,154 +326,122 @@ parseProof :: String -> Either String T.TSTP
 parseProof = parseTptp . Text.pack . extractSzsBlock
 
 -- Cut prover output to its SZS output block, since provers such as Twee
--- surround it with text that is not TSTP, and rewrite the forms the parser
+-- surround it with text that is not TSTP, and rewrite the lines the parser
 -- cannot read. Text without markers is kept whole.
 extractSzsBlock :: String -> String
-extractSzsBlock txt = dropIntroducedParents $ typedClausesAsFormulas $ quoteDollarTypings $ dropDistinctTypings $
-  case break isStart (lines txt) of
-    (_, [])        -> txt
-    (_, startLine : rest) ->
-      let (body, restEnd) = break isEnd rest
-          endLine = take 1 restEnd
-      in if any isUnit body
-           then unlines (startLine : body ++ endLine)
-           -- A TPTP solution file has its only SZS markers in a commented
-           -- copy of the raw output below the proof, so it is kept whole.
-           else txt
+extractSzsBlock txt =
+  dropIntroducedParents $ unlines $ map (tcfAsTff . quoteDollarName) $ filter (not . distinctTyping) $
+    case break isStart ls of
+      (_, [])        -> ls
+      (_, startLine : rest) ->
+        let (body, restEnd) = break isEnd rest
+        in if any isUnit body
+             then startLine : body ++ take 1 restEnd
+             -- A TPTP solution file has its only SZS markers in a commented
+             -- copy of the raw output below the proof, so it is kept whole.
+             else ls
   where
+    ls = lines txt
     isStart l = "SZS output start" `isInfixOf` l
     isEnd   l = "SZS output end"   `isInfixOf` l
     isUnit  l = any (`isPrefixOf` dropWhile (== ' ') l) ["cnf(", "fof(", "tff(", "tcf("]
-
--- Drop E's type declarations of distinct objects, such as
--- tff(d, type, "Apple": $i). The parser rejects them and they are not needed.
-dropDistinctTypings :: String -> String
-dropDistinctTypings = unlines . filter (not . distinctTyping) . lines
-  where
+    -- E types its distinct objects, as in tff(d, type, "Apple": $i). The
+    -- parser rejects these lines and they are not needed.
     distinctTyping l = "tff(" `isPrefixOf` l && ", type, \"" `isInfixOf` l
-
--- Quote a declared name that E writes as a dollar word, as in
--- tff(d, type, $ki_local_world: '$ki_world'). The parser reads a declared name
--- only as a plain or quoted word, and the rest of the proof quotes it.
-quoteDollarTypings :: String -> String
-quoteDollarTypings = unlines . map fix . lines
-  where
-    key = ", type, $"
-    fix l = case [ i | (i, t) <- zip [0 ..] (tails l), key `isPrefixOf` t ] of
+    -- E writes some declared names as dollar words, as in
+    -- tff(d, type, $ki_local_world: '$ki_world'). The parser reads a declared
+    -- name only as a plain or quoted word, and the rest of the proof quotes it.
+    quoteDollarName l = case [ i | (i, t) <- zip [0 ..] (tails l), dollarKey `isPrefixOf` t ] of
       (i : _) | "tff(" `isPrefixOf` l ->
-        let (before, rest) = splitAt (i + length key - 1) l
+        let (before, rest) = splitAt (i + length dollarKey - 1) l
             (nm, after)    = break (`elem` ": ") rest
         in before ++ "'" ++ nm ++ "'" ++ after
       _ -> l
-
--- Read E's tcf units, which the parser does not know, as tff. A tcf is a tff
--- whose formula is a clause.
-typedClausesAsFormulas :: String -> String
-typedClausesAsFormulas = unlines . map fix . lines
-  where
-    fix l | "tcf(" `isPrefixOf` l = "tff(" ++ drop 4 l
-          | otherwise             = l
+    dollarKey = ", type, $"
+    -- the parser does not know E's tcf units, which are tff units whose
+    -- formula is a clause
+    tcfAsTff l | "tcf(" `isPrefixOf` l = "tff(" ++ drop 4 l
+               | otherwise             = l
 
 -- The parser reads only introduced(kind, [info]), so drop the third argument,
 -- a list of parents, that Vampire and current TPTP add.
 dropIntroducedParents :: String -> String
-dropIntroducedParents = go
+dropIntroducedParents [] = []
+dropIntroducedParents s@(c : cs)
+  | key `isPrefixOf` s =
+      let (inner, rest) = splitAtClosing (drop (length key) s)
+      in key ++ intercalate "," (take 2 (topLevelArgs inner)) ++ ")" ++ dropIntroducedParents rest
+  | otherwise = c : dropIntroducedParents cs
   where
     key = "introduced("
-    go [] = []
-    go s@(c : cs)
-      | key `isPrefixOf` s =
-          let (inner, rest) = splitAtClosing (drop (length key) s)
-          in key ++ intercalate "," (take 2 (topLevelArgs inner)) ++ ")" ++ go rest
-      | otherwise = c : go cs
 
 -- The text up to the parenthesis that closes an open one, and the text after it.
 splitAtClosing :: String -> (String, String)
-splitAtClosing = walk (0 :: Int)
+splitAtClosing = walk 0
   where
     walk _ [] = ([], [])
     walk d (x : xs)
       | x == ')' && d == 0 = ([], xs)
-      | x `elem` "([" = first (x :) (walk (d + 1) xs)
-      | x `elem` ")]" = first (x :) (walk (d - 1) xs)
-      | otherwise     = first (x :) (walk d xs)
+      | otherwise          = first (x :) (walk (d + nesting x) xs)
     first f (a, b) = (f a, b)
 
 -- The arguments of a term's text, split at the commas outside brackets.
 topLevelArgs :: String -> [String]
-topLevelArgs = walk (0 :: Int) []
+topLevelArgs = walk 0 []
   where
     walk _ acc [] = [reverse acc]
     walk d acc (x : xs)
       | x == ',' && d == 0 = reverse acc : walk d [] xs
-      | x `elem` "([" = walk (d + 1) (x : acc) xs
-      | x `elem` ")]" = walk (d - 1) (x : acc) xs
-      | otherwise     = walk d (x : acc) xs
+      | otherwise          = walk (d + nesting x) (x : acc) xs
+
+-- How a character changes the bracket depth of text.
+nesting :: Char -> Int
+nesting x
+  | x `elem` "([" = 1
+  | x `elem` ")]" = -1
+  | otherwise     = 0
 
 -- Whether a declaration is a positive unit, which the tree reads as an
 -- electron. A disequality or truth constant is none.
 isPositiveUnitFormula :: T.Declaration -> Bool
-isPositiveUnitFormula (T.Formula _ (T.FOF f))  = isPosAtomFOF f
-isPositiveUnitFormula (T.Formula _ (T.CNF cl)) = isPosAtomCNF cl
-isPositiveUnitFormula _                        = False
-
--- Whether a formula is a positive atom or equation under universal quantifiers.
-isPosAtomFOF :: T.UnsortedFirstOrder -> Bool
-isPosAtomFOF (T.Quantified T.Forall _ body)           = isPosAtomFOF body
-isPosAtomFOF (T.Atomic (T.Equality _ T.Positive _))   = True
-isPosAtomFOF (T.Atomic (T.Predicate (T.Defined _) _)) = True
-isPosAtomFOF _                                         = False
-
--- Whether a clause is a single positive atom or equation.
-isPosAtomCNF :: T.Clause -> Bool
-isPosAtomCNF (T.Clause lits) = case toList lits of
-  [(T.Positive, T.Equality _ T.Positive _)]   -> True
-  [(T.Positive, T.Predicate (T.Defined _) _)] -> True
-  _                                           -> False
+isPositiveUnitFormula d = case d of
+  T.Formula _ (T.FOF f) | T.Atomic l <- stripForall f    -> positive l
+  T.Formula _ (T.CNF (T.Clause ((T.Positive, l) :| []))) -> positive l
+  _                                                      -> False
+  where
+    positive (T.Equality _ T.Positive _)   = True
+    positive (T.Predicate (T.Defined _) _) = True
+    positive _                             = False
 
 -- The head of a clause or formula, its only positive literal. A disequality
--- counts as positive here.
+-- counts as positive here. The head of a formula is the atom itself, the
+-- atomic consequent of an implication or the only positive disjunct.
 headLitOf :: T.Declaration -> Maybe T.Literal
-headLitOf (T.Formula _ (T.CNF (T.Clause lits))) =
-  case [l | (T.Positive, l) <- toList lits] of
-    [l] -> Just l
-    _   -> Nothing
-headLitOf (T.Formula _ (T.FOF f)) = headLitOfFOF f
-headLitOf _ = Nothing
-
--- headLitOf for a formula. The head is the atom itself, the atomic consequent
--- of an implication or the only positive disjunct.
-headLitOfFOF :: T.UnsortedFirstOrder -> Maybe T.Literal
-headLitOfFOF (T.Quantified T.Forall _ body)               = headLitOfFOF body
-headLitOfFOF (T.Atomic lit)                               = Just lit
-headLitOfFOF (T.Connected _ T.Implication (T.Atomic lit)) = Just lit
-headLitOfFOF f = case posLitsOfDisjFOF f of
-  [lit] -> Just lit
-  _     -> Nothing
+headLitOf d = case d of
+  T.Formula _ (T.CNF (T.Clause lits)) -> single [ l | (T.Positive, l) <- toList lits ]
+  T.Formula _ (T.FOF f) -> case stripForall f of
+    T.Atomic lit                               -> Just lit
+    T.Connected _ T.Implication (T.Atomic lit) -> Just lit
+    g                                          -> single (posLitsOfDisjFOF g)
+  _ -> Nothing
+  where
+    single [l] = Just l
+    single _   = Nothing
 
 -- The positive literals of a disjunction, where a disequality counts as
 -- positive.
 posLitsOfDisjFOF :: T.UnsortedFirstOrder -> [T.Literal]
-posLitsOfDisjFOF (T.Atomic lit)                   = [lit]
-posLitsOfDisjFOF (T.Negated _)                    = []
-posLitsOfDisjFOF (T.Connected l T.Disjunction r)  =
-  posLitsOfDisjFOF l ++ posLitsOfDisjFOF r
-posLitsOfDisjFOF _                                = []
+posLitsOfDisjFOF (T.Atomic lit)                  = [lit]
+posLitsOfDisjFOF (T.Connected l T.Disjunction r) = posLitsOfDisjFOF l ++ posLitsOfDisjFOF r
+posLitsOfDisjFOF _                               = []
 
 -- Whether a declaration states $false, also written as ~$true.
 declIsBottom :: T.Declaration -> Bool
-declIsBottom (T.Formula _ (T.CNF cl)) = isFalsum cl
-declIsBottom (T.Formula _ (T.FOF (T.Atomic
-  (T.Predicate (T.Reserved (T.Standard T.Falsum)) [])))) = True
-declIsBottom (T.Formula _ (T.FOF (T.Negated (T.Atomic
-  (T.Predicate (T.Reserved (T.Standard T.Tautology)) []))))) = True
-declIsBottom _ = False
-
--- Whether a clause is $false.
-isFalsum :: T.Clause -> Bool
-isFalsum (T.Clause lits) = case toList lits of
-  [(T.Positive, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])] -> True
-  _ -> False
+declIsBottom d = case d of
+  T.Formula _ (T.CNF (T.Clause ((T.Positive, l) :| []))) -> l == truth T.Falsum
+  T.Formula _ (T.FOF (T.Atomic l))                       -> l == truth T.Falsum
+  T.Formula _ (T.FOF (T.Negated (T.Atomic l)))           -> l == truth T.Tautology
+  _                                                      -> False
 
 -- The predicate symbols of all units.
 predicateSymbols :: [T.Unit] -> Set.Set String

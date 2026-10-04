@@ -14,16 +14,18 @@ module Conjecture
   , extractConjectureGoals
   , concludesNegation
   ) where
+
 import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
 import Data.List.NonEmpty (toList)
-import Data.Maybe (listToMaybe)
+import Data.Maybe (fromMaybe, listToMaybe)
 import Data.TPTP.Pretty ()
 import Prettyprinter (pretty)
+
 import Types
-import TptpConvert (clauseToDecl, collectDisjuncts, convertLit, isConjectureDecl, resolutionSource, stripForall, tptpLitVars, unitNameOf, unitNameStr)
+import TptpConvert (clauseToDecl, collectDisjuncts, convertLit, resolutionSource, stripForall, tptpLitVars, unitNameOf, unitNameStr)
 
 -- A Horn conjecture as the unit clauses a proof may assume and the goal atoms.
 data Conjecture = Conjecture
@@ -103,19 +105,21 @@ expandSimplifiedConjecture units = go Set.empty units
       | otherwise = u : go rewritten rest
     go rewritten (u : rest) = u : go rewritten rest
     expansion n cn gs =
-      [ T.Unit (unitNameOf (hypName i)) (negConj (clauseToDecl (Clause [] (Just g)))) (Just (negation, Nothing))
-      | (i, g) <- zip [1 :: Int ..] gs ]
-      ++ [ T.Unit (unitNameOf goalName) (negConj (clauseToDecl (Clause gs Nothing))) (Just (negation, Nothing)) ]
-      ++ [ T.Unit (if i == length gs then n else unitNameOf (base ++ "_r" ++ show i)) (clauseToDecl (Clause (drop i gs) Nothing))
+      [ assumed (hypName i) (Clause [] (Just g)) | (i, g) <- zip [1 :: Int ..] gs ]
+      ++ [ assumed goalName (Clause gs Nothing) ]
+      ++ [ T.Unit (if i == length gs then n else unitNameOf (resName i)) (clauseToDecl (Clause (drop i gs) Nothing))
                   (Just (resolutionSource [T.Status (T.Standard T.THM)]
-                           (if i == 1 then goalName else base ++ "_r" ++ show (i - 1)) (hypName i), Nothing))
+                           (if i == 1 then goalName else resName (i - 1)) (hypName i), Nothing))
          | i <- [1 .. length gs] ]
       where
         base = unitNameStr n
-        hypName i  = base ++ "_h" ++ show i
-        goalName   = base ++ "_g"
-        negation   = T.Inference (T.Atom (Text.pack "assume_negation"))
-                                 [T.Status (T.Standard T.CTH)] [T.Parent (T.UnitSource cn) []]
+        hypName i = base ++ "_h" ++ show i
+        resName i = base ++ "_r" ++ show i
+        goalName  = base ++ "_g"
+        -- a clause of the negated conjecture, assumed from the conjecture
+        assumed nm c = T.Unit (unitNameOf nm) (negConj (clauseToDecl c)) (Just (negation, Nothing))
+        negation  = T.Inference (T.Atom (Text.pack "assume_negation"))
+                                [T.Status (T.Standard T.CTH)] [T.Parent (T.UnitSource cn) []]
         negConj (T.Formula _ e) = T.Formula (T.Standard T.NegatedConjecture) e
         negConj e               = e
     isNegatedTruth (T.Formula _ (T.FOF (T.Negated (T.Atomic (T.Predicate (T.Reserved (T.Standard T.Tautology)) []))))) = True
@@ -125,13 +129,6 @@ expandSimplifiedConjecture units = go Set.empty units
         toList lits == [(T.Positive, T.Predicate (T.Reserved (T.Standard T.Falsum)) [])]
       T.Formula _ (T.FOF (T.Atomic (T.Predicate (T.Reserved (T.Standard T.Falsum)) []))) -> True
       _ -> False
-
--- The variables of a formula that no quantifier binds.
-freeVars :: T.FirstOrder s -> Set.Set T.Var
-freeVars (T.Atomic l)          = Set.fromList (tptpLitVars l)
-freeVars (T.Negated g)         = freeVars g
-freeVars (T.Connected l _ r)   = Set.union (freeVars l) (freeVars r)
-freeVars (T.Quantified _ vs b) = freeVars b `Set.difference` Set.fromList (map fst (toList vs))
 
 -- Renames each quantified variable that shadows an outer one, as ! [X1]
 -- inside ? [X1] on LCL684+1.001, so the two stay apart once the quantifiers
@@ -152,14 +149,14 @@ renameBoundApart f0 = snd (go Set.empty (allNames f0) f0)
         in (u2, T.Connected l' c r')
       _ -> (used, f)
     fresh (used, ren) v@(T.Var t) =
-      let v' = head [ T.Var (t <> Text.pack ("_" ++ show i)) | i <- [1 :: Int ..]
-                    , Set.notMember (T.Var (t <> Text.pack ("_" ++ show i))) used ]
+      let v' = head (filter (`Set.notMember` used) [ T.Var (t <> Text.pack ('_' : show i)) | i <- [1 :: Int ..] ])
       in (Set.insert v' used, Map.insert v v' ren)
+    -- every variable the formula names, bound or free
     allNames f = case f of
       T.Quantified _ vs b -> Set.union (Set.fromList (map fst (toList vs))) (allNames b)
       T.Negated g         -> allNames g
       T.Connected l _ r   -> Set.union (allNames l) (allNames r)
-      _                   -> freeVars f
+      T.Atomic l          -> Set.fromList (tptpLitVars l)
 
 -- Renames free occurrences only. An inner quantifier of the same name keeps
 -- its own variable.
@@ -211,43 +208,32 @@ extractGoalLits (T.Formula _ (T.CNF (T.Clause lits))) = mapM goalOf (toList lits
     goalOf _                                       = Nothing
 extractGoalLits (T.Formula _ (T.FOF f)) = extractFOF f
   where
-    extractFOF (T.Quantified T.Forall _ body)          = extractFOF body
-    extractFOF (T.Negated body)                        = extractConj body
-    extractFOF (T.Atomic (T.Equality l T.Negative r)) = Just [T.Equality l T.Positive r]
+    extractFOF (T.Quantified T.Forall _ body) = extractFOF body
+    extractFOF (T.Negated body)               = conjuncts body
     -- Only an all-negative disjunction states goals. One with a positive
     -- literal is a hypothesis, even when Vampire labels it negated_conjecture.
     -- posLitsOfDisjFOF is not used, as it counts a disequality as positive.
-    extractFOF g =
-      let posLits = goalPosLits g
-          negLits = goalNegLits g
-      in if null posLits && not (null negLits) then Just negLits else Nothing
-    goalPosLits (T.Atomic (T.Equality _ T.Negative _)) = []
-    goalPosLits (T.Atomic lit)                         = [lit]
-    goalPosLits (T.Negated _)                          = []
-    goalPosLits (T.Connected l T.Disjunction r)        = goalPosLits l ++ goalPosLits r
-    goalPosLits _                                      = []
-    goalNegLits (T.Negated (T.Atomic lit))             = [lit]
-    goalNegLits (T.Atomic (T.Equality l T.Negative r)) = [T.Equality l T.Positive r]
-    goalNegLits (T.Atomic _)                           = []
-    goalNegLits (T.Connected l T.Disjunction r)        = goalNegLits l ++ goalNegLits r
-    goalNegLits _                                      = []
-    extractConj (T.Atomic lit)                   = Just [lit]
-    extractConj (T.Connected l T.Conjunction r)  = do
-      ls <- extractConj l
-      rs <- extractConj r
-      return (ls ++ rs)
-    extractConj _                                = Nothing
+    extractFOF g = case disjuncts g of
+      ls@(_ : _) | not (any fst ls) -> Just (map snd ls)
+      _                             -> Nothing
+    -- the literals of a disjunction, each with whether it is positive
+    disjuncts (T.Atomic (T.Equality l T.Negative r)) = [(False, T.Equality l T.Positive r)]
+    disjuncts (T.Atomic lit)                         = [(True, lit)]
+    disjuncts (T.Negated (T.Atomic lit))             = [(False, lit)]
+    disjuncts (T.Connected l T.Disjunction r)        = disjuncts l ++ disjuncts r
+    disjuncts _                                      = []
+    conjuncts (T.Atomic lit)                  = Just [lit]
+    conjuncts (T.Connected l T.Conjunction r) = (++) <$> conjuncts l <*> conjuncts r
+    conjuncts _                               = Nothing
 extractGoalLits _ = Nothing
 
 -- A nullary goal atom the prover introduced, like epred in E's
 -- "~epred <=> ! [X] ~E(f(X),0)", stands for the atoms it abbreviates. Other
 -- atoms, and those not defined by a conjunction of atoms, are kept as they are.
 unfoldDefinition :: Map.Map String T.Unit -> T.Literal -> [T.Literal]
-unfoldDefinition unitMap lit@(T.Predicate (T.Defined (T.Atom pname)) []) =
-  case [ body | T.Unit _ (T.Formula _ (T.FOF f)) (Just (T.Introduced _ _, _)) <- Map.elems unitMap
-              , Just body <- [definitionBody f] ] of
-    (body : _) -> body
-    []         -> [lit]
+unfoldDefinition unitMap lit@(T.Predicate (T.Defined (T.Atom pname)) []) = fromMaybe [lit] $ listToMaybe
+  [ body | T.Unit _ (T.Formula _ (T.FOF f)) (Just (T.Introduced _ _, _)) <- Map.elems unitMap
+         , Just body <- [definitionBody f] ]
   where
     isAtom (T.Atomic (T.Predicate (T.Defined (T.Atom n)) [])) = n == pname
     isAtom _ = False
@@ -260,34 +246,22 @@ unfoldDefinition unitMap lit@(T.Predicate (T.Defined (T.Atom pname)) []) =
     definitionBody (T.Quantified _ _ body) = definitionBody body
     definitionBody _ = Nothing
     -- the negation pushed inward, so ~(~a | ~b) is the conjunction a & b
-    negatedOf (T.Quantified q vs body)          = T.Quantified q vs (negatedOf body)
-    negatedOf (T.Negated body)                  = body
-    negatedOf (T.Connected l T.Disjunction r)   = T.Connected (negatedOf l) T.Conjunction (negatedOf r)
-    negatedOf body                              = T.Negated body
-    atomsOf (T.Quantified _ _ body) = atomsOf body
-    atomsOf (T.Atomic a)            = Just [a]
+    negatedOf (T.Quantified q vs body)        = T.Quantified q vs (negatedOf body)
+    negatedOf (T.Negated body)                = body
+    negatedOf (T.Connected l T.Disjunction r) = T.Connected (negatedOf l) T.Conjunction (negatedOf r)
+    negatedOf body                            = T.Negated body
+    atomsOf (T.Quantified _ _ body)         = atomsOf body
+    atomsOf (T.Atomic a)                    = Just [a]
     atomsOf (T.Connected l T.Conjunction r) = (++) <$> atomsOf l <*> atomsOf r
-    atomsOf _ = Nothing
+    atomsOf _                               = Nothing
 unfoldDefinition _ lit = [lit]
 
 -- The goal atoms of the conjecture unit, which is more reliable than its
--- negation, since E may split or simplify that.
+-- negation, since E may split or simplify that. A negated conclusion has no
+-- goal atoms, so buildProofInfo takes them from a clause of the proof.
 extractConjectureGoals :: [T.Unit] -> Maybe [T.Literal]
 extractConjectureGoals units = listToMaybe
-  [ lits
-  | T.Unit _ decl _ <- units
-  , isConjectureDecl decl
-  , Just lits <- [extractConjLits decl]
-  ]
-  where
-    -- a negated conclusion has no goal atoms, so buildProofInfo takes them
-    -- from a clause of the proof
-    extractConjLits (T.Formula _ (T.CNF (T.Clause lits))) = goalsOf (clauseFormula (toList lits))
-    extractConjLits (T.Formula _ (T.FOF f))               = goalsOf f
-    extractConjLits _                                      = Nothing
-    goalsOf f = case readConjecture f of
-      Right c | not (null (cjGoals c)) -> Just (cjGoals c)
-      _                                -> Nothing
+  [ cjGoals c | Right c <- map readConjecture (conjectureFormulas units), not (null (cjGoals c)) ]
 
 -- Whether the conjecture concludes a negation, which its proof refutes.
 concludesNegation :: [T.Unit] -> Bool
