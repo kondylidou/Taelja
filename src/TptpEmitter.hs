@@ -296,8 +296,9 @@ emitTptp sp0 = unlines $
 
 -- Defines the Skolem symbols for the universal variables Xs of a conjecture
 -- ? [Ys] : ! [Xs] : M as ! [Ys] : ((? [Xs] : ~ M) => ~ M[Xs := sks(Ys)]),
--- reading each symbol off the facts. An X no fact fixes stays existential,
--- and when the prover split M each conjunct gets its own definition.
+-- reading each symbol off the facts, which also fix the variables M binds. An
+-- X no fact fixes stays existential, and when the prover split M each
+-- conjunct gets its own definition.
 skolemDefinition :: (String -> String) -> T.Unit -> [String] -> [Literal] -> [T.Unit]
 skolemDefinition fresh conjU syms facts = case unitFormula conjU of
   T.FOF f  -> units T.FOF (definitions f)
@@ -346,7 +347,7 @@ skolemDefinition fresh conjU syms facts = case unitFormula conjU of
       guard (all (`notElem` names ++ ynames) (boundIn m))
       let atoms   = [ l | a <- atomsIn m, Just l <- [safeLit a] ]
           relevant = [ l | l <- fs, any (`elem` ss) (litSymbols l) ]
-      σ <- listToMaybe (solve (names ++ ynames) atoms relevant [])
+      σ <- listToMaybe (solve (names ++ ynames ++ boundIn m) atoms relevant [])
       -- each fixed X is a Skolem symbol applied to the values of Ys
       let witness a = listToMaybe [ y | y <- ynames, lookup y σ == Just a ]
           skolemOf (v, t) = case t of
