@@ -387,41 +387,46 @@ superpose x y = nub
 -- The substitutions under which the printed conclusion is the replayed result,
 -- up to renaming and dropped duplicate or trivial literals. Each result literal
 -- matches a conclusion literal, binding only premise variables, or is a body
--- equation s ≈ t dropped by unifying s and t. Every conclusion literal is hit.
+-- equation s ≈ t dropped by unifying s and t. Every conclusion literal is hit,
+-- so a branch stops once fewer result literals are left than are unhit.
 cover :: [(Bool, Literal)] -> [(Bool, Literal)] -> TreeSubst -> [TreeSubst]
-cover result parent s0 = go result [] s0
+cover result parent s0 = go result (length result) Set.empty s0
   where
     idxParent = zip [0 :: Int ..] parent
     rigid = rigidVars s0 parent
-    go [] hit s
-      | all ((`elem` hit) . fst) idxParent = [s]
+    go [] _ hit s
+      | Set.size hit == length parent = [s]
       | otherwise = []
-    go ((sign, l) : ls) hit s =
-      [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
-            , s' <- matchOriented rigid l p s
-            , s'' <- go ls (i : hit) s' ]
-      ++ [ s'' | not sign, Eq a b <- [l], Just s' <- [unifyInTree a b s], s'' <- go ls hit s' ]
+    go ((sign, l) : ls) n hit s
+      | length parent - Set.size hit > n = []
+      | otherwise =
+          [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
+                , s' <- matchOriented rigid l p s
+                , s'' <- go ls (n - 1) (Set.insert i hit) s' ]
+          ++ [ s'' | not sign, Eq a b <- [l], Just s' <- [unifyInTree a b s], s'' <- go ls (n - 1) hit s' ]
 
 -- Like cover, but a conclusion literal may be a result literal rewritten once
 -- by l -> r, matched after putting the instance of l back. At least one
 -- literal must match that way, or cover would have succeeded.
 coverRewritten :: (Term, Term) -> [(Bool, Literal)] -> [(Bool, Literal)] -> TreeSubst -> [TreeSubst]
-coverRewritten (l, r) result parent s0 = go result [] False s0
+coverRewritten (l, r) result parent s0 = go result (length result) Set.empty False s0
   where
     idxParent = zip [0 :: Int ..] parent
     rigid = rigidVars s0 parent
-    go [] hit used s
-      | used && all ((`elem` hit) . fst) idxParent = [s]
+    go [] _ hit used s
+      | used && Set.size hit == length parent = [s]
       | otherwise = []
-    go ((sign, lit) : ls) hit used s =
-      [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
-            , s' <- matchOriented rigid lit p s
-            , s'' <- go ls (i : hit) used s' ]
-      ++ [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
-               , (u, ctx) <- litSubtermCtxs p
-               , Just s1 <- [matchInTree rigid r u s]
-               , s' <- matchOriented rigid lit (ctx (walkDeep s1 l)) s1
-               , s'' <- go ls (i : hit) True s' ]
+    go ((sign, lit) : ls) n hit used s
+      | length parent - Set.size hit > n = []
+      | otherwise =
+          [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
+                , s' <- matchOriented rigid lit p s
+                , s'' <- go ls (n - 1) (Set.insert i hit) used s' ]
+          ++ [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
+                   , (u, ctx) <- litSubtermCtxs p
+                   , Just s1 <- [matchInTree rigid r u s]
+                   , s' <- matchOriented rigid lit (ctx (walkDeep s1 l)) s1
+                   , s'' <- go ls (n - 1) (Set.insert i hit) True s' ]
 
 -- The conclusion's variables as instantiated so far, which covering never binds.
 rigidVars :: TreeSubst -> [(Bool, Literal)] -> Set.Set String
