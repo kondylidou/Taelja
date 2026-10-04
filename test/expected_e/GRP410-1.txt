@@ -1,0 +1,535 @@
+Axiom 1: multiply(multiply(inverse(multiply(X,inverse(multiply(Y,Z)))),multiply(X,inverse(Z))),inverse(multiply(inverse(Z),Z))) = Y
+
+Lemma 2: multiply(multiply(inverse(multiply(X,inverse(Y))),multiply(X,inverse(inverse(multiply(inverse(Z),Z))))),inverse(multiply(inverse(inverse(multiply(inverse(Z),Z))),inverse(multiply(inverse(Z),Z))))) = multiply(inverse(multiply(A,inverse(multiply(Y,Z)))),multiply(A,inverse(Z)))
+Proof:
+  multiply(multiply(inverse(multiply(X,inverse(Y))),multiply(X,inverse(inverse(multiply(inverse(Z),Z))))),inverse(multiply(inverse(inverse(multiply(inverse(Z),Z))),inverse(multiply(inverse(Z),Z)))))
+= { by axiom 1 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(multiply(inverse(multiply(A,inverse(multiply(Y,Z)))),multiply(A,inverse(Z))),inverse(multiply(inverse(Z),Z)))))),multiply(X,inverse(inverse(multiply(inverse(Z),Z))))),inverse(multiply(inverse(inverse(multiply(inverse(Z),Z))),inverse(multiply(inverse(Z),Z)))))
+= { by axiom 1 }
+  multiply(inverse(multiply(A,inverse(multiply(Y,Z)))),multiply(A,inverse(Z)))
+
+Lemma 3: multiply(inverse(multiply(X,inverse(multiply(multiply(Y,inverse(multiply(inverse(Z),Z))),Z)))),multiply(X,inverse(Z))) = Y
+Proof:
+  multiply(inverse(multiply(X,inverse(multiply(multiply(Y,inverse(multiply(inverse(Z),Z))),Z)))),multiply(X,inverse(Z)))
+= { by lemma 2 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(Y,inverse(multiply(inverse(Z),Z)))))),multiply(X,inverse(inverse(multiply(inverse(Z),Z))))),inverse(multiply(inverse(inverse(multiply(inverse(Z),Z))),inverse(multiply(inverse(Z),Z)))))
+= { by axiom 1 }
+  Y
+
+Lemma 4: multiply(inverse(multiply(X,inverse(Y))),multiply(X,inverse(Z))) = multiply(inverse(multiply(A,inverse(Y))),multiply(A,inverse(Z)))
+Proof:
+  multiply(inverse(multiply(X,inverse(Y))),multiply(X,inverse(Z)))
+= { by axiom 1 R->L }
+  multiply(inverse(multiply(X,inverse(Y))),multiply(X,inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X))))))
+= { by lemma 3 R->L }
+  multiply(inverse(multiply(X,inverse(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(multiply(Y,inverse(multiply(inverse(multiply(inverse(X),X)),multiply(inverse(X),X)))),multiply(inverse(X),X))))),multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X))))))),multiply(X,inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X))))))
+= { by lemma 2 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(multiply(Y,inverse(multiply(inverse(multiply(inverse(X),X)),multiply(inverse(X),X)))),multiply(inverse(X),X)))))))),multiply(X,inverse(inverse(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X)))),multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X)))))))),inverse(multiply(inverse(inverse(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X)))),multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X)))))),inverse(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X)))),multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X))))))))
+= { by lemma 2 }
+  multiply(inverse(multiply(A,inverse(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(multiply(Y,inverse(multiply(inverse(multiply(inverse(X),X)),multiply(inverse(X),X)))),multiply(inverse(X),X))))),multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X))))))),multiply(A,inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X))))))
+= { by lemma 3 }
+  multiply(inverse(multiply(A,inverse(Y))),multiply(A,inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(X),X))))))
+= { by axiom 1 }
+  multiply(inverse(multiply(A,inverse(Y))),multiply(A,inverse(Z)))
+
+Lemma 5: multiply(multiply(inverse(multiply(X,inverse(multiply(Y,multiply(Z,inverse(multiply(inverse(A),A))))))),multiply(X,inverse(multiply(Z,inverse(multiply(inverse(A),A)))))),inverse(multiply(inverse(B),B))) = Y
+Proof:
+  multiply(multiply(inverse(multiply(X,inverse(multiply(Y,multiply(Z,inverse(multiply(inverse(A),A))))))),multiply(X,inverse(multiply(Z,inverse(multiply(inverse(A),A)))))),inverse(multiply(inverse(B),B)))
+= { by axiom 1 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(Y,multiply(Z,inverse(multiply(inverse(A),A))))))),multiply(X,inverse(multiply(Z,inverse(multiply(inverse(A),A)))))),inverse(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(B,A)))),multiply(X,inverse(A))),inverse(multiply(inverse(A),A)))),B)))
+= { by axiom 1 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(Y,multiply(Z,inverse(multiply(inverse(A),A))))))),multiply(X,inverse(multiply(Z,inverse(multiply(inverse(A),A)))))),inverse(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(B,A)))),multiply(X,inverse(A))),inverse(multiply(inverse(A),A)))),multiply(multiply(inverse(multiply(X,inverse(multiply(B,A)))),multiply(X,inverse(A))),inverse(multiply(inverse(A),A))))))
+= { by lemma 4 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(Y,multiply(Z,inverse(multiply(inverse(A),A))))))),multiply(X,inverse(multiply(Z,inverse(multiply(inverse(A),A)))))),inverse(multiply(inverse(multiply(Z,inverse(multiply(inverse(A),A)))),multiply(Z,inverse(multiply(inverse(A),A))))))
+= { by axiom 1 }
+  Y
+
+Lemma 6: multiply(multiply(inverse(multiply(X,inverse(multiply(Y,Z)))),multiply(X,inverse(Z))),inverse(multiply(inverse(A),A))) = Y
+Proof:
+  multiply(multiply(inverse(multiply(X,inverse(multiply(Y,Z)))),multiply(X,inverse(Z))),inverse(multiply(inverse(A),A)))
+= { by lemma 5 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(Y,multiply(multiply(inverse(multiply(X,inverse(multiply(Z,multiply(X,inverse(multiply(inverse(X),X))))))),multiply(X,inverse(multiply(X,inverse(multiply(inverse(X),X)))))),inverse(multiply(inverse(X),X))))))),multiply(X,inverse(Z))),inverse(multiply(inverse(A),A)))
+= { by lemma 5 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(Y,multiply(multiply(inverse(multiply(X,inverse(multiply(Z,multiply(X,inverse(multiply(inverse(X),X))))))),multiply(X,inverse(multiply(X,inverse(multiply(inverse(X),X)))))),inverse(multiply(inverse(X),X))))))),multiply(X,inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Z,multiply(X,inverse(multiply(inverse(X),X))))))),multiply(X,inverse(multiply(X,inverse(multiply(inverse(X),X)))))),inverse(multiply(inverse(X),X)))))),inverse(multiply(inverse(A),A)))
+= { by lemma 5 }
+  Y
+
+Lemma 7: multiply(X,inverse(multiply(inverse(Y),Y))) = multiply(X,inverse(multiply(inverse(Z),Z)))
+Proof:
+  multiply(X,inverse(multiply(inverse(Y),Y)))
+= { by lemma 6 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(multiply(X,inverse(multiply(inverse(Y),Y))),Y)))),multiply(X,inverse(Y))),inverse(multiply(inverse(Z),Z)))
+= { by lemma 3 }
+  multiply(X,inverse(multiply(inverse(Z),Z)))
+
+Lemma 8: multiply(multiply(inverse(X),X),inverse(multiply(inverse(b2),b2))) = inverse(multiply(inverse(Y),Y))
+Proof:
+  multiply(multiply(inverse(X),X),inverse(multiply(inverse(b2),b2)))
+= { by lemma 6 R->L }
+  multiply(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(X,Y)))),multiply(X,inverse(Y))),inverse(multiply(inverse(X),X)))),X),inverse(multiply(inverse(b2),b2)))
+= { by lemma 7 R->L }
+  multiply(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(X,Y)))),multiply(X,inverse(Y))),inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y))))),X),inverse(multiply(inverse(b2),b2)))
+= { by lemma 7 R->L }
+  multiply(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(X,Y)))),multiply(X,inverse(Y))),inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y))))),X),inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y))))
+= { by axiom 1 R->L }
+  multiply(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(X,Y)))),multiply(X,inverse(Y))),inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y))))),multiply(multiply(inverse(multiply(X,inverse(multiply(X,Y)))),multiply(X,inverse(Y))),inverse(multiply(inverse(Y),Y)))),inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y))))
+= { by axiom 1 }
+  inverse(multiply(inverse(Y),Y))
+
+Lemma 9: inverse(multiply(inverse(X),X)) = inverse(multiply(inverse(Y),Y))
+Proof:
+  inverse(multiply(inverse(X),X))
+= { by lemma 8 R->L }
+  multiply(multiply(inverse(X),X),inverse(multiply(inverse(b2),b2)))
+= { by lemma 8 }
+  inverse(multiply(inverse(Y),Y))
+
+Lemma 10: multiply(multiply(inverse(X),X),inverse(multiply(inverse(Y),Y))) = inverse(multiply(inverse(Z),Z))
+Proof:
+  multiply(multiply(inverse(X),X),inverse(multiply(inverse(Y),Y)))
+= { by lemma 9 R->L }
+  multiply(multiply(inverse(X),X),inverse(multiply(inverse(b2),b2)))
+= { by lemma 8 }
+  inverse(multiply(inverse(Z),Z))
+
+Lemma 11: multiply(inverse(multiply(X,inverse(multiply(multiply(Y,inverse(multiply(inverse(Z),Z))),A)))),multiply(X,inverse(A))) = Y
+Proof:
+  multiply(inverse(multiply(X,inverse(multiply(multiply(Y,inverse(multiply(inverse(Z),Z))),A)))),multiply(X,inverse(A)))
+= { by lemma 7 R->L }
+  multiply(inverse(multiply(X,inverse(multiply(multiply(Y,inverse(multiply(inverse(A),A))),A)))),multiply(X,inverse(A)))
+= { by lemma 3 }
+  Y
+
+Lemma 12: multiply(inverse(multiply(X,inverse(multiply(inverse(multiply(inverse(Y),Y)),Z)))),multiply(X,inverse(Z))) = multiply(inverse(A),A)
+Proof:
+  multiply(inverse(multiply(X,inverse(multiply(inverse(multiply(inverse(Y),Y)),Z)))),multiply(X,inverse(Z)))
+= { by lemma 10 R->L }
+  multiply(inverse(multiply(X,inverse(multiply(multiply(multiply(inverse(A),A),inverse(multiply(inverse(X),X))),Z)))),multiply(X,inverse(Z)))
+= { by lemma 11 }
+  multiply(inverse(A),A)
+
+Lemma 13: multiply(inverse(X),X) = multiply(inverse(Y),Y)
+Proof:
+  multiply(inverse(X),X)
+= { by lemma 12 R->L }
+  multiply(inverse(multiply(X,inverse(multiply(inverse(multiply(inverse(X),X)),X)))),multiply(X,inverse(X)))
+= { by lemma 12 }
+  multiply(inverse(Y),Y)
+
+Lemma 14: multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Y,Z)))),multiply(X,inverse(Z))),inverse(A))),Y) = multiply(inverse(multiply(B,inverse(A))),multiply(B,inverse(multiply(inverse(C),C))))
+Proof:
+  multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Y,Z)))),multiply(X,inverse(Z))),inverse(A))),Y)
+= { by lemma 6 R->L }
+  multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(Y,Z)))),multiply(X,inverse(Z))),inverse(A))),multiply(multiply(inverse(multiply(X,inverse(multiply(Y,Z)))),multiply(X,inverse(Z))),inverse(multiply(inverse(C),C))))
+= { by lemma 4 R->L }
+  multiply(inverse(multiply(B,inverse(A))),multiply(B,inverse(multiply(inverse(C),C))))
+
+Lemma 15: multiply(multiply(inverse(multiply(b2,inverse(multiply(X,multiply(inverse(Y),Y))))),multiply(b2,inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(Z),Z))) = X
+Proof:
+  multiply(multiply(inverse(multiply(b2,inverse(multiply(X,multiply(inverse(Y),Y))))),multiply(b2,inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(Z),Z)))
+= { by lemma 14 R->L }
+  multiply(multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(b2,b2)))),multiply(b2,inverse(b2))),inverse(multiply(X,multiply(inverse(Y),Y))))),b2),inverse(multiply(inverse(Z),Z)))
+= { by lemma 6 R->L }
+  multiply(multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(b2,b2)))),multiply(b2,inverse(b2))),inverse(multiply(X,multiply(inverse(Y),Y))))),multiply(multiply(inverse(multiply(b2,inverse(multiply(b2,b2)))),multiply(b2,inverse(b2))),inverse(multiply(inverse(Y),Y)))),inverse(multiply(inverse(Z),Z)))
+= { by lemma 6 }
+  X
+
+Lemma 16: multiply(multiply(inverse(X),multiply(multiply(inverse(multiply(Y,inverse(multiply(X,Z)))),multiply(Y,inverse(Z))),inverse(Z))),inverse(multiply(inverse(Z),Z))) = inverse(Z)
+Proof:
+  multiply(multiply(inverse(X),multiply(multiply(inverse(multiply(Y,inverse(multiply(X,Z)))),multiply(Y,inverse(Z))),inverse(Z))),inverse(multiply(inverse(Z),Z)))
+= { by axiom 1 R->L }
+  multiply(multiply(inverse(multiply(multiply(inverse(multiply(Y,inverse(multiply(X,Z)))),multiply(Y,inverse(Z))),inverse(multiply(inverse(Z),Z)))),multiply(multiply(inverse(multiply(Y,inverse(multiply(X,Z)))),multiply(Y,inverse(Z))),inverse(Z))),inverse(multiply(inverse(Z),Z)))
+= { by axiom 1 }
+  inverse(Z)
+
+Lemma 17: multiply(inverse(X),X) = multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(inverse(Y),Y))))
+Proof:
+  multiply(inverse(X),X)
+= { by lemma 15 R->L }
+  multiply(inverse(X),multiply(multiply(inverse(multiply(b2,inverse(multiply(X,multiply(inverse(Y),Y))))),multiply(b2,inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(Y),Y))))
+= { by lemma 14 R->L }
+  multiply(inverse(X),multiply(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(X,X)))),multiply(X,inverse(X))),inverse(multiply(X,multiply(inverse(Y),Y))))),X),inverse(multiply(inverse(Y),Y))))
+= { by lemma 6 R->L }
+  multiply(inverse(X),multiply(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(X,X)))),multiply(X,inverse(X))),inverse(multiply(X,multiply(inverse(Y),Y))))),multiply(multiply(inverse(multiply(X,inverse(multiply(X,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(Y),Y)))),inverse(multiply(inverse(Y),Y))))
+= { by axiom 1 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(multiply(inverse(X),multiply(multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(X,X)))),multiply(X,inverse(X))),inverse(multiply(X,multiply(inverse(Y),Y))))),multiply(multiply(inverse(multiply(X,inverse(multiply(X,X)))),multiply(X,inverse(X))),inverse(multiply(inverse(Y),Y)))),inverse(multiply(inverse(Y),Y)))),inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y))))))),multiply(X,inverse(inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y)))))),inverse(multiply(inverse(inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y)))),inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y))))))
+= { by lemma 16 }
+  multiply(multiply(inverse(multiply(X,inverse(inverse(multiply(inverse(Y),Y))))),multiply(X,inverse(inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y)))))),inverse(multiply(inverse(inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y)))),inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y))))))
+= { by lemma 2 }
+  multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(inverse(Y),Y)),multiply(inverse(Y),Y))))),multiply(b2,inverse(multiply(inverse(Y),Y))))
+= { by lemma 13 }
+  multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(inverse(Y),Y))))
+
+Lemma 18: inverse(inverse(multiply(inverse(X),X))) = multiply(inverse(b2),b2)
+Proof:
+  inverse(inverse(multiply(inverse(X),X)))
+= { by lemma 11 R->L }
+  multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(X),X))),inverse(multiply(inverse(X),X))),inverse(multiply(inverse(b2),b2)))))),multiply(b2,inverse(inverse(multiply(inverse(b2),b2)))))
+= { by lemma 10 }
+  multiply(inverse(multiply(b2,inverse(inverse(multiply(inverse(b2),b2))))),multiply(b2,inverse(inverse(multiply(inverse(b2),b2)))))
+= { by lemma 17 }
+  multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(inverse(X),X))))
+= { by lemma 17 R->L }
+  multiply(inverse(b2),b2)
+
+Lemma 19: multiply(inverse(multiply(multiply(inverse(X),X),inverse(Y))),inverse(multiply(inverse(Z),Z))) = multiply(inverse(multiply(A,inverse(Y))),multiply(A,inverse(multiply(inverse(B),B))))
+Proof:
+  multiply(inverse(multiply(multiply(inverse(X),X),inverse(Y))),inverse(multiply(inverse(Z),Z)))
+= { by lemma 10 R->L }
+  multiply(inverse(multiply(multiply(inverse(X),X),inverse(Y))),multiply(multiply(inverse(X),X),inverse(multiply(inverse(B),B))))
+= { by lemma 4 R->L }
+  multiply(inverse(multiply(A,inverse(Y))),multiply(A,inverse(multiply(inverse(B),B))))
+
+Lemma 20: multiply(multiply(inverse(multiply(X,inverse(multiply(inverse(b2),b2)))),multiply(X,inverse(Y))),inverse(multiply(inverse(Z),Z))) = inverse(Y)
+Proof:
+  multiply(multiply(inverse(multiply(X,inverse(multiply(inverse(b2),b2)))),multiply(X,inverse(Y))),inverse(multiply(inverse(Z),Z)))
+= { by lemma 10 R->L }
+  multiply(multiply(inverse(multiply(X,multiply(multiply(inverse(X),X),inverse(multiply(inverse(X),X))))),multiply(X,inverse(Y))),inverse(multiply(inverse(Z),Z)))
+= { by lemma 10 }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(inverse(Y),Y)))),multiply(X,inverse(Y))),inverse(multiply(inverse(Z),Z)))
+= { by lemma 6 }
+  inverse(Y)
+
+Lemma 21: inverse(multiply(inverse(b2),b2)) = multiply(inverse(b2),b2)
+Proof:
+  inverse(multiply(inverse(b2),b2))
+= { by lemma 10 R->L }
+  multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))
+= { by lemma 18 R->L }
+  multiply(inverse(inverse(multiply(inverse(b2),b2))),inverse(multiply(inverse(b2),b2)))
+= { by lemma 10 R->L }
+  multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(b2),b2)))
+= { by lemma 19 }
+  multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(b2))),inverse(multiply(inverse(b2),b2)))),multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(b2))),inverse(multiply(inverse(b2),b2))))
+= { by lemma 20 }
+  multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(b2))),inverse(multiply(inverse(b2),b2))))
+= { by lemma 20 }
+  multiply(inverse(inverse(b2)),inverse(b2))
+= { by lemma 13 }
+  multiply(inverse(b2),b2)
+
+Lemma 22: inverse(multiply(inverse(X),X)) = multiply(inverse(X),X)
+Proof:
+  inverse(multiply(inverse(X),X))
+= { by lemma 13 R->L }
+  inverse(multiply(inverse(b2),b2))
+= { by lemma 21 }
+  multiply(inverse(b2),b2)
+= { by lemma 13 }
+  multiply(inverse(X),X)
+
+Lemma 23: multiply(multiply(inverse(multiply(X,inverse(multiply(Y,Z)))),multiply(X,inverse(Z))),multiply(inverse(A),A)) = Y
+Proof:
+  multiply(multiply(inverse(multiply(X,inverse(multiply(Y,Z)))),multiply(X,inverse(Z))),multiply(inverse(A),A))
+= { by lemma 22 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(Y,Z)))),multiply(X,inverse(Z))),inverse(multiply(inverse(A),A)))
+= { by lemma 6 }
+  Y
+
+Lemma 24: multiply(inverse(multiply(X,inverse(multiply(inverse(Y),Y)))),multiply(X,inverse(Z))) = multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(A),A),inverse(Z)))
+Proof:
+  multiply(inverse(multiply(X,inverse(multiply(inverse(Y),Y)))),multiply(X,inverse(Z)))
+= { by lemma 4 }
+  multiply(inverse(multiply(multiply(inverse(A),A),inverse(multiply(inverse(Y),Y)))),multiply(multiply(inverse(A),A),inverse(Z)))
+= { by lemma 10 }
+  multiply(inverse(inverse(multiply(inverse(X),X))),multiply(multiply(inverse(A),A),inverse(Z)))
+= { by lemma 18 }
+  multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(A),A),inverse(Z)))
+
+Lemma 25: multiply(multiply(inverse(multiply(X,inverse(Y))),multiply(X,inverse(multiply(Z,inverse(A))))),inverse(multiply(inverse(B),B))) = inverse(multiply(Z,inverse(multiply(multiply(Y,inverse(multiply(inverse(C),C))),A))))
+Proof:
+  multiply(multiply(inverse(multiply(X,inverse(Y))),multiply(X,inverse(multiply(Z,inverse(A))))),inverse(multiply(inverse(B),B)))
+= { by lemma 11 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(inverse(multiply(Z,inverse(multiply(multiply(Y,inverse(multiply(inverse(C),C))),A)))),multiply(Z,inverse(A)))))),multiply(X,inverse(multiply(Z,inverse(A))))),inverse(multiply(inverse(B),B)))
+= { by lemma 6 }
+  inverse(multiply(Z,inverse(multiply(multiply(Y,inverse(multiply(inverse(C),C))),A))))
+
+Lemma 26: inverse(multiply(X,inverse(multiply(multiply(inverse(Y),Y),Z)))) = inverse(multiply(X,inverse(Z)))
+Proof:
+  inverse(multiply(X,inverse(multiply(multiply(inverse(Y),Y),Z))))
+= { by lemma 22 R->L }
+  inverse(multiply(X,inverse(multiply(inverse(multiply(inverse(Y),Y)),Z))))
+= { by lemma 6 R->L }
+  inverse(multiply(X,inverse(multiply(multiply(multiply(inverse(multiply(X,inverse(multiply(inverse(multiply(inverse(Y),Y)),X)))),multiply(X,inverse(X))),inverse(multiply(inverse(b2),b2))),Z))))
+= { by lemma 12 }
+  inverse(multiply(X,inverse(multiply(multiply(multiply(inverse(multiply(X,inverse(Z))),multiply(X,inverse(Z))),inverse(multiply(inverse(b2),b2))),Z))))
+= { by lemma 25 R->L }
+  multiply(multiply(inverse(multiply(X,inverse(multiply(inverse(multiply(X,inverse(Z))),multiply(X,inverse(Z)))))),multiply(X,inverse(multiply(X,inverse(Z))))),inverse(multiply(inverse(X),X)))
+= { by lemma 6 }
+  inverse(multiply(X,inverse(Z)))
+
+Lemma 27: multiply(multiply(inverse(b2),b2),multiply(inverse(X),X)) = multiply(inverse(b2),b2)
+Proof:
+  multiply(multiply(inverse(b2),b2),multiply(inverse(X),X))
+= { by lemma 13 R->L }
+  multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(b2)),inverse(b2)))
+= { by lemma 21 R->L }
+  multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(inverse(b2)),inverse(b2)))
+= { by lemma 10 R->L }
+  multiply(multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2))),multiply(inverse(inverse(b2)),inverse(b2)))
+= { by lemma 10 }
+  multiply(inverse(multiply(inverse(inverse(b2)),inverse(b2))),multiply(inverse(inverse(b2)),inverse(b2)))
+= { by lemma 4 R->L }
+  multiply(inverse(multiply(b2,inverse(b2))),multiply(b2,inverse(b2)))
+= { by lemma 13 }
+  multiply(inverse(b2),b2)
+
+Lemma 28: inverse(multiply(inverse(inverse(multiply(multiply(inverse(X),X),Y))),inverse(Y))) = multiply(inverse(b2),b2)
+Proof:
+  inverse(multiply(inverse(inverse(multiply(multiply(inverse(X),X),Y))),inverse(Y)))
+= { by lemma 26 R->L }
+  inverse(multiply(inverse(inverse(multiply(multiply(inverse(X),X),Y))),inverse(multiply(multiply(inverse(X),X),Y))))
+= { by lemma 12 R->L }
+  inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(inverse(b2),b2)),b2)))),multiply(b2,inverse(b2))))
+= { by lemma 12 }
+  inverse(multiply(inverse(b2),b2))
+= { by lemma 22 }
+  multiply(inverse(b2),b2)
+
+Lemma 29: multiply(inverse(multiply(X,inverse(Y))),multiply(X,inverse(multiply(multiply(inverse(Z),Z),Y)))) = multiply(inverse(b2),b2)
+Proof:
+  multiply(inverse(multiply(X,inverse(Y))),multiply(X,inverse(multiply(multiply(inverse(Z),Z),Y))))
+= { by lemma 4 }
+  multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(Z),Z),Y))),inverse(Y))),multiply(inverse(inverse(multiply(multiply(inverse(Z),Z),Y))),inverse(multiply(multiply(inverse(Z),Z),Y))))
+= { by lemma 13 }
+  multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(Z),Z),Y))),inverse(Y))),multiply(inverse(X),X))
+= { by lemma 28 }
+  multiply(multiply(inverse(b2),b2),multiply(inverse(X),X))
+= { by lemma 27 }
+  multiply(inverse(b2),b2)
+
+Lemma 30: inverse(multiply(multiply(inverse(X),X),inverse(multiply(multiply(inverse(Y),multiply(inverse(Z),Z)),Y)))) = multiply(inverse(b2),b2)
+Proof:
+  inverse(multiply(multiply(inverse(X),X),inverse(multiply(multiply(inverse(Y),multiply(inverse(Z),Z)),Y))))
+= { by lemma 22 R->L }
+  inverse(multiply(multiply(inverse(X),X),inverse(multiply(multiply(inverse(Y),inverse(multiply(inverse(Z),Z))),Y))))
+= { by lemma 25 R->L }
+  multiply(multiply(inverse(multiply(b2,inverse(inverse(Y)))),multiply(b2,inverse(multiply(multiply(inverse(X),X),inverse(Y))))),inverse(multiply(inverse(X),X)))
+= { by lemma 22 }
+  multiply(multiply(inverse(multiply(b2,inverse(inverse(Y)))),multiply(b2,inverse(multiply(multiply(inverse(X),X),inverse(Y))))),multiply(inverse(X),X))
+= { by lemma 29 }
+  multiply(multiply(inverse(b2),b2),multiply(inverse(X),X))
+= { by lemma 27 }
+  multiply(inverse(b2),b2)
+
+Lemma 31: multiply(inverse(X),multiply(inverse(Y),Y)) = inverse(X)
+Proof:
+  multiply(inverse(X),multiply(inverse(Y),Y))
+= { by lemma 23 R->L }
+  multiply(multiply(inverse(multiply(multiply(inverse(X),X),inverse(multiply(multiply(inverse(X),multiply(inverse(Y),Y)),X)))),multiply(multiply(inverse(X),X),inverse(X))),multiply(inverse(X),X))
+= { by lemma 30 }
+  multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(X),X),inverse(X))),multiply(inverse(X),X))
+= { by lemma 24 R->L }
+  multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(X),X)))),multiply(b2,inverse(X))),multiply(inverse(X),X))
+= { by lemma 23 }
+  inverse(X)
+
+Lemma 32: multiply(inverse(multiply(X,inverse(multiply(multiply(Y,multiply(inverse(b2),b2)),Z)))),multiply(X,inverse(Z))) = Y
+Proof:
+  multiply(inverse(multiply(X,inverse(multiply(multiply(Y,multiply(inverse(b2),b2)),Z)))),multiply(X,inverse(Z)))
+= { by lemma 22 R->L }
+  multiply(inverse(multiply(X,inverse(multiply(multiply(Y,inverse(multiply(inverse(b2),b2))),Z)))),multiply(X,inverse(Z)))
+= { by lemma 11 }
+  Y
+
+Lemma 33: multiply(inverse(multiply(X,multiply(inverse(b2),b2))),multiply(X,inverse(Y))) = multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(Y)))
+Proof:
+  multiply(inverse(multiply(X,multiply(inverse(b2),b2))),multiply(X,inverse(Y)))
+= { by lemma 32 R->L }
+  multiply(inverse(multiply(X,multiply(inverse(b2),b2))),multiply(multiply(inverse(multiply(X,inverse(multiply(multiply(X,multiply(inverse(b2),b2)),X)))),multiply(X,inverse(X))),inverse(Y)))
+= { by lemma 6 R->L }
+  multiply(inverse(multiply(multiply(inverse(multiply(X,inverse(multiply(multiply(X,multiply(inverse(b2),b2)),X)))),multiply(X,inverse(X))),inverse(multiply(inverse(multiply(X,multiply(inverse(b2),b2))),multiply(X,multiply(inverse(b2),b2)))))),multiply(multiply(inverse(multiply(X,inverse(multiply(multiply(X,multiply(inverse(b2),b2)),X)))),multiply(X,inverse(X))),inverse(Y)))
+= { by lemma 4 R->L }
+  multiply(inverse(multiply(multiply(X,multiply(inverse(b2),b2)),inverse(multiply(inverse(multiply(X,multiply(inverse(b2),b2))),multiply(X,multiply(inverse(b2),b2)))))),multiply(multiply(X,multiply(inverse(b2),b2)),inverse(Y)))
+= { by lemma 24 }
+  multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(Y)))
+
+Lemma 34: multiply(inverse(multiply(b2,inverse(multiply(multiply(X,multiply(inverse(Y),Y)),multiply(inverse(Z),Z))))),multiply(b2,multiply(inverse(b2),b2))) = X
+Proof:
+  multiply(inverse(multiply(b2,inverse(multiply(multiply(X,multiply(inverse(Y),Y)),multiply(inverse(Z),Z))))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 22 R->L }
+  multiply(inverse(multiply(b2,inverse(multiply(multiply(X,multiply(inverse(Y),Y)),multiply(inverse(Z),Z))))),multiply(b2,inverse(multiply(inverse(b2),b2))))
+= { by lemma 14 R->L }
+  multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(b2,b2)))),multiply(b2,inverse(b2))),inverse(multiply(multiply(X,multiply(inverse(Y),Y)),multiply(inverse(Z),Z))))),b2)
+= { by lemma 22 R->L }
+  multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(b2,b2)))),multiply(b2,inverse(b2))),inverse(multiply(multiply(X,inverse(multiply(inverse(Y),Y))),multiply(inverse(Z),Z))))),b2)
+= { by lemma 14 }
+  multiply(inverse(multiply(b2,inverse(multiply(multiply(X,inverse(multiply(inverse(Y),Y))),multiply(inverse(Z),Z))))),multiply(b2,inverse(multiply(inverse(Z),Z))))
+= { by lemma 11 }
+  X
+
+Lemma 35: multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X))),multiply(inverse(Y),Y)) = inverse(X)
+Proof:
+  multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X))),multiply(inverse(Y),Y))
+= { by lemma 22 R->L }
+  multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X))),inverse(multiply(inverse(Y),Y)))
+= { by lemma 24 R->L }
+  multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(X))),inverse(multiply(inverse(Y),Y)))
+= { by lemma 20 }
+  inverse(X)
+
+Lemma 36: multiply(inverse(multiply(b2,inverse(inverse(X)))),multiply(b2,multiply(inverse(b2),b2))) = inverse(multiply(inverse(inverse(X)),multiply(inverse(b2),b2)))
+Proof:
+  multiply(inverse(multiply(b2,inverse(inverse(X)))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 35 R->L }
+  multiply(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X))),multiply(inverse(b2),b2))))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 33 R->L }
+  multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(multiply(inverse(inverse(X)),multiply(inverse(b2),b2))),multiply(inverse(inverse(X)),inverse(X))),multiply(inverse(b2),b2))))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 34 }
+  inverse(multiply(inverse(inverse(X)),multiply(inverse(b2),b2)))
+
+Lemma 37: inverse(inverse(inverse(X))) = inverse(X)
+Proof:
+  inverse(inverse(inverse(X)))
+= { by lemma 31 R->L }
+  inverse(multiply(inverse(inverse(X)),multiply(inverse(b2),b2)))
+= { by lemma 36 R->L }
+  multiply(inverse(multiply(b2,inverse(inverse(X)))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 31 R->L }
+  multiply(inverse(multiply(b2,inverse(multiply(inverse(X),multiply(inverse(b2),b2))))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 31 R->L }
+  multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(X),multiply(inverse(b2),b2)),multiply(inverse(b2),b2))))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 34 }
+  inverse(X)
+
+Lemma 38: inverse(multiply(X,inverse(inverse(multiply(multiply(inverse(Y),Y),Z))))) = inverse(multiply(X,inverse(inverse(Z))))
+Proof:
+  inverse(multiply(X,inverse(inverse(multiply(multiply(inverse(Y),Y),Z)))))
+= { by lemma 26 R->L }
+  inverse(multiply(X,inverse(multiply(multiply(inverse(X),X),inverse(multiply(multiply(inverse(Y),Y),Z))))))
+= { by lemma 26 }
+  inverse(multiply(X,inverse(multiply(multiply(inverse(X),X),inverse(Z)))))
+= { by lemma 26 }
+  inverse(multiply(X,inverse(inverse(Z))))
+
+Lemma 39: inverse(multiply(multiply(inverse(X),X),Y)) = inverse(Y)
+Proof:
+  inverse(multiply(multiply(inverse(X),X),Y))
+= { by lemma 37 R->L }
+  inverse(inverse(inverse(multiply(multiply(inverse(X),X),Y))))
+= { by lemma 31 R->L }
+  inverse(multiply(inverse(inverse(multiply(multiply(inverse(X),X),Y))),multiply(inverse(b2),b2)))
+= { by lemma 36 R->L }
+  multiply(inverse(multiply(b2,inverse(inverse(multiply(multiply(inverse(X),X),Y))))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 38 }
+  multiply(inverse(multiply(b2,inverse(inverse(Y)))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 36 }
+  inverse(multiply(inverse(inverse(Y)),multiply(inverse(b2),b2)))
+= { by lemma 31 }
+  inverse(inverse(inverse(Y)))
+= { by lemma 37 }
+  inverse(Y)
+
+Lemma 40: inverse(multiply(multiply(inverse(X),X),inverse(Y))) = multiply(inverse(multiply(Z,inverse(Y))),multiply(Z,multiply(inverse(A),A)))
+Proof:
+  inverse(multiply(multiply(inverse(X),X),inverse(Y)))
+= { by lemma 31 R->L }
+  multiply(inverse(multiply(multiply(inverse(X),X),inverse(Y))),multiply(inverse(X),X))
+= { by lemma 22 R->L }
+  multiply(inverse(multiply(multiply(inverse(X),X),inverse(Y))),inverse(multiply(inverse(X),X)))
+= { by lemma 19 }
+  multiply(inverse(multiply(Z,inverse(Y))),multiply(Z,inverse(multiply(inverse(A),A))))
+= { by lemma 22 }
+  multiply(inverse(multiply(Z,inverse(Y))),multiply(Z,multiply(inverse(A),A)))
+
+Lemma 41: inverse(multiply(inverse(inverse(inverse(multiply(multiply(inverse(X),X),Y)))),inverse(inverse(Y)))) = multiply(inverse(b2),b2)
+Proof:
+  inverse(multiply(inverse(inverse(inverse(multiply(multiply(inverse(X),X),Y)))),inverse(inverse(Y))))
+= { by lemma 38 R->L }
+  inverse(multiply(inverse(inverse(inverse(multiply(multiply(inverse(X),X),Y)))),inverse(inverse(multiply(multiply(inverse(X),X),Y)))))
+= { by lemma 12 R->L }
+  inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(inverse(b2),b2)),b2)))),multiply(b2,inverse(b2))))
+= { by lemma 12 }
+  inverse(multiply(inverse(b2),b2))
+= { by lemma 22 }
+  multiply(inverse(b2),b2)
+
+Lemma 42: multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X))) = inverse(X)
+Proof:
+  multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X)))
+= { by lemma 33 R->L }
+  multiply(inverse(multiply(inverse(inverse(X)),multiply(inverse(b2),b2))),multiply(inverse(inverse(X)),inverse(X)))
+= { by lemma 12 R->L }
+  multiply(inverse(multiply(inverse(inverse(X)),multiply(inverse(b2),b2))),multiply(inverse(multiply(X,inverse(multiply(inverse(multiply(inverse(X),X)),X)))),multiply(X,inverse(X))))
+= { by lemma 12 }
+  multiply(inverse(multiply(inverse(inverse(X)),multiply(inverse(b2),b2))),multiply(inverse(b2),b2))
+= { by lemma 31 }
+  inverse(multiply(inverse(inverse(X)),multiply(inverse(b2),b2)))
+= { by lemma 31 }
+  inverse(inverse(inverse(X)))
+= { by lemma 37 }
+  inverse(X)
+
+Lemma 43: multiply(multiply(inverse(b2),b2),inverse(X)) = inverse(X)
+Proof:
+  multiply(multiply(inverse(b2),b2),inverse(X))
+= { by lemma 39 R->L }
+  multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(b2),b2),X)))
+= { by lemma 37 R->L }
+  multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))
+= { by lemma 41 R->L }
+  multiply(inverse(multiply(inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))),inverse(inverse(X)))),inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))
+= { by lemma 42 R->L }
+  multiply(inverse(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))),inverse(inverse(X)))),inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))
+= { by lemma 33 R->L }
+  multiply(inverse(multiply(multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))),inverse(inverse(X)))),inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))
+= { by lemma 22 R->L }
+  multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))),inverse(inverse(X)))),inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))
+= { by lemma 13 R->L }
+  multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),multiply(b2,inverse(b2)))))),multiply(b2,inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))),inverse(inverse(X)))),inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))
+= { by lemma 26 R->L }
+  multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),b2)))),multiply(b2,inverse(b2)))))),multiply(b2,inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))),inverse(inverse(X)))),inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))
+= { by lemma 22 R->L }
+  multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(inverse(b2),b2)),b2)))),multiply(b2,inverse(b2)))))),multiply(b2,inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))),inverse(inverse(X)))),inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))
+= { by lemma 12 }
+  multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))),inverse(inverse(multiply(multiply(inverse(b2),b2),X))))))),multiply(b2,inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))),inverse(inverse(X)))),inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))
+= { by lemma 14 }
+  multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),X))),inverse(inverse(X)))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),X))),inverse(multiply(inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))),inverse(inverse(multiply(multiply(inverse(b2),b2),X)))))))
+= { by lemma 22 }
+  multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),X))),inverse(inverse(X)))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),X))),multiply(inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))),inverse(inverse(multiply(multiply(inverse(b2),b2),X))))))
+= { by lemma 40 R->L }
+  inverse(multiply(multiply(inverse(inverse(inverse(multiply(multiply(inverse(b2),b2),X)))),inverse(inverse(multiply(multiply(inverse(b2),b2),X)))),inverse(inverse(X))))
+= { by lemma 39 }
+  inverse(inverse(inverse(X)))
+= { by lemma 37 }
+  inverse(X)
+
+Lemma 44: inverse(inverse(multiply(multiply(X,multiply(inverse(Y),Y)),multiply(inverse(Z),Z)))) = X
+Proof:
+  inverse(inverse(multiply(multiply(X,multiply(inverse(Y),Y)),multiply(inverse(Z),Z))))
+= { by lemma 43 R->L }
+  inverse(multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(X,multiply(inverse(Y),Y)),multiply(inverse(Z),Z)))))
+= { by lemma 40 }
+  multiply(inverse(multiply(b2,inverse(multiply(multiply(X,multiply(inverse(Y),Y)),multiply(inverse(Z),Z))))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 34 }
+  X
+
+Lemma 45: inverse(inverse(X)) = X
+Proof:
+  inverse(inverse(X))
+= { by lemma 44 R->L }
+  inverse(inverse(inverse(inverse(multiply(multiply(X,multiply(inverse(X),X)),multiply(inverse(X),X))))))
+= { by lemma 37 }
+  inverse(inverse(multiply(multiply(X,multiply(inverse(X),X)),multiply(inverse(X),X))))
+= { by lemma 43 R->L }
+  inverse(multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(X,multiply(inverse(X),X)),multiply(inverse(X),X)))))
+= { by lemma 40 }
+  multiply(inverse(multiply(b2,inverse(multiply(multiply(X,multiply(inverse(X),X)),multiply(inverse(X),X))))),multiply(b2,multiply(inverse(b2),b2)))
+= { by lemma 34 }
+  X
+
+Lemma 46: multiply(multiply(inverse(b2),b2),X) = X
+Proof:
+  multiply(multiply(inverse(b2),b2),X)
+= { by lemma 45 R->L }
+  multiply(multiply(inverse(b2),b2),inverse(inverse(X)))
+= { by lemma 43 }
+  inverse(inverse(X))
+= { by lemma 45 }
+  X
+
+Goal 1: multiply(multiply(inverse(b2),b2),a2) = a2
+Proof:
+  multiply(multiply(inverse(b2),b2),a2)
+= { by lemma 46 }
+  a2

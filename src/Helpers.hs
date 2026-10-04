@@ -569,12 +569,22 @@ isEqChain (EqChain {}) = True
 isEqChain _            = False
 
 -- A clause's text with variables named by first occurrence, so variants that
--- list their literals in the same order get the same key.
+-- list their literals in the same order get the same key. A free variable
+-- keeps its mark.
 variantKey :: Clause -> String
 variantKey (Clause bs mh) = show (Clause (map ren bs) (fmap ren mh))
   where
-    ren = renameLit (zip (nub (concatMap litVars bs ++ maybe [] litVars mh))
-                         [ "v" ++ show i | i <- [0 :: Int ..] ])
+    ren = renameLit [ (v, "v" ++ show i ++ (if freeMark `isSuffixOf` v then freeMark else ""))
+                    | (v, i) <- zip (nub (concatMap litVars bs ++ maybe [] litVars mh)) [0 :: Int ..] ]
+
+-- The mark of a variable a rewrite brings in free, which a later rewrite of
+-- the same step may bind.
+freeMark :: String
+freeMark = "_free"
+
+-- Marks the variables of a rewrite's right side that its left side lacks.
+markFree :: Term -> Term -> Term -> Term
+markFree lhs rhs = renameTerm [ (v, v ++ freeMark) | v <- termVars rhs, v `notElem` termVars lhs ]
 
 -- Like variantKey, but the same for every order of the body. The body is
 -- sorted by the shape of each literal, its variables blanked, and the order

@@ -367,6 +367,7 @@ eBenchmarkNames =
   , "GRP415-1"        -- a rewrite that binds a variable an earlier rewrite brought in free
   , "GRP430-1"        -- the same, where the binding is the constant a1
   , "GRP655+2"        -- a long rw chain that brings in many free variables
+  , "GRP410-1"        -- c_0_77's first rw brings in a free variable its second rw binds
   ]
 
 -- The Lean module name of a proof. A TPTP name keeps its separator as a

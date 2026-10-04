@@ -30,7 +30,7 @@ import Types
 import Helpers (applySubstLit, clauseInstance, variantKey, flipLit, litSubtermCtxs, matchLitEither,
                 mapLiteralTerms, matchLit, matchLitWith, notVar, picks, polLits, replaceAllTerm,
                 rewritesFrom, suffixVarsLit, unifyTerms, instClause, resolveHead, suffixVarsClause,
-                deepApplySubstTerm, litVars, renameTerm, termVars, unifyApart)
+                deepApplySubstTerm, litVars, termVars, unifyApart, freeMark, markFree)
 import Conjecture
 import TptpConvert
 
@@ -412,8 +412,10 @@ resolvents a b =
         -- superposition of an equation head into any literal, at one
         -- occurrence or at all of them, since a prover demodulating with the
         -- equation replaces them all, as on LAT263-2
-        [ instClause σ (Clause (body x ++ bodyY') hdY')
-           | Eq s t <- [h], (lhs, rhs) <- [(s, t), (t, s)], rewritesFrom lhs rhs
+        [ instClause σ (Clause (map (mapLiteralTerms free) (body x) ++ bodyY') hdY')
+           | Eq s t <- [h], (lhs, rhs0) <- [(s, t), (t, s)], rewritesFrom lhs rhs0
+           , let free = markFree lhs rhs0
+                 rhs = free rhs0
            , (i, lit) <- zip [0 :: Int ..] (polLits y)
            , (u, ctx) <- litSubtermCtxs (snd lit), notVar u
            , Just σ <- [unifyTerms lhs u []]
@@ -461,14 +463,13 @@ rewriteOnce (lhs, rhs) (Clause bs mh) =
   , Just s <- [unifyApart rigid lhs u []]
   , and [ null (termVars (deepApplySubstTerm s (Var v))) | v <- vars, freeMark `isSuffixOf` v, v `elem` map fst s ]
   , let inst = deepApplySubstTerm s
-        r = renameTerm [ (v, v ++ freeMark) | v <- termVars rhs, v `notElem` termVars lhs ] (inst rhs)
+        r = markFree lhs rhs (inst rhs)
         at = mapLiteralTerms inst
   , ls' <- [ [ if j == i then (sg, at (ctx r)) else (sg, at m) | (j, (sg, m)) <- zip [0 :: Int ..] ls ]
            , [ (sg, mapLiteralTerms (replaceAllTerm (inst u) r) (at m)) | (sg, m) <- ls ] ] ]
   where
     vars = nub (concatMap litVars (bs ++ maybeToList mh))
     rigid = [ v | v <- vars, not (freeMark `isSuffixOf` v) ]
-    freeMark = "_free"
 
 -- Condenses a clause by dropping duplicate body atoms and body equations t = t.
 condense :: Clause -> Clause
