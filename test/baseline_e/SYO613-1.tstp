@@ -1,0 +1,92 @@
+# Preprocessing class: FSMSSMSSSSSNFFN.
+# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+# No SInE strategy applied
+# Search class: FHHNS-FFSF21-SFFFFFNN
+# Configuration: SAT001_MinMin_p005000_rr_RG
+# Initializing proof state
+# Scanning for AC axioms
+#
+#cnf(i_0_6, plain, (le(X1,X1))).
+#
+#cnf(i_0_9, plain, (eq(f(X1),a0))).
+#
+#cnf(i_0_8, plain, (le(X2,X3)|~le(max(X1,X2),X3))).
+#
+#cnf(i_0_7, plain, (le(X1,X3)|~le(max(X1,X2),X3))).
+#
+#cnf(i_0_10, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2))).
+# Presaturation interreduction done
+#
+#cnf(i_0_6, plain, (le(X1,X1))).
+#
+#cnf(i_0_9, plain, (eq(f(X1),a0))).
+#
+#cnf(i_0_8, plain, (le(X1,X2)|~le(max(X3,X1),X2))).
+#
+#cnf(i_0_7, plain, (le(X1,X2)|~le(max(X1,X3),X2))).
+#
+#cnf(i_0_10, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10)|~le(s(X12),X11))).
+#
+#cnf(i_0_13, plain, (~le(s(X2),X1)|~le(s(X3),X2)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10))).
+#
+#cnf(i_0_14, plain, (~le(s(X2),X1)|~le(s(X3),X2)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9))).
+#
+#cnf(i_0_11, plain, (le(X1,max(X2,X1)))).
+#
+#cnf(i_0_12, plain, (le(X1,max(X1,X2)))).
+#
+#cnf(i_0_17, plain, (le(X1,max(X2,max(X3,X1))))).
+#
+#cnf(i_0_18, plain, (le(X1,max(X2,max(X1,X3))))).
+#
+#cnf(i_0_15, plain, (~le(s(X2),X1)|~le(s(X3),X2)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8))).
+#
+#cnf(i_0_20, plain, (le(X1,max(max(X2,X1),X3)))).
+#
+#cnf(i_0_28, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9))).
+#
+#cnf(i_0_36, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8))).
+#
+#cnf(i_0_42, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7))).
+#
+#cnf(i_0_48, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6))).
+#
+#cnf(i_0_54, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5))).
+#
+#cnf(i_0_60, plain, (~le(s(X4),X1)|~le(s(X5),X4))).
+#
+#cnf(i_0_66, plain, (~le(s(X4),X1))).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(sos_05, axiom, (~eq(f(X1),a0)|~eq(f(X2),a0)|~eq(f(X3),a0)|~eq(f(X4),a0)|~eq(f(X5),a0)|~eq(f(X6),a0)|~eq(f(X7),a0)|~eq(f(X8),a0)|~eq(f(X9),a0)|~eq(f(X10),a0)|~eq(f(X11),a0)|~eq(f(X12),a0)|~le(s(X1),X2)|~le(s(X2),X3)|~le(s(X3),X4)|~le(s(X4),X5)|~le(s(X5),X6)|~le(s(X6),X7)|~le(s(X7),X8)|~le(s(X8),X9)|~le(s(X9),X10)|~le(s(X10),X11)|~le(s(X11),X12)), file('Problems/SYO/SYO613-1.p', sos_05)).
+cnf(sos_04, axiom, (eq(f(X1),a0)), file('Problems/SYO/SYO613-1.p', sos_04)).
+cnf(sos_01, axiom, (le(X1,X1)), file('Problems/SYO/SYO613-1.p', sos_01)).
+cnf(sos_03, axiom, (le(X2,X3)|~le(max(X1,X2),X3)), file('Problems/SYO/SYO613-1.p', sos_03)).
+cnf(sos_02, axiom, (le(X1,X3)|~le(max(X1,X2),X3)), file('Problems/SYO/SYO613-1.p', sos_02)).
+cnf(c_0_5, plain, (~eq(f(X1),a0)|~eq(f(X2),a0)|~eq(f(X3),a0)|~eq(f(X4),a0)|~eq(f(X5),a0)|~eq(f(X6),a0)|~eq(f(X7),a0)|~eq(f(X8),a0)|~eq(f(X9),a0)|~eq(f(X10),a0)|~eq(f(X11),a0)|~eq(f(X12),a0)|~le(s(X1),X2)|~le(s(X2),X3)|~le(s(X3),X4)|~le(s(X4),X5)|~le(s(X5),X6)|~le(s(X6),X7)|~le(s(X7),X8)|~le(s(X8),X9)|~le(s(X9),X10)|~le(s(X10),X11)|~le(s(X11),X12)), inference(fof_simplification,[status(thm)],[sos_05])).
+cnf(c_0_6, plain, (~eq(f(X1),a0)|~eq(f(X2),a0)|~eq(f(X3),a0)|~eq(f(X4),a0)|~eq(f(X5),a0)|~eq(f(X6),a0)|~eq(f(X7),a0)|~eq(f(X8),a0)|~eq(f(X9),a0)|~eq(f(X10),a0)|~eq(f(X11),a0)|~eq(f(X12),a0)|~le(s(X1),X2)|~le(s(X2),X3)|~le(s(X3),X4)|~le(s(X4),X5)|~le(s(X5),X6)|~le(s(X6),X7)|~le(s(X7),X8)|~le(s(X8),X9)|~le(s(X9),X10)|~le(s(X10),X11)|~le(s(X11),X12)), c_0_5).
+cnf(c_0_7, axiom, (eq(f(X1),a0)), sos_04).
+cnf(c_0_8, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10)|~le(s(X12),X11)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_6, c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7])])).
+cnf(c_0_9, axiom, (le(X1,X1)), sos_01).
+cnf(c_0_10, plain, (le(X2,X3)|~le(max(X1,X2),X3)), inference(fof_simplification,[status(thm)],[sos_03])).
+cnf(c_0_11, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10)), inference(spm,[status(thm)],[c_0_8, c_0_9])).
+cnf(c_0_12, plain, (le(X2,X3)|~le(max(X1,X2),X3)), c_0_10).
+cnf(c_0_13, plain, (le(X1,X3)|~le(max(X1,X2),X3)), inference(fof_simplification,[status(thm)],[sos_02])).
+cnf(c_0_14, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)), inference(spm,[status(thm)],[c_0_11, c_0_9])).
+cnf(c_0_15, plain, (le(X1,max(X2,X1))), inference(spm,[status(thm)],[c_0_12, c_0_9])).
+cnf(c_0_16, plain, (le(X1,X3)|~le(max(X1,X2),X3)), c_0_13).
+cnf(c_0_17, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)), inference(spm,[status(thm)],[c_0_14, c_0_9])).
+cnf(c_0_18, plain, (le(X1,max(X2,max(X3,X1)))), inference(spm,[status(thm)],[c_0_12, c_0_15])).
+cnf(c_0_19, plain, (le(X1,max(X1,X2))), inference(spm,[status(thm)],[c_0_16, c_0_9])).
+cnf(c_0_20, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)), inference(spm,[status(thm)],[c_0_17, c_0_18])).
+cnf(c_0_21, plain, (le(X1,max(max(X2,X1),X3))), inference(spm,[status(thm)],[c_0_12, c_0_19])).
+cnf(c_0_22, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)), inference(spm,[status(thm)],[c_0_20, c_0_21])).
+cnf(c_0_23, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)), inference(spm,[status(thm)],[c_0_22, c_0_21])).
+cnf(c_0_24, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)), inference(spm,[status(thm)],[c_0_23, c_0_21])).
+cnf(c_0_25, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)), inference(spm,[status(thm)],[c_0_24, c_0_21])).
+cnf(c_0_26, plain, (~le(s(X1),X2)|~le(s(X3),X1)), inference(spm,[status(thm)],[c_0_25, c_0_21])).
+cnf(c_0_27, plain, (~le(s(X1),X2)), inference(spm,[status(thm)],[c_0_26, c_0_21])).
+cnf(c_0_28, plain, ($false), inference(spm,[status(thm)],[c_0_27, c_0_21]), ['proof']).
+# SZS output end CNFRefutation

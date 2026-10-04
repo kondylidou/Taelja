@@ -1,0 +1,191 @@
+Axiom 1: neq(s0,s2)
+Axiom 2: neq(s1,s2)
+Axiom 3: neq(s0,s1)
+Axiom 4: neq(s1,s0)
+Axiom 5: neq(s2,s1)
+Axiom 6: neq(s2,s0)
+Axiom 7: p(s0,s0,s0,s0,s0)
+Axiom 8: p(X,Y,Z,A,B) => p(C,Y,Z,A,B)
+Axiom 9: p(X,Y,Z,A,B) /\ neq(X,Y) /\ neq(X,C) => p(X,C,Z,A,B)
+Axiom 10: p(X,Y,Z,A,B) /\ neq(X,Z) /\ neq(X,C) /\ neq(Y,Z) /\ neq(Y,C) => p(X,Y,C,A,B)
+Axiom 11: p(X,Y,Z,A,B) /\ neq(X,A) /\ neq(X,C) /\ neq(Y,A) /\ neq(Y,C) /\ neq(Z,A) /\ neq(Z,C) => p(X,Y,Z,C,B)
+Axiom 12: p(X,Y,Z,A,B) /\ neq(X,B) /\ neq(X,C) /\ neq(Y,B) /\ neq(Y,C) /\ neq(Z,B) /\ neq(Z,C) /\ neq(A,B) /\ neq(A,C) => p(X,Y,Z,A,C)
+
+Goal 1: p(s2,s2,s2,s2,s2)
+Proof:
+  have p(s0,s0,s0,s0,s0)
+    by axiom 7
+  hence p(s2,s0,s0,s0,s0)
+    by axiom 8
+   and neq(s2,s0)
+    by axiom 6
+   and neq(s2,s1)
+    by axiom 5
+  hence p(s2,s1,s0,s0,s0)
+    by axiom 9
+  hence p(s1,s1,s0,s0,s0)
+    by axiom 8
+   and neq(s1,s0)
+    by axiom 4
+   and neq(s1,s2)
+    by axiom 2
+   and neq(s1,s0)
+    by axiom 4
+   and neq(s1,s2)
+    by axiom 2
+  hence p(s1,s1,s2,s0,s0)
+    by axiom 10
+  hence p(s0,s1,s2,s0,s0)
+    by axiom 8
+   and neq(s0,s1)
+    by axiom 3
+   and neq(s0,s2)
+    by axiom 1
+  hence p(s0,s2,s2,s0,s0)
+    by axiom 9
+  hence p(s2,s2,s2,s0,s0)
+    by axiom 8
+   and neq(s2,s0)
+    by axiom 6
+   and neq(s2,s1)
+    by axiom 5
+   and neq(s2,s0)
+    by axiom 6
+   and neq(s2,s1)
+    by axiom 5
+   and neq(s2,s0)
+    by axiom 6
+   and neq(s2,s1)
+    by axiom 5
+  hence p(s2,s2,s2,s1,s0)
+    by axiom 11
+  hence p(s1,s2,s2,s1,s0)
+    by axiom 8
+   and neq(s1,s2)
+    by axiom 2
+   and neq(s1,s0)
+    by axiom 4
+  hence p(s1,s0,s2,s1,s0)
+    by axiom 9
+  hence p(s0,s0,s2,s1,s0)
+    by axiom 8
+   and neq(s0,s2)
+    by axiom 1
+   and neq(s0,s1)
+    by axiom 3
+   and neq(s0,s2)
+    by axiom 1
+   and neq(s0,s1)
+    by axiom 3
+  hence p(s0,s0,s1,s1,s0)
+    by axiom 10
+  hence p(s2,s0,s1,s1,s0)
+    by axiom 8
+   and neq(s2,s0)
+    by axiom 6
+   and neq(s2,s1)
+    by axiom 5
+  hence p(s2,s1,s1,s1,s0)
+    by axiom 9
+  hence p(s1,s1,s1,s1,s0)
+    by axiom 8
+   and neq(s1,s0)
+    by axiom 4
+   and neq(s1,s2)
+    by axiom 2
+   and neq(s1,s0)
+    by axiom 4
+   and neq(s1,s2)
+    by axiom 2
+   and neq(s1,s0)
+    by axiom 4
+   and neq(s1,s2)
+    by axiom 2
+   and neq(s1,s0)
+    by axiom 4
+   and neq(s1,s2)
+    by axiom 2
+  hence p(s1,s1,s1,s1,s2)
+    by axiom 12
+  hence p(s2,s1,s1,s1,s2)
+    by axiom 8
+   and neq(s2,s1)
+    by axiom 5
+   and neq(s2,s0)
+    by axiom 6
+  hence p(s2,s0,s1,s1,s2)
+    by axiom 9
+  hence p(s1,s0,s1,s1,s2)
+    by axiom 8
+   and neq(s1,s0)
+    by axiom 4
+   and neq(s1,s2)
+    by axiom 2
+  hence p(s1,s2,s1,s1,s2)
+    by axiom 9
+  hence p(s2,s2,s1,s1,s2)
+    by axiom 8
+   and neq(s2,s1)
+    by axiom 5
+   and neq(s2,s0)
+    by axiom 6
+   and neq(s2,s1)
+    by axiom 5
+   and neq(s2,s0)
+    by axiom 6
+  hence p(s2,s2,s0,s1,s2)
+    by axiom 10
+  hence p(s1,s2,s0,s1,s2)
+    by axiom 8
+   and neq(s1,s2)
+    by axiom 2
+   and neq(s1,s0)
+    by axiom 4
+  hence p(s1,s0,s0,s1,s2)
+    by axiom 9
+  hence p(s0,s0,s0,s1,s2)
+    by axiom 8
+   and neq(s0,s1)
+    by axiom 3
+   and neq(s0,s2)
+    by axiom 1
+   and neq(s0,s1)
+    by axiom 3
+   and neq(s0,s2)
+    by axiom 1
+   and neq(s0,s1)
+    by axiom 3
+   and neq(s0,s2)
+    by axiom 1
+  hence p(s0,s0,s0,s2,s2)
+    by axiom 11
+  hence p(s2,s0,s0,s2,s2)
+    by axiom 8
+   and neq(s2,s0)
+    by axiom 6
+   and neq(s2,s1)
+    by axiom 5
+  hence p(s2,s1,s0,s2,s2)
+    by axiom 9
+  hence p(s1,s1,s0,s2,s2)
+    by axiom 8
+   and neq(s1,s0)
+    by axiom 4
+   and neq(s1,s2)
+    by axiom 2
+   and neq(s1,s0)
+    by axiom 4
+   and neq(s1,s2)
+    by axiom 2
+  hence p(s1,s1,s2,s2,s2)
+    by axiom 10
+  hence p(s0,s1,s2,s2,s2)
+    by axiom 8
+   and neq(s0,s1)
+    by axiom 3
+   and neq(s0,s2)
+    by axiom 1
+  hence p(s0,s2,s2,s2,s2)
+    by axiom 9
+  hence p(s2,s2,s2,s2,s2)
+    by axiom 8

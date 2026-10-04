@@ -123,6 +123,7 @@ data AlgState = AlgState
   , stUnits      :: [UnitEntry]
   , stLemmas     :: [(String, Literal, ProofBlock)]
   , stGoals      :: [(Literal, ProofBlock)]
+  , stGoalFor    :: [Literal]  -- the conjunct each goal in stGoals was proved for
   , stCounter    :: Int
   , stAxNuclei   :: [(String, Clause)] -- axiom nuclei with a display name, with their clauses
   , stNameToPos  :: Map.Map String String        -- TSTP unit name to the tree position of its electron

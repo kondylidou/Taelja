@@ -388,12 +388,18 @@ superpose x y = nub
 -- up to renaming and dropped duplicate or trivial literals. Each result literal
 -- matches a conclusion literal, binding only premise variables, or is a body
 -- equation s ≈ t dropped by unifying s and t. Every conclusion literal is hit,
--- so a branch stops once fewer result literals are left than are unhit.
+-- so a branch stops once fewer result literals are left than are unhit. A
+-- result literal with no partner rules the reading out at once.
 cover :: [(Bool, Literal)] -> [(Bool, Literal)] -> TreeSubst -> [TreeSubst]
-cover result parent s0 = go result (length result) Set.empty s0
+cover result parent s0
+  | not (all hasPartner result) = []
+  | otherwise = go result (length result) Set.empty s0
   where
     idxParent = zip [0 :: Int ..] parent
     rigid = rigidVars s0 parent
+    hasPartner (sign, l) =
+      or [ sign == sign' && not (null (matchOriented rigid l p s0)) | (sign', p) <- parent ]
+      || (not sign && case l of { Eq a b -> isJust (unifyInTree a b s0); _ -> False })
     go [] _ hit s
       | Set.size hit == length parent = [s]
       | otherwise = []

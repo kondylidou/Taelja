@@ -1,0 +1,132 @@
+Axiom 1: le(X,X)
+Axiom 2: le(max(X,Y),Z) => le(X,Z)
+Axiom 3: le(max(X,Y),Z) => le(Y,Z)
+Axiom 4: eq(f(X),a0)
+
+Lemma 5: le(X,max(max(Y,X),Z))
+Proof:
+  have le(max(max(Y,X),Z),max(max(Y,X),Z))
+    by axiom 1
+  hence le(max(Y,X),max(max(Y,X),Z))
+    by axiom 2
+  hence le(X,max(max(Y,X),Z))
+    by axiom 3
+
+Goal 1: eq(f(X),a0)
+Proof:
+  have eq(f(X),a0)
+    by axiom 4
+
+Goal 2: eq(f(max(max(X,s(Y)),Z)),a0)
+Proof:
+  have eq(f(max(max(X,s(Y)),Z)),a0)
+    by axiom 4
+
+Goal 3: eq(f(max(max(X,s(max(max(Y,s(Z)),A))),B)),a0)
+Proof:
+  have eq(f(max(max(X,s(max(max(Y,s(Z)),A))),B)),a0)
+    by axiom 4
+
+Goal 4: eq(f(max(max(X,s(max(max(Y,s(max(max(Z,s(A)),B))),C))),U)),a0)
+Proof:
+  have eq(f(max(max(X,s(max(max(Y,s(max(max(Z,s(A)),B))),C))),U)),a0)
+    by axiom 4
+
+Goal 5: eq(f(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(B)),C))),U))),V))),W)),a0)
+Proof:
+  have eq(f(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(B)),C))),U))),V))),W)),a0)
+    by axiom 4
+
+Goal 6: eq(f(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(C)),U))),V))),W))),X1))),X2)),a0)
+Proof:
+  have eq(f(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(C)),U))),V))),W))),X1))),X2)),a0)
+    by axiom 4
+
+Goal 7: eq(f(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(U)),V))),W))),X1))),X2))),X3))),X4)),a0)
+Proof:
+  have eq(f(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(U)),V))),W))),X1))),X2))),X3))),X4)),a0)
+    by axiom 4
+
+Goal 8: eq(f(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(V)),W))),X1))),X2))),X3))),X4))),X5))),X6)),a0)
+Proof:
+  have eq(f(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(V)),W))),X1))),X2))),X3))),X4))),X5))),X6)),a0)
+    by axiom 4
+
+Goal 9: eq(f(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))),a0)
+Proof:
+  have eq(f(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))),a0)
+    by axiom 4
+
+Goal 10: eq(f(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8)))))),a0)
+Proof:
+  have eq(f(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8)))))),a0)
+    by axiom 4
+
+Goal 11: eq(f(s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))))),a0)
+Proof:
+  have eq(f(s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))))),a0)
+    by axiom 4
+
+Goal 12: eq(f(s(s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8)))))))),a0)
+Proof:
+  have eq(f(s(s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8)))))))),a0)
+    by axiom 4
+
+Goal 13: le(s(X),max(max(Y,s(X)),Z))
+Proof:
+  have le(s(X),max(max(Y,s(X)),Z))
+    by lemma 5
+
+Goal 14: le(s(max(max(X,s(Y)),Z)),max(max(A,s(max(max(X,s(Y)),Z))),B))
+Proof:
+  have le(s(max(max(X,s(Y)),Z)),max(max(A,s(max(max(X,s(Y)),Z))),B))
+    by lemma 5
+
+Goal 15: le(s(max(max(X,s(max(max(Y,s(Z)),A))),B)),max(max(C,s(max(max(X,s(max(max(Y,s(Z)),A))),B))),U))
+Proof:
+  have le(s(max(max(X,s(max(max(Y,s(Z)),A))),B)),max(max(C,s(max(max(X,s(max(max(Y,s(Z)),A))),B))),U))
+    by lemma 5
+
+Goal 16: le(s(max(max(X,s(max(max(Y,s(max(max(Z,s(A)),B))),C))),U)),max(max(V,s(max(max(X,s(max(max(Y,s(max(max(Z,s(A)),B))),C))),U))),W))
+Proof:
+  have le(s(max(max(X,s(max(max(Y,s(max(max(Z,s(A)),B))),C))),U)),max(max(V,s(max(max(X,s(max(max(Y,s(max(max(Z,s(A)),B))),C))),U))),W))
+    by lemma 5
+
+Goal 17: le(s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(B)),C))),U))),V))),W)),max(max(X1,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(B)),C))),U))),V))),W))),X2))
+Proof:
+  have le(s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(B)),C))),U))),V))),W)),max(max(X1,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(B)),C))),U))),V))),W))),X2))
+    by lemma 5
+
+Goal 18: le(s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(C)),U))),V))),W))),X1))),X2)),max(max(X3,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(C)),U))),V))),W))),X1))),X2))),X4))
+Proof:
+  have le(s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(C)),U))),V))),W))),X1))),X2)),max(max(X3,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(C)),U))),V))),W))),X1))),X2))),X4))
+    by lemma 5
+
+Goal 19: le(s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(U)),V))),W))),X1))),X2))),X3))),X4)),max(max(X5,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(U)),V))),W))),X1))),X2))),X3))),X4))),X6))
+Proof:
+  have le(s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(U)),V))),W))),X1))),X2))),X3))),X4)),max(max(X5,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(U)),V))),W))),X1))),X2))),X3))),X4))),X6))
+    by lemma 5
+
+Goal 20: le(s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(V)),W))),X1))),X2))),X3))),X4))),X5))),X6)),max(X7,max(X8,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(V)),W))),X1))),X2))),X3))),X4))),X5))),X6)))))
+Proof:
+  have le(max(X7,max(X8,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(V)),W))),X1))),X2))),X3))),X4))),X5))),X6)))),max(X7,max(X8,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(V)),W))),X1))),X2))),X3))),X4))),X5))),X6)))))
+    by axiom 1
+  hence le(max(X8,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(V)),W))),X1))),X2))),X3))),X4))),X5))),X6))),max(X7,max(X8,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(V)),W))),X1))),X2))),X3))),X4))),X5))),X6)))))
+    by axiom 3
+  hence le(s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(V)),W))),X1))),X2))),X3))),X4))),X5))),X6)),max(X7,max(X8,s(max(max(X,s(max(max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(V)),W))),X1))),X2))),X3))),X4))),X5))),X6)))))
+    by axiom 3
+
+Goal 21: le(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))),s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))))
+Proof:
+  have le(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))),s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))))
+    by axiom 1
+
+Goal 22: le(s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8)))))),s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8)))))))
+Proof:
+  have le(s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8)))))),s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8)))))))
+    by axiom 1
+
+Goal 23: le(s(s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))))),s(s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))))))
+Proof:
+  have le(s(s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))))),s(s(s(max(X,max(Y,s(max(max(Z,s(max(max(A,s(max(max(B,s(max(max(C,s(max(max(U,s(max(max(V,s(max(max(W,s(X1)),X2))),X3))),X4))),X5))),X6))),X7))),X8))))))))
+    by axiom 1

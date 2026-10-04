@@ -533,17 +533,23 @@ renameGoalsApart :: [Literal] -> [Literal]
 renameGoalsApart gs = [ suffixVarsLit ("_g" ++ show i) g | (i, g) <- zip [1 :: Int ..] gs ]
 
 -- A substitution extending σ under which each literal of the first list
--- unifies with one of the second. It backtracks, since a literal may unify
--- with several and only one choice may extend to the rest.
+-- unifies with one of the second.
 unifyEach :: Subst -> [Literal] -> [Literal] -> Maybe Subst
-unifyEach σ [] _ = Just σ
-unifyEach σ (l : ls) targets =
-  listToMaybe [ r | t <- targets, Just σ' <- [unifyLits l t σ], Just r <- [unifyEach σ' ls targets] ]
+unifyEach σ ls targets = unifyEachWith σ [ (l, targets) | l <- ls ]
 
--- Records a goal with its proof block. A goal already emitted up to renaming
--- is skipped, and one inconsistent with the goals before it fails the step.
-emitGoalProof :: Literal -> ProofBlock -> AlgM ()
-emitGoalProof lit blk = do
+-- A substitution extending σ under which each literal unifies with one of its
+-- targets, tried in order. It backtracks, since a literal may unify with
+-- several and only one choice may extend to the rest.
+unifyEachWith :: Subst -> [(Literal, [Literal])] -> Maybe Subst
+unifyEachWith σ [] = Just σ
+unifyEachWith σ ((l, targets) : ls) =
+  listToMaybe [ r | t <- targets, Just σ' <- [unifyLits l t σ], Just r <- [unifyEachWith σ' ls] ]
+
+-- Records a goal, proved for the given conjunct, with its proof block. A goal
+-- already emitted up to renaming is skipped, and one inconsistent with the
+-- goals before it fails the step.
+emitGoalProof :: Literal -> Literal -> ProofBlock -> AlgM ()
+emitGoalProof conj lit blk = do
   -- A goal may keep variables theta never bound, since clause copies are
   -- renamed apart. Goal variables are existential, so the goal is emitted at
   -- the instance the block concludes.
@@ -570,7 +576,7 @@ emitGoalProof lit blk = do
     then return ()
   -- the template's variables are existential, so the goals unify with it
   else if isJust (unifyEach [] (renameGoalsApart (existing ++ [litG])) (map (suffixVarsLit "_c") template))
-    then modify $ \s -> s { stGoals = stGoals s ++ [(litG, blk')] }
+    then modify $ \s -> s { stGoals = stGoals s ++ [(litG, blk')], stGoalFor = stGoalFor s ++ [conj] }
     else throwError ("emitGoalProof: " ++ ppLiteral litG
                       ++ " is inconsistent with an already-proven goal")
 
@@ -1552,7 +1558,7 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
                 blk <- nucleusBlock bodyLitsAbs matched mAxName theta falsumLit
                 modify (\st -> st { stClosing = stClosing st <|> Just blk })
                 forM_ goalLits $ \gl ->
-                  emitGoalProof gl (appendLine blk (Hence gl ByContradiction))
+                  emitGoalProof gl gl (appendLine blk (Hence gl ByContradiction))
                 return True
               Nothing ->
                 -- otherwise the goal clause closes, and each premise proves a goal
@@ -1560,7 +1566,7 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
                   ([gl], [(ki, σi, [])])
                     | isNothing (ueName ki)
                     , Just chain@(EqChain {}) <- ueProof ki ->
-                        emitGoalProof (applySubstLit theta gl) (instantiateBlock (ueUnit ki) σi chain) >> return True
+                        emitGoalProof gl (applySubstLit theta gl) (instantiateBlock (ueUnit ki) σi chain) >> return True
                   _ -> do
                     -- Each goal is proved by a premise of its own that it
                     -- matches, either way round. theta binds the clause copy's
@@ -1570,16 +1576,16 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
                     -- proves them.
                     let assign [] _ = [[]]
                         assign (gl : gls) ms =
-                          [ (applySubstLit ρ gl0, m) : rest
+                          [ (gl, applySubstLit ρ gl0, m) : rest
                           | let gl0 = applySubstLit theta gl
                           , (m@(ki, σi, rwi), ms') <- picks ms
                           , Just ρ <- [matchLitEither gl0 (matchedPremise ki σi rwi) []]
                           , rest <- assign gls ms' ]
                     case assign goalLits matched of
                       pairs : _ | not (null pairs) -> do
-                        forM_ pairs $ \(gl', (ki, σi, rwi)) -> do
+                        forM_ pairs $ \(gl, gl', (ki, σi, rwi)) -> do
                           blk <- goalBlock gl' ki σi rwi
-                          emitGoalProof gl' blk
+                          emitGoalProof gl gl' blk
                         return True
                       _ -> return False
               Just headLit -> do
@@ -1640,7 +1646,7 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
                     let goalInst = applySubstLit theta headLitOr
                     mBlk <- justifyByAxiom prover goalInst pos
                     case mBlk of
-                      Just blk' -> emitGoalProof gl blk' >> return True
+                      Just blk' -> emitGoalProof gl gl blk' >> return True
                       Nothing   -> return False
                   _ -> return False
 
@@ -1716,12 +1722,12 @@ reflexiveInstance l r = listToMaybe
       , Just ρ <- [matchTermWith p t []]
       , applySubstTerm ρ l == applySubstTerm ρ r ]
 
--- Proves a goal the nuclei left open. It tries a unit that states it, then
--- for an equation reflexivity or a chain from the input proof or the prover,
--- for an atom a fact the input proof rewrites into it, and last a named axiom
--- whose head is the goal.
-proveGoal :: Prover -> Literal -> AlgM ()
-proveGoal prover goal = do
+-- Proves a goal the nuclei left open, an instance of the given conjunct. It
+-- tries a unit that states it, then for an equation reflexivity or a chain
+-- from the input proof or the prover, for an atom a fact the input proof
+-- rewrites into it, and last a named axiom whose head is the goal.
+proveGoal :: Prover -> Literal -> Literal -> AlgM ()
+proveGoal prover conj goal = do
   units <- gets stUnits
   case goal of
     Eq l r -> do
@@ -1734,28 +1740,28 @@ proveGoal prover goal = do
             Nothing     -> return Nothing
             Just (u, σ) -> Just <$> makeBlock u σ []
           case mDerivedBlk of
-            Just blk -> emitGoalProof goal blk
+            Just blk -> emitGoalProof conj goal blk
             -- a goal whose sides match holds by reflexivity at that instance,
             -- where Twee prints reflexivity and Vampire equality_resolution
             Nothing | Just ρ <- reflexiveInstance l r -> do
               let l' = deepApplySubstTerm ρ l
-              emitGoalProof (Eq l' l') (EqChain l' [])
+              emitGoalProof conj (Eq l' l') (EqChain l' [])
             Nothing  -> do
               mTwee <- eqChainFor prover GoalBudget (filter isCitable units) goal
               case mTwee of
                 Just (start, chain) | not (null chain) -> do
                   steps' <- mapM nameChainStep chain
-                  emitGoalProof goal (EqChain start steps')
+                  emitGoalProof conj goal (EqChain start steps')
                 _ -> do
                   -- an equational goal can be the head of a Horn axiom such as
                   -- antisymmetry (HEN010-3), in either orientation
                   mAx <- justifyByAxiom prover goal "z"
                   case mAx of
-                    Just blk -> emitGoalProof goal blk
+                    Just blk -> emitGoalProof conj goal blk
                     Nothing -> do
                       mAxF <- justifyByAxiom prover (Eq r l) "z"
                       case mAxF of
-                        Just blk -> emitGoalProof (Eq r l) blk
+                        Just blk -> emitGoalProof conj (Eq r l) blk
                         Nothing ->
                           throwError ("no proof found for goal: " ++ ppLiteral goal)
     _ -> do
@@ -1771,14 +1777,14 @@ proveGoal prover goal = do
       case unitForGoal of
         Just (ue, ρ0, instGoal) -> do
           blk <- makeBlock ue ρ0 []
-          emitGoalProof instGoal blk
+          emitGoalProof conj instGoal blk
         Nothing | Just (ki, σi, _, rwi) <- mRw -> do
           blk <- makeBlock ki σi rwi
-          emitGoalProof goal blk
+          emitGoalProof conj goal blk
         Nothing -> do
           mAxBlk <- justifyByAxiom prover goal "z"
           case mAxBlk of
-            Just blk -> emitGoalProof goal blk
+            Just blk -> emitGoalProof conj goal blk
             Nothing  -> throwError ("no unit found for goal: " ++ ppLiteral goal)
 
 -- The key of an axiom's display name, its source unit and its clause, so the
@@ -2102,6 +2108,7 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
         , stUnits      = namedUnits ++ listedAxiomUnits ++ derivedUnits ++ bgNamedUnits
         , stLemmas     = preLemmaEntries
         , stGoals      = []
+        , stGoalFor    = []
         , stCounter    = nAll + 1
         , stAxNuclei   = axNucleiList
         , stNameToPos  = nameToPos
@@ -2149,16 +2156,20 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
     -- since Lean would also accept a proof of some other true statement.
     -- Goals are renamed apart and unified, as their free variables are
     -- universal.
+    -- Each conjunct tries the goals proved for it first, and each goal its
+    -- own conjunct, so the pairing the proof made is found without search.
     let emittedGoals = renameGoalsApart (map fst (stGoals finalSt))
         conjGoals    = map (suffixVarsLit "_c") goalLits'
+        provedFor    = zip (stGoalFor finalSt) emittedGoals
+        ownFirst k xs = [ x | (k', x) <- xs, k' == k ] ++ [ x | (k', x) <- xs, k' /= k ]
     -- every conjunct needs a goal proof, all under one substitution
-    σJoint <- case unifyEach [] conjGoals emittedGoals of
+    σJoint <- case unifyEachWith [] [ (c', ownFirst c provedFor) | (c, c') <- zip goalLits' conjGoals ] of
       Just σ  -> Right σ
       Nothing -> Left ("goal(s) could not be proved: "
                        ++ intercalate ", " [ ppLiteral c | c <- goalLits'
                                            , isNothing (unifyEach [] [suffixVarsLit "_c" c] emittedGoals) ]
                        ++ " (no emitted goal proves this conjunct)")
-    when (isNothing (unifyEach σJoint emittedGoals conjGoals)) $
+    when (isNothing (unifyEachWith σJoint [ (e, ownFirst c (zip goalLits' conjGoals)) | (c, e) <- provedFor ])) $
       Left ("emitted goals are not a consistent instance of the conjecture: "
             ++ intercalate ", " (map (ppLiteral . fst) (stGoals finalSt)))
     -- the derivation of $false comes after the check, which the conjuncts'
@@ -2175,7 +2186,7 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
           proveAll _ _ [] = return ()
           proveAll prover θ (g : rest) = do
             let g' = applySubstLit θ g
-            r <- attempt (proveGoal prover g')
+            r <- attempt (proveGoal prover g g')
             case r of
               Right () -> return ()
               Left msg -> liftIO $ dbg debug ("[goal] " ++ ppLiteral g' ++ " — " ++ msg)

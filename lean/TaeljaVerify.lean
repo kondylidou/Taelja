@@ -153,6 +153,8 @@ import TaeljaVerify.E.Grp4151
 import TaeljaVerify.E.Grp4301
 import TaeljaVerify.E.Grp655p2
 import TaeljaVerify.E.Grp4101
+import TaeljaVerify.E.Puz0562v005
+import TaeljaVerify.E.Syo6131
 import TaeljaVerify.Twee.Kle137p1
 import TaeljaVerify.Twee.Grp1361
 import TaeljaVerify.Twee.Col0427
