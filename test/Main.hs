@@ -369,6 +369,7 @@ eBenchmarkNames =
   , "GRP410-1"        -- c_0_77's first rw brings in a free variable its second rw binds
   , "PUZ056-2.005"    -- resolutions between large clauses, whose readings must fail fast
   , "SYO613-1"        -- 23 goals of one shape, each paired with the conjunct it proves
+  , "ROB014-2"        -- the goal clause needs a unit the tree derives after it
   ]
 
 -- The Lean module name of a proof. A TPTP name keeps its separator as a

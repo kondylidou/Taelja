@@ -1,0 +1,477 @@
+# Preprocessing class: FSMSSMSSSSSNFFN.
+# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+# No SInE strategy applied
+# Search class: FHUSM-FFSF21-DFFFFFNN
+# Configuration: G-E--_041_C18_F1_PI_AE_Q4_CS_SP_S0Y
+# Initializing proof state
+# Scanning for AC axioms
+# add is AC
+# AC handling enabled
+#
+#cnf(i_0_22, negated_conjecture, (negate(add(e,multiply(one,add(d,negate(add(d,negate(e)))))))!=negate(e))).
+#
+#cnf(i_0_21, hypothesis, (negate(add(negate(e),negate(add(d,negate(e)))))=d)).
+#
+#cnf(i_0_17, plain, (positive_integer(one))).
+#
+#cnf(i_0_15, plain, (multiply(one,X1)=X1)).
+#
+#cnf(i_0_12, plain, (add(X1,X2)=add(X2,X1))).
+#
+#cnf(i_0_18, plain, (positive_integer(successor(X1))|~positive_integer(X1))).
+#
+#cnf(i_0_13, plain, (add(add(X1,X2),X3)=add(X1,add(X2,X3)))).
+#
+#cnf(i_0_14, plain, (negate(add(negate(add(X1,X2)),negate(add(X1,negate(X2)))))=X1)).
+#
+#cnf(i_0_19, plain, (X1=X2|negate(add(X1,negate(add(X2,X3))))!=negate(add(X2,negate(add(X1,X3)))))).
+#
+#cnf(i_0_16, plain, (multiply(successor(X2),X1)=add(X1,multiply(X2,X1))|~positive_integer(X1))).
+#
+#cnf(i_0_20, plain, (negate(add(X1,negate(add(X2,multiply(X4,add(X1,X3))))))=X3|negate(add(X1,negate(X2)))!=X3|~positive_integer(X4))).
+#
+#cnf(i_0_23, negated_conjecture, (negate(add(e,add(d,negate(add(d,negate(e))))))!=negate(e))).
+#
+#cnf(i_0_36, hypothesis, (negate(add(d,negate(add(negate(e),add(d,negate(e))))))=negate(e))).
+#
+#cnf(i_0_24, plain, (add(X1,add(X2,X3))=add(X3,add(X1,X2)))).
+#
+#cnf(i_0_51, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(e)))))!=d)).
+####
+#cnf(i_0_92, hypothesis, (negate(add(d,negate(add(d,add(negate(e),negate(e))))))=negate(e))).
+#
+#cnf(i_0_40, hypothesis, (negate(add(d,negate(add(negate(e),negate(negate(add(d,negate(e))))))))=negate(e))).
+#
+#cnf(i_0_91, hypothesis, (negate(add(negate(e),negate(add(d,add(d,add(negate(e),negate(e)))))))=d)).
+#
+#cnf(i_0_142, hypothesis, (negate(e)=d|negate(add(d,negate(add(d,add(negate(e),add(negate(e),negate(e)))))))!=d)).
+####
+#cnf(i_0_88, hypothesis, (negate(add(negate(e),negate(add(d,negate(negate(add(d,add(negate(e),negate(e)))))))))=d)).
+######
+#cnf(i_0_155, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(d,add(negate(e),negate(e)))))))))!=d)).
+####
+#cnf(i_0_136, hypothesis, (negate(add(negate(e),negate(add(d,add(negate(e),negate(negate(add(d,negate(e)))))))))=d)).
+#
+#cnf(i_0_166, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),add(negate(e),negate(negate(add(d,negate(e)))))))))!=d)).
+##
+#cnf(i_0_141, hypothesis, (negate(add(d,negate(add(d,add(d,add(negate(e),add(negate(e),negate(e))))))))=negate(e))).
+#
+#cnf(i_0_133, hypothesis, (negate(add(negate(e),negate(add(d,negate(negate(add(negate(e),negate(negate(add(d,negate(e)))))))))))=d)).
+#
+#cnf(i_0_138, hypothesis, (negate(add(d,negate(add(negate(e),negate(negate(add(d,add(d,add(negate(e),negate(e))))))))))=negate(e))).
+#
+#cnf(i_0_27, plain, (add(X2,add(X1,X3))=add(X1,add(X2,X3)))).
+#####
+#cnf(i_0_182, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,negate(e)))))))))))!=d)).
+##
+#cnf(i_0_154, hypothesis, (negate(add(d,negate(add(d,add(negate(e),negate(negate(add(d,add(negate(e),negate(e))))))))))=negate(e))).
+#
+#cnf(i_0_165, hypothesis, (negate(add(d,negate(add(d,add(negate(e),add(negate(e),negate(negate(add(d,negate(e))))))))))=negate(e))).
+#
+#cnf(i_0_172, hypothesis, (negate(add(negate(e),negate(add(d,add(d,add(d,add(negate(e),add(negate(e),negate(e)))))))))=d)).
+#
+#cnf(i_0_264, hypothesis, (negate(e)=d|negate(add(d,negate(add(d,add(d,add(negate(e),add(negate(e),add(negate(e),negate(e)))))))))!=d)).
+#
+#cnf(i_0_151, hypothesis, (negate(add(d,negate(add(negate(e),negate(negate(add(d,negate(negate(add(d,add(negate(e),negate(e))))))))))))=negate(e))).
+#
+#cnf(i_0_162, hypothesis, (negate(add(d,negate(add(negate(e),negate(negate(add(d,add(negate(e),negate(negate(add(d,negate(e))))))))))))=negate(e))).
+#
+#cnf(i_0_181, hypothesis, (negate(add(d,negate(add(d,add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,negate(e))))))))))))=negate(e))).
+############
+#cnf(i_0_169, hypothesis, (negate(add(negate(e),negate(add(d,negate(negate(add(d,add(d,add(negate(e),add(negate(e),negate(e)))))))))))=d)).
+#
+#cnf(i_0_188, hypothesis, (negate(add(negate(e),negate(add(d,add(negate(e),negate(negate(add(d,add(d,add(negate(e),negate(e)))))))))))=d)).
+#
+#cnf(i_0_249, hypothesis, (negate(add(negate(e),negate(add(d,add(d,add(negate(e),negate(negate(add(d,add(negate(e),negate(e)))))))))))=d)).
+#
+#cnf(i_0_29, plain, (negate(add(negate(add(X1,X2)),negate(add(X1,add(negate(add(X2,X3)),negate(add(X2,negate(X3))))))))=X1)).
+##
+#cnf(i_0_308, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(d,add(d,add(negate(e),add(negate(e),negate(e)))))))))))!=d)).
+##
+#cnf(i_0_323, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),add(negate(e),negate(negate(add(d,add(d,add(negate(e),negate(e)))))))))))!=d)).
+##
+#cnf(i_0_334, hypothesis, (negate(e)=d|negate(add(d,negate(add(d,add(negate(e),add(negate(e),negate(negate(add(d,add(negate(e),negate(e)))))))))))!=d)).
+#####
+#cnf(i_0_256, hypothesis, (negate(add(negate(e),negate(add(d,add(d,add(negate(e),add(negate(e),negate(negate(add(d,negate(e)))))))))))=d)).
+#
+#cnf(i_0_34, plain, (negate(add(negate(add(X1,X2)),negate(add(negate(X2),X1))))=X1)).
+#
+#cnf(i_0_540, hypothesis, (negate(add(d,negate(add(e,negate(add(d,negate(e)))))))=negate(add(d,negate(e))))).
+#
+#cnf(i_0_30, plain, (negate(add(X1,negate(add(negate(add(X1,X2)),negate(negate(add(X1,negate(X2))))))))=negate(add(X1,X2)))).
+#
+#cnf(i_0_592, hypothesis, (d=e|negate(add(e,negate(add(d,negate(add(d,negate(e)))))))!=negate(add(d,negate(e))))).
+############
+#cnf(i_0_591, hypothesis, (negate(add(negate(add(d,negate(e))),negate(add(e,add(d,negate(add(d,negate(e))))))))=d)).
+#
+#cnf(i_0_31, plain, (negate(add(X1,negate(add(X1,add(negate(X2),negate(add(X1,X2)))))))=negate(add(X1,X2)))).
+#
+#cnf(i_0_710, hypothesis, (negate(add(d,negate(e)))=e|negate(add(e,negate(add(d,add(negate(add(d,negate(e))),negate(add(d,negate(e))))))))!=d)).
+#############
+#cnf(i_0_32, hypothesis, (negate(add(negate(add(X1,d)),negate(add(X1,add(negate(e),negate(add(d,negate(e))))))))=X1)).
+###
+#cnf(i_0_487, hypothesis, (negate(e)=d|negate(add(d,negate(add(d,add(negate(e),add(negate(e),add(negate(e),negate(negate(add(d,negate(e)))))))))))!=d)).
+########
+#cnf(i_0_650, hypothesis, (negate(add(negate(e),negate(add(negate(d),negate(add(d,add(negate(e),negate(e))))))))=negate(add(d,add(negate(e),negate(e)))))).
+#
+#cnf(i_0_585, hypothesis, (negate(add(negate(add(d,negate(e))),negate(add(d,negate(negate(add(e,negate(add(d,negate(e))))))))))=d)).
+##
+#cnf(i_0_33, plain, (negate(add(negate(add(X1,add(X2,X3))),negate(add(X1,add(X2,negate(X3))))))=add(X1,X2))).
+#
+#cnf(i_0_867, hypothesis, (negate(add(d,negate(e)))=d|negate(add(d,negate(add(negate(add(d,negate(e))),negate(negate(add(e,negate(add(d,negate(e))))))))))!=d)).
+#######
+#cnf(i_0_263, hypothesis, (negate(add(d,negate(add(d,add(d,add(d,add(negate(e),add(negate(e),add(negate(e),negate(e))))))))))=negate(e))).
+#
+#cnf(i_0_708, hypothesis, (negate(add(d,negate(add(e,add(d,add(negate(add(d,negate(e))),negate(add(d,negate(e)))))))))=negate(add(d,negate(e))))).
+#
+#cnf(i_0_992, hypothesis, (d=e|negate(add(e,negate(add(d,add(d,add(negate(add(d,negate(e))),negate(add(d,negate(e)))))))))!=negate(add(d,negate(e))))).
+#
+#cnf(i_0_543, hypothesis, (negate(add(d,negate(add(e,negate(add(d,add(d,add(negate(e),negate(e)))))))))=negate(add(d,add(d,add(negate(e),negate(e))))))).
+#
+#cnf(i_0_1017, hypothesis, (d=e|negate(add(e,negate(add(d,negate(add(d,add(d,add(negate(e),negate(e)))))))))!=negate(add(d,add(d,add(negate(e),negate(e))))))).
+############
+#cnf(i_0_178, hypothesis, (negate(add(d,negate(add(negate(e),negate(negate(add(d,negate(negate(add(negate(e),negate(negate(add(d,negate(e))))))))))))))=negate(e))).
+#
+#cnf(i_0_38, plain, (negate(add(negate(add(X2,X1)),negate(add(X1,negate(X2)))))=X1)).
+#####
+#cnf(i_0_1167, hypothesis, (negate(add(d,negate(add(negate(negate(e)),negate(add(d,negate(e)))))))=negate(add(d,negate(e))))).
+###
+#cnf(i_0_1203, hypothesis, (negate(add(negate(add(d,negate(e))),negate(add(d,add(negate(negate(e)),negate(add(d,negate(e))))))))=d)).
+#
+#cnf(i_0_1225, hypothesis, (negate(add(d,negate(e)))=d|negate(add(d,negate(add(negate(negate(e)),add(negate(add(d,negate(e))),negate(add(d,negate(e))))))))!=d)).
+#####
+#cnf(i_0_1194, hypothesis, (negate(add(negate(add(d,negate(e))),negate(add(d,negate(negate(add(negate(negate(e)),negate(add(d,negate(e))))))))))=d)).
+###
+#cnf(i_0_42, plain, (add(X1,X2)=X3|negate(add(X1,add(X2,negate(add(X3,X4)))))!=negate(add(X3,negate(add(X1,add(X2,X4))))))).
+#
+#cnf(i_0_1273, hypothesis, (add(d,negate(e))=d|negate(add(d,add(negate(e),negate(add(d,negate(e))))))!=negate(e))).
+#
+#cnf(i_0_1282, hypothesis, (negate(e)=add(d,d)|negate(add(d,add(d,negate(add(negate(e),add(negate(e),negate(e)))))))!=d)).
+#########
+#cnf(i_0_1274, hypothesis, (add(d,d)=d|negate(add(d,add(d,negate(add(d,add(negate(e),add(negate(e),negate(e))))))))!=negate(e))).
+###
+#cnf(i_0_43, plain, (X1=X2|negate(add(X1,negate(add(X2,X3))))!=negate(add(X2,negate(add(X3,X1)))))).
+#############
+#cnf(i_0_1283, hypothesis, (add(d,negate(e))=negate(e)|negate(add(d,add(negate(e),negate(add(negate(e),negate(negate(add(d,negate(e)))))))))!=d)).
+####
+#cnf(i_0_1284, hypothesis, (negate(e)=add(d,d)|negate(add(d,add(d,negate(add(d,add(negate(e),add(negate(e),add(negate(e),negate(e)))))))))!=d)).
+#########
+#cnf(i_0_557, plain, (negate(add(negate(add(X2,X1)),negate(add(negate(X2),X1))))=X1)).
+##
+#cnf(i_0_45, plain, (negate(add(X1,X2))=X3|negate(add(negate(add(X1,X2)),negate(add(X3,negate(add(X1,negate(X2)))))))!=negate(add(X3,X1)))).
+#
+#cnf(i_0_1757, hypothesis, (negate(add(e,d))=negate(e)|negate(add(d,negate(add(e,d))))!=negate(add(d,negate(e))))).
+####
+#cnf(i_0_1275, hypothesis, (add(d,negate(e))=d|negate(add(d,add(negate(e),negate(add(d,negate(negate(add(d,add(negate(e),negate(e))))))))))!=negate(e))).
+#
+#cnf(i_0_1276, hypothesis, (add(d,negate(e))=d|negate(add(d,add(negate(e),negate(add(d,add(negate(e),negate(negate(add(d,negate(e))))))))))!=negate(e))).
+########
+#cnf(i_0_46, hypothesis, (negate(e)=X1|negate(add(negate(e),negate(add(X1,negate(add(d,negate(e)))))))!=negate(add(X1,d)))).
+######
+#cnf(i_0_1754, hypothesis, (negate(add(e,add(d,negate(e))))=d|negate(add(negate(add(d,negate(e))),negate(add(e,add(d,negate(e))))))!=negate(add(e,d)))).
+#
+#cnf(i_0_1289, hypothesis, (negate(add(d,negate(e)))=add(e,d)|negate(add(e,add(d,negate(add(negate(add(d,negate(e))),negate(add(d,negate(e))))))))!=d)).
+####
+#cnf(i_0_639, hypothesis, (negate(add(d,negate(add(negate(negate(e)),negate(add(d,add(d,add(negate(e),negate(e)))))))))=negate(add(d,add(d,add(negate(e),negate(e))))))).
+##
+#cnf(i_0_1151, hypothesis, (negate(add(negate(e),negate(add(negate(d),negate(add(negate(e),negate(negate(add(d,negate(e))))))))))=negate(add(negate(e),negate(negate(add(d,negate(e)))))))).
+###
+#cnf(i_0_1286, hypothesis, (negate(e)=add(d,d)|negate(add(d,add(d,negate(add(negate(e),add(negate(e),negate(negate(add(d,add(negate(e),negate(e)))))))))))!=d)).
+#
+#cnf(i_0_1288, hypothesis, (negate(e)=add(d,d)|negate(add(d,add(d,negate(add(negate(e),add(negate(e),add(negate(e),negate(negate(add(d,negate(e)))))))))))!=d)).
+###########
+#cnf(i_0_48, plain, (X1=X2|negate(add(negate(add(X1,X3)),X2))!=negate(add(X1,negate(add(X2,X3)))))).
+######
+#cnf(i_0_1277, hypothesis, (add(d,negate(e))=d|negate(add(d,add(negate(e),negate(add(d,negate(negate(add(negate(e),negate(negate(add(d,negate(e))))))))))))!=negate(e))).
+#
+#cnf(i_0_1278, hypothesis, (add(d,d)=d|negate(add(d,add(d,negate(add(d,add(d,add(negate(e),add(negate(e),add(negate(e),negate(e))))))))))!=negate(e))).
+#
+#cnf(i_0_1279, hypothesis, (add(e,d)=d|negate(add(e,add(d,negate(add(d,add(negate(add(d,negate(e))),negate(add(d,negate(e)))))))))!=negate(add(d,negate(e))))).
+####
+#cnf(i_0_1162, hypothesis, (negate(add(negate(add(d,negate(e))),negate(add(negate(d),negate(add(e,negate(add(d,negate(e)))))))))=negate(add(e,negate(add(d,negate(e))))))).
+#
+#cnf(i_0_1450, hypothesis, (X1=negate(e)|negate(add(negate(e),negate(add(negate(add(d,negate(e))),X1))))!=negate(add(X1,d)))).
+##
+#cnf(i_0_2038, hypothesis, (negate(add(d,negate(add(e,add(d,negate(add(d,negate(e))))))))!=negate(add(d,negate(e))))).
+#
+#cnf(i_0_2034, hypothesis, (negate(add(d,negate(negate(e))))=negate(e)|negate(add(d,negate(add(d,negate(negate(e))))))!=negate(add(d,negate(e))))).
+##
+#cnf(i_0_2039, hypothesis, (negate(add(negate(e),negate(d)))=negate(e)|negate(add(d,negate(add(negate(e),negate(d)))))!=negate(add(negate(e),negate(e))))).
+##########
+#cnf(i_0_50, plain, (negate(add(X1,X2))=X1|negate(add(X1,negate(add(negate(X2),negate(add(X1,X2))))))!=X1)).
+#
+#cnf(i_0_2071, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,negate(e))))))))!=negate(e))).
+####
+#cnf(i_0_2076, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,add(d,add(negate(e),negate(e))))))))))!=negate(e))).
+#####
+#cnf(i_0_2074, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,negate(negate(add(d,add(negate(e),negate(e))))))))))))!=negate(e))).
+#
+#cnf(i_0_1928, hypothesis, (negate(e)=X1|negate(add(negate(e),negate(add(X1,negate(add(d,negate(e)))))))!=negate(add(d,X1)))).
+####
+#cnf(i_0_2077, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,add(negate(e),negate(negate(add(d,negate(e))))))))))))!=negate(e))).
+############
+#cnf(i_0_2150, hypothesis, (negate(e)=X1|negate(add(negate(e),negate(add(negate(add(d,negate(e))),X1))))!=negate(add(d,X1)))).
+#####
+#cnf(i_0_2172, hypothesis, (negate(add(d,add(negate(negate(e)),negate(add(d,negate(e))))))=negate(e))).
+####
+#cnf(i_0_2192, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(add(negate(negate(e)),negate(add(d,negate(e)))))))))!=d)).
+###
+#cnf(i_0_2201, hypothesis, (negate(add(negate(e),negate(add(d,add(d,add(negate(e),negate(negate(e))))))))=add(d,negate(negate(e))))).
+##
+#cnf(i_0_2202, hypothesis, (negate(add(negate(e),negate(add(d,add(negate(negate(e)),negate(negate(add(d,negate(e)))))))))=add(d,negate(negate(e))))).
+##
+#cnf(i_0_2234, hypothesis, (negate(e)=d|negate(add(d,negate(add(d,add(negate(e),add(negate(e),negate(negate(e))))))))!=add(d,negate(negate(e))))).
+#####
+#cnf(i_0_2238, hypothesis, (negate(e)=add(d,d)|negate(add(d,add(d,negate(add(negate(e),add(negate(e),negate(negate(e))))))))!=add(d,negate(negate(e))))).
+#####
+#cnf(i_0_2188, hypothesis, (negate(add(d,negate(add(d,add(negate(e),negate(add(negate(negate(e)),negate(add(d,negate(e))))))))))=negate(e))).
+##
+#cnf(i_0_2190, hypothesis, (negate(add(negate(e),negate(add(negate(d),add(negate(negate(e)),negate(add(d,negate(e))))))))=add(negate(negate(e)),negate(add(d,negate(e)))))).
+##
+#cnf(i_0_2273, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),add(negate(negate(e)),negate(negate(add(d,negate(e)))))))))!=add(d,negate(negate(e))))).
+###
+#cnf(i_0_2075, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,negate(negate(add(negate(e),negate(negate(add(d,negate(e))))))))))))))!=negate(e))).
+#
+#cnf(i_0_2056, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,add(d,add(negate(e),negate(e)))))))))))))!=d)).
+#
+#cnf(i_0_2061, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(d,add(negate(e),negate(negate(add(d,add(negate(e),negate(e)))))))))))))!=d)).
+#
+#cnf(i_0_2062, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(d,add(negate(e),add(negate(e),negate(negate(add(d,negate(e)))))))))))))!=d)).
+#####
+#cnf(i_0_2231, hypothesis, (negate(add(d,add(negate(negate(e)),negate(add(d,add(d,add(negate(e),add(negate(e),negate(negate(e))))))))))=negate(e))).
+########
+#cnf(i_0_2277, hypothesis, (add(d,negate(negate(e)))=negate(e)|negate(add(d,add(negate(negate(e)),negate(add(negate(e),negate(negate(add(d,negate(e)))))))))!=add(d,negate(negate(e))))).
+#
+#cnf(i_0_1285, hypothesis, (add(d,negate(e))=negate(e)|negate(add(d,add(negate(e),negate(add(negate(e),negate(negate(add(d,add(d,add(negate(e),negate(e)))))))))))!=d)).
+#
+#cnf(i_0_2079, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,add(d,add(d,add(negate(e),add(negate(e),negate(e))))))))))))!=negate(e))).
+##################
+#cnf(i_0_2313, hypothesis, (negate(add(negate(e),negate(add(d,add(d,add(negate(e),negate(add(negate(negate(e)),negate(add(d,negate(e)))))))))))=d)).
+###
+#cnf(i_0_2436, hypothesis, (negate(e)=d|negate(add(d,negate(add(d,add(negate(e),add(negate(e),negate(add(negate(negate(e)),negate(add(d,negate(e)))))))))))!=d)).
+#####
+#cnf(i_0_2440, hypothesis, (negate(e)=add(d,d)|negate(add(d,add(d,negate(add(negate(e),add(negate(e),negate(add(negate(negate(e)),negate(add(d,negate(e)))))))))))!=d)).
+#####
+#cnf(i_0_541, hypothesis, (negate(add(d,negate(add(e,negate(add(d,negate(negate(add(d,add(negate(e),negate(e)))))))))))=negate(add(d,negate(negate(add(d,add(negate(e),negate(e))))))))).
+#
+#cnf(i_0_544, hypothesis, (negate(add(d,negate(add(e,negate(add(d,add(negate(e),negate(negate(add(d,negate(e)))))))))))=negate(add(d,add(negate(e),negate(negate(add(d,negate(e))))))))).
+#####
+#cnf(i_0_1250, hypothesis, (negate(add(d,negate(e)))=d|negate(add(d,negate(add(negate(add(d,negate(e))),negate(negate(add(negate(negate(e)),negate(add(d,negate(e))))))))))!=d)).
+####
+#cnf(i_0_2304, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(d,add(negate(e),negate(add(negate(negate(e)),negate(add(d,negate(e)))))))))))))!=d)).
+#
+#cnf(i_0_2481, hypothesis, (d=e|negate(add(e,negate(add(d,negate(add(d,negate(negate(add(d,add(negate(e),negate(e)))))))))))!=negate(add(d,negate(negate(add(d,add(negate(e),negate(e))))))))).
+######
+#cnf(i_0_62, plain, (multiply(successor(X3),add(X1,X2))=add(X1,add(X2,multiply(X3,add(X1,X2))))|~positive_integer(add(X1,X2)))).
+#
+#cnf(i_0_2518, hypothesis, (d=e|negate(add(e,negate(add(d,negate(add(d,add(negate(e),negate(negate(add(d,negate(e)))))))))))!=negate(add(d,add(negate(e),negate(negate(add(d,negate(e))))))))).
+#####
+#cnf(i_0_1291, hypothesis, (negate(add(d,negate(e)))=add(d,negate(negate(e)))|negate(add(d,add(negate(negate(e)),negate(add(negate(add(d,negate(e))),negate(add(d,negate(e))))))))!=d)).
+###
+#cnf(i_0_1968, hypothesis, (negate(add(e,add(d,negate(add(d,negate(e))))))=d|negate(add(d,negate(add(negate(e),negate(add(e,add(d,negate(add(d,negate(e))))))))))!=d)).
+#
+#cnf(i_0_2057, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,negate(negate(add(d,add(negate(e),negate(e)))))))))))))))!=d)).
+#
+#cnf(i_0_519, hypothesis, (negate(add(negate(add(d,X1)),negate(add(X1,add(negate(e),negate(add(d,negate(e))))))))=X1)).
+#
+#cnf(i_0_701, hypothesis, (negate(add(d,negate(add(negate(add(d,negate(e))),negate(negate(add(e,add(d,negate(add(d,negate(e)))))))))))=negate(add(d,negate(e))))).
+##
+#cnf(i_0_63, plain, (add(multiply(successor(X2),X1),X3)=add(X1,add(multiply(X2,X1),X3))|~positive_integer(X1))).
+#
+#cnf(i_0_2058, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,add(negate(e),negate(negate(add(d,negate(e)))))))))))))))!=d)).
+#
+#cnf(i_0_2063, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(d,add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,negate(e)))))))))))))))!=d)).
+###
+#cnf(i_0_2078, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,negate(negate(add(d,add(d,add(negate(e),add(negate(e),negate(e))))))))))))))!=negate(e))).
+#
+#cnf(i_0_2080, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,add(negate(e),negate(negate(add(d,add(d,add(negate(e),negate(e))))))))))))))!=negate(e))).
+#
+#cnf(i_0_2081, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,add(d,add(negate(e),negate(negate(add(d,add(negate(e),negate(e))))))))))))))!=negate(e))).
+#
+#cnf(i_0_2083, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,add(d,add(negate(e),add(negate(e),negate(negate(add(d,negate(e))))))))))))))!=negate(e))).
+###
+#cnf(i_0_713, hypothesis, (negate(add(d,negate(add(d,add(negate(e),negate(add(e,add(d,negate(add(d,negate(e)))))))))))=negate(add(e,add(d,negate(add(d,negate(e)))))))).
+#
+#cnf(i_0_749, hypothesis, (negate(add(d,negate(add(d,add(negate(add(d,negate(e))),negate(negate(add(e,negate(add(d,negate(e)))))))))))=negate(add(d,negate(e))))).
+#
+#cnf(i_0_820, hypothesis, (negate(add(negate(add(X1,d)),negate(add(negate(e),add(negate(add(d,negate(e))),X1)))))=X1)).
+#
+#cnf(i_0_64, plain, (negate(add(negate(multiply(successor(X2),X1)),negate(add(X1,negate(multiply(X2,X1))))))=X1|~positive_integer(X1))).
+#############
+#cnf(i_0_823, hypothesis, (negate(add(negate(add(X1,d)),negate(add(negate(e),add(X1,negate(add(d,negate(e))))))))=X1)).
+#
+#cnf(i_0_65, plain, (X1=X2|negate(add(X1,negate(multiply(successor(X3),X2))))!=negate(add(X2,negate(add(X1,multiply(X3,X2)))))|~positive_integer(X2))).
+#########
+#cnf(i_0_2065, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(d,add(d,add(d,add(negate(e),add(negate(e),add(negate(e),negate(e)))))))))))))!=d)).
+#
+#cnf(i_0_2377, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(add(negate(negate(e)),negate(add(d,add(d,add(negate(e),add(negate(e),negate(negate(e)))))))))))))!=d)).
+##################
+#cnf(i_0_67, plain, (multiply(successor(successor(X1)),X2)=add(X2,add(X2,multiply(X1,X2)))|~positive_integer(X2))).
+#######
+#cnf(i_0_1756, hypothesis, (negate(add(d,add(negate(e),negate(negate(e)))))=d|negate(add(negate(add(d,negate(e))),negate(add(d,add(negate(e),negate(negate(e)))))))!=negate(add(d,negate(negate(e)))))).
+#
+#cnf(i_0_2085, hypothesis, (negate(add(d,negate(e)))=d|negate(add(negate(add(d,negate(e))),negate(add(d,negate(negate(add(e,add(d,negate(add(d,negate(e)))))))))))!=negate(add(d,negate(e))))).
+#
+#cnf(i_0_2424, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,add(d,add(negate(e),negate(add(negate(negate(e)),negate(add(d,negate(e))))))))))))))!=negate(e))).
+###
+#cnf(i_0_1223, hypothesis, (negate(add(d,negate(add(d,add(negate(negate(e)),add(negate(add(d,negate(e))),negate(add(d,negate(e)))))))))=negate(add(d,negate(e))))).
+##
+#cnf(i_0_68, plain, (multiply(successor(one),X1)=add(X1,X1)|~positive_integer(X1))).
+##
+#cnf(i_0_3172, hypothesis, (add(d,negate(negate(e)))=d|negate(add(d,add(negate(negate(e)),negate(add(d,add(negate(add(d,negate(e))),negate(add(d,negate(e)))))))))!=negate(add(d,negate(e))))).
+###
+#cnf(i_0_2060, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,negate(negate(add(negate(e),negate(negate(add(d,negate(e)))))))))))))))))!=d)).
+#
+#cnf(i_0_2868, hypothesis, (add(d,negate(e))=d|negate(add(d,add(negate(e),negate(add(d,negate(add(e,add(d,negate(add(d,negate(e)))))))))))!=negate(add(e,add(d,negate(add(d,negate(e)))))))).
+#
+#cnf(i_0_2015, hypothesis, (negate(add(d,negate(e)))=negate(d)|negate(add(negate(d),negate(add(negate(add(d,negate(e))),negate(add(e,negate(add(d,negate(e)))))))))!=negate(add(e,negate(add(d,negate(e))))))).
+###
+#cnf(i_0_2222, hypothesis, (add(d,negate(negate(e)))=negate(e)|negate(add(negate(e),negate(add(d,add(negate(negate(e)),negate(negate(add(d,add(d,add(negate(e),negate(negate(e))))))))))))!=negate(e))).
+#
+#cnf(i_0_1559, hypothesis, (negate(add(negate(add(d,X1)),negate(add(negate(e),add(negate(add(d,negate(e))),X1)))))=X1)).
+###
+#cnf(i_0_69, plain, (negate(add(negate(add(X1,X5)),negate(add(X1,add(X2,negate(add(X3,multiply(X4,add(X2,X5)))))))))=X1|negate(add(X2,negate(X3)))!=X5|~positive_integer(X4))).
+###
+#cnf(i_0_2037, hypothesis, (negate(add(d,negate(negate(add(e,negate(add(d,negate(e))))))))=negate(e)|negate(add(d,negate(add(d,negate(negate(add(e,negate(add(d,negate(e))))))))))!=negate(add(d,negate(e))))).
+###
+#cnf(i_0_2084, hypothesis, (negate(add(d,negate(e)))=d|negate(add(negate(add(d,negate(e))),negate(add(d,negate(negate(add(d,negate(negate(add(e,negate(add(d,negate(e)))))))))))))!=negate(add(d,negate(e))))).
+##
+#cnf(i_0_2901, hypothesis, (add(d,negate(add(d,negate(e))))=d|negate(add(d,add(negate(add(d,negate(e))),negate(add(d,negate(negate(add(e,negate(add(d,negate(e)))))))))))!=negate(add(d,negate(e))))).
+#
+#cnf(i_0_1967, hypothesis, (negate(add(d,negate(negate(add(e,negate(add(d,negate(e))))))))=d|negate(add(d,negate(add(negate(e),negate(add(d,negate(negate(add(e,negate(add(d,negate(e))))))))))))!=d)).
+####
+#cnf(i_0_2633, hypothesis, (negate(add(negate(add(d,X1)),negate(add(negate(e),add(X1,negate(add(d,negate(e))))))))=X1)).
+#
+#cnf(i_0_70, plain, (negate(add(X4,negate(add(X1,negate(negate(add(X2,multiply(X3,add(X1,X4)))))))))=X1|negate(add(X1,negate(X2)))!=X4|~positive_integer(X3))).
+#
+#cnf(i_0_2626, hypothesis, (negate(add(negate(e),add(negate(e),negate(add(d,negate(e))))))=negate(e)|negate(add(d,negate(add(negate(e),add(negate(e),negate(add(d,negate(e))))))))!=negate(add(negate(e),negate(e))))).
+########
+#cnf(i_0_2261, hypothesis, (add(d,negate(negate(e)))=negate(e)|negate(add(negate(e),negate(add(d,add(negate(negate(e)),negate(negate(add(d,add(negate(negate(e)),negate(negate(add(d,negate(e)))))))))))))!=negate(e))).
+#
+#cnf(i_0_2066, hypothesis, (negate(add(d,negate(e)))=d|negate(add(d,negate(add(negate(add(d,negate(e))),negate(negate(add(e,add(d,add(negate(add(d,negate(e))),negate(add(d,negate(e))))))))))))!=d)).
+####
+#cnf(i_0_71, plain, (X1=X2|negate(add(X2,negate(add(X1,negate(add(X3,multiply(X4,add(X2,X5))))))))!=negate(add(X1,X5))|negate(add(X2,negate(X3)))!=X5|~positive_integer(X4))).
+###
+#cnf(i_0_2090, hypothesis, (negate(add(d,negate(e)))=d|negate(add(negate(add(d,negate(e))),negate(add(d,negate(negate(add(d,negate(negate(add(negate(negate(e)),negate(add(d,negate(e)))))))))))))!=negate(add(d,negate(e))))).
+#
+#cnf(i_0_2685, hypothesis, (negate(add(d,negate(e)))=d|negate(add(d,negate(add(negate(add(d,negate(e))),negate(negate(add(negate(add(d,negate(e))),negate(negate(add(e,add(d,negate(add(d,negate(e))))))))))))))!=d)).
+#
+#cnf(i_0_2888, hypothesis, (negate(add(d,negate(e)))=d|negate(add(d,negate(add(negate(add(d,negate(e))),negate(negate(add(d,add(negate(add(d,negate(e))),negate(negate(add(e,negate(add(d,negate(e))))))))))))))!=d)).
+#
+#cnf(i_0_3159, hypothesis, (negate(add(d,negate(e)))=d|negate(add(d,negate(add(negate(add(d,negate(e))),negate(negate(add(d,add(negate(negate(e)),add(negate(add(d,negate(e))),negate(add(d,negate(e))))))))))))!=d)).
+###
+#cnf(i_0_185, hypothesis, (negate(add(negate(e),negate(add(d,negate(negate(add(negate(e),negate(negate(add(d,add(d,add(negate(e),negate(e)))))))))))))=d)).
+########
+#cnf(i_0_3709, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,negate(negate(add(negate(e),negate(negate(add(d,add(d,add(negate(e),negate(e))))))))))))))))!=negate(e))).
+#####
+#cnf(i_0_246, hypothesis, (negate(add(negate(e),negate(add(d,negate(negate(add(d,add(negate(e),negate(negate(add(d,add(negate(e),negate(e)))))))))))))=d)).
+######
+#cnf(i_0_73, plain, (negate(add(X4,negate(add(X1,add(X2,multiply(X3,add(X1,X4)))))))=X1|negate(add(X1,negate(X2)))!=X4|~positive_integer(X3))).
+##
+#cnf(i_0_3755, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,negate(negate(add(d,add(negate(e),negate(negate(add(d,add(negate(e),negate(e))))))))))))))))!=negate(e))).
+###
+#cnf(i_0_253, hypothesis, (negate(add(negate(e),negate(add(d,negate(negate(add(d,add(negate(e),add(negate(e),negate(negate(add(d,negate(e)))))))))))))=d)).
+####
+#cnf(i_0_3876, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,negate(negate(add(d,add(negate(e),add(negate(e),negate(negate(add(d,negate(e))))))))))))))))!=negate(e))).
+###
+#cnf(i_0_290, hypothesis, (negate(add(negate(e),negate(add(d,add(negate(e),negate(negate(add(d,negate(negate(add(d,add(negate(e),negate(e)))))))))))))=d)).
+#
+#cnf(i_0_297, hypothesis, (negate(add(negate(e),negate(add(d,add(negate(e),negate(negate(add(d,add(negate(e),negate(negate(add(d,negate(e)))))))))))))=d)).
+#
+#cnf(i_0_74, plain, (X1=X2|negate(add(X2,negate(add(X1,multiply(X3,add(X1,X4))))))!=X4|negate(add(X1,negate(X2)))!=X4|~positive_integer(X3))).
+#
+#cnf(i_0_3930, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),add(negate(e),negate(negate(add(d,negate(negate(add(d,add(negate(e),negate(e)))))))))))))!=d)).
+###
+#cnf(i_0_3970, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),add(negate(e),negate(negate(add(d,add(negate(e),negate(negate(add(d,negate(e)))))))))))))!=d)).
+#######
+#cnf(i_0_302, hypothesis, (negate(add(negate(e),negate(add(d,add(d,add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,negate(e)))))))))))))=d)).
+######
+#cnf(i_0_4041, hypothesis, (negate(e)=d|negate(add(d,negate(add(d,add(negate(e),add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,negate(e)))))))))))))!=d)).
+#####
+#cnf(i_0_4045, hypothesis, (negate(e)=add(d,d)|negate(add(d,add(d,negate(add(negate(e),add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,negate(e)))))))))))))!=d)).
+######
+#cnf(i_0_76, plain, (negate(add(X1,add(X2,negate(add(X3,multiply(X4,add(X1,add(X2,X5))))))))=X5|negate(add(X1,add(X2,negate(X3))))!=X5|~positive_integer(X4))).
+###
+#cnf(i_0_3934, hypothesis, (add(d,negate(e))=negate(e)|negate(add(d,add(negate(e),negate(add(negate(e),negate(negate(add(d,negate(negate(add(d,add(negate(e),negate(e)))))))))))))!=d)).
+#
+#cnf(i_0_3974, hypothesis, (add(d,negate(e))=negate(e)|negate(add(d,add(negate(e),negate(add(negate(e),negate(negate(add(d,add(negate(e),negate(negate(add(d,negate(e)))))))))))))!=d)).
+####
+#cnf(i_0_3918, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,add(negate(e),negate(negate(add(d,negate(negate(add(d,add(negate(e),negate(e))))))))))))))))!=negate(e))).
+#
+#cnf(i_0_3958, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,add(negate(e),negate(negate(add(d,add(negate(e),negate(negate(add(d,negate(e))))))))))))))))!=negate(e))).
+#
+#cnf(i_0_4029, hypothesis, (negate(e)=d|negate(add(negate(e),negate(add(d,negate(negate(add(d,add(d,add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,negate(e))))))))))))))))!=negate(e))).
+####
+#cnf(i_0_77, plain, (negate(add(X1,negate(add(X2,multiply(X3,multiply(successor(X4),X1))))))=multiply(X4,X1)|negate(add(X1,negate(X2)))!=multiply(X4,X1)|~positive_integer(X3)|~positive_integer(X1))).
+######
+#cnf(i_0_2041, hypothesis, (negate(add(d,negate(negate(add(negate(negate(e)),negate(add(d,negate(e))))))))=negate(e)|negate(add(d,negate(add(d,negate(negate(add(negate(negate(e)),negate(add(d,negate(e))))))))))!=negate(add(d,negate(e))))).
+##
+#cnf(i_0_1972, hypothesis, (negate(add(d,negate(negate(add(negate(negate(e)),negate(add(d,negate(e))))))))=d|negate(add(d,negate(add(negate(e),negate(add(d,negate(negate(add(negate(negate(e)),negate(add(d,negate(e))))))))))))!=d)).
+#
+#cnf(i_0_2043, hypothesis, (negate(add(negate(d),negate(add(e,negate(add(d,negate(e)))))))=negate(e)|negate(add(d,negate(add(negate(d),negate(add(e,negate(add(d,negate(e)))))))))!=negate(add(negate(e),negate(add(e,negate(add(d,negate(e))))))))).
+##
+#cnf(i_0_89, hypothesis, (X1=d|negate(add(d,negate(add(X1,negate(add(d,add(negate(e),negate(e))))))))!=negate(add(X1,negate(e))))).
+#
+#cnf(i_0_4214, hypothesis, (negate(add(e,add(d,negate(e))))=d|negate(add(negate(e),negate(add(e,add(d,negate(e))))))!=negate(add(d,add(d,negate(e)))))).
+##
+#cnf(i_0_78, plain, (negate(add(X1,negate(add(X2,multiply(X3,add(X4,X1))))))=X4|negate(add(X1,negate(X2)))!=X4|~positive_integer(X3))).
+#
+#cnf(i_0_260, hypothesis, (negate(add(d,negate(add(negate(e),negate(negate(add(d,add(d,add(d,add(negate(e),add(negate(e),negate(e))))))))))))=negate(e))).
+#
+#cnf(i_0_4306, hypothesis, (negate(e)=d|negate(add(d,negate(add(negate(e),negate(negate(add(negate(e),negate(negate(add(d,add(d,add(d,add(negate(e),add(negate(e),negate(e)))))))))))))))!=d)).
+###########
+#cnf(i_0_1434, hypothesis, (X1=d|negate(add(d,negate(add(negate(add(d,add(negate(e),negate(e)))),X1))))!=negate(add(X1,negate(e))))).
+##
+#cnf(i_0_4365, hypothesis, (negate(add(d,negate(add(negate(e),negate(e)))))=d|negate(add(negate(e),negate(add(d,negate(add(negate(e),negate(e)))))))!=negate(add(d,d)))).
+####
+#cnf(i_0_4367, hypothesis, (negate(add(d,add(negate(e),negate(negate(e)))))=d|negate(add(negate(e),negate(add(d,add(negate(e),negate(negate(e)))))))!=negate(add(d,add(d,negate(e)))))).
+#
+#cnf(i_0_4370, hypothesis, (negate(add(negate(e),add(negate(e),negate(d))))=d|negate(add(negate(e),negate(add(negate(e),add(negate(e),negate(d))))))!=negate(add(d,add(negate(e),negate(e)))))).
+####
+#cnf(i_0_4376, hypothesis, (negate(negate(add(d,negate(add(negate(e),negate(e))))))=d|negate(add(negate(e),negate(negate(add(d,negate(add(negate(e),negate(e))))))))!=negate(add(d,add(negate(e),negate(e)))))).
+##
+#cnf(i_0_1911, hypothesis, (d=X1|negate(add(d,negate(add(X1,negate(add(d,add(negate(e),negate(e))))))))!=negate(add(negate(e),X1)))).
+##
+#cnf(i_0_80, plain, (negate(add(X1,negate(add(X2,add(X1,add(X4,multiply(X3,add(X1,X4))))))))=X4|negate(add(X1,negate(X2)))!=X4|~positive_integer(add(X1,X4))|~positive_integer(successor(X3)))).
+#####
+#cnf(i_0_307, hypothesis, (negate(add(d,negate(add(d,add(negate(e),negate(negate(add(d,add(d,add(negate(e),add(negate(e),negate(e))))))))))))=negate(e))).
+#
+#cnf(i_0_4513, hypothesis, (add(d,negate(e))=d|negate(add(d,add(negate(e),negate(add(d,negate(negate(add(d,add(d,add(negate(e),add(negate(e),negate(e))))))))))))!=negate(e))).
+########
+#cnf(i_0_81, plain, (negate(add(X1,negate(add(X2,add(X1,X3)))))=X3|negate(add(X1,negate(X2)))!=X3)).
+
+# Proof found!
+# SZS status Unsatisfiable
+# SZS output start CNFRefutation
+cnf(lemma_3_2, axiom, (X1=X2|negate(add(X1,negate(add(X2,X3))))!=negate(add(X2,negate(add(X1,X3))))), file('Problems/ROB/ROB014-2.p', lemma_3_2)).
+cnf(robbins_axiom, axiom, (negate(add(negate(add(X1,X2)),negate(add(X1,negate(X2)))))=X1), file('TPTP/Axioms/ROB001-0.ax', robbins_axiom)).
+cnf(commutativity_of_add, axiom, (add(X1,X2)=add(X2,X1)), file('TPTP/Axioms/ROB001-0.ax', commutativity_of_add)).
+cnf(condition, hypothesis, (negate(add(negate(e),negate(add(d,negate(e)))))=d), file('Problems/ROB/ROB014-2.p', condition)).
+cnf(associativity_of_add, axiom, (add(add(X1,X2),X3)=add(X1,add(X2,X3))), file('TPTP/Axioms/ROB001-0.ax', associativity_of_add)).
+cnf(prove_base_step, negated_conjecture, (negate(add(e,multiply(one,add(d,negate(add(d,negate(e)))))))!=negate(e)), file('Problems/ROB/ROB014-2.p', prove_base_step)).
+cnf(one_times_x, axiom, (multiply(one,X1)=X1), file('TPTP/Axioms/ROB001-1.ax', one_times_x)).
+cnf(lemma_3_4, axiom, (negate(add(X1,negate(add(X2,multiply(X4,add(X1,X3))))))=X3|negate(add(X1,negate(X2)))!=X3|~positive_integer(X4)), file('Problems/ROB/ROB014-2.p', lemma_3_4)).
+cnf(one, axiom, (positive_integer(one)), file('TPTP/Axioms/ROB001-1.ax', one)).
+cnf(c_0_9, plain, (X1=X2|negate(add(X1,negate(add(X2,X3))))!=negate(add(X2,negate(add(X1,X3))))), inference(fof_simplification,[status(thm)],[lemma_3_2])).
+cnf(c_0_10, axiom, (negate(add(negate(add(X1,X2)),negate(add(X1,negate(X2)))))=X1), robbins_axiom).
+cnf(c_0_11, axiom, (add(X1,X2)=add(X2,X1)), commutativity_of_add).
+cnf(c_0_12, plain, (X1=X2|negate(add(X1,negate(add(X2,X3))))!=negate(add(X2,negate(add(X1,X3))))), c_0_9).
+cnf(c_0_13, plain, (negate(add(negate(add(X1,X2)),negate(add(negate(X2),X1))))=X1), inference(spm,[status(thm)],[c_0_10, c_0_11])).
+cnf(c_0_14, hypothesis, (negate(add(negate(e),negate(add(d,negate(e)))))=d), condition).
+cnf(c_0_15, axiom, (add(add(X1,X2),X3)=add(X1,add(X2,X3))), associativity_of_add).
+cnf(c_0_16, negated_conjecture, (negate(add(e,multiply(one,add(d,negate(add(d,negate(e)))))))!=negate(e)), inference(fof_simplification,[status(thm)],[prove_base_step])).
+cnf(c_0_17, plain, (X1=X2|negate(add(X1,negate(add(X2,X3))))!=negate(add(X2,negate(add(X3,X1))))), inference(spm,[status(thm)],[c_0_12, c_0_11])).
+cnf(c_0_18, hypothesis, (negate(add(d,negate(add(e,negate(add(d,negate(e)))))))=negate(add(d,negate(e)))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_13, c_0_14]), c_0_11]), c_0_11])).
+cnf(c_0_19, plain, (add(X1,add(X2,X3))=add(X2,add(X1,X3))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_15, c_0_11]), c_0_15])).
+cnf(c_0_20, negated_conjecture, (negate(add(e,multiply(one,add(d,negate(add(d,negate(e)))))))!=negate(e)), c_0_16).
+cnf(c_0_21, axiom, (multiply(one,X1)=X1), one_times_x).
+cnf(c_0_22, plain, (negate(add(X1,negate(add(X2,multiply(X4,add(X1,X3))))))=X3|negate(add(X1,negate(X2)))!=X3|~positive_integer(X4)), inference(fof_simplification,[status(thm)],[lemma_3_4])).
+cnf(c_0_23, hypothesis, (X1=negate(e)|negate(add(negate(e),negate(add(negate(add(d,negate(e))),X1))))!=negate(add(X1,d))), inference(spm,[status(thm)],[c_0_17, c_0_14])).
+cnf(c_0_24, hypothesis, (negate(add(negate(add(d,negate(e))),negate(add(e,add(d,negate(add(d,negate(e))))))))=d), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_10, c_0_18]), c_0_19]), c_0_11])).
+cnf(c_0_25, negated_conjecture, (negate(add(e,add(d,negate(add(d,negate(e))))))!=negate(e)), inference(spm,[status(thm)],[c_0_20, c_0_21])).
+cnf(c_0_26, plain, (negate(add(X1,negate(add(X2,multiply(X4,add(X1,X3))))))=X3|negate(add(X1,negate(X2)))!=X3|~positive_integer(X4)), c_0_22).
+cnf(c_0_27, axiom, (positive_integer(one)), one).
+cnf(c_0_28, hypothesis, (negate(add(d,negate(add(e,add(d,negate(add(d,negate(e))))))))!=negate(add(d,negate(e)))), inference(rw,[status(thm)],[inference(sr,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_23, c_0_24]), c_0_11]), c_0_25]), c_0_11])).
+cnf(c_0_29, plain, (negate(add(X1,negate(add(X2,add(X1,X3)))))=X3|negate(add(X1,negate(X2)))!=X3), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_26, c_0_21]), c_0_27])])).
+cnf(c_0_30, hypothesis, ($false), inference(spm,[status(thm)],[c_0_28, c_0_29]), ['proof']).
+# SZS output end CNFRefutation

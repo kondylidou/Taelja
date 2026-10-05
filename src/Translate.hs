@@ -1353,7 +1353,11 @@ translateNucleus prover debug thetaCtx entry posToName goalLits = do
           coherentStep theta' matched = case mHead of
             Just headLit -> resolutionCoherent bodyLitsAbs headLit (matchedPremises matched) (applySubstLit theta' headLit)
             Nothing      -> True
-      elecs   <- getElectrons pos
+      -- A clause without a head ends the direct proof and no unit rests on
+      -- it, so it may use every unit, also one the tree places after it, as
+      -- when the prover reasons from the negated goal first (ROB014-2). The
+      -- position z sorts after every other.
+      elecs   <- getElectrons (maybe "z" (const pos) mHead)
       mResult <- findElecs prover coherentStep bodyLits θ_local elecs pos
       case mResult of
         Nothing -> do
