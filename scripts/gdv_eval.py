@@ -33,9 +33,11 @@ def status_of(gdv, taelja, evaldir, row, tries=3):
         for _ in range(tries):
             # GDV names its obligation files after the steps, in /tmp by
             # default, so each run gets its own directory (-k) or parallel
-            # runs overwrite each other's.
+            # runs overwrite each other's. Steps are checked with Vampire,
+            # since GDV's default remote E reports a timeout on some correct
+            # steps after a few milliseconds (LCL384+2, GRP658+1).
             with tempfile.TemporaryDirectory(prefix='gdv-', ignore_cleanup_errors=True) as work:
-                _, report, _ = run([gdv, '-r', '-l', '-q1', '-t', '300', '-k', work,
+                _, report, _ = run([gdv, '-r', '-l', '-q1', '-t', '300', '-P', 'Vampire---', '-k', work,
                                     '-p', str(problem), tmp.name],
                                    timeout=1800, extra_env={'TPTP': str(TPTP)})
             szs = [l.split('% SZS status ')[1].strip() for l in report.splitlines()
