@@ -1,0 +1,21 @@
+Axiom 1: cat(james)
+Axiom 2: catch(james) = mouse
+Axiom 3: brings_home(james) = catch(james)
+Axiom 4: brings_home(X) = mouse /\ cat(X) => happy(X)
+
+Lemma 5: brings_home(james) = mouse
+Proof:
+  brings_home(james)
+= { by axiom 3 }
+  catch(james)
+= { by axiom 2 }
+  mouse
+
+Goal 1: happy(james)
+Proof:
+  have brings_home(james) = mouse
+    by lemma 5
+   and cat(james)
+    by axiom 1
+  hence happy(james)
+    by axiom 4

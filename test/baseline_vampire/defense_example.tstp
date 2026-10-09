@@ -1,0 +1,78 @@
+% Running in auto input_syntax mode. Trying TPTP
+% Detected formulas, will run a generic FOF schedule.
+% WARNING: time unlimited strategy and instruction limiting not in place - attempting to translate instructions to time
+% % WARNING: option sil not known.
+% % WARNING: option i not known.
+% lrs+1011_32_tgt=full:alpa=true:random_seed=2739745362:st=5:sd=1:ss=included:er=filter_1 on defense_example for (1ds)
+% Solution written to "/var/folders/bk/v9p36c7s37g3tzfx5s_t9pkw0000gn/T/vampire-proof-92573"
+% Refutation found. Thanks to Tanya!
+% SZS status Theorem for defense_example
+% SZS output start Proof for defense_example
+fof(f1,axiom,(
+  brings_home(james) = catch(james)),
+  file('test/input/defense_example.p',unknown)).
+fof(f2,axiom,(
+  catch(james) = mouse),
+  file('test/input/defense_example.p',unknown)).
+fof(f3,axiom,(
+  cat(james)),
+  file('test/input/defense_example.p',unknown)).
+fof(f4,axiom,(
+  ! [X0] : ((brings_home(X0) = mouse & cat(X0)) => happy(X0))),
+  file('test/input/defense_example.p',unknown)).
+fof(f5,conjecture,(
+  happy(james)),
+  file('test/input/defense_example.p',unknown)).
+fof(f6,negated_conjecture,(
+  ~happy(james)),
+  inference(negated_conjecture,[status(cth)],[f5])).
+fof(f7,plain,(
+  ~happy(james)),
+  inference(flattening,[],[f6])).
+fof(f8,plain,(
+  ! [X0] : (happy(X0) | (mouse != brings_home(X0) | ~cat(X0)))),
+  inference(ennf_transformation,[],[f4])).
+fof(f9,plain,(
+  ! [X0] : (happy(X0) | mouse != brings_home(X0) | ~cat(X0))),
+  inference(flattening,[],[f8])).
+fof(f10,plain,(
+  brings_home(james) = catch(james)),
+  inference(cnf_transformation,[],[f1])).
+fof(f11,plain,(
+  catch(james) = mouse),
+  inference(cnf_transformation,[],[f2])).
+fof(f12,plain,(
+  cat(james)),
+  inference(cnf_transformation,[],[f3])).
+fof(f13,plain,(
+  ( ! [X0] : (mouse != brings_home(X0) | happy(X0) | ~cat(X0)) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f14,plain,(
+  ~happy(james)),
+  inference(cnf_transformation,[],[f7])).
+fof(f15,plain,(
+  brings_home(james) = mouse),
+  inference(forward_demodulation,[],[f10,f11])).
+fof(f16,plain,(
+  mouse != mouse | happy(james) | ~cat(james)),
+  inference(superposition,[],[f13,f15])).
+fof(f17,plain,(
+  happy(james) | ~cat(james)),
+  inference(trivial_inequality_removal,[],[f16])).
+fof(f18,plain,(
+  ~cat(james)),
+  inference(forward_subsumption_resolution,[],[f17,f14])).
+fof(f19,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f18,f12])).
+% SZS output end Proof for defense_example
+% ------------------------------
+% Version: Vampire 5.0.1 (Release build, commit 1b13eaf on 2026-01-18 12:14:50 +0000)
+% Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 NOTFOUND
+% CaDiCaL version: 2.1.3
+% Termination reason: Refutation
+% Time elapsed: 0.004 s
+% Peak memory usage: 5 MB
+% ------------------------------
+% ------------------------------
+% Success in time 0.012 s

@@ -57,7 +57,7 @@ main = do
   when ("--no-fallback" `elem` flags) disableFallback
   raw <- TIO.readFile inputFile
   tstp@(T.TSTP _ units) <- either (die . ("Parse error: " ++)) return (parseProof (Text.unpack raw))
-  when debug $ case buildProofInfo units of
+  when debug $ case buildProofInfo True units of
     Left reason -> hPutStrLn stderr ("No proof tree, " ++ reason)
     Right info  -> do
       hPutStrLn stderr "-- Proof tree"

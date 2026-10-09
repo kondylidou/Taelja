@@ -40,7 +40,7 @@ import Debug (dbg)
 -- the override map are used as given, so the sub-proof cites the outer
 -- proof's axioms.
 translateWith :: Map.Map String String -> Bool -> T.TSTP -> IO (Either String StructuredProof)
-translateWith nameOverride debug (T.TSTP _ units) = case buildProofInfo units of
+translateWith nameOverride debug (T.TSTP _ units) = case buildProofInfo True units of
   Left reason    -> return (Left reason)
   Right origInfo -> translateTree debug origInfo units Map.empty nameOverride Nothing
 
@@ -78,10 +78,12 @@ translateUntyped debug tstp = do
 -- than an axiom or its copy, is translated on its own and becomes a leaf
 -- named "lemma <tstp-name>". Then the main tree is translated and finished.
 -- All share one axiom numbering, so an axiom used only in a lemma is listed.
+-- The numbering needs each clause once, so the tree with every use of a
+-- clause is built only after the lemmas cut it down.
 translateWithLemmas :: Bool -> T.TSTP -> IO (Either String StructuredProof)
 translateWithLemmas debug (T.TSTP _ units0) = do
   let units = expandPropRes (expandSimplifiedConjecture (inlineAtomCongruences (map dedupLiterals units0)))
-  case buildProofInfo units of
+  case buildProofInfo False units of
     Left reason -> return (Left reason)
     Right origInfo -> do
       let unitMap0 = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- units]
@@ -186,8 +188,9 @@ translateWithLemmas debug (T.TSTP _ units0) = do
             , not (any (`clauseInstance` c) (ante ++ cons)) ]
       case ungranted of
         why : _ -> return (Left ("unsupported conjecture, " ++ why))
-        [] | Map.null validCands -> finish origInfo units Map.empty origTstp2name origAxioms
-           | otherwise -> case buildProofInfo modUnits of
+        [] | Map.null validCands -> either (return . Left) (\info -> finish info units Map.empty origTstp2name origAxioms)
+                                             (buildProofInfo True units)
+           | otherwise -> case buildProofInfo True modUnits of
                Right mainInfo -> finish mainInfo modUnits validCands nameOverride allAxioms
                Left reason -> return (Left ("the proof with its lemmas as inputs is no refutation, " ++ reason))
 

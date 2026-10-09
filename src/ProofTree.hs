@@ -45,9 +45,11 @@ data ProofTree
 
 -- The electrons, nuclei and goal atoms of a proof, with the clause, unit and
 -- rule at each position. A proof outside the Horn fragment or the calculus is
--- refused with a message.
-buildProofInfo :: [T.Unit] -> Either String ProofInfo
-buildProofInfo allUnits = do
+-- refused with a message. With everyUse a nucleus is listed at each of its
+-- positions in the tree, as the translation needs. Without it every clause is
+-- listed once, at its first position, which costs no more than the DAG.
+buildProofInfo :: Bool -> [T.Unit] -> Either String ProofInfo
+buildProofInfo everyUse allUnits = do
   root <- maybe (Left "the proof never derives $false") Right (findRoot allUnits)
   let unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
   mapM_ (\n -> Left ("incomplete proof, it cites " ++ n ++ ", which it does not contain"))
@@ -55,8 +57,8 @@ buildProofInfo allUnits = do
   let tree    = buildProofTree allUnits root
       -- the clauses the conjecture grants as hypotheses
       granted = maybe [] (uncurry (++)) (conjectureHypotheses allUnits)
-      leafRows  = gatherLeaves tree
-      innerRows = gatherInner tree
+      leafRows  = gatherLeaves everyUse tree
+      innerRows = gatherInner everyUse tree
       mkLeaf (pos, name, decl) =
         let srcName = if isNegConj decl then name
                       else let r = resolveCopySource unitMap name
@@ -465,23 +467,24 @@ matchClause final outer
             , s'' <- go ls (i : hit) s' ]
 
 -- The leaves with their positions. An electron is kept once, at its first
--- position in depth-first order. A nucleus appears at every position, since
--- each occurrence may see different electrons, and a shared inner node
--- re-emits its nuclei at the new position.
-gatherLeaves :: ProofTree -> [(String, String, T.Declaration)]
-gatherLeaves = gatherRows (\(_, _, d) -> not (isPositiveUnitFormula d)) leaf
+-- position in depth-first order. With everyUse a nucleus appears at every
+-- position, since each occurrence may see different electrons, and a shared
+-- inner node re-emits its nuclei at the new position. Without it a nucleus is
+-- kept once like an electron.
+gatherLeaves :: Bool -> ProofTree -> [(String, String, T.Declaration)]
+gatherLeaves everyUse = gatherRows (\(_, _, d) -> everyUse && not (isPositiveUnitFormula d)) leaf
   where
     leaf pos (PTLeaf n d) seen
-      | not (isPositiveUnitFormula d) = (seen, [(pos, n, d)])
-      | Set.member n seen             = (seen, [])
-      | otherwise                     = (Set.insert n seen, [(pos, n, d)])
+      | everyUse && not (isPositiveUnitFormula d) = (seen, [(pos, n, d)])
+      | Set.member n seen                         = (seen, [])
+      | otherwise                                 = (Set.insert n seen, [(pos, n, d)])
     leaf _ _ seen = (seen, [])
 
 -- The inner nodes with their positions, each named unit once but every "?"
--- node, since each is a clause of its own. A named node met again re-emits
--- the "?" nodes below it.
-gatherInner :: ProofTree -> [(String, String, T.Declaration)]
-gatherInner = gatherRows (\(_, n, _) -> n == "?") inner
+-- node, since each is a clause of its own. With everyUse a named node met
+-- again re-emits the "?" nodes below it.
+gatherInner :: Bool -> ProofTree -> [(String, String, T.Declaration)]
+gatherInner everyUse = gatherRows (\(_, n, _) -> everyUse && n == "?") inner
   where
     inner pos (PTNode n d rule _) seen
       | rule == Text.pack "proved_conjecture" = (seen, [])

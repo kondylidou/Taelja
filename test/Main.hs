@@ -261,6 +261,7 @@ vampireBenchmarkNames =
   , "GRP656+1"
   , "GRP195-1"        -- a chain that returns to an earlier term once its variables are bound
   , "TOP050-1"        -- a step rewriting every occurrence of a constant in a premise
+  , "defense_example"  -- the running example of the PhD defense slides, James the cat
   ]
 
 -- The E proofs.
@@ -370,6 +371,9 @@ eBenchmarkNames =
   , "PUZ056-2.005"    -- resolutions between large clauses, whose readings must fail fast
   , "SYO613-1"        -- 23 goals of one shape, each paired with the conjunct it proves
   , "ROB014-2"        -- the goal clause needs a unit the tree derives after it
+  -- its proof tree has about a million nodes before lemma introduction and
+  -- a dozen after, so only the cut-down tree is built with every use
+  , "GRP418-1"
   ]
 
 -- The Lean module name of a proof. A TPTP name keeps its separator as a
