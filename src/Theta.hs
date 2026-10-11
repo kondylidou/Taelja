@@ -378,21 +378,24 @@ superpose x y = nub
 -- up to renaming and dropped duplicate or trivial literals. Each result literal
 -- matches a conclusion literal, binding only premise variables, or is a body
 -- equation s ≈ t dropped by unifying s and t. Every conclusion literal is hit,
--- so a branch stops once fewer result literals are left than are unhit. A
--- result literal with no partner rules the reading out at once.
+-- so a branch stops once fewer result literals are left than are unhit. It
+-- also stops once a remaining result literal has no partner or an unhit
+-- conclusion literal can no longer be hit, since bindings only grow.
 cover :: [(Bool, Literal)] -> [(Bool, Literal)] -> TreeSubst -> [TreeSubst]
-cover result parent s0
-  | not (all hasPartner result) = []
-  | otherwise = go result (length result) Set.empty s0
+cover result parent s0 = go result (length result) Set.empty s0
   where
     idxParent = zip [0 :: Int ..] parent
     rigid = rigidVars s0 parent
-    hasPartner (sign, l) =
-      or [ sign == sign' && not (null (matchOriented rigid l p s0)) | (sign', p) <- parent ]
-      || (not sign && case l of { Eq a b -> isJust (unifyInTree a b s0); _ -> False })
+    matches s (sign, l) (sign', p) = sign == sign' && not (null (matchOriented rigid l p s))
+    hasPartner s lit@(sign, l) =
+      any (matches s lit) parent
+      || (not sign && case l of { Eq a b -> isJust (unifyInTree a b s); _ -> False })
+    alive ls hit s =
+      all (hasPartner s) ls
+      && and [ any (\lit -> matches s lit p) ls | (i, p) <- idxParent, Set.notMember i hit ]
     go [] _ hit s = [ s | Set.size hit == length parent ]
-    go ((sign, l) : ls) n hit s
-      | length parent - Set.size hit > n = []
+    go ls0@((sign, l) : ls) n hit s
+      | length parent - Set.size hit > n || not (alive ls0 hit s) = []
       | otherwise =
           [ s'' | (i, (sign', p)) <- idxParent, sign == sign'
                 , s' <- matchOriented rigid l p s

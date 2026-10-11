@@ -8,7 +8,7 @@ import Control.Exception (SomeAsyncException, SomeException, fromException, thro
 import Data.Bifunctor (bimap)
 import Data.Char (isAlphaNum, isAsciiLower, isAsciiUpper, isDigit, toUpper)
 import Data.Function (on)
-import Data.List ((\\), groupBy, inits, intercalate, isPrefixOf, isSuffixOf, nub, partition, permutations, sortOn, tails)
+import Data.List ((\\), groupBy, inits, intercalate, isPrefixOf, isSuffixOf, nub, partition, sortOn, tails)
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -322,12 +322,15 @@ termCtxs t = (t, id) : case t of
               | (i, ti) <- zip [0 ..] ts, (u, c) <- termCtxs ti ]
   _        -> []
 
--- Apply a triangular substitution until nothing changes, so with X ↦ f(Y)
--- and Y ↦ c, X becomes f(c).
+-- Apply a triangular substitution all the way down, so with X ↦ f(Y) and
+-- Y ↦ c, X becomes f(c). A variable bound to itself stays as it is.
 deepApplySubstTerm :: Subst -> Term -> Term
-deepApplySubstTerm s t =
-  let t' = applySubstTerm s t
-  in if t' == t then t else deepApplySubstTerm s t'
+deepApplySubstTerm s t@(Var x) = case lookup x s of
+  Just (Var y) | y == x -> t
+  Just u                -> deepApplySubstTerm s u
+  Nothing               -> t
+deepApplySubstTerm s (App f ts) = App f (map (deepApplySubstTerm s) ts)
+deepApplySubstTerm _ t = t
 
 -- Append a suffix to every variable of a literal, to rename it apart.
 suffixVarsLit :: String -> Literal -> Literal
@@ -562,12 +565,24 @@ markFree lhs rhs = renameTerm [ (v, v ++ freeMark) | v <- termVars rhs, v `notEl
 
 -- Like variantKey, but the same for every order of the body. The body is
 -- sorted by the shape of each literal, its variables blanked, and the order
--- giving the smallest text is chosen among literals of the same shape.
+-- giving the smallest text is chosen among literals of the same shape. The
+-- order is built one literal at a time, keeping at each place only the
+-- literals whose text is smallest there, since any other makes the whole text
+-- larger.
 clauseKey :: Clause -> String
-clauseKey (Clause bs mh) =
-  minimum [ variantKey (Clause (concat body) mh) | body <- mapM permutations (groupBy ((==) `on` shape) (sortOn shape bs)) ]
+clauseKey (Clause bs mh) = minimum (go [] [] (groupBy ((==) `on` shape) (sortOn shape bs)))
   where
     shape l = show (renameLit [ (v, "_") | v <- litVars l ] l)
+    go done _ [] = [variantKey (Clause (reverse done) mh)]
+    go done ren ([] : gs) = go done ren gs
+    go done ren (g : gs) =
+      let options = [ (show (renameLit ren' l), l, ren', rest) | (l, rest) <- picks g, let ren' = foldl name ren (litVars l) ]
+          least = minimum [ t | (t, _, _, _) <- options ]
+      in concat [ go (l : done) ren' (rest : gs) | (t, l, ren', rest) <- options, t == least ]
+    -- names v by its first occurrence, as variantKey does
+    name ren v
+      | isJust (lookup v ren) = ren
+      | otherwise = ren ++ [(v, "v" ++ show (length ren) ++ (if freeMark `isSuffixOf` v then freeMark else ""))]
 
 -- Whether two clauses are instances of each other, so equal up to renaming.
 variantClause :: Clause -> Clause -> Bool

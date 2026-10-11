@@ -374,6 +374,9 @@ eBenchmarkNames =
   -- its proof tree has about a million nodes before lemma introduction and
   -- a dozen after, so only the cut-down tree is built with every use
   , "GRP418-1"
+  -- printed by E with --proof-object=3, one inference per simplification
+  -- step. Replaying E's nested steps had timed out on it.
+  , "RNG026-7"
   ]
 
 -- The Lean module name of a proof. A TPTP name keeps its separator as a

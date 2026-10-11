@@ -1,0 +1,141 @@
+Axiom 1: multiply(X,additive_identity) = additive_identity
+Axiom 2: add(X,additive_inverse(X)) = additive_identity
+Axiom 3: multiply(X,add(Y,Z)) = add(multiply(X,Y),multiply(X,Z))
+Axiom 4: multiply(X,additive_inverse(Y)) = additive_inverse(multiply(X,Y))
+Axiom 5: add(X,additive_identity) = X
+Axiom 6: add(X,Y) = add(Y,X)
+Axiom 7: add(X,add(Y,Z)) = add(add(X,Y),Z)
+Axiom 8: multiply(add(X,Y),Z) = add(multiply(X,Z),multiply(Y,Z))
+Axiom 9: additive_inverse(additive_inverse(X)) = X
+Axiom 10: add(additive_identity,X) = X
+Axiom 11: associator(X,Y,Z) = add(multiply(multiply(X,Y),Z),additive_inverse(multiply(X,multiply(Y,Z))))
+
+Lemma 12: add(X,add(Y,Z)) = add(Z,add(X,Y))
+Proof:
+  add(X,add(Y,Z))
+= { by axiom 7 }
+  add(add(X,Y),Z)
+= { by axiom 6 R->L }
+  add(Z,add(X,Y))
+
+Lemma 13: add(additive_inverse(X),add(Y,X)) = Y
+Proof:
+  add(additive_inverse(X),add(Y,X))
+= { by axiom 6 R->L }
+  add(additive_inverse(X),add(X,Y))
+= { by axiom 9 R->L }
+  add(additive_inverse(X),add(additive_inverse(additive_inverse(X)),Y))
+= { by axiom 7 }
+  add(add(additive_inverse(X),additive_inverse(additive_inverse(X))),Y)
+= { by axiom 2 }
+  add(additive_identity,Y)
+= { by axiom 10 }
+  Y
+
+Goal 1: add(add(associator(multiply(a,b),c,d),associator(a,b,multiply(c,d))),additive_inverse(add(add(associator(a,multiply(b,c),d),multiply(a,associator(b,c,d))),multiply(associator(a,b,c),d)))) = additive_identity
+Proof:
+  add(add(associator(multiply(a,b),c,d),associator(a,b,multiply(c,d))),additive_inverse(add(add(associator(a,multiply(b,c),d),multiply(a,associator(b,c,d))),multiply(associator(a,b,c),d))))
+= { by axiom 11 }
+  add(add(add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(multiply(a,b),multiply(c,d)))),associator(a,b,multiply(c,d))),additive_inverse(add(add(associator(a,multiply(b,c),d),multiply(a,associator(b,c,d))),multiply(associator(a,b,c),d))))
+= { by axiom 11 }
+  add(add(add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(multiply(a,b),multiply(c,d)))),add(multiply(multiply(a,b),multiply(c,d)),additive_inverse(multiply(a,multiply(b,multiply(c,d)))))),additive_inverse(add(add(associator(a,multiply(b,c),d),multiply(a,associator(b,c,d))),multiply(associator(a,b,c),d))))
+= { by axiom 11 }
+  add(add(add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(multiply(a,b),multiply(c,d)))),add(multiply(multiply(a,b),multiply(c,d)),additive_inverse(multiply(a,multiply(b,multiply(c,d)))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,associator(b,c,d))),multiply(associator(a,b,c),d))))
+= { by axiom 11 }
+  add(add(add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(multiply(a,b),multiply(c,d)))),add(multiply(multiply(a,b),multiply(c,d)),additive_inverse(multiply(a,multiply(b,multiply(c,d)))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(associator(a,b,c),d))))
+= { by axiom 11 }
+  add(add(add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(multiply(a,b),multiply(c,d)))),add(multiply(multiply(a,b),multiply(c,d)),additive_inverse(multiply(a,multiply(b,multiply(c,d)))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(add(multiply(multiply(multiply(a,b),c),d),multiply(multiply(a,b),additive_inverse(multiply(c,d)))),add(multiply(multiply(a,b),multiply(c,d)),additive_inverse(multiply(a,multiply(b,multiply(c,d)))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(add(multiply(multiply(multiply(a,b),c),d),multiply(multiply(a,b),multiply(c,additive_inverse(d)))),add(multiply(multiply(a,b),multiply(c,d)),additive_inverse(multiply(a,multiply(b,multiply(c,d)))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(add(multiply(multiply(multiply(a,b),c),d),multiply(multiply(a,b),multiply(c,additive_inverse(d)))),add(multiply(multiply(a,b),multiply(c,d)),multiply(a,additive_inverse(multiply(b,multiply(c,d)))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(add(multiply(multiply(multiply(a,b),c),d),multiply(multiply(a,b),multiply(c,additive_inverse(d)))),add(multiply(multiply(a,b),multiply(c,d)),multiply(a,multiply(b,additive_inverse(multiply(c,d)))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(add(multiply(multiply(multiply(a,b),c),d),multiply(multiply(a,b),multiply(c,additive_inverse(d)))),add(multiply(multiply(a,b),multiply(c,d)),multiply(a,multiply(b,multiply(c,additive_inverse(d)))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 7 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),add(multiply(multiply(a,b),multiply(c,additive_inverse(d))),add(multiply(multiply(a,b),multiply(c,d)),multiply(a,multiply(b,multiply(c,additive_inverse(d))))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by lemma 12 }
+  add(add(multiply(multiply(multiply(a,b),c),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),add(multiply(multiply(a,b),multiply(c,additive_inverse(d))),multiply(multiply(a,b),multiply(c,d))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 3 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),multiply(multiply(a,b),add(multiply(c,additive_inverse(d)),multiply(c,d))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 3 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),multiply(multiply(a,b),multiply(c,add(additive_inverse(d),d))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 6 }
+  add(add(multiply(multiply(multiply(a,b),c),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),multiply(multiply(a,b),multiply(c,add(d,additive_inverse(d)))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 2 }
+  add(add(multiply(multiply(multiply(a,b),c),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),multiply(multiply(a,b),multiply(c,additive_identity)))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 1 }
+  add(add(multiply(multiply(multiply(a,b),c),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),multiply(multiply(a,b),additive_identity))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 1 }
+  add(add(multiply(multiply(multiply(a,b),c),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),additive_identity)),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 5 }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),additive_inverse(multiply(a,multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,additive_inverse(multiply(multiply(b,c),d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,multiply(multiply(b,c),additive_inverse(d)))),multiply(a,add(multiply(multiply(b,c),d),additive_inverse(multiply(b,multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,multiply(multiply(b,c),additive_inverse(d)))),multiply(a,add(multiply(multiply(b,c),d),multiply(b,additive_inverse(multiply(c,d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,multiply(multiply(b,c),additive_inverse(d)))),multiply(a,add(multiply(multiply(b,c),d),multiply(b,multiply(c,additive_inverse(d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 7 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(multiply(multiply(a,multiply(b,c)),d),add(multiply(a,multiply(multiply(b,c),additive_inverse(d))),multiply(a,add(multiply(multiply(b,c),d),multiply(b,multiply(c,additive_inverse(d))))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 3 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,add(multiply(multiply(b,c),additive_inverse(d)),add(multiply(multiply(b,c),d),multiply(b,multiply(c,additive_inverse(d))))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by lemma 12 }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,add(multiply(b,multiply(c,additive_inverse(d))),add(multiply(multiply(b,c),additive_inverse(d)),multiply(multiply(b,c),d))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 3 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,add(multiply(b,multiply(c,additive_inverse(d))),multiply(multiply(b,c),add(additive_inverse(d),d))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 6 }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,add(multiply(b,multiply(c,additive_inverse(d))),multiply(multiply(b,c),add(d,additive_inverse(d)))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 2 }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,add(multiply(b,multiply(c,additive_inverse(d))),multiply(multiply(b,c),additive_identity)))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 1 }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,add(multiply(b,multiply(c,additive_inverse(d))),additive_identity))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 5 }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),multiply(add(multiply(multiply(a,b),c),additive_inverse(multiply(a,multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),multiply(add(multiply(multiply(a,b),c),multiply(a,additive_inverse(multiply(b,c)))),d))))
+= { by axiom 4 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(add(multiply(multiply(a,multiply(b,c)),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),d))))
+= { by axiom 7 R->L }
+  add(add(multiply(multiply(multiply(a,b),c),d),multiply(a,multiply(b,multiply(c,additive_inverse(d))))),additive_inverse(add(multiply(multiply(a,multiply(b,c)),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),d)))))
+= { by axiom 7 R->L }
+  add(multiply(multiply(multiply(a,b),c),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),additive_inverse(add(multiply(multiply(a,multiply(b,c)),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),d))))))
+= { by lemma 12 R->L }
+  add(multiply(multiply(multiply(a,b),c),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),additive_inverse(add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),add(multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),d),multiply(multiply(a,multiply(b,c)),d))))))
+= { by axiom 6 R->L }
+  add(multiply(multiply(multiply(a,b),c),d),add(additive_inverse(add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),add(multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),d),multiply(multiply(a,multiply(b,c)),d)))),multiply(a,multiply(b,multiply(c,additive_inverse(d))))))
+= { by lemma 13 R->L }
+  add(multiply(multiply(multiply(a,b),c),d),add(additive_inverse(add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),add(multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),d),multiply(multiply(a,multiply(b,c)),d)))),add(additive_inverse(add(multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),d),multiply(multiply(a,multiply(b,c)),d))),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),add(multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),d),multiply(multiply(a,multiply(b,c)),d))))))
+= { by lemma 13 }
+  add(multiply(multiply(multiply(a,b),c),d),additive_inverse(add(multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),d),multiply(multiply(a,multiply(b,c)),d))))
+= { by axiom 8 R->L }
+  add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(add(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),multiply(a,multiply(b,c))),d)))
+= { by axiom 7 R->L }
+  add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(add(multiply(multiply(a,b),c),add(multiply(a,multiply(b,additive_inverse(c))),multiply(a,multiply(b,c)))),d)))
+= { by axiom 3 R->L }
+  add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(add(multiply(multiply(a,b),c),multiply(a,add(multiply(b,additive_inverse(c)),multiply(b,c)))),d)))
+= { by axiom 3 R->L }
+  add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,add(additive_inverse(c),c)))),d)))
+= { by axiom 6 }
+  add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,add(c,additive_inverse(c))))),d)))
+= { by axiom 2 }
+  add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_identity))),d)))
+= { by axiom 1 }
+  add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(add(multiply(multiply(a,b),c),multiply(a,additive_identity)),d)))
+= { by axiom 1 }
+  add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(add(multiply(multiply(a,b),c),additive_identity),d)))
+= { by axiom 5 }
+  add(multiply(multiply(multiply(a,b),c),d),additive_inverse(multiply(multiply(multiply(a,b),c),d)))
+= { by axiom 4 R->L }
+  add(multiply(multiply(multiply(a,b),c),d),multiply(multiply(multiply(a,b),c),additive_inverse(d)))
+= { by axiom 3 R->L }
+  multiply(multiply(multiply(a,b),c),add(d,additive_inverse(d)))
+= { by axiom 2 }
+  multiply(multiply(multiply(a,b),c),additive_identity)
+= { by axiom 1 }
+  additive_identity

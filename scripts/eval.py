@@ -147,7 +147,9 @@ def prover_cmd(name, binary, p_file, tptp_dir):
     if name == 'vampire':
         return [binary, '--proof', 'tptp', '--avatar', 'off', rel]
     if name == 'e':
-        return [binary, '--auto', '--proof-object', '--tstp-format', rel]
+        # with --proof-object=3 E prints the clause after each
+        # simplification step, so Taelja need not take nested steps apart
+        return [binary, '--auto', '--proof-object=3', '--tstp-format', rel]
     return [binary, '--tstp', '--formal-proof', '--multi', '--root', str(tptp_dir), str(p_file)]
 
 
