@@ -103,17 +103,17 @@ type BuiltLemma = (Clause, ProofBlock, [(String, Clause, ProofBlock)], [Axiom])
 -- an argument because Translate imports this module.
 buildCandidateLemma
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Either String StructuredProof))
+  -> [String]               -- the proof's symbols, which the Skolem constants avoid
   -> Map.Map String T.Unit
   -> Map.Map String String  -- TSTP name to display name in the outer proof
   -> Bool                   -- debug
   -> (String, T.Declaration)
   -> IO (Maybe BuiltLemma)
-buildCandidateLemma translateFn unitMap tstp2name debug (cname, cdecl) =
+buildCandidateLemma translateFn taken unitMap tstp2name debug (cname, cdecl) =
   case headLitOf cdecl of
     Nothing   -> return Nothing
     Just tlit -> do
       let c = Clause (map convertLit (bodyLitsOf cdecl)) (Just (convertLit tlit))
-          taken = concat [ fs ++ ps | T.Unit _ d _ <- Map.elems unitMap, let (fs, ps) = declSymbols d ]
           (cSkolem, undoMap) = freezeClauseVars "skc_" taken c
       fromSubDag <- buildFromSubDag translateFn unitMap tstp2name debug cname c cSkolem undoMap
       maybe (buildWithTwee unitMap tstp2name cname c cSkolem undoMap) (return . Just) fromSubDag
@@ -190,7 +190,7 @@ buildFromSubDag translateFn unitMap tstp2name debug cname c cSkolem@(Clause body
 -- Turns the recursive translation of a candidate into an outer lemma. The goal
 -- block becomes its proof, and the sub-lemmas are renamed apart and
 -- de-Skolemized with it. The proof must end on the candidate's head. A
--- sub-lemma must not rest on the candidate's body atoms, since the format has
+-- sub-lemma must not assume the candidate's body atoms, since the format has
 -- no lemma local to another's proof, and stated alone it would drop them.
 liftSubProof :: Map.Map String String -> String -> Clause -> [(String, Term)]
              -> StructuredProof -> Maybe BuiltLemma
@@ -282,10 +282,12 @@ buildAllCandidates
 buildAllCandidates translateFn unitMap tstp2name debug cands =
   snd <$> mapAccumM buildOne [] cands
   where
+    -- the proof's symbols, gathered once, as huge terms make this slow
+    taken = Set.toList (Set.fromList (concat [ fs ++ ps | T.Unit _ d _ <- Map.elems unitMap, let (fs, ps) = declSymbols d ]))
     buildOne done c = do
       let unitMapC = foldr (Map.adjust lemmaInput) unitMap done
           namesC   = foldr (\c' -> Map.insert c' ("lemma " ++ c')) tstp2name done
-      v <- buildCandidateLemma translateFn unitMapC namesC debug c
+      v <- buildCandidateLemma translateFn taken unitMapC namesC debug c
       return (if isJust v then done ++ [fst c] else done, v)
 
 -- The pre-built lemmas in the order the proof tree reaches them, given as

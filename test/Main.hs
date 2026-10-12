@@ -183,7 +183,7 @@ handcraftedNames =
   -- negated conjecture
   , "fof_existential_goals"
   -- Uwe Waldmann's example, the derived clause c5 is no unit and is used
-  -- three times, so it is unfolded at each use instead of becoming a lemma
+  -- three times, so it becomes a Horn clause lemma
   , "test_shared_nonunit"
   ]
 

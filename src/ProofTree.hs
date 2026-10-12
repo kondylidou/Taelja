@@ -148,12 +148,7 @@ buildProofInfo everyUse allUnits = do
       Left ("unsupported conjecture, " ++ Text.unpack n
             ++ " abbreviates a formula the prover introduced that is not a conjunction of atoms, so its proof is a case split")
     lits -> Right lits
-  let -- every prefix of an entry position, plus the sibling of each prefix
-      wanted = Set.toList $ Set.fromList $ concat
-        [ p : [ init p ++ [if last p == '0' then '1' else '0'] | not (null p) ]
-        | e <- electrons ++ nuclei
-        , p <- inits (lePos e) ]
-      nodes   = [ (p, t) | p <- wanted, Just t <- [nodeByPath tree p] ]
+  let nodes   = wantedNodes (Set.fromList (map lePos (electrons ++ nuclei))) tree
       declMap = Map.fromList [ (p, ptDeclOf t) | (p, t) <- nodes ]
       unitAt  = Map.fromList [ (p, ptNameOf t) | (p, t) <- nodes ]
       -- the rule that concludes each clause, for a nested inference the rule
@@ -172,11 +167,23 @@ buildProofInfo everyUse allUnits = do
     , piRuleAt    = ruleAt
     }
 
--- Follows a position down the tree, numbering children as gatherRows does.
-nodeByPath :: ProofTree -> String -> Maybe ProofTree
-nodeByPath t [] = Just t
-nodeByPath (PTNode _ _ _ kids) (c : rest) = lookup c (zip (childLabels kids) kids) >>= (`nodeByPath` rest)
-nodeByPath _ _ = Nothing
+-- The nodes at a prefix of an entry position, and at the sibling of such a
+-- prefix, with their positions. One walk down the tree finds them, since
+-- listing every prefix of every position is quadratic in a deep tree.
+wantedNodes :: Set.Set String -> ProofTree -> [(String, ProofTree)]
+wantedNodes entries tree = [ ("", tree) | hit ] ++ below
+  where
+    reversed = Set.map reverse entries
+    (hit, below) = go "" tree
+    -- whether an entry is at or under the node at the reversed position rp,
+    -- and the wanted nodes under it
+    go rp t = (Set.member rp reversed || or [ h | (_, _, (h, _)) <- kids ], concat
+                [ [ (reverse (c : rp), k) | h || siblingHit c ] ++ ws | (c, k, (h, ws)) <- kids ])
+      where
+        kids = [ (c, k, go (c : rp) k) | (c, k) <- zip (childLabels (children t)) (children t) ]
+        siblingHit c = or [ h | (c', _, (h, _)) <- kids, (if c' == '0' then '1' else '0') == c ]
+    children (PTNode _ _ _ ks) = ks
+    children _                 = []
 
 -- The clause at a tree node.
 ptDeclOf :: ProofTree -> T.Declaration
