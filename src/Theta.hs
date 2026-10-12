@@ -98,8 +98,10 @@ literalRewrites ctx pos = case groundAt ctx pos of
 -- The rewrites the proof makes to the head of the clause at a position while
 -- it still has body atoms, so the derived electron states the rewritten head.
 -- They come with the head under θ, where the chain starts. Rewrites after the
--- clause becomes a unit are steps of their own. Only the consumer's head is
--- rewritten, since the provider's head is the equation that rewrites.
+-- clause becomes a unit are steps of their own. The provider's head is only
+-- followed when the equation beside it is a unit, since a step between two
+-- heads reads either way and a conditional equation's instance is cited
+-- only once its nucleus, which comes later, has proved it.
 headRewrites :: ThetaCtx -> String -> (Maybe Literal, [(String, Dir, (Term, Term), Literal)])
 headRewrites ctx pos = case groundAt ctx pos of
   Just (Clause (_ : _) (Just h)) -> (Just h, up pos h)
@@ -110,7 +112,7 @@ headRewrites ctx pos = case groundAt ctx pos of
       | otherwise = case groundAt ctx q of
           Just (Clause qbs (Just qh))
             | sameLit cur qh -> if null qbs then [] else up q cur
-            | not (null qbs), last p == '1'
+            | not (null qbs), last p == '1' || unitAt sib
             , Just eq <- headEquationAt ctx sib
             , run@(_ : _) <- rewriteRun cur eq [qh]
             -> withEquationPos sib run ++ up q (runResult run)
@@ -118,6 +120,8 @@ headRewrites ctx pos = case groundAt ctx pos of
       where
         q   = init p
         sib = sibling p
+    -- whether the clause at a position has no body
+    unitAt p = case Map.lookup p (tcClauses ctx) of { Just (Clause [] _) -> True; _ -> False }
 
 -- The clause at a position under θ.
 groundAt :: ThetaCtx -> String -> Maybe Clause
