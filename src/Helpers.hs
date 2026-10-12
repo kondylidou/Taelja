@@ -8,7 +8,7 @@ import Control.Exception (SomeAsyncException, SomeException, fromException, thro
 import Data.Bifunctor (bimap)
 import Data.Char (isAlphaNum, isAsciiLower, isAsciiUpper, isDigit, toUpper)
 import Data.Function (on)
-import Data.List ((\\), groupBy, inits, intercalate, isPrefixOf, isSuffixOf, nub, partition, sortOn, tails)
+import Data.List ((\\), groupBy, inits, intercalate, intersperse, isPrefixOf, isSuffixOf, nub, partition, sortOn, tails)
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -127,16 +127,20 @@ applyConstSubstLit s = mapLiteralTerms (applyConstSubstTerm s)
 padRight :: Int -> String -> String
 padRight n s = s ++ replicate (n - length s) ' '
 
--- A term and all its subterms, root first.
+-- A term and all its subterms, root first. Each is consed onto the rest, as
+-- appending makes deep terms quadratic.
 subterms :: Term -> [Term]
-subterms t = t : case t of { App _ ts -> concatMap subterms ts; _ -> [] }
+subterms t0 = go t0 []
+  where go t rest = t : case t of { App _ ts -> foldr go rest ts; _ -> rest }
 
--- The function and constant symbols of a term.
+-- The function and constant symbols of a term, consed onto the rest as in
+-- subterms.
 termSymbols :: Term -> [String]
-termSymbols (Const c)  = [c]
-termSymbols (Var _)    = []
-termSymbols (Fresh _)  = []
-termSymbols (App f ts) = f : concatMap termSymbols ts
+termSymbols t0 = go t0 []
+  where
+    go (Const c) rest  = c : rest
+    go (App f ts) rest = f : foldr go rest ts
+    go _ rest          = rest
 
 -- The function and constant symbols of a literal.
 litSymbols :: Literal -> [String]
@@ -688,12 +692,15 @@ appendLine :: ProofBlock -> ProofLine -> ProofBlock
 appendLine (HaveHence ls) l = HaveHence (ls ++ [l])
 appendLine (EqChain {})   _ = error "appendLine: cannot extend EqChain"
 
--- A term as the proof prints it.
+-- A term as the proof prints it. Each subterm is written in front of the rest,
+-- as appending makes deep terms quadratic.
 ppTerm :: Term -> String
-ppTerm (Var x)    = x
-ppTerm (Fresh x)  = x
-ppTerm (Const c)  = ppSymbol c
-ppTerm (App f ts) = ppSymbol f ++ "(" ++ intercalate "," (map ppTerm ts) ++ ")"
+ppTerm t0 = go t0 ""
+  where
+    go (Var x) rest    = x ++ rest
+    go (Fresh x) rest  = x ++ rest
+    go (Const c) rest  = ppSymbol c ++ rest
+    go (App f ts) rest = ppSymbol f ++ "(" ++ foldr ($) (')' : rest) (intersperse (',' :) (map go ts))
 
 -- A symbol as printed. Words, operators such as ==> and defined symbols such
 -- as $false stay bare, and anything else is quoted as in TPTP.

@@ -50,7 +50,7 @@ module TptpConvert
 
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.Char (isAsciiLower, isAsciiUpper, isDigit)
-import Data.List (intercalate, isInfixOf, isPrefixOf, nub, partition, tails)
+import Data.List (intercalate, intersperse, isInfixOf, isPrefixOf, nub, partition, tails)
 import Data.List.NonEmpty (NonEmpty (..), toList)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
@@ -75,16 +75,17 @@ resolutionSource :: [T.Info] -> String -> String -> T.Source
 resolutionSource info l r =
   T.Inference (T.Atom (Text.pack "resolution")) info [ T.Parent (T.UnitSource (unitNameOf p)) [] | p <- [l, r] ]
 
--- The function and predicate symbols of a cnf, fof or tff declaration.
+-- The function and predicate symbols of a cnf, fof or tff declaration. The
+-- symbols are consed onto the rest, as appending makes deep terms quadratic.
 declSymbols :: T.Declaration -> ([String], [String])
 declSymbols d = (concatMap funcs ls, [ Text.unpack p | T.Predicate (T.Defined (T.Atom p)) _ <- ls ])
   where
     ls = declAtoms d
-    funcs (T.Predicate _ ts) = concatMap termF ts
-    funcs (T.Equality l _ r) = termF l ++ termF r
-    termF (T.Function (T.Defined (T.Atom f)) ts) = Text.unpack f : concatMap termF ts
-    termF (T.Function _ ts)                      = concatMap termF ts
-    termF _                                      = []
+    funcs (T.Predicate _ ts) = foldr termF [] ts
+    funcs (T.Equality l _ r) = termF l (termF r [])
+    termF (T.Function (T.Defined (T.Atom f)) ts) rest = Text.unpack f : foldr termF rest ts
+    termF (T.Function _ ts) rest                      = foldr termF rest ts
+    termF _ rest                                      = rest
 
 -- The atoms of a cnf, fof or tff declaration, in order.
 declAtoms :: T.Declaration -> [T.Literal]
@@ -301,13 +302,17 @@ tptpSymbol s
   | "$" `isPrefixOf` s || isLowerWord s = s
   | otherwise                           = quoted s
 
--- A term in TPTP syntax. A variable starts upper case, as TPTP requires.
+-- A term in TPTP syntax. A variable starts upper case, as TPTP requires. Each
+-- subterm is written in front of the rest, as appending makes deep terms
+-- quadratic.
 tptpTerm :: Term -> String
-tptpTerm (Var v)    = capitalize v
-tptpTerm (Fresh v)  = capitalize v
-tptpTerm (Const c)  = tptpSymbol c
-tptpTerm (App f []) = tptpSymbol f
-tptpTerm (App f ts) = tptpSymbol f ++ "(" ++ intercalate "," (map tptpTerm ts) ++ ")"
+tptpTerm t0 = go t0 ""
+  where
+    go (Var v) rest          = capitalize v ++ rest
+    go (Fresh v) rest        = capitalize v ++ rest
+    go (Const c) rest        = tptpSymbol c ++ rest
+    go (App f []) rest       = tptpSymbol f ++ rest
+    go (App f ts) rest       = tptpSymbol f ++ "(" ++ foldr ($) (')' : rest) (intersperse (',' :) (map go ts))
 
 -- A literal in TPTP syntax. A predicate is written like a function symbol, so
 -- one that is no lower word, as '>=', is quoted.

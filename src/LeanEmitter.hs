@@ -109,12 +109,14 @@ leanRefName n = case words n of
 
 -- Symbols ----------------------------------------------------------------
 
--- The function symbols of a term.
+-- The function symbols of a term. Each is consed onto the rest, as appending
+-- makes deep terms quadratic.
 termSyms :: Term -> [Sym]
-termSyms (Var _)    = []
-termSyms (Fresh _)  = []
-termSyms (Const c)  = [(Fun, c, 0)]
-termSyms (App f ts) = (Fun, f, length ts) : concatMap termSyms ts
+termSyms t0 = go t0 []
+  where
+    go (Const c) rest  = (Fun, c, 0) : rest
+    go (App f ts) rest = (Fun, f, length ts) : foldr go rest ts
+    go _ rest          = rest
 
 -- $false and $true are Lean's False and True, not symbols of the problem.
 reservedAtom :: String -> Bool
@@ -203,12 +205,18 @@ reservedLeanNames = Set.fromList
 symName :: Ctx -> Sym -> String
 symName ctx s = Map.findWithDefault "taelja_undeclared_symbol" s (ctxNames ctx)
 
--- A term in Lean syntax. An unbound variable gets a name Lean rejects.
+-- A term in Lean syntax. An unbound variable gets a name Lean rejects. Each
+-- subterm is written in front of the rest, as appending makes deep terms
+-- quadratic.
 leanTerm :: Ctx -> Env -> Term -> String
-leanTerm _   env (Var v)    = Map.findWithDefault "taelja_unbound_variable" v env
-leanTerm ctx env (Fresh v)  = leanTerm ctx env (Var v)
-leanTerm ctx _   (Const c)  = symName ctx (Fun, c, 0)
-leanTerm ctx env (App f ts) = unwords (symName ctx (Fun, f, length ts) : map (leanArg ctx env) ts)
+leanTerm ctx env t0 = go t0 ""
+  where
+    go (Var v) rest    = Map.findWithDefault "taelja_unbound_variable" v env ++ rest
+    go (Fresh v) rest  = go (Var v) rest
+    go (Const c) rest  = symName ctx (Fun, c, 0) ++ rest
+    go (App f ts) rest = symName ctx (Fun, f, length ts) ++ foldr arg rest ts
+    arg t@(App _ (_ : _)) rest = " (" ++ go t (')' : rest)
+    arg t rest                 = ' ' : go t rest
 
 -- A term as an argument, in parentheses when it is an application.
 leanArg :: Ctx -> Env -> Term -> String
