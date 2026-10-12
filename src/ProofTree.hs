@@ -283,14 +283,28 @@ equationSteps units = (concatMap fst found, concatMap snd found)
       | Just (u, p) <- conditional a, isUnit b = Just (n, u, p)
       | Just (u, p) <- conditional b, isUnit a = Just (n, u, p)
       | otherwise = Nothing
+    -- the head of a positive unit or of a conditional equation
+    headOf c = case convertDeclToClause c of
+      Just (Clause [] h@(Just _))          -> h
+      Just (Clause (_ : _) h@(Just (Eq _ _))) -> h
+      _                                    -> Nothing
+    -- A step between units and conditional equations that rewrites a head,
+    -- read on the heads. Its conditions are those of the units the reading
+    -- ends in, which the algorithm proved first. A conclusion whose head is
+    -- an instance of a premise's head only changed the conditions.
+    onHeads d p1 p2 = case (convertDeclToClause d, mapM (\p -> lookupDecl unitMap p >>= headOf) [p1, p2]) of
+      (Just (Clause (_ : _) (Just h)), Just hs) -> all (\ph -> isNothing (matchLitEither ph h [])) hs
+      _                                          -> False
     -- Every Twee rewriting step counts. An E or Vampire step counts only when
-    -- it derives a positive unit from two, since the same rules also derive
-    -- nuclei and resolve a nucleus with a unit.
+    -- it derives a positive unit from two, or rewrites the head of a
+    -- conditional equation, since the same rules also derive nuclei and
+    -- resolve a nucleus with a unit.
     stepsOf n d src = case sourceParents src of
       [p1, p2]
         | sourceRules src == [Text.pack "rewriting"] -> Just ([(n, p1, p2)], [])
         | all equation (sourceRules src), isPositiveUnitFormula d, Just s <- onUnits unit (n, p1, p2)
         -> Just ([s], [])
+        | all equation (sourceRules src), onHeads d p1 p2 -> Just ([(n, p1, p2)], [])
       _ -> do
         (p0, (rule0, p1) : later@(_ : _)) <- inferenceSteps src
         d0 : ds <- mapM (lookupDecl unitMap) (p0 : p1 : map snd later)

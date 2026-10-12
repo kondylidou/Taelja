@@ -1708,10 +1708,10 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
         , isPositiveUnitFormula decl
         , Just tl <- [headLitOf decl]
         , not (isReservedTLit tl) ]
-        -- a conditional equation, by its head, which only the units the
+        -- a clause with conditions, by its head, which only the units the
         -- proof derives state
         ++ [ (unitNameStr n, h) | T.Unit n d _ <- allUnits
-                                , Just (Clause (_ : _) (Just h@(Eq _ _))) <- [convertDeclToClause d] ]
+                                , Just (Clause (_ : _) (Just h)) <- [convertDeclToClause d] ]
       -- Goal j is G_jθ, the goal literal instantiated as far as the proof
       -- fixes it, read off the negated conjecture nuclei nearest the root first.
       goalLits'  = instantiateGoals (map convertLit (piGoalLits info))
