@@ -28,7 +28,18 @@ Axiom 27: real('37.614975')
 Axiom 28: to_int('55.75695') = 55
 Axiom 29: latlong(s__Moscow,'55.75695','37.614975',moscow,ru)
 
-Lemma 30: s__orientation(s__Copenhagen,esk15_1(s__Copenhagen),s__Near)
+Lemma 30: s__GeopoliticalArea(X) => s__Object(X)
+Proof:
+  have s__GeopoliticalArea(X)
+    by assumption
+  hence s__GeographicArea(X)
+    by axiom 5
+  hence s__Region(X)
+    by axiom 6
+  hence s__Object(X)
+    by axiom 7
+
+Lemma 31: s__orientation(s__Copenhagen,esk15_1(s__Copenhagen),s__Near)
 Proof:
   have is_instance(s__Copenhagen,s__CoastalCitiesClass)
     by axiom 11
@@ -43,12 +54,8 @@ Proof:
     by axiom 9
   hence s__GeopoliticalArea(s__Copenhagen)
     by axiom 10
-  hence s__GeographicArea(s__Copenhagen)
-    by axiom 5
-  hence s__Region(s__Copenhagen)
-    by axiom 6
   hence s__Object(s__Copenhagen)
-    by axiom 7
+    by lemma 30
 
 Goal 2: s__Object(s__Denmark)
 Proof:
@@ -56,12 +63,8 @@ Proof:
     by axiom 1
   hence s__GeopoliticalArea(s__Denmark)
     by axiom 4
-  hence s__GeographicArea(s__Denmark)
-    by axiom 5
-  hence s__Region(s__Denmark)
-    by axiom 6
   hence s__Object(s__Denmark)
-    by axiom 7
+    by lemma 30
 
 Goal 3: real('55.67631')
 Proof:
@@ -156,6 +159,6 @@ Proof:
    and s__City(s__Copenhagen)
     by axiom 9
    and s__orientation(s__Copenhagen,esk15_1(s__Copenhagen),s__Near)
-    by lemma 30
+    by lemma 31
   hence s__capability(s__Flooding__t,s__located__m,s__Copenhagen)
     by axiom 16

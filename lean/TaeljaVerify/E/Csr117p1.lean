@@ -109,7 +109,16 @@ axiom ax28 : to_int op_55_dot_75695 = n_55
 axiom ax29 : latlong s__Moscow op_55_dot_75695 op_37_dot_614975 moscow ru
 
 -- Lemma 30
-theorem taelja_lemma30 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s__Near := by
+theorem taelja_lemma30 : ∀ (x : α), s__GeopoliticalArea x → s__Object x := by
+  intro x a1
+  have h1 : s__GeopoliticalArea x := by assumption
+  have h2 : s__GeographicArea x := ax5 x h1
+  have h3 : s__Region x := ax6 x h2
+  have h4 : s__Object x := ax7 x h3
+  exact h4
+
+-- Lemma 31
+theorem taelja_lemma31 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s__Near := by
   have h1 : is_instance s__Copenhagen s__CoastalCitiesClass := ax11
   have h2 : s__City s__Copenhagen := ax9
   have h3 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s__Near := ax15 s__Copenhagen h1 h2
@@ -119,19 +128,15 @@ theorem taelja_lemma30 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s_
 theorem taelja_goal1 : s__Object s__Copenhagen := by
   have h1 : s__City s__Copenhagen := ax9
   have h2 : s__GeopoliticalArea s__Copenhagen := ax10 s__Copenhagen h1
-  have h3 : s__GeographicArea s__Copenhagen := ax5 s__Copenhagen h2
-  have h4 : s__Region s__Copenhagen := ax6 s__Copenhagen h3
-  have h5 : s__Object s__Copenhagen := ax7 s__Copenhagen h4
-  exact h5
+  have h3 : s__Object s__Copenhagen := taelja_lemma30 s__Copenhagen h2
+  exact h3
 
 -- Goal 2
 theorem taelja_goal2 : s__Object s__Denmark := by
   have h1 : s__Nation s__Denmark := ax1
   have h2 : s__GeopoliticalArea s__Denmark := ax4 s__Denmark h1
-  have h3 : s__GeographicArea s__Denmark := ax5 s__Denmark h2
-  have h4 : s__Region s__Denmark := ax6 s__Denmark h3
-  have h5 : s__Object s__Denmark := ax7 s__Denmark h4
-  exact h5
+  have h3 : s__Object s__Denmark := taelja_lemma30 s__Denmark h2
+  exact h3
 
 -- Goal 3
 theorem taelja_goal3 : real op_55_dot_67631 := by
@@ -216,7 +221,7 @@ theorem taelja_goal18 : s__capability s__Flooding__t s__located__m s__Copenhagen
   have h4 : s__BodyOfWater (esk15_1 s__Copenhagen) := ax13 (esk15_1 s__Copenhagen) h3
   have h5 : s__WaterArea (esk15_1 s__Copenhagen) := ax14 (esk15_1 s__Copenhagen) h4
   have h6 : s__City s__Copenhagen := ax9
-  have h7 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s__Near := taelja_lemma30
+  have h7 : s__orientation s__Copenhagen (esk15_1 s__Copenhagen) s__Near := taelja_lemma31
   have h8 : s__capability s__Flooding__t s__located__m s__Copenhagen := ax16 (esk15_1 s__Copenhagen) s__Copenhagen h5 h6 h7
   exact h8
 

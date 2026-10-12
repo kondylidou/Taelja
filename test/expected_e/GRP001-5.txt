@@ -5,30 +5,33 @@ Axiom 4: product(X,Y,Z) /\ product(Y,A,B) /\ product(X,B,C) => product(Z,A,C)
 Axiom 5: product(identity,X,X)
 Axiom 6: product(X,Y,Z) /\ product(Y,A,B) /\ product(Z,A,C) => product(X,B,C)
 
-Lemma 7: product(c,b,a)
+Lemma 7: product(X,Y,Z) => product(Z,Y,X)
+Proof:
+  have product(X,Y,Z)
+    by assumption
+   and product(Y,Y,identity)
+    by axiom 3
+   and product(X,identity,X)
+    by axiom 2
+  hence product(Z,Y,X)
+    by axiom 4
+
+Lemma 8: product(c,b,a)
 Proof:
   have product(a,b,c)
     by axiom 1
-   and product(b,b,identity)
-    by axiom 3
-   and product(a,identity,a)
-    by axiom 2
   hence product(c,b,a)
-    by axiom 4
+    by lemma 7
 
 Goal 1: product(b,a,c)
 Proof:
   have product(c,c,identity)
     by axiom 3
    and product(c,b,a)
-    by lemma 7
+    by lemma 8
    and product(identity,b,b)
     by axiom 5
   hence product(c,a,b)
     by axiom 6
-   and product(a,a,identity)
-    by axiom 3
-   and product(c,identity,c)
-    by axiom 2
   hence product(b,a,c)
-    by axiom 4
+    by lemma 7

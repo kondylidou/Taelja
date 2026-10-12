@@ -58,22 +58,23 @@ theorem taelja_lemma14 : ∀ (x y : α), op_gt_eq (op_plus x y) y := by
   exact h3
 
 -- Lemma 15
-theorem taelja_lemma15 : ∀ (x y : α), op_gt_eq n_0 (op_eq_eq_gt x (op_eq_eq_gt y x)) := by
+theorem taelja_lemma15 : ∀ (x : α), op_gt_eq n_0 x → n_0 = x := by
+  intro x a1
+  have h1 : op_gt_eq x n_0 := ax5 x
+  have h2 : op_gt_eq n_0 x := by assumption
+  have h3 : n_0 = x := ax8 n_0 x h2 h1
+  exact h3
+
+-- Lemma 16
+theorem taelja_lemma16 : ∀ (x y : α), op_eq_eq_gt x (op_eq_eq_gt y x) = n_0 := by
   intro x y
   have h1 : op_gt_eq (op_plus (op_plus y n_0) x) x := taelja_lemma14 (op_plus y n_0) x
   have h2 : op_gt_eq (op_plus y (op_plus n_0 x)) x := Eq.mp (congrArg (fun t : α => op_gt_eq t x) (ax4 y n_0 x)) h1
   have h3 : op_gt_eq (op_plus y (op_plus x n_0)) x := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus y t) x) (ax3 n_0 x)) h2
   have h4 : op_gt_eq (op_plus x n_0) (op_eq_eq_gt y x) := ax7 y (op_plus x n_0) x h3
   have h5 : op_gt_eq n_0 (op_eq_eq_gt x (op_eq_eq_gt y x)) := ax7 x n_0 (op_eq_eq_gt y x) h4
-  exact h5
-
--- Lemma 16
-theorem taelja_lemma16 : ∀ (x y : α), op_eq_eq_gt x (op_eq_eq_gt y x) = n_0 := by
-  intro x y
-  have h1 : op_gt_eq (op_eq_eq_gt x (op_eq_eq_gt y x)) n_0 := ax5 (op_eq_eq_gt x (op_eq_eq_gt y x))
-  have h2 : op_gt_eq n_0 (op_eq_eq_gt x (op_eq_eq_gt y x)) := taelja_lemma15 x y
-  have h3 : op_eq_eq_gt x (op_eq_eq_gt y x) = n_0 := ax8 (op_eq_eq_gt x (op_eq_eq_gt y x)) n_0 h1 h2
-  exact h3
+  have h6 : op_eq_eq_gt x (op_eq_eq_gt y x) = n_0 := Eq.symm (taelja_lemma15 (op_eq_eq_gt x (op_eq_eq_gt y x)) h5)
+  exact h6
 
 -- Lemma 17
 theorem taelja_lemma17 : ∀ (x y : α), op_gt_eq x (op_eq_eq_gt y x) := by
@@ -109,58 +110,45 @@ theorem taelja_lemma21 : ∀ (x y : α), op_gt_eq (op_plus (op_eq_eq_gt n_0 x) y
   exact h2
 
 -- Lemma 22
-theorem taelja_lemma22 : ∀ (x : α), op_gt_eq n_0 (op_eq_eq_gt x n_0) := by
+theorem taelja_lemma22 : ∀ (x : α), n_0 = op_eq_eq_gt x n_0 := by
   intro x
   have h1 : op_gt_eq (op_plus x n_0) n_0 := ax5 (op_plus x n_0)
   have h2 : op_gt_eq n_0 (op_eq_eq_gt x n_0) := ax7 x n_0 n_0 h1
-  exact h2
-
--- Lemma 23
-theorem taelja_lemma23 : ∀ (x : α), op_eq_eq_gt x n_0 = n_0 := by
-  intro x
-  have h1 : op_gt_eq (op_eq_eq_gt x n_0) n_0 := ax5 (op_eq_eq_gt x n_0)
-  have h2 : op_gt_eq n_0 (op_eq_eq_gt x n_0) := taelja_lemma22 x
-  have h3 : op_eq_eq_gt x n_0 = n_0 := ax8 (op_eq_eq_gt x n_0) n_0 h1 h2
+  have h3 : n_0 = op_eq_eq_gt x n_0 := taelja_lemma15 (op_eq_eq_gt x n_0) h2
   exact h3
 
--- Lemma 24
-theorem taelja_lemma24 : ∀ (x : α), op_eq_eq_gt n_0 x = x := by
+-- Lemma 23
+theorem taelja_lemma23 : ∀ (x : α), op_eq_eq_gt n_0 x = x := by
   intro x
   calc op_eq_eq_gt n_0 x = op_plus x (op_eq_eq_gt x n_0) := Eq.symm (taelja_lemma19 x)
-      _ = op_plus x n_0 := congrArg (fun t : α => op_plus x t) (taelja_lemma23 x)
+      _ = op_plus x n_0 := congrArg (fun t : α => op_plus x t) (Eq.symm (taelja_lemma22 x))
       _ = x := ax2 x
 
--- Lemma 25
-theorem taelja_lemma25 : op_gt_eq esk2_0 esk3_0 := by
+-- Lemma 24
+theorem taelja_lemma24 : op_gt_eq esk2_0 esk3_0 := by
   have h1 : op_gt_eq esk2_0 (op_eq_eq_gt esk3_0 esk2_0) := taelja_lemma17 esk2_0 esk3_0
   have h2 : op_gt_eq esk2_0 esk3_0 := Eq.mp (congrArg (fun t : α => op_gt_eq esk2_0 t) (Eq.symm (ax1))) h1
   exact h2
 
--- Lemma 26
-theorem taelja_lemma26 : op_gt_eq n_0 (op_eq_eq_gt esk2_0 esk3_0) := by
+-- Lemma 25
+theorem taelja_lemma25 : n_0 = op_eq_eq_gt esk2_0 esk3_0 := by
   have h1 : op_gt_eq (op_plus (op_eq_eq_gt n_0 esk2_0) n_0) esk2_0 := taelja_lemma21 esk2_0 n_0
-  have h2 : op_gt_eq esk2_0 esk3_0 := taelja_lemma25
+  have h2 : op_gt_eq esk2_0 esk3_0 := taelja_lemma24
   have h3 : op_gt_eq (op_plus (op_eq_eq_gt n_0 esk2_0) n_0) esk3_0 := ax10 (op_plus (op_eq_eq_gt n_0 esk2_0) n_0) esk2_0 esk3_0 h1 h2
-  have h4 : op_gt_eq (op_plus esk2_0 n_0) esk3_0 := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus t n_0) esk3_0) (taelja_lemma24 esk2_0)) h3
+  have h4 : op_gt_eq (op_plus esk2_0 n_0) esk3_0 := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus t n_0) esk3_0) (taelja_lemma23 esk2_0)) h3
   have h5 : op_gt_eq n_0 (op_eq_eq_gt esk2_0 esk3_0) := ax7 esk2_0 n_0 esk3_0 h4
-  exact h5
+  have h6 : n_0 = op_eq_eq_gt esk2_0 esk3_0 := taelja_lemma15 (op_eq_eq_gt esk2_0 esk3_0) h5
+  exact h6
 
--- Lemma 27
-theorem taelja_lemma27 : op_eq_eq_gt esk2_0 esk3_0 = n_0 := by
-  have h1 : op_gt_eq (op_eq_eq_gt esk2_0 esk3_0) n_0 := ax5 (op_eq_eq_gt esk2_0 esk3_0)
-  have h2 : op_gt_eq n_0 (op_eq_eq_gt esk2_0 esk3_0) := taelja_lemma26
-  have h3 : op_eq_eq_gt esk2_0 esk3_0 = n_0 := ax8 (op_eq_eq_gt esk2_0 esk3_0) n_0 h1 h2
-  exact h3
-
--- Lemma 28
-theorem taelja_lemma28 : op_plus esk3_0 esk3_0 = esk2_0 := by
+-- Lemma 26
+theorem taelja_lemma26 : op_plus esk3_0 esk3_0 = esk2_0 := by
   calc op_plus esk3_0 esk3_0 = op_plus esk3_0 (op_eq_eq_gt esk3_0 esk2_0) := congrArg (fun t : α => op_plus esk3_0 t) (ax1)
       _ = op_plus esk2_0 (op_eq_eq_gt esk2_0 esk3_0) := ax9 esk3_0 esk2_0
-      _ = op_plus esk2_0 n_0 := congrArg (fun t : α => op_plus esk2_0 t) (taelja_lemma27)
+      _ = op_plus esk2_0 n_0 := congrArg (fun t : α => op_plus esk2_0 t) (Eq.symm (taelja_lemma25))
       _ = esk2_0 := ax2 esk2_0
 
--- Lemma 29
-theorem taelja_lemma29 : ∀ (x y z : α), op_gt_eq (op_plus (op_eq_eq_gt x y) z) (op_eq_eq_gt x (op_plus y z)) := by
+-- Lemma 27
+theorem taelja_lemma27 : ∀ (x y z : α), op_gt_eq (op_plus (op_eq_eq_gt x y) z) (op_eq_eq_gt x (op_plus y z)) := by
   intro x y z
   have h1 : op_gt_eq (op_plus y (op_eq_eq_gt y x)) y := taelja_lemma18 y (op_eq_eq_gt y x)
   have h2 : op_gt_eq (op_plus x (op_eq_eq_gt x y)) y := Eq.mp (congrArg (fun t : α => op_gt_eq t y) (ax9 y x)) h1
@@ -169,93 +157,87 @@ theorem taelja_lemma29 : ∀ (x y z : α), op_gt_eq (op_plus (op_eq_eq_gt x y) z
   have h5 : op_gt_eq (op_plus (op_eq_eq_gt x y) z) (op_eq_eq_gt x (op_plus y z)) := ax7 x (op_plus (op_eq_eq_gt x y) z) (op_plus y z) h4
   exact h5
 
--- Lemma 30
-theorem taelja_lemma30 : op_gt_eq esk2_0 esk1_0 := by
+-- Lemma 28
+theorem taelja_lemma28 : op_gt_eq esk2_0 esk1_0 := by
   have h1 : op_gt_eq esk2_0 (op_eq_eq_gt esk1_0 esk2_0) := taelja_lemma17 esk2_0 esk1_0
   have h2 : op_gt_eq esk2_0 esk1_0 := Eq.mp (congrArg (fun t : α => op_gt_eq esk2_0 t) (Eq.symm (ax11))) h1
   exact h2
 
--- Lemma 31
-theorem taelja_lemma31 : op_gt_eq n_0 (op_eq_eq_gt esk2_0 esk1_0) := by
+-- Lemma 29
+theorem taelja_lemma29 : n_0 = op_eq_eq_gt esk2_0 esk1_0 := by
   have h1 : op_gt_eq (op_plus (op_eq_eq_gt n_0 esk2_0) n_0) esk2_0 := taelja_lemma21 esk2_0 n_0
-  have h2 : op_gt_eq esk2_0 esk1_0 := taelja_lemma30
+  have h2 : op_gt_eq esk2_0 esk1_0 := taelja_lemma28
   have h3 : op_gt_eq (op_plus (op_eq_eq_gt n_0 esk2_0) n_0) esk1_0 := ax10 (op_plus (op_eq_eq_gt n_0 esk2_0) n_0) esk2_0 esk1_0 h1 h2
-  have h4 : op_gt_eq (op_plus esk2_0 n_0) esk1_0 := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus t n_0) esk1_0) (taelja_lemma24 esk2_0)) h3
+  have h4 : op_gt_eq (op_plus esk2_0 n_0) esk1_0 := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus t n_0) esk1_0) (taelja_lemma23 esk2_0)) h3
   have h5 : op_gt_eq n_0 (op_eq_eq_gt esk2_0 esk1_0) := ax7 esk2_0 n_0 esk1_0 h4
-  exact h5
+  have h6 : n_0 = op_eq_eq_gt esk2_0 esk1_0 := taelja_lemma15 (op_eq_eq_gt esk2_0 esk1_0) h5
+  exact h6
 
--- Lemma 32
-theorem taelja_lemma32 : op_eq_eq_gt esk2_0 esk1_0 = n_0 := by
-  have h1 : op_gt_eq (op_eq_eq_gt esk2_0 esk1_0) n_0 := ax5 (op_eq_eq_gt esk2_0 esk1_0)
-  have h2 : op_gt_eq n_0 (op_eq_eq_gt esk2_0 esk1_0) := taelja_lemma31
-  have h3 : op_eq_eq_gt esk2_0 esk1_0 = n_0 := ax8 (op_eq_eq_gt esk2_0 esk1_0) n_0 h1 h2
-  exact h3
-
--- Lemma 33
-theorem taelja_lemma33 : op_plus esk1_0 esk1_0 = esk2_0 := by
+-- Lemma 30
+theorem taelja_lemma30 : op_plus esk1_0 esk1_0 = esk2_0 := by
   calc op_plus esk1_0 esk1_0 = op_plus esk1_0 (op_eq_eq_gt esk1_0 esk2_0) := congrArg (fun t : α => op_plus esk1_0 t) (ax11)
       _ = op_plus esk2_0 (op_eq_eq_gt esk2_0 esk1_0) := ax9 esk1_0 esk2_0
-      _ = op_plus esk2_0 n_0 := congrArg (fun t : α => op_plus esk2_0 t) (taelja_lemma32)
+      _ = op_plus esk2_0 n_0 := congrArg (fun t : α => op_plus esk2_0 t) (Eq.symm (taelja_lemma29))
       _ = esk2_0 := ax2 esk2_0
 
--- Lemma 34
-theorem taelja_lemma34 : op_gt_eq (op_eq_eq_gt esk1_0 esk3_0) (op_eq_eq_gt esk3_0 esk1_0) := by
-  have h1 : op_gt_eq (op_plus (op_eq_eq_gt esk1_0 esk3_0) esk3_0) (op_eq_eq_gt esk1_0 (op_plus esk3_0 esk3_0)) := taelja_lemma29 esk1_0 esk3_0 esk3_0
-  have h2 : op_gt_eq (op_plus (op_eq_eq_gt esk1_0 esk3_0) esk3_0) (op_eq_eq_gt esk1_0 esk2_0) := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus (op_eq_eq_gt esk1_0 esk3_0) esk3_0) (op_eq_eq_gt esk1_0 t)) (taelja_lemma28)) h1
+-- Lemma 31
+theorem taelja_lemma31 : op_gt_eq (op_eq_eq_gt esk1_0 esk3_0) (op_eq_eq_gt esk3_0 esk1_0) := by
+  have h1 : op_gt_eq (op_plus (op_eq_eq_gt esk1_0 esk3_0) esk3_0) (op_eq_eq_gt esk1_0 (op_plus esk3_0 esk3_0)) := taelja_lemma27 esk1_0 esk3_0 esk3_0
+  have h2 : op_gt_eq (op_plus (op_eq_eq_gt esk1_0 esk3_0) esk3_0) (op_eq_eq_gt esk1_0 esk2_0) := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus (op_eq_eq_gt esk1_0 esk3_0) esk3_0) (op_eq_eq_gt esk1_0 t)) (taelja_lemma26)) h1
   have h3 : op_gt_eq (op_plus esk3_0 (op_eq_eq_gt esk1_0 esk3_0)) (op_eq_eq_gt esk1_0 esk2_0) := Eq.mp (congrArg (fun t : α => op_gt_eq t (op_eq_eq_gt esk1_0 esk2_0)) (ax3 (op_eq_eq_gt esk1_0 esk3_0) esk3_0)) h2
   have h4 : op_gt_eq (op_plus esk3_0 (op_eq_eq_gt esk1_0 esk3_0)) esk1_0 := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus esk3_0 (op_eq_eq_gt esk1_0 esk3_0)) t) (Eq.symm (ax11))) h3
   have h5 : op_gt_eq (op_eq_eq_gt esk1_0 esk3_0) (op_eq_eq_gt esk3_0 esk1_0) := ax7 esk3_0 (op_eq_eq_gt esk1_0 esk3_0) esk1_0 h4
   exact h5
 
--- Lemma 35
-theorem taelja_lemma35 : op_eq_eq_gt esk3_0 esk1_0 = op_eq_eq_gt esk1_0 esk3_0 := by
-  have h1 : op_gt_eq (op_plus (op_eq_eq_gt esk3_0 esk1_0) esk1_0) (op_eq_eq_gt esk3_0 (op_plus esk1_0 esk1_0)) := taelja_lemma29 esk3_0 esk1_0 esk1_0
-  have h2 : op_gt_eq (op_plus (op_eq_eq_gt esk3_0 esk1_0) esk1_0) (op_eq_eq_gt esk3_0 esk2_0) := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus (op_eq_eq_gt esk3_0 esk1_0) esk1_0) (op_eq_eq_gt esk3_0 t)) (taelja_lemma33)) h1
+-- Lemma 32
+theorem taelja_lemma32 : op_eq_eq_gt esk3_0 esk1_0 = op_eq_eq_gt esk1_0 esk3_0 := by
+  have h1 : op_gt_eq (op_plus (op_eq_eq_gt esk3_0 esk1_0) esk1_0) (op_eq_eq_gt esk3_0 (op_plus esk1_0 esk1_0)) := taelja_lemma27 esk3_0 esk1_0 esk1_0
+  have h2 : op_gt_eq (op_plus (op_eq_eq_gt esk3_0 esk1_0) esk1_0) (op_eq_eq_gt esk3_0 esk2_0) := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus (op_eq_eq_gt esk3_0 esk1_0) esk1_0) (op_eq_eq_gt esk3_0 t)) (taelja_lemma30)) h1
   have h3 : op_gt_eq (op_plus esk1_0 (op_eq_eq_gt esk3_0 esk1_0)) (op_eq_eq_gt esk3_0 esk2_0) := Eq.mp (congrArg (fun t : α => op_gt_eq t (op_eq_eq_gt esk3_0 esk2_0)) (ax3 (op_eq_eq_gt esk3_0 esk1_0) esk1_0)) h2
   have h4 : op_gt_eq (op_plus esk1_0 (op_eq_eq_gt esk3_0 esk1_0)) esk3_0 := Eq.mp (congrArg (fun t : α => op_gt_eq (op_plus esk1_0 (op_eq_eq_gt esk3_0 esk1_0)) t) (Eq.symm (ax1))) h3
   have h5 : op_gt_eq (op_eq_eq_gt esk3_0 esk1_0) (op_eq_eq_gt esk1_0 esk3_0) := ax7 esk1_0 (op_eq_eq_gt esk3_0 esk1_0) esk3_0 h4
-  have h6 : op_gt_eq (op_eq_eq_gt esk1_0 esk3_0) (op_eq_eq_gt esk3_0 esk1_0) := taelja_lemma34
+  have h6 : op_gt_eq (op_eq_eq_gt esk1_0 esk3_0) (op_eq_eq_gt esk3_0 esk1_0) := taelja_lemma31
   have h7 : op_eq_eq_gt esk3_0 esk1_0 = op_eq_eq_gt esk1_0 esk3_0 := ax8 (op_eq_eq_gt esk3_0 esk1_0) (op_eq_eq_gt esk1_0 esk3_0) h5 h6
   exact h7
 
--- Lemma 36
-theorem taelja_lemma36 : op_plus esk1_0 esk3_0 = esk2_0 := by
+-- Lemma 33
+theorem taelja_lemma33 : op_plus esk1_0 esk3_0 = esk2_0 := by
   calc op_plus esk1_0 esk3_0 = op_plus esk1_0 (op_plus esk3_0 n_0) := congrArg (fun t : α => op_plus esk1_0 t) (Eq.symm (ax2 esk3_0))
       _ = op_plus esk1_0 (op_plus esk3_0 (op_eq_eq_gt esk3_0 (op_eq_eq_gt esk1_0 esk3_0))) := congrArg (fun t : α => op_plus esk1_0 (op_plus esk3_0 t)) (Eq.symm (taelja_lemma16 esk3_0 esk1_0))
       _ = op_plus esk1_0 (op_plus (op_eq_eq_gt esk1_0 esk3_0) (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0)) := congrArg (fun t : α => op_plus esk1_0 t) (Eq.symm (ax9 (op_eq_eq_gt esk1_0 esk3_0) esk3_0))
       _ = op_plus (op_plus esk1_0 (op_eq_eq_gt esk1_0 esk3_0)) (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0) := Eq.symm (ax4 esk1_0 (op_eq_eq_gt esk1_0 esk3_0) (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0))
       _ = op_plus (op_plus esk3_0 (op_eq_eq_gt esk3_0 esk1_0)) (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0) := congrArg (fun t : α => op_plus t (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0)) (Eq.symm (ax9 esk3_0 esk1_0))
       _ = op_plus esk3_0 (op_plus (op_eq_eq_gt esk3_0 esk1_0) (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0)) := ax4 esk3_0 (op_eq_eq_gt esk3_0 esk1_0) (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0)
-      _ = op_plus esk3_0 (op_plus (op_eq_eq_gt esk1_0 esk3_0) (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0)) := congrArg (fun t : α => op_plus esk3_0 (op_plus t (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0))) (taelja_lemma35)
+      _ = op_plus esk3_0 (op_plus (op_eq_eq_gt esk1_0 esk3_0) (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0)) := congrArg (fun t : α => op_plus esk3_0 (op_plus t (op_eq_eq_gt (op_eq_eq_gt esk1_0 esk3_0) esk3_0))) (taelja_lemma32)
       _ = op_plus esk3_0 (op_plus esk3_0 (op_eq_eq_gt esk3_0 (op_eq_eq_gt esk1_0 esk3_0))) := congrArg (fun t : α => op_plus esk3_0 t) (Eq.symm (ax9 esk3_0 (op_eq_eq_gt esk1_0 esk3_0)))
       _ = op_plus (op_plus esk3_0 esk3_0) (op_eq_eq_gt esk3_0 (op_eq_eq_gt esk1_0 esk3_0)) := Eq.symm (ax4 esk3_0 esk3_0 (op_eq_eq_gt esk3_0 (op_eq_eq_gt esk1_0 esk3_0)))
-      _ = op_plus esk2_0 (op_eq_eq_gt esk3_0 (op_eq_eq_gt esk1_0 esk3_0)) := congrArg (fun t : α => op_plus t (op_eq_eq_gt esk3_0 (op_eq_eq_gt esk1_0 esk3_0))) (taelja_lemma28)
+      _ = op_plus esk2_0 (op_eq_eq_gt esk3_0 (op_eq_eq_gt esk1_0 esk3_0)) := congrArg (fun t : α => op_plus t (op_eq_eq_gt esk3_0 (op_eq_eq_gt esk1_0 esk3_0))) (taelja_lemma26)
       _ = op_plus esk2_0 n_0 := congrArg (fun t : α => op_plus esk2_0 t) (taelja_lemma16 esk3_0 esk1_0)
       _ = esk2_0 := ax2 esk2_0
 
--- Lemma 37
-theorem taelja_lemma37 : ∀ (x y : α), op_gt_eq x (op_eq_eq_gt y (op_plus y x)) := by
+-- Lemma 34
+theorem taelja_lemma34 : ∀ (x y : α), op_gt_eq x (op_eq_eq_gt y (op_plus y x)) := by
   intro x y
   have h1 : op_gt_eq (op_plus y x) (op_plus y x) := ax12 (op_plus y x)
   have h2 : op_gt_eq x (op_eq_eq_gt y (op_plus y x)) := ax7 y x (op_plus y x) h1
   exact h2
 
--- Lemma 38
-theorem taelja_lemma38 : op_gt_eq (op_eq_eq_gt esk1_0 (op_plus esk1_0 esk3_0)) esk3_0 := by
-  have h1 : op_gt_eq esk1_0 (op_eq_eq_gt esk3_0 (op_plus esk3_0 esk1_0)) := taelja_lemma37 esk1_0 esk3_0
+-- Lemma 35
+theorem taelja_lemma35 : op_gt_eq (op_eq_eq_gt esk1_0 (op_plus esk1_0 esk3_0)) esk3_0 := by
+  have h1 : op_gt_eq esk1_0 (op_eq_eq_gt esk3_0 (op_plus esk3_0 esk1_0)) := taelja_lemma34 esk1_0 esk3_0
   have h2 : op_gt_eq esk1_0 (op_eq_eq_gt esk3_0 (op_plus esk1_0 esk3_0)) := Eq.mp (congrArg (fun t : α => op_gt_eq esk1_0 (op_eq_eq_gt esk3_0 t)) (ax3 esk3_0 esk1_0)) h1
-  have h3 : op_gt_eq esk1_0 (op_eq_eq_gt esk3_0 esk2_0) := Eq.mp (congrArg (fun t : α => op_gt_eq esk1_0 (op_eq_eq_gt esk3_0 t)) (taelja_lemma36)) h2
+  have h3 : op_gt_eq esk1_0 (op_eq_eq_gt esk3_0 esk2_0) := Eq.mp (congrArg (fun t : α => op_gt_eq esk1_0 (op_eq_eq_gt esk3_0 t)) (taelja_lemma33)) h2
   have h4 : op_gt_eq esk1_0 esk3_0 := Eq.mp (congrArg (fun t : α => op_gt_eq esk1_0 t) (Eq.symm (ax1))) h3
   have h5 : op_gt_eq (op_eq_eq_gt esk1_0 esk2_0) esk3_0 := Eq.mp (congrArg (fun t : α => op_gt_eq t esk3_0) (ax11)) h4
-  have h6 : op_gt_eq (op_eq_eq_gt esk1_0 (op_plus esk1_0 esk3_0)) esk3_0 := Eq.mp (congrArg (fun t : α => op_gt_eq (op_eq_eq_gt esk1_0 t) esk3_0) (Eq.symm (taelja_lemma36))) h5
+  have h6 : op_gt_eq (op_eq_eq_gt esk1_0 (op_plus esk1_0 esk3_0)) esk3_0 := Eq.mp (congrArg (fun t : α => op_gt_eq (op_eq_eq_gt esk1_0 t) esk3_0) (Eq.symm (taelja_lemma33))) h5
   exact h6
 
 -- Goal 1
 theorem taelja_goal1 : esk1_0 = esk3_0 := by
-  have h1 : op_gt_eq esk3_0 (op_eq_eq_gt esk1_0 (op_plus esk1_0 esk3_0)) := taelja_lemma37 esk3_0 esk1_0
-  have h2 : op_gt_eq (op_eq_eq_gt esk1_0 (op_plus esk1_0 esk3_0)) esk3_0 := taelja_lemma38
+  have h1 : op_gt_eq esk3_0 (op_eq_eq_gt esk1_0 (op_plus esk1_0 esk3_0)) := taelja_lemma34 esk3_0 esk1_0
+  have h2 : op_gt_eq (op_eq_eq_gt esk1_0 (op_plus esk1_0 esk3_0)) esk3_0 := taelja_lemma35
   have h3 : esk3_0 = op_eq_eq_gt esk1_0 (op_plus esk1_0 esk3_0) := ax8 esk3_0 (op_eq_eq_gt esk1_0 (op_plus esk1_0 esk3_0)) h1 h2
-  have h4 : esk3_0 = op_eq_eq_gt esk1_0 esk2_0 := Eq.mp (congrArg (fun t : α => esk3_0 = op_eq_eq_gt esk1_0 t) (taelja_lemma36)) h3
+  have h4 : esk3_0 = op_eq_eq_gt esk1_0 esk2_0 := Eq.mp (congrArg (fun t : α => esk3_0 = op_eq_eq_gt esk1_0 t) (taelja_lemma33)) h3
   have h5 : esk3_0 = esk1_0 := Eq.mp (congrArg (fun t : α => esk3_0 = t) (Eq.symm (ax11))) h4
   exact Eq.symm (h5)
 

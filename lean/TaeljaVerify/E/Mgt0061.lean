@@ -51,27 +51,41 @@ axiom ax11 : ∀ (x y z u v w x1 x2 x3 x4 : α), organization x y → organizati
 axiom ax12 : ∀ (x y z u v w x1 x2 x3 x4 : α), organization x y → organization z u → reliability x v y → reliability z w u → accountability x x1 y → accountability z x2 u → reproducibility x x3 y → reproducibility z x4 u → greater x4 x3 → greater x2 x1
 
 -- Lemma 13
-theorem taelja_lemma13 : reproducibility sk2 (sk1 sk7 sk2) sk7 := by
-  have h1 : organization sk2 sk7 := ax3
-  have h2 : reproducibility sk2 (sk1 sk7 sk2) sk7 := ax4 sk2 sk7 h1
-  exact h2
-
--- Lemma 14
-theorem taelja_lemma14 : reproducibility sk2 (sk1 sk8 sk2) sk8 := by
+theorem taelja_lemma13 : reproducibility sk2 (sk1 sk8 sk2) sk8 := by
   have h1 : organization sk2 sk8 := ax5
   have h2 : reproducibility sk2 (sk1 sk8 sk2) sk8 := ax4 sk2 sk8 h1
   exact h2
 
--- Lemma 15
-theorem taelja_lemma15 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := by
+-- Lemma 14
+theorem taelja_lemma14 : ∀ (x : α), reproducibility sk2 x sk7 → greater (sk1 sk8 sk2) x := by
+  intro x a1
   have h1 : organization sk2 sk7 := ax3
   have h2 : organization sk2 sk8 := ax5
   have h3 : reorganization_free sk2 sk7 sk8 := ax7
-  have h4 : reproducibility sk2 (sk1 sk7 sk2) sk7 := taelja_lemma13
-  have h5 : reproducibility sk2 (sk1 sk8 sk2) sk8 := taelja_lemma14
+  have h4 : reproducibility sk2 x sk7 := by assumption
+  have h5 : reproducibility sk2 (sk1 sk8 sk2) sk8 := taelja_lemma13
   have h6 : greater sk8 sk7 := ax6
-  have h7 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := ax8 sk2 sk7 sk8 (sk1 sk7 sk2) (sk1 sk8 sk2) h1 h2 h3 h4 h5 h6
+  have h7 : greater (sk1 sk8 sk2) x := ax8 sk2 sk7 sk8 x (sk1 sk8 sk2) h1 h2 h3 h4 h5 h6
   exact h7
+
+-- Lemma 15
+theorem taelja_lemma15 : reproducibility sk2 (sk1 sk7 sk2) sk7 := by
+  have h1 : organization sk2 sk7 := ax3
+  have h2 : reproducibility sk2 (sk1 sk7 sk2) sk7 := ax4 sk2 sk7 h1
+  exact h2
+
+-- Lemma 16
+theorem taelja_lemma16 : reproducibility sk2 (sk1 sk8 sk2) sk8 := by
+  have h1 : organization sk2 sk8 := ax5
+  have h2 : reproducibility sk2 (sk1 sk8 sk2) sk8 := ax4 sk2 sk8 h1
+  exact h2
+
+-- Lemma 17
+theorem taelja_lemma17 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := by
+  have h1 : organization sk2 sk7 := ax3
+  have h2 : reproducibility sk2 (sk1 sk7 sk2) sk7 := ax4 sk2 sk7 h1
+  have h3 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := taelja_lemma14 (sk1 sk7 sk2) h2
+  exact h3
 
 -- Goal 1
 theorem taelja_goal1 : greater sk4 sk3 := by
@@ -81,9 +95,9 @@ theorem taelja_goal1 : greater sk4 sk3 := by
   have h4 : reliability sk2 sk4 sk8 := ax9
   have h5 : accountability sk2 sk5 sk7 := ax2
   have h6 : accountability sk2 sk6 sk8 := ax10
-  have h7 : reproducibility sk2 (sk1 sk7 sk2) sk7 := taelja_lemma13
-  have h8 : reproducibility sk2 (sk1 sk8 sk2) sk8 := taelja_lemma14
-  have h9 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := taelja_lemma15
+  have h7 : reproducibility sk2 (sk1 sk7 sk2) sk7 := taelja_lemma15
+  have h8 : reproducibility sk2 (sk1 sk8 sk2) sk8 := taelja_lemma16
+  have h9 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := taelja_lemma17
   have h10 : greater sk4 sk3 := ax11 sk2 sk7 sk2 sk8 sk3 sk4 sk5 sk6 (sk1 sk7 sk2) (sk1 sk8 sk2) h1 h2 h3 h4 h5 h6 h7 h8 h9
   exact h10
 
@@ -95,9 +109,9 @@ theorem taelja_goal2 : greater sk6 sk5 := by
   have h4 : reliability sk2 sk4 sk8 := ax9
   have h5 : accountability sk2 sk5 sk7 := ax2
   have h6 : accountability sk2 sk6 sk8 := ax10
-  have h7 : reproducibility sk2 (sk1 sk7 sk2) sk7 := taelja_lemma13
-  have h8 : reproducibility sk2 (sk1 sk8 sk2) sk8 := taelja_lemma14
-  have h9 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := taelja_lemma15
+  have h7 : reproducibility sk2 (sk1 sk7 sk2) sk7 := taelja_lemma15
+  have h8 : reproducibility sk2 (sk1 sk8 sk2) sk8 := taelja_lemma16
+  have h9 : greater (sk1 sk8 sk2) (sk1 sk7 sk2) := taelja_lemma17
   have h10 : greater sk6 sk5 := ax12 sk2 sk7 sk2 sk8 sk3 sk4 sk5 sk6 (sk1 sk7 sk2) (sk1 sk8 sk2) h1 h2 h3 h4 h5 h6 h7 h8 h9
   exact h10
 

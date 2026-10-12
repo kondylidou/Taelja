@@ -29,27 +29,27 @@ axiom ax5 : ∀ (x : α), product identity x x
 axiom ax6 : ∀ (x y z u v w : α), product x y z → product u y v → product w u x → product w v z
 
 -- Lemma 7
-theorem taelja_lemma7 : product c b a := by
-  have h1 : product b b identity := ax3 b
-  have h2 : product a b c := ax1
-  have h3 : product a identity a := ax2 a
-  have h4 : product c b a := ax4 b b identity a c a h1 h2 h3
+theorem taelja_lemma7 : ∀ (x y z : α), product x y z → product z y x := by
+  intro x y z a1
+  have h1 : product y y identity := ax3 y
+  have h2 : product x y z := by assumption
+  have h3 : product x identity x := ax2 x
+  have h4 : product z y x := ax4 y y identity x z x h1 h2 h3
   exact h4
 
 -- Lemma 8
-theorem taelja_lemma8 : product c a b := by
-  have h1 : product identity b b := ax5 b
-  have h2 : product c b a := taelja_lemma7
-  have h3 : product c c identity := ax3 c
-  have h4 : product c a b := ax6 identity b b c a c h1 h2 h3
-  exact h4
+theorem taelja_lemma8 : product c b a := by
+  have h1 : product a b c := ax1
+  have h2 : product c b a := taelja_lemma7 a b c h1
+  exact h2
 
 -- Goal 1
 theorem taelja_goal1 : product b a c := by
-  have h1 : product a a identity := ax3 a
-  have h2 : product c a b := taelja_lemma8
-  have h3 : product c identity c := ax2 c
-  have h4 : product b a c := ax4 a a identity c b c h1 h2 h3
-  exact h4
+  have h1 : product identity b b := ax5 b
+  have h2 : product c b a := taelja_lemma8
+  have h3 : product c c identity := ax3 c
+  have h4 : product c a b := ax6 identity b b c a c h1 h2 h3
+  have h5 : product b a c := taelja_lemma7 c a b h4
+  exact h5
 
 end VampireGrp0015

@@ -69,21 +69,21 @@ Proof:
   hence >=(==>(X,1),==>(X,Y))
     by axiom 9
 
-Lemma 19: >=(+(X,==>(X,1)),1)
+Lemma 19: >=(+(X,Y),Z) => >=(X,==>(Y,Z))
+Proof:
+  have >=(+(X,Y),Z)
+    by assumption
+  hence >=(+(Y,X),Z)
+    by rw axiom 1 R->L
+  hence >=(X,==>(Y,Z))
+    by axiom 4
+
+Lemma 20: >=(+(X,==>(X,1)),1)
 Proof:
   have >=(==>(X,1),==>(X,1))
     by lemma 18
   hence >=(+(X,==>(X,1)),1)
     by axiom 10
-
-Lemma 20: 1 = +(X,==>(X,1))
-Proof:
-  have >=(1,+(X,==>(X,1)))
-    by lemma 17
-   and >=(+(X,==>(X,1)),1)
-    by lemma 19
-  hence 1 = +(X,==>(X,1))
-    by axiom 6
 
 Lemma 21: +(==>(==>(X,1),X),==>(1,1)) = ==>(==>(X,1),X)
 Proof:
@@ -125,14 +125,10 @@ Proof:
 
 Lemma 25: >=(X,==>(==>(X,1),1))
 Proof:
-  have >=(1,1)
-    by lemma 17
-  hence >=(+(X,==>(X,1)),1)
-    by rw lemma 20
-  hence >=(+(==>(X,1),X),1)
-    by rw axiom 1 R->L
+  have >=(+(X,==>(X,1)),1)
+    by lemma 20
   hence >=(X,==>(==>(X,1),1))
-    by axiom 4
+    by lemma 19
 
 Goal 1: ==>(==>(X,1),1) = X
 Proof:

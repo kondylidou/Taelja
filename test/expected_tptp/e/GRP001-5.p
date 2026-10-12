@@ -5,13 +5,11 @@ cnf(square_element, hypothesis, product(X1, X1, identity), file('Problems/GRP/GR
 cnf(left_identity, axiom, product(identity, X1, X1), file('Problems/GRP/GRP001-5.p', left_identity)).
 cnf(right_identity, axiom, product(X1, identity, X1), file('Problems/GRP/GRP001-5.p', right_identity)).
 cnf(a_times_b_is_c, hypothesis, product(a, b, c), file('Problems/GRP/GRP001-5.p', a_times_b_is_c)).
-fof(s1, plain, product(b,b,identity), inference(instantiate, [status(thm)], [square_element])).
-fof(s2, plain, product(a,identity,a), inference(instantiate, [status(thm)], [right_identity])).
-fof(lemma_7, lemma, product(c,b,a), inference(mp, [status(thm)], [associativity2, a_times_b_is_c, s1, s2])).
-fof(s3, plain, product(c,c,identity), inference(instantiate, [status(thm)], [square_element])).
-fof(s4, plain, product(identity,b,b), inference(instantiate, [status(thm)], [left_identity])).
-fof(s5, plain, product(c,a,b), inference(mp, [status(thm)], [associativity1, s3, lemma_7, s4])).
-fof(s6, plain, product(a,a,identity), inference(instantiate, [status(thm)], [square_element])).
-fof(s7, plain, product(c,identity,c), inference(instantiate, [status(thm)], [right_identity])).
-fof(goal_1, theorem, product(b,a,c), inference(mp, [status(thm)], [associativity2, s5, s6, s7])).
+fof(s1, plain, ! [X,Y,Z] : (product(X,Y,Z) => product(X,Y,Z)), inference(assumption, [status(thm)], [])).
+fof(lemma_7, lemma, ! [X,Y,Z] : (product(X,Y,Z) => product(Z,Y,X)), inference(mp, [status(thm)], [associativity2, s1, square_element, right_identity])).
+fof(lemma_8, lemma, product(c,b,a), inference(mp, [status(thm)], [lemma_7, a_times_b_is_c])).
+fof(s2, plain, product(c,c,identity), inference(instantiate, [status(thm)], [square_element])).
+fof(s3, plain, product(identity,b,b), inference(instantiate, [status(thm)], [left_identity])).
+fof(s4, plain, product(c,a,b), inference(mp, [status(thm)], [associativity1, s2, lemma_8, s3])).
+fof(goal_1, theorem, product(b,a,c), inference(mp, [status(thm)], [lemma_7, s4])).
 % SZS output end Proof

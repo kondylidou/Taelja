@@ -1,0 +1,9 @@
+cnf(c1, axiom, (~p(X)|q(X,Y)), file('test_shared_nonunit.p', ax1)).
+cnf(c2, axiom, (~q(X,Z)|p(f(X))), file('test_shared_nonunit.p', ax2)).
+cnf(c3, axiom, (q(a,a)), file('test_shared_nonunit.p', ax3)).
+cnf(c4, negated_conjecture, (~q(f(f(f(a))),f(f(f(a))))), file('test_shared_nonunit.p', goal)).
+cnf(c5, plain, (~q(X,Z)|q(f(X),Y)), inference(resolution,[status(thm)],[c2,c1])).
+cnf(c6, plain, (~q(X,Z)|q(f(f(X)),Y)), inference(resolution,[status(thm)],[c5,c5])).
+cnf(c7, plain, (~q(X,Z)|q(f(f(f(X))),Y)), inference(resolution,[status(thm)],[c5,c6])).
+cnf(c8, negated_conjecture, (~q(a,Z)), inference(resolution,[status(thm)],[c7,c4])).
+cnf(c9, negated_conjecture, ($false), inference(resolution,[status(thm)],[c3,c8])).

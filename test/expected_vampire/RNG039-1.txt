@@ -18,31 +18,31 @@ Proof:
   hence product(a,b,multiply(X,b))
     by rw axiom 2
 
-Lemma 14: product(a,b,b)
+Lemma 14: product(a,b,X) => c = X
+Proof:
+  have product(a,b,c)
+    by axiom 4
+   and product(a,b,X)
+    by assumption
+  hence c = X
+    by axiom 5
+
+Lemma 15: b = c
 Proof:
   have product(a,b,multiply(b,b))
     by lemma 13
   hence product(a,b,b)
     by rw axiom 2
-
-Lemma 15: b = c
-Proof:
-  have product(a,b,c)
-    by axiom 4
-   and product(a,b,b)
-    by lemma 14
   hence b = c
-    by axiom 5
+    by lemma 14
 
 Lemma 16: b = multiply(X,b)
 Proof:
-  have product(a,b,c)
-    by axiom 4
-   and product(a,b,multiply(X,b))
+  have product(a,b,multiply(X,b))
     by lemma 13
-  hence multiply(X,b) = c
-    by axiom 5
-  hence multiply(X,b) = b
+  hence c = multiply(X,b)
+    by lemma 14
+  hence b = multiply(X,b)
     by rw lemma 15 R->L
 
 Lemma 17: product(add(a,b),b,additive_identity)
@@ -65,23 +65,34 @@ Proof:
   hence additive_identity = b
     by axiom 5
 
-Lemma 19: product(b,a,multiply(a,d))
+Lemma 19: product(b,a,multiply(X,d))
 Proof:
-  have product(multiply(a,b),a,multiply(a,d))
+  have product(multiply(X,b),a,multiply(X,d))
     by axiom 9
-  hence product(b,a,multiply(a,d))
+  hence product(b,a,multiply(X,d))
     by rw lemma 16 R->L
 
-Lemma 20: multiply(a,d) = d
+Lemma 20: multiply(X,d) = d
 Proof:
   have product(b,a,d)
     by axiom 10
-   and product(b,a,multiply(a,d))
+   and product(b,a,multiply(X,d))
     by lemma 19
-  hence multiply(a,d) = d
+  hence multiply(X,d) = d
     by axiom 5
 
-Lemma 21: product(a,d,a)
+Lemma 21: product(X,d,Y) => d = Y
+Proof:
+  have product(X,d,multiply(X,d))
+    by axiom 7
+  hence product(X,d,d)
+    by rw lemma 20
+   and product(X,d,Y)
+    by assumption
+  hence d = Y
+    by axiom 5
+
+Lemma 22: a = d
 Proof:
   have product(a,multiply(b,a),multiply(a,a))
     by axiom 3
@@ -89,35 +100,10 @@ Proof:
     by rw axiom 8
   hence product(a,d,a)
     by rw axiom 2
-
-Lemma 22: a = d
-Proof:
-  have product(a,d,multiply(a,d))
-    by axiom 7
-  hence product(a,d,d)
-    by rw lemma 20
-   and product(a,d,a)
-    by lemma 21
   hence a = d
-    by axiom 5
+    by lemma 21
 
-Lemma 23: product(b,a,multiply(a,d))
-Proof:
-  have product(multiply(a,b),a,multiply(a,d))
-    by axiom 9
-  hence product(b,a,multiply(a,d))
-    by rw lemma 16 R->L
-
-Lemma 24: multiply(a,d) = d
-Proof:
-  have product(b,a,d)
-    by axiom 10
-   and product(b,a,multiply(a,d))
-    by lemma 23
-  hence multiply(a,d) = d
-    by axiom 5
-
-Lemma 25: add(X,b) = X
+Lemma 23: add(X,b) = X
 Proof:
   add(X,b)
 = { by lemma 18 R->L }
@@ -125,12 +111,12 @@ Proof:
 = { by axiom 11 }
   X
 
-Lemma 26: product(a,d,b)
+Goal 1: c = d
 Proof:
   have product(add(a,b),a,add(a,d))
     by axiom 12
   hence product(a,a,add(a,d))
-    by rw lemma 25
+    by rw lemma 23
   hence product(a,a,add(a,a))
     by rw lemma 22 R->L
   hence product(a,a,additive_identity)
@@ -139,16 +125,7 @@ Proof:
     by rw lemma 18
   hence product(a,d,b)
     by rw lemma 22
-
-Goal 1: c = d
-Proof:
-  have product(a,d,multiply(a,d))
-    by axiom 7
-  hence product(a,d,d)
-    by rw lemma 24
-   and product(a,d,b)
-    by lemma 26
-  hence b = d
-    by axiom 5
-  hence c = d
+  hence d = b
+    by lemma 21
+  hence d = c
     by rw lemma 15

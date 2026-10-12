@@ -23,13 +23,19 @@ axiom ax2 : ∀ (x : α), p x
 -- Axiom 3
 axiom ax3 : ∀ (x y : α), q x y → p y → q (f x) y
 
+-- Lemma 4
+theorem taelja_lemma4 : ∀ (x y : α), q x y → q (f x) y := by
+  intro x y a1
+  have h1 : q x y := by assumption
+  have h2 : p y := ax2 y
+  have h3 : q (f x) y := ax3 x y h1 h2
+  exact h3
+
 -- Goal 1
 theorem taelja_goal1 : q (f (f b)) a := by
   have h1 : q b a := ax1 a
-  have h2 : p a := ax2 a
-  have h3 : q (f b) a := ax3 b a h1 h2
-  have h4 : p a := ax2 a
-  have h5 : q (f (f b)) a := ax3 (f b) a h3 h4
-  exact h5
+  have h2 : q (f b) a := taelja_lemma4 b a h1
+  have h3 : q (f (f b)) a := taelja_lemma4 (f b) a h2
+  exact h3
 
 end EResolutionExampleHornReuseInlined

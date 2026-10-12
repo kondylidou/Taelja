@@ -15,19 +15,35 @@ Axiom 14: greater(V,U) /\ organization(Z,A) /\ organization(B,C) /\ reliability(
 Axiom 15: survival_chance(esk5_0,esk11_0,esk7_0)
 Axiom 16: organization(X,X2) /\ organization(A,X3) /\ reliability(X,B,X2) /\ reliability(A,C,X3) /\ accountability(X,W,X2) /\ accountability(A,X1,X3) /\ survival_chance(X,X4,X2) /\ survival_chance(A,X5,X3) /\ greater(C,B) /\ greater(X1,W) => greater(X5,X4)
 
-Lemma 17: reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
-Proof:
-  have organization(esk4_0,esk6_0)
-    by axiom 1
-  hence reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
-    by axiom 5
-
-Lemma 18: reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+Lemma 17: reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
 Proof:
   have organization(esk5_0,esk7_0)
     by axiom 3
   hence reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
     by axiom 5
+
+Lemma 18: reproducibility(esk4_0,X,esk6_0) => greater(esk3_2(esk5_0,esk7_0),X)
+Proof:
+  have greater(esk9_0,esk8_0)
+    by axiom 6
+   and organization(esk4_0,esk6_0)
+    by axiom 1
+   and organization(esk5_0,esk7_0)
+    by axiom 3
+   and reorganization_free(esk4_0,esk6_0,esk6_0)
+    by axiom 7
+   and reorganization_free(esk5_0,esk7_0,esk7_0)
+    by axiom 9
+   and reproducibility(esk4_0,X,esk6_0)
+    by assumption
+   and reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+    by lemma 17
+   and inertia(esk4_0,esk8_0,esk6_0)
+    by axiom 8
+   and inertia(esk5_0,esk9_0,esk7_0)
+    by axiom 10
+  hence greater(esk3_2(esk5_0,esk7_0),X)
+    by axiom 11
 
 Lemma 19: reliability(esk4_0,esk1_2(esk4_0,esk6_0),esk6_0)
 Proof:
@@ -57,28 +73,28 @@ Proof:
   hence accountability(esk5_0,esk2_2(esk5_0,esk7_0),esk7_0)
     by axiom 4
 
-Lemma 23: greater(esk1_2(esk5_0,esk7_0),esk1_2(esk4_0,esk6_0))
+Lemma 23: reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
 Proof:
-  have greater(esk9_0,esk8_0)
-    by axiom 6
-   and organization(esk4_0,esk6_0)
+  have organization(esk4_0,esk6_0)
     by axiom 1
-   and organization(esk5_0,esk7_0)
+  hence reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
+    by axiom 5
+
+Lemma 24: reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+Proof:
+  have organization(esk5_0,esk7_0)
     by axiom 3
-   and reorganization_free(esk4_0,esk6_0,esk6_0)
-    by axiom 7
-   and reorganization_free(esk5_0,esk7_0,esk7_0)
-    by axiom 9
-   and reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
-    by lemma 17
-   and reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
-    by lemma 18
-   and inertia(esk4_0,esk8_0,esk6_0)
-    by axiom 8
-   and inertia(esk5_0,esk9_0,esk7_0)
-    by axiom 10
+  hence reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
+    by axiom 5
+
+Lemma 25: greater(esk1_2(esk5_0,esk7_0),esk1_2(esk4_0,esk6_0))
+Proof:
+  have organization(esk4_0,esk6_0)
+    by axiom 1
+  hence reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
+    by axiom 5
   hence greater(esk3_2(esk5_0,esk7_0),esk3_2(esk4_0,esk6_0))
-    by axiom 11
+    by lemma 18
    and organization(esk4_0,esk6_0)
     by axiom 1
    and organization(esk5_0,esk7_0)
@@ -92,34 +108,20 @@ Proof:
    and accountability(esk5_0,esk2_2(esk5_0,esk7_0),esk7_0)
     by lemma 22
    and reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
-    by lemma 17
+    by lemma 23
    and reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
-    by lemma 18
+    by lemma 24
   hence greater(esk1_2(esk5_0,esk7_0),esk1_2(esk4_0,esk6_0))
     by axiom 12
 
-Lemma 24: greater(esk2_2(esk5_0,esk7_0),esk2_2(esk4_0,esk6_0))
+Lemma 26: greater(esk2_2(esk5_0,esk7_0),esk2_2(esk4_0,esk6_0))
 Proof:
-  have greater(esk9_0,esk8_0)
-    by axiom 6
-   and organization(esk4_0,esk6_0)
+  have organization(esk4_0,esk6_0)
     by axiom 1
-   and organization(esk5_0,esk7_0)
-    by axiom 3
-   and reorganization_free(esk4_0,esk6_0,esk6_0)
-    by axiom 7
-   and reorganization_free(esk5_0,esk7_0,esk7_0)
-    by axiom 9
-   and reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
-    by lemma 17
-   and reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
-    by lemma 18
-   and inertia(esk4_0,esk8_0,esk6_0)
-    by axiom 8
-   and inertia(esk5_0,esk9_0,esk7_0)
-    by axiom 10
+  hence reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
+    by axiom 5
   hence greater(esk3_2(esk5_0,esk7_0),esk3_2(esk4_0,esk6_0))
-    by axiom 11
+    by lemma 18
    and organization(esk4_0,esk6_0)
     by axiom 1
    and organization(esk5_0,esk7_0)
@@ -133,9 +135,9 @@ Proof:
    and accountability(esk5_0,esk2_2(esk5_0,esk7_0),esk7_0)
     by lemma 22
    and reproducibility(esk4_0,esk3_2(esk4_0,esk6_0),esk6_0)
-    by lemma 17
+    by lemma 23
    and reproducibility(esk5_0,esk3_2(esk5_0,esk7_0),esk7_0)
-    by lemma 18
+    by lemma 24
   hence greater(esk2_2(esk5_0,esk7_0),esk2_2(esk4_0,esk6_0))
     by axiom 14
 
@@ -158,8 +160,8 @@ Proof:
    and survival_chance(esk5_0,esk11_0,esk7_0)
     by axiom 15
    and greater(esk1_2(esk5_0,esk7_0),esk1_2(esk4_0,esk6_0))
-    by lemma 23
+    by lemma 25
    and greater(esk2_2(esk5_0,esk7_0),esk2_2(esk4_0,esk6_0))
-    by lemma 24
+    by lemma 26
   hence greater(esk11_0,esk10_0)
     by axiom 16

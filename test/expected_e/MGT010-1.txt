@@ -16,21 +16,14 @@ Axiom 15: accountability(sk3,sk8,sk12)
 Axiom 16: organization(X,Y) /\ organization(Z,A) /\ reliability(X,B,Y) /\ reliability(Z,C,A) /\ accountability(X,U,Y) /\ accountability(Z,V,A) /\ reproducibility(X,W,Y) /\ reproducibility(Z,X1,A) /\ greater(X1,W) => greater(C,B)
 Axiom 17: organization(X,Y) /\ organization(Z,A) /\ reliability(X,B,Y) /\ reliability(Z,C,A) /\ accountability(X,U,Y) /\ accountability(Z,V,A) /\ reproducibility(X,W,Y) /\ reproducibility(Z,X1,A) /\ greater(X1,W) => greater(V,U)
 
-Lemma 18: reproducibility(sk2,sk1(sk11,sk2),sk11)
-Proof:
-  have organization(sk2,sk11)
-    by axiom 3
-  hence reproducibility(sk2,sk1(sk11,sk2),sk11)
-    by axiom 4
-
-Lemma 19: reproducibility(sk3,sk1(sk12,sk3),sk12)
+Lemma 18: reproducibility(sk3,sk1(sk12,sk3),sk12)
 Proof:
   have organization(sk3,sk12)
     by axiom 9
   hence reproducibility(sk3,sk1(sk12,sk3),sk12)
     by axiom 4
 
-Lemma 20: greater(sk1(sk12,sk3),sk1(sk11,sk2))
+Lemma 19: reproducibility(sk2,X,sk11) => greater(sk1(sk12,sk3),X)
 Proof:
   have organization(sk2,sk11)
     by axiom 3
@@ -44,18 +37,41 @@ Proof:
     by axiom 7
    and class(sk3,sk4,sk12)
     by axiom 10
-   and reproducibility(sk2,sk1(sk11,sk2),sk11)
-    by lemma 18
+   and reproducibility(sk2,X,sk11)
+    by assumption
    and reproducibility(sk3,sk1(sk12,sk3),sk12)
-    by lemma 19
+    by lemma 18
    and size(sk2,sk9,sk11)
     by axiom 8
    and size(sk3,sk10,sk12)
     by axiom 12
    and greater(sk10,sk9)
     by axiom 5
-  hence greater(sk1(sk12,sk3),sk1(sk11,sk2))
+  hence greater(sk1(sk12,sk3),X)
     by axiom 13
+
+Lemma 20: reproducibility(sk2,sk1(sk11,sk2),sk11)
+Proof:
+  have organization(sk2,sk11)
+    by axiom 3
+  hence reproducibility(sk2,sk1(sk11,sk2),sk11)
+    by axiom 4
+
+Lemma 21: reproducibility(sk3,sk1(sk12,sk3),sk12)
+Proof:
+  have organization(sk3,sk12)
+    by axiom 9
+  hence reproducibility(sk3,sk1(sk12,sk3),sk12)
+    by axiom 4
+
+Lemma 22: greater(sk1(sk12,sk3),sk1(sk11,sk2))
+Proof:
+  have organization(sk2,sk11)
+    by axiom 3
+  hence reproducibility(sk2,sk1(sk11,sk2),sk11)
+    by axiom 4
+  hence greater(sk1(sk12,sk3),sk1(sk11,sk2))
+    by lemma 19
 
 Goal 1: greater(sk6,sk5)
 Proof:
@@ -72,11 +88,11 @@ Proof:
    and accountability(sk3,sk8,sk12)
     by axiom 15
    and reproducibility(sk2,sk1(sk11,sk2),sk11)
-    by lemma 18
-   and reproducibility(sk3,sk1(sk12,sk3),sk12)
-    by lemma 19
-   and greater(sk1(sk12,sk3),sk1(sk11,sk2))
     by lemma 20
+   and reproducibility(sk3,sk1(sk12,sk3),sk12)
+    by lemma 21
+   and greater(sk1(sk12,sk3),sk1(sk11,sk2))
+    by lemma 22
   hence greater(sk6,sk5)
     by axiom 16
 
@@ -95,10 +111,10 @@ Proof:
    and accountability(sk3,sk8,sk12)
     by axiom 15
    and reproducibility(sk2,sk1(sk11,sk2),sk11)
-    by lemma 18
-   and reproducibility(sk3,sk1(sk12,sk3),sk12)
-    by lemma 19
-   and greater(sk1(sk12,sk3),sk1(sk11,sk2))
     by lemma 20
+   and reproducibility(sk3,sk1(sk12,sk3),sk12)
+    by lemma 21
+   and greater(sk1(sk12,sk3),sk1(sk11,sk2))
+    by lemma 22
   hence greater(sk8,sk7)
     by axiom 17

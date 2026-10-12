@@ -94,9 +94,10 @@ instance NFData Justification
 instance NFData Axiom
 
 -- The translated proof, with axioms in input order, lemmas and goal proofs.
+-- A lemma is a Horn clause, a unit for most, whose proof assumes its body.
 data StructuredProof = StructuredProof
   { axioms  :: [Axiom]
-  , lemmas  :: [(String, Literal, ProofBlock)]
+  , lemmas  :: [(String, Clause, ProofBlock)]
   , goals   :: [(Literal, ProofBlock)]
   , spInput :: ProofInput
   } deriving (Show)
@@ -121,7 +122,7 @@ emptyInput = ProofInput Map.empty Map.empty Nothing Map.empty [] [] [] []
 data AlgState = AlgState
   { stDebug      :: Bool  -- whether debug traces are printed
   , stUnits      :: [UnitEntry]
-  , stLemmas     :: [(String, Literal, ProofBlock)]
+  , stLemmas     :: [(String, Clause, ProofBlock)]
   , stGoals      :: [(Literal, ProofBlock)]
   , stGoalFor    :: [Literal]  -- the conjunct each goal in stGoals was proved for
   , stCounter    :: Int

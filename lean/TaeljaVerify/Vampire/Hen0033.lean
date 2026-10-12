@@ -36,25 +36,21 @@ theorem taelja_lemma7 : ∀ (x y : α), zero = divide (divide x y) x := by
   exact h2
 
 -- Lemma 8
-theorem taelja_lemma8 : less_equal (divide (divide a a) zero) zero := by
-  have h1 : less_equal (divide (divide a a) (divide (divide a a) a)) (divide (divide a (divide a a)) a) := ax3 a a (divide a a)
-  have h2 : less_equal (divide (divide a a) (divide (divide a a) a)) zero := Eq.mp (congrArg (fun t : α => less_equal (divide (divide a a) (divide (divide a a) a)) t) (Eq.symm (taelja_lemma7 a (divide a a)))) h1
-  have h3 : less_equal (divide (divide a a) zero) zero := Eq.mp (congrArg (fun t : α => less_equal (divide (divide a a) t) zero) (Eq.symm (taelja_lemma7 a a))) h2
+theorem taelja_lemma8 : ∀ (x : α), less_equal x zero → zero = x := by
+  intro x a1
+  have h1 : less_equal zero x := ax4 x
+  have h2 : less_equal x zero := by assumption
+  have h3 : zero = x := ax5 x zero h2 h1
   exact h3
-
--- Lemma 9
-theorem taelja_lemma9 : less_equal (divide a a) zero := by
-  have h1 : less_equal zero (divide (divide a a) zero) := ax4 (divide (divide a a) zero)
-  have h2 : less_equal (divide (divide a a) zero) zero := taelja_lemma8
-  have h3 : divide (divide a a) zero = zero := ax5 zero (divide (divide a a) zero) h1 h2
-  have h4 : less_equal (divide a a) zero := ax6 (divide a a) zero h3
-  exact h4
 
 -- Goal 1
 theorem taelja_goal1 : divide a a = zero := by
-  have h1 : less_equal zero (divide a a) := ax4 (divide a a)
-  have h2 : less_equal (divide a a) zero := taelja_lemma9
-  have h3 : divide a a = zero := ax5 zero (divide a a) h1 h2
-  exact h3
+  have h1 : less_equal (divide (divide a a) (divide (divide a a) a)) (divide (divide a (divide a a)) a) := ax3 a a (divide a a)
+  have h2 : less_equal (divide (divide a a) (divide (divide a a) a)) zero := Eq.mp (congrArg (fun t : α => less_equal (divide (divide a a) (divide (divide a a) a)) t) (Eq.symm (taelja_lemma7 a (divide a a)))) h1
+  have h3 : less_equal (divide (divide a a) zero) zero := Eq.mp (congrArg (fun t : α => less_equal (divide (divide a a) t) zero) (Eq.symm (taelja_lemma7 a a))) h2
+  have h4 : zero = divide (divide a a) zero := taelja_lemma8 (divide (divide a a) zero) h3
+  have h5 : less_equal (divide a a) zero := ax6 (divide a a) zero (Eq.symm (h4))
+  have h6 : divide a a = zero := Eq.symm (taelja_lemma8 (divide a a) h5)
+  exact h6
 
 end VampireHen0033

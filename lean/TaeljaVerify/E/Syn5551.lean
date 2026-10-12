@@ -30,17 +30,24 @@ axiom ax4 : ∀ (x y z : α), p4 x y → p4 x z → p4 y z
 axiom ax5 : ∀ (x y z : α), p4 (f5 c7 x y) y → p4 (f5 c7 (f6 x y z) y) (f5 c7 (f6 x y z) z) → p4 (f5 c7 x z) z
 
 -- Lemma 6
-theorem taelja_lemma6 : ∀ (x : α), p4 (f5 c7 x c9) (f5 c7 x c8) := by
+theorem taelja_lemma6 : ∀ (x y : α), p4 x y → p4 y x := by
+  intro x y a1
+  have h1 : p4 x y := by assumption
+  have h2 : p4 x x := ax3 x
+  have h3 : p4 y x := ax4 x y x h1 h2
+  exact h3
+
+-- Lemma 7
+theorem taelja_lemma7 : ∀ (x : α), p4 (f5 c7 x c9) (f5 c7 x c8) := by
   intro x
   have h1 : p4 (f5 c7 x c8) (f5 c7 x c9) := ax2 x
-  have h2 : p4 (f5 c7 x c8) (f5 c7 x c8) := ax3 (f5 c7 x c8)
-  have h3 : p4 (f5 c7 x c9) (f5 c7 x c8) := ax4 (f5 c7 x c8) (f5 c7 x c9) (f5 c7 x c8) h1 h2
-  exact h3
+  have h2 : p4 (f5 c7 x c9) (f5 c7 x c8) := taelja_lemma6 (f5 c7 x c8) (f5 c7 x c9) h1
+  exact h2
 
 -- Goal 1
 theorem taelja_goal1 : p4 (f5 c7 c10 c8) c8 := by
   have h1 : p4 (f5 c7 c10 c9) c9 := ax1
-  have h2 : p4 (f5 c7 (f6 c10 c9 c8) c9) (f5 c7 (f6 c10 c9 c8) c8) := taelja_lemma6 (f6 c10 c9 c8)
+  have h2 : p4 (f5 c7 (f6 c10 c9 c8) c9) (f5 c7 (f6 c10 c9 c8) c8) := taelja_lemma7 (f6 c10 c9 c8)
   have h3 : p4 (f5 c7 c10 c8) c8 := ax5 c10 c9 c8 h1 h2
   exact h3
 

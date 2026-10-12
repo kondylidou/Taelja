@@ -12,7 +12,7 @@ import Data.Maybe (fromMaybe, listToMaybe, maybeToList)
 import qualified Data.Set as Set
 
 import Emitter (finalProof)
-import Helpers (applySubstTerm, atomTerms, axiomClause, axiomLits, axiomName, blockShownVars, matchTermIf, capitalize, falsumLit, flipLit, foldLiteralTerms, isEqLit, isRelLit, lineLit, litVars, mapLiteralTerms, termAtom, termVars, underscoreApart)
+import Helpers (applySubstTerm, assumptionName, atomTerms, axiomClause, axiomLits, axiomName, blockShownVars, clauseHead, clauseLits, matchTermIf, capitalize, falsumLit, flipLit, foldLiteralTerms, isEqLit, isRelLit, lineLit, litVars, mapLiteralTerms, termAtom, termVars, underscoreApart)
 import Types
 
 -- Whether a symbol is a function or a predicate.
@@ -61,8 +61,8 @@ emitLean namespace0 sp0 = unlines $
   ++ concat [ [ "-- " ++ capitalize n, "axiom " ++ refName r ++ " : " ++ refType ctx r ]
             | (n, r) <- axiomRefs ]
   ++ [ "" | not (null axiomRefs) ]
-  ++ concat [ theorem (capitalize n) (leanRefName n) lit blk | (n, lit, blk) <- lemmas sp ]
-  ++ concat [ theorem ("Goal " ++ show i) ("taelja_goal" ++ show i) lit blk
+  ++ concat [ theorem (capitalize n) (leanRefName n) c blk | (n, c, blk) <- lemmas sp ]
+  ++ concat [ theorem ("Goal " ++ show i) ("taelja_goal" ++ show i) (Clause [] (Just lit)) blk
             | (i, (lit, blk)) <- zip [(1 :: Int) ..] (goals sp) ]
   ++ [ "end " ++ namespace ]
   where
@@ -70,17 +70,17 @@ emitLean namespace0 sp0 = unlines $
     sp = finalProof sp0
     syms = Set.toList . Set.fromList $
       concat [ concatMap litSyms (axiomLits ax) | ax <- axioms sp ]
-      ++ concat [ litSyms lit ++ blockSyms lit blk | (_, lit, blk) <- lemmas sp ]
+      ++ concat [ concatMap litSyms (clauseLits c) ++ blockSyms (clauseHead c) blk | (_, c, blk) <- lemmas sp ]
       ++ concat [ litSyms lit ++ blockSyms lit blk | (lit, blk) <- goals sp ]
     names = symbolNames syms
     axiomRefs = [ (axiomName ax, mkRef (axiomName ax) (axiomClause ax)) | ax <- axioms sp ]
-    lemmaRefs = [ (n, mkRef n (Clause [] (Just lit))) | (n, lit, _) <- lemmas sp ]
+    lemmaRefs = [ (n, mkRef n c) | (n, c, _) <- lemmas sp ]
     ctx = Ctx { ctxNames = names
               , ctxUsed  = Set.fromList (Map.elems names)
               , ctxRefs  = Map.fromList (axiomRefs ++ lemmaRefs) }
-    theorem title nm lit blk =
-      [ "-- " ++ title, "theorem " ++ nm ++ " : " ++ statement ctx lit ++ " := by" ]
-      ++ map ("  " ++) (proofLines ctx lit blk) ++ [""]
+    theorem title nm c blk =
+      [ "-- " ++ title, "theorem " ++ nm ++ " : " ++ statement ctx c ++ " := by" ]
+      ++ map ("  " ++) (proofLines ctx c blk) ++ [""]
     symbolDecls =
       let decl s@(k, _, n) = "axiom " ++ names Map.! s ++ " : "
             ++ intercalate " → " (replicate n "α" ++ [if k == Fun then "α" else "Prop"])
@@ -240,20 +240,27 @@ quantified :: [String] -> String -> String
 quantified [] body = body
 quantified vs body = "∀ (" ++ unwords vs ++ " : α), " ++ body
 
--- A lemma or goal, universally closed over its variables in order of occurrence.
-statement :: Ctx -> Literal -> String
-statement ctx lit = quantified (map (env Map.!) vs) (leanLiteral ctx env lit)
-  where vs  = nub (litVars lit)
+-- A lemma or goal b1 /\ ... /\ bn => h as b1 → ... → bn → h, universally
+-- closed over its variables in order of occurrence.
+statement :: Ctx -> Clause -> String
+statement ctx c@(Clause bs mh) = quantified (map (env Map.!) vs) $
+  intercalate " → " (map (hypothesis ctx env) bs ++ [maybe "False" (leanLiteral ctx env) mh])
+  where vs  = nub (concatMap litVars (clauseLits c))
         env = bindVars (ctxUsed ctx) Map.empty vs
 
 -- A clause b1 /\ ... /\ bn => h as b1 → ... → bn → h under its variables.
 refType :: Ctx -> Ref -> String
 refType ctx r = quantified (map (env Map.!) (refBinders r)) $
-  intercalate " → " (map hyp (refBody r) ++ [maybe "False" (leanLiteral ctx env) (refHead r)])
+  intercalate " → " (map (hypothesis ctx env) (refBody r) ++ [maybe "False" (leanLiteral ctx env) (refHead r)])
   where
     env = bindVars (ctxUsed ctx) Map.empty (refBinders r)
-    hyp b | isEqLit b || isRelLit b = leanLiteral ctx env b
-          | otherwise               = "(" ++ leanLiteral ctx env b ++ ")"
+
+-- A body atom as the hypothesis of an implication, in parentheses unless it
+-- is an atom or an equation.
+hypothesis :: Ctx -> Env -> Literal -> String
+hypothesis ctx env b
+  | isEqLit b || isRelLit b = leanLiteral ctx env b
+  | otherwise               = "(" ++ leanLiteral ctx env b ++ ")"
 
 -- Matching ---------------------------------------------------------------
 
@@ -338,16 +345,18 @@ unjustified :: String -> [String]
 unjustified why = [ "-- not justified: " ++ why, "exact taelja_step_not_justified" ]
 
 -- The tactic proof of a lemma or goal. It introduces the statement's
--- variables and sets any other block variable to taelja_elem.
-proofLines :: Ctx -> Literal -> ProofBlock -> [String]
-proofLines ctx stmt blk =
-  [ "intro " ++ unwords (map (env Map.!) stmtVs) | not (null stmtVs) ]
+-- variables and body atoms and sets any other block variable to taelja_elem.
+proofLines :: Ctx -> Clause -> ProofBlock -> [String]
+proofLines ctx c blk =
+  [ "intro " ++ unwords (map (env Map.!) stmtVs ++ hyps) | not (null stmtVs && null hyps) ]
   ++ [ "have " ++ env Map.! v ++ " : α := taelja_elem" | v <- blockVs ]
   ++ case blk of
        HaveHence ls    -> haveHence ctx env stmt ls
        EqChain s steps -> chainProof ctx env stmt s steps
   where
-    stmtVs  = nub (litVars stmt)
+    stmt    = clauseHead c
+    hyps    = [ localName ctx env ("a" ++ show i) | i <- [1 .. length (body c)] ]
+    stmtVs  = nub (concatMap litVars (clauseLits c))
     blockVs = nub (blockShownVars blk) \\ stmtVs
     env0    = bindVars (ctxUsed ctx) Map.empty (stmtVs ++ blockVs)
     hole    = head [ h | h <- "t" : [ "t" ++ show n | n <- [(1 :: Int) ..] ]
@@ -376,6 +385,9 @@ haveHence ctx env stmt = go (1 :: Int) Nothing []
           And {} -> go (n + 1) cur (extras ++ [(h, l)]) rest
           _      -> go (n + 1) (Just (h, l)) [] rest
         (proof, why) = case ln of
+          -- a body atom of the lemma, which the statement introduced
+          Have _ nm | nm == assumptionName -> (Just "by assumption", "")
+          And _ nm  | nm == assumptionName -> (Just "by assumption", "")
           Have _ nm -> (cite nm [], nm ++ " does not state " ++ lit l)
           And _ nm  -> (cite nm [], nm ++ " does not state " ++ lit l)
           Hence _ (ByAxiom nm) ->

@@ -90,19 +90,19 @@ theorem taelja_lemma18 : ∀ (x y : α), op_gt_eq (op_eq_eq_gt x n_1) (op_eq_eq_
   exact h2
 
 -- Lemma 19
-theorem taelja_lemma19 : ∀ (x : α), op_gt_eq (op_plus x (op_eq_eq_gt x n_1)) n_1 := by
+theorem taelja_lemma19 : ∀ (x y z : α), op_gt_eq (op_plus x y) z → op_gt_eq x (op_eq_eq_gt y z) := by
+  intro x y z a1
+  have h1 : op_gt_eq (op_plus x y) z := by assumption
+  have h2 : op_gt_eq (op_plus y x) z := Eq.mp (congrArg (fun t : α => op_gt_eq t z) (Eq.symm (ax1 y x))) h1
+  have h3 : op_gt_eq x (op_eq_eq_gt y z) := ax4 y x z h2
+  exact h3
+
+-- Lemma 20
+theorem taelja_lemma20 : ∀ (x : α), op_gt_eq (op_plus x (op_eq_eq_gt x n_1)) n_1 := by
   intro x
   have h1 : op_gt_eq (op_eq_eq_gt x n_1) (op_eq_eq_gt x n_1) := taelja_lemma18 x n_1
   have h2 : op_gt_eq (op_plus x (op_eq_eq_gt x n_1)) n_1 := ax10 (op_eq_eq_gt x n_1) x n_1 h1
   exact h2
-
--- Lemma 20
-theorem taelja_lemma20 : ∀ (x : α), n_1 = op_plus x (op_eq_eq_gt x n_1) := by
-  intro x
-  have h1 : op_gt_eq n_1 (op_plus x (op_eq_eq_gt x n_1)) := taelja_lemma17 (op_plus x (op_eq_eq_gt x n_1))
-  have h2 : op_gt_eq (op_plus x (op_eq_eq_gt x n_1)) n_1 := taelja_lemma19 x
-  have h3 : n_1 = op_plus x (op_eq_eq_gt x n_1) := ax6 n_1 (op_plus x (op_eq_eq_gt x n_1)) h1 h2
-  exact h3
 
 -- Lemma 21
 theorem taelja_lemma21 : ∀ (x : α), op_plus (op_eq_eq_gt (op_eq_eq_gt x n_1) x) (op_eq_eq_gt n_1 n_1) = op_eq_eq_gt (op_eq_eq_gt x n_1) x := by
@@ -137,11 +137,9 @@ theorem taelja_lemma24 : ∀ (x : α), op_eq_eq_gt (op_eq_eq_gt x n_1) x = x := 
 -- Lemma 25
 theorem taelja_lemma25 : ∀ (x : α), op_gt_eq x (op_eq_eq_gt (op_eq_eq_gt x n_1) n_1) := by
   intro x
-  have h1 : op_gt_eq n_1 n_1 := taelja_lemma17 n_1
-  have h2 : op_gt_eq (op_plus x (op_eq_eq_gt x n_1)) n_1 := Eq.mp (congrArg (fun t : α => op_gt_eq t n_1) (taelja_lemma20 x)) h1
-  have h3 : op_gt_eq (op_plus (op_eq_eq_gt x n_1) x) n_1 := Eq.mp (congrArg (fun t : α => op_gt_eq t n_1) (Eq.symm (ax1 (op_eq_eq_gt x n_1) x))) h2
-  have h4 : op_gt_eq x (op_eq_eq_gt (op_eq_eq_gt x n_1) n_1) := ax4 (op_eq_eq_gt x n_1) x n_1 h3
-  exact h4
+  have h1 : op_gt_eq (op_plus x (op_eq_eq_gt x n_1)) n_1 := taelja_lemma20 x
+  have h2 : op_gt_eq x (op_eq_eq_gt (op_eq_eq_gt x n_1) n_1) := taelja_lemma19 x (op_eq_eq_gt x n_1) n_1 h1
+  exact h2
 
 -- Goal 1
 theorem taelja_goal1 : ∀ (x : α), op_eq_eq_gt (op_eq_eq_gt x n_1) n_1 = x := by

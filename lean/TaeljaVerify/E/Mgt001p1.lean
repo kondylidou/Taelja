@@ -64,16 +64,25 @@ axiom ax15 : survival_chance esk5_0 esk11_0 esk7_0
 axiom ax16 : ∀ (x y z u v w x1 x2 x3 x4 : α), organization x y → organization z u → reliability x v y → reliability z w u → accountability x x1 y → accountability z x2 u → survival_chance x x3 y → survival_chance z x4 u → greater w v → greater x2 x1 → greater x4 x3
 
 -- Lemma 17
-theorem taelja_lemma17 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := by
-  have h1 : organization esk4_0 esk6_0 := ax1
-  have h2 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := ax5 esk4_0 esk6_0 h1
-  exact h2
-
--- Lemma 18
-theorem taelja_lemma18 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := by
+theorem taelja_lemma17 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := by
   have h1 : organization esk5_0 esk7_0 := ax3
   have h2 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := ax5 esk5_0 esk7_0 h1
   exact h2
+
+-- Lemma 18
+theorem taelja_lemma18 : ∀ (x : α), reproducibility esk4_0 x esk6_0 → greater (esk3_2 esk5_0 esk7_0) x := by
+  intro x a1
+  have h1 : greater esk9_0 esk8_0 := ax6
+  have h2 : organization esk4_0 esk6_0 := ax1
+  have h3 : organization esk5_0 esk7_0 := ax3
+  have h4 : reorganization_free esk4_0 esk6_0 esk6_0 := ax7
+  have h5 : reorganization_free esk5_0 esk7_0 esk7_0 := ax9
+  have h6 : reproducibility esk4_0 x esk6_0 := by assumption
+  have h7 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := taelja_lemma17
+  have h8 : inertia esk4_0 esk8_0 esk6_0 := ax8
+  have h9 : inertia esk5_0 esk9_0 esk7_0 := ax10
+  have h10 : greater (esk3_2 esk5_0 esk7_0) x := ax11 esk9_0 esk8_0 esk4_0 esk6_0 esk5_0 esk7_0 x (esk3_2 esk5_0 esk7_0) h1 h2 h3 h4 h5 h6 h7 h8 h9
+  exact h10
 
 -- Lemma 19
 theorem taelja_lemma19 : reliability esk4_0 (esk1_2 esk4_0 esk6_0) esk6_0 := by
@@ -100,50 +109,48 @@ theorem taelja_lemma22 : accountability esk5_0 (esk2_2 esk5_0 esk7_0) esk7_0 := 
   exact h2
 
 -- Lemma 23
-theorem taelja_lemma23 : greater (esk1_2 esk5_0 esk7_0) (esk1_2 esk4_0 esk6_0) := by
-  have h1 : greater esk9_0 esk8_0 := ax6
-  have h2 : organization esk4_0 esk6_0 := ax1
-  have h3 : organization esk5_0 esk7_0 := ax3
-  have h4 : reorganization_free esk4_0 esk6_0 esk6_0 := ax7
-  have h5 : reorganization_free esk5_0 esk7_0 esk7_0 := ax9
-  have h6 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := taelja_lemma17
-  have h7 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := taelja_lemma18
-  have h8 : inertia esk4_0 esk8_0 esk6_0 := ax8
-  have h9 : inertia esk5_0 esk9_0 esk7_0 := ax10
-  have h10 : greater (esk3_2 esk5_0 esk7_0) (esk3_2 esk4_0 esk6_0) := ax11 esk9_0 esk8_0 esk4_0 esk6_0 esk5_0 esk7_0 (esk3_2 esk4_0 esk6_0) (esk3_2 esk5_0 esk7_0) h1 h2 h3 h4 h5 h6 h7 h8 h9
-  have h11 : organization esk4_0 esk6_0 := ax1
-  have h12 : organization esk5_0 esk7_0 := ax3
-  have h13 : reliability esk4_0 (esk1_2 esk4_0 esk6_0) esk6_0 := taelja_lemma19
-  have h14 : reliability esk5_0 (esk1_2 esk5_0 esk7_0) esk7_0 := taelja_lemma20
-  have h15 : accountability esk4_0 (esk2_2 esk4_0 esk6_0) esk6_0 := taelja_lemma21
-  have h16 : accountability esk5_0 (esk2_2 esk5_0 esk7_0) esk7_0 := taelja_lemma22
-  have h17 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := taelja_lemma17
-  have h18 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := taelja_lemma18
-  have h19 : greater (esk1_2 esk5_0 esk7_0) (esk1_2 esk4_0 esk6_0) := ax12 (esk3_2 esk5_0 esk7_0) (esk3_2 esk4_0 esk6_0) esk4_0 esk6_0 esk5_0 esk7_0 (esk1_2 esk4_0 esk6_0) (esk1_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) (esk2_2 esk5_0 esk7_0) h10 h11 h12 h13 h14 h15 h16 h17 h18
-  exact h19
+theorem taelja_lemma23 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := by
+  have h1 : organization esk4_0 esk6_0 := ax1
+  have h2 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := ax5 esk4_0 esk6_0 h1
+  exact h2
 
 -- Lemma 24
-theorem taelja_lemma24 : greater (esk2_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) := by
-  have h1 : greater esk9_0 esk8_0 := ax6
-  have h2 : organization esk4_0 esk6_0 := ax1
-  have h3 : organization esk5_0 esk7_0 := ax3
-  have h4 : reorganization_free esk4_0 esk6_0 esk6_0 := ax7
-  have h5 : reorganization_free esk5_0 esk7_0 esk7_0 := ax9
-  have h6 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := taelja_lemma17
-  have h7 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := taelja_lemma18
-  have h8 : inertia esk4_0 esk8_0 esk6_0 := ax8
-  have h9 : inertia esk5_0 esk9_0 esk7_0 := ax10
-  have h10 : greater (esk3_2 esk5_0 esk7_0) (esk3_2 esk4_0 esk6_0) := ax11 esk9_0 esk8_0 esk4_0 esk6_0 esk5_0 esk7_0 (esk3_2 esk4_0 esk6_0) (esk3_2 esk5_0 esk7_0) h1 h2 h3 h4 h5 h6 h7 h8 h9
-  have h11 : organization esk4_0 esk6_0 := ax1
-  have h12 : organization esk5_0 esk7_0 := ax3
-  have h13 : reliability esk4_0 (esk1_2 esk4_0 esk6_0) esk6_0 := taelja_lemma19
-  have h14 : reliability esk5_0 (esk1_2 esk5_0 esk7_0) esk7_0 := taelja_lemma20
-  have h15 : accountability esk4_0 (esk2_2 esk4_0 esk6_0) esk6_0 := taelja_lemma21
-  have h16 : accountability esk5_0 (esk2_2 esk5_0 esk7_0) esk7_0 := taelja_lemma22
-  have h17 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := taelja_lemma17
-  have h18 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := taelja_lemma18
-  have h19 : greater (esk2_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) := ax14 (esk3_2 esk5_0 esk7_0) (esk3_2 esk4_0 esk6_0) esk4_0 esk6_0 esk5_0 esk7_0 (esk1_2 esk4_0 esk6_0) (esk1_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) (esk2_2 esk5_0 esk7_0) h10 h11 h12 h13 h14 h15 h16 h17 h18
-  exact h19
+theorem taelja_lemma24 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := by
+  have h1 : organization esk5_0 esk7_0 := ax3
+  have h2 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := ax5 esk5_0 esk7_0 h1
+  exact h2
+
+-- Lemma 25
+theorem taelja_lemma25 : greater (esk1_2 esk5_0 esk7_0) (esk1_2 esk4_0 esk6_0) := by
+  have h1 : organization esk4_0 esk6_0 := ax1
+  have h2 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := ax5 esk4_0 esk6_0 h1
+  have h3 : greater (esk3_2 esk5_0 esk7_0) (esk3_2 esk4_0 esk6_0) := taelja_lemma18 (esk3_2 esk4_0 esk6_0) h2
+  have h4 : organization esk4_0 esk6_0 := ax1
+  have h5 : organization esk5_0 esk7_0 := ax3
+  have h6 : reliability esk4_0 (esk1_2 esk4_0 esk6_0) esk6_0 := taelja_lemma19
+  have h7 : reliability esk5_0 (esk1_2 esk5_0 esk7_0) esk7_0 := taelja_lemma20
+  have h8 : accountability esk4_0 (esk2_2 esk4_0 esk6_0) esk6_0 := taelja_lemma21
+  have h9 : accountability esk5_0 (esk2_2 esk5_0 esk7_0) esk7_0 := taelja_lemma22
+  have h10 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := taelja_lemma23
+  have h11 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := taelja_lemma24
+  have h12 : greater (esk1_2 esk5_0 esk7_0) (esk1_2 esk4_0 esk6_0) := ax12 (esk3_2 esk5_0 esk7_0) (esk3_2 esk4_0 esk6_0) esk4_0 esk6_0 esk5_0 esk7_0 (esk1_2 esk4_0 esk6_0) (esk1_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) (esk2_2 esk5_0 esk7_0) h3 h4 h5 h6 h7 h8 h9 h10 h11
+  exact h12
+
+-- Lemma 26
+theorem taelja_lemma26 : greater (esk2_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) := by
+  have h1 : organization esk4_0 esk6_0 := ax1
+  have h2 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := ax5 esk4_0 esk6_0 h1
+  have h3 : greater (esk3_2 esk5_0 esk7_0) (esk3_2 esk4_0 esk6_0) := taelja_lemma18 (esk3_2 esk4_0 esk6_0) h2
+  have h4 : organization esk4_0 esk6_0 := ax1
+  have h5 : organization esk5_0 esk7_0 := ax3
+  have h6 : reliability esk4_0 (esk1_2 esk4_0 esk6_0) esk6_0 := taelja_lemma19
+  have h7 : reliability esk5_0 (esk1_2 esk5_0 esk7_0) esk7_0 := taelja_lemma20
+  have h8 : accountability esk4_0 (esk2_2 esk4_0 esk6_0) esk6_0 := taelja_lemma21
+  have h9 : accountability esk5_0 (esk2_2 esk5_0 esk7_0) esk7_0 := taelja_lemma22
+  have h10 : reproducibility esk4_0 (esk3_2 esk4_0 esk6_0) esk6_0 := taelja_lemma23
+  have h11 : reproducibility esk5_0 (esk3_2 esk5_0 esk7_0) esk7_0 := taelja_lemma24
+  have h12 : greater (esk2_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) := ax14 (esk3_2 esk5_0 esk7_0) (esk3_2 esk4_0 esk6_0) esk4_0 esk6_0 esk5_0 esk7_0 (esk1_2 esk4_0 esk6_0) (esk1_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) (esk2_2 esk5_0 esk7_0) h3 h4 h5 h6 h7 h8 h9 h10 h11
+  exact h12
 
 -- Goal 1
 theorem taelja_goal1 : greater esk11_0 esk10_0 := by
@@ -155,8 +162,8 @@ theorem taelja_goal1 : greater esk11_0 esk10_0 := by
   have h6 : accountability esk5_0 (esk2_2 esk5_0 esk7_0) esk7_0 := taelja_lemma22
   have h7 : survival_chance esk4_0 esk10_0 esk6_0 := ax13
   have h8 : survival_chance esk5_0 esk11_0 esk7_0 := ax15
-  have h9 : greater (esk1_2 esk5_0 esk7_0) (esk1_2 esk4_0 esk6_0) := taelja_lemma23
-  have h10 : greater (esk2_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) := taelja_lemma24
+  have h9 : greater (esk1_2 esk5_0 esk7_0) (esk1_2 esk4_0 esk6_0) := taelja_lemma25
+  have h10 : greater (esk2_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) := taelja_lemma26
   have h11 : greater esk11_0 esk10_0 := ax16 esk4_0 esk6_0 esk5_0 esk7_0 (esk1_2 esk4_0 esk6_0) (esk1_2 esk5_0 esk7_0) (esk2_2 esk4_0 esk6_0) (esk2_2 esk5_0 esk7_0) esk10_0 esk11_0 h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
   exact h11
 

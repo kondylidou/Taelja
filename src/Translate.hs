@@ -144,7 +144,7 @@ translateWithLemmas debug (T.TSTP _ units0) = do
           candOverride = Map.fromList [ (c, "lemma " ++ c) | c <- Map.keys validCands ]
           nameOverride = Map.union candOverride origTstp2name
           modUnits = map replace units
-          replace u@(T.Unit n _ _) | Map.member (unitNameStr n) validCands = makeFileSourced u
+          replace u@(T.Unit n _ _) | Map.member (unitNameStr n) validCands = lemmaInput u
           replace u = u
           -- the leaves of one kind that have a display name
           namedLeaves p = [ (nm, e) | e <- origLeaves, p e, Just nm <- [Map.lookup (lePos e) origPosToName] ]
@@ -217,7 +217,7 @@ checkBlockEnds sp = case [ n | (n, l, b) <- blocks, not (endsOn l b) ] of
     []    -> sp
     n : _ -> error ("the proof of " ++ n ++ " does not end on its statement")
   where
-    blocks = lemmas sp ++ [ (ppLiteral l, l, b) | (l, b) <- goals sp ]
+    blocks = [ (n, l, b) | (n, Clause _ (Just l), b) <- lemmas sp ] ++ [ (ppLiteral l, l, b) | (l, b) <- goals sp ]
     endsOn l (HaveHence ls@(_ : _)) = lineLit (last ls) `elem` [l, flipLit l]
     endsOn l (EqChain s steps)
       | isRelLit l, (_, Const "true") : _ <- reverse steps = s == atomTerm l
@@ -240,7 +240,7 @@ checkChains sp = case [ (n, nm, shown) | (n, blk) <- blocks, (nm, shown) <- take
           ++ [ ("goal " ++ show i, b) | (i, (_, b)) <- zip [1 :: Int ..] (goals sp) ]
     stated = Map.fromList $
       [ (n, (a, b)) | AUnit n (Eq a b) <- axioms sp ]
-      ++ [ (n, (a, b)) | (n, Eq a b, _) <- lemmas sp ]
+      ++ [ (n, (a, b)) | (n, Clause [] (Just (Eq a b)), _) <- lemmas sp ]
     unjustified (EqChain start steps) =
       [ (rwName rw, ppLiteral (Eq prev cur))
       | ((rw, cur), prev) <- zip steps (start : map snd steps)
@@ -302,8 +302,8 @@ skolemWitnesses :: StructuredProof -> StructuredProof
 skolemWitnesses sp0 = foldl liftSymbol sp0 skolemFunctions
   where
     -- the symbols the problem, the axioms and the lemmas state
-    stated = Set.unions (problemSymbols sp0 : [ Set.fromList (litSymbols l ++ concatMap termSymbols (blockTerms b))
-                                              | (_, l, b) <- lemmas sp0 ])
+    stated = Set.unions (problemSymbols sp0 : [ Set.fromList (concatMap litSymbols (clauseLits c) ++ concatMap termSymbols (blockTerms b))
+                                              | (_, c, b) <- lemmas sp0 ])
     skolemFunctions = nub
       [ f | (l, _) <- goals sp0, t <- foldLiteralTerms subterms l
           , App f (_ : _) <- [t], Set.notMember f stated ]
@@ -315,7 +315,7 @@ skolemWitnesses sp0 = foldl liftSymbol sp0 skolemFunctions
           let needed  = [ (w, ("lemma " ++ f ++ " witness " ++ show i, u, path))
                         | (i, w, Just (u, path)) <- zip3 [(0 :: Int) ..] ws found ]
               chosen  = [ maybe w fst m | (w, m) <- zip ws found ]
-              newLemmas = [ (n, Eq (erase w) u, EqChain (erase w) path) | (w, (n, u, path)) <- needed ]
+              newLemmas = [ (n, Clause [] (Just (Eq (erase w) u)), EqChain (erase w) path) | (w, (n, u, path)) <- needed ]
           in sp { lemmas  = lemmas sp ++ newLemmas
                 , goals   = [ restate needed l b | (l, b) <- goals sp ]
                 , spInput = (spInput sp) { inGeneralized = inGeneralized (spInput sp) ++ [(yName, App f chosen)] } }
@@ -424,7 +424,7 @@ skolemWitnesses sp0 = foldl liftSymbol sp0 skolemFunctions
 generalizeGoals :: StructuredProof -> StructuredProof
 generalizeGoals sp
   | null fresh = sp
-  | otherwise  = sp { lemmas = [ (n, applyTermSubstLit sub l, applyTermSubstBlock sub b) | (n, l, b) <- lemmas sp ]
+  | otherwise  = sp { lemmas = [ (n, mapClauseLits (applyTermSubstLit sub) c, applyTermSubstBlock sub b) | (n, c, b) <- lemmas sp ]
                     , goals  = [ (applyTermSubstLit sub l, applyTermSubstBlock sub b) | (l, b) <- goals sp ]
                     , spInput = (spInput sp) { inGeneralized = inGeneralized (spInput sp) ++ [ (v, t) | (t, Var v) <- sub ] } }
   where
@@ -434,7 +434,7 @@ generalizeGoals sp
                [ f | t <- skolemTerms stated lemmaTerms, t `notElem` goalSkolems, f <- take 1 (termSymbols t) ])
     goalSkolems = skolemTerms stated goalTerms
     goalTerms  = [ t | (l, _) <- goals sp, t <- foldLiteralTerms (: []) l ]
-    lemmaTerms = concat [ foldLiteralTerms (: []) l ++ blockTerms b | (_, l, b) <- lemmas sp ]
+    lemmaTerms = concat [ concatMap (foldLiteralTerms (: [])) (clauseLits c) ++ blockTerms b | (_, c, b) <- lemmas sp ]
     -- the maximal subterms headed by a symbol not among those given
     skolemTerms known = concatMap maximal
       where
@@ -591,7 +591,7 @@ promoteToLemma lit blk
             if name `Set.member` taken then freshName else return name
       name <- freshName
       modify $ \s -> s
-        { stLemmas = stLemmas s ++ [(name, lit, blk)]
+        { stLemmas = stLemmas s ++ [(name, Clause [] (Just lit), blk)]
         , stUnits  = map (promote name) (stUnits s)
         }
       return name
@@ -1775,8 +1775,12 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
       axiomElectrons =
         [ (leName e, nm) | e <- piElectrons info, leRole e == OrigAxiom, Just nm <- [Map.lookup (lePos e) posToName] ]
       nameToAxiom = Map.fromList axiomElectrons
-      -- the axiom electrons that are prebuilt lemmas
-      prebuilt = [ p | p@(n, _) <- axiomElectrons, Map.member n candLemmaMap ]
+      -- the leaves that are prebuilt lemmas, in tree order, a unit lemma as
+      -- an electron and a Horn lemma as a nucleus
+      prebuilt =
+        [ (leName e, nm) | e <- sortBy (comparing lePos) (piElectrons info ++ piNuclei info)
+                         , leRole e == OrigAxiom, Map.member (leName e) candLemmaMap
+                         , Just nm <- [Map.lookup (lePos e) posToName] ]
       candAxiomNames = Set.fromList (map snd prebuilt)
       -- the axioms proper, without those lemmas
       axiomList = case mFixedAxioms of

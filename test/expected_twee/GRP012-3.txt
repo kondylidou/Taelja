@@ -6,7 +6,16 @@ Axiom 5: product(X,Y,U) /\ product(X,Y,V) => U = V
 Axiom 6: product(W,X1,multiply(W,X1))
 Axiom 7: product(X,Y,X2) /\ product(Y,U,X3) /\ product(X2,U,V) => product(X,X3,V)
 
-Lemma 8: product(X,multiply(inverse(X),Y),Y)
+Lemma 8: product(X,Y,Z) => multiply(X,Y) = Z
+Proof:
+  have product(X,Y,multiply(X,Y))
+    by axiom 6
+   and product(X,Y,Z)
+    by assumption
+  hence multiply(X,Y) = Z
+    by axiom 5
+
+Lemma 9: multiply(X,multiply(inverse(X),Y)) = Y
 Proof:
   have product(X,inverse(X),identity)
     by axiom 2
@@ -16,17 +25,10 @@ Proof:
     by axiom 1
   hence product(X,multiply(inverse(X),Y),Y)
     by axiom 7
-
-Lemma 9: multiply(X,multiply(inverse(X),Y)) = Y
-Proof:
-  have product(X,multiply(inverse(X),Y),multiply(X,multiply(inverse(X),Y)))
-    by axiom 6
-   and product(X,multiply(inverse(X),Y),Y)
-    by lemma 8
   hence multiply(X,multiply(inverse(X),Y)) = Y
-    by axiom 5
+    by lemma 8
 
-Lemma 10: product(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))),b)
+Lemma 10: multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a)))) = b
 Proof:
   have product(b,multiply(inverse(b),inverse(a)),multiply(b,multiply(inverse(b),inverse(a))))
     by axiom 6
@@ -36,15 +38,8 @@ Proof:
     by axiom 3
   hence product(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))),b)
     by axiom 4
-
-Lemma 11: multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a)))) = b
-Proof:
-  have product(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))),multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a)))))
-    by axiom 6
-   and product(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))),b)
-    by lemma 10
   hence multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a)))) = b
-    by axiom 5
+    by lemma 8
 
 Goal 1: inverse(multiply(a,b)) = multiply(inverse(b),inverse(a))
 Proof:
@@ -65,4 +60,4 @@ Proof:
   hence multiply(inverse(b),inverse(a)) = inverse(multiply(a,multiply(multiply(b,multiply(inverse(b),inverse(a))),inverse(multiply(inverse(b),inverse(a))))))
     by rw lemma 9 R->L
   hence multiply(inverse(b),inverse(a)) = inverse(multiply(a,b))
-    by rw lemma 11
+    by rw lemma 10

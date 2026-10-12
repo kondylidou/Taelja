@@ -10,25 +10,25 @@ cnf(left_inverse, axiom, product(inverse(X1), X1, identity), file('/home/user/De
 cnf(right_identity, axiom, product(X1, identity, X1), file('/home/user/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
 fof(s1, plain, ! [X] : product(identity,X,multiply(identity,X)), inference(instantiate, [status(thm)], [total_function1])).
 fof(lemma_10, lemma, ! [X] : multiply(identity,X) = X, inference(mp, [status(thm)], [total_function2, left_identity, s1])).
-fof(s2, plain, product(b,inverse(b),identity), inference(instantiate, [status(thm)], [right_inverse])).
-fof(s3, plain, product(b,d,multiply(b,d)), inference(instantiate, [status(thm)], [total_function1])).
-fof(lemma_11, lemma, product(identity,inverse(a),multiply(b,d)), inference(mp, [status(thm)], [associativity2, s2, inverse_b_multiply_inverse_a_is_d, s3])).
-fof(s4, plain, product(identity,inverse(a),multiply(identity,inverse(a))), inference(instantiate, [status(thm)], [total_function1])).
-fof(lemma_12, lemma, multiply(identity,inverse(a)) = multiply(b,d), inference(mp, [status(thm)], [total_function2, s4, lemma_11])).
-fof(s5, plain, multiply(b,d) = multiply(identity,inverse(a)), inference(instantiate, [status(thm)], [lemma_12])).
-fof(lemma_13, lemma, multiply(b,d) = inverse(a), inference(rewrite, [status(thm)], [lemma_10, s5])).
-fof(s6, plain, product(b,d,multiply(b,d)), inference(instantiate, [status(thm)], [total_function1])).
-fof(lemma_14, lemma, product(b,d,inverse(a)), inference(rewrite, [status(thm)], [lemma_13, s6])).
-fof(s7, plain, product(a,b,multiply(a,b)), inference(instantiate, [status(thm)], [total_function1])).
-fof(lemma_15, lemma, c = multiply(a,b), inference(mp, [status(thm)], [total_function2, a_multiply_b_is_c, s7])).
+fof(s2, plain, ! [X,Y,Z] : (product(X,Y,Z) => product(X,Y,Z)), inference(assumption, [status(thm)], [])).
+fof(lemma_11, lemma, ! [X,Y,Z] : (product(X,Y,Z) => multiply(X,Y) = Z), inference(mp, [status(thm)], [total_function2, total_function1, s2])).
+fof(s3, plain, product(b,inverse(b),identity), inference(instantiate, [status(thm)], [right_inverse])).
+fof(s4, plain, product(b,d,multiply(b,d)), inference(instantiate, [status(thm)], [total_function1])).
+fof(s5, plain, product(identity,inverse(a),multiply(b,d)), inference(mp, [status(thm)], [associativity2, s3, inverse_b_multiply_inverse_a_is_d, s4])).
+fof(lemma_12, lemma, multiply(identity,inverse(a)) = multiply(b,d), inference(mp, [status(thm)], [lemma_11, s5])).
+fof(s6, plain, multiply(b,d) = multiply(identity,inverse(a)), inference(instantiate, [status(thm)], [lemma_12])).
+fof(lemma_13, lemma, multiply(b,d) = inverse(a), inference(rewrite, [status(thm)], [lemma_10, s6])).
+fof(s7, plain, product(b,d,multiply(b,d)), inference(instantiate, [status(thm)], [total_function1])).
+fof(lemma_14, lemma, product(b,d,inverse(a)), inference(rewrite, [status(thm)], [lemma_13, s7])).
 fof(s8, plain, product(a,b,multiply(a,b)), inference(instantiate, [status(thm)], [total_function1])).
-fof(s9, plain, product(a,inverse(a),identity), inference(instantiate, [status(thm)], [right_inverse])).
-fof(s10, plain, product(multiply(a,b),d,identity), inference(mp, [status(thm)], [associativity2, s8, lemma_14, s9])).
-fof(lemma_16, lemma, product(c,d,identity), inference(rewrite, [status(thm)], [lemma_15, s10])).
-fof(s11, plain, product(inverse(c),c,identity), inference(instantiate, [status(thm)], [left_inverse])).
-fof(s12, plain, product(inverse(c),identity,inverse(c)), inference(instantiate, [status(thm)], [right_identity])).
-fof(lemma_17, lemma, product(identity,d,inverse(c)), inference(mp, [status(thm)], [associativity2, s11, lemma_16, s12])).
-fof(s13, plain, product(identity,d,multiply(identity,d)), inference(instantiate, [status(thm)], [total_function1])).
-fof(s14, plain, multiply(identity,d) = inverse(c), inference(mp, [status(thm)], [total_function2, s13, lemma_17])).
-fof(goal_1, theorem, inverse(c) = d, inference(rewrite, [status(thm)], [lemma_10, s14])).
+fof(lemma_15, lemma, c = multiply(a,b), inference(mp, [status(thm)], [total_function2, a_multiply_b_is_c, s8])).
+fof(s9, plain, product(a,b,multiply(a,b)), inference(instantiate, [status(thm)], [total_function1])).
+fof(s10, plain, product(a,inverse(a),identity), inference(instantiate, [status(thm)], [right_inverse])).
+fof(s11, plain, product(multiply(a,b),d,identity), inference(mp, [status(thm)], [associativity2, s9, lemma_14, s10])).
+fof(lemma_16, lemma, product(c,d,identity), inference(rewrite, [status(thm)], [lemma_15, s11])).
+fof(s12, plain, product(inverse(c),c,identity), inference(instantiate, [status(thm)], [left_inverse])).
+fof(s13, plain, product(inverse(c),identity,inverse(c)), inference(instantiate, [status(thm)], [right_identity])).
+fof(s14, plain, product(identity,d,inverse(c)), inference(mp, [status(thm)], [associativity2, s12, lemma_16, s13])).
+fof(s15, plain, multiply(identity,d) = inverse(c), inference(mp, [status(thm)], [lemma_11, s14])).
+fof(goal_1, theorem, inverse(c) = d, inference(rewrite, [status(thm)], [lemma_10, s15])).
 % SZS output end Proof

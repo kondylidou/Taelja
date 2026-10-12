@@ -204,12 +204,12 @@ emitTptp sp0 = unlines $
 
     -- the unit axioms and lemmas a have or and line may merely restate
     facts = [ (axTarget n, l) | AUnit n l <- axioms spNumbered ]
-         ++ [ (lemmaTarget n, l) | (n, l, _) <- lemmas spNumbered ]
+         ++ [ (lemmaTarget n, l) | (n, Clause [] (Just l), _) <- lemmas spNumbered ]
 
     -- a goal is an ordinary numbered step when a separate theorem line
     -- concludes from it
-    blocks = [ (Just n, "lemma", lit, blk) | (n, lit, blk) <- lemmas sp ]
-          ++ [ (goalName i, goalRole, lit, blk) | (i, (lit, blk)) <- zip [1 :: Int ..] (goals sp) ]
+    blocks = [ (Just n, "lemma", c, blk) | (n, c, blk) <- lemmas sp ]
+          ++ [ (goalName i, goalRole, Clause [] (Just lit), blk) | (i, (lit, blk)) <- zip [1 :: Int ..] (goals sp) ]
     goalName i | goalRole == "plain" = Nothing
                | otherwise           = Just (fresh ("goal_" ++ show i))
     conj      = inConjecture input
@@ -226,8 +226,8 @@ emitTptp sp0 = unlines $
              | otherwise                 = "theorem"
     blockResults = go 1 blocks
     go _ [] = []
-    go k ((name, role, lit, blk) : rest) =
-      let (k', steps, final) = blockSteps fresh facts k name role (restoreSkolemsLit lit) (mapShownTerms restoreSkolems blk)
+    go k ((name, role, c, blk) : rest) =
+      let (k', steps, final) = blockSteps fresh facts k name role (mapClauseLits restoreSkolemsLit c) (mapShownTerms restoreSkolems blk)
       in (steps, final) : go k' rest
     stepLines  = concatMap fst blockResults
     goalFinals = map snd (drop (length (lemmas sp)) blockResults)
@@ -267,7 +267,7 @@ emitTptp sp0 = unlines $
     axSyms = concatMap litSymbols . axiomLits
     dischargedText =
       let hs = map (ppFormula env . axiomFormula) hypAxioms
-          gs = [ ppFormula env (LitFormula (renameLit (blockRenaming l b) (restoreSkolemsLit l))) | (l, b) <- goals sp ]
+          gs = [ ppFormula env (LitFormula (renameLit (blockRenaming (Clause [] (Just l)) b) (restoreSkolemsLit l))) | (l, b) <- goals sp ]
       in if null hs then conjunction gs else "(" ++ conjunction hs ++ " => " ++ conjunction gs ++ ")"
     allLines = skolemDefLines ++ inputLines ++ [ line | (_, _, Just line) <- skolemChosen ] ++ axiomLines
             ++ (if merged then init stepLines else stepLines)
@@ -480,21 +480,25 @@ ppFormula _ (Raw s)      = s
 
 -- The steps of one block numbered from k, with the next free number and the
 -- name of the final step. A have or and line that only restates its fact gives
--- way to the fact unless it is last. The last step states the block's literal
--- up to orientation and takes its name and role, and an empty block proves a
--- reflexive equation.
-blockSteps :: (String -> String) -> [(String, Literal)] -> Int -> Maybe String -> String -> Literal -> ProofBlock -> (Int, [Line], String)
-blockSteps fresh facts k mName role lit blk =
+-- way to the fact unless it is last. The last step states the block's
+-- statement up to orientation and takes its name and role, and an empty block
+-- proves a reflexive equation. In a lemma with a body every step assumes the
+-- body, so it states the body implying its line, and an assumption line
+-- needs no parent.
+blockSteps :: (String -> String) -> [(String, Literal)] -> Int -> Maybe String -> String -> Clause -> ProofBlock -> (Int, [Line], String)
+blockSteps fresh facts k mName role stmt blk =
   case reverse steps of
-    Step own _ (LitFormula _) rule ps : earlier ->
+    Step own _ _ rule ps : earlier ->
       let name = fromMaybe own mName
-      in (k' - 1 + maybe 1 (const 0) mName, reverse (Step name role (LitFormula lit') rule ps : earlier), name)
+      in (k' - 1 + maybe 1 (const 0) mName, reverse (Step name role (assuming lit') rule ps : earlier), name)
     [] -> let name = fromMaybe (stepName k') mName
-          in (k' + 1, [Step name role (LitFormula lit') "reflexivity" []], name)
+          in (k' + 1, [Step name role (assuming lit') "reflexivity" []], name)
     _ -> (k', steps, fromMaybe (stepName k') mName)
   where
-    renaming    = blockRenaming lit blk
-    lit'        = renameLit renaming lit
+    renaming    = blockRenaming stmt blk
+    stmt'       = mapClauseLits (renameLit renaming) stmt
+    lit'        = clauseHead stmt'
+    assuming l  = if null (body stmt') then LitFormula l else ClauseFormula (Clause (body stmt') (Just l))
     (k', steps) = rawSteps k (renameBlock renaming blk)
     stepName n  = fresh ("s" ++ show n)
     restatesFact lit0 nm = maybe False (variantLit lit0) (lookup nm facts)
@@ -505,9 +509,11 @@ blockSteps fresh facts k mName role lit blk =
         loop n _ _ acc [] = (n, reverse acc)
         loop n cur extras acc (l : rest) = case l of
           Have lit0 nm
+            | nm == assumptionName -> loop (n + 1) (Just me) [] (plain lit0 "assumption" [] : acc) rest
             | restatesFact lit0 nm, notLast -> loop n (Just nm) [] acc rest
             | otherwise -> loop (n + 1) (Just me) [] (plain lit0 "instantiate" [nm] : acc) rest
           And lit0 nm
+            | nm == assumptionName -> loop (n + 1) cur (extras ++ [me]) (plain lit0 "assumption" [] : acc) rest
             | restatesFact lit0 nm, notLast -> loop n cur (extras ++ [nm]) acc rest
             | otherwise -> loop (n + 1) cur (extras ++ [me]) (plain lit0 "instantiate" [nm] : acc) rest
           Hence lit0 j ->
@@ -518,7 +524,7 @@ blockSteps fresh facts k mName role lit blk =
             in loop (n + 1) (Just me) [] (plain lit0 rule ps : acc) rest
           where
             me = stepName n
-            plain lit0 = Step me "plain" (LitFormula lit0)
+            plain lit0 = Step me "plain" (assuming lit0)
             notLast = not (null rest)
     rawSteps k0 (EqChain s chain)
       -- a relational chain ends in true, so read backwards each atom follows

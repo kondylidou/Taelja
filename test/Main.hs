@@ -182,6 +182,9 @@ handcraftedNames =
   -- two goal atoms with one predicate, each with its own instance from the
   -- negated conjecture
   , "fof_existential_goals"
+  -- Uwe Waldmann's example, the derived clause c5 is no unit and is used
+  -- three times, so it is unfolded at each use instead of becoming a lemma
+  , "test_shared_nonunit"
   ]
 
 -- Vampire proofs of TPTP problems and worked examples.

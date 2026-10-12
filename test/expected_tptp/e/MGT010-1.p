@@ -16,9 +16,13 @@ cnf(t10_FOL_18, negated_conjecture, greater(sk10, sk9), file('Problems/MGT/MGT01
 cnf(t10_FOL_6, negated_conjecture, organization(sk2, sk11), file('Problems/MGT/MGT010-1.p', t10_FOL_6)).
 cnf(t10_FOL_14, negated_conjecture, accountability(sk2, sk7, sk11), file('Problems/MGT/MGT010-1.p', t10_FOL_14)).
 cnf(t10_FOL_12, negated_conjecture, reliability(sk2, sk5, sk11), file('Problems/MGT/MGT010-1.p', t10_FOL_12)).
-fof(lemma_18, lemma, reproducibility(sk2,sk1(sk11,sk2),sk11), inference(mp, [status(thm)], [mp3_1, t10_FOL_6])).
-fof(lemma_19, lemma, reproducibility(sk3,sk1(sk12,sk3),sk12), inference(mp, [status(thm)], [mp3_1, t10_FOL_7])).
-fof(lemma_20, lemma, greater(sk1(sk12,sk3),sk1(sk11,sk2)), inference(mp, [status(thm)], [t9_FOL_5, t10_FOL_6, t10_FOL_7, t10_FOL_8, t10_FOL_9, t10_FOL_10, t10_FOL_11, lemma_18, lemma_19, t10_FOL_16, t10_FOL_17, t10_FOL_18])).
-fof(goal_1, theorem, greater(sk6,sk5), inference(mp, [status(thm)], [a2_FOL_2, t10_FOL_6, t10_FOL_7, t10_FOL_12, t10_FOL_13, t10_FOL_14, t10_FOL_15, lemma_18, lemma_19, lemma_20])).
-fof(goal_2, theorem, greater(sk8,sk7), inference(mp, [status(thm)], [a2_FOL_3, t10_FOL_6, t10_FOL_7, t10_FOL_12, t10_FOL_13, t10_FOL_14, t10_FOL_15, lemma_18, lemma_19, lemma_20])).
+fof(lemma_18, lemma, reproducibility(sk3,sk1(sk12,sk3),sk12), inference(mp, [status(thm)], [mp3_1, t10_FOL_7])).
+fof(s1, plain, ! [X] : (reproducibility(sk2,X,sk11) => reproducibility(sk2,X,sk11)), inference(assumption, [status(thm)], [])).
+fof(lemma_19, lemma, ! [X] : (reproducibility(sk2,X,sk11) => greater(sk1(sk12,sk3),X)), inference(mp, [status(thm)], [t9_FOL_5, t10_FOL_6, t10_FOL_7, t10_FOL_8, t10_FOL_9, t10_FOL_10, t10_FOL_11, s1, lemma_18, t10_FOL_16, t10_FOL_17, t10_FOL_18])).
+fof(lemma_20, lemma, reproducibility(sk2,sk1(sk11,sk2),sk11), inference(mp, [status(thm)], [mp3_1, t10_FOL_6])).
+fof(lemma_21, lemma, reproducibility(sk3,sk1(sk12,sk3),sk12), inference(mp, [status(thm)], [mp3_1, t10_FOL_7])).
+fof(s2, plain, reproducibility(sk2,sk1(sk11,sk2),sk11), inference(mp, [status(thm)], [mp3_1, t10_FOL_6])).
+fof(lemma_22, lemma, greater(sk1(sk12,sk3),sk1(sk11,sk2)), inference(mp, [status(thm)], [lemma_19, s2])).
+fof(goal_1, theorem, greater(sk6,sk5), inference(mp, [status(thm)], [a2_FOL_2, t10_FOL_6, t10_FOL_7, t10_FOL_12, t10_FOL_13, t10_FOL_14, t10_FOL_15, lemma_20, lemma_21, lemma_22])).
+fof(goal_2, theorem, greater(sk8,sk7), inference(mp, [status(thm)], [a2_FOL_3, t10_FOL_6, t10_FOL_7, t10_FOL_12, t10_FOL_13, t10_FOL_14, t10_FOL_15, lemma_20, lemma_21, lemma_22])).
 % SZS output end Proof

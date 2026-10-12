@@ -382,9 +382,32 @@ underscoreApart taken x = head [ y | y <- iterate (++ "_") x, not (taken y) ]
 -- gets underscores until no taken symbol starts with it.
 freezeLitVars :: String -> [String] -> Literal -> (Literal, [(String, Term)])
 freezeLitVars base taken lit =
+  let (Clause _ mh, undo) = freezeClauseVars base taken (Clause [] (Just lit))
+  in (fromMaybe lit mh, undo)
+
+-- The same for every variable of a clause, so the body and the head share
+-- the constants.
+freezeClauseVars :: String -> [String] -> Clause -> (Clause, [(String, Term)])
+freezeClauseVars base taken c =
   let prefix = underscoreApart (\p -> any (p `isPrefixOf`) taken) base
-      pairs  = [ (v, prefix ++ v) | v <- nub (litVars lit) ]
-  in (applySubstLit [ (v, Const c) | (v, c) <- pairs ] lit, [ (c, Var v) | (v, c) <- pairs ])
+      pairs  = [ (v, prefix ++ v) | v <- nub (concatMap litVars (clauseLits c)) ]
+  in (mapClauseLits (applySubstLit [ (v, Const cn) | (v, cn) <- pairs ]) c, [ (cn, Var v) | (v, cn) <- pairs ])
+
+-- The head of a clause, $false when it has none.
+clauseHead :: Clause -> Literal
+clauseHead = fromMaybe falsumLit . hd
+
+-- The literals of a clause, its body and then its head.
+clauseLits :: Clause -> [Literal]
+clauseLits (Clause bs mh) = bs ++ maybe [] pure mh
+
+-- A clause with a function applied to each of its literals.
+mapClauseLits :: (Literal -> Literal) -> Clause -> Clause
+mapClauseLits f (Clause bs mh) = Clause (map f bs) (fmap f mh)
+
+-- The justification of a lemma's body atom, which its proof assumes.
+assumptionName :: String
+assumptionName = "assumption"
 
 -- An axiom as a clause. A unit axiom is a clause with an empty body.
 axiomClause :: Axiom -> Clause
@@ -393,7 +416,7 @@ axiomClause (ANucleus _ c) = c
 
 -- The literals of an axiom, its body and then its head.
 axiomLits :: Axiom -> [Literal]
-axiomLits ax = let Clause bs mh = axiomClause ax in bs ++ maybe [] pure mh
+axiomLits = clauseLits . axiomClause
 
 -- A word with its first letter upper case.
 capitalize :: String -> String

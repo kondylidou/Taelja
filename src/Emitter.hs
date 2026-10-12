@@ -23,8 +23,8 @@ emitText :: StructuredProof -> String
 emitText sp0 = unlines $ concat
   [ axiomLines (axioms sp)
   , [ "" | not (null (axioms sp)) ]
-  , concat [ provedLines (capitalize n) lit blk ++ [""] | (n, lit, blk) <- lemmas sp ]
-  , intercalate [""] [ provedLines ("Goal " ++ show i) lit blk | (i, (lit, blk)) <- zip [1 :: Int ..] (goals sp) ]
+  , concat [ provedLines (capitalize n) c blk ++ [""] | (n, c, blk) <- lemmas sp ]
+  , intercalate [""] [ provedLines ("Goal " ++ show i) (Clause [] (Just lit)) blk | (i, (lit, blk)) <- zip [1 :: Int ..] (goals sp) ]
   ]
   where
     sp = finalProof sp0
@@ -61,15 +61,15 @@ prettyVarNames = ["X", "Y", "Z", "A", "B", "C", "U", "V", "W"] ++ [ "X" ++ show 
 -- The readable name of each variable of a statement and its proof block, in
 -- order of first occurrence. Names are local to a block, so one name may mean
 -- different things in different lemmas.
-blockRenaming :: Literal -> ProofBlock -> [(String, String)]
-blockRenaming lit block = zip (nub (litVars lit ++ blockShownVars block ++ blockVars block)) prettyVarNames
+blockRenaming :: Clause -> ProofBlock -> [(String, String)]
+blockRenaming c block = zip (nub (concatMap litVars (clauseLits c) ++ blockShownVars block ++ blockVars block)) prettyVarNames
 
 -- A lemma or goal under its title with its proof, in variable names of its own.
-provedLines :: String -> Literal -> ProofBlock -> [String]
-provedLines title lit block =
-  (title ++ ": " ++ ppLiteral (renameLit ren lit)) : "Proof:" : blockLines (renameBlock ren block)
+provedLines :: String -> Clause -> ProofBlock -> [String]
+provedLines title c block =
+  (title ++ ": " ++ ppClause (mapClauseLits (renameLit ren) c)) : "Proof:" : blockLines (renameBlock ren block)
   where
-    ren = blockRenaming lit block
+    ren = blockRenaming c block
 
 -- The printed lines of a proof block. A chain prints one term per line with
 -- the cited equation in between.
