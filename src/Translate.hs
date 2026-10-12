@@ -13,7 +13,7 @@ import Control.Exception (evaluate)
 import Control.Monad.Except (ExceptT, runExceptT, throwError)
 import Control.Monad.State
 import Data.Either (isRight)
-import Data.List (find, inits, intercalate, mapAccumL, nub, partition, sortBy, isSuffixOf, tails)
+import Data.List (find, inits, intercalate, mapAccumL, nub, partition, sortBy, sortOn, isSuffixOf, tails)
 import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
 import Data.Ord (Down(..), comparing)
 import Data.Tuple (swap)
@@ -898,14 +898,15 @@ findElecsMemo prover accept failedRef known lits theta elecs pos = goMemo lits t
           return r
 
     -- The sibling electron first, then unnamed electrons, then named ones,
-    -- each tier nearest position first.
+    -- each tier nearest position first. sortOn computes each distance once,
+    -- as positions are as long as the tree is deep.
     sortedElecs =
       let (sibling, rest) = case providerSibling pos of
             Nothing -> ([], elecs)
             Just sp -> partition (\e -> uePos e == Just sp) elecs
           (unnamed, named) = partition (isNothing . ueName) rest
           byProx = Down . length . takeWhile id . zipWith (==) pos . fromMaybe "" . uePos
-      in sibling ++ sortBy (comparing byProx) unnamed ++ sortBy (comparing byProx) named
+      in sibling ++ sortOn byProx unnamed ++ sortOn byProx named
 
     go [] theta' _ _ acc = finish theta' acc
     go (li : restLits) theta' usedPos extraElecs acc = case applySubstLit theta' li of

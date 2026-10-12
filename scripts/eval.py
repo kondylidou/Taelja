@@ -141,15 +141,18 @@ def run(cmd, timeout=60, cwd=None, extra_env=None):
         return -2, '', str(e)
 
 
-def prover_cmd(name, binary, p_file, tptp_dir):
+def prover_cmd(name, binary, p_file, tptp_dir, timeout):
     """The command line that runs a prover on a problem."""
     rel = str(p_file.relative_to(tptp_dir))
     if name == 'vampire':
         return [binary, '--proof', 'tptp', '--avatar', 'off', rel]
     if name == 'e':
         # with --proof-object=3 E prints the clause after each
-        # simplification step, so Taelja need not take nested steps apart
-        return [binary, '--auto', '--proof-object=3', '--tstp-format', rel]
+        # simplification step, so Taelja need not take nested steps apart.
+        # The schedule tries several strategies on one core within the time
+        # limit, as the one strategy --auto picks since E 3.5.1 loses
+        # problems such as LCL020-1.
+        return [binary, '--auto-schedule', f'--cpu-limit={timeout}', '--proof-object=3', '--tstp-format', rel]
     return [binary, '--tstp', '--formal-proof', '--multi', '--root', str(tptp_dir), str(p_file)]
 
 
@@ -385,7 +388,7 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
         prove = _read_prove_status(out, prover_name)
     if prove in (None, 'tfail'):
         # E finds the problem's includes through $TPTP
-        rc, tstp, err = run(prover_cmd(prover_name, prover_bin, p_file, tptp_dir),
+        rc, tstp, err = run(prover_cmd(prover_name, prover_bin, p_file, tptp_dir, timeout),
                             timeout=timeout, cwd=str(tptp_dir),
                             extra_env={'TPTP': str(tptp_dir)} if prover_name == 'e' else None)
         if prover_name == 'twee':
