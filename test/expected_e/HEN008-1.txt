@@ -33,16 +33,7 @@ Proof:
   hence less_equal(divide(divide(a,c),bQc),zero)
     by axiom 8
 
-Lemma 13: aQc = divide(a,c)
-Proof:
-  have quotient(a,c,aQc)
-    by axiom 2
-   and quotient(a,c,divide(a,c))
-    by axiom 1
-  hence aQc = divide(a,c)
-    by axiom 3
-
-Lemma 14: zero = divide(divide(a,c),bQc)
+Lemma 13: zero = divide(divide(a,c),bQc)
 Proof:
   have quotient(zero,divide(divide(a,c),bQc),zero)
     by lemma 11
@@ -53,13 +44,22 @@ Proof:
   hence zero = divide(divide(a,c),bQc)
     by axiom 10
 
+Lemma 14: aQc = divide(a,c)
+Proof:
+  have quotient(a,c,aQc)
+    by axiom 2
+   and quotient(a,c,divide(a,c))
+    by axiom 1
+  hence aQc = divide(a,c)
+    by axiom 3
+
 Goal 1: less_equal(aQc,bQc)
 Proof:
   have quotient(divide(a,c),bQc,divide(divide(a,c),bQc))
     by axiom 1
   hence quotient(divide(a,c),bQc,zero)
-    by rw lemma 14 R->L
-  hence quotient(aQc,bQc,zero)
     by rw lemma 13 R->L
+  hence quotient(aQc,bQc,zero)
+    by rw lemma 14 R->L
   hence less_equal(aQc,bQc)
     by axiom 9

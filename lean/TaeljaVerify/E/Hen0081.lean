@@ -60,25 +60,25 @@ theorem taelja_lemma12 : less_equal (divide (divide a c) bQc) zero := by
   exact h7
 
 -- Lemma 13
-theorem taelja_lemma13 : aQc = divide a c := by
-  have h1 : quotient a c aQc := ax2
-  have h2 : quotient a c (divide a c) := ax1 a c
-  have h3 : aQc = divide a c := ax3 a c aQc (divide a c) h1 h2
-  exact h3
-
--- Lemma 14
-theorem taelja_lemma14 : zero = divide (divide a c) bQc := by
+theorem taelja_lemma13 : zero = divide (divide a c) bQc := by
   have h1 : quotient zero (divide (divide a c) bQc) zero := taelja_lemma11 (divide (divide a c) bQc)
   have h2 : less_equal zero (divide (divide a c) bQc) := ax9 zero (divide (divide a c) bQc) h1
   have h3 : less_equal (divide (divide a c) bQc) zero := taelja_lemma12
   have h4 : zero = divide (divide a c) bQc := ax10 zero (divide (divide a c) bQc) h2 h3
   exact h4
 
+-- Lemma 14
+theorem taelja_lemma14 : aQc = divide a c := by
+  have h1 : quotient a c aQc := ax2
+  have h2 : quotient a c (divide a c) := ax1 a c
+  have h3 : aQc = divide a c := ax3 a c aQc (divide a c) h1 h2
+  exact h3
+
 -- Goal 1
 theorem taelja_goal1 : less_equal aQc bQc := by
   have h1 : quotient (divide a c) bQc (divide (divide a c) bQc) := ax1 (divide a c) bQc
-  have h2 : quotient (divide a c) bQc zero := Eq.mp (congrArg (fun t : α => quotient (divide a c) bQc t) (Eq.symm (taelja_lemma14))) h1
-  have h3 : quotient aQc bQc zero := Eq.mp (congrArg (fun t : α => quotient t bQc zero) (Eq.symm (taelja_lemma13))) h2
+  have h2 : quotient (divide a c) bQc zero := Eq.mp (congrArg (fun t : α => quotient (divide a c) bQc t) (Eq.symm (taelja_lemma13))) h1
+  have h3 : quotient aQc bQc zero := Eq.mp (congrArg (fun t : α => quotient t bQc zero) (Eq.symm (taelja_lemma14))) h2
   have h4 : less_equal aQc bQc := ax9 aQc bQc h3
   exact h4
 

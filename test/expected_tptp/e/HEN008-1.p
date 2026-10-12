@@ -15,13 +15,13 @@ fof(s2, plain, quotient(a,c,divide(a,c)), inference(instantiate, [status(thm)], 
 fof(s3, plain, quotient(divide(a,c),bQc,divide(divide(a,c),bQc)), inference(instantiate, [status(thm)], [closure])).
 fof(s4, plain, quotient(zero,c,zero), inference(instantiate, [status(thm)], [lemma_11])).
 fof(lemma_12, lemma, less_equal(divide(divide(a,c),bQc),zero), inference(mp, [status(thm)], [quotient_property, s1, bQc, s2, s3, s4])).
-fof(s5, plain, quotient(a,c,divide(a,c)), inference(instantiate, [status(thm)], [closure])).
-fof(lemma_13, lemma, aQc = divide(a,c), inference(mp, [status(thm)], [well_defined, aQc, s5])).
-fof(s6, plain, quotient(zero,divide(divide(a,c),bQc),zero), inference(instantiate, [status(thm)], [lemma_11])).
-fof(s7, plain, less_equal(zero,divide(divide(a,c),bQc)), inference(mp, [status(thm)], [less_equal_quotient, s6])).
-fof(lemma_14, lemma, zero = divide(divide(a,c),bQc), inference(mp, [status(thm)], [less_equal_and_equal, s7, lemma_12])).
+fof(s5, plain, quotient(zero,divide(divide(a,c),bQc),zero), inference(instantiate, [status(thm)], [lemma_11])).
+fof(s6, plain, less_equal(zero,divide(divide(a,c),bQc)), inference(mp, [status(thm)], [less_equal_quotient, s5])).
+fof(lemma_13, lemma, zero = divide(divide(a,c),bQc), inference(mp, [status(thm)], [less_equal_and_equal, s6, lemma_12])).
+fof(s7, plain, quotient(a,c,divide(a,c)), inference(instantiate, [status(thm)], [closure])).
+fof(lemma_14, lemma, aQc = divide(a,c), inference(mp, [status(thm)], [well_defined, aQc, s7])).
 fof(s8, plain, quotient(divide(a,c),bQc,divide(divide(a,c),bQc)), inference(instantiate, [status(thm)], [closure])).
-fof(s9, plain, quotient(divide(a,c),bQc,zero), inference(rewrite, [status(thm)], [lemma_14, s8])).
-fof(s10, plain, quotient(aQc,bQc,zero), inference(rewrite, [status(thm)], [lemma_13, s9])).
+fof(s9, plain, quotient(divide(a,c),bQc,zero), inference(rewrite, [status(thm)], [lemma_13, s8])).
+fof(s10, plain, quotient(aQc,bQc,zero), inference(rewrite, [status(thm)], [lemma_14, s9])).
 fof(goal_1, theorem, less_equal(aQc,bQc), inference(mp, [status(thm)], [less_equal_quotient, s10])).
 % SZS output end Proof

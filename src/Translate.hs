@@ -14,7 +14,7 @@ import Control.Monad.Except (ExceptT, runExceptT, throwError)
 import Control.Monad.State
 import Data.Either (isRight)
 import Data.List (find, inits, intercalate, mapAccumL, nub, partition, sortBy, sortOn, isSuffixOf, tails)
-import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
+import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe, maybeToList)
 import Data.Ord (Down(..), comparing)
 import Data.Tuple (swap)
 import qualified Data.Map.Strict as Map
@@ -696,11 +696,15 @@ positiveUnit _           = Nothing
 -- A premise of an equation step. It is a unit the table holds, read at some
 -- instance, a unit another step derived, or an equation t = t, which holds
 -- by reflexivity and rewrites nothing.
-data Premise = Given UnitEntry Literal | ByStep String Literal | Trivial Literal
+data Premise = Given UnitEntry Literal | ByStep String Literal | Trivial Literal | Resolved Resolution
 
 -- A premise's equation, an atom P read as P = true.
 premiseEq :: Premise -> Maybe (Term, Term)
-premiseEq p = positiveUnit (case p of { Given _ l -> l; ByStep _ l -> l; Trivial l -> l })
+premiseEq p = positiveUnit (case p of { Given _ l -> l; ByStep _ l -> l; Trivial l -> l; Resolved (_, _, _, h) -> h })
+
+-- A unit the proof derives by one resolution, as the clause's display name,
+-- the unit resolving its body atom, that atom's instance and the head.
+type Resolution = (String, UnitEntry, Literal, Literal)
 
 -- The readings of premise nm of an equation step. An equation t = t is
 -- trivial. Otherwise it is read as the unit that states it, or else as the
@@ -711,6 +715,11 @@ premiseReadings nm = do
   lits  <- gets stUnitLitByName
   units <- gets (filter isCitable . stUnits)
   steps <- gets stEquationSteps
+  -- the unit's resolution step read at the printed generality, for when no
+  -- instance a unit states fits
+  resolved <- case Map.lookup nm lits of
+    Just e  -> gets (Map.lookup nm . stResolvedUnits) >>= maybe (return Nothing) (resolvedPremise e)
+    Nothing -> return Nothing
   return $ case Map.lookup nm lits of
     Nothing -> []
     Just e@(Eq a b) | a == b -> [Trivial e]
@@ -733,7 +742,30 @@ premiseReadings nm = do
            Nothing
              | any (\(c, _, _) -> c == nm) steps -> [ByStep nm e]
              | Just u <- listToMaybe [ u | u <- units, states generalizes u ] -> [atPrinted u]
-             | otherwise -> [ given u | u <- units, states instantiates u ]
+             | otherwise -> [ given u | u <- units, states instantiates u ] ++ map Resolved (maybeToList resolved)
+
+-- The step resolving clause c, whose one body atom the unit named en
+-- resolves, read as generally as the proof prints its equation, lit. The
+-- clause is cited by its display name and the unit by a unit stating it. An
+-- atom is no lemma but spliced where it is used, so only an equation is read.
+-- Nothing when either cannot be cited or the step derives no variant of lit.
+resolvedPremise :: Literal -> (Clause, String) -> AlgM (Maybe Resolution)
+resolvedPremise lit (c, en) = do
+  lits  <- gets stUnitLitByName
+  axs   <- gets stAxNuclei
+  units <- gets (filter isCitable . stUnits)
+  let Clause bs mh = suffixVarsClause "_r" c
+      states el u = isJust (matchLit (ueUnit u) el) || isJust (matchLit (ueUnit u) (flipLit el))
+      derived = listToMaybe
+        [ (ax, u, applySubstLit σ b, h')
+        | Eq _ _ <- [lit], Just el <- [Map.lookup en lits], [b] <- [bs], Just h <- [mh]
+        , ax <- [ nmA | (nmA, cl) <- axs, variantKey cl == variantKey c ]
+        , u <- filter (states el) units
+        , let ul = suffixVarsLit "_e" (ueUnit u)
+        , Just σ <- [unifyLits b ul [] <|> unifyLits b (flipLit ul) []]
+        , let h' = applySubstLit σ h
+        , variantLit h' lit || variantLit (flipLit h') lit ]
+  return derived
 
 -- The chain from l to r through the two premises of the equation step c.
 readStepChain :: String -> Term -> Term -> AlgM (Maybe (Term, [(UnitEntry, Dir, Term)]))
@@ -789,6 +821,11 @@ readPremiseStep nm e@(pl, pr) = do
 premiseRewriteSteps :: (Premise, Dir, Bool, (Term, Term)) -> Term -> Term -> AlgM (Maybe [(UnitEntry, Dir, Term)])
 premiseRewriteSteps (Given u _, d, _, _) _ to = return (Just [(u, d, to)])
 premiseRewriteSteps (Trivial _, _, _, _) _ _ = return (Just [])
+-- a resolved unit becomes a lemma, since its block is no chain
+premiseRewriteSteps (Resolved (ax, u, premise, h), d, _, _) _ to = do
+  un <- maybe (ensureNamed (ueUnit u) (makeBlock u [] [])) return (ueName u)
+  n  <- ensureNamed h (return (HaveHence [Have premise un, Hence h (ByAxiom ax)]))
+  return (Just [(UnitEntry (Just n) (unrigidLit h) Nothing Nothing, d, to)])
 premiseRewriteSteps (ByStep nm lit, d, atRoot, inst) from to = do
   preds <- gets stPredicates
   let e = unitEquation lit
@@ -1492,10 +1529,11 @@ translateNuclei prover debug thetaCtx nuclei posToName goalLits = do
                           | e <- nuclei, (v, t) <- computeNucleusTheta thetaCtx e ] ++ "}"
   processPass nuclei
   where
-    processPass [] = return []
+    processPass [] = storeUnitRewrites debug Nothing >> return []
     processPass (entry : rest) = do
       open <- openGoalsOf goalLits
       if null open then return [] else do
+        storeUnitRewrites debug (Just (lePos entry))
         prevCount <- gets (length . stUnits)
         res       <- attempt (translateNucleus prover debug thetaCtx entry posToName goalLits)
         newCount  <- gets (length . stUnits)
@@ -1507,6 +1545,33 @@ translateNuclei prover debug thetaCtx nuclei posToName goalLits = do
             liftIO $ dbg debug $ "[skip] pos=" ++ lePos entry ++ " — " ++ msg
             return True
         ([ entry | failedHere ] ++) <$> processPass rest
+
+-- Stores each unit a conditional equation rewrote at a position before upTo,
+-- or at any position without it, as the rewritten unit. The rewrites cite
+-- equations at earlier positions or units, which the pass has proved by then.
+-- A chain that cannot be cited is dropped with the state restored.
+storeUnitRewrites :: Bool -> Maybe String -> AlgM ()
+storeUnitRewrites debug upTo = do
+  pending <- gets stUnitRewrites
+  let (now, later) = partition (\(p, _, _) -> maybe True (p <) upTo) pending
+  modify (\s -> s { stUnitRewrites = later })
+  forM_ now $ \(p, start, steps) -> do
+    units <- gets stUnits
+    case [ (u, asStored, ρ) | u <- units, isCitable u, asStored <- [id, flipLit]
+                            , Just ρ <- [matchLit (ueUnit u) (asStored (unrigidLit start))] ] of
+      (u, asStored, ρ) : _ -> do
+        saved <- get
+        let rwSteps = [ (RwStep nm (unitEquation (unrigidLit (uncurry Eq e))) d, asStored (unrigidLit l))
+                      | (nm, d, e, l) <- steps ]
+        r <- attempt (makeBlock u ρ rwSteps)
+        case r of
+          Right blk -> do
+            liftIO $ dbg debug $ "[unit-rw] pos=" ++ p ++ " " ++ ppLiteral (snd (last rwSteps))
+            addUnit (UnitEntry Nothing (snd (last rwSteps)) (Just blk) (Just p))
+          Left msg -> do
+            put saved
+            liftIO $ dbg debug $ "[unit-rw] pos=" ++ p ++ " not stored: " ++ msg
+      [] -> return ()
 
 -- A unit stating a relational goal, matched onto the goal or the goal onto it.
 findUnitForGoal :: Literal -> [UnitEntry] -> Maybe (UnitEntry, Subst, Literal)
@@ -1701,6 +1766,21 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
                                         , (Just start, raw) <- [headRewrites thetaCtx (lePos e)]
                                         , Just steps@(_ : _) <- [mapM named raw]
                                         , not (any atomStep steps) ]
+      -- the units conditional equations rewrite, at every position, in
+      -- tree order
+      unitRw = [ (p, start, steps) | (p, Clause [] (Just _)) <- Map.toList (tcClauses thetaCtx)
+                                   , (Just start, raw) <- [headRewrites thetaCtx p]
+                                   , Just steps@(_ : _) <- [mapM named raw]
+                                   , not (any atomStep steps) ]
+      -- the units the proof derives by resolving a clause with one body atom
+      -- against a unit, as that clause and the unit's name
+      resolvedUnits = Map.fromList
+        [ (unitNameStr n, (c, e)) | u@(T.Unit n d _) <- allUnits, isPositiveUnitFormula d
+                                  , [p1, p2] <- [unitParents u]
+                                  , (pc, e) <- [(p1, p2), (p2, p1)]
+                                  , Just c@(Clause [_] (Just _)) <- [clauseNamed pc]
+                                  , Just (Clause [] (Just _)) <- [clauseNamed e] ]
+      clauseNamed nm = listToMaybe [ c | Just (T.Unit _ d _) <- [Map.lookup nm unitMap], Just c <- [convertDeclToClause d] ]
       -- every positive unit's literal by TSTP name, for reading steps
       unitLitByTstpName = Map.fromList $
         [ (nm, convertLit tl)
@@ -1856,6 +1936,8 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
         , stPremiseUses = premiseUses allUnits
         , stLiteralRewrites = literalRw
         , stHeadRewrites = headRw
+        , stUnitRewrites = unitRw
+        , stResolvedUnits = resolvedUnits
         , stReadableUnits = readableUnits allUnits
         , stPredicates = predicateSymbols allUnits
         , stUnreadSteps = Set.empty

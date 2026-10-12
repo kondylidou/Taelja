@@ -97,15 +97,16 @@ literalRewrites ctx pos = case groundAt ctx pos of
 
 -- The rewrites the proof makes to the head of the clause at a position while
 -- it still has body atoms, so the derived electron states the rewritten head.
--- They come with the head under θ, where the chain starts. Rewrites after the
--- clause becomes a unit are steps of their own. The provider's head is only
+-- A unit gains body atoms when a conditional equation rewrites it, and is
+-- followed the same way. They come with the head under θ, where the chain
+-- starts. Rewrites after the clause becomes a unit are steps of their own. The provider's head is only
 -- followed when the equation beside it is a unit, since a step between two
 -- heads reads either way and a conditional equation's instance is cited
 -- only once its nucleus, which comes later, has proved it.
 headRewrites :: ThetaCtx -> String -> (Maybe Literal, [(String, Dir, (Term, Term), Literal)])
 headRewrites ctx pos = case groundAt ctx pos of
-  Just (Clause (_ : _) (Just h)) -> (Just h, up pos h)
-  _                              -> (Nothing, [])
+  Just (Clause _ (Just h)) -> (Just h, up pos h)
+  _                        -> (Nothing, [])
   where
     up p cur
       | null p    = []
