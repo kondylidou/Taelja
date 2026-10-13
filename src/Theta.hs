@@ -15,6 +15,7 @@ module Theta
 import Control.Applicative ((<|>))
 import Control.Monad (foldM)
 import Data.Bifunctor (first)
+import Data.Containers.ListUtils (nubOrdOn)
 import Data.List (inits, nub, sortOn, tails)
 import Data.Maybe (fromMaybe, isJust, isNothing, listToMaybe, mapMaybe)
 import qualified Data.Map.Strict as Map
@@ -367,18 +368,31 @@ resolveTwice x y =
   , c' <- orientations c ]
 
 -- x's equation head rewrites a non-variable subterm of y, at one occurrence
--- or at every occurrence in the clause.
+-- or at every occurrence in the clause. A subterm whose top symbol differs
+-- from l's can never unify with it, so it is skipped before the clause is
+-- rebuilt. Two results are equal only for one subterm rewritten everywhere,
+-- for a subterm that occurs once, or for one equal to r, which changes
+-- nothing. Each result is keyed by that, which drops the duplicates in order
+-- without comparing whole clauses, as that is slow on large ones.
 superpose :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
-superpose x y = nub
-  [ ([(l, u)], filter (not . fst) x ++ y')
+superpose x y = map snd $ nubOrdOn fst
+  [ ((l, u, at), ([(l, u)], filter (not . fst) x ++ y'))
   | Eq s t <- heads x
   , (l, r) <- [(s, t), (t, s)]
   , rewritesFrom l r
   , (i, (_, lit)) <- zip [0 :: Int ..] y
-  , (u, ctx) <- litSubtermCtxs lit
-  , notVar u
-  , y' <- [ [ (sign, if j == i then ctx r else m) | (j, (sign, m)) <- zip [0 :: Int ..] y ]
-          , [ (sign, mapLiteralTerms (replaceAllTerm u r) m) | (sign, m) <- y ] ] ]
+  , (k, (u, ctx)) <- zip [0 :: Int ..] (litSubtermCtxs lit)
+  , notVar u, sameTop l u
+  , (at, y') <- (if u == r then Nothing else Just (i, k), [ (sign, if j == i then ctx r else m) | (j, (sign, m)) <- zip [0 :: Int ..] y ])
+                : [ (Nothing, [ (sign, mapLiteralTerms (replaceAllTerm u r) m) | (sign, m) <- y ])
+                  | Map.findWithDefault (0 :: Int) u occurrences > 1 ] ]
+  where
+    occurrences = Map.fromListWith (+) [ (u, 1) | (_, lit) <- y, (u, _) <- litSubtermCtxs lit ]
+    sameTop (App f as) (App g bs) = f == g && length as == length bs
+    sameTop (App _ _) _           = False
+    sameTop (Const c) (Const d)   = c == d
+    sameTop (Const _) _           = False
+    sameTop _ _                   = True
 
 -- The substitutions under which the printed conclusion is the replayed result,
 -- up to renaming and dropped duplicate or trivial literals. Each result literal

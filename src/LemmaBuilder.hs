@@ -1,6 +1,6 @@
 -- Lemma introduction. A derived Horn clause with a head that the proof cites
--- at least twice is proved once, from its own derivation or, for a unit
--- equation, by a Twee chain, and cited at its uses.
+-- at least twice is proved once, from its own derivation, and cited at its
+-- uses.
 module LemmaBuilder
   ( findLemmaCandidates
   , BuiltLemma
@@ -11,7 +11,6 @@ module LemmaBuilder
   ) where
 
 import Control.Monad (guard, when)
-import Control.Applicative ((<|>))
 import Data.List (intercalate, nub, stripPrefix, zip4)
 import Data.Maybe (isJust, listToMaybe, maybeToList)
 import Data.Traversable (mapAccumM)
@@ -27,14 +26,11 @@ import Helpers
   ( applyConstSubstBlock, applyConstSubstLit, assumptionName, axiomName, blockRefNames
   , blockVars, blockConcludes, clauseHead, clauseLits, freezeClauseVars, isEmptyBlock, litVars
   , mapClauseLits, renameBlock, renameLit, renameRefsBlock, sanitizeId, underscoreApart
-  , unitEquation
   )
 import Debug (dbgScoped)
-import Conjecture (conjectureHypotheses)
-import ProofTree (classifyRole, resolveCopySource)
+import ProofTree (resolveCopySource)
 import TptpConvert
-import TweeInterface (TweeBudget (..), callTwee)
-import StepReader (isAtomEquation, reverseChain)
+import StepReader (isAtomEquation)
 
 -- The names of every ancestor of rootName, itself excluded.
 ancestorNamesOf :: Map.Map String T.Unit -> String -> Set.Set String
@@ -98,9 +94,8 @@ type BuiltLemma = (Clause, ProofBlock, [(String, Clause, ProofBlock)], [Axiom])
 
 -- Builds the lemma for a candidate B1 /\ ... /\ Bn => H. Its variables become
 -- Skolem constants, its derivation is translated recursively as a refutation
--- that assumes the Bi and ~H, and the result is de-Skolemized. When that
--- fails, a unit equation may still get a Twee chain. translateFn comes in as
--- an argument because Translate imports this module.
+-- that assumes the Bi and ~H, and the result is de-Skolemized. translateFn
+-- comes in as an argument because Translate imports this module.
 buildCandidateLemma
   :: (Map.Map String String -> Bool -> T.TSTP -> IO (Either String StructuredProof))
   -> [String]               -- the proof's symbols, which the Skolem constants avoid
@@ -115,8 +110,7 @@ buildCandidateLemma translateFn taken unitMap tstp2name debug (cname, cdecl) =
     Just tlit -> do
       let c = Clause (map convertLit (bodyLitsOf cdecl)) (Just (convertLit tlit))
           (cSkolem, undoMap) = freezeClauseVars "skc_" taken c
-      fromSubDag <- buildFromSubDag translateFn unitMap tstp2name debug cname c cSkolem undoMap
-      maybe (buildWithTwee unitMap tstp2name cname c cSkolem undoMap) (return . Just) fromSubDag
+      buildFromSubDag translateFn unitMap tstp2name debug cname c cSkolem undoMap
 
 -- The candidate's own derivation as a refutation, so no prover is needed.
 -- The sub-problem is its ancestors, the candidate, the Skolemized body atoms
@@ -211,52 +205,6 @@ liftSubProof nameOverride cname c undoMap sp = do
   guard (not (isEmptyBlock blk') && blockConcludes lit blk')
   guard (assumptionName `notElem` concat [ blockRefNames b | (_, _, b) <- subLemmas ])
   return (c, blk', lifted, ownAxioms)
-
--- The fallback for an equation whose ancestor axioms are all unit equations.
--- Twee is asked for a chain from them.
-buildWithTwee
-  :: Map.Map String T.Unit
-  -> Map.Map String String
-  -> String -> Clause -> Clause -> [(String, Term)]
-  -> IO (Maybe BuiltLemma)
-buildWithTwee unitMap tstp2name cname c cSkolem undoMap = case cSkolem of
-  Clause [] (Just (Eq l r)) | Just units <- mapM unitEquationOf origAncestors -> do
-    mChain <- callTwee InternalBudget units (Eq l r)
-    return $ case mChain of
-      Just (start, chain)
-        | not (null chain), all (\(ue, _, _) -> isJust (ueName ue)) chain ->
-            -- a chain from r to l is reversed, so the lemma states the
-            -- candidate as the proof cites it
-            let chain' = if start == l then chain else reverseChain start chain
-                steps = [ (RwStep nm (unitEquation (ueUnit ue)) dir, cur)
-                        | (ue, dir, cur) <- chain', Just nm <- [ueName ue] ]
-            in Just (c, deSkolemizeBlock undoMap (EqChain l steps), [], [])
-      _ -> Nothing
-  _ -> return Nothing
-  where
-    granted = maybe [] (uncurry (++)) (conjectureHypotheses (Map.elems unitMap))
-    dispNameOf aname = Map.lookup (resolveCopySource unitMap aname) tstp2name <|> Map.lookup aname tstp2name
-    -- An original axiom is an underived axiom or hypothesis, another
-    -- underived clause that classifyRole reads as an axiom, such as one the
-    -- conjecture grants, or a clausified copy of a file axiom, which E marks
-    -- plain. The last two also need a display name.
-    origAncestors =
-      [ (aname, adecl)
-      | aname <- Set.toList (ancestorNamesOf unitMap cname)
-      , Just u@(T.Unit _ adecl _) <- [Map.lookup aname unitMap]
-      , isOrigAncestor aname u adecl ]
-    isOrigAncestor aname u adecl =
-      (not (isDerivedUnit u) && hasAxiomRole adecl)
-        || (not (isDerivedUnit u) && classifyRole granted unitMap aname adecl == OrigAxiom && named)
-        || (isFileUnit unitMap copySrc && maybe False hasAxiomRole (lookupDecl unitMap copySrc) && named)
-      where
-        named = isJust (dispNameOf aname)
-        copySrc = resolveCopySource unitMap aname
-    unitEquationOf (aname, adecl)
-      | isPositiveUnitFormula adecl
-      , Just eq@(Eq _ _) <- convertLit <$> headLitOf adecl
-      = Just (UnitEntry (dispNameOf aname) eq Nothing Nothing)
-      | otherwise = Nothing
 
 -- A clause as a TPTP disjunction, its body atoms negated.
 tptpClause :: Clause -> String

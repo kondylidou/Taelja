@@ -14,7 +14,6 @@ import qualified Data.TPTP as T
 
 import ProofTree (buildProofInfo)
 import Translate (translate)
-import TweeInterface (disableFallback)
 import Emitter (emitText)
 import TptpEmitter (emitTptp)
 import LeanEmitter (emitLean)
@@ -43,18 +42,17 @@ main = do
              | otherwise             = emitText
       -- also write the Lean file here, from the same run
       leanOut = value "--lean-out="
-      known f = f `elem` ["--debug", "--tptp", "--lean", "--no-fallback", "--horn-problem"]
+      known f = f `elem` ["--debug", "--tptp", "--lean", "--horn-problem"]
                 || any (`isPrefixOf` f) ["--namespace=", "--lean-out="]
   inputFile <- case files of
     [f] | all known flags, not (all (`elem` flags) ["--tptp", "--lean"]) -> return f
-    _ -> die "Usage: taelja [--debug] [--tptp | --lean] [--namespace=NAME] [--lean-out=FILE] [--no-fallback] <proof-file> | taelja --horn-problem <problem-file>"
+    _ -> die "Usage: taelja [--debug] [--tptp | --lean] [--namespace=NAME] [--lean-out=FILE] <proof-file> | taelja --horn-problem <problem-file>"
   -- --horn-problem only checks whether the problem is Horn as written and
   -- prints "horn" or why the first offending unit is not.
   when ("--horn-problem" `elem` flags) $ do
     units <- loadProblem inputFile >>= either die return
     putStrLn (maybe "horn" ("not horn: " ++) (nonHornReason units))
     exitSuccess
-  when ("--no-fallback" `elem` flags) disableFallback
   raw <- TIO.readFile inputFile
   tstp@(T.TSTP _ units) <- either (die . ("Parse error: " ++)) return (parseProof (Text.unpack raw))
   when debug $ case buildProofInfo True units of

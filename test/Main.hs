@@ -1,6 +1,6 @@
 -- The test suite. The listed proofs in test/baseline_* are translated and
 -- compared with their text, Lean and TPTP goldens, and the executable must
--- print the same text with the fallback off. Small hand-built proofs check
+-- print the same text. Small hand-built proofs check
 -- that the Lean output states a step exactly when it is right.
 module Main where
 
@@ -13,7 +13,6 @@ import qualified Data.Text as Text
 import qualified Data.Text.IO as TIO
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TLE
-import System.Environment (setEnv)
 import System.Process (readProcessWithExitCode)
 import Test.Tasty
 import Test.Tasty.Golden
@@ -27,13 +26,9 @@ import TptpEmitter (emitTptp)
 import Translate (translate)
 import Types
 
--- Runs the suite with small prover time limits and a 30 s timeout per test.
+-- Runs the suite with a 30 s timeout per test.
 main :: IO ()
 main = do
-  -- A failing Twee call uses its whole time limit, so keep the limits small,
-  -- 5 s per call and 10 s per run, well under the 30 s test timeout.
-  setEnv "TAELJA_TWEE_TIMEOUT" "5"
-  setEnv "TAELJA_FALLBACK_TIMEOUT" "10"
   -- A missing golden is an error rather than created from the output, so
   -- every golden has been checked by hand.
   defaultMain (adjustOption defaultTimeout (localOption (NoCreateFile True) tests))
@@ -48,7 +43,7 @@ tests = testGroup "Taelja"
   , testGroup "Vampire"     (map (mkTextTest "vampire") vampireBenchmarkNames)
   , testGroup "E"           (map (mkTextTest "e")       eBenchmarkNames)
   , testGroup "Twee"        (map (mkTextTest "twee")    tweeBenchmarkNames)
-  , testGroup "No fallback" (map mkNoFallbackTest suiteNames)
+  , testGroup "Executable"  (map mkExeTest suiteNames)
   , testGroup "Lean"        (leanRootTest : map mkLeanTest suiteNames)
   , testGroup "TPTP"        (map mkTptpTest suiteNames)
   , testGroup "Lean, steps"  leanStepTests
@@ -466,15 +461,15 @@ mkTextTest :: String -> String -> TestTree
 mkTextTest prover name = goldenVsString name ("test/expected_" ++ prover ++ "/" ++ name ++ ".txt")
   (runAscii emitText (baseline prover name))
 
--- Each suite proof translated by the executable with --no-fallback must
--- match its golden exactly, stderr included. The golden belongs to the
--- prover's group, so --accept never rewrites it from here.
-mkNoFallbackTest :: (String, String) -> TestTree
-mkNoFallbackTest (prover, name) = goldenTest (prover ++ "/" ++ name)
+-- Each suite proof translated by the executable must match its golden
+-- exactly, stderr included. The golden belongs to the prover's group, so
+-- --accept never rewrites it from here.
+mkExeTest :: (String, String) -> TestTree
+mkExeTest (prover, name) = goldenTest (prover ++ "/" ++ name)
   (LBS.readFile ("test/expected_" ++ prover ++ "/" ++ name ++ ".txt"))
-  (do (_, out, err) <- readProcessWithExitCode "taelja" ["--no-fallback", baseline prover name] ""
+  (do (_, out, err) <- readProcessWithExitCode "taelja" [baseline prover name] ""
       return (LBS.pack (out ++ err)))
-  (\golden out -> return (if golden == out then Nothing else Just "differs from the golden with the fallback off"))
+  (\golden out -> return (if golden == out then Nothing else Just "differs from the golden"))
   (const (return ()))
 
 -- Each suite proof as a TPTP derivation. The suite only compares, so accept

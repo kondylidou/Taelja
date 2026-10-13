@@ -133,7 +133,7 @@ data AlgState = AlgState
   , stPremiseUses :: Map.Map String Int  -- TSTP unit name to how often it is a premise
   , stLiteralRewrites :: Map.Map String [(Literal, [(String, Dir, (Term, Term), Literal)])]  -- nucleus position to the rewrites the proof makes to each body atom
   , stHeadRewrites :: Map.Map String (Literal, [(String, Dir, (Term, Term), Literal)])  -- nucleus position to its head under θ and the rewrites made to it before the clause is a unit
-  , stUnitRewrites :: [(String, Literal, [(String, Dir, (Term, Term), Literal)])]  -- units conditional equations rewrite, by position, not yet stored
+  , stUnitRewrites :: [(String, Literal, [(String, Dir, (Term, Term), Literal)])]  -- units conditional equations rewrite and heads that wait, by the position they are stored before, not yet stored
   , stResolvedUnits :: Map.Map String (Clause, String)  -- units the proof derives by resolving a clause with one body atom against a unit, by name
   , stReadableUnits :: Set.Set String  -- units whose whole derivation can be read step by step (see readableUnits)
   , stPredicates :: Set.Set String  -- predicate symbols, so an equation between atoms is never a lemma (see isAtomEquation)

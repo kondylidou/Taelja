@@ -20,7 +20,6 @@ library
     HornProblem
     PropRes
     TptpConvert
-    TweeInterface
     StepReader
     LemmaBuilder
     Theta

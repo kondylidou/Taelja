@@ -18,9 +18,8 @@ Usage
   --jobs N          parallel workers (default 2)
   --lean PATH       lean binary, to check each translated proof
   --skip-done       keep results where proof.tstp and taelja.txt exist. Taelja
-                    timeouts, spent budgets and ok proofs without a Lean file
-                    are translated again, and a missing no-fallback run or
-                    Lean check (with --lean) is done.
+                    timeouts and ok proofs without a Lean file are translated
+                    again, and a missing Lean check (with --lean) is done.
   --list FILE       run the problems in FILE instead of the SPC scan for HNE,
                     HEQ and UEQ, one CATEGORY<TAB>Problems/DOM/NAME.p per line
                     as select_horn.py writes. May be repeated. Twee skips TFF.
@@ -28,12 +27,11 @@ Usage
 A prover's proof.tstp is reused when present, unless the prover never started
 or reported a proof it did not print. Each run writes to
 <out>/<category>/<stem>/<prover>/ the files proof.tstp, taelja.txt and .err,
-taelja.lean, taelja_nofallback.txt and .err (from taelja --no-fallback), and
-lean.ok or lean.err. All rows go to <out>/results.csv, with columns
+taelja.lean, and lean.ok or lean.err. All rows go to <out>/results.csv, with
+columns
   prove       ok, timeout, fail, or tfail (a proof was found but not printed usably)
   taelja      ok, timeout, fail, nonhorn (the proof leaves the Horn fragment),
-              unsupported, budget (the Twee budget was spent), or - if not run
-  nofallback  the same for taelja --no-fallback
+              unsupported, or - if not run
   lean        ok, fail, or - if not checked
 """
 
@@ -273,8 +271,6 @@ def _translation_status(txt, err, timed_out, exited_ok=True):
         return 'nonhorn'
     if 'unsupported proof' in err or 'unsupported conjecture' in err:
         return 'unsupported'
-    if 'fallback budget' in err:
-        return 'budget'
     lines = err.splitlines()
     complete = (exited_ok and txt.strip()
                 # stderr holds only [warn] lines and blank ones, so no error
@@ -309,67 +305,52 @@ def _read_taelja_status(out, p_file, tag='taelja'):
     return 'fail'
 
 
-# Statuses of a proof outside the fragment, and the file stem of the
-# --no-fallback translation.
-OUT_OF_SCOPE = ('nonhorn', 'unsupported')
-NOFB = 'taelja_nofallback'
-
-
-def _translate(out, taelja, p_file, category, prover_name, taelja_timeout, nofallback=False):
-    """Run Taelja on the cached proof from the project root, where bin/twee
-    lives, write taelja.txt and .err, or taelja_nofallback.txt and .err, and
-    return the status. With the fallback the same run writes the Lean file,
-    which Lean checks later."""
-    tag = NOFB if nofallback else 'taelja'
-    if nofallback:
-        args = ['--no-fallback']
-    else:
-        lean_file = (out / 'taelja.lean').resolve()
-        for stale in (lean_file, out / 'lean.ok', out / 'lean.err'):
-            stale.unlink(missing_ok=True)
-        # each proof needs its own namespace, e.g. HeqVampireAna0092, so
-        # regen_lean_eval.py can import them all into one library
-        namespace = category.capitalize() + PROVER_DIR[prover_name] + lean_module(p_file.stem)
-        args = [f'--lean-out={lean_file}', f'--namespace={namespace}']
+def _translate(out, taelja, p_file, category, prover_name, taelja_timeout):
+    """Run Taelja on the cached proof, write taelja.txt and .err and the Lean
+    file, which Lean checks later, and return the status."""
+    lean_file = (out / 'taelja.lean').resolve()
+    for stale in (lean_file, out / 'lean.ok', out / 'lean.err'):
+        stale.unlink(missing_ok=True)
+    # each proof needs its own namespace, e.g. HeqVampireAna0092, so
+    # regen_lean_eval.py can import them all into one library
+    namespace = category.capitalize() + PROVER_DIR[prover_name] + lean_module(p_file.stem)
+    args = [f'--lean-out={lean_file}', f'--namespace={namespace}']
     cmd = [taelja] if taelja else ['cabal', 'run', 'taelja', '--']
     rc, proof, err = run(cmd + args + [str(out / 'proof.tstp')], timeout=taelja_timeout,
-                         cwd=str(SCRIPT_DIR.parent), extra_env={'TAELJA_TWEE_TIMEOUT': '60'})
-    (out / (tag + '.txt')).write_text(proof)
+                         cwd=str(SCRIPT_DIR.parent))
+    (out / 'taelja.txt').write_text(proof)
     # a blank stderr removes a stale .err from an earlier run
-    _write_or_remove(out / (tag + '.err'), err)
+    _write_or_remove(out / 'taelja.err', err)
     status = _translation_status(proof, err, rc == -1, rc == 0)
     if status == 'ok' and not _goal_matches_conjecture(proof, p_file):
-        (out / (tag + '.err')).write_text(err + '\n' + GOAL_NOTE)
+        (out / 'taelja.err').write_text(err + '\n' + GOAL_NOTE)
         return 'fail'
     return status
 
 
 def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp_dir, timeout,
                 skip_done, lean_bin, taelja_timeout):
-    """Run one prover on one problem, translate the proof with and without the
-    fallback, check it with Lean when asked, and return the row of results."""
+    """Run one prover on one problem, translate the proof, check it with Lean
+    when asked, and return the row of results."""
     out = out_dir / category / p_file.stem / prover_name
     out.mkdir(parents=True, exist_ok=True)
     result = {
         'category': category, 'problem': p_file.stem, 'prover': prover_name,
-        'prove': '-', 'taelja': '-', 'nofallback': '-', 'lean': '-',
+        'prove': '-', 'taelja': '-', 'lean': '-',
     }
     translate = partial(_translate, out, taelja, p_file, category, prover_name, taelja_timeout)
 
-    # Under --skip-done a cached translation is kept, except a timeout or spent
-    # budget, which depends on machine load, and an ok proof without its Lean
-    # file. A missing --no-fallback translation is run on its own.
+    # Under --skip-done a cached translation is kept, except a timeout, which
+    # depends on machine load, and an ok proof without its Lean file.
     cached = None
     if skip_done and (out / 'proof.tstp').exists() and (out / 'taelja.txt').exists():
         status = _read_taelja_status(out, p_file)
-        if status not in ('timeout', 'budget') and (status != 'ok' or (out / 'taelja.lean').exists()):
+        if status != 'timeout' and (status != 'ok' or (out / 'taelja.lean').exists()):
             cached = status
     if cached is not None:
         result['prove'] = _read_prove_status(out, prover_name)
         if result['prove'] == 'ok':
             result['taelja'] = cached
-            nofb = cached if cached in OUT_OF_SCOPE else _read_taelja_status(out, p_file, NOFB)
-            result['nofallback'] = translate(nofallback=True) if nofb in ('-', 'timeout') else nofb
             if cached == 'ok':
                 # the recorded Lean verdict, else a new check when asked
                 if (out / 'lean.ok').exists():
@@ -401,11 +382,8 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
     if prove != 'ok':
         return result
 
-    # 2. Taelja, with and without the fallback. A proof outside the fragment
-    # is refused either way, so it is not run twice.
+    # 2. Taelja
     result['taelja'] = translate()
-    result['nofallback'] = (result['taelja'] if result['taelja'] in OUT_OF_SCOPE
-                            else translate(nofallback=True))
 
     # 3. Lean verification (optional)
     if result['taelja'] == 'ok' and lean_bin:
@@ -464,8 +442,6 @@ def main():
         if provers[name] is None:
             raise SystemExit(f"error: no {exe} found. Give --{exe} PATH, "
                              f"set {env_var}, put it at bin/{exe} or on the PATH")
-    # Taelja's fallback uses the same Twee
-    os.environ['TAELJA_TWEE'] = provers['twee']
 
     taelja = find_taelja()
     if taelja:
@@ -529,13 +505,11 @@ def main():
             r = f.result()
             results.append(r)
             print(f"[{i:5d}/{len(futures)}] {r['category']}/{r['problem']} "
-                  f"[{r['prover']:7s}]: prove={r['prove']:7s} taelja={r['taelja']:7s} "
-                  f"nofallback={r['nofallback']}")
+                  f"[{r['prover']:7s}]: prove={r['prove']:7s} taelja={r['taelja']}")
 
     csv_path = out / 'results.csv'
     with open(csv_path, 'w', newline='') as f:
-        w = csv.DictWriter(f, fieldnames=['category', 'problem', 'prover', 'prove', 'taelja',
-                                          'nofallback', 'lean'])
+        w = csv.DictWriter(f, fieldnames=['category', 'problem', 'prover', 'prove', 'taelja', 'lean'])
         w.writeheader()
         w.writerows(sorted(results, key=lambda r: (r['category'], r['problem'], r['prover'])))
 
@@ -556,12 +530,10 @@ def main():
         txt = _read(p / 'taelja.txt').strip()
         if r['taelja'] == 'timeout' or 'TIMEOUT' in err:
             key = 'TIMEOUT (Taelja)'
-        elif r['taelja'] == 'budget':
-            key = 'fallback budget spent (Twee calls)'
         elif 'no unit found for goal' in err:
             key = 'no unit found for goal'
         elif 'no proof found for goal' in err:
-            key = 'no proof found for goal (Twee)'
+            key = 'no proof found for goal'
         elif 'case split' in err:
             key = 'unsupported conjecture (case split)'
         elif 'outside the supported calculus' in err:
@@ -601,7 +573,7 @@ def main():
 
 def _print_summary(results, provers, lean_col, categories):
     """Print the counts per category and prover."""
-    heads = ['Total', 'Proved', 'NonHrn', 'Unsupp', 'Transl', 'NoFB', 'Fail', 'Budget', 'TFail']
+    heads = ['Total', 'Proved', 'NonHrn', 'Unsupp', 'Transl', 'Fail', 'TFail']
     if lean_col:
         heads.append('Lean')
     hdr = f"{'Category':8s}  {'Prover':7s}" + ''.join(f"  {h:>6s}" for h in heads)
@@ -622,10 +594,8 @@ def _print_summary(results, provers, lean_col, categories):
                       # tfail counts as proved, as only the prover's TSTP output failed
                       prove['ok'] + prove['tfail'],
                       taelja['nonhorn'], taelja['unsupported'], taelja['ok'],
-                      # translated from the input proof alone, without Twee
-                      sum(r['nofallback'] == 'ok' for r in sub),
                       sum(r['prove'] == 'ok' and r['taelja'] in ('fail', 'timeout') for r in sub),
-                      taelja['budget'], prove['tfail']]
+                      prove['tfail']]
             if lean_col:
                 counts.append(sum(r['lean'] == 'ok' for r in sub))
             cat_col = cat if prover in (prover_list[0], 'ALL') else ''

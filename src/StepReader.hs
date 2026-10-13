@@ -9,11 +9,9 @@ module StepReader
   , reverseChain
   ) where
 
-import Control.Applicative ((<|>))
 import Control.Monad (guard)
 import Data.Bifunctor (bimap)
 import Data.List (foldl', nub)
-import Data.Maybe (listToMaybe)
 import qualified Data.Set as Set
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
@@ -57,8 +55,8 @@ isAtomEquation _ _ = False
 -- premise, in either order. Only premise variables are bound, and one left
 -- free takes a leaf of the left side, as the premise holds for every value.
 -- A chain found from the right side is read backwards.
-twoRewrites :: Term -> Term -> (Term, Term) -> (Term, Term) -> Maybe [(Int, Dir, Bool, (Term, Term), Term)]
-twoRewrites gl gr e1 e2 = listToMaybe
+twoRewrites :: Term -> Term -> (Term, Term) -> (Term, Term) -> [[(Int, Dir, Bool, (Term, Term), Term)]]
+twoRewrites gl gr e1 e2 =
   [ chain | (ia, ea, ib, eb) <- [(1, e1, 2, e2), (2, e2, 1, e1)], back <- [False, True]
           , chain <- via back ia ea ib eb ]
   where
@@ -92,8 +90,8 @@ twoRewrites gl gr e1 e2 = listToMaybe
 -- occurrence of a term in an instance of one premise by the other, as E and
 -- Vampire can. The chain undoes those rewrites on the left, applies the
 -- rewritten premise at the root and redoes them on the right.
-rewriteEveryOccurrence :: Term -> Term -> (Term, Term) -> (Term, Term) -> Maybe [(Int, Dir, Bool, (Term, Term), Term)]
-rewriteEveryOccurrence gl gr e1 e2 = listToMaybe (reading 1 e1 2 e2 ++ reading 2 e2 1 e1)
+rewriteEveryOccurrence :: Term -> Term -> (Term, Term) -> (Term, Term) -> [[(Int, Dir, Bool, (Term, Term), Term)]]
+rewriteEveryOccurrence gl gr e1 e2 = reading 1 e1 2 e2 ++ reading 2 e2 1 e1
   where
     rigid = nub (termVars gl ++ termVars gr)
     leaf  = firstLeaf gl
@@ -165,11 +163,13 @@ firstLeaf t = head ([ u | (u, _) <- termCtxs t, isLeaf u ] ++ [t])
     isLeaf (App _ (_ : _)) = False
     isLeaf _               = True
 
--- The rewrites, in chain order, that take the left side of a step's equation
--- to the right. Each gives its premise (1 or 2), its direction, whether it is
--- at the root, the premise instance and the term it rewrites to.
-stepRewrites :: Term -> Term -> (Term, Term) -> (Term, Term) -> Maybe [(Int, Dir, Bool, (Term, Term), Term)]
-stepRewrites gl gr e1 e2 = twoRewrites gl gr e1 e2 <|> rewriteEveryOccurrence gl gr e1 e2
+-- Every reading of a step as rewrites, in chain order, that take the left
+-- side of its equation to the right, the two-rewrite ones first. Each rewrite
+-- gives its premise (1 or 2), its direction, whether it is at the root, the
+-- premise instance and the term it rewrites to. A reading may need a premise
+-- at an instance the proof does not derive, so the caller tries them in turn.
+stepRewrites :: Term -> Term -> (Term, Term) -> (Term, Term) -> [[(Int, Dir, Bool, (Term, Term), Term)]]
+stepRewrites gl gr e1 e2 = nub (twoRewrites gl gr e1 e2 ++ rewriteEveryOccurrence gl gr e1 e2)
 
 -- A chain from pl to pr, reversed when the equation is applied right to left
 -- and instantiated to run from `from` to `to`.

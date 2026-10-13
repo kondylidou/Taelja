@@ -69,21 +69,19 @@ Building requires Cabal 3 and GHC 9.6 to 9.12.
 cabal build
 ```
 
-Taelja invokes Twee to reconstruct rewrite steps that the input proof does not
-justify. Twee is not distributed with Taelja. The evaluation additionally
-requires E and Vampire, which its script looks up in the same way. The options
-`--vampire`, `--eprover`, and `--twee` of that script name a binary
-explicitly.
+Taelja itself calls no prover. The evaluation requires Twee, E and Vampire,
+which its script looks up as follows. The options `--vampire`, `--eprover`,
+and `--twee` of that script name a binary explicitly.
 
 | Prover  | Source | Lookup order |
 |---------|--------|--------------|
 | Twee    | `horn` branch of <https://codeberg.org/nick8325/twee>, built with `cabal build`. | `TAELJA_TWEE`, `bin/twee`, `PATH` |
-| E       | <https://www.eprover.org/> | `TAELJA_EPROVER`, `bin/eprover`, `PATH` |
+| E       | `proof-object-steps` branch of <https://github.com/eprover/eprover>, which adds `--proof-object=3`, built with `./configure && make`. | `TAELJA_EPROVER`, `bin/eprover`, `PATH` |
 | Vampire | <https://github.com/vprover/vampire> | `TAELJA_VAMPIRE`, `bin/vampire`, `PATH` |
 
-All invocations of Twee within one run share a time budget of
-`TAELJA_FALLBACK_TIMEOUT` seconds (default: 30). Taelja has been tested with
-Twee 2.7, E 3.2.5, and Vampire 5.0.1.
+Taelja has been tested with Twee 2.7, E 3.5.1 from that branch, and Vampire 5.0.1. The evaluation runs E
+with `--auto-schedule --proof-object=3`, so that E prints the clause after each
+simplification step.
 
 ## Usage
 
@@ -98,7 +96,6 @@ cabal run taelja -- [options] proof.tstp
 | `--lean` | Print the proof as a Lean 4 file. |
 | `--namespace=NAME` | Set the namespace of the Lean file (default: `TaeljaProof`). |
 | `--lean-out=FILE` | Additionally write the Lean file to `FILE`. |
-| `--no-fallback` | Do not invoke Twee. |
 | `--debug` | Additionally print the proof tree and the matching traces. |
 
 The command `taelja --horn-problem problem.p` reports whether a problem
@@ -145,10 +142,9 @@ python3 scripts/check_lean_eval.py --jobs 3
 1. `select_horn.py` determines the Horn problems and writes one list per
    input format.
 2. `eval.py` runs the three provers on these problems and translates every
-   proof twice, with the fallback and with `--no-fallback`. The results are
-   written to `eval_out/<category>/<problem>/<prover>/` and summarized in
-   `eval_out/results.csv`, whose columns `taelja` and `nofallback` give the
-   two outcomes. The option `--skip-done` resumes an interrupted run.
+   proof. The results are written to `eval_out/<category>/<problem>/<prover>/`
+   and summarized in `eval_out/results.csv`. The option `--skip-done` resumes
+   an interrupted run.
 3. `regen_lean_eval.py` collects the Lean file of every translated proof in
    `lean/TaeljaVerify/`.
 4. `check_lean_eval.py` verifies each of these files with Lean and records

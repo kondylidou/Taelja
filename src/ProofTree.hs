@@ -472,20 +472,29 @@ condense (Clause bs mh) = Clause (nub [ l | l <- bs, not (trivial l) ]) mh
 -- A substitution that turns the replayed clause into the printed one. Each
 -- replayed literal matches a printed literal of the same sign and every
 -- printed literal is hit. Two replayed literals may hit the same one, as when
--- E's csr brings in a condition the clause already has.
+-- E's csr brings in a condition the clause already has. A branch stops once a
+-- remaining literal has no partner or a printed literal can no longer be hit,
+-- since bindings only grow, so clauses of many similar literals stay fast.
 matchClause :: Clause -> Clause -> Maybe Subst
 matchClause final outer
   | isJust (hd final) /= isJust (hd outer) = Nothing
   | otherwise = listToMaybe (go (polLits (suffixVarsClause "_f" final)) [] [])
   where
     idxOuter = zip [0 :: Int ..] (polLits outer)
+    -- the printed literals a replayed one matches under s, an equation either
+    -- way round, with the extended substitution
+    partners s (b, l) = [ (i, s') | (i, (b', p)) <- idxOuter, b == b'
+                                  , s' <- nub (catMaybes [matchLitWith l p s, matchLitWith (flipLit l) p s]) ]
     go [] hit s
       | all ((`elem` hit) . fst) idxOuter = [s]
       | otherwise = []
-    go ((b, l) : ls) hit s =
-      [ s'' | (i, (b', p)) <- idxOuter, b == b'
-            , s' <- catMaybes [matchLitWith l p s, matchLitWith (flipLit l) p s]
-            , s'' <- go ls (i : hit) s' ]
+    go (l : ls) hit s
+      | any null later = []
+      | not (all (\(i, _) -> i `elem` hit || any (any ((== i) . fst)) (now : later)) idxOuter) = []
+      | otherwise = [ s'' | (i, s') <- now, s'' <- go ls (i : hit) s' ]
+      where
+        now   = partners s l
+        later = map (partners s) ls
 
 -- The leaves with their positions. An electron is kept once, at its first
 -- position in depth-first order. With everyUse a nucleus appears at every
