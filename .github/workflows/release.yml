@@ -1,0 +1,97 @@
+name: Release
+
+# Builds a taelja binary for Linux, macOS (Apple Silicon and Intel) and
+# Windows. A tag v* attaches them to a GitHub release, and a manual run
+# keeps them as workflow artifacts. GHC does not cross-compile, so each
+# binary is built on its own platform.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  # A static binary built against musl, so it runs on any Linux distribution.
+  linux:
+    runs-on: ubuntu-latest
+    # GHC 9.6 on Alpine with the static libraries GHC links (gmp, ffi, ...)
+    container: quay.io/benz0li/ghc-musl:9.6.7
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          cabal update
+          cabal install exe:taelja --install-method=copy --installdir=out \
+            --overwrite-policy=always --enable-executable-static
+          strip out/taelja
+          ./out/taelja --help 2>&1 | head -1 || true
+          tar -czf taelja-linux-x86_64.tar.gz -C out taelja
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: taelja-linux-x86_64
+          path: taelja-linux-x86_64.tar.gz
+
+  macos-windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14
+            name: macos-arm64
+          - os: macos-15-intel
+            name: macos-x86_64
+          - os: windows-latest
+            name: windows-x86_64
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up GHC
+        uses: haskell-actions/setup@v2
+        with:
+          ghc-version: '9.6.7'
+          cabal-version: 'latest'
+
+      - name: Build
+        # cabal install strips the binary it copies
+        run: |
+          cabal update
+          cabal install exe:taelja --install-method=copy --installdir=out --overwrite-policy=always
+
+      - name: Package
+        run: |
+          if [ "$RUNNER_OS" = Windows ]; then
+            cp out/taelja.exe taelja-${{ matrix.name }}.exe
+            echo "ASSET=taelja-${{ matrix.name }}.exe" >> "$GITHUB_ENV"
+          else
+            tar -czf taelja-${{ matrix.name }}.tar.gz -C out taelja
+            echo "ASSET=taelja-${{ matrix.name }}.tar.gz" >> "$GITHUB_ENV"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: taelja-${{ matrix.name }}
+          path: ${{ env.ASSET }}
+
+  # On a tag, the binaries go to the release of that tag.
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [linux, macos-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: assets
+          merge-multiple: true
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: assets/*
