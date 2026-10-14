@@ -534,7 +534,7 @@ def main():
         err = _read(p / 'taelja.err').strip()
         txt = _read(p / 'taelja.txt').strip()
         if r['taelja'] == 'timeout' or 'TIMEOUT' in err:
-            key = 'TIMEOUT (Taelja)'
+            key = 'timeout'
         elif 'no unit found for goal' in err:
             key = 'no unit found for goal'
         elif 'no proof found for goal' in err:
