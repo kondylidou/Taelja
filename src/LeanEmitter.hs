@@ -326,17 +326,20 @@ abstract (l, r) p c
       App f <$> zipWithM (abstract (l, r)) as bs
   | otherwise      = Nothing
 
--- Finds one instance l = r of the cited unit equation, used in the given
+-- Finds one instance l = r of the cited equation, used in the given
 -- direction, that turns each first component into the second. Returns the
 -- proof of that instance and the components with the rewritten places as holes.
-rewrite :: Ctx -> Env -> Ref -> Dir -> [(Term, Term)] -> Maybe (String, [Term])
-rewrite ctx env r d comps = case refHead r of
-  Just (Eq l0 r0) | null (refBody r) -> listToMaybe
+-- A conditional equation takes its conditions from the given premises, the
+-- body atoms of the lemma being proved.
+rewrite :: Ctx -> Env -> [(String, Literal)] -> Ref -> Dir -> [(Term, Term)] -> Maybe (String, [Term])
+rewrite ctx env prems r d comps = case refHead r of
+  Just h@(Eq l0 r0) -> listToMaybe
     [ (if d == LR then inst else "Eq.symm (" ++ inst ++ ")", ctxs)
     | let (from, to) = if d == LR then (l0, r0) else (r0, l0)
     , (x, y) <- concatMap (uncurry diffPairs) comps
     , Just s <- [matchTermIf isPattern from x [] >>= matchTermIf isPattern to y]
-    , let inst = instantiate ctx env r s
+    , Just inst <- [ if null (refBody r) then Just (instantiate ctx env r s)
+                     else applyClause ctx env r (mapLiteralTerms (applySubstTerm s) h) prems ]
     , Just ctxs <- [mapM (uncurry (abstract (x, y))) comps] ]
   _ -> Nothing
 
@@ -408,7 +411,7 @@ haveHence ctx env assumed stmt = go (1 :: Int) Nothing []
           (hp, lp) <- cur
           r <- Map.lookup nm (ctxRefs ctx)
           comps <- components lp l
-          (eq, ctxs) <- rewrite ctx env r d comps
+          (eq, ctxs) <- rewrite ctx env assumed r d comps
           shape <- rebuild lp ctxs
           Just ("Eq.mp (" ++ congr env (lit shape) eq ++ ") " ++ hp)
         contradiction = do
@@ -491,7 +494,7 @@ chainProof ctx env stmt s steps = case stmt of
       Just []        -> [ "rfl" ]
     step prev (rw, cur) = do
       r <- ref (rwName rw)
-      (eq, [shape]) <- rewrite ctx env r (rwDir rw) [(prev, cur)]
+      (eq, [shape]) <- rewrite ctx env [] r (rwDir rw) [(prev, cur)]
       Just (leanTerm ctx env cur ++ " := "
             ++ (if shape == Var holeVar then eq else congr env (leanTerm ctx env shape) eq))
     -- the atoms as haves from the fact the last step cites back to the
@@ -508,6 +511,6 @@ chainProof ctx env stmt s steps = case stmt of
             ++ [ "exact " ++ names !! (length atoms - 1) ])
     back (Rel p as, Rel q bs, rw) | p == q, length as == length bs = do
       r <- ref (rwName rw)
-      (eq, shapes) <- rewrite ctx env r (rwDir rw) (zip as bs)
+      (eq, shapes) <- rewrite ctx env [] r (rwDir rw) (zip as bs)
       Just ("Eq.mpr (" ++ congr env (leanLiteral ctx env (Rel p shapes)) eq ++ ")")
     back _ = Nothing

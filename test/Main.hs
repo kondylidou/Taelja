@@ -436,6 +436,10 @@ leanStepTests =
   , blockTest False qa "have by a Horn clause outside a lemma" [Have qa "axiom 2"]
   , lemmaTest True  [Rel "p" [x]] qa [Have pa "axiom 1"] "have by a Horn clause on the lemma's body" [Have (Rel "q" [x]) "axiom 2"]
   , lemmaTest False [Rel "r" [x]] qc [Have rc "axiom 5"] "have by a Horn clause on no body atom"    [Have (Rel "q" [x]) "axiom 2"]
+  , blockTest False (Rel "q" [f a]) "rewrite by a conditional equation outside a lemma"
+      [Have pa "axiom 1", Hence qa (ByAxiom "axiom 2"), Hence (Rel "q" [f a]) (ByRw "axiom 6" RL)]
+  , lemmaTest True  [Rel "p" [x]] qa [Have pa "axiom 1"] "rewrite by a conditional equation on the lemma's body"
+      [Have (Rel "p" [x]) "assumption", Hence (Rel "q" [x]) (ByAxiom "axiom 2"), Hence (Rel "q" [f x]) (ByRw "axiom 6" RL), Hence (Rel "q" [x]) (ByRw "axiom 6" LR)]
   ]
   where
     a = Const "a"; b = Const "b"; c = Const "c"
@@ -448,7 +452,8 @@ leanStepTests =
                  , ANucleus "axiom 2" (Clause [Rel "p" [x]] (Just (Rel "q" [x])))
                  , AUnit "axiom 3" (Eq (f x) x)
                  , AUnit "axiom 4" pfa
-                 , ANucleus "axiom 5" (Clause [Eq x c] (Just (Rel "r" [x]))) ]
+                 , ANucleus "axiom 5" (Clause [Eq x c] (Just (Rel "r" [x])))
+                 , ANucleus "axiom 6" (Clause [Rel "p" [x]] (Just (Eq (f x) x))) ]
       , lemmas = [], goals = [(goal, blk)], spInput = emptyInput }
     holds sp = let out = emitLean "" sp
                in not (any (`isInfixOf` out) [ "taelja_step_not_justified"
