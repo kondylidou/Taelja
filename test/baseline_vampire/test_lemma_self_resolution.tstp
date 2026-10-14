@@ -1,0 +1,24 @@
+% SZS status Unsatisfiable for test_lemma_self_resolution
+% SZS output start Proof for test_lemma_self_resolution
+cnf(f1,axiom,~p(X0,X1) | ~r(X0) | q(X0,X1),file('/home/user/Developer/Taelja/test/input/test_lemma_self_resolution.p',a1)).
+cnf(f2,axiom,~q(X0,f(X2)) | ~t(X2) | s(X0,f(X2)),file('/home/user/Developer/Taelja/test/input/test_lemma_self_resolution.p',a2)).
+cnf(f3,axiom,~r(X0) | u(X0),file('/home/user/Developer/Taelja/test/input/test_lemma_self_resolution.p',a3)).
+cnf(f4,axiom,~s(X0,X1) | ~u(X0) | p(f(X0),f(b)),file('/home/user/Developer/Taelja/test/input/test_lemma_self_resolution.p',a4)).
+cnf(f5,axiom,r(a),file('/home/user/Developer/Taelja/test/input/test_lemma_self_resolution.p',a5)).
+cnf(f6,axiom,r(f(X0)),file('/home/user/Developer/Taelja/test/input/test_lemma_self_resolution.p',a6)).
+cnf(f7,axiom,t(a),file('/home/user/Developer/Taelja/test/input/test_lemma_self_resolution.p',a7)).
+cnf(f8,axiom,t(b),file('/home/user/Developer/Taelja/test/input/test_lemma_self_resolution.p',a8)).
+cnf(f9,axiom,p(a,f(a)),file('/home/user/Developer/Taelja/test/input/test_lemma_self_resolution.p',a9)).
+cnf(f10,negated_conjecture,~p(f(f(a)),f(b)),file('/home/user/Developer/Taelja/test/input/test_lemma_self_resolution.p',a10)).
+cnf(f11,plain,~p(X0,f(X2)) | ~r(X0) | ~t(X2) | s(X0,f(X2)),inference(resolution,[],[f1,f2])).
+cnf(f12,plain,~s(X0,X1) | ~r(X0) | p(f(X0),f(b)),inference(resolution,[],[f3,f4])).
+cnf(f13,plain,~p(X0,f(X2)) | ~r(X0) | ~t(X2) | ~r(X0) | p(f(X0),f(b)),inference(resolution,[],[f11,f12])).
+cnf(f14,plain,~p(X0,f(X2)) | ~r(X0) | ~t(X2) | p(f(X0),f(b)),inference(duplicate_literal_removal,[],[f13])).
+cnf(f15,plain,~p(X0,f(X2)) | ~r(X0) | ~t(X2) | ~r(f(X0)) | ~t(b) | p(f(f(X0)),f(b)),inference(resolution,[],[f14,f14])).
+cnf(f16,plain,~p(X0,f(X2)) | ~r(X0) | ~t(X2) | ~r(f(X0)) | p(f(f(X0)),f(b)),inference(resolution,[],[f8,f15])).
+cnf(f17,plain,~r(a) | ~t(a) | ~r(f(a)) | p(f(f(a)),f(b)),inference(resolution,[],[f9,f16])).
+cnf(f18,plain,~r(a) | ~t(a) | ~r(f(a)),inference(resolution,[],[f17,f10])).
+cnf(f19,plain,~t(a) | ~r(f(a)),inference(resolution,[],[f5,f18])).
+cnf(f20,plain,~r(f(a)),inference(resolution,[],[f7,f19])).
+cnf(f21,plain,$false,inference(resolution,[],[f6,f20])).
+% SZS output end Proof for test_lemma_self_resolution

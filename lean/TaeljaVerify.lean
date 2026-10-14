@@ -20,6 +20,7 @@ import TaeljaVerify.Vampire.TffTypedLemma
 import TaeljaVerify.Vampire.FofSkolemDefinition
 import TaeljaVerify.Vampire.FofExistentialGoals
 import TaeljaVerify.Vampire.TestSharedNonunit
+import TaeljaVerify.Vampire.TestLemmaSelfResolution
 import TaeljaVerify.Vampire.Hen0093
 import TaeljaVerify.Vampire.Grp4511
 import TaeljaVerify.Vampire.Grp658p1

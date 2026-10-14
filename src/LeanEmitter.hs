@@ -359,7 +359,7 @@ proofLines ctx c blk =
   [ "intro " ++ unwords (map (env Map.!) stmtVs ++ hyps) | not (null stmtVs && null hyps) ]
   ++ [ "have " ++ env Map.! v ++ " : α := taelja_elem" | v <- blockVs ]
   ++ case blk of
-       HaveHence ls    -> haveHence ctx env stmt ls
+       HaveHence ls    -> haveHence ctx env (zip hyps (body c)) stmt ls
        EqChain s steps -> chainProof ctx env stmt s steps
   where
     stmt    = clauseHead c
@@ -373,9 +373,10 @@ proofLines ctx c blk =
 
 -- The tactic proof of a have/hence block, one Lean have per line. The
 -- premises of a hence line are the last have or hence line and the and lines
--- after it.
-haveHence :: Ctx -> Env -> Literal -> [ProofLine] -> [String]
-haveHence ctx env stmt = go (1 :: Int) Nothing []
+-- after it. A have or and line may apply a Horn clause to the lemma's body
+-- atoms, given as their hypotheses.
+haveHence :: Ctx -> Env -> [(String, Literal)] -> Literal -> [ProofLine] -> [String]
+haveHence ctx env assumed stmt = go (1 :: Int) Nothing []
   where
     go _ cur _ [] = case cur of
       Just (h, l) | l == stmt         -> [ "exact " ++ h ]
@@ -396,8 +397,8 @@ haveHence ctx env stmt = go (1 :: Int) Nothing []
           -- a body atom of the lemma, which the statement introduced
           Have _ nm | nm == assumptionName -> (Just "by assumption", "")
           And _ nm  | nm == assumptionName -> (Just "by assumption", "")
-          Have _ nm -> (cite nm [], nm ++ " does not state " ++ lit l)
-          And _ nm  -> (cite nm [], nm ++ " does not state " ++ lit l)
+          Have _ nm -> (cite nm assumed, nm ++ " does not state " ++ lit l)
+          And _ nm  -> (cite nm assumed, nm ++ " does not state " ++ lit l)
           Hence _ (ByAxiom nm) ->
             (cite nm (maybeToList cur ++ extras), nm ++ " does not derive " ++ lit l ++ " from the lines before it")
           Hence _ (ByRw nm d) -> (rewritten nm d, nm ++ " does not rewrite the line before into " ++ lit l)

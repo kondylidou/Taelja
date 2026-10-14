@@ -50,52 +50,48 @@ theorem taelja_lemma11 : ∀ (x y : α), p5 c7 x y → p5 c7 x (f3 y) := by
   exact h3
 
 -- Lemma 12
-theorem taelja_lemma12 : ∀ (x y : α), p2 x y → p2 y x := by
+theorem taelja_lemma12 : ∀ (x y z : α), p5 c7 x y → p2 (f3 y) z → p2 z (f3 x) := by
+  intro x y z a1 a2
+  have h1 : p5 c7 x (f3 x) := ax4 x
+  have h2 : p6 c7 (f3 x) := ax3 x
+  have h3 : p6 c7 (f3 y) := ax3 y
+  have h4 : p5 c7 x (f3 y) := taelja_lemma11 x y a1
+  have h5 : p2 (f3 y) (f3 x) := ax6 x (f3 x) (f3 y) h1 h2 h3 h4
+  have h6 : p2 (f3 y) z := by assumption
+  have h7 : p2 z (f3 x) := ax7 (f3 y) (f3 x) z h5 h6
+  exact h7
+
+-- Lemma 13
+theorem taelja_lemma13 : ∀ (x y : α), p2 x y → p2 y x := by
   intro x y a1
   have h1 : p2 x x := ax1 x
   have h2 : p2 x y := by assumption
   have h3 : p2 y x := ax7 x x y h1 h2
   exact h3
 
--- Lemma 13
-theorem taelja_lemma13 : p5 c7 c10 (f3 c8) := by
-  have h1 : p5 c7 c10 c8 := ax2
-  have h2 : p5 c7 c10 (f3 c8) := taelja_lemma11 c10 c8 h1
-  exact h2
-
 -- Lemma 14
-theorem taelja_lemma14 : p5 c7 c10 (f3 c9) := by
-  have h1 : p5 c7 c10 c9 := ax8
-  have h2 : p5 c7 c10 (f3 c9) := taelja_lemma11 c10 c9 h1
-  exact h2
+theorem taelja_lemma14 : p2 (f3 c10) (f3 c8) := by
+  have h1 : p5 c7 c10 c8 := ax2
+  have h2 : p2 (f3 c8) (f3 c8) := ax1 (f3 c8)
+  have h3 : p2 (f3 c8) (f3 c10) := taelja_lemma12 c10 c8 (f3 c8) h1 h2
+  have h4 : p2 (f3 c10) (f3 c8) := taelja_lemma13 (f3 c8) (f3 c10) h3
+  exact h4
 
 -- Lemma 15
-theorem taelja_lemma15 : p2 (f3 c10) (f3 c8) := by
-  have h1 : p5 c7 c10 (f3 c10) := ax4 c10
-  have h2 : p6 c7 (f3 c10) := ax3 c10
-  have h3 : p6 c7 (f3 c8) := ax3 c8
-  have h4 : p5 c7 c10 (f3 c8) := taelja_lemma13
-  have h5 : p2 (f3 c8) (f3 c10) := ax6 c10 (f3 c10) (f3 c8) h1 h2 h3 h4
-  have h6 : p2 (f3 c10) (f3 c8) := taelja_lemma12 (f3 c8) (f3 c10) h5
-  exact h6
-
--- Lemma 16
-theorem taelja_lemma16 : p2 (f3 c9) (f3 c8) := by
-  have h1 : p5 c7 c10 (f3 c10) := ax4 c10
-  have h2 : p6 c7 (f3 c10) := ax3 c10
-  have h3 : p6 c7 (f3 c9) := ax3 c9
-  have h4 : p5 c7 c10 (f3 c9) := taelja_lemma14
-  have h5 : p2 (f3 c9) (f3 c10) := ax6 c10 (f3 c10) (f3 c9) h1 h2 h3 h4
-  have h6 : p2 (f3 c10) (f3 c9) := taelja_lemma12 (f3 c9) (f3 c10) h5
-  have h7 : p2 (f3 c10) (f3 c8) := taelja_lemma15
-  have h8 : p2 (f3 c8) (f3 c9) := ax7 (f3 c10) (f3 c9) (f3 c8) h6 h7
-  have h9 : p2 (f3 c9) (f3 c8) := taelja_lemma12 (f3 c8) (f3 c9) h8
-  exact h9
+theorem taelja_lemma15 : p2 (f3 c9) (f3 c8) := by
+  have h1 : p5 c7 c10 c9 := ax8
+  have h2 : p2 (f3 c9) (f3 c9) := ax1 (f3 c9)
+  have h3 : p2 (f3 c9) (f3 c10) := taelja_lemma12 c10 c9 (f3 c9) h1 h2
+  have h4 : p2 (f3 c10) (f3 c9) := taelja_lemma13 (f3 c9) (f3 c10) h3
+  have h5 : p2 (f3 c10) (f3 c8) := taelja_lemma14
+  have h6 : p2 (f3 c8) (f3 c9) := ax7 (f3 c10) (f3 c9) (f3 c8) h4 h5
+  have h7 : p2 (f3 c9) (f3 c8) := taelja_lemma13 (f3 c8) (f3 c9) h6
+  exact h7
 
 -- Goal 1
 theorem taelja_goal1 : p5 c7 c8 (f3 (f3 (f3 c9))) := by
   have h1 : p5 c7 (f3 c9) (f3 (f3 c9)) := ax4 (f3 c9)
-  have h2 : p2 (f3 c9) (f3 c8) := taelja_lemma16
+  have h2 : p2 (f3 c9) (f3 c8) := taelja_lemma15
   have h3 : p2 (f3 (f3 c9)) (f3 (f3 c9)) := ax1 (f3 (f3 c9))
   have h4 : p4 c7 c7 := ax9 c7
   have h5 : p5 c7 (f3 c8) (f3 (f3 c9)) := ax10 c7 (f3 c9) (f3 (f3 c9)) (f3 c8) (f3 (f3 c9)) c7 h1 h2 h3 h4

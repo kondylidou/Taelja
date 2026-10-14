@@ -180,6 +180,9 @@ handcraftedNames =
   -- Uwe Waldmann's example, the derived clause c5 is no unit and is used
   -- three times, so it becomes a Horn clause lemma
   , "test_shared_nonunit"
+  -- Uwe Waldmann's second example, clause 14 resolves with itself, and its
+  -- proof needs u(X), a fact one step from its body atom r(X)
+  , "test_lemma_self_resolution"
   ]
 
 -- Vampire proofs of TPTP problems and worked examples.
@@ -430,6 +433,9 @@ leanStepTests =
   , chainTest True  "chain of two steps" [(step, f a), (step, a)]
   , chainTest False "chain step that is two rewrites" [(step, a)]
   , chainTest False "chain step in the wrong direction" [(step { rwDir = RL }, f a), (step, a)]
+  , blockTest False qa "have by a Horn clause outside a lemma" [Have qa "axiom 2"]
+  , lemmaTest True  "have by a Horn clause on the lemma's body" [Have (Rel "q" [x]) "axiom 2"]
+  , lemmaTest False "have by a Horn clause on no body atom"    [Have (Rel "r" [x]) "axiom 5"]
   ]
   where
     a = Const "a"; b = Const "b"; c = Const "c"
@@ -444,17 +450,21 @@ leanStepTests =
                  , AUnit "axiom 4" pfa
                  , ANucleus "axiom 5" (Clause [Eq x c] (Just (Rel "r" [x]))) ]
       , lemmas = [], goals = [(goal, blk)], spInput = emptyInput }
-    holds goal blk = let out = emitLean "" (proofOf goal blk)
-                     in not (any (`isInfixOf` out) [ "taelja_step_not_justified"
-                                                   , "taelja_unbound_variable"
-                                                   , "taelja_undeclared_symbol" ])
-    -- the Lean output must state the block proving goal exactly when want holds
-    check want name goal blk = goldenTest name (return want) (return (holds goal blk))
+    holds sp = let out = emitLean "" sp
+               in not (any (`isInfixOf` out) [ "taelja_step_not_justified"
+                                             , "taelja_unbound_variable"
+                                             , "taelja_undeclared_symbol" ])
+    -- the Lean output must state the proof exactly when want holds
+    check want name sp = goldenTest name (return want) (return (holds sp))
       (\_ got -> return (if want == got then Nothing
                          else Just (if want then "a correct step is not stated" else "a wrong step is stated")))
       (const (return ()))
-    blockTest want goal name ls = check want name goal (HaveHence ls)
-    chainTest want name steps = check want name (Eq (f (f a)) a) (EqChain (f (f a)) steps)
+    blockTest want goal name ls = check want name (proofOf goal (HaveHence ls))
+    chainTest want name steps = check want name (proofOf (Eq (f (f a)) a) (EqChain (f (f a)) steps))
+    -- lemma 6, p(X) => q(X), proved by the given lines, and a goal citing it
+    lemmaTest want name ls = check want name
+      ((proofOf qa (HaveHence [Have pa "axiom 1", Hence qa (ByAxiom "lemma 6")]))
+         { lemmas = [("lemma 6", Clause [Rel "p" [x]] (Just (Rel "q" [x])), HaveHence ls)] })
 
 -- A proof translated to text and compared with its golden .txt file.
 mkTextTest :: String -> String -> TestTree

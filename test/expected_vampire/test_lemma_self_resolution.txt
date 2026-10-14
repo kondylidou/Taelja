@@ -1,0 +1,43 @@
+Axiom 1: r(f(X))
+Axiom 2: t(a)
+Axiom 3: r(a)
+Axiom 4: p(a,f(a))
+Axiom 5: t(b)
+Axiom 6: p(X,Y) /\ r(X) => q(X,Y)
+Axiom 7: q(X,f(Z)) /\ t(Z) => s(X,f(Z))
+Axiom 8: r(X) => u(X)
+Axiom 9: s(X,Y) /\ u(X) => p(f(X),f(b))
+
+Lemma 10: p(X,f(Y)) /\ r(X) /\ t(Y) => p(f(X),f(b))
+Proof:
+  have p(X,f(Y))
+    by assumption
+   and r(X)
+    by assumption
+  hence q(X,f(Y))
+    by axiom 6
+   and t(Y)
+    by assumption
+  hence s(X,f(Y))
+    by axiom 7
+   and u(X)
+    by axiom 8
+  hence p(f(X),f(b))
+    by axiom 9
+
+Goal 1: p(f(f(a)),f(b))
+Proof:
+  have p(a,f(a))
+    by axiom 4
+   and r(a)
+    by axiom 3
+   and t(a)
+    by axiom 2
+  hence p(f(a),f(b))
+    by lemma 10
+   and r(f(a))
+    by axiom 1
+   and t(b)
+    by axiom 5
+  hence p(f(f(a)),f(b))
+    by lemma 10
