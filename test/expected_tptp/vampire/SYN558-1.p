@@ -11,7 +11,7 @@ fof(f13, negated_conjecture, ! [X2, X0, X1]: (~ p5(c7, X2, X1) | ~ p6(c7, X1) | 
 fof(f14, negated_conjecture, ! [X2, X3, X0, X1, X4, X5]: (~ p5(X5, X3, X4) | ~ p2(X3, X1) | ~ p2(X4, X2) | ~ p4(X5, X0) | p5(X0, X1, X2)), file('Problems/SYN/SYN558-1.p')).
 fof(s1, plain, ! [X,Y] : (p5(c7,X,Y) => p5(c7,X,Y)), inference(assumption, [status(thm)], [])).
 fof(lemma_11, lemma, ! [X,Y] : (p5(c7,X,Y) => p5(c7,X,f3(Y))), inference(mp, [status(thm)], [f11, f6, s1])).
-fof(s2, plain, ! [X,Y,Z] : ((p5(c7,X,Y) & p2(f3(Y),Z)) => p5(c7,X,f3(Y))), inference(instantiate, [status(thm)], [lemma_11])).
+fof(s2, plain, ! [X,Y,Z] : ((p5(c7,X,Y) & p2(f3(Y),Z)) => p5(c7,X,f3(Y))), inference(mp, [status(thm)], [lemma_11])).
 fof(s3, plain, ! [X,Y,Z] : ((p5(c7,X,Y) & p2(f3(Y),Z)) => p2(f3(Y),f3(X))), inference(mp, [status(thm)], [f13, f6, f3, f3, s2])).
 fof(s4, plain, ! [X,Y,Z] : ((p5(c7,X,Y) & p2(f3(Y),Z)) => p2(f3(Y),Z)), inference(assumption, [status(thm)], [])).
 fof(lemma_12, lemma, ! [X,Y,Z] : ((p5(c7,X,Y) & p2(f3(Y),Z)) => p2(Z,f3(X))), inference(mp, [status(thm)], [f9, s3, s4])).

@@ -434,14 +434,14 @@ leanStepTests =
   , chainTest False "chain step that is two rewrites" [(step, a)]
   , chainTest False "chain step in the wrong direction" [(step { rwDir = RL }, f a), (step, a)]
   , blockTest False qa "have by a Horn clause outside a lemma" [Have qa "axiom 2"]
-  , lemmaTest True  "have by a Horn clause on the lemma's body" [Have (Rel "q" [x]) "axiom 2"]
-  , lemmaTest False "have by a Horn clause on no body atom"    [Have (Rel "r" [x]) "axiom 5"]
+  , lemmaTest True  [Rel "p" [x]] qa [Have pa "axiom 1"] "have by a Horn clause on the lemma's body" [Have (Rel "q" [x]) "axiom 2"]
+  , lemmaTest False [Rel "r" [x]] qc [Have rc "axiom 5"] "have by a Horn clause on no body atom"    [Have (Rel "q" [x]) "axiom 2"]
   ]
   where
     a = Const "a"; b = Const "b"; c = Const "c"
     f t = App "f" [t]
     x = Var "X"
-    pa = Rel "p" [a]; pb = Rel "p" [b]; qa = Rel "q" [a]; pfa = Rel "p" [f a]
+    pa = Rel "p" [a]; pb = Rel "p" [b]; qa = Rel "q" [a]; pfa = Rel "p" [f a]; qc = Rel "q" [c]; rc = Rel "r" [c]
     step = RwStep "axiom 3" (f x, x) LR
     proofOf goal blk = StructuredProof
       { axioms = [ AUnit "axiom 1" pa
@@ -461,10 +461,11 @@ leanStepTests =
       (const (return ()))
     blockTest want goal name ls = check want name (proofOf goal (HaveHence ls))
     chainTest want name steps = check want name (proofOf (Eq (f (f a)) a) (EqChain (f (f a)) steps))
-    -- lemma 6, p(X) => q(X), proved by the given lines, and a goal citing it
-    lemmaTest want name ls = check want name
-      ((proofOf qa (HaveHence [Have pa "axiom 1", Hence qa (ByAxiom "lemma 6")]))
-         { lemmas = [("lemma 6", Clause [Rel "p" [x]] (Just (Rel "q" [x])), HaveHence ls)] })
+    -- lemma 6, body => q(X), proved by the given lines, and the goal proved
+    -- from its premise by the lemma, so the lemma is printed
+    lemmaTest want body goal prems name ls = check want name
+      ((proofOf goal (HaveHence (prems ++ [Hence goal (ByAxiom "lemma 6")])))
+         { lemmas = [("lemma 6", Clause body (Just (Rel "q" [x])), HaveHence ls)] })
 
 -- A proof translated to text and compared with its golden .txt file.
 mkTextTest :: String -> String -> TestTree

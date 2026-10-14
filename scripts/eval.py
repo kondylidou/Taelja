@@ -402,12 +402,17 @@ def record_lean(out_dir, ok, message=''):
     return 'ok' if ok else 'fail'
 
 
+# Lean's default limits stop two deep proofs (NUM284-1.014 needs both
+# raised). They bound only Lean's own work, so the check stays a kernel check.
+LEAN_LIMITS = ['-DmaxRecDepth=2048', '-DmaxHeartbeats=4000000']
+
+
 def _run_lean(out_dir, lean_bin):
     """Check the Lean file Taelja wrote for the proof. Returns 'ok' or 'fail'."""
     lean_file = out_dir / 'taelja.lean'
     if not lean_file.exists():
         return record_lean(out_dir, False, 'taelja wrote no Lean file')
-    rc, lean_out, lean_err = run([lean_bin, str(lean_file)], timeout=120)
+    rc, lean_out, lean_err = run([lean_bin, *LEAN_LIMITS, str(lean_file)], timeout=120)
     return record_lean(out_dir, rc == 0 and 'error' not in lean_out + lean_err, lean_out + lean_err)
 
 

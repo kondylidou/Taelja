@@ -373,7 +373,7 @@ proofLines ctx c blk =
 
 -- The tactic proof of a have/hence block, one Lean have per line. The
 -- premises of a hence line are the last have or hence line and the and lines
--- after it. A have or and line may apply a Horn clause to the lemma's body
+-- after it. Any line may also apply the clause it cites to the lemma's body
 -- atoms, given as their hypotheses.
 haveHence :: Ctx -> Env -> [(String, Literal)] -> Literal -> [ProofLine] -> [String]
 haveHence ctx env assumed stmt = go (1 :: Int) Nothing []
@@ -400,7 +400,7 @@ haveHence ctx env assumed stmt = go (1 :: Int) Nothing []
           Have _ nm -> (cite nm assumed, nm ++ " does not state " ++ lit l)
           And _ nm  -> (cite nm assumed, nm ++ " does not state " ++ lit l)
           Hence _ (ByAxiom nm) ->
-            (cite nm (maybeToList cur ++ extras), nm ++ " does not derive " ++ lit l ++ " from the lines before it")
+            (cite nm (maybeToList cur ++ extras ++ assumed), nm ++ " does not derive " ++ lit l ++ " from the lines before it")
           Hence _ (ByRw nm d) -> (rewritten nm d, nm ++ " does not rewrite the line before into " ++ lit l)
           Hence _ ByContradiction -> (contradiction, "no contradiction was derived before this line")
         cite nm prems = Map.lookup nm (ctxRefs ctx) >>= \r -> applyClause ctx env r l prems

@@ -11,7 +11,7 @@ module LemmaBuilder
   ) where
 
 import Control.Monad (guard, when)
-import Data.List (intercalate, nub, stripPrefix, zip4, (\\))
+import Data.List (intercalate, nub, stripPrefix, zip4)
 import Data.Maybe (isJust, listToMaybe, mapMaybe, maybeToList)
 import Data.Traversable (mapAccumM)
 import Data.TPTP.Pretty (Pretty (..))
@@ -179,33 +179,34 @@ buildFromSubDag translateFn unitMap tstp2name debug cname c cSkolem@(Clause body
         Left reason -> do
           when debug $ hPutStrLn stderr ("buildCandidateLemma: no lemma for " ++ cname ++ ", " ++ reason)
           return Nothing
-        Right sp -> return (liftSubProof nameOverride cname c undoMap sp)
+        Right sp -> return (liftSubProof nameOverride cname c bodySk undoMap sp)
 
 -- Turns the recursive translation of a candidate into an outer lemma. The goal
 -- block becomes its proof, and the sub-lemmas are renamed apart and
 -- de-Skolemized with it. The proof must end on the candidate's head. A
--- sub-lemma that rests on the candidate's body atoms cannot stand alone, so
--- it becomes a Horn lemma over the body atoms it uses. One that is a single
--- step from them is cited by that step's rule instead. Both are cited on have
--- and and lines, which may apply a Horn clause to the body atoms, so a
--- candidate citing them anywhere else, or assuming a body atom other than on
--- such a line, is rejected.
-liftSubProof :: Map.Map String String -> String -> Clause -> [(String, Term)]
+-- sub-lemma that rests on the candidate's body atoms, bodySk, cannot stand
+-- alone, so those atoms join its body. One that is a single step from them
+-- is cited by that step's rule instead. A step inside a lemma may apply the
+-- clause it cites to the lemma's body atoms, so both can be cited on have,
+-- and and hence lines, but not in a chain, which rewrites by units only.
+liftSubProof :: Map.Map String String -> String -> Clause -> [Literal] -> [(String, Term)]
              -> StructuredProof -> Maybe BuiltLemma
-liftSubProof nameOverride cname c undoMap sp = do
+liftSubProof nameOverride cname c bodySk undoMap sp = do
   (_, goalBlk) <- listToMaybe (goals sp)
   lit <- hd c
   let subLemmas = lemmas sp
-      -- the body atoms each sub-lemma rests on, through the sub-lemmas it cites
-      rests = foldl (\m (n, _, b) -> Map.insert n (restsOn m b) m) Map.empty subLemmas
-      restsOn m b = nub ([ l | (l, nm) <- factRefs b, nm == assumptionName ]
-                         ++ concat [ Map.findWithDefault [] nm m | (_, nm) <- factRefs b ])
-      dependent = Map.keysSet (Map.filter (not . null) rests)
+      -- The candidate's body atoms each sub-lemma rests on, directly or
+      -- through the sub-lemmas it cites, whatever order they are listed in.
+      -- A nested lemma's own body atoms are assumed too but are not these.
+      rests = fixed (\m -> Map.fromList [ (n, restsOn m b) | (n, _, b) <- subLemmas ]) Map.empty
+      fixed f m = let m' = f m in if m' == m then m else fixed f m'
+      restsOn m b = nub ([ l | (l, nm) <- lineFacts b, nm == assumptionName, l `elem` bodySk ]
+                         ++ concat [ Map.findWithDefault [] nm m | (_, nm) <- lineFacts b ])
       -- a dependent sub-lemma one hyperresolution step from the body atoms
-      oneStep (n, _, HaveHence ls@(_ : _))
-        | Set.member n dependent, Hence _ (ByAxiom r) <- last ls
-        , and [ nm == assumptionName | ln <- init ls, Just (_, nm) <- [lineFact ln] ]
-        , all (isJust . lineFact) (init ls) = Just (n, r)
+      oneStep (n, _, HaveHence ls@(_ : _ : _))
+        | Hence _ (ByAxiom r) <- last ls
+        , all ((== Just assumptionName) . fmap snd . lineFact) (init ls)
+        , not (null (rests Map.! n)) = Just (n, r)
       oneStep _ = Nothing
       replaced  = Map.fromList (mapMaybe oneStep subLemmas)
       newName n = "lemma " ++ cname ++ "/" ++ n
@@ -213,32 +214,29 @@ liftSubProof nameOverride cname c undoMap sp = do
       ren nm    = let nm' = Map.findWithDefault nm nm replaced in Map.findWithDefault nm' nm' renaming
       lift blk  = deSkolemizeBlock undoMap (renameRefsBlock ren blk)
       deSkolemize l = mapClauseLits (applyConstSubstLit undoMap . renameLit (apartFrom undoMap (concatMap litVars (clauseLits l)))) l
-      lifted    = [ (newName n, deSkolemize (Clause (Map.findWithDefault [] n rests) mh), lift b)
-                  | (n, Clause _ mh, b) <- subLemmas, Map.notMember n replaced ]
+      lifted    = [ (newName n, deSkolemize (Clause (nub (bs ++ rests Map.! n)) mh), lift b)
+                  | (n, Clause bs mh, b) <- subLemmas, Map.notMember n replaced ]
       blk'      = lift goalBlk
       -- Axiom names taken from the outer proof. The sub-run numbered the
       -- others itself.
       outerNames = Set.fromList (filter (not . null) (Map.elems nameOverride))
       ownAxioms = [ a | a <- axioms sp, axiomName a `Set.notMember` outerNames ]
+      dependent = Map.keysSet (Map.filter (not . null) rests)
+      chainRefs b = case b of { EqChain _ steps -> [ rwName rw | (rw, _) <- steps ]; _ -> [] }
   guard (not (isEmptyBlock blk') && blockConcludes lit blk')
-  guard (assumptionName `notElem` concat [ ruleRefs b | (_, _, b) <- subLemmas ])
-  guard (not (any (`Set.member` dependent) (concatMap ruleRefs (goalBlk : [ b | (_, _, b) <- subLemmas ]))))
+  guard (not (any (`Set.member` dependent) (concatMap chainRefs (goalBlk : [ b | (_, _, b) <- subLemmas ]))))
   return (c, blk', lifted, ownAxioms)
 
 -- The facts a block cites on have and and lines, with the cited names.
-factRefs :: ProofBlock -> [(Literal, String)]
-factRefs (HaveHence ls) = mapMaybe lineFact ls
-factRefs (EqChain _ _)  = []
+lineFacts :: ProofBlock -> [(Literal, String)]
+lineFacts (HaveHence ls) = mapMaybe lineFact ls
+lineFacts (EqChain _ _)  = []
 
 -- A have or and line as its fact and the name it cites.
 lineFact :: ProofLine -> Maybe (Literal, String)
 lineFact (Have l nm) = Just (l, nm)
 lineFact (And l nm)  = Just (l, nm)
 lineFact _           = Nothing
-
--- The names a block cites as rules, on hence lines and in chain steps.
-ruleRefs :: ProofBlock -> [String]
-ruleRefs b = blockRefNames b \\ map snd (factRefs b)
 
 -- A clause as a TPTP disjunction, its body atoms negated.
 tptpClause :: Clause -> String

@@ -13,7 +13,7 @@ fof(s2, plain, ! [X,Y] : ((p(X,f(Y)) & r(X) & t(Y)) => r(X)), inference(assumpti
 fof(s3, plain, ! [X,Y] : ((p(X,f(Y)) & r(X) & t(Y)) => q(X,f(Y))), inference(mp, [status(thm)], [f1, s1, s2])).
 fof(s4, plain, ! [X,Y] : ((p(X,f(Y)) & r(X) & t(Y)) => t(Y)), inference(assumption, [status(thm)], [])).
 fof(s5, plain, ! [X,Y] : ((p(X,f(Y)) & r(X) & t(Y)) => s(X,f(Y))), inference(mp, [status(thm)], [f2, s3, s4])).
-fof(s6, plain, ! [X,Y] : ((p(X,f(Y)) & r(X) & t(Y)) => u(X)), inference(instantiate, [status(thm)], [f3])).
+fof(s6, plain, ! [X,Y] : ((p(X,f(Y)) & r(X) & t(Y)) => u(X)), inference(mp, [status(thm)], [f3])).
 fof(lemma_10, lemma, ! [X,Y] : ((p(X,f(Y)) & r(X) & t(Y)) => p(f(X),f(b))), inference(mp, [status(thm)], [f4, s5, s6])).
 fof(s7, plain, p(f(a),f(b)), inference(mp, [status(thm)], [lemma_10, f9, f5, f7])).
 fof(s8, plain, r(f(a)), inference(instantiate, [status(thm)], [f6])).

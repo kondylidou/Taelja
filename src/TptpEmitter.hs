@@ -205,6 +205,9 @@ emitTptp sp0 = unlines $
     -- the unit axioms and lemmas a have or and line may merely restate
     facts = [ (axTarget n, l) | AUnit n l <- axioms spNumbered ]
          ++ [ (lemmaTarget n, l) | (n, Clause [] (Just l), _) <- lemmas spNumbered ]
+    -- the Horn clauses, which a have or and line applies to the body atoms
+    horn = Set.fromList ([ axTarget n | ANucleus n _ <- axioms spNumbered ]
+                         ++ [ lemmaTarget n | (n, Clause (_ : _) _, _) <- lemmas spNumbered ])
 
     -- a goal is an ordinary numbered step when a separate theorem line
     -- concludes from it
@@ -227,7 +230,7 @@ emitTptp sp0 = unlines $
     blockResults = go 1 blocks
     go _ [] = []
     go k ((name, role, c, blk) : rest) =
-      let (k', steps, final) = blockSteps fresh facts k name role (mapClauseLits restoreSkolemsLit c) (mapShownTerms restoreSkolems blk)
+      let (k', steps, final) = blockSteps fresh facts horn k name role (mapClauseLits restoreSkolemsLit c) (mapShownTerms restoreSkolems blk)
       in (steps, final) : go k' rest
     stepLines  = concatMap fst blockResults
     goalFinals = map snd (drop (length (lemmas sp)) blockResults)
@@ -483,10 +486,12 @@ ppFormula _ (Raw s)      = s
 -- way to the fact unless it is last. The last step states the block's
 -- statement up to orientation and takes its name and role, and an empty block
 -- proves a reflexive equation. In a lemma with a body every step assumes the
--- body, so it states the body implying its line, and an assumption line
--- needs no parent.
-blockSteps :: (String -> String) -> [(String, Literal)] -> Int -> Maybe String -> String -> Clause -> ProofBlock -> (Int, [Line], String)
-blockSteps fresh facts k mName role stmt blk =
+-- body, so it states the body implying its line, an assumption line needs no
+-- parent, and a line applying a Horn clause to the body is an mp step. A
+-- Horn clause cited outside a lemma body rests on reflexive premises alone
+-- and stays an instance.
+blockSteps :: (String -> String) -> [(String, Literal)] -> Set.Set String -> Int -> Maybe String -> String -> Clause -> ProofBlock -> (Int, [Line], String)
+blockSteps fresh facts horn k mName role stmt blk =
   case reverse steps of
     Step own _ _ rule ps : earlier ->
       let name = fromMaybe own mName
@@ -511,11 +516,11 @@ blockSteps fresh facts k mName role stmt blk =
           Have lit0 nm
             | nm == assumptionName -> loop (n + 1) (Just me) [] (plain lit0 "assumption" [] : acc) rest
             | restatesFact lit0 nm, notLast -> loop n (Just nm) [] acc rest
-            | otherwise -> loop (n + 1) (Just me) [] (plain lit0 "instantiate" [nm] : acc) rest
+            | otherwise -> loop (n + 1) (Just me) [] (plain lit0 (cited nm) [nm] : acc) rest
           And lit0 nm
             | nm == assumptionName -> loop (n + 1) cur (extras ++ [me]) (plain lit0 "assumption" [] : acc) rest
             | restatesFact lit0 nm, notLast -> loop n cur (extras ++ [nm]) acc rest
-            | otherwise -> loop (n + 1) cur (extras ++ [me]) (plain lit0 "instantiate" [nm] : acc) rest
+            | otherwise -> loop (n + 1) cur (extras ++ [me]) (plain lit0 (cited nm) [nm] : acc) rest
           Hence lit0 j ->
             let (rule, ps) = case j of
                   ByAxiom nm      -> ("mp", nm : maybeToList cur ++ extras)
@@ -526,6 +531,7 @@ blockSteps fresh facts k mName role stmt blk =
             me = stepName n
             plain lit0 = Step me "plain" (assuming lit0)
             notLast = not (null rest)
+            cited nm = if Set.member nm horn && not (null (body stmt')) then "mp" else "instantiate"
     rawSteps k0 (EqChain s chain)
       -- a relational chain ends in true, so read backwards each atom follows
       -- from the next by the equation between them

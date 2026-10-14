@@ -15,14 +15,11 @@ from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from eval import ALL_CATEGORIES, PROVER_DIR, lean_module, read_results, record_lean, run
+from eval import ALL_CATEGORIES, LEAN_LIMITS, PROVER_DIR, lean_module, read_results, record_lean, run
 
 ROOT = Path(__file__).resolve().parent.parent
 LEAN = ROOT / "lean"
 TIMEOUT = 600  # seconds per module
-# Lean's defaults stop two deep proofs (NUM284-1.014 needs both raised).
-# They bound only Lean's own work, so the check stays a kernel check.
-LIMITS = ["-DmaxRecDepth=2048", "-DmaxHeartbeats=4000000"]
 
 
 def main():
@@ -44,7 +41,7 @@ def main():
         rel = f"TaeljaVerify/{r['category']}/{PROVER_DIR[r['prover']]}/{lean_module(r['problem'])}.lean"
         if not (LEAN / rel).exists():
             return r, "missing", ""
-        rc, out, err = run(["lake", "env", "lean", *LIMITS, rel], timeout=TIMEOUT, cwd=str(LEAN))
+        rc, out, err = run(["lake", "env", "lean", *LEAN_LIMITS, rel], timeout=TIMEOUT, cwd=str(LEAN))
         out = f"error: no verdict within {TIMEOUT} s" if rc == -1 else out + err
         ok = rc == 0 and "error" not in out
         return r, record_lean(evaldir / r["category"] / r["problem"] / r["prover"], ok, out), out
