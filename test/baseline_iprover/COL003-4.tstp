@@ -1,0 +1,72 @@
+% SZS status Unsatisfiable for COL003-4.p
+% SZS output start CNFRefutation for COL003-4.p
+tcf(c_49,plain,![X0:$i,X1:$i,X2:$i]:  
+    (apply(apply(apply(b,X0),X1),X2) = apply(X0,apply(X1,X2))),
+    file('Problems/COL/COL003-4.p', b_definition)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (apply(apply(X0,X1),X1) = apply(apply(w,X0),X1)),
+    file('Problems/COL/COL003-4.p', w_definition)).
+tcf(c_51,plain,![X0:$i]:  
+    (apply(fixed_pt,apply(X0,fixed_pt)) != apply(X0,fixed_pt)|fixed_point(X0)),
+    file('Problems/COL/COL003-4.p', strong_fixed_point)).
+tcf(c_52,plain, 
+    (~fixed_point(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b))),
+    file('Problems/COL/COL003-4.p', prove_strong_fixed_point)).
+tcf(c_73,plain,![X0:$i]:  
+    (apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b) != X0|
+    apply(fixed_pt,apply(X0,fixed_pt)) != apply(X0,fixed_pt)),
+    inference(resolution_lifted,[status(thm)],[c_51,c_52])).
+tcf(c_74,plain, 
+    (apply(fixed_pt,apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt)) != apply(apply(apply(b,apply(apply(b,apply(w,w)),apply(apply(b,w),b))),b),fixed_pt)),
+    inference(unflattening,[status(thm)],[c_73])).
+tcf(c_85,plain, 
+    (apply(fixed_pt,apply(apply(w,w),apply(w,apply(b,apply(b,fixed_pt))))) != apply(apply(w,w),apply(w,apply(b,apply(b,fixed_pt))))),
+    inference(demodulation,[status(thm)],[c_74,c_49])).
+tcf(c_89,plain, (apply(w,w) = iPr_def_10),definition).
+tcf(c_90,plain, (apply(b,fixed_pt) = iPr_def_11),definition).
+tcf(c_91,plain, (apply(b,iPr_def_11) = iPr_def_12),definition).
+tcf(c_92,plain, (apply(w,iPr_def_12) = iPr_def_13),definition).
+tcf(c_93,plain, (apply(iPr_def_10,iPr_def_13) = iPr_def_14),definition).
+tcf(c_94,plain, (apply(fixed_pt,iPr_def_14) = iPr_def_15),definition).
+tcf(c_95,plain, 
+    (iPr_def_15 != iPr_def_14),
+    inference(demodulation,
+              [status(thm)],
+              [c_85,c_90,c_91,c_92,c_89,c_93,c_94])).
+tcf(c_139,plain,![X0:$i]:  
+    (apply(apply(iPr_def_12,X0),X0) = apply(iPr_def_13,X0)),
+    inference(superposition,[status(thm)],[c_92,c_50])).
+tcf(c_143,plain,![X0:$i]:  
+    (apply(apply(X0,X0),X0) = apply(apply(w,w),X0)),
+    inference(superposition,[status(thm)],[c_50,c_50])).
+tcf(c_144,plain,![X0:$i]:  
+    (apply(apply(X0,X0),X0) = apply(iPr_def_10,X0)),
+    inference(light_normalisation,[status(thm)],[c_143,c_89])).
+tcf(c_147,plain,![X0:$i,X1:$i]:  
+    (apply(apply(iPr_def_11,X0),X1) = apply(fixed_pt,apply(X0,X1))),
+    inference(superposition,[status(thm)],[c_90,c_49])).
+tcf(c_148,plain,![X0:$i,X1:$i]:  
+    (apply(apply(iPr_def_12,X0),X1) = apply(iPr_def_11,apply(X0,X1))),
+    inference(superposition,[status(thm)],[c_91,c_49])).
+tcf(c_161,plain,![X0:$i]:  
+    (apply(iPr_def_11,apply(X0,X0)) = apply(iPr_def_13,X0)),
+    inference(demodulation,[status(thm)],[c_139,c_148])).
+tcf(c_176,plain,![X0:$i,X1:$i]:  
+    (apply(fixed_pt,apply(apply(X0,X0),X1)) = apply(apply(iPr_def_13,X0),X1)),
+    inference(superposition,[status(thm)],[c_161,c_147])).
+tcf(c_401,plain,![X0:$i]:  
+    (apply(apply(iPr_def_13,X0),X0) = apply(fixed_pt,apply(iPr_def_10,X0))),
+    inference(superposition,[status(thm)],[c_144,c_176])).
+tcf(c_441,plain, 
+    (apply(fixed_pt,apply(iPr_def_10,iPr_def_13)) = apply(iPr_def_10,iPr_def_13)),
+    inference(superposition,[status(thm)],[c_401,c_144])).
+tcf(c_444,plain, 
+    (iPr_def_14 = iPr_def_15),
+    inference(light_normalisation,[status(thm)],[c_441,c_93,c_94])).
+tcf(c_449,plain, 
+    (iPr_def_14 != iPr_def_14),
+    inference(demodulation,[status(thm)],[c_95,c_444])).
+tcf(c_450,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_449])).
+% SZS output end CNFRefutation for COL003-4.p

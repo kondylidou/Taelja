@@ -1,0 +1,97 @@
+Axiom 1: m0(X,d,Y)
+Axiom 2: m0(X,Y,Z) /\ m0(Y,A,A) => n1(Z,Z,X)
+Axiom 3: p0(b,X)
+Axiom 4: q0(d,d)
+Axiom 5: p0(X,X) => s1(X)
+Axiom 6: q0(X,Y) /\ s1(Z) => s1(X)
+Axiom 7: m0(X,Y,Z) /\ p0(A,A) /\ s1(Y) => l2(Z,Z)
+Axiom 8: n0(c,d)
+Axiom 9: n0(X,Y) => k1(Y)
+Axiom 10: l0(c)
+Axiom 11: l2(X,Y) /\ k1(X) /\ l0(c) => q2(Y,c,X)
+Axiom 12: n0(d,c)
+Axiom 13: q2(X,Y,Z) /\ n0(X,Y) => q3(Y,Z)
+Axiom 14: s0(d)
+Axiom 15: k0(e)
+Axiom 16: s0(d) /\ k0(e) => q1(d,d,d)
+Axiom 17: q1(d,X,d) /\ q0(Y,X) /\ s0(d) => r1(Y)
+Axiom 18: r1(d) /\ s1(d) => s2(d)
+Axiom 19: n1(X,Y,Z) /\ q3(Z,Y) /\ s2(Y) => q3(Y,Z)
+
+Lemma 20: s1(b)
+Proof:
+  have p0(b,b)
+    by axiom 3
+  hence s1(b)
+    by axiom 5
+
+Lemma 21: s1(d)
+Proof:
+  have q0(d,d)
+    by axiom 4
+   and s1(b)
+    by lemma 20
+  hence s1(d)
+    by axiom 6
+
+Lemma 22: k1(d)
+Proof:
+  have n0(c,d)
+    by axiom 8
+  hence k1(d)
+    by axiom 9
+
+Lemma 23: q3(c,d)
+Proof:
+  have m0(X,d,d)
+    by axiom 1
+   and p0(b,b)
+    by axiom 3
+   and s1(d)
+    by lemma 21
+  hence l2(d,d)
+    by axiom 7
+   and k1(d)
+    by lemma 22
+   and l0(c)
+    by axiom 10
+  hence q2(d,c,d)
+    by axiom 11
+   and n0(d,c)
+    by axiom 12
+  hence q3(c,d)
+    by axiom 13
+
+Lemma 24: s2(d)
+Proof:
+  have s0(d)
+    by axiom 14
+   and k0(e)
+    by axiom 15
+  hence q1(d,d,d)
+    by axiom 16
+   and q0(d,d)
+    by axiom 4
+   and s0(d)
+    by axiom 14
+  hence r1(d)
+    by axiom 17
+   and s1(d)
+    by lemma 21
+  hence s2(d)
+    by axiom 18
+
+Goal 1: q3(d,c)
+Proof:
+  have m0(c,d,d)
+    by axiom 1
+   and m0(d,d,d)
+    by axiom 1
+  hence n1(d,d,c)
+    by axiom 2
+   and q3(c,d)
+    by lemma 23
+   and s2(d)
+    by lemma 24
+  hence q3(d,c)
+    by axiom 19

@@ -1,0 +1,185 @@
+% SZS status Unsatisfiable for LAT005-2.p
+% SZS output start CNFRefutation for LAT005-2.p
+tcf(c_53,plain,![X0:$i]:  
+    (join(X0,n0,X0)),
+    file('Problems/LAT/LAT005-2.p', join_x_and_0)).
+tcf(c_56,plain,![X0:$i]:  
+    (meet(X0,X0,X0)),
+    file('Problems/LAT/LAT005-2.p', meet_x_and_x)).
+tcf(c_59,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~meet(X0,X1,X2)|meet(X1,X0,X2)),
+    file('Problems/LAT/LAT005-2.p', commutativity_of_meet)).
+tcf(c_60,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~join(X0,X1,X2)|join(X1,X0,X2)),
+    file('Problems/LAT/LAT005-2.p', commutativity_of_join)).
+tcf(c_61,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~meet(X0,X1,X2)|join(X0,X2,X0)),
+    file('Problems/LAT/LAT005-2.p', absorbtion1)).
+tcf(c_62,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~join(X0,X1,X2)|meet(X0,X2,X0)),
+    file('Problems/LAT/LAT005-2.p', absorbtion2)).
+tcf(c_63,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~meet(X0,X1,X2)|~meet(X0,X3,X4)|~meet(X1,X5,X3)|meet(X2,X5,X4)),
+    file('Problems/LAT/LAT005-2.p', associativity_of_meet1)).
+tcf(c_64,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~meet(X0,X1,X2)|~meet(X1,X3,X4)|~meet(X2,X3,X5)|meet(X0,X4,X5)),
+    file('Problems/LAT/LAT005-2.p', associativity_of_meet2)).
+tcf(c_68,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~join(X0,X1,X2)|~join(X0,X3,X4)|~meet(X0,X5,X0)|~meet(X1,X5,X3)|
+    meet(X5,X2,X4)),
+    file('Problems/LAT/LAT005-2.p', modularity2)).
+tcf(c_69,plain, 
+    (~meet(a2,b2,r1)),
+    file('Problems/LAT/LAT005-2.p', meet_a2_and_b2)).
+tcf(c_70,plain, (meet(a,b,c)),file('Problems/LAT/LAT005-2.p', meet_a_and_b)).
+tcf(c_72,plain, 
+    (meet(c,r2,n0)),
+    file('Problems/LAT/LAT005-2.p', meet_c_and_r2)).
+tcf(c_73,plain, 
+    (meet(r2,b,e)),
+    file('Problems/LAT/LAT005-2.p', meet_r2_and_b)).
+tcf(c_74,plain, 
+    (join(a,b,c2)),
+    file('Problems/LAT/LAT005-2.p', join_a_and_b)).
+tcf(c_76,plain, 
+    (meet(c2,r1,n0)),
+    file('Problems/LAT/LAT005-2.p', meet_c2_and_r1)).
+tcf(c_77,plain, 
+    (meet(r2,a,d)),
+    file('Problems/LAT/LAT005-2.p', meet_r2_and_a)).
+tcf(c_78,plain, 
+    (join(r1,e,a2)),
+    file('Problems/LAT/LAT005-2.p', join_r1_and_e)).
+tcf(c_79,plain, 
+    (join(r1,d,b2)),
+    file('Problems/LAT/LAT005-2.p', join_r1_and_d)).
+tcf(c_82,plain, 
+    (meet(n0,n0,n0)),
+    inference(instantiation,[status(thm)],[c_56])).
+tcf(c_91,plain, 
+    (meet(b,a,c)),
+    inference(resolution,[status(thm)],[c_59,c_70])).
+tcf(c_92,plain, 
+    (meet(r2,c,n0)),
+    inference(resolution,[status(thm)],[c_59,c_72])).
+tcf(c_94,plain, 
+    (meet(r1,c2,n0)),
+    inference(resolution,[status(thm)],[c_59,c_76])).
+tcf(c_105,plain, 
+    (join(b,a,c2)),
+    inference(resolution,[status(thm)],[c_60,c_74])).
+tcf(c_107,plain, 
+    (join(e,r1,a2)),
+    inference(resolution,[status(thm)],[c_60,c_78])).
+tcf(c_128,plain, 
+    (meet(a,c2,a)),
+    inference(resolution,[status(thm)],[c_62,c_74])).
+tcf(c_130,plain, 
+    (meet(r1,a2,r1)),
+    inference(resolution,[status(thm)],[c_62,c_78])).
+tcf(c_140,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~meet(b,X0,X1)|~meet(r2,X1,X2)|meet(e,X0,X2)),
+    inference(resolution,[status(thm)],[c_63,c_73])).
+tcf(c_143,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~meet(a,X0,X1)|~meet(r2,X1,X2)|meet(d,X0,X2)),
+    inference(resolution,[status(thm)],[c_63,c_77])).
+tcf(c_150,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~meet(X0,X1,X2)|~meet(X0,X1,X3)|meet(X0,X2,X3)),
+    inference(resolution,[status(thm)],[c_64,c_56])).
+tcf(c_165,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~meet(n0,X0,X1)|~meet(c,X0,X2)|meet(r2,X2,X1)),
+    inference(resolution,[status(thm)],[c_64,c_92])).
+tcf(c_166,plain, 
+    (~meet(n0,n0,n0)|~meet(c,n0,n0)|meet(r2,n0,n0)),
+    inference(instantiation,[status(thm)],[c_165])).
+tcf(c_171,plain, 
+    (join(r1,n0,r1)),
+    inference(resolution,[status(thm)],[c_94,c_61])).
+tcf(c_181,plain, 
+    (meet(b,c2,b)),
+    inference(resolution,[status(thm)],[c_105,c_62])).
+tcf(c_218,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~join(X0,X1,b2)|~join(X0,X2,r1)|~meet(X0,a2,X0)|~meet(X1,a2,X2)|
+    meet(a2,b2,r1)),
+    inference(instantiation,[status(thm)],[c_68])).
+tcf(c_220,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~meet(X1,a2,X2)|~meet(X0,a2,X0)|~join(X0,X2,r1)|~join(X0,X1,b2)),
+    inference(global_subsumption_just,[status(thm)],[c_218,c_69,c_218])).
+tcf(c_221,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~join(X0,X1,b2)|~join(X0,X2,r1)|~meet(X0,a2,X0)|~meet(X1,a2,X2)),
+    inference(renaming,[status(thm)],[c_220])).
+tcf(c_342,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~join(e,X0,X1)|~meet(r1,X2,X0)|~meet(e,X2,e)|meet(X2,a2,X1)),
+    inference(resolution,[status(thm)],[c_68,c_107])).
+tcf(c_544,plain,![X0:$i,X1:$i]:  
+    (~meet(X0,a2,X1)|~join(r1,X0,b2)|~join(r1,X1,r1)|~meet(r1,a2,r1)),
+    inference(instantiation,[status(thm)],[c_221])).
+tcf(c_545,plain,![X0:$i,X1:$i]:  
+    (~join(r1,X1,r1)|~join(r1,X0,b2)|~meet(X0,a2,X1)),
+    inference(global_subsumption_just,[status(thm)],[c_544,c_130,c_544])).
+tcf(c_546,plain,![X0:$i,X1:$i]:  
+    (~meet(X0,a2,X1)|~join(r1,X0,b2)|~join(r1,X1,r1)),
+    inference(renaming,[status(thm)],[c_545])).
+tcf(c_748,plain,![X0:$i]:  
+    (~meet(r2,c,X0)|meet(e,a,X0)),
+    inference(resolution,[status(thm)],[c_140,c_91])).
+tcf(c_771,plain,![X0:$i]:  
+    (~meet(r2,a,X0)|meet(d,c2,X0)),
+    inference(resolution,[status(thm)],[c_143,c_128])).
+tcf(c_846,plain,![X0:$i]:  
+    (~meet(c,r2,X0)|meet(c,n0,X0)),
+    inference(resolution,[status(thm)],[c_150,c_72])).
+tcf(c_847,plain, 
+    (~meet(c,r2,n0)|meet(c,n0,n0)),
+    inference(instantiation,[status(thm)],[c_846])).
+tcf(c_3206,plain,![X0:$i]:  
+    (~join(r1,X0,r1)|~meet(d,a2,X0)|~join(r1,d,b2)),
+    inference(instantiation,[status(thm)],[c_546])).
+tcf(c_3207,plain, 
+    (~join(r1,n0,r1)|~join(r1,d,b2)|~meet(d,a2,n0)),
+    inference(instantiation,[status(thm)],[c_3206])).
+tcf(c_3633,plain,![X0:$i]:  
+    (~meet(r2,b,X0)|meet(e,c2,X0)),
+    inference(resolution,[status(thm)],[c_181,c_140])).
+tcf(c_7509,plain, 
+    (meet(e,a,n0)),
+    inference(resolution,[status(thm)],[c_748,c_92])).
+tcf(c_7526,plain, 
+    (meet(a,e,n0)),
+    inference(resolution,[status(thm)],[c_7509,c_59])).
+tcf(c_7661,plain, 
+    (meet(d,c2,d)),
+    inference(resolution,[status(thm)],[c_771,c_77])).
+tcf(c_7676,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~meet(c2,X0,X1)|~meet(d,X1,X2)|meet(d,X0,X2)),
+    inference(resolution,[status(thm)],[c_7661,c_63])).
+tcf(c_9825,plain, 
+    (meet(e,c2,e)),
+    inference(resolution,[status(thm)],[c_3633,c_73])).
+tcf(c_13645,plain,![X0:$i]:  
+    (~meet(r1,X0,n0)|~meet(e,X0,e)|meet(X0,a2,e)),
+    inference(resolution,[status(thm)],[c_342,c_53])).
+tcf(c_18430,plain,![X0:$i]:  
+    (~meet(r2,n0,X0)|meet(d,e,X0)),
+    inference(resolution,[status(thm)],[c_7526,c_143])).
+tcf(c_18432,plain, 
+    (~meet(r2,n0,n0)|meet(d,e,n0)),
+    inference(instantiation,[status(thm)],[c_18430])).
+tcf(c_23583,plain, 
+    (~meet(e,c2,e)|meet(c2,a2,e)),
+    inference(resolution,[status(thm)],[c_13645,c_94])).
+tcf(c_23592,plain, 
+    (meet(c2,a2,e)),
+    inference(global_subsumption_just,[status(thm)],[c_23583,c_9825,c_23583])).
+tcf(c_23620,plain,![X0:$i]:  
+    (~meet(d,e,X0)|meet(d,a2,X0)),
+    inference(resolution,[status(thm)],[c_23592,c_7676])).
+tcf(c_23622,plain, 
+    (~meet(d,e,n0)|meet(d,a2,n0)),
+    inference(instantiation,[status(thm)],[c_23620])).
+tcf(c_23623,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_23622,c_18432,c_3207,c_847,c_171,c_166,c_82,c_72,c_79])).
+% SZS output end CNFRefutation for LAT005-2.p

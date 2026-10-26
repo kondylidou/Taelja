@@ -1,0 +1,71 @@
+Axiom 1: product(identity,X,X)
+Axiom 2: product(X,X,identity)
+Axiom 3: product(X,identity,X)
+Axiom 4: product(a,b,c)
+Axiom 5: product(X,Y,Z) /\ product(X,A,B) /\ product(Y,C,A) => product(Z,C,B)
+Axiom 6: product(X,Y,Z) /\ product(Y,A,B) /\ product(Z,A,C) => product(X,B,C)
+
+Lemma 7: product(a,X,Y) /\ product(b,Z,X) => product(c,Z,Y)
+Proof:
+  have product(a,b,c)
+    by axiom 4
+   and product(a,X,Y)
+    by assumption
+   and product(b,Z,X)
+    by assumption
+  hence product(c,Z,Y)
+    by axiom 5
+
+Lemma 8: product(c,b,a)
+Proof:
+  have product(a,identity,a)
+    by axiom 3
+   and product(b,b,identity)
+    by axiom 2
+  hence product(c,b,a)
+    by lemma 7
+
+Lemma 9: product(X,Y,Z) /\ product(identity,Y,A) => product(X,Z,A)
+Proof:
+  have product(X,X,identity)
+    by axiom 2
+   and product(X,Y,Z)
+    by assumption
+   and product(identity,Y,A)
+    by assumption
+  hence product(X,Z,A)
+    by axiom 6
+
+Lemma 10: product(a,c,b)
+Proof:
+  have product(a,b,c)
+    by axiom 4
+   and product(identity,b,b)
+    by axiom 1
+  hence product(a,c,b)
+    by lemma 9
+
+Lemma 11: product(c,a,b)
+Proof:
+  have product(c,b,a)
+    by lemma 8
+   and product(identity,b,b)
+    by axiom 1
+  hence product(c,a,b)
+    by lemma 9
+
+Lemma 12: product(b,a,c)
+Proof:
+  have product(a,c,b)
+    by lemma 10
+   and product(a,b,c)
+    by axiom 4
+   and product(c,a,b)
+    by lemma 11
+  hence product(b,a,c)
+    by axiom 5
+
+Goal 1: product(b,a,c)
+Proof:
+  have product(b,a,c)
+    by lemma 12

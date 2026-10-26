@@ -1,0 +1,37 @@
+% SZS output start Proof
+fof(c_49, plain, ! [X0, X1]: multiply(X0, multiply(X0, X1)) = multiply(X1, multiply(X0, X0)), file('GRP195-1.p', condition)).
+fof(c_51, plain, ! [X0, X1, X2]: multiply(multiply(X0, X1), X2) = multiply(X0, multiply(X1, X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP008-0.ax', associativity_of_multiply)).
+fof(lemma_3, lemma, ! [X] : multiply(b,multiply(multiply(a,b),X)) = multiply(multiply(b,multiply(a,b)),X), inference(instantiate, [status(thm)], [c_51])).
+fof(lemma_4, lemma, ! [X] : multiply(a,multiply(b,X)) = multiply(multiply(a,b),X), inference(instantiate, [status(thm)], [c_51])).
+fof(lemma_5, lemma, ! [X] : multiply(b,multiply(b,X)) = multiply(multiply(b,b),X), inference(instantiate, [status(thm)], [c_51])).
+fof(s1, plain, ! [X] : multiply(X,multiply(b,b)) = multiply(b,multiply(b,X)), inference(instantiate, [status(thm)], [c_49])).
+fof(lemma_6, lemma, ! [X] : multiply(X,multiply(b,b)) = multiply(multiply(b,b),X), inference(rewrite, [status(thm)], [lemma_5, s1])).
+fof(lemma_7, lemma, ! [X] : multiply(b,multiply(multiply(b,b),X)) = multiply(multiply(b,multiply(b,b)),X), inference(instantiate, [status(thm)], [c_51])).
+fof(lemma_8, lemma, multiply(multiply(b,b),b) = multiply(b,multiply(b,b)), inference(instantiate, [status(thm)], [lemma_6])).
+fof(s2, plain, multiply(multiply(b,multiply(b,b)),b) = multiply(b,multiply(multiply(b,b),b)), inference(instantiate, [status(thm)], [lemma_7])).
+fof(lemma_9, lemma, multiply(multiply(b,multiply(b,b)),b) = multiply(b,multiply(b,multiply(b,b))), inference(rewrite, [status(thm)], [lemma_8, s2])).
+fof(s3, plain, multiply(multiply(b,b),a) = multiply(a,multiply(b,b)), inference(instantiate, [status(thm)], [lemma_6])).
+fof(lemma_10, lemma, multiply(multiply(b,b),a) = multiply(multiply(a,b),b), inference(rewrite, [status(thm)], [lemma_4, s3])).
+fof(s4, plain, multiply(multiply(b,multiply(b,b)),a) = multiply(b,multiply(multiply(b,b),a)), inference(instantiate, [status(thm)], [lemma_7])).
+fof(s5, plain, multiply(multiply(b,multiply(b,b)),a) = multiply(b,multiply(multiply(a,b),b)), inference(rewrite, [status(thm)], [lemma_10, s4])).
+fof(lemma_11, lemma, multiply(multiply(b,multiply(b,b)),a) = multiply(multiply(b,multiply(a,b)),b), inference(rewrite, [status(thm)], [lemma_3, s5])).
+fof(s6, plain, multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))) = multiply(multiply(multiply(b,multiply(a,b)),b),multiply(a,b)), inference(instantiate, [status(thm)], [c_51])).
+fof(s7, plain, multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))) = multiply(multiply(multiply(b,multiply(b,b)),a),multiply(a,b)), inference(rewrite, [status(thm)], [lemma_11, s6])).
+fof(s8, plain, multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))) = multiply(multiply(b,multiply(b,b)),multiply(a,multiply(a,b))), inference(rewrite, [status(thm)], [c_51, s7])).
+fof(s9, plain, multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))) = multiply(multiply(b,multiply(b,b)),multiply(multiply(a,a),b)), inference(rewrite, [status(thm)], [c_51, s8])).
+fof(s10, plain, multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))) = multiply(multiply(multiply(b,multiply(b,b)),multiply(a,a)),b), inference(rewrite, [status(thm)], [c_51, s9])).
+fof(s11, plain, multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))) = multiply(multiply(a,multiply(a,multiply(b,multiply(b,b)))),b), inference(rewrite, [status(thm)], [c_49, s10])).
+fof(s12, plain, multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))) = multiply(a,multiply(multiply(a,multiply(b,multiply(b,b))),b)), inference(rewrite, [status(thm)], [c_51, s11])).
+fof(s13, plain, multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))) = multiply(a,multiply(a,multiply(multiply(b,multiply(b,b)),b))), inference(rewrite, [status(thm)], [c_51, s12])).
+fof(lemma_12, lemma, multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))) = multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b))))), inference(rewrite, [status(thm)], [lemma_9, s13])).
+fof(lemma_13, lemma, multiply(multiply(a,b),multiply(a,b)) = multiply(a,multiply(b,multiply(a,b))), inference(instantiate, [status(thm)], [lemma_4])).
+fof(lemma_14, lemma, multiply(multiply(a,b),multiply(a,multiply(b,multiply(a,b)))) = multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b))))), inference(instantiate, [status(thm)], [lemma_4])).
+fof(s14, plain, multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))) = multiply(a,multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b)))), inference(instantiate, [status(thm)], [lemma_12])).
+fof(s15, plain, multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))) = multiply(a,multiply(b,multiply(multiply(a,b),multiply(b,multiply(a,b))))), inference(rewrite, [status(thm)], [lemma_3, s14])).
+fof(s16, plain, multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))) = multiply(multiply(a,b),multiply(multiply(a,b),multiply(b,multiply(a,b)))), inference(rewrite, [status(thm)], [lemma_4, s15])).
+fof(s17, plain, multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))) = multiply(multiply(b,multiply(a,b)),multiply(multiply(a,b),multiply(a,b))), inference(rewrite, [status(thm)], [c_49, s16])).
+fof(s18, plain, multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))) = multiply(multiply(b,multiply(a,b)),multiply(a,multiply(b,multiply(a,b)))), inference(rewrite, [status(thm)], [lemma_13, s17])).
+fof(s19, plain, multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))) = multiply(b,multiply(multiply(a,b),multiply(a,multiply(b,multiply(a,b))))), inference(rewrite, [status(thm)], [lemma_3, s18])).
+fof(lemma_15, lemma, multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))) = multiply(b,multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b)))))), inference(rewrite, [status(thm)], [lemma_14, s19])).
+fof(goal_1, theorem, multiply(a,multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b))))))) = multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b))))))), inference(instantiate, [status(thm)], [lemma_15])).
+% SZS output end Proof

@@ -1,0 +1,21 @@
+Axiom 1: f(b) = c
+Axiom 2: a = b
+Axiom 3: c = f(X) => c = g(X)
+Axiom 4: c = g(a) => c = h(a)
+
+Lemma 5: c = f(a)
+Proof:
+  c
+= { by axiom 1 R->L }
+  f(b)
+= { by axiom 2 R->L }
+  f(a)
+
+Goal 1: c = h(a)
+Proof:
+  have c = f(a)
+    by lemma 5
+  hence c = g(a)
+    by axiom 3
+  hence c = h(a)
+    by axiom 4

@@ -1,0 +1,12 @@
+Axiom 1: E(f(AP(s(s(0)),X)),0)
+Axiom 2: E(f(X),s(0))
+
+Goal 1: E(f(X),s(0))
+Proof:
+  have E(f(X),s(0))
+    by axiom 2
+
+Goal 2: E(f(AP(s(s(0)),X)),0)
+Proof:
+  have E(f(AP(s(s(0)),X)),0)
+    by axiom 1

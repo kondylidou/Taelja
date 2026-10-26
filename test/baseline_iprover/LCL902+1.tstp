@@ -1,0 +1,216 @@
+% SZS status Theorem for LCL902+1.p
+% SZS output start CNFRefutation for LCL902+1.p
+fof(f2,axiom,(
+  ! [X0,X1] : '+'(X0,X1) = '+'(X1,X0)),
+  file('Problems/LCL/LCL902+1.p',sos_02)).
+fof(f3,axiom,(
+  ! [X0] : '+'(X0,'0') = X0),
+  file('Problems/LCL/LCL902+1.p',sos_03)).
+fof(f4,axiom,(
+  ! [X0] : '>='(X0,X0)),
+  file('Problems/LCL/LCL902+1.p',sos_04)).
+fof(f5,axiom,(
+  ! [X3,X4,X5] : (('>='(X4,X5) & '>='(X3,X4)) => '>='(X3,X5))),
+  file('Problems/LCL/LCL902+1.p',sos_05)).
+fof(f6,axiom,(
+  ! [X6,X7] : (('>='(X7,X6) & '>='(X6,X7)) => X6 = X7)),
+  file('Problems/LCL/LCL902+1.p',sos_06)).
+fof(f7,axiom,(
+  ! [X8,X9,X10] : ('>='('+'(X8,X9),X10) <=> '>='(X9,'==>'(X8,X10)))),
+  file('Problems/LCL/LCL902+1.p',sos_07)).
+fof(f8,axiom,(
+  ! [X0] : '>='(X0,'0')),
+  file('Problems/LCL/LCL902+1.p',sos_08)).
+fof(f12,axiom,(
+  ! [X0] : '1' = '+'(X0,'1')),
+  file('Problems/LCL/LCL902+1.p',sos_12)).
+fof(f13,axiom,(
+  ! [X0] : '0' = '==>'('==>'('==>'(X0,'1'),X0),X0)),
+  file('Problems/LCL/LCL902+1.p',sos_13)).
+fof(f14,conjecture,(
+  ! [X20] : '==>'('==>'(X20,'1'),'1') = X20),
+  file('Problems/LCL/LCL902+1.p',goals_14)).
+fof(f15,negated_conjecture,(
+  ~! [X20] : '==>'('==>'(X20,'1'),'1') = X20),
+inference(negated_conjecture,[status(cth)],[f14])).
+fof(f16,plain,(
+  ! [X0,X1,X2] : (('>='(X1,X2) & '>='(X0,X1)) => '>='(X0,X2))),
+  inference(rectify,[],[f5])).
+fof(f17,plain,(
+  ! [X0,X1] : (('>='(X1,X0) & '>='(X0,X1)) => X0 = X1)),
+  inference(rectify,[],[f6])).
+fof(f18,plain,(
+  ! [X0,X1,X2] : ('>='('+'(X0,X1),X2) <=> '>='(X1,'==>'(X0,X2)))),
+  inference(rectify,[],[f7])).
+fof(f22,plain,(
+  ~! [X0] : '==>'('==>'(X0,'1'),'1') = X0),
+  inference(rectify,[],[f15])).
+fof(f23,plain,(
+  ! [X0,X1,X2] : ('>='(X0,X2) | (~'>='(X1,X2) | ~'>='(X0,X1)))),
+  inference(ennf_transformation,[],[f16])).
+fof(f24,plain,(
+  ! [X0,X1,X2] : ('>='(X0,X2) | ~'>='(X1,X2) | ~'>='(X0,X1))),
+  inference(flattening,[],[f23])).
+fof(f25,plain,(
+  ! [X0,X1] : (X0 = X1 | (~'>='(X1,X0) | ~'>='(X0,X1)))),
+  inference(ennf_transformation,[],[f17])).
+fof(f26,plain,(
+  ! [X0,X1] : (X0 = X1 | ~'>='(X1,X0) | ~'>='(X0,X1))),
+  inference(flattening,[],[f25])).
+fof(f30,plain,(
+  ? [X0] : '==>'('==>'(X0,'1'),'1') != X0),
+  inference(ennf_transformation,[],[f22])).
+fof(f31,plain,(
+  ! [X0,X1,X2] : (('>='('+'(X0,X1),X2) | ~'>='(X1,'==>'(X0,X2))) & ('>='(X1,'==>'(X0,X2)) | ~'>='('+'(X0,X1),X2)))),
+  inference(nnf_transformation,[],[f18])).
+fof(f32,plain,(
+  ? [X0] : '==>'('==>'(X0,'1'),'1') != X0 => sK0 != '==>'('==>'(sK0,'1'),'1')),
+  introduced(choice_axiom,[])).
+fof(f33,plain,(
+  sK0 != '==>'('==>'(sK0,'1'),'1')),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK0])],[f30,f32])).
+fof(f35,plain,(
+  ( ! [X0,X1] : ('+'(X0,X1) = '+'(X1,X0)) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f36,plain,(
+  ( ! [X0] : ('+'(X0,'0') = X0) )),
+  inference(cnf_transformation,[],[f3])).
+fof(f37,plain,(
+  ( ! [X0] : ('>='(X0,X0)) )),
+  inference(cnf_transformation,[],[f4])).
+fof(f38,plain,(
+  ( ! [X2,X0,X1] : ('>='(X0,X2) | ~'>='(X1,X2) | ~'>='(X0,X1)) )),
+  inference(cnf_transformation,[],[f24])).
+fof(f39,plain,(
+  ( ! [X0,X1] : (X0 = X1 | ~'>='(X1,X0) | ~'>='(X0,X1)) )),
+  inference(cnf_transformation,[],[f26])).
+fof(f40,plain,(
+  ( ! [X2,X0,X1] : ('>='(X1,'==>'(X0,X2)) | ~'>='('+'(X0,X1),X2)) )),
+  inference(cnf_transformation,[],[f31])).
+fof(f41,plain,(
+  ( ! [X2,X0,X1] : ('>='('+'(X0,X1),X2) | ~'>='(X1,'==>'(X0,X2))) )),
+  inference(cnf_transformation,[],[f31])).
+fof(f42,plain,(
+  ( ! [X0] : ('>='(X0,'0')) )),
+  inference(cnf_transformation,[],[f8])).
+fof(f46,plain,(
+  ( ! [X0] : ('1' = '+'(X0,'1')) )),
+  inference(cnf_transformation,[],[f12])).
+fof(f47,plain,(
+  ( ! [X0] : ('0' = '==>'('==>'('==>'(X0,'1'),X0),X0)) )),
+  inference(cnf_transformation,[],[f13])).
+fof(f48,plain,(
+  sK0 != '==>'('==>'(sK0,'1'),'1')),
+  inference(cnf_transformation,[],[f33])).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    ('+'(X0,X1) = '+'(X1,X0)),
+    inference(cnf_transformation,[],[f35])).
+tcf(c_51,plain,![X0:$i]:  
+    ('+'(X0,'0') = X0),
+    inference(cnf_transformation,[],[f36])).
+tcf(c_52,plain,![X0:$i]:  
+    ('>='(X0,X0)),
+    inference(cnf_transformation,[],[f37])).
+tcf(c_53,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~'>='(X0,X1)|~'>='(X1,X2)|'>='(X0,X2)),
+    inference(cnf_transformation,[],[f38])).
+tcf(c_54,plain,![X0:$i,X1:$i]:  
+    (~'>='(X0,X1)|~'>='(X1,X0)|X0 = X1),
+    inference(cnf_transformation,[],[f39])).
+tcf(c_55,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~'>='(X0,'==>'(X1,X2))|'>='('+'(X1,X0),X2)),
+    inference(cnf_transformation,[],[f41])).
+tcf(c_56,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~'>='('+'(X0,X1),X2)|'>='(X1,'==>'(X0,X2))),
+    inference(cnf_transformation,[],[f40])).
+tcf(c_57,plain,![X0:$i]:  
+    ('>='(X0,'0')),
+    inference(cnf_transformation,[],[f42])).
+tcf(c_61,plain,![X0:$i]:  
+    ('+'(X0,'1') = '1'),
+    inference(cnf_transformation,[],[f46])).
+tcf(c_62,plain,![X0:$i]:  
+    ('==>'('==>'('==>'(X0,'1'),X0),X0) = '0'),
+    inference(cnf_transformation,[],[f47])).
+tcf(c_63,plain, 
+    ('==>'('==>'(sK0,'1'),'1') != sK0),
+    inference(cnf_transformation,[],[f48])).
+tcf(c_333,plain,![X0:$i]:  
+    ('+'('1',X0) = '1'),
+    inference(superposition,[status(thm)],[c_50,c_61])).
+tcf(c_375,plain,![X0:$i,X1:$i]:  
+    ('>='('+'(X0,'==>'(X0,X1)),X1)),
+    inference(superposition,[status(thm)],[c_52,c_55])).
+tcf(c_376,plain,![X0:$i,X1:$i]:  
+    (~'>='(X0,'0')|'>='('+'('==>'('==>'(X1,'1'),X1),X0),X1)),
+    inference(superposition,[status(thm)],[c_62,c_55])).
+tcf(c_377,plain,![X0:$i,X1:$i]:  
+    ('>='('+'('==>'('==>'(X0,'1'),X0),X1),X0)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_376,c_57])).
+tcf(c_384,plain,![X0:$i,X1:$i]:  
+    ('>='(X0,'==>'(X1,'+'(X1,X0)))),
+    inference(superposition,[status(thm)],[c_52,c_56])).
+tcf(c_418,plain,![X0:$i]:  
+    ('>='('1',X0)),
+    inference(superposition,[status(thm)],[c_333,c_375])).
+tcf(c_436,plain,![X0:$i,X1:$i]:  
+    (~'>='(X0,'1')|'>='(X0,X1)),
+    inference(superposition,[status(thm)],[c_418,c_53])).
+tcf(c_452,plain,![X0:$i,X1:$i]:  
+    ('>='(X0,'==>'(X1,'+'(X0,X1)))),
+    inference(superposition,[status(thm)],[c_50,c_384])).
+tcf(c_453,plain,![X0:$i]:  
+    ('>='('0','==>'(X0,X0))),
+    inference(superposition,[status(thm)],[c_51,c_384])).
+tcf(c_476,plain,![X0:$i,X1:$i]:  
+    (~'>='(X0,'0')|'>='(X0,'==>'(X1,X1))),
+    inference(superposition,[status(thm)],[c_453,c_53])).
+tcf(c_479,plain,![X0:$i,X1:$i]:  
+    ('>='(X0,'==>'(X1,X1))),
+    inference(forward_subsumption_resolution,[status(thm)],[c_476,c_57])).
+tcf(c_498,plain,![X0:$i,X1:$i]:  
+    ('>='('+'(X0,X1),X0)),
+    inference(superposition,[status(thm)],[c_479,c_55])).
+tcf(c_507,plain,![X0:$i,X1:$i]:  
+    ('>='('+'(X0,X1),X1)),
+    inference(superposition,[status(thm)],[c_50,c_498])).
+tcf(c_539,plain,![X0:$i,X1:$i]:  
+    ('>='(X0,'==>'(X1,X0))),
+    inference(superposition,[status(thm)],[c_507,c_56])).
+tcf(c_759,plain,![X0:$i,X1:$i]:  
+    ('>='('+'(X0,'==>'(X0,'1')),X1)),
+    inference(superposition,[status(thm)],[c_375,c_436])).
+tcf(c_940,plain,![X0:$i,X1:$i]:  
+    ('>='('==>'(X0,'1'),'==>'(X0,X1))),
+    inference(superposition,[status(thm)],[c_759,c_56])).
+tcf(c_1045,plain,![X0:$i]:  
+    (~'>='(X0,'1')|X0 = '1'),
+    inference(superposition,[status(thm)],[c_418,c_54])).
+tcf(c_1393,plain,![X0:$i]:  
+    ('+'(X0,'==>'(X0,'1')) = '1'),
+    inference(superposition,[status(thm)],[c_759,c_1045])).
+tcf(c_1405,plain,![X0:$i]:  
+    ('>='('==>'('==>'(X0,'1'),X0),X0)),
+    inference(superposition,[status(thm)],[c_51,c_377])).
+tcf(c_1442,plain,![X0:$i]:  
+    (~'>='(X0,'==>'('==>'(X0,'1'),X0))|'==>'('==>'(X0,'1'),X0) = X0),
+    inference(superposition,[status(thm)],[c_1405,c_54])).
+tcf(c_1448,plain,![X0:$i]:  
+    ('==>'('==>'(X0,'1'),X0) = X0),
+    inference(forward_subsumption_resolution,[status(thm)],[c_1442,c_539])).
+tcf(c_1510,plain,![X0:$i]:  
+    ('>='(X0,'==>'('==>'(X0,'1'),'1'))),
+    inference(superposition,[status(thm)],[c_1393,c_452])).
+tcf(c_1574,plain,![X0:$i]:  
+    ('>='('==>'('==>'(X0,'1'),'1'),X0)),
+    inference(superposition,[status(thm)],[c_1448,c_940])).
+tcf(c_1639,plain,![X0:$i]:  
+    (~'>='(X0,'==>'('==>'(X0,'1'),'1'))|'==>'('==>'(X0,'1'),'1') = X0),
+    inference(superposition,[status(thm)],[c_1574,c_54])).
+tcf(c_1645,plain,![X0:$i]:  
+    ('==>'('==>'(X0,'1'),'1') = X0),
+    inference(forward_subsumption_resolution,[status(thm)],[c_1639,c_1510])).
+tcf(c_1646,plain, 
+    ($false),
+    inference(backward_subsumption_resolution,[status(thm)],[c_63,c_1645])).
+% SZS output end CNFRefutation for LCL902+1.p

@@ -1,0 +1,74 @@
+% SZS status Theorem for tau_mixed.p
+% SZS output start CNFRefutation for tau_mixed.p
+fof(f1,axiom,(
+  q(a)),
+  file('tau_mixed.p',ax1)).
+fof(f2,axiom,(
+  ! [X0] : f(X0) = X0),
+  file('tau_mixed.p',ax2)).
+fof(f3,axiom,(
+  ! [X0] : f(X0) = g(X0)),
+  file('tau_mixed.p',ax3)).
+fof(f4,axiom,(
+  ! [X0] : ((g(X0) = X0 & q(X0)) => p(g(a)))),
+  file('tau_mixed.p',ax4)).
+fof(f5,conjecture,(
+  p(g(a))),
+  file('tau_mixed.p',goal)).
+fof(f6,negated_conjecture,(
+  ~p(g(a))),
+inference(negated_conjecture,[status(cth)],[f5])).
+fof(f7,plain,(
+  ~p(g(a))),
+  inference(flattening,[],[f6])).
+fof(f8,plain,(
+  ! [X0] : (p(g(a)) | (g(X0) != X0 | ~q(X0)))),
+  inference(ennf_transformation,[],[f4])).
+fof(f9,plain,(
+  ! [X0] : (p(g(a)) | g(X0) != X0 | ~q(X0))),
+  inference(flattening,[],[f8])).
+fof(f10,plain,(
+  q(a)),
+  inference(cnf_transformation,[],[f1])).
+fof(f11,plain,(
+  ( ! [X0] : (f(X0) = X0) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f12,plain,(
+  ( ! [X0] : (f(X0) = g(X0)) )),
+  inference(cnf_transformation,[],[f3])).
+fof(f13,plain,(
+  ( ! [X0] : (p(g(a)) | g(X0) != X0 | ~q(X0)) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f14,plain,(
+  ~p(g(a))),
+  inference(cnf_transformation,[],[f7])).
+tcf(c_49,plain, (q(a)),inference(cnf_transformation,[],[f10])).
+tcf(c_50,plain,![X0:$i]:  
+    (f(X0) = X0),
+    inference(cnf_transformation,[],[f11])).
+tcf(c_51,plain,![X0:$i]:  
+    (f(X0) = g(X0)),
+    inference(cnf_transformation,[],[f12])).
+tcf(c_52,plain,![X0:$i]:  
+    (g(X0) != X0|~q(X0)|p(g(a))),
+    inference(cnf_transformation,[],[f13])).
+tcf(c_53,plain, (~p(g(a))),inference(cnf_transformation,[],[f14])).
+tcf(c_57,plain,![X0:$i]:  
+    (~q(X0)|g(X0) != X0),
+    inference(global_subsumption_just,[status(thm)],[c_52,c_53,c_52])).
+tcf(c_58,plain,![X0:$i]:  
+    (g(X0) != X0|~q(X0)),
+    inference(renaming,[status(thm)],[c_57])).
+tcf(c_72,plain,![X0:$i]:  
+    (g(X0) = X0),
+    inference(light_normalisation,[status(thm)],[c_51,c_50])).
+tcf(c_74,plain,![X0:$i]:  
+    (X0 != X0|~q(X0)),
+    inference(demodulation,[status(thm)],[c_58,c_72])).
+tcf(c_75,plain,![X0:$i]:  
+    (~q(X0)),
+    inference(equality_resolution_simp,[status(thm)],[c_74])).
+tcf(c_76,plain, 
+    ($false),
+    inference(backward_subsumption_resolution,[status(thm)],[c_49,c_75])).
+% SZS output end CNFRefutation for tau_mixed.p

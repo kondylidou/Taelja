@@ -1,0 +1,88 @@
+% SZS status Unsatisfiable for HEN008-2.p
+% SZS output start CNFRefutation for HEN008-2.p
+tcf(c_50,plain,![X0:$i]:  
+    (quotient(zero,X0,zero)),
+    file('Problems/HEN/HEN008-2.p', zero_divide_anything_is_zero)).
+tcf(c_52,plain,![X0:$i]:  
+    (quotient(X0,zero,X0)),
+    file('Problems/HEN/HEN008-2.p', x_divde_zero_is_x)).
+tcf(c_54,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~quotient(X0,X1,X2)|~quotient(X0,X3,X4)|~less_equal(X2,X3)|less_equal(X4,X1)),
+    file('Problems/HEN/HEN008-2.p', xQyLEz_implies_xQzLEy)).
+tcf(c_56,plain, (less_equal(a,b)),file('Problems/HEN/HEN008-2.p', aLEb)).
+tcf(c_57,plain, (quotient(a,c,aQc)),file('Problems/HEN/HEN008-2.p', aQc)).
+tcf(c_58,plain, (quotient(b,c,bQc)),file('Problems/HEN/HEN008-2.p', bQc)).
+tcf(c_59,plain, 
+    (~less_equal(aQc,bQc)),
+    file('Problems/HEN/HEN008-2.p', prove_aQcLEbQc)).
+tcf(c_60,plain,![X0:$i,X1:$i]:  
+    (~less_equal(X0,X1)|quotient(X0,X1,zero)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', quotient_less_equal)).
+tcf(c_63,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~quotient(X0,X1,X2)|~quotient(X0,X3,X4)|~quotient(X1,X3,X5)|~quotient(X2,X3,X6)|
+    ~quotient(X4,X5,X7)|less_equal(X7,X6)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', quotient_property)).
+tcf(c_67,plain,![X0:$i,X1:$i]:  
+    (quotient(X0,X1,divide(X0,X1))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', closure)).
+tcf(c_68,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~quotient(X0,X1,X2)|~quotient(X0,X1,X3)|X2 = X3),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', well_defined)).
+tcf(c_747,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~quotient(X0,X1,X2)|divide(X0,X1) = X2),
+    inference(superposition,[status(thm)],[c_67,c_68])).
+tcf(c_772,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~quotient(X0,X1,aQc)|~quotient(X0,bQc,X2)|~less_equal(X2,X1)|less_equal(aQc,bQc)),
+    inference(instantiation,[status(thm)],[c_54])).
+tcf(c_1015,plain,![X0:$i]:  
+    (~quotient(aQc,bQc,X0)|~quotient(aQc,zero,aQc)|~less_equal(X0,zero)|
+    less_equal(aQc,bQc)),
+    inference(instantiation,[status(thm)],[c_772])).
+tcf(c_1016,plain, 
+    (quotient(aQc,zero,aQc)),
+    inference(instantiation,[status(thm)],[c_52])).
+tcf(c_1292,plain,![X0:$i,X1:$i]:  
+    (~less_equal(X0,X1)|divide(X0,X1) = zero),
+    inference(superposition,[status(thm)],[c_60,c_747])).
+tcf(c_1300,plain, 
+    (divide(a,b) = zero),
+    inference(superposition,[status(thm)],[c_56,c_1292])).
+tcf(c_1354,plain, 
+    (quotient(a,b,zero)),
+    inference(superposition,[status(thm)],[c_1300,c_67])).
+tcf(c_1400,plain, 
+    (~quotient(aQc,bQc,divide(aQc,bQc))|~less_equal(divide(aQc,bQc),zero)|
+    ~quotient(aQc,zero,aQc)|less_equal(aQc,bQc)),
+    inference(instantiation,[status(thm)],[c_1015])).
+tcf(c_1401,plain, 
+    (quotient(aQc,bQc,divide(aQc,bQc))),
+    inference(instantiation,[status(thm)],[c_67])).
+tcf(c_2741,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~quotient(X0,X1,divide(aQc,bQc))|~quotient(X2,X3,X4)|~quotient(X2,X5,X0)|
+    ~quotient(X3,X5,X1)|~quotient(X4,X5,zero)|less_equal(divide(aQc,bQc),zero)),
+    inference(instantiation,[status(thm)],[c_63])).
+tcf(c_4266,plain, 
+    (quotient(zero,c,zero)),
+    inference(instantiation,[status(thm)],[c_50])).
+tcf(c_9956,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~quotient(aQc,bQc,divide(aQc,bQc))|~quotient(X0,X1,X2)|~quotient(X0,X3,aQc)|
+    ~quotient(X1,X3,bQc)|~quotient(X2,X3,zero)|less_equal(divide(aQc,bQc),zero)),
+    inference(instantiation,[status(thm)],[c_2741])).
+tcf(c_21375,plain,![X0:$i,X1:$i]:  
+    (~quotient(aQc,bQc,divide(aQc,bQc))|~quotient(a,X0,X1)|~quotient(X0,c,bQc)|
+    ~quotient(X1,c,zero)|~quotient(a,c,aQc)|less_equal(divide(aQc,bQc),zero)),
+    inference(instantiation,[status(thm)],[c_9956])).
+tcf(c_38519,plain,![X0:$i]:  
+    (~quotient(aQc,bQc,divide(aQc,bQc))|~quotient(X0,c,zero)|~quotient(a,b,X0)|
+    ~quotient(a,c,aQc)|~quotient(b,c,bQc)|less_equal(divide(aQc,bQc),zero)),
+    inference(instantiation,[status(thm)],[c_21375])).
+tcf(c_38520,plain, 
+    (~quotient(aQc,bQc,divide(aQc,bQc))|~quotient(zero,c,zero)|~quotient(a,b,zero)|
+    ~quotient(a,c,aQc)|~quotient(b,c,bQc)|less_equal(divide(aQc,bQc),zero)),
+    inference(instantiation,[status(thm)],[c_38519])).
+tcf(c_38521,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_38520,c_4266,c_1401,c_1400,c_1354,c_1016,c_57,c_58,c_59])).
+% SZS output end CNFRefutation for HEN008-2.p

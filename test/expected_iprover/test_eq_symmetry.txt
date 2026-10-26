@@ -1,0 +1,7 @@
+Axiom 1: b = a
+
+Goal 1: b = a
+Proof:
+  b
+= { by axiom 1 }
+  a

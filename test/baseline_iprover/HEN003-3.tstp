@@ -1,0 +1,48 @@
+% SZS status Unsatisfiable for HEN003-3.p
+% SZS output start CNFRefutation for HEN003-3.p
+tcf(c_49,plain, 
+    (divide(a,a) != zero),
+    file('Problems/HEN/HEN003-3.p', prove_x_divide_x_is_zero)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (~less_equal(X0,X1)|divide(X0,X1) = zero),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_less_equal1)).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (divide(X0,X1) != zero|less_equal(X0,X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_less_equal2)).
+tcf(c_52,plain,![X0:$i,X1:$i]:  
+    (less_equal(divide(X0,X1),X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_smaller_than_numerator)).
+tcf(c_53,plain,![X0:$i,X1:$i,X2:$i]:  
+    (less_equal(divide(divide(X0,X1),divide(X2,X1)),divide(divide(X0,X2),X1))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_property)).
+tcf(c_54,plain,![X0:$i]:  
+    (less_equal(zero,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', zero_is_smallest)).
+tcf(c_55,plain,![X0:$i,X1:$i]:  
+    (~less_equal(X0,X1)|~less_equal(X1,X0)|X0 = X1),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', less_equal_and_equal)).
+tcf(c_276,plain,![X0:$i,X1:$i]:  
+    (divide(divide(X0,X1),X0) = zero),
+    inference(superposition,[status(thm)],[c_52,c_50])).
+tcf(c_303,plain,![X0:$i]:  
+    (~less_equal(X0,zero)|X0 = zero),
+    inference(superposition,[status(thm)],[c_54,c_55])).
+tcf(c_319,plain,![X0:$i,X1:$i]:  
+    (less_equal(divide(divide(X0,X0),divide(X1,X0)),zero)),
+    inference(superposition,[status(thm)],[c_276,c_53])).
+tcf(c_362,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,X0),zero),zero)),
+    inference(superposition,[status(thm)],[c_276,c_319])).
+tcf(c_381,plain,![X0:$i]:  
+    (divide(divide(X0,X0),zero) = zero),
+    inference(superposition,[status(thm)],[c_362,c_303])).
+tcf(c_388,plain,![X0:$i]:  
+    (less_equal(divide(X0,X0),zero)),
+    inference(superposition,[status(thm)],[c_381,c_51])).
+tcf(c_407,plain,![X0:$i]:  
+    (divide(X0,X0) = zero),
+    inference(superposition,[status(thm)],[c_388,c_303])).
+tcf(c_408,plain, 
+    ($false),
+    inference(backward_subsumption_resolution,[status(thm)],[c_49,c_407])).
+% SZS output end CNFRefutation for HEN003-3.p

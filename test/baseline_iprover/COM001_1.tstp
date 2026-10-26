@@ -1,0 +1,114 @@
+% SZS status Theorem for COM001_1.p
+% SZS output start CNFRefutation for COM001_1.p
+tff(func_def_0, type, p3: state).
+tff(pred_def_1, type, follows: (state * state) > $o).
+tff(pred_def_2, type, succeeds: (state * state) > $o).
+tff(pred_def_3, type, labels: (label * state) > $o).
+tff(pred_def_4, type, has: (state * statement) > $o).
+tff(func_def_5, type, register_j: register).
+tff(func_def_6, type, out: label).
+tff(func_def_7, type, loop: label).
+tff(func_def_8, type, equal_function: (register * number) > boolean).
+tff(func_def_9, type, goto: label > statement).
+tff(func_def_10, type, ifthen: (boolean * state) > statement).
+tff(f1,axiom,(
+  ! [X0 : state,X1 : state] : (follows(X1,X0) => succeeds(X1,X0))),
+  file('Problems/COM/COM001_1.p',direct_success)).
+tff(f2,axiom,(
+  ! [X0 : state,X2 : state,X1 : state] : ((succeeds(X2,X0) & succeeds(X1,X2)) => succeeds(X1,X0))),
+  file('Problems/COM/COM001_1.p',transitivity_of_success)).
+tff(f3,axiom,(
+  ! [X1 : state,X3 : label,X0 : state] : ((labels(X3,X1) & has(X0,goto(X3))) => succeeds(X1,X0))),
+  file('Problems/COM/COM001_1.p',goto_success)).
+tff(f5,axiom,(
+  labels(loop,p3)),
+  file('Problems/COM/COM001_1.p',label_state_3)).
+tff(f9,axiom,(
+  follows(p8,p3)),
+  file('Problems/COM/COM001_1.p',transition_3_to_8)).
+tff(f10,axiom,(
+  has(p8,goto(loop))),
+  file('Problems/COM/COM001_1.p',state_8)).
+tff(f11,conjecture,(
+  succeeds(p3,p3)),
+  file('Problems/COM/COM001_1.p',prove_there_is_a_loop_through_p3)).
+tff(f12,negated_conjecture,(
+  ~succeeds(p3,p3)),
+inference(negated_conjecture,[status(cth)],[f11])).
+tff(f13,plain,(
+  ! [X0 : state,X1 : state,X2 : state] : ((succeeds(X1,X0) & succeeds(X2,X1)) => succeeds(X2,X0))),
+  inference(rectify,[],[f2])).
+tff(f14,plain,(
+  ! [X0 : state,X1 : label,X2 : state] : ((labels(X1,X0) & has(X2,goto(X1))) => succeeds(X0,X2))),
+  inference(rectify,[],[f3])).
+tff(f16,plain,(
+  ~succeeds(p3,p3)),
+  inference(flattening,[],[f12])).
+tff(f17,plain,(
+  ! [X0 : state,X1 : state] : (succeeds(X1,X0) | ~follows(X1,X0))),
+  inference(ennf_transformation,[],[f1])).
+tff(f18,plain,(
+  ! [X0 : state,X1 : state,X2 : state] : (succeeds(X2,X0) | (~succeeds(X1,X0) | ~succeeds(X2,X1)))),
+  inference(ennf_transformation,[],[f13])).
+tff(f19,plain,(
+  ! [X0 : state,X1 : state,X2 : state] : (succeeds(X2,X0) | ~succeeds(X1,X0) | ~succeeds(X2,X1))),
+  inference(flattening,[],[f18])).
+tff(f20,plain,(
+  ! [X0 : state,X1 : label,X2 : state] : (succeeds(X0,X2) | (~labels(X1,X0) | ~has(X2,goto(X1))))),
+  inference(ennf_transformation,[],[f14])).
+tff(f21,plain,(
+  ! [X0 : state,X1 : label,X2 : state] : (succeeds(X0,X2) | ~labels(X1,X0) | ~has(X2,goto(X1)))),
+  inference(flattening,[],[f20])).
+tff(f23,plain,(
+  ( ! [X0 : state,X1 : state] : (succeeds(X1,X0) | ~follows(X1,X0)) )),
+  inference(cnf_transformation,[],[f17])).
+tff(f24,plain,(
+  ( ! [X2 : state,X0 : state,X1 : state] : (succeeds(X2,X0) | ~succeeds(X1,X0) | ~succeeds(X2,X1)) )),
+  inference(cnf_transformation,[],[f19])).
+tff(f25,plain,(
+  ( ! [X2 : state,X0 : state,X1 : label] : (succeeds(X0,X2) | ~labels(X1,X0) | ~has(X2,goto(X1))) )),
+  inference(cnf_transformation,[],[f21])).
+tff(f27,plain,(
+  labels(loop,p3)),
+  inference(cnf_transformation,[],[f5])).
+tff(f31,plain,(
+  follows(p8,p3)),
+  inference(cnf_transformation,[],[f9])).
+tff(f32,plain,(
+  has(p8,goto(loop))),
+  inference(cnf_transformation,[],[f10])).
+tff(f33,plain,(
+  ~succeeds(p3,p3)),
+  inference(cnf_transformation,[],[f16])).
+tcf(c_49,plain,![X0_state:state,X1_state:state]:  
+    (~follows(X0_state,X1_state)|succeeds(X0_state,X1_state)),
+    inference(cnf_transformation,[],[f23])).
+tcf(c_50,plain,![X0_state:state,X1_state:state,X2_state:state]:  
+    (~succeeds(X0_state,X1_state)|~succeeds(X1_state,X2_state)|succeeds(X0_state,X2_state)),
+    inference(cnf_transformation,[],[f24])).
+tcf(c_51,plain,![X0_state:state,X0_label:label,X1_state:state]:  
+    (~has(X0_state,goto(X0_label))|~labels(X0_label,X1_state)|succeeds(X1_state,X0_state)),
+    inference(cnf_transformation,[],[f25])).
+tcf(c_53,plain, (labels(loop,p3)),inference(cnf_transformation,[],[f27])).
+tcf(c_57,plain, (follows(p8,p3)),inference(cnf_transformation,[],[f31])).
+tcf(c_58,plain, (has(p8,goto(loop))),inference(cnf_transformation,[],[f32])).
+tcf(c_59,plain, (~succeeds(p3,p3)),inference(cnf_transformation,[],[f33])).
+tcf(c_101,plain, 
+    (succeeds(p8,p3)),
+    inference(resolution,[status(thm)],[c_49,c_57])).
+tcf(c_107,plain,![X0_state:state]:  
+    (~has(X0_state,goto(loop))|succeeds(p3,X0_state)),
+    inference(resolution,[status(thm)],[c_51,c_53])).
+tcf(c_121,plain, 
+    (succeeds(p3,p8)),
+    inference(resolution,[status(thm)],[c_58,c_107])).
+tcf(c_147,plain,![X0_state:state]:  
+    (~succeeds(p8,X0_state)|succeeds(p3,X0_state)),
+    inference(resolution,[status(thm)],[c_50,c_121])).
+tcf(c_148,plain, 
+    (~succeeds(p8,p3)|succeeds(p3,p3)),
+    inference(instantiation,[status(thm)],[c_147])).
+tcf(c_149,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_148,c_101,c_59])).
+% SZS output end CNFRefutation for COM001_1.p

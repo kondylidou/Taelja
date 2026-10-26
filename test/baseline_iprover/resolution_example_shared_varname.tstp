@@ -1,0 +1,50 @@
+% SZS status Unsatisfiable for resolution_example_shared_varname.p
+% SZS output start CNFRefutation for resolution_example_shared_varname.p
+tcf(c_49,plain, 
+    (~r2(c)),
+    file('resolution_example_shared_varname.p', prove_this)).
+tcf(c_50,plain, 
+    (s0(d)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_1)).
+tcf(c_66,plain,![X0:$i]:  
+    (q0(X0,d)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_17)).
+tcf(c_73,plain, 
+    (l0(c)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_24)).
+tcf(c_77,plain, 
+    (k0(e)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_28)).
+tcf(c_204,plain, 
+    (~s0(d)|~k0(e)|q1(d,d,d)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_117)).
+tcf(c_211,plain,![X0:$i,X1:$i]:  
+    (~q1(d,X0,d)|~q0(X1,X0)|~s0(d)|r1(X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_124)).
+tcf(c_275,plain,![X0:$i]:  
+    (~l0(X0)|~r1(X0)|r2(X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_188)).
+tcf(c_692,plain,![X0:$i,X1:$i]:  
+    (~q0(X1,X0)|~q1(d,X0,d)|r1(X1)),
+    inference(global_subsumption_just,[status(thm)],[c_211,c_50,c_211])).
+tcf(c_693,plain,![X0:$i,X1:$i]:  
+    (~q1(d,X0,d)|~q0(X1,X0)|r1(X1)),
+    inference(renaming,[status(thm)],[c_692])).
+tcf(c_725,plain, 
+    (~r1(c)|r2(c)),
+    inference(resolution,[status(thm)],[c_275,c_73])).
+tcf(c_726,plain, 
+    (~r1(c)),
+    inference(global_subsumption_just,[status(thm)],[c_725,c_49,c_725])).
+tcf(c_1406,plain,![X0:$i]:  
+    (~q1(d,d,d)|r1(X0)),
+    inference(resolution,[status(thm)],[c_693,c_66])).
+tcf(c_1458,plain,![X0:$i]:  
+    (r1(X0)),
+    inference(global_subsumption_just,
+              [status(thm)],
+              [c_1406,c_77,c_50,c_204,c_1406])).
+tcf(c_1461,plain, 
+    ($false),
+    inference(resolution,[status(thm)],[c_1458,c_726])).
+% SZS output end CNFRefutation for resolution_example_shared_varname.p

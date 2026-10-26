@@ -1,0 +1,86 @@
+% SZS status Theorem for resolution_example_horn_general.p
+% SZS output start CNFRefutation for resolution_example_horn_general.p
+fof(f1,axiom,(
+  s(a)),
+  file('resolution_example_horn_general.p',ax1)).
+fof(f2,axiom,(
+  ! [X0] : (s(X0) => p(X0))),
+  file('resolution_example_horn_general.p',ax2)).
+fof(f3,axiom,(
+  t(b)),
+  file('resolution_example_horn_general.p',ax3)).
+fof(f4,axiom,(
+  ! [X1] : (t(X1) => q(X1))),
+  file('resolution_example_horn_general.p',ax4)).
+fof(f5,axiom,(
+  ! [X0,X1] : ((q(X1) & p(X0)) => r(X0,X1))),
+  file('resolution_example_horn_general.p',ax5)).
+fof(f6,conjecture,(
+  r(a,b)),
+  file('resolution_example_horn_general.p',goal)).
+fof(f7,negated_conjecture,(
+  ~r(a,b)),
+inference(negated_conjecture,[status(cth)],[f6])).
+fof(f8,plain,(
+  ! [X0] : (t(X0) => q(X0))),
+  inference(rectify,[],[f4])).
+fof(f9,plain,(
+  ~r(a,b)),
+  inference(flattening,[],[f7])).
+fof(f10,plain,(
+  ! [X0] : (p(X0) | ~s(X0))),
+  inference(ennf_transformation,[],[f2])).
+fof(f11,plain,(
+  ! [X0] : (q(X0) | ~t(X0))),
+  inference(ennf_transformation,[],[f8])).
+fof(f12,plain,(
+  ! [X0,X1] : (r(X0,X1) | (~q(X1) | ~p(X0)))),
+  inference(ennf_transformation,[],[f5])).
+fof(f13,plain,(
+  ! [X0,X1] : (r(X0,X1) | ~q(X1) | ~p(X0))),
+  inference(flattening,[],[f12])).
+fof(f14,plain,(
+  s(a)),
+  inference(cnf_transformation,[],[f1])).
+fof(f15,plain,(
+  ( ! [X0] : (p(X0) | ~s(X0)) )),
+  inference(cnf_transformation,[],[f10])).
+fof(f16,plain,(
+  t(b)),
+  inference(cnf_transformation,[],[f3])).
+fof(f17,plain,(
+  ( ! [X0] : (q(X0) | ~t(X0)) )),
+  inference(cnf_transformation,[],[f11])).
+fof(f18,plain,(
+  ( ! [X0,X1] : (r(X0,X1) | ~q(X1) | ~p(X0)) )),
+  inference(cnf_transformation,[],[f13])).
+fof(f19,plain,(
+  ~r(a,b)),
+  inference(cnf_transformation,[],[f9])).
+tcf(c_49,plain, (s(a)),inference(cnf_transformation,[],[f14])).
+tcf(c_50,plain,![X0:$i]:  
+    (~s(X0)|p(X0)),
+    inference(cnf_transformation,[],[f15])).
+tcf(c_51,plain, (t(b)),inference(cnf_transformation,[],[f16])).
+tcf(c_52,plain,![X0:$i]:  
+    (~t(X0)|q(X0)),
+    inference(cnf_transformation,[],[f17])).
+tcf(c_53,plain,![X0:$i,X1:$i]:  
+    (~p(X0)|~q(X1)|r(X0,X1)),
+    inference(cnf_transformation,[],[f18])).
+tcf(c_54,plain, (~r(a,b)),inference(cnf_transformation,[],[f19])).
+tcf(c_56,plain, (~s(a)|p(a)),inference(instantiation,[status(thm)],[c_50])).
+tcf(c_59,plain,![X0_iProver_r_1:iProver_r_1,X0_iProver_r_2:iProver_r_2]:  
+    (~p(X0_iProver_r_1)|~q(X0_iProver_r_2)|r(X0_iProver_r_1,X0_iProver_r_2)),
+    inference(subtyping,[status(esa)],[c_53])).
+tcf(c_60,plain,![X0_iProver_r_2:iProver_r_2]:  
+    (~t(X0_iProver_r_2)|q(X0_iProver_r_2)),
+    inference(subtyping,[status(esa)],[c_52])).
+tcf(c_64,plain, (~t(b)|q(b)),inference(instantiation,[status(thm)],[c_60])).
+tcf(c_65,plain, 
+    (~p(a)|~q(b)|r(a,b)),
+    inference(instantiation,[status(thm)],[c_59])).
+tcf(c_66,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_65,c_64,c_56,c_54,c_49,c_51])).
+% SZS output end CNFRefutation for resolution_example_horn_general.p

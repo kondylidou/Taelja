@@ -1,0 +1,137 @@
+% SZS status Unsatisfiable for SYN179-1.p
+% SZS output start CNFRefutation for SYN179-1.p
+tcf(c_49,plain,![X0:$i]:  
+    (~q3(d,X0)),
+    file('Problems/SYN/SYN179-1.p', prove_this)).
+tcf(c_50,plain, 
+    (s0(d)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_1)).
+tcf(c_63,plain,![X0:$i]:  
+    (p0(b,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_14)).
+tcf(c_68,plain,![X0:$i,X1:$i]:  
+    (m0(X0,d,X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_19)).
+tcf(c_73,plain, 
+    (l0(c)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_24)).
+tcf(c_74,plain, 
+    (q0(d,d)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_25)).
+tcf(c_75,plain, 
+    (n0(d,c)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_26)).
+tcf(c_77,plain, 
+    (k0(e)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_28)).
+tcf(c_83,plain, 
+    (n0(c,d)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', axiom_34)).
+tcf(c_88,plain,![X0:$i,X1:$i]:  
+    (~n0(X0,X1)|k1(X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_001)).
+tcf(c_146,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~m0(X0,X1,X2)|~m0(X1,X3,X3)|n1(X2,X2,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_059)).
+tcf(c_204,plain, 
+    (~s0(d)|~k0(e)|q1(d,d,d)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_117)).
+tcf(c_211,plain,![X0:$i,X1:$i]:  
+    (~q1(d,X0,d)|~q0(X1,X0)|~s0(d)|r1(X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_124)).
+tcf(c_212,plain,![X0:$i]:  
+    (~p0(X0,X0)|s1(X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_125)).
+tcf(c_213,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~q0(X0,X1)|~s1(X2)|s1(X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_126)).
+tcf(c_220,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~m0(X0,X1,X2)|~p0(X3,X3)|~s1(X1)|l2(X2,X2)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_133)).
+tcf(c_270,plain,![X0:$i,X1:$i]:  
+    (~l2(X0,X1)|~k1(X0)|~l0(c)|q2(X1,c,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_183)).
+tcf(c_278,plain, 
+    (~r1(d)|~s1(d)|s2(d)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_191)).
+tcf(c_342,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~q2(X0,X1,X2)|~n0(X0,X1)|q3(X1,X2)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_255)).
+tcf(c_344,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~n1(X0,X1,X2)|~q3(X2,X1)|~s2(X1)|q3(X1,X2)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/SYN001-0.ax', rule_257)).
+tcf(c_687,plain,![X0:$i,X1:$i]:  
+    (~k1(X0)|~l2(X0,X1)|q2(X1,c,X0)),
+    inference(global_subsumption_just,[status(thm)],[c_270,c_73,c_270])).
+tcf(c_688,plain,![X0:$i,X1:$i]:  
+    (~l2(X0,X1)|~k1(X0)|q2(X1,c,X0)),
+    inference(renaming,[status(thm)],[c_687])).
+tcf(c_690,plain,![X0:$i,X1:$i]:  
+    (~q0(X1,X0)|~q1(d,X0,d)|r1(X1)),
+    inference(global_subsumption_just,[status(thm)],[c_211,c_50,c_211])).
+tcf(c_691,plain,![X0:$i,X1:$i]:  
+    (~q1(d,X0,d)|~q0(X1,X0)|r1(X1)),
+    inference(renaming,[status(thm)],[c_690])).
+tcf(c_746,plain, 
+    (~q1(d,d,d)|r1(d)),
+    inference(resolution,[status(thm)],[c_691,c_74])).
+tcf(c_758,plain, 
+    (r1(d)),
+    inference(global_subsumption_just,
+              [status(thm)],
+              [c_746,c_77,c_50,c_204,c_746])).
+tcf(c_761,plain, 
+    (~s1(d)|s2(d)),
+    inference(resolution,[status(thm)],[c_758,c_278])).
+tcf(c_774,plain,![X0:$i]:  
+    (~q2(d,c,X0)|q3(c,X0)),
+    inference(resolution,[status(thm)],[c_342,c_75])).
+tcf(c_808,plain, (k1(d)),inference(resolution,[status(thm)],[c_88,c_83])).
+tcf(c_823,plain, (s1(b)),inference(resolution,[status(thm)],[c_212,c_63])).
+tcf(c_1034,plain,![X0:$i,X1:$i]:  
+    (~q0(X0,X1)|s1(X0)),
+    inference(resolution,[status(thm)],[c_213,c_823])).
+tcf(c_1097,plain, (s1(d)),inference(resolution,[status(thm)],[c_1034,c_74])).
+tcf(c_1103,plain, 
+    (s2(d)),
+    inference(resolution,[status(thm)],[c_1097,c_761])).
+tcf(c_1104,plain,![X0:$i,X1:$i]:  
+    (~n1(X0,d,X1)|~q3(X1,d)|q3(d,X1)),
+    inference(resolution,[status(thm)],[c_1103,c_344])).
+tcf(c_1385,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~m0(d,X0,X0)|n1(X1,X1,X2)),
+    inference(resolution,[status(thm)],[c_146,c_68])).
+tcf(c_1424,plain,![X0:$i,X1:$i]:  
+    (n1(X0,X0,X1)),
+    inference(resolution,[status(thm)],[c_1385,c_68])).
+tcf(c_1563,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~m0(X0,d,X1)|~p0(X2,X2)|l2(X1,X1)),
+    inference(resolution,[status(thm)],[c_220,c_1097])).
+tcf(c_1589,plain,![X1:$i,X2:$i]:  
+    (~p0(X2,X2)|l2(X1,X1)),
+    inference(global_subsumption_just,[status(thm)],[c_1563,c_68,c_1563])).
+tcf(c_1590,plain,![X0:$i,X1:$i]:  
+    (~p0(X0,X0)|l2(X1,X1)),
+    inference(renaming,[status(thm)],[c_1589])).
+tcf(c_1593,plain,![X0:$i]:  
+    (l2(X0,X0)),
+    inference(resolution,[status(thm)],[c_1590,c_63])).
+tcf(c_1942,plain,![X0:$i]:  
+    (~l2(d,X0)|q2(X0,c,d)),
+    inference(resolution,[status(thm)],[c_688,c_808])).
+tcf(c_1962,plain, 
+    (q2(d,c,d)),
+    inference(resolution,[status(thm)],[c_1942,c_1593])).
+tcf(c_1966,plain, 
+    (q3(c,d)),
+    inference(resolution,[status(thm)],[c_1962,c_774])).
+tcf(c_1968,plain,![X0:$i]:  
+    (~n1(X0,d,c)|q3(d,c)),
+    inference(resolution,[status(thm)],[c_1966,c_1104])).
+tcf(c_1970,plain, 
+    (q3(d,c)),
+    inference(resolution,[status(thm)],[c_1968,c_1424])).
+tcf(c_1972,plain, 
+    ($false),
+    inference(resolution,[status(thm)],[c_1970,c_49])).
+% SZS output end CNFRefutation for SYN179-1.p

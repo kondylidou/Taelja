@@ -1,0 +1,705 @@
+% SZS status Unsatisfiable for TOP050-1.p
+% SZS output start CNFRefutation for TOP050-1.p
+tcf(c_49,plain,![X0:$i]:  
+    (product(X0,X0) = X0),
+    file('TOP050-1.p', involutory_quandle)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (product(product(X0,X1),X1) = X0),
+    file('TOP050-1.p', involutory_quandle_01)).
+tcf(c_51,plain,![X0:$i,X1:$i,X2:$i]:  
+    (product(product(X0,X1),product(X2,X1)) = product(product(X0,X2),X1)),
+    file('TOP050-1.p', involutory_quandle_02)).
+tcf(c_52,plain, (product(a1,a31) = a2),file('TOP050-1.p', knot)).
+tcf(c_53,plain, (product(a2,a25) = a3),file('TOP050-1.p', knot_03)).
+tcf(c_54,plain, (product(a3,a29) = a4),file('TOP050-1.p', knot_04)).
+tcf(c_55,plain, (product(a4,a11) = a5),file('TOP050-1.p', knot_05)).
+tcf(c_56,plain, (product(a5,a15) = a6),file('TOP050-1.p', knot_06)).
+tcf(c_57,plain, (product(a7,a19) = a8),file('TOP050-1.p', knot_07)).
+tcf(c_58,plain, (product(a8,a5) = a9),file('TOP050-1.p', knot_08)).
+tcf(c_59,plain, (product(a9,a17) = a10),file('TOP050-1.p', knot_09)).
+tcf(c_60,plain, (product(a10,a7) = a11),file('TOP050-1.p', knot_10)).
+tcf(c_61,plain, (product(a11,a5) = a12),file('TOP050-1.p', knot_11)).
+tcf(c_62,plain, (product(a12,a19) = a13),file('TOP050-1.p', knot_12)).
+tcf(c_63,plain, (product(a13,a7) = a14),file('TOP050-1.p', knot_13)).
+tcf(c_64,plain, (product(a14,a17) = a15),file('TOP050-1.p', knot_14)).
+tcf(c_65,plain, (product(a15,a5) = a16),file('TOP050-1.p', knot_15)).
+tcf(c_66,plain, (product(a16,a19) = a17),file('TOP050-1.p', knot_16)).
+tcf(c_67,plain, (product(a17,a9) = a18),file('TOP050-1.p', knot_17)).
+tcf(c_68,plain, (product(a18,a15) = a19),file('TOP050-1.p', knot_18)).
+tcf(c_69,plain, (product(a19,a11) = a20),file('TOP050-1.p', knot_19)).
+tcf(c_70,plain, (product(a20,a29) = a21),file('TOP050-1.p', knot_20)).
+tcf(c_71,plain, (product(a21,a25) = a22),file('TOP050-1.p', knot_21)).
+tcf(c_72,plain, (product(a22,a31) = a23),file('TOP050-1.p', knot_22)).
+tcf(c_73,plain, (product(a23,a21) = a24),file('TOP050-1.p', knot_23)).
+tcf(c_74,plain, (product(a24,a3) = a25),file('TOP050-1.p', knot_24)).
+tcf(c_75,plain, (product(a25,a23) = a26),file('TOP050-1.p', knot_25)).
+tcf(c_76,plain, (product(a26,a1) = a27),file('TOP050-1.p', knot_26)).
+tcf(c_77,plain, (product(a27,a21) = a28),file('TOP050-1.p', knot_27)).
+tcf(c_78,plain, (product(a28,a3) = a29),file('TOP050-1.p', knot_28)).
+tcf(c_79,plain, (product(a29,a1) = a30),file('TOP050-1.p', knot_29)).
+tcf(c_80,plain, (product(a30,a23) = a31),file('TOP050-1.p', knot_30)).
+tcf(c_81,plain, (product(a31,a3) = a32),file('TOP050-1.p', knot_31)).
+tcf(c_82,plain, (product(a32,a21) = a1),file('TOP050-1.p', knot_32)).
+tcf(c_83,plain, 
+    (tuple(a1,a30,a31,a2,a24,a25,a3,a28,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a12,a13,a20,a21,a22,a23,a26,a27) != tuple(a2,a31,a32,a3,a25,a26,a4,a29,a30,a5,a11,a12,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a28)),
+    file('TOP050-1.p', goal)).
+tcf(c_161,plain, 
+    (tuple(a1,a30,a31,a2,a24,a25,a3,a28,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a12,a13,a20,a21,a22,a23,a26,a27) = iPr_def_10),
+    definition).
+tcf(c_162,plain, 
+    (tuple(a2,a31,a32,a3,a25,a26,a4,a29,a30,a5,a11,a12,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a28) = iPr_def_11),
+    definition).
+tcf(c_163,plain, 
+    (iPr_def_10 != iPr_def_11),
+    inference(demodulation,[status(thm)],[c_83,c_162,c_161])).
+tcf(c_324,plain, 
+    (product(a3,a25) = a2),
+    inference(superposition,[status(thm)],[c_53,c_50])).
+tcf(c_325,plain, 
+    (product(a4,a29) = a3),
+    inference(superposition,[status(thm)],[c_54,c_50])).
+tcf(c_326,plain, 
+    (product(a5,a11) = a4),
+    inference(superposition,[status(thm)],[c_55,c_50])).
+tcf(c_328,plain, 
+    (product(a8,a19) = a7),
+    inference(superposition,[status(thm)],[c_57,c_50])).
+tcf(c_330,plain, 
+    (product(a10,a17) = a9),
+    inference(superposition,[status(thm)],[c_59,c_50])).
+tcf(c_331,plain, 
+    (product(a11,a7) = a10),
+    inference(superposition,[status(thm)],[c_60,c_50])).
+tcf(c_332,plain, 
+    (product(a12,a5) = a11),
+    inference(superposition,[status(thm)],[c_61,c_50])).
+tcf(c_335,plain, 
+    (product(a15,a17) = a14),
+    inference(superposition,[status(thm)],[c_64,c_50])).
+tcf(c_336,plain, 
+    (product(a16,a5) = a15),
+    inference(superposition,[status(thm)],[c_65,c_50])).
+tcf(c_338,plain, 
+    (product(a18,a9) = a17),
+    inference(superposition,[status(thm)],[c_67,c_50])).
+tcf(c_339,plain, 
+    (product(a19,a15) = a18),
+    inference(superposition,[status(thm)],[c_68,c_50])).
+tcf(c_340,plain, 
+    (product(a20,a11) = a19),
+    inference(superposition,[status(thm)],[c_69,c_50])).
+tcf(c_341,plain, 
+    (product(a21,a29) = a20),
+    inference(superposition,[status(thm)],[c_70,c_50])).
+tcf(c_342,plain, 
+    (product(a22,a25) = a21),
+    inference(superposition,[status(thm)],[c_71,c_50])).
+tcf(c_343,plain, 
+    (product(a23,a31) = a22),
+    inference(superposition,[status(thm)],[c_72,c_50])).
+tcf(c_344,plain, 
+    (product(a24,a21) = a23),
+    inference(superposition,[status(thm)],[c_73,c_50])).
+tcf(c_345,plain, 
+    (product(a25,a3) = a24),
+    inference(superposition,[status(thm)],[c_74,c_50])).
+tcf(c_347,plain, 
+    (product(a27,a1) = a26),
+    inference(superposition,[status(thm)],[c_76,c_50])).
+tcf(c_348,plain, 
+    (product(a28,a21) = a27),
+    inference(superposition,[status(thm)],[c_77,c_50])).
+tcf(c_349,plain, 
+    (product(a29,a3) = a28),
+    inference(superposition,[status(thm)],[c_78,c_50])).
+tcf(c_350,plain, 
+    (product(a30,a1) = a29),
+    inference(superposition,[status(thm)],[c_79,c_50])).
+tcf(c_351,plain, 
+    (product(a31,a23) = a30),
+    inference(superposition,[status(thm)],[c_80,c_50])).
+tcf(c_352,plain, 
+    (product(a32,a3) = a31),
+    inference(superposition,[status(thm)],[c_81,c_50])).
+tcf(c_353,plain, 
+    (product(a1,a21) = a32),
+    inference(superposition,[status(thm)],[c_82,c_50])).
+tcf(c_362,plain,![X0:$i,X1:$i]:  
+    (product(product(X0,X1),X0) = product(X0,product(X1,X0))),
+    inference(superposition,[status(thm)],[c_49,c_51])).
+tcf(c_374,plain,![X0:$i]:  
+    (product(product(a11,X0),a5) = product(a12,product(X0,a5))),
+    inference(superposition,[status(thm)],[c_61,c_51])).
+tcf(c_390,plain,![X0:$i]:  
+    (product(product(a27,X0),a21) = product(a28,product(X0,a21))),
+    inference(superposition,[status(thm)],[c_77,c_51])).
+tcf(c_391,plain,![X0:$i]:  
+    (product(product(a28,X0),a3) = product(a29,product(X0,a3))),
+    inference(superposition,[status(thm)],[c_78,c_51])).
+tcf(c_405,plain,![X0:$i]:  
+    (product(product(X0,a1),a31) = product(product(X0,a31),a2)),
+    inference(superposition,[status(thm)],[c_52,c_51])).
+tcf(c_426,plain,![X0:$i]:  
+    (product(product(X0,a21),a24) = product(product(X0,a23),a21)),
+    inference(superposition,[status(thm)],[c_73,c_51])).
+tcf(c_427,plain,![X0:$i]:  
+    (product(product(X0,a3),a25) = product(product(X0,a24),a3)),
+    inference(superposition,[status(thm)],[c_74,c_51])).
+tcf(c_437,plain,![X0:$i]:  
+    (product(product(X0,a25),a2) = product(product(X0,a3),a25)),
+    inference(superposition,[status(thm)],[c_324,c_51])).
+tcf(c_494,plain,![X0:$i]:  
+    (product(product(a25,X0),a3) = product(a24,product(X0,a3))),
+    inference(superposition,[status(thm)],[c_345,c_51])).
+tcf(c_520,plain,![X0:$i]:  
+    (product(product(X0,a1),a21) = product(product(X0,a21),a32)),
+    inference(superposition,[status(thm)],[c_353,c_51])).
+tcf(c_528,plain, 
+    (product(a3,product(a29,a3)) = product(a4,a3)),
+    inference(superposition,[status(thm)],[c_54,c_362])).
+tcf(c_533,plain, 
+    (product(a9,product(a17,a9)) = product(a10,a9)),
+    inference(superposition,[status(thm)],[c_59,c_362])).
+tcf(c_535,plain, 
+    (product(a11,product(a5,a11)) = product(a12,a11)),
+    inference(superposition,[status(thm)],[c_61,c_362])).
+tcf(c_558,plain, 
+    (product(a3,product(a25,a3)) = product(a2,a3)),
+    inference(superposition,[status(thm)],[c_324,c_362])).
+tcf(c_560,plain, 
+    (product(a5,product(a11,a5)) = product(a4,a5)),
+    inference(superposition,[status(thm)],[c_326,c_362])).
+tcf(c_566,plain, 
+    (product(a12,product(a5,a12)) = product(a11,a12)),
+    inference(superposition,[status(thm)],[c_332,c_362])).
+tcf(c_585,plain, 
+    (product(a31,product(a23,a31)) = product(a30,a31)),
+    inference(superposition,[status(thm)],[c_351,c_362])).
+tcf(c_596,plain, 
+    (product(a31,a22) = product(a30,a31)),
+    inference(light_normalisation,[status(thm)],[c_585,c_343])).
+tcf(c_600,plain, 
+    (product(a4,a5) = product(a5,a12)),
+    inference(light_normalisation,[status(thm)],[c_560,c_61])).
+tcf(c_601,plain, 
+    (product(a2,a3) = product(a3,a24)),
+    inference(light_normalisation,[status(thm)],[c_558,c_345])).
+tcf(c_604,plain, 
+    (product(a11,a4) = product(a12,a11)),
+    inference(light_normalisation,[status(thm)],[c_535,c_326])).
+tcf(c_605,plain, 
+    (product(a9,a18) = product(a10,a9)),
+    inference(light_normalisation,[status(thm)],[c_533,c_67])).
+tcf(c_607,plain, 
+    (product(a3,a28) = product(a4,a3)),
+    inference(light_normalisation,[status(thm)],[c_528,c_349])).
+tcf(c_1469,plain, 
+    (product(a28,product(a1,a21)) = product(a26,a21)),
+    inference(superposition,[status(thm)],[c_347,c_390])).
+tcf(c_1478,plain, 
+    (product(a26,a21) = product(a28,a32)),
+    inference(light_normalisation,[status(thm)],[c_1469,c_353])).
+tcf(c_1535,plain, 
+    (product(product(a26,a21),a32) = a28),
+    inference(superposition,[status(thm)],[c_1478,c_50])).
+tcf(c_1537,plain, 
+    (product(product(a26,a21),a3) = product(a29,product(a32,a3))),
+    inference(superposition,[status(thm)],[c_1478,c_391])).
+tcf(c_1538,plain, 
+    (product(product(a26,a21),a3) = product(a29,a31)),
+    inference(light_normalisation,[status(thm)],[c_1537,c_352])).
+tcf(c_1784,plain, 
+    (product(product(a29,a31),a2) = product(a30,a31)),
+    inference(superposition,[status(thm)],[c_79,c_405])).
+tcf(c_1799,plain, 
+    (product(product(a29,a31),a2) = product(a31,a22)),
+    inference(light_normalisation,[status(thm)],[c_1784,c_596])).
+tcf(c_2472,plain, 
+    (product(product(a25,a21),a24) = product(a26,a21)),
+    inference(superposition,[status(thm)],[c_75,c_426])).
+tcf(c_2475,plain, 
+    (product(product(a31,a21),a24) = product(a30,a21)),
+    inference(superposition,[status(thm)],[c_351,c_426])).
+tcf(c_2519,plain, 
+    (product(product(product(a25,a21),a3),a25) = product(product(a26,a21),a3)),
+    inference(superposition,[status(thm)],[c_2472,c_427])).
+tcf(c_2535,plain, 
+    (product(product(product(a25,a21),a3),a25) = product(a29,a31)),
+    inference(light_normalisation,[status(thm)],[c_2519,c_1538])).
+tcf(c_2840,plain,![X0:$i]:  
+    (product(product(product(a25,X0),a3),a25) = product(product(a25,product(X0,a25)),a2)),
+    inference(superposition,[status(thm)],[c_362,c_437])).
+tcf(c_2859,plain,![X0:$i]:  
+    (product(product(a25,product(X0,a25)),a2) = product(product(a24,product(X0,a3)),a25)),
+    inference(light_normalisation,[status(thm)],[c_2840,c_494])).
+tcf(c_4737,plain, 
+    (product(product(a30,a21),a32) = product(a29,a21)),
+    inference(superposition,[status(thm)],[c_350,c_520])).
+tcf(c_5602,plain, 
+    (product(product(a25,a22),a2) = product(a29,a31)),
+    inference(demodulation,[status(thm)],[c_2535,c_71,c_494,c_2859])).
+tcf(c_5605,plain, 
+    (product(product(a29,a31),a2) = product(a25,a22)),
+    inference(superposition,[status(thm)],[c_5602,c_50])).
+tcf(c_5609,plain, 
+    (product(a31,a22) = product(a25,a22)),
+    inference(light_normalisation,[status(thm)],[c_5605,c_1799])).
+tcf(c_5672,plain, 
+    (product(product(a31,a22),a22) = a25),
+    inference(superposition,[status(thm)],[c_5609,c_50])).
+tcf(c_5692,plain, 
+    (a31 = a25),
+    inference(demodulation,[status(thm)],[c_5672,c_50])).
+tcf(c_5714,plain, 
+    (product(product(a31,a21),a24) = product(a26,a21)),
+    inference(demodulation,[status(thm)],[c_2472,c_5692])).
+tcf(c_5738,plain, 
+    (product(a31,a3) = a24),
+    inference(demodulation,[status(thm)],[c_345,c_5692])).
+tcf(c_5739,plain, 
+    (product(a22,a31) = a21),
+    inference(demodulation,[status(thm)],[c_342,c_5692])).
+tcf(c_5740,plain, 
+    (product(a3,a31) = a2),
+    inference(demodulation,[status(thm)],[c_324,c_5692])).
+tcf(c_5741,plain, 
+    (product(a31,a23) = a26),
+    inference(demodulation,[status(thm)],[c_75,c_5692])).
+tcf(c_5742,plain, 
+    (product(a24,a3) = a31),
+    inference(demodulation,[status(thm)],[c_74,c_5692])).
+tcf(c_5743,plain, 
+    (tuple(a2,a31,a32,a3,a31,a26,a4,a29,a30,a5,a11,a12,a6,a15,a16,a7,a8,a19,a20,a9,a10,a17,a18,a13,a14,a21,a22,a23,a24,a27,a28) = iPr_def_11),
+    inference(demodulation,[status(thm)],[c_162,c_5692])).
+tcf(c_5745,plain, 
+    (tuple(a1,a30,a31,a2,a24,a31,a3,a28,a29,a4,a10,a11,a5,a14,a15,a6,a7,a18,a19,a8,a9,a16,a17,a12,a13,a20,a21,a22,a23,a26,a27) = iPr_def_10),
+    inference(demodulation,[status(thm)],[c_161,c_5692])).
+tcf(c_5746,plain, 
+    (product(a2,a31) = a3),
+    inference(demodulation,[status(thm)],[c_53,c_5692])).
+tcf(c_5769,plain, 
+    (product(a26,a21) = product(a30,a21)),
+    inference(demodulation,[status(thm)],[c_2475,c_5714])).
+tcf(c_5771,plain, 
+    (product(product(a26,a21),a32) = product(a29,a21)),
+    inference(demodulation,[status(thm)],[c_4737,c_5769])).
+tcf(c_5774,plain, 
+    (product(a29,a21) = a28),
+    inference(light_normalisation,[status(thm)],[c_5771,c_1535])).
+tcf(c_5790,plain, 
+    (a24 = a32),
+    inference(demodulation,[status(thm)],[c_81,c_5738])).
+tcf(c_5808,plain, 
+    (product(a24,a21) = a1),
+    inference(demodulation,[status(thm)],[c_82,c_5790])).
+tcf(c_5809,plain, 
+    (a1 = a23),
+    inference(light_normalisation,[status(thm)],[c_5808,c_344])).
+tcf(c_5829,plain, 
+    (product(a30,a23) = a29),
+    inference(demodulation,[status(thm)],[c_350,c_5809])).
+tcf(c_5834,plain, 
+    (product(a23,a31) = a2),
+    inference(demodulation,[status(thm)],[c_52,c_5809])).
+tcf(c_5835,plain, 
+    (a2 = a22),
+    inference(demodulation,[status(thm)],[c_343,c_5834])).
+tcf(c_5849,plain, 
+    (product(a2,a31) = a23),
+    inference(demodulation,[status(thm)],[c_72,c_5835])).
+tcf(c_5852,plain, 
+    (a31 = a29),
+    inference(light_normalisation,[status(thm)],[c_5829,c_80])).
+tcf(c_5881,plain, 
+    (product(a21,a31) = a20),
+    inference(demodulation,[status(thm)],[c_341,c_5852])).
+tcf(c_5882,plain, 
+    (product(a4,a31) = a3),
+    inference(demodulation,[status(thm)],[c_325,c_5852])).
+tcf(c_5883,plain, 
+    (product(a28,a3) = a31),
+    inference(demodulation,[status(thm)],[c_78,c_5852])).
+tcf(c_5885,plain, 
+    (product(a3,a31) = a4),
+    inference(demodulation,[status(thm)],[c_54,c_5852])).
+tcf(c_5893,plain, 
+    (a26 = a30),
+    inference(demodulation,[status(thm)],[c_351,c_5741])).
+tcf(c_5907,plain, 
+    (a3 = a21),
+    inference(light_normalisation,[status(thm)],[c_5739,c_5746,c_5835])).
+tcf(c_5922,plain, 
+    (product(a28,a3) = a27),
+    inference(demodulation,[status(thm)],[c_348,c_5907])).
+tcf(c_5923,plain, 
+    (product(a24,a3) = a23),
+    inference(demodulation,[status(thm)],[c_344,c_5907])).
+tcf(c_5926,plain, 
+    (a31 = a23),
+    inference(light_normalisation,[status(thm)],[c_5923,c_5742])).
+tcf(c_5927,plain, 
+    (a31 = a27),
+    inference(light_normalisation,[status(thm)],[c_5922,c_5883])).
+tcf(c_5935,plain, 
+    (a1 = a31),
+    inference(demodulation,[status(thm)],[c_5809,c_5926])).
+tcf(c_6010,plain, 
+    (product(a31,a31) = a26),
+    inference(light_normalisation,[status(thm)],[c_5741,c_5926])).
+tcf(c_6011,plain, 
+    (a31 = a26),
+    inference(demodulation,[status(thm)],[c_6010,c_49])).
+tcf(c_6012,plain, 
+    (a31 = a30),
+    inference(demodulation,[status(thm)],[c_5893,c_6011])).
+tcf(c_6023,plain, 
+    (a24 = a28),
+    inference(light_normalisation,
+              [status(thm)],
+              [c_5774,c_5738,c_5852,c_5907])).
+tcf(c_6026,plain, 
+    (product(a3,a24) = product(a4,a3)),
+    inference(demodulation,[status(thm)],[c_607,c_6023])).
+tcf(c_6031,plain, 
+    (product(a31,a31) = a2),
+    inference(light_normalisation,[status(thm)],[c_5834,c_5926])).
+tcf(c_6032,plain, 
+    (a31 = a2),
+    inference(demodulation,[status(thm)],[c_6031,c_49])).
+tcf(c_6033,plain, 
+    (product(a31,a31) = a3),
+    inference(demodulation,[status(thm)],[c_5746,c_6032])).
+tcf(c_6034,plain, 
+    (product(a3,a31) = a31),
+    inference(demodulation,[status(thm)],[c_5740,c_6032])).
+tcf(c_6035,plain, 
+    (a31 = a22),
+    inference(demodulation,[status(thm)],[c_5835,c_6032])).
+tcf(c_6036,plain, 
+    (product(a31,a3) = product(a3,a24)),
+    inference(demodulation,[status(thm)],[c_601,c_6032])).
+tcf(c_6037,plain, 
+    (product(a3,a24) = a24),
+    inference(light_normalisation,[status(thm)],[c_6036,c_5738])).
+tcf(c_6038,plain, 
+    (a31 = a3),
+    inference(light_normalisation,
+              [status(thm)],
+              [c_5849,c_5926,c_6032,c_6033])).
+tcf(c_6039,plain, 
+    (a3 = a22),
+    inference(demodulation,[status(thm)],[c_6035,c_6038])).
+tcf(c_6040,plain, 
+    (a2 = a3),
+    inference(demodulation,[status(thm)],[c_6032,c_6038])).
+tcf(c_6042,plain, 
+    (a3 = a30),
+    inference(demodulation,[status(thm)],[c_6012,c_6038])).
+tcf(c_6043,plain, 
+    (a3 = a26),
+    inference(demodulation,[status(thm)],[c_6011,c_6038])).
+tcf(c_6044,plain, 
+    (a1 = a3),
+    inference(demodulation,[status(thm)],[c_5935,c_6038])).
+tcf(c_6045,plain, 
+    (a3 = a27),
+    inference(demodulation,[status(thm)],[c_5927,c_6038])).
+tcf(c_6046,plain, 
+    (a3 = a23),
+    inference(demodulation,[status(thm)],[c_5926,c_6038])).
+tcf(c_6047,plain, 
+    (product(a3,a3) = a24),
+    inference(demodulation,[status(thm)],[c_5738,c_6038])).
+tcf(c_6048,plain, 
+    (a3 = a29),
+    inference(demodulation,[status(thm)],[c_5852,c_6038])).
+tcf(c_6061,plain, 
+    (a20 = a24),
+    inference(light_normalisation,
+              [status(thm)],
+              [c_5881,c_5907,c_6038,c_6047])).
+tcf(c_6062,plain, 
+    (a20 = a28),
+    inference(demodulation,[status(thm)],[c_6023,c_6061])).
+tcf(c_6063,plain, 
+    (a20 = a32),
+    inference(demodulation,[status(thm)],[c_5790,c_6061])).
+tcf(c_6064,plain, 
+    (a3 = a20),
+    inference(light_normalisation,
+              [status(thm)],
+              [c_5882,c_6026,c_6037,c_6038,c_6061])).
+tcf(c_6065,plain, 
+    (a3 = a32),
+    inference(demodulation,[status(thm)],[c_6063,c_6064])).
+tcf(c_6066,plain, 
+    (a3 = a28),
+    inference(demodulation,[status(thm)],[c_6062,c_6064])).
+tcf(c_6067,plain, 
+    (a3 = a24),
+    inference(demodulation,[status(thm)],[c_6061,c_6064])).
+tcf(c_6079,plain, 
+    (product(a3,a11) = a19),
+    inference(demodulation,[status(thm)],[c_340,c_6064])).
+tcf(c_6085,plain, 
+    (a3 = a4),
+    inference(light_normalisation,[status(thm)],[c_5885,c_6034,c_6038])).
+tcf(c_6096,plain, 
+    (product(a11,a3) = product(a12,a11)),
+    inference(demodulation,[status(thm)],[c_604,c_6085])).
+tcf(c_6097,plain, 
+    (product(a3,a5) = product(a5,a12)),
+    inference(demodulation,[status(thm)],[c_600,c_6085])).
+tcf(c_6098,plain, 
+    (product(a5,a11) = a3),
+    inference(demodulation,[status(thm)],[c_326,c_6085])).
+tcf(c_6099,plain, 
+    (product(a3,a11) = a5),
+    inference(demodulation,[status(thm)],[c_55,c_6085])).
+tcf(c_6103,plain, 
+    (product(a12,product(a3,a5)) = product(a11,a12)),
+    inference(demodulation,[status(thm)],[c_566,c_6097])).
+tcf(c_6112,plain, 
+    (a5 = a19),
+    inference(light_normalisation,[status(thm)],[c_6079,c_6099])).
+tcf(c_6162,plain, 
+    (product(a5,a15) = a18),
+    inference(demodulation,[status(thm)],[c_339,c_6112])).
+tcf(c_6165,plain, 
+    (product(a8,a5) = a7),
+    inference(demodulation,[status(thm)],[c_328,c_6112])).
+tcf(c_6166,plain, 
+    (product(a18,a15) = a5),
+    inference(demodulation,[status(thm)],[c_68,c_6112])).
+tcf(c_6167,plain, 
+    (product(a16,a5) = a17),
+    inference(demodulation,[status(thm)],[c_66,c_6112])).
+tcf(c_6168,plain, 
+    (product(a12,a5) = a13),
+    inference(demodulation,[status(thm)],[c_62,c_6112])).
+tcf(c_6169,plain, 
+    (product(a7,a5) = a8),
+    inference(demodulation,[status(thm)],[c_57,c_6112])).
+tcf(c_6170,plain, 
+    (a11 = a13),
+    inference(light_normalisation,[status(thm)],[c_6168,c_332])).
+tcf(c_6171,plain, 
+    (a15 = a17),
+    inference(light_normalisation,[status(thm)],[c_6167,c_336])).
+tcf(c_6197,plain, 
+    (a6 = a18),
+    inference(demodulation,[status(thm)],[c_56,c_6162])).
+tcf(c_6211,plain, 
+    (a7 = a9),
+    inference(demodulation,[status(thm)],[c_58,c_6165])).
+tcf(c_6229,plain, 
+    (product(a7,a18) = product(a10,a7)),
+    inference(demodulation,[status(thm)],[c_605,c_6211])).
+tcf(c_6230,plain, 
+    (product(a18,a7) = a17),
+    inference(demodulation,[status(thm)],[c_338,c_6211])).
+tcf(c_6231,plain, 
+    (product(a10,a17) = a7),
+    inference(demodulation,[status(thm)],[c_330,c_6211])).
+tcf(c_6237,plain, 
+    (product(a7,a18) = a11),
+    inference(light_normalisation,[status(thm)],[c_6229,c_60])).
+tcf(c_6247,plain, 
+    (product(a11,a7) = a14),
+    inference(demodulation,[status(thm)],[c_63,c_6170])).
+tcf(c_6248,plain, 
+    (a10 = a14),
+    inference(light_normalisation,[status(thm)],[c_6247,c_331])).
+tcf(c_6256,plain, 
+    (product(a15,a17) = a10),
+    inference(demodulation,[status(thm)],[c_335,c_6248])).
+tcf(c_6257,plain, 
+    (product(a10,a17) = a15),
+    inference(demodulation,[status(thm)],[c_64,c_6248])).
+tcf(c_6305,plain, 
+    (product(a18,a7) = a15),
+    inference(light_normalisation,[status(thm)],[c_6230,c_6171])).
+tcf(c_6308,plain, 
+    (product(a15,a7) = a18),
+    inference(superposition,[status(thm)],[c_6305,c_50])).
+tcf(c_6313,plain, 
+    (product(a10,a15) = a7),
+    inference(light_normalisation,[status(thm)],[c_6231,c_6171])).
+tcf(c_6367,plain, 
+    (product(a11,a18) = a7),
+    inference(superposition,[status(thm)],[c_6237,c_50])).
+tcf(c_6372,plain, 
+    (product(a15,a15) = a10),
+    inference(light_normalisation,[status(thm)],[c_6256,c_6171])).
+tcf(c_6373,plain, 
+    (a15 = a10),
+    inference(demodulation,[status(thm)],[c_6372,c_49])).
+tcf(c_6376,plain, 
+    (product(a15,a15) = a7),
+    inference(demodulation,[status(thm)],[c_6313,c_6373])).
+tcf(c_6377,plain, 
+    (a15 = a14),
+    inference(demodulation,[status(thm)],[c_6248,c_6373])).
+tcf(c_6386,plain, 
+    (product(a15,a7) = a11),
+    inference(demodulation,[status(thm)],[c_60,c_6373])).
+tcf(c_6387,plain, 
+    (a11 = a18),
+    inference(demodulation,[status(thm)],[c_6308,c_6386])).
+tcf(c_6390,plain, 
+    (product(a11,a15) = a5),
+    inference(demodulation,[status(thm)],[c_6166,c_6387])).
+tcf(c_6391,plain, 
+    (product(a5,a15) = a11),
+    inference(demodulation,[status(thm)],[c_6162,c_6387])).
+tcf(c_6392,plain, 
+    (a11 = a6),
+    inference(demodulation,[status(thm)],[c_6197,c_6387])).
+tcf(c_6393,plain, 
+    (a15 = a7),
+    inference(light_normalisation,
+              [status(thm)],
+              [c_6257,c_6171,c_6373,c_6376])).
+tcf(c_6394,plain, 
+    (product(a15,a5) = a8),
+    inference(demodulation,[status(thm)],[c_6169,c_6393])).
+tcf(c_6396,plain, 
+    (a15 = a9),
+    inference(demodulation,[status(thm)],[c_6211,c_6393])).
+tcf(c_6397,plain, 
+    (a8 = a16),
+    inference(demodulation,[status(thm)],[c_65,c_6394])).
+tcf(c_6404,plain, 
+    (product(a11,a11) = a15),
+    inference(light_normalisation,[status(thm)],[c_6367,c_6387,c_6393])).
+tcf(c_6405,plain, 
+    (a11 = a15),
+    inference(demodulation,[status(thm)],[c_6404,c_49])).
+tcf(c_6406,plain, 
+    (a11 = a9),
+    inference(demodulation,[status(thm)],[c_6396,c_6405])).
+tcf(c_6407,plain, 
+    (a11 = a7),
+    inference(demodulation,[status(thm)],[c_6393,c_6405])).
+tcf(c_6408,plain, 
+    (a11 = a14),
+    inference(demodulation,[status(thm)],[c_6377,c_6405])).
+tcf(c_6409,plain, 
+    (a11 = a10),
+    inference(demodulation,[status(thm)],[c_6373,c_6405])).
+tcf(c_6410,plain, 
+    (a11 = a17),
+    inference(demodulation,[status(thm)],[c_6171,c_6405])).
+tcf(c_6419,plain, 
+    (product(product(a11,a3),a11) = a12),
+    inference(superposition,[status(thm)],[c_6096,c_50])).
+tcf(c_6430,plain, 
+    (product(a11,a11) = a5),
+    inference(light_normalisation,[status(thm)],[c_6390,c_6405])).
+tcf(c_6431,plain, 
+    (a11 = a5),
+    inference(demodulation,[status(thm)],[c_6430,c_49])).
+tcf(c_6432,plain, 
+    (a5 = a17),
+    inference(demodulation,[status(thm)],[c_6410,c_6431])).
+tcf(c_6433,plain, 
+    (a5 = a10),
+    inference(demodulation,[status(thm)],[c_6409,c_6431])).
+tcf(c_6434,plain, 
+    (a5 = a14),
+    inference(demodulation,[status(thm)],[c_6408,c_6431])).
+tcf(c_6435,plain, 
+    (a5 = a7),
+    inference(demodulation,[status(thm)],[c_6407,c_6431])).
+tcf(c_6437,plain, 
+    (a5 = a9),
+    inference(demodulation,[status(thm)],[c_6406,c_6431])).
+tcf(c_6438,plain, 
+    (a5 = a15),
+    inference(demodulation,[status(thm)],[c_6405,c_6431])).
+tcf(c_6439,plain, 
+    (a5 = a6),
+    inference(demodulation,[status(thm)],[c_6392,c_6431])).
+tcf(c_6440,plain, 
+    (a5 = a18),
+    inference(demodulation,[status(thm)],[c_6387,c_6431])).
+tcf(c_6441,plain, 
+    (product(a3,a5) = a5),
+    inference(demodulation,[status(thm)],[c_6099,c_6431])).
+tcf(c_6442,plain, 
+    (product(a5,a5) = a3),
+    inference(demodulation,[status(thm)],[c_6098,c_6431])).
+tcf(c_6443,plain, 
+    (a5 = a13),
+    inference(demodulation,[status(thm)],[c_6170,c_6431])).
+tcf(c_6446,plain,![X0:$i]:  
+    (product(product(a5,X0),a5) = product(a12,product(X0,a5))),
+    inference(demodulation,[status(thm)],[c_374,c_6431])).
+tcf(c_6451,plain, 
+    (product(product(a5,a3),a5) = a12),
+    inference(light_normalisation,[status(thm)],[c_6419,c_6431])).
+tcf(c_6452,plain, 
+    (a5 = a12),
+    inference(demodulation,
+              [status(thm)],
+              [c_6451,c_6097,c_6103,c_6431,c_6441,c_6446])).
+tcf(c_6456,plain, 
+    (a3 = a5),
+    inference(light_normalisation,
+              [status(thm)],
+              [c_6391,c_6431,c_6438,c_6442])).
+tcf(c_6457,plain, 
+    (a3 = a13),
+    inference(demodulation,[status(thm)],[c_6443,c_6456])).
+tcf(c_6458,plain, 
+    (a3 = a18),
+    inference(demodulation,[status(thm)],[c_6440,c_6456])).
+tcf(c_6459,plain, 
+    (a3 = a6),
+    inference(demodulation,[status(thm)],[c_6439,c_6456])).
+tcf(c_6460,plain, 
+    (a3 = a15),
+    inference(demodulation,[status(thm)],[c_6438,c_6456])).
+tcf(c_6461,plain, 
+    (a3 = a9),
+    inference(demodulation,[status(thm)],[c_6437,c_6456])).
+tcf(c_6462,plain, 
+    (a3 = a7),
+    inference(demodulation,[status(thm)],[c_6435,c_6456])).
+tcf(c_6463,plain, 
+    (a3 = a14),
+    inference(demodulation,[status(thm)],[c_6434,c_6456])).
+tcf(c_6464,plain, 
+    (a3 = a12),
+    inference(demodulation,[status(thm)],[c_6452,c_6456])).
+tcf(c_6465,plain, 
+    (a3 = a10),
+    inference(demodulation,[status(thm)],[c_6433,c_6456])).
+tcf(c_6466,plain, 
+    (a3 = a17),
+    inference(demodulation,[status(thm)],[c_6432,c_6456])).
+tcf(c_6467,plain, 
+    (a3 = a11),
+    inference(demodulation,[status(thm)],[c_6431,c_6456])).
+tcf(c_6468,plain, 
+    (a3 = a19),
+    inference(demodulation,[status(thm)],[c_6112,c_6456])).
+tcf(c_6475,plain, 
+    (product(a3,a3) = a8),
+    inference(light_normalisation,[status(thm)],[c_6394,c_6456,c_6460])).
+tcf(c_6476,plain, 
+    (a3 = a8),
+    inference(demodulation,[status(thm)],[c_6475,c_49])).
+tcf(c_6477,plain, 
+    (a3 = a16),
+    inference(demodulation,[status(thm)],[c_6397,c_6476])).
+tcf(c_16884,plain, 
+    ($false),
+    inference(smt_impl_just,
+              [status(thm)],
+              [c_6477,c_6476,c_6468,c_6467,c_6466,c_6465,c_6464,c_6463,
+               c_6462,c_6461,c_6460,c_6459,c_6458,c_6457,c_6456,c_6085,
+               c_6067,c_6066,c_6065,c_6064,c_6048,c_6046,c_6045,c_6044,
+               c_6043,c_6042,c_6040,c_6039,c_6038,c_5907,c_5745,c_5743,
+               c_163])).
+% SZS output end CNFRefutation for TOP050-1.p

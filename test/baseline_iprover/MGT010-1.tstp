@@ -1,0 +1,211 @@
+% SZS status Unsatisfiable for MGT010-1.p
+% SZS output start CNFRefutation for MGT010-1.p
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (~organization(X0,X1)|reproducibility(X0,sk1(X1,X0),X1)),
+    file('Problems/MGT/MGT010-1.p', mp3_1)).
+tcf(c_50,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i]:  
+    (~reproducibility(X0,X1,X2)|~reproducibility(X3,X4,X5)|~reliability(X0,X6,X2)|
+    ~reliability(X3,X7,X5)|~accountability(X0,X8,X2)|~accountability(X3,X9,X5)|
+    ~organization(X0,X2)|~organization(X3,X5)|~greater(X4,X1)|greater(X7,X6)),
+    file('Problems/MGT/MGT010-1.p', a2_FOL_2)).
+tcf(c_51,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i]:  
+    (~reproducibility(X0,X1,X2)|~reproducibility(X3,X4,X5)|~reliability(X0,X6,X2)|
+    ~reliability(X3,X7,X5)|~accountability(X0,X8,X2)|~accountability(X3,X9,X5)|
+    ~organization(X0,X2)|~organization(X3,X5)|~greater(X4,X1)|greater(X9,X8)),
+    file('Problems/MGT/MGT010-1.p', a2_FOL_3)).
+tcf(c_53,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i]:  
+    (~reproducibility(X0,X1,X2)|~reproducibility(X3,X4,X5)|~reorganization_free(X0,X2,X2)|
+    ~reorganization_free(X3,X5,X5)|~class(X0,X6,X2)|~class(X3,X6,X5)|
+    ~size(X0,X7,X2)|~size(X3,X8,X5)|~organization(X0,X2)|~organization(X3,X5)|
+    ~greater(X8,X7)|greater(X4,X1)),
+    file('Problems/MGT/MGT010-1.p', t9_FOL_5)).
+tcf(c_54,plain, 
+    (organization(sk2,sk11)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_6)).
+tcf(c_55,plain, 
+    (organization(sk3,sk12)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_7)).
+tcf(c_56,plain, 
+    (reorganization_free(sk2,sk11,sk11)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_8)).
+tcf(c_57,plain, 
+    (reorganization_free(sk3,sk12,sk12)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_9)).
+tcf(c_58,plain, 
+    (class(sk2,sk4,sk11)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_10)).
+tcf(c_59,plain, 
+    (class(sk3,sk4,sk12)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_11)).
+tcf(c_60,plain, 
+    (reliability(sk2,sk5,sk11)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_12)).
+tcf(c_61,plain, 
+    (reliability(sk3,sk6,sk12)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_13)).
+tcf(c_62,plain, 
+    (accountability(sk2,sk7,sk11)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_14)).
+tcf(c_63,plain, 
+    (accountability(sk3,sk8,sk12)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_15)).
+tcf(c_64,plain, 
+    (size(sk2,sk9,sk11)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_16)).
+tcf(c_65,plain, 
+    (size(sk3,sk10,sk12)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_17)).
+tcf(c_66,plain, 
+    (greater(sk10,sk9)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_18)).
+tcf(c_67,plain, 
+    (~greater(sk6,sk5)|~greater(sk8,sk7)),
+    file('Problems/MGT/MGT010-1.p', t10_FOL_19)).
+tcf(c_189,plain, 
+    (~organization(sk2,sk11)|reproducibility(sk2,sk1(sk11,sk2),sk11)),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_190,plain, 
+    (~organization(sk3,sk12)|reproducibility(sk3,sk1(sk12,sk3),sk12)),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_191,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~reproducibility(X0,X1,X2)|~reliability(X0,X3,X2)|~accountability(X0,X4,X2)|
+    ~reproducibility(sk2,X5,sk11)|~reliability(sk2,X6,sk11)|~accountability(sk2,X7,sk11)|
+    ~organization(X0,X2)|~greater(X1,X5)|~organization(sk2,sk11)|greater(X3,X6)),
+    inference(instantiation,[status(thm)],[c_50])).
+tcf(c_193,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~reproducibility(X0,X1,X2)|~reliability(X0,X3,X2)|~accountability(X0,X4,X2)|
+    ~reproducibility(sk2,X5,sk11)|~reliability(sk2,X6,sk11)|~accountability(sk2,X7,sk11)|
+    ~organization(X0,X2)|~greater(X1,X5)|~organization(sk2,sk11)|greater(X4,X7)),
+    inference(instantiation,[status(thm)],[c_51])).
+tcf(c_197,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i]:  
+    (~reproducibility(X0,X1,X2)|~reorganization_free(X0,X2,X2)|~class(X0,X3,X2)|
+    ~size(X0,X4,X2)|~reproducibility(sk2,X5,sk11)|~class(sk2,X3,sk11)|
+    ~size(sk2,X6,sk11)|~reorganization_free(sk2,sk11,sk11)|~organization(X0,X2)|
+    ~greater(X4,X6)|~organization(sk2,sk11)|greater(X1,X5)),
+    inference(instantiation,[status(thm)],[c_53])).
+tcf(c_200,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~reproducibility(sk2,X0,sk11)|~reproducibility(sk3,X1,sk12)|~reliability(sk2,X2,sk11)|
+    ~reliability(sk3,X3,sk12)|~accountability(sk2,X4,sk11)|~accountability(sk3,X5,sk12)|
+    ~greater(X1,X0)|~organization(sk2,sk11)|~organization(sk3,sk12)|greater(X3,X2)),
+    inference(instantiation,[status(thm)],[c_191])).
+tcf(c_204,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~reproducibility(sk2,X0,sk11)|~reproducibility(sk3,X1,sk12)|~reliability(sk2,X2,sk11)|
+    ~reliability(sk3,X3,sk12)|~accountability(sk2,X4,sk11)|~accountability(sk3,X5,sk12)|
+    ~greater(X1,X0)|~organization(sk2,sk11)|~organization(sk3,sk12)|greater(X5,X4)),
+    inference(instantiation,[status(thm)],[c_193])).
+tcf(c_211,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~reproducibility(sk2,sk1(sk11,sk2),sk11)|~reproducibility(X0,X1,X2)|
+    ~reorganization_free(X0,X2,X2)|~class(X0,X3,X2)|~size(X0,X4,X2)|~class(sk2,X3,sk11)|
+    ~size(sk2,X5,sk11)|~reorganization_free(sk2,sk11,sk11)|~organization(X0,X2)|
+    ~greater(X4,X5)|~organization(sk2,sk11)|greater(X1,sk1(sk11,sk2))),
+    inference(instantiation,[status(thm)],[c_197])).
+tcf(c_217,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~reproducibility(sk2,sk1(sk11,sk2),sk11)|~greater(X0,sk1(sk11,sk2))|
+    ~reproducibility(sk3,X0,sk12)|~reliability(sk2,X1,sk11)|~reliability(sk3,X2,sk12)|
+    ~accountability(sk2,X3,sk11)|~accountability(sk3,X4,sk12)|~organization(sk2,sk11)|
+    ~organization(sk3,sk12)|greater(X2,X1)),
+    inference(instantiation,[status(thm)],[c_200])).
+tcf(c_224,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~reproducibility(sk2,sk1(sk11,sk2),sk11)|~greater(X0,sk1(sk11,sk2))|
+    ~reproducibility(sk3,X0,sk12)|~reliability(sk2,X1,sk11)|~reliability(sk3,X2,sk12)|
+    ~accountability(sk2,X3,sk11)|~accountability(sk3,X4,sk12)|~organization(sk2,sk11)|
+    ~organization(sk3,sk12)|greater(X4,X3)),
+    inference(instantiation,[status(thm)],[c_204])).
+tcf(c_237,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~greater(sk1(sk12,sk3),sk1(sk11,sk2))|~reproducibility(sk2,sk1(sk11,sk2),sk11)|
+    ~reproducibility(sk3,sk1(sk12,sk3),sk12)|~reliability(sk2,X0,sk11)|
+    ~reliability(sk3,X1,sk12)|~accountability(sk2,X2,sk11)|~accountability(sk3,X3,sk12)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(X1,X0)),
+    inference(instantiation,[status(thm)],[c_217])).
+tcf(c_244,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~greater(sk1(sk12,sk3),sk1(sk11,sk2))|~reproducibility(sk2,sk1(sk11,sk2),sk11)|
+    ~reproducibility(sk3,sk1(sk12,sk3),sk12)|~reliability(sk2,X0,sk11)|
+    ~reliability(sk3,X1,sk12)|~accountability(sk2,X2,sk11)|~accountability(sk3,X3,sk12)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(X3,X2)),
+    inference(instantiation,[status(thm)],[c_224])).
+tcf(c_249,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~greater(sk1(sk12,sk3),sk1(sk11,sk2))|~reproducibility(sk2,sk1(sk11,sk2),sk11)|
+    ~reproducibility(sk3,sk1(sk12,sk3),sk12)|~reliability(sk3,X0,sk12)|
+    ~accountability(sk2,X1,sk11)|~accountability(sk3,X2,sk12)|~reliability(sk2,sk5,sk11)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(X0,sk5)),
+    inference(instantiation,[status(thm)],[c_237])).
+tcf(c_257,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~greater(sk1(sk12,sk3),sk1(sk11,sk2))|~reproducibility(sk2,sk1(sk11,sk2),sk11)|
+    ~reproducibility(sk3,sk1(sk12,sk3),sk12)|~reliability(sk3,X0,sk12)|
+    ~accountability(sk2,X1,sk11)|~accountability(sk3,X2,sk12)|~reliability(sk2,sk5,sk11)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(X2,X1)),
+    inference(instantiation,[status(thm)],[c_244])).
+tcf(c_263,plain,![X0:$i,X1:$i]:  
+    (~greater(sk1(sk12,sk3),sk1(sk11,sk2))|~reproducibility(sk2,sk1(sk11,sk2),sk11)|
+    ~reproducibility(sk3,sk1(sk12,sk3),sk12)|~accountability(sk2,X0,sk11)|
+    ~accountability(sk3,X1,sk12)|~reliability(sk2,sk5,sk11)|~reliability(sk3,sk6,sk12)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(sk6,sk5)),
+    inference(instantiation,[status(thm)],[c_249])).
+tcf(c_269,plain,![X0:$i,X1:$i]:  
+    (~greater(sk1(sk12,sk3),sk1(sk11,sk2))|~reproducibility(sk2,sk1(sk11,sk2),sk11)|
+    ~reproducibility(sk3,sk1(sk12,sk3),sk12)|~accountability(sk2,X0,sk11)|
+    ~accountability(sk3,X1,sk12)|~reliability(sk2,sk5,sk11)|~reliability(sk3,sk6,sk12)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(X1,X0)),
+    inference(instantiation,[status(thm)],[c_257])).
+tcf(c_275,plain,![X0:$i]:  
+    (~greater(sk1(sk12,sk3),sk1(sk11,sk2))|~reproducibility(sk2,sk1(sk11,sk2),sk11)|
+    ~reproducibility(sk3,sk1(sk12,sk3),sk12)|~accountability(sk3,X0,sk12)|
+    ~reliability(sk2,sk5,sk11)|~reliability(sk3,sk6,sk12)|~accountability(sk2,sk7,sk11)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(sk6,sk5)),
+    inference(instantiation,[status(thm)],[c_263])).
+tcf(c_281,plain,![X0:$i]:  
+    (~greater(sk1(sk12,sk3),sk1(sk11,sk2))|~reproducibility(sk2,sk1(sk11,sk2),sk11)|
+    ~reproducibility(sk3,sk1(sk12,sk3),sk12)|~accountability(sk3,X0,sk12)|
+    ~reliability(sk2,sk5,sk11)|~reliability(sk3,sk6,sk12)|~accountability(sk2,sk7,sk11)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(X0,sk7)),
+    inference(instantiation,[status(thm)],[c_269])).
+tcf(c_287,plain, 
+    (~greater(sk1(sk12,sk3),sk1(sk11,sk2))|~reproducibility(sk2,sk1(sk11,sk2),sk11)|
+    ~reproducibility(sk3,sk1(sk12,sk3),sk12)|~reliability(sk2,sk5,sk11)|
+    ~reliability(sk3,sk6,sk12)|~accountability(sk2,sk7,sk11)|~accountability(sk3,sk8,sk12)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(sk6,sk5)),
+    inference(instantiation,[status(thm)],[c_275])).
+tcf(c_288,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~reproducibility(sk2,sk1(sk11,sk2),sk11)|~reproducibility(X0,X1,X2)|
+    ~reorganization_free(X0,X2,X2)|~size(X0,X3,X2)|~class(X0,sk4,X2)|
+    ~size(sk2,X4,sk11)|~reorganization_free(sk2,sk11,sk11)|~class(sk2,sk4,sk11)|
+    ~organization(X0,X2)|~greater(X3,X4)|~organization(sk2,sk11)|greater(X1,sk1(sk11,sk2))),
+    inference(instantiation,[status(thm)],[c_211])).
+tcf(c_300,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~reproducibility(sk2,sk1(sk11,sk2),sk11)|~reproducibility(X0,X1,X2)|
+    ~reorganization_free(X0,X2,X2)|~size(X0,X3,X2)|~class(X0,sk4,X2)|
+    ~reorganization_free(sk2,sk11,sk11)|~class(sk2,sk4,sk11)|~size(sk2,sk9,sk11)|
+    ~organization(X0,X2)|~greater(X3,sk9)|~organization(sk2,sk11)|greater(X1,sk1(sk11,sk2))),
+    inference(instantiation,[status(thm)],[c_288])).
+tcf(c_387,plain,![X0:$i,X1:$i]:  
+    (~reproducibility(sk2,sk1(sk11,sk2),sk11)|~reproducibility(sk3,X0,sk12)|
+    ~size(sk3,X1,sk12)|~reorganization_free(sk2,sk11,sk11)|~reorganization_free(sk3,sk12,sk12)|
+    ~class(sk2,sk4,sk11)|~class(sk3,sk4,sk12)|~size(sk2,sk9,sk11)|~greater(X1,sk9)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(X0,sk1(sk11,sk2))),
+    inference(instantiation,[status(thm)],[c_300])).
+tcf(c_493,plain,![X0:$i]:  
+    (~reproducibility(sk2,sk1(sk11,sk2),sk11)|~reproducibility(sk3,sk1(sk12,sk3),sk12)|
+    ~size(sk3,X0,sk12)|~reorganization_free(sk2,sk11,sk11)|~reorganization_free(sk3,sk12,sk12)|
+    ~class(sk2,sk4,sk11)|~class(sk3,sk4,sk12)|~size(sk2,sk9,sk11)|~greater(X0,sk9)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(sk1(sk12,sk3),sk1(sk11,sk2))),
+    inference(instantiation,[status(thm)],[c_387])).
+tcf(c_602,plain, 
+    (~reproducibility(sk2,sk1(sk11,sk2),sk11)|~reproducibility(sk3,sk1(sk12,sk3),sk12)|
+    ~reorganization_free(sk2,sk11,sk11)|~reorganization_free(sk3,sk12,sk12)|
+    ~class(sk2,sk4,sk11)|~class(sk3,sk4,sk12)|~size(sk2,sk9,sk11)|~size(sk3,sk10,sk12)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|~greater(sk10,sk9)|
+    greater(sk1(sk12,sk3),sk1(sk11,sk2))),
+    inference(instantiation,[status(thm)],[c_493])).
+tcf(c_669,plain, 
+    (~greater(sk1(sk12,sk3),sk1(sk11,sk2))|~reproducibility(sk2,sk1(sk11,sk2),sk11)|
+    ~reproducibility(sk3,sk1(sk12,sk3),sk12)|~reliability(sk2,sk5,sk11)|
+    ~reliability(sk3,sk6,sk12)|~accountability(sk2,sk7,sk11)|~accountability(sk3,sk8,sk12)|
+    ~organization(sk2,sk11)|~organization(sk3,sk12)|greater(sk8,sk7)),
+    inference(instantiation,[status(thm)],[c_281])).
+tcf(c_670,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_669,c_602,c_287,c_190,c_189,c_67,c_56,c_57,c_58,c_59,
+               c_60,c_61,c_62,c_63,c_64,c_65,c_54,c_55,c_66])).
+% SZS output end CNFRefutation for MGT010-1.p

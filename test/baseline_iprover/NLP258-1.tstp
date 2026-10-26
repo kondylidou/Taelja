@@ -1,0 +1,409 @@
+% SZS status Unsatisfiable for NLP258-1.p
+% SZS output start CNFRefutation for NLP258-1.p
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (~smoke(X0,X1)|event(X0,X1)),
+    file('Problems/NLP/NLP258-1.p', clause1)).
+tcf(c_77,plain,![X0:$i,X1:$i]:  
+    (~vincent_forename(X0,X1)|forename(X0,X1)),
+    file('Problems/NLP/NLP258-1.p', clause29)).
+tcf(c_78,plain,![X0:$i,X1:$i]:  
+    (~jules_forename(X0,X1)|forename(X0,X1)),
+    file('Problems/NLP/NLP258-1.p', clause30)).
+tcf(c_100,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~man(X0,X1)|~accessible_world(X0,X2)|man(X2,X1)),
+    file('Problems/NLP/NLP258-1.p', clause52)).
+tcf(c_120,plain, 
+    (actual_world(skc8)),
+    file('Problems/NLP/NLP258-1.p', clause72)).
+tcf(c_121,plain, 
+    (man(skc8,skc15)),
+    file('Problems/NLP/NLP258-1.p', clause73)).
+tcf(c_123,plain, 
+    (vincent_forename(skc8,skc14)),
+    file('Problems/NLP/NLP258-1.p', clause75)).
+tcf(c_124,plain, 
+    (event(skc8,skc13)),
+    file('Problems/NLP/NLP258-1.p', clause76)).
+tcf(c_125,plain, 
+    (present(skc8,skc13)),
+    file('Problems/NLP/NLP258-1.p', clause77)).
+tcf(c_126,plain, 
+    (think_believe_consider(skc8,skc13)),
+    file('Problems/NLP/NLP258-1.p', clause78)).
+tcf(c_127,plain, 
+    (jules_forename(skc8,skc11)),
+    file('Problems/NLP/NLP258-1.p', clause79)).
+tcf(c_129,plain, 
+    (man(skc8,skc10)),
+    file('Problems/NLP/NLP258-1.p', clause81)).
+tcf(c_130,plain, 
+    (state(skc8,skc9)),
+    file('Problems/NLP/NLP258-1.p', clause82)).
+tcf(c_131,plain, 
+    (accessible_world(skc8,skc12)),
+    file('Problems/NLP/NLP258-1.p', clause83)).
+tcf(c_132,plain, 
+    (proposition(skc8,skc12)),
+    file('Problems/NLP/NLP258-1.p', clause84)).
+tcf(c_133,plain, 
+    (of(skc8,skc14,skc15)),
+    file('Problems/NLP/NLP258-1.p', clause85)).
+tcf(c_134,plain, 
+    (agent(skc8,skc13,skc15)),
+    file('Problems/NLP/NLP258-1.p', clause86)).
+tcf(c_135,plain, 
+    (theme(skc8,skc13,skc12)),
+    file('Problems/NLP/NLP258-1.p', clause87)).
+tcf(c_136,plain, 
+    (of(skc8,skc11,skc10)),
+    file('Problems/NLP/NLP258-1.p', clause88)).
+tcf(c_137,plain, 
+    (be(skc8,skc9,skc10,skc10)),
+    file('Problems/NLP/NLP258-1.p', clause89)).
+tcf(c_138,plain,![X0:$i,X1:$i]:  
+    (~man(skc12,X0)|smoke(skc12,skf2(X1))),
+    file('Problems/NLP/NLP258-1.p', clause90)).
+tcf(c_139,plain,![X0:$i,X1:$i]:  
+    (~man(skc12,X0)|present(skc12,skf2(X1))),
+    file('Problems/NLP/NLP258-1.p', clause91)).
+tcf(c_141,plain,![X0:$i]:  
+    (~man(skc12,X0)|agent(skc12,skf2(X0),X0)),
+    file('Problems/NLP/NLP258-1.p', clause93)).
+tcf(c_142,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i]:  
+    (~be(X0,X1,X2,X2)|~agent(X0,X3,X4)|~agent(X0,X5,X4)|~agent(X6,X7,X2)|
+    ~theme(X0,X3,X8)|~theme(X0,X5,X6)|~of(X0,X9,X2)|~of(X0,X10,X4)|~smoke(X6,X7)|
+    ~event(X0,X3)|~event(X0,X5)|~event(X6,X7)|~proposition(X0,X6)|~proposition(X0,X8)|
+    ~state(X0,X1)|~man(X0,X2)|~man(X0,X4)|~forename(X0,X9)|~forename(X0,X10)|
+    ~vincent_forename(X0,X10)|~jules_forename(X0,X9)|~accessible_world(X0,X6)|
+    ~accessible_world(X0,X8)|~present(X0,X3)|~present(X0,X5)|~present(X6,X7)|
+    ~think_believe_consider(X0,X3)|~think_believe_consider(X0,X5)|~actual_world(X0)|
+    man(X8,skf4(X8))),
+    file('Problems/NLP/NLP258-1.p', clause94)).
+tcf(c_143,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i,X11:$i]:  
+    (~be(X0,X1,X2,X2)|~agent(X3,X4,skf4(X3))|~agent(X0,X5,X6)|~agent(X0,X7,X6)|
+    ~agent(X8,X9,X2)|~theme(X0,X5,X3)|~theme(X0,X7,X8)|~of(X0,X10,X2)|
+    ~of(X0,X11,X6)|~smoke(X3,X4)|~smoke(X8,X9)|~event(X0,X5)|~event(X0,X7)|
+    ~event(X3,X4)|~event(X8,X9)|~proposition(X0,X3)|~proposition(X0,X8)|
+    ~state(X0,X1)|~man(X0,X2)|~man(X0,X6)|~forename(X0,X10)|~forename(X0,X11)|
+    ~vincent_forename(X0,X11)|~jules_forename(X0,X10)|~accessible_world(X0,X3)|
+    ~accessible_world(X0,X8)|~present(X0,X5)|~present(X0,X7)|~present(X3,X4)|
+    ~present(X8,X9)|~think_believe_consider(X0,X5)|~think_believe_consider(X0,X7)|
+    ~actual_world(X0)),
+    file('Problems/NLP/NLP258-1.p', clause95)).
+tcf(c_227,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i]:  
+    (~be(X0,X1,X2,X2)|~agent(X0,X3,X4)|~agent(X0,X5,X4)|~agent(X6,X7,X2)|
+    ~theme(X0,X3,X8)|~theme(X0,X5,X6)|~of(X0,X9,X2)|~of(X0,X10,X4)|~smoke(X6,X7)|
+    ~event(X0,X3)|~event(X0,X5)|~proposition(X0,X6)|~proposition(X0,X8)|
+    ~state(X0,X1)|~man(X0,X2)|~man(X0,X4)|~forename(X0,X9)|~forename(X0,X10)|
+    ~vincent_forename(X0,X10)|~jules_forename(X0,X9)|~accessible_world(X0,X6)|
+    ~accessible_world(X0,X8)|~present(X0,X3)|~present(X0,X5)|~present(X6,X7)|
+    ~think_believe_consider(X0,X3)|~think_believe_consider(X0,X5)|~actual_world(X0)|
+    man(X8,skf4(X8))),
+    inference(backward_subsumption_resolution,[status(thm)],[c_142,c_49])).
+tcf(c_228,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i,X11:$i]:  
+    (~be(X0,X1,X2,X2)|~agent(X3,X4,skf4(X3))|~agent(X0,X5,X6)|~agent(X0,X7,X6)|
+    ~agent(X8,X9,X2)|~theme(X0,X5,X3)|~theme(X0,X7,X8)|~of(X0,X10,X2)|
+    ~of(X0,X11,X6)|~smoke(X3,X4)|~smoke(X8,X9)|~event(X0,X5)|~event(X0,X7)|
+    ~event(X8,X9)|~proposition(X0,X3)|~proposition(X0,X8)|~state(X0,X1)|
+    ~man(X0,X2)|~man(X0,X6)|~forename(X0,X10)|~forename(X0,X11)|~vincent_forename(X0,X11)|
+    ~jules_forename(X0,X10)|~accessible_world(X0,X3)|~accessible_world(X0,X8)|
+    ~present(X0,X5)|~present(X0,X7)|~present(X3,X4)|~present(X8,X9)|~think_believe_consider(X0,X5)|
+    ~think_believe_consider(X0,X7)|~actual_world(X0)),
+    inference(backward_subsumption_resolution,[status(thm)],[c_143,c_49])).
+tcf(c_341,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i,X11:$i]:  
+    (~be(X0,X1,X2,X2)|~agent(X3,X4,skf4(X3))|~agent(X0,X5,X6)|~agent(X0,X7,X6)|
+    ~agent(X8,X9,X2)|~theme(X0,X5,X3)|~theme(X0,X7,X8)|~of(X0,X10,X2)|
+    ~of(X0,X11,X6)|~smoke(X3,X4)|~smoke(X8,X9)|~event(X0,X5)|~event(X0,X7)|
+    ~event(X8,X9)|~proposition(X0,X3)|~proposition(X0,X8)|~state(X0,X1)|
+    ~man(X0,X2)|~man(X0,X6)|~forename(X0,X10)|~vincent_forename(X0,X11)|
+    ~jules_forename(X0,X10)|~accessible_world(X0,X3)|~accessible_world(X0,X8)|
+    ~present(X0,X5)|~present(X0,X7)|~present(X3,X4)|~present(X8,X9)|~think_believe_consider(X0,X5)|
+    ~think_believe_consider(X0,X7)|~actual_world(X0)),
+    inference(backward_subsumption_resolution,[status(thm)],[c_228,c_77])).
+tcf(c_342,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i]:  
+    (~be(X0,X1,X2,X2)|~agent(X0,X3,X4)|~agent(X0,X5,X4)|~agent(X6,X7,X2)|
+    ~theme(X0,X3,X8)|~theme(X0,X5,X6)|~of(X0,X9,X2)|~of(X0,X10,X4)|~smoke(X6,X7)|
+    ~event(X0,X3)|~event(X0,X5)|~proposition(X0,X6)|~proposition(X0,X8)|
+    ~state(X0,X1)|~man(X0,X2)|~man(X0,X4)|~forename(X0,X9)|~vincent_forename(X0,X10)|
+    ~jules_forename(X0,X9)|~accessible_world(X0,X6)|~accessible_world(X0,X8)|
+    ~present(X0,X3)|~present(X0,X5)|~present(X6,X7)|~think_believe_consider(X0,X3)|
+    ~think_believe_consider(X0,X5)|~actual_world(X0)|man(X8,skf4(X8))),
+    inference(backward_subsumption_resolution,[status(thm)],[c_227,c_77])).
+tcf(c_347,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i]:  
+    (~be(X0,X1,X2,X2)|~agent(X0,X3,X4)|~agent(X0,X5,X4)|~agent(X6,X7,X2)|
+    ~theme(X0,X3,X8)|~theme(X0,X5,X6)|~of(X0,X9,X2)|~of(X0,X10,X4)|~smoke(X6,X7)|
+    ~event(X0,X3)|~event(X0,X5)|~proposition(X0,X6)|~proposition(X0,X8)|
+    ~state(X0,X1)|~man(X0,X2)|~man(X0,X4)|~vincent_forename(X0,X10)|~jules_forename(X0,X9)|
+    ~accessible_world(X0,X6)|~accessible_world(X0,X8)|~present(X0,X3)|
+    ~present(X0,X5)|~present(X6,X7)|~think_believe_consider(X0,X3)|~think_believe_consider(X0,X5)|
+    ~actual_world(X0)|man(X8,skf4(X8))),
+    inference(backward_subsumption_resolution,[status(thm)],[c_342,c_78])).
+tcf(c_348,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i,X11:$i]:  
+    (~be(X0,X1,X2,X2)|~agent(X3,X4,skf4(X3))|~agent(X0,X5,X6)|~agent(X0,X7,X6)|
+    ~agent(X8,X9,X2)|~theme(X0,X5,X3)|~theme(X0,X7,X8)|~of(X0,X10,X2)|
+    ~of(X0,X11,X6)|~smoke(X3,X4)|~smoke(X8,X9)|~event(X0,X5)|~event(X0,X7)|
+    ~event(X8,X9)|~proposition(X0,X3)|~proposition(X0,X8)|~state(X0,X1)|
+    ~man(X0,X2)|~man(X0,X6)|~vincent_forename(X0,X11)|~jules_forename(X0,X10)|
+    ~accessible_world(X0,X3)|~accessible_world(X0,X8)|~present(X0,X5)|
+    ~present(X0,X7)|~present(X3,X4)|~present(X8,X9)|~think_believe_consider(X0,X5)|
+    ~think_believe_consider(X0,X7)|~actual_world(X0)),
+    inference(backward_subsumption_resolution,[status(thm)],[c_341,c_78])).
+tcf(c_705,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i,X11:$i]:  
+    (~be(X0,X1,X2,X2)|~agent(X3,X4,skf4(X3))|~agent(X0,X5,X6)|~agent(X0,X7,X6)|
+    ~agent(X8,X9,X2)|~theme(X0,X5,X3)|~theme(X0,X7,X8)|~of(X0,X10,X2)|
+    ~of(X0,X11,X6)|~smoke(X3,X4)|~smoke(X8,X9)|~event(X0,X5)|~event(X0,X7)|
+    ~proposition(X0,X3)|~proposition(X0,X8)|~state(X0,X1)|~man(X0,X2)|
+    ~man(X0,X6)|~vincent_forename(X0,X11)|~jules_forename(X0,X10)|~accessible_world(X0,X3)|
+    ~accessible_world(X0,X8)|~present(X0,X5)|~present(X0,X7)|~present(X3,X4)|
+    ~present(X8,X9)|~think_believe_consider(X0,X5)|~think_believe_consider(X0,X7)|
+    ~actual_world(X0)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_348,c_49])).
+tcf(c_1312,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i,X11:$i]:  
+    (X0 != skc8|~be(X0,X1,X2,X2)|~agent(X3,X4,skf4(X3))|~agent(X0,X5,X6)|
+    ~agent(X0,X7,X6)|~agent(X8,X9,X2)|~theme(X0,X5,X3)|~theme(X0,X7,X8)|
+    ~of(X0,X10,X2)|~of(X0,X11,X6)|~smoke(X3,X4)|~smoke(X8,X9)|~event(X0,X5)|
+    ~event(X0,X7)|~proposition(X0,X3)|~proposition(X0,X8)|~state(X0,X1)|
+    ~man(X0,X2)|~man(X0,X6)|~vincent_forename(X0,X11)|~jules_forename(X0,X10)|
+    ~accessible_world(X0,X3)|~accessible_world(X0,X8)|~present(X0,X5)|
+    ~present(X0,X7)|~present(X3,X4)|~present(X8,X9)|~think_believe_consider(X0,X5)|
+    ~think_believe_consider(X0,X7)),
+    inference(resolution_lifted,[status(thm)],[c_120,c_705])).
+tcf(c_1313,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i]:  
+    (~be(skc8,X0,X1,X1)|~agent(X2,X3,skf4(X2))|~agent(X4,X5,X1)|~agent(skc8,X6,X7)|
+    ~agent(skc8,X8,X7)|~theme(skc8,X6,X2)|~theme(skc8,X8,X4)|~of(skc8,X9,X1)|
+    ~of(skc8,X10,X7)|~smoke(X2,X3)|~smoke(X4,X5)|~present(X2,X3)|~present(X4,X5)|
+    ~event(skc8,X6)|~event(skc8,X8)|~proposition(skc8,X2)|~proposition(skc8,X4)|
+    ~state(skc8,X0)|~man(skc8,X1)|~man(skc8,X7)|~vincent_forename(skc8,X10)|
+    ~jules_forename(skc8,X9)|~accessible_world(skc8,X2)|~accessible_world(skc8,X4)|
+    ~present(skc8,X6)|~present(skc8,X8)|~think_believe_consider(skc8,X6)|
+    ~think_believe_consider(skc8,X8)),
+    inference(unflattening,[status(thm)],[c_1312])).
+tcf(c_1371,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i]:  
+    (X0 != skc8|~be(X0,X1,X2,X2)|~agent(X0,X3,X4)|~agent(X0,X5,X4)|~agent(X6,X7,X2)|
+    ~theme(X0,X3,X8)|~theme(X0,X5,X6)|~of(X0,X9,X2)|~of(X0,X10,X4)|~smoke(X6,X7)|
+    ~event(X0,X3)|~event(X0,X5)|~proposition(X0,X6)|~proposition(X0,X8)|
+    ~state(X0,X1)|~man(X0,X2)|~man(X0,X4)|~vincent_forename(X0,X10)|~jules_forename(X0,X9)|
+    ~accessible_world(X0,X6)|~accessible_world(X0,X8)|~present(X0,X3)|
+    ~present(X0,X5)|~present(X6,X7)|~think_believe_consider(X0,X3)|~think_believe_consider(X0,X5)|
+    man(X8,skf4(X8))),
+    inference(resolution_lifted,[status(thm)],[c_120,c_347])).
+tcf(c_1372,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i]:  
+    (~be(skc8,X0,X1,X1)|~agent(X2,X3,X1)|~agent(skc8,X4,X5)|~agent(skc8,X6,X5)|
+    ~theme(skc8,X4,X7)|~theme(skc8,X6,X2)|~of(skc8,X8,X1)|~of(skc8,X9,X5)|
+    ~smoke(X2,X3)|~present(X2,X3)|~event(skc8,X4)|~event(skc8,X6)|~proposition(skc8,X2)|
+    ~proposition(skc8,X7)|~state(skc8,X0)|~man(skc8,X1)|~man(skc8,X5)|
+    ~vincent_forename(skc8,X9)|~jules_forename(skc8,X8)|~accessible_world(skc8,X2)|
+    ~accessible_world(skc8,X7)|~present(skc8,X4)|~present(skc8,X6)|~think_believe_consider(skc8,X4)|
+    ~think_believe_consider(skc8,X6)|man(X7,skf4(X7))),
+    inference(unflattening,[status(thm)],[c_1371])).
+tcf(c_3630,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i]:  
+    (~agent(X0,X1,skf4(X0))|~agent(X2,X3,skc10)|~agent(skc8,X4,X5)|~agent(skc8,X6,X5)|
+    ~theme(skc8,X4,X0)|~theme(skc8,X6,X2)|~of(skc8,X7,X5)|~of(skc8,X8,skc10)|
+    ~smoke(X0,X1)|~smoke(X2,X3)|~present(X0,X1)|~present(X2,X3)|~event(skc8,X4)|
+    ~event(skc8,X6)|~proposition(skc8,X0)|~proposition(skc8,X2)|~man(skc8,X5)|
+    ~vincent_forename(skc8,X7)|~jules_forename(skc8,X8)|~accessible_world(skc8,X0)|
+    ~accessible_world(skc8,X2)|~present(skc8,X4)|~present(skc8,X6)|~think_believe_consider(skc8,X4)|
+    ~think_believe_consider(skc8,X6)|~state(skc8,skc9)|~man(skc8,skc10)),
+    inference(superposition,[status(thm)],[c_137,c_1313])).
+tcf(c_3631,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i]:  
+    (~agent(X0,X1,skf4(X0))|~agent(X2,X3,skc10)|~agent(skc8,X4,X5)|~agent(skc8,X6,X5)|
+    ~theme(skc8,X4,X0)|~theme(skc8,X6,X2)|~of(skc8,X7,X5)|~of(skc8,X8,skc10)|
+    ~smoke(X0,X1)|~smoke(X2,X3)|~present(X0,X1)|~present(X2,X3)|~event(skc8,X4)|
+    ~event(skc8,X6)|~proposition(skc8,X0)|~proposition(skc8,X2)|~man(skc8,X5)|
+    ~vincent_forename(skc8,X7)|~jules_forename(skc8,X8)|~accessible_world(skc8,X0)|
+    ~accessible_world(skc8,X2)|~present(skc8,X4)|~present(skc8,X6)|~think_believe_consider(skc8,X4)|
+    ~think_believe_consider(skc8,X6)),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_3630,c_129,c_130])).
+tcf(c_3724,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i]:  
+    (~smoke(skc12,skf2(skf4(skc12)))|~present(skc12,skf2(skf4(skc12)))|
+    ~agent(X0,X1,skc10)|~agent(skc8,X2,X3)|~agent(skc8,X4,X3)|~theme(skc8,X4,X0)|
+    ~of(skc8,X5,X3)|~theme(skc8,X2,skc12)|~of(skc8,X6,skc10)|~man(skc12,skf4(skc12))|
+    ~smoke(X0,X1)|~present(X0,X1)|~event(skc8,X2)|~event(skc8,X4)|~proposition(skc8,X0)|
+    ~man(skc8,X3)|~vincent_forename(skc8,X5)|~jules_forename(skc8,X6)|
+    ~accessible_world(skc8,X0)|~present(skc8,X2)|~present(skc8,X4)|~think_believe_consider(skc8,X2)|
+    ~think_believe_consider(skc8,X4)|~proposition(skc8,skc12)|~accessible_world(skc8,skc12)),
+    inference(superposition,[status(thm)],[c_141,c_3631])).
+tcf(c_3725,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i]:  
+    (~smoke(skc12,skf2(skf4(skc12)))|~present(skc12,skf2(skf4(skc12)))|
+    ~agent(X0,X1,skc10)|~agent(skc8,X2,X3)|~agent(skc8,X4,X3)|~theme(skc8,X4,X0)|
+    ~of(skc8,X5,X3)|~theme(skc8,X2,skc12)|~of(skc8,X6,skc10)|~man(skc12,skf4(skc12))|
+    ~smoke(X0,X1)|~present(X0,X1)|~event(skc8,X2)|~event(skc8,X4)|~proposition(skc8,X0)|
+    ~man(skc8,X3)|~vincent_forename(skc8,X5)|~jules_forename(skc8,X6)|
+    ~accessible_world(skc8,X0)|~present(skc8,X2)|~present(skc8,X4)|~think_believe_consider(skc8,X2)|
+    ~think_believe_consider(skc8,X4)),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_3724,c_131,c_132])).
+tcf(c_3773,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i]:  
+    (~agent(X0,X1,skc10)|~agent(skc8,X2,X3)|~agent(skc8,X4,X3)|~theme(skc8,X4,X0)|
+    ~of(skc8,X5,X3)|~theme(skc8,X2,skc12)|~of(skc8,X6,skc10)|~man(skc12,skf4(skc12))|
+    ~smoke(X0,X1)|~present(X0,X1)|~event(skc8,X2)|~event(skc8,X4)|~proposition(skc8,X0)|
+    ~man(skc8,X3)|~vincent_forename(skc8,X5)|~jules_forename(skc8,X6)|
+    ~accessible_world(skc8,X0)|~present(skc8,X2)|~present(skc8,X4)|~think_believe_consider(skc8,X2)|
+    ~think_believe_consider(skc8,X4)),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_3725,c_139,c_138])).
+tcf(c_3837,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~agent(skc8,X0,X1)|~of(skc8,X2,X1)|~agent(skc8,skc13,X1)|~agent(skc12,X3,skc10)|
+    ~theme(skc8,X0,skc12)|~of(skc8,X4,skc10)|~man(skc12,skf4(skc12))|
+    ~smoke(skc12,X3)|~event(skc8,X0)|~man(skc8,X1)|~vincent_forename(skc8,X2)|
+    ~jules_forename(skc8,X4)|~present(skc8,X0)|~present(skc12,X3)|~think_believe_consider(skc8,X0)|
+    ~event(skc8,skc13)|~proposition(skc8,skc12)|~accessible_world(skc8,skc12)|
+    ~present(skc8,skc13)|~think_believe_consider(skc8,skc13)),
+    inference(superposition,[status(thm)],[c_135,c_3773])).
+tcf(c_3838,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~agent(skc8,X0,X1)|~of(skc8,X2,X1)|~agent(skc8,skc13,X1)|~agent(skc12,X3,skc10)|
+    ~theme(skc8,X0,skc12)|~of(skc8,X4,skc10)|~man(skc12,skf4(skc12))|
+    ~smoke(skc12,X3)|~event(skc8,X0)|~man(skc8,X1)|~vincent_forename(skc8,X2)|
+    ~jules_forename(skc8,X4)|~present(skc8,X0)|~present(skc12,X3)|~think_believe_consider(skc8,X0)),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_3837,c_126,c_125,c_131,c_132,c_124])).
+tcf(c_3937,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~agent(X0,X1,skc10)|~agent(skc8,X2,X3)|~agent(skc8,X4,X3)|~theme(skc8,X2,X5)|
+    ~theme(skc8,X4,X0)|~of(skc8,X6,X3)|~of(skc8,X7,skc10)|~smoke(X0,X1)|
+    ~present(X0,X1)|~event(skc8,X2)|~event(skc8,X4)|~proposition(skc8,X0)|
+    ~proposition(skc8,X5)|~man(skc8,X3)|~vincent_forename(skc8,X6)|~jules_forename(skc8,X7)|
+    ~accessible_world(skc8,X0)|~accessible_world(skc8,X5)|~present(skc8,X2)|
+    ~present(skc8,X4)|~think_believe_consider(skc8,X2)|~think_believe_consider(skc8,X4)|
+    ~state(skc8,skc9)|~man(skc8,skc10)|man(X5,skf4(X5))),
+    inference(superposition,[status(thm)],[c_137,c_1372])).
+tcf(c_3938,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~agent(X0,X1,skc10)|~agent(skc8,X2,X3)|~agent(skc8,X4,X3)|~theme(skc8,X2,X5)|
+    ~theme(skc8,X4,X0)|~of(skc8,X6,X3)|~of(skc8,X7,skc10)|~smoke(X0,X1)|
+    ~present(X0,X1)|~event(skc8,X2)|~event(skc8,X4)|~proposition(skc8,X0)|
+    ~proposition(skc8,X5)|~man(skc8,X3)|~vincent_forename(skc8,X6)|~jules_forename(skc8,X7)|
+    ~accessible_world(skc8,X0)|~accessible_world(skc8,X5)|~present(skc8,X2)|
+    ~present(skc8,X4)|~think_believe_consider(skc8,X2)|~think_believe_consider(skc8,X4)|
+    man(X5,skf4(X5))),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_3937,c_129,c_130])).
+tcf(c_4033,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~agent(skc8,X0,X1)|~theme(skc8,X0,X2)|~of(skc8,X3,X1)|~agent(skc8,skc13,X1)|
+    ~agent(skc12,X4,skc10)|~of(skc8,X5,skc10)|~smoke(skc12,X4)|~event(skc8,X0)|
+    ~proposition(skc8,X2)|~man(skc8,X1)|~vincent_forename(skc8,X3)|~jules_forename(skc8,X5)|
+    ~accessible_world(skc8,X2)|~present(skc8,X0)|~present(skc12,X4)|~think_believe_consider(skc8,X0)|
+    ~event(skc8,skc13)|~proposition(skc8,skc12)|~accessible_world(skc8,skc12)|
+    ~present(skc8,skc13)|~think_believe_consider(skc8,skc13)|man(X2,skf4(X2))),
+    inference(superposition,[status(thm)],[c_135,c_3938])).
+tcf(c_4034,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~agent(skc8,X0,X1)|~theme(skc8,X0,X2)|~of(skc8,X3,X1)|~agent(skc8,skc13,X1)|
+    ~agent(skc12,X4,skc10)|~of(skc8,X5,skc10)|~smoke(skc12,X4)|~event(skc8,X0)|
+    ~proposition(skc8,X2)|~man(skc8,X1)|~vincent_forename(skc8,X3)|~jules_forename(skc8,X5)|
+    ~accessible_world(skc8,X2)|~present(skc8,X0)|~present(skc12,X4)|~think_believe_consider(skc8,X0)|
+    man(X2,skf4(X2))),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_4033,c_126,c_125,c_131,c_132,c_124])).
+tcf(c_4087,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~agent(skc12,X0,skc10)|~theme(skc8,skc13,X1)|~of(skc8,X2,skc15)|
+    ~of(skc8,X3,skc10)|~agent(skc8,skc13,skc15)|~smoke(skc12,X0)|~proposition(skc8,X1)|
+    ~vincent_forename(skc8,X2)|~jules_forename(skc8,X3)|~accessible_world(skc8,X1)|
+    ~present(skc12,X0)|~event(skc8,skc13)|~man(skc8,skc15)|~present(skc8,skc13)|
+    ~think_believe_consider(skc8,skc13)|man(X1,skf4(X1))),
+    inference(superposition,[status(thm)],[c_134,c_4034])).
+tcf(c_4088,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~agent(skc12,X0,skc10)|~theme(skc8,skc13,X1)|~of(skc8,X2,skc15)|
+    ~of(skc8,X3,skc10)|~smoke(skc12,X0)|~proposition(skc8,X1)|~vincent_forename(skc8,X2)|
+    ~jules_forename(skc8,X3)|~accessible_world(skc8,X1)|~present(skc12,X0)|
+    man(X1,skf4(X1))),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_4087,c_126,c_125,c_121,c_124,c_134])).
+tcf(c_4123,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~theme(skc8,skc13,X0)|~of(skc8,X1,skc15)|~of(skc8,X2,skc10)|~smoke(skc12,skf2(skc10))|
+    ~present(skc12,skf2(skc10))|~proposition(skc8,X0)|~vincent_forename(skc8,X1)|
+    ~jules_forename(skc8,X2)|~accessible_world(skc8,X0)|~man(skc12,skc10)|
+    man(X0,skf4(X0))),
+    inference(superposition,[status(thm)],[c_141,c_4088])).
+tcf(c_4147,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~theme(skc8,skc13,X0)|~of(skc8,X1,skc15)|~of(skc8,X2,skc10)|~proposition(skc8,X0)|
+    ~vincent_forename(skc8,X1)|~jules_forename(skc8,X2)|~accessible_world(skc8,X0)|
+    ~man(skc12,skc10)|man(X0,skf4(X0))),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_4123,c_139,c_138])).
+tcf(c_4175,plain,![X0:$i,X1:$i]:  
+    (~of(skc8,X0,skc15)|~of(skc8,X1,skc10)|~vincent_forename(skc8,X0)|
+    ~jules_forename(skc8,X1)|~proposition(skc8,skc12)|~man(skc12,skc10)|
+    ~accessible_world(skc8,skc12)|man(skc12,skf4(skc12))),
+    inference(superposition,[status(thm)],[c_135,c_4147])).
+tcf(c_4176,plain,![X0:$i,X1:$i]:  
+    (~of(skc8,X0,skc15)|~of(skc8,X1,skc10)|~vincent_forename(skc8,X0)|
+    ~jules_forename(skc8,X1)|~man(skc12,skc10)|man(skc12,skf4(skc12))),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_4175,c_131,c_132])).
+tcf(c_4196,plain,![X0:$i]:  
+    (~of(skc8,X0,skc10)|~jules_forename(skc8,X0)|~man(skc12,skc10)|~vincent_forename(skc8,skc14)|
+    man(skc12,skf4(skc12))),
+    inference(superposition,[status(thm)],[c_133,c_4176])).
+tcf(c_4197,plain,![X0:$i]:  
+    (~of(skc8,X0,skc10)|~jules_forename(skc8,X0)|~man(skc12,skc10)|man(skc12,skf4(skc12))),
+    inference(forward_subsumption_resolution,[status(thm)],[c_4196,c_123])).
+tcf(c_4215,plain, 
+    (~man(skc12,skc10)|~jules_forename(skc8,skc11)|man(skc12,skf4(skc12))),
+    inference(superposition,[status(thm)],[c_136,c_4197])).
+tcf(c_4216,plain, 
+    (~man(skc12,skc10)|man(skc12,skf4(skc12))),
+    inference(forward_subsumption_resolution,[status(thm)],[c_4215,c_127])).
+tcf(c_4228,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~agent(skc8,X0,X1)|~of(skc8,X2,X1)|~agent(skc8,skc13,X1)|~agent(skc12,X3,skc10)|
+    ~theme(skc8,X0,skc12)|~of(skc8,X4,skc10)|~smoke(skc12,X3)|~event(skc8,X0)|
+    ~man(skc8,X1)|~vincent_forename(skc8,X2)|~jules_forename(skc8,X4)|
+    ~present(skc8,X0)|~present(skc12,X3)|~think_believe_consider(skc8,X0)|
+    ~man(skc12,skc10)),
+    inference(superposition,[status(thm)],[c_4216,c_3838])).
+tcf(c_4304,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~agent(skc8,X0,X1)|~of(skc8,X2,X1)|~agent(skc8,skc13,X1)|~agent(skc12,X3,skc10)|
+    ~theme(skc8,X0,skc12)|~smoke(skc12,X3)|~event(skc8,X0)|~man(skc8,X1)|
+    ~vincent_forename(skc8,X2)|~present(skc8,X0)|~present(skc12,X3)|~think_believe_consider(skc8,X0)|
+    ~man(skc12,skc10)|~jules_forename(skc8,skc11)),
+    inference(superposition,[status(thm)],[c_136,c_4228])).
+tcf(c_4305,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~agent(skc8,X0,X1)|~of(skc8,X2,X1)|~agent(skc8,skc13,X1)|~agent(skc12,X3,skc10)|
+    ~theme(skc8,X0,skc12)|~smoke(skc12,X3)|~event(skc8,X0)|~man(skc8,X1)|
+    ~vincent_forename(skc8,X2)|~present(skc8,X0)|~present(skc12,X3)|~think_believe_consider(skc8,X0)|
+    ~man(skc12,skc10)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_4304,c_127])).
+tcf(c_4359,plain,![X0:$i,X1:$i]:  
+    (~agent(skc12,X0,skc10)|~of(skc8,X1,skc15)|~agent(skc8,skc13,skc15)|
+    ~theme(skc8,skc13,skc12)|~smoke(skc12,X0)|~vincent_forename(skc8,X1)|
+    ~present(skc12,X0)|~event(skc8,skc13)|~man(skc8,skc15)|~man(skc12,skc10)|
+    ~present(skc8,skc13)|~think_believe_consider(skc8,skc13)),
+    inference(superposition,[status(thm)],[c_134,c_4305])).
+tcf(c_4360,plain,![X0:$i,X1:$i]:  
+    (~agent(skc12,X0,skc10)|~of(skc8,X1,skc15)|~smoke(skc12,X0)|~vincent_forename(skc8,X1)|
+    ~present(skc12,X0)|~man(skc12,skc10)),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_4359,c_126,c_125,c_121,c_124,c_135,c_134])).
+tcf(c_4380,plain,![X0:$i]:  
+    (~of(skc8,X0,skc15)|~smoke(skc12,skf2(skc10))|~present(skc12,skf2(skc10))|
+    ~vincent_forename(skc8,X0)|~man(skc12,skc10)),
+    inference(superposition,[status(thm)],[c_141,c_4360])).
+tcf(c_4392,plain,![X0:$i]:  
+    (~of(skc8,X0,skc15)|~vincent_forename(skc8,X0)|~man(skc12,skc10)),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_4380,c_139,c_138])).
+tcf(c_4402,plain, 
+    (~man(skc12,skc10)|~vincent_forename(skc8,skc14)),
+    inference(superposition,[status(thm)],[c_133,c_4392])).
+tcf(c_4403,plain, 
+    (~man(skc12,skc10)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_4402,c_123])).
+tcf(c_4946,plain,![X0:$i]:  
+    (~accessible_world(skc8,X0)|man(X0,skc10)),
+    inference(superposition,[status(thm)],[c_129,c_100])).
+tcf(c_5047,plain, 
+    (man(skc12,skc10)),
+    inference(superposition,[status(thm)],[c_131,c_4946])).
+tcf(c_5048,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_5047,c_4403])).
+% SZS output end CNFRefutation for NLP258-1.p

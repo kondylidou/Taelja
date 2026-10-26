@@ -1,0 +1,12 @@
+Axiom 1: less(b,a)
+Axiom 2: less(a,b)
+Axiom 3: less(X,Y) /\ less(Z,X) => less(Z,Y)
+
+Goal 1: less(a,a)
+Proof:
+  have less(b,a)
+    by axiom 1
+   and less(a,b)
+    by axiom 2
+  hence less(a,a)
+    by axiom 3

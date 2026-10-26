@@ -1,0 +1,39 @@
+% SZS status Theorem for e_cdclpropres.p
+% SZS output start CNFRefutation for e_cdclpropres.p
+fof(f1,axiom,(
+  p(a)),
+  file('e_cdclpropres.p',a1)).
+fof(f2,axiom,(
+  ! [X0] : (p(X0) => q(X0))),
+  file('e_cdclpropres.p',a2)).
+fof(f3,conjecture,(
+  q(a)),
+  file('e_cdclpropres.p',c)).
+fof(f4,negated_conjecture,(
+  ~q(a)),
+inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  ~q(a)),
+  inference(flattening,[],[f4])).
+fof(f6,plain,(
+  ! [X0] : (q(X0) | ~p(X0))),
+  inference(ennf_transformation,[],[f2])).
+fof(f7,plain,(
+  p(a)),
+  inference(cnf_transformation,[],[f1])).
+fof(f8,plain,(
+  ( ! [X0] : (q(X0) | ~p(X0)) )),
+  inference(cnf_transformation,[],[f6])).
+fof(f9,plain,(
+  ~q(a)),
+  inference(cnf_transformation,[],[f5])).
+tcf(c_49,plain, (p(a)),inference(cnf_transformation,[],[f7])).
+tcf(c_50,plain,![X0:$i]:  
+    (~p(X0)|q(X0)),
+    inference(cnf_transformation,[],[f8])).
+tcf(c_51,plain, (~q(a)),inference(cnf_transformation,[],[f9])).
+tcf(c_52,plain, (~p(a)|q(a)),inference(instantiation,[status(thm)],[c_50])).
+tcf(c_53,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_52,c_51,c_49])).
+% SZS output end CNFRefutation for e_cdclpropres.p

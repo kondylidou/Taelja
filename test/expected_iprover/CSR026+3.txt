@@ -1,0 +1,50 @@
+Axiom 1: mtvisible(c_tptp_spindlecollectormt)
+Axiom 2: genlmt(c_tptp_spindlecollectormt,c_tptp_member3633_mt)
+Axiom 3: genlmt(X,Y) /\ mtvisible(X) => mtvisible(Y)
+Axiom 4: genlmt(c_tptp_member3633_mt,c_tptp_spindleheadmt)
+Axiom 5: genlmt(c_tptp_spindleheadmt,c_cyclistsmt)
+Axiom 6: genlmt(c_tptp_spindlecollectormt,c_tptp_member2701_mt)
+Axiom 7: mtvisible(c_cyclistsmt) => runningshorts(c_tptprunningshorts)
+Axiom 8: runningshorts(Z) /\ mtvisible(c_tptp_member2701_mt) => tptpofobject(Z,f_tptpquantityfn_2(n_756))
+
+Lemma 9: mtvisible(c_tptp_member3633_mt)
+Proof:
+  have genlmt(c_tptp_spindlecollectormt,c_tptp_member3633_mt)
+    by axiom 2
+   and mtvisible(c_tptp_spindlecollectormt)
+    by axiom 1
+  hence mtvisible(c_tptp_member3633_mt)
+    by axiom 3
+
+Lemma 10: mtvisible(c_tptp_spindleheadmt)
+Proof:
+  have genlmt(c_tptp_member3633_mt,c_tptp_spindleheadmt)
+    by axiom 4
+   and mtvisible(c_tptp_member3633_mt)
+    by lemma 9
+  hence mtvisible(c_tptp_spindleheadmt)
+    by axiom 3
+
+Lemma 11: mtvisible(c_tptp_member2701_mt)
+Proof:
+  have genlmt(c_tptp_spindlecollectormt,c_tptp_member2701_mt)
+    by axiom 6
+   and mtvisible(c_tptp_spindlecollectormt)
+    by axiom 1
+  hence mtvisible(c_tptp_member2701_mt)
+    by axiom 3
+
+Goal 1: tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))
+Proof:
+  have genlmt(c_tptp_spindleheadmt,c_cyclistsmt)
+    by axiom 5
+   and mtvisible(c_tptp_spindleheadmt)
+    by lemma 10
+  hence mtvisible(c_cyclistsmt)
+    by axiom 3
+  hence runningshorts(c_tptprunningshorts)
+    by axiom 7
+   and mtvisible(c_tptp_member2701_mt)
+    by lemma 11
+  hence tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))
+    by axiom 8

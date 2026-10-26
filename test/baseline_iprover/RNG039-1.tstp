@@ -1,0 +1,139 @@
+% SZS status Unsatisfiable for RNG039-1.p
+% SZS output start CNFRefutation for RNG039-1.p
+tcf(c_51,plain,![X0:$i]:  
+    (sum(X0,X0,additive_identity)),
+    file('Problems/RNG/RNG039-1.p', clause32)).
+tcf(c_53,plain,![X0:$i]:  
+    (add(X0,X0) = additive_identity),
+    file('Problems/RNG/RNG039-1.p', clause34)).
+tcf(c_54,plain,![X0:$i]:  
+    (multiply(X0,X0) = X0),
+    file('Problems/RNG/RNG039-1.p', clause35)).
+tcf(c_56,plain, 
+    (multiply(b,a) = d),
+    file('Problems/RNG/RNG039-1.p', clause37)).
+tcf(c_61,plain, (product(d,a,d)),file('Problems/RNG/RNG039-1.p', clause42)).
+tcf(c_62,plain,![X0:$i,X1:$i]:  
+    (product(X0,multiply(X0,X1),multiply(X0,X1))),
+    file('Problems/RNG/RNG039-1.p', clause43)).
+tcf(c_63,plain,![X0:$i,X1:$i]:  
+    (product(a,multiply(b,X0),multiply(X1,X0))),
+    file('Problems/RNG/RNG039-1.p', clause44)).
+tcf(c_85,plain, 
+    (product(add(b,a),b,add(b,c))),
+    file('Problems/RNG/RNG039-1.p', clause68)).
+tcf(c_88,plain,![X0:$i]:  
+    (product(X0,X0,X0)),
+    file('Problems/RNG/RNG039-1.p', clause71)).
+tcf(c_89,plain, (product(a,b,c)),file('Problems/RNG/RNG039-1.p', a_times_b)).
+tcf(c_90,plain, (product(b,a,d)),file('Problems/RNG/RNG039-1.p', b_times_a)).
+tcf(c_91,plain, (c != d),file('Problems/RNG/RNG039-1.p', prove_c_equals_d)).
+tcf(c_93,plain,![X0:$i]:  
+    (sum(X0,additive_identity,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/RNG001-0.ax', additive_identity2)).
+tcf(c_101,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~product(X0,X1,X2)|~product(X1,X3,X4)|~product(X2,X3,X5)|product(X0,X4,X5)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/RNG001-0.ax', associativity_of_multiplication1)).
+tcf(c_105,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i]:  
+    (~sum(X0,X1,X2)|~product(X0,X3,X4)|~product(X1,X3,X5)|~product(X2,X3,X6)|
+    sum(X4,X5,X6)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/RNG001-0.ax', distributivity3)).
+tcf(c_107,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~sum(X0,X1,X2)|~sum(X0,X1,X3)|X2 = X3),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/RNG001-0.ax', addition_is_well_defined)).
+tcf(c_108,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~product(X0,X1,X2)|~product(X0,X1,X3)|X2 = X3),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/RNG001-0.ax', multiplication_is_well_defined)).
+tcf(c_111,plain, 
+    (product(a,a,a)),
+    inference(instantiation,[status(thm)],[c_88])).
+tcf(c_891,plain,![X0:$i]:  
+    (product(a,b,multiply(X0,b))),
+    inference(superposition,[status(thm)],[c_54,c_63])).
+tcf(c_892,plain,![X0:$i]:  
+    (product(a,d,multiply(X0,a))),
+    inference(superposition,[status(thm)],[c_56,c_63])).
+tcf(c_895,plain, 
+    (product(a,d,d)),
+    inference(superposition,[status(thm)],[c_56,c_63])).
+tcf(c_899,plain, 
+    (product(a,b,b)),
+    inference(superposition,[status(thm)],[c_54,c_891])).
+tcf(c_901,plain, 
+    (product(a,d,a)),
+    inference(superposition,[status(thm)],[c_54,c_892])).
+tcf(c_1000,plain,![X0:$i,X1:$i]:  
+    (~sum(X0,X0,X1)|X1 = additive_identity),
+    inference(superposition,[status(thm)],[c_51,c_107])).
+tcf(c_1069,plain,![X0:$i]:  
+    (~product(a,b,X0)|X0 = c),
+    inference(superposition,[status(thm)],[c_89,c_108])).
+tcf(c_1075,plain,![X0:$i]:  
+    (~product(a,d,X0)|X0 = d),
+    inference(superposition,[status(thm)],[c_895,c_108])).
+tcf(c_1300,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~product(a,X0,X1)|~product(d,X0,X2)|product(b,X1,X2)),
+    inference(superposition,[status(thm)],[c_90,c_101])).
+tcf(c_1521,plain,![X0:$i]:  
+    (multiply(X0,b) = c),
+    inference(superposition,[status(thm)],[c_891,c_1069])).
+tcf(c_1522,plain, 
+    (b = c),
+    inference(superposition,[status(thm)],[c_899,c_1069])).
+tcf(c_1529,plain, 
+    (product(add(b,a),b,add(b,b))),
+    inference(demodulation,[status(thm)],[c_85,c_1522])).
+tcf(c_1538,plain, 
+    (b != d),
+    inference(demodulation,[status(thm)],[c_91,c_1522])).
+tcf(c_1565,plain,![X0:$i]:  
+    (~product(a,a,X0)|product(b,X0,d)),
+    inference(superposition,[status(thm)],[c_61,c_1300])).
+tcf(c_1578,plain,![X0:$i]:  
+    (multiply(X0,b) = b),
+    inference(light_normalisation,[status(thm)],[c_1521,c_1522])).
+tcf(c_1580,plain,![X0:$i]:  
+    (product(X0,b,b)),
+    inference(superposition,[status(thm)],[c_1578,c_62])).
+tcf(c_1947,plain,![X0:$i,X1:$i]:  
+    (~product(X0,b,X1)|X1 = b),
+    inference(superposition,[status(thm)],[c_1580,c_108])).
+tcf(c_2596,plain, 
+    (product(add(b,a),b,additive_identity)),
+    inference(demodulation,[status(thm)],[c_1529,c_53])).
+tcf(c_4418,plain, 
+    (a = d),
+    inference(superposition,[status(thm)],[c_901,c_1075])).
+tcf(c_4459,plain,![X0:$i]:  
+    (~product(a,a,X0)|product(b,X0,a)),
+    inference(demodulation,[status(thm)],[c_1565,c_4418])).
+tcf(c_4463,plain, 
+    (a != b),
+    inference(demodulation,[status(thm)],[c_1538,c_4418])).
+tcf(c_4512,plain, 
+    (~product(a,a,a)|product(b,a,a)),
+    inference(instantiation,[status(thm)],[c_4459])).
+tcf(c_4715,plain, 
+    (additive_identity = b),
+    inference(superposition,[status(thm)],[c_2596,c_1947])).
+tcf(c_4725,plain,![X0:$i,X1:$i]:  
+    (~sum(X0,X0,X1)|X1 = b),
+    inference(demodulation,[status(thm)],[c_1000,c_4715])).
+tcf(c_4730,plain,![X0:$i]:  
+    (sum(X0,b,X0)),
+    inference(demodulation,[status(thm)],[c_93,c_4715])).
+tcf(c_4749,plain, 
+    (~sum(a,a,a)|a = b),
+    inference(instantiation,[status(thm)],[c_4725])).
+tcf(c_4751,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~product(X0,X1,X2)|~product(X0,X1,X3)|~product(b,X1,X4)|sum(X2,X4,X3)),
+    inference(superposition,[status(thm)],[c_4730,c_105])).
+tcf(c_4781,plain, 
+    (~product(a,a,a)|~product(b,a,a)|sum(a,a,a)),
+    inference(instantiation,[status(thm)],[c_4751])).
+tcf(c_4782,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_4781,c_4749,c_4512,c_4463,c_111])).
+% SZS output end CNFRefutation for RNG039-1.p

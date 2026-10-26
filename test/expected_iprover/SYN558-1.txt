@@ -1,0 +1,64 @@
+Axiom 1: p5(c7,X,f3(X))
+Axiom 2: p5(X,Y,Z) /\ p5(X,Z,A) => p5(X,Y,A)
+Axiom 3: p6(c7,f3(X))
+Axiom 4: p5(c7,c10,c9)
+Axiom 5: p5(c7,c10,c8)
+Axiom 6: p5(c7,X,Y) /\ p5(c7,X,Z) /\ p6(c7,Y) /\ p6(c7,Z) => p2(Y,Z)
+Axiom 7: p2(X,Y) => p2(f3(X),f3(Y))
+Axiom 8: p4(X,X)
+Axiom 9: p2(X,X)
+Axiom 10: p5(X,Y,Z) /\ p2(Y,A) /\ p2(Z,B) /\ p4(X,C) => p5(C,A,B)
+
+Lemma 11: p5(c7,c10,f3(c9))
+Proof:
+  have p5(c7,c10,c9)
+    by axiom 4
+   and p5(c7,c9,f3(c9))
+    by axiom 1
+  hence p5(c7,c10,f3(c9))
+    by axiom 2
+
+Lemma 12: p2(f3(f3(c8)),f3(f3(c9)))
+Proof:
+  have p5(c7,c10,c8)
+    by axiom 5
+   and p5(c7,c8,f3(c8))
+    by axiom 1
+  hence p5(c7,c10,f3(c8))
+    by axiom 2
+   and p5(c7,c10,f3(c9))
+    by lemma 11
+   and p6(c7,f3(c8))
+    by axiom 3
+   and p6(c7,f3(c9))
+    by axiom 3
+  hence p2(f3(c8),f3(c9))
+    by axiom 6
+  hence p2(f3(f3(c8)),f3(f3(c9)))
+    by axiom 7
+
+Goal 1: p5(c7,c9,f3(f3(c9)))
+Proof:
+  have p5(c7,c9,f3(c9))
+    by axiom 1
+   and p5(c7,f3(c9),f3(f3(c9)))
+    by axiom 1
+  hence p5(c7,c9,f3(f3(c9)))
+    by axiom 2
+
+Goal 2: p5(c7,c8,f3(f3(c9)))
+Proof:
+  have p5(c7,c8,f3(c8))
+    by axiom 1
+   and p5(c7,f3(c8),f3(f3(c8)))
+    by axiom 1
+  hence p5(c7,c8,f3(f3(c8)))
+    by axiom 2
+   and p2(c8,c8)
+    by axiom 9
+   and p2(f3(f3(c8)),f3(f3(c9)))
+    by lemma 12
+   and p4(c7,c7)
+    by axiom 8
+  hence p5(c7,c8,f3(f3(c9)))
+    by axiom 10

@@ -1,0 +1,43 @@
+% SZS status Theorem for krympa_example5_nonparallel.p
+% SZS output start CNFRefutation for krympa_example5_nonparallel.p
+fof(f1,axiom,(
+  a = b),
+  file('krympa_example5_nonparallel.p',ax1)).
+fof(f2,axiom,(
+  ! [X0] : f(X0) = X0),
+  file('krympa_example5_nonparallel.p',ax2)).
+fof(f3,conjecture,(
+  h(f(b),a) = h(a,f(b))),
+  file('krympa_example5_nonparallel.p',goal)).
+fof(f4,negated_conjecture,(
+  ~h(f(b),a) = h(a,f(b))),
+inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  h(f(b),a) != h(a,f(b))),
+  inference(flattening,[],[f4])).
+fof(f6,plain,(
+  a = b),
+  inference(cnf_transformation,[],[f1])).
+fof(f7,plain,(
+  ( ! [X0] : (f(X0) = X0) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f8,plain,(
+  h(f(b),a) != h(a,f(b))),
+  inference(cnf_transformation,[],[f5])).
+tcf(c_49,plain, (a = b),inference(cnf_transformation,[],[f6])).
+tcf(c_50,plain,![X0:$i]:  
+    (f(X0) = X0),
+    inference(cnf_transformation,[],[f7])).
+tcf(c_51,plain, 
+    (h(f(b),a) != h(a,f(b))),
+    inference(cnf_transformation,[],[f8])).
+tcf(c_59,plain, 
+    (h(f(a),a) != h(a,f(a))),
+    inference(light_normalisation,[status(thm)],[c_51,c_49])).
+tcf(c_60,plain, 
+    (h(a,a) != h(a,a)),
+    inference(demodulation,[status(thm)],[c_59,c_50])).
+tcf(c_61,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_60])).
+% SZS output end CNFRefutation for krympa_example5_nonparallel.p

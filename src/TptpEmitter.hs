@@ -46,7 +46,7 @@ emitTptp sp0 = unlines $
     -- A typed problem gives a typed proof. Type declarations come first,
     -- input units are printed in their typed form, and each variable gets
     -- the sort of its argument position.
-    typing    = inTyped input
+    typing    = completeTyping (inTyped input)
     env       | null typing = Nothing
               | otherwise   = Just (Map.fromList [ (Text.unpack a, (map sortName as, sortName r))
                                                  | T.Unit _ (T.Typing (T.Atom a) (T.Type as r)) _ <- typing ])
@@ -423,6 +423,56 @@ assumptionDeps = foldl add Map.empty
           discharged = [ p | rule == "implies", p <- ps, Map.lookup p m == Just [p] ]
       in Map.insert n (filter (`notElem` discharged) inherited) m
     add m (Input _ _)          = m
+
+-- The units of a typed proof with its type declarations completed and put
+-- first. A prover may leave out a declaration it never printed, as iProver's
+-- clausifier does, so every sort a type uses is declared first, and a symbol
+-- with no type gets one from the places it fills.
+completeTyping :: [T.Unit] -> [T.Unit]
+completeTyping [] = []
+completeTyping units = sorts ++ typings ++ added ++ others
+  where
+    typings = [ u | u@(T.Unit _ (T.Typing _ _) _) <- units ]
+    others  = [ u | u@(T.Unit _ (T.Formula _ _) _) <- units ]
+    declared = Map.fromList [ (a, (as, r)) | T.Unit _ (T.Typing (T.Atom a) (T.Type as r)) _ <- typings ]
+    types = inferTypes declared [ f | T.Unit _ (T.Formula _ (T.TFF0 f)) _ <- others ]
+    added = [ T.Unit (unitNameOf ("taelja_type_" ++ Text.unpack a)) (T.Typing (T.Atom a) (T.Type as r)) Nothing
+            | (a, (as, r)) <- Map.toList (Map.difference types declared) ]
+    declaredSorts = [ a | T.Unit _ (T.Sort a 0) _ <- units ]
+    sorts = [ u | u@(T.Unit _ (T.Sort _ _) _) <- units ]
+         ++ [ T.Unit (unitNameOf ("taelja_sort_" ++ Text.unpack a)) (T.Sort (T.Atom a) 0) Nothing
+            | a <- nub [ a | (as, r) <- Map.elems types, T.Defined (T.Atom a) <- r : as ]
+            , T.Atom a `notElem` declaredSorts ]
+
+-- The types of the symbols with none, from the places they fill in the
+-- formulas. A term has its variable's sort or its symbol's result sort, an
+-- argument place gives the sort of what fills it, and the two sides of an
+-- equation share one. Rounds go on while they type more symbols.
+inferTypes :: Map.Map Text.Text ([T.Name T.Sort], T.Name T.Sort) -> [T.MonomorphicFirstOrder]
+           -> Map.Map Text.Text ([T.Name T.Sort], T.Name T.Sort)
+inferTypes known formulas
+  | Map.null new = known
+  | otherwise    = inferTypes (Map.union known new) formulas
+  where
+    new = Map.fromList [ h | h@(f, _) <- concatMap (walk Map.empty) formulas, Map.notMember f known ]
+    walk env (T.Quantified _ vs body) =
+      walk (foldr (\(v, T.Sorted srt) -> Map.insert v (fromMaybe (T.Reserved (T.Standard T.I)) srt)) env vs) body
+    walk env (T.Negated x) = walk env x
+    walk env (T.Connected x _ y) = walk env x ++ walk env y
+    walk env (T.Atomic (T.Predicate (T.Defined (T.Atom p)) ts)) = symbol env p ts (Just (T.Reserved (T.Standard T.O)))
+    walk env (T.Atomic (T.Equality a _ b)) = term env (sortOf env b) a ++ term env (sortOf env a) b
+    walk _ _ = []
+    term env expected (T.Function (T.Defined (T.Atom f)) ts) = symbol env f ts expected
+    term _ _ _ = []
+    -- a typed symbol passes its argument sorts on, an untyped one is typed
+    -- once its arguments and its place have sorts
+    symbol env f ts expected = case Map.lookup f known of
+      Just (as, _) -> concat (zipWith (term env . Just) as ts)
+      Nothing -> [ (f, (as, r)) | Just as <- [mapM (sortOf env) ts], Just r <- [expected] ]
+                 ++ concatMap (term env Nothing) ts
+    sortOf env (T.Variable v) = Map.lookup v env
+    sortOf _ (T.Function (T.Defined (T.Atom f)) _) = snd <$> Map.lookup f known
+    sortOf _ _ = Nothing
 
 -- Each symbol's argument and result sorts, or Nothing for an untyped proof.
 type SortEnv = Maybe (Map.Map String ([String], String))

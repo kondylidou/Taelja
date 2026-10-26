@@ -1,0 +1,24 @@
+% SZS status Unsatisfiable for GRP041-2.p
+% SZS output start CNFRefutation for GRP041-2.p
+tcf(c_49,plain, 
+    (~equalish(a,a)),
+    file('Problems/GRP/GRP041-2.p', prove_reflexivity)).
+tcf(c_50,plain,![X0:$i]:  
+    (product(identity,X0,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP005-0.ax', left_identity)).
+tcf(c_53,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~product(X0,X1,X2)|~product(X0,X1,X3)|equalish(X2,X3)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP005-0.ax', total_function2)).
+tcf(c_57,plain, 
+    (product(identity,a,a)),
+    inference(instantiation,[status(thm)],[c_50])).
+tcf(c_120,plain,![X0:$i,X1:$i]:  
+    (~product(identity,X0,X0)|~product(identity,X0,X1)|equalish(X0,X1)),
+    inference(instantiation,[status(thm)],[c_53])).
+tcf(c_121,plain, 
+    (~product(identity,a,a)|equalish(a,a)),
+    inference(instantiation,[status(thm)],[c_120])).
+tcf(c_122,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_121,c_57,c_49])).
+% SZS output end CNFRefutation for GRP041-2.p

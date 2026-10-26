@@ -1,0 +1,24 @@
+Axiom 1: s(a)
+Axiom 2: f(X) = g(X)
+Axiom 3: f(X) = X
+Axiom 4: g(X) = X => q(X)
+Axiom 5: home(X) = Y /\ q(X) /\ s(X) => p(X,Y)
+
+Lemma 6: g(X) = X
+Proof:
+  g(X)
+= { by axiom 2 R->L }
+  f(X)
+= { by axiom 3 }
+  X
+
+Goal 1: p(a,home(a))
+Proof:
+  have g(a) = a
+    by lemma 6
+  hence q(a)
+    by axiom 4
+   and s(a)
+    by axiom 1
+  hence p(a,home(a))
+    by axiom 5

@@ -1,0 +1,124 @@
+Axiom 1: multiply(X,multiply(X,Y)) = multiply(Y,multiply(X,X))
+Axiom 2: multiply(multiply(X,Y),Z) = multiply(X,multiply(Y,Z))
+
+Lemma 3: multiply(b,multiply(multiply(a,b),X)) = multiply(multiply(b,multiply(a,b)),X)
+Proof:
+  multiply(b,multiply(multiply(a,b),X))
+= { by axiom 2 R->L }
+  multiply(multiply(b,multiply(a,b)),X)
+
+Lemma 4: multiply(a,multiply(b,X)) = multiply(multiply(a,b),X)
+Proof:
+  multiply(a,multiply(b,X))
+= { by axiom 2 R->L }
+  multiply(multiply(a,b),X)
+
+Lemma 5: multiply(b,multiply(b,X)) = multiply(multiply(b,b),X)
+Proof:
+  multiply(b,multiply(b,X))
+= { by axiom 2 R->L }
+  multiply(multiply(b,b),X)
+
+Lemma 6: multiply(X,multiply(b,b)) = multiply(multiply(b,b),X)
+Proof:
+  multiply(X,multiply(b,b))
+= { by axiom 1 R->L }
+  multiply(b,multiply(b,X))
+= { by lemma 5 }
+  multiply(multiply(b,b),X)
+
+Lemma 7: multiply(b,multiply(multiply(b,b),X)) = multiply(multiply(b,multiply(b,b)),X)
+Proof:
+  multiply(b,multiply(multiply(b,b),X))
+= { by axiom 2 R->L }
+  multiply(multiply(b,multiply(b,b)),X)
+
+Lemma 8: multiply(multiply(b,b),b) = multiply(b,multiply(b,b))
+Proof:
+  multiply(multiply(b,b),b)
+= { by lemma 6 R->L }
+  multiply(b,multiply(b,b))
+
+Lemma 9: multiply(multiply(b,multiply(b,b)),b) = multiply(b,multiply(b,multiply(b,b)))
+Proof:
+  multiply(multiply(b,multiply(b,b)),b)
+= { by lemma 7 R->L }
+  multiply(b,multiply(multiply(b,b),b))
+= { by lemma 8 }
+  multiply(b,multiply(b,multiply(b,b)))
+
+Lemma 10: multiply(multiply(b,b),a) = multiply(multiply(a,b),b)
+Proof:
+  multiply(multiply(b,b),a)
+= { by lemma 6 R->L }
+  multiply(a,multiply(b,b))
+= { by lemma 4 }
+  multiply(multiply(a,b),b)
+
+Lemma 11: multiply(multiply(b,multiply(b,b)),a) = multiply(multiply(b,multiply(a,b)),b)
+Proof:
+  multiply(multiply(b,multiply(b,b)),a)
+= { by lemma 7 R->L }
+  multiply(b,multiply(multiply(b,b),a))
+= { by lemma 10 }
+  multiply(b,multiply(multiply(a,b),b))
+= { by lemma 3 }
+  multiply(multiply(b,multiply(a,b)),b)
+
+Lemma 12: multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))) = multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))
+Proof:
+  multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b)))
+= { by axiom 2 R->L }
+  multiply(multiply(multiply(b,multiply(a,b)),b),multiply(a,b))
+= { by lemma 11 R->L }
+  multiply(multiply(multiply(b,multiply(b,b)),a),multiply(a,b))
+= { by axiom 2 }
+  multiply(multiply(b,multiply(b,b)),multiply(a,multiply(a,b)))
+= { by axiom 2 R->L }
+  multiply(multiply(b,multiply(b,b)),multiply(multiply(a,a),b))
+= { by axiom 2 R->L }
+  multiply(multiply(multiply(b,multiply(b,b)),multiply(a,a)),b)
+= { by axiom 1 R->L }
+  multiply(multiply(a,multiply(a,multiply(b,multiply(b,b)))),b)
+= { by axiom 2 }
+  multiply(a,multiply(multiply(a,multiply(b,multiply(b,b))),b))
+= { by axiom 2 }
+  multiply(a,multiply(a,multiply(multiply(b,multiply(b,b)),b)))
+= { by lemma 9 }
+  multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))
+
+Lemma 13: multiply(multiply(a,b),multiply(a,b)) = multiply(a,multiply(b,multiply(a,b)))
+Proof:
+  multiply(multiply(a,b),multiply(a,b))
+= { by lemma 4 R->L }
+  multiply(a,multiply(b,multiply(a,b)))
+
+Lemma 14: multiply(multiply(a,b),multiply(a,multiply(b,multiply(a,b)))) = multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b)))))
+Proof:
+  multiply(multiply(a,b),multiply(a,multiply(b,multiply(a,b))))
+= { by lemma 4 R->L }
+  multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b)))))
+
+Lemma 15: multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))) = multiply(b,multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b))))))
+Proof:
+  multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b))))))
+= { by lemma 12 R->L }
+  multiply(a,multiply(multiply(b,multiply(a,b)),multiply(b,multiply(a,b))))
+= { by lemma 3 R->L }
+  multiply(a,multiply(b,multiply(multiply(a,b),multiply(b,multiply(a,b)))))
+= { by lemma 4 }
+  multiply(multiply(a,b),multiply(multiply(a,b),multiply(b,multiply(a,b))))
+= { by axiom 1 }
+  multiply(multiply(b,multiply(a,b)),multiply(multiply(a,b),multiply(a,b)))
+= { by lemma 13 }
+  multiply(multiply(b,multiply(a,b)),multiply(a,multiply(b,multiply(a,b))))
+= { by lemma 3 R->L }
+  multiply(b,multiply(multiply(a,b),multiply(a,multiply(b,multiply(a,b)))))
+= { by lemma 14 }
+  multiply(b,multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b))))))
+
+Goal 1: multiply(a,multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b))))))) = multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b)))))))
+Proof:
+  multiply(a,multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b)))))))
+= { by lemma 15 }
+  multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b)))))))

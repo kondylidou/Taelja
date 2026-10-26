@@ -1,0 +1,27 @@
+% SZS status Unsatisfiable for SYO611-1.p
+% SZS output start CNFRefutation for SYO611-1.p
+tcf(c_49,plain,![X0:$i]:  
+    (le(X0,X0)),
+    file('Problems/SYO/SYO611-1.p', sos_01)).
+tcf(c_52,plain,![X0:$i]:  
+    (eq(f(X0),a0)),
+    file('Problems/SYO/SYO611-1.p', sos_04)).
+tcf(c_53,plain,![X0:$i,X1:$i]:  
+    (~le(s(X0),X1)|~eq(f(X0),a0)|~eq(f(X1),a0)),
+    file('Problems/SYO/SYO611-1.p', sos_05)).
+tcf(c_57,plain,![X0:$i,X1:$i]:  
+    (~le(s(X0),X1)|~eq(f(X1),a0)),
+    inference(global_subsumption_just,[status(thm)],[c_53,c_52,c_53])).
+tcf(c_63,plain,![X0:$i,X1:$i]:  
+    (~le(s(X0),X1)),
+    inference(backward_subsumption_resolution,[status(thm)],[c_57,c_52])).
+tcf(c_87,plain,![X0:$i]:  
+    (~le(s(X0),s(X0))),
+    inference(instantiation,[status(thm)],[c_63])).
+tcf(c_88,plain,![X0:$i]:  
+    (le(s(X0),s(X0))),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_90,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_88,c_87])).
+% SZS output end CNFRefutation for SYO611-1.p

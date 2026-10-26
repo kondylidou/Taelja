@@ -1,0 +1,39 @@
+% SZS status Theorem for fof_existential_goals.p
+% SZS output start CNFRefutation for fof_existential_goals.p
+fof(f1,axiom,(
+  q(c,d) & q(a,b) & p(a)),
+  file('fof_existential_goals.p',a1)).
+fof(f2,conjecture,(
+  ? [X0,X1,X2,X3] : (q(X2,X3) & q(X0,X1) & p(X0))),
+  file('fof_existential_goals.p',c)).
+fof(f3,negated_conjecture,(
+  ~? [X0,X1,X2,X3] : (q(X2,X3) & q(X0,X1) & p(X0))),
+inference(negated_conjecture,[status(cth)],[f2])).
+fof(f4,plain,(
+  ! [X0,X1,X2,X3] : (~q(X2,X3) | ~q(X0,X1) | ~p(X0))),
+  inference(ennf_transformation,[],[f3])).
+fof(f5,plain,(
+  p(a)),
+  inference(cnf_transformation,[],[f1])).
+fof(f6,plain,(
+  q(a,b)),
+  inference(cnf_transformation,[],[f1])).
+fof(f8,plain,(
+  ( ! [X2,X3,X0,X1] : (~q(X2,X3) | ~q(X0,X1) | ~p(X0)) )),
+  inference(cnf_transformation,[],[f4])).
+tcf(c_50,plain, (q(a,b)),inference(cnf_transformation,[],[f6])).
+tcf(c_51,plain, (p(a)),inference(cnf_transformation,[],[f5])).
+tcf(c_52,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~q(X0,X1)|~q(X2,X3)|~p(X2)),
+    inference(cnf_transformation,[],[f8])).
+tcf(c_54,plain,![X0_iProver_p_1:iProver_p_1,X0_iProver_q_2:iProver_q_2,X1_iProver_p_1:iProver_p_1,X1_iProver_q_2:iProver_q_2]:  
+    (~q(X0_iProver_p_1,X0_iProver_q_2)|~q(X1_iProver_p_1,X1_iProver_q_2)|
+    ~p(X1_iProver_p_1)),
+    inference(subtyping,[status(esa)],[c_52])).
+tcf(c_58,plain, 
+    (~q(a,b)|~p(a)),
+    inference(instantiation,[status(thm)],[c_54])).
+tcf(c_59,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_58,c_50,c_51])).
+% SZS output end CNFRefutation for fof_existential_goals.p

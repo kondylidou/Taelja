@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Run Vampire, E and Twee on TPTP Horn problems and translate each proof with Taelja.
+Run Vampire, E, Twee and iProver on TPTP Horn problems and translate each
+proof with Taelja.
 
 Usage
   python eval.py <tptp_dir> [options]
@@ -8,10 +9,11 @@ Usage
   tptp_dir          TPTP directory (contains Problems/)
   --vampire PATH    Vampire binary
   --eprover PATH    E binary
-  --twee PATH       Twee binary. Each prover is the path given, else
-                    $TAELJA_VAMPIRE, $TAELJA_EPROVER or $TAELJA_TWEE, else
-                    bin/<name> in this repository, else on the PATH. All three
-                    are required.
+  --twee PATH       Twee binary
+  --iprover PATH    iProver binary. Each prover is the path given, else
+                    $TAELJA_VAMPIRE, $TAELJA_EPROVER, $TAELJA_TWEE or
+                    $TAELJA_IPROVER, else bin/<name> in this repository, else
+                    on the PATH. All four are required.
   --output-dir DIR  output directory (default eval_out)
   --timeout SEC     per-prover timeout (default 60)
   --taelja-timeout SEC  Taelja timeout (default 60)
@@ -109,7 +111,7 @@ def find_taelja():
     return shutil.which('taelja')
 
 
-PROVER_DIR = {'vampire': 'Vampire', 'e': 'E', 'twee': 'Twee'}
+PROVER_DIR = {'vampire': 'Vampire', 'e': 'E', 'twee': 'Twee', 'iprover': 'Iprover'}
 
 
 def lean_module(problem):
@@ -151,6 +153,18 @@ def prover_cmd(name, binary, p_file, tptp_dir, timeout):
         # limit, as the one strategy --auto picks since E 3.5.1 loses
         # problems such as LCL020-1.
         return [binary, '--auto-schedule', f'--cpu-limit={timeout}', '--proof-object=3', '--tstp-format', rel]
+    if name == 'iprover':
+        # Without well-definedness and splitting iProver's proofs cite every
+        # premise and stay Horn. Its clausifier for FOF and TFF eliminates no
+        # definitions, since it prints no step for that.
+        cmd = [binary, '--time_out_real', str(timeout), '--prep_well_definedness', 'false', '--splitting_mode', 'none']
+        text = p_file.read_text(errors='replace')
+        mode = ('--mode tclausify --show_fool true' if re.search(r'^tff\(', text, re.M)
+                else '--mode clausify' if re.search(r'^fof\(', text, re.M) else None)
+        if mode:
+            cmd += ['--clausifier', str(Path(binary).parent / 'VClausifier' / 'vclausify_rel'),
+                    '--clausifier_options', f'{mode} --input_syntax tptp -fde none --bad_option off -t {timeout + 1}']
+        return cmd + [rel]
     return [binary, '--tstp', '--formal-proof', '--multi', '--root', str(tptp_dir), str(p_file)]
 
 
@@ -162,9 +176,11 @@ def prove_status(name, tstp, timed_out):
     """ok when a prover's output reports a proof that has clauses, else
     timeout, tfail when it reports a proof it did not print usably, or fail."""
     reported = any(m in tstp for m in OK_MARKERS)
-    # Twee sometimes prints a success status with no proof clauses, which
-    # leaves Taelja nothing to read.
-    if reported and (name != 'twee' or any(l.startswith(('cnf(', 'fof(')) for l in tstp.splitlines())):
+    # Twee sometimes prints a success status with no proof clauses, and so does
+    # iProver when its clausifier solved the problem, which leaves Taelja
+    # nothing to read.
+    if reported and (name not in ('twee', 'iprover')
+                     or any(l.startswith(('cnf(', 'fof(', 'tcf(', 'tff(')) for l in tstp.splitlines())):
         return 'ok'
     # A run killed mid-print may show a status marker in its partial output,
     # so a timeout wins over tfail
@@ -368,10 +384,10 @@ def process_one(p_file, category, prover_name, prover_bin, taelja, out_dir, tptp
     if (out / 'proof.tstp').exists() and not _read(out / 'prover.err').startswith('[Errno'):
         prove = _read_prove_status(out, prover_name)
     if prove in (None, 'tfail'):
-        # E finds the problem's includes through $TPTP
+        # E and iProver find the problem's includes through $TPTP
         rc, tstp, err = run(prover_cmd(prover_name, prover_bin, p_file, tptp_dir, timeout),
                             timeout=timeout, cwd=str(tptp_dir),
-                            extra_env={'TPTP': str(tptp_dir)} if prover_name == 'e' else None)
+                            extra_env={'TPTP': str(tptp_dir)} if prover_name in ('e', 'iprover') else None)
         if prover_name == 'twee':
             tstp = strip_twee_preamble(tstp)
         (out / 'proof.tstp').write_text(tstp)
@@ -423,6 +439,7 @@ def main():
     parser.add_argument('--vampire',     default=None, metavar='PATH')
     parser.add_argument('--eprover',     default=None, metavar='PATH')
     parser.add_argument('--twee',        default=None, metavar='PATH')
+    parser.add_argument('--iprover',     default=None, metavar='PATH')
     parser.add_argument('--output-dir',  default='eval_out')
     parser.add_argument('--timeout',     type=int, default=60,
                         help='Per-prover timeout in seconds (default: 60)')
@@ -441,7 +458,7 @@ def main():
     # run in the TPTP directory. Each one's option and variable are named
     # after its binary.
     provers = {}
-    for name, exe in (('vampire', 'vampire'), ('e', 'eprover'), ('twee', 'twee')):
+    for name, exe in (('vampire', 'vampire'), ('e', 'eprover'), ('twee', 'twee'), ('iprover', 'iprover')):
         env_var = 'TAELJA_' + exe.upper()
         provers[name] = find_prover(getattr(args, exe), env_var, exe)
         if provers[name] is None:

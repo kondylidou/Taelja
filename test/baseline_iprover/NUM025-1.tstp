@@ -1,0 +1,23 @@
+% SZS status Unsatisfiable for NUM025-1.p
+% SZS output start CNFRefutation for NUM025-1.p
+tcf(c_53,plain,![X0:$i]:  
+    (~less(X0,X0)),
+    file('Problems/NUM/NUM025-1.p', no_number_less_than_itself)).
+tcf(c_54,plain, (less(a,b)),file('Problems/NUM/NUM025-1.p', a_less_than_b)).
+tcf(c_55,plain, 
+    (less(b,a)),
+    file('Problems/NUM/NUM025-1.p', prove_b_not_less_than_a)).
+tcf(c_56,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~less(X0,X1)|~less(X2,X0)|less(X2,X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/NUM001-1.ax', transitivity_of_less)).
+tcf(c_166,plain,![X0:$i]:  
+    (~less(X0,b)|~less(b,a)|less(X0,a)),
+    inference(instantiation,[status(thm)],[c_56])).
+tcf(c_193,plain, 
+    (~less(a,b)|~less(b,a)|less(a,a)),
+    inference(instantiation,[status(thm)],[c_166])).
+tcf(c_194,plain, (~less(a,a)),inference(instantiation,[status(thm)],[c_53])).
+tcf(c_195,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_194,c_193,c_54,c_55])).
+% SZS output end CNFRefutation for NUM025-1.p

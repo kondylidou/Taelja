@@ -1,0 +1,91 @@
+% SZS status Theorem for test_instantiations_no_ground.p
+% SZS output start CNFRefutation for test_instantiations_no_ground.p
+fof(f1,axiom,(
+  top),
+  file('test_instantiations_no_ground.p',f1)).
+fof(f2,axiom,(
+  ! [X0,X1] : (top => q(X0,X1))),
+  file('test_instantiations_no_ground.p',f2)).
+fof(f3,axiom,(
+  ! [X0] : (q(X0,b) => r1(X0))),
+  file('test_instantiations_no_ground.p',f3)).
+fof(f4,axiom,(
+  ! [X0] : (q(X0,X0) => r2(X0))),
+  file('test_instantiations_no_ground.p',f4)).
+fof(f5,axiom,(
+  ! [X0] : ((r2(X0) & r1(X0)) => s(X0))),
+  file('test_instantiations_no_ground.p',f5)).
+fof(f6,conjecture,(
+  s(a)),
+  file('test_instantiations_no_ground.p',f6)).
+fof(f7,negated_conjecture,(
+  ~s(a)),
+inference(negated_conjecture,[status(cth)],[f6])).
+fof(f8,plain,(
+  ~s(a)),
+  inference(flattening,[],[f7])).
+fof(f9,plain,(
+  ! [X0,X1] : (q(X0,X1) | ~top)),
+  inference(ennf_transformation,[],[f2])).
+fof(f10,plain,(
+  ! [X0] : (r1(X0) | ~q(X0,b))),
+  inference(ennf_transformation,[],[f3])).
+fof(f11,plain,(
+  ! [X0] : (r2(X0) | ~q(X0,X0))),
+  inference(ennf_transformation,[],[f4])).
+fof(f12,plain,(
+  ! [X0] : (s(X0) | (~r2(X0) | ~r1(X0)))),
+  inference(ennf_transformation,[],[f5])).
+fof(f13,plain,(
+  ! [X0] : (s(X0) | ~r2(X0) | ~r1(X0))),
+  inference(flattening,[],[f12])).
+fof(f14,plain,(
+  top),
+  inference(cnf_transformation,[],[f1])).
+fof(f15,plain,(
+  ( ! [X0,X1] : (q(X0,X1) | ~top) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f16,plain,(
+  ( ! [X0] : (r1(X0) | ~q(X0,b)) )),
+  inference(cnf_transformation,[],[f10])).
+fof(f17,plain,(
+  ( ! [X0] : (r2(X0) | ~q(X0,X0)) )),
+  inference(cnf_transformation,[],[f11])).
+fof(f18,plain,(
+  ( ! [X0] : (s(X0) | ~r2(X0) | ~r1(X0)) )),
+  inference(cnf_transformation,[],[f13])).
+fof(f19,plain,(
+  ~s(a)),
+  inference(cnf_transformation,[],[f8])).
+tcf(c_49,plain, (top),inference(cnf_transformation,[],[f14])).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (~top|q(X0,X1)),
+    inference(cnf_transformation,[],[f15])).
+tcf(c_51,plain,![X0:$i]:  
+    (~q(X0,b)|r1(X0)),
+    inference(cnf_transformation,[],[f16])).
+tcf(c_52,plain,![X0:$i]:  
+    (~q(X0,X0)|r2(X0)),
+    inference(cnf_transformation,[],[f17])).
+tcf(c_53,plain,![X0:$i]:  
+    (~r1(X0)|~r2(X0)|s(X0)),
+    inference(cnf_transformation,[],[f18])).
+tcf(c_54,plain, (~s(a)),inference(cnf_transformation,[],[f19])).
+tcf(c_55,plain, (~top|q(a,a)),inference(instantiation,[status(thm)],[c_50])).
+tcf(c_56,plain, 
+    (~q(a,a)|r2(a)),
+    inference(instantiation,[status(thm)],[c_52])).
+tcf(c_58,plain, 
+    (~r1(a)|~r2(a)|s(a)),
+    inference(instantiation,[status(thm)],[c_53])).
+tcf(c_59,plain,![X0:$i,X1:$i]:  
+    (q(X0,X1)),
+    inference(global_subsumption_just,[status(thm)],[c_50,c_49,c_50])).
+tcf(c_62,plain,![X0:$i]:  
+    (r1(X0)),
+    inference(resolution,[status(thm)],[c_51,c_59])).
+tcf(c_63,plain, (r1(a)),inference(instantiation,[status(thm)],[c_62])).
+tcf(c_64,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_63,c_58,c_56,c_55,c_54,c_49])).
+% SZS output end CNFRefutation for test_instantiations_no_ground.p

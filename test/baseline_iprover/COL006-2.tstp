@@ -1,0 +1,107 @@
+% SZS status Unsatisfiable for COL006-2.p
+% SZS output start CNFRefutation for COL006-2.p
+tcf(c_49,plain,![X0:$i,X1:$i,X2:$i]:  
+    (apply(apply(X0,X1),apply(X2,X1)) = apply(apply(apply(s,X0),X2),X1)),
+    file('Problems/COL/COL006-2.p', s_definition)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (apply(apply(k,X0),X1) = X0),
+    file('Problems/COL/COL006-2.p', k_definition)).
+tcf(c_51,plain,![X0:$i]:  
+    (apply(fixed_pt,apply(X0,fixed_pt)) != apply(X0,fixed_pt)|fixed_point(X0)),
+    file('Problems/COL/COL006-2.p', strong_fixed_point)).
+tcf(c_52,plain, 
+    (~fixed_point(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))))),
+    file('Problems/COL/COL006-2.p', prove_strong_fixed_point)).
+tcf(c_73,plain,![X0:$i]:  
+    (apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))) != X0|
+    apply(fixed_pt,apply(X0,fixed_pt)) != apply(X0,fixed_pt)),
+    inference(resolution_lifted,[status(thm)],[c_51,c_52])).
+tcf(c_74,plain, 
+    (apply(fixed_pt,apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt)) != apply(apply(apply(s,apply(k,apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)))),apply(apply(s,apply(k,apply(apply(s,s),apply(s,k)))),apply(apply(s,apply(k,s)),k))),fixed_pt)),
+    inference(unflattening,[status(thm)],[c_73])).
+tcf(c_85,plain, 
+    (apply(fixed_pt,apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))) != apply(apply(apply(s,apply(apply(s,k),k)),apply(apply(s,k),k)),apply(apply(apply(s,s),apply(s,k)),apply(s,apply(k,fixed_pt))))),
+    inference(demodulation,[status(thm)],[c_74,c_49,c_50])).
+tcf(c_89,plain, (apply(s,k) = iPr_def_10),definition).
+tcf(c_90,plain, (apply(iPr_def_10,k) = iPr_def_11),definition).
+tcf(c_91,plain, (apply(s,iPr_def_11) = iPr_def_12),definition).
+tcf(c_92,plain, (apply(iPr_def_12,iPr_def_11) = iPr_def_13),definition).
+tcf(c_93,plain, (apply(s,s) = iPr_def_14),definition).
+tcf(c_94,plain, (apply(iPr_def_14,iPr_def_10) = iPr_def_15),definition).
+tcf(c_95,plain, (apply(k,fixed_pt) = iPr_def_16),definition).
+tcf(c_96,plain, (apply(s,iPr_def_16) = iPr_def_17),definition).
+tcf(c_97,plain, (apply(iPr_def_15,iPr_def_17) = iPr_def_18),definition).
+tcf(c_98,plain, (apply(iPr_def_13,iPr_def_18) = iPr_def_19),definition).
+tcf(c_99,plain, (apply(fixed_pt,iPr_def_19) = iPr_def_20),definition).
+tcf(c_100,plain, 
+    (iPr_def_20 != iPr_def_19),
+    inference(demodulation,
+              [status(thm)],
+              [c_85,c_95,c_96,c_93,c_94,c_97,c_89,c_90,c_91,c_92,c_98,c_99])).
+tcf(c_158,plain,![X0:$i,X1:$i,X2:$i]:  
+    (apply(apply(X0,X1),apply(apply(X2,X0),X1)) = apply(apply(apply(apply(s,s),X2),X0),X1)),
+    inference(superposition,[status(thm)],[c_49,c_49])).
+tcf(c_161,plain,![X0:$i,X1:$i,X2:$i]:  
+    (apply(apply(X0,X1),apply(apply(X2,X0),X1)) = apply(apply(apply(iPr_def_14,X2),X0),X1)),
+    inference(light_normalisation,[status(thm)],[c_158,c_93])).
+tcf(c_164,plain,![X0:$i]:  
+    (apply(iPr_def_16,X0) = fixed_pt),
+    inference(superposition,[status(thm)],[c_95,c_50])).
+tcf(c_167,plain,![X0:$i,X1:$i]:  
+    (apply(apply(apply(s,k),X0),X1) = X1),
+    inference(superposition,[status(thm)],[c_50,c_49])).
+tcf(c_168,plain,![X0:$i,X1:$i]:  
+    (apply(apply(iPr_def_10,X0),X1) = X1),
+    inference(light_normalisation,[status(thm)],[c_167,c_89])).
+tcf(c_170,plain,![X0:$i,X1:$i]:  
+    (apply(apply(apply(s,iPr_def_16),X0),X1) = apply(fixed_pt,apply(X0,X1))),
+    inference(superposition,[status(thm)],[c_164,c_49])).
+tcf(c_172,plain,![X0:$i,X1:$i]:  
+    (apply(apply(iPr_def_17,X0),X1) = apply(fixed_pt,apply(X0,X1))),
+    inference(light_normalisation,[status(thm)],[c_170,c_96])).
+tcf(c_175,plain,![X0:$i]:  
+    (apply(iPr_def_11,X0) = X0),
+    inference(superposition,[status(thm)],[c_90,c_168])).
+tcf(c_180,plain,![X0:$i,X1:$i]:  
+    (apply(apply(apply(s,iPr_def_11),X0),X1) = apply(X1,apply(X0,X1))),
+    inference(superposition,[status(thm)],[c_175,c_49])).
+tcf(c_182,plain,![X0:$i,X1:$i]:  
+    (apply(X0,apply(X1,X0)) = apply(apply(iPr_def_12,X1),X0)),
+    inference(light_normalisation,[status(thm)],[c_180,c_91])).
+tcf(c_210,plain,![X0:$i]:  
+    (apply(X0,apply(iPr_def_11,X0)) = apply(iPr_def_13,X0)),
+    inference(superposition,[status(thm)],[c_92,c_182])).
+tcf(c_223,plain,![X0:$i]:  
+    (apply(X0,X0) = apply(iPr_def_13,X0)),
+    inference(light_normalisation,[status(thm)],[c_210,c_175])).
+tcf(c_3207,plain,![X0:$i,X1:$i]:  
+    (apply(apply(apply(iPr_def_14,iPr_def_10),X0),X1) = apply(apply(X0,X1),X1)),
+    inference(superposition,[status(thm)],[c_168,c_161])).
+tcf(c_3414,plain,![X0:$i,X1:$i]:  
+    (apply(apply(X0,X1),X1) = apply(apply(iPr_def_15,X0),X1)),
+    inference(light_normalisation,[status(thm)],[c_3207,c_94])).
+tcf(c_3932,plain,![X0:$i]:  
+    (apply(fixed_pt,apply(X0,X0)) = apply(apply(iPr_def_15,iPr_def_17),X0)),
+    inference(superposition,[status(thm)],[c_3414,c_172])).
+tcf(c_3985,plain,![X0:$i]:  
+    (apply(fixed_pt,apply(X0,X0)) = apply(iPr_def_18,X0)),
+    inference(light_normalisation,[status(thm)],[c_3932,c_97])).
+tcf(c_4628,plain,![X0:$i]:  
+    (apply(fixed_pt,apply(iPr_def_13,X0)) = apply(iPr_def_18,X0)),
+    inference(superposition,[status(thm)],[c_223,c_3985])).
+tcf(c_4901,plain, 
+    (apply(fixed_pt,iPr_def_19) = apply(iPr_def_18,iPr_def_18)),
+    inference(superposition,[status(thm)],[c_98,c_4628])).
+tcf(c_4934,plain, 
+    (apply(iPr_def_18,iPr_def_18) = iPr_def_20),
+    inference(light_normalisation,[status(thm)],[c_4901,c_99])).
+tcf(c_4938,plain, 
+    (iPr_def_19 = iPr_def_20),
+    inference(demodulation,[status(thm)],[c_4934,c_98,c_223])).
+tcf(c_4942,plain, 
+    (iPr_def_19 != iPr_def_19),
+    inference(demodulation,[status(thm)],[c_100,c_4938])).
+tcf(c_4943,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_4942])).
+% SZS output end CNFRefutation for COL006-2.p

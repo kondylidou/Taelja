@@ -1,0 +1,30 @@
+Axiom 1: borders(indian,india)
+Axiom 2: asian(india)
+Axiom 3: borders(indian,somalia)
+Axiom 4: african(somalia)
+Axiom 5: ocean(indian)
+
+Goal 1: borders(indian,somalia)
+Proof:
+  have borders(indian,somalia)
+    by axiom 3
+
+Goal 2: borders(indian,india)
+Proof:
+  have borders(indian,india)
+    by axiom 1
+
+Goal 3: ocean(indian)
+Proof:
+  have ocean(indian)
+    by axiom 5
+
+Goal 4: african(somalia)
+Proof:
+  have african(somalia)
+    by axiom 4
+
+Goal 5: asian(india)
+Proof:
+  have asian(india)
+    by axiom 2

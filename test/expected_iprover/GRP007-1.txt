@@ -1,0 +1,12 @@
+Axiom 1: product(X,identity,X)
+Axiom 2: product(c,X,X)
+Axiom 3: product(X,Y,Z) /\ product(X,Y,A) => Z = A
+
+Goal 1: c = identity
+Proof:
+  have product(c,identity,identity)
+    by axiom 2
+   and product(c,identity,c)
+    by axiom 1
+  hence c = identity
+    by axiom 3

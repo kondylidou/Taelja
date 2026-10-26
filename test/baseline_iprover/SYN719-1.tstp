@@ -1,0 +1,82 @@
+% SZS status Unsatisfiable for SYN719-1.p
+% SZS output start CNFRefutation for SYN719-1.p
+tcf(c_86,plain,![X0:$i]:  
+    (p14(X0,X0)),
+    file('Problems/SYN/SYN719-1.p', p14_38)).
+tcf(c_89,plain, 
+    (p66(f12(c78,c77),c79)),
+    file('Problems/SYN/SYN719-1.p', p66_41)).
+tcf(c_90,plain, 
+    (p67(f16(c80,c81),c82)),
+    file('Problems/SYN/SYN719-1.p', p67_42)).
+tcf(c_91,plain,![X0:$i,X1:$i]:  
+    (p70(f30(c88,X0),f38(c85,X1))),
+    file('Problems/SYN/SYN719-1.p', p70_43)).
+tcf(c_93,plain,![X0:$i]:  
+    (p14(f23(f26(c84,c85),X0),X0)),
+    file('Problems/SYN/SYN719-1.p', p14_45)).
+tcf(c_94,plain, 
+    (~p68(f19(f21(c83,c77),c79),c81)),
+    file('Problems/SYN/SYN719-1.p', not_p68_46)).
+tcf(c_100,plain,![X0:$i,X1:$i]:  
+    (~p70(X0,X1)|p69(f36(c86,X1),X0)),
+    file('Problems/SYN/SYN719-1.p', p69_52)).
+tcf(c_138,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p14(X0,X1)|~p14(X0,X2)|p14(X1,X2)),
+    file('Problems/SYN/SYN719-1.p', p14_90)).
+tcf(c_174,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p69(f36(c86,f38(X0,f40(f42(f44(f46(c87,X1),X2),X0),X3))),f30(c88,f32(c89,f8(c75,c76))))|
+    ~p14(X2,f23(f26(c84,X0),X3))|~p66(f12(c78,c77),X1)|~p67(f16(c80,X3),c82)|
+    p68(f19(f21(c83,c77),X1),X2)),
+    file('Problems/SYN/SYN719-1.p', p68_126)).
+tcf(c_1263,plain,![X0:$i,X1:$i]:  
+    (~p70(f30(c88,X0),f38(c85,X1))|p69(f36(c86,f38(c85,X1)),f30(c88,X0))),
+    inference(instantiation,[status(thm)],[c_100])).
+tcf(c_1271,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p69(f36(c86,f38(X0,f40(f42(f44(f46(c87,c79),X1),X0),X2))),f30(c88,f32(c89,f8(c75,c76))))|
+    ~p14(X1,f23(f26(c84,X0),X2))|~p67(f16(c80,X2),c82)|~p66(f12(c78,c77),c79)|
+    p68(f19(f21(c83,c77),c79),X1)),
+    inference(instantiation,[status(thm)],[c_174])).
+tcf(c_1299,plain,![X0:$i,X1:$i]:  
+    (~p69(f36(c86,f38(X0,f40(f42(f44(f46(c87,c79),X1),X0),c81))),f30(c88,f32(c89,f8(c75,c76))))|
+    ~p14(X1,f23(f26(c84,X0),c81))|~p66(f12(c78,c77),c79)|~p67(f16(c80,c81),c82)|
+    p68(f19(f21(c83,c77),c79),X1)),
+    inference(instantiation,[status(thm)],[c_1271])).
+tcf(c_1339,plain,![X0:$i]:  
+    (p14(f23(f26(c84,X0),c81),f23(f26(c84,X0),c81))),
+    inference(instantiation,[status(thm)],[c_86])).
+tcf(c_1346,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p14(X0,f23(f26(c84,X1),c81))|~p14(X0,X2)|p14(X2,f23(f26(c84,X1),c81))),
+    inference(instantiation,[status(thm)],[c_138])).
+tcf(c_1445,plain,![X0:$i,X1:$i]:  
+    (~p14(f23(f26(c84,X0),c81),f23(f26(c84,X0),c81))|~p14(f23(f26(c84,X0),c81),X1)|
+    p14(X1,f23(f26(c84,X0),c81))),
+    inference(instantiation,[status(thm)],[c_1346])).
+tcf(c_1453,plain, 
+    (p14(f23(f26(c84,c85),c81),c81)),
+    inference(instantiation,[status(thm)],[c_93])).
+tcf(c_1624,plain, 
+    (p14(f23(f26(c84,c85),c81),f23(f26(c84,c85),c81))),
+    inference(instantiation,[status(thm)],[c_1339])).
+tcf(c_1679,plain, 
+    (~p14(f23(f26(c84,c85),c81),f23(f26(c84,c85),c81))|~p14(f23(f26(c84,c85),c81),c81)|
+    p14(c81,f23(f26(c84,c85),c81))),
+    inference(instantiation,[status(thm)],[c_1445])).
+tcf(c_1899,plain, 
+    (~p69(f36(c86,f38(c85,f40(f42(f44(f46(c87,c79),c81),c85),c81))),f30(c88,f32(c89,f8(c75,c76))))|
+    ~p14(c81,f23(f26(c84,c85),c81))|~p66(f12(c78,c77),c79)|~p67(f16(c80,c81),c82)|
+    p68(f19(f21(c83,c77),c79),c81)),
+    inference(instantiation,[status(thm)],[c_1299])).
+tcf(c_2326,plain, 
+    (~p70(f30(c88,f32(c89,f8(c75,c76))),f38(c85,f40(f42(f44(f46(c87,c79),c81),c85),c81)))|
+    p69(f36(c86,f38(c85,f40(f42(f44(f46(c87,c79),c81),c85),c81))),f30(c88,f32(c89,f8(c75,c76))))),
+    inference(instantiation,[status(thm)],[c_1263])).
+tcf(c_2944,plain, 
+    (p70(f30(c88,f32(c89,f8(c75,c76))),f38(c85,f40(f42(f44(f46(c87,c79),c81),c85),c81)))),
+    inference(instantiation,[status(thm)],[c_91])).
+tcf(c_2945,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_2944,c_2326,c_1899,c_1679,c_1624,c_1453,c_94,c_89,c_90])).
+% SZS output end CNFRefutation for SYN719-1.p

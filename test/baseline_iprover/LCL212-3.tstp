@@ -1,0 +1,36 @@
+% SZS status Unsatisfiable for LCL212-3.p
+% SZS output start CNFRefutation for LCL212-3.p
+tcf(c_49,plain, 
+    (~theorem(implies(not(p),implies(q,implies(implies(p,q),q))))),
+    file('Problems/LCL/LCL212-3.p', prove_this)).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (axiom(implies(X0,or(X1,X0)))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', axiom_1_3)).
+tcf(c_55,plain,![X0:$i,X1:$i]:  
+    (or(not(X0),X1) = implies(X0,X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', implies_definition)).
+tcf(c_56,plain,![X0:$i]:  
+    (~axiom(X0)|theorem(X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', rule_1)).
+tcf(c_57,plain,![X0:$i,X1:$i]:  
+    (~theorem(implies(X0,X1))|~theorem(X0)|theorem(X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL004-0.ax', rule_2)).
+tcf(c_111,plain,![X0:$i,X1:$i,X2:$i]:  
+    (implies(X0,or(X1,X0)) != X2|theorem(X2)),
+    inference(resolution_lifted,[status(thm)],[c_51,c_56])).
+tcf(c_112,plain,![X0:$i,X1:$i]:  
+    (theorem(implies(X0,or(X1,X0)))),
+    inference(unflattening,[status(thm)],[c_111])).
+tcf(c_286,plain,![X0:$i,X1:$i]:  
+    (theorem(implies(X0,implies(X1,X0)))),
+    inference(superposition,[status(thm)],[c_55,c_112])).
+tcf(c_311,plain,![X0:$i,X1:$i]:  
+    (~theorem(X0)|theorem(implies(X1,X0))),
+    inference(superposition,[status(thm)],[c_286,c_57])).
+tcf(c_350,plain, 
+    (~theorem(implies(q,implies(implies(p,q),q)))),
+    inference(superposition,[status(thm)],[c_311,c_49])).
+tcf(c_352,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_350,c_286])).
+% SZS output end CNFRefutation for LCL212-3.p

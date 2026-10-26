@@ -1,0 +1,83 @@
+Axiom 1: subgroup_member(b)
+Axiom 2: subgroup_member(a)
+Axiom 3: product(X,inverse(X),identity)
+Axiom 4: product(X,inverse(Y),Z) /\ subgroup_member(X) /\ subgroup_member(Y) => subgroup_member(Z)
+Axiom 5: product(identity,X,X)
+Axiom 6: product(X,identity,X)
+Axiom 7: product(a,b,c)
+Axiom 8: product(X,Y,Z) /\ product(X,A,B) /\ product(Y,C,A) => product(Z,C,B)
+Axiom 9: product(X,Y,Z) /\ product(X,Y,A) => Z = A
+Axiom 10: product(X,Y,multiply(X,Y))
+Axiom 11: product(X,Y,Z) /\ product(Y,A,B) /\ product(Z,A,C) => product(X,B,C)
+
+Lemma 12: subgroup_member(identity)
+Proof:
+  have product(a,inverse(a),identity)
+    by axiom 3
+   and subgroup_member(a)
+    by axiom 2
+   and subgroup_member(a)
+    by axiom 2
+  hence subgroup_member(identity)
+    by axiom 4
+
+Lemma 13: product(c,identity,c)
+Proof:
+  have product(a,b,c)
+    by axiom 7
+   and product(a,b,c)
+    by axiom 7
+   and product(b,identity,b)
+    by axiom 6
+  hence product(c,identity,c)
+    by axiom 8
+
+Lemma 14: product(a,identity,multiply(c,inverse(b)))
+Proof:
+  have product(a,b,c)
+    by axiom 7
+   and product(b,inverse(b),identity)
+    by axiom 3
+   and product(c,inverse(b),multiply(c,inverse(b)))
+    by axiom 10
+  hence product(a,identity,multiply(c,inverse(b)))
+    by axiom 11
+
+Lemma 15: a = multiply(c,inverse(b))
+Proof:
+  have product(a,identity,a)
+    by axiom 6
+   and product(a,identity,multiply(c,inverse(b)))
+    by lemma 14
+  hence a = multiply(c,inverse(b))
+    by axiom 9
+
+Lemma 16: subgroup_member(inverse(b))
+Proof:
+  have product(identity,inverse(b),inverse(b))
+    by axiom 5
+   and subgroup_member(identity)
+    by lemma 12
+   and subgroup_member(b)
+    by axiom 1
+  hence subgroup_member(inverse(b))
+    by axiom 4
+
+Goal 1: subgroup_member(c)
+Proof:
+  have product(c,inverse(b),multiply(c,inverse(b)))
+    by axiom 10
+  hence product(c,inverse(b),a)
+    by rw lemma 15 R->L
+   and product(c,identity,c)
+    by lemma 13
+   and product(inverse(b),inverse(inverse(b)),identity)
+    by axiom 3
+  hence product(a,inverse(inverse(b)),c)
+    by axiom 8
+   and subgroup_member(a)
+    by axiom 2
+   and subgroup_member(inverse(b))
+    by lemma 16
+  hence subgroup_member(c)
+    by axiom 4

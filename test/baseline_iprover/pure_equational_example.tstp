@@ -1,0 +1,35 @@
+% SZS status Theorem for pure_equational_example.p
+% SZS output start CNFRefutation for pure_equational_example.p
+fof(f1,axiom,(
+  a = b),
+  file('pure_equational_example.p',ax1)).
+fof(f2,axiom,(
+  b = c),
+  file('pure_equational_example.p',ax2)).
+fof(f3,conjecture,(
+  a = c),
+  file('pure_equational_example.p',goal)).
+fof(f4,negated_conjecture,(
+  ~a = c),
+inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  a != c),
+  inference(flattening,[],[f4])).
+fof(f6,plain,(
+  a = b),
+  inference(cnf_transformation,[],[f1])).
+fof(f7,plain,(
+  b = c),
+  inference(cnf_transformation,[],[f2])).
+fof(f8,plain,(
+  a != c),
+  inference(cnf_transformation,[],[f5])).
+tcf(c_49,plain, (a = b),inference(cnf_transformation,[],[f6])).
+tcf(c_50,plain, (b = c),inference(cnf_transformation,[],[f7])).
+tcf(c_51,plain, (a != c),inference(cnf_transformation,[],[f8])).
+tcf(c_58,plain, (a = c),inference(demodulation,[status(thm)],[c_50,c_49])).
+tcf(c_59,plain, (a != a),inference(demodulation,[status(thm)],[c_51,c_58])).
+tcf(c_60,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_59])).
+% SZS output end CNFRefutation for pure_equational_example.p

@@ -1,0 +1,13 @@
+Axiom 1: g(a) = b
+Axiom 2: h(X) = X
+Axiom 3: f(sK0) = a
+
+Goal 1: b = g(h(f(sK0)))
+Proof:
+  b
+= { by axiom 1 R->L }
+  g(a)
+= { by axiom 2 R->L }
+  g(h(a))
+= { by axiom 3 R->L }
+  g(h(f(sK0)))

@@ -1,0 +1,65 @@
+% SZS status Theorem for defense_example.p
+% SZS output start CNFRefutation for defense_example.p
+fof(f1,axiom,(
+  brings_home(james) = catch(james)),
+  file('defense_example.p',brings_home_catch)).
+fof(f2,axiom,(
+  catch(james) = mouse),
+  file('defense_example.p',catches_mouse)).
+fof(f3,axiom,(
+  cat(james)),
+  file('defense_example.p',james_is_cat)).
+fof(f4,axiom,(
+  ! [X0] : ((cat(X0) & mouse = brings_home(X0)) => happy(X0))),
+  file('defense_example.p',happy)).
+fof(f5,conjecture,(
+  happy(james)),
+  file('defense_example.p',goal)).
+fof(f6,negated_conjecture,(
+  ~happy(james)),
+inference(negated_conjecture,[status(cth)],[f5])).
+fof(f7,plain,(
+  ~happy(james)),
+  inference(flattening,[],[f6])).
+fof(f8,plain,(
+  ! [X0] : (happy(X0) | (~cat(X0) | mouse != brings_home(X0)))),
+  inference(ennf_transformation,[],[f4])).
+fof(f9,plain,(
+  ! [X0] : (happy(X0) | ~cat(X0) | mouse != brings_home(X0))),
+  inference(flattening,[],[f8])).
+fof(f10,plain,(
+  brings_home(james) = catch(james)),
+  inference(cnf_transformation,[],[f1])).
+fof(f11,plain,(
+  catch(james) = mouse),
+  inference(cnf_transformation,[],[f2])).
+fof(f12,plain,(
+  cat(james)),
+  inference(cnf_transformation,[],[f3])).
+fof(f13,plain,(
+  ( ! [X0] : (happy(X0) | ~cat(X0) | mouse != brings_home(X0)) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f14,plain,(
+  ~happy(james)),
+  inference(cnf_transformation,[],[f7])).
+tcf(c_49,plain, 
+    (brings_home(james) = catch(james)),
+    inference(cnf_transformation,[],[f10])).
+tcf(c_50,plain, 
+    (catch(james) = mouse),
+    inference(cnf_transformation,[],[f11])).
+tcf(c_51,plain, (cat(james)),inference(cnf_transformation,[],[f12])).
+tcf(c_52,plain,![X0:$i]:  
+    (brings_home(X0) != mouse|~cat(X0)|happy(X0)),
+    inference(cnf_transformation,[],[f13])).
+tcf(c_53,plain, (~happy(james)),inference(cnf_transformation,[],[f14])).
+tcf(c_54,plain, 
+    (brings_home(james) != mouse|~cat(james)|happy(james)),
+    inference(instantiation,[status(thm)],[c_52])).
+tcf(c_69,plain, 
+    (brings_home(james) = mouse),
+    inference(light_normalisation,[status(thm)],[c_49,c_50])).
+tcf(c_80,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_69,c_54,c_53,c_51])).
+% SZS output end CNFRefutation for defense_example.p

@@ -1,0 +1,49 @@
+% SZS status Unsatisfiable for test_lemma_self_resolution.p
+% SZS output start CNFRefutation for test_lemma_self_resolution.p
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (~p(X0,X1)|~r(X0)|q(X0,X1)),
+    file('test_lemma_self_resolution.p', a1)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (~q(X0,f(X1))|~t(X1)|s(X0,f(X1))),
+    file('test_lemma_self_resolution.p', a2)).
+tcf(c_51,plain,![X0:$i]:  
+    (~r(X0)|u(X0)),
+    file('test_lemma_self_resolution.p', a3)).
+tcf(c_52,plain,![X0:$i,X1:$i]:  
+    (~s(X0,X1)|~u(X0)|p(f(X0),f(b))),
+    file('test_lemma_self_resolution.p', a4)).
+tcf(c_53,plain, (r(a)),file('test_lemma_self_resolution.p', a5)).
+tcf(c_54,plain,![X0:$i]:  
+    (r(f(X0))),
+    file('test_lemma_self_resolution.p', a6)).
+tcf(c_55,plain, (t(a)),file('test_lemma_self_resolution.p', a7)).
+tcf(c_56,plain, (t(b)),file('test_lemma_self_resolution.p', a8)).
+tcf(c_57,plain, (p(a,f(a))),file('test_lemma_self_resolution.p', a9)).
+tcf(c_58,plain, 
+    (~p(f(f(a)),f(b))),
+    file('test_lemma_self_resolution.p', a10)).
+tcf(c_98,plain,![X0:$i,X1:$i]:  
+    (~s(X0,X1)|~r(X0)|p(f(X0),f(b))),
+    inference(resolution,[status(thm)],[c_51,c_52])).
+tcf(c_112,plain,![X0:$i,X1:$i]:  
+    (~p(X0,f(X1))|~r(X0)|~t(X1)|s(X0,f(X1))),
+    inference(resolution,[status(thm)],[c_49,c_50])).
+tcf(c_130,plain,![X0:$i,X1:$i]:  
+    (~p(X0,f(X1))|~r(X0)|~t(X1)|p(f(X0),f(b))),
+    inference(resolution,[status(thm)],[c_112,c_98])).
+tcf(c_131,plain, 
+    (~p(a,f(a))|~r(a)|~t(a)|p(f(a),f(b))),
+    inference(instantiation,[status(thm)],[c_130])).
+tcf(c_155,plain,![X0:$i,X1:$i]:  
+    (~p(f(X0),f(X1))|~t(X1)|p(f(f(X0)),f(b))),
+    inference(resolution,[status(thm)],[c_130,c_54])).
+tcf(c_178,plain,![X0:$i]:  
+    (~p(f(X0),f(b))|p(f(f(X0)),f(b))),
+    inference(resolution,[status(thm)],[c_155,c_56])).
+tcf(c_179,plain, 
+    (~p(f(a),f(b))|p(f(f(a)),f(b))),
+    inference(instantiation,[status(thm)],[c_178])).
+tcf(c_180,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_179,c_131,c_58,c_57,c_53,c_55])).
+% SZS output end CNFRefutation for test_lemma_self_resolution.p

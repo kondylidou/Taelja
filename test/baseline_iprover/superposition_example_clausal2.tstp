@@ -1,0 +1,68 @@
+% SZS status Theorem for superposition_example_clausal2.p
+% SZS output start CNFRefutation for superposition_example_clausal2.p
+fof(f1,axiom,(
+  ! [X0,X1] : (f(X0) = f(X1) => X0 = X1)),
+  file('superposition_example_clausal2.p',ax1)).
+fof(f2,axiom,(
+  ! [X0,X1] : (g(X0) = g(X1) => X0 = X1)),
+  file('superposition_example_clausal2.p',ax2)).
+fof(f3,axiom,(
+  g(f(a)) = g(f(b))),
+  file('superposition_example_clausal2.p',ax3)).
+fof(f4,conjecture,(
+  a = b),
+  file('superposition_example_clausal2.p',goal)).
+fof(f5,negated_conjecture,(
+  ~a = b),
+inference(negated_conjecture,[status(cth)],[f4])).
+fof(f6,plain,(
+  a != b),
+  inference(flattening,[],[f5])).
+fof(f7,plain,(
+  ! [X0,X1] : (X0 = X1 | f(X0) != f(X1))),
+  inference(ennf_transformation,[],[f1])).
+fof(f8,plain,(
+  ! [X0,X1] : (X0 = X1 | g(X0) != g(X1))),
+  inference(ennf_transformation,[],[f2])).
+fof(f9,plain,(
+  ( ! [X0,X1] : (X0 = X1 | f(X0) != f(X1)) )),
+  inference(cnf_transformation,[],[f7])).
+fof(f10,plain,(
+  ( ! [X0,X1] : (X0 = X1 | g(X0) != g(X1)) )),
+  inference(cnf_transformation,[],[f8])).
+fof(f11,plain,(
+  g(f(a)) = g(f(b))),
+  inference(cnf_transformation,[],[f3])).
+fof(f12,plain,(
+  a != b),
+  inference(cnf_transformation,[],[f6])).
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (f(X0) != f(X1)|X0 = X1),
+    inference(cnf_transformation,[],[f9])).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (g(X0) != g(X1)|X0 = X1),
+    inference(cnf_transformation,[],[f10])).
+tcf(c_51,plain, (g(f(a)) = g(f(b))),inference(cnf_transformation,[],[f11])).
+tcf(c_52,plain, (a != b),inference(cnf_transformation,[],[f12])).
+tcf(c_77,plain,![X0:$i]:  (X0 = X0),theory(equality)).
+tcf(c_79,plain,![X0:$i,X1:$i]:  (X0 != X1|f(X0) = f(X1)),theory(equality)).
+tcf(c_81,plain, 
+    (a != a|f(a) = f(a)),
+    inference(instantiation,[status(thm)],[c_79])).
+tcf(c_83,plain, (a = a),inference(instantiation,[status(thm)],[c_77])).
+tcf(c_142,plain,![X0:$i]:  
+    (g(f(a)) != g(X0)|f(b) = X0),
+    inference(superposition,[status(thm)],[c_51,c_50])).
+tcf(c_153,plain, 
+    (f(a) = f(b)),
+    inference(equality_resolution,[status(thm)],[c_142])).
+tcf(c_159,plain,![X0:$i]:  
+    (f(X0) != f(a)|X0 = b),
+    inference(superposition,[status(thm)],[c_153,c_49])).
+tcf(c_163,plain, 
+    (f(a) != f(a)|a = b),
+    inference(instantiation,[status(thm)],[c_159])).
+tcf(c_164,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_163,c_83,c_81,c_52])).
+% SZS output end CNFRefutation for superposition_example_clausal2.p

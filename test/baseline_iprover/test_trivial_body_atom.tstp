@@ -1,0 +1,18 @@
+% SZS status Unsatisfiable for test_trivial_body_atom.p
+% SZS output start CNFRefutation for test_trivial_body_atom.p
+tcf(c_49,plain, (p(a)),file('test_trivial_body_atom.p', a1)).
+tcf(c_50,plain, (r(a)),file('test_trivial_body_atom.p', a2)).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (X0 != X1|~p(X0)|~r(X1)|q(X0)),
+    file('test_trivial_body_atom.p', a3)).
+tcf(c_52,plain, (~q(a)),file('test_trivial_body_atom.p', goal)).
+tcf(c_53,plain,![X0:$i]:  
+    (~p(X0)|~r(X0)|q(X0)),
+    inference(unflattening,[status(thm)],[c_51])).
+tcf(c_54,plain, 
+    (~p(a)|~r(a)|q(a)),
+    inference(instantiation,[status(thm)],[c_53])).
+tcf(c_55,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_54,c_52,c_49,c_50])).
+% SZS output end CNFRefutation for test_trivial_body_atom.p

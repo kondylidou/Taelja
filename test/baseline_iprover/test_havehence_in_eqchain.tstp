@@ -1,0 +1,71 @@
+% SZS status Theorem for test_havehence_in_eqchain.p
+% SZS output start CNFRefutation for test_havehence_in_eqchain.p
+fof(f1,axiom,(
+  p(a)),
+  file('test_havehence_in_eqchain.p',f1)).
+fof(f2,axiom,(
+  q(a)),
+  file('test_havehence_in_eqchain.p',f2)).
+fof(f3,axiom,(
+  ! [X0] : (p(X0) => f(X0) = g(X0))),
+  file('test_havehence_in_eqchain.p',f3)).
+fof(f4,axiom,(
+  ! [X0] : (q(X0) => g(X0) = h(X0))),
+  file('test_havehence_in_eqchain.p',f4)).
+fof(f5,conjecture,(
+  s(f(a)) = s(h(a))),
+  file('test_havehence_in_eqchain.p',f5)).
+fof(f6,negated_conjecture,(
+  ~s(f(a)) = s(h(a))),
+inference(negated_conjecture,[status(cth)],[f5])).
+fof(f7,plain,(
+  s(f(a)) != s(h(a))),
+  inference(flattening,[],[f6])).
+fof(f8,plain,(
+  ! [X0] : (f(X0) = g(X0) | ~p(X0))),
+  inference(ennf_transformation,[],[f3])).
+fof(f9,plain,(
+  ! [X0] : (g(X0) = h(X0) | ~q(X0))),
+  inference(ennf_transformation,[],[f4])).
+fof(f10,plain,(
+  p(a)),
+  inference(cnf_transformation,[],[f1])).
+fof(f11,plain,(
+  q(a)),
+  inference(cnf_transformation,[],[f2])).
+fof(f12,plain,(
+  ( ! [X0] : (f(X0) = g(X0) | ~p(X0)) )),
+  inference(cnf_transformation,[],[f8])).
+fof(f13,plain,(
+  ( ! [X0] : (g(X0) = h(X0) | ~q(X0)) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f14,plain,(
+  s(f(a)) != s(h(a))),
+  inference(cnf_transformation,[],[f7])).
+tcf(c_49,plain, (p(a)),inference(cnf_transformation,[],[f10])).
+tcf(c_50,plain, (q(a)),inference(cnf_transformation,[],[f11])).
+tcf(c_51,plain,![X0:$i]:  
+    (~p(X0)|f(X0) = g(X0)),
+    inference(cnf_transformation,[],[f12])).
+tcf(c_52,plain,![X0:$i]:  
+    (~q(X0)|g(X0) = h(X0)),
+    inference(cnf_transformation,[],[f13])).
+tcf(c_53,plain, (s(f(a)) != s(h(a))),inference(cnf_transformation,[],[f14])).
+tcf(c_84,plain,![X0:$i]:  
+    (X0 != a|f(X0) = g(X0)),
+    inference(resolution_lifted,[status(thm)],[c_49,c_51])).
+tcf(c_85,plain, (f(a) = g(a)),inference(unflattening,[status(thm)],[c_84])).
+tcf(c_90,plain,![X0:$i]:  
+    (X0 != a|g(X0) = h(X0)),
+    inference(resolution_lifted,[status(thm)],[c_50,c_52])).
+tcf(c_91,plain, (g(a) = h(a)),inference(unflattening,[status(thm)],[c_90])).
+tcf(c_102,plain, 
+    (f(a) = h(a)),
+    inference(demodulation,[status(thm)],[c_91,c_85])).
+tcf(c_103,plain, 
+    (s(f(a)) != s(f(a))),
+    inference(light_normalisation,[status(thm)],[c_53,c_102])).
+tcf(c_104,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_103])).
+% SZS output end CNFRefutation for test_havehence_in_eqchain.p

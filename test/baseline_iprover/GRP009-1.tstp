@@ -1,0 +1,58 @@
+% SZS status Unsatisfiable for GRP009-1.p
+% SZS output start CNFRefutation for GRP009-1.p
+tcf(c_49,plain, 
+    (product(a,b,identity)),
+    file('Problems/GRP/GRP009-1.p', a_is_an_inverse_of_b)).
+tcf(c_50,plain, 
+    (product(c,b,identity)),
+    file('Problems/GRP/GRP009-1.p', c_is_an_inverse_of_b)).
+tcf(c_51,plain, (a != c),file('Problems/GRP/GRP009-1.p', prove_a_equals_c)).
+tcf(c_52,plain,![X0:$i]:  
+    (product(identity,X0,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', left_identity)).
+tcf(c_53,plain,![X0:$i]:  
+    (product(X0,identity,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
+tcf(c_55,plain,![X0:$i]:  
+    (product(X0,inverse(X0),identity)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_inverse)).
+tcf(c_57,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~product(X0,X1,X2)|~product(X0,X1,X3)|X2 = X3),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function2)).
+tcf(c_58,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~product(X0,X1,X2)|~product(X1,X3,X4)|~product(X2,X3,X5)|product(X0,X4,X5)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', associativity1)).
+tcf(c_252,plain,![X0:$i,X1:$i]:  
+    (~product(X0,identity,X1)|X0 = X1),
+    inference(superposition,[status(thm)],[c_53,c_57])).
+tcf(c_279,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~product(b,X0,X1)|~product(identity,X0,X2)|product(a,X1,X2)),
+    inference(superposition,[status(thm)],[c_49,c_58])).
+tcf(c_280,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~product(b,X0,X1)|~product(identity,X0,X2)|product(c,X1,X2)),
+    inference(superposition,[status(thm)],[c_50,c_58])).
+tcf(c_440,plain,![X0:$i]:  
+    (~product(identity,inverse(b),X0)|product(a,identity,X0)),
+    inference(superposition,[status(thm)],[c_55,c_279])).
+tcf(c_466,plain, 
+    (product(a,identity,inverse(b))),
+    inference(superposition,[status(thm)],[c_52,c_440])).
+tcf(c_471,plain, 
+    (inverse(b) = a),
+    inference(superposition,[status(thm)],[c_466,c_252])).
+tcf(c_523,plain, 
+    (product(b,a,identity)),
+    inference(superposition,[status(thm)],[c_471,c_55])).
+tcf(c_667,plain,![X0:$i]:  
+    (~product(identity,a,X0)|product(c,identity,X0)),
+    inference(superposition,[status(thm)],[c_523,c_280])).
+tcf(c_745,plain, 
+    (product(c,identity,a)),
+    inference(superposition,[status(thm)],[c_52,c_667])).
+tcf(c_756,plain, 
+    (a = c),
+    inference(superposition,[status(thm)],[c_745,c_252])).
+tcf(c_757,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_756,c_51])).
+% SZS output end CNFRefutation for GRP009-1.p

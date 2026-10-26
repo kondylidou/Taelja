@@ -1,0 +1,30 @@
+Axiom 1: member(pair(y,ya),r)
+Axiom 2: member(pair(y,yp),trancl(r))
+Axiom 3: diamond(r)
+Axiom 4: member(pair(X,Y),trancl(Z)) /\ member(pair(X,A),Z) /\ diamond(Z) => member(pair(A,diamond_strip_lemmaD_sk1(X,Y,A,Z)),trancl(Z))
+Axiom 5: member(pair(X,Y),trancl(Z)) /\ member(pair(X,A),Z) /\ diamond(Z) => member(pair(Y,diamond_strip_lemmaD_sk1(X,Y,A,Z)),Z)
+Axiom 6: member(pair(X,Y),Z) => member(pair(X,Y),trancl(Z))
+
+Goal 1: member(pair(ya,diamond_strip_lemmaD_sk1(y,yp,ya,r)),trancl(r))
+Proof:
+  have member(pair(y,yp),trancl(r))
+    by axiom 2
+   and member(pair(y,ya),r)
+    by axiom 1
+   and diamond(r)
+    by axiom 3
+  hence member(pair(ya,diamond_strip_lemmaD_sk1(y,yp,ya,r)),trancl(r))
+    by axiom 4
+
+Goal 2: member(pair(yp,diamond_strip_lemmaD_sk1(y,yp,ya,r)),trancl(r))
+Proof:
+  have member(pair(y,yp),trancl(r))
+    by axiom 2
+   and member(pair(y,ya),r)
+    by axiom 1
+   and diamond(r)
+    by axiom 3
+  hence member(pair(yp,diamond_strip_lemmaD_sk1(y,yp,ya,r)),r)
+    by axiom 5
+  hence member(pair(yp,diamond_strip_lemmaD_sk1(y,yp,ya,r)),trancl(r))
+    by axiom 6

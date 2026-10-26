@@ -1,0 +1,49 @@
+% SZS status Unsatisfiable for MGT032-2.p
+% SZS output start CNFRefutation for MGT032-2.p
+tcf(c_49,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~greater(growth_rate(X0,X1),growth_rate(X2,X1))|~subpopulations(X2,X0,X3,X1)|
+    ~environment(X3)|selection_favors(X0,X2,X1)),
+    file('Problems/MGT/MGT032-2.p', mp1_high_growth_rates_1)).
+tcf(c_50,plain,![X0:$i]:  
+    (~environment(X0)|~stable(X0)|in_environment(X0,sk1(X0))),
+    file('Problems/MGT/MGT032-2.p', l1_2)).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (~subpopulations(first_movers,efficient_producers,X0,X1)|~greater_or_equal(X1,sk1(X0))|
+    ~environment(X0)|~stable(X0)|greater(growth_rate(efficient_producers,X1),growth_rate(first_movers,X1))),
+    file('Problems/MGT/MGT032-2.p', l1_3)).
+tcf(c_52,plain, 
+    (environment(sk2)),
+    file('Problems/MGT/MGT032-2.p', prove_t1_4)).
+tcf(c_53,plain, (stable(sk2)),file('Problems/MGT/MGT032-2.p', prove_t1_5)).
+tcf(c_54,plain,![X0:$i]:  
+    (~in_environment(sk2,X0)|subpopulations(first_movers,efficient_producers,sk2,sk3(X0))),
+    file('Problems/MGT/MGT032-2.p', prove_t1_6)).
+tcf(c_55,plain,![X0:$i]:  
+    (~in_environment(sk2,X0)|greater_or_equal(sk3(X0),X0)),
+    file('Problems/MGT/MGT032-2.p', prove_t1_7)).
+tcf(c_56,plain,![X0:$i]:  
+    (~selection_favors(efficient_producers,first_movers,sk3(X0))|~in_environment(sk2,X0)),
+    file('Problems/MGT/MGT032-2.p', prove_t1_8)).
+tcf(c_60,plain, 
+    (~environment(sk2)|~stable(sk2)|in_environment(sk2,sk1(sk2))),
+    inference(instantiation,[status(thm)],[c_50])).
+tcf(c_103,plain,![X0:$i,X1:$i]:  
+    (~greater(growth_rate(efficient_producers,sk3(X0)),growth_rate(first_movers,sk3(X0)))|
+    ~subpopulations(first_movers,efficient_producers,X1,sk3(X0))|~in_environment(sk2,X0)|
+    ~environment(X1)),
+    inference(resolution,[status(thm)],[c_49,c_56])).
+tcf(c_121,plain,![X0:$i]:  
+    (~subpopulations(first_movers,efficient_producers,X0,sk3(sk1(X0)))|
+    ~in_environment(sk2,sk1(X0))|~environment(X0)|~stable(X0)|greater(growth_rate(efficient_producers,sk3(sk1(X0))),growth_rate(first_movers,sk3(sk1(X0))))),
+    inference(resolution,[status(thm)],[c_51,c_55])).
+tcf(c_133,plain,![X0:$i]:  
+    (~subpopulations(first_movers,efficient_producers,X0,sk3(sk1(X0)))|
+    ~in_environment(sk2,sk1(X0))|~environment(X0)|~stable(X0)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_121,c_103])).
+tcf(c_143,plain, 
+    (~in_environment(sk2,sk1(sk2))|~environment(sk2)|~stable(sk2)),
+    inference(resolution,[status(thm)],[c_54,c_133])).
+tcf(c_144,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_143,c_60,c_52,c_53])).
+% SZS output end CNFRefutation for MGT032-2.p

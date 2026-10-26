@@ -1,0 +1,152 @@
+Axiom 1: organization(sk4,sk6)
+Axiom 2: organization(X,Y) => reproducibility(X,sk3(Y,X),Y)
+Axiom 3: organization(sk5,sk7)
+Axiom 4: greater(sk9,sk8)
+Axiom 5: inertia(sk5,sk9,sk7)
+Axiom 6: inertia(sk4,sk8,sk6)
+Axiom 7: reorganization_free(sk5,sk7,sk7)
+Axiom 8: reorganization_free(sk4,sk6,sk6)
+Axiom 9: reproducibility(X,Y,Z) /\ reproducibility(A,B,C) /\ reorganization_free(X,Z,Z) /\ reorganization_free(A,C,C) /\ inertia(X,U,Z) /\ inertia(A,V,C) /\ organization(X,Z) /\ organization(A,C) /\ greater(V,U) => greater(B,Y)
+Axiom 10: organization(X,Y) => reliability(X,sk1(Y,X),Y)
+Axiom 11: organization(X,Y) => accountability(X,sk2(Y,X),Y)
+Axiom 12: reliability(X,Y,Z) /\ reliability(A,B,C) /\ accountability(X,U,Z) /\ accountability(A,V,C) /\ reproducibility(X,W,Z) /\ reproducibility(A,X1,C) /\ organization(X,Z) /\ organization(A,C) /\ greater(X1,W) => greater(B,Y)
+Axiom 13: reliability(X,Y,Z) /\ reliability(A,B,C) /\ accountability(X,U,Z) /\ accountability(A,V,C) /\ reproducibility(X,W,Z) /\ reproducibility(A,X1,C) /\ organization(X,Z) /\ organization(A,C) /\ greater(X1,W) => greater(V,U)
+Axiom 14: survival_chance(sk5,sk11,sk7)
+Axiom 15: survival_chance(sk4,sk10,sk6)
+Axiom 16: reliability(X,Y,Z) /\ reliability(A,B,C) /\ accountability(X,U,Z) /\ accountability(A,V,C) /\ survival_chance(X,W,Z) /\ survival_chance(A,X1,C) /\ organization(X,Z) /\ organization(A,C) /\ greater(B,Y) /\ greater(V,U) => greater(X1,W)
+
+Lemma 17: reproducibility(sk4,sk3(sk6,sk4),sk6)
+Proof:
+  have organization(sk4,sk6)
+    by axiom 1
+  hence reproducibility(sk4,sk3(sk6,sk4),sk6)
+    by axiom 2
+
+Lemma 18: reproducibility(sk5,sk3(sk7,sk5),sk7)
+Proof:
+  have organization(sk5,sk7)
+    by axiom 3
+  hence reproducibility(sk5,sk3(sk7,sk5),sk7)
+    by axiom 2
+
+Lemma 19: greater(sk3(sk7,sk5),sk3(sk6,sk4))
+Proof:
+  have reproducibility(sk4,sk3(sk6,sk4),sk6)
+    by lemma 17
+   and reproducibility(sk5,sk3(sk7,sk5),sk7)
+    by lemma 18
+   and reorganization_free(sk4,sk6,sk6)
+    by axiom 8
+   and reorganization_free(sk5,sk7,sk7)
+    by axiom 7
+   and inertia(sk4,sk8,sk6)
+    by axiom 6
+   and inertia(sk5,sk9,sk7)
+    by axiom 5
+   and organization(sk4,sk6)
+    by axiom 1
+   and organization(sk5,sk7)
+    by axiom 3
+   and greater(sk9,sk8)
+    by axiom 4
+  hence greater(sk3(sk7,sk5),sk3(sk6,sk4))
+    by axiom 9
+
+Lemma 20: reliability(sk4,sk1(sk6,sk4),sk6)
+Proof:
+  have organization(sk4,sk6)
+    by axiom 1
+  hence reliability(sk4,sk1(sk6,sk4),sk6)
+    by axiom 10
+
+Lemma 21: reliability(sk5,sk1(sk7,sk5),sk7)
+Proof:
+  have organization(sk5,sk7)
+    by axiom 3
+  hence reliability(sk5,sk1(sk7,sk5),sk7)
+    by axiom 10
+
+Lemma 22: accountability(sk4,sk2(sk6,sk4),sk6)
+Proof:
+  have organization(sk4,sk6)
+    by axiom 1
+  hence accountability(sk4,sk2(sk6,sk4),sk6)
+    by axiom 11
+
+Lemma 23: accountability(sk5,sk2(sk7,sk5),sk7)
+Proof:
+  have organization(sk5,sk7)
+    by axiom 3
+  hence accountability(sk5,sk2(sk7,sk5),sk7)
+    by axiom 11
+
+Lemma 24: greater(sk1(sk7,sk5),sk1(sk6,sk4))
+Proof:
+  have reliability(sk4,sk1(sk6,sk4),sk6)
+    by lemma 20
+   and reliability(sk5,sk1(sk7,sk5),sk7)
+    by lemma 21
+   and accountability(sk4,sk2(sk6,sk4),sk6)
+    by lemma 22
+   and accountability(sk5,sk2(sk7,sk5),sk7)
+    by lemma 23
+   and reproducibility(sk4,sk3(sk6,sk4),sk6)
+    by lemma 17
+   and reproducibility(sk5,sk3(sk7,sk5),sk7)
+    by lemma 18
+   and organization(sk4,sk6)
+    by axiom 1
+   and organization(sk5,sk7)
+    by axiom 3
+   and greater(sk3(sk7,sk5),sk3(sk6,sk4))
+    by lemma 19
+  hence greater(sk1(sk7,sk5),sk1(sk6,sk4))
+    by axiom 12
+
+Lemma 25: greater(sk2(sk7,sk5),sk2(sk6,sk4))
+Proof:
+  have reliability(sk4,sk1(sk6,sk4),sk6)
+    by lemma 20
+   and reliability(sk5,sk1(sk7,sk5),sk7)
+    by lemma 21
+   and accountability(sk4,sk2(sk6,sk4),sk6)
+    by lemma 22
+   and accountability(sk5,sk2(sk7,sk5),sk7)
+    by lemma 23
+   and reproducibility(sk4,sk3(sk6,sk4),sk6)
+    by lemma 17
+   and reproducibility(sk5,sk3(sk7,sk5),sk7)
+    by lemma 18
+   and organization(sk4,sk6)
+    by axiom 1
+   and organization(sk5,sk7)
+    by axiom 3
+   and greater(sk3(sk7,sk5),sk3(sk6,sk4))
+    by lemma 19
+  hence greater(sk2(sk7,sk5),sk2(sk6,sk4))
+    by axiom 13
+
+Goal 1: greater(sk11,sk10)
+Proof:
+  have reliability(sk4,sk1(sk6,sk4),sk6)
+    by lemma 20
+   and reliability(sk5,sk1(sk7,sk5),sk7)
+    by lemma 21
+   and accountability(sk4,sk2(sk6,sk4),sk6)
+    by lemma 22
+   and accountability(sk5,sk2(sk7,sk5),sk7)
+    by lemma 23
+   and survival_chance(sk4,sk10,sk6)
+    by axiom 15
+   and survival_chance(sk5,sk11,sk7)
+    by axiom 14
+   and organization(sk4,sk6)
+    by axiom 1
+   and organization(sk5,sk7)
+    by axiom 3
+   and greater(sk1(sk7,sk5),sk1(sk6,sk4))
+    by lemma 24
+   and greater(sk2(sk7,sk5),sk2(sk6,sk4))
+    by lemma 25
+  hence greater(sk11,sk10)
+    by axiom 16

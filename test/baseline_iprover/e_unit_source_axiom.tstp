@@ -1,0 +1,25 @@
+% SZS status Unsatisfiable for e_unit_source_axiom.p
+% SZS output start CNFRefutation for e_unit_source_axiom.p
+tcf(c_49,plain,![X0:$i]:  
+    (less_equal(X0,top)),
+    file('e_unit_source_axiom.p', ax1)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (~less_equal(X0,X1)|member(X0,X1)),
+    file('e_unit_source_axiom.p', ax2)).
+tcf(c_51,plain, (~member(a,top)),file('e_unit_source_axiom.p', neg)).
+tcf(c_55,plain,![X0_iProver_member_1:iProver_member_1,X0_iProver_member_2:iProver_member_2]:  
+    (~less_equal(X0_iProver_member_1,X0_iProver_member_2)|member(X0_iProver_member_1,X0_iProver_member_2)),
+    inference(subtyping,[status(esa)],[c_50])).
+tcf(c_56,plain,![X0_iProver_member_1:iProver_member_1]:  
+    (less_equal(X0_iProver_member_1,top)),
+    inference(subtyping,[status(esa)],[c_49])).
+tcf(c_57,plain, 
+    (less_equal(a,top)),
+    inference(instantiation,[status(thm)],[c_56])).
+tcf(c_58,plain, 
+    (~less_equal(a,top)|member(a,top)),
+    inference(instantiation,[status(thm)],[c_55])).
+tcf(c_59,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_58,c_57,c_51])).
+% SZS output end CNFRefutation for e_unit_source_axiom.p

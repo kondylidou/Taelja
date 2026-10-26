@@ -1,0 +1,28 @@
+Axiom 1: c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))
+Axiom 2: c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))
+Axiom 3: c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit) = v_A
+Axiom 4: c_Tarski_Olub(X,c_Tarski_Odual(Y,Z),Z) = c_Tarski_Oglb(X,Y,Z)
+Axiom 5: c_Tarski_Opotype_Opset(c_Tarski_Odual(X,Y),Y,tc_Product__Type_Ounit) = c_Tarski_Opotype_Opset(X,Y,tc_Product__Type_Ounit)
+Axiom 6: c_lessequals(v_S,v_A,tc_set(t_a))
+Axiom 7: c_lessequals(X,c_Tarski_Opotype_Opset(Y,Z,tc_Product__Type_Ounit),tc_set(Z)) /\ c_in(Y,c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(Z,tc_Product__Type_Ounit)) /\ c_in(Y,c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(Z,tc_Product__Type_Ounit)) => c_in(c_Tarski_Olub(X,Y,Z),c_Tarski_Opotype_Opset(Y,Z,tc_Product__Type_Ounit),Z)
+
+Goal 1: c_in(c_Tarski_Oglb(v_S,v_cl,t_a),v_A,t_a)
+Proof:
+  have c_lessequals(v_S,v_A,tc_set(t_a))
+    by axiom 6
+  hence c_lessequals(v_S,c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),tc_set(t_a))
+    by rw axiom 3 R->L
+  hence c_lessequals(v_S,c_Tarski_Opotype_Opset(c_Tarski_Odual(v_cl,t_a),t_a,tc_Product__Type_Ounit),tc_set(t_a))
+    by rw axiom 5 R->L
+   and c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))
+    by axiom 1
+   and c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))
+    by axiom 2
+  hence c_in(c_Tarski_Olub(v_S,c_Tarski_Odual(v_cl,t_a),t_a),c_Tarski_Opotype_Opset(c_Tarski_Odual(v_cl,t_a),t_a,tc_Product__Type_Ounit),t_a)
+    by axiom 7
+  hence c_in(c_Tarski_Olub(v_S,c_Tarski_Odual(v_cl,t_a),t_a),c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),t_a)
+    by rw axiom 5
+  hence c_in(c_Tarski_Oglb(v_S,v_cl,t_a),c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),t_a)
+    by rw axiom 4
+  hence c_in(c_Tarski_Oglb(v_S,v_cl,t_a),v_A,t_a)
+    by rw axiom 3

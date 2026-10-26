@@ -1,0 +1,111 @@
+Axiom 1: >=(X,X)
+Axiom 2: >=(X,==>(Y,Z)) => >=(+(Y,X),Z)
+Axiom 3: 1 = +(X,1)
+Axiom 4: +(X,Y) = +(Y,X)
+Axiom 5: >=(A,B) /\ >=(C,A) => >=(C,B)
+Axiom 6: >=(U,V) /\ >=(V,U) => V = U
+Axiom 7: >=(+(X,Y),Z) => >=(Y,==>(X,Z))
+Axiom 8: >=(X,0)
+Axiom 9: +(X,0) = X
+Axiom 10: 0 = ==>(==>(==>(X,1),X),X)
+
+Lemma 11: >=(+(X,==>(X,Y)),Y)
+Proof:
+  have >=(==>(X,Y),==>(X,Y))
+    by axiom 1
+  hence >=(+(X,==>(X,Y)),Y)
+    by axiom 2
+
+Lemma 12: +(1,X) = 1
+Proof:
+  +(1,X)
+= { by axiom 4 }
+  +(X,1)
+= { by axiom 3 R->L }
+  1
+
+Lemma 13: >=(1,X)
+Proof:
+  have >=(+(1,==>(1,X)),X)
+    by lemma 11
+  hence >=(1,X)
+    by rw lemma 12
+
+Lemma 14: >=(+(X,==>(X,1)),Y)
+Proof:
+  have >=(1,Y)
+    by lemma 13
+   and >=(+(X,==>(X,1)),1)
+    by lemma 11
+  hence >=(+(X,==>(X,1)),Y)
+    by axiom 5
+
+Lemma 15: >=(X,==>(Y,+(Y,X)))
+Proof:
+  have >=(+(Y,X),+(Y,X))
+    by axiom 1
+  hence >=(X,==>(Y,+(Y,X)))
+    by axiom 7
+
+Lemma 16: >=(X,==>(==>(X,1),X))
+Proof:
+  have >=(0,==>(X,+(X,0)))
+    by lemma 15
+  hence >=(0,==>(X,X))
+    by rw axiom 9
+   and >=(==>(X,1),0)
+    by axiom 8
+  hence >=(==>(X,1),==>(X,X))
+    by axiom 5
+  hence >=(+(X,==>(X,1)),X)
+    by axiom 2
+  hence >=(+(==>(X,1),X),X)
+    by rw axiom 4 R->L
+  hence >=(X,==>(==>(X,1),X))
+    by axiom 7
+
+Lemma 17: X = ==>(==>(X,1),X)
+Proof:
+  have >=(0,0)
+    by axiom 8
+  hence >=(0,==>(==>(==>(X,1),X),X))
+    by rw axiom 10
+  hence >=(+(==>(==>(X,1),X),0),X)
+    by axiom 2
+  hence >=(==>(==>(X,1),X),X)
+    by rw axiom 9
+   and >=(X,==>(==>(X,1),X))
+    by lemma 16
+  hence X = ==>(==>(X,1),X)
+    by axiom 6
+
+Lemma 18: +(X,==>(X,1)) = 1
+Proof:
+  have >=(1,+(X,==>(X,1)))
+    by lemma 13
+   and >=(+(X,==>(X,1)),1)
+    by lemma 14
+  hence +(X,==>(X,1)) = 1
+    by axiom 6
+
+Lemma 19: >=(X,==>(==>(X,1),1))
+Proof:
+  have >=(X,==>(==>(X,1),+(==>(X,1),X)))
+    by lemma 15
+  hence >=(X,==>(==>(X,1),+(X,==>(X,1))))
+    by rw axiom 4 R->L
+  hence >=(X,==>(==>(X,1),1))
+    by rw lemma 18
+
+Goal 1: ==>(==>(X,1),1) = X
+Proof:
+  have >=(+(==>(X,1),==>(==>(X,1),1)),X)
+    by lemma 14
+  hence >=(==>(==>(X,1),1),==>(==>(X,1),X))
+    by axiom 7
+  hence >=(==>(==>(X,1),1),X)
+    by rw lemma 17 R->L
+   and >=(X,==>(==>(X,1),1))
+    by lemma 19
+  hence ==>(==>(X,1),1) = X
+    by axiom 6

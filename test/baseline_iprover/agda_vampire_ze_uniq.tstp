@@ -1,0 +1,93 @@
+% SZS status Theorem for agda_vampire_ze_uniq.p
+% SZS output start CNFRefutation for agda_vampire_ze_uniq.p
+fof(f1,axiom,(
+  ! [X0] : plus(ze,X0) = X0),
+  file('agda_vampire_ze_uniq.p',neutl)).
+fof(f2,axiom,(
+  ! [X0] : ze = plus(neg(X0),X0)),
+  file('agda_vampire_ze_uniq.p',negl)).
+fof(f3,axiom,(
+  ! [X0,X1,X2] : plus(plus(X0,X1),X2) = plus(X0,plus(X1,X2))),
+  file('agda_vampire_ze_uniq.p',assoc)).
+fof(f4,conjecture,(
+  ! [X0,X1] : (plus(X0,X1) = X1 => ze = X0)),
+  file('agda_vampire_ze_uniq.p',ze_uniq)).
+fof(f5,negated_conjecture,(
+  ~! [X0,X1] : (plus(X0,X1) = X1 => ze = X0)),
+inference(negated_conjecture,[status(cth)],[f4])).
+fof(f6,plain,(
+  ? [X0,X1] : (ze != X0 & plus(X0,X1) = X1)),
+  inference(ennf_transformation,[],[f5])).
+fof(f7,plain,(
+  ? [X0,X1] : (ze != X0 & plus(X0,X1) = X1) => (ze != sK0 & sK1 = plus(sK0,sK1))),
+  introduced(choice_axiom,[])).
+fof(f8,plain,(
+  ze != sK0 & sK1 = plus(sK0,sK1)),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK0,sK1])],[f6,f7])).
+fof(f9,plain,(
+  ( ! [X0] : (plus(ze,X0) = X0) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f10,plain,(
+  ( ! [X0] : (ze = plus(neg(X0),X0)) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f11,plain,(
+  ( ! [X2,X0,X1] : (plus(plus(X0,X1),X2) = plus(X0,plus(X1,X2))) )),
+  inference(cnf_transformation,[],[f3])).
+fof(f12,plain,(
+  sK1 = plus(sK0,sK1)),
+  inference(cnf_transformation,[],[f8])).
+fof(f13,plain,(
+  ze != sK0),
+  inference(cnf_transformation,[],[f8])).
+tcf(c_49,plain,![X0:$i]:  
+    (plus(ze,X0) = X0),
+    inference(cnf_transformation,[],[f9])).
+tcf(c_50,plain,![X0:$i]:  
+    (plus(neg(X0),X0) = ze),
+    inference(cnf_transformation,[],[f10])).
+tcf(c_51,plain,![X0:$i,X1:$i,X2:$i]:  
+    (plus(plus(X0,X1),X2) = plus(X0,plus(X1,X2))),
+    inference(cnf_transformation,[],[f11])).
+tcf(c_52,plain, (ze != sK0),inference(cnf_transformation,[],[f13])).
+tcf(c_53,plain, 
+    (plus(sK0,sK1) = sK1),
+    inference(cnf_transformation,[],[f12])).
+tcf(c_70,plain, (plus(sK0,sK1) = iPr_def_10),definition).
+tcf(c_71,plain, 
+    (iPr_def_10 = sK1),
+    inference(demodulation,[status(thm)],[c_53,c_70])).
+tcf(c_72,plain, (ze != sK0),inference(demodulation,[status(thm)],[c_52])).
+tcf(c_104,plain, 
+    (plus(sK0,iPr_def_10) = iPr_def_10),
+    inference(light_normalisation,[status(thm)],[c_70,c_71])).
+tcf(c_106,plain,![X0:$i,X1:$i]:  
+    (plus(neg(X0),plus(X0,X1)) = plus(ze,X1)),
+    inference(superposition,[status(thm)],[c_50,c_51])).
+tcf(c_108,plain,![X0:$i]:  
+    (plus(sK0,plus(iPr_def_10,X0)) = plus(iPr_def_10,X0)),
+    inference(superposition,[status(thm)],[c_104,c_51])).
+tcf(c_114,plain,![X0:$i,X1:$i]:  
+    (plus(neg(X0),plus(X0,X1)) = X1),
+    inference(demodulation,[status(thm)],[c_106,c_49])).
+tcf(c_116,plain,![X0:$i]:  
+    (plus(neg(neg(X0)),ze) = X0),
+    inference(superposition,[status(thm)],[c_50,c_114])).
+tcf(c_121,plain,![X0:$i,X1:$i]:  
+    (plus(neg(neg(X0)),X1) = plus(X0,X1)),
+    inference(superposition,[status(thm)],[c_114,c_114])).
+tcf(c_130,plain,![X0:$i]:  
+    (plus(X0,ze) = X0),
+    inference(demodulation,[status(thm)],[c_116,c_121])).
+tcf(c_150,plain,![X0:$i]:  
+    (plus(X0,neg(X0)) = ze),
+    inference(superposition,[status(thm)],[c_121,c_50])).
+tcf(c_176,plain, 
+    (plus(sK0,ze) = ze),
+    inference(superposition,[status(thm)],[c_150,c_108])).
+tcf(c_178,plain, 
+    (ze = sK0),
+    inference(demodulation,[status(thm)],[c_176,c_130])).
+tcf(c_179,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_178,c_72])).
+% SZS output end CNFRefutation for agda_vampire_ze_uniq.p

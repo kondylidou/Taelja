@@ -1,0 +1,77 @@
+Axiom 1: mult(X,ld(X,Y)) = Y
+Axiom 2: mult(mult(X,Y),mult(Z,X)) = mult(mult(X,mult(Y,Z)),X)
+Axiom 3: rd(mult(X,Y),Y) = X
+Axiom 4: mult(rd(X,Y),Y) = X
+Axiom 5: ld(X,mult(X,Y)) = Y
+
+Lemma 6: mult(mult(X,rd(Y,rd(Z,X))),Z) = mult(mult(X,Y),X)
+Proof:
+  mult(mult(X,rd(Y,rd(Z,X))),Z)
+= { by axiom 4 R->L }
+  mult(mult(X,rd(Y,rd(Z,X))),mult(rd(Z,X),X))
+= { by axiom 2 }
+  mult(mult(X,mult(rd(Y,rd(Z,X)),rd(Z,X))),X)
+= { by axiom 4 }
+  mult(mult(X,Y),X)
+
+Lemma 7: mult(mult(X,Y),mult(ld(Y,Z),X)) = mult(mult(X,Z),X)
+Proof:
+  mult(mult(X,Y),mult(ld(Y,Z),X))
+= { by axiom 2 }
+  mult(mult(X,mult(Y,ld(Y,Z))),X)
+= { by axiom 1 }
+  mult(mult(X,Z),X)
+
+Lemma 8: mult(X,rd(Y,rd(X,X))) = mult(X,Y)
+Proof:
+  mult(X,rd(Y,rd(X,X)))
+= { by axiom 3 R->L }
+  rd(mult(mult(X,rd(Y,rd(X,X))),X),X)
+= { by lemma 6 }
+  rd(mult(mult(X,Y),X),X)
+= { by lemma 7 R->L }
+  rd(mult(mult(X,X),mult(ld(X,Y),X)),X)
+= { by axiom 2 }
+  rd(mult(mult(X,mult(X,ld(X,Y))),X),X)
+= { by axiom 3 }
+  mult(X,mult(X,ld(X,Y)))
+= { by axiom 1 }
+  mult(X,Y)
+
+Lemma 9: rd(X,rd(Y,Y)) = X
+Proof:
+  rd(X,rd(Y,Y))
+= { by axiom 5 R->L }
+  ld(Y,mult(Y,rd(X,rd(Y,Y))))
+= { by lemma 8 }
+  ld(Y,mult(Y,X))
+= { by axiom 5 }
+  X
+
+Lemma 10: ld(X,X) = rd(Y,Y)
+Proof:
+  ld(X,X)
+= { by lemma 9 R->L }
+  ld(rd(X,rd(Y,Y)),X)
+= { by axiom 4 R->L }
+  ld(rd(X,rd(Y,Y)),mult(rd(X,rd(Y,Y)),rd(Y,Y)))
+= { by axiom 5 }
+  rd(Y,Y)
+
+Goal 1: mult(rd(X,X),Y) = Y
+Proof:
+  mult(rd(X,X),Y)
+= { by lemma 10 R->L }
+  mult(ld(Z,Z),Y)
+= { by lemma 10 }
+  mult(rd(Y,Y),Y)
+= { by axiom 4 }
+  Y
+
+Goal 2: mult(X,rd(Y,Y)) = X
+Proof:
+  mult(X,rd(Y,Y))
+= { by lemma 9 R->L }
+  mult(rd(X,rd(Y,Y)),rd(Y,Y))
+= { by axiom 4 }
+  X

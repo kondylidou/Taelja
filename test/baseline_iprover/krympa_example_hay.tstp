@@ -1,0 +1,42 @@
+% SZS status Theorem for krympa_example_hay.p
+% SZS output start CNFRefutation for krympa_example_hay.p
+fof(f1,axiom,(
+  ! [X0] : h(a,X0) = c),
+  file('krympa_example_hay.p',ax1)).
+fof(f2,axiom,(
+  ! [X1] : h(X1,b) = X1),
+  file('krympa_example_hay.p',ax2)).
+fof(f3,conjecture,(
+  a = c),
+  file('krympa_example_hay.p',goal)).
+fof(f4,negated_conjecture,(
+  ~a = c),
+inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  ! [X0] : h(X0,b) = X0),
+  inference(rectify,[],[f2])).
+fof(f6,plain,(
+  a != c),
+  inference(flattening,[],[f4])).
+fof(f7,plain,(
+  ( ! [X0] : (h(a,X0) = c) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f8,plain,(
+  ( ! [X0] : (h(X0,b) = X0) )),
+  inference(cnf_transformation,[],[f5])).
+fof(f9,plain,(
+  a != c),
+  inference(cnf_transformation,[],[f6])).
+tcf(c_49,plain,![X0:$i]:  
+    (h(a,X0) = c),
+    inference(cnf_transformation,[],[f7])).
+tcf(c_50,plain,![X0:$i]:  
+    (h(X0,b) = X0),
+    inference(cnf_transformation,[],[f8])).
+tcf(c_51,plain, (a != c),inference(cnf_transformation,[],[f9])).
+tcf(c_63,plain, (a != c),inference(demodulation,[status(thm)],[c_51])).
+tcf(c_89,plain, (a = c),inference(superposition,[status(thm)],[c_49,c_50])).
+tcf(c_91,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_89,c_63])).
+% SZS output end CNFRefutation for krympa_example_hay.p

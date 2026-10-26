@@ -1,0 +1,23 @@
+Axiom 1: q(a,a)
+Axiom 2: q(X,Y) => p(f(X))
+Axiom 3: p(X) => q(X,Y)
+
+Lemma 4: q(X,Y) => q(f(X),Z)
+Proof:
+  have q(X,Y)
+    by assumption
+  hence p(f(X))
+    by axiom 2
+  hence q(f(X),Z)
+    by axiom 3
+
+Goal 1: q(f(f(f(a))),f(f(f(a))))
+Proof:
+  have q(a,a)
+    by axiom 1
+  hence q(f(a),a)
+    by lemma 4
+  hence q(f(f(a)),a)
+    by lemma 4
+  hence q(f(f(f(a))),f(f(f(a))))
+    by lemma 4

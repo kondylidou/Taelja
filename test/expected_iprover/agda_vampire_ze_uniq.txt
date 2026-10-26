@@ -1,0 +1,56 @@
+Axiom 1: ze = plus(neg(X),X)
+Axiom 2: plus(plus(X,Y),Z) = plus(X,plus(Y,Z))
+Axiom 3: plus(ze,X) = X
+Axiom 4: plus(sK0,sK1) = sK1
+
+Lemma 5: plus(neg(X),plus(X,Y)) = Y
+Proof:
+  plus(neg(X),plus(X,Y))
+= { by axiom 2 R->L }
+  plus(plus(neg(X),X),Y)
+= { by axiom 1 R->L }
+  plus(ze,Y)
+= { by axiom 3 }
+  Y
+
+Lemma 6: plus(neg(neg(X)),Y) = plus(X,Y)
+Proof:
+  plus(neg(neg(X)),Y)
+= { by lemma 5 R->L }
+  plus(neg(neg(X)),plus(neg(X),plus(X,Y)))
+= { by lemma 5 }
+  plus(X,Y)
+
+Lemma 7: plus(X,neg(X)) = ze
+Proof:
+  plus(X,neg(X))
+= { by lemma 6 R->L }
+  plus(neg(neg(X)),neg(X))
+= { by axiom 1 R->L }
+  ze
+
+Lemma 8: plus(sK0,plus(sK0,sK1)) = plus(sK0,sK1)
+Proof:
+  plus(sK0,plus(sK0,sK1))
+= { by axiom 4 }
+  plus(sK0,sK1)
+
+Goal 1: ze = sK0
+Proof:
+  ze
+= { by axiom 1 }
+  plus(neg(neg(plus(sK0,sK1))),neg(plus(sK0,sK1)))
+= { by lemma 6 }
+  plus(plus(sK0,sK1),neg(plus(sK0,sK1)))
+= { by lemma 8 R->L }
+  plus(plus(sK0,plus(sK0,sK1)),neg(plus(sK0,sK1)))
+= { by axiom 2 }
+  plus(sK0,plus(plus(sK0,sK1),neg(plus(sK0,sK1))))
+= { by lemma 7 }
+  plus(sK0,ze)
+= { by lemma 6 R->L }
+  plus(neg(neg(sK0)),ze)
+= { by axiom 1 }
+  plus(neg(neg(sK0)),plus(neg(sK0),sK0))
+= { by lemma 5 }
+  sK0

@@ -1,0 +1,20 @@
+% SZS status Theorem for test_axioms_contradictory.p
+% SZS output start CNFRefutation for test_axioms_contradictory.p
+fof(f1,axiom,(
+  p(a)),
+  file('test_axioms_contradictory.p',f1)).
+fof(f2,axiom,(
+  ~p(a)),
+  file('test_axioms_contradictory.p',f2)).
+fof(f7,plain,(
+  p(a)),
+  inference(cnf_transformation,[],[f1])).
+fof(f8,plain,(
+  ~p(a)),
+  inference(cnf_transformation,[],[f2])).
+tcf(c_49,plain, (p(a)),inference(cnf_transformation,[],[f7])).
+tcf(c_50,plain, (~p(a)),inference(cnf_transformation,[],[f8])).
+tcf(c_52,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_50,c_49])).
+% SZS output end CNFRefutation for test_axioms_contradictory.p

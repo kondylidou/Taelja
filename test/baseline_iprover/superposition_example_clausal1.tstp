@@ -1,0 +1,47 @@
+% SZS status Theorem for superposition_example_clausal1.p
+% SZS output start CNFRefutation for superposition_example_clausal1.p
+fof(f1,axiom,(
+  a = b),
+  file('superposition_example_clausal1.p',ax1)).
+fof(f2,axiom,(
+  b = c),
+  file('superposition_example_clausal1.p',ax2)).
+fof(f3,axiom,(
+  ! [X0] : f(X0) = X0),
+  file('superposition_example_clausal1.p',ax3)).
+fof(f4,conjecture,(
+  d = f(d) & a = c),
+  file('superposition_example_clausal1.p',goal)).
+fof(f5,negated_conjecture,(
+  ~(d = f(d) & a = c)),
+inference(negated_conjecture,[status(cth)],[f4])).
+fof(f6,plain,(
+  d != f(d) | a != c),
+  inference(ennf_transformation,[],[f5])).
+fof(f7,plain,(
+  a = b),
+  inference(cnf_transformation,[],[f1])).
+fof(f8,plain,(
+  b = c),
+  inference(cnf_transformation,[],[f2])).
+fof(f9,plain,(
+  ( ! [X0] : (f(X0) = X0) )),
+  inference(cnf_transformation,[],[f3])).
+fof(f10,plain,(
+  d != f(d) | a != c),
+  inference(cnf_transformation,[],[f6])).
+tcf(c_49,plain, (a = b),inference(cnf_transformation,[],[f7])).
+tcf(c_50,plain, (b = c),inference(cnf_transformation,[],[f8])).
+tcf(c_51,plain,![X0:$i]:  
+    (f(X0) = X0),
+    inference(cnf_transformation,[],[f9])).
+tcf(c_52,plain, (f(d) != d|a != c),inference(cnf_transformation,[],[f10])).
+tcf(c_60,plain, 
+    (a != c),
+    inference(backward_subsumption_resolution,[status(thm)],[c_52,c_51])).
+tcf(c_63,plain, (a = c),inference(demodulation,[status(thm)],[c_50,c_49])).
+tcf(c_64,plain, (a != a),inference(demodulation,[status(thm)],[c_60,c_63])).
+tcf(c_65,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_64])).
+% SZS output end CNFRefutation for superposition_example_clausal1.p

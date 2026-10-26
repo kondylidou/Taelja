@@ -1,0 +1,24 @@
+% SZS status Unsatisfiable for GRP007-1.p
+% SZS output start CNFRefutation for GRP007-1.p
+tcf(c_49,plain,![X0:$i]:  
+    (product(c,X0,X0)),
+    file('Problems/GRP/GRP007-1.p', another_left_identity)).
+tcf(c_51,plain, 
+    (c != identity),
+    file('Problems/GRP/GRP007-1.p', prove_identity_equals_c)).
+tcf(c_53,plain,![X0:$i]:  
+    (product(X0,identity,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
+tcf(c_57,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~product(X0,X1,X2)|~product(X0,X1,X3)|X2 = X3),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function2)).
+tcf(c_251,plain,![X0:$i,X1:$i]:  
+    (~product(c,X0,X1)|X0 = X1),
+    inference(superposition,[status(thm)],[c_49,c_57])).
+tcf(c_359,plain, 
+    (c = identity),
+    inference(superposition,[status(thm)],[c_53,c_251])).
+tcf(c_362,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_359,c_51])).
+% SZS output end CNFRefutation for GRP007-1.p

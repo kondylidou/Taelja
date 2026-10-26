@@ -1,0 +1,53 @@
+% SZS status Unsatisfiable for LCL126-1.p
+% SZS output start CNFRefutation for LCL126-1.p
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (~is_a_theorem(equivalent(X0,X1))|~is_a_theorem(X0)|is_a_theorem(X1)),
+    file('Problems/LCL/LCL126-1.p', condensed_detachment)).
+tcf(c_50,plain,![X0:$i,X1:$i,X2:$i]:  
+    (is_a_theorem(equivalent(X0,equivalent(equivalent(X0,equivalent(X1,X2)),equivalent(X2,X1))))),
+    file('Problems/LCL/LCL126-1.p', q_3)).
+tcf(c_51,plain,![X0:$i,X1:$i,X2:$i]:  
+    (is_a_theorem(equivalent(equivalent(X0,X1),equivalent(equivalent(X0,X2),equivalent(X1,X2))))),
+    file('Problems/LCL/LCL126-1.p', q_4)).
+tcf(c_52,plain, 
+    (~is_a_theorem(equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c)))),
+    file('Problems/LCL/LCL126-1.p', prove_q_2)).
+tcf(c_125,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~is_a_theorem(X0)|is_a_theorem(equivalent(equivalent(X0,equivalent(X1,X2)),equivalent(X2,X1)))),
+    inference(superposition,[status(thm)],[c_50,c_49])).
+tcf(c_168,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~is_a_theorem(equivalent(X0,equivalent(X1,X2)))|~is_a_theorem(X0)|
+    is_a_theorem(equivalent(X2,X1))),
+    inference(superposition,[status(thm)],[c_125,c_49])).
+tcf(c_241,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~is_a_theorem(X0)|is_a_theorem(equivalent(equivalent(X1,X2),equivalent(X0,equivalent(X2,X1))))),
+    inference(superposition,[status(thm)],[c_50,c_168])).
+tcf(c_319,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~is_a_theorem(equivalent(X0,X1))|~is_a_theorem(X2)|is_a_theorem(equivalent(X2,equivalent(X1,X0)))),
+    inference(superposition,[status(thm)],[c_241,c_49])).
+tcf(c_585,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~is_a_theorem(equivalent(X0,X1))|~is_a_theorem(X2)|is_a_theorem(equivalent(X1,X0))),
+    inference(superposition,[status(thm)],[c_319,c_49])).
+tcf(c_683,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~is_a_theorem(X0)|is_a_theorem(equivalent(equivalent(equivalent(X1,equivalent(X2,X3)),equivalent(X3,X2)),X1))),
+    inference(superposition,[status(thm)],[c_50,c_585])).
+tcf(c_1144,plain,![X0:$i,X1:$i,X2:$i]:  
+    (is_a_theorem(equivalent(equivalent(equivalent(X0,equivalent(X1,X2)),equivalent(X2,X1)),X0))),
+    inference(superposition,[status(thm)],[c_50,c_683])).
+tcf(c_1170,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~is_a_theorem(equivalent(equivalent(X0,equivalent(X1,X2)),equivalent(X2,X1)))|
+    is_a_theorem(X0)),
+    inference(superposition,[status(thm)],[c_1144,c_49])).
+tcf(c_1236,plain,![X0:$i,X1:$i]:  
+    (is_a_theorem(equivalent(equivalent(X0,X1),equivalent(X0,X1)))),
+    inference(superposition,[status(thm)],[c_1144,c_1170])).
+tcf(c_1302,plain,![X0:$i,X1:$i]:  
+    (~is_a_theorem(equivalent(X0,X1))|is_a_theorem(equivalent(X1,X0))),
+    inference(superposition,[status(thm)],[c_1236,c_168])).
+tcf(c_1416,plain,![X0:$i,X1:$i,X2:$i]:  
+    (is_a_theorem(equivalent(equivalent(equivalent(X0,X1),equivalent(X2,X1)),equivalent(X0,X2)))),
+    inference(superposition,[status(thm)],[c_51,c_1302])).
+tcf(c_1425,plain, 
+    ($false),
+    inference(backward_subsumption_resolution,[status(thm)],[c_52,c_1416])).
+% SZS output end CNFRefutation for LCL126-1.p

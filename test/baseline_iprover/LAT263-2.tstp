@@ -1,0 +1,80 @@
+% SZS status Unsatisfiable for LAT263-2.p
+% SZS output start CNFRefutation for LAT263-2.p
+tcf(c_49,plain, 
+    (c_lessequals(v_S,v_A,tc_set(t_a))),
+    file('Problems/LAT/LAT263-2.p', cls_conjecture_0)).
+tcf(c_50,plain, 
+    (~c_in(c_Tarski_Oglb(v_S,v_cl,t_a),v_A,t_a)),
+    file('Problems/LAT/LAT263-2.p', cls_conjecture_1)).
+tcf(c_51,plain, 
+    (c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit) = v_A),
+    file('Problems/LAT/LAT263-2.p', cls_Tarski_OA_A_61_61_Apset_Acl_0)).
+tcf(c_52,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~c_lessequals(X0,c_Tarski_Opotype_Opset(X1,X2,tc_Product__Type_Ounit),tc_set(X2))|
+    ~c_in(X1,c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(X2,tc_Product__Type_Ounit))|
+    ~c_in(X1,c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(X2,tc_Product__Type_Ounit))|
+    c_in(c_Tarski_Olub(X0,X1,X2),c_Tarski_Opotype_Opset(X1,X2,tc_Product__Type_Ounit),X2)),
+    file('Problems/LAT/LAT263-2.p', cls_Tarski_OCL_Olub__in__lattice_0)).
+tcf(c_53,plain, 
+    (c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))),
+    file('Problems/LAT/LAT263-2.p', cls_Tarski_Odual_Acl_A_58_ACompleteLattice_0)).
+tcf(c_54,plain, 
+    (c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))),
+    file('Problems/LAT/LAT263-2.p', cls_Tarski_Odual_Acl_A_58_APartialOrder_0)).
+tcf(c_55,plain,![X0:$i,X1:$i,X2:$i]:  
+    (c_Tarski_Olub(X0,c_Tarski_Odual(X1,X2),X2) = c_Tarski_Oglb(X0,X1,X2)),
+    file('Problems/LAT/LAT263-2.p', cls_Tarski_Oglb__dual__lub_0)).
+tcf(c_56,plain,![X0:$i,X1:$i]:  
+    (c_Tarski_Opotype_Opset(c_Tarski_Odual(X0,X1),X1,tc_Product__Type_Ounit) = c_Tarski_Opotype_Opset(X0,X1,tc_Product__Type_Ounit)),
+    file('Problems/LAT/LAT263-2.p', cls_Tarski_Opset_A_Idual_Acl_J_A_61_61_Apset_Acl_0)).
+tcf(c_97,plain,![X0:$i,X1:$i,X2:$i]:  
+    (c_Tarski_Opotype_Opset(X2,X0,tc_Product__Type_Ounit) != v_A|tc_set(X0) != tc_set(t_a)|
+    X1 != v_S|~c_in(X2,c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(X0,tc_Product__Type_Ounit))|
+    ~c_in(X2,c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(X0,tc_Product__Type_Ounit))|
+    c_in(c_Tarski_Olub(X1,X2,X0),c_Tarski_Opotype_Opset(X2,X0,tc_Product__Type_Ounit),X0)),
+    inference(resolution_lifted,[status(thm)],[c_49,c_52])).
+tcf(c_98,plain,![X0:$i,X1:$i]:  
+    (c_Tarski_Opotype_Opset(X0,X1,tc_Product__Type_Ounit) != v_A|tc_set(X1) != tc_set(t_a)|
+    ~c_in(X0,c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(X1,tc_Product__Type_Ounit))|
+    ~c_in(X0,c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(X1,tc_Product__Type_Ounit))|
+    c_in(c_Tarski_Olub(v_S,X0,X1),c_Tarski_Opotype_Opset(X0,X1,tc_Product__Type_Ounit),X1)),
+    inference(unflattening,[status(thm)],[c_97])).
+tcf(c_350,plain,![X0:$i,X1:$i]:  
+    (c_Tarski_Opotype_Opset(X0,X1,tc_Product__Type_Ounit) != v_A|tc_set(X1) != tc_set(t_a)|
+    ~c_in(c_Tarski_Odual(X0,X1),c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(X1,tc_Product__Type_Ounit))|
+    ~c_in(c_Tarski_Odual(X0,X1),c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(X1,tc_Product__Type_Ounit))|
+    c_in(c_Tarski_Olub(v_S,c_Tarski_Odual(X0,X1),X1),c_Tarski_Opotype_Opset(c_Tarski_Odual(X0,X1),X1,tc_Product__Type_Ounit),X1)),
+    inference(superposition,[status(thm)],[c_56,c_98])).
+tcf(c_351,plain,![X0:$i,X1:$i]:  
+    (c_Tarski_Opotype_Opset(X0,X1,tc_Product__Type_Ounit) != v_A|tc_set(X1) != tc_set(t_a)|
+    ~c_in(c_Tarski_Odual(X0,X1),c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(X1,tc_Product__Type_Ounit))|
+    ~c_in(c_Tarski_Odual(X0,X1),c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(X1,tc_Product__Type_Ounit))|
+    c_in(c_Tarski_Olub(v_S,c_Tarski_Odual(X0,X1),X1),c_Tarski_Opotype_Opset(X0,X1,tc_Product__Type_Ounit),X1)),
+    inference(light_normalisation,[status(thm)],[c_350,c_56])).
+tcf(c_358,plain,![X0:$i,X1:$i]:  
+    (c_Tarski_Opotype_Opset(X0,X1,tc_Product__Type_Ounit) != v_A|tc_set(X1) != tc_set(t_a)|
+    ~c_in(c_Tarski_Odual(X0,X1),c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(X1,tc_Product__Type_Ounit))|
+    ~c_in(c_Tarski_Odual(X0,X1),c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(X1,tc_Product__Type_Ounit))|
+    c_in(c_Tarski_Oglb(v_S,X0,X1),c_Tarski_Opotype_Opset(X0,X1,tc_Product__Type_Ounit),X1)),
+    inference(demodulation,[status(thm)],[c_351,c_55])).
+tcf(c_374,plain, 
+    (tc_set(t_a) != tc_set(t_a)|~c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))|
+    ~c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))|
+    c_in(c_Tarski_Oglb(v_S,v_cl,t_a),c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),t_a)),
+    inference(superposition,[status(thm)],[c_51,c_358])).
+tcf(c_376,plain, 
+    (~c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))|
+    ~c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))|
+    c_in(c_Tarski_Oglb(v_S,v_cl,t_a),c_Tarski_Opotype_Opset(v_cl,t_a,tc_Product__Type_Ounit),t_a)),
+    inference(equality_resolution_simp,[status(thm)],[c_374])).
+tcf(c_377,plain, 
+    (~c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OCompleteLattice,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))|
+    ~c_in(c_Tarski_Odual(v_cl,t_a),c_Tarski_OPartialOrder,tc_Tarski_Opotype_Opotype__ext__type(t_a,tc_Product__Type_Ounit))|
+    c_in(c_Tarski_Oglb(v_S,v_cl,t_a),v_A,t_a)),
+    inference(light_normalisation,[status(thm)],[c_376,c_51])).
+tcf(c_378,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_377,c_50,c_54,c_53])).
+% SZS output end CNFRefutation for LAT263-2.p

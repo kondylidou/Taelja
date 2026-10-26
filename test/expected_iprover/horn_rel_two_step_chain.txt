@@ -1,0 +1,12 @@
+Axiom 1: p(c)
+Axiom 2: g(b) = c
+Axiom 3: f(a) = b
+
+Goal 1: p(g(f(a)))
+Proof:
+  have p(c)
+    by axiom 1
+  hence p(g(b))
+    by rw axiom 2 R->L
+  hence p(g(f(a)))
+    by rw axiom 3 R->L

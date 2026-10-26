@@ -1,0 +1,111 @@
+% SZS status Unsatisfiable for ANA023-2.p
+% SZS output start CNFRefutation for ANA023-2.p
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (~class_OrderedGroup_Ocomm__monoid__add(X0)|c_plus(c_0,X1,X0) = X1),
+    file('Problems/ANA/ANA023-2.p', cls_OrderedGroup_Ocomm__monoid__add__class_Oaxioms_0)).
+tcf(c_50,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~c_lessequals(X0,c_minus(X1,X2,X3),X3)|~class_OrderedGroup_Opordered__ab__group__add(X3)|
+    c_lessequals(c_plus(X0,X2,X3),X1,X3)),
+    file('Problems/ANA/ANA023-2.p', cls_OrderedGroup_Ocompare__rls__9_0)).
+tcf(c_51,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~c_lessequals(c_plus(X0,X1,X2),X3,X2)|~class_OrderedGroup_Opordered__ab__group__add(X2)|
+    c_lessequals(X0,c_minus(X3,X1,X2),X2)),
+    file('Problems/ANA/ANA023-2.p', cls_OrderedGroup_Ocompare__rls__9_1)).
+tcf(c_52,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~c_lessequals(X0,X1,X2)|~c_lessequals(X3,X0,X2)|~class_Orderings_Oorder(X2)|
+    c_lessequals(X3,X1,X2)),
+    file('Problems/ANA/ANA023-2.p', cls_Orderings_Oorder__class_Oorder__trans_0)).
+tcf(c_53,plain, 
+    (c_lessequals(c_0,c_minus(v_k(v_x),v_g(v_x),t_b),t_b)),
+    file('Problems/ANA/ANA023-2.p', cls_conjecture_1)).
+tcf(c_54,plain, 
+    (c_lessequals(v_k(v_x),v_f(v_x),t_b)),
+    file('Problems/ANA/ANA023-2.p', cls_conjecture_2)).
+tcf(c_55,plain, 
+    (~c_lessequals(c_0,c_minus(v_f(v_x),v_g(v_x),t_b),t_b)),
+    file('Problems/ANA/ANA023-2.p', cls_conjecture_3)).
+tcf(c_56,plain,![X0:$i]:  
+    (~class_Orderings_Olinorder(X0)|class_Orderings_Oorder(X0)),
+    file('Problems/ANA/ANA023-2.p', clsrel_Orderings_Olinorder_4)).
+tcf(c_57,plain,![X0:$i]:  
+    (~class_Ring__and__Field_Oordered__idom(X0)|class_OrderedGroup_Ocomm__monoid__add(X0)),
+    file('Problems/ANA/ANA023-2.p', clsrel_Ring__and__Field_Oordered__idom_23)).
+tcf(c_58,plain,![X0:$i]:  
+    (~class_Ring__and__Field_Oordered__idom(X0)|class_Orderings_Olinorder(X0)),
+    file('Problems/ANA/ANA023-2.p', clsrel_Ring__and__Field_Oordered__idom_33)).
+tcf(c_59,plain,![X0:$i]:  
+    (~class_Ring__and__Field_Oordered__idom(X0)|class_OrderedGroup_Opordered__ab__group__add(X0)),
+    file('Problems/ANA/ANA023-2.p', clsrel_Ring__and__Field_Oordered__idom_54)).
+tcf(c_60,plain, 
+    (class_Ring__and__Field_Oordered__idom(t_b)),
+    file('Problems/ANA/ANA023-2.p', tfree_tcs)).
+tcf(c_164,plain,![X0:$i,X1:$i,X2:$i]:  
+    (X0 != X1|~class_Ring__and__Field_Oordered__idom(X0)|c_plus(c_0,X2,X1) = X2),
+    inference(resolution_lifted,[status(thm)],[c_57,c_49])).
+tcf(c_165,plain,![X0:$i,X1:$i]:  
+    (~class_Ring__and__Field_Oordered__idom(X0)|c_plus(c_0,X1,X0) = X1),
+    inference(unflattening,[status(thm)],[c_164])).
+tcf(c_175,plain,![X0:$i,X1:$i]:  
+    (X0 != X1|~class_Ring__and__Field_Oordered__idom(X0)|class_Orderings_Oorder(X1)),
+    inference(resolution_lifted,[status(thm)],[c_58,c_56])).
+tcf(c_176,plain,![X0:$i]:  
+    (~class_Ring__and__Field_Oordered__idom(X0)|class_Orderings_Oorder(X0)),
+    inference(unflattening,[status(thm)],[c_175])).
+tcf(c_186,plain,![X0:$i]:  
+    (X0 != t_b|class_Orderings_Oorder(X0)),
+    inference(resolution_lifted,[status(thm)],[c_176,c_60])).
+tcf(c_187,plain, 
+    (class_Orderings_Oorder(t_b)),
+    inference(unflattening,[status(thm)],[c_186])).
+tcf(c_191,plain,![X0:$i,X1:$i]:  
+    (X0 != t_b|c_plus(c_0,X1,X0) = X1),
+    inference(resolution_lifted,[status(thm)],[c_165,c_60])).
+tcf(c_192,plain,![X0:$i]:  
+    (c_plus(c_0,X0,t_b) = X0),
+    inference(unflattening,[status(thm)],[c_191])).
+tcf(c_197,plain,![X0:$i]:  
+    (X0 != t_b|class_OrderedGroup_Opordered__ab__group__add(X0)),
+    inference(resolution_lifted,[status(thm)],[c_59,c_60])).
+tcf(c_198,plain, 
+    (class_OrderedGroup_Opordered__ab__group__add(t_b)),
+    inference(unflattening,[status(thm)],[c_197])).
+tcf(c_205,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (X0 != t_b|~c_lessequals(X1,X2,X0)|~c_lessequals(X3,X1,X0)|c_lessequals(X3,X2,X0)),
+    inference(resolution_lifted,[status(thm)],[c_52,c_187])).
+tcf(c_206,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~c_lessequals(X0,X1,t_b)|~c_lessequals(X2,X0,t_b)|c_lessequals(X2,X1,t_b)),
+    inference(unflattening,[status(thm)],[c_205])).
+tcf(c_219,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (X0 != t_b|~c_lessequals(X1,c_minus(X2,X3,X0),X0)|c_lessequals(c_plus(X1,X3,X0),X2,X0)),
+    inference(resolution_lifted,[status(thm)],[c_50,c_198])).
+tcf(c_220,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~c_lessequals(X0,c_minus(X1,X2,t_b),t_b)|c_lessequals(c_plus(X0,X2,t_b),X1,t_b)),
+    inference(unflattening,[status(thm)],[c_219])).
+tcf(c_228,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (X0 != t_b|~c_lessequals(c_plus(X1,X2,X0),X3,X0)|c_lessequals(X1,c_minus(X3,X2,X0),X0)),
+    inference(resolution_lifted,[status(thm)],[c_51,c_198])).
+tcf(c_229,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~c_lessequals(c_plus(X0,X1,t_b),X2,t_b)|c_lessequals(X0,c_minus(X2,X1,t_b),t_b)),
+    inference(unflattening,[status(thm)],[c_228])).
+tcf(c_437,plain,![X0:$i]:  
+    (~c_lessequals(X0,v_k(v_x),t_b)|c_lessequals(X0,v_f(v_x),t_b)),
+    inference(superposition,[status(thm)],[c_54,c_206])).
+tcf(c_460,plain, 
+    (c_lessequals(c_plus(c_0,v_g(v_x),t_b),v_k(v_x),t_b)),
+    inference(superposition,[status(thm)],[c_53,c_220])).
+tcf(c_470,plain,![X0:$i,X1:$i]:  
+    (~c_lessequals(X0,X1,t_b)|c_lessequals(c_0,c_minus(X1,X0,t_b),t_b)),
+    inference(superposition,[status(thm)],[c_192,c_229])).
+tcf(c_477,plain, 
+    (c_lessequals(v_g(v_x),v_k(v_x),t_b)),
+    inference(demodulation,[status(thm)],[c_460,c_192])).
+tcf(c_479,plain, 
+    (c_lessequals(v_g(v_x),v_f(v_x),t_b)),
+    inference(superposition,[status(thm)],[c_477,c_437])).
+tcf(c_499,plain, 
+    (~c_lessequals(v_g(v_x),v_f(v_x),t_b)),
+    inference(superposition,[status(thm)],[c_470,c_55])).
+tcf(c_502,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_499,c_479])).
+% SZS output end CNFRefutation for ANA023-2.p

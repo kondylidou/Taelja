@@ -1,0 +1,12 @@
+Axiom 1: g(f(a)) = g(f(b))
+Axiom 2: g(X) = g(Y) => X = Y
+Axiom 3: f(X) = f(Y) => X = Y
+
+Goal 1: a = b
+Proof:
+  have g(f(a)) = g(f(b))
+    by axiom 1
+  hence f(a) = f(b)
+    by axiom 2
+  hence a = b
+    by axiom 3

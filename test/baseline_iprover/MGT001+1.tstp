@@ -1,0 +1,422 @@
+% SZS status Theorem for MGT001+1.p
+% SZS output start CNFRefutation for MGT001+1.p
+fof(f1,axiom,(
+  ! [X0,X1] : (organization(X0,X1) => ? [X2] : reliability(X0,X2,X1))),
+  file('Problems/MGT/MGT001+1.p',mp1)).
+fof(f2,axiom,(
+  ! [X0,X1] : (organization(X0,X1) => ? [X3] : accountability(X0,X3,X1))),
+  file('Problems/MGT/MGT001+1.p',mp2)).
+fof(f3,axiom,(
+  ! [X0,X1] : (organization(X0,X1) => ? [X4] : reproducibility(X0,X4,X1))),
+  file('Problems/MGT/MGT001+1.p',mp3)).
+fof(f4,axiom,(
+  ! [X0,X5,X6,X7,X8,X9,X10,X11,X12,X13] : ((greater(X9,X8) & greater(X7,X6) & survival_chance(X5,X11,X13) & survival_chance(X0,X10,X12) & accountability(X5,X9,X13) & accountability(X0,X8,X12) & reliability(X5,X7,X13) & reliability(X0,X6,X12) & organization(X5,X13) & organization(X0,X12)) => greater(X11,X10))),
+  file('Problems/MGT/MGT001+1.p',a1_FOL)).
+fof(f5,axiom,(
+  ! [X0,X5,X12,X13,X6,X7,X8,X9,X14,X15] : ((reproducibility(X5,X15,X13) & reproducibility(X0,X14,X12) & accountability(X5,X9,X13) & accountability(X0,X8,X12) & reliability(X5,X7,X13) & reliability(X0,X6,X12) & organization(X5,X13) & organization(X0,X12)) => (greater(X15,X14) <=> (greater(X9,X8) & greater(X7,X6))))),
+  file('Problems/MGT/MGT001+1.p',a2_FOL)).
+fof(f6,axiom,(
+  ! [X0,X5,X12,X13,X14,X15,X16,X17] : ((inertia(X5,X17,X13) & inertia(X0,X16,X12) & reproducibility(X5,X15,X13) & reproducibility(X0,X14,X12) & reorganization_free(X5,X13,X13) & reorganization_free(X0,X12,X12) & organization(X5,X13) & organization(X0,X12)) => (greater(X15,X14) <=> greater(X17,X16)))),
+  file('Problems/MGT/MGT001+1.p',a3_FOL)).
+fof(f7,conjecture,(
+  ! [X0,X5,X12,X13,X16,X17,X10,X11] : ((greater(X17,X16) & survival_chance(X5,X11,X13) & survival_chance(X0,X10,X12) & inertia(X5,X17,X13) & inertia(X0,X16,X12) & reorganization_free(X5,X13,X13) & reorganization_free(X0,X12,X12) & organization(X5,X13) & organization(X0,X12)) => greater(X11,X10))),
+  file('Problems/MGT/MGT001+1.p',t1_FOL)).
+fof(f8,negated_conjecture,(
+  ~! [X0,X5,X12,X13,X16,X17,X10,X11] : ((greater(X17,X16) & survival_chance(X5,X11,X13) & survival_chance(X0,X10,X12) & inertia(X5,X17,X13) & inertia(X0,X16,X12) & reorganization_free(X5,X13,X13) & reorganization_free(X0,X12,X12) & organization(X5,X13) & organization(X0,X12)) => greater(X11,X10))),
+inference(negated_conjecture,[status(cth)],[f7])).
+fof(f9,plain,(
+  ! [X0,X1] : (organization(X0,X1) => ? [X2] : accountability(X0,X2,X1))),
+  inference(rectify,[],[f2])).
+fof(f10,plain,(
+  ! [X0,X1] : (organization(X0,X1) => ? [X2] : reproducibility(X0,X2,X1))),
+  inference(rectify,[],[f3])).
+fof(f11,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7,X8,X9] : ((greater(X5,X4) & greater(X3,X2) & survival_chance(X1,X7,X9) & survival_chance(X0,X6,X8) & accountability(X1,X5,X9) & accountability(X0,X4,X8) & reliability(X1,X3,X9) & reliability(X0,X2,X8) & organization(X1,X9) & organization(X0,X8)) => greater(X7,X6))),
+  inference(rectify,[],[f4])).
+fof(f12,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7,X8,X9] : ((reproducibility(X1,X9,X3) & reproducibility(X0,X8,X2) & accountability(X1,X7,X3) & accountability(X0,X6,X2) & reliability(X1,X5,X3) & reliability(X0,X4,X2) & organization(X1,X3) & organization(X0,X2)) => (greater(X9,X8) <=> (greater(X7,X6) & greater(X5,X4))))),
+  inference(rectify,[],[f5])).
+fof(f13,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7] : ((inertia(X1,X7,X3) & inertia(X0,X6,X2) & reproducibility(X1,X5,X3) & reproducibility(X0,X4,X2) & reorganization_free(X1,X3,X3) & reorganization_free(X0,X2,X2) & organization(X1,X3) & organization(X0,X2)) => (greater(X5,X4) <=> greater(X7,X6)))),
+  inference(rectify,[],[f6])).
+fof(f14,plain,(
+  ~! [X0,X1,X2,X3,X4,X5,X6,X7] : ((greater(X5,X4) & survival_chance(X1,X7,X3) & survival_chance(X0,X6,X2) & inertia(X1,X5,X3) & inertia(X0,X4,X2) & reorganization_free(X1,X3,X3) & reorganization_free(X0,X2,X2) & organization(X1,X3) & organization(X0,X2)) => greater(X7,X6))),
+  inference(rectify,[],[f8])).
+fof(f15,plain,(
+  ! [X0,X1] : (? [X2] : reliability(X0,X2,X1) | ~organization(X0,X1))),
+  inference(ennf_transformation,[],[f1])).
+fof(f16,plain,(
+  ! [X0,X1] : (? [X2] : accountability(X0,X2,X1) | ~organization(X0,X1))),
+  inference(ennf_transformation,[],[f9])).
+fof(f17,plain,(
+  ! [X0,X1] : (? [X2] : reproducibility(X0,X2,X1) | ~organization(X0,X1))),
+  inference(ennf_transformation,[],[f10])).
+fof(f18,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7,X8,X9] : (greater(X7,X6) | (~greater(X5,X4) | ~greater(X3,X2) | ~survival_chance(X1,X7,X9) | ~survival_chance(X0,X6,X8) | ~accountability(X1,X5,X9) | ~accountability(X0,X4,X8) | ~reliability(X1,X3,X9) | ~reliability(X0,X2,X8) | ~organization(X1,X9) | ~organization(X0,X8)))),
+  inference(ennf_transformation,[],[f11])).
+fof(f19,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7,X8,X9] : (greater(X7,X6) | ~greater(X5,X4) | ~greater(X3,X2) | ~survival_chance(X1,X7,X9) | ~survival_chance(X0,X6,X8) | ~accountability(X1,X5,X9) | ~accountability(X0,X4,X8) | ~reliability(X1,X3,X9) | ~reliability(X0,X2,X8) | ~organization(X1,X9) | ~organization(X0,X8))),
+  inference(flattening,[],[f18])).
+fof(f20,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7,X8,X9] : ((greater(X9,X8) <=> (greater(X7,X6) & greater(X5,X4))) | (~reproducibility(X1,X9,X3) | ~reproducibility(X0,X8,X2) | ~accountability(X1,X7,X3) | ~accountability(X0,X6,X2) | ~reliability(X1,X5,X3) | ~reliability(X0,X4,X2) | ~organization(X1,X3) | ~organization(X0,X2)))),
+  inference(ennf_transformation,[],[f12])).
+fof(f21,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7,X8,X9] : ((greater(X9,X8) <=> (greater(X7,X6) & greater(X5,X4))) | ~reproducibility(X1,X9,X3) | ~reproducibility(X0,X8,X2) | ~accountability(X1,X7,X3) | ~accountability(X0,X6,X2) | ~reliability(X1,X5,X3) | ~reliability(X0,X4,X2) | ~organization(X1,X3) | ~organization(X0,X2))),
+  inference(flattening,[],[f20])).
+fof(f22,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7] : ((greater(X5,X4) <=> greater(X7,X6)) | (~inertia(X1,X7,X3) | ~inertia(X0,X6,X2) | ~reproducibility(X1,X5,X3) | ~reproducibility(X0,X4,X2) | ~reorganization_free(X1,X3,X3) | ~reorganization_free(X0,X2,X2) | ~organization(X1,X3) | ~organization(X0,X2)))),
+  inference(ennf_transformation,[],[f13])).
+fof(f23,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7] : ((greater(X5,X4) <=> greater(X7,X6)) | ~inertia(X1,X7,X3) | ~inertia(X0,X6,X2) | ~reproducibility(X1,X5,X3) | ~reproducibility(X0,X4,X2) | ~reorganization_free(X1,X3,X3) | ~reorganization_free(X0,X2,X2) | ~organization(X1,X3) | ~organization(X0,X2))),
+  inference(flattening,[],[f22])).
+fof(f24,plain,(
+  ? [X0,X1,X2,X3,X4,X5,X6,X7] : (~greater(X7,X6) & (greater(X5,X4) & survival_chance(X1,X7,X3) & survival_chance(X0,X6,X2) & inertia(X1,X5,X3) & inertia(X0,X4,X2) & reorganization_free(X1,X3,X3) & reorganization_free(X0,X2,X2) & organization(X1,X3) & organization(X0,X2)))),
+  inference(ennf_transformation,[],[f14])).
+fof(f25,plain,(
+  ? [X0,X1,X2,X3,X4,X5,X6,X7] : (~greater(X7,X6) & greater(X5,X4) & survival_chance(X1,X7,X3) & survival_chance(X0,X6,X2) & inertia(X1,X5,X3) & inertia(X0,X4,X2) & reorganization_free(X1,X3,X3) & reorganization_free(X0,X2,X2) & organization(X1,X3) & organization(X0,X2))),
+  inference(flattening,[],[f24])).
+fof(f26,plain,(
+  ! [X0,X1] : (? [X2] : reliability(X0,X2,X1) => reliability(X0,sK0(X0,X1),X1))),
+  introduced(choice_axiom,[])).
+fof(f27,plain,(
+  ! [X0,X1] : (reliability(X0,sK0(X0,X1),X1) | ~organization(X0,X1))),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK0])],[f15,f26])).
+fof(f28,plain,(
+  ! [X0,X1] : (? [X2] : accountability(X0,X2,X1) => accountability(X0,sK1(X0,X1),X1))),
+  introduced(choice_axiom,[])).
+fof(f29,plain,(
+  ! [X0,X1] : (accountability(X0,sK1(X0,X1),X1) | ~organization(X0,X1))),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK1])],[f16,f28])).
+fof(f30,plain,(
+  ! [X0,X1] : (? [X2] : reproducibility(X0,X2,X1) => reproducibility(X0,sK2(X0,X1),X1))),
+  introduced(choice_axiom,[])).
+fof(f31,plain,(
+  ! [X0,X1] : (reproducibility(X0,sK2(X0,X1),X1) | ~organization(X0,X1))),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK2])],[f17,f30])).
+fof(f32,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7,X8,X9] : (((greater(X9,X8) | (~greater(X7,X6) | ~greater(X5,X4))) & ((greater(X7,X6) & greater(X5,X4)) | ~greater(X9,X8))) | ~reproducibility(X1,X9,X3) | ~reproducibility(X0,X8,X2) | ~accountability(X1,X7,X3) | ~accountability(X0,X6,X2) | ~reliability(X1,X5,X3) | ~reliability(X0,X4,X2) | ~organization(X1,X3) | ~organization(X0,X2))),
+  inference(nnf_transformation,[],[f21])).
+fof(f33,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7,X8,X9] : (((greater(X9,X8) | ~greater(X7,X6) | ~greater(X5,X4)) & ((greater(X7,X6) & greater(X5,X4)) | ~greater(X9,X8))) | ~reproducibility(X1,X9,X3) | ~reproducibility(X0,X8,X2) | ~accountability(X1,X7,X3) | ~accountability(X0,X6,X2) | ~reliability(X1,X5,X3) | ~reliability(X0,X4,X2) | ~organization(X1,X3) | ~organization(X0,X2))),
+  inference(flattening,[],[f32])).
+fof(f34,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7] : (((greater(X5,X4) | ~greater(X7,X6)) & (greater(X7,X6) | ~greater(X5,X4))) | ~inertia(X1,X7,X3) | ~inertia(X0,X6,X2) | ~reproducibility(X1,X5,X3) | ~reproducibility(X0,X4,X2) | ~reorganization_free(X1,X3,X3) | ~reorganization_free(X0,X2,X2) | ~organization(X1,X3) | ~organization(X0,X2))),
+  inference(nnf_transformation,[],[f23])).
+fof(f35,plain,(
+  ? [X0,X1,X2,X3,X4,X5,X6,X7] : (~greater(X7,X6) & greater(X5,X4) & survival_chance(X1,X7,X3) & survival_chance(X0,X6,X2) & inertia(X1,X5,X3) & inertia(X0,X4,X2) & reorganization_free(X1,X3,X3) & reorganization_free(X0,X2,X2) & organization(X1,X3) & organization(X0,X2)) => (~greater(sK10,sK9) & greater(sK8,sK7) & survival_chance(sK4,sK10,sK6) & survival_chance(sK3,sK9,sK5) & inertia(sK4,sK8,sK6) & inertia(sK3,sK7,sK5) & reorganization_free(sK4,sK6,sK6) & reorganization_free(sK3,sK5,sK5) & organization(sK4,sK6) & organization(sK3,sK5))),
+  introduced(choice_axiom,[])).
+fof(f36,plain,(
+  ~greater(sK10,sK9) & greater(sK8,sK7) & survival_chance(sK4,sK10,sK6) & survival_chance(sK3,sK9,sK5) & inertia(sK4,sK8,sK6) & inertia(sK3,sK7,sK5) & reorganization_free(sK4,sK6,sK6) & reorganization_free(sK3,sK5,sK5) & organization(sK4,sK6) & organization(sK3,sK5)),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK3,sK4,sK5,sK6,sK7,sK8,sK9,sK10])],[f25,f35])).
+fof(f37,plain,(
+  ( ! [X0,X1] : (reliability(X0,sK0(X0,X1),X1) | ~organization(X0,X1)) )),
+  inference(cnf_transformation,[],[f27])).
+fof(f38,plain,(
+  ( ! [X0,X1] : (accountability(X0,sK1(X0,X1),X1) | ~organization(X0,X1)) )),
+  inference(cnf_transformation,[],[f29])).
+fof(f39,plain,(
+  ( ! [X0,X1] : (reproducibility(X0,sK2(X0,X1),X1) | ~organization(X0,X1)) )),
+  inference(cnf_transformation,[],[f31])).
+fof(f40,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (greater(X7,X6) | ~greater(X5,X4) | ~greater(X3,X2) | ~survival_chance(X1,X7,X9) | ~survival_chance(X0,X6,X8) | ~accountability(X1,X5,X9) | ~accountability(X0,X4,X8) | ~reliability(X1,X3,X9) | ~reliability(X0,X2,X8) | ~organization(X1,X9) | ~organization(X0,X8)) )),
+  inference(cnf_transformation,[],[f19])).
+fof(f41,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (greater(X5,X4) | ~greater(X9,X8) | ~reproducibility(X1,X9,X3) | ~reproducibility(X0,X8,X2) | ~accountability(X1,X7,X3) | ~accountability(X0,X6,X2) | ~reliability(X1,X5,X3) | ~reliability(X0,X4,X2) | ~organization(X1,X3) | ~organization(X0,X2)) )),
+  inference(cnf_transformation,[],[f33])).
+fof(f42,plain,(
+  ( ! [X2,X3,X0,X1,X8,X6,X9,X7,X4,X5] : (greater(X7,X6) | ~greater(X9,X8) | ~reproducibility(X1,X9,X3) | ~reproducibility(X0,X8,X2) | ~accountability(X1,X7,X3) | ~accountability(X0,X6,X2) | ~reliability(X1,X5,X3) | ~reliability(X0,X4,X2) | ~organization(X1,X3) | ~organization(X0,X2)) )),
+  inference(cnf_transformation,[],[f33])).
+fof(f45,plain,(
+  ( ! [X2,X3,X0,X1,X6,X7,X4,X5] : (greater(X5,X4) | ~greater(X7,X6) | ~inertia(X1,X7,X3) | ~inertia(X0,X6,X2) | ~reproducibility(X1,X5,X3) | ~reproducibility(X0,X4,X2) | ~reorganization_free(X1,X3,X3) | ~reorganization_free(X0,X2,X2) | ~organization(X1,X3) | ~organization(X0,X2)) )),
+  inference(cnf_transformation,[],[f34])).
+fof(f46,plain,(
+  organization(sK3,sK5)),
+  inference(cnf_transformation,[],[f36])).
+fof(f47,plain,(
+  organization(sK4,sK6)),
+  inference(cnf_transformation,[],[f36])).
+fof(f48,plain,(
+  reorganization_free(sK3,sK5,sK5)),
+  inference(cnf_transformation,[],[f36])).
+fof(f49,plain,(
+  reorganization_free(sK4,sK6,sK6)),
+  inference(cnf_transformation,[],[f36])).
+fof(f50,plain,(
+  inertia(sK3,sK7,sK5)),
+  inference(cnf_transformation,[],[f36])).
+fof(f51,plain,(
+  inertia(sK4,sK8,sK6)),
+  inference(cnf_transformation,[],[f36])).
+fof(f52,plain,(
+  survival_chance(sK3,sK9,sK5)),
+  inference(cnf_transformation,[],[f36])).
+fof(f53,plain,(
+  survival_chance(sK4,sK10,sK6)),
+  inference(cnf_transformation,[],[f36])).
+fof(f54,plain,(
+  greater(sK8,sK7)),
+  inference(cnf_transformation,[],[f36])).
+fof(f55,plain,(
+  ~greater(sK10,sK9)),
+  inference(cnf_transformation,[],[f36])).
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (~organization(X0,X1)|reliability(X0,sK0(X0,X1),X1)),
+    inference(cnf_transformation,[],[f37])).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (~organization(X0,X1)|accountability(X0,sK1(X0,X1),X1)),
+    inference(cnf_transformation,[],[f38])).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (~organization(X0,X1)|reproducibility(X0,sK2(X0,X1),X1)),
+    inference(cnf_transformation,[],[f39])).
+tcf(c_52,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i]:  
+    (~reliability(X0,X1,X2)|~reliability(X3,X4,X5)|~accountability(X0,X6,X2)|
+    ~accountability(X3,X7,X5)|~survival_chance(X0,X8,X2)|~survival_chance(X3,X9,X5)|
+    ~organization(X0,X2)|~organization(X3,X5)|~greater(X4,X1)|~greater(X7,X6)|
+    greater(X9,X8)),
+    inference(cnf_transformation,[],[f40])).
+tcf(c_54,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i]:  
+    (~reliability(X0,X1,X2)|~reliability(X3,X4,X5)|~accountability(X0,X6,X2)|
+    ~accountability(X3,X7,X5)|~reproducibility(X0,X8,X2)|~reproducibility(X3,X9,X5)|
+    ~organization(X0,X2)|~organization(X3,X5)|~greater(X9,X8)|greater(X7,X6)),
+    inference(cnf_transformation,[],[f42])).
+tcf(c_55,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i]:  
+    (~reliability(X0,X1,X2)|~reliability(X3,X4,X5)|~accountability(X0,X6,X2)|
+    ~accountability(X3,X7,X5)|~reproducibility(X0,X8,X2)|~reproducibility(X3,X9,X5)|
+    ~organization(X0,X2)|~organization(X3,X5)|~greater(X9,X8)|greater(X4,X1)),
+    inference(cnf_transformation,[],[f41])).
+tcf(c_56,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~reproducibility(X0,X1,X2)|~reproducibility(X3,X4,X5)|~inertia(X0,X6,X2)|
+    ~inertia(X3,X7,X5)|~reorganization_free(X0,X2,X2)|~reorganization_free(X3,X5,X5)|
+    ~organization(X0,X2)|~organization(X3,X5)|~greater(X7,X6)|greater(X4,X1)),
+    inference(cnf_transformation,[],[f45])).
+tcf(c_58,plain, (~greater(sK10,sK9)),inference(cnf_transformation,[],[f55])).
+tcf(c_59,plain, (greater(sK8,sK7)),inference(cnf_transformation,[],[f54])).
+tcf(c_60,plain, 
+    (survival_chance(sK4,sK10,sK6)),
+    inference(cnf_transformation,[],[f53])).
+tcf(c_61,plain, 
+    (survival_chance(sK3,sK9,sK5)),
+    inference(cnf_transformation,[],[f52])).
+tcf(c_62,plain, 
+    (inertia(sK4,sK8,sK6)),
+    inference(cnf_transformation,[],[f51])).
+tcf(c_63,plain, 
+    (inertia(sK3,sK7,sK5)),
+    inference(cnf_transformation,[],[f50])).
+tcf(c_64,plain, 
+    (reorganization_free(sK4,sK6,sK6)),
+    inference(cnf_transformation,[],[f49])).
+tcf(c_65,plain, 
+    (reorganization_free(sK3,sK5,sK5)),
+    inference(cnf_transformation,[],[f48])).
+tcf(c_66,plain, 
+    (organization(sK4,sK6)),
+    inference(cnf_transformation,[],[f47])).
+tcf(c_67,plain, 
+    (organization(sK3,sK5)),
+    inference(cnf_transformation,[],[f46])).
+tcf(c_227,plain, 
+    (~organization(sK4,sK6)|reliability(sK4,sK0(sK4,sK6),sK6)),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_228,plain, 
+    (~organization(sK3,sK5)|reliability(sK3,sK0(sK3,sK5),sK5)),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_229,plain, 
+    (~organization(sK4,sK6)|accountability(sK4,sK1(sK4,sK6),sK6)),
+    inference(instantiation,[status(thm)],[c_50])).
+tcf(c_230,plain, 
+    (~organization(sK3,sK5)|accountability(sK3,sK1(sK3,sK5),sK5)),
+    inference(instantiation,[status(thm)],[c_50])).
+tcf(c_231,plain, 
+    (~organization(sK4,sK6)|reproducibility(sK4,sK2(sK4,sK6),sK6)),
+    inference(instantiation,[status(thm)],[c_51])).
+tcf(c_232,plain, 
+    (~organization(sK3,sK5)|reproducibility(sK3,sK2(sK3,sK5),sK5)),
+    inference(instantiation,[status(thm)],[c_51])).
+tcf(c_234,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~reliability(X0,X1,X2)|~accountability(X0,X3,X2)|~reproducibility(X0,X4,X2)|
+    ~reliability(sK3,X5,sK5)|~accountability(sK3,X6,sK5)|~reproducibility(sK3,X7,sK5)|
+    ~organization(X0,X2)|~greater(X4,X7)|~organization(sK3,sK5)|greater(X3,X6)),
+    inference(instantiation,[status(thm)],[c_54])).
+tcf(c_236,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~reliability(X0,X1,X2)|~accountability(X0,X3,X2)|~reproducibility(X0,X4,X2)|
+    ~reliability(sK3,X5,sK5)|~accountability(sK3,X6,sK5)|~reproducibility(sK3,X7,sK5)|
+    ~organization(X0,X2)|~greater(X4,X7)|~organization(sK3,sK5)|greater(X1,X5)),
+    inference(instantiation,[status(thm)],[c_55])).
+tcf(c_238,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~reproducibility(X0,X1,X2)|~inertia(X0,X3,X2)|~reorganization_free(X0,X2,X2)|
+    ~reproducibility(sK3,X4,sK5)|~inertia(sK3,X5,sK5)|~reorganization_free(sK3,sK5,sK5)|
+    ~organization(X0,X2)|~greater(X3,X5)|~organization(sK3,sK5)|greater(X1,X4)),
+    inference(instantiation,[status(thm)],[c_56])).
+tcf(c_242,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~reliability(X0,X1,X2)|~accountability(X0,X3,X2)|~survival_chance(X0,X4,X2)|
+    ~reliability(sK3,X5,sK5)|~accountability(sK3,X6,sK5)|~survival_chance(sK3,X7,sK5)|
+    ~organization(X0,X2)|~greater(X1,X5)|~greater(X3,X6)|~organization(sK3,sK5)|
+    greater(X4,X7)),
+    inference(instantiation,[status(thm)],[c_52])).
+tcf(c_247,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~reliability(sK4,X0,sK6)|~reliability(sK3,X1,sK5)|~accountability(sK4,X2,sK6)|
+    ~accountability(sK3,X3,sK5)|~reproducibility(sK4,X4,sK6)|~reproducibility(sK3,X5,sK5)|
+    ~greater(X4,X5)|~organization(sK4,sK6)|~organization(sK3,sK5)|greater(X2,X3)),
+    inference(instantiation,[status(thm)],[c_234])).
+tcf(c_251,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~reproducibility(sK3,sK2(sK3,sK5),sK5)|~reproducibility(X0,X1,X2)|
+    ~inertia(X0,X3,X2)|~reorganization_free(X0,X2,X2)|~inertia(sK3,X4,sK5)|
+    ~reorganization_free(sK3,sK5,sK5)|~organization(X0,X2)|~greater(X3,X4)|
+    ~organization(sK3,sK5)|greater(X1,sK2(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_238])).
+tcf(c_259,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i]:  
+    (~reliability(sK3,sK0(sK3,sK5),sK5)|~reliability(X0,X1,X2)|~accountability(X0,X3,X2)|
+    ~reproducibility(X0,X4,X2)|~accountability(sK3,X5,sK5)|~reproducibility(sK3,X6,sK5)|
+    ~organization(X0,X2)|~greater(X4,X6)|~organization(sK3,sK5)|greater(X1,sK0(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_236])).
+tcf(c_262,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i]:  
+    (~reliability(sK3,sK0(sK3,sK5),sK5)|~greater(X0,sK0(sK3,sK5))|~reliability(X1,X0,X2)|
+    ~accountability(X1,X3,X2)|~survival_chance(X1,X4,X2)|~accountability(sK3,X5,sK5)|
+    ~survival_chance(sK3,X6,sK5)|~organization(X1,X2)|~greater(X3,X5)|
+    ~organization(sK3,sK5)|greater(X4,X6)),
+    inference(instantiation,[status(thm)],[c_242])).
+tcf(c_267,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~reliability(sK4,sK0(sK4,sK6),sK6)|~reliability(sK3,X0,sK5)|~accountability(sK4,X1,sK6)|
+    ~accountability(sK3,X2,sK5)|~reproducibility(sK4,X3,sK6)|~reproducibility(sK3,X4,sK5)|
+    ~greater(X3,X4)|~organization(sK4,sK6)|~organization(sK3,sK5)|greater(X1,X2)),
+    inference(instantiation,[status(thm)],[c_247])).
+tcf(c_275,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~greater(X0,sK0(sK3,sK5))|~greater(X1,sK1(sK3,sK5))|~reliability(X2,X0,X3)|
+    ~accountability(X2,X1,X3)|~survival_chance(X2,X4,X3)|~survival_chance(sK3,X5,sK5)|
+    ~organization(X2,X3)|~organization(sK3,sK5)|greater(X4,X5)),
+    inference(instantiation,[status(thm)],[c_262])).
+tcf(c_284,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~reliability(sK4,sK0(sK4,sK6),sK6)|~reliability(sK3,sK0(sK3,sK5),sK5)|
+    ~accountability(sK4,X0,sK6)|~accountability(sK3,X1,sK5)|~reproducibility(sK4,X2,sK6)|
+    ~reproducibility(sK3,X3,sK5)|~greater(X2,X3)|~organization(sK4,sK6)|
+    ~organization(sK3,sK5)|greater(X0,X1)),
+    inference(instantiation,[status(thm)],[c_267])).
+tcf(c_287,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~greater(X0,sK0(sK3,sK5))|~greater(X1,sK1(sK3,sK5))|~reliability(X2,X0,X3)|
+    ~accountability(X2,X1,X3)|~survival_chance(X2,X4,X3)|~survival_chance(sK3,sK9,sK5)|
+    ~organization(X2,X3)|~organization(sK3,sK5)|greater(X4,sK9)),
+    inference(instantiation,[status(thm)],[c_275])).
+tcf(c_293,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~greater(X0,sK0(sK3,sK5))|~greater(X1,sK1(sK3,sK5))|~reliability(X2,X0,X3)|
+    ~accountability(X2,X1,X3)|~survival_chance(X2,sK10,X3)|~survival_chance(sK3,sK9,sK5)|
+    ~organization(X2,X3)|~organization(sK3,sK5)|greater(sK10,sK9)),
+    inference(instantiation,[status(thm)],[c_287])).
+tcf(c_301,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~reliability(sK4,sK0(sK4,sK6),sK6)|~reliability(sK3,sK0(sK3,sK5),sK5)|
+    ~accountability(sK4,sK1(sK4,sK6),sK6)|~accountability(sK3,X0,sK5)|
+    ~reproducibility(sK4,X1,sK6)|~reproducibility(sK3,X2,sK5)|~greater(X1,X2)|
+    ~organization(sK4,sK6)|~organization(sK3,sK5)|greater(sK1(sK4,sK6),X0)),
+    inference(instantiation,[status(thm)],[c_284])).
+tcf(c_303,plain,![X0:$i,X1:$i]:  
+    (~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~greater(X0,sK0(sK3,sK5))|~greater(X1,sK1(sK3,sK5))|~reliability(sK4,X0,sK6)|
+    ~accountability(sK4,X1,sK6)|~survival_chance(sK4,sK10,sK6)|~survival_chance(sK3,sK9,sK5)|
+    ~organization(sK4,sK6)|~organization(sK3,sK5)|greater(sK10,sK9)),
+    inference(instantiation,[status(thm)],[c_293])).
+tcf(c_307,plain,![X0:$i]:  
+    (~greater(sK0(sK4,sK6),sK0(sK3,sK5))|~reliability(sK4,sK0(sK4,sK6),sK6)|
+    ~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~greater(X0,sK1(sK3,sK5))|~accountability(sK4,X0,sK6)|~survival_chance(sK4,sK10,sK6)|
+    ~survival_chance(sK3,sK9,sK5)|~organization(sK4,sK6)|~organization(sK3,sK5)|
+    greater(sK10,sK9)),
+    inference(instantiation,[status(thm)],[c_303])).
+tcf(c_311,plain, 
+    (~greater(sK0(sK4,sK6),sK0(sK3,sK5))|~greater(sK1(sK4,sK6),sK1(sK3,sK5))|
+    ~reliability(sK4,sK0(sK4,sK6),sK6)|~reliability(sK3,sK0(sK3,sK5),sK5)|
+    ~accountability(sK4,sK1(sK4,sK6),sK6)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~survival_chance(sK4,sK10,sK6)|~survival_chance(sK3,sK9,sK5)|~organization(sK4,sK6)|
+    ~organization(sK3,sK5)|greater(sK10,sK9)),
+    inference(instantiation,[status(thm)],[c_307])).
+tcf(c_313,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~reliability(X0,X1,X2)|~accountability(X0,X3,X2)|~reproducibility(X0,X4,X2)|
+    ~reproducibility(sK3,X5,sK5)|~organization(X0,X2)|~greater(X4,X5)|
+    ~organization(sK3,sK5)|greater(X1,sK0(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_259])).
+tcf(c_315,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~reproducibility(sK3,sK2(sK3,sK5),sK5)|~greater(X0,sK2(sK3,sK5))|
+    ~reliability(X1,X2,X3)|~accountability(X1,X4,X3)|~reproducibility(X1,X0,X3)|
+    ~organization(X1,X3)|~organization(sK3,sK5)|greater(X2,sK0(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_313])).
+tcf(c_321,plain,![X0:$i,X1:$i]:  
+    (~reliability(sK4,sK0(sK4,sK6),sK6)|~reliability(sK3,sK0(sK3,sK5),sK5)|
+    ~accountability(sK4,sK1(sK4,sK6),sK6)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~reproducibility(sK4,X0,sK6)|~reproducibility(sK3,X1,sK5)|~greater(X0,X1)|
+    ~organization(sK4,sK6)|~organization(sK3,sK5)|greater(sK1(sK4,sK6),sK1(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_301])).
+tcf(c_323,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~reproducibility(sK3,sK2(sK3,sK5),sK5)|~reproducibility(X0,X1,X2)|
+    ~inertia(X0,X3,X2)|~reorganization_free(X0,X2,X2)|~inertia(sK3,sK7,sK5)|
+    ~reorganization_free(sK3,sK5,sK5)|~organization(X0,X2)|~greater(X3,sK7)|
+    ~organization(sK3,sK5)|greater(X1,sK2(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_251])).
+tcf(c_325,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~reproducibility(sK3,sK2(sK3,sK5),sK5)|~reproducibility(X0,X1,X2)|
+    ~reorganization_free(X0,X2,X2)|~inertia(X0,sK8,X2)|~inertia(sK3,sK7,sK5)|
+    ~reorganization_free(sK3,sK5,sK5)|~organization(X0,X2)|~organization(sK3,sK5)|
+    ~greater(sK8,sK7)|greater(X1,sK2(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_323])).
+tcf(c_331,plain,![X0:$i]:  
+    (~reliability(sK4,sK0(sK4,sK6),sK6)|~reliability(sK3,sK0(sK3,sK5),sK5)|
+    ~accountability(sK4,sK1(sK4,sK6),sK6)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~reproducibility(sK4,sK2(sK4,sK6),sK6)|~greater(sK2(sK4,sK6),X0)|
+    ~reproducibility(sK3,X0,sK5)|~organization(sK4,sK6)|~organization(sK3,sK5)|
+    greater(sK1(sK4,sK6),sK1(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_321])).
+tcf(c_333,plain,![X0:$i]:  
+    (~reproducibility(sK3,sK2(sK3,sK5),sK5)|~reproducibility(sK4,X0,sK6)|
+    ~inertia(sK4,sK8,sK6)|~inertia(sK3,sK7,sK5)|~reorganization_free(sK4,sK6,sK6)|
+    ~reorganization_free(sK3,sK5,sK5)|~organization(sK4,sK6)|~organization(sK3,sK5)|
+    ~greater(sK8,sK7)|greater(X0,sK2(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_325])).
+tcf(c_339,plain, 
+    (~greater(sK2(sK4,sK6),sK2(sK3,sK5))|~reliability(sK4,sK0(sK4,sK6),sK6)|
+    ~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK4,sK1(sK4,sK6),sK6)|
+    ~accountability(sK3,sK1(sK3,sK5),sK5)|~reproducibility(sK4,sK2(sK4,sK6),sK6)|
+    ~reproducibility(sK3,sK2(sK3,sK5),sK5)|~organization(sK4,sK6)|~organization(sK3,sK5)|
+    greater(sK1(sK4,sK6),sK1(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_331])).
+tcf(c_340,plain, 
+    (~reproducibility(sK4,sK2(sK4,sK6),sK6)|~reproducibility(sK3,sK2(sK3,sK5),sK5)|
+    ~inertia(sK4,sK8,sK6)|~inertia(sK3,sK7,sK5)|~reorganization_free(sK4,sK6,sK6)|
+    ~reorganization_free(sK3,sK5,sK5)|~organization(sK4,sK6)|~organization(sK3,sK5)|
+    ~greater(sK8,sK7)|greater(sK2(sK4,sK6),sK2(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_333])).
+tcf(c_609,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~greater(sK2(sK4,sK6),sK2(sK3,sK5))|~reproducibility(X0,sK2(sK4,sK6),X1)|
+    ~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~reproducibility(sK3,sK2(sK3,sK5),sK5)|~reliability(X0,X2,X1)|~accountability(X0,X3,X1)|
+    ~organization(X0,X1)|~organization(sK3,sK5)|greater(X2,sK0(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_315])).
+tcf(c_616,plain,![X0:$i,X1:$i]:  
+    (~greater(sK2(sK4,sK6),sK2(sK3,sK5))|~reliability(sK3,sK0(sK3,sK5),sK5)|
+    ~accountability(sK3,sK1(sK3,sK5),sK5)|~reproducibility(sK4,sK2(sK4,sK6),sK6)|
+    ~reproducibility(sK3,sK2(sK3,sK5),sK5)|~reliability(sK4,X0,sK6)|~accountability(sK4,X1,sK6)|
+    ~organization(sK4,sK6)|~organization(sK3,sK5)|greater(X0,sK0(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_609])).
+tcf(c_707,plain,![X0:$i]:  
+    (~greater(sK2(sK4,sK6),sK2(sK3,sK5))|~reliability(sK4,sK0(sK4,sK6),sK6)|
+    ~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK3,sK1(sK3,sK5),sK5)|
+    ~reproducibility(sK4,sK2(sK4,sK6),sK6)|~reproducibility(sK3,sK2(sK3,sK5),sK5)|
+    ~accountability(sK4,X0,sK6)|~organization(sK4,sK6)|~organization(sK3,sK5)|
+    greater(sK0(sK4,sK6),sK0(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_616])).
+tcf(c_768,plain, 
+    (~greater(sK2(sK4,sK6),sK2(sK3,sK5))|~reliability(sK4,sK0(sK4,sK6),sK6)|
+    ~reliability(sK3,sK0(sK3,sK5),sK5)|~accountability(sK4,sK1(sK4,sK6),sK6)|
+    ~accountability(sK3,sK1(sK3,sK5),sK5)|~reproducibility(sK4,sK2(sK4,sK6),sK6)|
+    ~reproducibility(sK3,sK2(sK3,sK5),sK5)|~organization(sK4,sK6)|~organization(sK3,sK5)|
+    greater(sK0(sK4,sK6),sK0(sK3,sK5))),
+    inference(instantiation,[status(thm)],[c_707])).
+tcf(c_769,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_768,c_340,c_339,c_311,c_232,c_231,c_230,c_229,c_228,
+               c_227,c_58,c_60,c_61,c_62,c_63,c_64,c_65,c_59,c_66,c_67])).
+% SZS output end CNFRefutation for MGT001+1.p

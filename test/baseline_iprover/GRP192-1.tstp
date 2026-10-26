@@ -1,0 +1,59 @@
+% SZS status Unsatisfiable for GRP192-1.p
+% SZS output start CNFRefutation for GRP192-1.p
+tcf(c_49,plain,![X0:$i]:  
+    (least_upper_bound(identity,X0) = X0),
+    file('Problems/GRP/GRP192-1.p', p40a_1)).
+tcf(c_50,plain, 
+    (multiply(a,b) != multiply(b,a)),
+    file('Problems/GRP/GRP192-1.p', prove_p40a)).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (greatest_lower_bound(X0,X1) = greatest_lower_bound(X1,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-2.ax', symmetry_of_glb)).
+tcf(c_57,plain,![X0:$i,X1:$i]:  
+    (least_upper_bound(X0,greatest_lower_bound(X0,X1)) = X0),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-2.ax', lub_absorbtion)).
+tcf(c_62,plain,![X0:$i,X1:$i,X2:$i]:  
+    (greatest_lower_bound(multiply(X0,X1),multiply(X2,X1)) = multiply(greatest_lower_bound(X0,X2),X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-2.ax', monotony_glb2)).
+tcf(c_63,plain,![X0:$i]:  
+    (multiply(identity,X0) = X0),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-0.ax', left_identity)).
+tcf(c_64,plain,![X0:$i]:  
+    (multiply(inverse(X0),X0) = identity),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP004-0.ax', left_inverse)).
+tcf(c_120,plain, (multiply(a,b) = iPr_def_10),definition).
+tcf(c_121,plain, (multiply(b,a) = iPr_def_11),definition).
+tcf(c_122,plain, 
+    (iPr_def_10 != iPr_def_11),
+    inference(demodulation,[status(thm)],[c_50,c_121,c_120])).
+tcf(c_221,plain,![X0:$i]:  
+    (greatest_lower_bound(identity,X0) = identity),
+    inference(superposition,[status(thm)],[c_57,c_49])).
+tcf(c_242,plain,![X0:$i]:  
+    (greatest_lower_bound(X0,identity) = identity),
+    inference(superposition,[status(thm)],[c_221,c_51])).
+tcf(c_651,plain,![X0:$i,X1:$i]:  
+    (greatest_lower_bound(multiply(identity,X0),multiply(X1,X0)) = multiply(identity,X0)),
+    inference(superposition,[status(thm)],[c_221,c_62])).
+tcf(c_659,plain,![X0:$i,X1:$i]:  
+    (greatest_lower_bound(X0,multiply(X1,X0)) = X0),
+    inference(light_normalisation,[status(thm)],[c_651,c_63])).
+tcf(c_674,plain,![X0:$i]:  
+    (greatest_lower_bound(X0,identity) = X0),
+    inference(superposition,[status(thm)],[c_64,c_659])).
+tcf(c_711,plain,![X0:$i]:  
+    (X0 = identity),
+    inference(superposition,[status(thm)],[c_674,c_242])).
+tcf(c_726,plain,![X0:$i]:  
+    (X0 = iProver_smallest),
+    inference(demodulation,[status(thm)],[c_711])).
+tcf(c_727,plain,![X0:$i]:  
+    (X0 = iProver_smallest),
+    inference(demodulation,[status(thm)],[c_711,c_726])).
+tcf(c_748,plain,![X0:$i,X1:$i]:  
+    (X0 = X1),
+    inference(superposition,[status(thm)],[c_727,c_727])).
+tcf(c_750,plain, 
+    ($false),
+    inference(backward_subsumption_resolution,[status(thm)],[c_122,c_748])).
+% SZS output end CNFRefutation for GRP192-1.p

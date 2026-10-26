@@ -13,7 +13,7 @@ module Theta
   ) where
 
 import Control.Applicative ((<|>))
-import Control.Monad (foldM)
+import Control.Monad (foldM, guard)
 import Data.Bifunctor (first)
 import Data.Containers.ListUtils (nubOrdOn)
 import Data.List (inits, nub, sortOn, tails)
@@ -59,12 +59,18 @@ thetaContext info = ThetaCtx
   where clauses = thetaClauses (piDeclAt info) (piNuclei info ++ piElectrons info)
 
 -- The clause θ is solved over at each position. An original axiom uses its
--- source declaration, in whose variables its nucleus is processed, and every
--- other position the clause printed there.
+-- source declaration, in whose variables its nucleus is processed, and so does
+-- the negated conjecture when its source is a clause, since a prover may name
+-- the variables of the clause it prints otherwise. Every other position uses
+-- the clause printed there.
 thetaClauses :: Map.Map String T.Declaration -> [LeafEntry] -> Map.Map String Clause
 thetaClauses declAt entries = Map.union entryClauses (Map.mapMaybe convertDeclToClause declAt)
   where
-    entryClauses = Map.fromList [ (lePos e, c) | e <- entries, Just c <- [convertDeclToClause (if leRole e == OrigAxiom then leSrcDecl e else leDecl e)] ]
+    entryClauses = Map.fromList [ (lePos e, c) | e <- entries, Just c <- [clauseOf e] ]
+    clauseOf e = case leRole e of
+      OrigAxiom     -> convertDeclToClause (leSrcDecl e)
+      NegConjecture -> convertDeclToClause (leSrcDecl e) <|> convertDeclToClause (leDecl e)
+      _             -> convertDeclToClause (leDecl e)
 
 -- The rewrites the proof makes to each body atom of the clause at a position
 -- before it is resolved, so the electron states the rewritten atom. The atom
@@ -90,11 +96,37 @@ literalRewrites ctx pos = case groundAt ctx pos of
             | Just (l, r) <- equationBeside
             , isNothing (matchLitEither (Eq l r) cur []) || Set.member q (tcRewriteAt ctx)
             -> withEquationPos sib (closingRun cur (l, r))
+            -- An atom beside with the same predicate resolved cur without
+            -- unifying, as iProver's resolution_lifted does, and left each
+            -- pair of arguments as a body equation that later steps close.
+            | Rel n xs <- cur, Just (Clause _ (Just (Rel m ys))) <- groundAt ctx sib
+            , n == m, length xs == length ys
+            , Just run <- lifted q n (zip3 [0 ..] xs ys) xs
+            -> run
           _ -> []
       where
         q   = init p
         sib = sibling p
         equationBeside = headEquationAt ctx sib
+    -- Each argument pair followed up the tree as an equation until it closes.
+    -- A rewrite of the nucleus side rewrites the atom's argument. The
+    -- rewrites of the electron side come after, backwards, so the atom ends
+    -- as the electron's.
+    lifted _ _ [] _ = Just []
+    lifted q n ((i, x, y) : rest) args
+      | x == y = lifted q n rest args
+      | otherwise = do
+          let run = up q (Eq x y)
+              states = Eq x y : map (\(_, _, _, c) -> c) run
+          Eq a b <- Just (last states)
+          guard (a == b)
+          let atom t = Rel n (take i args ++ t : drop (i + 1) args)
+              steps = zip run states
+              ahead = [ (e, d, inst, atom l') | ((e, d, inst, Eq l' _), Eq l _) <- steps, l' /= l ]
+              back  = reverse [ (e, flipDir d, inst, atom r) | ((e, d, inst, Eq _ r'), Eq _ r) <- steps, r' /= r ]
+              args' = take i args ++ y : drop (i + 1) args
+          later <- lifted q n rest args'
+          Just (ahead ++ back ++ later)
 
 -- The rewrites the proof makes to the head of the clause at a position while
 -- it still has body atoms, so the derived electron states the rewritten head.
@@ -343,6 +375,7 @@ premiseCombinations kids = concat
     -- that premise, which recovers the instantiation.
     base [a, b] = resolve a b ++ resolve b a ++ superpose a b ++ superpose b a
                   ++ resolveTwice a b ++ resolveTwice b a ++ [([], a), ([], b)]
+                  ++ resolveLifted a b ++ resolveLifted b a
     base _      = []
 
 -- The head literals of a signed clause.
@@ -356,6 +389,16 @@ resolve x y =
   | h <- heads x
   , ((False, b), rest) <- picks y
   , b' <- orientations b ]
+
+-- Like resolve, but the arguments of the two atoms are not unified. Each pair
+-- is left as a body equation s = t, as iProver's resolution_lifted does, and
+-- later steps prove or drop them.
+resolveLifted :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]
+resolveLifted x y =
+  [ ([], filter (not . fst) x ++ rest ++ [ (False, Eq a b) | (a, b) <- zip as bs ])
+  | Rel p as <- heads x
+  , ((False, Rel q bs), rest) <- picks y
+  , p == q, length as == length bs ]
 
 -- Like resolve, but x's head resolves two body atoms of y that merged.
 resolveTwice :: [(Bool, Literal)] -> [(Bool, Literal)] -> [([(Term, Term)], [(Bool, Literal)])]

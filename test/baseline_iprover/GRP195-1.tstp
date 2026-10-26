@@ -1,0 +1,193 @@
+% SZS status Unsatisfiable for GRP195-1.p
+% SZS output start CNFRefutation for GRP195-1.p
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (multiply(X0,multiply(X0,X1)) = multiply(X1,multiply(X0,X0))),
+    file('GRP195-1.p', condition)).
+tcf(c_50,plain, 
+    (multiply(a,multiply(a,multiply(a,multiply(a,multiply(b,multiply(b,multiply(b,b))))))) != multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,multiply(b,multiply(a,b)))))))),
+    file('GRP195-1.p', prove_this)).
+tcf(c_51,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(multiply(X0,X1),X2) = multiply(X0,multiply(X1,X2))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP008-0.ax', associativity_of_multiply)).
+tcf(c_63,plain, (multiply(b,b) = iPr_def_10),definition).
+tcf(c_64,plain, (multiply(b,iPr_def_10) = iPr_def_11),definition).
+tcf(c_65,plain, (multiply(b,iPr_def_11) = iPr_def_12),definition).
+tcf(c_66,plain, (multiply(a,iPr_def_12) = iPr_def_13),definition).
+tcf(c_67,plain, (multiply(a,iPr_def_13) = iPr_def_14),definition).
+tcf(c_68,plain, (multiply(a,iPr_def_14) = iPr_def_15),definition).
+tcf(c_69,plain, (multiply(a,iPr_def_15) = iPr_def_16),definition).
+tcf(c_70,plain, (multiply(a,b) = iPr_def_17),definition).
+tcf(c_71,plain, (multiply(b,iPr_def_17) = iPr_def_18),definition).
+tcf(c_72,plain, (multiply(a,iPr_def_18) = iPr_def_19),definition).
+tcf(c_73,plain, (multiply(b,iPr_def_19) = iPr_def_20),definition).
+tcf(c_74,plain, (multiply(a,iPr_def_20) = iPr_def_21),definition).
+tcf(c_75,plain, (multiply(b,iPr_def_21) = iPr_def_22),definition).
+tcf(c_76,plain, (multiply(a,iPr_def_22) = iPr_def_23),definition).
+tcf(c_77,plain, 
+    (iPr_def_16 != iPr_def_23),
+    inference(demodulation,
+              [status(thm)],
+              [c_50,c_70,c_71,c_72,c_73,c_74,c_75,c_76,c_63,c_64,c_65,
+               c_66,c_67,c_68,c_69])).
+tcf(c_134,plain, 
+    (multiply(iPr_def_12,multiply(a,a)) = multiply(a,iPr_def_13)),
+    inference(superposition,[status(thm)],[c_66,c_49])).
+tcf(c_145,plain,![X0:$i]:  
+    (multiply(b,multiply(b,X0)) = multiply(X0,iPr_def_10)),
+    inference(superposition,[status(thm)],[c_63,c_49])).
+tcf(c_146,plain,![X0:$i,X1:$i]:  
+    (multiply(multiply(X0,X0),multiply(multiply(X0,X0),X1)) = multiply(X1,multiply(X0,multiply(X0,multiply(X0,X0))))),
+    inference(superposition,[status(thm)],[c_49,c_49])).
+tcf(c_153,plain, 
+    (multiply(iPr_def_12,multiply(a,a)) = iPr_def_14),
+    inference(light_normalisation,[status(thm)],[c_134,c_67])).
+tcf(c_167,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(multiply(X0,multiply(X0,X1)),X2) = multiply(X1,multiply(multiply(X0,X0),X2))),
+    inference(superposition,[status(thm)],[c_49,c_51])).
+tcf(c_169,plain,![X0:$i]:  
+    (multiply(a,multiply(b,X0)) = multiply(iPr_def_17,X0)),
+    inference(superposition,[status(thm)],[c_70,c_51])).
+tcf(c_170,plain,![X0:$i]:  
+    (multiply(b,multiply(b,X0)) = multiply(iPr_def_10,X0)),
+    inference(superposition,[status(thm)],[c_63,c_51])).
+tcf(c_172,plain,![X0:$i]:  
+    (multiply(b,multiply(iPr_def_10,X0)) = multiply(iPr_def_11,X0)),
+    inference(superposition,[status(thm)],[c_64,c_51])).
+tcf(c_173,plain,![X0:$i]:  
+    (multiply(b,multiply(iPr_def_11,X0)) = multiply(iPr_def_12,X0)),
+    inference(superposition,[status(thm)],[c_65,c_51])).
+tcf(c_178,plain,![X0:$i]:  
+    (multiply(b,multiply(iPr_def_17,X0)) = multiply(iPr_def_18,X0)),
+    inference(superposition,[status(thm)],[c_71,c_51])).
+tcf(c_179,plain,![X0:$i]:  
+    (multiply(a,multiply(iPr_def_18,X0)) = multiply(iPr_def_19,X0)),
+    inference(superposition,[status(thm)],[c_72,c_51])).
+tcf(c_196,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (multiply(multiply(X0,multiply(X1,X2)),X3) = multiply(multiply(X0,X1),multiply(X2,X3))),
+    inference(superposition,[status(thm)],[c_51,c_51])).
+tcf(c_234,plain, 
+    (multiply(a,iPr_def_10) = multiply(iPr_def_17,b)),
+    inference(superposition,[status(thm)],[c_63,c_169])).
+tcf(c_237,plain, 
+    (multiply(a,iPr_def_18) = multiply(iPr_def_17,iPr_def_17)),
+    inference(superposition,[status(thm)],[c_71,c_169])).
+tcf(c_238,plain, 
+    (multiply(a,iPr_def_20) = multiply(iPr_def_17,iPr_def_19)),
+    inference(superposition,[status(thm)],[c_73,c_169])).
+tcf(c_247,plain, 
+    (multiply(iPr_def_17,iPr_def_19) = iPr_def_21),
+    inference(light_normalisation,[status(thm)],[c_238,c_74])).
+tcf(c_248,plain, 
+    (multiply(iPr_def_17,iPr_def_17) = iPr_def_19),
+    inference(light_normalisation,[status(thm)],[c_237,c_72])).
+tcf(c_253,plain,![X0:$i]:  
+    (multiply(iPr_def_17,multiply(iPr_def_17,X0)) = multiply(X0,iPr_def_19)),
+    inference(superposition,[status(thm)],[c_248,c_49])).
+tcf(c_264,plain,![X0:$i,X1:$i]:  
+    (multiply(X0,multiply(X0,multiply(X0,multiply(X0,X1)))) = multiply(X1,multiply(X0,multiply(X0,multiply(X0,X0))))),
+    inference(demodulation,[status(thm)],[c_146,c_51])).
+tcf(c_305,plain,![X0:$i]:  
+    (multiply(b,multiply(b,multiply(b,multiply(b,X0)))) = multiply(X0,multiply(b,multiply(b,iPr_def_10)))),
+    inference(superposition,[status(thm)],[c_63,c_264])).
+tcf(c_330,plain,![X0:$i]:  
+    (multiply(X0,iPr_def_12) = multiply(iPr_def_12,X0)),
+    inference(light_normalisation,
+              [status(thm)],
+              [c_305,c_64,c_65,c_170,c_172,c_173])).
+tcf(c_355,plain, 
+    (multiply(iPr_def_12,a) = iPr_def_13),
+    inference(demodulation,[status(thm)],[c_66,c_330])).
+tcf(c_357,plain,![X0:$i]:  
+    (multiply(iPr_def_12,multiply(a,X0)) = multiply(iPr_def_13,X0)),
+    inference(superposition,[status(thm)],[c_355,c_51])).
+tcf(c_358,plain, 
+    (multiply(iPr_def_13,a) = iPr_def_14),
+    inference(demodulation,[status(thm)],[c_153,c_357])).
+tcf(c_374,plain,![X0:$i]:  
+    (multiply(X0,multiply(iPr_def_12,X0)) = multiply(iPr_def_12,multiply(X0,X0))),
+    inference(superposition,[status(thm)],[c_330,c_49])).
+tcf(c_416,plain,![X0:$i]:  
+    (multiply(X0,iPr_def_10) = multiply(iPr_def_10,X0)),
+    inference(superposition,[status(thm)],[c_170,c_145])).
+tcf(c_429,plain, 
+    (multiply(iPr_def_10,a) = multiply(iPr_def_17,b)),
+    inference(demodulation,[status(thm)],[c_234,c_416])).
+tcf(c_430,plain, 
+    (multiply(iPr_def_10,b) = iPr_def_11),
+    inference(demodulation,[status(thm)],[c_64,c_416])).
+tcf(c_619,plain, 
+    (multiply(b,iPr_def_11) = multiply(iPr_def_11,b)),
+    inference(superposition,[status(thm)],[c_430,c_172])).
+tcf(c_629,plain, 
+    (multiply(iPr_def_11,b) = iPr_def_12),
+    inference(light_normalisation,[status(thm)],[c_619,c_65])).
+tcf(c_829,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(X0,multiply(X0,multiply(X1,X2))) = multiply(X1,multiply(X0,multiply(X0,X2)))),
+    inference(demodulation,[status(thm)],[c_167,c_51,c_196])).
+tcf(c_921,plain,![X0:$i]:  
+    (multiply(a,multiply(a,multiply(X0,b))) = multiply(X0,multiply(a,iPr_def_17))),
+    inference(superposition,[status(thm)],[c_70,c_829])).
+tcf(c_1137,plain, 
+    (multiply(b,multiply(iPr_def_10,a)) = multiply(iPr_def_18,b)),
+    inference(superposition,[status(thm)],[c_429,c_178])).
+tcf(c_1140,plain, 
+    (multiply(b,iPr_def_21) = multiply(iPr_def_18,iPr_def_19)),
+    inference(superposition,[status(thm)],[c_247,c_178])).
+tcf(c_1150,plain,![X0:$i]:  
+    (multiply(a,multiply(iPr_def_18,X0)) = multiply(iPr_def_17,multiply(iPr_def_17,X0))),
+    inference(superposition,[status(thm)],[c_178,c_169])).
+tcf(c_1153,plain, 
+    (multiply(iPr_def_18,iPr_def_19) = iPr_def_22),
+    inference(light_normalisation,[status(thm)],[c_1140,c_75])).
+tcf(c_1156,plain,![X0:$i]:  
+    (multiply(X0,iPr_def_19) = multiply(iPr_def_19,X0)),
+    inference(light_normalisation,[status(thm)],[c_1150,c_179,c_253])).
+tcf(c_1174,plain, 
+    (multiply(iPr_def_18,multiply(iPr_def_18,a)) = multiply(iPr_def_19,iPr_def_18)),
+    inference(superposition,[status(thm)],[c_179,c_49])).
+tcf(c_2334,plain, 
+    (multiply(iPr_def_18,multiply(iPr_def_18,a)) = iPr_def_22),
+    inference(demodulation,[status(thm)],[c_1174,c_1153,c_1156])).
+tcf(c_2933,plain, 
+    (multiply(iPr_def_11,a) = multiply(iPr_def_18,b)),
+    inference(demodulation,[status(thm)],[c_1137,c_172])).
+tcf(c_2935,plain,![X0:$i]:  
+    (multiply(multiply(iPr_def_11,a),X0) = multiply(iPr_def_18,multiply(b,X0))),
+    inference(superposition,[status(thm)],[c_2933,c_51])).
+tcf(c_4184,plain,![X0:$i]:  
+    (multiply(X0,multiply(X0,iPr_def_12)) = multiply(X0,multiply(iPr_def_12,X0))),
+    inference(superposition,[status(thm)],[c_374,c_49])).
+tcf(c_16583,plain,![X0:$i]:  
+    (multiply(iPr_def_11,multiply(a,X0)) = multiply(iPr_def_18,multiply(b,X0))),
+    inference(demodulation,[status(thm)],[c_2935,c_51])).
+tcf(c_16594,plain, 
+    (multiply(iPr_def_11,multiply(a,iPr_def_17)) = multiply(iPr_def_18,iPr_def_18)),
+    inference(superposition,[status(thm)],[c_71,c_16583])).
+tcf(c_29228,plain, 
+    (multiply(a,multiply(a,iPr_def_12)) = multiply(iPr_def_11,multiply(a,iPr_def_17))),
+    inference(superposition,[status(thm)],[c_629,c_921])).
+tcf(c_29260,plain, 
+    (multiply(a,multiply(a,iPr_def_12)) = multiply(iPr_def_18,iPr_def_18)),
+    inference(light_normalisation,[status(thm)],[c_29228,c_16594])).
+tcf(c_29436,plain, 
+    (multiply(iPr_def_18,iPr_def_18) = iPr_def_14),
+    inference(demodulation,[status(thm)],[c_29260,c_357,c_358,c_374,c_4184])).
+tcf(c_29444,plain,![X0:$i]:  
+    (multiply(iPr_def_18,multiply(iPr_def_18,X0)) = multiply(X0,iPr_def_14)),
+    inference(superposition,[status(thm)],[c_29436,c_49])).
+tcf(c_29470,plain, 
+    (multiply(a,iPr_def_14) = iPr_def_22),
+    inference(demodulation,[status(thm)],[c_2334,c_29444])).
+tcf(c_29471,plain, 
+    (iPr_def_15 = iPr_def_22),
+    inference(light_normalisation,[status(thm)],[c_29470,c_68])).
+tcf(c_29518,plain, 
+    (multiply(a,iPr_def_15) = iPr_def_23),
+    inference(demodulation,[status(thm)],[c_76,c_29471])).
+tcf(c_29520,plain, 
+    (iPr_def_16 = iPr_def_23),
+    inference(light_normalisation,[status(thm)],[c_29518,c_69])).
+tcf(c_29521,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_29520,c_77])).
+% SZS output end CNFRefutation for GRP195-1.p

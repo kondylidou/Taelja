@@ -1,0 +1,81 @@
+% SZS status Theorem for thesis_example_both_lemmas.p
+% SZS output start CNFRefutation for thesis_example_both_lemmas.p
+fof(f1,axiom,(
+  ! [X0] : f(X0) = X0),
+  file('thesis_example_both_lemmas.p',ax1)).
+fof(f2,axiom,(
+  ! [X0] : f(X0) = g(X0)),
+  file('thesis_example_both_lemmas.p',ax2)).
+fof(f3,axiom,(
+  ! [X0] : (g(X0) = X0 => q(X0))),
+  file('thesis_example_both_lemmas.p',ax3)).
+fof(f4,axiom,(
+  s(a)),
+  file('thesis_example_both_lemmas.p',ax4)).
+fof(f5,axiom,(
+  ! [X0] : ((q(X0) & s(X0)) => p(X0))),
+  file('thesis_example_both_lemmas.p',ax5)).
+fof(f6,conjecture,(
+  p(a)),
+  file('thesis_example_both_lemmas.p',goal)).
+fof(f7,negated_conjecture,(
+  ~p(a)),
+inference(negated_conjecture,[status(cth)],[f6])).
+fof(f8,plain,(
+  ~p(a)),
+  inference(flattening,[],[f7])).
+fof(f9,plain,(
+  ! [X0] : (q(X0) | g(X0) != X0)),
+  inference(ennf_transformation,[],[f3])).
+fof(f10,plain,(
+  ! [X0] : (p(X0) | (~q(X0) | ~s(X0)))),
+  inference(ennf_transformation,[],[f5])).
+fof(f11,plain,(
+  ! [X0] : (p(X0) | ~q(X0) | ~s(X0))),
+  inference(flattening,[],[f10])).
+fof(f12,plain,(
+  ( ! [X0] : (f(X0) = X0) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f13,plain,(
+  ( ! [X0] : (f(X0) = g(X0)) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f14,plain,(
+  ( ! [X0] : (q(X0) | g(X0) != X0) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f15,plain,(
+  s(a)),
+  inference(cnf_transformation,[],[f4])).
+fof(f16,plain,(
+  ( ! [X0] : (p(X0) | ~q(X0) | ~s(X0)) )),
+  inference(cnf_transformation,[],[f11])).
+fof(f17,plain,(
+  ~p(a)),
+  inference(cnf_transformation,[],[f8])).
+tcf(c_49,plain,![X0:$i]:  
+    (f(X0) = X0),
+    inference(cnf_transformation,[],[f12])).
+tcf(c_50,plain,![X0:$i]:  
+    (f(X0) = g(X0)),
+    inference(cnf_transformation,[],[f13])).
+tcf(c_51,plain,![X0:$i]:  
+    (g(X0) != X0|q(X0)),
+    inference(cnf_transformation,[],[f14])).
+tcf(c_52,plain, (s(a)),inference(cnf_transformation,[],[f15])).
+tcf(c_53,plain,![X0:$i]:  
+    (~q(X0)|~s(X0)|p(X0)),
+    inference(cnf_transformation,[],[f16])).
+tcf(c_54,plain, (~p(a)),inference(cnf_transformation,[],[f17])).
+tcf(c_57,plain, 
+    (~q(a)|~s(a)|p(a)),
+    inference(instantiation,[status(thm)],[c_53])).
+tcf(c_58,plain, 
+    (g(a) != a|q(a)),
+    inference(instantiation,[status(thm)],[c_51])).
+tcf(c_77,plain,![X0:$i]:  
+    (g(X0) = X0),
+    inference(light_normalisation,[status(thm)],[c_50,c_49])).
+tcf(c_91,plain, (g(a) = a),inference(instantiation,[status(thm)],[c_77])).
+tcf(c_92,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_91,c_58,c_57,c_54,c_52])).
+% SZS output end CNFRefutation for thesis_example_both_lemmas.p

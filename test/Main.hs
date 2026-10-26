@@ -43,6 +43,7 @@ tests = testGroup "Taelja"
   , testGroup "Vampire"     (map (mkTextTest "vampire") vampireBenchmarkNames)
   , testGroup "E"           (map (mkTextTest "e")       eBenchmarkNames)
   , testGroup "Twee"        (map (mkTextTest "twee")    tweeBenchmarkNames)
+  , testGroup "iProver"     (map (mkTextTest "iprover") iproverBenchmarkNames)
   , testGroup "Executable"  (map mkExeTest suiteNames)
   , testGroup "Lean"        (leanRootTest : map mkLeanTest suiteNames)
   , testGroup "TPTP"        (map mkTptpTest suiteNames)
@@ -54,7 +55,8 @@ suiteNames :: [(String, String)]
 suiteNames = nub $
   [ ("vampire", n) | n <- handcraftedNames ++ vampireBenchmarkNames ] ++
   [ ("e",       n) | n <- eBenchmarkNames ] ++
-  [ ("twee",    n) | n <- tweeBenchmarkNames ]
+  [ ("twee",    n) | n <- tweeBenchmarkNames ] ++
+  [ ("iprover", n) | n <- iproverBenchmarkNames ]
 
 -- The Twee proofs.
 tweeBenchmarkNames :: [String]
@@ -378,6 +380,155 @@ eBenchmarkNames =
   -- printed by E with --proof-object=3, one inference per simplification
   -- step. Replaying E's nested steps had timed out on it.
   , "RNG026-7"
+  ]
+
+-- The iProver proofs, of the problems behind the Vampire and E proofs.
+iproverBenchmarkNames :: [String]
+iproverBenchmarkNames =
+  -- iProver's demodulation by no equation restates its premise
+  [ "krympa_example_hay"
+  -- an instance of a derived clause is derived like that clause
+  , "test_shared_nonunit"
+  -- iProver's propositional refutation, as unit resolutions
+  , "GRP041-2"
+  -- a propositional step over wide ground clauses, each resolved once by a
+  -- unit
+  , "MGT001-1"
+  -- a global subsumption whose clause other premises derive
+  , "PUZ011-1"
+  -- a global subsumption whose clause a premise already states
+  , "SYN159-1"
+  -- iProver's binary hyper-resolution, as resolutions
+  , "SWW967+1"
+  -- the equality resolution of a disequation X != t, which ends the refutation
+  , "COL083-1"
+  -- a lifted resolution whose argument equations later steps rewrite
+  , "LAT263-2"
+  -- names iProver gives ground terms, unfolded back to the terms
+  , "GRP117-1"
+  -- a demodulation that rewrites by its equations several times
+  , "GRP451-1"
+  -- an equation with sides of one weight, whose rewrites follow one precedence
+  , "GRP430-1"
+  -- a superposition iProver simplified at once by its ground premise
+  , "GRP410-1"
+  -- an AC normalisation whose clause names the variables otherwise
+  , "ROB014-2"
+  -- iProver's equality axioms in a propositional step, read as rewrites
+  , "HEN008-1"
+  , "LCL146-1"
+  -- an SMT step, closed by rewriting with ground equations
+  , "TOP050-1"
+  -- iProver's least constant, read as the one term of a singleton domain
+  , "SWV818-1"
+  , "GRP192-1"
+  -- a negated conjecture whose clause names its variables otherwise
+  , "CSR117+1"
+  -- a FOF problem whose clausifier keeps the definitions
+  , "pure_equational_example"
+  , "ALG006-1"
+  , "ALG210+2"
+  , "ANA009-2"
+  , "ANA023-2"
+  , "ANA027-2"
+  , "COL003-4"
+  , "COL006-2"
+  , "COL099-1"
+  , "COM001_1"
+  , "CSR026+3"
+  , "GRP001-5"
+  , "GRP007-1"
+  , "GRP009-1"
+  , "GRP012-2"
+  , "GRP035-3"
+  , "GRP195-1"
+  , "GRP418-1"
+  , "GRP656+1"
+  , "GRP658+1"
+  , "GRP703-10"
+  , "HEN003-3"
+  , "HEN006-4"
+  , "HEN008-2"
+  , "HEN009-3"
+  , "LAT005-2"
+  , "LCL126-1"
+  , "LCL212-3"
+  , "LCL430-2"
+  , "LCL902+1"
+  , "MGT001+1"
+  , "MGT006-1"
+  , "MGT010-1"
+  , "MGT032-2"
+  , "NLP258-1"
+  , "NUM025-1"
+  , "PUZ056-2.005"
+  , "RNG038-1"
+  , "RNG039-1"
+  , "SET864-2"
+  , "SET886+1"
+  , "SWV819-1"
+  , "SWW968+1"
+  , "SYN163-1"
+  , "SYN179-1"
+  , "SYN555-1"
+  , "SYN558-1"
+  , "SYN577-1"
+  , "SYN590-1"
+  , "SYN719-1"
+  , "SYN973+1"
+  , "SYN982-1"
+  , "SYO611-1"
+  , "SYO632-1"
+  , "agda_vampire_ze_uniq"
+  , "defense_example"
+  , "e_cdclpropres"
+  , "e_unit_source_axiom"
+  , "fof_equational_hypothesis"
+  , "fof_existential_goals"
+  , "fof_skolem_definition"
+  , "horn_example_derived_rw"
+  , "horn_example_elim_var_rw"
+  , "horn_example_eq_head_inlined"
+  , "horn_example_eq_rw_chain"
+  , "horn_example_relational_rw"
+  , "horn_rel_two_step_chain"
+  , "krympa_example5_nonparallel"
+  , "paper_heu"
+  , "resolution_example_eq_positive_rewrite"
+  , "resolution_example_horn_2unit"
+  , "resolution_example_horn_dag"
+  , "resolution_example_horn_general"
+  , "resolution_example_horn_reuse_forced"
+  , "resolution_example_horn_reuse_inlined"
+  , "resolution_example_horn_reuse_n1"
+  , "resolution_example_pqr"
+  , "resolution_example_shared_varname"
+  , "superposition_example_clausal1"
+  , "superposition_example_clausal2"
+  , "superposition_example_nonground_lemma"
+  , "superposition_example_unit1"
+  , "superposition_example_unit2"
+  , "superposition_exercise12_2"
+  , "tau_mixed"
+  , "tau_shared"
+  , "test_axioms_contradictory"
+  , "test_eq_symmetry"
+  , "test_eqchain_in_havehence"
+  , "test_havehence_in_eqchain"
+  , "test_instantiations_no_ground"
+  , "test_lemma_self_resolution"
+  , "test_nonunit_chain"
+  , "test_nonunit_single"
+  , "test_prelemmatize_sym_eq"
+  , "test_rl_safety"
+  , "test_split_derived_unit"
+  , "test_trivial_body_atom"
+  , "tff_nato"
+  , "tff_nato_short"
+  , "tff_typed_lemma"
+  , "thesis_example_both_lemmas"
+  , "tptp_implication_conjecture"
+  , "units_only_relational_example"
   ]
 
 -- The Lean module name of a proof. A TPTP name keeps its separator as a

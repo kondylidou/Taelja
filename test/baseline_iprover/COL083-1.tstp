@@ -1,0 +1,7 @@
+% SZS status Unsatisfiable for COL083-1.p
+% SZS output start CNFRefutation for COL083-1.p
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (response(a,X0) != X1),
+    file('Problems/COL/COL083-1.p', prove_birds_are_compatible_1)).
+tcf(c_52,plain, ($false),inference(unflattening,[status(thm)],[c_51])).
+% SZS output end CNFRefutation for COL083-1.p

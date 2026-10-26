@@ -38,7 +38,7 @@ readableUnits = foldl' add Set.empty
         -- a copy is as readable as the unit it copies
         readable (Just (T.UnitSource p, _)) = Set.member (unitNameStr p) done
         readable _ = True
-        isRead r = r `elem` equationRuleNames || r == Text.pack "resolution"
+        isRead r = r `elem` equationRuleNames || r `elem` map Text.pack ["resolution", "resolution_lifted"]
                  || Set.notMember r coreInferenceNames
     add done _ = done
 

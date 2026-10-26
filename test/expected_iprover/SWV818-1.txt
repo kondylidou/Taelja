@@ -1,0 +1,9 @@
+Axiom 1: X = v_ta
+
+Goal 1: v_s = v_t
+Proof:
+  v_s
+= { by axiom 1 }
+  v_ta
+= { by axiom 1 R->L }
+  v_t

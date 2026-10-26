@@ -1,0 +1,12 @@
+% SZS status Unsatisfiable for SWV819-1.p
+% SZS output start CNFRefutation for SWV819-1.p
+tcf(c_52,plain,![X0:$i]:  
+    (X0 = v_ta),
+    file('Problems/SWV/SWV819-1.p', cls_conjecture_1)).
+tcf(c_53,plain, 
+    (v_t != v_ta),
+    file('Problems/SWV/SWV819-1.p', cls_conjecture_2)).
+tcf(c_58,plain, 
+    ($false),
+    inference(backward_subsumption_resolution,[status(thm)],[c_53,c_52])).
+% SZS output end CNFRefutation for SWV819-1.p

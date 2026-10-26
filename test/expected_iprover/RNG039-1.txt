@@ -1,0 +1,135 @@
+Axiom 1: product(X,X,X)
+Axiom 2: multiply(X,X) = X
+Axiom 3: multiply(b,a) = d
+Axiom 4: product(a,multiply(b,X),multiply(Y,X))
+Axiom 5: product(X,Y,Z) /\ product(X,Y,A) => Z = A
+Axiom 6: product(b,a,d)
+Axiom 7: add(X,X) = additive_identity
+Axiom 8: product(a,b,c)
+Axiom 9: product(add(b,a),b,add(b,c))
+Axiom 10: product(X,multiply(X,Y),multiply(X,Y))
+Axiom 11: sum(X,additive_identity,X)
+Axiom 12: sum(X,Y,Z) /\ product(X,A,B) /\ product(Y,A,C) /\ product(Z,A,U) => sum(B,C,U)
+Axiom 13: sum(X,X,additive_identity)
+Axiom 14: sum(X,Y,Z) /\ sum(X,Y,A) => Z = A
+
+Lemma 15: product(a,d,a)
+Proof:
+  have product(a,multiply(b,a),multiply(a,a))
+    by axiom 4
+  hence product(a,d,multiply(a,a))
+    by rw axiom 3
+  hence product(a,d,a)
+    by rw axiom 2
+
+Lemma 16: a = d
+Proof:
+  have product(a,multiply(b,a),multiply(b,a))
+    by axiom 4
+  hence product(a,multiply(b,a),d)
+    by rw axiom 3
+  hence product(a,d,d)
+    by rw axiom 3
+   and product(a,d,a)
+    by lemma 15
+  hence a = d
+    by axiom 5
+
+Lemma 17: product(a,b,multiply(X,b))
+Proof:
+  have product(a,multiply(b,b),multiply(X,b))
+    by axiom 4
+  hence product(a,b,multiply(X,b))
+    by rw axiom 2
+
+Lemma 18: product(a,b,X) => X = c
+Proof:
+  have product(a,b,c)
+    by axiom 8
+   and product(a,b,X)
+    by assumption
+  hence X = c
+    by axiom 5
+
+Lemma 19: b = c
+Proof:
+  have product(a,b,multiply(b,b))
+    by lemma 17
+  hence product(a,b,b)
+    by rw axiom 2
+  hence b = c
+    by lemma 18
+
+Lemma 20: multiply(X,b) = c
+Proof:
+  have product(a,b,multiply(X,b))
+    by lemma 17
+  hence multiply(X,b) = c
+    by lemma 18
+
+Lemma 21: multiply(X,b) = b
+Proof:
+  multiply(X,b)
+= { by lemma 20 }
+  c
+= { by lemma 19 R->L }
+  b
+
+Lemma 22: product(add(b,a),b,additive_identity)
+Proof:
+  have product(add(b,a),b,add(b,c))
+    by axiom 9
+  hence product(add(b,a),b,add(b,b))
+    by rw lemma 19 R->L
+  hence product(add(b,a),b,additive_identity)
+    by rw axiom 7
+
+Lemma 23: additive_identity = b
+Proof:
+  have product(add(b,a),multiply(add(b,a),b),multiply(add(b,a),b))
+    by axiom 10
+  hence product(add(b,a),multiply(add(b,a),b),b)
+    by rw lemma 21
+  hence product(add(b,a),b,b)
+    by rw lemma 21
+   and product(add(b,a),b,additive_identity)
+    by lemma 22
+  hence additive_identity = b
+    by axiom 5
+
+Lemma 24: product(b,a,a)
+Proof:
+  have product(b,a,d)
+    by axiom 6
+  hence product(b,a,a)
+    by rw lemma 16 R->L
+
+Lemma 25: sum(a,a,a)
+Proof:
+  have sum(a,additive_identity,a)
+    by axiom 11
+  hence sum(a,b,a)
+    by rw lemma 23
+   and product(a,a,a)
+    by axiom 1
+   and product(b,a,a)
+    by lemma 24
+   and product(a,a,a)
+    by axiom 1
+  hence sum(a,a,a)
+    by axiom 12
+
+Goal 1: c = d
+Proof:
+  have sum(a,a,additive_identity)
+    by axiom 13
+   and sum(a,a,a)
+    by lemma 25
+  hence additive_identity = a
+    by axiom 14
+  hence b = a
+    by rw lemma 23
+  hence b = d
+    by rw lemma 16
+  hence c = d
+    by rw lemma 19

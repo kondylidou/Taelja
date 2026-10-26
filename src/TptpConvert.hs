@@ -17,6 +17,7 @@ module TptpConvert
   , topLevelArgs
   , eraseSorts
   , dedupLiterals
+  , unfoldTermDefinitions
   , declSymbols
   , usesDistinctObjects
   , isPositiveUnitFormula
@@ -142,6 +143,56 @@ dedupLiterals u@(T.Unit n d a) = case d of
     prefix (T.Quantified q vs b) g = T.Quantified q vs (prefix b g)
     prefix _ g                     = g
 dedupLiterals u = u
+
+-- iProver names a ground term t by a new constant c, in a unit t = c whose
+-- source is the word definition. Every such constant is unfolded back to its
+-- term, so the proof never mentions it, and the unit becomes t = t, which
+-- holds by reflexivity as Twee states it. iProver's least constant,
+-- iProver_smallest, comes in only once a unit X = t says that every term is
+-- t, so it is read as t.
+unfoldTermDefinitions :: [T.Unit] -> [T.Unit]
+unfoldTermDefinitions units
+  | Map.null terms = units
+  | otherwise = map unfold units
+  where
+    names = Set.fromList [ unitNameStr n | T.Unit n _ _ <- units ]
+    defs = Map.fromList
+      [ (unitNameStr n, (c, t))
+      | T.Unit n d (Just (T.UnitSource w, _)) <- units
+      , unitNameStr w == "definition", Set.notMember "definition" names, isPositiveUnitFormula d
+      , Just (T.Equality t T.Positive (T.Function (T.Defined (T.Atom c)) [])) <- [headLitOf d] ]
+    smallest = take 1
+      [ (Text.pack "iProver_smallest", t)
+      | T.Unit _ d _ <- units, isPositiveUnitFormula d
+      , Just (T.Equality l T.Positive r) <- [headLitOf d]
+      , (T.Variable _, t) <- [(l, r), (r, l)], null (termVariables t) ]
+    terms = Map.fromList (Map.elems defs ++ smallest)
+    termVariables (T.Variable v)    = [v]
+    termVariables (T.Function _ ts) = concatMap termVariables ts
+    termVariables _                 = []
+    expand (T.Function (T.Defined (T.Atom c)) []) | Just t <- Map.lookup c terms = expand t
+    expand (T.Function f ts) = T.Function f (map expand ts)
+    expand t = t
+    refl = T.Inference (T.Atom (Text.pack "reflexivity")) [T.Status (T.Standard T.THM)] []
+    unfold (T.Unit n d s)
+      | Map.member (unitNameStr n) defs = T.Unit n (mapDeclTerms expand d) (Just (refl, Nothing))
+      | otherwise = T.Unit n (mapDeclTerms expand d) s
+    unfold u = u
+
+-- A declaration with a function applied to each of its terms.
+mapDeclTerms :: (T.Term -> T.Term) -> T.Declaration -> T.Declaration
+mapDeclTerms g (T.Formula r f) = T.Formula r $ case f of
+  T.CNF (T.Clause ls) -> T.CNF (T.Clause (fmap (fmap lit) ls))
+  T.FOF x             -> T.FOF (form x)
+  _                   -> f
+  where
+    lit (T.Predicate p ts) = T.Predicate p (map g ts)
+    lit (T.Equality a s b) = T.Equality (g a) s (g b)
+    form (T.Atomic l)          = T.Atomic (lit l)
+    form (T.Negated x)         = T.Negated (form x)
+    form (T.Connected x c y)   = T.Connected (form x) c (form y)
+    form (T.Quantified q vs x) = T.Quantified q vs (form x)
+mapDeclTerms _ d = d
 
 -- A non-empty list of signed literals as their disjunction.
 signedDisjunction :: [(T.Sign, T.Literal)] -> T.UnsortedFirstOrder

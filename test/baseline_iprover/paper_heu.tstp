@@ -1,0 +1,54 @@
+% SZS status Theorem for paper_heu.p
+% SZS output start CNFRefutation for paper_heu.p
+fof(f1,axiom,(
+  ! [X0] : f(X0) = X0),
+  file('paper_heu.p',ax1)).
+fof(f2,axiom,(
+  ! [X0] : f(X0) = g(X0)),
+  file('paper_heu.p',ax2)).
+fof(f3,axiom,(
+  a = g(a) => p(g(a))),
+  file('paper_heu.p',ax3)).
+fof(f4,conjecture,(
+  p(g(a))),
+  file('paper_heu.p',goal)).
+fof(f5,negated_conjecture,(
+  ~p(g(a))),
+inference(negated_conjecture,[status(cth)],[f4])).
+fof(f6,plain,(
+  ~p(g(a))),
+  inference(flattening,[],[f5])).
+fof(f7,plain,(
+  p(g(a)) | a != g(a)),
+  inference(ennf_transformation,[],[f3])).
+fof(f8,plain,(
+  ( ! [X0] : (f(X0) = X0) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f9,plain,(
+  ( ! [X0] : (f(X0) = g(X0)) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f10,plain,(
+  p(g(a)) | a != g(a)),
+  inference(cnf_transformation,[],[f7])).
+fof(f11,plain,(
+  ~p(g(a))),
+  inference(cnf_transformation,[],[f6])).
+tcf(c_49,plain,![X0:$i]:  
+    (f(X0) = X0),
+    inference(cnf_transformation,[],[f8])).
+tcf(c_50,plain,![X0:$i]:  
+    (f(X0) = g(X0)),
+    inference(cnf_transformation,[],[f9])).
+tcf(c_51,plain, (g(a) != a|p(g(a))),inference(cnf_transformation,[],[f10])).
+tcf(c_52,plain, (~p(g(a))),inference(cnf_transformation,[],[f11])).
+tcf(c_55,plain, 
+    (g(a) != a),
+    inference(global_subsumption_just,[status(thm)],[c_51,c_52,c_51])).
+tcf(c_65,plain,![X0:$i]:  
+    (g(X0) = X0),
+    inference(light_normalisation,[status(thm)],[c_50,c_49])).
+tcf(c_66,plain, (a != a),inference(demodulation,[status(thm)],[c_55,c_65])).
+tcf(c_68,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_66])).
+% SZS output end CNFRefutation for paper_heu.p

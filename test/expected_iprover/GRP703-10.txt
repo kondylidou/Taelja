@@ -1,0 +1,39 @@
+Axiom 1: ld(X,mult(X,Y)) = Y
+Axiom 2: mult(X,unit) = X
+Axiom 3: mult(mult(rd(op_c,mult(X,Y)),Y),X) = op_e
+Axiom 4: mult(unit,X) = X
+Axiom 5: mult(rd(X,Y),Y) = X
+Axiom 6: mult(X,ld(X,Y)) = Y
+Axiom 7: mult(mult(op_c,X),Y) = mult(op_c,mult(X,Y))
+
+Lemma 8: op_c = op_e
+Proof:
+  op_c
+= { by axiom 5 R->L }
+  mult(rd(op_c,op_c),op_c)
+= { by axiom 4 R->L }
+  mult(rd(op_c,mult(unit,op_c)),op_c)
+= { by axiom 2 R->L }
+  mult(mult(rd(op_c,mult(unit,op_c)),op_c),unit)
+= { by axiom 3 }
+  op_e
+
+Lemma 9: ld(op_c,mult(op_e,x2)) = x2
+Proof:
+  ld(op_c,mult(op_e,x2))
+= { by lemma 8 }
+  ld(op_e,mult(op_e,x2))
+= { by axiom 1 }
+  x2
+
+Goal 1: mult(mult(op_e,x2),x3) = mult(op_e,mult(x2,x3))
+Proof:
+  mult(mult(op_e,x2),x3)
+= { by axiom 6 R->L }
+  mult(mult(op_c,ld(op_c,mult(op_e,x2))),x3)
+= { by axiom 7 }
+  mult(op_c,mult(ld(op_c,mult(op_e,x2)),x3))
+= { by lemma 9 }
+  mult(op_c,mult(x2,x3))
+= { by lemma 8 }
+  mult(op_e,mult(x2,x3))

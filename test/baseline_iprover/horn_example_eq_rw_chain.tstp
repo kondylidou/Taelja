@@ -1,0 +1,64 @@
+% SZS status Theorem for horn_example_eq_rw_chain.p
+% SZS output start CNFRefutation for horn_example_eq_rw_chain.p
+fof(f1,axiom,(
+  a = b),
+  file('horn_example_eq_rw_chain.p',ax1)).
+fof(f2,axiom,(
+  f(b) = c),
+  file('horn_example_eq_rw_chain.p',ax2)).
+fof(f3,axiom,(
+  ! [X0] : (c = f(X0) => c = g(X0))),
+  file('horn_example_eq_rw_chain.p',ax3)).
+fof(f4,axiom,(
+  c = g(a) => c = h(a)),
+  file('horn_example_eq_rw_chain.p',ax4)).
+fof(f5,conjecture,(
+  c = h(a)),
+  file('horn_example_eq_rw_chain.p',goal)).
+fof(f6,negated_conjecture,(
+  ~c = h(a)),
+inference(negated_conjecture,[status(cth)],[f5])).
+fof(f7,plain,(
+  c != h(a)),
+  inference(flattening,[],[f6])).
+fof(f8,plain,(
+  ! [X0] : (c = g(X0) | c != f(X0))),
+  inference(ennf_transformation,[],[f3])).
+fof(f9,plain,(
+  c = h(a) | c != g(a)),
+  inference(ennf_transformation,[],[f4])).
+fof(f10,plain,(
+  a = b),
+  inference(cnf_transformation,[],[f1])).
+fof(f11,plain,(
+  f(b) = c),
+  inference(cnf_transformation,[],[f2])).
+fof(f12,plain,(
+  ( ! [X0] : (c = g(X0) | c != f(X0)) )),
+  inference(cnf_transformation,[],[f8])).
+fof(f13,plain,(
+  c = h(a) | c != g(a)),
+  inference(cnf_transformation,[],[f9])).
+fof(f14,plain,(
+  c != h(a)),
+  inference(cnf_transformation,[],[f7])).
+tcf(c_49,plain, (a = b),inference(cnf_transformation,[],[f10])).
+tcf(c_50,plain, (f(b) = c),inference(cnf_transformation,[],[f11])).
+tcf(c_51,plain,![X0:$i]:  
+    (f(X0) != c|g(X0) = c),
+    inference(cnf_transformation,[],[f12])).
+tcf(c_52,plain, (g(a) != c|h(a) = c),inference(cnf_transformation,[],[f13])).
+tcf(c_53,plain, (h(a) != c),inference(cnf_transformation,[],[f14])).
+tcf(c_55,plain, 
+    (g(a) != c),
+    inference(global_subsumption_just,[status(thm)],[c_52,c_53,c_52])).
+tcf(c_69,plain, 
+    (f(a) = c),
+    inference(light_normalisation,[status(thm)],[c_50,c_49])).
+tcf(c_120,plain, 
+    (g(a) = c),
+    inference(superposition,[status(thm)],[c_69,c_51])).
+tcf(c_121,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_120,c_55])).
+% SZS output end CNFRefutation for horn_example_eq_rw_chain.p

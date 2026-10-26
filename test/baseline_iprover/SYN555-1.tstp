@@ -1,0 +1,35 @@
+% SZS status Unsatisfiable for SYN555-1.p
+% SZS output start CNFRefutation for SYN555-1.p
+tcf(c_50,plain,![X0:$i]:  (p4(X0,X0)),file('Problems/SYN/SYN555-1.p', p4_2)).
+tcf(c_52,plain, 
+    (p4(f5(c7,c10,c9),c9)),
+    file('Problems/SYN/SYN555-1.p', p4_4)).
+tcf(c_53,plain, 
+    (~p4(f5(c7,c10,c8),c8)),
+    file('Problems/SYN/SYN555-1.p', not_p4_5)).
+tcf(c_54,plain,![X0:$i]:  
+    (p4(f5(c7,X0,c8),f5(c7,X0,c9))),
+    file('Problems/SYN/SYN555-1.p', p4_6)).
+tcf(c_56,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p4(X0,X1)|~p4(X0,X2)|p4(X1,X2)),
+    file('Problems/SYN/SYN555-1.p', p4_8)).
+tcf(c_60,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p4(f5(c7,f6(X0,X1,X2),X1),f5(c7,f6(X0,X1,X2),X2))|~p4(f5(c7,X0,X1),X1)|
+    p4(f5(c7,X0,X2),X2)),
+    file('Problems/SYN/SYN555-1.p', p4_12)).
+tcf(c_243,plain,![X0:$i,X1:$i]:  
+    (~p4(f5(c7,X0,c8),X1)|p4(f5(c7,X0,c9),X1)),
+    inference(superposition,[status(thm)],[c_54,c_56])).
+tcf(c_726,plain,![X0:$i]:  
+    (p4(f5(c7,X0,c9),f5(c7,X0,c8))),
+    inference(superposition,[status(thm)],[c_50,c_243])).
+tcf(c_805,plain,![X0:$i]:  
+    (~p4(f5(c7,X0,c9),c9)|p4(f5(c7,X0,c8),c8)),
+    inference(superposition,[status(thm)],[c_726,c_60])).
+tcf(c_1087,plain, 
+    (p4(f5(c7,c10,c8),c8)),
+    inference(superposition,[status(thm)],[c_52,c_805])).
+tcf(c_1089,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_1087,c_53])).
+% SZS output end CNFRefutation for SYN555-1.p

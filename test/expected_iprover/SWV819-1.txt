@@ -1,0 +1,7 @@
+Axiom 1: X = v_ta
+
+Goal 1: v_t = v_ta
+Proof:
+  v_t
+= { by axiom 1 }
+  v_ta

@@ -1,0 +1,18 @@
+Axiom 1: p4(f5(c7,c10,c9),c9)
+Axiom 2: p4(X,X)
+Axiom 3: p4(f5(c7,X,c8),f5(c7,X,c9))
+Axiom 4: p4(X,Y) /\ p4(X,Z) => p4(Y,Z)
+Axiom 5: p4(f5(c7,f6(X,Y,Z),Y),f5(c7,f6(X,Y,Z),Z)) /\ p4(f5(c7,X,Y),Y) => p4(f5(c7,X,Z),Z)
+
+Goal 1: p4(f5(c7,c10,c8),c8)
+Proof:
+  have p4(f5(c7,f6(c10,c9,c8),c8),f5(c7,f6(c10,c9,c8),c9))
+    by axiom 3
+   and p4(f5(c7,f6(c10,c9,c8),c8),f5(c7,f6(c10,c9,c8),c8))
+    by axiom 2
+  hence p4(f5(c7,f6(c10,c9,c8),c9),f5(c7,f6(c10,c9,c8),c8))
+    by axiom 4
+   and p4(f5(c7,c10,c9),c9)
+    by axiom 1
+  hence p4(f5(c7,c10,c8),c8)
+    by axiom 5

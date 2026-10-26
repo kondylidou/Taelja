@@ -1,0 +1,124 @@
+% SZS status Unsatisfiable for SYN982-1.p
+% SZS output start CNFRefutation for SYN982-1.p
+tcf(c_50,plain, (ssP(t)),file('Problems/SYN/SYN982-1.p', clause2)).
+tcf(c_51,plain, (ssBf(na)),file('Problems/SYN/SYN982-1.p', clause3)).
+tcf(c_52,plain, (ssP(b)),file('Problems/SYN/SYN982-1.p', clause4)).
+tcf(c_53,plain, (ssP(a)),file('Problems/SYN/SYN982-1.p', clause5)).
+tcf(c_62,plain,![X0:$i,X1:$i]:  
+    (~ssIm(pair(X0,X1))|ssIm(X1)),
+    file('Problems/SYN/SYN982-1.p', clause14)).
+tcf(c_64,plain, 
+    (ssM(sent(a,b,pair(a,na)))),
+    file('Problems/SYN/SYN982-1.p', clause16)).
+tcf(c_65,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~ssIm(triple(X0,X1,X2))|ssIm(X2)),
+    file('Problems/SYN/SYN982-1.p', clause17)).
+tcf(c_66,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~ssIm(triple(X0,X1,X2))|ssIm(X1)),
+    file('Problems/SYN/SYN982-1.p', clause18)).
+tcf(c_68,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~ssM(sent(X0,X1,X2))|ssIm(X2)),
+    file('Problems/SYN/SYN982-1.p', clause20)).
+tcf(c_73,plain,![X0:$i,X1:$i]:  
+    (~ssP(X0)|~ssIm(X1)|ssIk(key(X1,X0))),
+    file('Problems/SYN/SYN982-1.p', clause25)).
+tcf(c_74,plain,![X0:$i,X1:$i]:  
+    (~ssIm(X0)|~ssIm(X1)|ssIm(pair(X0,X1))),
+    file('Problems/SYN/SYN982-1.p', clause26)).
+tcf(c_75,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~ssP(X0)|~ssP(X1)|~ssIm(X2)|ssM(sent(X0,X1,X2))),
+    file('Problems/SYN/SYN982-1.p', clause27)).
+tcf(c_77,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~ssIk(key(X0,X1))|~ssP(X1)|~ssIm(X2)|ssIm(encr(X2,X0))),
+    file('Problems/SYN/SYN982-1.p', clause29)).
+tcf(c_78,plain,![X0:$i,X1:$i]:  
+    (~ssM(sent(X0,b,pair(X0,X1)))|~ssBf(X1)|ssSb(pair(X0,X1))),
+    file('Problems/SYN/SYN982-1.p', clause30)).
+tcf(c_81,plain,![X0:$i,X1:$i]:  
+    (~ssM(sent(X0,b,pair(X0,X1)))|~ssBf(X1)|ssM(sent(b,t,triple(b,nb(X1),encr(triple(X0,X1,tb(X1)),bt))))),
+    file('Problems/SYN/SYN982-1.p', clause33)).
+tcf(c_82,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~ssM(sent(X0,b,pair(encr(triple(X0,X1,tb(X2)),bt),encr(nb(X2),X1))))|
+    ~ssSb(pair(X0,X2))|ssBk(key(X1,X0))),
+    file('Problems/SYN/SYN982-1.p', clause34)).
+tcf(c_85,plain,![X0:$i]:  
+    (~ssBk(key(X0,a))|~ssIk(key(X0,b))),
+    file('Problems/SYN/SYN982-1.p', clause37)).
+tcf(c_274,plain,![X0:$i,X1:$i]:  
+    (~ssM(sent(a,b,pair(encr(triple(a,X0,tb(X1)),bt),encr(nb(X1),X0))))|
+    ~ssIk(key(X0,b))|~ssSb(pair(a,X1))),
+    inference(resolution,[status(thm)],[c_82,c_85])).
+tcf(c_288,plain,![X0:$i]:  
+    (~ssM(sent(X0,b,pair(X0,na)))|ssM(sent(b,t,triple(b,nb(na),encr(triple(X0,na,tb(na)),bt))))),
+    inference(resolution,[status(thm)],[c_51,c_81])).
+tcf(c_296,plain,![X0:$i]:  
+    (~ssM(sent(X0,b,pair(X0,na)))|ssSb(pair(X0,na))),
+    inference(resolution,[status(thm)],[c_51,c_78])).
+tcf(c_308,plain,![X0:$i]:  
+    (~ssM(sent(a,b,pair(encr(triple(a,X0,tb(na)),bt),encr(nb(na),X0))))|
+    ~ssM(sent(a,b,pair(a,na)))|~ssIk(key(X0,b))),
+    inference(resolution,[status(thm)],[c_274,c_296])).
+tcf(c_310,plain,![X0:$i]:  
+    (~ssM(sent(a,b,pair(encr(triple(a,X0,tb(na)),bt),encr(nb(na),X0))))|
+    ~ssIk(key(X0,b))),
+    inference(global_subsumption_just,[status(thm)],[c_308,c_64,c_308])).
+tcf(c_321,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~ssP(X0)|~ssIm(X1)|~ssIm(X2)|ssIm(encr(X1,X2))),
+    inference(resolution,[status(thm)],[c_77,c_73])).
+tcf(c_335,plain,![X0:$i]:  
+    (~ssM(sent(a,b,pair(encr(triple(a,X0,tb(na)),bt),encr(nb(na),X0))))|
+    ~ssIm(X0)|~ssP(b)),
+    inference(resolution,[status(thm)],[c_73,c_310])).
+tcf(c_337,plain,![X0:$i]:  
+    (~ssIm(X0)|~ssM(sent(a,b,pair(encr(triple(a,X0,tb(na)),bt),encr(nb(na),X0))))),
+    inference(global_subsumption_just,[status(thm)],[c_335,c_52,c_335])).
+tcf(c_338,plain,![X0:$i]:  
+    (~ssM(sent(a,b,pair(encr(triple(a,X0,tb(na)),bt),encr(nb(na),X0))))|
+    ~ssIm(X0)),
+    inference(renaming,[status(thm)],[c_337])).
+tcf(c_839,plain, 
+    (ssIm(pair(a,na))),
+    inference(superposition,[status(thm)],[c_64,c_68])).
+tcf(c_868,plain, 
+    (ssIm(na)),
+    inference(superposition,[status(thm)],[c_839,c_62])).
+tcf(c_950,plain,![X0:$i,X1:$i]:  
+    (~ssIm(X0)|~ssIm(X1)|ssIm(encr(X0,X1))),
+    inference(superposition,[status(thm)],[c_50,c_321])).
+tcf(c_986,plain,![X0:$i]:  
+    (~ssIm(pair(encr(triple(a,X0,tb(na)),bt),encr(nb(na),X0)))|~ssIm(X0)|
+    ~ssP(b)|~ssP(a)),
+    inference(superposition,[status(thm)],[c_75,c_338])).
+tcf(c_987,plain,![X0:$i]:  
+    (~ssIm(pair(encr(triple(a,X0,tb(na)),bt),encr(nb(na),X0)))|~ssIm(X0)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_986,c_53,c_52])).
+tcf(c_1130,plain,![X0:$i]:  
+    (~ssIm(encr(triple(a,X0,tb(na)),bt))|~ssIm(encr(nb(na),X0))|~ssIm(X0)),
+    inference(superposition,[status(thm)],[c_74,c_987])).
+tcf(c_1246,plain, 
+    (ssM(sent(b,t,triple(b,nb(na),encr(triple(a,na,tb(na)),bt))))),
+    inference(superposition,[status(thm)],[c_64,c_288])).
+tcf(c_1296,plain, 
+    (ssIm(triple(b,nb(na),encr(triple(a,na,tb(na)),bt)))),
+    inference(superposition,[status(thm)],[c_1246,c_68])).
+tcf(c_1342,plain, 
+    (ssIm(nb(na))),
+    inference(superposition,[status(thm)],[c_1296,c_66])).
+tcf(c_1343,plain, 
+    (ssIm(encr(triple(a,na,tb(na)),bt))),
+    inference(superposition,[status(thm)],[c_1296,c_65])).
+tcf(c_1380,plain, 
+    (~ssIm(encr(nb(na),na))|~ssIm(na)),
+    inference(superposition,[status(thm)],[c_1343,c_1130])).
+tcf(c_1381,plain, 
+    (~ssIm(encr(nb(na),na))),
+    inference(forward_subsumption_resolution,[status(thm)],[c_1380,c_868])).
+tcf(c_1384,plain, 
+    (~ssIm(nb(na))|~ssIm(na)),
+    inference(superposition,[status(thm)],[c_950,c_1381])).
+tcf(c_1385,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_1384,c_868,c_1342])).
+% SZS output end CNFRefutation for SYN982-1.p

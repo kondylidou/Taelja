@@ -1,0 +1,202 @@
+% SZS status Unsatisfiable for HEN009-3.p
+% SZS output start CNFRefutation for HEN009-3.p
+tcf(c_50,plain, 
+    (divide(identity,a) = b),
+    file('Problems/HEN/HEN009-3.p', id_divide_a_is_b)).
+tcf(c_51,plain, 
+    (divide(identity,b) = c),
+    file('Problems/HEN/HEN009-3.p', id_divide_b_is_c)).
+tcf(c_52,plain, 
+    (divide(identity,c) = d),
+    file('Problems/HEN/HEN009-3.p', id_divide_c_is_d)).
+tcf(c_53,plain, (b != d),file('Problems/HEN/HEN009-3.p', prove_b_equals_d)).
+tcf(c_54,plain,![X0:$i,X1:$i]:  
+    (~less_equal(X0,X1)|divide(X0,X1) = zero),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_less_equal1)).
+tcf(c_55,plain,![X0:$i,X1:$i]:  
+    (divide(X0,X1) != zero|less_equal(X0,X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_less_equal2)).
+tcf(c_56,plain,![X0:$i,X1:$i]:  
+    (less_equal(divide(X0,X1),X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_smaller_than_numerator)).
+tcf(c_57,plain,![X0:$i,X1:$i,X2:$i]:  
+    (less_equal(divide(divide(X0,X1),divide(X2,X1)),divide(divide(X0,X2),X1))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_property)).
+tcf(c_58,plain,![X0:$i]:  
+    (less_equal(zero,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', zero_is_smallest)).
+tcf(c_59,plain,![X0:$i,X1:$i]:  
+    (~less_equal(X0,X1)|~less_equal(X1,X0)|X0 = X1),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', less_equal_and_equal)).
+tcf(c_60,plain,![X0:$i]:  
+    (less_equal(X0,identity)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', identity_is_largest)).
+tcf(c_381,plain,![X0:$i,X1:$i]:  
+    (divide(divide(X0,X1),X0) = zero),
+    inference(superposition,[status(thm)],[c_56,c_54])).
+tcf(c_382,plain,![X0:$i]:  
+    (divide(zero,X0) = zero),
+    inference(superposition,[status(thm)],[c_58,c_54])).
+tcf(c_383,plain,![X0:$i]:  
+    (divide(X0,identity) = zero),
+    inference(superposition,[status(thm)],[c_60,c_54])).
+tcf(c_415,plain,![X0:$i]:  
+    (~less_equal(X0,zero)|X0 = zero),
+    inference(superposition,[status(thm)],[c_58,c_59])).
+tcf(c_426,plain,![X0:$i]:  
+    (less_equal(divide(b,divide(X0,a)),divide(divide(identity,X0),a))),
+    inference(superposition,[status(thm)],[c_50,c_57])).
+tcf(c_430,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,a),b),divide(divide(X0,identity),a))),
+    inference(superposition,[status(thm)],[c_50,c_57])).
+tcf(c_431,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,b),c),divide(divide(X0,identity),b))),
+    inference(superposition,[status(thm)],[c_51,c_57])).
+tcf(c_432,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,c),d),divide(divide(X0,identity),c))),
+    inference(superposition,[status(thm)],[c_52,c_57])).
+tcf(c_434,plain,![X0:$i,X1:$i]:  
+    (less_equal(divide(divide(X0,X0),divide(X1,X0)),zero)),
+    inference(superposition,[status(thm)],[c_381,c_57])).
+tcf(c_443,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,c),d),divide(zero,c))),
+    inference(light_normalisation,[status(thm)],[c_432,c_383])).
+tcf(c_444,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,b),c),divide(zero,b))),
+    inference(light_normalisation,[status(thm)],[c_431,c_383])).
+tcf(c_445,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,a),b),divide(zero,a))),
+    inference(light_normalisation,[status(thm)],[c_430,c_383])).
+tcf(c_483,plain,![X0:$i,X1:$i]:  
+    (less_equal(divide(divide(X0,X1),zero),divide(divide(X0,zero),X1))),
+    inference(superposition,[status(thm)],[c_382,c_57])).
+tcf(c_533,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,X0),zero),zero)),
+    inference(superposition,[status(thm)],[c_381,c_434])).
+tcf(c_557,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,c),d),zero)),
+    inference(demodulation,[status(thm)],[c_443,c_382])).
+tcf(c_564,plain,![X0:$i]:  
+    (divide(divide(X0,c),d) = zero),
+    inference(superposition,[status(thm)],[c_557,c_415])).
+tcf(c_609,plain,![X0:$i]:  
+    (divide(divide(X0,X0),zero) = zero),
+    inference(superposition,[status(thm)],[c_533,c_415])).
+tcf(c_678,plain,![X0:$i]:  
+    (less_equal(divide(X0,c),d)),
+    inference(superposition,[status(thm)],[c_564,c_55])).
+tcf(c_715,plain,![X0:$i]:  
+    (less_equal(divide(X0,X0),zero)),
+    inference(superposition,[status(thm)],[c_609,c_55])).
+tcf(c_745,plain,![X0:$i]:  
+    (divide(X0,X0) = zero),
+    inference(superposition,[status(thm)],[c_715,c_415])).
+tcf(c_757,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,b),c),zero)),
+    inference(demodulation,[status(thm)],[c_444,c_382])).
+tcf(c_764,plain,![X0:$i]:  
+    (divide(divide(X0,b),c) = zero),
+    inference(superposition,[status(thm)],[c_757,c_415])).
+tcf(c_769,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,a),b),zero)),
+    inference(demodulation,[status(thm)],[c_445,c_382])).
+tcf(c_776,plain,![X0:$i]:  
+    (divide(divide(X0,a),b) = zero),
+    inference(superposition,[status(thm)],[c_769,c_415])).
+tcf(c_805,plain,![X0:$i]:  
+    (less_equal(divide(X0,b),c)),
+    inference(superposition,[status(thm)],[c_764,c_55])).
+tcf(c_810,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,c),divide(b,c)),zero)),
+    inference(superposition,[status(thm)],[c_764,c_57])).
+tcf(c_831,plain,![X0:$i]:  
+    (less_equal(divide(X0,a),b)),
+    inference(superposition,[status(thm)],[c_776,c_55])).
+tcf(c_836,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,b),divide(a,b)),zero)),
+    inference(superposition,[status(thm)],[c_776,c_57])).
+tcf(c_879,plain, 
+    (less_equal(divide(d,divide(b,c)),zero)),
+    inference(superposition,[status(thm)],[c_52,c_810])).
+tcf(c_892,plain, 
+    (divide(d,divide(b,c)) = zero),
+    inference(superposition,[status(thm)],[c_879,c_415])).
+tcf(c_896,plain, 
+    (less_equal(divide(c,divide(a,b)),zero)),
+    inference(superposition,[status(thm)],[c_51,c_836])).
+tcf(c_929,plain, 
+    (divide(c,divide(a,b)) = zero),
+    inference(superposition,[status(thm)],[c_896,c_415])).
+tcf(c_932,plain, 
+    (less_equal(d,divide(b,c))),
+    inference(superposition,[status(thm)],[c_892,c_55])).
+tcf(c_955,plain, 
+    (~less_equal(divide(b,c),d)|divide(b,c) = d),
+    inference(superposition,[status(thm)],[c_932,c_59])).
+tcf(c_957,plain, 
+    (divide(b,c) = d),
+    inference(forward_subsumption_resolution,[status(thm)],[c_955,c_678])).
+tcf(c_963,plain, 
+    (less_equal(d,b)),
+    inference(superposition,[status(thm)],[c_957,c_56])).
+tcf(c_973,plain, 
+    (~less_equal(b,d)|b = d),
+    inference(superposition,[status(thm)],[c_963,c_59])).
+tcf(c_975,plain, 
+    (~less_equal(b,d)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_973,c_53])).
+tcf(c_1017,plain, 
+    (less_equal(c,divide(a,b))),
+    inference(superposition,[status(thm)],[c_929,c_55])).
+tcf(c_1026,plain, 
+    (~less_equal(divide(a,b),c)|divide(a,b) = c),
+    inference(superposition,[status(thm)],[c_1017,c_59])).
+tcf(c_1028,plain, 
+    (divide(a,b) = c),
+    inference(forward_subsumption_resolution,[status(thm)],[c_1026,c_805])).
+tcf(c_1035,plain, 
+    (divide(c,a) = zero),
+    inference(superposition,[status(thm)],[c_1028,c_381])).
+tcf(c_1167,plain, 
+    (less_equal(divide(b,divide(c,a)),divide(d,a))),
+    inference(superposition,[status(thm)],[c_52,c_426])).
+tcf(c_1173,plain, 
+    (less_equal(divide(b,zero),divide(d,a))),
+    inference(light_normalisation,[status(thm)],[c_1167,c_1035])).
+tcf(c_1791,plain,![X0:$i]:  
+    (less_equal(divide(divide(X0,divide(X0,zero)),zero),zero)),
+    inference(superposition,[status(thm)],[c_745,c_483])).
+tcf(c_2030,plain,![X0:$i]:  
+    (divide(divide(X0,divide(X0,zero)),zero) = zero),
+    inference(superposition,[status(thm)],[c_1791,c_415])).
+tcf(c_2326,plain,![X0:$i]:  
+    (less_equal(divide(X0,divide(X0,zero)),zero)),
+    inference(superposition,[status(thm)],[c_2030,c_55])).
+tcf(c_2361,plain,![X0:$i]:  
+    (divide(X0,divide(X0,zero)) = zero),
+    inference(superposition,[status(thm)],[c_2326,c_415])).
+tcf(c_2369,plain,![X0:$i]:  
+    (less_equal(X0,divide(X0,zero))),
+    inference(superposition,[status(thm)],[c_2361,c_55])).
+tcf(c_2450,plain,![X0:$i]:  
+    (~less_equal(divide(X0,zero),X0)|divide(X0,zero) = X0),
+    inference(superposition,[status(thm)],[c_2369,c_59])).
+tcf(c_2454,plain,![X0:$i]:  
+    (divide(X0,zero) = X0),
+    inference(forward_subsumption_resolution,[status(thm)],[c_2450,c_56])).
+tcf(c_2463,plain, 
+    (less_equal(b,divide(d,a))),
+    inference(demodulation,[status(thm)],[c_1173,c_2454])).
+tcf(c_2479,plain, 
+    (~less_equal(divide(d,a),b)|divide(d,a) = b),
+    inference(superposition,[status(thm)],[c_2463,c_59])).
+tcf(c_2481,plain, 
+    (divide(d,a) = b),
+    inference(forward_subsumption_resolution,[status(thm)],[c_2479,c_831])).
+tcf(c_2688,plain, 
+    (less_equal(b,d)),
+    inference(superposition,[status(thm)],[c_2481,c_56])).
+tcf(c_2698,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_2688,c_975])).
+% SZS output end CNFRefutation for HEN009-3.p

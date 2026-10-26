@@ -26,7 +26,7 @@ import System.IO (hPutStrLn, stderr)
 
 import Types
 import Helpers
-import PropRes (expandACRes, expandPropRes)
+import PropRes (expandACRes, expandDemodulation, expandPropRes)
 import Conjecture (concludesNegation, conjectureHypotheses, expandSimplifiedConjecture)
 import ProofTree (buildProofInfo, equationSteps, findRoot, inlineAtomCongruences, reachedNames, resolveCopySource)
 import TptpConvert
@@ -77,7 +77,7 @@ translateUntyped debug tstp = do
 -- clause is built only after the lemmas cut it down.
 translateWithLemmas :: Bool -> T.TSTP -> IO (Either String StructuredProof)
 translateWithLemmas debug (T.TSTP _ units0) = do
-  let units = expandACRes (expandPropRes (expandSimplifiedConjecture (inlineAtomCongruences (map dedupLiterals units0))))
+  let units = expandACRes (expandPropRes (expandSimplifiedConjecture (inlineAtomCongruences (map dedupLiterals (unfoldTermDefinitions (expandDemodulation units0))))))
   case buildProofInfo False units of
     Left reason -> return (Left reason)
     Right origInfo -> do
@@ -1788,9 +1788,10 @@ translateTree debug info allUnits candLemmaMap nameOverride mFixedAxioms = do
         where
           goalNuclei = sortBy (comparing (\e -> (length (lePos e), lePos e)))
                          [ e | e <- piNuclei info, leRole e == NegConjecture ]
+          -- each body in the clause θ is solved over, its source if that is a clause
           instBodies = [ applySubstLit (computeNucleusTheta thetaCtx e) l
                        | e <- goalNuclei
-                       , Just (Clause bs _) <- [convertDeclToClause (leDecl e)]
+                       , Just (Clause bs _) <- [convertDeclToClause (leSrcDecl e) <|> convertDeclToClause (leDecl e)]
                        , l <- bs ]
           -- The goal literals share variables, so one substitution must fit
           -- them all, or a variable could get two values (PUZ011-1). The

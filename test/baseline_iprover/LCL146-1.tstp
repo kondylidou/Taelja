@@ -1,0 +1,232 @@
+% SZS status Unsatisfiable for LCL146-1.p
+% SZS output start CNFRefutation for LCL146-1.p
+tcf(c_49,plain, 
+    (big_V(not(x),not(y)) != not(big_hat(x,y))),
+    file('Problems/LCL/LCL146-1.p', prove_wajsberg_theorem)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (implies(implies(X0,X1),X1) = big_V(X0,X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL001-1.ax', big_V_definition)).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (not(big_V(not(X0),not(X1))) = big_hat(X0,X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL001-1.ax', big_hat_definition)).
+tcf(c_54,plain,![X0:$i]:  
+    (implies(truth,X0) = X0),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_1)).
+tcf(c_55,plain,![X0:$i,X1:$i,X2:$i]:  
+    (implies(implies(X0,X1),implies(implies(X1,X2),implies(X0,X2))) = truth),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_2)).
+tcf(c_56,plain,![X0:$i,X1:$i]:  
+    (implies(implies(X0,X1),X1) = implies(implies(X1,X0),X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_3)).
+tcf(c_57,plain,![X0:$i,X1:$i]:  
+    (implies(implies(not(X0),not(X1)),implies(X1,X0)) = truth),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/LCL001-0.ax', wajsberg_4)).
+tcf(c_110,plain,![X0:$i,X1:$i]:  
+    (implies(implies(X0,X1),X1) = big_V(X1,X0)),
+    inference(light_normalisation,[status(thm)],[c_56,c_50])).
+tcf(c_140,plain, (not(x) = iPr_def_10),definition).
+tcf(c_141,plain, (not(y) = iPr_def_11),definition).
+tcf(c_142,plain, (big_V(iPr_def_10,iPr_def_11) = iPr_def_12),definition).
+tcf(c_143,plain, (big_hat(x,y) = iPr_def_13),definition).
+tcf(c_144,plain, (not(iPr_def_13) = iPr_def_14),definition).
+tcf(c_145,plain, 
+    (iPr_def_12 != iPr_def_14),
+    inference(demodulation,
+              [status(thm)],
+              [c_49,c_143,c_144,c_141,c_140,c_142])).
+tcf(c_146,plain,![X0:$i]:  (X0 = X0),theory(equality)).
+tcf(c_147,plain,![X0:$i,X1:$i,X2:$i]:  
+    (X0 != X1|X2 != X1|X2 = X0),
+    theory(equality)).
+tcf(c_212,plain,![X0:$i]:  
+    (implies(X0,X0) = big_V(truth,X0)),
+    inference(superposition,[status(thm)],[c_54,c_50])).
+tcf(c_217,plain,![X0:$i]:  
+    (implies(X0,X0) = big_V(X0,truth)),
+    inference(superposition,[status(thm)],[c_54,c_110])).
+tcf(c_221,plain,![X0:$i]:  
+    (not(big_V(iPr_def_10,not(X0))) = big_hat(x,X0)),
+    inference(superposition,[status(thm)],[c_140,c_51])).
+tcf(c_241,plain,![X0:$i]:  
+    (implies(implies(not(X0),not(truth)),X0) = truth),
+    inference(superposition,[status(thm)],[c_54,c_57])).
+tcf(c_250,plain,![X0:$i,X1:$i,X2:$i]:  
+    (implies(truth,implies(implies(implies(X0,X1),X2),implies(implies(not(X1),not(X0)),X2))) = truth),
+    inference(superposition,[status(thm)],[c_57,c_55])).
+tcf(c_257,plain,![X0:$i,X1:$i,X2:$i]:  
+    (implies(implies(X0,implies(not(X1),not(X2))),implies(truth,implies(X0,implies(X2,X1)))) = truth),
+    inference(superposition,[status(thm)],[c_57,c_55])).
+tcf(c_260,plain,![X0:$i,X1:$i]:  
+    (implies(implies(truth,X0),implies(implies(X0,X1),X1)) = truth),
+    inference(superposition,[status(thm)],[c_54,c_55])).
+tcf(c_271,plain,![X0:$i,X1:$i]:  
+    (implies(X0,big_V(X0,X1)) = truth),
+    inference(light_normalisation,[status(thm)],[c_260,c_50,c_54])).
+tcf(c_312,plain,![X0:$i]:  
+    (big_V(truth,X0) = truth),
+    inference(superposition,[status(thm)],[c_271,c_54])).
+tcf(c_316,plain,![X0:$i]:  
+    (implies(X0,X0) = truth),
+    inference(demodulation,[status(thm)],[c_212,c_312])).
+tcf(c_317,plain,![X0:$i]:  
+    (big_V(X0,truth) = truth),
+    inference(demodulation,[status(thm)],[c_217,c_316])).
+tcf(c_342,plain,![X0:$i]:  
+    (implies(X0,truth) = truth),
+    inference(superposition,[status(thm)],[c_317,c_271])).
+tcf(c_349,plain,![X0:$i,X1:$i]:  
+    (implies(truth,implies(implies(truth,X0),implies(X1,X0))) = truth),
+    inference(superposition,[status(thm)],[c_342,c_55])).
+tcf(c_360,plain,![X0:$i,X1:$i]:  
+    (implies(truth,implies(X0,implies(X1,X0))) = truth),
+    inference(light_normalisation,[status(thm)],[c_349,c_54])).
+tcf(c_396,plain, 
+    (not(big_V(iPr_def_10,iPr_def_11)) = big_hat(x,y)),
+    inference(superposition,[status(thm)],[c_141,c_221])).
+tcf(c_405,plain, 
+    (not(iPr_def_12) = iPr_def_13),
+    inference(light_normalisation,[status(thm)],[c_396,c_142,c_143])).
+tcf(c_409,plain,![X0:$i]:  
+    (implies(implies(not(X0),iPr_def_13),implies(iPr_def_12,X0)) = truth),
+    inference(superposition,[status(thm)],[c_405,c_57])).
+tcf(c_437,plain,![X0:$i]:  
+    (iPr_def_12 != X0|iPr_def_14 != X0|iPr_def_12 = iPr_def_14),
+    inference(instantiation,[status(thm)],[c_147])).
+tcf(c_476,plain,![X0:$i,X1:$i]:  
+    (X0 != X1|iPr_def_14 != X1|iPr_def_14 = X0),
+    inference(instantiation,[status(thm)],[c_147])).
+tcf(c_496,plain,![X0:$i]:  
+    (X0 != iPr_def_14|iPr_def_14 != iPr_def_14|iPr_def_14 = X0),
+    inference(instantiation,[status(thm)],[c_476])).
+tcf(c_497,plain, 
+    (iPr_def_14 = iPr_def_14),
+    inference(instantiation,[status(thm)],[c_146])).
+tcf(c_513,plain, 
+    (implies(truth,iPr_def_14) != iPr_def_14|iPr_def_14 != iPr_def_14|
+    iPr_def_14 = implies(truth,iPr_def_14)),
+    inference(instantiation,[status(thm)],[c_496])).
+tcf(c_514,plain, 
+    (implies(truth,iPr_def_14) = iPr_def_14),
+    inference(instantiation,[status(thm)],[c_54])).
+tcf(c_565,plain, 
+    (iPr_def_12 != implies(truth,iPr_def_14)|iPr_def_14 != implies(truth,iPr_def_14)|
+    iPr_def_12 = iPr_def_14),
+    inference(instantiation,[status(thm)],[c_437])).
+tcf(c_614,plain, 
+    (implies(implies(iPr_def_13,not(truth)),iPr_def_12) = truth),
+    inference(superposition,[status(thm)],[c_405,c_241])).
+tcf(c_621,plain,![X0:$i]:  
+    (big_V(X0,implies(not(X0),not(truth))) = implies(truth,X0)),
+    inference(superposition,[status(thm)],[c_241,c_110])).
+tcf(c_623,plain, 
+    (big_V(not(truth),not(not(truth))) = truth),
+    inference(superposition,[status(thm)],[c_241,c_110])).
+tcf(c_632,plain,![X0:$i]:  
+    (big_V(X0,implies(not(X0),not(truth))) = X0),
+    inference(light_normalisation,[status(thm)],[c_621,c_54])).
+tcf(c_675,plain,![X0:$i]:  
+    (implies(truth,iPr_def_14) != X0|iPr_def_12 != X0|iPr_def_12 = implies(truth,iPr_def_14)),
+    inference(instantiation,[status(thm)],[c_147])).
+tcf(c_707,plain,![X0:$i,X1:$i]:  
+    (implies(X0,implies(X1,X0)) = truth),
+    inference(demodulation,[status(thm)],[c_360,c_54])).
+tcf(c_804,plain, 
+    (big_V(iPr_def_13,implies(iPr_def_14,not(truth))) = iPr_def_13),
+    inference(superposition,[status(thm)],[c_144,c_632])).
+tcf(c_941,plain, 
+    (iPr_def_12 = iPr_def_12),
+    inference(instantiation,[status(thm)],[c_146])).
+tcf(c_1550,plain, 
+    (implies(truth,iPr_def_14) != iPr_def_12|iPr_def_12 != iPr_def_12|
+    iPr_def_12 = implies(truth,iPr_def_14)),
+    inference(instantiation,[status(thm)],[c_675])).
+tcf(c_4431,plain,![X0:$i,X1:$i,X2:$i]:  
+    (implies(implies(implies(X0,X1),X2),implies(implies(not(X1),not(X0)),X2)) = truth),
+    inference(demodulation,[status(thm)],[c_250,c_54])).
+tcf(c_4460,plain, 
+    (implies(truth,implies(implies(not(not(truth)),not(iPr_def_13)),iPr_def_12)) = truth),
+    inference(superposition,[status(thm)],[c_614,c_4431])).
+tcf(c_4649,plain, 
+    (implies(truth,implies(implies(not(not(truth)),iPr_def_14),iPr_def_12)) = truth),
+    inference(light_normalisation,[status(thm)],[c_4460,c_144])).
+tcf(c_6162,plain, 
+    (implies(implies(not(not(truth)),iPr_def_14),iPr_def_12) = truth),
+    inference(demodulation,[status(thm)],[c_4649,c_54])).
+tcf(c_6167,plain, 
+    (big_V(iPr_def_12,implies(not(not(truth)),iPr_def_14)) = implies(truth,iPr_def_12)),
+    inference(superposition,[status(thm)],[c_6162,c_110])).
+tcf(c_6222,plain,![X0:$i,X1:$i,X2:$i]:  
+    (implies(implies(X0,implies(not(X1),not(X2))),implies(X0,implies(X2,X1))) = truth),
+    inference(demodulation,[status(thm)],[c_257,c_54])).
+tcf(c_6231,plain,![X0:$i,X1:$i]:  
+    (implies(truth,implies(not(X0),implies(X0,X1))) = truth),
+    inference(superposition,[status(thm)],[c_707,c_6222])).
+tcf(c_6633,plain, 
+    (big_V(iPr_def_12,implies(not(not(truth)),iPr_def_14)) = iPr_def_12),
+    inference(demodulation,[status(thm)],[c_6167,c_54])).
+tcf(c_6715,plain,![X0:$i,X1:$i]:  
+    (implies(not(X0),implies(X0,X1)) = truth),
+    inference(demodulation,[status(thm)],[c_6231,c_54])).
+tcf(c_6735,plain,![X0:$i,X1:$i]:  
+    (implies(not(implies(X0,X1)),big_V(X1,X0)) = truth),
+    inference(superposition,[status(thm)],[c_110,c_6715])).
+tcf(c_6737,plain,![X0:$i]:  
+    (implies(not(truth),X0) = truth),
+    inference(superposition,[status(thm)],[c_54,c_6715])).
+tcf(c_6878,plain,![X0:$i]:  
+    (big_V(not(truth),X0) = implies(truth,X0)),
+    inference(superposition,[status(thm)],[c_6737,c_50])).
+tcf(c_6947,plain,![X0:$i]:  
+    (big_V(not(truth),X0) = X0),
+    inference(light_normalisation,[status(thm)],[c_6878,c_54])).
+tcf(c_6959,plain, 
+    (not(not(truth)) = truth),
+    inference(demodulation,[status(thm)],[c_623,c_6947])).
+tcf(c_6960,plain, 
+    (big_V(iPr_def_12,implies(truth,iPr_def_14)) = iPr_def_12),
+    inference(demodulation,[status(thm)],[c_6633,c_6959])).
+tcf(c_7797,plain, 
+    (big_V(iPr_def_12,iPr_def_14) = iPr_def_12),
+    inference(demodulation,[status(thm)],[c_6960,c_54])).
+tcf(c_8769,plain,![X0:$i]:  
+    (implies(not(implies(X0,not(truth))),X0) = truth),
+    inference(superposition,[status(thm)],[c_6947,c_6735])).
+tcf(c_9714,plain,![X0:$i]:  
+    (implies(truth,implies(X0,implies(not(X0),not(truth)))) = truth),
+    inference(superposition,[status(thm)],[c_8769,c_57])).
+tcf(c_12580,plain,![X0:$i]:  
+    (implies(X0,implies(not(X0),not(truth))) = truth),
+    inference(demodulation,[status(thm)],[c_9714,c_54])).
+tcf(c_12589,plain, 
+    (implies(iPr_def_13,implies(iPr_def_14,not(truth))) = truth),
+    inference(superposition,[status(thm)],[c_144,c_12580])).
+tcf(c_12826,plain, 
+    (big_V(iPr_def_13,implies(iPr_def_14,not(truth))) = implies(truth,implies(iPr_def_14,not(truth)))),
+    inference(superposition,[status(thm)],[c_12589,c_50])).
+tcf(c_12856,plain, 
+    (implies(truth,implies(iPr_def_14,not(truth))) = iPr_def_13),
+    inference(light_normalisation,[status(thm)],[c_12826,c_804])).
+tcf(c_13205,plain, 
+    (implies(iPr_def_14,not(truth)) = iPr_def_13),
+    inference(demodulation,[status(thm)],[c_12856,c_54])).
+tcf(c_13216,plain, 
+    (implies(not(iPr_def_14),iPr_def_13) = truth),
+    inference(superposition,[status(thm)],[c_13205,c_6715])).
+tcf(c_13307,plain, 
+    (implies(truth,implies(iPr_def_12,iPr_def_14)) = truth),
+    inference(superposition,[status(thm)],[c_13216,c_409])).
+tcf(c_13349,plain, 
+    (implies(iPr_def_12,iPr_def_14) = truth),
+    inference(demodulation,[status(thm)],[c_13307,c_54])).
+tcf(c_13364,plain, 
+    (big_V(iPr_def_12,iPr_def_14) = implies(truth,iPr_def_14)),
+    inference(superposition,[status(thm)],[c_13349,c_50])).
+tcf(c_13392,plain, 
+    (implies(truth,iPr_def_14) = iPr_def_12),
+    inference(light_normalisation,[status(thm)],[c_13364,c_7797])).
+tcf(c_13435,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_13392,c_1550,c_941,c_565,c_514,c_513,c_497,c_145])).
+% SZS output end CNFRefutation for LCL146-1.p

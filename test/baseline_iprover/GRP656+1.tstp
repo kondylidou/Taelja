@@ -1,0 +1,126 @@
+% SZS status Theorem for GRP656+1.p
+% SZS output start CNFRefutation for GRP656+1.p
+fof(f1,axiom,(
+  ! [X0,X1] : mult(X1,ld(X1,X0)) = X0),
+  file('GRP656+1.p',f01)).
+fof(f2,axiom,(
+  ! [X0,X1] : ld(X1,mult(X1,X0)) = X0),
+  file('GRP656+1.p',f02)).
+fof(f3,axiom,(
+  ! [X0,X1] : mult(rd(X1,X0),X0) = X1),
+  file('GRP656+1.p',f03)).
+fof(f4,axiom,(
+  ! [X0,X1] : rd(mult(X1,X0),X0) = X1),
+  file('GRP656+1.p',f04)).
+fof(f5,axiom,(
+  ! [X2,X0,X1] : mult(mult(X1,X0),mult(X2,X1)) = mult(mult(X1,mult(X0,X2)),X1)),
+  file('GRP656+1.p',f05)).
+fof(f6,conjecture,(
+  ? [X3] : ! [X4] : (mult(X3,X4) = X4 & mult(X4,X3) = X4)),
+  file('GRP656+1.p',goals)).
+fof(f7,negated_conjecture,(
+  ~? [X3] : ! [X4] : (mult(X3,X4) = X4 & mult(X4,X3) = X4)),
+inference(negated_conjecture,[status(cth)],[f6])).
+fof(f8,plain,(
+  ! [X0,X1,X2] : mult(mult(X2,X1),mult(X0,X2)) = mult(mult(X2,mult(X1,X0)),X2)),
+  inference(rectify,[],[f5])).
+fof(f9,plain,(
+  ~? [X0] : ! [X1] : (mult(X0,X1) = X1 & mult(X1,X0) = X1)),
+  inference(rectify,[],[f7])).
+fof(f10,plain,(
+  ! [X0] : ? [X1] : (mult(X0,X1) != X1 | mult(X1,X0) != X1)),
+  inference(ennf_transformation,[],[f9])).
+fof(f11,plain,(
+  ! [X0] : (? [X1] : (mult(X0,X1) != X1 | mult(X1,X0) != X1) => (sK0(X0) != mult(X0,sK0(X0)) | sK0(X0) != mult(sK0(X0),X0)))),
+  introduced(choice_axiom,[])).
+fof(f12,plain,(
+  ! [X0] : (sK0(X0) != mult(X0,sK0(X0)) | sK0(X0) != mult(sK0(X0),X0))),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK0])],[f10,f11])).
+fof(f13,plain,(
+  ( ! [X0,X1] : (mult(X1,ld(X1,X0)) = X0) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f14,plain,(
+  ( ! [X0,X1] : (ld(X1,mult(X1,X0)) = X0) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f15,plain,(
+  ( ! [X0,X1] : (mult(rd(X1,X0),X0) = X1) )),
+  inference(cnf_transformation,[],[f3])).
+fof(f16,plain,(
+  ( ! [X0,X1] : (rd(mult(X1,X0),X0) = X1) )),
+  inference(cnf_transformation,[],[f4])).
+fof(f17,plain,(
+  ( ! [X2,X0,X1] : (mult(mult(X2,X1),mult(X0,X2)) = mult(mult(X2,mult(X1,X0)),X2)) )),
+  inference(cnf_transformation,[],[f8])).
+fof(f18,plain,(
+  ( ! [X0] : (sK0(X0) != mult(X0,sK0(X0)) | sK0(X0) != mult(sK0(X0),X0)) )),
+  inference(cnf_transformation,[],[f12])).
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (mult(X0,ld(X0,X1)) = X1),
+    inference(cnf_transformation,[],[f13])).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (ld(X0,mult(X0,X1)) = X1),
+    inference(cnf_transformation,[],[f14])).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (mult(rd(X0,X1),X1) = X0),
+    inference(cnf_transformation,[],[f15])).
+tcf(c_52,plain,![X0:$i,X1:$i]:  
+    (rd(mult(X0,X1),X1) = X0),
+    inference(cnf_transformation,[],[f16])).
+tcf(c_53,plain,![X0:$i,X1:$i,X2:$i]:  
+    (mult(mult(X0,mult(X1,X2)),X0) = mult(mult(X0,X1),mult(X2,X0))),
+    inference(cnf_transformation,[],[f17])).
+tcf(c_54,plain,![X0:$i]:  
+    (mult(sK0(X0),X0) != sK0(X0)|mult(X0,sK0(X0)) != sK0(X0)),
+    inference(cnf_transformation,[],[f18])).
+tcf(c_129,plain,![X0:$i,X1:$i]:  
+    (ld(rd(X0,X1),X0) = X1),
+    inference(superposition,[status(thm)],[c_51,c_50])).
+tcf(c_139,plain,![X0:$i,X1:$i,X2:$i]:  
+    (mult(mult(X0,X1),mult(ld(X1,X2),X0)) = mult(mult(X0,X2),X0)),
+    inference(superposition,[status(thm)],[c_49,c_53])).
+tcf(c_140,plain,![X0:$i,X1:$i,X2:$i]:  
+    (mult(mult(X0,rd(X1,X2)),mult(X2,X0)) = mult(mult(X0,X1),X0)),
+    inference(superposition,[status(thm)],[c_51,c_53])).
+tcf(c_142,plain,![X0:$i,X1:$i,X2:$i]:  
+    (rd(mult(mult(X0,X1),mult(X2,X0)),X0) = mult(X0,mult(X1,X2))),
+    inference(superposition,[status(thm)],[c_53,c_52])).
+tcf(c_247,plain,![X0:$i,X1:$i,X2:$i]:  
+    (mult(mult(X0,rd(X1,rd(X2,X0))),X2) = mult(mult(X0,X1),X0)),
+    inference(superposition,[status(thm)],[c_51,c_140])).
+tcf(c_312,plain,![X0:$i,X1:$i,X2:$i]:  
+    (mult(X0,mult(X1,ld(X1,X2))) = rd(mult(mult(X0,X2),X0),X0)),
+    inference(superposition,[status(thm)],[c_139,c_142])).
+tcf(c_548,plain,![X0:$i,X1:$i,X2:$i]:  
+    (mult(X0,rd(X1,rd(X2,X0))) = rd(mult(mult(X0,X1),X0),X2)),
+    inference(superposition,[status(thm)],[c_247,c_52])).
+tcf(c_597,plain,![X0:$i,X1:$i]:  
+    (mult(X0,rd(X1,rd(X0,X0))) = mult(X0,X1)),
+    inference(demodulation,[status(thm)],[c_312,c_49,c_548])).
+tcf(c_602,plain,![X0:$i,X1:$i]:  
+    (ld(X0,mult(X0,X1)) = rd(X1,rd(X0,X0))),
+    inference(superposition,[status(thm)],[c_597,c_50])).
+tcf(c_610,plain,![X0:$i,X1:$i]:  
+    (rd(X0,rd(X1,X1)) = X0),
+    inference(light_normalisation,[status(thm)],[c_602,c_50])).
+tcf(c_627,plain,![X0:$i,X1:$i]:  
+    (ld(X0,X0) = rd(X1,X1)),
+    inference(superposition,[status(thm)],[c_610,c_129])).
+tcf(c_628,plain,![X0:$i,X1:$i]:  
+    (mult(X0,rd(X1,X1)) = X0),
+    inference(superposition,[status(thm)],[c_610,c_51])).
+tcf(c_689,plain,![X0:$i,X1:$i]:  
+    (mult(ld(X0,X0),X1) = X1),
+    inference(superposition,[status(thm)],[c_627,c_51])).
+tcf(c_724,plain,![X0:$i]:  
+    (mult(rd(X0,X0),sK0(rd(X0,X0))) != sK0(rd(X0,X0))),
+    inference(superposition,[status(thm)],[c_628,c_54])).
+tcf(c_814,plain,![X0:$i]:  
+    (mult(ld(X0,X0),sK0(ld(X0,X0))) != sK0(ld(X0,X0))),
+    inference(superposition,[status(thm)],[c_627,c_724])).
+tcf(c_817,plain,![X0:$i]:  
+    (sK0(ld(X0,X0)) != sK0(ld(X0,X0))),
+    inference(demodulation,[status(thm)],[c_814,c_689])).
+tcf(c_818,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_817])).
+% SZS output end CNFRefutation for GRP656+1.p

@@ -1,0 +1,343 @@
+% SZS status Unsatisfiable for PUZ056-2.005.p
+% SZS output start CNFRefutation for PUZ056-2.005.p
+tcf(c_49,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~p(X0,X1,X2,X3,X4)|p(X5,X1,X2,X3,X4)),
+    file('PUZ056-2.005.p', rule1)).
+tcf(c_50,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~p(X0,X1,X2,X3,X4)|~neq(X0,X1)|~neq(X0,X5)|p(X0,X5,X2,X3,X4)),
+    file('PUZ056-2.005.p', rule2)).
+tcf(c_51,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~p(X0,X1,X2,X3,X4)|~neq(X0,X2)|~neq(X0,X5)|~neq(X1,X2)|~neq(X1,X5)|
+    p(X0,X1,X5,X3,X4)),
+    file('PUZ056-2.005.p', rule3)).
+tcf(c_52,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~p(X0,X1,X2,X3,X4)|~neq(X0,X3)|~neq(X0,X5)|~neq(X1,X3)|~neq(X1,X5)|
+    ~neq(X2,X3)|~neq(X2,X5)|p(X0,X1,X2,X5,X4)),
+    file('PUZ056-2.005.p', rule4)).
+tcf(c_53,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~p(X0,X1,X2,X3,X4)|~neq(X0,X4)|~neq(X0,X5)|~neq(X1,X4)|~neq(X1,X5)|
+    ~neq(X2,X4)|~neq(X2,X5)|~neq(X3,X4)|~neq(X3,X5)|p(X0,X1,X2,X3,X5)),
+    file('PUZ056-2.005.p', rule5)).
+tcf(c_55,plain, (neq(s0,s1)),file('PUZ056-2.005.p', neq2)).
+tcf(c_56,plain, (neq(s0,s2)),file('PUZ056-2.005.p', neq3)).
+tcf(c_57,plain, (neq(s1,s0)),file('PUZ056-2.005.p', neq4)).
+tcf(c_59,plain, (neq(s1,s2)),file('PUZ056-2.005.p', neq6)).
+tcf(c_60,plain, (neq(s2,s0)),file('PUZ056-2.005.p', neq7)).
+tcf(c_61,plain, (neq(s2,s1)),file('PUZ056-2.005.p', neq8)).
+tcf(c_63,plain, (p(s0,s0,s0,s0,s0)),file('PUZ056-2.005.p', init)).
+tcf(c_64,plain, (~p(s2,s2,s2,s2,s2)),file('PUZ056-2.005.p', goal)).
+tcf(c_65,plain,![X0:$i]:  
+    (p(X0,s0,s0,s0,s0)),
+    inference(resolution,[status(thm)],[c_49,c_63])).
+tcf(c_67,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s0,s2,X0,X1,X2)|~neq(s0,X3)|p(s0,X3,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_50,c_56])).
+tcf(c_68,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s1,s2,X0,X1,X2)|~neq(s1,X3)|p(s1,X3,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_50,c_59])).
+tcf(c_70,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s2,s0,X0,X1,X2)|~neq(s2,X3)|p(s2,X3,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_50,c_60])).
+tcf(c_71,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s2,s1,X0,X1,X2)|~neq(s2,X3)|p(s2,X3,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_50,c_61])).
+tcf(c_74,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s0,s1,X0,X1,X2)|~neq(s0,X3)|p(s0,X3,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_55,c_50])).
+tcf(c_75,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p(s0,s2,X0,X1,X2)|p(s0,s1,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_55,c_67])).
+tcf(c_77,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s1,s0,X0,X1,X2)|~neq(s1,X3)|p(s1,X3,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_57,c_50])).
+tcf(c_79,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s0,X0,s2,X1,X2)|~neq(X0,X3)|~neq(X0,s2)|~neq(s0,X3)|p(s0,X0,X3,X1,X2)),
+    inference(resolution,[status(thm)],[c_51,c_56])).
+tcf(c_80,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s1,X0,s0,X1,X2)|~neq(X0,X3)|~neq(X0,s0)|~neq(s1,X3)|p(s1,X0,X3,X1,X2)),
+    inference(resolution,[status(thm)],[c_51,c_57])).
+tcf(c_82,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s2,X0,s0,X1,X2)|~neq(X0,X3)|~neq(X0,s0)|~neq(s2,X3)|p(s2,X0,X3,X1,X2)),
+    inference(resolution,[status(thm)],[c_51,c_60])).
+tcf(c_83,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s2,X0,s1,X1,X2)|~neq(X0,X3)|~neq(X0,s1)|~neq(s2,X3)|p(s2,X0,X3,X1,X2)),
+    inference(resolution,[status(thm)],[c_51,c_61])).
+tcf(c_84,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s0,X0,X1,s1,X2)|~neq(X0,X3)|~neq(X1,X3)|~neq(X0,s1)|~neq(X1,s1)|
+    ~neq(s0,X3)|p(s0,X0,X1,X3,X2)),
+    inference(resolution,[status(thm)],[c_52,c_55])).
+tcf(c_85,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s0,X0,X1,s2,X2)|~neq(X0,X3)|~neq(X1,X3)|~neq(X0,s2)|~neq(X1,s2)|
+    ~neq(s0,X3)|p(s0,X0,X1,X3,X2)),
+    inference(resolution,[status(thm)],[c_52,c_56])).
+tcf(c_86,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s1,X0,X1,s0,X2)|~neq(X0,X3)|~neq(X1,X3)|~neq(X0,s0)|~neq(X1,s0)|
+    ~neq(s1,X3)|p(s1,X0,X1,X3,X2)),
+    inference(resolution,[status(thm)],[c_52,c_57])).
+tcf(c_92,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p(s1,X0,X1,X2,s0)|~neq(X0,X3)|~neq(X1,X3)|~neq(X2,X3)|~neq(X0,s0)|
+    ~neq(X1,s0)|~neq(X2,s0)|~neq(s1,X3)|p(s1,X0,X1,X2,X3)),
+    inference(resolution,[status(thm)],[c_53,c_57])).
+tcf(c_96,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p(s1,s2,X0,X1,X2)|p(s1,s0,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_68,c_57])).
+tcf(c_100,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p(s2,s0,X0,X1,X2)|p(s2,s1,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_70,c_61])).
+tcf(c_102,plain, 
+    (p(s2,s1,s0,s0,s0)),
+    inference(resolution,[status(thm)],[c_100,c_65])).
+tcf(c_103,plain,![X0:$i]:  
+    (p(X0,s1,s0,s0,s0)),
+    inference(resolution,[status(thm)],[c_102,c_49])).
+tcf(c_106,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p(s2,s1,X0,X1,X2)|p(s2,s0,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_71,c_60])).
+tcf(c_117,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p(s0,s1,X0,X1,X2)|p(s0,s2,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_74,c_56])).
+tcf(c_120,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p(s1,s0,X0,X1,X2)|p(s1,s2,X0,X1,X2)),
+    inference(resolution,[status(thm)],[c_77,c_59])).
+tcf(c_125,plain,![X0:$i]:  
+    (~p(X0,s2,s2,s2,s2)|p(s2,s2,s2,s2,s2)),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_138,plain,![X0:$i,X1:$i]:  
+    (~p(X0,X1,s2,s2,s2)|~neq(X0,X1)|~neq(X0,s2)|p(X0,s2,s2,s2,s2)),
+    inference(instantiation,[status(thm)],[c_50])).
+tcf(c_139,plain,![X0:$i,X1:$i]:  
+    (~neq(X0,s2)|~neq(X0,X1)|~p(X0,X1,s2,s2,s2)),
+    inference(global_subsumption_just,[status(thm)],[c_138,c_64,c_125,c_138])).
+tcf(c_140,plain,![X0:$i,X1:$i]:  
+    (~p(X0,X1,s2,s2,s2)|~neq(X0,X1)|~neq(X0,s2)),
+    inference(renaming,[status(thm)],[c_139])).
+tcf(c_144,plain,![X0:$i,X1:$i]:  
+    (~p(s0,s0,s2,X0,X1)|~neq(s0,s1)|~neq(s0,s2)|p(s0,s0,s1,X0,X1)),
+    inference(resolution,[status(thm)],[c_79,c_55])).
+tcf(c_151,plain, 
+    (~p(s0,s1,s2,s2,s2)|~neq(s0,s1)|~neq(s0,s2)),
+    inference(instantiation,[status(thm)],[c_140])).
+tcf(c_168,plain,![X0:$i,X1:$i]:  
+    (~p(s1,s1,s0,X0,X1)|~neq(s1,s0)|~neq(s1,s2)|p(s1,s1,s2,X0,X1)),
+    inference(resolution,[status(thm)],[c_80,c_59])).
+tcf(c_202,plain,![X0:$i,X1:$i]:  
+    (~p(s2,s2,s0,X0,X1)|~neq(s2,s0)|~neq(s2,s1)|p(s2,s2,s1,X0,X1)),
+    inference(resolution,[status(thm)],[c_82,c_61])).
+tcf(c_204,plain,![X0:$i]:  
+    (~p(X0,s1,s2,s2,s2)|p(s0,s1,s2,s2,s2)),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_219,plain,![X0:$i,X1:$i]:  
+    (~p(s2,s2,s1,X0,X1)|~neq(s2,s0)|~neq(s2,s1)|p(s2,s2,s0,X0,X1)),
+    inference(resolution,[status(thm)],[c_83,c_60])).
+tcf(c_223,plain,![X0:$i,X1:$i]:  
+    (~p(s0,s0,X0,s1,X1)|~neq(X0,s1)|~neq(X0,s2)|~neq(s0,s1)|~neq(s0,s2)|
+    p(s0,s0,X0,s2,X1)),
+    inference(resolution,[status(thm)],[c_84,c_56])).
+tcf(c_229,plain,![X0:$i,X1:$i]:  
+    (~p(s0,s0,X0,s2,X1)|~neq(X0,s1)|~neq(X0,s2)|~neq(s0,s1)|~neq(s0,s2)|
+    p(s0,s0,X0,s1,X1)),
+    inference(resolution,[status(thm)],[c_85,c_55])).
+tcf(c_258,plain,![X0:$i,X1:$i]:  
+    (~p(s0,s0,s2,X0,X1)|p(s0,s0,s1,X0,X1)),
+    inference(global_subsumption_just,[status(thm)],[c_144,c_56,c_55,c_144])).
+tcf(c_272,plain,![X0:$i,X1:$i]:  
+    (~p(s1,s1,X0,s0,X1)|~neq(X0,s0)|~neq(X0,s2)|~neq(s1,s0)|~neq(s1,s2)|
+    p(s1,s1,X0,s2,X1)),
+    inference(resolution,[status(thm)],[c_86,c_59])).
+tcf(c_302,plain,![X0:$i,X1:$i]:  
+    (~p(s1,s1,s0,X0,X1)|p(s1,s1,s2,X0,X1)),
+    inference(global_subsumption_just,[status(thm)],[c_168,c_59,c_57,c_168])).
+tcf(c_305,plain, 
+    (p(s1,s1,s2,s0,s0)),
+    inference(resolution,[status(thm)],[c_302,c_103])).
+tcf(c_306,plain,![X0:$i]:  
+    (p(X0,s1,s2,s0,s0)),
+    inference(resolution,[status(thm)],[c_305,c_49])).
+tcf(c_309,plain, 
+    (p(s2,s0,s2,s0,s0)),
+    inference(resolution,[status(thm)],[c_306,c_106])).
+tcf(c_311,plain,![X0:$i]:  
+    (p(X0,s0,s2,s0,s0)),
+    inference(resolution,[status(thm)],[c_309,c_49])).
+tcf(c_319,plain, 
+    (p(s0,s0,s1,s0,s0)),
+    inference(resolution,[status(thm)],[c_311,c_258])).
+tcf(c_344,plain,![X0:$i,X1:$i]:  
+    (~p(s1,s1,X0,X1,s0)|~neq(X0,s0)|~neq(X0,s2)|~neq(X1,s0)|~neq(X1,s2)|
+    ~neq(s1,s0)|~neq(s1,s2)|p(s1,s1,X0,X1,s2)),
+    inference(resolution,[status(thm)],[c_92,c_59])).
+tcf(c_380,plain,![X0:$i]:  
+    (p(X0,s0,s1,s0,s0)),
+    inference(resolution,[status(thm)],[c_319,c_49])).
+tcf(c_385,plain, 
+    (p(s2,s1,s1,s0,s0)),
+    inference(resolution,[status(thm)],[c_380,c_100])).
+tcf(c_392,plain,![X0:$i,X1:$i]:  
+    (~p(X0,s1,X1,s2,s2)|~neq(X0,X1)|~neq(X0,s2)|~neq(s1,X1)|~neq(s1,s2)|
+    p(X0,s1,s2,s2,s2)),
+    inference(instantiation,[status(thm)],[c_51])).
+tcf(c_393,plain,![X0:$i,X1:$i]:  
+    (~p(X0,s1,X1,s2,s2)|~neq(X0,X1)|~neq(X0,s2)|~neq(s1,X1)),
+    inference(global_subsumption_just,
+              [status(thm)],
+              [c_392,c_59,c_56,c_55,c_151,c_204,c_392])).
+tcf(c_399,plain,![X0:$i]:  
+    (p(X0,s1,s1,s0,s0)),
+    inference(resolution,[status(thm)],[c_385,c_49])).
+tcf(c_445,plain,![X0:$i,X1:$i]:  
+    (~p(s2,s2,s0,X0,X1)|p(s2,s2,s1,X0,X1)),
+    inference(global_subsumption_just,[status(thm)],[c_202,c_61,c_60,c_202])).
+tcf(c_452,plain,![X0:$i,X1:$i]:  
+    (~p(s2,s2,s1,X0,X1)|p(s2,s2,s0,X0,X1)),
+    inference(global_subsumption_just,[status(thm)],[c_219,c_61,c_60,c_219])).
+tcf(c_457,plain,![X0:$i,X1:$i]:  
+    (~p(s0,s0,X0,s1,X1)|~neq(X0,s1)|~neq(X0,s2)|p(s0,s0,X0,s2,X1)),
+    inference(global_subsumption_just,[status(thm)],[c_223,c_56,c_55,c_223])).
+tcf(c_459,plain,![X0:$i]:  
+    (~p(s0,s0,s0,s1,X0)|~neq(s0,s2)|p(s0,s0,s0,s2,X0)),
+    inference(resolution,[status(thm)],[c_457,c_55])).
+tcf(c_464,plain,![X0:$i,X1:$i]:  
+    (~p(s0,s0,X0,s2,X1)|~neq(X0,s1)|~neq(X0,s2)|p(s0,s0,X0,s1,X1)),
+    inference(global_subsumption_just,[status(thm)],[c_229,c_56,c_55,c_229])).
+tcf(c_468,plain,![X0:$i]:  
+    (~p(s0,s0,s0,s1,X0)|p(s0,s0,s0,s2,X0)),
+    inference(global_subsumption_just,[status(thm)],[c_459,c_56,c_459])).
+tcf(c_471,plain,![X0:$i]:  
+    (~p(s0,s0,s0,s2,X0)|~neq(s0,s2)|p(s0,s0,s0,s1,X0)),
+    inference(resolution,[status(thm)],[c_464,c_55])).
+tcf(c_474,plain,![X0:$i]:  
+    (~p(s0,s0,s0,s2,X0)|p(s0,s0,s0,s1,X0)),
+    inference(global_subsumption_just,[status(thm)],[c_471,c_56,c_471])).
+tcf(c_483,plain,![X0:$i,X1:$i]:  
+    (~p(s1,s1,X0,s0,X1)|~neq(X0,s0)|~neq(X0,s2)|p(s1,s1,X0,s2,X1)),
+    inference(global_subsumption_just,[status(thm)],[c_272,c_59,c_57,c_272])).
+tcf(c_485,plain,![X0:$i]:  
+    (~p(s1,s1,s1,s0,X0)|~neq(s1,s2)|p(s1,s1,s1,s2,X0)),
+    inference(resolution,[status(thm)],[c_483,c_57])).
+tcf(c_490,plain,![X0:$i]:  
+    (~p(s1,s1,s1,s0,X0)|p(s1,s1,s1,s2,X0)),
+    inference(global_subsumption_just,[status(thm)],[c_485,c_59,c_485])).
+tcf(c_493,plain, 
+    (p(s1,s1,s1,s2,s0)),
+    inference(resolution,[status(thm)],[c_490,c_399])).
+tcf(c_494,plain,![X0:$i]:  
+    (p(X0,s1,s1,s2,s0)),
+    inference(resolution,[status(thm)],[c_493,c_49])).
+tcf(c_498,plain, 
+    (p(s0,s2,s1,s2,s0)),
+    inference(resolution,[status(thm)],[c_494,c_117])).
+tcf(c_502,plain,![X0:$i]:  
+    (p(X0,s2,s1,s2,s0)),
+    inference(resolution,[status(thm)],[c_498,c_49])).
+tcf(c_513,plain, 
+    (p(s2,s2,s0,s2,s0)),
+    inference(resolution,[status(thm)],[c_502,c_452])).
+tcf(c_534,plain, 
+    (~p(s1,s1,s0,s2,s2)|~neq(s1,s0)|~neq(s1,s2)),
+    inference(instantiation,[status(thm)],[c_393])).
+tcf(c_558,plain,![X0:$i]:  
+    (p(X0,s2,s0,s2,s0)),
+    inference(resolution,[status(thm)],[c_513,c_49])).
+tcf(c_579,plain, 
+    (p(s1,s0,s0,s2,s0)),
+    inference(resolution,[status(thm)],[c_558,c_96])).
+tcf(c_601,plain,![X0:$i,X1:$i]:  
+    (~p(s1,s1,X0,X1,s0)|~neq(X0,s0)|~neq(X0,s2)|~neq(X1,s0)|~neq(X1,s2)|
+    p(s1,s1,X0,X1,s2)),
+    inference(global_subsumption_just,[status(thm)],[c_344,c_59,c_57,c_344])).
+tcf(c_610,plain,![X0:$i]:  
+    (p(X0,s0,s0,s2,s0)),
+    inference(resolution,[status(thm)],[c_579,c_49])).
+tcf(c_633,plain, 
+    (p(s0,s0,s0,s1,s0)),
+    inference(resolution,[status(thm)],[c_610,c_474])).
+tcf(c_636,plain,![X0:$i]:  
+    (~p(s1,s1,s1,X0,s0)|~neq(X0,s0)|~neq(X0,s2)|~neq(s1,s2)|p(s1,s1,s1,X0,s2)),
+    inference(resolution,[status(thm)],[c_601,c_57])).
+tcf(c_638,plain,![X0:$i]:  
+    (~p(X0,s1,s0,s2,s2)|p(s1,s1,s0,s2,s2)),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_671,plain,![X0:$i]:  
+    (p(X0,s0,s0,s1,s0)),
+    inference(resolution,[status(thm)],[c_633,c_49])).
+tcf(c_675,plain, 
+    (p(s1,s2,s0,s1,s0)),
+    inference(resolution,[status(thm)],[c_671,c_120])).
+tcf(c_730,plain,![X0:$i]:  
+    (p(X0,s2,s0,s1,s0)),
+    inference(resolution,[status(thm)],[c_675,c_49])).
+tcf(c_744,plain, 
+    (p(s2,s2,s1,s1,s0)),
+    inference(resolution,[status(thm)],[c_730,c_445])).
+tcf(c_754,plain,![X0:$i]:  
+    (p(X0,s2,s1,s1,s0)),
+    inference(resolution,[status(thm)],[c_744,c_49])).
+tcf(c_792,plain, 
+    (p(s0,s1,s1,s1,s0)),
+    inference(resolution,[status(thm)],[c_754,c_75])).
+tcf(c_818,plain,![X0:$i]:  
+    (p(X0,s1,s1,s1,s0)),
+    inference(resolution,[status(thm)],[c_792,c_49])).
+tcf(c_827,plain,![X0:$i]:  
+    (~neq(X0,s2)|~neq(X0,s0)|~p(s1,s1,s1,X0,s0)|p(s1,s1,s1,X0,s2)),
+    inference(global_subsumption_just,[status(thm)],[c_636,c_59,c_636])).
+tcf(c_828,plain,![X0:$i]:  
+    (~p(s1,s1,s1,X0,s0)|~neq(X0,s0)|~neq(X0,s2)|p(s1,s1,s1,X0,s2)),
+    inference(renaming,[status(thm)],[c_827])).
+tcf(c_838,plain,![X0:$i,X1:$i]:  
+    (~p(X0,X1,s0,s2,s2)|~neq(X0,X1)|~neq(X0,s1)|p(X0,s1,s0,s2,s2)),
+    inference(instantiation,[status(thm)],[c_50])).
+tcf(c_839,plain,![X0:$i,X1:$i]:  
+    (~neq(X0,s1)|~neq(X0,X1)|~p(X0,X1,s0,s2,s2)),
+    inference(global_subsumption_just,
+              [status(thm)],
+              [c_838,c_59,c_57,c_534,c_638,c_838])).
+tcf(c_840,plain,![X0:$i,X1:$i]:  
+    (~p(X0,X1,s0,s2,s2)|~neq(X0,X1)|~neq(X0,s1)),
+    inference(renaming,[status(thm)],[c_839])).
+tcf(c_875,plain, 
+    (~p(s1,s1,s1,s1,s0)|~neq(s1,s2)|p(s1,s1,s1,s1,s2)),
+    inference(resolution,[status(thm)],[c_828,c_57])).
+tcf(c_903,plain, 
+    (~p(s1,s1,s1,s1,s0)|p(s1,s1,s1,s1,s2)),
+    inference(global_subsumption_just,[status(thm)],[c_875,c_59,c_875])).
+tcf(c_905,plain, 
+    (p(s1,s1,s1,s1,s2)),
+    inference(resolution,[status(thm)],[c_903,c_818])).
+tcf(c_915,plain,![X0:$i]:  
+    (p(X0,s1,s1,s1,s2)),
+    inference(resolution,[status(thm)],[c_905,c_49])).
+tcf(c_930,plain, 
+    (p(s0,s2,s1,s1,s2)),
+    inference(resolution,[status(thm)],[c_915,c_117])).
+tcf(c_950,plain,![X0:$i]:  
+    (p(X0,s2,s1,s1,s2)),
+    inference(resolution,[status(thm)],[c_930,c_49])).
+tcf(c_973,plain, 
+    (~p(s2,s0,s0,s2,s2)|~neq(s2,s0)|~neq(s2,s1)),
+    inference(instantiation,[status(thm)],[c_840])).
+tcf(c_994,plain, 
+    (p(s2,s2,s0,s1,s2)),
+    inference(resolution,[status(thm)],[c_950,c_452])).
+tcf(c_1010,plain,![X0:$i]:  
+    (p(X0,s2,s0,s1,s2)),
+    inference(resolution,[status(thm)],[c_994,c_49])).
+tcf(c_1043,plain, 
+    (p(s1,s0,s0,s1,s2)),
+    inference(resolution,[status(thm)],[c_1010,c_96])).
+tcf(c_1116,plain,![X0:$i]:  
+    (p(X0,s0,s0,s1,s2)),
+    inference(resolution,[status(thm)],[c_1043,c_49])).
+tcf(c_1129,plain,![X0:$i]:  
+    (~p(X0,s0,s0,s2,s2)|p(s2,s0,s0,s2,s2)),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_1130,plain, 
+    (~p(s0,s0,s0,s2,s2)|p(s2,s0,s0,s2,s2)),
+    inference(instantiation,[status(thm)],[c_1129])).
+tcf(c_1187,plain, 
+    (p(s0,s0,s0,s2,s2)),
+    inference(resolution,[status(thm)],[c_1116,c_468])).
+tcf(c_1188,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_1187,c_1130,c_973,c_60,c_61])).
+% SZS output end CNFRefutation for PUZ056-2.005.p

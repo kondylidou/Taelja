@@ -1,0 +1,61 @@
+% SZS status Theorem for resolution_example_horn_reuse_inlined.p
+% SZS output start CNFRefutation for resolution_example_horn_reuse_inlined.p
+fof(f1,axiom,(
+  ! [X0] : p(X0)),
+  file('resolution_example_horn_reuse_inlined.p',ax1)).
+fof(f2,axiom,(
+  ! [X0] : q(b,X0)),
+  file('resolution_example_horn_reuse_inlined.p',ax2)).
+fof(f3,axiom,(
+  ! [X1,X2] : ((p(X2) & q(X1,X2)) => q(f(X1),X2))),
+  file('resolution_example_horn_reuse_inlined.p',ax3)).
+fof(f4,conjecture,(
+  q(f(f(b)),a)),
+  file('resolution_example_horn_reuse_inlined.p',goal)).
+fof(f5,negated_conjecture,(
+  ~q(f(f(b)),a)),
+inference(negated_conjecture,[status(cth)],[f4])).
+fof(f6,plain,(
+  ! [X0,X1] : ((p(X1) & q(X0,X1)) => q(f(X0),X1))),
+  inference(rectify,[],[f3])).
+fof(f7,plain,(
+  ~q(f(f(b)),a)),
+  inference(flattening,[],[f5])).
+fof(f8,plain,(
+  ! [X0,X1] : (q(f(X0),X1) | (~p(X1) | ~q(X0,X1)))),
+  inference(ennf_transformation,[],[f6])).
+fof(f9,plain,(
+  ! [X0,X1] : (q(f(X0),X1) | ~p(X1) | ~q(X0,X1))),
+  inference(flattening,[],[f8])).
+fof(f10,plain,(
+  ( ! [X0] : (p(X0)) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f11,plain,(
+  ( ! [X0] : (q(b,X0)) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f12,plain,(
+  ( ! [X0,X1] : (q(f(X0),X1) | ~p(X1) | ~q(X0,X1)) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f13,plain,(
+  ~q(f(f(b)),a)),
+  inference(cnf_transformation,[],[f7])).
+tcf(c_49,plain,![X0:$i]:  (p(X0)),inference(cnf_transformation,[],[f10])).
+tcf(c_50,plain,![X0:$i]:  (q(b,X0)),inference(cnf_transformation,[],[f11])).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (~q(X0,X1)|~p(X1)|q(f(X0),X1)),
+    inference(cnf_transformation,[],[f12])).
+tcf(c_52,plain, (~q(f(f(b)),a)),inference(cnf_transformation,[],[f13])).
+tcf(c_58,plain,![X0:$i,X1:$i]:  
+    (~q(X0,X1)|q(f(X0),X1)),
+    inference(backward_subsumption_resolution,[status(thm)],[c_51,c_49])).
+tcf(c_76,plain, 
+    (~q(f(b),a)|q(f(f(b)),a)),
+    inference(instantiation,[status(thm)],[c_58])).
+tcf(c_77,plain, 
+    (~q(b,a)|q(f(b),a)),
+    inference(instantiation,[status(thm)],[c_58])).
+tcf(c_78,plain, (q(b,a)),inference(instantiation,[status(thm)],[c_50])).
+tcf(c_79,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_78,c_77,c_76,c_52])).
+% SZS output end CNFRefutation for resolution_example_horn_reuse_inlined.p

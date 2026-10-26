@@ -1,0 +1,200 @@
+Axiom 1: m0(X,d,Y)
+Axiom 2: m0(X,Y,Z) => q1(Z,Z,Z)
+Axiom 3: q1(X,X,X) => p2(X,X,X)
+Axiom 4: p2(X,X,X) => m3(X,X,X)
+Axiom 5: m0(X,d,X) /\ m0(e,d,X) => q1(e,X,X)
+Axiom 6: q1(X,Y,Y) => k2(Y,Y)
+Axiom 7: k2(X,Y) => k3(Y,Y,X)
+Axiom 8: p0(b,X)
+Axiom 9: p0(X,Y) => p1(Y,Y,Y)
+Axiom 10: p1(X,X,X) => q2(X,X,X)
+Axiom 11: q2(X,Y,Z) /\ k3(A,A,Z) /\ m3(X,B,X) => q4(Z,Y)
+Axiom 12: k0(b)
+Axiom 13: p1(X,X,X) /\ k0(Y) => q2(X,Y,Y)
+Axiom 14: n0(d,b)
+Axiom 15: q2(X,Y,Z) /\ n0(X,Y) => q3(Y,Z)
+Axiom 16: s0(b)
+Axiom 17: p0(X,Y) /\ s0(X) => m1(X,Y,X)
+Axiom 18: m1(X,Y,X) => p2(Y,X,Y)
+Axiom 19: n0(b,a)
+Axiom 20: n0(X,Y) => k1(Y)
+Axiom 21: p2(e,X,Y) /\ k1(Z) => p2(X,Y,Y)
+Axiom 22: p2(X,Y,Z) => r3(X,Z,X)
+Axiom 23: m0(a,X,a)
+Axiom 24: q0(a,b)
+Axiom 25: m1(X,c,X) /\ m0(a,Y,a) /\ q0(Z,X) => m1(Z,a,X)
+Axiom 26: l0(a)
+Axiom 27: l0(X) /\ k0(Y) => m1(X,Y,X)
+Axiom 28: m1(X,Y,Z) /\ m1(X,A,Y) => m1(Z,Y,Y)
+Axiom 29: r0(b)
+Axiom 30: m1(X,Y,Y) /\ r0(Z) => q1(X,X,Y)
+Axiom 31: r3(X,e,Y) /\ q1(a,a,Y) /\ q3(X,X) => k4(e)
+Axiom 32: m3(X,X,X) /\ k4(Y) => n4(X,X)
+Axiom 33: k3(X,X,Y) => p4(X,Y,X)
+Axiom 34: q4(X,Y) => n5(Y,Y)
+Axiom 35: p4(X,X,Y) /\ n5(X,Y) /\ n4(Z,A) /\ q4(B,A) => n5(Z,Y)
+
+Lemma 36: p1(X,X,X)
+Proof:
+  have p0(b,X)
+    by axiom 8
+  hence p1(X,X,X)
+    by axiom 9
+
+Lemma 37: k3(X,X,X)
+Proof:
+  have m0(X,d,X)
+    by axiom 1
+   and m0(e,d,X)
+    by axiom 1
+  hence q1(e,X,X)
+    by axiom 5
+  hence k2(X,X)
+    by axiom 6
+  hence k3(X,X,X)
+    by axiom 7
+
+Lemma 38: q1(X,X,X)
+Proof:
+  have m0(Y,d,X)
+    by axiom 1
+  hence q1(X,X,X)
+    by axiom 2
+
+Lemma 39: m3(X,X,X)
+Proof:
+  have q1(X,X,X)
+    by lemma 38
+  hence p2(X,X,X)
+    by axiom 3
+  hence m3(X,X,X)
+    by axiom 4
+
+Lemma 40: q4(X,X)
+Proof:
+  have p1(X,X,X)
+    by lemma 36
+  hence q2(X,X,X)
+    by axiom 10
+   and k3(X,X,X)
+    by lemma 37
+   and m3(X,X,X)
+    by lemma 39
+  hence q4(X,X)
+    by axiom 11
+
+Lemma 41: m1(b,X,b)
+Proof:
+  have p0(b,X)
+    by axiom 8
+   and s0(b)
+    by axiom 16
+  hence m1(b,X,b)
+    by axiom 17
+
+Lemma 42: m1(a,b,a)
+Proof:
+  have l0(a)
+    by axiom 26
+   and k0(b)
+    by axiom 12
+  hence m1(a,b,a)
+    by axiom 27
+
+Lemma 43: k1(a)
+Proof:
+  have n0(b,a)
+    by axiom 19
+  hence k1(a)
+    by axiom 20
+
+Lemma 44: m1(a,a,b)
+Proof:
+  have m1(b,c,b)
+    by lemma 41
+   and m0(a,X,a)
+    by axiom 23
+   and q0(a,b)
+    by axiom 24
+  hence m1(a,a,b)
+    by axiom 25
+
+Lemma 45: q1(a,a,b)
+Proof:
+  have m1(a,b,a)
+    by lemma 42
+   and m1(a,a,b)
+    by lemma 44
+  hence m1(a,b,b)
+    by axiom 28
+   and r0(b)
+    by axiom 29
+  hence q1(a,a,b)
+    by axiom 30
+
+Lemma 46: q3(b,b)
+Proof:
+  have p1(d,d,d)
+    by lemma 36
+   and k0(b)
+    by axiom 12
+  hence q2(d,b,b)
+    by axiom 13
+   and n0(d,b)
+    by axiom 14
+  hence q3(b,b)
+    by axiom 15
+
+Lemma 47: k4(e)
+Proof:
+  have m1(b,e,b)
+    by lemma 41
+  hence p2(e,b,e)
+    by axiom 18
+   and k1(a)
+    by lemma 43
+  hence p2(b,e,e)
+    by axiom 21
+  hence r3(b,e,b)
+    by axiom 22
+   and q1(a,a,b)
+    by lemma 45
+   and q3(b,b)
+    by lemma 46
+  hence k4(e)
+    by axiom 31
+
+Lemma 48: n5(e,e)
+Proof:
+  have q4(e,e)
+    by lemma 40
+  hence n5(e,e)
+    by axiom 34
+
+Lemma 49: n4(a,a)
+Proof:
+  have q1(a,a,a)
+    by lemma 38
+  hence p2(a,a,a)
+    by axiom 3
+  hence m3(a,a,a)
+    by axiom 4
+   and k4(e)
+    by lemma 47
+  hence n4(a,a)
+    by axiom 32
+
+Goal 1: n5(a,e)
+Proof:
+  have k3(e,e,e)
+    by lemma 37
+  hence p4(e,e,e)
+    by axiom 33
+   and n5(e,e)
+    by lemma 48
+   and n4(a,a)
+    by lemma 49
+   and q4(a,a)
+    by lemma 40
+  hence n5(a,e)
+    by axiom 35

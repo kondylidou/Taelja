@@ -1,0 +1,38 @@
+% SZS status Theorem for units_only_relational_example.p
+% SZS output start CNFRefutation for units_only_relational_example.p
+fof(f1,axiom,(
+  ! [X0] : p(f(X0))),
+  file('units_only_relational_example.p',ax1)).
+fof(f2,axiom,(
+  ! [X0] : f(X0) = X0),
+  file('units_only_relational_example.p',ax2)).
+fof(f3,conjecture,(
+  p(a)),
+  file('units_only_relational_example.p',goal)).
+fof(f4,negated_conjecture,(
+  ~p(a)),
+inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  ~p(a)),
+  inference(flattening,[],[f4])).
+fof(f6,plain,(
+  ( ! [X0] : (p(f(X0))) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f7,plain,(
+  ( ! [X0] : (f(X0) = X0) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f8,plain,(
+  ~p(a)),
+  inference(cnf_transformation,[],[f5])).
+tcf(c_49,plain,![X0:$i]:  (p(f(X0))),inference(cnf_transformation,[],[f6])).
+tcf(c_50,plain,![X0:$i]:  
+    (f(X0) = X0),
+    inference(cnf_transformation,[],[f7])).
+tcf(c_51,plain, (~p(a)),inference(cnf_transformation,[],[f8])).
+tcf(c_60,plain,![X0:$i]:  
+    (p(X0)),
+    inference(demodulation,[status(thm)],[c_49,c_50])).
+tcf(c_61,plain, 
+    ($false),
+    inference(backward_subsumption_resolution,[status(thm)],[c_51,c_60])).
+% SZS output end CNFRefutation for units_only_relational_example.p

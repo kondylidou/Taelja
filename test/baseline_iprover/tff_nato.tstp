@@ -1,0 +1,78 @@
+% SZS status Theorem for tff_nato.p
+% SZS output start CNFRefutation for tff_nato.p
+tff(func_def_0, type, sweden: country).
+tff(pred_def_1, type, nato_member: country > $o).
+tff(pred_def_2, type, attacked: (country * country) > $o).
+tff(pred_def_3, type, protects: (country * country) > $o).
+tff(type_def_5, type, country: $tType).
+tff(f1,axiom,(
+  ! [X0 : country,X1 : country,X2 : country] : ((attacked(X2,X1) & nato_member(X1) & nato_member(X0)) => protects(X0,X1))),
+  file('tff_nato.p',nato_protection)).
+tff(f2,axiom,(
+  nato_member(sweden)),
+  file('tff_nato.p',sweden_nato_member)).
+tff(f3,axiom,(
+  nato_member(germany)),
+  file('tff_nato.p',germany_nato_member)).
+tff(f4,axiom,(
+  attacked(russia,germany)),
+  file('tff_nato.p',russia_attacked_germany)).
+tff(f5,conjecture,(
+  protects(sweden,germany)),
+  file('tff_nato.p',sweden_protects_germany)).
+tff(f6,negated_conjecture,(
+  ~protects(sweden,germany)),
+inference(negated_conjecture,[status(cth)],[f5])).
+tff(f7,plain,(
+  ~protects(sweden,germany)),
+  inference(flattening,[],[f6])).
+tff(f8,plain,(
+  ! [X0 : country,X1 : country,X2 : country] : (protects(X0,X1) | (~attacked(X2,X1) | ~nato_member(X1) | ~nato_member(X0)))),
+  inference(ennf_transformation,[],[f1])).
+tff(f9,plain,(
+  ! [X0 : country,X1 : country,X2 : country] : (protects(X0,X1) | ~attacked(X2,X1) | ~nato_member(X1) | ~nato_member(X0))),
+  inference(flattening,[],[f8])).
+tff(f10,plain,(
+  ( ! [X2 : country,X0 : country,X1 : country] : (protects(X0,X1) | ~attacked(X2,X1) | ~nato_member(X1) | ~nato_member(X0)) )),
+  inference(cnf_transformation,[],[f9])).
+tff(f11,plain,(
+  nato_member(sweden)),
+  inference(cnf_transformation,[],[f2])).
+tff(f12,plain,(
+  nato_member(germany)),
+  inference(cnf_transformation,[],[f3])).
+tff(f13,plain,(
+  attacked(russia,germany)),
+  inference(cnf_transformation,[],[f4])).
+tff(f14,plain,(
+  ~protects(sweden,germany)),
+  inference(cnf_transformation,[],[f7])).
+tcf(c_49,plain,![X0_country:country,X1_country:country,X2_country:country]:  
+    (~attacked(X0_country,X1_country)|~nato_member(X1_country)|~nato_member(X2_country)|
+    protects(X2_country,X1_country)),
+    inference(cnf_transformation,[],[f10])).
+tcf(c_50,plain, 
+    (nato_member(sweden)),
+    inference(cnf_transformation,[],[f11])).
+tcf(c_51,plain, 
+    (nato_member(germany)),
+    inference(cnf_transformation,[],[f12])).
+tcf(c_52,plain, 
+    (attacked(russia,germany)),
+    inference(cnf_transformation,[],[f13])).
+tcf(c_53,plain, 
+    (~protects(sweden,germany)),
+    inference(cnf_transformation,[],[f14])).
+tcf(c_71,plain,![X0_country:country]:  
+    (~nato_member(X0_country)|~nato_member(germany)|protects(X0_country,germany)),
+    inference(resolution,[status(thm)],[c_49,c_52])).
+tcf(c_73,plain,![X0_country:country]:  
+    (~nato_member(X0_country)|protects(X0_country,germany)),
+    inference(global_subsumption_just,[status(thm)],[c_71,c_51,c_71])).
+tcf(c_83,plain, 
+    (~nato_member(sweden)),
+    inference(resolution,[status(thm)],[c_53,c_73])).
+tcf(c_84,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_83,c_50])).
+% SZS output end CNFRefutation for tff_nato.p

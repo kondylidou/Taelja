@@ -1,0 +1,7 @@
+Axiom 1: f(X) = c
+
+Goal 1: c = f(a)
+Proof:
+  c
+= { by axiom 1 R->L }
+  f(a)

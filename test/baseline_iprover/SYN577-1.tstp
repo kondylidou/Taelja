@@ -1,0 +1,80 @@
+% SZS status Unsatisfiable for SYN577-1.p
+% SZS output start CNFRefutation for SYN577-1.p
+tcf(c_49,plain,![X0:$i]:  (p2(X0,X0)),file('Problems/SYN/SYN577-1.p', p2_1)).
+tcf(c_53,plain, (p7(c9,c10)),file('Problems/SYN/SYN577-1.p', p7_5)).
+tcf(c_56,plain, (p2(f4(c16,c14),c18)),file('Problems/SYN/SYN577-1.p', p2_8)).
+tcf(c_57,plain, (p2(f4(c15,c14),c17)),file('Problems/SYN/SYN577-1.p', p2_9)).
+tcf(c_59,plain, 
+    (p2(f5(f6(c9),c19),c17)),
+    file('Problems/SYN/SYN577-1.p', p2_11)).
+tcf(c_60,plain, 
+    (p2(f5(f6(c9),c20),c18)),
+    file('Problems/SYN/SYN577-1.p', p2_12)).
+tcf(c_62,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p2(X0,X1)|~p2(X0,X2)|p2(X1,X2)),
+    file('Problems/SYN/SYN577-1.p', p2_14)).
+tcf(c_68,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~p2(f4(X0,c14),f5(f6(X1),c19))|~p2(f4(X2,c14),f5(f6(X1),c20))|~p2(c15,X0)|
+    ~p2(c16,X2)|~p7(X1,c10)),
+    file('Problems/SYN/SYN577-1.p', not_p7_20)).
+tcf(c_195,plain,![X0:$i,X1:$i]:  
+    (~p2(f4(X0,c14),f5(f6(X1),c20))|~p2(f4(c15,c14),f5(f6(X1),c19))|~p2(c16,X0)|
+    ~p7(X1,c10)|~p2(c15,c15)),
+    inference(instantiation,[status(thm)],[c_68])).
+tcf(c_196,plain, 
+    (p2(c15,c15)),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_259,plain,![X0:$i]:  
+    (~p2(f4(c15,c14),f5(f6(X0),c19))|~p2(f4(c16,c14),f5(f6(X0),c20))|
+    ~p7(X0,c10)|~p2(c15,c15)|~p2(c16,c16)),
+    inference(instantiation,[status(thm)],[c_195])).
+tcf(c_260,plain, 
+    (p2(c16,c16)),
+    inference(instantiation,[status(thm)],[c_49])).
+tcf(c_297,plain, 
+    (~p2(f4(c15,c14),f5(f6(c9),c19))|~p2(f4(c16,c14),f5(f6(c9),c20))|
+    ~p2(c15,c15)|~p2(c16,c16)|~p7(c9,c10)),
+    inference(instantiation,[status(thm)],[c_259])).
+tcf(c_388,plain,![X0:$i]:  
+    (~p2(X0,f5(f6(c9),c19))|~p2(X0,f4(c15,c14))|p2(f4(c15,c14),f5(f6(c9),c19))),
+    inference(instantiation,[status(thm)],[c_62])).
+tcf(c_427,plain,![X0:$i]:  
+    (~p2(f4(c16,c14),X0)|p2(c18,X0)),
+    inference(superposition,[status(thm)],[c_56,c_62])).
+tcf(c_428,plain,![X0:$i]:  
+    (~p2(f4(c15,c14),X0)|p2(c17,X0)),
+    inference(superposition,[status(thm)],[c_57,c_62])).
+tcf(c_430,plain,![X0:$i]:  
+    (~p2(f5(f6(c9),c19),X0)|p2(c17,X0)),
+    inference(superposition,[status(thm)],[c_59,c_62])).
+tcf(c_431,plain,![X0:$i]:  
+    (~p2(f5(f6(c9),c20),X0)|p2(c18,X0)),
+    inference(superposition,[status(thm)],[c_60,c_62])).
+tcf(c_653,plain, 
+    (p2(c18,f4(c16,c14))),
+    inference(superposition,[status(thm)],[c_49,c_427])).
+tcf(c_1756,plain, 
+    (p2(c17,f4(c15,c14))),
+    inference(superposition,[status(thm)],[c_49,c_428])).
+tcf(c_2217,plain,![X0:$i]:  
+    (~p2(X0,f5(f6(c9),c20))|~p2(X0,f4(c16,c14))|p2(f4(c16,c14),f5(f6(c9),c20))),
+    inference(instantiation,[status(thm)],[c_62])).
+tcf(c_2792,plain, 
+    (p2(c17,f5(f6(c9),c19))),
+    inference(superposition,[status(thm)],[c_49,c_430])).
+tcf(c_2980,plain, 
+    (p2(c18,f5(f6(c9),c20))),
+    inference(superposition,[status(thm)],[c_49,c_431])).
+tcf(c_3642,plain, 
+    (~p2(c17,f5(f6(c9),c19))|~p2(c17,f4(c15,c14))|p2(f4(c15,c14),f5(f6(c9),c19))),
+    inference(instantiation,[status(thm)],[c_388])).
+tcf(c_8002,plain, 
+    (~p2(c18,f5(f6(c9),c20))|~p2(c18,f4(c16,c14))|p2(f4(c16,c14),f5(f6(c9),c20))),
+    inference(instantiation,[status(thm)],[c_2217])).
+tcf(c_8003,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_8002,c_3642,c_2980,c_2792,c_1756,c_653,c_297,c_260,c_196,
+               c_53])).
+% SZS output end CNFRefutation for SYN577-1.p

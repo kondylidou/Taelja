@@ -1,0 +1,54 @@
+% SZS status Theorem for horn_example_elim_var_rw.p
+% SZS output start CNFRefutation for horn_example_elim_var_rw.p
+fof(f1,axiom,(
+  ! [X0] : q(a,X0)),
+  file('horn_example_elim_var_rw.p',f1)).
+fof(f2,axiom,(
+  ! [X0,X1] : (q(X0,X1) => f(X0) = g(X1))),
+  file('horn_example_elim_var_rw.p',f2)).
+fof(f3,axiom,(
+  ! [X0] : g(X0) = c),
+  file('horn_example_elim_var_rw.p',f3)).
+fof(f4,conjecture,(
+  c = f(a)),
+  file('horn_example_elim_var_rw.p',f4)).
+fof(f5,negated_conjecture,(
+  ~c = f(a)),
+inference(negated_conjecture,[status(cth)],[f4])).
+fof(f6,plain,(
+  c != f(a)),
+  inference(flattening,[],[f5])).
+fof(f7,plain,(
+  ! [X0,X1] : (f(X0) = g(X1) | ~q(X0,X1))),
+  inference(ennf_transformation,[],[f2])).
+fof(f8,plain,(
+  ( ! [X0] : (q(a,X0)) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f9,plain,(
+  ( ! [X0,X1] : (f(X0) = g(X1) | ~q(X0,X1)) )),
+  inference(cnf_transformation,[],[f7])).
+fof(f10,plain,(
+  ( ! [X0] : (g(X0) = c) )),
+  inference(cnf_transformation,[],[f3])).
+fof(f11,plain,(
+  c != f(a)),
+  inference(cnf_transformation,[],[f6])).
+tcf(c_49,plain,![X0:$i]:  (q(a,X0)),inference(cnf_transformation,[],[f8])).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (~q(X0,X1)|f(X0) = g(X1)),
+    inference(cnf_transformation,[],[f9])).
+tcf(c_51,plain,![X0:$i]:  
+    (g(X0) = c),
+    inference(cnf_transformation,[],[f10])).
+tcf(c_52,plain, (f(a) != c),inference(cnf_transformation,[],[f11])).
+tcf(c_53,plain, (q(a,a)),inference(instantiation,[status(thm)],[c_49])).
+tcf(c_66,plain,![X0:$i,X1:$i]:  
+    (~q(X0,X1)|f(X0) = c),
+    inference(demodulation,[status(thm)],[c_50,c_51])).
+tcf(c_74,plain, 
+    (~q(a,a)|f(a) = c),
+    inference(instantiation,[status(thm)],[c_66])).
+tcf(c_75,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_74,c_52,c_53])).
+% SZS output end CNFRefutation for horn_example_elim_var_rw.p

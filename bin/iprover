@@ -1,0 +1,4 @@
+#!/bin/sh
+# run iProver with its clausifier from bin/VClausifier and Homebrew's z3 and gmp
+d=$(cd "$(dirname "$0")" && pwd)
+DYLD_LIBRARY_PATH=/opt/homebrew/lib exec "$d/iproveropt" "$@"

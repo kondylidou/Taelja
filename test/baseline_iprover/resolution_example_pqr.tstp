@@ -1,0 +1,52 @@
+% SZS status Theorem for resolution_example_pqr.p
+% SZS output start CNFRefutation for resolution_example_pqr.p
+fof(f1,axiom,(
+  p(a)),
+  file('resolution_example_pqr.p',ax1)).
+fof(f2,axiom,(
+  ! [X0] : (p(X0) => q(X0))),
+  file('resolution_example_pqr.p',ax2)).
+fof(f3,axiom,(
+  ! [X0] : (q(X0) => r(X0))),
+  file('resolution_example_pqr.p',ax3)).
+fof(f4,conjecture,(
+  r(a)),
+  file('resolution_example_pqr.p',goal)).
+fof(f5,negated_conjecture,(
+  ~r(a)),
+inference(negated_conjecture,[status(cth)],[f4])).
+fof(f6,plain,(
+  ~r(a)),
+  inference(flattening,[],[f5])).
+fof(f7,plain,(
+  ! [X0] : (q(X0) | ~p(X0))),
+  inference(ennf_transformation,[],[f2])).
+fof(f8,plain,(
+  ! [X0] : (r(X0) | ~q(X0))),
+  inference(ennf_transformation,[],[f3])).
+fof(f9,plain,(
+  p(a)),
+  inference(cnf_transformation,[],[f1])).
+fof(f10,plain,(
+  ( ! [X0] : (q(X0) | ~p(X0)) )),
+  inference(cnf_transformation,[],[f7])).
+fof(f11,plain,(
+  ( ! [X0] : (r(X0) | ~q(X0)) )),
+  inference(cnf_transformation,[],[f8])).
+fof(f12,plain,(
+  ~r(a)),
+  inference(cnf_transformation,[],[f6])).
+tcf(c_49,plain, (p(a)),inference(cnf_transformation,[],[f9])).
+tcf(c_50,plain,![X0:$i]:  
+    (~p(X0)|q(X0)),
+    inference(cnf_transformation,[],[f10])).
+tcf(c_51,plain,![X0:$i]:  
+    (~q(X0)|r(X0)),
+    inference(cnf_transformation,[],[f11])).
+tcf(c_52,plain, (~r(a)),inference(cnf_transformation,[],[f12])).
+tcf(c_53,plain, (~q(a)|r(a)),inference(instantiation,[status(thm)],[c_51])).
+tcf(c_54,plain, (~p(a)|q(a)),inference(instantiation,[status(thm)],[c_50])).
+tcf(c_55,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_54,c_53,c_52,c_49])).
+% SZS output end CNFRefutation for resolution_example_pqr.p

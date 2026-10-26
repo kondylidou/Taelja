@@ -1,0 +1,52 @@
+% SZS status Theorem for superposition_exercise12_2.p
+% SZS output start CNFRefutation for superposition_exercise12_2.p
+fof(f1,axiom,(
+  ! [X0] : (f(X0) = c => f(X0) = b)),
+  file('superposition_exercise12_2.p',ax1)).
+fof(f2,axiom,(
+  ! [X1] : f(f(X1)) = X1),
+  file('superposition_exercise12_2.p',ax2)).
+fof(f3,conjecture,(
+  c = b),
+  file('superposition_exercise12_2.p',goal)).
+fof(f4,negated_conjecture,(
+  ~c = b),
+inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  ! [X0] : f(f(X0)) = X0),
+  inference(rectify,[],[f2])).
+fof(f6,plain,(
+  c != b),
+  inference(flattening,[],[f4])).
+fof(f7,plain,(
+  ! [X0] : (f(X0) = b | f(X0) != c)),
+  inference(ennf_transformation,[],[f1])).
+fof(f8,plain,(
+  ( ! [X0] : (f(X0) = b | f(X0) != c) )),
+  inference(cnf_transformation,[],[f7])).
+fof(f9,plain,(
+  ( ! [X0] : (f(f(X0)) = X0) )),
+  inference(cnf_transformation,[],[f5])).
+fof(f10,plain,(
+  c != b),
+  inference(cnf_transformation,[],[f6])).
+tcf(c_49,plain,![X0:$i]:  
+    (f(X0) != c|f(X0) = b),
+    inference(cnf_transformation,[],[f8])).
+tcf(c_50,plain,![X0:$i]:  
+    (f(f(X0)) = X0),
+    inference(cnf_transformation,[],[f9])).
+tcf(c_51,plain, (b != c),inference(cnf_transformation,[],[f10])).
+tcf(c_94,plain,![X0:$i]:  
+    (X0 != c|f(f(X0)) = b),
+    inference(superposition,[status(thm)],[c_50,c_49])).
+tcf(c_95,plain,![X0:$i]:  
+    (X0 != c|X0 = b),
+    inference(light_normalisation,[status(thm)],[c_94,c_50])).
+tcf(c_102,plain, 
+    (b = c),
+    inference(equality_resolution,[status(thm)],[c_95])).
+tcf(c_103,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_102,c_51])).
+% SZS output end CNFRefutation for superposition_exercise12_2.p

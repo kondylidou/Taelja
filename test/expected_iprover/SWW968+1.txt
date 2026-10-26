@@ -1,0 +1,199 @@
+Axiom 1: pred_attacker(tuple_true)
+Axiom 2: pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
+Axiom 3: pred_attacker(tuple_client_A_out_1(Y,Z,A)) => pred_attacker(A)
+Axiom 4: pred_attacker(B) /\ pred_attacker(C) /\ pred_attacker(U) => pred_attacker(tuple_server_S_in_1(U,C,B))
+Axiom 5: pred_attacker(tuple_server_S_in_1(V,W,X1)) => pred_attacker(tuple_server_S_out_2(constr_cbc_enc_4(X1,W,name_Kab_66(X2),constr_cbc_enc_2(name_Kab_66(X2),V,name_Kbs),name_Kas)))
+Axiom 6: pred_attacker(tuple_server_S_out_2(X3)) => pred_attacker(X3)
+Axiom 7: constr_tuple_4_get_3_bitstring(tuple_4(X4,X5,X6,X7)) = X7
+Axiom 8: constr_cbc_dec_4(constr_cbc_enc_4(X8,X9,X10,X11,X12),X12) = tuple_4(X8,X9,X10,X11)
+Axiom 9: pred_attacker(X13) => pred_attacker(tuple_client_A_in_2(X13))
+Axiom 10: pred_eq_bitstring_bitstring(X14,X15)
+Axiom 11: pred_attacker(tuple_client_A_in_2(X16)) /\ pred_eq_bitstring_bitstring(name_Na(X17),constr_tuple_4_get_0x30(constr_cbc_dec_4(X16,name_Kas))) /\ pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(X16,name_Kas))) => pred_attacker(tuple_client_A_out_3(constr_tuple_4_get_3_bitstring(constr_cbc_dec_4(X16,name_Kas))))
+Axiom 12: pred_attacker(tuple_client_A_out_3(X18)) => pred_attacker(X18)
+Axiom 13: constr_cbc_2_get_1_prefixes(constr_cbc_enc_2(X19,X20,X21)) = constr_cbc_enc_1(X19,X21)
+Axiom 14: pred_attacker(X22) => pred_attacker(constr_cbc_2_get_1_prefixes(X22))
+Axiom 15: constr_cbc_4_get_2_prefixes(constr_cbc_enc_4(X23,X24,X25,X26,X27)) = constr_cbc_enc_2(X23,X24,X27)
+Axiom 16: pred_attacker(X28) => pred_attacker(constr_cbc_4_get_2_prefixes(X28))
+Axiom 17: pred_attacker(X29) => pred_attacker(tuple_client_A_in_6(X29))
+Axiom 18: constr_tuple_2_get_0x30_bitstring(tuple_2(X30,X31)) = X30
+Axiom 19: constr_cbc_dec_2(constr_cbc_enc_2(X32,X33,X34),X34) = tuple_2(X32,X33)
+Axiom 20: pred_attacker(X35) => pred_attacker(tuple_client_A_in_8(X35))
+Axiom 21: pred_attacker(X36) => pred_attacker(tuple_client_A_in_4(X36))
+Axiom 22: pred_attacker(tuple_client_A_in_2(X37)) /\ pred_eq_bitstring_bitstring(name_Na(X38),constr_tuple_4_get_0x30(constr_cbc_dec_4(X37,name_Kas))) /\ pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(X37,name_Kas))) /\ pred_attacker(tuple_client_A_in_4(X39)) /\ pred_attacker(tuple_client_A_in_6(X40)) /\ pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(X40,name_Kas))) /\ pred_attacker(tuple_client_A_in_8(X41)) /\ pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(X39,X37,X38)),constr_cbc_dec_1(X41,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X40,name_Kas)))) => pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X40,name_Kas)))))
+Axiom 23: pred_attacker(tuple_client_A_out_10(X42)) => pred_attacker(X42)
+Axiom 24: constr_dec(constr_enc(X43,X44),X44) = X43
+Axiom 25: pred_attacker(X45) /\ pred_attacker(X46) => pred_attacker(constr_dec(X46,X45))
+Axiom 26: pred_attacker(constr_CONST_4)
+Axiom 27: pred_attacker(tuple_client_A_in_2(X47)) /\ pred_eq_bitstring_bitstring(name_Na(X48),constr_tuple_4_get_0x30(constr_cbc_dec_4(X47,name_Kas))) /\ pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(X47,name_Kas))) /\ pred_attacker(tuple_client_A_in_4(X49)) /\ pred_attacker(tuple_client_A_in_6(X50)) /\ pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(X50,name_Kas))) /\ pred_attacker(tuple_client_A_in_8(X51)) /\ pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(X49,X47,X48)),constr_cbc_dec_1(X51,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(X50,name_Kas)))) => pred_attacker(tuple_client_A_out_9(name_objective1))
+Axiom 28: pred_attacker(tuple_client_A_out_9(X52)) => pred_attacker(X52)
+Axiom 29: pred_attacker(X53) /\ pred_attacker(X54) => pred_attacker(tuple_2(X54,X53))
+
+Lemma 30: pred_attacker(name_Na(X))
+Proof:
+  have pred_attacker(tuple_client_A_out_1(name_A,name_B,name_Na(X)))
+    by axiom 2
+  hence pred_attacker(name_Na(X))
+    by axiom 3
+
+Lemma 31: pred_attacker(tuple_server_S_in_1(X,Y,Z)) => pred_attacker(constr_cbc_enc_4(Z,Y,name_Kab_66(A),constr_cbc_enc_2(name_Kab_66(A),X,name_Kbs),name_Kas))
+Proof:
+  have pred_attacker(tuple_server_S_in_1(X,Y,Z))
+    by assumption
+  hence pred_attacker(tuple_server_S_out_2(constr_cbc_enc_4(Z,Y,name_Kab_66(A),constr_cbc_enc_2(name_Kab_66(A),X,name_Kbs),name_Kas)))
+    by axiom 5
+  hence pred_attacker(constr_cbc_enc_4(Z,Y,name_Kab_66(A),constr_cbc_enc_2(name_Kab_66(A),X,name_Kbs),name_Kas))
+    by axiom 6
+
+Lemma 32: pred_attacker(constr_cbc_enc_1(name_Kab_66(X),name_Kbs))
+Proof:
+  have pred_attacker(name_Na(Y))
+    by lemma 30
+   and pred_attacker(name_Na(Z))
+    by lemma 30
+   and pred_attacker(name_Na(A))
+    by lemma 30
+  hence pred_attacker(tuple_server_S_in_1(name_Na(A),name_Na(Z),name_Na(Y)))
+    by axiom 4
+  hence pred_attacker(constr_cbc_enc_4(name_Na(Y),name_Na(Z),name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),name_Na(A),name_Kbs),name_Kas))
+    by lemma 31
+  hence pred_attacker(tuple_client_A_in_2(constr_cbc_enc_4(name_Na(Y),name_Na(Z),name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),name_Na(A),name_Kbs),name_Kas)))
+    by axiom 9
+   and pred_eq_bitstring_bitstring(name_Na(B),constr_tuple_4_get_0x30(constr_cbc_dec_4(constr_cbc_enc_4(name_Na(Y),name_Na(Z),name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),name_Na(A),name_Kbs),name_Kas),name_Kas)))
+    by axiom 10
+   and pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(constr_cbc_enc_4(name_Na(Y),name_Na(Z),name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),name_Na(A),name_Kbs),name_Kas),name_Kas)))
+    by axiom 10
+  hence pred_attacker(tuple_client_A_out_3(constr_tuple_4_get_3_bitstring(constr_cbc_dec_4(constr_cbc_enc_4(name_Na(Y),name_Na(Z),name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),name_Na(A),name_Kbs),name_Kas),name_Kas))))
+    by axiom 11
+  hence pred_attacker(constr_tuple_4_get_3_bitstring(constr_cbc_dec_4(constr_cbc_enc_4(name_Na(Y),name_Na(Z),name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),name_Na(A),name_Kbs),name_Kas),name_Kas)))
+    by axiom 12
+  hence pred_attacker(constr_tuple_4_get_3_bitstring(tuple_4(name_Na(Y),name_Na(Z),name_Kab_66(X),constr_cbc_enc_2(name_Kab_66(X),name_Na(A),name_Kbs))))
+    by rw axiom 8
+  hence pred_attacker(constr_cbc_enc_2(name_Kab_66(X),name_Na(A),name_Kbs))
+    by rw axiom 7
+  hence pred_attacker(constr_cbc_2_get_1_prefixes(constr_cbc_enc_2(name_Kab_66(X),name_Na(A),name_Kbs)))
+    by axiom 14
+  hence pred_attacker(constr_cbc_enc_1(name_Kab_66(X),name_Kbs))
+    by rw axiom 13
+
+Lemma 33: pred_attacker(tuple_client_A_in_4(constr_cbc_enc_1(name_Kab_66(X),name_Kbs)))
+Proof:
+  have pred_attacker(constr_cbc_enc_1(name_Kab_66(X),name_Kbs))
+    by lemma 32
+  hence pred_attacker(tuple_client_A_in_4(constr_cbc_enc_1(name_Kab_66(X),name_Kbs)))
+    by axiom 21
+
+Lemma 34: pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(tuple_true,constr_cbc_enc_1(name_Kab_66(X),name_Kbs),name_Kas)))
+Proof:
+  have pred_attacker(tuple_true)
+    by axiom 1
+   and pred_attacker(constr_cbc_enc_1(name_Kab_66(X),name_Kbs))
+    by lemma 32
+   and pred_attacker(name_Na(Y))
+    by lemma 30
+  hence pred_attacker(tuple_server_S_in_1(name_Na(Y),constr_cbc_enc_1(name_Kab_66(X),name_Kbs),tuple_true))
+    by axiom 4
+  hence pred_attacker(constr_cbc_enc_4(tuple_true,constr_cbc_enc_1(name_Kab_66(X),name_Kbs),name_Kab_66(Z),constr_cbc_enc_2(name_Kab_66(Z),name_Na(Y),name_Kbs),name_Kas))
+    by lemma 31
+  hence pred_attacker(constr_cbc_4_get_2_prefixes(constr_cbc_enc_4(tuple_true,constr_cbc_enc_1(name_Kab_66(X),name_Kbs),name_Kab_66(Z),constr_cbc_enc_2(name_Kab_66(Z),name_Na(Y),name_Kbs),name_Kas)))
+    by axiom 16
+  hence pred_attacker(constr_cbc_enc_2(tuple_true,constr_cbc_enc_1(name_Kab_66(X),name_Kbs),name_Kas))
+    by rw axiom 15
+  hence pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(tuple_true,constr_cbc_enc_1(name_Kab_66(X),name_Kbs),name_Kas)))
+    by axiom 17
+
+Lemma 35: pred_attacker(tuple_client_A_in_8(constr_cbc_enc_1(name_Kab_66(X),name_Kbs)))
+Proof:
+  have pred_attacker(constr_cbc_enc_1(name_Kab_66(X),name_Kbs))
+    by lemma 32
+  hence pred_attacker(tuple_client_A_in_8(constr_cbc_enc_1(name_Kab_66(X),name_Kbs)))
+    by axiom 20
+
+Lemma 36: pred_attacker(constr_enc(name_objective2,tuple_true))
+Proof:
+  have pred_attacker(name_Na(X))
+    by lemma 30
+  hence pred_attacker(tuple_client_A_in_2(name_Na(X)))
+    by axiom 9
+   and pred_eq_bitstring_bitstring(name_Na(Y),constr_tuple_4_get_0x30(constr_cbc_dec_4(name_Na(X),name_Kas)))
+    by axiom 10
+   and pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(name_Na(X),name_Kas)))
+    by axiom 10
+   and pred_attacker(tuple_client_A_in_4(constr_cbc_enc_1(name_Kab_66(Z),name_Kbs)))
+    by lemma 33
+   and pred_attacker(tuple_client_A_in_6(constr_cbc_enc_2(tuple_true,constr_cbc_enc_1(name_Kab_66(A),name_Kbs),name_Kas)))
+    by lemma 34
+   and pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(constr_cbc_enc_2(tuple_true,constr_cbc_enc_1(name_Kab_66(A),name_Kbs),name_Kas),name_Kas)))
+    by axiom 10
+   and pred_attacker(tuple_client_A_in_8(constr_cbc_enc_1(name_Kab_66(B),name_Kbs)))
+    by lemma 35
+   and pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(constr_cbc_enc_1(name_Kab_66(Z),name_Kbs),name_Na(X),Y)),constr_cbc_dec_1(constr_cbc_enc_1(name_Kab_66(B),name_Kbs),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(tuple_true,constr_cbc_enc_1(name_Kab_66(A),name_Kbs),name_Kas),name_Kas))))
+    by axiom 10
+  hence pred_attacker(tuple_client_A_out_10(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(tuple_true,constr_cbc_enc_1(name_Kab_66(A),name_Kbs),name_Kas),name_Kas)))))
+    by axiom 22
+  hence pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(constr_cbc_enc_2(tuple_true,constr_cbc_enc_1(name_Kab_66(A),name_Kbs),name_Kas),name_Kas))))
+    by axiom 23
+  hence pred_attacker(constr_enc(name_objective2,constr_tuple_2_get_0x30_bitstring(tuple_2(tuple_true,constr_cbc_enc_1(name_Kab_66(A),name_Kbs)))))
+    by rw axiom 19
+  hence pred_attacker(constr_enc(name_objective2,tuple_true))
+    by rw axiom 18
+
+Lemma 37: pred_attacker(tuple_client_A_in_4(name_Na(X)))
+Proof:
+  have pred_attacker(name_Na(X))
+    by lemma 30
+  hence pred_attacker(tuple_client_A_in_4(name_Na(X)))
+    by axiom 21
+
+Lemma 38: pred_attacker(tuple_client_A_in_6(name_Na(X)))
+Proof:
+  have pred_attacker(name_Na(X))
+    by lemma 30
+  hence pred_attacker(tuple_client_A_in_6(name_Na(X)))
+    by axiom 17
+
+Lemma 39: pred_attacker(tuple_client_A_in_8(name_Na(X)))
+Proof:
+  have pred_attacker(name_Na(X))
+    by lemma 30
+  hence pred_attacker(tuple_client_A_in_8(name_Na(X)))
+    by axiom 20
+
+Lemma 40: pred_attacker(name_objective1)
+Proof:
+  have pred_attacker(constr_CONST_4)
+    by axiom 26
+  hence pred_attacker(tuple_client_A_in_2(constr_CONST_4))
+    by axiom 9
+   and pred_eq_bitstring_bitstring(name_Na(X),constr_tuple_4_get_0x30(constr_cbc_dec_4(constr_CONST_4,name_Kas)))
+    by axiom 10
+   and pred_eq_bitstring_bitstring(name_B,constr_tuple_4_get_1(constr_cbc_dec_4(constr_CONST_4,name_Kas)))
+    by axiom 10
+   and pred_attacker(tuple_client_A_in_4(name_Na(Y)))
+    by lemma 37
+   and pred_attacker(tuple_client_A_in_6(name_Na(Z)))
+    by lemma 38
+   and pred_eq_bitstring_bitstring(name_A,constr_tuple_2_get_1(constr_cbc_dec_2(name_Na(Z),name_Kas)))
+    by axiom 10
+   and pred_attacker(tuple_client_A_in_8(name_Na(A)))
+    by lemma 39
+   and pred_eq_bitstring_bitstring(tuple_succ(name_Na0x27(name_Na(Y),constr_CONST_4,X)),constr_cbc_dec_1(name_Na(A),constr_tuple_2_get_0x30_bitstring(constr_cbc_dec_2(name_Na(Z),name_Kas))))
+    by axiom 10
+  hence pred_attacker(tuple_client_A_out_9(name_objective1))
+    by axiom 27
+  hence pred_attacker(name_objective1)
+    by axiom 28
+
+Goal 1: pred_attacker(tuple_2(name_objective1,name_objective2))
+Proof:
+  have pred_attacker(tuple_true)
+    by axiom 1
+   and pred_attacker(constr_enc(name_objective2,tuple_true))
+    by lemma 36
+  hence pred_attacker(constr_dec(constr_enc(name_objective2,tuple_true),tuple_true))
+    by axiom 25
+  hence pred_attacker(name_objective2)
+    by rw axiom 24
+   and pred_attacker(name_objective1)
+    by lemma 40
+  hence pred_attacker(tuple_2(name_objective1,name_objective2))
+    by axiom 29

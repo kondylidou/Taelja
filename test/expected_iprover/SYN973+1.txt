@@ -1,0 +1,6 @@
+Axiom 1: p(z)
+
+Goal 1: p(z)
+Proof:
+  have p(z)
+    by axiom 1

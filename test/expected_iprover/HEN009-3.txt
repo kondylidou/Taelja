@@ -1,0 +1,208 @@
+Axiom 1: less_equal(zero,X)
+Axiom 2: less_equal(X,Y) => divide(X,Y) = zero
+Axiom 3: less_equal(X,identity)
+Axiom 4: divide(identity,a) = b
+Axiom 5: less_equal(divide(divide(X,Y),divide(Z,Y)),divide(divide(X,Z),Y))
+Axiom 6: less_equal(X,Y) /\ less_equal(Y,X) => X = Y
+Axiom 7: divide(X,Y) = zero => less_equal(X,Y)
+Axiom 8: less_equal(divide(X,Y),X)
+Axiom 9: divide(identity,b) = c
+Axiom 10: divide(identity,c) = d
+
+Lemma 11: divide(X,identity) = zero
+Proof:
+  have less_equal(X,identity)
+    by axiom 3
+  hence divide(X,identity) = zero
+    by axiom 2
+
+Lemma 12: divide(zero,X) = zero
+Proof:
+  have less_equal(zero,X)
+    by axiom 1
+  hence divide(zero,X) = zero
+    by axiom 2
+
+Lemma 13: less_equal(X,zero) => X = zero
+Proof:
+  have less_equal(zero,X)
+    by axiom 1
+   and less_equal(X,zero)
+    by assumption
+  hence X = zero
+    by axiom 6
+
+Lemma 14: divide(divide(X,a),b) = zero
+Proof:
+  have less_equal(divide(divide(X,a),divide(identity,a)),divide(divide(X,identity),a))
+    by axiom 5
+  hence less_equal(divide(divide(X,a),b),divide(divide(X,identity),a))
+    by rw axiom 4
+  hence less_equal(divide(divide(X,a),b),divide(zero,a))
+    by rw lemma 11
+  hence less_equal(divide(divide(X,a),b),zero)
+    by rw lemma 12
+  hence divide(divide(X,a),b) = zero
+    by lemma 13
+
+Lemma 15: divide(divide(X,Y),X) = zero
+Proof:
+  have less_equal(divide(X,Y),X)
+    by axiom 8
+  hence divide(divide(X,Y),X) = zero
+    by axiom 2
+
+Lemma 16: divide(divide(X,b),c) = zero
+Proof:
+  have less_equal(divide(divide(X,b),divide(identity,b)),divide(divide(X,identity),b))
+    by axiom 5
+  hence less_equal(divide(divide(X,b),c),divide(divide(X,identity),b))
+    by rw axiom 9
+  hence less_equal(divide(divide(X,b),c),divide(zero,b))
+    by rw lemma 11
+  hence less_equal(divide(divide(X,b),c),zero)
+    by rw lemma 12
+  hence divide(divide(X,b),c) = zero
+    by lemma 13
+
+Lemma 17: divide(divide(b,zero),divide(b,zero)) = zero
+Proof:
+  have less_equal(divide(divide(divide(b,zero),divide(b,zero)),divide(divide(divide(b,zero),b),divide(b,zero))),divide(divide(divide(b,zero),divide(divide(b,zero),b)),divide(b,zero)))
+    by axiom 5
+  hence less_equal(divide(divide(divide(b,zero),divide(b,zero)),divide(divide(divide(b,zero),b),divide(b,zero))),zero)
+    by rw lemma 15
+  hence less_equal(divide(divide(divide(b,zero),divide(b,zero)),zero),zero)
+    by rw lemma 15
+  hence divide(divide(divide(b,zero),divide(b,zero)),zero) = zero
+    by lemma 13
+  hence less_equal(divide(divide(b,zero),divide(b,zero)),zero)
+    by axiom 7
+  hence divide(divide(b,zero),divide(b,zero)) = zero
+    by lemma 13
+
+Lemma 18: less_equal(divide(a,b),c)
+Proof:
+  have divide(divide(a,b),c) = zero
+    by lemma 16
+  hence less_equal(divide(a,b),c)
+    by axiom 7
+
+Lemma 19: c = divide(a,b)
+Proof:
+  have less_equal(divide(divide(identity,b),divide(a,b)),divide(divide(identity,a),b))
+    by axiom 5
+  hence less_equal(divide(divide(identity,b),divide(a,b)),zero)
+    by rw lemma 14
+  hence less_equal(divide(c,divide(a,b)),zero)
+    by rw axiom 9
+  hence divide(c,divide(a,b)) = zero
+    by lemma 13
+  hence less_equal(c,divide(a,b))
+    by axiom 7
+   and less_equal(divide(a,b),c)
+    by lemma 18
+  hence c = divide(a,b)
+    by axiom 6
+
+Lemma 20: divide(c,a) = zero
+Proof:
+  divide(c,a)
+= { by lemma 19 }
+  divide(divide(a,b),a)
+= { by lemma 15 }
+  zero
+
+Lemma 21: b = divide(b,zero)
+Proof:
+  have less_equal(divide(divide(b,divide(b,zero)),divide(zero,divide(b,zero))),divide(divide(b,zero),divide(b,zero)))
+    by axiom 5
+  hence less_equal(divide(divide(b,divide(b,zero)),zero),divide(divide(b,zero),divide(b,zero)))
+    by rw lemma 12
+  hence less_equal(divide(divide(b,divide(b,zero)),zero),zero)
+    by rw lemma 17
+  hence divide(divide(b,divide(b,zero)),zero) = zero
+    by lemma 13
+  hence less_equal(divide(b,divide(b,zero)),zero)
+    by axiom 7
+  hence divide(b,divide(b,zero)) = zero
+    by lemma 13
+  hence less_equal(b,divide(b,zero))
+    by axiom 7
+   and less_equal(divide(b,zero),b)
+    by axiom 8
+  hence b = divide(b,zero)
+    by axiom 6
+
+Lemma 22: less_equal(divide(d,a),b)
+Proof:
+  have divide(divide(d,a),b) = zero
+    by lemma 14
+  hence less_equal(divide(d,a),b)
+    by axiom 7
+
+Lemma 23: less_equal(divide(b,c),d)
+Proof:
+  have less_equal(divide(divide(b,c),divide(identity,c)),divide(divide(b,identity),c))
+    by axiom 5
+  hence less_equal(divide(divide(b,c),d),divide(divide(b,identity),c))
+    by rw axiom 10
+  hence less_equal(divide(divide(b,c),d),divide(zero,c))
+    by rw lemma 11
+  hence less_equal(divide(divide(b,c),d),zero)
+    by rw lemma 12
+  hence divide(divide(b,c),d) = zero
+    by lemma 13
+  hence less_equal(divide(b,c),d)
+    by axiom 7
+
+Lemma 24: d = divide(b,c)
+Proof:
+  have less_equal(divide(divide(identity,c),divide(b,c)),divide(divide(identity,b),c))
+    by axiom 5
+  hence less_equal(divide(divide(identity,c),divide(b,c)),zero)
+    by rw lemma 16
+  hence less_equal(divide(d,divide(b,c)),zero)
+    by rw axiom 10
+  hence divide(d,divide(b,c)) = zero
+    by lemma 13
+  hence less_equal(d,divide(b,c))
+    by axiom 7
+   and less_equal(divide(b,c),d)
+    by lemma 23
+  hence d = divide(b,c)
+    by axiom 6
+
+Lemma 25: b = divide(d,a)
+Proof:
+  have less_equal(divide(divide(identity,a),divide(c,a)),divide(divide(identity,c),a))
+    by axiom 5
+  hence less_equal(divide(b,divide(c,a)),divide(divide(identity,c),a))
+    by rw axiom 4
+  hence less_equal(divide(b,divide(c,a)),divide(d,a))
+    by rw axiom 10
+  hence less_equal(divide(b,zero),divide(d,a))
+    by rw lemma 20
+  hence less_equal(b,divide(d,a))
+    by rw lemma 21 R->L
+   and less_equal(divide(d,a),b)
+    by lemma 22
+  hence b = divide(d,a)
+    by axiom 6
+
+Lemma 26: less_equal(b,d)
+Proof:
+  have less_equal(divide(d,a),d)
+    by axiom 8
+  hence less_equal(b,d)
+    by rw lemma 25 R->L
+
+Goal 1: b = d
+Proof:
+  have less_equal(divide(b,c),b)
+    by axiom 8
+  hence less_equal(d,b)
+    by rw lemma 24 R->L
+   and less_equal(b,d)
+    by lemma 26
+  hence b = d
+    by axiom 6

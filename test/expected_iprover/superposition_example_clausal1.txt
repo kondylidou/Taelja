@@ -1,0 +1,17 @@
+Axiom 1: b = c
+Axiom 2: a = b
+Axiom 3: f(X) = X
+
+Goal 1: d = f(d)
+Proof:
+  d
+= { by axiom 3 R->L }
+  f(d)
+
+Goal 2: a = c
+Proof:
+  a
+= { by axiom 2 }
+  b
+= { by axiom 1 }
+  c

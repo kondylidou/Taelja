@@ -1,0 +1,81 @@
+% SZS status Theorem for SET886+1.p
+% SZS output start CNFRefutation for SET886+1.p
+fof(f1,axiom,(
+  ! [X0,X1] : unordered_pair(X0,X1) = unordered_pair(X1,X0)),
+  file('Problems/SET/SET886+1.p',commutativity_k2_tarski)).
+fof(f5,axiom,(
+  ! [X0,X1,X2] : (subset(unordered_pair(X0,X1),singleton(X2)) => X0 = X2)),
+  file('Problems/SET/SET886+1.p',t26_zfmisc_1)).
+fof(f6,conjecture,(
+  ! [X0,X1,X2] : (subset(unordered_pair(X0,X1),singleton(X2)) => unordered_pair(X0,X1) = singleton(X2))),
+  file('Problems/SET/SET886+1.p',t27_zfmisc_1)).
+fof(f7,negated_conjecture,(
+  ~! [X0,X1,X2] : (subset(unordered_pair(X0,X1),singleton(X2)) => unordered_pair(X0,X1) = singleton(X2))),
+inference(negated_conjecture,[status(cth)],[f6])).
+fof(f8,axiom,(
+  ! [X0] : unordered_pair(X0,X0) = singleton(X0)),
+  file('Problems/SET/SET886+1.p',t69_enumset1)).
+fof(f10,plain,(
+  ! [X0,X1,X2] : (X0 = X2 | ~subset(unordered_pair(X0,X1),singleton(X2)))),
+  inference(ennf_transformation,[],[f5])).
+fof(f11,plain,(
+  ? [X0,X1,X2] : (unordered_pair(X0,X1) != singleton(X2) & subset(unordered_pair(X0,X1),singleton(X2)))),
+  inference(ennf_transformation,[],[f7])).
+fof(f16,plain,(
+  ? [X0,X1,X2] : (unordered_pair(X0,X1) != singleton(X2) & subset(unordered_pair(X0,X1),singleton(X2))) => (unordered_pair(sK2,sK3) != singleton(sK4) & subset(unordered_pair(sK2,sK3),singleton(sK4)))),
+  introduced(choice_axiom,[])).
+fof(f17,plain,(
+  unordered_pair(sK2,sK3) != singleton(sK4) & subset(unordered_pair(sK2,sK3),singleton(sK4))),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK2,sK3,sK4])],[f11,f16])).
+fof(f18,plain,(
+  ( ! [X0,X1] : (unordered_pair(X0,X1) = unordered_pair(X1,X0)) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f22,plain,(
+  ( ! [X2,X0,X1] : (X0 = X2 | ~subset(unordered_pair(X0,X1),singleton(X2))) )),
+  inference(cnf_transformation,[],[f10])).
+fof(f23,plain,(
+  subset(unordered_pair(sK2,sK3),singleton(sK4))),
+  inference(cnf_transformation,[],[f17])).
+fof(f24,plain,(
+  unordered_pair(sK2,sK3) != singleton(sK4)),
+  inference(cnf_transformation,[],[f17])).
+fof(f25,plain,(
+  ( ! [X0] : (unordered_pair(X0,X0) = singleton(X0)) )),
+  inference(cnf_transformation,[],[f8])).
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (unordered_pair(X0,X1) = unordered_pair(X1,X0)),
+    inference(cnf_transformation,[],[f18])).
+tcf(c_53,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~subset(unordered_pair(X0,X1),singleton(X2))|X0 = X2),
+    inference(cnf_transformation,[],[f22])).
+tcf(c_54,plain, 
+    (unordered_pair(sK2,sK3) != singleton(sK4)),
+    inference(cnf_transformation,[],[f24])).
+tcf(c_55,plain, 
+    (subset(unordered_pair(sK2,sK3),singleton(sK4))),
+    inference(cnf_transformation,[],[f23])).
+tcf(c_56,plain,![X0:$i]:  
+    (unordered_pair(X0,X0) = singleton(X0)),
+    inference(cnf_transformation,[],[f25])).
+tcf(c_262,plain, 
+    (sK2 = sK4),
+    inference(superposition,[status(thm)],[c_55,c_53])).
+tcf(c_263,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~subset(unordered_pair(X0,X1),singleton(X2))|X1 = X2),
+    inference(superposition,[status(thm)],[c_49,c_53])).
+tcf(c_270,plain, 
+    (unordered_pair(sK2,sK3) != singleton(sK2)),
+    inference(demodulation,[status(thm)],[c_54,c_262])).
+tcf(c_271,plain, 
+    (subset(unordered_pair(sK2,sK3),singleton(sK2))),
+    inference(demodulation,[status(thm)],[c_55,c_262])).
+tcf(c_282,plain, 
+    (sK2 = sK3),
+    inference(superposition,[status(thm)],[c_271,c_263])).
+tcf(c_287,plain, 
+    (unordered_pair(sK2,sK2) != singleton(sK2)),
+    inference(demodulation,[status(thm)],[c_270,c_282])).
+tcf(c_288,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_287,c_56])).
+% SZS output end CNFRefutation for SET886+1.p

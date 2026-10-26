@@ -1,0 +1,69 @@
+% SZS status Theorem for horn_example_eq_head_inlined.p
+% SZS output start CNFRefutation for horn_example_eq_head_inlined.p
+fof(f1,axiom,(
+  ! [X0] : ((q(X0) & p(X0)) => zero = X0)),
+  file('horn_example_eq_head_inlined.p',ax1)).
+fof(f2,axiom,(
+  ! [X0] : p(f(X0))),
+  file('horn_example_eq_head_inlined.p',ax2)).
+fof(f3,axiom,(
+  ! [X0] : q(f(X0))),
+  file('horn_example_eq_head_inlined.p',ax3)).
+fof(f4,axiom,(
+  ! [X0] : f(X0) = g(X0)),
+  file('horn_example_eq_head_inlined.p',ax4)).
+fof(f5,conjecture,(
+  zero = g(a)),
+  file('horn_example_eq_head_inlined.p',goal)).
+fof(f6,negated_conjecture,(
+  ~zero = g(a)),
+inference(negated_conjecture,[status(cth)],[f5])).
+fof(f7,plain,(
+  zero != g(a)),
+  inference(flattening,[],[f6])).
+fof(f8,plain,(
+  ! [X0] : (zero = X0 | (~q(X0) | ~p(X0)))),
+  inference(ennf_transformation,[],[f1])).
+fof(f9,plain,(
+  ! [X0] : (zero = X0 | ~q(X0) | ~p(X0))),
+  inference(flattening,[],[f8])).
+fof(f10,plain,(
+  ( ! [X0] : (zero = X0 | ~q(X0) | ~p(X0)) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f11,plain,(
+  ( ! [X0] : (p(f(X0))) )),
+  inference(cnf_transformation,[],[f2])).
+fof(f12,plain,(
+  ( ! [X0] : (q(f(X0))) )),
+  inference(cnf_transformation,[],[f3])).
+fof(f13,plain,(
+  ( ! [X0] : (f(X0) = g(X0)) )),
+  inference(cnf_transformation,[],[f4])).
+fof(f14,plain,(
+  zero != g(a)),
+  inference(cnf_transformation,[],[f7])).
+tcf(c_49,plain,![X0:$i]:  
+    (~q(X0)|~p(X0)|X0 = zero),
+    inference(cnf_transformation,[],[f10])).
+tcf(c_50,plain,![X0:$i]:  (p(f(X0))),inference(cnf_transformation,[],[f11])).
+tcf(c_51,plain,![X0:$i]:  (q(f(X0))),inference(cnf_transformation,[],[f12])).
+tcf(c_52,plain,![X0:$i]:  
+    (f(X0) = g(X0)),
+    inference(cnf_transformation,[],[f13])).
+tcf(c_53,plain, (g(a) != zero),inference(cnf_transformation,[],[f14])).
+tcf(c_72,plain, 
+    (f(a) != zero),
+    inference(demodulation,[status(thm)],[c_53,c_52])).
+tcf(c_82,plain,![X0:$i,X1:$i]:  
+    (f(X0) != X1|~p(X1)|X1 = zero),
+    inference(resolution_lifted,[status(thm)],[c_49,c_51])).
+tcf(c_83,plain,![X0:$i]:  
+    (~p(f(X0))|f(X0) = zero),
+    inference(unflattening,[status(thm)],[c_82])).
+tcf(c_85,plain,![X0:$i]:  
+    (f(X0) = zero),
+    inference(global_subsumption_just,[status(thm)],[c_83,c_50,c_83])).
+tcf(c_92,plain, 
+    ($false),
+    inference(backward_subsumption_resolution,[status(thm)],[c_72,c_85])).
+% SZS output end CNFRefutation for horn_example_eq_head_inlined.p

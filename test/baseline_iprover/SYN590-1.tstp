@@ -1,0 +1,60 @@
+% SZS status Unsatisfiable for SYN590-1.p
+% SZS output start CNFRefutation for SYN590-1.p
+tcf(c_51,plain, (p11(c16)),file('Problems/SYN/SYN590-1.p', c16_is_p11_3)).
+tcf(c_56,plain, (p3(f4(c16),f6(c15))),file('Problems/SYN/SYN590-1.p', p3_8)).
+tcf(c_57,plain,![X0:$i]:  
+    (~p11(X0)|p11(f9(X0))),
+    file('Problems/SYN/SYN590-1.p', p11_9)).
+tcf(c_59,plain,![X0:$i,X1:$i]:  
+    (~p10(f6(X0),f6(X1))|p12(X0,X1)),
+    file('Problems/SYN/SYN590-1.p', p12_11)).
+tcf(c_66,plain,![X0:$i]:  
+    (~p11(X0)|p3(f4(X0),f6(f8(X0)))),
+    file('Problems/SYN/SYN590-1.p', p3_18)).
+tcf(c_67,plain,![X0:$i]:  
+    (~p11(X0)|p10(f4(f9(X0)),f4(X0))),
+    file('Problems/SYN/SYN590-1.p', p10_19)).
+tcf(c_73,plain,![X0:$i,X1:$i]:  
+    (~p3(f4(X0),f6(X1))|~p12(X1,c15)|~p11(X0)),
+    file('Problems/SYN/SYN590-1.p', not_p11_25)).
+tcf(c_74,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~p3(X0,X1)|~p3(X2,X3)|~p10(X0,X2)|p10(X1,X3)),
+    file('Problems/SYN/SYN590-1.p', p10_26)).
+tcf(c_469,plain, 
+    (~p11(c16)|p11(f9(c16))),
+    inference(instantiation,[status(thm)],[c_57])).
+tcf(c_478,plain, 
+    (~p11(c16)|p10(f4(f9(c16)),f4(c16))),
+    inference(instantiation,[status(thm)],[c_67])).
+tcf(c_507,plain,![X0:$i]:  
+    (~p3(f4(f9(c16)),f6(X0))|~p12(X0,c15)|~p11(f9(c16))),
+    inference(instantiation,[status(thm)],[c_73])).
+tcf(c_510,plain, 
+    (~p11(f9(c16))|p3(f4(f9(c16)),f6(f8(f9(c16))))),
+    inference(instantiation,[status(thm)],[c_66])).
+tcf(c_525,plain,![X0:$i,X1:$i]:  
+    (~p10(f4(f9(c16)),f4(c16))|~p3(f4(f9(c16)),X0)|~p3(f4(c16),X1)|p10(X0,X1)),
+    inference(instantiation,[status(thm)],[c_74])).
+tcf(c_648,plain,![X0:$i]:  
+    (~p10(f4(f9(c16)),f4(c16))|~p3(f4(f9(c16)),X0)|~p3(f4(c16),f6(c15))|
+    p10(X0,f6(c15))),
+    inference(instantiation,[status(thm)],[c_525])).
+tcf(c_1008,plain,![X0:$i]:  
+    (~p10(f6(X0),f6(c15))|p12(X0,c15)),
+    inference(instantiation,[status(thm)],[c_59])).
+tcf(c_1490,plain, 
+    (~p3(f4(f9(c16)),f6(f8(f9(c16))))|~p10(f4(f9(c16)),f4(c16))|~p3(f4(c16),f6(c15))|
+    p10(f6(f8(f9(c16))),f6(c15))),
+    inference(instantiation,[status(thm)],[c_648])).
+tcf(c_2178,plain, 
+    (~p10(f6(f8(f9(c16))),f6(c15))|p12(f8(f9(c16)),c15)),
+    inference(instantiation,[status(thm)],[c_1008])).
+tcf(c_3194,plain, 
+    (~p3(f4(f9(c16)),f6(f8(f9(c16))))|~p12(f8(f9(c16)),c15)|~p11(f9(c16))),
+    inference(instantiation,[status(thm)],[c_507])).
+tcf(c_3200,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_3194,c_2178,c_1490,c_510,c_478,c_469,c_56,c_51])).
+% SZS output end CNFRefutation for SYN590-1.p

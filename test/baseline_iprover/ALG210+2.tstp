@@ -1,0 +1,183 @@
+% SZS status Theorem for ALG210+2.p
+% SZS output start CNFRefutation for ALG210+2.p
+fof(f1,axiom,(
+  ! [X0,X1,X2] : times(times(X0,X1),X2) = times(X1,times(X2,X0))),
+  file('Problems/ALG/ALG210+2.p',axiom_1)).
+fof(f2,axiom,(
+  ! [X1] : (element(X1) <=> ? [X2] : (times(X1,X1) = X2 & times(X1,X2) = X1))),
+  file('Problems/ALG/ALG210+2.p',axiom_2)).
+fof(f3,conjecture,(
+  ! [X0,X1,X2] : ((times(X0,X1) = X2 & element(X1) & element(X0)) => element(X2))),
+  file('Problems/ALG/ALG210+2.p',conjecture_1)).
+fof(f4,negated_conjecture,(
+  ~! [X0,X1,X2] : ((times(X0,X1) = X2 & element(X1) & element(X0)) => element(X2))),
+inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  ! [X0] : (element(X0) <=> ? [X1] : (times(X0,X0) = X1 & times(X0,X1) = X0))),
+  inference(rectify,[],[f2])).
+fof(f6,plain,(
+  ? [X0,X1,X2] : (~element(X2) & (times(X0,X1) = X2 & element(X1) & element(X0)))),
+  inference(ennf_transformation,[],[f4])).
+fof(f7,plain,(
+  ? [X0,X1,X2] : (~element(X2) & times(X0,X1) = X2 & element(X1) & element(X0))),
+  inference(flattening,[],[f6])).
+fof(f8,plain,(
+  ! [X0] : ((element(X0) | ! [X1] : (times(X0,X0) != X1 | times(X0,X1) != X0)) & (? [X1] : (times(X0,X0) = X1 & times(X0,X1) = X0) | ~element(X0)))),
+  inference(nnf_transformation,[],[f5])).
+fof(f9,plain,(
+  ! [X0] : ((element(X0) | ! [X1] : (times(X0,X0) != X1 | times(X0,X1) != X0)) & (? [X2] : (times(X0,X0) = X2 & times(X0,X2) = X0) | ~element(X0)))),
+  inference(rectify,[],[f8])).
+fof(f10,plain,(
+  ! [X0] : (? [X2] : (times(X0,X0) = X2 & times(X0,X2) = X0) => (times(X0,X0) = sK0(X0) & times(X0,sK0(X0)) = X0))),
+  introduced(choice_axiom,[])).
+fof(f11,plain,(
+  ! [X0] : ((element(X0) | ! [X1] : (times(X0,X0) != X1 | times(X0,X1) != X0)) & ((times(X0,X0) = sK0(X0) & times(X0,sK0(X0)) = X0) | ~element(X0)))),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK0])],[f9,f10])).
+fof(f12,plain,(
+  ? [X0,X1,X2] : (~element(X2) & times(X0,X1) = X2 & element(X1) & element(X0)) => (~element(sK3) & sK3 = times(sK1,sK2) & element(sK2) & element(sK1))),
+  introduced(choice_axiom,[])).
+fof(f13,plain,(
+  ~element(sK3) & sK3 = times(sK1,sK2) & element(sK2) & element(sK1)),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK1,sK2,sK3])],[f7,f12])).
+fof(f14,plain,(
+  ( ! [X2,X0,X1] : (times(times(X0,X1),X2) = times(X1,times(X2,X0))) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f15,plain,(
+  ( ! [X0] : (times(X0,sK0(X0)) = X0 | ~element(X0)) )),
+  inference(cnf_transformation,[],[f11])).
+fof(f16,plain,(
+  ( ! [X0] : (times(X0,X0) = sK0(X0) | ~element(X0)) )),
+  inference(cnf_transformation,[],[f11])).
+fof(f17,plain,(
+  ( ! [X0,X1] : (element(X0) | times(X0,X0) != X1 | times(X0,X1) != X0) )),
+  inference(cnf_transformation,[],[f11])).
+fof(f18,plain,(
+  element(sK1)),
+  inference(cnf_transformation,[],[f13])).
+fof(f19,plain,(
+  element(sK2)),
+  inference(cnf_transformation,[],[f13])).
+fof(f20,plain,(
+  sK3 = times(sK1,sK2)),
+  inference(cnf_transformation,[],[f13])).
+fof(f21,plain,(
+  ~element(sK3)),
+  inference(cnf_transformation,[],[f13])).
+fof(f22,plain,(
+  ( ! [X0] : (element(X0) | times(X0,times(X0,X0)) != X0) )),
+  inference(equality_resolution,[],[f17])).
+tcf(c_49,plain,![X0:$i,X1:$i,X2:$i]:  
+    (times(times(X0,X1),X2) = times(X1,times(X2,X0))),
+    inference(cnf_transformation,[],[f14])).
+tcf(c_50,plain,![X0:$i]:  
+    (times(X0,times(X0,X0)) != X0|element(X0)),
+    inference(cnf_transformation,[],[f22])).
+tcf(c_51,plain,![X0:$i]:  
+    (~element(X0)|times(X0,X0) = sK0(X0)),
+    inference(cnf_transformation,[],[f16])).
+tcf(c_52,plain,![X0:$i]:  
+    (~element(X0)|times(X0,sK0(X0)) = X0),
+    inference(cnf_transformation,[],[f15])).
+tcf(c_53,plain, (~element(sK3)),inference(cnf_transformation,[],[f21])).
+tcf(c_54,plain, 
+    (times(sK1,sK2) = sK3),
+    inference(cnf_transformation,[],[f20])).
+tcf(c_55,plain, (element(sK2)),inference(cnf_transformation,[],[f19])).
+tcf(c_56,plain, (element(sK1)),inference(cnf_transformation,[],[f18])).
+tcf(c_255,plain, 
+    (times(sK2,sK2) = sK0(sK2)),
+    inference(superposition,[status(thm)],[c_55,c_51])).
+tcf(c_256,plain, 
+    (times(sK1,sK1) = sK0(sK1)),
+    inference(superposition,[status(thm)],[c_56,c_51])).
+tcf(c_261,plain, 
+    (times(sK2,sK0(sK2)) = sK2),
+    inference(superposition,[status(thm)],[c_55,c_52])).
+tcf(c_262,plain, 
+    (times(sK1,sK0(sK1)) = sK1),
+    inference(superposition,[status(thm)],[c_56,c_52])).
+tcf(c_270,plain,![X0:$i]:  
+    (times(sK2,times(X0,sK1)) = times(sK3,X0)),
+    inference(superposition,[status(thm)],[c_54,c_49])).
+tcf(c_271,plain,![X0:$i]:  
+    (times(sK1,times(X0,sK1)) = times(sK0(sK1),X0)),
+    inference(superposition,[status(thm)],[c_256,c_49])).
+tcf(c_273,plain,![X0:$i]:  
+    (times(sK2,times(X0,sK2)) = times(sK0(sK2),X0)),
+    inference(superposition,[status(thm)],[c_255,c_49])).
+tcf(c_274,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (times(times(X0,times(X1,X2)),X3) = times(X1,times(X3,times(X2,X0)))),
+    inference(superposition,[status(thm)],[c_49,c_49])).
+tcf(c_290,plain,![X0:$i,X1:$i]:  
+    (times(sK2,times(X0,times(sK1,X1))) = times(sK3,times(X1,X0))),
+    inference(superposition,[status(thm)],[c_49,c_270])).
+tcf(c_291,plain, 
+    (times(sK2,sK0(sK1)) = times(sK3,sK1)),
+    inference(superposition,[status(thm)],[c_256,c_270])).
+tcf(c_301,plain, 
+    (times(sK0(sK1),sK1) = times(sK1,sK0(sK1))),
+    inference(superposition,[status(thm)],[c_256,c_271])).
+tcf(c_304,plain, 
+    (times(sK0(sK1),sK1) = sK1),
+    inference(light_normalisation,[status(thm)],[c_301,c_262])).
+tcf(c_315,plain,![X0:$i]:  
+    (times(sK1,times(X0,sK0(sK1))) = times(sK1,X0)),
+    inference(superposition,[status(thm)],[c_304,c_49])).
+tcf(c_362,plain, 
+    (times(sK0(sK2),sK1) = times(sK2,sK3)),
+    inference(superposition,[status(thm)],[c_54,c_273])).
+tcf(c_380,plain, 
+    (times(sK2,times(sK2,sK3)) = times(sK3,sK0(sK2))),
+    inference(superposition,[status(thm)],[c_362,c_270])).
+tcf(c_404,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (times(X0,times(X1,times(X2,X3))) = times(X2,times(X3,times(X0,X1)))),
+    inference(demodulation,[status(thm)],[c_274,c_49])).
+tcf(c_445,plain,![X0:$i,X1:$i]:  
+    (times(sK1,times(sK2,times(X0,X1))) = times(X0,times(X1,sK3))),
+    inference(superposition,[status(thm)],[c_54,c_404])).
+tcf(c_634,plain, 
+    (times(sK1,times(sK3,sK1)) = times(sK1,sK2)),
+    inference(superposition,[status(thm)],[c_291,c_315])).
+tcf(c_641,plain, 
+    (times(sK1,times(sK3,sK1)) = sK3),
+    inference(light_normalisation,[status(thm)],[c_634,c_54])).
+tcf(c_645,plain, 
+    (times(sK0(sK1),sK3) = sK3),
+    inference(demodulation,[status(thm)],[c_641,c_271])).
+tcf(c_684,plain, 
+    (times(sK1,times(sK2,sK0(sK2))) = times(sK2,times(sK2,sK3))),
+    inference(superposition,[status(thm)],[c_255,c_445])).
+tcf(c_713,plain, 
+    (times(sK3,sK0(sK2)) = sK3),
+    inference(light_normalisation,[status(thm)],[c_684,c_54,c_261,c_380])).
+tcf(c_832,plain, 
+    (times(sK2,times(sK2,sK3)) = sK3),
+    inference(light_normalisation,[status(thm)],[c_380,c_713])).
+tcf(c_839,plain, 
+    (times(sK2,times(sK3,sK3)) = times(sK1,sK3)),
+    inference(superposition,[status(thm)],[c_832,c_445])).
+tcf(c_850,plain, 
+    (times(sK3,times(sK3,sK3)) = times(sK1,times(sK1,sK3))),
+    inference(superposition,[status(thm)],[c_839,c_445])).
+tcf(c_937,plain,![X0:$i,X1:$i]:  
+    (times(sK1,times(X0,times(sK2,X1))) = times(sK3,times(X0,X1))),
+    inference(demodulation,[status(thm)],[c_290,c_404])).
+tcf(c_947,plain, 
+    (times(sK3,times(sK1,sK0(sK1))) = times(sK1,times(sK1,sK2))),
+    inference(superposition,[status(thm)],[c_315,c_937])).
+tcf(c_970,plain, 
+    (times(sK3,sK1) = times(sK1,sK3)),
+    inference(light_normalisation,[status(thm)],[c_947,c_54,c_262])).
+tcf(c_1582,plain, 
+    (times(sK3,times(sK3,sK3)) = times(sK1,times(sK3,sK1))),
+    inference(light_normalisation,[status(thm)],[c_850,c_970])).
+tcf(c_1583,plain, 
+    (times(sK3,times(sK3,sK3)) = sK3),
+    inference(demodulation,[status(thm)],[c_1582,c_271,c_645])).
+tcf(c_1587,plain, 
+    (element(sK3)),
+    inference(superposition,[status(thm)],[c_1583,c_50])).
+tcf(c_1591,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_1587,c_53])).
+% SZS output end CNFRefutation for ALG210+2.p

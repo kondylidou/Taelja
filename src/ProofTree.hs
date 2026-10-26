@@ -14,6 +14,7 @@ module ProofTree
   , inferenceReading
   , findRoot
   , reachedNames
+  , resolvents
   ) where
 import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map
@@ -155,7 +156,7 @@ buildProofInfo everyUse allUnits = do
       -- of its outermost step, so cn(rw(spm(A,B),C)) gives rw
       ruleAt  = Map.fromList
         [ (p, Text.unpack (lastStep n r)) | (p, PTNode n _ r _) <- nodes ]
-      lastStep n r = case maybe [] unitStepRules (Map.lookup n unitMap) of
+      lastStep n r = case maybe [] sourceStepRules (derivingSource unitMap n) of
         rs@(_ : _) | n /= "?" -> last rs
         _                     -> r
   return ProofInfo
@@ -201,17 +202,17 @@ ptNameOf (PTNode n _ _ _) = n
 buildProofTree :: [T.Unit] -> String -> ProofTree
 buildProofTree allUnits root = nodes Map.! root
   where
-    units = Map.fromList [(unitNameStr n, (d, u)) | u@(T.Unit n d _) <- allUnits]
-    declOf n = fst (units Map.! n)
+    unitMap = Map.fromList [(unitNameStr n, u) | u@(T.Unit n _ _) <- allUnits]
+    decls = Map.fromList [(unitNameStr n, d) | T.Unit n d _ <- allUnits]
+    declOf n = decls Map.! n
     -- One node per unit, so a shared clause is built once. The strict map
     -- forces only to WHNF, so children stay lazy, and as the proof is acyclic
     -- forcing them terminates.
-    nodes = Map.mapWithKey buildNode units
+    nodes = Map.mapWithKey buildNode decls
     node n = nodes Map.! n
-    buildNode name (decl, u) = case u of
-      T.Unit _ _ (Just (src@(T.Inference (T.Atom rule) _ _), _))
-        | Set.member rule coreInferenceNames ->
-            PTNode name decl rule (orderedChildren decl rule (unitStepRules u) (sourceParents src))
+    buildNode name decl = case derivingSource unitMap name of
+      Just src@(T.Inference (T.Atom rule) _ _) ->
+        PTNode name decl rule (orderedChildren decl rule (sourceStepRules src) (sourceParents src))
       _ -> PTLeaf name decl
     orderedChildren decl rule steps parents = case parents of
       [p1, p2]
@@ -260,7 +261,8 @@ equationSteps :: [T.Unit] -> ([(String, String, String)], [(String, T.Declaratio
 equationSteps units = (concatMap fst found, concatMap snd found)
   where
     unitMap = Map.fromList [ (unitNameStr n, u) | u@(T.Unit n _ _) <- units ]
-    found = [ r | T.Unit n d (Just (src@(T.Inference {}), _)) <- units
+    found = [ r | T.Unit n d s <- units
+                , Just src <- [derivingSource unitMap (unitNameStr n) <|> fmap fst s]
                 , Just r <- [stepsOf (unitNameStr n) d src] ]
     equation r = r `elem` equationRuleNames
     unit p = maybe False isPositiveUnitFormula (lookupDecl unitMap p)
@@ -324,7 +326,8 @@ equationRuleNames = map Text.pack
   [ "rewriting"                                                       -- Twee
   , "superposition", "forward_demodulation", "backward_demodulation"  -- Vampire
   , "definition_unfolding"
-  , "spm", "pm", "rw", "cn" ]                                         -- E
+  , "spm", "pm", "rw", "cn"                                           -- E
+  , "demodulation", "light_normalisation" ]                           -- iProver
 
 -- An inference as a chain of binary steps. Returns the first premise and,
 -- innermost first, the rule and other premise of each step. E nests steps, as
@@ -627,6 +630,11 @@ resolveCopySource unitMap = go
     go name = case Map.lookup name unitMap of
       Just (T.Unit _ _ (Just (T.UnitSource parentName, _))) ->
         go (unitNameStr parentName)
+      -- a step that restates its one premise copies it whatever its rule, as
+      -- iProver's demodulation by no equation does
+      Just (T.Unit _ (T.Formula _ f) (Just (T.Inference _ _ [T.Parent (T.UnitSource pn) _], _)))
+        | Just (T.Unit _ (T.Formula _ f') _) <- Map.lookup (unitNameStr pn) unitMap, f == f' ->
+            go (unitNameStr pn)
       Just (T.Unit _ _ (Just (src@(T.Inference (T.Atom rule) _ ps), _)))
         | not (Set.member rule coreInferenceNames)
         , not (sourceNegates src)
@@ -634,6 +642,16 @@ resolveCopySource unitMap = go
         , [pn] <- case filter (not . isIntroducedSrc unitMap) prems of { [] -> prems; rest -> rest }
         -> go pn
       _ -> name
+
+-- The core inference that derives a unit. A unit that copies a derived
+-- clause, or an instance of it as iProver's instantiation does, is derived
+-- like that clause, as a copy of an input traces to the input. A unit with
+-- no such inference is a leaf.
+derivingSource :: Map.Map String T.Unit -> String -> Maybe T.Source
+derivingSource unitMap name = case Map.lookup (resolveCopySource unitMap name) unitMap of
+  Just (T.Unit _ _ (Just (src@(T.Inference (T.Atom rule) _ _), _)))
+    | Set.member rule coreInferenceNames -> Just src
+  _ -> Nothing
 
 -- The rules whose steps become nodes of the proof tree. A unit derived by any
 -- other rule is a leaf and is traced back as a copy of its premise.
@@ -647,9 +665,15 @@ coreInferenceNames = Set.fromList $ map Text.pack
   , "forward_demodulation", "backward_demodulation"
   , "duplicate_literal_removal", "subsumption_resolution"
   , "spm", "sr", "csr", "er", "rw", "cn", "pm"
+  , "demodulation", "light_normalisation"  -- iProver's rewriting
+  , "unflattening"  -- iProver's equality resolution of disequations X != t
+  -- iProver's resolution that keeps the arguments of the two atoms as
+  -- disequations s != t, which later steps resolve
+  , "resolution_lifted"
   , "proved_conjecture"
-  -- E's propositional refutation, which PropRes expands into resolutions
-  , "cdclpropres"
+  -- E's and iProver's propositional refutations, which PropRes expands into
+  -- resolutions
+  , "cdclpropres", "prop_impl_just"
   , "rewriting" ]  -- Twee's rewriting creates new equations and expands into the tree
 
 -- Rules outside the paper's calculus. calculusViolation refuses these, and
@@ -661,7 +685,11 @@ outsideCalculus r = Set.member r outside || Text.pack "avatar_" `Text.isPrefixOf
     outside = Set.fromList $ map Text.pack
       [ "factoring", "equality_factoring", "ef"   -- factoring, for non-Horn clauses
       , "ar"                                       -- E's AC resolution
-      , "unit_resulting_resolution", "global_subsumption" ]
+      , "unit_resulting_resolution", "global_subsumption"
+      -- iProver's well_definedness rests on totality and functionality axioms
+      -- the step does not cite, and an AC normalisation whose rewrites PropRes
+      -- does not find stays unread
+      , "well_definedness", "theory_normalisation" ]
 
 -- How the translation reads an inference, with the reason for a refusal.
 data RuleReading = TreeStep | RewriteStep | Copy | Refused String
@@ -743,10 +771,9 @@ inlineAtomCongruences units
       Nothing  -> [p]
     swap p = [p]
 
--- The rule of each step of a unit's inference, the innermost first.
-unitStepRules :: T.Unit -> [Text.Text]
-unitStepRules (T.Unit _ _ (Just (src, _))) = maybe [] (map fst . snd) (inferenceSteps src)
-unitStepRules _                            = []
+-- The rule of each step of an inference, the innermost first.
+sourceStepRules :: T.Source -> [Text.Text]
+sourceStepRules src = maybe [] (map fst . snd) (inferenceSteps src)
 
 -- The outer rule of a derived unit.
 inferenceRuleName :: T.Unit -> Maybe Text.Text

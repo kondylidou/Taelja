@@ -1,0 +1,37 @@
+% SZS status Theorem for superposition_example_unit2.p
+% SZS output start CNFRefutation for superposition_example_unit2.p
+fof(f1,axiom,(
+  c = a),
+  file('superposition_example_unit2.p',ax1)).
+fof(f2,axiom,(
+  a = b),
+  file('superposition_example_unit2.p',ax2)).
+fof(f3,conjecture,(
+  f(c) = f(b)),
+  file('superposition_example_unit2.p',goal)).
+fof(f4,negated_conjecture,(
+  ~f(c) = f(b)),
+inference(negated_conjecture,[status(cth)],[f3])).
+fof(f5,plain,(
+  f(c) != f(b)),
+  inference(flattening,[],[f4])).
+fof(f6,plain,(
+  c = a),
+  inference(cnf_transformation,[],[f1])).
+fof(f7,plain,(
+  a = b),
+  inference(cnf_transformation,[],[f2])).
+fof(f8,plain,(
+  f(c) != f(b)),
+  inference(cnf_transformation,[],[f5])).
+tcf(c_49,plain, (c = a),inference(cnf_transformation,[],[f6])).
+tcf(c_50,plain, (a = b),inference(cnf_transformation,[],[f7])).
+tcf(c_51,plain, (f(c) != f(b)),inference(cnf_transformation,[],[f8])).
+tcf(c_58,plain, (c = b),inference(demodulation,[status(thm)],[c_50,c_49])).
+tcf(c_59,plain, 
+    (f(c) != f(c)),
+    inference(light_normalisation,[status(thm)],[c_51,c_58])).
+tcf(c_60,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_59])).
+% SZS output end CNFRefutation for superposition_example_unit2.p

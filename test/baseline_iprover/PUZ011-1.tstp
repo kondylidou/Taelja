@@ -1,0 +1,45 @@
+% SZS status Unsatisfiable for PUZ011-1.p
+% SZS output start CNFRefutation for PUZ011-1.p
+tcf(c_50,plain, (ocean(indian)),file('Problems/PUZ/PUZ011-1.p', indian)).
+tcf(c_57,plain, 
+    (borders(indian,india)),
+    file('Problems/PUZ/PUZ011-1.p', indian_india)).
+tcf(c_60,plain, 
+    (borders(indian,somalia)),
+    file('Problems/PUZ/PUZ011-1.p', indian_somalia)).
+tcf(c_66,plain, (african(zaire)),file('Problems/PUZ/PUZ011-1.p', zaire)).
+tcf(c_69,plain, (african(somalia)),file('Problems/PUZ/PUZ011-1.p', somalia)).
+tcf(c_72,plain, (asian(india)),file('Problems/PUZ/PUZ011-1.p', india)).
+tcf(c_75,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~borders(X0,X1)|~borders(X0,X2)|~ocean(X0)|~african(X1)|~asian(X2)),
+    file('Problems/PUZ/PUZ011-1.p', prove_there_is_a_common_ocean)).
+tcf(c_77,plain,![X0_iProver_ocean_1:iProver_ocean_1,X0_iProver_african_1:iProver_african_1,X1_iProver_african_1:iProver_african_1]:  
+    (~borders(X0_iProver_ocean_1,X0_iProver_african_1)|~borders(X0_iProver_ocean_1,X1_iProver_african_1)|
+    ~ocean(X0_iProver_ocean_1)|~african(X0_iProver_african_1)|~asian(X1_iProver_african_1)),
+    inference(subtyping,[status(esa)],[c_75])).
+tcf(c_80,plain, (asian(india)),inference(subtyping,[status(esa)],[c_72])).
+tcf(c_83,plain, 
+    (african(somalia)),
+    inference(subtyping,[status(esa)],[c_69])).
+tcf(c_86,plain, (african(zaire)),inference(subtyping,[status(esa)],[c_66])).
+tcf(c_99,plain, (ocean(indian)),inference(subtyping,[status(esa)],[c_50])).
+tcf(c_102,plain,![X0_iProver_african_1:iProver_african_1,X1_iProver_african_1:iProver_african_1]:  
+    (~borders(indian,X0_iProver_african_1)|~borders(indian,X1_iProver_african_1)|
+    ~african(X0_iProver_african_1)|~asian(X1_iProver_african_1)),
+    inference(resolution,[status(thm)],[c_99,c_77])).
+tcf(c_106,plain,![X0_iProver_african_1:iProver_african_1]:  
+    (~borders(indian,X0_iProver_african_1)|~borders(indian,zaire)|~asian(X0_iProver_african_1)),
+    inference(resolution,[status(thm)],[c_102,c_86])).
+tcf(c_112,plain,![X0_iProver_african_1:iProver_african_1]:  
+    (~borders(indian,X0_iProver_african_1)|~borders(indian,somalia)|~asian(X0_iProver_african_1)),
+    inference(resolution,[status(thm)],[c_102,c_83])).
+tcf(c_124,plain,![X0_iProver_african_1:iProver_african_1]:  
+    (~borders(indian,X0_iProver_african_1)|~asian(X0_iProver_african_1)),
+    inference(global_subsumption_just,[status(thm)],[c_106,c_60,c_112])).
+tcf(c_126,plain, 
+    (~borders(indian,india)),
+    inference(resolution,[status(thm)],[c_124,c_80])).
+tcf(c_127,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_126,c_57])).
+% SZS output end CNFRefutation for PUZ011-1.p

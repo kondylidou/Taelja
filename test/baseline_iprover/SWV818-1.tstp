@@ -1,0 +1,18 @@
+% SZS status Unsatisfiable for SWV818-1.p
+% SZS output start CNFRefutation for SWV818-1.p
+tcf(c_51,plain, 
+    (v_s != v_t),
+    file('Problems/SWV/SWV818-1.p', cls_conjecture_0)).
+tcf(c_52,plain,![X0:$i]:  
+    (X0 = v_ta),
+    file('Problems/SWV/SWV818-1.p', cls_conjecture_1)).
+tcf(c_61,plain,![X0:$i]:  
+    (X0 = iProver_smallest),
+    inference(demodulation,[status(thm)],[c_52])).
+tcf(c_62,plain, 
+    (iProver_smallest != iProver_smallest),
+    inference(demodulation,[status(thm)],[c_51,c_61])).
+tcf(c_63,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_62])).
+% SZS output end CNFRefutation for SWV818-1.p

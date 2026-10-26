@@ -1,0 +1,11 @@
+Axiom 1: f(f(X)) = X
+Axiom 2: f(Y) = c => f(Y) = b
+
+Goal 1: c = b
+Proof:
+  have f(f(c)) = c
+    by axiom 1
+  hence f(f(c)) = b
+    by axiom 2
+  hence c = b
+    by rw axiom 1

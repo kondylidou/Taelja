@@ -76,7 +76,7 @@ def main():
           f"ok={total['ok']} fail={total['fail']} missing={total['missing']}")
     print(f"{'cat':4} {'prover':8} {'ok':>5} {'fail':>5}")
     for c in ALL_CATEGORIES:
-        for pr in ("vampire", "e", "twee"):
+        for pr in ("vampire", "e", "twee", "iprover"):
             sub = [v for (cc, _, pp), v in verdict.items() if cc == c and pp == pr]
             print(f"{c:4} {pr:8} {sum(v=='ok' for v in sub):5} {sum(v!='ok' for v in sub):5}")
     print(f"failing list: {evaldir / 'lean_failing.txt'}")

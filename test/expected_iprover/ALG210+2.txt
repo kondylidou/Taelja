@@ -1,0 +1,158 @@
+Axiom 1: times(sK1,sK2) = sK3
+Axiom 2: element(sK2)
+Axiom 3: element(X) => times(X,X) = sK0(X)
+Axiom 4: times(times(X,Y),Z) = times(Y,times(Z,X))
+Axiom 5: element(X) => times(X,sK0(X)) = X
+Axiom 6: element(sK1)
+Axiom 7: times(X,X) = Y /\ times(X,Y) = X => element(X)
+
+Lemma 8: times(sK2,times(X,sK1)) = times(sK3,X)
+Proof:
+  times(sK2,times(X,sK1))
+= { by axiom 4 R->L }
+  times(times(sK1,sK2),X)
+= { by axiom 1 }
+  times(sK3,X)
+
+Lemma 9: times(sK2,sK2) = sK0(sK2)
+Proof:
+  have element(sK2)
+    by axiom 2
+  hence times(sK2,sK2) = sK0(sK2)
+    by axiom 3
+
+Lemma 10: times(X,times(Y,times(Z,A))) = times(Z,times(A,times(X,Y)))
+Proof:
+  times(X,times(Y,times(Z,A)))
+= { by axiom 4 R->L }
+  times(times(times(Z,A),X),Y)
+= { by axiom 4 }
+  times(times(A,times(X,Z)),Y)
+= { by axiom 4 }
+  times(times(X,Z),times(Y,A))
+= { by axiom 4 }
+  times(Z,times(times(Y,A),X))
+= { by axiom 4 }
+  times(Z,times(A,times(X,Y)))
+
+Lemma 11: times(sK1,times(sK2,times(X,Y))) = times(X,times(Y,sK3))
+Proof:
+  times(sK1,times(sK2,times(X,Y)))
+= { by lemma 10 R->L }
+  times(X,times(Y,times(sK1,sK2)))
+= { by axiom 1 }
+  times(X,times(Y,sK3))
+
+Lemma 12: times(sK1,sK1) = sK0(sK1)
+Proof:
+  have element(sK1)
+    by axiom 6
+  hence times(sK1,sK1) = sK0(sK1)
+    by axiom 3
+
+Lemma 13: times(sK1,times(X,sK1)) = times(sK0(sK1),X)
+Proof:
+  times(sK1,times(X,sK1))
+= { by axiom 4 R->L }
+  times(times(sK1,sK1),X)
+= { by lemma 12 }
+  times(sK0(sK1),X)
+
+Lemma 14: times(sK1,sK0(sK1)) = sK1
+Proof:
+  have element(sK1)
+    by axiom 6
+  hence times(sK1,sK0(sK1)) = sK1
+    by axiom 5
+
+Lemma 15: times(sK0(sK1),sK1) = sK1
+Proof:
+  times(sK0(sK1),sK1)
+= { by lemma 13 R->L }
+  times(sK1,times(sK1,sK1))
+= { by lemma 12 }
+  times(sK1,sK0(sK1))
+= { by lemma 14 }
+  sK1
+
+Lemma 16: times(sK1,times(X,sK0(sK1))) = times(sK1,X)
+Proof:
+  times(sK1,times(X,sK0(sK1)))
+= { by axiom 4 R->L }
+  times(times(sK0(sK1),sK1),X)
+= { by lemma 15 }
+  times(sK1,X)
+
+Lemma 17: times(sK2,sK0(sK2)) = sK2
+Proof:
+  have element(sK2)
+    by axiom 2
+  hence times(sK2,sK0(sK2)) = sK2
+    by axiom 5
+
+Lemma 18: times(sK2,times(sK2,sK3)) = sK3
+Proof:
+  times(sK2,times(sK2,sK3))
+= { by lemma 11 R->L }
+  times(sK1,times(sK2,times(sK2,sK2)))
+= { by lemma 9 }
+  times(sK1,times(sK2,sK0(sK2)))
+= { by lemma 17 }
+  times(sK1,sK2)
+= { by axiom 1 }
+  sK3
+
+Lemma 19: times(sK2,times(sK3,sK3)) = times(sK1,sK3)
+Proof:
+  times(sK2,times(sK3,sK3))
+= { by lemma 11 R->L }
+  times(sK1,times(sK2,times(sK2,sK3)))
+= { by lemma 18 }
+  times(sK1,sK3)
+
+Lemma 20: times(sK3,sK1) = times(sK1,sK3)
+Proof:
+  times(sK3,sK1)
+= { by lemma 14 R->L }
+  times(sK3,times(sK1,sK0(sK1)))
+= { by lemma 8 R->L }
+  times(sK2,times(times(sK1,sK0(sK1)),sK1))
+= { by axiom 4 }
+  times(sK2,times(sK0(sK1),times(sK1,sK1)))
+= { by lemma 10 }
+  times(sK1,times(sK1,times(sK2,sK0(sK1))))
+= { by lemma 16 }
+  times(sK1,times(sK1,sK2))
+= { by axiom 1 }
+  times(sK1,sK3)
+
+Lemma 21: times(sK2,sK0(sK1)) = times(sK3,sK1)
+Proof:
+  times(sK2,sK0(sK1))
+= { by lemma 12 R->L }
+  times(sK2,times(sK1,sK1))
+= { by lemma 8 }
+  times(sK3,sK1)
+
+Lemma 22: times(sK3,times(sK3,sK3)) = sK3
+Proof:
+  times(sK3,times(sK3,sK3))
+= { by lemma 11 R->L }
+  times(sK1,times(sK2,times(sK3,sK3)))
+= { by lemma 19 }
+  times(sK1,times(sK1,sK3))
+= { by lemma 20 R->L }
+  times(sK1,times(sK3,sK1))
+= { by lemma 21 R->L }
+  times(sK1,times(sK2,sK0(sK1)))
+= { by lemma 16 }
+  times(sK1,sK2)
+= { by axiom 1 }
+  sK3
+
+Goal 1: element(sK3)
+Proof:
+  have times(sK3,times(sK3,sK3)) = sK3
+    by lemma 22
+  hence element(sK3)
+    by axiom 7

@@ -1,0 +1,26 @@
+Axiom 1: follows(p8,p3)
+Axiom 2: follows(X,Y) => succeeds(X,Y)
+Axiom 3: has(p8,goto(loop))
+Axiom 4: labels(loop,p3)
+Axiom 5: labels(Z,X) /\ has(Y,goto(Z)) => succeeds(X,Y)
+Axiom 6: succeeds(A,Y) /\ succeeds(X,A) => succeeds(X,Y)
+
+Lemma 7: succeeds(p3,p8)
+Proof:
+  have labels(loop,p3)
+    by axiom 4
+   and has(p8,goto(loop))
+    by axiom 3
+  hence succeeds(p3,p8)
+    by axiom 5
+
+Goal 1: succeeds(p3,p3)
+Proof:
+  have follows(p8,p3)
+    by axiom 1
+  hence succeeds(p8,p3)
+    by axiom 2
+   and succeeds(p3,p8)
+    by lemma 7
+  hence succeeds(p3,p3)
+    by axiom 6

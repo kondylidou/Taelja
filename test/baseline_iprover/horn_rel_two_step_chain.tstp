@@ -1,0 +1,46 @@
+% SZS status Theorem for horn_rel_two_step_chain.p
+% SZS output start CNFRefutation for horn_rel_two_step_chain.p
+fof(f1,axiom,(
+  f(a) = b),
+  file('horn_rel_two_step_chain.p',ax1)).
+fof(f2,axiom,(
+  g(b) = c),
+  file('horn_rel_two_step_chain.p',ax2)).
+fof(f3,axiom,(
+  p(c)),
+  file('horn_rel_two_step_chain.p',ax3)).
+fof(f4,conjecture,(
+  p(g(f(a)))),
+  file('horn_rel_two_step_chain.p',goal)).
+fof(f5,negated_conjecture,(
+  ~p(g(f(a)))),
+inference(negated_conjecture,[status(cth)],[f4])).
+fof(f6,plain,(
+  ~p(g(f(a)))),
+  inference(flattening,[],[f5])).
+fof(f7,plain,(
+  f(a) = b),
+  inference(cnf_transformation,[],[f1])).
+fof(f8,plain,(
+  g(b) = c),
+  inference(cnf_transformation,[],[f2])).
+fof(f9,plain,(
+  p(c)),
+  inference(cnf_transformation,[],[f3])).
+fof(f10,plain,(
+  ~p(g(f(a)))),
+  inference(cnf_transformation,[],[f6])).
+tcf(c_49,plain, (f(a) = b),inference(cnf_transformation,[],[f7])).
+tcf(c_50,plain, (g(b) = c),inference(cnf_transformation,[],[f8])).
+tcf(c_51,plain, (p(c)),inference(cnf_transformation,[],[f9])).
+tcf(c_52,plain, (~p(g(f(a)))),inference(cnf_transformation,[],[f10])).
+tcf(c_61,plain, 
+    (~p(g(b))),
+    inference(demodulation,[status(thm)],[c_52,c_49])).
+tcf(c_62,plain, 
+    (~p(c)),
+    inference(light_normalisation,[status(thm)],[c_61,c_50])).
+tcf(c_63,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_62,c_51])).
+% SZS output end CNFRefutation for horn_rel_two_step_chain.p

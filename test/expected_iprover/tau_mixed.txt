@@ -1,0 +1,21 @@
+Axiom 1: q(a)
+Axiom 2: f(X) = g(X)
+Axiom 3: f(X) = X
+Axiom 4: g(X) = X /\ q(X) => p(g(a))
+
+Lemma 5: g(X) = X
+Proof:
+  g(X)
+= { by axiom 2 R->L }
+  f(X)
+= { by axiom 3 }
+  X
+
+Goal 1: p(g(a))
+Proof:
+  have g(a) = a
+    by lemma 5
+   and q(a)
+    by axiom 1
+  hence p(g(a))
+    by axiom 4

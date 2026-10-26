@@ -1,0 +1,26 @@
+% SZS status Theorem for test_eq_symmetry.p
+% SZS output start CNFRefutation for test_eq_symmetry.p
+fof(f1,axiom,(
+  b = a),
+  file('test_eq_symmetry.p',eq_axiom)).
+fof(f2,conjecture,(
+  b = a),
+  file('test_eq_symmetry.p',eq_goal)).
+fof(f3,negated_conjecture,(
+  ~b = a),
+inference(negated_conjecture,[status(cth)],[f2])).
+fof(f4,plain,(
+  b != a),
+  inference(flattening,[],[f3])).
+fof(f5,plain,(
+  b = a),
+  inference(cnf_transformation,[],[f1])).
+fof(f6,plain,(
+  b != a),
+  inference(cnf_transformation,[],[f4])).
+tcf(c_49,plain, (b = a),inference(cnf_transformation,[],[f5])).
+tcf(c_50,plain, (b != a),inference(cnf_transformation,[],[f6])).
+tcf(c_51,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_50,c_49])).
+% SZS output end CNFRefutation for test_eq_symmetry.p

@@ -1,0 +1,71 @@
+% SZS status Theorem for horn_example_derived_rw.p
+% SZS output start CNFRefutation for horn_example_derived_rw.p
+fof(f1,axiom,(
+  p(a)),
+  file('horn_example_derived_rw.p',ax1)).
+fof(f2,axiom,(
+  q(b)),
+  file('horn_example_derived_rw.p',ax2)).
+fof(f3,axiom,(
+  ! [X0] : (p(X0) => f(X0) = c)),
+  file('horn_example_derived_rw.p',ax3)).
+fof(f4,axiom,(
+  ! [X1] : (q(X1) => a = X1)),
+  file('horn_example_derived_rw.p',ax4)).
+fof(f5,conjecture,(
+  c = f(b)),
+  file('horn_example_derived_rw.p',goal)).
+fof(f6,negated_conjecture,(
+  ~c = f(b)),
+inference(negated_conjecture,[status(cth)],[f5])).
+fof(f7,plain,(
+  ! [X0] : (q(X0) => a = X0)),
+  inference(rectify,[],[f4])).
+fof(f8,plain,(
+  c != f(b)),
+  inference(flattening,[],[f6])).
+fof(f9,plain,(
+  ! [X0] : (f(X0) = c | ~p(X0))),
+  inference(ennf_transformation,[],[f3])).
+fof(f10,plain,(
+  ! [X0] : (a = X0 | ~q(X0))),
+  inference(ennf_transformation,[],[f7])).
+fof(f11,plain,(
+  p(a)),
+  inference(cnf_transformation,[],[f1])).
+fof(f12,plain,(
+  q(b)),
+  inference(cnf_transformation,[],[f2])).
+fof(f13,plain,(
+  ( ! [X0] : (f(X0) = c | ~p(X0)) )),
+  inference(cnf_transformation,[],[f9])).
+fof(f14,plain,(
+  ( ! [X0] : (a = X0 | ~q(X0)) )),
+  inference(cnf_transformation,[],[f10])).
+fof(f15,plain,(
+  c != f(b)),
+  inference(cnf_transformation,[],[f8])).
+tcf(c_49,plain, (p(a)),inference(cnf_transformation,[],[f11])).
+tcf(c_50,plain, (q(b)),inference(cnf_transformation,[],[f12])).
+tcf(c_51,plain,![X0:$i]:  
+    (~p(X0)|f(X0) = c),
+    inference(cnf_transformation,[],[f13])).
+tcf(c_52,plain,![X0:$i]:  
+    (~q(X0)|X0 = a),
+    inference(cnf_transformation,[],[f14])).
+tcf(c_53,plain, (f(b) != c),inference(cnf_transformation,[],[f15])).
+tcf(c_82,plain,![X0:$i]:  
+    (X0 != a|f(X0) = c),
+    inference(resolution_lifted,[status(thm)],[c_49,c_51])).
+tcf(c_83,plain, (f(a) = c),inference(unflattening,[status(thm)],[c_82])).
+tcf(c_88,plain,![X0:$i]:  
+    (X0 != b|X0 = a),
+    inference(resolution_lifted,[status(thm)],[c_50,c_52])).
+tcf(c_89,plain, (b = a),inference(unflattening,[status(thm)],[c_88])).
+tcf(c_100,plain, 
+    (c != c),
+    inference(light_normalisation,[status(thm)],[c_53,c_83,c_89])).
+tcf(c_101,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_100])).
+% SZS output end CNFRefutation for horn_example_derived_rw.p

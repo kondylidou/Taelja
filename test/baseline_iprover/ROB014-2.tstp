@@ -1,0 +1,77 @@
+% SZS status Unsatisfiable for ROB014-2.p
+% SZS output start CNFRefutation for ROB014-2.p
+tcf(c_49,plain,![X0:$i,X1:$i,X2:$i]:  
+    (negate(add(X0,negate(add(X1,X2)))) != negate(add(X1,negate(add(X0,X2))))|
+    X0 = X1),
+    file('Problems/ROB/ROB014-2.p', lemma_3_2)).
+tcf(c_51,plain, 
+    (negate(add(negate(e),negate(add(d,negate(e))))) = d),
+    file('Problems/ROB/ROB014-2.p', condition)).
+tcf(c_52,plain, 
+    (negate(add(e,multiply(one,add(d,negate(add(d,negate(e))))))) != negate(e)),
+    file('Problems/ROB/ROB014-2.p', prove_base_step)).
+tcf(c_53,plain,![X0:$i]:  
+    (multiply(one,X0) = X0),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/ROB001-1.ax', one_times_x)).
+tcf(c_57,plain,![X0:$i,X1:$i]:  
+    (add(X0,X1) = add(X1,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/ROB001-0.ax', commutativity_of_add)).
+tcf(c_58,plain,![X0:$i,X1:$i,X2:$i]:  
+    (add(add(X0,X1),X2) = add(X0,add(X1,X2))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/ROB001-0.ax', associativity_of_add)).
+tcf(c_59,plain,![X0:$i,X1:$i]:  
+    (negate(add(negate(add(X0,X1)),negate(add(X0,negate(X1))))) = X0),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/ROB001-0.ax', robbins_axiom)).
+tcf(c_105,plain, 
+    (negate(add(e,add(d,negate(add(d,negate(e)))))) != negate(e)),
+    inference(demodulation,[status(thm)],[c_52,c_53])).
+tcf(c_274,plain,![X0:$i,X1:$i,X2:$i]:  
+    (negate(add(negate(add(X0,X1)),X2)) != negate(add(X0,negate(add(X2,X1))))|
+    X0 = X2),
+    inference(superposition,[status(thm)],[c_57,c_49])).
+tcf(c_314,plain,![X0:$i,X1:$i]:  
+    (negate(add(negate(add(X0,X1)),negate(add(X1,negate(X0))))) = X1),
+    inference(superposition,[status(thm)],[c_57,c_59])).
+tcf(c_410,plain,![X0:$i,X1:$i]:  
+    (negate(add(negate(add(X0,X1)),negate(add(negate(X0),X1)))) = X1),
+    inference(superposition,[status(thm)],[c_57,c_314])).
+tcf(c_516,plain, 
+    (negate(add(negate(add(e,negate(add(d,negate(e))))),d)) = negate(add(d,negate(e)))),
+    inference(superposition,[status(thm)],[c_51,c_410])).
+tcf(c_518,plain,![X0:$i,X1:$i]:  
+    (negate(add(negate(add(add(X0,X1),negate(add(X1,negate(X0))))),X1)) = negate(add(X1,negate(X0)))),
+    inference(superposition,[status(thm)],[c_314,c_410])).
+tcf(c_541,plain, 
+    (negate(add(d,negate(add(e,negate(add(d,negate(e))))))) = negate(add(d,negate(e)))),
+    inference(theory_normalisation,[status(thm)],[c_516,c_58,c_57])).
+tcf(c_547,plain,![X0:$i,X1:$i]:  
+    (negate(add(X0,negate(add(X1,add(X0,negate(add(X0,negate(X1)))))))) = negate(add(X0,negate(X1)))),
+    inference(theory_normalisation,[status(thm)],[c_518,c_58,c_57])).
+tcf(c_1806,plain, 
+    (negate(add(negate(add(add(e,negate(add(d,negate(e)))),d)),negate(add(d,negate(e))))) = d),
+    inference(superposition,[status(thm)],[c_541,c_314])).
+tcf(c_1807,plain, 
+    (negate(add(negate(add(d,negate(e))),negate(add(e,add(d,negate(add(d,negate(e)))))))) = d),
+    inference(theory_normalisation,[status(thm)],[c_1806,c_58,c_57])).
+tcf(c_2050,plain,![X0:$i,X1:$i,X2:$i]:  
+    (negate(add(negate(add(X0,X1)),X2)) != negate(add(X1,negate(add(X2,X0))))|
+    X1 = X2),
+    inference(superposition,[status(thm)],[c_57,c_274])).
+tcf(c_33291,plain, 
+    (negate(add(negate(e),negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),d)))) != d|
+    negate(add(e,add(d,negate(add(d,negate(e)))))) = negate(e)),
+    inference(superposition,[status(thm)],[c_1807,c_2050])).
+tcf(c_33511,plain, 
+    (negate(add(negate(e),negate(add(d,negate(add(e,add(d,negate(add(d,negate(e)))))))))) != d|
+    negate(add(e,add(d,negate(add(d,negate(e)))))) = negate(e)),
+    inference(theory_normalisation,[status(thm)],[c_33291,c_58,c_57])).
+tcf(c_33512,plain, 
+    (negate(add(negate(e),negate(add(d,negate(add(e,add(d,negate(add(d,negate(e)))))))))) != d),
+    inference(forward_subsumption_resolution,[status(thm)],[c_33511,c_105])).
+tcf(c_41359,plain, 
+    (d != d),
+    inference(demodulation,[status(thm)],[c_33512,c_51,c_547])).
+tcf(c_41360,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_41359])).
+% SZS output end CNFRefutation for ROB014-2.p

@@ -1,0 +1,34 @@
+% SZS status Unsatisfiable for test_shared_nonunit.p
+% SZS output start CNFRefutation for test_shared_nonunit.p
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (~p(X0)|q(X0,X1)),
+    file('test_shared_nonunit.p', ax1)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (~q(X0,X1)|p(f(X0))),
+    file('test_shared_nonunit.p', ax2)).
+tcf(c_51,plain, (q(a,a)),file('test_shared_nonunit.p', ax3)).
+tcf(c_52,plain, 
+    (~q(f(f(f(a))),f(f(f(a))))),
+    file('test_shared_nonunit.p', goal)).
+tcf(c_66,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~q(X0,X1)|q(f(X0),X2)),
+    inference(resolution,[status(thm)],[c_49,c_50])).
+tcf(c_67,plain, 
+    (~q(a,a)|q(f(a),a)),
+    inference(instantiation,[status(thm)],[c_66])).
+tcf(c_84,plain,![X0:$i]:  
+    (~q(f(f(a)),X0)|q(f(f(f(a))),f(f(f(a))))),
+    inference(instantiation,[status(thm)],[c_66])).
+tcf(c_85,plain, 
+    (~q(f(f(a)),a)|q(f(f(f(a))),f(f(f(a))))),
+    inference(instantiation,[status(thm)],[c_84])).
+tcf(c_86,plain,![X0:$i,X1:$i]:  
+    (~q(f(a),X0)|q(f(f(a)),X1)),
+    inference(instantiation,[status(thm)],[c_66])).
+tcf(c_87,plain, 
+    (~q(f(a),a)|q(f(f(a)),a)),
+    inference(instantiation,[status(thm)],[c_86])).
+tcf(c_88,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_87,c_85,c_67,c_52,c_51])).
+% SZS output end CNFRefutation for test_shared_nonunit.p

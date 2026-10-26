@@ -1,0 +1,60 @@
+% SZS status Unsatisfiable for HEN006-4.p
+% SZS output start CNFRefutation for HEN006-4.p
+tcf(c_53,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~less_equal(X0,X1)|~less_equal(X1,X2)|less_equal(X0,X2)),
+    file('Problems/HEN/HEN006-4.p', transitivity_of_less_equal)).
+tcf(c_54,plain, 
+    (less_equal(divide(a,b),d)),
+    file('Problems/HEN/HEN006-4.p', a_divide_b_LE_d)).
+tcf(c_55,plain, 
+    (~less_equal(divide(a,d),b)),
+    file('Problems/HEN/HEN006-4.p', prove_a_divide_d_LE_b)).
+tcf(c_56,plain,![X0:$i,X1:$i]:  
+    (~less_equal(X0,X1)|divide(X0,X1) = zero),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_less_equal1)).
+tcf(c_57,plain,![X0:$i,X1:$i]:  
+    (divide(X0,X1) != zero|less_equal(X0,X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_less_equal2)).
+tcf(c_58,plain,![X0:$i,X1:$i]:  
+    (less_equal(divide(X0,X1),X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_smaller_than_numerator)).
+tcf(c_59,plain,![X0:$i,X1:$i,X2:$i]:  
+    (less_equal(divide(divide(X0,X1),divide(X2,X1)),divide(divide(X0,X2),X1))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', quotient_property)).
+tcf(c_60,plain,![X0:$i]:  
+    (less_equal(zero,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', zero_is_smallest)).
+tcf(c_61,plain,![X0:$i,X1:$i]:  
+    (~less_equal(X0,X1)|~less_equal(X1,X0)|X0 = X1),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN002-0.ax', less_equal_and_equal)).
+tcf(c_360,plain, 
+    (divide(divide(a,b),d) = zero),
+    inference(superposition,[status(thm)],[c_54,c_56])).
+tcf(c_400,plain,![X0:$i]:  
+    (~less_equal(X0,zero)|X0 = zero),
+    inference(superposition,[status(thm)],[c_60,c_61])).
+tcf(c_545,plain, 
+    (less_equal(divide(divide(a,d),divide(b,d)),zero)),
+    inference(superposition,[status(thm)],[c_360,c_59])).
+tcf(c_649,plain,![X0:$i]:  
+    (~less_equal(zero,X0)|less_equal(divide(divide(a,d),divide(b,d)),X0)),
+    inference(superposition,[status(thm)],[c_545,c_53])).
+tcf(c_652,plain,![X0:$i]:  
+    (less_equal(divide(divide(a,d),divide(b,d)),X0)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_649,c_60])).
+tcf(c_659,plain, 
+    (divide(divide(a,d),divide(b,d)) = zero),
+    inference(superposition,[status(thm)],[c_652,c_400])).
+tcf(c_682,plain, 
+    (less_equal(divide(a,d),divide(b,d))),
+    inference(superposition,[status(thm)],[c_659,c_57])).
+tcf(c_703,plain,![X0:$i]:  
+    (~less_equal(divide(b,d),X0)|less_equal(divide(a,d),X0)),
+    inference(superposition,[status(thm)],[c_682,c_53])).
+tcf(c_1745,plain, 
+    (less_equal(divide(a,d),b)),
+    inference(superposition,[status(thm)],[c_58,c_703])).
+tcf(c_1750,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_1745,c_55])).
+% SZS output end CNFRefutation for HEN006-4.p

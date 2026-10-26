@@ -1,0 +1,482 @@
+% SZS status Theorem for CSR117+1.p
+% SZS output start CNFRefutation for CSR117+1.p
+fof(f15,axiom,(
+  ! [X0] : (s__Region(X0) => s__Object(X0))),
+  file('Problems/CSR/CSR117+1.p',kb_SUMO_MILO_701)).
+fof(f16,axiom,(
+  ! [X0] : (s__GeographicArea(X0) => s__Region(X0))),
+  file('Problems/CSR/CSR117+1.p',kb_SUMO_MILO_6365)).
+fof(f17,axiom,(
+  ! [X0] : (s__GeopoliticalArea(X0) => s__GeographicArea(X0))),
+  file('Problems/CSR/CSR117+1.p',kb_SUMO_MILO_6345)).
+fof(f18,axiom,(
+  ! [X0] : (s__Nation(X0) => s__GeopoliticalArea(X0))),
+  file('Problems/CSR/CSR117+1.p',kb_SUMO_MILO_6428)).
+fof(f19,axiom,(
+  ! [X0] : (s__City(X0) => s__GeopoliticalArea(X0))),
+  file('Problems/CSR/CSR117+1.p',kb_SUMO_MILO_6437)).
+fof(f21,axiom,(
+  ! [X0] : (s__BodyOfWater(X0) => s__WaterArea(X0))),
+  file('Problems/CSR/CSR117+1.p',kb_SUMO_MILO_Domains_9582)).
+fof(f22,axiom,(
+  ! [X0] : (s__Sea(X0) => s__BodyOfWater(X0))),
+  file('Problems/CSR/CSR117+1.p',kb_SUMO_MILO_Domains_9679)).
+fof(f27,axiom,(
+  ! [X1] : (s__City(X1) => (is_instance(X1,s__CoastalCitiesClass) => ? [X2] : (s__orientation(X1,X2,s__Near) & s__Sea(X2))))),
+  file('Problems/CSR/CSR117+1.p',coastal_cities_near_water)).
+fof(f28,axiom,(
+  ! [X3,X4] : ((s__City(X4) & s__WaterArea(X3)) => (s__orientation(X4,X3,s__Near) => s__capability(s__Flooding__t,s__located__m,X4)))),
+  file('Problems/CSR/CSR117+1.p',flood_near_water)).
+fof(f29,conjecture,(
+  ? [X1,X5,X6,X7,X8,X9,X10,X11,X12,X13,X14] : (s__capability(s__Flooding__t,s__located__m,X1) & to_int(X6) = to_int(X11) & latlong(s__Moscow,X11,X12,X13,X14) & latlong(X1,X6,X7,X8,X9) & look_different(X1,s__Moscow) & capital_city(X1,X5) & is_instance(X5,s__OECDMemberEconomiesClass) & s__SymbolicString(X14) & s__SymbolicString(X13) & real(X12) & real(X11) & int(X10) & s__SymbolicString(X9) & s__SymbolicString(X8) & real(X7) & real(X6) & s__Object(X5) & s__Object(X1))),
+  file('Problems/CSR/CSR117+1.p',where)).
+fof(f30,negated_conjecture,(
+  ~? [X1,X5,X6,X7,X8,X9,X10,X11,X12,X13,X14] : (s__capability(s__Flooding__t,s__located__m,X1) & to_int(X6) = to_int(X11) & latlong(s__Moscow,X11,X12,X13,X14) & latlong(X1,X6,X7,X8,X9) & look_different(X1,s__Moscow) & capital_city(X1,X5) & is_instance(X5,s__OECDMemberEconomiesClass) & s__SymbolicString(X14) & s__SymbolicString(X13) & real(X12) & real(X11) & int(X10) & s__SymbolicString(X9) & s__SymbolicString(X8) & real(X7) & real(X6) & s__Object(X5) & s__Object(X1))),
+inference(negated_conjecture,[status(cth)],[f29])).
+fof(f32,axiom,(
+  ? [X0] : int(X0)),
+  file('Problems/CSR/CSR117+1.p',int_type)).
+fof(f35,axiom,(
+  is_instance(s__Copenhagen,s__CoastalCitiesClass)),
+  file('Problems/CSR/CSR117+1.p',copenhagen_coastal)).
+fof(f40,axiom,(
+  s__Nation(s__Denmark)),
+  file('Problems/CSR/CSR117+1.p',s__Denmark_type)).
+fof(f41,axiom,(
+  is_instance(s__Denmark,s__OECDMemberEconomiesClass)),
+  file('Problems/CSR/CSR117+1.p',s__Denmark_OECD)).
+fof(f102,axiom,(
+  s__City(s__Copenhagen)),
+  file('Problems/CSR/CSR117+1.p',s__Copenhagen_type)).
+fof(f103,axiom,(
+  capital_city(s__Copenhagen,s__Denmark)),
+  file('Problems/CSR/CSR117+1.p',s__Copenhagen_s__Denmark)).
+fof(f150,axiom,(
+  real('55.67631')),
+  file('Problems/CSR/CSR117+1.p',copenhagen_lat_type)).
+fof(f151,axiom,(
+  real('12.569355')),
+  file('Problems/CSR/CSR117+1.p',copenhagen_long_type)).
+fof(f152,axiom,(
+  s__SymbolicString(copenhagen)),
+  file('Problems/CSR/CSR117+1.p',copenhagen_type)).
+fof(f153,axiom,(
+  s__SymbolicString(dk)),
+  file('Problems/CSR/CSR117+1.p',dk_type)).
+fof(f154,axiom,(
+  latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk)),
+  file('Problems/CSR/CSR117+1.p',latlong_s__Copenhagen)).
+fof(f170,axiom,(
+  real('55.75695')),
+  file('Problems/CSR/CSR117+1.p',moscow_lat_type)).
+fof(f171,axiom,(
+  real('37.614975')),
+  file('Problems/CSR/CSR117+1.p',moscow_long_type)).
+fof(f172,axiom,(
+  s__SymbolicString(moscow)),
+  file('Problems/CSR/CSR117+1.p',moscow_type)).
+fof(f173,axiom,(
+  s__SymbolicString(ru)),
+  file('Problems/CSR/CSR117+1.p',ru_type)).
+fof(f174,axiom,(
+  latlong(s__Moscow,'55.75695','37.614975',moscow,ru)),
+  file('Problems/CSR/CSR117+1.p',latlong_s__Moscow)).
+fof(f206,axiom,(
+  look_different(s__Copenhagen,s__Moscow)),
+  file('Problems/CSR/CSR117+1.p',s__Copenhagen_not_s__Moscow)).
+fof(f237,axiom,(
+  '55' = to_int('55.67631')),
+  file('Problems/CSR/CSR117+1.p','55.67631_55')).
+fof(f238,axiom,(
+  '55' = to_int('55.75695')),
+  file('Problems/CSR/CSR117+1.p','55.75695_55')).
+fof(f271,plain,(
+  ! [X0] : (s__City(X0) => (is_instance(X0,s__CoastalCitiesClass) => ? [X1] : (s__orientation(X0,X1,s__Near) & s__Sea(X1))))),
+  inference(rectify,[],[f27])).
+fof(f272,plain,(
+  ! [X0,X1] : ((s__City(X1) & s__WaterArea(X0)) => (s__orientation(X1,X0,s__Near) => s__capability(s__Flooding__t,s__located__m,X1)))),
+  inference(rectify,[],[f28])).
+fof(f273,plain,(
+  ~? [X0,X1,X2,X3,X4,X5,X6,X7,X8,X9,X10] : (s__capability(s__Flooding__t,s__located__m,X0) & to_int(X2) = to_int(X7) & latlong(s__Moscow,X7,X8,X9,X10) & latlong(X0,X2,X3,X4,X5) & look_different(X0,s__Moscow) & capital_city(X0,X1) & is_instance(X1,s__OECDMemberEconomiesClass) & s__SymbolicString(X10) & s__SymbolicString(X9) & real(X8) & real(X7) & int(X6) & s__SymbolicString(X5) & s__SymbolicString(X4) & real(X3) & real(X2) & s__Object(X1) & s__Object(X0))),
+  inference(rectify,[],[f30])).
+fof(f274,plain,(
+  ! [X0] : (s__Object(X0) | ~s__Region(X0))),
+  inference(ennf_transformation,[],[f15])).
+fof(f275,plain,(
+  ! [X0] : (s__Region(X0) | ~s__GeographicArea(X0))),
+  inference(ennf_transformation,[],[f16])).
+fof(f276,plain,(
+  ! [X0] : (s__GeographicArea(X0) | ~s__GeopoliticalArea(X0))),
+  inference(ennf_transformation,[],[f17])).
+fof(f277,plain,(
+  ! [X0] : (s__GeopoliticalArea(X0) | ~s__Nation(X0))),
+  inference(ennf_transformation,[],[f18])).
+fof(f278,plain,(
+  ! [X0] : (s__GeopoliticalArea(X0) | ~s__City(X0))),
+  inference(ennf_transformation,[],[f19])).
+fof(f280,plain,(
+  ! [X0] : (s__WaterArea(X0) | ~s__BodyOfWater(X0))),
+  inference(ennf_transformation,[],[f21])).
+fof(f281,plain,(
+  ! [X0] : (s__BodyOfWater(X0) | ~s__Sea(X0))),
+  inference(ennf_transformation,[],[f22])).
+fof(f283,plain,(
+  ! [X0] : ((? [X1] : (s__orientation(X0,X1,s__Near) & s__Sea(X1)) | ~is_instance(X0,s__CoastalCitiesClass)) | ~s__City(X0))),
+  inference(ennf_transformation,[],[f271])).
+fof(f284,plain,(
+  ! [X0] : (? [X1] : (s__orientation(X0,X1,s__Near) & s__Sea(X1)) | ~is_instance(X0,s__CoastalCitiesClass) | ~s__City(X0))),
+  inference(flattening,[],[f283])).
+fof(f285,plain,(
+  ! [X0,X1] : ((s__capability(s__Flooding__t,s__located__m,X1) | ~s__orientation(X1,X0,s__Near)) | (~s__City(X1) | ~s__WaterArea(X0)))),
+  inference(ennf_transformation,[],[f272])).
+fof(f286,plain,(
+  ! [X0,X1] : (s__capability(s__Flooding__t,s__located__m,X1) | ~s__orientation(X1,X0,s__Near) | ~s__City(X1) | ~s__WaterArea(X0))),
+  inference(flattening,[],[f285])).
+fof(f287,plain,(
+  ! [X0,X1,X2,X3,X4,X5,X6,X7,X8,X9,X10] : (~s__capability(s__Flooding__t,s__located__m,X0) | to_int(X2) != to_int(X7) | ~latlong(s__Moscow,X7,X8,X9,X10) | ~latlong(X0,X2,X3,X4,X5) | ~look_different(X0,s__Moscow) | ~capital_city(X0,X1) | ~is_instance(X1,s__OECDMemberEconomiesClass) | ~s__SymbolicString(X10) | ~s__SymbolicString(X9) | ~real(X8) | ~real(X7) | ~int(X6) | ~s__SymbolicString(X5) | ~s__SymbolicString(X4) | ~real(X3) | ~real(X2) | ~s__Object(X1) | ~s__Object(X0))),
+  inference(ennf_transformation,[],[f273])).
+fof(f347,plain,(
+  ! [X0] : (? [X1] : (s__orientation(X0,X1,s__Near) & s__Sea(X1)) => (s__orientation(X0,sK14(X0),s__Near) & s__Sea(sK14(X0))))),
+  introduced(choice_axiom,[])).
+fof(f348,plain,(
+  ! [X0] : ((s__orientation(X0,sK14(X0),s__Near) & s__Sea(sK14(X0))) | ~is_instance(X0,s__CoastalCitiesClass) | ~s__City(X0))),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK14])],[f284,f347])).
+fof(f351,plain,(
+  ? [X0] : int(X0) => int(sK16)),
+  introduced(choice_axiom,[])).
+fof(f352,plain,(
+  int(sK16)),
+  inference(skolemisation,[status(esa),new_symbols(skolem,[sK16])],[f32,f351])).
+fof(f367,plain,(
+  ( ! [X0] : (s__Object(X0) | ~s__Region(X0)) )),
+  inference(cnf_transformation,[],[f274])).
+fof(f368,plain,(
+  ( ! [X0] : (s__Region(X0) | ~s__GeographicArea(X0)) )),
+  inference(cnf_transformation,[],[f275])).
+fof(f369,plain,(
+  ( ! [X0] : (s__GeographicArea(X0) | ~s__GeopoliticalArea(X0)) )),
+  inference(cnf_transformation,[],[f276])).
+fof(f370,plain,(
+  ( ! [X0] : (s__GeopoliticalArea(X0) | ~s__Nation(X0)) )),
+  inference(cnf_transformation,[],[f277])).
+fof(f371,plain,(
+  ( ! [X0] : (s__GeopoliticalArea(X0) | ~s__City(X0)) )),
+  inference(cnf_transformation,[],[f278])).
+fof(f373,plain,(
+  ( ! [X0] : (s__WaterArea(X0) | ~s__BodyOfWater(X0)) )),
+  inference(cnf_transformation,[],[f280])).
+fof(f374,plain,(
+  ( ! [X0] : (s__BodyOfWater(X0) | ~s__Sea(X0)) )),
+  inference(cnf_transformation,[],[f281])).
+fof(f379,plain,(
+  ( ! [X0] : (s__Sea(sK14(X0)) | ~is_instance(X0,s__CoastalCitiesClass) | ~s__City(X0)) )),
+  inference(cnf_transformation,[],[f348])).
+fof(f380,plain,(
+  ( ! [X0] : (s__orientation(X0,sK14(X0),s__Near) | ~is_instance(X0,s__CoastalCitiesClass) | ~s__City(X0)) )),
+  inference(cnf_transformation,[],[f348])).
+fof(f381,plain,(
+  ( ! [X0,X1] : (s__capability(s__Flooding__t,s__located__m,X1) | ~s__orientation(X1,X0,s__Near) | ~s__City(X1) | ~s__WaterArea(X0)) )),
+  inference(cnf_transformation,[],[f286])).
+fof(f382,plain,(
+  ( ! [X2,X3,X10,X0,X1,X8,X6,X9,X7,X4,X5] : (~s__capability(s__Flooding__t,s__located__m,X0) | to_int(X2) != to_int(X7) | ~latlong(s__Moscow,X7,X8,X9,X10) | ~latlong(X0,X2,X3,X4,X5) | ~look_different(X0,s__Moscow) | ~capital_city(X0,X1) | ~is_instance(X1,s__OECDMemberEconomiesClass) | ~s__SymbolicString(X10) | ~s__SymbolicString(X9) | ~real(X8) | ~real(X7) | ~int(X6) | ~s__SymbolicString(X5) | ~s__SymbolicString(X4) | ~real(X3) | ~real(X2) | ~s__Object(X1) | ~s__Object(X0)) )),
+  inference(cnf_transformation,[],[f287])).
+fof(f384,plain,(
+  int(sK16)),
+  inference(cnf_transformation,[],[f352])).
+fof(f387,plain,(
+  is_instance(s__Copenhagen,s__CoastalCitiesClass)),
+  inference(cnf_transformation,[],[f35])).
+fof(f392,plain,(
+  s__Nation(s__Denmark)),
+  inference(cnf_transformation,[],[f40])).
+fof(f393,plain,(
+  is_instance(s__Denmark,s__OECDMemberEconomiesClass)),
+  inference(cnf_transformation,[],[f41])).
+fof(f454,plain,(
+  s__City(s__Copenhagen)),
+  inference(cnf_transformation,[],[f102])).
+fof(f455,plain,(
+  capital_city(s__Copenhagen,s__Denmark)),
+  inference(cnf_transformation,[],[f103])).
+fof(f502,plain,(
+  real('55.67631')),
+  inference(cnf_transformation,[],[f150])).
+fof(f503,plain,(
+  real('12.569355')),
+  inference(cnf_transformation,[],[f151])).
+fof(f504,plain,(
+  s__SymbolicString(copenhagen)),
+  inference(cnf_transformation,[],[f152])).
+fof(f505,plain,(
+  s__SymbolicString(dk)),
+  inference(cnf_transformation,[],[f153])).
+fof(f506,plain,(
+  latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk)),
+  inference(cnf_transformation,[],[f154])).
+fof(f522,plain,(
+  real('55.75695')),
+  inference(cnf_transformation,[],[f170])).
+fof(f523,plain,(
+  real('37.614975')),
+  inference(cnf_transformation,[],[f171])).
+fof(f524,plain,(
+  s__SymbolicString(moscow)),
+  inference(cnf_transformation,[],[f172])).
+fof(f525,plain,(
+  s__SymbolicString(ru)),
+  inference(cnf_transformation,[],[f173])).
+fof(f526,plain,(
+  latlong(s__Moscow,'55.75695','37.614975',moscow,ru)),
+  inference(cnf_transformation,[],[f174])).
+fof(f558,plain,(
+  look_different(s__Copenhagen,s__Moscow)),
+  inference(cnf_transformation,[],[f206])).
+fof(f589,plain,(
+  '55' = to_int('55.67631')),
+  inference(cnf_transformation,[],[f237])).
+fof(f590,plain,(
+  '55' = to_int('55.75695')),
+  inference(cnf_transformation,[],[f238])).
+tcf(c_63,plain,![X0:$i]:  
+    (~s__Region(X0)|s__Object(X0)),
+    inference(cnf_transformation,[],[f367])).
+tcf(c_64,plain,![X0:$i]:  
+    (~s__GeographicArea(X0)|s__Region(X0)),
+    inference(cnf_transformation,[],[f368])).
+tcf(c_65,plain,![X0:$i]:  
+    (~s__GeopoliticalArea(X0)|s__GeographicArea(X0)),
+    inference(cnf_transformation,[],[f369])).
+tcf(c_66,plain,![X0:$i]:  
+    (~s__Nation(X0)|s__GeopoliticalArea(X0)),
+    inference(cnf_transformation,[],[f370])).
+tcf(c_67,plain,![X0:$i]:  
+    (~s__City(X0)|s__GeopoliticalArea(X0)),
+    inference(cnf_transformation,[],[f371])).
+tcf(c_69,plain,![X0:$i]:  
+    (~s__BodyOfWater(X0)|s__WaterArea(X0)),
+    inference(cnf_transformation,[],[f373])).
+tcf(c_70,plain,![X0:$i]:  
+    (~s__Sea(X0)|s__BodyOfWater(X0)),
+    inference(cnf_transformation,[],[f374])).
+tcf(c_75,plain,![X0:$i]:  
+    (~is_instance(X0,s__CoastalCitiesClass)|~s__City(X0)|s__orientation(X0,sK14(X0),s__Near)),
+    inference(cnf_transformation,[],[f380])).
+tcf(c_76,plain,![X0:$i]:  
+    (~is_instance(X0,s__CoastalCitiesClass)|~s__City(X0)|s__Sea(sK14(X0))),
+    inference(cnf_transformation,[],[f379])).
+tcf(c_77,plain,![X0:$i,X1:$i]:  
+    (~s__orientation(X0,X1,s__Near)|~s__City(X0)|~s__WaterArea(X1)|s__capability(s__Flooding__t,s__located__m,X0)),
+    inference(cnf_transformation,[],[f381])).
+tcf(c_78,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i]:  
+    (to_int(X0) != to_int(X1)|~latlong(X2,X0,X3,X4,X5)|~latlong(s__Moscow,X1,X6,X7,X8)|
+    ~s__capability(s__Flooding__t,s__located__m,X2)|~capital_city(X2,X9)|
+    ~is_instance(X9,s__OECDMemberEconomiesClass)|~look_different(X2,s__Moscow)|
+    ~s__Object(X2)|~s__Object(X9)|~s__SymbolicString(X4)|~s__SymbolicString(X5)|
+    ~s__SymbolicString(X7)|~s__SymbolicString(X8)|~real(X0)|~real(X1)|
+    ~real(X3)|~real(X6)|~int(X10)),
+    inference(cnf_transformation,[],[f382])).
+tcf(c_80,plain, (int(sK16)),inference(cnf_transformation,[],[f384])).
+tcf(c_83,plain, 
+    (is_instance(s__Copenhagen,s__CoastalCitiesClass)),
+    inference(cnf_transformation,[],[f387])).
+tcf(c_88,plain, 
+    (s__Nation(s__Denmark)),
+    inference(cnf_transformation,[],[f392])).
+tcf(c_89,plain, 
+    (is_instance(s__Denmark,s__OECDMemberEconomiesClass)),
+    inference(cnf_transformation,[],[f393])).
+tcf(c_150,plain, 
+    (s__City(s__Copenhagen)),
+    inference(cnf_transformation,[],[f454])).
+tcf(c_151,plain, 
+    (capital_city(s__Copenhagen,s__Denmark)),
+    inference(cnf_transformation,[],[f455])).
+tcf(c_198,plain, (real('55.67631')),inference(cnf_transformation,[],[f502])).
+tcf(c_199,plain, 
+    (real('12.569355')),
+    inference(cnf_transformation,[],[f503])).
+tcf(c_200,plain, 
+    (s__SymbolicString(copenhagen)),
+    inference(cnf_transformation,[],[f504])).
+tcf(c_201,plain, 
+    (s__SymbolicString(dk)),
+    inference(cnf_transformation,[],[f505])).
+tcf(c_202,plain, 
+    (latlong(s__Copenhagen,'55.67631','12.569355',copenhagen,dk)),
+    inference(cnf_transformation,[],[f506])).
+tcf(c_218,plain, (real('55.75695')),inference(cnf_transformation,[],[f522])).
+tcf(c_219,plain, 
+    (real('37.614975')),
+    inference(cnf_transformation,[],[f523])).
+tcf(c_220,plain, 
+    (s__SymbolicString(moscow)),
+    inference(cnf_transformation,[],[f524])).
+tcf(c_221,plain, 
+    (s__SymbolicString(ru)),
+    inference(cnf_transformation,[],[f525])).
+tcf(c_222,plain, 
+    (latlong(s__Moscow,'55.75695','37.614975',moscow,ru)),
+    inference(cnf_transformation,[],[f526])).
+tcf(c_254,plain, 
+    (look_different(s__Copenhagen,s__Moscow)),
+    inference(cnf_transformation,[],[f558])).
+tcf(c_285,plain, 
+    (to_int('55.67631') = '55'),
+    inference(cnf_transformation,[],[f589])).
+tcf(c_286,plain, 
+    (to_int('55.75695') = '55'),
+    inference(cnf_transformation,[],[f590])).
+tcf(c_1281,plain,![X0:$i,X1:$i]:  
+    (X0 != X1|~s__GeographicArea(X0)|s__Object(X1)),
+    inference(resolution_lifted,[status(thm)],[c_64,c_63])).
+tcf(c_1282,plain,![X0:$i]:  
+    (~s__GeographicArea(X0)|s__Object(X0)),
+    inference(unflattening,[status(thm)],[c_1281])).
+tcf(c_1297,plain,![X0:$i,X1:$i]:  
+    (X0 != X1|~s__Sea(X0)|s__WaterArea(X1)),
+    inference(resolution_lifted,[status(thm)],[c_70,c_69])).
+tcf(c_1298,plain,![X0:$i]:  
+    (~s__Sea(X0)|s__WaterArea(X0)),
+    inference(unflattening,[status(thm)],[c_1297])).
+tcf(c_1319,plain,![X0:$i,X1:$i]:  
+    (sK14(X0) != X1|~is_instance(X0,s__CoastalCitiesClass)|~s__City(X0)|
+    s__WaterArea(X1)),
+    inference(resolution_lifted,[status(thm)],[c_1298,c_76])).
+tcf(c_1320,plain,![X0:$i]:  
+    (~is_instance(X0,s__CoastalCitiesClass)|~s__City(X0)|s__WaterArea(sK14(X0))),
+    inference(unflattening,[status(thm)],[c_1319])).
+tcf(c_1343,plain,![X0:$i,X1:$i]:  
+    (X0 != X1|~s__GeopoliticalArea(X0)|s__Object(X1)),
+    inference(resolution_lifted,[status(thm)],[c_65,c_1282])).
+tcf(c_1344,plain,![X0:$i]:  
+    (~s__GeopoliticalArea(X0)|s__Object(X0)),
+    inference(unflattening,[status(thm)],[c_1343])).
+tcf(c_1355,plain,![X0:$i,X1:$i,X2:$i]:  
+    (sK14(X0) != X1|X0 != X2|s__Near != s__Near|~is_instance(X0,s__CoastalCitiesClass)|
+    ~s__City(X0)|~s__City(X2)|~s__WaterArea(X1)|s__capability(s__Flooding__t,s__located__m,X2)),
+    inference(resolution_lifted,[status(thm)],[c_75,c_77])).
+tcf(c_1356,plain,![X0:$i]:  
+    (~s__WaterArea(sK14(X0))|~is_instance(X0,s__CoastalCitiesClass)|~s__City(X0)|
+    s__capability(s__Flooding__t,s__located__m,X0)),
+    inference(unflattening,[status(thm)],[c_1355])).
+tcf(c_1358,plain,![X0:$i]:  
+    (~is_instance(X0,s__CoastalCitiesClass)|~s__City(X0)|s__capability(s__Flooding__t,s__located__m,X0)),
+    inference(global_subsumption_just,[status(thm)],[c_1356,c_1320,c_1356])).
+tcf(c_1938,plain,![X0:$i]:  
+    (X0 != s__Denmark|s__GeopoliticalArea(X0)),
+    inference(resolution_lifted,[status(thm)],[c_66,c_88])).
+tcf(c_1939,plain, 
+    (s__GeopoliticalArea(s__Denmark)),
+    inference(unflattening,[status(thm)],[c_1938])).
+tcf(c_2237,plain,![X0:$i,X1:$i]:  
+    (X0 != X1|~s__City(X0)|s__Object(X1)),
+    inference(resolution_lifted,[status(thm)],[c_67,c_1344])).
+tcf(c_2238,plain,![X0:$i]:  
+    (~s__City(X0)|s__Object(X0)),
+    inference(unflattening,[status(thm)],[c_2237])).
+tcf(c_2283,plain,![X0:$i]:  
+    (X0 != s__Denmark|s__Object(X0)),
+    inference(resolution_lifted,[status(thm)],[c_1344,c_1939])).
+tcf(c_2284,plain, 
+    (s__Object(s__Denmark)),
+    inference(unflattening,[status(thm)],[c_2283])).
+tcf(c_3791,plain,![X0:$i]:  
+    (X0 != s__Copenhagen|s__Object(X0)),
+    inference(resolution_lifted,[status(thm)],[c_2238,c_150])).
+tcf(c_3792,plain, 
+    (s__Object(s__Copenhagen)),
+    inference(unflattening,[status(thm)],[c_3791])).
+tcf(c_3796,plain,![X0:$i]:  
+    (X0 != s__Copenhagen|~is_instance(X0,s__CoastalCitiesClass)|s__capability(s__Flooding__t,s__located__m,X0)),
+    inference(resolution_lifted,[status(thm)],[c_1358,c_150])).
+tcf(c_3797,plain, 
+    (~is_instance(s__Copenhagen,s__CoastalCitiesClass)|s__capability(s__Flooding__t,s__located__m,s__Copenhagen)),
+    inference(unflattening,[status(thm)],[c_3796])).
+tcf(c_6305,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i,X10:$i]:  
+    (to_int(X0) != to_int(X1)|X2 != sK16|~latlong(X3,X0,X4,X5,X6)|~latlong(s__Moscow,X1,X7,X8,X9)|
+    ~s__capability(s__Flooding__t,s__located__m,X3)|~capital_city(X3,X10)|
+    ~is_instance(X10,s__OECDMemberEconomiesClass)|~look_different(X3,s__Moscow)|
+    ~s__Object(X3)|~s__Object(X10)|~s__SymbolicString(X5)|~s__SymbolicString(X6)|
+    ~s__SymbolicString(X8)|~s__SymbolicString(X9)|~real(X0)|~real(X1)|
+    ~real(X4)|~real(X7)),
+    inference(resolution_lifted,[status(thm)],[c_78,c_80])).
+tcf(c_6306,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i,X9:$i]:  
+    (to_int(X0) != to_int(X1)|~latlong(X2,X0,X3,X4,X5)|~latlong(s__Moscow,X1,X6,X7,X8)|
+    ~s__capability(s__Flooding__t,s__located__m,X2)|~capital_city(X2,X9)|
+    ~is_instance(X9,s__OECDMemberEconomiesClass)|~look_different(X2,s__Moscow)|
+    ~s__Object(X2)|~s__Object(X9)|~s__SymbolicString(X4)|~s__SymbolicString(X5)|
+    ~s__SymbolicString(X7)|~s__SymbolicString(X8)|~real(X0)|~real(X1)|
+    ~real(X3)|~real(X6)),
+    inference(unflattening,[status(thm)],[c_6305])).
+tcf(c_31467,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i]:  
+    (to_int(X0) != '55'|~latlong(X1,'55.67631',X2,X3,X4)|~latlong(s__Moscow,X0,X5,X6,X7)|
+    ~s__capability(s__Flooding__t,s__located__m,X1)|~capital_city(X1,X8)|
+    ~is_instance(X8,s__OECDMemberEconomiesClass)|~look_different(X1,s__Moscow)|
+    ~s__Object(X1)|~s__Object(X8)|~s__SymbolicString(X3)|~s__SymbolicString(X4)|
+    ~s__SymbolicString(X6)|~s__SymbolicString(X7)|~real(X0)|~real(X2)|
+    ~real(X5)|~real('55.67631')),
+    inference(superposition,[status(thm)],[c_285,c_6306])).
+tcf(c_31870,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i,X8:$i]:  
+    (to_int(X0) != '55'|~latlong(X1,'55.67631',X2,X3,X4)|~latlong(s__Moscow,X0,X5,X6,X7)|
+    ~s__capability(s__Flooding__t,s__located__m,X1)|~capital_city(X1,X8)|
+    ~is_instance(X8,s__OECDMemberEconomiesClass)|~look_different(X1,s__Moscow)|
+    ~s__Object(X1)|~s__Object(X8)|~s__SymbolicString(X3)|~s__SymbolicString(X4)|
+    ~s__SymbolicString(X6)|~s__SymbolicString(X7)|~real(X0)|~real(X2)|
+    ~real(X5)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_31467,c_198])).
+tcf(c_33122,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~latlong(X0,'55.67631',X1,X2,X3)|~latlong(s__Moscow,'55.75695',X4,X5,X6)|
+    ~s__capability(s__Flooding__t,s__located__m,X0)|~capital_city(X0,X7)|
+    ~is_instance(X7,s__OECDMemberEconomiesClass)|~look_different(X0,s__Moscow)|
+    ~s__Object(X0)|~s__Object(X7)|~s__SymbolicString(X2)|~s__SymbolicString(X3)|
+    ~s__SymbolicString(X5)|~s__SymbolicString(X6)|~real(X1)|~real(X4)|
+    ~real('55.75695')),
+    inference(superposition,[status(thm)],[c_286,c_31870])).
+tcf(c_33124,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i,X6:$i,X7:$i]:  
+    (~latlong(X0,'55.67631',X1,X2,X3)|~latlong(s__Moscow,'55.75695',X4,X5,X6)|
+    ~s__capability(s__Flooding__t,s__located__m,X0)|~capital_city(X0,X7)|
+    ~is_instance(X7,s__OECDMemberEconomiesClass)|~look_different(X0,s__Moscow)|
+    ~s__Object(X0)|~s__Object(X7)|~s__SymbolicString(X2)|~s__SymbolicString(X3)|
+    ~s__SymbolicString(X5)|~s__SymbolicString(X6)|~real(X1)|~real(X4)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_33122,c_218])).
+tcf(c_34315,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~latlong(s__Moscow,'55.75695',X0,X1,X2)|~s__capability(s__Flooding__t,s__located__m,s__Copenhagen)|
+    ~is_instance(X3,s__OECDMemberEconomiesClass)|~capital_city(s__Copenhagen,X3)|
+    ~look_different(s__Copenhagen,s__Moscow)|~s__Object(X3)|~s__SymbolicString(X1)|
+    ~s__SymbolicString(X2)|~real(X0)|~s__Object(s__Copenhagen)|~s__SymbolicString(copenhagen)|
+    ~s__SymbolicString(dk)|~real('12.569355')),
+    inference(superposition,[status(thm)],[c_202,c_33124])).
+tcf(c_34316,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~latlong(s__Moscow,'55.75695',X0,X1,X2)|~s__capability(s__Flooding__t,s__located__m,s__Copenhagen)|
+    ~is_instance(X3,s__OECDMemberEconomiesClass)|~capital_city(s__Copenhagen,X3)|
+    ~s__Object(X3)|~s__SymbolicString(X1)|~s__SymbolicString(X2)|~real(X0)),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_34315,c_199,c_201,c_200,c_3792,c_254])).
+tcf(c_41050,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~latlong(s__Moscow,'55.75695',X0,X1,X2)|~is_instance(X3,s__OECDMemberEconomiesClass)|
+    ~capital_city(s__Copenhagen,X3)|~s__Object(X3)|~s__SymbolicString(X1)|
+    ~s__SymbolicString(X2)|~real(X0)),
+    inference(global_subsumption_just,
+              [status(thm)],
+              [c_34316,c_83,c_3797,c_34316])).
+tcf(c_41066,plain,![X0:$i]:  
+    (~is_instance(X0,s__OECDMemberEconomiesClass)|~capital_city(s__Copenhagen,X0)|
+    ~s__Object(X0)|~s__SymbolicString(moscow)|~s__SymbolicString(ru)|
+    ~real('37.614975')),
+    inference(superposition,[status(thm)],[c_222,c_41050])).
+tcf(c_41067,plain,![X0:$i]:  
+    (~is_instance(X0,s__OECDMemberEconomiesClass)|~capital_city(s__Copenhagen,X0)|
+    ~s__Object(X0)),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_41066,c_219,c_221,c_220])).
+tcf(c_41082,plain, 
+    (~capital_city(s__Copenhagen,s__Denmark)|~s__Object(s__Denmark)),
+    inference(superposition,[status(thm)],[c_89,c_41067])).
+tcf(c_41131,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,
+              [status(thm)],
+              [c_41082,c_2284,c_151])).
+% SZS output end CNFRefutation for CSR117+1.p

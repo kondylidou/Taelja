@@ -1,0 +1,21 @@
+% SZS status Unsatisfiable for SYO632-1.p
+% SZS output start CNFRefutation for SYO632-1.p
+tcf(c_50,plain,![X0:$i]:  
+    ('E'(f('AP'(s(s('0')),X0)),'0')),
+    file('Problems/SYO/SYO632-1.p', clause_2_02)).
+tcf(c_51,plain,![X0:$i]:  
+    ('E'(f(X0),s('0'))),
+    file('Problems/SYO/SYO632-1.p', clause_0_03)).
+tcf(c_52,plain,![X0:$i,X1:$i]:  
+    (~'E'(f(X0),s('0'))|~'E'(f(X1),'0')),
+    file('Problems/SYO/SYO632-1.p', clause_1_04)).
+tcf(c_59,plain,![X1:$i]:  
+    (~'E'(f(X1),'0')),
+    inference(global_subsumption_just,[status(thm)],[c_52,c_51,c_52])).
+tcf(c_60,plain,![X0:$i]:  
+    (~'E'(f(X0),'0')),
+    inference(renaming,[status(thm)],[c_59])).
+tcf(c_66,plain, 
+    ($false),
+    inference(backward_subsumption_resolution,[status(thm)],[c_50,c_60])).
+% SZS output end CNFRefutation for SYO632-1.p

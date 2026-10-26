@@ -9,7 +9,7 @@ import Data.Bifunctor (bimap)
 import Data.Char (isAlphaNum, isAsciiLower, isAsciiUpper, isDigit, toUpper)
 import Data.Function (on)
 import Data.List ((\\), groupBy, inits, intercalate, intersperse, isPrefixOf, isSuffixOf, nub, partition, sortOn, tails)
-import Data.Maybe (fromMaybe, isJust)
+import Data.Maybe (fromMaybe, isJust, listToMaybe)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 
@@ -455,6 +455,10 @@ notVar _       = True
 -- A clause's literals, each with whether it is the head.
 polLits :: Clause -> [(Bool, Literal)]
 polLits (Clause bs mh) = [ (False, l) | l <- bs ] ++ [ (True, h) | Just h <- [mh] ]
+
+-- The clause of literals that each say whether they are the head.
+fromPolLits :: [(Bool, Literal)] -> Clause
+fromPolLits ls = Clause [ l | (False, l) <- ls ] (listToMaybe [ l | (True, l) <- ls ])
 
 -- Every term one rewrite of t with the equation in the given direction can
 -- give, at the root or at any subterm, root first.

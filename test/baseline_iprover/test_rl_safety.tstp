@@ -1,0 +1,26 @@
+% SZS status Theorem for test_rl_safety.p
+% SZS output start CNFRefutation for test_rl_safety.p
+fof(f1,axiom,(
+  ! [X0] : f(X0) = c),
+  file('test_rl_safety.p',f1)).
+fof(f2,conjecture,(
+  c = f(a)),
+  file('test_rl_safety.p',f2)).
+fof(f3,negated_conjecture,(
+  ~c = f(a)),
+inference(negated_conjecture,[status(cth)],[f2])).
+fof(f4,plain,(
+  c != f(a)),
+  inference(flattening,[],[f3])).
+fof(f5,plain,(
+  ( ! [X0] : (f(X0) = c) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f6,plain,(
+  c != f(a)),
+  inference(cnf_transformation,[],[f4])).
+tcf(c_49,plain,![X0:$i]:  (f(X0) = c),inference(cnf_transformation,[],[f5])).
+tcf(c_50,plain, (f(a) != c),inference(cnf_transformation,[],[f6])).
+tcf(c_54,plain, 
+    ($false),
+    inference(backward_subsumption_resolution,[status(thm)],[c_50,c_49])).
+% SZS output end CNFRefutation for test_rl_safety.p

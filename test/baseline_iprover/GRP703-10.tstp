@@ -1,0 +1,85 @@
+% SZS status Unsatisfiable for GRP703-10.p
+% SZS output start CNFRefutation for GRP703-10.p
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (mult(X0,ld(X0,X1)) = X1),
+    file('Problems/GRP/GRP703-10.p', f01)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (ld(X0,mult(X0,X1)) = X1),
+    file('Problems/GRP/GRP703-10.p', f02)).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (mult(rd(X0,X1),X1) = X0),
+    file('Problems/GRP/GRP703-10.p', f03)).
+tcf(c_53,plain,![X0:$i]:  
+    (mult(X0,unit) = X0),
+    file('Problems/GRP/GRP703-10.p', f05)).
+tcf(c_54,plain,![X0:$i]:  
+    (mult(unit,X0) = X0),
+    file('Problems/GRP/GRP703-10.p', f06)).
+tcf(c_56,plain,![X0:$i,X1:$i]:  
+    (mult(mult(op_c,X0),X1) = mult(op_c,mult(X0,X1))),
+    file('Problems/GRP/GRP703-10.p', f08)).
+tcf(c_59,plain,![X0:$i]:  
+    (ld(X0,mult(op_c,X0)) = op_d),
+    file('Problems/GRP/GRP703-10.p', f11)).
+tcf(c_60,plain,![X0:$i,X1:$i]:  
+    (mult(mult(rd(op_c,mult(X0,X1)),X1),X0) = op_e),
+    file('Problems/GRP/GRP703-10.p', f12)).
+tcf(c_62,plain, 
+    (mult(mult(op_e,x2),x3) != mult(op_e,mult(x2,x3))),
+    file('Problems/GRP/GRP703-10.p', goal)).
+tcf(c_107,plain, (mult(op_e,x2) = iPr_def_10),definition).
+tcf(c_108,plain, (mult(iPr_def_10,x3) = iPr_def_11),definition).
+tcf(c_109,plain, (mult(x2,x3) = iPr_def_12),definition).
+tcf(c_110,plain, (mult(op_e,iPr_def_12) = iPr_def_13),definition).
+tcf(c_111,plain, 
+    (iPr_def_11 != iPr_def_13),
+    inference(demodulation,[status(thm)],[c_62,c_109,c_110,c_107,c_108])).
+tcf(c_191,plain, 
+    (ld(op_e,iPr_def_10) = x2),
+    inference(superposition,[status(thm)],[c_107,c_50])).
+tcf(c_209,plain,![X0:$i]:  
+    (mult(X0,op_d) = mult(op_c,X0)),
+    inference(superposition,[status(thm)],[c_59,c_49])).
+tcf(c_210,plain, 
+    (op_c = op_d),
+    inference(superposition,[status(thm)],[c_59,c_50])).
+tcf(c_230,plain,![X0:$i]:  
+    (mult(X0,op_c) = mult(op_c,X0)),
+    inference(light_normalisation,[status(thm)],[c_209,c_210])).
+tcf(c_242,plain,![X0:$i,X1:$i]:  
+    (mult(op_c,mult(ld(op_c,X0),X1)) = mult(X0,X1)),
+    inference(superposition,[status(thm)],[c_49,c_56])).
+tcf(c_327,plain,![X0:$i]:  
+    (mult(rd(op_c,mult(unit,X0)),X0) = op_e),
+    inference(superposition,[status(thm)],[c_60,c_53])).
+tcf(c_333,plain,![X0:$i]:  
+    (mult(rd(op_c,X0),X0) = op_e),
+    inference(light_normalisation,[status(thm)],[c_327,c_54])).
+tcf(c_393,plain, 
+    (op_c = op_e),
+    inference(demodulation,[status(thm)],[c_333,c_51])).
+tcf(c_397,plain, 
+    (ld(op_c,iPr_def_10) = x2),
+    inference(demodulation,[status(thm)],[c_191,c_393])).
+tcf(c_398,plain, 
+    (mult(op_c,iPr_def_12) = iPr_def_13),
+    inference(demodulation,[status(thm)],[c_110,c_393])).
+tcf(c_506,plain,![X0:$i]:  
+    (mult(op_c,mult(x2,X0)) = mult(iPr_def_10,X0)),
+    inference(superposition,[status(thm)],[c_397,c_242])).
+tcf(c_508,plain, 
+    (mult(iPr_def_12,op_c) = iPr_def_13),
+    inference(demodulation,[status(thm)],[c_398,c_230])).
+tcf(c_626,plain, 
+    (mult(op_c,iPr_def_12) = mult(iPr_def_10,x3)),
+    inference(superposition,[status(thm)],[c_109,c_506])).
+tcf(c_633,plain, 
+    (mult(op_c,iPr_def_12) = iPr_def_11),
+    inference(light_normalisation,[status(thm)],[c_626,c_108])).
+tcf(c_639,plain, 
+    (iPr_def_11 = iPr_def_13),
+    inference(demodulation,[status(thm)],[c_633,c_230,c_508])).
+tcf(c_640,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_639,c_111])).
+% SZS output end CNFRefutation for GRP703-10.p

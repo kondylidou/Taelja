@@ -1,0 +1,154 @@
+% SZS status Theorem for CSR026+3.p
+% SZS output start CNFRefutation for CSR026+3.p
+fof(f1907,axiom,(
+  ! [X1] : ((runningshorts(X1) & mtvisible(c_tptp_member2701_mt)) => tptpofobject(X1,f_tptpquantityfn_2(n_756)))),
+  file('Problems/CSR/CSR026+3.p',ax2_1907)).
+fof(f2363,axiom,(
+  genlmt(c_tptp_spindlecollectormt,c_tptp_member2701_mt)),
+  file('Problems/CSR/CSR026+3.p',ax2_2363)).
+fof(f2882,axiom,(
+  genlmt(c_tptp_spindlecollectormt,c_tptp_member3633_mt)),
+  file('Problems/CSR/CSR026+3.p',ax2_2882)).
+fof(f3932,axiom,(
+  genlmt(c_tptp_member3633_mt,c_tptp_spindleheadmt)),
+  file('Problems/CSR/CSR026+3.p',ax2_3932)).
+fof(f3995,axiom,(
+  mtvisible(c_cyclistsmt) => runningshorts(c_tptprunningshorts)),
+  file('Problems/CSR/CSR026+3.p',ax2_3995)).
+fof(f4481,axiom,(
+  genlmt(c_tptp_spindleheadmt,c_cyclistsmt)),
+  file('Problems/CSR/CSR026+3.p',ax2_4481)).
+fof(f7997,axiom,(
+  ! [X20,X21] : ((genlmt(X20,X21) & mtvisible(X20)) => mtvisible(X21))),
+  file('Problems/CSR/CSR026+3.p',ax2_7997)).
+fof(f8006,conjecture,(
+  mtvisible(c_tptp_spindlecollectormt) => tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))),
+  file('Problems/CSR/CSR026+3.p',query126)).
+fof(f8007,negated_conjecture,(
+  ~(mtvisible(c_tptp_spindlecollectormt) => tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756)))),
+inference(negated_conjecture,[status(cth)],[f8006])).
+fof(f8104,plain,(
+  ! [X0] : ((runningshorts(X0) & mtvisible(c_tptp_member2701_mt)) => tptpofobject(X0,f_tptpquantityfn_2(n_756)))),
+  inference(rectify,[],[f1907])).
+fof(f11718,plain,(
+  ! [X0,X1] : ((genlmt(X0,X1) & mtvisible(X0)) => mtvisible(X1))),
+  inference(rectify,[],[f7997])).
+fof(f13213,plain,(
+  ! [X0] : (tptpofobject(X0,f_tptpquantityfn_2(n_756)) | (~runningshorts(X0) | ~mtvisible(c_tptp_member2701_mt)))),
+  inference(ennf_transformation,[],[f8104])).
+fof(f13214,plain,(
+  ! [X0] : (tptpofobject(X0,f_tptpquantityfn_2(n_756)) | ~runningshorts(X0) | ~mtvisible(c_tptp_member2701_mt))),
+  inference(flattening,[],[f13213])).
+fof(f14046,plain,(
+  runningshorts(c_tptprunningshorts) | ~mtvisible(c_cyclistsmt)),
+  inference(ennf_transformation,[],[f3995])).
+fof(f17108,plain,(
+  ! [X0,X1] : (mtvisible(X1) | (~genlmt(X0,X1) | ~mtvisible(X0)))),
+  inference(ennf_transformation,[],[f11718])).
+fof(f17109,plain,(
+  ! [X0,X1] : (mtvisible(X1) | ~genlmt(X0,X1) | ~mtvisible(X0))),
+  inference(flattening,[],[f17108])).
+fof(f17118,plain,(
+  ~tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756)) & mtvisible(c_tptp_spindlecollectormt)),
+  inference(ennf_transformation,[],[f8007])).
+fof(f18987,plain,(
+  ( ! [X0] : (tptpofobject(X0,f_tptpquantityfn_2(n_756)) | ~runningshorts(X0) | ~mtvisible(c_tptp_member2701_mt)) )),
+  inference(cnf_transformation,[],[f13214])).
+fof(f19438,plain,(
+  genlmt(c_tptp_spindlecollectormt,c_tptp_member2701_mt)),
+  inference(cnf_transformation,[],[f2363])).
+fof(f19952,plain,(
+  genlmt(c_tptp_spindlecollectormt,c_tptp_member3633_mt)),
+  inference(cnf_transformation,[],[f2882])).
+fof(f20986,plain,(
+  genlmt(c_tptp_member3633_mt,c_tptp_spindleheadmt)),
+  inference(cnf_transformation,[],[f3932])).
+fof(f21047,plain,(
+  runningshorts(c_tptprunningshorts) | ~mtvisible(c_cyclistsmt)),
+  inference(cnf_transformation,[],[f14046])).
+fof(f21521,plain,(
+  genlmt(c_tptp_spindleheadmt,c_cyclistsmt)),
+  inference(cnf_transformation,[],[f4481])).
+fof(f24396,plain,(
+  ( ! [X0,X1] : (mtvisible(X1) | ~genlmt(X0,X1) | ~mtvisible(X0)) )),
+  inference(cnf_transformation,[],[f17109])).
+fof(f24405,plain,(
+  mtvisible(c_tptp_spindlecollectormt)),
+  inference(cnf_transformation,[],[f17118])).
+fof(f24406,plain,(
+  ~tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))),
+  inference(cnf_transformation,[],[f17118])).
+tcf(c_1917,plain,![X0:$i]:  
+    (~runningshorts(X0)|~mtvisible(c_tptp_member2701_mt)|tptpofobject(X0,f_tptpquantityfn_2(n_756))),
+    inference(cnf_transformation,[],[f18987])).
+tcf(c_2368,plain, 
+    (genlmt(c_tptp_spindlecollectormt,c_tptp_member2701_mt)),
+    inference(cnf_transformation,[],[f19438])).
+tcf(c_2882,plain, 
+    (genlmt(c_tptp_spindlecollectormt,c_tptp_member3633_mt)),
+    inference(cnf_transformation,[],[f19952])).
+tcf(c_3916,plain, 
+    (genlmt(c_tptp_member3633_mt,c_tptp_spindleheadmt)),
+    inference(cnf_transformation,[],[f20986])).
+tcf(c_3977,plain, 
+    (~mtvisible(c_cyclistsmt)|runningshorts(c_tptprunningshorts)),
+    inference(cnf_transformation,[],[f21047])).
+tcf(c_4451,plain, 
+    (genlmt(c_tptp_spindleheadmt,c_cyclistsmt)),
+    inference(cnf_transformation,[],[f21521])).
+tcf(c_7326,plain,![X0:$i,X1:$i]:  
+    (~genlmt(X0,X1)|~mtvisible(X0)|mtvisible(X1)),
+    inference(cnf_transformation,[],[f24396])).
+tcf(c_7335,plain, 
+    (~tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))),
+    inference(cnf_transformation,[],[f24406])).
+tcf(c_7336,plain, 
+    (mtvisible(c_tptp_spindlecollectormt)),
+    inference(cnf_transformation,[],[f24405])).
+tcf(c_15812,plain, 
+    (~mtvisible(c_cyclistsmt)|runningshorts(c_tptprunningshorts)),
+    inference(prop_impl_just,[status(thm)],[c_3977])).
+tcf(c_68085,plain, 
+    (~mtvisible(c_cyclistsmt)|~mtvisible(c_tptp_member2701_mt)|tptpofobject(c_tptprunningshorts,f_tptpquantityfn_2(n_756))),
+    inference(resolution,[status(thm)],[c_1917,c_15812])).
+tcf(c_68086,plain, 
+    (~mtvisible(c_tptp_member2701_mt)|~mtvisible(c_cyclistsmt)),
+    inference(global_subsumption_just,[status(thm)],[c_68085,c_7335,c_68085])).
+tcf(c_68087,plain, 
+    (~mtvisible(c_cyclistsmt)|~mtvisible(c_tptp_member2701_mt)),
+    inference(renaming,[status(thm)],[c_68086])).
+tcf(c_247072,plain,![X0:$i]:  
+    (~genlmt(X0,c_cyclistsmt)|~mtvisible(X0)|mtvisible(c_cyclistsmt)),
+    inference(instantiation,[status(thm)],[c_7326])).
+tcf(c_247077,plain,![X0:$i]:  
+    (~genlmt(X0,c_tptp_spindleheadmt)|~mtvisible(X0)|mtvisible(c_tptp_spindleheadmt)),
+    inference(instantiation,[status(thm)],[c_7326])).
+tcf(c_247159,plain,![X0:$i]:  
+    (~genlmt(X0,c_tptp_member2701_mt)|~mtvisible(X0)|mtvisible(c_tptp_member2701_mt)),
+    inference(instantiation,[status(thm)],[c_7326])).
+tcf(c_248262,plain, 
+    (~genlmt(c_tptp_spindleheadmt,c_cyclistsmt)|~mtvisible(c_tptp_spindleheadmt)|
+    mtvisible(c_cyclistsmt)),
+    inference(instantiation,[status(thm)],[c_247072])).
+tcf(c_248278,plain, 
+    (~genlmt(c_tptp_member3633_mt,c_tptp_spindleheadmt)|~mtvisible(c_tptp_member3633_mt)|
+    mtvisible(c_tptp_spindleheadmt)),
+    inference(instantiation,[status(thm)],[c_247077])).
+tcf(c_248498,plain, 
+    (~genlmt(c_tptp_spindlecollectormt,c_tptp_member2701_mt)|~mtvisible(c_tptp_spindlecollectormt)|
+    mtvisible(c_tptp_member2701_mt)),
+    inference(instantiation,[status(thm)],[c_247159])).
+tcf(c_249361,plain,![X0:$i]:  
+    (~genlmt(X0,c_tptp_member3633_mt)|~mtvisible(X0)|mtvisible(c_tptp_member3633_mt)),
+    inference(instantiation,[status(thm)],[c_7326])).
+tcf(c_253143,plain, 
+    (~genlmt(c_tptp_spindlecollectormt,c_tptp_member3633_mt)|~mtvisible(c_tptp_spindlecollectormt)|
+    mtvisible(c_tptp_member3633_mt)),
+    inference(instantiation,[status(thm)],[c_249361])).
+tcf(c_253144,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_253143,c_248498,c_248278,c_248262,c_68087,c_2368,c_2882,
+               c_3916,c_4451,c_7336])).
+% SZS output end CNFRefutation for CSR026+3.p

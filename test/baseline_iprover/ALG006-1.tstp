@@ -1,0 +1,265 @@
+% SZS status Unsatisfiable for ALG006-1.p
+% SZS output start CNFRefutation for ALG006-1.p
+tcf(c_49,plain,![X0:$i,X1:$i]:  
+    (difference(X0,difference(X1,X0)) = X0),
+    file('Problems/ALG/ALG006-1.p', set_difference_1)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (difference(X0,difference(X0,X1)) = difference(X1,difference(X1,X0))),
+    file('Problems/ALG/ALG006-1.p', set_difference_2)).
+tcf(c_51,plain,![X0:$i,X1:$i,X2:$i]:  
+    (difference(difference(X0,X1),difference(X2,X1)) = difference(difference(X0,X2),X1)),
+    file('Problems/ALG/ALG006-1.p', set_difference_3)).
+tcf(c_52,plain, 
+    (difference(difference(a,c),b) != difference(difference(a,b),c)),
+    file('Problems/ALG/ALG006-1.p', prove_set_difference_3_simplified)).
+tcf(c_67,plain, (difference(a,c) = iPr_def_10),definition).
+tcf(c_68,plain, (difference(iPr_def_10,b) = iPr_def_11),definition).
+tcf(c_69,plain, (difference(a,b) = iPr_def_12),definition).
+tcf(c_70,plain, (difference(iPr_def_12,c) = iPr_def_13),definition).
+tcf(c_71,plain, 
+    (iPr_def_11 != iPr_def_13),
+    inference(demodulation,[status(thm)],[c_52,c_69,c_70,c_67,c_68])).
+tcf(c_108,plain, 
+    (difference(c,iPr_def_10) = c),
+    inference(superposition,[status(thm)],[c_67,c_49])).
+tcf(c_109,plain, 
+    (difference(b,iPr_def_12) = b),
+    inference(superposition,[status(thm)],[c_69,c_49])).
+tcf(c_110,plain, 
+    (difference(b,iPr_def_11) = b),
+    inference(superposition,[status(thm)],[c_68,c_49])).
+tcf(c_111,plain, 
+    (difference(c,iPr_def_13) = c),
+    inference(superposition,[status(thm)],[c_70,c_49])).
+tcf(c_112,plain,![X0:$i,X1:$i]:  
+    (difference(difference(X0,X1),X1) = difference(X0,X1)),
+    inference(superposition,[status(thm)],[c_49,c_49])).
+tcf(c_113,plain, 
+    (difference(iPr_def_10,c) = iPr_def_10),
+    inference(superposition,[status(thm)],[c_108,c_49])).
+tcf(c_114,plain, 
+    (difference(iPr_def_12,b) = iPr_def_12),
+    inference(superposition,[status(thm)],[c_109,c_49])).
+tcf(c_115,plain, 
+    (difference(iPr_def_11,b) = iPr_def_11),
+    inference(superposition,[status(thm)],[c_110,c_49])).
+tcf(c_119,plain, 
+    (difference(iPr_def_10,difference(iPr_def_10,c)) = difference(c,c)),
+    inference(superposition,[status(thm)],[c_108,c_50])).
+tcf(c_120,plain, 
+    (difference(iPr_def_12,difference(iPr_def_12,b)) = difference(b,b)),
+    inference(superposition,[status(thm)],[c_109,c_50])).
+tcf(c_121,plain, 
+    (difference(iPr_def_11,difference(iPr_def_11,b)) = difference(b,b)),
+    inference(superposition,[status(thm)],[c_110,c_50])).
+tcf(c_122,plain,![X0:$i,X1:$i]:  
+    (difference(difference(X0,X1),difference(X1,difference(X1,X0))) = difference(X0,X1)),
+    inference(superposition,[status(thm)],[c_50,c_49])).
+tcf(c_124,plain, 
+    (difference(b,b) = difference(iPr_def_11,iPr_def_11)),
+    inference(light_normalisation,[status(thm)],[c_121,c_115])).
+tcf(c_125,plain, 
+    (difference(b,b) = difference(iPr_def_12,iPr_def_12)),
+    inference(light_normalisation,[status(thm)],[c_120,c_114])).
+tcf(c_126,plain, 
+    (difference(c,c) = difference(iPr_def_10,iPr_def_10)),
+    inference(light_normalisation,[status(thm)],[c_119,c_113])).
+tcf(c_129,plain,![X0:$i,X1:$i,X2:$i]:  
+    (difference(difference(X0,X1),difference(X2,X0)) = difference(X0,difference(X1,difference(X2,X0)))),
+    inference(superposition,[status(thm)],[c_49,c_51])).
+tcf(c_133,plain,![X0:$i]:  
+    (difference(difference(a,X0),c) = difference(iPr_def_10,difference(X0,c))),
+    inference(superposition,[status(thm)],[c_67,c_51])).
+tcf(c_134,plain,![X0:$i]:  
+    (difference(difference(a,X0),b) = difference(iPr_def_12,difference(X0,b))),
+    inference(superposition,[status(thm)],[c_69,c_51])).
+tcf(c_140,plain,![X0:$i,X1:$i,X2:$i]:  
+    (difference(difference(X0,difference(X1,X2)),X2) = difference(difference(X0,X2),difference(X1,X2))),
+    inference(superposition,[status(thm)],[c_49,c_51])).
+tcf(c_160,plain, 
+    (difference(iPr_def_13,c) = iPr_def_13),
+    inference(superposition,[status(thm)],[c_111,c_49])).
+tcf(c_162,plain, 
+    (difference(iPr_def_13,difference(iPr_def_13,c)) = difference(c,c)),
+    inference(superposition,[status(thm)],[c_111,c_50])).
+tcf(c_164,plain, 
+    (difference(iPr_def_13,difference(iPr_def_13,c)) = difference(iPr_def_10,iPr_def_10)),
+    inference(light_normalisation,[status(thm)],[c_162,c_126])).
+tcf(c_181,plain, 
+    (difference(iPr_def_11,iPr_def_11) = difference(iPr_def_12,iPr_def_12)),
+    inference(light_normalisation,[status(thm)],[c_125,c_124])).
+tcf(c_185,plain, 
+    (difference(c,difference(iPr_def_10,iPr_def_10)) = c),
+    inference(superposition,[status(thm)],[c_126,c_49])).
+tcf(c_197,plain,![X0:$i]:  
+    (difference(difference(c,X0),difference(iPr_def_10,iPr_def_10)) = difference(c,difference(X0,difference(iPr_def_10,iPr_def_10)))),
+    inference(superposition,[status(thm)],[c_185,c_51])).
+tcf(c_217,plain, 
+    (difference(iPr_def_10,iPr_def_10) = difference(iPr_def_13,iPr_def_13)),
+    inference(light_normalisation,[status(thm)],[c_164,c_160])).
+tcf(c_218,plain, 
+    (difference(iPr_def_13,difference(iPr_def_10,iPr_def_10)) = iPr_def_13),
+    inference(superposition,[status(thm)],[c_217,c_49])).
+tcf(c_220,plain,![X0:$i]:  
+    (difference(difference(iPr_def_10,iPr_def_10),difference(X0,iPr_def_13)) = difference(difference(iPr_def_13,X0),iPr_def_13)),
+    inference(superposition,[status(thm)],[c_217,c_51])).
+tcf(c_257,plain,![X0:$i,X1:$i]:  
+    (difference(difference(difference(X0,X1),X1),difference(X1,X1)) = difference(difference(X0,X1),X1)),
+    inference(superposition,[status(thm)],[c_49,c_122])).
+tcf(c_316,plain,![X0:$i,X1:$i]:  
+    (difference(difference(X0,X1),difference(X1,X1)) = difference(X0,X1)),
+    inference(light_normalisation,[status(thm)],[c_257,c_112])).
+tcf(c_351,plain, 
+    (difference(iPr_def_10,difference(b,c)) = difference(iPr_def_12,c)),
+    inference(superposition,[status(thm)],[c_69,c_133])).
+tcf(c_362,plain, 
+    (difference(iPr_def_10,difference(b,c)) = iPr_def_13),
+    inference(light_normalisation,[status(thm)],[c_351,c_70])).
+tcf(c_515,plain,![X0:$i,X1:$i]:  
+    (difference(X0,difference(X0,difference(X1,X0))) = difference(difference(X0,X1),X0)),
+    inference(superposition,[status(thm)],[c_129,c_51])).
+tcf(c_518,plain,![X0:$i,X1:$i]:  
+    (difference(difference(X0,X1),X0) = difference(X0,X0)),
+    inference(light_normalisation,[status(thm)],[c_515,c_49])).
+tcf(c_555,plain, 
+    (difference(iPr_def_10,iPr_def_10) = difference(iPr_def_11,iPr_def_10)),
+    inference(superposition,[status(thm)],[c_68,c_518])).
+tcf(c_556,plain, 
+    (difference(iPr_def_12,iPr_def_12) = difference(iPr_def_13,iPr_def_12)),
+    inference(superposition,[status(thm)],[c_70,c_518])).
+tcf(c_564,plain, 
+    (difference(iPr_def_10,iPr_def_10) = difference(iPr_def_13,iPr_def_10)),
+    inference(superposition,[status(thm)],[c_362,c_518])).
+tcf(c_574,plain,![X0:$i,X1:$i,X2:$i]:  
+    (difference(difference(X0,difference(X1,X2)),X1) = difference(difference(X0,X1),difference(X1,X1))),
+    inference(superposition,[status(thm)],[c_518,c_51])).
+tcf(c_581,plain, 
+    (difference(iPr_def_11,iPr_def_11) = difference(iPr_def_13,iPr_def_12)),
+    inference(light_normalisation,[status(thm)],[c_556,c_181])).
+tcf(c_584,plain,![X0:$i,X1:$i,X2:$i]:  
+    (difference(difference(X0,difference(X1,X2)),X1) = difference(X0,X1)),
+    inference(light_normalisation,[status(thm)],[c_574,c_316])).
+tcf(c_621,plain, 
+    (difference(iPr_def_10,difference(iPr_def_10,iPr_def_11)) = difference(iPr_def_11,difference(iPr_def_10,iPr_def_10))),
+    inference(superposition,[status(thm)],[c_555,c_50])).
+tcf(c_644,plain, 
+    (difference(iPr_def_10,difference(iPr_def_10,iPr_def_13)) = difference(iPr_def_13,difference(iPr_def_10,iPr_def_10))),
+    inference(superposition,[status(thm)],[c_564,c_50])).
+tcf(c_648,plain, 
+    (difference(iPr_def_10,difference(iPr_def_10,iPr_def_13)) = iPr_def_13),
+    inference(light_normalisation,[status(thm)],[c_644,c_218])).
+tcf(c_661,plain, 
+    (difference(iPr_def_12,difference(iPr_def_12,iPr_def_13)) = difference(iPr_def_13,difference(iPr_def_11,iPr_def_11))),
+    inference(superposition,[status(thm)],[c_581,c_50])).
+tcf(c_741,plain, 
+    (difference(iPr_def_12,difference(c,b)) = difference(iPr_def_10,b)),
+    inference(superposition,[status(thm)],[c_67,c_134])).
+tcf(c_758,plain, 
+    (difference(iPr_def_12,difference(c,b)) = iPr_def_11),
+    inference(light_normalisation,[status(thm)],[c_741,c_68])).
+tcf(c_1740,plain,![X0:$i,X1:$i,X2:$i]:  
+    (difference(difference(X0,difference(X1,X2)),X2) = difference(difference(X0,X1),X2)),
+    inference(demodulation,[status(thm)],[c_140,c_51])).
+tcf(c_1764,plain, 
+    (difference(difference(iPr_def_10,b),c) = difference(iPr_def_13,c)),
+    inference(superposition,[status(thm)],[c_362,c_1740])).
+tcf(c_1775,plain, 
+    (difference(difference(iPr_def_12,c),b) = difference(iPr_def_11,b)),
+    inference(superposition,[status(thm)],[c_758,c_1740])).
+tcf(c_1859,plain, 
+    (difference(iPr_def_13,b) = iPr_def_11),
+    inference(light_normalisation,[status(thm)],[c_1775,c_70,c_115])).
+tcf(c_1862,plain, 
+    (difference(iPr_def_11,c) = iPr_def_13),
+    inference(light_normalisation,[status(thm)],[c_1764,c_68,c_160])).
+tcf(c_1998,plain, 
+    (difference(iPr_def_11,iPr_def_13) = difference(iPr_def_13,iPr_def_13)),
+    inference(superposition,[status(thm)],[c_1859,c_518])).
+tcf(c_2009,plain, 
+    (difference(iPr_def_10,iPr_def_10) = difference(iPr_def_11,iPr_def_13)),
+    inference(light_normalisation,[status(thm)],[c_1998,c_217])).
+tcf(c_2014,plain, 
+    (difference(difference(c,iPr_def_11),difference(iPr_def_11,iPr_def_13)) = difference(c,iPr_def_11)),
+    inference(superposition,[status(thm)],[c_1862,c_122])).
+tcf(c_2017,plain, 
+    (difference(iPr_def_11,iPr_def_11) = difference(iPr_def_13,iPr_def_11)),
+    inference(superposition,[status(thm)],[c_1862,c_518])).
+tcf(c_2029,plain, 
+    (difference(difference(c,iPr_def_11),difference(iPr_def_10,iPr_def_10)) = difference(c,iPr_def_11)),
+    inference(light_normalisation,[status(thm)],[c_2014,c_2009])).
+tcf(c_2045,plain,![X0:$i]:  
+    (difference(difference(iPr_def_10,iPr_def_10),difference(X0,iPr_def_13)) = difference(difference(iPr_def_11,X0),iPr_def_13)),
+    inference(superposition,[status(thm)],[c_2009,c_51])).
+tcf(c_2064,plain, 
+    (difference(iPr_def_11,difference(iPr_def_11,iPr_def_13)) = difference(iPr_def_13,difference(iPr_def_11,iPr_def_11))),
+    inference(superposition,[status(thm)],[c_2017,c_50])).
+tcf(c_2070,plain, 
+    (difference(iPr_def_10,difference(iPr_def_10,iPr_def_11)) = difference(iPr_def_13,difference(iPr_def_11,iPr_def_11))),
+    inference(light_normalisation,[status(thm)],[c_2064,c_621,c_661,c_2009])).
+tcf(c_3950,plain,![X0:$i]:  
+    (difference(difference(X0,iPr_def_13),iPr_def_10) = difference(X0,iPr_def_10)),
+    inference(superposition,[status(thm)],[c_648,c_584])).
+tcf(c_3957,plain,![X0:$i]:  
+    (difference(difference(X0,iPr_def_11),iPr_def_13) = difference(X0,iPr_def_13)),
+    inference(superposition,[status(thm)],[c_1859,c_584])).
+tcf(c_3958,plain,![X0:$i]:  
+    (difference(difference(X0,iPr_def_13),iPr_def_11) = difference(X0,iPr_def_11)),
+    inference(superposition,[status(thm)],[c_1862,c_584])).
+tcf(c_4470,plain,![X0:$i]:  
+    (difference(difference(X0,iPr_def_10),difference(X0,iPr_def_13)) = difference(difference(X0,iPr_def_13),difference(X0,iPr_def_13))),
+    inference(superposition,[status(thm)],[c_3950,c_518])).
+tcf(c_4585,plain,![X0:$i]:  
+    (difference(difference(X0,iPr_def_11),difference(X0,iPr_def_13)) = difference(iPr_def_13,difference(iPr_def_13,difference(X0,iPr_def_11)))),
+    inference(superposition,[status(thm)],[c_3957,c_50])).
+tcf(c_4592,plain,![X0:$i,X1:$i]:  
+    (difference(difference(X0,difference(X1,iPr_def_11)),iPr_def_13) = difference(difference(X0,iPr_def_13),difference(X1,iPr_def_13))),
+    inference(superposition,[status(thm)],[c_3957,c_51])).
+tcf(c_4642,plain,![X0:$i]:  
+    (difference(difference(X0,iPr_def_11),difference(X0,iPr_def_13)) = difference(difference(X0,iPr_def_13),difference(X0,iPr_def_13))),
+    inference(superposition,[status(thm)],[c_3958,c_518])).
+tcf(c_4669,plain,![X0:$i]:  
+    (difference(difference(X0,iPr_def_10),difference(X0,iPr_def_13)) = difference(iPr_def_13,difference(iPr_def_13,difference(X0,iPr_def_11)))),
+    inference(light_normalisation,[status(thm)],[c_4642,c_4470,c_4585])).
+tcf(c_8447,plain, 
+    (difference(c,difference(iPr_def_10,difference(iPr_def_10,iPr_def_11))) = difference(c,iPr_def_11)),
+    inference(demodulation,[status(thm)],[c_2029,c_197,c_621])).
+tcf(c_8801,plain,![X0:$i]:  
+    (difference(difference(iPr_def_11,X0),iPr_def_13) = difference(difference(iPr_def_13,X0),iPr_def_13)),
+    inference(light_normalisation,[status(thm)],[c_220,c_2045])).
+tcf(c_8802,plain,![X0:$i]:  
+    (difference(difference(iPr_def_11,X0),iPr_def_13) = difference(iPr_def_10,iPr_def_10)),
+    inference(demodulation,[status(thm)],[c_8801,c_217,c_518])).
+tcf(c_8810,plain,![X0:$i]:  
+    (difference(difference(X0,difference(X0,iPr_def_11)),iPr_def_13) = difference(iPr_def_10,iPr_def_10)),
+    inference(superposition,[status(thm)],[c_50,c_8802])).
+tcf(c_8877,plain,![X0:$i]:  
+    (difference(iPr_def_13,difference(iPr_def_13,difference(X0,iPr_def_11))) = difference(iPr_def_10,iPr_def_10)),
+    inference(demodulation,[status(thm)],[c_8810,c_4470,c_4592,c_4669])).
+tcf(c_8882,plain, 
+    (difference(iPr_def_13,difference(iPr_def_13,b)) = difference(iPr_def_10,iPr_def_10)),
+    inference(superposition,[status(thm)],[c_110,c_8877])).
+tcf(c_8928,plain, 
+    (difference(iPr_def_10,iPr_def_10) = difference(iPr_def_11,iPr_def_11)),
+    inference(light_normalisation,[status(thm)],[c_8882,c_1859,c_2017])).
+tcf(c_8942,plain, 
+    (difference(iPr_def_10,difference(iPr_def_10,iPr_def_11)) = difference(iPr_def_13,difference(iPr_def_10,iPr_def_10))),
+    inference(demodulation,[status(thm)],[c_2070,c_8928])).
+tcf(c_8955,plain, 
+    (difference(iPr_def_10,difference(iPr_def_10,iPr_def_11)) = iPr_def_13),
+    inference(light_normalisation,[status(thm)],[c_8942,c_218])).
+tcf(c_8956,plain, 
+    (difference(c,iPr_def_11) = difference(c,iPr_def_13)),
+    inference(demodulation,[status(thm)],[c_8447,c_8955])).
+tcf(c_8961,plain, 
+    (difference(c,iPr_def_11) = c),
+    inference(light_normalisation,[status(thm)],[c_8956,c_111])).
+tcf(c_8981,plain, 
+    (difference(iPr_def_11,c) = iPr_def_11),
+    inference(superposition,[status(thm)],[c_8961,c_49])).
+tcf(c_9011,plain, 
+    (iPr_def_11 = iPr_def_13),
+    inference(demodulation,[status(thm)],[c_1862,c_8981])).
+tcf(c_9012,plain, 
+    ($false),
+    inference(forward_subsumption_resolution,[status(thm)],[c_9011,c_71])).
+% SZS output end CNFRefutation for ALG006-1.p

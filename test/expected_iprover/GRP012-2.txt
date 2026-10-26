@@ -1,0 +1,89 @@
+Axiom 1: product(identity,X,X)
+Axiom 2: product(X,Y,Z) /\ product(X,Y,A) => Z = A
+Axiom 3: product(inverse(b),inverse(a),d)
+Axiom 4: product(X,inverse(X),identity)
+Axiom 5: product(X,Y,Z) /\ product(Y,A,B) /\ product(Z,A,C) => product(X,B,C)
+Axiom 6: product(X,Y,multiply(X,Y))
+Axiom 7: product(a,b,c)
+Axiom 8: product(inverse(X),X,identity)
+Axiom 9: product(X,identity,X)
+
+Lemma 10: product(X,Y,Z) => multiply(X,Y) = Z
+Proof:
+  have product(X,Y,multiply(X,Y))
+    by axiom 6
+   and product(X,Y,Z)
+    by assumption
+  hence multiply(X,Y) = Z
+    by axiom 2
+
+Lemma 11: multiply(b,d) = inverse(a)
+Proof:
+  have product(b,inverse(b),identity)
+    by axiom 4
+   and product(inverse(b),inverse(a),d)
+    by axiom 3
+   and product(identity,inverse(a),inverse(a))
+    by axiom 1
+  hence product(b,d,inverse(a))
+    by axiom 5
+  hence multiply(b,d) = inverse(a)
+    by lemma 10
+
+Lemma 12: multiply(a,multiply(b,d)) = multiply(c,d)
+Proof:
+  have product(a,b,c)
+    by axiom 7
+   and product(b,d,multiply(b,d))
+    by axiom 6
+   and product(c,d,multiply(c,d))
+    by axiom 6
+  hence product(a,multiply(b,d),multiply(c,d))
+    by axiom 5
+  hence multiply(a,multiply(b,d)) = multiply(c,d)
+    by lemma 10
+
+Lemma 13: product(a,inverse(a),multiply(c,d))
+Proof:
+  have product(a,multiply(b,d),multiply(a,multiply(b,d)))
+    by axiom 6
+  hence product(a,multiply(b,d),multiply(c,d))
+    by rw lemma 12
+  hence product(a,inverse(a),multiply(c,d))
+    by rw lemma 11
+
+Lemma 14: identity = multiply(c,d)
+Proof:
+  have product(a,inverse(a),identity)
+    by axiom 4
+   and product(a,inverse(a),multiply(c,d))
+    by lemma 13
+  hence identity = multiply(c,d)
+    by axiom 2
+
+Lemma 15: product(c,d,identity)
+Proof:
+  have product(c,d,multiply(c,d))
+    by axiom 6
+  hence product(c,d,identity)
+    by rw lemma 14 R->L
+
+Lemma 16: product(inverse(c),identity,d)
+Proof:
+  have product(inverse(c),c,identity)
+    by axiom 8
+   and product(c,d,identity)
+    by lemma 15
+   and product(identity,d,d)
+    by axiom 1
+  hence product(inverse(c),identity,d)
+    by axiom 5
+
+Goal 1: inverse(c) = d
+Proof:
+  have product(inverse(c),identity,inverse(c))
+    by axiom 9
+   and product(inverse(c),identity,d)
+    by lemma 16
+  hence inverse(c) = d
+    by axiom 2

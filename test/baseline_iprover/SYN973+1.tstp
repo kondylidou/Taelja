@@ -1,0 +1,23 @@
+% SZS status Theorem for SYN973+1.p
+% SZS output start CNFRefutation for SYN973+1.p
+fof(f1,conjecture,(
+  p(z) => p(z)),
+  file('Problems/SYN/SYN973+1.p',prove_this)).
+fof(f2,negated_conjecture,(
+  ~(p(z) => p(z))),
+inference(negated_conjecture,[status(cth)],[f1])).
+fof(f3,plain,(
+  ~p(z) & p(z)),
+  inference(ennf_transformation,[],[f2])).
+fof(f4,plain,(
+  p(z)),
+  inference(cnf_transformation,[],[f3])).
+fof(f5,plain,(
+  ~p(z)),
+  inference(cnf_transformation,[],[f3])).
+tcf(c_49,plain, (~p(z)),inference(cnf_transformation,[],[f5])).
+tcf(c_50,plain, (p(z)),inference(cnf_transformation,[],[f4])).
+tcf(c_51,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_49,c_50])).
+% SZS output end CNFRefutation for SYN973+1.p

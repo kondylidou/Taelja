@@ -1,0 +1,10 @@
+Axiom 1: h(X,b) = X
+Axiom 2: h(a,Y) = c
+
+Goal 1: a = c
+Proof:
+  a
+= { by axiom 1 R->L }
+  h(a,b)
+= { by axiom 2 }
+  c
