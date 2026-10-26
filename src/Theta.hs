@@ -521,15 +521,15 @@ orientations l        = [l]
 derivedHead :: [Literal] -> Literal -> [Literal] -> Maybe Literal
 derivedHead bodyAbs headAbs targets
   | length bodyAbs /= length targets = Nothing
-  | otherwise = do
+  | otherwise = listToMaybe $ do
       s <- foldM unifyBody Map.empty (zip (map ren bodyAbs) targets)
       return (mapLiteralTerms (walkDeep s) (ren headAbs))
   where
     ren = suffixVarsLit "_dh"
-    -- a body atom unifies with its premise, either way round for an equation
-    unifyBody s (b, t) = do
-      tb <- litAsTerm b
-      listToMaybe [ s' | t' <- orientations t, Just tt <- [litAsTerm t'], Just s' <- [unifyInTree tb tt s] ]
+    -- A body atom unifies with its premise, either way round for an
+    -- equation. The way that a later body atom rules out is undone.
+    unifyBody s (b, t) =
+      [ s' | Just tb <- [litAsTerm b], t' <- orientations t, Just tt <- [litAsTerm t'], Just s' <- [unifyInTree tb tt s] ]
 
 -- Checks one assembled hyperresolution step before it is emitted, as the Lean
 -- check would. The rule's body atoms must unify with the matched electrons and

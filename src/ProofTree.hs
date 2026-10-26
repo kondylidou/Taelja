@@ -15,6 +15,7 @@ module ProofTree
   , findRoot
   , reachedNames
   , resolvents
+  , matchClause
   ) where
 import qualified Data.TPTP as T
 import qualified Data.Map.Strict as Map

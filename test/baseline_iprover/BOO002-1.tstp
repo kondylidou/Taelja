@@ -1,0 +1,89 @@
+% SZS status Unsatisfiable for BOO002-1.p
+% SZS output start CNFRefutation for BOO002-1.p
+tcf(c_49,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i]:  
+    (multiply(multiply(X0,X1,X2),X3,multiply(X0,X1,X4)) = multiply(X0,X1,multiply(X2,X3,X4))),
+    file('Problems/BOO/BOO002-1.p', associativity)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (multiply(X0,X1,X1) = X1),
+    file('Problems/BOO/BOO002-1.p', ternary_multiply_1)).
+tcf(c_51,plain,![X0:$i,X1:$i]:  
+    (multiply(X0,X0,X1) = X0),
+    file('Problems/BOO/BOO002-1.p', ternary_multiply_2)).
+tcf(c_52,plain,![X0:$i,X1:$i]:  
+    (multiply(inverse(X0),X0,X1) = X1),
+    file('Problems/BOO/BOO002-1.p', left_inverse)).
+tcf(c_53,plain, 
+    (multiply(a,inverse(a),b) != b),
+    file('Problems/BOO/BOO002-1.p', prove_equation)).
+tcf(c_71,plain, (inverse(a) = iPr_def_10),definition).
+tcf(c_72,plain, (multiply(a,iPr_def_10,b) = iPr_def_11),definition).
+tcf(c_73,plain, 
+    (iPr_def_11 != b),
+    inference(demodulation,[status(thm)],[c_53,c_71,c_72])).
+tcf(c_115,plain,![X0:$i]:  
+    (multiply(iPr_def_10,a,X0) = X0),
+    inference(superposition,[status(thm)],[c_71,c_52])).
+tcf(c_120,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (multiply(X0,X1,multiply(X1,X2,X3)) = multiply(X1,X2,multiply(X0,X1,X3))),
+    inference(superposition,[status(thm)],[c_50,c_49])).
+tcf(c_123,plain,![X0:$i,X1:$i]:  
+    (multiply(a,iPr_def_10,multiply(b,X0,X1)) = multiply(iPr_def_11,X0,multiply(a,iPr_def_10,X1))),
+    inference(superposition,[status(thm)],[c_72,c_49])).
+tcf(c_126,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (multiply(multiply(X0,X1,X2),X3,X1) = multiply(X0,X1,multiply(X2,X3,X1))),
+    inference(superposition,[status(thm)],[c_50,c_49])).
+tcf(c_163,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(X0,X1,multiply(X0,X0,X2)) = X0),
+    inference(superposition,[status(thm)],[c_120,c_51])).
+tcf(c_176,plain,![X0:$i,X1:$i]:  
+    (multiply(X0,X1,X0) = X0),
+    inference(demodulation,[status(thm)],[c_163,c_51])).
+tcf(c_270,plain,![X0:$i]:  
+    (multiply(iPr_def_11,b,multiply(a,iPr_def_10,X0)) = multiply(a,iPr_def_10,b)),
+    inference(superposition,[status(thm)],[c_51,c_123])).
+tcf(c_286,plain,![X0:$i]:  
+    (multiply(iPr_def_11,b,multiply(a,iPr_def_10,X0)) = iPr_def_11),
+    inference(light_normalisation,[status(thm)],[c_270,c_72])).
+tcf(c_288,plain, 
+    (multiply(iPr_def_11,b,iPr_def_10) = iPr_def_11),
+    inference(superposition,[status(thm)],[c_50,c_286])).
+tcf(c_295,plain, 
+    (multiply(iPr_def_11,b,a) = iPr_def_11),
+    inference(superposition,[status(thm)],[c_176,c_286])).
+tcf(c_305,plain,![X0:$i,X1:$i]:  
+    (multiply(iPr_def_11,X0,multiply(iPr_def_11,b,X1)) = multiply(iPr_def_11,b,multiply(iPr_def_10,X0,X1))),
+    inference(superposition,[status(thm)],[c_288,c_49])).
+tcf(c_314,plain,![X0:$i,X1:$i]:  
+    (multiply(iPr_def_11,X0,multiply(iPr_def_11,b,X1)) = multiply(iPr_def_11,b,multiply(a,X0,X1))),
+    inference(superposition,[status(thm)],[c_295,c_49])).
+tcf(c_525,plain,![X0:$i]:  
+    (multiply(iPr_def_11,b,multiply(iPr_def_10,X0,b)) = multiply(iPr_def_11,X0,b)),
+    inference(superposition,[status(thm)],[c_288,c_126])).
+tcf(c_4298,plain, 
+    (multiply(iPr_def_11,a,b) = multiply(iPr_def_11,b,b)),
+    inference(superposition,[status(thm)],[c_115,c_525])).
+tcf(c_4340,plain, 
+    (multiply(iPr_def_11,a,b) = b),
+    inference(demodulation,[status(thm)],[c_4298,c_50])).
+tcf(c_5033,plain,![X0:$i]:  
+    (multiply(iPr_def_11,a,multiply(iPr_def_11,b,X0)) = multiply(iPr_def_11,b,X0)),
+    inference(superposition,[status(thm)],[c_115,c_305])).
+tcf(c_5608,plain,![X0:$i]:  
+    (multiply(iPr_def_11,a,multiply(iPr_def_11,b,X0)) = multiply(iPr_def_11,b,a)),
+    inference(superposition,[status(thm)],[c_51,c_314])).
+tcf(c_5711,plain,![X0:$i]:  
+    (multiply(iPr_def_11,a,multiply(iPr_def_11,b,X0)) = iPr_def_11),
+    inference(light_normalisation,[status(thm)],[c_5608,c_295,c_5033])).
+tcf(c_5970,plain, 
+    (multiply(iPr_def_11,a,b) = iPr_def_11),
+    inference(superposition,[status(thm)],[c_50,c_5711])).
+tcf(c_6028,plain, 
+    (b = iPr_def_11),
+    inference(demodulation,[status(thm)],[c_4340,c_5970])).
+tcf(c_6095,plain, 
+    (iPr_def_11 != iPr_def_11),
+    inference(demodulation,[status(thm)],[c_73,c_6028])).
+tcf(c_6096,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_6095])).
+% SZS output end CNFRefutation for BOO002-1.p

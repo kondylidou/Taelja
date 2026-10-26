@@ -14,7 +14,7 @@ import Control.Applicative ((<|>))
 import Control.Monad (foldM, guard)
 import Data.Function (on)
 import Data.List (nub, nubBy, partition, sortOn)
-import Data.Maybe (isJust, listToMaybe, maybeToList)
+import Data.Maybe (fromMaybe, isJust, listToMaybe, maybeToList)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
@@ -24,7 +24,7 @@ import Types
 import Helpers (applySubstTerm, clauseInstance, clauseKey, clauseLits, fromPolLits, foldLiteralTerms, litVars, matchTerm, notVar, polLits,
                 ppTerm, putTermAt, resolveHead, subterms, suffixVarsClause, suffixVarsLit, termAt, termCtxs, termVars)
 import TptpConvert (clauseToDecl, convertDeclToClause, resolutionSource, unitNameOf, unitNameStr)
-import ProofTree (resolveCopySource, resolvents)
+import ProofTree (matchClause, resolveCopySource, resolvents)
 
 -- The name of a derived clause, the names of the two clauses it resolves, and
 -- the clause.
@@ -82,7 +82,8 @@ expandPropRes units = concatMap expand units
 -- The resolutions that derive goal, a part of a cited clause. Each resolves
 -- the clause so far, starting from any cited clause, with another one. The
 -- search is breadth first, duplicate body atoms are dropped, and as in
--- propRefute a resolvent may only use terms the cited clauses contain.
+-- propRefute a resolvent may only use terms the cited clauses contain. The
+-- last resolvent may be more general than goal, whose literals it may merge.
 resolveAway :: String -> Clause -> [(String, Clause)] -> Maybe [Step]
 resolveAway base goal prem = go [ (n, c, []) | (n, c) <- prem ] (Set.fromList (map (clauseKey . snd) prem))
   where
@@ -90,7 +91,7 @@ resolveAway base goal prem = go [ (n, c, []) | (n, c) <- prem ] (Set.fromList (m
     -- each path is the premises used and the clauses they give, the last first
     go [] _ = Nothing
     go ((start, c, path) : queue) seen
-      | clauseKey c == clauseKey goal, not (null path) = Just (named start (reverse path))
+      | isJust (matchClause c goal), not (null path) = Just (named start (reverse path))
       | otherwise = go (queue ++ [ (start, r, (pn, r) : path) | (pn, r) <- next ])
                        (foldr (Set.insert . clauseKey . snd) seen next)
       where
@@ -304,35 +305,43 @@ expandDemodulation units = concatMap expand units
 -- give a literal of c with the same sign, an equation either way round.
 -- Rewrites keep the variables of c0, which c may name differently, so one
 -- renaming of c's variables into c0's is built up along the way, and so is
--- one symbol precedence.
+-- one symbol precedence. iProver orders terms by Knuth-Bendix, or for some
+-- theories by a lexicographic path ordering, which is tried when the first
+-- gives no rewrites.
 rewriteChain :: [(String, (Term, Term))] -> Clause -> Clause -> Maybe [(String, Clause)]
-rewriteChain eqs c0 c = listToMaybe (walk [] ([], []) (polLits c0) (polLits c))
+rewriteChain eqs c0 c = listToMaybe (concatMap chain [const kboGreater, lpoGreater])
   where
-    walk _ _ [] [] = [[]]
-    walk done st ((sg, l) : rest) targets =
-      [ [ (e, fromPolLits (done ++ (sg, m) : rest)) | (e, m) <- steps ] ++ later
-      | (k, (sg', l')) <- zip [0 :: Int ..] targets, sg == sg'
-      , (steps, l'', st') <- literal st l l'
-      , later <- walk (done ++ [(sg, l'')]) st' rest (take k targets ++ drop (k + 1) targets) ]
-    walk _ _ _ _ = []
-    literal st (Eq s t) (Eq a b) = sides st s t a b ++ sides st s t b a
-    literal st (Rel p as) (Rel q bs)
-      | p == q = [ (steps, Rel p xs, st') | (steps, xs, st') <- arguments (Rel p) st [] as bs ]
-    literal _ _ _ = []
-    sides st s t a b =
-      [ ([ (e, Eq x t) | (e, x) <- cs ] ++ [ (e, Eq s' y) | (e, y) <- ct ], Eq s' t', st2)
-      | (s', cs, st1) <- normalAs st a s, (t', ct, st2) <- normalAs st1 b t ]
-    -- each argument normalised in turn, its rewrites put back into the literal
-    arguments _ st done [] [] = [([], reverse done, st)]
-    arguments build st done (a : rest) (b : bs) =
-      [ ([ (e, build (reverse done ++ x : rest)) | (e, x) <- sa ] ++ more, xs, st2)
-      | (a', sa, st1) <- normalAs st b a
-      , (more, xs, st2) <- arguments build st1 (a' : done) rest bs ]
-    arguments _ _ _ _ _ = []
-    -- the normal forms of u that are target renamed
-    normalAs (ren, prec) target u =
-      [ (u', steps, (ren', prec')) | (u', steps, prec') <- normalForms eqs prec u
-                                   , Just ren' <- [renaming ren target u'] ]
+    chain greater = walk [] ([], []) (polLits c0) (polLits c)
+      where
+        walk _ _ [] [] = [[]]
+        walk done st ((sg, l) : rest) targets =
+          [ [ (e, fromPolLits (done ++ (sg, m) : rest)) | (e, m) <- steps ] ++ later
+          | (k, (sg', l')) <- zip [0 :: Int ..] targets, sg == sg'
+          , (steps, l'', st') <- literal st l l'
+          , later <- walk (done ++ [(sg, l'')]) st' rest (take k targets ++ drop (k + 1) targets) ]
+        walk _ _ _ _ = []
+        literal st (Eq s t) (Eq a b) = sides st s t a b ++ sides st s t b a
+        literal st (Rel p as) (Rel q bs)
+          | p == q = [ (steps, Rel p xs, st') | (steps, xs, st') <- arguments (Rel p) st [] as bs ]
+        literal _ _ _ = []
+        sides st s t a b =
+          [ ([ (e, Eq x t) | (e, x) <- cs ] ++ [ (e, Eq s' y) | (e, y) <- ct ], Eq s' t', st2)
+          | (s', cs, st1) <- normalAs st (unitSide t) a s, (t', ct, st2) <- normalAs st1 (unitSide s) b t ]
+        -- the other side of the equation c0 is, when it is one
+        unitSide other = case c0 of
+          Clause [] (Just (Eq _ _)) -> Just other
+          _                         -> Nothing
+        -- each argument normalised in turn, its rewrites put back into the literal
+        arguments _ st done [] [] = [([], reverse done, st)]
+        arguments build st done (a : rest) (b : bs) =
+          [ ([ (e, build (reverse done ++ x : rest)) | (e, x) <- sa ] ++ more, xs, st2)
+          | (a', sa, st1) <- normalAs st Nothing b a
+          , (more, xs, st2) <- arguments build st1 (a' : done) rest bs ]
+        arguments _ _ _ _ _ = []
+        -- the normal forms of u that are target renamed
+        normalAs (ren, prec) other target u =
+          [ (u', steps, (ren', prec')) | (u', steps, prec') <- normalForms eqs greater other prec u
+                                       , Just ren' <- [renaming ren target u'] ]
 
 -- Extends a renaming of the variables of pattern p into those of term u, one
 -- to one, so that p renamed is u.
@@ -349,13 +358,23 @@ renaming ren p u = case (p, u) of
 -- it needs. It rewrites a term at its root as long as it can, then each
 -- argument in turn, and starts again at the root once an argument changed. A
 -- rewrite matches one side of an equation and puts in the other, and goes to
--- a smaller term in iProver's Knuth-Bendix ordering. Where the precedence of
--- two symbols decides, both orders are tried, the same one for every rewrite.
--- A term met again at the same place ends that replay, so the replays are
--- finite.
-normalForms :: [(String, (Term, Term))] -> [(String, String)] -> Term -> [(Term, [(String, Term)], [(String, String)])]
-normalForms eqs = normal []
+-- a smaller term in the ordering greater. Where the precedence of two symbols
+-- decides, both orders are tried, the same one for every rewrite. A term met
+-- again at the same place ends that replay, so the replays are finite. When u
+-- is a side of an equation that is the whole clause, with other the other
+-- side, an equation that matches all of u only by renaming rewrites it only
+-- when u or the result is smaller than other, as iProver's encompassment
+-- condition demands.
+normalForms :: [(String, (Term, Term))] -> ([(String, String)] -> Term -> Term -> Either (String, String) Bool)
+            -> Maybe Term -> [(String, String)] -> Term -> [(Term, [(String, Term)], [(String, String)])]
+normalForms eqs greater other prec0 u0 = normal [] prec0 u0
   where
+    encompasses prec u σ r = case other of
+      Just t | u == u0, all isVariable (map snd σ), length (nub (map snd σ)) == length σ ->
+        greater prec t u == Right True || greater prec t r == Right True
+      _ -> True
+    isVariable (Var _) = True
+    isVariable _       = False
     dirs = [ (e, a, b) | (e, (l, r)) <- eqs, (from, to) <- [(l, r), (r, l)]
                        , Eq a b <- [suffixVarsLit "_e" (Eq from to)], all (`elem` termVars a) (termVars b) ]
     normal seen prec u = do
@@ -376,8 +395,8 @@ normalForms eqs = normal []
     atRoot seen prec u =
       let rs = [ (e, r, open)
                | notVar u, (e, a, b) <- dirs, Just σ <- [matchTerm a u]
-               , let r = applySubstTerm σ b, r `notElem` (u : seen)
-               , open <- case kboGreater u r of
+               , let r = applySubstTerm σ b, r `notElem` (u : seen), encompasses prec u σ r
+               , open <- case greater prec u r of
                    Right True -> [Nothing]
                    Right False -> []
                    Left (f, g) | (f, g) `elem` prec -> [Nothing]
@@ -416,6 +435,39 @@ kboGreater s t
     symbol (Const c) = c
     symbol (Fresh x) = x
     symbol (Var x)   = x
+
+-- Whether s is greater than t in a lexicographic path ordering under the
+-- precedence prec, pairs of a greater and a smaller symbol. Where two symbols
+-- prec does not order decide, the first such pair comes back, s being greater
+-- exactly when its first symbol precedes the second.
+lpoGreater :: [(String, String)] -> Term -> Term -> Either (String, String) Bool
+lpoGreater prec s t = case (s, t) of
+  _ | s == t -> Right False
+  (_, Var x) -> Right (x `elem` termVars s)
+  (Var _, _) -> Right False
+  _ -> anyOf ([ if si == t then Right True else lpoGreater prec si t | si <- ss ] ++ [top])
+  where
+    (f, ss) = parts s
+    (g, ts) = parts t
+    dominates = allOf [ lpoGreater prec s tj | tj <- ts ]
+    top | f == g               = allOf [lexicographic ss ts, dominates]
+        | (f, g) `elem` prec   = dominates
+        | (g, f) `elem` prec   = Right False
+        | otherwise            = allOf [dominates, Left (f, g)]
+    lexicographic (a : as) (b : bs) | a == b = lexicographic as bs | otherwise = lpoGreater prec a b
+    lexicographic _ _ = Right False
+    parts (App h xs) = (h, xs)
+    parts (Const c)  = (c, [])
+    parts (Fresh x)  = (x, [])
+    parts (Var x)    = (x, [])
+    -- true when one is, false when all are, else the first open pair
+    anyOf xs = case [ () | Right True <- xs ] of
+      _ : _ -> Right True
+      []    -> fromMaybe (Right False) (listToMaybe [ x | x@(Left _) <- xs ])
+    -- false when one is, true when all are, else the first open pair
+    allOf xs = case [ () | Right False <- xs ] of
+      _ : _ -> Right False
+      []    -> fromMaybe (Right True) (listToMaybe [ x | x@(Left _) <- xs ])
 
 -- The names of the associativity and commutativity axioms of one operator.
 data AC = AC { acAssoc :: Maybe String, acComm :: Maybe String }

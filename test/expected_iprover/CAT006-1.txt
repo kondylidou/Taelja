@@ -1,0 +1,94 @@
+Axiom 1: identity_map(h)
+Axiom 2: defined(h,a)
+Axiom 3: defined(X,Y) /\ identity_map(X) => product(X,Y,Y)
+Axiom 4: product(X,Y,Z) /\ defined(A,Z) => defined(A,X)
+Axiom 5: identity_map(codomain(X))
+Axiom 6: product(codomain(X),X,X)
+Axiom 7: defined(X,Y) /\ identity_map(Y) => product(X,Y,X)
+Axiom 8: product(X,Y,Z) /\ defined(Z,A) => defined(Y,A)
+Axiom 9: product(X,Y,Z) /\ product(X,Y,A) => Z = A
+Axiom 10: product(X,Y,Z) /\ product(Y,A,B) /\ product(Z,A,C) => product(X,B,C)
+
+Lemma 11: defined(X,Y) /\ defined(X,Z) /\ identity_map(Y) => defined(Y,Z)
+Proof:
+  have defined(X,Y)
+    by assumption
+   and identity_map(Y)
+    by assumption
+  hence product(X,Y,X)
+    by axiom 7
+   and defined(X,Z)
+    by assumption
+  hence defined(Y,Z)
+    by axiom 8
+
+Lemma 12: defined(h,h)
+Proof:
+  have defined(h,a)
+    by axiom 2
+   and identity_map(h)
+    by axiom 1
+  hence product(h,a,a)
+    by axiom 3
+   and defined(h,a)
+    by axiom 2
+  hence defined(h,h)
+    by axiom 4
+
+Lemma 13: product(codomain(a),h,h)
+Proof:
+  have product(codomain(a),a,a)
+    by axiom 6
+   and defined(h,a)
+    by axiom 2
+  hence defined(h,codomain(a))
+    by axiom 4
+   and defined(h,h)
+    by lemma 12
+   and identity_map(codomain(a))
+    by axiom 5
+  hence defined(codomain(a),h)
+    by lemma 11
+   and identity_map(codomain(a))
+    by axiom 5
+  hence product(codomain(a),h,h)
+    by axiom 3
+
+Lemma 14: product(codomain(a),h,codomain(a))
+Proof:
+  have product(codomain(a),a,a)
+    by axiom 6
+   and defined(h,a)
+    by axiom 2
+  hence defined(h,codomain(a))
+    by axiom 4
+   and defined(h,h)
+    by lemma 12
+   and identity_map(codomain(a))
+    by axiom 5
+  hence defined(codomain(a),h)
+    by lemma 11
+   and identity_map(h)
+    by axiom 1
+  hence product(codomain(a),h,codomain(a))
+    by axiom 7
+
+Lemma 15: product(codomain(codomain(a)),codomain(a),h)
+Proof:
+  have product(codomain(codomain(a)),codomain(a),codomain(a))
+    by axiom 6
+   and product(codomain(a),h,codomain(a))
+    by lemma 14
+   and product(codomain(a),h,h)
+    by lemma 13
+  hence product(codomain(codomain(a)),codomain(a),h)
+    by axiom 10
+
+Goal 1: codomain(a) = h
+Proof:
+  have product(codomain(codomain(a)),codomain(a),codomain(a))
+    by axiom 6
+   and product(codomain(codomain(a)),codomain(a),h)
+    by lemma 15
+  hence codomain(a) = h
+    by axiom 9

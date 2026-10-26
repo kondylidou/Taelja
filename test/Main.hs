@@ -426,6 +426,16 @@ iproverBenchmarkNames =
   , "CSR117+1"
   -- a FOF problem whose clausifier keeps the definitions
   , "pure_equational_example"
+  -- a demodulation under iProver's path ordering, which it uses for
+  -- boolean algebra
+  , "BOO003-2"
+  -- a global subsumption whose resolvent has a literal twice, merged
+  , "CAT006-1"
+  -- a nucleus whose equation premise matches only the other way round
+  , "CAT002-4"
+  -- an equation iProver does not rewrite at a whole side, by its
+  -- encompassment condition
+  , "BOO002-1"
   , "ALG006-1"
   , "ALG210+2"
   , "ANA009-2"

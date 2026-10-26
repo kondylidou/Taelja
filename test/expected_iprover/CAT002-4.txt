@@ -1,0 +1,23 @@
+Axiom 1: compose(compose(a,b),h) = compose(compose(a,b),g)
+Axiom 2: compose(compose(X,Y),Z) = compose(X,compose(Y,Z))
+Axiom 3: compose(a,X) = Y /\ compose(a,Z) = Y => X = Z
+Axiom 4: compose(b,X) = Y /\ compose(b,Z) = Y => X = Z
+
+Lemma 5: compose(a,compose(b,h)) = compose(a,compose(b,g))
+Proof:
+  compose(a,compose(b,h))
+= { by axiom 2 R->L }
+  compose(compose(a,b),h)
+= { by axiom 1 }
+  compose(compose(a,b),g)
+= { by axiom 2 }
+  compose(a,compose(b,g))
+
+Goal 1: h = g
+Proof:
+  have compose(a,compose(b,h)) = compose(a,compose(b,g))
+    by lemma 5
+  hence compose(b,h) = compose(b,g)
+    by axiom 3
+  hence g = h
+    by axiom 4

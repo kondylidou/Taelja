@@ -1,0 +1,60 @@
+Axiom 1: add(X,Y) = add(Y,X)
+Axiom 2: multiply(X,inverse(X)) = additive_identity
+Axiom 3: multiply(add(X,Y),add(X,Z)) = add(X,multiply(Y,Z))
+Axiom 4: add(X,additive_identity) = X
+Axiom 5: add(multiply(X,Y),multiply(X,Z)) = multiply(X,add(Y,Z))
+Axiom 6: multiply(add(X,Y),add(Z,Y)) = add(multiply(X,Z),Y)
+Axiom 7: add(X,inverse(X)) = multiplicative_identity
+Axiom 8: multiply(X,multiplicative_identity) = X
+
+Lemma 9: multiply(add(X,Y),add(X,inverse(Y))) = X
+Proof:
+  multiply(add(X,Y),add(X,inverse(Y)))
+= { by axiom 3 }
+  add(X,multiply(Y,inverse(Y)))
+= { by axiom 2 }
+  add(X,additive_identity)
+= { by axiom 4 }
+  X
+
+Lemma 10: multiply(add(X,Y),add(Y,inverse(X))) = Y
+Proof:
+  multiply(add(X,Y),add(Y,inverse(X)))
+= { by axiom 1 }
+  multiply(add(Y,X),add(Y,inverse(X)))
+= { by lemma 9 }
+  Y
+
+Lemma 11: add(X,X) = X
+Proof:
+  add(X,X)
+= { by axiom 8 R->L }
+  multiply(add(X,X),multiplicative_identity)
+= { by axiom 7 R->L }
+  multiply(add(X,X),add(X,inverse(X)))
+= { by lemma 9 }
+  X
+
+Goal 1: multiply(a,a) = a
+Proof:
+  multiply(a,a)
+= { by axiom 8 R->L }
+  multiply(multiply(a,multiplicative_identity),a)
+= { by axiom 7 R->L }
+  multiply(multiply(a,add(a,inverse(a))),a)
+= { by lemma 10 R->L }
+  multiply(multiply(a,add(a,inverse(a))),multiply(add(a,a),add(a,inverse(a))))
+= { by axiom 3 }
+  multiply(multiply(a,add(a,inverse(a))),add(a,multiply(a,inverse(a))))
+= { by lemma 11 R->L }
+  multiply(multiply(add(a,a),add(a,inverse(a))),add(a,multiply(a,inverse(a))))
+= { by axiom 3 }
+  multiply(add(a,multiply(a,inverse(a))),add(a,multiply(a,inverse(a))))
+= { by axiom 6 }
+  add(multiply(a,a),multiply(a,inverse(a)))
+= { by axiom 5 }
+  multiply(a,add(a,inverse(a)))
+= { by axiom 7 }
+  multiply(a,multiplicative_identity)
+= { by axiom 8 }
+  a

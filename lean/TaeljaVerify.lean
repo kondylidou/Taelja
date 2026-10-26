@@ -233,6 +233,10 @@ import TaeljaVerify.Iprover.Swv8181
 import TaeljaVerify.Iprover.Grp1921
 import TaeljaVerify.Iprover.Csr117p1
 import TaeljaVerify.Iprover.PureEquationalExample
+import TaeljaVerify.Iprover.Boo0032
+import TaeljaVerify.Iprover.Cat0061
+import TaeljaVerify.Iprover.Cat0024
+import TaeljaVerify.Iprover.Boo0021
 import TaeljaVerify.Iprover.Alg0061
 import TaeljaVerify.Iprover.Alg210p2
 import TaeljaVerify.Iprover.Ana0092

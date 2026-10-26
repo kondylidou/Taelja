@@ -1,0 +1,67 @@
+% SZS status Unsatisfiable for BOO003-2.p
+% SZS output start CNFRefutation for BOO003-2.p
+tcf(c_49,plain, 
+    (multiply(a,a) != a),
+    file('Problems/BOO/BOO003-2.p', prove_a_times_a_is_a)).
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (add(X0,X1) = add(X1,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/BOO003-0.ax', commutativity_of_add)).
+tcf(c_52,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(add(X0,X1),add(X2,X1)) = add(multiply(X0,X2),X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/BOO003-0.ax', distributivity1)).
+tcf(c_53,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(add(X0,X1),add(X0,X2)) = add(X0,multiply(X1,X2))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/BOO003-0.ax', distributivity2)).
+tcf(c_55,plain,![X0:$i,X1:$i,X2:$i]:  
+    (add(multiply(X0,X1),multiply(X0,X2)) = multiply(X0,add(X1,X2))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/BOO003-0.ax', distributivity4)).
+tcf(c_56,plain,![X0:$i]:  
+    (add(X0,inverse(X0)) = multiplicative_identity),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/BOO003-0.ax', additive_inverse1)).
+tcf(c_58,plain,![X0:$i]:  
+    (multiply(X0,inverse(X0)) = additive_identity),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/BOO003-0.ax', multiplicative_inverse1)).
+tcf(c_60,plain,![X0:$i]:  
+    (multiply(X0,multiplicative_identity) = X0),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/BOO003-0.ax', multiplicative_id1)).
+tcf(c_62,plain,![X0:$i]:  
+    (add(X0,additive_identity) = X0),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/BOO003-0.ax', additive_id1)).
+tcf(c_143,plain, (multiply(a,a) = iPr_def_10),definition).
+tcf(c_144,plain, 
+    (iPr_def_10 != a),
+    inference(demodulation,[status(thm)],[c_49,c_143])).
+tcf(c_242,plain,![X0:$i,X1:$i]:  
+    (multiply(add(X0,X1),add(X0,inverse(X1))) = add(X0,additive_identity)),
+    inference(superposition,[status(thm)],[c_58,c_53])).
+tcf(c_250,plain,![X0:$i,X1:$i]:  
+    (multiply(add(X0,X1),add(X0,inverse(X1))) = X0),
+    inference(light_normalisation,[status(thm)],[c_242,c_62])).
+tcf(c_255,plain,![X0:$i,X1:$i]:  
+    (multiply(add(X0,X1),add(X1,inverse(X0))) = X1),
+    inference(superposition,[status(thm)],[c_50,c_250])).
+tcf(c_265,plain,![X0:$i]:  
+    (multiply(add(X0,X0),multiplicative_identity) = X0),
+    inference(superposition,[status(thm)],[c_56,c_250])).
+tcf(c_276,plain,![X0:$i]:  
+    (add(X0,X0) = X0),
+    inference(demodulation,[status(thm)],[c_265,c_60])).
+tcf(c_425,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(multiply(X0,add(X0,X1)),multiply(add(X2,X0),add(X2,X1))) = multiply(X0,add(X2,X1))),
+    inference(demodulation,[status(thm)],[c_55,c_52,c_53,c_276])).
+tcf(c_444,plain,![X0:$i]:  
+    (multiply(multiply(X0,add(X0,inverse(X0))),X0) = multiply(X0,add(X0,inverse(X0)))),
+    inference(superposition,[status(thm)],[c_255,c_425])).
+tcf(c_470,plain,![X0:$i]:  
+    (multiply(X0,X0) = X0),
+    inference(light_normalisation,[status(thm)],[c_444,c_56,c_60])).
+tcf(c_477,plain, 
+    (a = iPr_def_10),
+    inference(demodulation,[status(thm)],[c_143,c_470])).
+tcf(c_479,plain, 
+    (iPr_def_10 != iPr_def_10),
+    inference(demodulation,[status(thm)],[c_144,c_477])).
+tcf(c_480,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_479])).
+% SZS output end CNFRefutation for BOO003-2.p

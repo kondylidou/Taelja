@@ -1,0 +1,181 @@
+% SZS status Unsatisfiable for CAT006-1.p
+% SZS output start CNFRefutation for CAT006-1.p
+tcf(c_49,plain, (defined(h,a)),file('Problems/CAT/CAT006-1.p', ha_defined)).
+tcf(c_50,plain, 
+    (identity_map(h)),
+    file('Problems/CAT/CAT006-1.p', h_is_the_identity_map)).
+tcf(c_51,plain, 
+    (codomain(a) != h),
+    file('Problems/CAT/CAT006-1.p', prove_codomain_of_a_is_h)).
+tcf(c_52,plain,![X0:$i,X1:$i]:  
+    (~defined(X0,X1)|product(X0,X1,compose(X0,X1))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', closure_of_composition)).
+tcf(c_53,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~product(X0,X1,X2)|defined(X0,X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', associative_property1)).
+tcf(c_54,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~product(X0,X1,X2)|~defined(X2,X3)|defined(X1,X3)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', associative_property2)).
+tcf(c_56,plain,![X0:$i,X1:$i,X2:$i,X3:$i,X4:$i,X5:$i]:  
+    (~product(X0,X1,X2)|~product(X1,X3,X4)|~product(X2,X3,X5)|product(X0,X4,X5)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', category_theory_axiom2)).
+tcf(c_57,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~product(X0,X1,X2)|~defined(X3,X2)|defined(X3,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', category_theory_axiom3)).
+tcf(c_60,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~defined(X0,X1)|~defined(X1,X2)|~identity_map(X1)|defined(X0,X2)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', category_theory_axiom6)).
+tcf(c_62,plain,![X0:$i]:  
+    (identity_map(codomain(X0))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', codomain_is_an_identity_map)).
+tcf(c_63,plain,![X0:$i]:  
+    (defined(X0,domain(X0))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', mapping_from_x_to_its_domain)).
+tcf(c_64,plain,![X0:$i]:  
+    (defined(codomain(X0),X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', mapping_from_codomain_of_x_to_x)).
+tcf(c_65,plain,![X0:$i]:  
+    (product(X0,domain(X0),X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', product_on_domain)).
+tcf(c_66,plain,![X0:$i]:  
+    (product(codomain(X0),X0,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', product_on_codomain)).
+tcf(c_67,plain,![X0:$i,X1:$i]:  
+    (~defined(X0,X1)|~identity_map(X0)|product(X0,X1,X1)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', identity1)).
+tcf(c_68,plain,![X0:$i,X1:$i]:  
+    (~defined(X0,X1)|~identity_map(X1)|product(X0,X1,X0)),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', identity2)).
+tcf(c_69,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~product(X0,X1,X2)|~product(X0,X1,X3)|X2 = X3),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT001-0.ax', composition_is_well_defined)).
+tcf(c_675,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~defined(X0,X1)|~defined(X0,X2)|~identity_map(X1)|defined(X1,X2)),
+    inference(superposition,[status(thm)],[c_68,c_54])).
+tcf(c_699,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~defined(X0,X1)|~defined(X2,X1)|~identity_map(X0)|defined(X2,X0)),
+    inference(superposition,[status(thm)],[c_67,c_57])).
+tcf(c_769,plain,![X0:$i]:  
+    (~defined(a,X0)|~identity_map(a)|defined(h,X0)),
+    inference(superposition,[status(thm)],[c_49,c_60])).
+tcf(c_841,plain,![X0:$i,X1:$i]:  
+    (~product(X0,X1,codomain(a))|~product(X0,X1,h)|codomain(a) = h),
+    inference(instantiation,[status(thm)],[c_69])).
+tcf(c_883,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~product(X0,X1,X2)|~defined(X0,X1)|compose(X0,X1) = X2),
+    inference(superposition,[status(thm)],[c_52,c_69])).
+tcf(c_884,plain,![X0:$i,X1:$i]:  
+    (~product(X0,domain(X0),X1)|X0 = X1),
+    inference(superposition,[status(thm)],[c_65,c_69])).
+tcf(c_948,plain, 
+    (~defined(h,a)|~identity_map(h)|product(h,a,a)),
+    inference(instantiation,[status(thm)],[c_67])).
+tcf(c_1027,plain,![X0:$i,X1:$i]:  
+    (~product(X0,X1,a)|~defined(h,a)|defined(h,X0)),
+    inference(instantiation,[status(thm)],[c_57])).
+tcf(c_1151,plain,![X0:$i,X1:$i,X2:$i,X3:$i]:  
+    (~product(codomain(X0),X0,X0)|~product(X0,X1,X2)|~product(X0,X1,X3)|
+    product(codomain(X0),X2,X3)),
+    inference(instantiation,[status(thm)],[c_56])).
+tcf(c_1552,plain, 
+    (~product(codomain(a),a,a)|~defined(h,a)|defined(h,codomain(a))),
+    inference(instantiation,[status(thm)],[c_1027])).
+tcf(c_1553,plain, 
+    (product(codomain(a),a,a)),
+    inference(instantiation,[status(thm)],[c_66])).
+tcf(c_1554,plain, 
+    (~product(h,a,a)|~defined(h,a)|defined(h,h)),
+    inference(instantiation,[status(thm)],[c_1027])).
+tcf(c_1561,plain,![X0:$i]:  
+    (~defined(X0,domain(X0))|~identity_map(X0)|domain(X0) = X0),
+    inference(superposition,[status(thm)],[c_67,c_884])).
+tcf(c_1564,plain,![X0:$i]:  
+    (~identity_map(X0)|domain(X0) = X0),
+    inference(forward_subsumption_resolution,[status(thm)],[c_1561,c_63])).
+tcf(c_1660,plain,![X0:$i]:  
+    (domain(codomain(X0)) = codomain(X0)),
+    inference(superposition,[status(thm)],[c_62,c_1564])).
+tcf(c_1770,plain,![X0:$i]:  
+    (defined(codomain(X0),codomain(X0))),
+    inference(superposition,[status(thm)],[c_1660,c_63])).
+tcf(c_1790,plain,![X0:$i,X1:$i]:  
+    (~defined(codomain(X0),X1)|~identity_map(X1)|product(codomain(X0),X1,codomain(X0))),
+    inference(instantiation,[status(thm)],[c_68])).
+tcf(c_1940,plain, 
+    (~product(codomain(codomain(a)),codomain(a),codomain(a))|~product(codomain(codomain(a)),codomain(a),h)|
+    codomain(a) = h),
+    inference(instantiation,[status(thm)],[c_841])).
+tcf(c_1941,plain, 
+    (product(codomain(codomain(a)),codomain(a),codomain(a))),
+    inference(instantiation,[status(thm)],[c_66])).
+tcf(c_3542,plain,![X0:$i]:  
+    (~product(codomain(codomain(a)),codomain(a),codomain(a))|~product(codomain(a),X0,codomain(a))|
+    ~product(codomain(a),X0,h)|product(codomain(codomain(a)),codomain(a),h)),
+    inference(instantiation,[status(thm)],[c_1151])).
+tcf(c_3543,plain, 
+    (~product(codomain(codomain(a)),codomain(a),codomain(a))|~product(codomain(a),h,codomain(a))|
+    ~product(codomain(a),h,h)|product(codomain(codomain(a)),codomain(a),h)),
+    inference(instantiation,[status(thm)],[c_3542])).
+tcf(c_3678,plain,![X0:$i,X1:$i]:  
+    (~defined(codomain(X0),X1)|~identity_map(X0)|defined(X0,X1)),
+    inference(superposition,[status(thm)],[c_64,c_675])).
+tcf(c_3977,plain,![X0:$i]:  
+    (~identity_map(X0)|defined(X0,codomain(X0))),
+    inference(superposition,[status(thm)],[c_1770,c_3678])).
+tcf(c_4205,plain, 
+    (~identity_map(a)|defined(h,codomain(a))),
+    inference(superposition,[status(thm)],[c_3977,c_769])).
+tcf(c_4340,plain, 
+    (defined(h,codomain(a))),
+    inference(global_subsumption_just,
+              [status(thm)],
+              [c_4205,c_49,c_1552,c_1553])).
+tcf(c_4342,plain,![X0:$i]:  
+    (~defined(h,X0)|~identity_map(codomain(a))|defined(codomain(a),X0)),
+    inference(superposition,[status(thm)],[c_4340,c_675])).
+tcf(c_4354,plain,![X0:$i]:  
+    (~defined(h,X0)|defined(codomain(a),X0)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_4342,c_62])).
+tcf(c_4357,plain, 
+    (~defined(h,h)|defined(codomain(a),h)),
+    inference(instantiation,[status(thm)],[c_4354])).
+tcf(c_4618,plain,![X0:$i]:  
+    (~defined(X0,a)|~identity_map(h)|defined(X0,h)),
+    inference(superposition,[status(thm)],[c_49,c_699])).
+tcf(c_4656,plain,![X0:$i]:  
+    (~defined(X0,a)|defined(X0,h)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_4618,c_50])).
+tcf(c_4831,plain, 
+    (defined(codomain(a),h)),
+    inference(superposition,[status(thm)],[c_64,c_4656])).
+tcf(c_5916,plain,![X0:$i,X1:$i,X2:$i]:  
+    (~product(X0,X1,X2)|compose(X0,X1) = X2),
+    inference(global_subsumption_just,[status(thm)],[c_883,c_53,c_883])).
+tcf(c_5925,plain,![X0:$i,X1:$i]:  
+    (~defined(X0,X1)|~identity_map(X0)|compose(X0,X1) = X1),
+    inference(superposition,[status(thm)],[c_67,c_5916])).
+tcf(c_6158,plain, 
+    (~identity_map(codomain(a))|compose(codomain(a),h) = h),
+    inference(superposition,[status(thm)],[c_4831,c_5925])).
+tcf(c_6168,plain, 
+    (compose(codomain(a),h) = h),
+    inference(forward_subsumption_resolution,[status(thm)],[c_6158,c_62])).
+tcf(c_6294,plain,![X0:$i]:  
+    (~defined(codomain(a),X0)|~identity_map(X0)|product(codomain(a),X0,codomain(a))),
+    inference(instantiation,[status(thm)],[c_1790])).
+tcf(c_6301,plain, 
+    (~defined(codomain(a),h)|~identity_map(h)|product(codomain(a),h,codomain(a))),
+    inference(instantiation,[status(thm)],[c_6294])).
+tcf(c_6562,plain, 
+    (~defined(codomain(a),h)|product(codomain(a),h,h)),
+    inference(superposition,[status(thm)],[c_6168,c_52])).
+tcf(c_6566,plain, 
+    (product(codomain(a),h,h)),
+    inference(forward_subsumption_resolution,[status(thm)],[c_6562,c_4831])).
+tcf(c_6579,plain, 
+    ($false),
+    inference(prop_impl_just,
+              [status(thm)],
+              [c_6566,c_6301,c_4357,c_3543,c_1941,c_1940,c_1554,c_948,
+               c_51,c_49,c_50])).
+% SZS output end CNFRefutation for CAT006-1.p

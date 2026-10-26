@@ -1,0 +1,70 @@
+Axiom 1: multiply(inverse(X),X,Y) = Y
+Axiom 2: multiply(X,Y,Y) = Y
+Axiom 3: multiply(X,X,Y) = X
+Axiom 4: multiply(multiply(X,Y,Z),A,multiply(X,Y,B)) = multiply(X,Y,multiply(Z,A,B))
+
+Lemma 5: multiply(inverse(a),a,X) = X
+Proof:
+  multiply(inverse(a),a,X)
+= { by axiom 1 }
+  X
+
+Lemma 6: multiply(multiply(a,inverse(a),b),b,multiply(a,inverse(a),X)) = multiply(a,inverse(a),b)
+Proof:
+  multiply(multiply(a,inverse(a),b),b,multiply(a,inverse(a),X))
+= { by axiom 4 }
+  multiply(a,inverse(a),multiply(b,b,X))
+= { by axiom 3 }
+  multiply(a,inverse(a),b)
+
+Lemma 7: multiply(multiply(a,inverse(a),b),b,inverse(a)) = multiply(a,inverse(a),b)
+Proof:
+  multiply(multiply(a,inverse(a),b),b,inverse(a))
+= { by axiom 2 R->L }
+  multiply(multiply(a,inverse(a),b),b,multiply(a,inverse(a),inverse(a)))
+= { by lemma 6 }
+  multiply(a,inverse(a),b)
+
+Lemma 8: multiply(X,Y,X) = X
+Proof:
+  multiply(X,Y,X)
+= { by axiom 3 R->L }
+  multiply(X,Y,multiply(X,X,X))
+= { by axiom 2 R->L }
+  multiply(multiply(X,X,X),Y,multiply(X,X,X))
+= { by axiom 4 }
+  multiply(X,X,multiply(X,Y,X))
+= { by axiom 3 }
+  X
+
+Lemma 9: multiply(multiply(a,inverse(a),b),b,a) = multiply(a,inverse(a),b)
+Proof:
+  multiply(multiply(a,inverse(a),b),b,a)
+= { by lemma 8 R->L }
+  multiply(multiply(a,inverse(a),b),b,multiply(a,inverse(a),a))
+= { by lemma 6 }
+  multiply(a,inverse(a),b)
+
+Goal 1: multiply(a,inverse(a),b) = b
+Proof:
+  multiply(a,inverse(a),b)
+= { by lemma 9 R->L }
+  multiply(multiply(a,inverse(a),b),b,a)
+= { by axiom 3 R->L }
+  multiply(multiply(a,inverse(a),b),b,multiply(a,a,b))
+= { by axiom 4 R->L }
+  multiply(multiply(multiply(a,inverse(a),b),b,a),a,multiply(multiply(a,inverse(a),b),b,b))
+= { by lemma 9 }
+  multiply(multiply(a,inverse(a),b),a,multiply(multiply(a,inverse(a),b),b,b))
+= { by axiom 2 }
+  multiply(multiply(a,inverse(a),b),a,b)
+= { by lemma 7 R->L }
+  multiply(multiply(multiply(a,inverse(a),b),b,inverse(a)),a,b)
+= { by axiom 2 R->L }
+  multiply(multiply(multiply(a,inverse(a),b),b,inverse(a)),a,multiply(multiply(a,inverse(a),b),b,b))
+= { by axiom 4 }
+  multiply(multiply(a,inverse(a),b),b,multiply(inverse(a),a,b))
+= { by lemma 5 }
+  multiply(multiply(a,inverse(a),b),b,b)
+= { by axiom 2 }
+  b

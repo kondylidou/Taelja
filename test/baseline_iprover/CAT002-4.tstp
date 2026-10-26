@@ -1,0 +1,34 @@
+% SZS status Unsatisfiable for CAT002-4.p
+% SZS output start CNFRefutation for CAT002-4.p
+tcf(c_50,plain,![X0:$i,X1:$i,X2:$i]:  
+    (compose(a,X0) != X1|compose(a,X2) != X1|X0 = X2),
+    file('Problems/CAT/CAT002-4.p', cancellation_for_compose1)).
+tcf(c_51,plain,![X0:$i,X1:$i,X2:$i]:  
+    (compose(b,X0) != X1|compose(b,X2) != X1|X0 = X2),
+    file('Problems/CAT/CAT002-4.p', cancellation_for_compose2)).
+tcf(c_53,plain, 
+    (compose(compose(a,b),h) = compose(compose(a,b),g)),
+    file('Problems/CAT/CAT002-4.p', ab_h_equals_ab_g)).
+tcf(c_54,plain, (h != g),file('Problems/CAT/CAT002-4.p', prove_g_equals_h)).
+tcf(c_63,plain,![X0:$i,X1:$i,X2:$i]:  
+    (compose(compose(X0,X1),X2) = compose(X0,compose(X1,X2))),
+    file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/CAT004-0.ax', associativity_of_compose)).
+tcf(c_67,plain,![X0:$i,X1:$i]:  
+    (compose(b,X0) != compose(b,X1)|X1 = X0),
+    inference(unflattening,[status(thm)],[c_51])).
+tcf(c_68,plain,![X0:$i,X1:$i]:  
+    (compose(a,X0) != compose(a,X1)|X1 = X0),
+    inference(unflattening,[status(thm)],[c_50])).
+tcf(c_164,plain, 
+    (compose(a,compose(b,h)) = compose(a,compose(b,g))),
+    inference(demodulation,[status(thm)],[c_53,c_63])).
+tcf(c_483,plain, 
+    (compose(b,g) != compose(b,h)|h = g),
+    inference(instantiation,[status(thm)],[c_67])).
+tcf(c_583,plain, 
+    (compose(a,compose(b,h)) != compose(a,compose(b,g))|compose(b,g) = compose(b,h)),
+    inference(instantiation,[status(thm)],[c_68])).
+tcf(c_585,plain, 
+    ($false),
+    inference(prop_impl_just,[status(thm)],[c_583,c_483,c_164,c_54])).
+% SZS output end CNFRefutation for CAT002-4.p
