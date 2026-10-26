@@ -265,7 +265,9 @@ vampireBenchmarkNames =
   -- Vampire on SystemOnTPTP adds records skolemize(X0,sK0) to the info of its
   -- skolemize step, which the parser reads only once they are dropped
   , "SYN080+1"
-  , "defense_example"  -- the running example of the PhD defense slides, James the cat
+  -- the running example of the PhD defense slides, James the cat, proved by
+  -- Vampire with --selection 2 as the slides show
+  , "defense_example"
   ]
 
 -- The E proofs.

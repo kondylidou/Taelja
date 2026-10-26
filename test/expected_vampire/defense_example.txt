@@ -1,15 +1,15 @@
-Axiom 1: cat(james)
-Axiom 2: catches(james,mouse)
+Axiom 1: catches(james,mouse)
+Axiom 2: cat(james)
 Axiom 3: catches(james,X) => brings(james,X)
 Axiom 4: brings(X,mouse) /\ cat(X) => happy(X)
 
 Goal 1: happy(james)
 Proof:
   have catches(james,mouse)
-    by axiom 2
+    by axiom 1
   hence brings(james,mouse)
     by axiom 3
    and cat(james)
-    by axiom 1
+    by axiom 2
   hence happy(james)
     by axiom 4

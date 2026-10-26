@@ -17,9 +17,9 @@ axiom catches : α → α → Prop
 axiom happy : α → Prop
 
 -- Axiom 1
-axiom ax1 : cat james
+axiom ax1 : catches james mouse
 -- Axiom 2
-axiom ax2 : catches james mouse
+axiom ax2 : cat james
 -- Axiom 3
 axiom ax3 : ∀ (x : α), catches james x → brings james x
 -- Axiom 4
@@ -27,9 +27,9 @@ axiom ax4 : ∀ (x : α), brings x mouse → cat x → happy x
 
 -- Goal 1
 theorem taelja_goal1 : happy james := by
-  have h1 : catches james mouse := ax2
+  have h1 : catches james mouse := ax1
   have h2 : brings james mouse := ax3 mouse h1
-  have h3 : cat james := ax1
+  have h3 : cat james := ax2
   have h4 : happy james := ax4 james h2 h3
   exact h4
 
