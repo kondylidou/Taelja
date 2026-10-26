@@ -1,0 +1,71 @@
+% START OF SYSTEM OUTPUT
+Running first-order theorem proving
+Running: /home/tptp/Systems/Vampire---5.0.1/vampire --input_syntax tptp --output_axiom_names on --mode casc -m 16384 --cores 7 -t 60 /home/tptp/TPTP-v9.3.1/Problems/SYN/SYN080+1.p
+% (4190198)Detected formulas, will run a generic FOF schedule.
+% (4190233)dis-1010_2:3_sil=16000:sp=reverse_frequency:random_seed=3372080152:i=119:av=off:ss=axioms_1 on SYN080+1 for (1ds/119Mi)
+% (4190230)lrs+11_1_ncem=casc2026/models/loop8.pt:sil=128000:npcc=on:lma=off:spb=units:urr=ec_only:bce=on:s2agt=64:updr=off:random_seed=3816462948:i=134677:sd=20:aac=none:nm=16:ss=included:sgt=10_599 on SYN080+1 for (599ds/134677Mi)
+% (4190235)dis-21_1_sil=8000:lcm=predicate:random_seed=3101905256:st=5:avsq=on:i=129:avsqr=1,16:sd=3:aac=none:ep=RS:fsr=off:ss=included_1 on SYN080+1 for (1ds/129Mi)
+% (4190231)lrs+1010_1_anc=all:sfv=off:to=kbo:ncem=casc2026/models/loop7.pt:sil=128000:npcc=on:prc=on:sos=all:bsr=unit_only:sac=on:random_seed=2568406907:i=141695:sd=1:nm=32:gsp=on:ss=included_599 on SYN080+1 for (599ds/141695Mi)
+% (4190233)First to succeed.
+% (4190235)Refutation not found, incomplete strategy
+% (4190235)------------------------------
+% (4190235)Version: Vampire 5.0.1 (Release build, commit ea8961452 on 2026-07-16 15:14:34 +0200)
+% (4190233)Solution written to "/tmp/tmp.04JoWywn8r/vampire-proof-4190198"
+% (4190235)Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 z3-4.8.4-9178-g3c47fd96c
+% (4190235)CaDiCaL version: 2.1.3
+% (4190235)Termination reason: Refutation not found, incomplete strategy
+% (4190235)Time elapsed: 0.001 s
+% (4190235)Peak memory usage: 87 MB
+% (4190229)lrs+10_1_ncem=casc2026/models/loop8.pt:sil=128000:tgt=full:npcc=on:drc=off:sp=weighted_frequency:spb=goal:fd=preordered:foolp=on:random_seed=160807380:i=141193_599 on SYN080+1 for (599ds/141193Mi)
+% (4190232)lrs+1010_1_to=lpo:sil=32000:sos=on:spb=goal_then_units:bce=on:random_seed=2799661767:i=109:sd=1:ins=1:gsp=on:ss=axioms_1 on SYN080+1 for (1ds/109Mi)
+% (4190232)Also succeeded, but the first one will report.
+% (4190234)dis-1011_1_sil=16000:fde=unused:s2agt=70:random_seed=1408610044:s2a=on:i=139:gtg=position_1 on SYN080+1 for (1ds/139Mi)
+% (4190234)Also succeeded, but the first one will report.
+% (4190235)------------------------------
+% (4190235)------------------------------
+% (4190233)Refutation found. Thanks to Tanya!
+% SZS status Theorem for SYN080+1
+% SZS output start Proof for SYN080+1
+fof(f1,axiom,(
+  ! [X0,X1] : f(X0) = g(X1)),
+  file('/home/tptp/TPTP-v9.3.1/Problems/SYN/SYN080+1.p',pel58_1)).
+fof(f2,conjecture,(
+  ! [X0,X1] : f(f(X0)) = f(g(X1))),
+  file('/home/tptp/TPTP-v9.3.1/Problems/SYN/SYN080+1.p',pel58)).
+fof(f3,negated_conjecture,(
+  ~! [X0,X1] : f(f(X0)) = f(g(X1))),
+  inference(negated_conjecture,[status(cth)],[f2])).
+fof(f4,plain,(
+  ? [X0,X1] : f(f(X0)) != f(g(X1))),
+  inference(ennf_transformation,[],[f3])).
+fof(f5,plain,(
+  f(f(sK0)) != f(g(sK1))),
+  inference(skolemize,[status(esa),new_symbols(skolem,[sK0,sK1]),skolemize(X0,sK0),skolemize(X1,sK1)],[f4])).
+fof(f6,plain,(
+  f(f(sK0)) != f(g(sK1))),
+  inference(cnf_transformation,[],[f5])).
+fof(f7,plain,(
+  ( ! [X0,X1] : (f(X0) = g(X1)) )),
+  inference(cnf_transformation,[],[f1])).
+fof(f11,plain,(
+  ( ! [X0] : (f(g(sK1)) != g(X0)) )),
+  inference(superposition,[],[f6,f7])).
+fof(f12,plain,(
+  $false),
+  inference(forward_subsumption_resolution,[],[f11,f7])).
+% SZS output end Proof for SYN080+1
+% (4190233)------------------------------
+% (4190233)Version: Vampire 5.0.1 (Release build, commit ea8961452 on 2026-07-16 15:14:34 +0200)
+% (4190233)Linked with Z3 4.14.0.0 3c47fd96cf5645d0c42b2c819d9e9a84380aa721 z3-4.8.4-9178-g3c47fd96c
+% (4190233)CaDiCaL version: 2.1.3
+% (4190233)Termination reason: Refutation
+% (4190233)Time elapsed: 0.001 s
+% (4190233)Peak memory usage: 87 MB
+% (4190233)------------------------------
+% (4190233)------------------------------
+% (4190198)Success in time 0.481 s
+% Vampire exiting
+
+% END OF SYSTEM OUTPUT
+% RESULT: SYN080+1 - Vampire---5.0.1 says Theorem - CPU = 3.77 WC = 0.98 
+% OUTPUT: SYN080+1 - Vampire---5.0.1 says Refutation - CPU = 3.77 WC = 0.98 

@@ -1,0 +1,10 @@
+Axiom 1: f(X) = g(Y)
+
+Goal 1: f(f(X)) = f(g(Y))
+Proof:
+  have f(g(Y)) = g(Z)
+    by axiom 1
+  hence f(g(Y)) = f(g(Y))
+    by rw axiom 1 R->L
+  hence f(f(X)) = f(g(Y))
+    by rw axiom 1 R->L
