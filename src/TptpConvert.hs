@@ -335,7 +335,7 @@ parseProof = parseTptp . Text.pack . extractSzsBlock
 -- cannot read. Text without markers is kept whole.
 extractSzsBlock :: String -> String
 extractSzsBlock txt =
-  dropIntroducedParents $ unlines $ map (tcfAsTff . quoteDollarName) $ filter (not . distinctTyping) $
+  dropSkolemizeInfo $ dropIntroducedParents $ unlines $ map (tcfAsTff . quoteDollarName) $ filter (not . distinctTyping) $
     case break isStart ls of
       (_, [])        -> ls
       (_, startLine : rest) ->
@@ -379,6 +379,17 @@ dropIntroducedParents s@(c : cs)
   | otherwise = c : dropIntroducedParents cs
   where
     key = "introduced("
+
+-- The parser reads no variable in a general term, so drop the records
+-- skolemize(X0, sK0) that Vampire on SystemOnTPTP adds to the info of a
+-- skolemize step. Its new_symbols record names the same symbols.
+dropSkolemizeInfo :: String -> String
+dropSkolemizeInfo [] = []
+dropSkolemizeInfo s@(c : cs)
+  | key `isPrefixOf` s = dropSkolemizeInfo (snd (splitAtClosing (drop (length key) s)))
+  | otherwise = c : dropSkolemizeInfo cs
+  where
+    key = ",skolemize("
 
 -- The text up to the parenthesis that closes an open one, and the text after it.
 splitAtClosing :: String -> (String, String)
