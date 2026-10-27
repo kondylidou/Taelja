@@ -76,7 +76,7 @@ and `--twee` of that script name a binary explicitly.
 | Prover  | Source | Lookup order |
 |---------|--------|--------------|
 | Twee    | `horn` branch of <https://codeberg.org/nick8325/twee>, built with `cabal build`. | `TAELJA_TWEE`, `bin/twee`, `PATH` |
-| E       | `master` of <https://github.com/eprover/eprover>, which has `--proof-object=3` since pull request 36, built with `./configure && make NODEBUG="-DNDEBUG -DFAST_EXIT"`. | `TAELJA_EPROVER`, `bin/eprover`, `PATH` |
+| E       | `master` of <https://github.com/eprover/eprover>, which has `--proof-object=3` since pull request 36, built as a release with `./configure && make NODEBUG="-DNDEBUG -DFAST_EXIT" MEMDEBUG= DEBUGGER=`. | `TAELJA_EPROVER`, `bin/eprover`, `PATH` |
 | Vampire | <https://github.com/vprover/vampire> | `TAELJA_VAMPIRE`, `bin/vampire`, `PATH` |
 
 Taelja has been tested with Twee 2.7, E 3.5.1 from master, and Vampire 5.0.1. The evaluation runs E
