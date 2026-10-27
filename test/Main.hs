@@ -265,6 +265,9 @@ vampireBenchmarkNames =
   -- Vampire on SystemOnTPTP adds records skolemize(X0,sK0) to the info of its
   -- skolemize step, which the parser reads only once they are dropped
   , "SYN080+1"
+  -- the evaluation of XOR expressions, whose refutation works back from the
+  -- negated conjecture until it denies value(truth,truth)
+  , "MSC005-1"
   -- the running example of the PhD defense slides, James the cat, proved by
   -- Vampire with --selection 2 as the slides show
   , "defense_example"
