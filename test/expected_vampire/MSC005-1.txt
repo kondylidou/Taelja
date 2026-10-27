@@ -1,0 +1,41 @@
+Axiom 1: value(truth,truth)
+Axiom 2: value(falsity,falsity)
+Axiom 3: value(X,falsity) /\ value(Y,truth) => value(xor(Y,X),truth)
+Axiom 4: value(X,truth) /\ value(Y,truth) => value(xor(Y,X),falsity)
+Axiom 5: value(X,falsity) /\ value(Y,falsity) => value(xor(Y,X),falsity)
+
+Lemma 6: value(xor(truth,falsity),truth)
+Proof:
+  have value(falsity,falsity)
+    by axiom 2
+   and value(truth,truth)
+    by axiom 1
+  hence value(xor(truth,falsity),truth)
+    by axiom 3
+
+Lemma 7: value(xor(xor(truth,falsity),falsity),truth)
+Proof:
+  have value(falsity,falsity)
+    by axiom 2
+   and value(xor(truth,falsity),truth)
+    by lemma 6
+  hence value(xor(xor(truth,falsity),falsity),truth)
+    by axiom 3
+
+Lemma 8: value(xor(xor(xor(truth,falsity),falsity),truth),falsity)
+Proof:
+  have value(truth,truth)
+    by axiom 1
+   and value(xor(xor(truth,falsity),falsity),truth)
+    by lemma 7
+  hence value(xor(xor(xor(truth,falsity),falsity),truth),falsity)
+    by axiom 4
+
+Goal 1: value(xor(xor(xor(xor(truth,falsity),falsity),truth),falsity),falsity)
+Proof:
+  have value(falsity,falsity)
+    by axiom 2
+   and value(xor(xor(xor(truth,falsity),falsity),truth),falsity)
+    by lemma 8
+  hence value(xor(xor(xor(xor(truth,falsity),falsity),truth),falsity),falsity)
+    by axiom 5
