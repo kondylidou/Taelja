@@ -77,6 +77,7 @@ import TaeljaVerify.Vampire.Swv8181
 import TaeljaVerify.Vampire.Grp656p1
 import TaeljaVerify.Vampire.Grp1951
 import TaeljaVerify.Vampire.Top0501
+import TaeljaVerify.Vampire.Syn080p1
 import TaeljaVerify.Vampire.DefenseExample
 import TaeljaVerify.E.Grp0015
 import TaeljaVerify.E.Grp1171

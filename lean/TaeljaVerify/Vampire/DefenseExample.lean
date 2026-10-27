@@ -11,31 +11,26 @@ noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 axiom james : α
 axiom mouse : α
 
-axiom brings_home : α → α
-axiom catch_ : α → α
-
+axiom brings : α → α → Prop
 axiom cat : α → Prop
+axiom catches : α → α → Prop
 axiom happy : α → Prop
 
 -- Axiom 1
-axiom ax1 : cat james
+axiom ax1 : catches james mouse
 -- Axiom 2
-axiom ax2 : catch_ james = mouse
+axiom ax2 : cat james
 -- Axiom 3
-axiom ax3 : brings_home james = catch_ james
+axiom ax3 : ∀ (x : α), catches james x → brings james x
 -- Axiom 4
-axiom ax4 : ∀ (x : α), brings_home x = mouse → cat x → happy x
-
--- Lemma 5
-theorem taelja_lemma5 : brings_home james = mouse := by
-  calc brings_home james = catch_ james := ax3
-      _ = mouse := ax2
+axiom ax4 : ∀ (x : α), brings x mouse → cat x → happy x
 
 -- Goal 1
 theorem taelja_goal1 : happy james := by
-  have h1 : brings_home james = mouse := taelja_lemma5
-  have h2 : cat james := ax1
-  have h3 : happy james := ax4 james h1 h2
-  exact h3
+  have h1 : catches james mouse := ax1
+  have h2 : brings james mouse := ax3 mouse h1
+  have h3 : cat james := ax2
+  have h4 : happy james := ax4 james h2 h3
+  exact h4
 
 end VampireDefenseExample

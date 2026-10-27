@@ -76,11 +76,11 @@ iProver, which its script looks up as follows. The options `--vampire`,
 | Prover  | Source | Lookup order |
 |---------|--------|--------------|
 | Twee    | `horn` branch of <https://codeberg.org/nick8325/twee>, built with `cabal build`. | `TAELJA_TWEE`, `bin/twee`, `PATH` |
-| E       | `proof-object-steps` branch of <https://github.com/eprover/eprover>, which adds `--proof-object=3`, built with `./configure && make`. | `TAELJA_EPROVER`, `bin/eprover`, `PATH` |
+| E       | `master` of <https://github.com/eprover/eprover>, which has `--proof-object=3` since pull request 36, built as a release with `./configure && make NODEBUG="-DNDEBUG -DFAST_EXIT" MEMDEBUG= DEBUGGER=`. | `TAELJA_EPROVER`, `bin/eprover`, `PATH` |
 | Vampire | <https://github.com/vprover/vampire> | `TAELJA_VAMPIRE`, `bin/vampire`, `PATH` |
 | iProver | the macOS build of <https://gitlab.com/korovin/iprover>, as `bin/iproveropt` with its clausifier in `bin/VClausifier`. `bin/iprover` runs it with Homebrew's `z3` and `gmp`. | `TAELJA_IPROVER`, `bin/iprover`, `PATH` |
 
-Taelja has been tested with Twee 2.7, E 3.5.1 from that branch, Vampire 5.0.1 and iProver 3.9.4. The evaluation runs E
+Taelja has been tested with Twee 2.7, E 3.5.1 from master, Vampire 5.0.1 and iProver 3.9.4. The evaluation runs E
 with `--auto-schedule --proof-object=3`, so that E prints the clause after each
 simplification step. It runs iProver with `--prep_well_definedness false
 --splitting_mode none`, so that each step cites all its premises and the proof

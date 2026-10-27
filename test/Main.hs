@@ -264,7 +264,12 @@ vampireBenchmarkNames =
   , "GRP656+1"
   , "GRP195-1"        -- a chain that returns to an earlier term once its variables are bound
   , "TOP050-1"        -- a step rewriting every occurrence of a constant in a premise
-  , "defense_example"  -- the running example of the PhD defense slides, James the cat
+  -- Vampire on SystemOnTPTP adds records skolemize(X0,sK0) to the info of its
+  -- skolemize step, which the parser reads only once they are dropped
+  , "SYN080+1"
+  -- the running example of the PhD defense slides, James the cat, proved by
+  -- Vampire with --selection 2 as the slides show
+  , "defense_example"
   ]
 
 -- The E proofs.
