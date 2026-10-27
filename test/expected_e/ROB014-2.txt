@@ -1,68 +1,75 @@
-Axiom 1: positive_integer(one)
-Axiom 2: multiply(one,X) = X
-Axiom 3: positive_integer(Y) /\ negate(add(X,negate(Z))) = A => negate(add(X,negate(add(Z,multiply(Y,add(X,A)))))) = A
-Axiom 4: add(X,Z) = add(Z,X)
-Axiom 5: add(add(X,Z),A) = add(X,add(Z,A))
-Axiom 6: negate(add(negate(e),negate(add(d,negate(e))))) = d
-Axiom 7: negate(add(negate(add(X,Z)),negate(add(X,negate(Z))))) = X
-Axiom 8: negate(add(X,negate(add(Z,A)))) = negate(add(Z,negate(add(X,A)))) => X = Z
+Axiom 1: negate(add(negate(e),negate(add(d,negate(e))))) = d
+Axiom 2: add(X,Y) = add(Y,X)
+Axiom 3: add(add(X,Y),Z) = add(X,add(Y,Z))
+Axiom 4: negate(add(negate(add(X,Y)),negate(add(X,negate(Y))))) = X
+Axiom 5: negate(add(X,negate(add(Y,Z)))) = negate(add(Y,negate(add(X,Z)))) => X = Y
+Axiom 6: multiply(one,X) = X
+
+Lemma 7: negate(add(negate(add(X,Y)),negate(add(negate(Y),X)))) = X
+Proof:
+  negate(add(negate(add(X,Y)),negate(add(negate(Y),X))))
+= { by axiom 2 R->L }
+  negate(add(negate(add(X,Y)),negate(add(X,negate(Y)))))
+= { by axiom 4 }
+  X
+
+Lemma 8: negate(add(negate(add(X,Y)),negate(add(Y,negate(X))))) = Y
+Proof:
+  negate(add(negate(add(X,Y)),negate(add(Y,negate(X)))))
+= { by axiom 2 R->L }
+  negate(add(negate(add(Y,X)),negate(add(Y,negate(X)))))
+= { by axiom 4 }
+  Y
 
 Lemma 9: add(X,add(Y,Z)) = add(Y,add(X,Z))
 Proof:
   add(X,add(Y,Z))
-= { by axiom 5 R->L }
+= { by axiom 3 R->L }
   add(add(X,Y),Z)
-= { by axiom 4 }
+= { by axiom 2 }
   add(add(Y,X),Z)
-= { by axiom 5 }
+= { by axiom 3 }
   add(Y,add(X,Z))
 
 Lemma 10: negate(add(d,negate(add(e,negate(add(d,negate(e))))))) = negate(add(d,negate(e)))
 Proof:
   negate(add(d,negate(add(e,negate(add(d,negate(e)))))))
-= { by axiom 4 R->L }
-  negate(add(d,negate(add(negate(add(d,negate(e))),e))))
-= { by axiom 4 R->L }
+= { by axiom 2 R->L }
+  negate(add(negate(add(e,negate(add(d,negate(e))))),d))
+= { by axiom 2 R->L }
   negate(add(negate(add(negate(add(d,negate(e))),e)),d))
-= { by axiom 6 R->L }
+= { by axiom 1 R->L }
   negate(add(negate(add(negate(add(d,negate(e))),e)),negate(add(negate(e),negate(add(d,negate(e)))))))
-= { by axiom 4 R->L }
-  negate(add(negate(add(negate(add(d,negate(e))),e)),negate(add(negate(add(d,negate(e))),negate(e)))))
-= { by axiom 7 }
+= { by lemma 7 }
   negate(add(d,negate(e)))
 
-Lemma 11: negate(add(d,negate(add(e,add(d,negate(add(d,negate(e)))))))) = negate(add(d,negate(e)))
+Lemma 11: negate(add(negate(e),negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),d)))) = negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),negate(add(negate(e),d))))
 Proof:
-  have positive_integer(one)
-    by axiom 1
-  hence negate(add(d,negate(add(e,multiply(one,add(d,negate(add(d,negate(e))))))))) = negate(add(d,negate(e)))
-    by axiom 3
-  hence negate(add(d,negate(add(e,add(d,negate(add(d,negate(e)))))))) = negate(add(d,negate(e)))
-    by rw axiom 2
-
-Lemma 12: negate(add(negate(e),negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),negate(add(d,negate(e))))))) = negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),negate(add(negate(e),negate(add(d,negate(e)))))))
-Proof:
-  negate(add(negate(e),negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),negate(add(d,negate(e)))))))
-= { by lemma 9 R->L }
-  negate(add(negate(e),negate(add(negate(add(d,add(e,negate(add(d,negate(e)))))),negate(add(d,negate(e)))))))
-= { by lemma 10 R->L }
-  negate(add(negate(e),negate(add(negate(add(d,add(e,negate(add(d,negate(e)))))),negate(add(d,negate(add(e,negate(add(d,negate(e)))))))))))
-= { by axiom 7 }
-  negate(add(negate(e),d))
-= { by axiom 4 }
-  negate(add(d,negate(e)))
-= { by lemma 11 R->L }
-  negate(add(d,negate(add(e,add(d,negate(add(d,negate(e))))))))
+  negate(add(negate(e),negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),d))))
+= { by axiom 3 R->L }
+  negate(add(negate(e),negate(add(negate(add(add(e,d),negate(add(d,negate(e))))),d))))
+= { by axiom 2 R->L }
+  negate(add(negate(e),negate(add(negate(add(negate(add(d,negate(e))),add(e,d))),d))))
+= { by lemma 8 R->L }
+  negate(add(negate(e),negate(add(negate(add(negate(add(d,negate(e))),add(e,d))),negate(add(negate(add(e,d)),negate(add(d,negate(e)))))))))
+= { by lemma 7 }
+  negate(add(negate(e),negate(add(d,negate(e)))))
+= { by axiom 1 }
+  d
 = { by axiom 4 R->L }
-  negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),d))
-= { by axiom 6 R->L }
-  negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),negate(add(negate(e),negate(add(d,negate(e)))))))
+  negate(add(negate(add(d,add(e,negate(add(d,negate(e)))))),negate(add(d,negate(add(e,negate(add(d,negate(e)))))))))
+= { by lemma 10 }
+  negate(add(negate(add(d,add(e,negate(add(d,negate(e)))))),negate(add(d,negate(e)))))
+= { by lemma 9 }
+  negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),negate(add(d,negate(e)))))
+= { by axiom 2 R->L }
+  negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),negate(add(negate(e),d))))
 
 Goal 1: negate(add(e,multiply(one,add(d,negate(add(d,negate(e))))))) = negate(e)
 Proof:
-  have negate(add(negate(e),negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),negate(add(d,negate(e))))))) = negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),negate(add(negate(e),negate(add(d,negate(e)))))))
-    by lemma 12
+  have negate(add(negate(e),negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),d)))) = negate(add(negate(add(e,add(d,negate(add(d,negate(e)))))),negate(add(negate(e),d))))
+    by lemma 11
   hence negate(e) = negate(add(e,add(d,negate(add(d,negate(e))))))
-    by axiom 8
+    by axiom 5
   hence negate(e) = negate(add(e,multiply(one,add(d,negate(add(d,negate(e)))))))
-    by rw axiom 2 R->L
+    by rw axiom 6 R->L

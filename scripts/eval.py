@@ -14,7 +14,7 @@ Usage
                     are required.
   --output-dir DIR  output directory (default eval_out)
   --timeout SEC     per-prover timeout (default 60)
-  --taelja-timeout SEC  Taelja timeout (default 60)
+  --taelja-timeout SEC  Taelja timeout (default 300)
   --jobs N          parallel workers (default 2)
   --lean PATH       lean binary, to check each translated proof
   --skip-done       keep results where proof.tstp and taelja.txt exist. Taelja
@@ -427,7 +427,7 @@ def main():
     parser.add_argument('--timeout',     type=int, default=60,
                         help='Per-prover timeout in seconds (default: 60)')
     parser.add_argument('--jobs',        type=int, default=2)
-    parser.add_argument('--taelja-timeout', type=int, default=60, metavar='SEC',
+    parser.add_argument('--taelja-timeout', type=int, default=300, metavar='SEC',
                         help='Taelja timeout in seconds (default: 60)')
     parser.add_argument('--list',        action='append', default=[], metavar='FILE',
                         help='problem list from select_horn.py instead of the SPC scan')

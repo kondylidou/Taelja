@@ -4,27 +4,20 @@ Axiom 3: p4(X,X)
 Axiom 4: p4(Y,X) /\ p4(Y,Z) => p4(X,Z)
 Axiom 5: p4(f5(c7,X,Y),Y) /\ p4(f5(c7,f6(X,Y,Z),Y),f5(c7,f6(X,Y,Z),Z)) => p4(f5(c7,X,Z),Z)
 
-Lemma 6: p4(X,Y) => p4(Y,X)
+Lemma 6: p4(f5(c7,f6(c10,c9,c8),c9),f5(c7,f6(c10,c9,c8),c8))
 Proof:
-  have p4(X,Y)
-    by assumption
-   and p4(X,X)
-    by axiom 3
-  hence p4(Y,X)
-    by axiom 4
-
-Lemma 7: p4(f5(c7,X,c9),f5(c7,X,c8))
-Proof:
-  have p4(f5(c7,X,c8),f5(c7,X,c9))
+  have p4(f5(c7,f6(c10,c9,c8),c8),f5(c7,f6(c10,c9,c8),c9))
     by axiom 2
-  hence p4(f5(c7,X,c9),f5(c7,X,c8))
-    by lemma 6
+   and p4(f5(c7,f6(c10,c9,c8),c8),f5(c7,f6(c10,c9,c8),c8))
+    by axiom 3
+  hence p4(f5(c7,f6(c10,c9,c8),c9),f5(c7,f6(c10,c9,c8),c8))
+    by axiom 4
 
 Goal 1: p4(f5(c7,c10,c8),c8)
 Proof:
   have p4(f5(c7,c10,c9),c9)
     by axiom 1
    and p4(f5(c7,f6(c10,c9,c8),c9),f5(c7,f6(c10,c9,c8),c8))
-    by lemma 7
+    by lemma 6
   hence p4(f5(c7,c10,c8),c8)
     by axiom 5

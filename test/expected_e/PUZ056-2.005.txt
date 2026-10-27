@@ -107,21 +107,13 @@ Proof:
     by axiom 2
   hence p(s1,s1,s1,s1,s2)
     by axiom 12
-  hence p(s2,s1,s1,s1,s2)
+  hence p(s0,s1,s1,s1,s2)
     by axiom 8
-   and neq(s2,s1)
-    by axiom 5
-   and neq(s2,s0)
-    by axiom 6
-  hence p(s2,s0,s1,s1,s2)
-    by axiom 9
-  hence p(s1,s0,s1,s1,s2)
-    by axiom 8
-   and neq(s1,s0)
-    by axiom 4
-   and neq(s1,s2)
-    by axiom 2
-  hence p(s1,s2,s1,s1,s2)
+   and neq(s0,s1)
+    by axiom 3
+   and neq(s0,s2)
+    by axiom 1
+  hence p(s0,s2,s1,s1,s2)
     by axiom 9
   hence p(s2,s2,s1,s1,s2)
     by axiom 8

@@ -33,16 +33,16 @@ Proof:
 = { by axiom 1 }
   rd(Y,Y)
 
-Goal 1: mult(X,rd(Y,Y)) = X
+Goal 1: mult(X,ld(Y,Y)) = X
 Proof:
+  mult(X,ld(Y,Y))
+= { by lemma 7 }
   mult(X,rd(Y,Y))
 = { by lemma 6 }
   X
 
-Goal 2: mult(rd(X,X),Y) = Y
+Goal 2: mult(ld(X,X),Y) = Y
 Proof:
-  mult(rd(X,X),Y)
-= { by lemma 7 R->L }
   mult(ld(X,X),Y)
 = { by lemma 7 }
   mult(rd(Y,Y),Y)

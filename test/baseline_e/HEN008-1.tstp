@@ -1,290 +1,669 @@
-# Preprocessing class: FSMSSMSSSSSNFFN.
-# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
-# No SInE strategy applied
-# Search class: FHUSS-FFSS22-SFFFFFNN
-# Configuration: SAT001_MinMin_p005000_rr_RG
-# Initializing proof state
-# Scanning for AC axioms
-#
-#cnf(i_0_26, negated_conjecture, (~less_equal(aQc,bQc))).
-#
-#cnf(i_0_23, hypothesis, (less_equal(a,b))).
-#
-#cnf(i_0_20, plain, (less_equal(X1,identity))).
-#
-#cnf(i_0_18, plain, (less_equal(zero,X1))).
-#
-#cnf(i_0_24, hypothesis, (quotient(a,c,aQc))).
-#
-#cnf(i_0_19, plain, (X1=X2|~less_equal(X2,X1)|~less_equal(X1,X2))).
-#
-#cnf(i_0_25, hypothesis, (quotient(b,c,bQc))).
-#
-#cnf(i_0_14, plain, (quotient(X1,X2,zero)|~less_equal(X1,X2))).
-#
-#cnf(i_0_15, plain, (less_equal(X1,X2)|~quotient(X1,X2,zero))).
-#
-#cnf(i_0_16, plain, (less_equal(X3,X1)|~quotient(X1,X2,X3))).
-#
-#cnf(i_0_21, plain, (quotient(X1,X2,divide(X1,X2)))).
-#
-#cnf(i_0_22, plain, (X3=X4|~quotient(X1,X2,X4)|~quotient(X1,X2,X3))).
-#
-#cnf(i_0_17, plain, (less_equal(X7,X8)|~quotient(X6,X5,X7)|~quotient(X3,X4,X8)|~quotient(X2,X4,X5)|~quotient(X1,X4,X6)|~quotient(X1,X2,X3))).
-# Presaturation interreduction done
-#
-#cnf(i_0_26, negated_conjecture, (~less_equal(aQc,bQc))).
-#
-#cnf(i_0_23, hypothesis, (less_equal(a,b))).
-#
-#cnf(i_0_20, plain, (less_equal(X1,identity))).
-#
-#cnf(i_0_18, plain, (less_equal(zero,X1))).
-#
-#cnf(i_0_24, hypothesis, (quotient(a,c,aQc))).
-#
-#cnf(i_0_14, plain, (quotient(X1,X2,zero)|~less_equal(X1,X2))).
-#
-#cnf(i_0_15, plain, (less_equal(X1,X2)|~quotient(X1,X2,zero))).
-#
-#cnf(i_0_30, negated_conjecture, (~quotient(aQc,bQc,zero))).
-#
-#cnf(i_0_19, plain, (X1=X2|~less_equal(X2,X1)|~less_equal(X1,X2))).
-#
-#cnf(i_0_25, hypothesis, (quotient(b,c,bQc))).
-#
-#cnf(i_0_32, hypothesis, (b=a|~less_equal(b,a))).
-#
-#cnf(i_0_33, plain, (X1=zero|~less_equal(X1,zero))).
-#
-#cnf(i_0_34, plain, (identity=X1|~less_equal(identity,X1))).
-#
-#cnf(i_0_36, hypothesis, (b=a|~quotient(b,a,zero))).
-#
-#cnf(i_0_21, plain, (quotient(X1,X2,divide(X1,X2)))).
-#
-#cnf(i_0_27, hypothesis, (quotient(a,b,zero))).
-#
-#cnf(i_0_16, plain, (less_equal(X1,X2)|~quotient(X2,X3,X1))).
-#
-#cnf(i_0_22, plain, (X1=X2|~quotient(X3,X4,X2)|~quotient(X3,X4,X1))).
-#
-#cnf(i_0_17, plain, (less_equal(X1,X2)|~quotient(X3,X4,X1)|~quotient(X5,X6,X2)|~quotient(X7,X6,X4)|~quotient(X8,X6,X3)|~quotient(X8,X7,X5))).
-#
-#cnf(i_0_39, hypothesis, (less_equal(bQc,b))).
-#
-#cnf(i_0_40, hypothesis, (less_equal(aQc,a))).
-#
-#cnf(i_0_52, hypothesis, (bQc=b|~less_equal(b,bQc))).
-#
-#cnf(i_0_54, hypothesis, (aQc=a|~less_equal(a,aQc))).
-#
-#cnf(i_0_55, hypothesis, (bQc=b|~quotient(b,bQc,zero))).
-#
-#cnf(i_0_56, hypothesis, (aQc=a|~quotient(a,aQc,zero))).
-#
-#cnf(i_0_28, plain, (quotient(zero,X1,zero))).
-#
-#cnf(i_0_51, hypothesis, (quotient(bQc,b,zero))).
-#
-#cnf(i_0_58, plain, (X1=zero|~quotient(zero,X2,X1))).
-#
-#cnf(i_0_37, plain, (X1=zero|~quotient(X1,zero,zero))).
-#
-#cnf(i_0_38, plain, (identity=X1|~quotient(identity,X1,zero))).
-#
-#cnf(i_0_43, hypothesis, (X1=bQc|~quotient(b,c,X1))).
-#
-#cnf(i_0_64, hypothesis, (divide(b,c)=bQc)).
-#
-#cnf(i_0_53, hypothesis, (quotient(aQc,a,zero))).
-#
-#cnf(i_0_44, hypothesis, (X1=aQc|~quotient(a,c,X1))).
-#
-#cnf(i_0_69, hypothesis, (divide(a,c)=aQc)).
-#
-#cnf(i_0_61, hypothesis, (X1=zero|~quotient(bQc,b,X1))).
-#
-#cnf(i_0_29, plain, (quotient(X1,identity,zero))).
-#
-#cnf(i_0_71, hypothesis, (divide(bQc,b)=zero)).
-#
-#cnf(i_0_73, plain, (X1=zero|~quotient(X2,identity,X1))).
-#
-#cnf(i_0_45, hypothesis, (X1=zero|~quotient(a,b,X1))).
-#
-#cnf(i_0_67, hypothesis, (X1=zero|~quotient(aQc,a,X1))).
-#
-#cnf(i_0_35, plain, (X1=X2|~quotient(X2,X1,zero)|~less_equal(X1,X2))).
-#
-#cnf(i_0_78, hypothesis, (divide(aQc,a)=zero)).
-###
-#cnf(i_0_63, plain, (divide(zero,X1)=zero)).
-#
-#cnf(i_0_76, plain, (divide(X1,identity)=zero)).
-#
-#cnf(i_0_42, plain, (less_equal(divide(X1,X2),X1))).
-#
-#cnf(i_0_77, hypothesis, (divide(a,b)=zero)).
-####
-#cnf(i_0_46, plain, (X1=divide(X2,X3)|~quotient(X2,X3,X1))).
-#
-#cnf(i_0_89, plain, (quotient(divide(X1,X2),X1,zero))).
-#
-#cnf(i_0_91, plain, (divide(X1,X2)=X1|~less_equal(X1,divide(X1,X2)))).
-####
-#cnf(i_0_47, hypothesis, (less_equal(bQc,X1)|~quotient(X4,X3,c)|~quotient(X5,X3,b)|~quotient(X2,X3,X1)|~quotient(X5,X4,X2))).
-####
-#cnf(i_0_110, plain, (X1=zero|~quotient(divide(X2,X3),X2,X1))).
-#######
-#cnf(i_0_48, hypothesis, (less_equal(aQc,X1)|~quotient(X4,X3,c)|~quotient(X5,X3,a)|~quotient(X2,X3,X1)|~quotient(X5,X4,X2))).
-#
-#cnf(i_0_109, plain, (divide(divide(X1,X2),X1)=zero)).
-###
-#cnf(i_0_84, plain, (X1=X2|~quotient(X2,X1,zero)|~quotient(X1,X2,zero))).
-#######
-#cnf(i_0_50, plain, (less_equal(divide(X1,X2),X3)|~quotient(X4,X5,X3)|~quotient(X6,X5,X2)|~quotient(X7,X5,X1)|~quotient(X7,X6,X4))).
-##
-#cnf(i_0_90, plain, (divide(X1,X2)=X1|~quotient(X1,divide(X1,X2),zero))).
-#########
-#cnf(i_0_154, hypothesis, (less_equal(divide(X1,X2),zero)|~quotient(X3,b,X2)|~quotient(X4,b,X1)|~quotient(X4,X3,bQc))).
-##
-#cnf(i_0_172, hypothesis, (less_equal(divide(X1,zero),zero)|~quotient(X2,a,bQc)|~quotient(X2,b,X1))).
-#
-#cnf(i_0_174, hypothesis, (less_equal(divide(X1,zero),zero)|~quotient(X2,zero,bQc)|~quotient(X2,b,X1))).
-#
-#cnf(i_0_171, hypothesis, (less_equal(divide(X1,zero),zero)|~quotient(X2,bQc,bQc)|~quotient(X2,b,X1))).
-#
-#cnf(i_0_160, plain, (less_equal(divide(X1,X2),zero)|~quotient(X5,X4,zero)|~quotient(X4,X3,X2)|~quotient(X5,X3,X1))).
-#
-#cnf(i_0_180, hypothesis, (less_equal(divide(divide(X1,b),zero),zero)|~quotient(X1,a,bQc))).
-#
-#cnf(i_0_186, hypothesis, (less_equal(divide(X1,X2),zero)|~quotient(b,X3,X2)|~quotient(bQc,X3,X1))).
-#
-#cnf(i_0_203, hypothesis, (less_equal(divide(X1,bQc),zero)|~quotient(bQc,c,X1))).
-#
-#cnf(i_0_205, hypothesis, (divide(X1,bQc)=zero|~quotient(bQc,c,X1))).
-##
-#cnf(i_0_155, hypothesis, (less_equal(divide(X1,X2),zero)|~quotient(X3,a,X2)|~quotient(X4,a,X1)|~quotient(X4,X3,aQc))).
-###
-#cnf(i_0_210, hypothesis, (quotient(X1,bQc,zero)|~quotient(bQc,c,X1))).
-###
-#cnf(i_0_201, hypothesis, (less_equal(divide(X1,zero),zero)|~quotient(bQc,identity,X1))).
-#
-#cnf(i_0_224, hypothesis, (divide(X1,zero)=zero|~quotient(bQc,identity,X1))).
-##
-#cnf(i_0_230, hypothesis, (quotient(X1,zero,zero)|~quotient(bQc,identity,X1))).
-##
-#cnf(i_0_156, hypothesis, (less_equal(divide(X1,X2),bQc)|~quotient(X3,c,X2)|~quotient(X4,c,X1)|~quotient(X4,X3,b))).
-####
-#cnf(i_0_190, plain, (less_equal(divide(X1,X2),zero)|~quotient(zero,X4,X1)|~quotient(X3,X4,X2))).
-#
-#cnf(i_0_191, plain, (less_equal(divide(X1,X2),zero)|~quotient(identity,X4,X2)|~quotient(X3,X4,X1))).
-#
-#cnf(i_0_248, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,identity,X1))).
-#
-#cnf(i_0_218, hypothesis, (less_equal(divide(X1,zero),zero)|~quotient(X2,aQc,aQc)|~quotient(X2,a,X1))).
-#
-#cnf(i_0_240, hypothesis, (less_equal(divide(X1,bQc),bQc)|~quotient(X2,b,b)|~quotient(X2,c,X1))).
-#
-#cnf(i_0_255, hypothesis, (less_equal(divide(aQc,bQc),bQc)|~quotient(a,b,b))).
-#
-#cnf(i_0_261, hypothesis, (divide(aQc,bQc)=bQc|~quotient(a,b,b)|~less_equal(bQc,divide(aQc,bQc)))).
-#
-#cnf(i_0_157, hypothesis, (less_equal(divide(X1,X2),aQc)|~quotient(X3,c,X2)|~quotient(X4,c,X1)|~quotient(X4,X3,a))).
-#
-#cnf(i_0_259, hypothesis, (quotient(divide(aQc,bQc),bQc,zero)|~quotient(a,b,b))).
-##
-#cnf(i_0_272, hypothesis, (X1=zero|~quotient(divide(aQc,bQc),bQc,X1)|~quotient(a,b,b))).
-#
-#cnf(i_0_187, hypothesis, (less_equal(divide(X1,X2),zero)|~quotient(a,X3,X2)|~quotient(aQc,X3,X1))).
-#
-#cnf(i_0_188, hypothesis, (less_equal(divide(X1,X2),zero)|~quotient(b,X3,X2)|~quotient(a,X3,X1))).
-#
-#cnf(i_0_282, hypothesis, (less_equal(divide(X1,aQc),zero)|~quotient(aQc,c,X1))).
-#
-#cnf(i_0_288, hypothesis, (divide(X1,aQc)=zero|~quotient(aQc,c,X1))).
-####
-#cnf(i_0_158, hypothesis, (less_equal(divide(X1,X2),zero)|~quotient(X3,b,X2)|~quotient(X4,b,X1)|~quotient(X4,X3,a))).
-#
-#cnf(i_0_293, hypothesis, (quotient(X1,aQc,zero)|~quotient(aQc,c,X1))).
-###
-#cnf(i_0_249, plain, (less_equal(divide(X1,divide(identity,X2)),zero)|~quotient(X3,X2,X1))).
-##
-#cnf(i_0_309, hypothesis, (less_equal(divide(bQc,divide(identity,c)),zero))).
-#
-#cnf(i_0_318, hypothesis, (divide(bQc,divide(identity,c))=zero)).
-####
-#cnf(i_0_159, plain, (less_equal(divide(X1,X2),zero)|~quotient(X6,X5,divide(X3,X4))|~quotient(X5,X3,X2)|~quotient(X6,X3,X1))).
-#
-#cnf(i_0_321, hypothesis, (quotient(bQc,divide(identity,c),zero))).
-#
-#cnf(i_0_343, hypothesis, (X1=zero|~quotient(bQc,divide(identity,c),X1))).
-#
-#cnf(i_0_340, plain, (less_equal(divide(X1,X2),zero)|~quotient(X4,X3,X2)|~quotient(X3,X3,X1))).
-#
-#cnf(i_0_357, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,X2,X1))).
-##
-#cnf(i_0_310, hypothesis, (less_equal(divide(aQc,divide(identity,c)),zero))).
-#
-#cnf(i_0_365, hypothesis, (divide(aQc,divide(identity,c))=zero)).
-####
-#cnf(i_0_161, plain, (less_equal(divide(X1,X2),zero)|~quotient(X4,identity,X2)|~quotient(X5,identity,X1)|~quotient(X5,X4,X3))).
-#
-#cnf(i_0_368, hypothesis, (quotient(aQc,divide(identity,c),zero))).
-#
-#cnf(i_0_382, hypothesis, (X1=zero|~quotient(aQc,divide(identity,c),X1))).
-#
-#cnf(i_0_360, plain, (less_equal(divide(X1,divide(X2,X3)),zero)|~quotient(X3,X3,X1))).
-#
-#cnf(i_0_345, hypothesis, (divide(identity,c)=bQc|~quotient(divide(identity,c),bQc,zero))).
-#
-#cnf(i_0_385, hypothesis, (divide(identity,c)=aQc|~quotient(divide(identity,c),aQc,zero))).
-#
-#cnf(i_0_363, plain, (less_equal(divide(divide(X1,X1),zero),zero))).
-#
-#cnf(i_0_271, hypothesis, (divide(divide(aQc,bQc),bQc)=zero|~quotient(a,b,b))).
-###
-#cnf(i_0_260, hypothesis, (divide(aQc,bQc)=bQc|~quotient(bQc,divide(aQc,bQc),zero)|~quotient(a,b,b))).
-#
-#cnf(i_0_162, plain, (less_equal(divide(X1,X2),divide(X3,X4))|~quotient(X5,X4,X2)|~quotient(X6,X4,X1)|~quotient(X6,X5,X3))).
-#
-#cnf(i_0_394, plain, (divide(divide(X1,X1),zero)=zero)).
-####
-#cnf(i_0_427, plain, (quotient(divide(X1,X1),zero,zero))).
-#
-#cnf(i_0_446, plain, (divide(X1,X1)=zero)).
-####
-#cnf(i_0_460, plain, (quotient(X1,X1,zero))).
-#
-#cnf(i_0_173, hypothesis, (less_equal(divide(X1,zero),zero)|~quotient(X3,divide(b,X2),bQc)|~quotient(X3,b,X1))).
-#
-#cnf(i_0_485, plain, (X1=zero|~quotient(X2,X2,X1))).
-###
-#cnf(i_0_490, plain, (less_equal(divide(X1,X2),zero)|~quotient(X3,X4,X2)|~quotient(X3,X4,X1))).
-##
-#cnf(i_0_286, hypothesis, (less_equal(divide(X1,bQc),zero)|~quotient(a,c,X1))).
-#
-#cnf(i_0_515, hypothesis, (divide(X1,bQc)=zero|~quotient(a,c,X1))).
-####
-#cnf(i_0_175, hypothesis, (less_equal(divide(X1,divide(X2,b)),zero)|~quotient(X3,b,X1)|~quotient(X3,X2,bQc))).
-###
-#cnf(i_0_530, hypothesis, (quotient(X1,bQc,zero)|~quotient(a,c,X1))).
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with pid 23592 completed with status 0
+% Result found by G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FHUSS-FFSS22-SFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% SubtermCWHack with pid 23593 completed with status 0
+% Result found by SubtermCWHack
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FHUSS-FFSS22-SFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% Initializing proof state
+% Scanning for AC axioms
+%
+%cnf(i_0_23, hypothesis, (less_equal(a,b))).
+%
+%cnf(i_0_20, plain, (less_equal(X1,identity))).
+%
+%cnf(i_0_18, plain, (less_equal(zero,X1))).
+%
+%cnf(i_0_26, negated_conjecture, (~less_equal(aQc,bQc))).
+%
+%cnf(i_0_24, hypothesis, (quotient(a,c,aQc))).
+%
+%cnf(i_0_25, hypothesis, (quotient(b,c,bQc))).
+%
+%cnf(i_0_21, plain, (quotient(X1,X2,divide(X1,X2)))).
+%
+%cnf(i_0_14, plain, (quotient(X1,X2,zero)|~less_equal(X1,X2))).
+%
+%cnf(i_0_27, plain, (quotient(a,b,zero))).
+%
+%cnf(i_0_28, plain, (quotient(zero,X1,zero))).
+%
+%cnf(i_0_19, plain, (X1=X2|~less_equal(X2,X1)|~less_equal(X1,X2))).
+%
+%cnf(i_0_29, plain, (quotient(X1,identity,zero))).
+%
+%cnf(i_0_30, plain, (b=a|~less_equal(b,a))).
+%
+%cnf(i_0_31, plain, (X1=zero|~less_equal(X1,zero))).
+%
+%cnf(i_0_32, plain, (identity=X1|~less_equal(identity,X1))).
+%
+%cnf(i_0_15, plain, (less_equal(X1,X2)|~quotient(X1,X2,zero))).
+%
+%cnf(i_0_33, negated_conjecture, (~quotient(aQc,bQc,zero))).
+%
+%cnf(i_0_16, plain, (less_equal(X3,X1)|~quotient(X1,X2,X3))).
+%
+%cnf(i_0_39, plain, (less_equal(bQc,b))).
+%
+%cnf(i_0_40, plain, (less_equal(aQc,a))).
+%
+%cnf(i_0_45, plain, (quotient(bQc,b,zero))).
+%
+%cnf(i_0_22, plain, (X3=X4|~quotient(X1,X2,X4)|~quotient(X1,X2,X3))).
+%
+%cnf(i_0_47, plain, (quotient(aQc,a,zero))).
+%
+%cnf(i_0_44, plain, (less_equal(divide(X1,X2),X1))).
+%
+%cnf(i_0_59, plain, (divide(zero,X1)=zero)).
+%
+%cnf(i_0_46, plain, (bQc=b|~less_equal(b,bQc))).
+%
+%cnf(i_0_48, plain, (aQc=a|~less_equal(a,aQc))).
+%
+%cnf(i_0_60, plain, (quotient(divide(X1,X2),X1,zero))).
+%
+%cnf(i_0_34, plain, (b=a|~quotient(b,a,zero))).
+%
+%cnf(i_0_35, plain, (identity=X1|~quotient(identity,X1,zero))).
+%
+%cnf(i_0_36, plain, (X1=zero|~quotient(X1,zero,zero))).
+%
+%cnf(i_0_50, plain, (X1=zero|~quotient(bQc,b,X1))).
+%
+%cnf(i_0_17, plain, (less_equal(X7,X8)|~quotient(X6,X5,X7)|~quotient(X3,X4,X8)|~quotient(X2,X4,X5)|~quotient(X1,X4,X6)|~quotient(X1,X2,X3))).
+%
+%cnf(i_0_70, plain, (divide(bQc,b)=zero)).
+%
+%cnf(i_0_51, plain, (X1=bQc|~quotient(b,c,X1))).
+%
+%cnf(i_0_83, plain, (divide(b,c)=bQc)).
+%
+%cnf(i_0_52, plain, (X1=aQc|~quotient(a,c,X1))).
+%
+%cnf(i_0_87, plain, (divide(a,c)=aQc)).
+%
+%cnf(i_0_53, plain, (X1=zero|~quotient(a,b,X1))).
+%
+%cnf(i_0_91, plain, (divide(a,b)=zero)).
+%
+%cnf(i_0_54, plain, (X1=zero|~quotient(zero,X2,X1))).
+%
+%cnf(i_0_55, plain, (X1=zero|~quotient(X2,identity,X1))).
+%
+%cnf(i_0_96, plain, (divide(X1,identity)=zero)).
+%
+%cnf(i_0_38, plain, (X1=X2|~quotient(X2,X1,zero)|~less_equal(X1,X2))).
+%
+%cnf(i_0_58, plain, (X1=zero|~quotient(aQc,a,X1))).
+%
+%cnf(i_0_107, plain, (divide(aQc,a)=zero)).
+%
+%cnf(i_0_64, plain, (bQc=b|~quotient(b,bQc,zero))).
+%
+%cnf(i_0_65, plain, (aQc=a|~quotient(a,aQc,zero))).
+%%%%%%
+%cnf(i_0_56, plain, (X1=divide(X2,X3)|~quotient(X2,X3,X1))).
+%
+%cnf(i_0_61, plain, (divide(X1,X2)=X1|~less_equal(X1,divide(X1,X2)))).
+%%%%%%%
+%cnf(i_0_116, plain, (divide(divide(X1,X2),X1)=zero)).
+%
+%cnf(i_0_67, plain, (X1=zero|~quotient(divide(X2,X3),X2,X1))).
+%%%
+%cnf(i_0_73, plain, (less_equal(bQc,X1)|~quotient(X4,X3,c)|~quotient(X5,X3,b)|~quotient(X2,X3,X1)|~quotient(X5,X4,X2))).
+%%%%%%%%
+%cnf(i_0_103, plain, (divide(X1,X2)=X1|~quotient(X1,divide(X1,X2),zero))).
+%%%
+%cnf(i_0_74, plain, (less_equal(aQc,X1)|~quotient(X4,X3,c)|~quotient(X5,X3,a)|~quotient(X2,X3,X1)|~quotient(X5,X4,X2))).
+%%%%%
+%cnf(i_0_106, plain, (X1=X2|~quotient(X2,X1,zero)|~quotient(X1,X2,zero))).
+%%%%%%
+%cnf(i_0_79, plain, (less_equal(divide(X1,X2),X3)|~quotient(X4,X5,X3)|~quotient(X6,X5,X2)|~quotient(X7,X5,X1)|~quotient(X7,X6,X4))).
+%%%%
+%cnf(i_0_162, plain, (less_equal(divide(X1,X2),zero)|~quotient(X3,b,X2)|~quotient(X4,b,X1)|~quotient(X4,X3,bQc))).
+%
+%cnf(i_0_171, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,bQc,bQc)|~quotient(X2,b,X1))).
+%
+%cnf(i_0_172, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,a,bQc)|~quotient(X2,b,X1))).
+%
+%cnf(i_0_180, plain, (less_equal(divide(divide(X1,b),zero),zero)|~quotient(X1,a,bQc))).
+%
+%cnf(i_0_182, plain, (divide(divide(X1,b),zero)=zero|~quotient(X1,a,bQc))).
+%
+%cnf(i_0_190, plain, (quotient(divide(X1,b),zero,zero)|~quotient(X1,a,bQc))).
+%
+%cnf(i_0_202, plain, (divide(X1,b)=zero|~quotient(X1,a,bQc))).
+%
+%cnf(i_0_163, plain, (less_equal(divide(X1,X2),zero)|~quotient(X3,a,X2)|~quotient(X4,a,X1)|~quotient(X4,X3,aQc))).
+%
+%cnf(i_0_213, plain, (quotient(X1,b,zero)|~quotient(X1,a,bQc))).
+%
+%cnf(i_0_227, plain, (identity=b|~quotient(identity,a,bQc))).
+%%%%%%%%%
+%cnf(i_0_164, plain, (less_equal(divide(X1,X2),bQc)|~quotient(X3,c,X2)|~quotient(X4,c,X1)|~quotient(X4,X3,b))).
+%
+%cnf(i_0_228, plain, (b=X1|~quotient(b,X1,zero)|~quotient(X1,a,bQc))).
+%%
+%cnf(i_0_231, plain, (X1=zero|~quotient(X2,a,bQc)|~quotient(X2,b,X1))).
+%%
+%cnf(i_0_181, plain, (quotient(divide(divide(X1,b),zero),zero,zero)|~quotient(X1,a,bQc))).
+%%%
+%cnf(i_0_174, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,zero,bQc)|~quotient(X2,b,X1))).
+%
+%cnf(i_0_261, plain, (less_equal(divide(divide(X1,b),zero),zero)|~quotient(X1,zero,bQc))).
+%
+%cnf(i_0_264, plain, (divide(divide(X1,b),zero)=zero|~quotient(X1,zero,bQc))).
+%
+%cnf(i_0_165, plain, (less_equal(divide(X1,X2),aQc)|~quotient(X3,c,X2)|~quotient(X4,c,X1)|~quotient(X4,X3,a))).
+%
+%cnf(i_0_274, plain, (quotient(divide(X1,b),zero,zero)|~quotient(X1,zero,bQc))).
+%
+%cnf(i_0_294, plain, (divide(X1,b)=zero|~quotient(X1,zero,bQc))).
+%
+%cnf(i_0_306, plain, (quotient(X1,b,zero)|~quotient(X1,zero,bQc))).
+%
+%cnf(i_0_320, plain, (identity=b|~quotient(identity,zero,bQc))).
+%%%%%%%
+%cnf(i_0_166, plain, (less_equal(divide(X1,X2),zero)|~quotient(X3,b,X2)|~quotient(X4,b,X1)|~quotient(X4,X3,a))).
+%%%
+%cnf(i_0_321, plain, (b=X1|~quotient(b,X1,zero)|~quotient(X1,zero,bQc))).
+%%
+%cnf(i_0_324, plain, (X1=zero|~quotient(X2,zero,bQc)|~quotient(X2,b,X1))).
+%%
+%cnf(i_0_263, plain, (quotient(divide(divide(X1,b),zero),zero,zero)|~quotient(X1,zero,bQc))).
+%%%%
+%cnf(i_0_167, plain, (less_equal(divide(X1,X2),zero)|~quotient(X6,X5,divide(X3,X4))|~quotient(X5,X3,X2)|~quotient(X6,X3,X1))).
+%
+%cnf(i_0_205, plain, (X1=zero|~quotient(divide(X2,b),zero,X1)|~quotient(X2,a,bQc))).
+%%%%%%
+%cnf(i_0_223, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,aQc,aQc)|~quotient(X2,a,X1))).
+%
+%cnf(i_0_225, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,zero,aQc)|~quotient(X2,a,X1))).
+%
+%cnf(i_0_378, plain, (less_equal(divide(divide(X1,a),zero),zero)|~quotient(X1,zero,aQc))).
+%
+%cnf(i_0_380, plain, (divide(divide(X1,a),zero)=zero|~quotient(X1,zero,aQc))).
+%
+%cnf(i_0_168, plain, (less_equal(divide(X1,X2),zero)|~quotient(X5,X4,zero)|~quotient(X4,X3,X2)|~quotient(X5,X3,X1))).
+%
+%cnf(i_0_387, plain, (quotient(divide(X1,a),zero,zero)|~quotient(X1,zero,aQc))).
+%
+%cnf(i_0_411, plain, (divide(X1,a)=zero|~quotient(X1,zero,aQc))).
+%
+%cnf(i_0_422, plain, (quotient(X1,a,zero)|~quotient(X1,zero,aQc))).
+%
+%cnf(i_0_435, plain, (b=a|~quotient(b,zero,aQc))).
+%
+%cnf(i_0_436, plain, (identity=a|~quotient(identity,zero,aQc))).
+%%%%%%
+%cnf(i_0_169, plain, (less_equal(divide(X1,X2),zero)|~quotient(X4,identity,X2)|~quotient(X5,identity,X1)|~quotient(X5,X4,X3))).
+%%%%%%
+%cnf(i_0_437, plain, (a=X1|~quotient(a,X1,zero)|~quotient(X1,zero,aQc))).
+%%%
+%cnf(i_0_440, plain, (X1=zero|~quotient(X2,zero,aQc)|~quotient(X2,a,X1))).
+%%
+%cnf(i_0_170, plain, (less_equal(divide(X1,X2),divide(X3,X4))|~quotient(X5,X4,X2)|~quotient(X6,X4,X1)|~quotient(X6,X5,X3))).
+%%%
+%cnf(i_0_379, plain, (quotient(divide(divide(X1,a),zero),zero,zero)|~quotient(X1,zero,aQc))).
+%%%
+%cnf(i_0_236, plain, (less_equal(divide(X1,bQc),bQc)|~quotient(X2,b,b)|~quotient(X2,c,X1))).
+%
+%cnf(i_0_488, plain, (less_equal(divide(aQc,bQc),bQc)|~quotient(a,b,b))).
+%
+%cnf(i_0_492, plain, (quotient(divide(aQc,bQc),bQc,zero)|~quotient(a,b,b))).
+%
+%cnf(i_0_491, plain, (less_equal(divide(divide(X1,c),bQc),bQc)|~quotient(X1,b,b))).
+%%
+%cnf(i_0_173, plain, (less_equal(divide(X1,zero),zero)|~quotient(X3,divide(b,X2),bQc)|~quotient(X3,b,X1))).
+%
+%cnf(i_0_497, plain, (divide(divide(aQc,bQc),bQc)=zero|~quotient(a,b,b))).
+%%
+%cnf(i_0_503, plain, (quotient(divide(divide(X1,c),bQc),bQc,zero)|~quotient(X1,b,b))).
+%%
+%cnf(i_0_237, plain, (less_equal(divide(X1,aQc),bQc)|~quotient(X2,a,b)|~quotient(X2,c,X1))).
+%
+%cnf(i_0_538, plain, (less_equal(divide(aQc,aQc),bQc)|~quotient(a,a,b))).
+%
+%cnf(i_0_542, plain, (quotient(divide(aQc,aQc),bQc,zero)|~quotient(a,a,b))).
+%
+%cnf(i_0_541, plain, (less_equal(divide(divide(X1,c),aQc),bQc)|~quotient(X1,a,b))).
+%%
+%cnf(i_0_547, plain, (divide(divide(aQc,aQc),bQc)=zero|~quotient(a,a,b))).
+%
+%cnf(i_0_175, plain, (less_equal(divide(X1,divide(X2,b)),zero)|~quotient(X3,b,X1)|~quotient(X3,X2,bQc))).
+%%
+%cnf(i_0_553, plain, (quotient(divide(divide(X1,c),aQc),bQc,zero)|~quotient(X1,a,b))).
+%%
+%cnf(i_0_239, plain, (less_equal(divide(X1,zero),bQc)|~quotient(X2,zero,b)|~quotient(X2,c,X1))).
+%
+%cnf(i_0_590, plain, (less_equal(divide(aQc,zero),bQc)|~quotient(a,zero,b))).
+%
+%cnf(i_0_594, plain, (quotient(divide(aQc,zero),bQc,zero)|~quotient(a,zero,b))).
+%
+%cnf(i_0_593, plain, (less_equal(divide(divide(X1,c),zero),bQc)|~quotient(X1,zero,b))).
+%%
+%cnf(i_0_599, plain, (divide(divide(aQc,zero),bQc)=zero|~quotient(a,zero,b))).
+%%%
+%cnf(i_0_605, plain, (quotient(divide(divide(X1,c),zero),bQc,zero)|~quotient(X1,zero,b))).
+%%
+%cnf(i_0_245, plain, (divide(divide(divide(X1,b),zero),zero)=zero|~quotient(X1,a,bQc))).
+%%%
+%cnf(i_0_289, plain, (less_equal(divide(X1,bQc),aQc)|~quotient(X2,b,a)|~quotient(X2,c,X1))).
+%
+%cnf(i_0_651, plain, (less_equal(divide(bQc,bQc),aQc)|~quotient(b,b,a))).
+%
+%cnf(i_0_656, plain, (quotient(divide(bQc,bQc),aQc,zero)|~quotient(b,b,a))).
+%
+%cnf(i_0_655, plain, (less_equal(divide(divide(X1,c),bQc),aQc)|~quotient(X1,b,a))).
+%%%
+%cnf(i_0_661, plain, (divide(divide(bQc,bQc),aQc)=zero|~quotient(b,b,a))).
+%%
+%cnf(i_0_667, plain, (quotient(divide(divide(X1,c),bQc),aQc,zero)|~quotient(X1,b,a))).
+%%
+%cnf(i_0_290, plain, (less_equal(divide(X1,aQc),aQc)|~quotient(X2,a,a)|~quotient(X2,c,X1))).
+%
+%cnf(i_0_696, plain, (less_equal(divide(bQc,aQc),aQc)|~quotient(b,a,a))).
+%
+%cnf(i_0_701, plain, (quotient(divide(bQc,aQc),aQc,zero)|~quotient(b,a,a))).
+%
+%cnf(i_0_700, plain, (less_equal(divide(divide(X1,c),aQc),aQc)|~quotient(X1,a,a))).
+%%
+%cnf(i_0_706, plain, (divide(divide(bQc,aQc),aQc)=zero|~quotient(b,a,a))).
+%
+%cnf(i_0_207, plain, (less_equal(divide(X1,X2),zero)|~quotient(X5,X4,divide(X3,b))|~quotient(X3,a,bQc)|~quotient(X4,zero,X2)|~quotient(X5,zero,X1))).
+%%
+%cnf(i_0_712, plain, (quotient(divide(divide(X1,c),aQc),aQc,zero)|~quotient(X1,a,a))).
+%%
+%cnf(i_0_292, plain, (less_equal(divide(X1,zero),aQc)|~quotient(X2,zero,a)|~quotient(X2,c,X1))).
+%
+%cnf(i_0_748, plain, (less_equal(divide(bQc,zero),aQc)|~quotient(b,zero,a))).
+%
+%cnf(i_0_753, plain, (quotient(divide(bQc,zero),aQc,zero)|~quotient(b,zero,a))).
+%
+%cnf(i_0_752, plain, (less_equal(divide(divide(X1,c),zero),aQc)|~quotient(X1,zero,a))).
+%%
+%cnf(i_0_758, plain, (divide(divide(bQc,zero),aQc)=zero|~quotient(b,zero,a))).
+%%
+%cnf(i_0_224, plain, (less_equal(divide(X1,zero),zero)|~quotient(X3,divide(a,X2),aQc)|~quotient(X3,a,X1))).
+%
+%cnf(i_0_764, plain, (quotient(divide(divide(X1,c),zero),aQc,zero)|~quotient(X1,zero,a))).
+%%
+%cnf(i_0_297, plain, (X1=zero|~quotient(divide(X2,b),zero,X1)|~quotient(X2,zero,bQc))).
+%%%%%%
+%cnf(i_0_330, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,bQc,a)|~quotient(X2,b,X1))).
+%
+%cnf(i_0_331, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,a,a)|~quotient(X2,b,X1))).
+%
+%cnf(i_0_226, plain, (less_equal(divide(X1,divide(X2,a)),zero)|~quotient(X3,a,X1)|~quotient(X3,X2,aQc))).
+%
+%cnf(i_0_810, plain, (less_equal(divide(divide(X1,b),zero),zero)|~quotient(X1,a,a))).
+%
+%cnf(i_0_819, plain, (divide(divide(X1,b),zero)=zero|~quotient(X1,a,a))).
+%
+%cnf(i_0_831, plain, (quotient(divide(X1,b),zero,zero)|~quotient(X1,a,a))).
+%
+%cnf(i_0_851, plain, (divide(X1,b)=zero|~quotient(X1,a,a))).
+%
+%cnf(i_0_868, plain, (quotient(X1,b,zero)|~quotient(X1,a,a))).
+%
+%cnf(i_0_892, plain, (identity=b|~quotient(identity,a,a))).
+%%%%%
+%cnf(i_0_233, plain, (less_equal(divide(X1,X2),zero)|~quotient(X3,a,bQc)|~quotient(X4,b,X2)|~quotient(X5,b,X1)|~quotient(X5,X4,X3))).
+%%%%%%
+%cnf(i_0_893, plain, (b=X1|~quotient(b,X1,zero)|~quotient(X1,a,a))).
+%%
+%cnf(i_0_896, plain, (X1=zero|~quotient(X2,a,a)|~quotient(X2,b,X1))).
+%%%
+%cnf(i_0_234, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,a,bQc)|~quotient(X3,b,X1)|~quotient(X3,X2,bQc))).
+%
+%cnf(i_0_818, plain, (quotient(divide(divide(X1,b),zero),zero,zero)|~quotient(X1,a,a))).
+%%%
+%cnf(i_0_333, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,zero,a)|~quotient(X2,b,X1))).
+%
+%cnf(i_0_934, plain, (less_equal(divide(divide(X1,b),zero),zero)|~quotient(X1,zero,a))).
+%
+%cnf(i_0_939, plain, (divide(divide(X1,b),zero)=zero|~quotient(X1,zero,a))).
+%
+%cnf(i_0_953, plain, (quotient(divide(X1,b),zero,zero)|~quotient(X1,zero,a))).
+%
+%cnf(i_0_976, plain, (divide(X1,b)=zero|~quotient(X1,zero,a))).
+%
+%cnf(i_0_994, plain, (quotient(X1,b,zero)|~quotient(X1,zero,a))).
+%
+%cnf(i_0_1022, plain, (identity=b|~quotient(identity,zero,a))).
+%
+%cnf(i_0_238, plain, (less_equal(divide(X1,zero),bQc)|~quotient(X3,divide(c,X2),b)|~quotient(X3,c,X1))).
+%%%%%%%%%%
+%cnf(i_0_1023, plain, (b=X1|~quotient(b,X1,zero)|~quotient(X1,zero,a))).
+%
+%cnf(i_0_240, plain, (less_equal(divide(X1,divide(X2,c)),bQc)|~quotient(X3,c,X1)|~quotient(X3,X2,b))).
+%%
+%cnf(i_0_1026, plain, (X1=zero|~quotient(X2,zero,a)|~quotient(X2,b,X1))).
+%%%
+%cnf(i_0_1047, plain, (less_equal(divide(aQc,divide(X1,c)),bQc)|~quotient(a,X1,b))).
+%%%%
+%cnf(i_0_1057, plain, (less_equal(divide(aQc,zero),bQc)|~quotient(a,divide(c,X1),b))).
+%%
+%cnf(i_0_246, plain, (X1=zero|~quotient(divide(divide(X2,b),zero),zero,X1)|~quotient(X2,a,bQc))).
+%%%%%%%
+%cnf(i_0_938, plain, (quotient(divide(divide(X1,b),zero),zero,zero)|~quotient(X1,zero,a))).
+%%%
+%cnf(i_0_1052, plain, (quotient(divide(aQc,divide(X1,c)),bQc,zero)|~quotient(a,X1,b))).
+%
+%cnf(i_0_248, plain, (less_equal(divide(X1,X2),zero)|~quotient(X5,X4,divide(divide(X3,b),zero))|~quotient(X3,a,bQc)|~quotient(X4,zero,X2)|~quotient(X5,zero,X1))).
+%%%%
+%cnf(i_0_1111, plain, (quotient(divide(aQc,zero),bQc,zero)|~quotient(a,divide(c,X1),b))).
+%%
+%cnf(i_0_341, plain, (divide(divide(divide(X1,b),zero),zero)=zero|~quotient(X1,zero,bQc))).
+%%
+%cnf(i_0_367, plain, (less_equal(divide(X1,X2),zero)|~quotient(X4,X3,X2)|~quotient(X3,X3,X1))).
+%
+%cnf(i_0_1154, plain, (less_equal(divide(X1,zero),zero)|~quotient(b,b,X1))).
+%
+%cnf(i_0_1155, plain, (less_equal(divide(X1,zero),zero)|~quotient(a,a,X1))).
+%%
+%cnf(i_0_1156, plain, (less_equal(divide(X1,bQc),zero)|~quotient(c,c,X1))).
+%
+%cnf(i_0_1157, plain, (less_equal(divide(X1,aQc),zero)|~quotient(c,c,X1))).
+%%
+%cnf(i_0_1182, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,X2,X1))).
+%
+%cnf(i_0_1242, plain, (less_equal(divide(divide(X1,X1),zero),zero))).
+%
+%cnf(i_0_1244, plain, (divide(divide(X1,X1),zero)=zero)).
+%
+%cnf(i_0_1260, plain, (quotient(divide(X1,X1),zero,zero))).
+%
+%cnf(i_0_1293, plain, (divide(X1,X1)=zero)).
+%
+%cnf(i_0_1358, plain, (quotient(X1,X1,zero))).
+%%%%%
+%cnf(i_0_1388, plain, (X1=zero|~quotient(X2,X2,X1))).
+%%%
+%cnf(i_0_1218, plain, (divide(X1,bQc)=zero|~quotient(c,c,X1))).
+%
+%cnf(i_0_1408, plain, (quotient(X1,bQc,zero)|~quotient(c,c,X1))).
+%%%
+%cnf(i_0_1227, plain, (divide(X1,aQc)=zero|~quotient(c,c,X1))).
+%
+%cnf(i_0_291, plain, (less_equal(divide(X1,zero),aQc)|~quotient(X3,divide(c,X2),a)|~quotient(X3,c,X1))).
+%
+%cnf(i_0_1431, plain, (quotient(X1,aQc,zero)|~quotient(c,c,X1))).
+%%%%
+%cnf(i_0_1329, plain, (less_equal(divide(aQc,zero),bQc)|~quotient(a,c,b))).
+%%
+%cnf(i_0_1217, plain, (quotient(divide(X1,bQc),zero,zero)|~quotient(c,c,X1))).
+%%%
+%cnf(i_0_1226, plain, (quotient(divide(X1,aQc),zero,zero)|~quotient(c,c,X1))).
+%
+%cnf(i_0_293, plain, (less_equal(divide(X1,divide(X2,c)),aQc)|~quotient(X3,c,X1)|~quotient(X3,X2,a))).
+%%%%
+%cnf(i_0_1330, plain, (quotient(divide(aQc,zero),bQc,zero)|~quotient(a,c,b))).
+%%%%
+%cnf(i_0_1190, plain, (less_equal(divide(X1,divide(X2,X3)),zero)|~quotient(X3,X3,X1))).
+%%%
+%cnf(i_0_299, plain, (less_equal(divide(X1,X2),zero)|~quotient(X5,X4,divide(X3,b))|~quotient(X3,zero,bQc)|~quotient(X4,zero,X2)|~quotient(X5,zero,X1))).
+%%%%%%
+%cnf(i_0_1456, plain, (divide(divide(X1,bQc),zero)=zero|~quotient(c,c,X1))).
+%%
+%cnf(i_0_1472, plain, (divide(divide(X1,aQc),zero)=zero|~quotient(c,c,X1))).
+%%
+%cnf(i_0_1486, plain, (less_equal(divide(bQc,divide(X1,c)),aQc)|~quotient(b,X1,a))).
+%
+%cnf(i_0_326, plain, (less_equal(divide(X1,X2),zero)|~quotient(X3,zero,bQc)|~quotient(X4,b,X2)|~quotient(X5,b,X1)|~quotient(X5,X4,X3))).
+%%%
+%cnf(i_0_1555, plain, (less_equal(divide(bQc,zero),aQc)|~quotient(b,c,a))).
+%
+%cnf(i_0_1556, plain, (quotient(divide(bQc,zero),aQc,zero)|~quotient(b,c,a))).
+%
+%cnf(i_0_1494, plain, (divide(divide(aQc,zero),bQc)=zero|~quotient(a,c,b))).
+%%
+%cnf(i_0_1553, plain, (less_equal(divide(bQc,zero),aQc)|~quotient(b,divide(c,X1),a))).
+%%%
+%cnf(i_0_1561, plain, (divide(divide(bQc,zero),aQc)=zero|~quotient(b,c,a))).
+%
+%cnf(i_0_327, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,zero,bQc)|~quotient(X3,b,X1)|~quotient(X3,X2,bQc))).
+%%
+%cnf(i_0_1548, plain, (quotient(divide(bQc,divide(X1,c)),aQc,zero)|~quotient(b,X1,a))).
+%%%%
+%cnf(i_0_1610, plain, (quotient(divide(bQc,zero),aQc,zero)|~quotient(b,divide(c,X1),a))).
+%%%%%
+%cnf(i_0_332, plain, (less_equal(divide(X1,zero),zero)|~quotient(X3,divide(b,X2),a)|~quotient(X3,b,X1))).
+%
+%cnf(i_0_399, plain, (less_equal(divide(X1,X2),zero)|~quotient(b,X3,X2)|~quotient(bQc,X3,X1))).
+%
+%cnf(i_0_1637, plain, (less_equal(divide(X1,zero),zero)|~quotient(bQc,identity,X1))).
+%
+%cnf(i_0_1639, plain, (less_equal(divide(X1,zero),zero)|~quotient(bQc,b,X1))).
+%
+%cnf(i_0_1640, plain, (less_equal(divide(X1,bQc),zero)|~quotient(bQc,c,X1))).
+%
+%cnf(i_0_1642, plain, (divide(X1,zero)=zero|~quotient(bQc,identity,X1))).
+%
+%cnf(i_0_1723, plain, (quotient(X1,zero,zero)|~quotient(bQc,identity,X1))).
+%%%
+%cnf(i_0_1658, plain, (divide(X1,zero)=zero|~quotient(bQc,b,X1))).
+%
+%cnf(i_0_1774, plain, (quotient(X1,zero,zero)|~quotient(bQc,b,X1))).
+%
+%cnf(i_0_334, plain, (less_equal(divide(X1,divide(X2,b)),zero)|~quotient(X3,b,X1)|~quotient(X3,X2,a))).
+%%%
+%cnf(i_0_1674, plain, (divide(X1,bQc)=zero|~quotient(bQc,c,X1))).
+%
+%cnf(i_0_1816, plain, (quotient(X1,bQc,zero)|~quotient(bQc,c,X1))).
+%%%
+%cnf(i_0_1641, plain, (quotient(divide(X1,zero),zero,zero)|~quotient(bQc,identity,X1))).
+%%%
+%cnf(i_0_1657, plain, (quotient(divide(X1,zero),zero,zero)|~quotient(bQc,b,X1))).
+%
+%cnf(i_0_335, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,a,bQc)|~quotient(X3,b,X1)|~quotient(X3,X2,a))).
+%%%
+%cnf(i_0_1673, plain, (quotient(divide(X1,bQc),zero,zero)|~quotient(bQc,c,X1))).
+%%%%%%
+%cnf(i_0_1638, plain, (less_equal(divide(X1,divide(b,X2)),zero)|~quotient(bQc,X2,X1))).
+%%
+%cnf(i_0_336, plain, (less_equal(divide(X1,zero),zero)|~quotient(X2,zero,bQc)|~quotient(X3,b,X1)|~quotient(X3,X2,a))).
+%%%%%%%%%
+%cnf(i_0_1831, plain, (divide(divide(X1,zero),zero)=zero|~quotient(bQc,identity,X1))).
+%%
+%cnf(i_0_342, plain, (X1=zero|~quotient(divide(divide(X2,b),zero),zero,X1)|~quotient(X2,zero,bQc))).
+%
+%cnf(i_0_1855, plain, (divide(divide(X1,zero),zero)=zero|~quotient(bQc,b,X1))).
+%%
+%cnf(i_0_1879, plain, (divide(divide(X1,bQc),zero)=zero|~quotient(bQc,c,X1))).
+%%
+%cnf(i_0_1896, plain, (divide(X1,divide(b,X2))=zero|~quotient(bQc,X2,X1))).
+%%%%
+%cnf(i_0_2025, plain, (quotient(X1,divide(b,X2),zero)|~quotient(bQc,X2,X1))).
+%%
+%cnf(i_0_344, plain, (less_equal(divide(X1,X2),zero)|~quotient(X5,X4,divide(divide(X3,b),zero))|~quotient(X3,zero,bQc)|~quotient(X4,zero,X2)|~quotient(X5,zero,X1))).
+%%%
+%cnf(i_0_2053, plain, (divide(b,X1)=identity|~quotient(bQc,X1,identity))).
+%%
+%cnf(i_0_2172, plain, (less_equal(identity,b)|~quotient(bQc,X1,identity))).
+%
+%cnf(i_0_2174, plain, (identity=b|~quotient(bQc,X1,identity))).
+%%%
+%cnf(i_0_2180, plain, (identity=bQc|~quotient(bQc,c,identity))).
+%
+%cnf(i_0_2171, plain, (quotient(b,X1,identity)|~quotient(bQc,X1,identity))).
+%%
+%cnf(i_0_2173, plain, (quotient(identity,b,zero)|~quotient(bQc,X1,identity))).
+%
+%cnf(i_0_2065, plain, (divide(b,X1)=b|~quotient(bQc,X1,b))).
+%%
+%cnf(i_0_2261, plain, (less_equal(b,b)|~quotient(bQc,X1,b))).
+%%
+%cnf(i_0_2267, plain, (bQc=b|~quotient(bQc,c,b))).
+%
+%cnf(i_0_2260, plain, (quotient(b,X1,b)|~quotient(bQc,X1,b))).
+%
+%cnf(i_0_2176, plain, (divide(identity,b)=zero|~quotient(bQc,X1,identity))).
+%%%%%%%%%%%%%%%%
+%cnf(i_0_2098, plain, (less_equal(identity,zero)|~quotient(c,c,b)|~quotient(bQc,bQc,identity))).
+%%
+%cnf(i_0_2101, plain, (less_equal(identity,zero)|~quotient(bQc,c,b)|~quotient(bQc,bQc,identity))).
+%%
+%cnf(i_0_2105, plain, (less_equal(identity,zero)|~quotient(c,c,b)|~quotient(bQc,aQc,identity))).
+%
+%cnf(i_0_2107, plain, (identity=zero|~quotient(c,c,b)|~quotient(bQc,aQc,identity))).
+%%%%%%
+%cnf(i_0_2159, plain, (identity=zero|~quotient(b,zero,aQc)|~quotient(bQc,a,identity))).
+%
+%cnf(i_0_2164, plain, (less_equal(identity,zero)|~quotient(bQc,identity,b)|~quotient(bQc,zero,identity))).
+%
+%cnf(i_0_2165, plain, (less_equal(identity,zero)|~quotient(bQc,b,b)|~quotient(bQc,zero,identity))).
+%
+%cnf(i_0_2166, plain, (identity=zero|~quotient(bQc,identity,b)|~quotient(bQc,zero,identity))).
+%
+%cnf(i_0_2168, plain, (identity=zero|~quotient(bQc,b,b)|~quotient(bQc,zero,identity))).
+%
+%cnf(i_0_2177, plain, (X1=zero|~quotient(identity,b,X1)|~quotient(bQc,X2,identity))).
+%%
+%cnf(i_0_2187, plain, (less_equal(b,zero)|~quotient(c,c,b)|~quotient(bQc,bQc,b))).
+%%%
+%cnf(i_0_2190, plain, (less_equal(b,zero)|~quotient(bQc,c,b)|~quotient(bQc,bQc,b))).
+%%
+%cnf(i_0_2194, plain, (less_equal(b,zero)|~quotient(c,c,b)|~quotient(bQc,aQc,b))).
+%%%%%%
+%cnf(i_0_2248, plain, (b=zero|~quotient(b,zero,aQc)|~quotient(bQc,a,b))).
+%
+%cnf(i_0_2253, plain, (less_equal(b,zero)|~quotient(bQc,identity,b)|~quotient(bQc,zero,b))).
+%%
+%cnf(i_0_2254, plain, (less_equal(b,zero)|~quotient(bQc,b,b)|~quotient(bQc,zero,b))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_1895, plain, (quotient(divide(X1,divide(b,X2)),zero,zero)|~quotient(bQc,X2,X1))).
+%%%%%%
+%cnf(i_0_2066, plain, (quotient(X1,zero,zero)|~quotient(c,c,b)|~quotient(bQc,bQc,X1))).
+%
+%cnf(i_0_2067, plain, (quotient(X1,zero,zero)|~quotient(bQc,c,b)|~quotient(bQc,bQc,X1))).
+%
+%cnf(i_0_2068, plain, (quotient(X1,zero,zero)|~quotient(c,c,b)|~quotient(bQc,aQc,X1))).
+%
+%cnf(i_0_2356, plain, (quotient(divide(bQc,aQc),zero,zero)|~quotient(c,c,b))).
+%%
+%cnf(i_0_2357, plain, (divide(bQc,aQc)=zero|~quotient(c,c,b))).
+%
+%cnf(i_0_2368, plain, (quotient(bQc,aQc,zero)|~quotient(c,c,b))).
+%%%%
+%cnf(i_0_2359, plain, (divide(divide(bQc,aQc),zero)=zero|~quotient(c,c,b))).
+%%%%%%
+%cnf(i_0_2386, plain, (X1=zero|~quotient(c,c,b)|~quotient(bQc,aQc,X1))).
+%%%%%%
+%cnf(i_0_2073, plain, (quotient(X1,zero,zero)|~quotient(b,zero,aQc)|~quotient(bQc,a,X1))).
+%
+%cnf(i_0_2410, plain, (quotient(divide(bQc,a),zero,zero)|~quotient(b,zero,aQc))).
+%
+%cnf(i_0_2412, plain, (divide(bQc,a)=zero|~quotient(b,zero,aQc))).
+%
+%cnf(i_0_2423, plain, (quotient(bQc,a,zero)|~quotient(b,zero,aQc))).
+%%%%%
+%cnf(i_0_2414, plain, (divide(divide(bQc,a),zero)=zero|~quotient(b,zero,aQc))).
+%%%%
+%cnf(i_0_2436, plain, (bQc=a|~quotient(a,bQc,zero)|~quotient(b,zero,aQc))).
+%
+%cnf(i_0_2439, plain, (X1=zero|~quotient(b,zero,aQc)|~quotient(bQc,a,X1))).
+%%%
+%cnf(i_0_2076, plain, (quotient(X1,zero,zero)|~quotient(bQc,identity,b)|~quotient(bQc,zero,X1))).
+%
+%cnf(i_0_2077, plain, (quotient(X1,zero,zero)|~quotient(bQc,b,b)|~quotient(bQc,zero,X1))).
+%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_2270, plain, (quotient(X1,b,zero)|~quotient(bQc,X2,b)|~quotient(bQc,X2,X1))).
+%%%%%%%%
+%cnf(i_0_400, plain, (less_equal(divide(X1,X2),zero)|~quotient(a,X3,X2)|~quotient(aQc,X3,X1))).
+%
+%cnf(i_0_2474, plain, (less_equal(divide(X1,zero),zero)|~quotient(aQc,identity,X1))).
+%
+%cnf(i_0_2476, plain, (less_equal(divide(X1,zero),zero)|~quotient(aQc,a,X1))).
+%
+%cnf(i_0_2477, plain, (less_equal(divide(X1,aQc),zero)|~quotient(aQc,c,X1))).
+%
+%cnf(i_0_2478, plain, (less_equal(divide(X1,zero),zero)|~quotient(aQc,b,X1))).
+%
+%cnf(i_0_2480, plain, (divide(X1,zero)=zero|~quotient(aQc,identity,X1))).
+%
+%cnf(i_0_2615, plain, (quotient(X1,zero,zero)|~quotient(aQc,identity,X1))).
+%%%
+%cnf(i_0_2505, plain, (divide(X1,zero)=zero|~quotient(aQc,a,X1))).
+%
+%cnf(i_0_2681, plain, (quotient(X1,zero,zero)|~quotient(aQc,a,X1))).
+%
+%cnf(i_0_401, plain, (less_equal(divide(X1,X2),zero)|~quotient(b,X3,X2)|~quotient(a,X3,X1))).
+%%%
+%cnf(i_0_2530, plain, (divide(X1,aQc)=zero|~quotient(aQc,c,X1))).
+%
+%cnf(i_0_2735, plain, (quotient(X1,aQc,zero)|~quotient(aQc,c,X1))).
+%%%
+%cnf(i_0_2544, plain, (divide(X1,zero)=zero|~quotient(aQc,b,X1))).
+%
+%cnf(i_0_2795, plain, (quotient(X1,zero,zero)|~quotient(aQc,b,X1))).
+%
+%cnf(i_0_2812, plain, (quotient(divide(aQc,b),zero,zero))).
+%
+%cnf(i_0_2817, plain, (divide(aQc,b)=zero)).
+%
+%cnf(i_0_402, plain, (less_equal(divide(X1,X2),zero)|~quotient(divide(divide(X3,b),zero),X4,X1)|~quotient(X3,a,bQc)|~quotient(zero,X4,X2))).
+%
+%cnf(i_0_2831, plain, (quotient(aQc,b,zero))).
+%%%%
+%cnf(i_0_2903, plain, (aQc=b|~quotient(b,aQc,zero))).
+%
+%cnf(i_0_2906, plain, (X1=zero|~quotient(aQc,b,X1))).
+%%%
+%cnf(i_0_2707, plain, (less_equal(divide(X1,zero),zero)|~quotient(a,identity,X1))).
+%
+%cnf(i_0_2709, plain, (less_equal(divide(X1,zero),zero)|~quotient(a,b,X1))).
+%
+%cnf(i_0_403, plain, (less_equal(divide(X1,X2),zero)|~quotient(divide(divide(X3,b),zero),X4,X1)|~quotient(X3,zero,bQc)|~quotient(zero,X4,X2))).
+%
+%cnf(i_0_2710, plain, (less_equal(divide(X1,bQc),zero)|~quotient(a,c,X1))).
+%%
+%cnf(i_0_2923, plain, (divide(X1,zero)=zero|~quotient(a,identity,X1))).
+%
+%cnf(i_0_3079, plain, (quotient(X1,zero,zero)|~quotient(a,identity,X1))).
+%%%
+%cnf(i_0_2951, plain, (divide(X1,zero)=zero|~quotient(a,b,X1))).
+%
+%cnf(i_0_3149, plain, (quotient(X1,zero,zero)|~quotient(a,b,X1))).
+%%%
+%cnf(i_0_404, plain, (less_equal(divide(X1,X2),zero)|~quotient(divide(X3,b),X4,X1)|~quotient(X3,a,bQc)|~quotient(zero,X4,X2))).
+%
+%cnf(i_0_3017, plain, (divide(X1,bQc)=zero|~quotient(a,c,X1))).
+%
+%cnf(i_0_3222, plain, (quotient(X1,bQc,zero)|~quotient(a,c,X1))).
 
-# Proof found!
-# SZS status Unsatisfiable
-# SZS output start CNFRefutation
-cnf(quotient_property, axiom, (less_equal(X7,X8)|~quotient(X1,X2,X3)|~quotient(X2,X4,X5)|~quotient(X1,X4,X6)|~quotient(X6,X5,X7)|~quotient(X3,X4,X8)), file('TPTP/Axioms/HEN001-0.ax', quotient_property)).
-cnf(quotient_less_equal, axiom, (quotient(X1,X2,zero)|~less_equal(X1,X2)), file('TPTP/Axioms/HEN001-0.ax', quotient_less_equal)).
-cnf(closure, axiom, (quotient(X1,X2,divide(X1,X2))), file('TPTP/Axioms/HEN001-0.ax', closure)).
-cnf(zero_is_smallest, axiom, (less_equal(zero,X1)), file('TPTP/Axioms/HEN001-0.ax', zero_is_smallest)).
-cnf(aLEb, hypothesis, (less_equal(a,b)), file('Problems/HEN/HEN008-1.p', aLEb)).
-cnf(less_equal_and_equal, axiom, (X1=X2|~less_equal(X1,X2)|~less_equal(X2,X1)), file('TPTP/Axioms/HEN001-0.ax', less_equal_and_equal)).
-cnf(less_equal_quotient, axiom, (less_equal(X1,X2)|~quotient(X1,X2,zero)), file('TPTP/Axioms/HEN001-0.ax', less_equal_quotient)).
-cnf(bQc, hypothesis, (quotient(b,c,bQc)), file('Problems/HEN/HEN008-1.p', bQc)).
-cnf(well_defined, axiom, (X3=X4|~quotient(X1,X2,X3)|~quotient(X1,X2,X4)), file('TPTP/Axioms/HEN001-0.ax', well_defined)).
-cnf(aQc, hypothesis, (quotient(a,c,aQc)), file('Problems/HEN/HEN008-1.p', aQc)).
-cnf(prove_aQcLEbQc, negated_conjecture, (~less_equal(aQc,bQc)), file('Problems/HEN/HEN008-1.p', prove_aQcLEbQc)).
+% Proof found!
+% SZS status Unsatisfiable
+% SZS output start CNFRefutation
+cnf(quotient_property, axiom, (less_equal(X7,X8)|~quotient(X1,X2,X3)|~quotient(X2,X4,X5)|~quotient(X1,X4,X6)|~quotient(X6,X5,X7)|~quotient(X3,X4,X8)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', quotient_property)).
+cnf(quotient_less_equal, axiom, (quotient(X1,X2,zero)|~less_equal(X1,X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', quotient_less_equal)).
+cnf(closure, axiom, (quotient(X1,X2,divide(X1,X2))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', closure)).
+cnf(zero_is_smallest, axiom, (less_equal(zero,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', zero_is_smallest)).
+cnf(aLEb, hypothesis, (less_equal(a,b)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/HEN/HEN008-1.p', aLEb)).
+cnf(less_equal_and_equal, axiom, (X1=X2|~less_equal(X1,X2)|~less_equal(X2,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', less_equal_and_equal)).
+cnf(less_equal_quotient, axiom, (less_equal(X1,X2)|~quotient(X1,X2,zero)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', less_equal_quotient)).
+cnf(bQc, hypothesis, (quotient(b,c,bQc)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/HEN/HEN008-1.p', bQc)).
+cnf(well_defined, axiom, (X3=X4|~quotient(X1,X2,X3)|~quotient(X1,X2,X4)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/HEN001-0.ax', well_defined)).
+cnf(aQc, hypothesis, (quotient(a,c,aQc)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/HEN/HEN008-1.p', aQc)).
+cnf(prove_aQcLEbQc, negated_conjecture, (~less_equal(aQc,bQc)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/HEN/HEN008-1.p', prove_aQcLEbQc)).
 cnf(c_0_11, plain, (less_equal(X7,X8)|~quotient(X1,X2,X3)|~quotient(X2,X4,X5)|~quotient(X1,X4,X6)|~quotient(X6,X5,X7)|~quotient(X3,X4,X8)), inference(fof_simplification,[status(thm)],[quotient_property])).
 cnf(c_0_12, plain, (quotient(X1,X2,zero)|~less_equal(X1,X2)), inference(fof_simplification,[status(thm)],[quotient_less_equal])).
 cnf(c_0_13, plain, (less_equal(X7,X8)|~quotient(X1,X2,X3)|~quotient(X2,X4,X5)|~quotient(X1,X4,X6)|~quotient(X6,X5,X7)|~quotient(X3,X4,X8)), c_0_11).
@@ -297,22 +676,26 @@ cnf(c_0_19, hypothesis, (less_equal(a,b)), aLEb).
 cnf(c_0_20, plain, (X1=X2|~less_equal(X1,X2)|~less_equal(X2,X1)), inference(fof_simplification,[status(thm)],[less_equal_and_equal])).
 cnf(c_0_21, plain, (less_equal(X1,X2)|~quotient(X1,X2,zero)), inference(fof_simplification,[status(thm)],[less_equal_quotient])).
 cnf(c_0_22, plain, (less_equal(divide(X1,X2),zero)|~quotient(X3,X4,zero)|~quotient(X4,X5,X2)|~quotient(X3,X5,X1)), inference(spm,[status(thm)],[c_0_17, c_0_18])).
-cnf(c_0_23, hypothesis, (quotient(a,b,zero)), inference(spm,[status(thm)],[c_0_15, c_0_19])).
+cnf(c_0_23, plain, (quotient(a,b,zero)), inference(spm,[status(thm)],[c_0_15, c_0_19])).
 cnf(c_0_24, plain, (X1=X2|~less_equal(X1,X2)|~less_equal(X2,X1)), c_0_20).
 cnf(c_0_25, plain, (less_equal(X1,X2)|~quotient(X1,X2,zero)), c_0_21).
-cnf(c_0_26, hypothesis, (less_equal(divide(X1,X2),zero)|~quotient(b,X3,X2)|~quotient(a,X3,X1)), inference(spm,[status(thm)],[c_0_22, c_0_23])).
+cnf(c_0_26, plain, (less_equal(divide(X1,X2),zero)|~quotient(b,X3,X2)|~quotient(a,X3,X1)), inference(spm,[status(thm)],[c_0_22, c_0_23])).
 cnf(c_0_27, hypothesis, (quotient(b,c,bQc)), bQc).
-cnf(c_0_28, plain, (X3=X4|~quotient(X1,X2,X3)|~quotient(X1,X2,X4)), inference(fof_simplification,[status(thm)],[well_defined])).
-cnf(c_0_29, plain, (X1=X2|~quotient(X2,X1,zero)|~less_equal(X1,X2)), inference(spm,[status(thm)],[c_0_24, c_0_25])).
-cnf(c_0_30, hypothesis, (less_equal(divide(X1,bQc),zero)|~quotient(a,c,X1)), inference(spm,[status(thm)],[c_0_26, c_0_27])).
-cnf(c_0_31, plain, (X3=X4|~quotient(X1,X2,X3)|~quotient(X1,X2,X4)), c_0_28).
-cnf(c_0_32, hypothesis, (quotient(a,c,aQc)), aQc).
-cnf(c_0_33, negated_conjecture, (~less_equal(aQc,bQc)), inference(fof_simplification,[status(thm)],[prove_aQcLEbQc])).
-cnf(c_0_34, hypothesis, (divide(X1,bQc)=zero|~quotient(a,c,X1)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_29, c_0_30]), c_0_18])])).
-cnf(c_0_35, hypothesis, (X1=aQc|~quotient(a,c,X1)), inference(spm,[status(thm)],[c_0_31, c_0_32])).
-cnf(c_0_36, negated_conjecture, (~less_equal(aQc,bQc)), c_0_33).
-cnf(c_0_37, hypothesis, (quotient(X1,bQc,zero)|~quotient(a,c,X1)), inference(spm,[status(thm)],[c_0_14, c_0_34])).
-cnf(c_0_38, hypothesis, (divide(a,c)=aQc), inference(spm,[status(thm)],[c_0_35, c_0_14])).
-cnf(c_0_39, negated_conjecture, (~quotient(aQc,bQc,zero)), inference(spm,[status(thm)],[c_0_36, c_0_25])).
-cnf(c_0_40, hypothesis, ($false), inference(sr,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_37, c_0_14]), c_0_38]), c_0_39]), ['proof']).
-# SZS output end CNFRefutation
+cnf(c_0_28, plain, (X1=X2|~quotient(X2,X1,zero)|~less_equal(X1,X2)), inference(spm,[status(thm)],[c_0_24, c_0_25])).
+cnf(c_0_29, plain, (less_equal(divide(X1,bQc),zero)|~quotient(a,c,X1)), inference(spm,[status(thm)],[c_0_26, c_0_27])).
+cnf(c_0_30, plain, (divide(X1,bQc)=zero|~quotient(zero,divide(X1,bQc),zero)|~quotient(a,c,X1)), inference(spm,[status(thm)],[c_0_28, c_0_29])).
+cnf(c_0_31, plain, (divide(X1,bQc)=zero|$false|~quotient(a,c,X1)), inference(rw,[status(thm)],[c_0_30, c_0_18])).
+cnf(c_0_32, plain, (X3=X4|~quotient(X1,X2,X3)|~quotient(X1,X2,X4)), inference(fof_simplification,[status(thm)],[well_defined])).
+cnf(c_0_33, plain, (divide(X1,bQc)=zero|~quotient(a,c,X1)), inference(cn,[status(thm)],[c_0_31])).
+cnf(c_0_34, plain, (X3=X4|~quotient(X1,X2,X3)|~quotient(X1,X2,X4)), c_0_32).
+cnf(c_0_35, hypothesis, (quotient(a,c,aQc)), aQc).
+cnf(c_0_36, plain, (quotient(X1,bQc,zero)|~quotient(a,c,X1)), inference(spm,[status(thm)],[c_0_14, c_0_33])).
+cnf(c_0_37, plain, (X1=aQc|~quotient(a,c,X1)), inference(spm,[status(thm)],[c_0_34, c_0_35])).
+cnf(c_0_38, negated_conjecture, (~less_equal(aQc,bQc)), inference(fof_simplification,[status(thm)],[prove_aQcLEbQc])).
+cnf(c_0_39, plain, (quotient(divide(a,c),bQc,zero)), inference(spm,[status(thm)],[c_0_36, c_0_14])).
+cnf(c_0_40, plain, (divide(a,c)=aQc), inference(spm,[status(thm)],[c_0_37, c_0_14])).
+cnf(c_0_41, negated_conjecture, (~less_equal(aQc,bQc)), c_0_38).
+cnf(c_0_42, plain, (quotient(aQc,bQc,zero)), inference(rw,[status(thm)],[c_0_39, c_0_40])).
+cnf(c_0_43, negated_conjecture, (~quotient(aQc,bQc,zero)), inference(spm,[status(thm)],[c_0_41, c_0_25])).
+cnf(c_0_44, plain, ($false), inference(sr,[status(thm)],[c_0_42, c_0_43]), ['proof']).
+% SZS output end CNFRefutation

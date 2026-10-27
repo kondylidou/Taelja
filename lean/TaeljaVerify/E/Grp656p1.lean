@@ -43,15 +43,15 @@ theorem taelja_lemma7 : ∀ (x y : α), ld x x = rd y y := by
       _ = rd y y := ax1 x (rd y y)
 
 -- Goal 1
-theorem taelja_goal1 : ∀ (x y : α), mult x (rd y y) = x := by
+theorem taelja_goal1 : ∀ (x y : α), mult x (ld y y) = x := by
   intro x y
-  calc mult x (rd y y) = x := taelja_lemma6 x y
+  calc mult x (ld y y) = mult x (rd y y) := congrArg (fun t : α => mult x t) (taelja_lemma7 y y)
+      _ = x := taelja_lemma6 x y
 
 -- Goal 2
-theorem taelja_goal2 : ∀ (x y : α), mult (rd x x) y = y := by
+theorem taelja_goal2 : ∀ (x y : α), mult (ld x x) y = y := by
   intro x y
-  calc mult (rd x x) y = mult (ld x x) y := congrArg (fun t : α => mult t y) (Eq.symm (taelja_lemma7 x x))
-      _ = mult (rd y y) y := congrArg (fun t : α => mult t y) (taelja_lemma7 x y)
+  calc mult (ld x x) y = mult (rd y y) y := congrArg (fun t : α => mult t y) (taelja_lemma7 x y)
       _ = y := ax2 y y
 
 end EGrp656p1

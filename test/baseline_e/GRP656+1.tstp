@@ -1,57 +1,93 @@
-# Preprocessing class: FSSSSMSSSSSNFFN.
-# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
-# No SInE strategy applied
-# Search class: FUHPM-FFSF21-MFFFFFNN
-# Configuration: H----_047_B31_F1_PI_AE_R4_CS_SP_S2S
-# Initializing proof state
-# Scanning for AC axioms
-#
-#cnf(i_0_6, negated_conjecture, (mult(X1,esk2_1(X1))!=esk2_1(X1)|mult(esk1_1(X1),X1)!=esk1_1(X1))).
-#
-#cnf(i_0_2, plain, (ld(X1,mult(X1,X2))=X2)).
-#
-#cnf(i_0_1, plain, (mult(X1,ld(X1,X2))=X2)).
-#
-#cnf(i_0_3, plain, (mult(rd(X1,X2),X2)=X1)).
-#
-#cnf(i_0_4, plain, (rd(mult(X1,X2),X2)=X1)).
-#
-#cnf(i_0_5, plain, (mult(mult(X1,mult(X2,X3)),X1)=mult(mult(X1,X2),mult(X3,X1)))).
-#
-#cnf(i_0_7, plain, (ld(rd(X1,X2),X1)=X2)).
-#
-#cnf(i_0_8, plain, (rd(X2,ld(X1,X2))=X1)).
-#
-#cnf(i_0_11, plain, (rd(mult(mult(X1,X2),mult(X3,X1)),X1)=mult(X1,mult(X2,X3)))).
-#
-#cnf(i_0_22, plain, (rd(mult(mult(X1,X2),X3),X1)=mult(X1,mult(X2,rd(X3,X1))))).
-#
-#cnf(i_0_30, plain, (mult(X1,mult(X2,rd(X1,X1)))=mult(X1,X2))).
-#
-#cnf(i_0_37, plain, (mult(X2,rd(X1,X1))=X2)).
-#
-#cnf(i_0_44, plain, (rd(X1,rd(X2,X2))=X1)).
-##
-#cnf(i_0_47, plain, (ld(X1,X1)=rd(X2,X2))).
-#
-#cnf(i_0_58, plain, (mult(ld(X2,X2),X1)=X1)).
-#
-#cnf(i_0_59, plain, (ld(ld(X2,X2),X1)=X1)).
-#
-#cnf(i_0_60, plain, (mult(X1,ld(X3,X3))=X1)).
-#
-#cnf(i_0_61, plain, (rd(X1,ld(X3,X3))=X1)).
-###
-#cnf(i_0_74, plain, (mult(rd(X3,X3),X2)=X2)).
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% G-E--_302_C18_F1_URBAN_RG_S04BN with pid 23568 completed with status 0
+% Result found by G-E--_302_C18_F1_URBAN_RG_S04BN
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FUHPM-FFSF21-MFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% SubtermCWHack with pid 23569 completed with status 0
+% Result found by SubtermCWHack
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FUHPM-FFSF21-MFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% Initializing proof state
+% Scanning for AC axioms
+%
+%cnf(i_0_2, plain, (ld(X1,mult(X1,X2))=X2)).
+%
+%cnf(i_0_1, plain, (mult(X1,ld(X1,X2))=X2)).
+%
+%cnf(i_0_3, plain, (mult(rd(X1,X2),X2)=X1)).
+%
+%cnf(i_0_4, plain, (rd(mult(X1,X2),X2)=X1)).
+%
+%cnf(i_0_7, plain, (ld(rd(X1,X2),X1)=X2)).
+%
+%cnf(i_0_8, plain, (rd(X2,ld(X1,X2))=X1)).
+%
+%cnf(i_0_6, negated_conjecture, (mult(X1,esk2_1(X1))!=esk2_1(X1)|mult(esk1_1(X1),X1)!=esk1_1(X1))).
+%
+%cnf(i_0_5, plain, (mult(mult(X1,mult(X2,X3)),X1)=mult(mult(X1,X2),mult(X3,X1)))).
+%
+%cnf(i_0_14, plain, (ld(mult(X1,mult(X2,X3)),mult(mult(X1,X2),mult(X3,X1)))=X1)).
+%
+%cnf(i_0_15, plain, (rd(mult(mult(X1,X2),mult(X3,X1)),X1)=mult(X1,mult(X2,X3)))).
+%
+%cnf(i_0_13, plain, (mult(mult(mult(mult(X1,X2),X3),mult(X4,mult(X1,X2))),mult(mult(X1,X2),mult(X3,X4)))=mult(mult(mult(mult(X1,X2),mult(X3,X4)),X1),mult(X2,mult(mult(X1,X2),mult(X3,X4)))))).
+%
+%cnf(i_0_17, plain, (mult(mult(X1,rd(X2,X3)),mult(X3,X1))=mult(mult(X1,X2),X1))).
+%
+%cnf(i_0_18, plain, (mult(mult(X1,X2),mult(ld(X2,X3),X1))=mult(mult(X1,X3),X1))).
+%%
+%cnf(i_0_22, plain, (ld(mult(X1,mult(X2,rd(X3,X1))),mult(mult(X1,X2),X3))=X1)).
+%
+%cnf(i_0_27, plain, (ld(mult(X1,mult(ld(X1,X2),X3)),mult(X2,mult(X3,X1)))=X1)).
+%%%
+%cnf(i_0_35, plain, (rd(mult(mult(X1,X2),X3),X1)=mult(X1,mult(X2,rd(X3,X1))))).
+%
+%cnf(i_0_176, plain, (mult(X1,mult(X2,rd(X1,X1)))=mult(X1,X2))).
+%
+%cnf(i_0_194, plain, (mult(X2,rd(X1,X1))=X2)).
+%
+%cnf(i_0_16, plain, (mult(mult(X1,mult(X2,mult(X3,X4))),mult(X2,X1))=mult(mult(X1,mult(X2,X3)),mult(mult(X4,X2),X1)))).
+%
+%cnf(i_0_216, plain, (rd(X1,rd(X2,X2))=X1)).
+%
+%cnf(i_0_222, plain, (mult(rd(X3,X3),X1)=X1)).
+%
+%cnf(i_0_223, plain, (ld(X1,X1)=rd(X2,X2))).
+%%%%
+%cnf(i_0_300, plain, (rd(X2,X2)=rd(X1,X1))).
+%
+%cnf(i_0_309, plain, (ld(rd(X1,X1),X2)=X2)).
+%%%
+%cnf(i_0_19, plain, (mult(mult(rd(X1,mult(X2,X3)),X2),mult(X3,rd(X1,mult(X2,X3))))=mult(X1,rd(X1,mult(X2,X3))))).
+%%
+%cnf(i_0_327, plain, (mult(ld(X2,X2),X1)=X1)).
+%
+%cnf(i_0_328, plain, (ld(ld(X2,X2),X1)=X1)).
+%%
+%cnf(i_0_332, plain, (mult(X1,ld(X3,X3))=X1)).
 
-# Proof found!
-# SZS status Theorem
-# SZS output start CNFRefutation
-fof(f04, axiom, ![X1, X2]:(rd(mult(X2,X1),X1)=X2), file('Problems/GRP/GRP656+1.p', f04)).
-fof(f05, axiom, ![X3, X1, X2]:(mult(mult(X2,X1),mult(X3,X2))=mult(mult(X2,mult(X1,X3)),X2)), file('Problems/GRP/GRP656+1.p', f05)).
-fof(f03, axiom, ![X1, X2]:(mult(rd(X2,X1),X1)=X2), file('Problems/GRP/GRP656+1.p', f03)).
-fof(f02, axiom, ![X1, X2]:(ld(X2,mult(X2,X1))=X1), file('Problems/GRP/GRP656+1.p', f02)).
-fof(goals, conjecture, ?[X4]:(![X5]:((mult(X5,X4)=X5&mult(X4,X5)=X5))), file('Problems/GRP/GRP656+1.p', goals)).
+% Proof found!
+% SZS status Theorem
+% SZS output start CNFRefutation
+fof(f04, axiom, ![X1, X2]:(rd(mult(X2,X1),X1)=X2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP656+1.p', f04)).
+fof(f05, axiom, ![X3, X1, X2]:(mult(mult(X2,X1),mult(X3,X2))=mult(mult(X2,mult(X1,X3)),X2)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP656+1.p', f05)).
+fof(f03, axiom, ![X1, X2]:(mult(rd(X2,X1),X1)=X2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP656+1.p', f03)).
+fof(f02, axiom, ![X1, X2]:(ld(X2,mult(X2,X1))=X1), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP656+1.p', f02)).
+fof(goals, conjecture, ?[X4]:(![X5]:((mult(X5,X4)=X5&mult(X4,X5)=X5))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP656+1.p', goals)).
 fof(c_0_5, plain, ![X12, X13]:(rd(mult(X13,X12),X12)=X13), inference(variable_rename,[status(thm)],[f04])).
 fof(c_0_6, plain, ![X14, X15, X16]:(mult(mult(X16,X15),mult(X14,X16))=mult(mult(X16,mult(X15,X14)),X16)), inference(variable_rename,[status(thm)],[f05])).
 cnf(c_0_7, plain, (rd(mult(X1,X2),X2)=X1), inference(split_conjunct,[status(thm)],[c_0_5])).
@@ -63,12 +99,15 @@ fof(c_0_12, plain, ![X8, X9]:(ld(X9,mult(X9,X8))=X8), inference(variable_rename,
 cnf(c_0_13, plain, (rd(mult(mult(X1,X2),X3),X1)=mult(X1,mult(X2,rd(X3,X1)))), inference(spm,[status(thm)],[c_0_10, c_0_11])).
 cnf(c_0_14, plain, (ld(X1,mult(X1,X2))=X2), inference(split_conjunct,[status(thm)],[c_0_12])).
 cnf(c_0_15, plain, (mult(X1,mult(X2,rd(X1,X1)))=mult(X1,X2)), inference(spm,[status(thm)],[c_0_7, c_0_13])).
-cnf(c_0_16, plain, (mult(X1,rd(X2,X2))=X1), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_14, c_0_15]), c_0_14])).
+cnf(c_0_16, plain, (ld(X1,mult(X1,X2))=mult(X2,rd(X1,X1))), inference(spm,[status(thm)],[c_0_14, c_0_15])).
 fof(c_0_17, negated_conjecture, ~(?[X4]:(![X5]:((mult(X5,X4)=X5&mult(X4,X5)=X5)))), inference(assume_negation,[status(cth)],[goals])).
-cnf(c_0_18, plain, (ld(X1,X1)=rd(X2,X2)), inference(spm,[status(thm)],[c_0_14, c_0_16])).
+cnf(c_0_18, plain, (mult(X1,rd(X2,X2))=X1), inference(rw,[status(thm)],[c_0_16, c_0_14])).
 fof(c_0_19, negated_conjecture, ![X17]:((mult(esk1_1(X17),X17)!=esk1_1(X17)|mult(X17,esk2_1(X17))!=esk2_1(X17))), inference(fof_nnf,[status(thm)],[inference(skolemize,[status(esa)],[inference(variable_rename,[status(thm)],[inference(shift_quantors,[status(thm)],[inference(fof_nnf,[status(thm)],[c_0_17])])])])])).
-cnf(c_0_20, plain, (mult(ld(X1,X1),X2)=X2), inference(spm,[status(thm)],[c_0_11, c_0_18])).
+cnf(c_0_20, plain, (ld(X1,X1)=rd(X2,X2)), inference(spm,[status(thm)],[c_0_14, c_0_18])).
 cnf(c_0_21, negated_conjecture, (mult(esk1_1(X1),X1)!=esk1_1(X1)|mult(X1,esk2_1(X1))!=esk2_1(X1)), inference(split_conjunct,[status(thm)],[c_0_19])).
-cnf(c_0_22, plain, (mult(rd(X1,X1),X2)=X2), inference(spm,[status(thm)],[c_0_20, c_0_18])).
-cnf(c_0_23, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_21, c_0_22]), c_0_16])]), ['proof']).
-# SZS output end CNFRefutation
+cnf(c_0_22, plain, (mult(X1,ld(X2,X2))=X1), inference(spm,[status(thm)],[c_0_18, c_0_20])).
+cnf(c_0_23, negated_conjecture, (mult(ld(X1,X1),esk2_1(ld(X1,X1)))!=esk2_1(ld(X1,X1))), inference(spm,[status(thm)],[c_0_21, c_0_22])).
+cnf(c_0_24, plain, (mult(ld(X1,X1),X2)=X2), inference(spm,[status(thm)],[c_0_11, c_0_20])).
+cnf(c_0_25, negated_conjecture, ($false), inference(rw,[status(thm)],[c_0_23, c_0_24])).
+cnf(c_0_26, negated_conjecture, ($false), inference(cn,[status(thm)],[c_0_25]), ['proof']).
+% SZS output end CNFRefutation

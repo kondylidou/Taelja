@@ -1,37 +1,37 @@
 % SZS output start Proof
-fof(kb_SUMO_MILO_Domains_9679, axiom, ! [X1]: (s__Sea(X1) => s__BodyOfWater(X1)), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_Domains_9679)).
-fof(coastal_cities_near_water, axiom, ! [X2]: (s__City(X2) => (is_instance(X2, s__CoastalCitiesClass) => ? [X3]: (s__Sea(X3) & s__orientation(X2, X3, s__Near)))), file('Problems/CSR/CSR117+1.p', coastal_cities_near_water)).
-fof(kb_SUMO_MILO_Domains_9582, axiom, ! [X1]: (s__BodyOfWater(X1) => s__WaterArea(X1)), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_Domains_9582)).
-fof(kb_SUMO_MILO_6365, axiom, ! [X1]: (s__GeographicArea(X1) => s__Region(X1)), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6365)).
-fof(kb_SUMO_MILO_6345, axiom, ! [X1]: (s__GeopoliticalArea(X1) => s__GeographicArea(X1)), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6345)).
-fof(latlong_s__Moscow, axiom, latlong(s__Moscow, '55.75695', '37.614975', moscow, ru), file('Problems/CSR/CSR117+1.p', latlong_s__Moscow)).
-fof('55.75695_55', axiom, to_int('55.75695') = '55', file('Problems/CSR/CSR117+1.p', '55.75695_55')).
-fof(moscow_long_type, axiom, real('37.614975'), file('Problems/CSR/CSR117+1.p', moscow_long_type)).
-fof(moscow_lat_type, axiom, real('55.75695'), file('Problems/CSR/CSR117+1.p', moscow_lat_type)).
-fof(ru_type, axiom, s__SymbolicString(ru), file('Problems/CSR/CSR117+1.p', ru_type)).
-fof(moscow_type, axiom, s__SymbolicString(moscow), file('Problems/CSR/CSR117+1.p', moscow_type)).
-fof(flood_near_water, axiom, ! [X4, X5]: ((s__WaterArea(X4) & s__City(X5)) => (s__orientation(X5, X4, s__Near) => s__capability(s__Flooding__t, s__located__m, X5))), file('Problems/CSR/CSR117+1.p', flood_near_water)).
-fof(kb_SUMO_MILO_701, axiom, ! [X1]: (s__Region(X1) => s__Object(X1)), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_701)).
-fof(latlong_s__Copenhagen, axiom, latlong(s__Copenhagen, '55.67631', '12.569355', copenhagen, dk), file('Problems/CSR/CSR117+1.p', latlong_s__Copenhagen)).
-fof('55.67631_55', axiom, to_int('55.67631') = '55', file('Problems/CSR/CSR117+1.p', '55.67631_55')).
-fof(s__Copenhagen_not_s__Moscow, axiom, look_different(s__Copenhagen, s__Moscow), file('Problems/CSR/CSR117+1.p', s__Copenhagen_not_s__Moscow)).
-fof(copenhagen_long_type, axiom, real('12.569355'), file('Problems/CSR/CSR117+1.p', copenhagen_long_type)).
-fof(copenhagen_lat_type, axiom, real('55.67631'), file('Problems/CSR/CSR117+1.p', copenhagen_lat_type)).
-fof(dk_type, axiom, s__SymbolicString(dk), file('Problems/CSR/CSR117+1.p', dk_type)).
-fof(copenhagen_type, axiom, s__SymbolicString(copenhagen), file('Problems/CSR/CSR117+1.p', copenhagen_type)).
-fof(kb_SUMO_MILO_6437, axiom, ! [X1]: (s__City(X1) => s__GeopoliticalArea(X1)), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6437)).
-fof(copenhagen_coastal, axiom, is_instance(s__Copenhagen, s__CoastalCitiesClass), file('Problems/CSR/CSR117+1.p', copenhagen_coastal)).
-fof(s__Copenhagen_type, axiom, s__City(s__Copenhagen), file('Problems/CSR/CSR117+1.p', s__Copenhagen_type)).
-fof(int_type, axiom, ? [X1]: int(X1), file('Problems/CSR/CSR117+1.p', int_type)).
-fof(kb_SUMO_MILO_6428, axiom, ! [X1]: (s__Nation(X1) => s__GeopoliticalArea(X1)), file('Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6428)).
-fof(s__Copenhagen_s__Denmark, axiom, capital_city(s__Copenhagen, s__Denmark), file('Problems/CSR/CSR117+1.p', s__Copenhagen_s__Denmark)).
-fof(s__Denmark_OECD, axiom, is_instance(s__Denmark, s__OECDMemberEconomiesClass), file('Problems/CSR/CSR117+1.p', s__Denmark_OECD)).
-fof(s__Denmark_type, axiom, s__Nation(s__Denmark), file('Problems/CSR/CSR117+1.p', s__Denmark_type)).
-fof(skolem_c_0_73, definition, ? [X1]: int(X1) => int(esk17_0), introduced(definition, [new_symbols(definition, [esk17_0])], [])).
-fof(skolem_c_0_31, definition, ! [X2]: (s__City(X2) => (is_instance(X2, s__CoastalCitiesClass) => ? [X3]: (s__Sea(X3) & s__orientation(X2, X3, s__Near)))) => ! [X39]: ((s__Sea(esk15_1(X39)) | ~ is_instance(X39, s__CoastalCitiesClass) | ~ s__City(X39)) & (s__orientation(X39, esk15_1(X39), s__Near) | ~ is_instance(X39, s__CoastalCitiesClass) | ~ s__City(X39))), introduced(definition, [new_symbols(definition, [esk15_1])], [])).
-fof(axiom_8, plain, int(esk17_0), inference(clausify, [status(thm)], [int_type, skolem_c_0_73])).
-fof(axiom_12, plain, ! [X] : ((is_instance(X,s__CoastalCitiesClass) & s__City(X)) => s__Sea(esk15_1(X))), inference(clausify, [status(thm)], [coastal_cities_near_water, skolem_c_0_31])).
-fof(axiom_15, plain, ! [X] : ((is_instance(X,s__CoastalCitiesClass) & s__City(X)) => s__orientation(X,esk15_1(X),s__Near)), inference(clausify, [status(thm)], [coastal_cities_near_water, skolem_c_0_31])).
+fof(latlong_s__Moscow, axiom, latlong(s__Moscow, '55.75695', '37.614975', moscow, ru), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', latlong_s__Moscow)).
+fof('55.75695_55', axiom, to_int('55.75695') = '55', file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', '55.75695_55')).
+fof(moscow_long_type, axiom, real('37.614975'), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', moscow_long_type)).
+fof(moscow_lat_type, axiom, real('55.75695'), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', moscow_lat_type)).
+fof(ru_type, axiom, s__SymbolicString(ru), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', ru_type)).
+fof(moscow_type, axiom, s__SymbolicString(moscow), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', moscow_type)).
+fof(latlong_s__Copenhagen, axiom, latlong(s__Copenhagen, '55.67631', '12.569355', copenhagen, dk), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', latlong_s__Copenhagen)).
+fof('55.67631_55', axiom, to_int('55.67631') = '55', file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', '55.67631_55')).
+fof(s__Copenhagen_not_s__Moscow, axiom, look_different(s__Copenhagen, s__Moscow), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', s__Copenhagen_not_s__Moscow)).
+fof(copenhagen_long_type, axiom, real('12.569355'), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', copenhagen_long_type)).
+fof(copenhagen_lat_type, axiom, real('55.67631'), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', copenhagen_lat_type)).
+fof(kb_SUMO_MILO_Domains_9679, axiom, ! [X1]: (s__Sea(X1) => s__BodyOfWater(X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', kb_SUMO_MILO_Domains_9679)).
+fof(coastal_cities_near_water, axiom, ! [X2]: (s__City(X2) => (is_instance(X2, s__CoastalCitiesClass) => ? [X3]: (s__Sea(X3) & s__orientation(X2, X3, s__Near)))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', coastal_cities_near_water)).
+fof(dk_type, axiom, s__SymbolicString(dk), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', dk_type)).
+fof(flood_near_water, axiom, ! [X4, X5]: ((s__WaterArea(X4) & s__City(X5)) => (s__orientation(X5, X4, s__Near) => s__capability(s__Flooding__t, s__located__m, X5))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', flood_near_water)).
+fof(kb_SUMO_MILO_Domains_9582, axiom, ! [X1]: (s__BodyOfWater(X1) => s__WaterArea(X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', kb_SUMO_MILO_Domains_9582)).
+fof(copenhagen_type, axiom, s__SymbolicString(copenhagen), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', copenhagen_type)).
+fof(kb_SUMO_MILO_6365, axiom, ! [X1]: (s__GeographicArea(X1) => s__Region(X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6365)).
+fof(kb_SUMO_MILO_6345, axiom, ! [X1]: (s__GeopoliticalArea(X1) => s__GeographicArea(X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6345)).
+fof(copenhagen_coastal, axiom, is_instance(s__Copenhagen, s__CoastalCitiesClass), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', copenhagen_coastal)).
+fof(kb_SUMO_MILO_701, axiom, ! [X1]: (s__Region(X1) => s__Object(X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', kb_SUMO_MILO_701)).
+fof(s__Copenhagen_type, axiom, s__City(s__Copenhagen), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', s__Copenhagen_type)).
+fof(kb_SUMO_MILO_6437, axiom, ! [X1]: (s__City(X1) => s__GeopoliticalArea(X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6437)).
+fof(int_type, axiom, ? [X1]: int(X1), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', int_type)).
+fof(kb_SUMO_MILO_6428, axiom, ! [X1]: (s__Nation(X1) => s__GeopoliticalArea(X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', kb_SUMO_MILO_6428)).
+fof(s__Copenhagen_s__Denmark, axiom, capital_city(s__Copenhagen, s__Denmark), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', s__Copenhagen_s__Denmark)).
+fof(s__Denmark_OECD, axiom, is_instance(s__Denmark, s__OECDMemberEconomiesClass), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', s__Denmark_OECD)).
+fof(s__Denmark_type, axiom, s__Nation(s__Denmark), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/CSR/CSR117+1.p', s__Denmark_type)).
+fof(skolem_c_0_92, definition, ? [X1]: int(X1) => int(esk17_0), introduced(definition, [new_symbols(definition, [esk17_0])], [])).
+fof(skolem_c_0_55, definition, ! [X2]: (s__City(X2) => (is_instance(X2, s__CoastalCitiesClass) => ? [X3]: (s__Sea(X3) & s__orientation(X2, X3, s__Near)))) => ! [X39]: ((s__Sea(esk15_1(X39)) | ~ is_instance(X39, s__CoastalCitiesClass) | ~ s__City(X39)) & (s__orientation(X39, esk15_1(X39), s__Near) | ~ is_instance(X39, s__CoastalCitiesClass) | ~ s__City(X39))), introduced(definition, [new_symbols(definition, [esk15_1])], [])).
+fof(axiom_8, plain, int(esk17_0), inference(clausify, [status(thm)], [int_type, skolem_c_0_92])).
+fof(axiom_12, plain, ! [X] : ((is_instance(X,s__CoastalCitiesClass) & s__City(X)) => s__Sea(esk15_1(X))), inference(clausify, [status(thm)], [coastal_cities_near_water, skolem_c_0_55])).
+fof(axiom_15, plain, ! [X] : ((is_instance(X,s__CoastalCitiesClass) & s__City(X)) => s__orientation(X,esk15_1(X),s__Near)), inference(clausify, [status(thm)], [coastal_cities_near_water, skolem_c_0_55])).
 fof(s1, plain, ! [X] : (s__GeopoliticalArea(X) => s__GeopoliticalArea(X)), inference(assumption, [status(thm)], [])).
 fof(s2, plain, ! [X] : (s__GeopoliticalArea(X) => s__GeographicArea(X)), inference(mp, [status(thm)], [kb_SUMO_MILO_6345, s1])).
 fof(s3, plain, ! [X] : (s__GeopoliticalArea(X) => s__Region(X)), inference(mp, [status(thm)], [kb_SUMO_MILO_6365, s2])).

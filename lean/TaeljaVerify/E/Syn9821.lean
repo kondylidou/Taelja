@@ -41,78 +41,81 @@ axiom ax4 : ssBf na
 -- Axiom 5
 axiom ax5 : ∀ (x y : α), ssM (sent x b (pair x y)) → ssBf y → ssM (sent b t (triple b (nb y) (encr (triple x y (tb y)) bt)))
 -- Axiom 6
-axiom ax6 : ∀ (x y z : α), ssIm (triple x y z) → ssIm z
+axiom ax6 : ∀ (x y z : α), ssIm (triple x y z) → ssIm y
 -- Axiom 7
-axiom ax7 : ∀ (x y z : α), ssIm (triple x y z) → ssIm y
+axiom ax7 : ssP a
 -- Axiom 8
-axiom ax8 : ssP a
+axiom ax8 : ∀ (x y : α), ssIm x → ssP y → ssIk (key x y)
 -- Axiom 9
-axiom ax9 : ∀ (x y : α), ssIm x → ssP y → ssIk (key x y)
+axiom ax9 : ∀ (x y z : α), ssIm x → ssIk (key y z) → ssP z → ssIm (encr x y)
 -- Axiom 10
-axiom ax10 : ∀ (x y z : α), ssIm x → ssIk (key y z) → ssP z → ssIm (encr x y)
+axiom ax10 : ∀ (x y : α), ssM (sent x b (pair x y)) → ssBf y → ssSb (pair x y)
 -- Axiom 11
-axiom ax11 : ∀ (x y : α), ssIm x → ssIm y → ssIm (pair x y)
+axiom ax11 : ∀ (x y z : α), ssIm (triple x y z) → ssIm z
 -- Axiom 12
-axiom ax12 : ssP b
+axiom ax12 : ∀ (x y : α), ssIm x → ssIm y → ssIm (pair x y)
 -- Axiom 13
-axiom ax13 : ∀ (x y z : α), ssIm x → ssP y → ssP z → ssM (sent y z x)
+axiom ax13 : ssP b
 -- Axiom 14
-axiom ax14 : ∀ (x y : α), ssM (sent x b (pair x y)) → ssBf y → ssSb (pair x y)
+axiom ax14 : ∀ (x y z : α), ssIm x → ssP y → ssP z → ssM (sent y z x)
 -- Axiom 15
 axiom ax15 : ∀ (x y z : α), ssM (sent x b (pair (encr (triple x y (tb z)) bt) (encr (nb z) y))) → ssSb (pair x z) → ssBk (key y x)
 
 -- Lemma 16
-theorem taelja_lemma16 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := by
+theorem taelja_lemma16 : ssIm na := by
+  have h1 : ssM (sent a b (pair a na)) := ax1
+  have h2 : ssIm (pair a na) := ax2 a b (pair a na) h1
+  have h3 : ssIm na := ax3 a na h2
+  exact h3
+
+-- Lemma 17
+theorem taelja_lemma17 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := by
   have h1 : ssM (sent a b (pair a na)) := ax1
   have h2 : ssBf na := ax4
   have h3 : ssM (sent b t (triple b (nb na) (encr (triple a na (tb na)) bt))) := ax5 a na h1 h2
   have h4 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := ax2 b t (triple b (nb na) (encr (triple a na (tb na)) bt)) h3
   exact h4
 
--- Lemma 17
-theorem taelja_lemma17 : ssIk (key na a) := by
-  have h1 : ssM (sent a b (pair a na)) := ax1
-  have h2 : ssIm (pair a na) := ax2 a b (pair a na) h1
-  have h3 : ssIm na := ax3 a na h2
-  have h4 : ssP a := ax8
-  have h5 : ssIk (key na a) := ax9 na a h3 h4
-  exact h5
-
 -- Lemma 18
-theorem taelja_lemma18 : ssIm (encr (nb na) na) := by
-  have h1 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := taelja_lemma16
-  have h2 : ssIm (nb na) := ax7 b (nb na) (encr (triple a na (tb na)) bt) h1
-  have h3 : ssIk (key na a) := taelja_lemma17
-  have h4 : ssP a := ax8
-  have h5 : ssIm (encr (nb na) na) := ax10 (nb na) na a h2 h3 h4
-  exact h5
+theorem taelja_lemma18 : ssIk (key na a) := by
+  have h1 : ssIm na := taelja_lemma16
+  have h2 : ssP a := ax7
+  have h3 : ssIk (key na a) := ax8 na a h1 h2
+  exact h3
 
 -- Lemma 19
-theorem taelja_lemma19 : ssSb (pair a na) := by
+theorem taelja_lemma19 : ssIm (encr (nb na) na) := by
+  have h1 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := taelja_lemma17
+  have h2 : ssIm (nb na) := ax6 b (nb na) (encr (triple a na (tb na)) bt) h1
+  have h3 : ssIk (key na a) := taelja_lemma18
+  have h4 : ssP a := ax7
+  have h5 : ssIm (encr (nb na) na) := ax9 (nb na) na a h2 h3 h4
+  exact h5
+
+-- Lemma 20
+theorem taelja_lemma20 : ssSb (pair a na) := by
   have h1 : ssM (sent a b (pair a na)) := ax1
   have h2 : ssBf na := ax4
-  have h3 : ssSb (pair a na) := ax14 a na h1 h2
+  have h3 : ssSb (pair a na) := ax10 a na h1 h2
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : ssIk (key na b) := by
-  have h1 : ssM (sent a b (pair a na)) := ax1
-  have h2 : ssIm (pair a na) := ax2 a b (pair a na) h1
-  have h3 : ssIm na := ax3 a na h2
-  have h4 : ssP b := ax12
-  have h5 : ssIk (key na b) := ax9 na b h3 h4
-  exact h5
+  have h1 : ssIm na := taelja_lemma16
+  have h2 : ssP b := ax13
+  have h3 : ssIk (key na b) := ax8 na b h1 h2
+  exact h3
 
 -- Goal 2
 theorem taelja_goal2 : ssBk (key na a) := by
-  have h1 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := taelja_lemma16
-  have h2 : ssIm (encr (triple a na (tb na)) bt) := ax6 b (nb na) (encr (triple a na (tb na)) bt) h1
-  have h3 : ssIm (encr (nb na) na) := taelja_lemma18
-  have h4 : ssIm (pair (encr (triple a na (tb na)) bt) (encr (nb na) na)) := ax11 (encr (triple a na (tb na)) bt) (encr (nb na) na) h2 h3
-  have h5 : ssP a := ax8
-  have h6 : ssP b := ax12
-  have h7 : ssM (sent a b (pair (encr (triple a na (tb na)) bt) (encr (nb na) na))) := ax13 (pair (encr (triple a na (tb na)) bt) (encr (nb na) na)) a b h4 h5 h6
-  have h8 : ssSb (pair a na) := taelja_lemma19
+  have h1 : ssIm (triple b (nb na) (encr (triple a na (tb na)) bt)) := taelja_lemma17
+  have h2 : ssIm (encr (triple a na (tb na)) bt) := ax11 b (nb na) (encr (triple a na (tb na)) bt) h1
+  have h3 : ssIm (encr (nb na) na) := taelja_lemma19
+  have h4 : ssIm (pair (encr (triple a na (tb na)) bt) (encr (nb na) na)) := ax12 (encr (triple a na (tb na)) bt) (encr (nb na) na) h2 h3
+  have h5 : ssP a := ax7
+  have h6 : ssP b := ax13
+  have h7 : ssM (sent a b (pair (encr (triple a na (tb na)) bt) (encr (nb na) na))) := ax14 (pair (encr (triple a na (tb na)) bt) (encr (nb na) na)) a b h4 h5 h6
+  have h8 : ssSb (pair a na) := taelja_lemma20
   have h9 : ssBk (key na a) := ax15 a na na h7 h8
   exact h9
 

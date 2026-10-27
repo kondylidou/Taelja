@@ -30,258 +30,153 @@ theorem taelja_lemma3 : ∀ (x y z u v w : α), multiply x (inverse (multiply (m
       _ = multiply (multiply (multiply v (inverse v)) (inverse (multiply y u))) (multiply w (inverse w)) := taelja_lemma2 x w u (multiply (multiply (multiply v (inverse v)) (inverse (multiply y u))) (multiply w (inverse w))) z
 
 -- Lemma 4
-theorem taelja_lemma4 : ∀ (x y z u : α), multiply (multiply x (inverse x)) (inverse (multiply y z)) = multiply (multiply u (inverse u)) (inverse (multiply y z)) := by
-  intro x y z u
-  calc multiply (multiply x (inverse x)) (inverse (multiply y z)) = multiply (multiply u (inverse u)) (inverse (multiply y (multiply (multiply (multiply u (inverse u)) (inverse (multiply (multiply (multiply x (inverse x)) (inverse (multiply y z))) y))) (multiply u (inverse u))))) := Eq.symm (ax1 (multiply u (inverse u)) y u (multiply (multiply x (inverse x)) (inverse (multiply y z))))
-      _ = multiply (multiply u (inverse u)) (inverse (multiply y (multiply x (inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply y z))) (multiply x (inverse x))) (multiply y x)))))) := congrArg (fun t : α => multiply (multiply u (inverse u)) (inverse (multiply y t))) (Eq.symm (taelja_lemma3 x (multiply (multiply x (inverse x)) (inverse (multiply y z))) x y u u))
-      _ = multiply (multiply u (inverse u)) (inverse (multiply y z)) := congrArg (fun t : α => multiply (multiply u (inverse u)) (inverse (multiply y t))) (taelja_lemma2 x x y z x)
+theorem taelja_lemma4 : ∀ (x y z u v : α), multiply (multiply x (inverse x)) (inverse (multiply y (multiply z (inverse (multiply (multiply u (multiply v (inverse v))) (multiply y z)))))) = u := by
+  intro x y z u v
+  calc multiply (multiply x (inverse x)) (inverse (multiply y (multiply z (inverse (multiply (multiply u (multiply v (inverse v))) (multiply y z)))))) = multiply (multiply x (inverse x)) (inverse (multiply y (multiply (multiply (multiply x (inverse x)) (inverse (multiply u y))) (multiply x (inverse x))))) := congrArg (fun t : α => multiply (multiply x (inverse x)) (inverse (multiply y t))) (taelja_lemma3 z u v y x x)
+      _ = u := ax1 (multiply x (inverse x)) y x u
 
 -- Lemma 5
-theorem taelja_lemma5 : ∀ (x y : α), multiply x (inverse x) = multiply y (inverse y) := by
-  intro x y
-  calc multiply x (inverse x) = multiply x (inverse (multiply (inverse (multiply x x)) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (inverse (multiply x x))))) x))) := Eq.symm (ax1 x (inverse (multiply x x)) x (multiply x (inverse x)))
-      _ = multiply x (inverse (multiply (inverse (multiply x x)) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply y (inverse y)) (inverse (multiply x x))))) x))) := congrArg (fun t : α => multiply x (inverse (multiply (inverse (multiply x x)) (multiply (multiply (multiply x (inverse x)) (inverse t)) x)))) (taelja_lemma4 x x x y)
-      _ = multiply y (inverse y) := ax1 x (inverse (multiply x x)) x (multiply y (inverse y))
+theorem taelja_lemma5 : ∀ (x y z u : α), multiply (multiply x (inverse x)) (inverse (multiply y z)) = multiply (multiply u (inverse u)) (inverse (multiply y z)) := by
+  intro x y z u
+  calc multiply (multiply x (inverse x)) (inverse (multiply y z)) = multiply (multiply u (inverse u)) (inverse (multiply y (multiply x (inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply y z))) (multiply x (inverse x))) (multiply y x)))))) := Eq.symm (taelja_lemma4 u y x (multiply (multiply x (inverse x)) (inverse (multiply y z))) x)
+      _ = multiply (multiply u (inverse u)) (inverse (multiply y z)) := congrArg (fun t : α => multiply (multiply u (inverse u)) (inverse (multiply y t))) (taelja_lemma2 x x y z x)
 
 -- Lemma 6
-theorem taelja_lemma6 : ∀ (x y z u v w : α), multiply x (inverse (multiply (multiply (multiply (multiply y (inverse y)) (inverse z)) (multiply u (inverse u))) (multiply v x))) = inverse (multiply (multiply a1 (inverse (multiply (multiply w (multiply a1 (inverse a1))) (multiply z a1)))) (multiply w v)) := by
-  intro x y z u v w
-  calc multiply x (inverse (multiply (multiply (multiply (multiply y (inverse y)) (inverse z)) (multiply u (inverse u))) (multiply v x))) = multiply x (inverse (multiply (multiply (multiply (multiply y (inverse y)) (inverse (multiply v (inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply w z))) (multiply x (inverse x))) (multiply w v)))))) (multiply u (inverse u))) (multiply v x))) := congrArg (fun t : α => multiply x (inverse (multiply (multiply (multiply (multiply y (inverse y)) (inverse t)) (multiply u (inverse u))) (multiply v x)))) (Eq.symm (taelja_lemma2 v x w z x))
-      _ = inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply w z))) (multiply x (inverse x))) (multiply w v)) := taelja_lemma2 x y v (inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply w z))) (multiply x (inverse x))) (multiply w v))) u
-      _ = inverse (multiply (multiply a1 (inverse (multiply (multiply w (multiply a1 (inverse a1))) (multiply z a1)))) (multiply w v)) := congrArg (fun t : α => inverse (multiply t (multiply w v))) (Eq.symm (taelja_lemma3 a1 w a1 z x x))
+theorem taelja_lemma6 : ∀ (x y : α), multiply x (inverse x) = multiply y (inverse y) := by
+  intro x y
+  calc multiply x (inverse x) = multiply x (inverse (multiply (inverse (multiply x x)) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (inverse (multiply x x))))) x))) := Eq.symm (ax1 x (inverse (multiply x x)) x (multiply x (inverse x)))
+      _ = multiply x (inverse (multiply (inverse (multiply x x)) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply y (inverse y)) (inverse (multiply x x))))) x))) := congrArg (fun t : α => multiply x (inverse (multiply (inverse (multiply x x)) (multiply (multiply (multiply x (inverse x)) (inverse t)) x)))) (taelja_lemma5 x x x y)
+      _ = multiply y (inverse y) := ax1 x (inverse (multiply x x)) x (multiply y (inverse y))
 
 -- Lemma 7
-theorem taelja_lemma7 : ∀ (x y : α), inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply x y) a1)))) (multiply a1 x)) = y := by
-  intro x y
-  calc inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply x y) a1)))) (multiply a1 x)) = multiply a1 (inverse (multiply (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply x y))) (multiply a1 (inverse a1))) (multiply x a1))) := Eq.symm (taelja_lemma6 a1 a1 (multiply x y) a1 x a1)
-      _ = y := taelja_lemma2 a1 a1 x y a1
+theorem taelja_lemma7 : ∀ (x y z u : α), multiply x (inverse (multiply (multiply (multiply y (inverse y)) (multiply z (inverse z))) (multiply u x))) = inverse u := by
+  intro x y z u
+  calc multiply x (inverse (multiply (multiply (multiply y (inverse y)) (multiply z (inverse z))) (multiply u x))) = multiply x (inverse (multiply (multiply (multiply (multiply u (inverse u)) (inverse (multiply u (inverse u)))) (multiply z (inverse z))) (multiply u x))) := congrArg (fun t : α => multiply x (inverse (multiply (multiply t (multiply z (inverse z))) (multiply u x)))) (Eq.symm (taelja_lemma6 (multiply u (inverse u)) y))
+      _ = inverse u := taelja_lemma2 x u u (inverse u) z
 
 -- Lemma 8
-theorem taelja_lemma8 : ∀ (x y z u v w : α), multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply z x))) (multiply (multiply u (inverse u)) (inverse (multiply v w)))))) (inverse (multiply w z)) = v := by
-  intro x y z u v w
-  calc multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply z x))) (multiply (multiply u (inverse u)) (inverse (multiply v w)))))) (inverse (multiply w z)) = multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply z x))) (multiply (multiply u (inverse u)) (inverse (multiply v w)))))) (inverse (multiply w (multiply (multiply (multiply u (inverse u)) (inverse (multiply v w))) (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply z x))) (multiply (multiply u (inverse u)) (inverse (multiply v w))))))))) := congrArg (fun t : α => multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply z x))) (multiply (multiply u (inverse u)) (inverse (multiply v w)))))) (inverse (multiply w t))) (Eq.symm (ax1 (multiply (multiply u (inverse u)) (inverse (multiply v w))) x y z))
-      _ = v := ax1 (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply z x))) (multiply (multiply u (inverse u)) (inverse (multiply v w)))))) w u v
+theorem taelja_lemma8 : ∀ (x y z u : α), inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z u) x))) z)) = u := by
+  intro x y z u
+  calc inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z u) x))) z)) = multiply x (inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply z (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z u) x))) z)))))) (multiply x (inverse x))) (multiply z x))) := Eq.symm (taelja_lemma2 x x z (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z u) x))) z))) x)
+      _ = multiply x (inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply z u))) (multiply x (inverse x))) (multiply z x))) := congrArg (fun t : α => multiply x (inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse t)) (multiply x (inverse x))) (multiply z x)))) (ax1 z x y (multiply z u))
+      _ = u := taelja_lemma2 x x z u x
 
 -- Lemma 9
-theorem taelja_lemma9 : ∀ (x y z u v w x1 x2 : α), multiply x (inverse (multiply (inverse (multiply y z)) (multiply (multiply (multiply u (inverse u)) (inverse v)) x))) = inverse (multiply w (multiply (multiply (multiply x1 (inverse x1)) (inverse (multiply z w))) (multiply (multiply x2 (inverse x2)) (inverse (multiply v y))))) := by
-  intro x y z u v w x1 x2
-  calc multiply x (inverse (multiply (inverse (multiply y z)) (multiply (multiply (multiply u (inverse u)) (inverse v)) x))) = multiply x (inverse (multiply (inverse (multiply y z)) (multiply (multiply (multiply u (inverse u)) (inverse (multiply (inverse (multiply w (multiply (multiply (multiply x1 (inverse x1)) (inverse (multiply z w))) (multiply (multiply x2 (inverse x2)) (inverse (multiply v y)))))) (inverse (multiply y z))))) x))) := congrArg (fun t : α => multiply x (inverse (multiply (inverse (multiply y z)) (multiply (multiply (multiply u (inverse u)) (inverse t)) x)))) (Eq.symm (taelja_lemma8 w x1 z x2 v y))
-      _ = inverse (multiply w (multiply (multiply (multiply x1 (inverse x1)) (inverse (multiply z w))) (multiply (multiply x2 (inverse x2)) (inverse (multiply v y))))) := ax1 x (inverse (multiply y z)) u (inverse (multiply w (multiply (multiply (multiply x1 (inverse x1)) (inverse (multiply z w))) (multiply (multiply x2 (inverse x2)) (inverse (multiply v y))))))
+theorem taelja_lemma9 : ∀ (x y z u : α), multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u) = u := by
+  intro x y z u
+  calc multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u) = multiply (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z))))) (inverse (multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) (multiply (multiply (multiply (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)) (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)))) (inverse (multiply (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)) (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)))))) (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z)))))))) := Eq.symm (ax1 (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z))))) (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)) (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)))
+      _ = multiply (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z))))) (inverse (multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) (multiply (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z)))) (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z)))))))) := congrArg (fun t : α => multiply (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z))))) (inverse (multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) (multiply t (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z))))))))) (taelja_lemma6 (multiply (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)) (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)))) (multiply z (inverse z)))
+      _ = multiply (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z))))) (inverse (multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) (multiply (multiply (multiply z (inverse z)) (inverse (multiply u (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)))))) (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z)))))))) := congrArg (fun t : α => multiply (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z))))) (inverse (multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) (multiply (multiply (multiply z (inverse z)) (inverse t)) (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z))))))))) (Eq.symm (ax1 u x y (multiply z (inverse z))))
+      _ = u := ax1 (inverse (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z))))) (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) z u
 
 -- Lemma 10
-theorem taelja_lemma10 : ∀ (x y : α), multiply (multiply a1 (inverse (multiply x (multiply (multiply (multiply a1 (inverse a1)) (inverse y)) a1)))) x = y := by
-  intro x y
-  calc multiply (multiply a1 (inverse (multiply x (multiply (multiply (multiply a1 (inverse a1)) (inverse y)) a1)))) x = multiply (multiply a1 (inverse (multiply (inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 x) a1)))) (multiply a1 a1))) (multiply (multiply (multiply a1 (inverse a1)) (inverse y)) a1)))) x := congrArg (fun t : α => multiply (multiply a1 (inverse (multiply t (multiply (multiply (multiply a1 (inverse a1)) (inverse y)) a1)))) x) (Eq.symm (taelja_lemma7 a1 x))
-      _ = multiply (multiply a1 (inverse (multiply (inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 x) a1)))) (multiply a1 a1))) (multiply (multiply (multiply a1 (inverse a1)) (inverse y)) a1)))) (inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 x) a1)))) (multiply a1 a1))) := congrArg (fun t : α => multiply (multiply a1 (inverse (multiply (inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 x) a1)))) (multiply a1 a1))) (multiply (multiply (multiply a1 (inverse a1)) (inverse y)) a1)))) t) (Eq.symm (taelja_lemma7 a1 x))
-      _ = multiply (inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 a1) a1))) (multiply (multiply a1 (inverse a1)) (inverse (multiply y (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 x) a1)))))))))) (inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 x) a1)))) (multiply a1 a1))) := congrArg (fun t : α => multiply t (inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 x) a1)))) (multiply a1 a1)))) (taelja_lemma9 a1 (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 x) a1)))) (multiply a1 a1) a1 y a1 a1 a1)
-      _ = y := taelja_lemma8 a1 a1 (multiply a1 a1) a1 y (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 x) a1))))
+theorem taelja_lemma10 : ∀ (x y z : α), multiply (inverse (multiply x (inverse x))) (multiply (multiply y (inverse y)) z) = z := by
+  intro x y z
+  calc multiply (inverse (multiply x (inverse x))) (multiply (multiply y (inverse y)) z) = multiply (inverse (multiply x (inverse x))) (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply x (inverse x)))) (inverse (multiply (multiply x (inverse x)) (inverse (multiply x (inverse x)))))) z) := congrArg (fun t : α => multiply (inverse (multiply x (inverse x))) (multiply t z)) (Eq.symm (taelja_lemma6 (multiply (multiply x (inverse x)) (inverse (multiply x (inverse x)))) y))
+      _ = z := taelja_lemma9 (inverse (multiply x (inverse x))) (multiply x (inverse x)) x z
 
 -- Lemma 11
-theorem taelja_lemma11 : ∀ (x : α), inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) x))) (multiply a1 a1)) = inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse x)) a1)) := by
-  intro x
-  calc inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) x))) (multiply a1 a1)) = inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 (inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse x)) a1)))) a1)))) (multiply a1 a1)) := congrArg (fun t : α => inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) t))) (multiply a1 a1))) (Eq.symm (taelja_lemma10 a1 x))
-      _ = inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse x)) a1)) := taelja_lemma7 a1 (inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse x)) a1)))
+theorem taelja_lemma11 : ∀ (x y z : α), multiply (multiply x (inverse x)) (inverse (multiply y (inverse y))) = multiply z (inverse z) := by
+  intro x y z
+  calc multiply (multiply x (inverse x)) (inverse (multiply y (inverse y))) = multiply (multiply x (inverse x)) (inverse (multiply y (multiply x (inverse (multiply (multiply (multiply z (inverse z)) (multiply x (inverse x))) (multiply y x)))))) := congrArg (fun t : α => multiply (multiply x (inverse x)) (inverse (multiply y t))) (Eq.symm (taelja_lemma7 x z x y))
+      _ = multiply z (inverse z) := taelja_lemma4 x y x (multiply z (inverse z)) x
 
 -- Lemma 12
-theorem taelja_lemma12 : ∀ (x : α), inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1)) = x := by
-  intro x
-  calc inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1)) = inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 x) a1)))) (multiply a1 a1)) := Eq.symm (taelja_lemma11 (multiply (multiply a1 x) a1))
-      _ = x := taelja_lemma7 a1 x
+theorem taelja_lemma12 : ∀ (x y z : α), multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z) = z := by
+  intro x y z
+  calc multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z) = inverse (multiply (inverse (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply (multiply (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z))) (inverse (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z))))) (inverse (multiply (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z))) (inverse (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z))))))) (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))))) := Eq.symm (taelja_lemma8 (inverse (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z)))) (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z))) (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z)))
+      _ = inverse (multiply (inverse (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) := congrArg (fun t : α => inverse (multiply (inverse (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z)))) t)) (taelja_lemma11 (multiply (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z))) (inverse (multiply (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z))))) (multiply (inverse (multiply y (inverse y))) z) (multiply y (inverse y)))
+      _ = inverse (multiply (inverse (multiply (inverse (multiply y (inverse y))) z)) (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) := congrArg (fun t : α => inverse (multiply (inverse t) (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))) (taelja_lemma10 (multiply (inverse (multiply y (inverse y))) z) x (multiply (inverse (multiply y (inverse y))) z))
+      _ = inverse (multiply (inverse (multiply (inverse (multiply y (inverse y))) z)) (multiply (multiply (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z))) (inverse (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z))))) (inverse (multiply y (inverse y))))) := congrArg (fun t : α => inverse (multiply (inverse (multiply (inverse (multiply y (inverse y))) z)) (multiply t (inverse (multiply y (inverse y)))))) (Eq.symm (taelja_lemma6 (multiply (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply (inverse (multiply y (inverse y))) z))) y))
+      _ = z := taelja_lemma8 (inverse (multiply (inverse (multiply y (inverse y))) z)) (multiply (inverse (multiply y (inverse y))) z) (inverse (multiply y (inverse y))) z
 
 -- Lemma 13
-theorem taelja_lemma13 : ∀ (x y z : α), multiply x (inverse (multiply (inverse y) (multiply (multiply z (inverse z)) x))) = y := by
-  intro x y z
-  calc multiply x (inverse (multiply (inverse y) (multiply (multiply z (inverse z)) x))) = multiply x (inverse (multiply (inverse y) (multiply (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))) x))) := congrArg (fun t : α => multiply x (inverse (multiply (inverse y) (multiply t x)))) (Eq.symm (taelja_lemma5 (multiply y (inverse y)) z))
-      _ = y := ax1 x (inverse y) y y
+theorem taelja_lemma13 : ∀ (x y z u v : α), multiply x (inverse (multiply (multiply y (inverse (multiply (multiply z (multiply u (inverse u))) (multiply v y)))) (multiply z x))) = v := by
+  intro x y z u v
+  calc multiply x (inverse (multiply (multiply y (inverse (multiply (multiply z (multiply u (inverse u))) (multiply v y)))) (multiply z x))) = multiply x (inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply z v))) (multiply x (inverse x))) (multiply z x))) := congrArg (fun t : α => multiply x (inverse (multiply t (multiply z x)))) (taelja_lemma3 y z u v x x)
+      _ = v := taelja_lemma2 x x z v x
 
 -- Lemma 14
-theorem taelja_lemma14 : ∀ (x y z u : α), multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u) = u := by
-  intro x y z u
-  calc multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u) = multiply x (inverse (multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) (multiply (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z)))) x))) := Eq.symm (taelja_lemma13 x (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)) (multiply z (inverse z)))
-      _ = multiply x (inverse (multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) (multiply (multiply (multiply z (inverse z)) (inverse (multiply u (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u)))))) x))) := congrArg (fun t : α => multiply x (inverse (multiply (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) (multiply (multiply (multiply z (inverse z)) (inverse t)) x)))) (Eq.symm (ax1 u x y (multiply z (inverse z))))
-      _ = u := ax1 x (inverse (multiply x (multiply (multiply (multiply y (inverse y)) (inverse (multiply (multiply z (inverse z)) x))) u))) z u
+theorem taelja_lemma14 : ∀ (x y z : α), multiply (multiply (inverse (multiply x (inverse x))) y) (inverse (multiply (inverse z) y)) = z := by
+  intro x y z
+  calc multiply (multiply (inverse (multiply x (inverse x))) y) (inverse (multiply (inverse z) y)) = multiply (multiply (inverse (multiply x (inverse x))) y) (inverse (multiply (multiply x (inverse (multiply (multiply (multiply x (inverse x)) (multiply x (inverse x))) (multiply z x)))) y)) := congrArg (fun t : α => multiply (multiply (inverse (multiply x (inverse x))) y) (inverse (multiply t y))) (Eq.symm (taelja_lemma7 x x x z))
+      _ = multiply (multiply (inverse (multiply x (inverse x))) y) (inverse (multiply (multiply x (inverse (multiply (multiply (multiply x (inverse x)) (multiply x (inverse x))) (multiply z x)))) (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) := congrArg (fun t : α => multiply (multiply (inverse (multiply x (inverse x))) y) (inverse (multiply (multiply x (inverse (multiply (multiply (multiply x (inverse x)) (multiply x (inverse x))) (multiply z x)))) t))) (Eq.symm (taelja_lemma12 x x y))
+      _ = z := taelja_lemma13 (multiply (inverse (multiply x (inverse x))) y) x (multiply x (inverse x)) x z
 
 -- Lemma 15
-theorem taelja_lemma15 : ∀ (x y z : α), multiply (inverse (multiply x (inverse x))) (multiply (multiply y (inverse y)) z) = z := by
+theorem taelja_lemma15 : ∀ (x y z : α), multiply (multiply (multiply x (inverse x)) (inverse y)) z = inverse (multiply (inverse z) y) := by
   intro x y z
-  calc multiply (inverse (multiply x (inverse x))) (multiply (multiply y (inverse y)) z) = multiply (inverse (multiply x (inverse x))) (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply x (inverse x)))) (inverse (multiply (multiply x (inverse x)) (inverse (multiply x (inverse x)))))) z) := congrArg (fun t : α => multiply (inverse (multiply x (inverse x))) (multiply t z)) (Eq.symm (taelja_lemma5 (multiply (multiply x (inverse x)) (inverse (multiply x (inverse x)))) y))
-      _ = z := taelja_lemma14 (inverse (multiply x (inverse x))) (multiply x (inverse x)) x z
+  calc multiply (multiply (multiply x (inverse x)) (inverse y)) z = multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z := congrArg (fun t : α => multiply (multiply (multiply x (inverse x)) (inverse t)) z) (Eq.symm (taelja_lemma12 x x y))
+      _ = inverse (multiply (inverse (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z))) (multiply (multiply (multiply (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z)) (inverse (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z)))) (inverse (multiply (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z)) (inverse (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z)))))) (multiply (inverse (multiply x (inverse x))) y))) := Eq.symm (taelja_lemma8 (inverse (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z))) (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z)) (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z))
+      _ = inverse (multiply (inverse (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z))) y) := congrArg (fun t : α => inverse (multiply (inverse (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z))) t)) (taelja_lemma12 (multiply (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z)) (inverse (multiply (multiply (inverse (multiply x (inverse x))) y) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) y)))) z)))) x y)
+      _ = inverse (multiply (inverse z) y) := congrArg (fun t : α => inverse (multiply (inverse t) y)) (taelja_lemma9 (multiply (inverse (multiply x (inverse x))) y) x x z)
 
 -- Lemma 16
-theorem taelja_lemma16 : ∀ (x y z : α), multiply (inverse (multiply x (inverse x))) (multiply y (inverse y)) = inverse (multiply z (inverse z)) := by
+theorem taelja_lemma16 : ∀ (x y z : α), inverse (multiply x (inverse (multiply (inverse y) (multiply (multiply y z) x)))) = z := by
   intro x y z
-  calc multiply (inverse (multiply x (inverse x))) (multiply y (inverse y)) = multiply (inverse (multiply x (inverse x))) (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z)))) := congrArg (fun t : α => multiply (inverse (multiply x (inverse x))) t) (Eq.symm (taelja_lemma5 (multiply z (inverse z)) y))
-      _ = inverse (multiply z (inverse z)) := taelja_lemma15 x z (inverse (multiply z (inverse z)))
+  calc inverse (multiply x (inverse (multiply (inverse y) (multiply (multiply y z) x)))) = inverse (multiply x (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply y z) x))) y)) := congrArg (fun t : α => inverse (multiply x t)) (Eq.symm (taelja_lemma15 x (multiply (multiply y z) x) y))
+      _ = z := taelja_lemma8 x x y z
 
 -- Lemma 17
-theorem taelja_lemma17 : ∀ (x y z : α), multiply (inverse (multiply x (inverse x))) (inverse (multiply (inverse y) (multiply z (inverse z)))) = y := by
-  intro x y z
-  calc multiply (inverse (multiply x (inverse x))) (inverse (multiply (inverse y) (multiply z (inverse z)))) = multiply (inverse (multiply x (inverse x))) (inverse (multiply (inverse y) (multiply (multiply x (inverse x)) (inverse (multiply x (inverse x)))))) := congrArg (fun t : α => multiply (inverse (multiply x (inverse x))) (inverse (multiply (inverse y) t))) (Eq.symm (taelja_lemma5 (multiply x (inverse x)) z))
-      _ = y := taelja_lemma13 (inverse (multiply x (inverse x))) y x
+theorem taelja_lemma17 : ∀ (x y : α), inverse (multiply x (inverse (multiply y (inverse y)))) = inverse x := by
+  intro x y
+  calc inverse (multiply x (inverse (multiply y (inverse y)))) = inverse (multiply x (inverse (multiply (inverse (multiply y (inverse y))) (multiply (multiply (multiply y (inverse y)) (inverse (multiply x (inverse (multiply y (inverse y)))))) x)))) := Eq.symm (taelja_lemma16 x (multiply y (inverse y)) (inverse (multiply x (inverse (multiply y (inverse y))))))
+      _ = inverse x := congrArg (fun t : α => inverse t) (ax1 x (inverse (multiply y (inverse y))) y x)
 
 -- Lemma 18
-theorem taelja_lemma18 : ∀ (x y z : α), multiply (multiply a1 (inverse (multiply (multiply x (multiply a1 (inverse a1))) (multiply (multiply y (inverse y)) a1)))) (multiply x z) = z := by
-  intro x y z
-  calc multiply (multiply a1 (inverse (multiply (multiply x (multiply a1 (inverse a1))) (multiply (multiply y (inverse y)) a1)))) (multiply x z) = multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (multiply (inverse (multiply (multiply a1 (inverse (multiply (multiply x (multiply a1 (inverse a1))) (multiply (multiply y (inverse y)) a1)))) (multiply x z))) (multiply (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))) (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))))) := Eq.symm (taelja_lemma17 (multiply y (inverse y)) (multiply (multiply a1 (inverse (multiply (multiply x (multiply a1 (inverse a1))) (multiply (multiply y (inverse y)) a1)))) (multiply x z)) (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))
-      _ = multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (multiply (inverse (multiply (multiply (multiply (multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))))) (inverse (multiply x (multiply y (inverse y))))) (multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))))) (multiply x z))) (multiply (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))) (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))))) := congrArg (fun t : α => multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (multiply (inverse (multiply t (multiply x z))) (multiply (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))) (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))))))) (taelja_lemma3 a1 x a1 (multiply y (inverse y)) (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))))
-      _ = multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (multiply (inverse (multiply (multiply (multiply (multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))))) (inverse (multiply x (multiply y (inverse y))))) (multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))))) (multiply x z))) (multiply (multiply (multiply y (inverse y)) (inverse (multiply z (inverse (multiply (multiply (multiply (multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))))) (inverse (multiply x (multiply y (inverse y))))) (multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))))) (multiply x z)))))) (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))))) := congrArg (fun t : α => multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (multiply (inverse (multiply (multiply (multiply (multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))))) (inverse (multiply x (multiply y (inverse y))))) (multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))))) (multiply x z))) (multiply (multiply (multiply y (inverse y)) (inverse t)) (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))))))) (Eq.symm (taelja_lemma2 z (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) x (multiply y (inverse y)) (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))))
-      _ = z := ax1 (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (multiply (multiply (multiply (multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))))) (inverse (multiply x (multiply y (inverse y))))) (multiply (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y))))) (inverse (inverse (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))))) (multiply x z))) y z
+theorem taelja_lemma18 : ∀ (x y : α), multiply x (inverse (multiply y (inverse y))) = x := by
+  intro x y
+  calc multiply x (inverse (multiply y (inverse y))) = multiply (multiply (inverse (multiply x (inverse x))) x) (inverse (multiply (inverse (multiply x (inverse (multiply y (inverse y))))) x)) := Eq.symm (taelja_lemma14 x x (multiply x (inverse (multiply y (inverse y)))))
+      _ = multiply (multiply (inverse (multiply x (inverse x))) x) (inverse (multiply (inverse x) x)) := congrArg (fun t : α => multiply (multiply (inverse (multiply x (inverse x))) x) (inverse (multiply t x))) (taelja_lemma17 x y)
+      _ = x := taelja_lemma14 x x x
 
 -- Lemma 19
-theorem taelja_lemma19 : ∀ (x y : α), multiply (multiply a1 (inverse a1)) (multiply (inverse (multiply x (inverse x))) y) = y := by
+theorem taelja_lemma19 : ∀ (x y : α), multiply x (inverse x) = inverse (multiply y (inverse y)) := by
   intro x y
-  calc multiply (multiply a1 (inverse a1)) (multiply (inverse (multiply x (inverse x))) y) = multiply (multiply a1 (inverse (multiply (inverse (multiply a1 (inverse a1))) (multiply (multiply a1 (inverse a1)) a1)))) (multiply (inverse (multiply x (inverse x))) y) := congrArg (fun t : α => multiply (multiply a1 (inverse t)) (multiply (inverse (multiply x (inverse x))) y)) (Eq.symm (taelja_lemma15 a1 a1 a1))
-      _ = multiply (multiply a1 (inverse (multiply (multiply (inverse (multiply x (inverse x))) (multiply a1 (inverse a1))) (multiply (multiply a1 (inverse a1)) a1)))) (multiply (inverse (multiply x (inverse x))) y) := congrArg (fun t : α => multiply (multiply a1 (inverse (multiply t (multiply (multiply a1 (inverse a1)) a1)))) (multiply (inverse (multiply x (inverse x))) y)) (Eq.symm (taelja_lemma16 x a1 a1))
-      _ = y := taelja_lemma18 (inverse (multiply x (inverse x))) a1 y
+  calc multiply x (inverse x) = multiply (multiply x (inverse x)) (inverse (multiply x (inverse x))) := Eq.symm (taelja_lemma18 (multiply x (inverse x)) x)
+      _ = multiply (multiply x (inverse x)) (multiply (inverse (multiply x (inverse x))) (inverse (multiply y (inverse y)))) := congrArg (fun t : α => multiply (multiply x (inverse x)) t) (Eq.symm (taelja_lemma18 (inverse (multiply x (inverse x))) y))
+      _ = inverse (multiply y (inverse y)) := taelja_lemma12 x x (inverse (multiply y (inverse y)))
 
 -- Lemma 20
-theorem taelja_lemma20 : ∀ (x y z : α), multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z) = z := by
-  intro x y z
-  calc multiply (multiply x (inverse x)) (multiply (inverse (multiply y (inverse y))) z) = multiply (multiply a1 (inverse a1)) (multiply (inverse (multiply y (inverse y))) z) := congrArg (fun t : α => multiply t (multiply (inverse (multiply y (inverse y))) z)) (Eq.symm (taelja_lemma5 a1 x))
-      _ = z := taelja_lemma19 y z
+theorem taelja_lemma20 : ∀ (x y : α), multiply x (multiply y (inverse y)) = x := by
+  intro x y
+  calc multiply x (multiply y (inverse y)) = multiply x (inverse (multiply x (inverse x))) := congrArg (fun t : α => multiply x t) (taelja_lemma19 y x)
+      _ = x := taelja_lemma18 x x
 
 -- Lemma 21
-theorem taelja_lemma21 : ∀ (x y z : α), multiply (multiply (inverse (multiply x (inverse x))) y) (inverse (multiply (inverse z) y)) = z := by
-  intro x y z
-  calc multiply (multiply (inverse (multiply x (inverse x))) y) (inverse (multiply (inverse z) y)) = multiply (multiply (inverse (multiply x (inverse x))) y) (inverse (multiply (inverse z) (multiply (multiply (multiply z (inverse z)) (inverse (multiply z (inverse z)))) (multiply (inverse (multiply x (inverse x))) y)))) := congrArg (fun t : α => multiply (multiply (inverse (multiply x (inverse x))) y) (inverse (multiply (inverse z) t))) (Eq.symm (taelja_lemma20 (multiply z (inverse z)) x y))
-      _ = z := ax1 (multiply (inverse (multiply x (inverse x))) y) (inverse z) z z
+theorem taelja_lemma21 : ∀ (x y z u : α), multiply x (inverse (multiply y (multiply (multiply z (inverse (multiply u (multiply y z)))) x))) = u := by
+  intro x y z u
+  calc multiply x (inverse (multiply y (multiply (multiply z (inverse (multiply u (multiply y z)))) x))) = multiply x (inverse (multiply y (multiply (multiply z (inverse (multiply (multiply u (multiply x (inverse x))) (multiply y z)))) x))) := congrArg (fun t : α => multiply x (inverse (multiply y (multiply (multiply z (inverse (multiply t (multiply y z)))) x)))) (Eq.symm (taelja_lemma20 u x))
+      _ = multiply x (inverse (multiply (multiply y (multiply x (inverse x))) (multiply (multiply z (inverse (multiply (multiply u (multiply x (inverse x))) (multiply y z)))) x))) := congrArg (fun t : α => multiply x (inverse (multiply t (multiply (multiply z (inverse (multiply (multiply u (multiply x (inverse x))) (multiply y z)))) x)))) (Eq.symm (taelja_lemma20 y x))
+      _ = multiply x (inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply z (inverse (multiply (multiply u (multiply x (inverse x))) (multiply y z)))) (multiply u (multiply x (inverse x)))))) (multiply x (inverse x))) (multiply (multiply z (inverse (multiply (multiply u (multiply x (inverse x))) (multiply y z)))) x))) := congrArg (fun t : α => multiply x (inverse (multiply (multiply t (multiply x (inverse x))) (multiply (multiply z (inverse (multiply (multiply u (multiply x (inverse x))) (multiply y z)))) x)))) (Eq.symm (taelja_lemma13 (multiply x (inverse x)) z u x y))
+      _ = multiply u (multiply x (inverse x)) := taelja_lemma2 x x (multiply z (inverse (multiply (multiply u (multiply x (inverse x))) (multiply y z)))) (multiply u (multiply x (inverse x))) x
+      _ = u := taelja_lemma20 u x
 
 -- Lemma 22
-theorem taelja_lemma22 : ∀ (x y z : α), multiply (inverse (multiply x (inverse x))) (inverse (inverse (multiply y (inverse y)))) = multiply z (inverse z) := by
-  intro x y z
-  calc multiply (inverse (multiply x (inverse x))) (inverse (inverse (multiply y (inverse y)))) = multiply (inverse (multiply x (inverse x))) (inverse (multiply (inverse (multiply z (inverse z))) (multiply (multiply y (inverse y)) (inverse (multiply y (inverse y)))))) := congrArg (fun t : α => multiply (inverse (multiply x (inverse x))) (inverse t)) (Eq.symm (taelja_lemma15 z y (inverse (multiply y (inverse y)))))
-      _ = multiply z (inverse z) := taelja_lemma17 x (multiply z (inverse z)) (multiply y (inverse y))
+theorem taelja_lemma22 : ∀ (x y : α), inverse (multiply x (multiply (inverse y) y)) = inverse x := by
+  intro x y
+  calc inverse (multiply x (multiply (inverse y) y)) = inverse (multiply x (inverse (multiply (inverse y) (multiply (multiply y (inverse (multiply x (multiply (inverse y) y)))) x)))) := Eq.symm (taelja_lemma16 x y (inverse (multiply x (multiply (inverse y) y))))
+      _ = inverse x := congrArg (fun t : α => inverse t) (taelja_lemma21 x (inverse y) y x)
 
 -- Lemma 23
-theorem taelja_lemma23 : ∀ (x : α), multiply (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1)) x = multiply a1 (inverse a1) := by
+theorem taelja_lemma23 : ∀ (x : α), inverse (inverse x) = x := by
   intro x
-  calc multiply (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1)) x = multiply (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1)) (inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1))) := congrArg (fun t : α => multiply (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1)) t) (Eq.symm (taelja_lemma12 x))
-      _ = multiply (inverse (multiply a1 (inverse a1))) (inverse (inverse (multiply a1 (inverse a1)))) := Eq.symm (taelja_lemma22 a1 a1 (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1)))
-      _ = multiply a1 (inverse a1) := taelja_lemma22 a1 a1 a1
+  calc inverse (inverse x) = multiply x (inverse (multiply (multiply (multiply x (inverse x)) (multiply x (inverse x))) (multiply (inverse x) x))) := Eq.symm (taelja_lemma7 x x x (inverse x))
+      _ = multiply x (inverse (multiply (multiply x (inverse x)) (multiply x (inverse x)))) := congrArg (fun t : α => multiply x t) (taelja_lemma22 (multiply (multiply x (inverse x)) (multiply x (inverse x))) x)
+      _ = multiply x (inverse (multiply x (inverse x))) := congrArg (fun t : α => multiply x (inverse t)) (taelja_lemma20 (multiply x (inverse x)) x)
+      _ = x := taelja_lemma18 x x
 
 -- Lemma 24
-theorem taelja_lemma24 : ∀ (x : α), multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) x))) (multiply a1 a1) = multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse x)) a1) := by
-  intro x
-  calc multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) x))) (multiply a1 a1) = multiply (multiply (inverse (multiply a1 (inverse a1))) a1) (inverse (multiply (inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) x))) (multiply a1 a1))) a1)) := Eq.symm (taelja_lemma21 a1 a1 (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) x))) (multiply a1 a1)))
-      _ = multiply (multiply (inverse (multiply a1 (inverse a1))) a1) (inverse (multiply (inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse x)) a1))) a1)) := congrArg (fun t : α => multiply (multiply (inverse (multiply a1 (inverse a1))) a1) (inverse (multiply t a1))) (taelja_lemma11 x)
-      _ = multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse x)) a1) := taelja_lemma21 a1 a1 (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse x)) a1))
-
--- Lemma 25
-theorem taelja_lemma25 : multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 a1) a1))) a1 = inverse (multiply a1 (multiply (multiply a1 (inverse a1)) a1)) := by
-  calc multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 a1) a1))) a1 = inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 a1) a1))) a1)) a1)))) (multiply a1 a1)) := Eq.symm (taelja_lemma7 a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 a1) a1))) a1))
-      _ = inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) (multiply a1 (inverse a1))))) (multiply a1 a1)) := congrArg (fun t : α => inverse (multiply (multiply a1 (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) t))) (multiply a1 a1))) (taelja_lemma23 a1)
-      _ = inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply a1 (inverse a1)))) a1)) := congrArg (fun t : α => inverse t) (taelja_lemma24 (multiply a1 (inverse a1)))
-      _ = inverse (multiply a1 (multiply (multiply a1 (inverse a1)) a1)) := congrArg (fun t : α => inverse (multiply a1 (multiply t a1))) (taelja_lemma5 (multiply a1 (inverse a1)) a1)
-
--- Lemma 26
-theorem taelja_lemma26 : ∀ (x : α), inverse (multiply a1 (inverse (multiply a1 (multiply (multiply x (inverse x)) a1)))) = a1 := by
-  intro x
-  calc inverse (multiply a1 (inverse (multiply a1 (multiply (multiply x (inverse x)) a1)))) = inverse (multiply a1 (inverse (multiply a1 (multiply (multiply a1 (inverse a1)) a1)))) := congrArg (fun t : α => inverse (multiply a1 (inverse (multiply a1 (multiply t a1))))) (Eq.symm (taelja_lemma5 a1 x))
-      _ = inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 a1) a1))) a1)) := congrArg (fun t : α => inverse (multiply a1 t)) (Eq.symm (taelja_lemma25))
-      _ = a1 := taelja_lemma12 a1
-
--- Lemma 27
-theorem taelja_lemma27 : ∀ (x y : α), multiply (multiply a1 (inverse a1)) (inverse (multiply x (inverse x))) = multiply y (inverse y) := by
+theorem taelja_lemma24 : ∀ (x y : α), multiply x (inverse x) = multiply (inverse y) y := by
   intro x y
-  calc multiply (multiply a1 (inverse a1)) (inverse (multiply x (inverse x))) = multiply (multiply a1 (inverse a1)) (multiply (inverse (multiply a1 (inverse a1))) (multiply y (inverse y))) := congrArg (fun t : α => multiply (multiply a1 (inverse a1)) t) (Eq.symm (taelja_lemma16 a1 y x))
-      _ = multiply y (inverse y) := taelja_lemma19 a1 (multiply y (inverse y))
-
--- Lemma 28
-theorem taelja_lemma28 : ∀ (x y z : α), multiply (multiply x (inverse x)) (inverse (multiply y (inverse y))) = multiply z (inverse z) := by
-  intro x y z
-  calc multiply (multiply x (inverse x)) (inverse (multiply y (inverse y))) = multiply (multiply a1 (inverse a1)) (inverse (multiply y (inverse y))) := congrArg (fun t : α => multiply t (inverse (multiply y (inverse y)))) (Eq.symm (taelja_lemma5 a1 x))
-      _ = multiply z (inverse z) := taelja_lemma27 y z
-
--- Lemma 29
-theorem taelja_lemma29 : ∀ (x y : α), inverse (multiply (inverse x) (multiply y (inverse y))) = multiply (multiply a1 (inverse a1)) x := by
-  intro x y
-  calc inverse (multiply (inverse x) (multiply y (inverse y))) = multiply (multiply a1 (inverse a1)) (multiply (inverse (multiply x (inverse x))) (inverse (multiply (inverse x) (multiply y (inverse y))))) := Eq.symm (taelja_lemma19 x (inverse (multiply (inverse x) (multiply y (inverse y)))))
-      _ = multiply (multiply a1 (inverse a1)) x := congrArg (fun t : α => multiply (multiply a1 (inverse a1)) t) (taelja_lemma17 x x y)
-
--- Lemma 30
-theorem taelja_lemma30 : ∀ (x : α), multiply (multiply a1 (inverse (multiply a1 (multiply (multiply x (inverse x)) a1)))) a1 = multiply a1 (inverse a1) := by
-  intro x
-  calc multiply (multiply a1 (inverse (multiply a1 (multiply (multiply x (inverse x)) a1)))) a1 = multiply (multiply a1 (inverse (multiply a1 (multiply (multiply x (inverse x)) a1)))) (inverse (multiply a1 (inverse (multiply a1 (multiply (multiply x (inverse x)) a1))))) := congrArg (fun t : α => multiply (multiply a1 (inverse (multiply a1 (multiply (multiply x (inverse x)) a1)))) t) (Eq.symm (taelja_lemma26 x))
-      _ = multiply (inverse (multiply a1 (inverse a1))) (inverse (inverse (multiply a1 (inverse a1)))) := Eq.symm (taelja_lemma22 a1 a1 (multiply a1 (inverse (multiply a1 (multiply (multiply x (inverse x)) a1)))))
-      _ = multiply a1 (inverse a1) := taelja_lemma22 a1 a1 a1
-
--- Lemma 31
-theorem taelja_lemma31 : ∀ (x y z : α), multiply x (inverse (multiply (inverse (inverse (multiply y (inverse y)))) (multiply z x))) = inverse z := by
-  intro x y z
-  calc multiply x (inverse (multiply (inverse (inverse (multiply y (inverse y)))) (multiply z x))) = multiply x (inverse (multiply (multiply (multiply (multiply x (inverse x)) (inverse (multiply x (inverse x)))) (multiply (inverse (multiply y (inverse y))) (inverse (inverse (multiply y (inverse y)))))) (multiply z x))) := congrArg (fun t : α => multiply x (inverse (multiply t (multiply z x)))) (Eq.symm (taelja_lemma20 (multiply x (inverse x)) y (inverse (inverse (multiply y (inverse y))))))
-      _ = inverse (multiply (multiply a1 (inverse (multiply (multiply x (multiply a1 (inverse a1))) (multiply (multiply x (inverse x)) a1)))) (multiply x z)) := taelja_lemma6 x x (multiply x (inverse x)) (inverse (multiply y (inverse y))) z x
-      _ = inverse z := congrArg (fun t : α => inverse t) (taelja_lemma18 x x z)
-
--- Lemma 32
-theorem taelja_lemma32 : ∀ (x y : α), multiply x (multiply y (inverse y)) = x := by
-  intro x y
-  calc multiply x (multiply y (inverse y)) = multiply x (multiply a1 (inverse a1)) := congrArg (fun t : α => multiply x t) (Eq.symm (taelja_lemma5 a1 y))
-      _ = multiply x (multiply (multiply a1 (inverse a1)) (inverse (multiply x (inverse x)))) := congrArg (fun t : α => multiply x t) (Eq.symm (taelja_lemma27 x a1))
-      _ = multiply x (inverse (multiply (inverse (inverse (multiply x (inverse x)))) (multiply a1 (inverse a1)))) := congrArg (fun t : α => multiply x t) (Eq.symm (taelja_lemma29 (inverse (multiply x (inverse x))) a1))
-      _ = multiply x (inverse (multiply (inverse (inverse (multiply x (inverse x)))) (multiply (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1)) x))) := congrArg (fun t : α => multiply x (inverse (multiply (inverse (inverse (multiply x (inverse x)))) t))) (Eq.symm (taelja_lemma23 x))
-      _ = inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1)) := taelja_lemma31 x x (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 x) a1))) a1))
-      _ = x := taelja_lemma12 x
-
--- Lemma 33
-theorem taelja_lemma33 : ∀ (x : α), multiply (multiply a1 (inverse a1)) x = inverse (inverse x) := by
-  intro x
-  calc multiply (multiply a1 (inverse a1)) x = inverse (multiply (inverse x) (multiply a1 (inverse a1))) := Eq.symm (taelja_lemma29 x a1)
-      _ = inverse (inverse x) := congrArg (fun t : α => inverse t) (taelja_lemma32 (inverse x) a1)
-
--- Lemma 34
-theorem taelja_lemma34 : ∀ (x y : α), multiply (multiply x (inverse x)) y = inverse (inverse y) := by
-  intro x y
-  calc multiply (multiply x (inverse x)) y = multiply (multiply a1 (inverse a1)) y := congrArg (fun t : α => multiply t y) (Eq.symm (taelja_lemma5 a1 x))
-      _ = inverse (inverse y) := taelja_lemma33 y
-
--- Lemma 35
-theorem taelja_lemma35 : ∀ (x : α), inverse (inverse (inverse (inverse x))) = x := by
-  intro x
-  calc inverse (inverse (inverse (inverse x))) = inverse (inverse (multiply (multiply a1 (inverse a1)) x)) := congrArg (fun t : α => inverse (inverse t)) (Eq.symm (taelja_lemma33 x))
-      _ = inverse (inverse (multiply (multiply (multiply x (inverse x)) (inverse (multiply x (inverse x)))) x)) := congrArg (fun t : α => inverse (inverse (multiply t x))) (Eq.symm (taelja_lemma28 x x a1))
-      _ = inverse (inverse (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply a1 (inverse a1))))) x)) := congrArg (fun t : α => inverse (inverse (multiply (multiply (multiply x (inverse x)) (inverse t)) x))) (Eq.symm (taelja_lemma32 (multiply x (inverse x)) a1))
-      _ = multiply (multiply a1 (inverse a1)) (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply a1 (inverse a1))))) x) := Eq.symm (taelja_lemma33 (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) (multiply a1 (inverse a1))))) x))
-      _ = x := taelja_lemma14 (multiply a1 (inverse a1)) x x x
-
--- Lemma 36
-theorem taelja_lemma36 : ∀ (x : α), inverse (inverse x) = x := by
-  intro x
-  calc inverse (inverse x) = multiply x (multiply (multiply (multiply x (inverse x)) (inverse (multiply (multiply x (inverse x)) x))) (inverse (inverse x))) := Eq.symm (taelja_lemma14 x x x (inverse (inverse x)))
-      _ = multiply x (multiply (inverse (inverse (inverse (multiply (multiply x (inverse x)) x)))) (inverse (inverse x))) := congrArg (fun t : α => multiply x (multiply t (inverse (inverse x)))) (taelja_lemma34 x (inverse (multiply (multiply x (inverse x)) x)))
-      _ = multiply x (multiply (inverse (inverse (inverse (inverse (inverse x))))) (inverse (inverse x))) := congrArg (fun t : α => multiply x (multiply (inverse (inverse (inverse t))) (inverse (inverse x)))) (taelja_lemma34 x x)
-      _ = multiply x (multiply (inverse x) (inverse (inverse x))) := congrArg (fun t : α => multiply x (multiply t (inverse (inverse x)))) (taelja_lemma35 (inverse x))
-      _ = x := taelja_lemma32 x (inverse x)
-
--- Lemma 37
-theorem taelja_lemma37 : multiply a1 (inverse (multiply a1 a1)) = inverse a1 := by
-  calc multiply a1 (inverse (multiply a1 a1)) = multiply a1 (inverse (multiply a1 (inverse (inverse a1)))) := congrArg (fun t : α => multiply a1 (inverse (multiply a1 t))) (Eq.symm (taelja_lemma36 a1))
-      _ = multiply a1 (inverse (multiply a1 (multiply (multiply a1 (inverse a1)) a1))) := congrArg (fun t : α => multiply a1 (inverse (multiply a1 t))) (Eq.symm (taelja_lemma34 a1 a1))
-      _ = inverse (inverse (multiply a1 (inverse (multiply a1 (multiply (multiply a1 (inverse a1)) a1))))) := Eq.symm (taelja_lemma36 (multiply a1 (inverse (multiply a1 (multiply (multiply a1 (inverse a1)) a1)))))
-      _ = inverse a1 := congrArg (fun t : α => inverse t) (taelja_lemma26 a1)
-
--- Lemma 38
-theorem taelja_lemma38 : ∀ (x y : α), multiply x (multiply (inverse y) y) = x := by
-  intro x y
-  calc multiply x (multiply (inverse y) y) = multiply x (multiply (inverse y) (inverse (inverse y))) := congrArg (fun t : α => multiply x (multiply (inverse y) t)) (Eq.symm (taelja_lemma36 y))
-      _ = x := taelja_lemma32 x (inverse y)
-
--- Lemma 39
-theorem taelja_lemma39 : multiply a1 (multiply a1 (inverse a1)) = a1 := by
-  calc multiply a1 (multiply a1 (inverse a1)) = multiply a1 (multiply (multiply a1 (inverse a1)) (inverse (multiply a1 (inverse a1)))) := congrArg (fun t : α => multiply a1 t) (Eq.symm (taelja_lemma28 a1 a1 a1))
-      _ = multiply a1 (inverse (multiply (inverse (inverse (multiply a1 (inverse a1)))) (multiply a1 (inverse a1)))) := congrArg (fun t : α => multiply a1 t) (Eq.symm (taelja_lemma29 (inverse (multiply a1 (inverse a1))) a1))
-      _ = multiply a1 (inverse (multiply (inverse (inverse (multiply a1 (inverse a1)))) (multiply (multiply a1 (inverse (multiply a1 (multiply (multiply a1 (inverse a1)) a1)))) a1))) := congrArg (fun t : α => multiply a1 (inverse (multiply (inverse (inverse (multiply a1 (inverse a1)))) t))) (Eq.symm (taelja_lemma30 a1))
-      _ = inverse (multiply a1 (inverse (multiply a1 (multiply (multiply a1 (inverse a1)) a1)))) := taelja_lemma31 a1 a1 (multiply a1 (inverse (multiply a1 (multiply (multiply a1 (inverse a1)) a1))))
-      _ = a1 := taelja_lemma26 a1
+  calc multiply x (inverse x) = multiply (inverse y) (inverse (inverse y)) := taelja_lemma6 x (inverse y)
+      _ = multiply (inverse y) y := congrArg (fun t : α => multiply (inverse y) t) (taelja_lemma23 y)
 
 -- Goal 1
 theorem taelja_goal1 : multiply (inverse a1) a1 = multiply (inverse b1) b1 := by
-  calc multiply (inverse a1) a1 = multiply (multiply a1 (inverse (multiply a1 a1))) a1 := congrArg (fun t : α => multiply t a1) (Eq.symm (taelja_lemma37))
-      _ = multiply (multiply a1 (inverse (multiply a1 (inverse (inverse a1))))) a1 := congrArg (fun t : α => multiply (multiply a1 (inverse (multiply a1 t))) a1) (Eq.symm (taelja_lemma36 a1))
-      _ = multiply (multiply a1 (inverse (multiply a1 (multiply (multiply a1 (inverse a1)) a1)))) a1 := congrArg (fun t : α => multiply (multiply a1 (inverse (multiply a1 t))) a1) (Eq.symm (taelja_lemma34 a1 a1))
-      _ = multiply a1 (inverse a1) := taelja_lemma30 a1
-      _ = inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 (multiply a1 (inverse a1))) a1))) a1)) := Eq.symm (taelja_lemma12 (multiply a1 (inverse a1)))
-      _ = inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply a1 a1))) a1)) := congrArg (fun t : α => inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply t a1))) a1))) (taelja_lemma39)
-      _ = inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply (multiply a1 (multiply (inverse b1) b1)) a1))) a1)) := congrArg (fun t : α => inverse (multiply a1 (multiply (multiply (multiply a1 (inverse a1)) (inverse (multiply t a1))) a1))) (Eq.symm (taelja_lemma38 a1 b1))
-      _ = multiply (inverse b1) b1 := taelja_lemma12 (multiply (inverse b1) b1)
+  have x : α := taelja_elem
+  have h1 : multiply x (inverse x) = multiply (inverse b1) b1 := taelja_lemma24 x b1
+  have h2 : multiply (inverse a1) a1 = multiply (inverse b1) b1 := Eq.mp (congrArg (fun t : α => t = multiply (inverse b1) b1) (taelja_lemma24 x a1)) h1
+  exact h2
 
 end EGrp4301

@@ -22,83 +22,73 @@ axiom subgroup_member : α → Prop
 -- Axiom 1
 axiom ax1 : subgroup_member b
 -- Axiom 2
-axiom ax2 : subgroup_member a
+axiom ax2 : ∀ (x : α), product x (inverse x) identity
 -- Axiom 3
-axiom ax3 : ∀ (x y : α), product x y (multiply x y)
+axiom ax3 : ∀ (x y z : α), subgroup_member x → subgroup_member y → product x (inverse y) z → subgroup_member z
 -- Axiom 4
-axiom ax4 : product a b c
+axiom ax4 : ∀ (x : α), product identity x x
 -- Axiom 5
-axiom ax5 : ∀ (x y z u : α), product x y z → product x y u → z = u
+axiom ax5 : subgroup_member a
 -- Axiom 6
-axiom ax6 : ∀ (x : α), product x (inverse x) identity
+axiom ax6 : ∀ (x y : α), product x y (multiply x y)
 -- Axiom 7
-axiom ax7 : ∀ (x y z : α), subgroup_member x → subgroup_member y → product x (inverse y) z → subgroup_member z
+axiom ax7 : product a b c
 -- Axiom 8
-axiom ax8 : ∀ (x : α), product identity x x
+axiom ax8 : ∀ (x y z u : α), product x y z → product x y u → z = u
 -- Axiom 9
-axiom ax9 : ∀ (x : α), product (inverse x) x identity
+axiom ax9 : ∀ (x : α), product x identity x
 -- Axiom 10
-axiom ax10 : ∀ (x : α), product x identity x
--- Axiom 11
-axiom ax11 : ∀ (x y z u v w : α), product x y z → product y u v → product x v w → product z u w
+axiom ax10 : ∀ (x y z u v w : α), product x y z → product y u v → product x v w → product z u w
+
+-- Lemma 11
+theorem taelja_lemma11 : b = multiply b identity := by
+  have h1 : product b identity b := ax9 b
+  have h2 : product b identity (multiply b identity) := ax6 b identity
+  have h3 : b = multiply b identity := ax8 b identity b (multiply b identity) h1 h2
+  exact h3
 
 -- Lemma 12
-theorem taelja_lemma12 : inverse (inverse b) = multiply (inverse (inverse b)) identity := by
-  have h1 : product (inverse (inverse b)) identity (inverse (inverse b)) := ax10 (inverse (inverse b))
-  have h2 : product (inverse (inverse b)) identity (multiply (inverse (inverse b)) identity) := ax3 (inverse (inverse b)) identity
-  have h3 : inverse (inverse b) = multiply (inverse (inverse b)) identity := ax5 (inverse (inverse b)) identity (inverse (inverse b)) (multiply (inverse (inverse b)) identity) h1 h2
-  exact h3
-
--- Lemma 13
-theorem taelja_lemma13 : product identity b (inverse (inverse b)) := by
-  have h1 : product (inverse (inverse b)) (inverse b) identity := ax9 (inverse b)
-  have h2 : product (inverse b) b identity := ax9 b
-  have h3 : product (inverse (inverse b)) identity (multiply (inverse (inverse b)) identity) := ax3 (inverse (inverse b)) identity
-  have h4 : product identity b (multiply (inverse (inverse b)) identity) := ax11 (inverse (inverse b)) (inverse b) identity b identity (multiply (inverse (inverse b)) identity) h1 h2 h3
-  have h5 : product identity b (inverse (inverse b)) := Eq.mp (congrArg (fun t : α => product identity b t) (Eq.symm (taelja_lemma12))) h4
+theorem taelja_lemma12 : product identity (inverse (inverse b)) b := by
+  have h1 : product b (inverse b) identity := ax2 b
+  have h2 : product (inverse b) (inverse (inverse b)) identity := ax2 (inverse b)
+  have h3 : product b identity (multiply b identity) := ax6 b identity
+  have h4 : product identity (inverse (inverse b)) (multiply b identity) := ax10 b (inverse b) identity (inverse (inverse b)) identity (multiply b identity) h1 h2 h3
+  have h5 : product identity (inverse (inverse b)) b := Eq.mp (congrArg (fun t : α => product identity (inverse (inverse b)) t) (Eq.symm (taelja_lemma11))) h4
   exact h5
 
--- Lemma 14
-theorem taelja_lemma14 : subgroup_member (inverse b) := by
+-- Lemma 13
+theorem taelja_lemma13 : subgroup_member (inverse b) := by
   have h1 : subgroup_member b := ax1
   have h2 : subgroup_member b := ax1
-  have h3 : product b (inverse b) identity := ax6 b
-  have h4 : subgroup_member identity := ax7 b b identity h1 h1 h3
+  have h3 : product b (inverse b) identity := ax2 b
+  have h4 : subgroup_member identity := ax3 b b identity h1 h1 h3
   have h5 : subgroup_member b := ax1
-  have h6 : product identity (inverse b) (inverse b) := ax8 (inverse b)
-  have h7 : subgroup_member (inverse b) := ax7 identity b (inverse b) h4 h5 h6
+  have h6 : product identity (inverse b) (inverse b) := ax4 (inverse b)
+  have h7 : subgroup_member (inverse b) := ax3 identity b (inverse b) h4 h5 h6
   exact h7
 
+-- Lemma 14
+theorem taelja_lemma14 : inverse (inverse b) = b := by
+  have h1 : product identity (inverse (inverse b)) (inverse (inverse b)) := ax4 (inverse (inverse b))
+  have h2 : product identity (inverse (inverse b)) b := taelja_lemma12
+  have h3 : inverse (inverse b) = b := ax8 identity (inverse (inverse b)) (inverse (inverse b)) b h1 h2
+  exact h3
+
 -- Lemma 15
-theorem taelja_lemma15 : multiply identity b = inverse (inverse b) := by
-  have h1 : product identity b (multiply identity b) := ax3 identity b
-  have h2 : product identity b (inverse (inverse b)) := taelja_lemma13
-  have h3 : multiply identity b = inverse (inverse b) := ax5 identity b (multiply identity b) (inverse (inverse b)) h1 h2
-  exact h3
-
--- Lemma 16
-theorem taelja_lemma16 : b = multiply identity b := by
-  have h1 : product identity b b := ax8 b
-  have h2 : product identity b (multiply identity b) := ax3 identity b
-  have h3 : b = multiply identity b := ax5 identity b b (multiply identity b) h1 h2
-  exact h3
-
--- Lemma 17
-theorem taelja_lemma17 : c = multiply a b := by
-  have h1 : product a b c := ax4
-  have h2 : product a b (multiply a b) := ax3 a b
-  have h3 : c = multiply a b := ax5 a b c (multiply a b) h1 h2
+theorem taelja_lemma15 : c = multiply a b := by
+  have h1 : product a b c := ax7
+  have h2 : product a b (multiply a b) := ax6 a b
+  have h3 : c = multiply a b := ax8 a b c (multiply a b) h1 h2
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : subgroup_member c := by
-  have h1 : subgroup_member a := ax2
-  have h2 : subgroup_member (inverse b) := taelja_lemma14
-  have h3 : product a (inverse (inverse b)) (multiply a (inverse (inverse b))) := ax3 a (inverse (inverse b))
-  have h4 : subgroup_member (multiply a (inverse (inverse b))) := ax7 a (inverse b) (multiply a (inverse (inverse b))) h1 h2 h3
-  have h5 : subgroup_member (multiply a (multiply identity b)) := Eq.mp (congrArg (fun t : α => subgroup_member (multiply a t)) (Eq.symm (taelja_lemma15))) h4
-  have h6 : subgroup_member (multiply a b) := Eq.mp (congrArg (fun t : α => subgroup_member (multiply a t)) (Eq.symm (taelja_lemma16))) h5
-  have h7 : subgroup_member c := Eq.mp (congrArg (fun t : α => subgroup_member t) (Eq.symm (taelja_lemma17))) h6
-  exact h7
+  have h1 : subgroup_member a := ax5
+  have h2 : subgroup_member (inverse b) := taelja_lemma13
+  have h3 : product a (inverse (inverse b)) (multiply a (inverse (inverse b))) := ax6 a (inverse (inverse b))
+  have h4 : subgroup_member (multiply a (inverse (inverse b))) := ax3 a (inverse b) (multiply a (inverse (inverse b))) h1 h2 h3
+  have h5 : subgroup_member (multiply a b) := Eq.mp (congrArg (fun t : α => subgroup_member (multiply a t)) (taelja_lemma14)) h4
+  have h6 : subgroup_member c := Eq.mp (congrArg (fun t : α => subgroup_member t) (Eq.symm (taelja_lemma15))) h5
+  exact h6
 
 end EGrp0353

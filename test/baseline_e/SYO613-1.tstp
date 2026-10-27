@@ -1,92 +1,1116 @@
-# Preprocessing class: FSMSSMSSSSSNFFN.
-# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
-# No SInE strategy applied
-# Search class: FHHNS-FFSF21-SFFFFFNN
-# Configuration: SAT001_MinMin_p005000_rr_RG
-# Initializing proof state
-# Scanning for AC axioms
-#
-#cnf(i_0_6, plain, (le(X1,X1))).
-#
-#cnf(i_0_9, plain, (eq(f(X1),a0))).
-#
-#cnf(i_0_8, plain, (le(X2,X3)|~le(max(X1,X2),X3))).
-#
-#cnf(i_0_7, plain, (le(X1,X3)|~le(max(X1,X2),X3))).
-#
-#cnf(i_0_10, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2))).
-# Presaturation interreduction done
-#
-#cnf(i_0_6, plain, (le(X1,X1))).
-#
-#cnf(i_0_9, plain, (eq(f(X1),a0))).
-#
-#cnf(i_0_8, plain, (le(X1,X2)|~le(max(X3,X1),X2))).
-#
-#cnf(i_0_7, plain, (le(X1,X2)|~le(max(X1,X3),X2))).
-#
-#cnf(i_0_10, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10)|~le(s(X12),X11))).
-#
-#cnf(i_0_13, plain, (~le(s(X2),X1)|~le(s(X3),X2)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10))).
-#
-#cnf(i_0_14, plain, (~le(s(X2),X1)|~le(s(X3),X2)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9))).
-#
-#cnf(i_0_11, plain, (le(X1,max(X2,X1)))).
-#
-#cnf(i_0_12, plain, (le(X1,max(X1,X2)))).
-#
-#cnf(i_0_17, plain, (le(X1,max(X2,max(X3,X1))))).
-#
-#cnf(i_0_18, plain, (le(X1,max(X2,max(X1,X3))))).
-#
-#cnf(i_0_15, plain, (~le(s(X2),X1)|~le(s(X3),X2)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8))).
-#
-#cnf(i_0_20, plain, (le(X1,max(max(X2,X1),X3)))).
-#
-#cnf(i_0_28, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9))).
-#
-#cnf(i_0_36, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8))).
-#
-#cnf(i_0_42, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7))).
-#
-#cnf(i_0_48, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6))).
-#
-#cnf(i_0_54, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5))).
-#
-#cnf(i_0_60, plain, (~le(s(X4),X1)|~le(s(X5),X4))).
-#
-#cnf(i_0_66, plain, (~le(s(X4),X1))).
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with pid 23836 completed with status 0
+% Result found by G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FHHNS-FFSF21-SFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% SubtermCWHack with pid 23837 completed with status 0
+% Result found by SubtermCWHack
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FHHNS-FFSF21-SFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% Initializing proof state
+% Scanning for AC axioms
+%
+%cnf(i_0_6, plain, (le(X1,X1))).
+%
+%cnf(i_0_9, plain, (eq(f(X1),a0))).
+%
+%cnf(i_0_8, plain, (le(X2,X3)|~le(max(X1,X2),X3))).
+%
+%cnf(i_0_11, plain, (le(X1,max(X2,X1)))).
+%
+%cnf(i_0_12, plain, (le(X1,max(X2,max(X3,X1))))).
+%
+%cnf(i_0_7, plain, (le(X1,X3)|~le(max(X1,X2),X3))).
+%
+%cnf(i_0_16, plain, (le(X1,max(X1,X2)))).
+%
+%cnf(i_0_15, plain, (le(X1,max(X2,max(X1,X3))))).
+%
+%cnf(i_0_17, plain, (le(X1,max(max(X1,X2),X3)))).
+%
+%cnf(i_0_18, plain, (le(X1,max(max(X2,X1),X3)))).
+%
+%cnf(i_0_10, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2))).
+%
+%cnf(i_0_13, plain, (le(X1,max(X2,max(X3,max(X4,X1)))))).
+%
+%cnf(i_0_14, plain, (le(X1,max(X2,max(X3,max(X1,X4)))))).
+%
+%cnf(i_0_19, plain, (le(X1,max(X2,max(max(X1,X3),X4))))).
+%
+%cnf(i_0_20, plain, (le(X1,max(X2,max(max(X3,X1),X4))))).
+%
+%cnf(i_0_21, plain, (le(X1,max(max(max(X1,X2),X3),X4)))).
+%
+%cnf(i_0_22, plain, (le(X1,max(max(max(X2,X1),X3),X4)))).
+%
+%cnf(i_0_23, plain, (le(X1,max(max(X2,max(X1,X3)),X4)))).
+%
+%cnf(i_0_24, plain, (le(X1,max(max(X2,max(X3,X1)),X4)))).
+%
+%cnf(i_0_33, plain, (le(X1,max(X2,max(X3,max(X4,max(X1,X5))))))).
+%
+%cnf(i_0_34, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,X1))))))).
+%
+%cnf(i_0_25, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10)|~le(s(X12),X11)|~le(s(X13),X12))).
+%
+%cnf(i_0_36, plain, (le(X1,max(X2,max(X3,max(max(X1,X4),X5)))))).
+%
+%cnf(i_0_37, plain, (le(X1,max(X2,max(X3,max(max(X4,X1),X5)))))).
+%
+%cnf(i_0_39, plain, (le(X1,max(X2,max(max(max(X1,X3),X4),X5))))).
+%
+%cnf(i_0_40, plain, (le(X1,max(X2,max(max(max(X3,X1),X4),X5))))).
+%
+%cnf(i_0_42, plain, (le(X1,max(X2,max(max(X3,max(X1,X4)),X5))))).
+%
+%cnf(i_0_43, plain, (le(X1,max(X2,max(max(X3,max(X4,X1)),X5))))).
+%
+%cnf(i_0_45, plain, (le(X1,max(max(max(max(X1,X2),X3),X4),X5)))).
+%
+%cnf(i_0_46, plain, (le(X1,max(max(max(max(X2,X1),X3),X4),X5)))).
+%
+%cnf(i_0_48, plain, (le(X1,max(max(max(X2,max(X1,X3)),X4),X5)))).
+%
+%cnf(i_0_49, plain, (le(X1,max(max(max(X2,max(X3,X1)),X4),X5)))).
+%
+%cnf(i_0_51, plain, (le(X1,max(max(X2,max(max(X1,X3),X4)),X5)))).
+%
+%cnf(i_0_52, plain, (le(X1,max(max(X2,max(max(X3,X1),X4)),X5)))).
+%
+%cnf(i_0_54, plain, (le(X1,max(max(X2,max(X3,max(X1,X4))),X5)))).
+%
+%cnf(i_0_55, plain, (le(X1,max(max(X2,max(X3,max(X4,X1))),X5)))).
+%
+%cnf(i_0_57, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X1,X5),X6))))))).
+%
+%cnf(i_0_58, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,X1),X6))))))).
+%
+%cnf(i_0_60, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X1,X6)))))))).
+%
+%cnf(i_0_61, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,X1)))))))).
+%
+%cnf(i_0_80, plain, (le(X1,max(X2,max(X3,max(max(max(X1,X4),X5),X6)))))).
+%
+%cnf(i_0_81, plain, (le(X1,max(X2,max(X3,max(max(max(X4,X1),X5),X6)))))).
+%
+%cnf(i_0_83, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X1,X5)),X6)))))).
+%
+%cnf(i_0_62, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10)|~le(s(X12),X11))).
+%
+%cnf(i_0_84, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,X1)),X6)))))).
+%
+%cnf(i_0_86, plain, (le(X1,max(X2,max(max(max(max(X1,X3),X4),X5),X6))))).
+%
+%cnf(i_0_87, plain, (le(X1,max(X2,max(max(max(max(X3,X1),X4),X5),X6))))).
+%
+%cnf(i_0_89, plain, (le(X1,max(X2,max(max(max(X3,max(X1,X4)),X5),X6))))).
+%
+%cnf(i_0_90, plain, (le(X1,max(X2,max(max(max(X3,max(X4,X1)),X5),X6))))).
+%
+%cnf(i_0_92, plain, (le(X1,max(X2,max(max(X3,max(max(X1,X4),X5)),X6))))).
+%
+%cnf(i_0_93, plain, (le(X1,max(X2,max(max(X3,max(max(X4,X1),X5)),X6))))).
+%
+%cnf(i_0_95, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X1,X5))),X6))))).
+%
+%cnf(i_0_96, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,X1))),X6))))).
+%
+%cnf(i_0_98, plain, (le(X1,max(max(max(max(max(X1,X2),X3),X4),X5),X6)))).
+%
+%cnf(i_0_99, plain, (le(X1,max(max(max(max(max(X2,X1),X3),X4),X5),X6)))).
+%
+%cnf(i_0_101, plain, (le(X1,max(max(max(max(X2,max(X1,X3)),X4),X5),X6)))).
+%
+%cnf(i_0_102, plain, (le(X1,max(max(max(max(X2,max(X3,X1)),X4),X5),X6)))).
+%
+%cnf(i_0_104, plain, (le(X1,max(max(max(X2,max(max(X1,X3),X4)),X5),X6)))).
+%
+%cnf(i_0_105, plain, (le(X1,max(max(max(X2,max(max(X3,X1),X4)),X5),X6)))).
+%
+%cnf(i_0_107, plain, (le(X1,max(max(max(X2,max(X3,max(X1,X4))),X5),X6)))).
+%
+%cnf(i_0_108, plain, (le(X1,max(max(max(X2,max(X3,max(X4,X1))),X5),X6)))).
+%
+%cnf(i_0_110, plain, (le(X1,max(max(X2,max(max(max(X1,X3),X4),X5)),X6)))).
+%
+%cnf(i_0_111, plain, (le(X1,max(max(X2,max(max(max(X3,X1),X4),X5)),X6)))).
+%
+%cnf(i_0_113, plain, (le(X1,max(max(X2,max(max(X3,max(X1,X4)),X5)),X6)))).
+%
+%cnf(i_0_114, plain, (le(X1,max(max(X2,max(max(X3,max(X4,X1)),X5)),X6)))).
+%
+%cnf(i_0_116, plain, (le(X1,max(max(X2,max(X3,max(max(X1,X4),X5))),X6)))).
+%
+%cnf(i_0_117, plain, (le(X1,max(max(X2,max(X3,max(max(X4,X1),X5))),X6)))).
+%
+%cnf(i_0_119, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X1,X5)))),X6)))).
+%
+%cnf(i_0_120, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,X1)))),X6)))).
+%
+%cnf(i_0_122, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(X1,X5),X6),X7))))))).
+%
+%cnf(i_0_123, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(X5,X1),X6),X7))))))).
+%
+%cnf(i_0_125, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(X1,X6)),X7))))))).
+%
+%cnf(i_0_126, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(X6,X1)),X7))))))).
+%
+%cnf(i_0_128, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(X1,X6),X7)))))))).
+%
+%cnf(i_0_129, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(X6,X1),X7)))))))).
+%
+%cnf(i_0_131, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(X1,X7))))))))).
+%
+%cnf(i_0_132, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,X1))))))))).
+%
+%cnf(i_0_134, plain, (le(X1,max(X2,max(X3,max(max(max(max(X1,X4),X5),X6),X7)))))).
+%
+%cnf(i_0_135, plain, (le(X1,max(X2,max(X3,max(max(max(max(X4,X1),X5),X6),X7)))))).
+%
+%cnf(i_0_137, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(X1,X5)),X6),X7)))))).
+%
+%cnf(i_0_138, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(X5,X1)),X6),X7)))))).
+%
+%cnf(i_0_140, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(X1,X5),X6)),X7)))))).
+%
+%cnf(i_0_141, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(X5,X1),X6)),X7)))))).
+%
+%cnf(i_0_181, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(X1,X6))),X7)))))).
+%
+%cnf(i_0_182, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(X6,X1))),X7)))))).
+%
+%cnf(i_0_184, plain, (le(X1,max(X2,max(max(max(max(max(X1,X3),X4),X5),X6),X7))))).
+%
+%cnf(i_0_185, plain, (le(X1,max(X2,max(max(max(max(max(X3,X1),X4),X5),X6),X7))))).
+%
+%cnf(i_0_142, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10))).
+%
+%cnf(i_0_187, plain, (le(X1,max(X2,max(max(max(max(X3,max(X1,X4)),X5),X6),X7))))).
+%
+%cnf(i_0_188, plain, (le(X1,max(X2,max(max(max(max(X3,max(X4,X1)),X5),X6),X7))))).
+%
+%cnf(i_0_190, plain, (le(X1,max(X2,max(max(max(X3,max(max(X1,X4),X5)),X6),X7))))).
+%
+%cnf(i_0_191, plain, (le(X1,max(X2,max(max(max(X3,max(max(X4,X1),X5)),X6),X7))))).
+%
+%cnf(i_0_193, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(X1,X5))),X6),X7))))).
+%
+%cnf(i_0_194, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(X5,X1))),X6),X7))))).
+%
+%cnf(i_0_196, plain, (le(X1,max(X2,max(max(X3,max(max(max(X1,X4),X5),X6)),X7))))).
+%
+%cnf(i_0_197, plain, (le(X1,max(X2,max(max(X3,max(max(max(X4,X1),X5),X6)),X7))))).
+%
+%cnf(i_0_199, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(X1,X5)),X6)),X7))))).
+%
+%cnf(i_0_200, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(X5,X1)),X6)),X7))))).
+%
+%cnf(i_0_202, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(X1,X5),X6))),X7))))).
+%
+%cnf(i_0_203, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(X5,X1),X6))),X7))))).
+%
+%cnf(i_0_205, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(X1,X6)))),X7))))).
+%
+%cnf(i_0_206, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(X6,X1)))),X7))))).
+%
+%cnf(i_0_208, plain, (le(X1,max(max(max(max(max(max(X1,X2),X3),X4),X5),X6),X7)))).
+%
+%cnf(i_0_209, plain, (le(X1,max(max(max(max(max(max(X2,X1),X3),X4),X5),X6),X7)))).
+%
+%cnf(i_0_211, plain, (le(X1,max(max(max(max(max(X2,max(X1,X3)),X4),X5),X6),X7)))).
+%
+%cnf(i_0_212, plain, (le(X1,max(max(max(max(max(X2,max(X3,X1)),X4),X5),X6),X7)))).
+%
+%cnf(i_0_214, plain, (le(X1,max(max(max(max(X2,max(max(X1,X3),X4)),X5),X6),X7)))).
+%
+%cnf(i_0_215, plain, (le(X1,max(max(max(max(X2,max(max(X3,X1),X4)),X5),X6),X7)))).
+%
+%cnf(i_0_217, plain, (le(X1,max(max(max(max(X2,max(X3,max(X1,X4))),X5),X6),X7)))).
+%
+%cnf(i_0_218, plain, (le(X1,max(max(max(max(X2,max(X3,max(X4,X1))),X5),X6),X7)))).
+%
+%cnf(i_0_220, plain, (le(X1,max(max(max(X2,max(max(max(X1,X3),X4),X5)),X6),X7)))).
+%
+%cnf(i_0_221, plain, (le(X1,max(max(max(X2,max(max(max(X3,X1),X4),X5)),X6),X7)))).
+%
+%cnf(i_0_223, plain, (le(X1,max(max(max(X2,max(max(X3,max(X1,X4)),X5)),X6),X7)))).
+%
+%cnf(i_0_224, plain, (le(X1,max(max(max(X2,max(max(X3,max(X4,X1)),X5)),X6),X7)))).
+%
+%cnf(i_0_226, plain, (le(X1,max(max(max(X2,max(X3,max(max(X1,X4),X5))),X6),X7)))).
+%
+%cnf(i_0_227, plain, (le(X1,max(max(max(X2,max(X3,max(max(X4,X1),X5))),X6),X7)))).
+%
+%cnf(i_0_229, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(X1,X5)))),X6),X7)))).
+%
+%cnf(i_0_230, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(X5,X1)))),X6),X7)))).
+%
+%cnf(i_0_232, plain, (le(X1,max(max(X2,max(max(max(max(X1,X3),X4),X5),X6)),X7)))).
+%
+%cnf(i_0_233, plain, (le(X1,max(max(X2,max(max(max(max(X3,X1),X4),X5),X6)),X7)))).
+%
+%cnf(i_0_235, plain, (le(X1,max(max(X2,max(max(max(X3,max(X1,X4)),X5),X6)),X7)))).
+%
+%cnf(i_0_236, plain, (le(X1,max(max(X2,max(max(max(X3,max(X4,X1)),X5),X6)),X7)))).
+%
+%cnf(i_0_238, plain, (le(X1,max(max(X2,max(max(X3,max(max(X1,X4),X5)),X6)),X7)))).
+%
+%cnf(i_0_239, plain, (le(X1,max(max(X2,max(max(X3,max(max(X4,X1),X5)),X6)),X7)))).
+%
+%cnf(i_0_241, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(X1,X5))),X6)),X7)))).
+%
+%cnf(i_0_242, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(X5,X1))),X6)),X7)))).
+%
+%cnf(i_0_244, plain, (le(X1,max(max(X2,max(X3,max(max(max(X1,X4),X5),X6))),X7)))).
+%
+%cnf(i_0_245, plain, (le(X1,max(max(X2,max(X3,max(max(max(X4,X1),X5),X6))),X7)))).
+%
+%cnf(i_0_247, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(X1,X5)),X6))),X7)))).
+%
+%cnf(i_0_248, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(X5,X1)),X6))),X7)))).
+%
+%cnf(i_0_250, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(X1,X5),X6)))),X7)))).
+%
+%cnf(i_0_251, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(X5,X1),X6)))),X7)))).
+%
+%cnf(i_0_253, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(X1,X6))))),X7)))).
+%
+%cnf(i_0_254, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(X6,X1))))),X7)))).
+%
+%cnf(i_0_256, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(max(X1,X5),X6),X7),X8))))))).
+%
+%cnf(i_0_257, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(max(X5,X1),X6),X7),X8))))))).
+%
+%cnf(i_0_259, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(X5,max(X1,X6)),X7),X8))))))).
+%
+%cnf(i_0_260, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(X5,max(X6,X1)),X7),X8))))))).
+%
+%cnf(i_0_262, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(max(X1,X6),X7)),X8))))))).
+%
+%cnf(i_0_263, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(max(X6,X1),X7)),X8))))))).
+%
+%cnf(i_0_265, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(X6,max(X1,X7))),X8))))))).
+%
+%cnf(i_0_266, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(X6,max(X7,X1))),X8))))))).
+%
+%cnf(i_0_268, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(max(X1,X6),X7),X8)))))))).
+%
+%cnf(i_0_269, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(max(X6,X1),X7),X8)))))))).
+%
+%cnf(i_0_271, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(X6,max(X1,X7)),X8)))))))).
+%
+%cnf(i_0_272, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(X6,max(X7,X1)),X8)))))))).
+%
+%cnf(i_0_274, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(max(X1,X7),X8))))))))).
+%
+%cnf(i_0_275, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(max(X7,X1),X8))))))))).
+%
+%cnf(i_0_277, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,max(X1,X8)))))))))).
+%
+%cnf(i_0_278, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,max(X8,X1)))))))))).
+%
+%cnf(i_0_280, plain, (le(X1,max(X2,max(X3,max(max(max(max(max(X1,X4),X5),X6),X7),X8)))))).
+%
+%cnf(i_0_281, plain, (le(X1,max(X2,max(X3,max(max(max(max(max(X4,X1),X5),X6),X7),X8)))))).
+%
+%cnf(i_0_283, plain, (le(X1,max(X2,max(X3,max(max(max(max(X4,max(X1,X5)),X6),X7),X8)))))).
+%
+%cnf(i_0_284, plain, (le(X1,max(X2,max(X3,max(max(max(max(X4,max(X5,X1)),X6),X7),X8)))))).
+%
+%cnf(i_0_286, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(max(X1,X5),X6)),X7),X8)))))).
+%
+%cnf(i_0_287, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(max(X5,X1),X6)),X7),X8)))))).
+%
+%cnf(i_0_289, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(X5,max(X1,X6))),X7),X8)))))).
+%
+%cnf(i_0_290, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(X5,max(X6,X1))),X7),X8)))))).
+%
+%cnf(i_0_292, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(max(X1,X5),X6),X7)),X8)))))).
+%
+%cnf(i_0_293, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(max(X5,X1),X6),X7)),X8)))))).
+%
+%cnf(i_0_295, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(X5,max(X1,X6)),X7)),X8)))))).
+%
+%cnf(i_0_296, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(X5,max(X6,X1)),X7)),X8)))))).
+%
+%cnf(i_0_298, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(max(X1,X6),X7))),X8)))))).
+%
+%cnf(i_0_299, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(max(X6,X1),X7))),X8)))))).
+%
+%cnf(i_0_301, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(X6,max(X1,X7)))),X8)))))).
+%
+%cnf(i_0_302, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(X6,max(X7,X1)))),X8)))))).
+%
+%cnf(i_0_304, plain, (le(X1,max(X2,max(max(max(max(max(max(X1,X3),X4),X5),X6),X7),X8))))).
+%
+%cnf(i_0_305, plain, (le(X1,max(X2,max(max(max(max(max(max(X3,X1),X4),X5),X6),X7),X8))))).
+%
+%cnf(i_0_307, plain, (le(X1,max(X2,max(max(max(max(max(X3,max(X1,X4)),X5),X6),X7),X8))))).
+%
+%cnf(i_0_308, plain, (le(X1,max(X2,max(max(max(max(max(X3,max(X4,X1)),X5),X6),X7),X8))))).
+%
+%cnf(i_0_391, plain, (le(X1,max(X2,max(max(max(max(X3,max(max(X1,X4),X5)),X6),X7),X8))))).
+%
+%cnf(i_0_392, plain, (le(X1,max(X2,max(max(max(max(X3,max(max(X4,X1),X5)),X6),X7),X8))))).
+%
+%cnf(i_0_394, plain, (le(X1,max(X2,max(max(max(max(X3,max(X4,max(X1,X5))),X6),X7),X8))))).
+%
+%cnf(i_0_395, plain, (le(X1,max(X2,max(max(max(max(X3,max(X4,max(X5,X1))),X6),X7),X8))))).
+%
+%cnf(i_0_397, plain, (le(X1,max(X2,max(max(max(X3,max(max(max(X1,X4),X5),X6)),X7),X8))))).
+%
+%cnf(i_0_309, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9))).
+%
+%cnf(i_0_398, plain, (le(X1,max(X2,max(max(max(X3,max(max(max(X4,X1),X5),X6)),X7),X8))))).
+%
+%cnf(i_0_400, plain, (le(X1,max(X2,max(max(max(X3,max(max(X4,max(X1,X5)),X6)),X7),X8))))).
+%
+%cnf(i_0_401, plain, (le(X1,max(X2,max(max(max(X3,max(max(X4,max(X5,X1)),X6)),X7),X8))))).
+%
+%cnf(i_0_403, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(max(X1,X5),X6))),X7),X8))))).
+%
+%cnf(i_0_404, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(max(X5,X1),X6))),X7),X8))))).
+%
+%cnf(i_0_406, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(X5,max(X1,X6)))),X7),X8))))).
+%
+%cnf(i_0_407, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(X5,max(X6,X1)))),X7),X8))))).
+%
+%cnf(i_0_409, plain, (le(X1,max(X2,max(max(X3,max(max(max(max(X1,X4),X5),X6),X7)),X8))))).
+%
+%cnf(i_0_410, plain, (le(X1,max(X2,max(max(X3,max(max(max(max(X4,X1),X5),X6),X7)),X8))))).
+%
+%cnf(i_0_412, plain, (le(X1,max(X2,max(max(X3,max(max(max(X4,max(X1,X5)),X6),X7)),X8))))).
+%
+%cnf(i_0_413, plain, (le(X1,max(X2,max(max(X3,max(max(max(X4,max(X5,X1)),X6),X7)),X8))))).
+%
+%cnf(i_0_415, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(max(X1,X5),X6)),X7)),X8))))).
+%
+%cnf(i_0_416, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(max(X5,X1),X6)),X7)),X8))))).
+%
+%cnf(i_0_418, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(X5,max(X1,X6))),X7)),X8))))).
+%
+%cnf(i_0_419, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(X5,max(X6,X1))),X7)),X8))))).
+%
+%cnf(i_0_421, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(max(X1,X5),X6),X7))),X8))))).
+%
+%cnf(i_0_422, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(max(X5,X1),X6),X7))),X8))))).
+%
+%cnf(i_0_424, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(X5,max(X1,X6)),X7))),X8))))).
+%
+%cnf(i_0_425, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(X5,max(X6,X1)),X7))),X8))))).
+%
+%cnf(i_0_427, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(max(X1,X6),X7)))),X8))))).
+%
+%cnf(i_0_428, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(max(X6,X1),X7)))),X8))))).
+%
+%cnf(i_0_430, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(X6,max(X1,X7))))),X8))))).
+%
+%cnf(i_0_431, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(X6,max(X7,X1))))),X8))))).
+%
+%cnf(i_0_433, plain, (le(X1,max(max(max(max(max(max(max(X1,X2),X3),X4),X5),X6),X7),X8)))).
+%
+%cnf(i_0_434, plain, (le(X1,max(max(max(max(max(max(max(X2,X1),X3),X4),X5),X6),X7),X8)))).
+%
+%cnf(i_0_436, plain, (le(X1,max(max(max(max(max(max(X2,max(X1,X3)),X4),X5),X6),X7),X8)))).
+%
+%cnf(i_0_437, plain, (le(X1,max(max(max(max(max(max(X2,max(X3,X1)),X4),X5),X6),X7),X8)))).
+%
+%cnf(i_0_439, plain, (le(X1,max(max(max(max(max(X2,max(max(X1,X3),X4)),X5),X6),X7),X8)))).
+%
+%cnf(i_0_440, plain, (le(X1,max(max(max(max(max(X2,max(max(X3,X1),X4)),X5),X6),X7),X8)))).
+%
+%cnf(i_0_442, plain, (le(X1,max(max(max(max(max(X2,max(X3,max(X1,X4))),X5),X6),X7),X8)))).
+%
+%cnf(i_0_443, plain, (le(X1,max(max(max(max(max(X2,max(X3,max(X4,X1))),X5),X6),X7),X8)))).
+%
+%cnf(i_0_445, plain, (le(X1,max(max(max(max(X2,max(max(max(X1,X3),X4),X5)),X6),X7),X8)))).
+%
+%cnf(i_0_446, plain, (le(X1,max(max(max(max(X2,max(max(max(X3,X1),X4),X5)),X6),X7),X8)))).
+%
+%cnf(i_0_448, plain, (le(X1,max(max(max(max(X2,max(max(X3,max(X1,X4)),X5)),X6),X7),X8)))).
+%
+%cnf(i_0_449, plain, (le(X1,max(max(max(max(X2,max(max(X3,max(X4,X1)),X5)),X6),X7),X8)))).
+%
+%cnf(i_0_451, plain, (le(X1,max(max(max(max(X2,max(X3,max(max(X1,X4),X5))),X6),X7),X8)))).
+%
+%cnf(i_0_452, plain, (le(X1,max(max(max(max(X2,max(X3,max(max(X4,X1),X5))),X6),X7),X8)))).
+%
+%cnf(i_0_454, plain, (le(X1,max(max(max(max(X2,max(X3,max(X4,max(X1,X5)))),X6),X7),X8)))).
+%
+%cnf(i_0_455, plain, (le(X1,max(max(max(max(X2,max(X3,max(X4,max(X5,X1)))),X6),X7),X8)))).
+%
+%cnf(i_0_457, plain, (le(X1,max(max(max(X2,max(max(max(max(X1,X3),X4),X5),X6)),X7),X8)))).
+%
+%cnf(i_0_458, plain, (le(X1,max(max(max(X2,max(max(max(max(X3,X1),X4),X5),X6)),X7),X8)))).
+%
+%cnf(i_0_460, plain, (le(X1,max(max(max(X2,max(max(max(X3,max(X1,X4)),X5),X6)),X7),X8)))).
+%
+%cnf(i_0_461, plain, (le(X1,max(max(max(X2,max(max(max(X3,max(X4,X1)),X5),X6)),X7),X8)))).
+%
+%cnf(i_0_463, plain, (le(X1,max(max(max(X2,max(max(X3,max(max(X1,X4),X5)),X6)),X7),X8)))).
+%
+%cnf(i_0_464, plain, (le(X1,max(max(max(X2,max(max(X3,max(max(X4,X1),X5)),X6)),X7),X8)))).
+%
+%cnf(i_0_466, plain, (le(X1,max(max(max(X2,max(max(X3,max(X4,max(X1,X5))),X6)),X7),X8)))).
+%
+%cnf(i_0_467, plain, (le(X1,max(max(max(X2,max(max(X3,max(X4,max(X5,X1))),X6)),X7),X8)))).
+%
+%cnf(i_0_469, plain, (le(X1,max(max(max(X2,max(X3,max(max(max(X1,X4),X5),X6))),X7),X8)))).
+%
+%cnf(i_0_470, plain, (le(X1,max(max(max(X2,max(X3,max(max(max(X4,X1),X5),X6))),X7),X8)))).
+%
+%cnf(i_0_472, plain, (le(X1,max(max(max(X2,max(X3,max(max(X4,max(X1,X5)),X6))),X7),X8)))).
+%
+%cnf(i_0_473, plain, (le(X1,max(max(max(X2,max(X3,max(max(X4,max(X5,X1)),X6))),X7),X8)))).
+%
+%cnf(i_0_475, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(max(X1,X5),X6)))),X7),X8)))).
+%
+%cnf(i_0_476, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(max(X5,X1),X6)))),X7),X8)))).
+%
+%cnf(i_0_478, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(X5,max(X1,X6))))),X7),X8)))).
+%
+%cnf(i_0_479, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(X5,max(X6,X1))))),X7),X8)))).
+%
+%cnf(i_0_481, plain, (le(X1,max(max(X2,max(max(max(max(max(X1,X3),X4),X5),X6),X7)),X8)))).
+%
+%cnf(i_0_482, plain, (le(X1,max(max(X2,max(max(max(max(max(X3,X1),X4),X5),X6),X7)),X8)))).
+%
+%cnf(i_0_484, plain, (le(X1,max(max(X2,max(max(max(max(X3,max(X1,X4)),X5),X6),X7)),X8)))).
+%
+%cnf(i_0_485, plain, (le(X1,max(max(X2,max(max(max(max(X3,max(X4,X1)),X5),X6),X7)),X8)))).
+%
+%cnf(i_0_487, plain, (le(X1,max(max(X2,max(max(max(X3,max(max(X1,X4),X5)),X6),X7)),X8)))).
+%
+%cnf(i_0_488, plain, (le(X1,max(max(X2,max(max(max(X3,max(max(X4,X1),X5)),X6),X7)),X8)))).
+%
+%cnf(i_0_490, plain, (le(X1,max(max(X2,max(max(max(X3,max(X4,max(X1,X5))),X6),X7)),X8)))).
+%
+%cnf(i_0_491, plain, (le(X1,max(max(X2,max(max(max(X3,max(X4,max(X5,X1))),X6),X7)),X8)))).
+%
+%cnf(i_0_493, plain, (le(X1,max(max(X2,max(max(X3,max(max(max(X1,X4),X5),X6)),X7)),X8)))).
+%
+%cnf(i_0_494, plain, (le(X1,max(max(X2,max(max(X3,max(max(max(X4,X1),X5),X6)),X7)),X8)))).
+%
+%cnf(i_0_496, plain, (le(X1,max(max(X2,max(max(X3,max(max(X4,max(X1,X5)),X6)),X7)),X8)))).
+%
+%cnf(i_0_497, plain, (le(X1,max(max(X2,max(max(X3,max(max(X4,max(X5,X1)),X6)),X7)),X8)))).
+%
+%cnf(i_0_499, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(max(X1,X5),X6))),X7)),X8)))).
+%
+%cnf(i_0_500, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(max(X5,X1),X6))),X7)),X8)))).
+%
+%cnf(i_0_502, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(X5,max(X1,X6)))),X7)),X8)))).
+%
+%cnf(i_0_503, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(X5,max(X6,X1)))),X7)),X8)))).
+%
+%cnf(i_0_505, plain, (le(X1,max(max(X2,max(X3,max(max(max(max(X1,X4),X5),X6),X7))),X8)))).
+%
+%cnf(i_0_506, plain, (le(X1,max(max(X2,max(X3,max(max(max(max(X4,X1),X5),X6),X7))),X8)))).
+%
+%cnf(i_0_508, plain, (le(X1,max(max(X2,max(X3,max(max(max(X4,max(X1,X5)),X6),X7))),X8)))).
+%
+%cnf(i_0_509, plain, (le(X1,max(max(X2,max(X3,max(max(max(X4,max(X5,X1)),X6),X7))),X8)))).
+%
+%cnf(i_0_511, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(max(X1,X5),X6)),X7))),X8)))).
+%
+%cnf(i_0_512, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(max(X5,X1),X6)),X7))),X8)))).
+%
+%cnf(i_0_514, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(X5,max(X1,X6))),X7))),X8)))).
+%
+%cnf(i_0_515, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(X5,max(X6,X1))),X7))),X8)))).
+%
+%cnf(i_0_517, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(max(X1,X5),X6),X7)))),X8)))).
+%
+%cnf(i_0_518, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(max(X5,X1),X6),X7)))),X8)))).
+%
+%cnf(i_0_520, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(X5,max(X1,X6)),X7)))),X8)))).
+%
+%cnf(i_0_521, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(X5,max(X6,X1)),X7)))),X8)))).
+%
+%cnf(i_0_523, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(max(X1,X6),X7))))),X8)))).
+%
+%cnf(i_0_524, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(max(X6,X1),X7))))),X8)))).
+%
+%cnf(i_0_526, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(X6,max(X1,X7)))))),X8)))).
+%
+%cnf(i_0_527, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,X1)))))),X8)))).
+%
+%cnf(i_0_529, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(max(max(X1,X5),X6),X7),X8),X9))))))).
+%
+%cnf(i_0_530, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(max(max(X5,X1),X6),X7),X8),X9))))))).
+%
+%cnf(i_0_532, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(max(X5,max(X1,X6)),X7),X8),X9))))))).
+%
+%cnf(i_0_533, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(max(X5,max(X6,X1)),X7),X8),X9))))))).
+%
+%cnf(i_0_535, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(X5,max(max(X1,X6),X7)),X8),X9))))))).
+%
+%cnf(i_0_536, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(X5,max(max(X6,X1),X7)),X8),X9))))))).
+%
+%cnf(i_0_538, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(X5,max(X6,max(X1,X7))),X8),X9))))))).
+%
+%cnf(i_0_539, plain, (le(X1,max(X2,max(X3,max(X4,max(max(max(X5,max(X6,max(X7,X1))),X8),X9))))))).
+%
+%cnf(i_0_541, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(max(max(X1,X6),X7),X8)),X9))))))).
+%
+%cnf(i_0_542, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(max(max(X6,X1),X7),X8)),X9))))))).
+%
+%cnf(i_0_544, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(max(X6,max(X1,X7)),X8)),X9))))))).
+%
+%cnf(i_0_545, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(max(X6,max(X7,X1)),X8)),X9))))))).
+%
+%cnf(i_0_547, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(X6,max(max(X1,X7),X8))),X9))))))).
+%
+%cnf(i_0_548, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(X6,max(max(X7,X1),X8))),X9))))))).
+%
+%cnf(i_0_550, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(X6,max(X7,max(X1,X8)))),X9))))))).
+%
+%cnf(i_0_551, plain, (le(X1,max(X2,max(X3,max(X4,max(max(X5,max(X6,max(X7,max(X8,X1)))),X9))))))).
+%
+%cnf(i_0_553, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(max(max(X1,X6),X7),X8),X9)))))))).
+%
+%cnf(i_0_554, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(max(max(X6,X1),X7),X8),X9)))))))).
+%
+%cnf(i_0_556, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(max(X6,max(X1,X7)),X8),X9)))))))).
+%
+%cnf(i_0_557, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(max(X6,max(X7,X1)),X8),X9)))))))).
+%
+%cnf(i_0_559, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(X6,max(max(X1,X7),X8)),X9)))))))).
+%
+%cnf(i_0_560, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(X6,max(max(X7,X1),X8)),X9)))))))).
+%
+%cnf(i_0_562, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(X6,max(X7,max(X1,X8))),X9)))))))).
+%
+%cnf(i_0_563, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(max(X6,max(X7,max(X8,X1))),X9)))))))).
+%
+%cnf(i_0_565, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(max(max(X1,X7),X8),X9))))))))).
+%
+%cnf(i_0_566, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(max(max(X7,X1),X8),X9))))))))).
+%
+%cnf(i_0_568, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(max(X7,max(X1,X8)),X9))))))))).
+%
+%cnf(i_0_569, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(max(X7,max(X8,X1)),X9))))))))).
+%
+%cnf(i_0_571, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,max(max(X1,X8),X9)))))))))).
+%
+%cnf(i_0_572, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,max(max(X8,X1),X9)))))))))).
+%
+%cnf(i_0_574, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,max(X8,max(X1,X9))))))))))).
+%
+%cnf(i_0_575, plain, (le(X1,max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,max(X8,max(X9,X1))))))))))).
+%
+%cnf(i_0_577, plain, (le(X1,max(X2,max(X3,max(max(max(max(max(max(X1,X4),X5),X6),X7),X8),X9)))))).
+%
+%cnf(i_0_578, plain, (le(X1,max(X2,max(X3,max(max(max(max(max(max(X4,X1),X5),X6),X7),X8),X9)))))).
+%
+%cnf(i_0_580, plain, (le(X1,max(X2,max(X3,max(max(max(max(max(X4,max(X1,X5)),X6),X7),X8),X9)))))).
+%
+%cnf(i_0_581, plain, (le(X1,max(X2,max(X3,max(max(max(max(max(X4,max(X5,X1)),X6),X7),X8),X9)))))).
+%
+%cnf(i_0_583, plain, (le(X1,max(X2,max(X3,max(max(max(max(X4,max(max(X1,X5),X6)),X7),X8),X9)))))).
+%
+%cnf(i_0_584, plain, (le(X1,max(X2,max(X3,max(max(max(max(X4,max(max(X5,X1),X6)),X7),X8),X9)))))).
+%
+%cnf(i_0_586, plain, (le(X1,max(X2,max(X3,max(max(max(max(X4,max(X5,max(X1,X6))),X7),X8),X9)))))).
+%
+%cnf(i_0_587, plain, (le(X1,max(X2,max(X3,max(max(max(max(X4,max(X5,max(X6,X1))),X7),X8),X9)))))).
+%
+%cnf(i_0_589, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(max(max(X1,X5),X6),X7)),X8),X9)))))).
+%
+%cnf(i_0_590, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(max(max(X5,X1),X6),X7)),X8),X9)))))).
+%
+%cnf(i_0_592, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(max(X5,max(X1,X6)),X7)),X8),X9)))))).
+%
+%cnf(i_0_593, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(max(X5,max(X6,X1)),X7)),X8),X9)))))).
+%
+%cnf(i_0_595, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(X5,max(max(X1,X6),X7))),X8),X9)))))).
+%
+%cnf(i_0_596, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(X5,max(max(X6,X1),X7))),X8),X9)))))).
+%
+%cnf(i_0_598, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(X5,max(X6,max(X1,X7)))),X8),X9)))))).
+%
+%cnf(i_0_599, plain, (le(X1,max(X2,max(X3,max(max(max(X4,max(X5,max(X6,max(X7,X1)))),X8),X9)))))).
+%
+%cnf(i_0_601, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(max(max(X1,X5),X6),X7),X8)),X9)))))).
+%
+%cnf(i_0_602, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(max(max(X5,X1),X6),X7),X8)),X9)))))).
+%
+%cnf(i_0_604, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(max(X5,max(X1,X6)),X7),X8)),X9)))))).
+%
+%cnf(i_0_605, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(max(X5,max(X6,X1)),X7),X8)),X9)))))).
+%
+%cnf(i_0_607, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(X5,max(max(X1,X6),X7)),X8)),X9)))))).
+%
+%cnf(i_0_608, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(X5,max(max(X6,X1),X7)),X8)),X9)))))).
+%
+%cnf(i_0_610, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(X5,max(X6,max(X1,X7))),X8)),X9)))))).
+%
+%cnf(i_0_611, plain, (le(X1,max(X2,max(X3,max(max(X4,max(max(X5,max(X6,max(X7,X1))),X8)),X9)))))).
+%
+%cnf(i_0_613, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(max(max(X1,X6),X7),X8))),X9)))))).
+%
+%cnf(i_0_614, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(max(max(X6,X1),X7),X8))),X9)))))).
+%
+%cnf(i_0_616, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(max(X6,max(X1,X7)),X8))),X9)))))).
+%
+%cnf(i_0_617, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(max(X6,max(X7,X1)),X8))),X9)))))).
+%
+%cnf(i_0_619, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(X6,max(max(X1,X7),X8)))),X9)))))).
+%
+%cnf(i_0_620, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(X6,max(max(X7,X1),X8)))),X9)))))).
+%
+%cnf(i_0_622, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(X6,max(X7,max(X1,X8))))),X9)))))).
+%
+%cnf(i_0_623, plain, (le(X1,max(X2,max(X3,max(max(X4,max(X5,max(X6,max(X7,max(X8,X1))))),X9)))))).
+%
+%cnf(i_0_625, plain, (le(X1,max(X2,max(max(max(max(max(max(max(X1,X3),X4),X5),X6),X7),X8),X9))))).
+%
+%cnf(i_0_626, plain, (le(X1,max(X2,max(max(max(max(max(max(max(X3,X1),X4),X5),X6),X7),X8),X9))))).
+%
+%cnf(i_0_628, plain, (le(X1,max(X2,max(max(max(max(max(max(X3,max(X1,X4)),X5),X6),X7),X8),X9))))).
+%
+%cnf(i_0_629, plain, (le(X1,max(X2,max(max(max(max(max(max(X3,max(X4,X1)),X5),X6),X7),X8),X9))))).
+%
+%cnf(i_0_631, plain, (le(X1,max(X2,max(max(max(max(max(X3,max(max(X1,X4),X5)),X6),X7),X8),X9))))).
+%
+%cnf(i_0_632, plain, (le(X1,max(X2,max(max(max(max(max(X3,max(max(X4,X1),X5)),X6),X7),X8),X9))))).
+%
+%cnf(i_0_634, plain, (le(X1,max(X2,max(max(max(max(max(X3,max(X4,max(X1,X5))),X6),X7),X8),X9))))).
+%
+%cnf(i_0_635, plain, (le(X1,max(X2,max(max(max(max(max(X3,max(X4,max(X5,X1))),X6),X7),X8),X9))))).
+%
+%cnf(i_0_637, plain, (le(X1,max(X2,max(max(max(max(X3,max(max(max(X1,X4),X5),X6)),X7),X8),X9))))).
+%
+%cnf(i_0_638, plain, (le(X1,max(X2,max(max(max(max(X3,max(max(max(X4,X1),X5),X6)),X7),X8),X9))))).
+%
+%cnf(i_0_640, plain, (le(X1,max(X2,max(max(max(max(X3,max(max(X4,max(X1,X5)),X6)),X7),X8),X9))))).
+%
+%cnf(i_0_641, plain, (le(X1,max(X2,max(max(max(max(X3,max(max(X4,max(X5,X1)),X6)),X7),X8),X9))))).
+%
+%cnf(i_0_643, plain, (le(X1,max(X2,max(max(max(max(X3,max(X4,max(max(X1,X5),X6))),X7),X8),X9))))).
+%
+%cnf(i_0_644, plain, (le(X1,max(X2,max(max(max(max(X3,max(X4,max(max(X5,X1),X6))),X7),X8),X9))))).
+%
+%cnf(i_0_646, plain, (le(X1,max(X2,max(max(max(max(X3,max(X4,max(X5,max(X1,X6)))),X7),X8),X9))))).
+%
+%cnf(i_0_647, plain, (le(X1,max(X2,max(max(max(max(X3,max(X4,max(X5,max(X6,X1)))),X7),X8),X9))))).
+%
+%cnf(i_0_649, plain, (le(X1,max(X2,max(max(max(X3,max(max(max(max(X1,X4),X5),X6),X7)),X8),X9))))).
+%
+%cnf(i_0_650, plain, (le(X1,max(X2,max(max(max(X3,max(max(max(max(X4,X1),X5),X6),X7)),X8),X9))))).
+%
+%cnf(i_0_820, plain, (le(X1,max(X2,max(max(max(X3,max(max(max(X4,max(X1,X5)),X6),X7)),X8),X9))))).
+%
+%cnf(i_0_821, plain, (le(X1,max(X2,max(max(max(X3,max(max(max(X4,max(X5,X1)),X6),X7)),X8),X9))))).
+%
+%cnf(i_0_823, plain, (le(X1,max(X2,max(max(max(X3,max(max(X4,max(max(X1,X5),X6)),X7)),X8),X9))))).
+%
+%cnf(i_0_824, plain, (le(X1,max(X2,max(max(max(X3,max(max(X4,max(max(X5,X1),X6)),X7)),X8),X9))))).
+%
+%cnf(i_0_826, plain, (le(X1,max(X2,max(max(max(X3,max(max(X4,max(X5,max(X1,X6))),X7)),X8),X9))))).
+%
+%cnf(i_0_827, plain, (le(X1,max(X2,max(max(max(X3,max(max(X4,max(X5,max(X6,X1))),X7)),X8),X9))))).
+%
+%cnf(i_0_651, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8))).
+%
+%cnf(i_0_829, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(max(max(X1,X5),X6),X7))),X8),X9))))).
+%
+%cnf(i_0_830, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(max(max(X5,X1),X6),X7))),X8),X9))))).
+%
+%cnf(i_0_832, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(max(X5,max(X1,X6)),X7))),X8),X9))))).
+%
+%cnf(i_0_833, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(max(X5,max(X6,X1)),X7))),X8),X9))))).
+%
+%cnf(i_0_835, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(X5,max(max(X1,X6),X7)))),X8),X9))))).
+%
+%cnf(i_0_836, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(X5,max(max(X6,X1),X7)))),X8),X9))))).
+%
+%cnf(i_0_838, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(X5,max(X6,max(X1,X7))))),X8),X9))))).
+%
+%cnf(i_0_839, plain, (le(X1,max(X2,max(max(max(X3,max(X4,max(X5,max(X6,max(X7,X1))))),X8),X9))))).
+%
+%cnf(i_0_841, plain, (le(X1,max(X2,max(max(X3,max(max(max(max(max(X1,X4),X5),X6),X7),X8)),X9))))).
+%
+%cnf(i_0_842, plain, (le(X1,max(X2,max(max(X3,max(max(max(max(max(X4,X1),X5),X6),X7),X8)),X9))))).
+%
+%cnf(i_0_844, plain, (le(X1,max(X2,max(max(X3,max(max(max(max(X4,max(X1,X5)),X6),X7),X8)),X9))))).
+%
+%cnf(i_0_845, plain, (le(X1,max(X2,max(max(X3,max(max(max(max(X4,max(X5,X1)),X6),X7),X8)),X9))))).
+%
+%cnf(i_0_847, plain, (le(X1,max(X2,max(max(X3,max(max(max(X4,max(max(X1,X5),X6)),X7),X8)),X9))))).
+%
+%cnf(i_0_848, plain, (le(X1,max(X2,max(max(X3,max(max(max(X4,max(max(X5,X1),X6)),X7),X8)),X9))))).
+%
+%cnf(i_0_850, plain, (le(X1,max(X2,max(max(X3,max(max(max(X4,max(X5,max(X1,X6))),X7),X8)),X9))))).
+%
+%cnf(i_0_851, plain, (le(X1,max(X2,max(max(X3,max(max(max(X4,max(X5,max(X6,X1))),X7),X8)),X9))))).
+%
+%cnf(i_0_853, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(max(max(X1,X5),X6),X7)),X8)),X9))))).
+%
+%cnf(i_0_854, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(max(max(X5,X1),X6),X7)),X8)),X9))))).
+%
+%cnf(i_0_856, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(max(X5,max(X1,X6)),X7)),X8)),X9))))).
+%
+%cnf(i_0_857, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(max(X5,max(X6,X1)),X7)),X8)),X9))))).
+%
+%cnf(i_0_859, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(X5,max(max(X1,X6),X7))),X8)),X9))))).
+%
+%cnf(i_0_860, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(X5,max(max(X6,X1),X7))),X8)),X9))))).
+%
+%cnf(i_0_862, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(X5,max(X6,max(X1,X7)))),X8)),X9))))).
+%
+%cnf(i_0_863, plain, (le(X1,max(X2,max(max(X3,max(max(X4,max(X5,max(X6,max(X7,X1)))),X8)),X9))))).
+%
+%cnf(i_0_865, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(max(max(X1,X5),X6),X7),X8))),X9))))).
+%
+%cnf(i_0_866, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(max(max(X5,X1),X6),X7),X8))),X9))))).
+%
+%cnf(i_0_868, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(max(X5,max(X1,X6)),X7),X8))),X9))))).
+%
+%cnf(i_0_869, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(max(X5,max(X6,X1)),X7),X8))),X9))))).
+%
+%cnf(i_0_871, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(X5,max(max(X1,X6),X7)),X8))),X9))))).
+%
+%cnf(i_0_872, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(X5,max(max(X6,X1),X7)),X8))),X9))))).
+%
+%cnf(i_0_874, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(X5,max(X6,max(X1,X7))),X8))),X9))))).
+%
+%cnf(i_0_875, plain, (le(X1,max(X2,max(max(X3,max(X4,max(max(X5,max(X6,max(X7,X1))),X8))),X9))))).
+%
+%cnf(i_0_877, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(max(max(X1,X6),X7),X8)))),X9))))).
+%
+%cnf(i_0_878, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(max(max(X6,X1),X7),X8)))),X9))))).
+%
+%cnf(i_0_880, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(max(X6,max(X1,X7)),X8)))),X9))))).
+%
+%cnf(i_0_881, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(max(X6,max(X7,X1)),X8)))),X9))))).
+%
+%cnf(i_0_883, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(X6,max(max(X1,X7),X8))))),X9))))).
+%
+%cnf(i_0_884, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(X6,max(max(X7,X1),X8))))),X9))))).
+%
+%cnf(i_0_886, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(X6,max(X7,max(X1,X8)))))),X9))))).
+%
+%cnf(i_0_887, plain, (le(X1,max(X2,max(max(X3,max(X4,max(X5,max(X6,max(X7,max(X8,X1)))))),X9))))).
+%
+%cnf(i_0_889, plain, (le(X1,max(max(max(max(max(max(max(max(X1,X2),X3),X4),X5),X6),X7),X8),X9)))).
+%
+%cnf(i_0_890, plain, (le(X1,max(max(max(max(max(max(max(max(X2,X1),X3),X4),X5),X6),X7),X8),X9)))).
+%
+%cnf(i_0_892, plain, (le(X1,max(max(max(max(max(max(max(X2,max(X1,X3)),X4),X5),X6),X7),X8),X9)))).
+%
+%cnf(i_0_893, plain, (le(X1,max(max(max(max(max(max(max(X2,max(X3,X1)),X4),X5),X6),X7),X8),X9)))).
+%
+%cnf(i_0_895, plain, (le(X1,max(max(max(max(max(max(X2,max(max(X1,X3),X4)),X5),X6),X7),X8),X9)))).
+%
+%cnf(i_0_896, plain, (le(X1,max(max(max(max(max(max(X2,max(max(X3,X1),X4)),X5),X6),X7),X8),X9)))).
+%
+%cnf(i_0_898, plain, (le(X1,max(max(max(max(max(max(X2,max(X3,max(X1,X4))),X5),X6),X7),X8),X9)))).
+%
+%cnf(i_0_899, plain, (le(X1,max(max(max(max(max(max(X2,max(X3,max(X4,X1))),X5),X6),X7),X8),X9)))).
+%
+%cnf(i_0_901, plain, (le(X1,max(max(max(max(max(X2,max(max(max(X1,X3),X4),X5)),X6),X7),X8),X9)))).
+%
+%cnf(i_0_902, plain, (le(X1,max(max(max(max(max(X2,max(max(max(X3,X1),X4),X5)),X6),X7),X8),X9)))).
+%
+%cnf(i_0_904, plain, (le(X1,max(max(max(max(max(X2,max(max(X3,max(X1,X4)),X5)),X6),X7),X8),X9)))).
+%
+%cnf(i_0_905, plain, (le(X1,max(max(max(max(max(X2,max(max(X3,max(X4,X1)),X5)),X6),X7),X8),X9)))).
+%
+%cnf(i_0_907, plain, (le(X1,max(max(max(max(max(X2,max(X3,max(max(X1,X4),X5))),X6),X7),X8),X9)))).
+%
+%cnf(i_0_908, plain, (le(X1,max(max(max(max(max(X2,max(X3,max(max(X4,X1),X5))),X6),X7),X8),X9)))).
+%
+%cnf(i_0_910, plain, (le(X1,max(max(max(max(max(X2,max(X3,max(X4,max(X1,X5)))),X6),X7),X8),X9)))).
+%
+%cnf(i_0_911, plain, (le(X1,max(max(max(max(max(X2,max(X3,max(X4,max(X5,X1)))),X6),X7),X8),X9)))).
+%
+%cnf(i_0_913, plain, (le(X1,max(max(max(max(X2,max(max(max(max(X1,X3),X4),X5),X6)),X7),X8),X9)))).
+%
+%cnf(i_0_914, plain, (le(X1,max(max(max(max(X2,max(max(max(max(X3,X1),X4),X5),X6)),X7),X8),X9)))).
+%
+%cnf(i_0_916, plain, (le(X1,max(max(max(max(X2,max(max(max(X3,max(X1,X4)),X5),X6)),X7),X8),X9)))).
+%
+%cnf(i_0_917, plain, (le(X1,max(max(max(max(X2,max(max(max(X3,max(X4,X1)),X5),X6)),X7),X8),X9)))).
+%
+%cnf(i_0_919, plain, (le(X1,max(max(max(max(X2,max(max(X3,max(max(X1,X4),X5)),X6)),X7),X8),X9)))).
+%
+%cnf(i_0_920, plain, (le(X1,max(max(max(max(X2,max(max(X3,max(max(X4,X1),X5)),X6)),X7),X8),X9)))).
+%
+%cnf(i_0_922, plain, (le(X1,max(max(max(max(X2,max(max(X3,max(X4,max(X1,X5))),X6)),X7),X8),X9)))).
+%
+%cnf(i_0_923, plain, (le(X1,max(max(max(max(X2,max(max(X3,max(X4,max(X5,X1))),X6)),X7),X8),X9)))).
+%
+%cnf(i_0_925, plain, (le(X1,max(max(max(max(X2,max(X3,max(max(max(X1,X4),X5),X6))),X7),X8),X9)))).
+%
+%cnf(i_0_926, plain, (le(X1,max(max(max(max(X2,max(X3,max(max(max(X4,X1),X5),X6))),X7),X8),X9)))).
+%
+%cnf(i_0_928, plain, (le(X1,max(max(max(max(X2,max(X3,max(max(X4,max(X1,X5)),X6))),X7),X8),X9)))).
+%
+%cnf(i_0_929, plain, (le(X1,max(max(max(max(X2,max(X3,max(max(X4,max(X5,X1)),X6))),X7),X8),X9)))).
+%
+%cnf(i_0_931, plain, (le(X1,max(max(max(max(X2,max(X3,max(X4,max(max(X1,X5),X6)))),X7),X8),X9)))).
+%
+%cnf(i_0_932, plain, (le(X1,max(max(max(max(X2,max(X3,max(X4,max(max(X5,X1),X6)))),X7),X8),X9)))).
+%
+%cnf(i_0_934, plain, (le(X1,max(max(max(max(X2,max(X3,max(X4,max(X5,max(X1,X6))))),X7),X8),X9)))).
+%
+%cnf(i_0_935, plain, (le(X1,max(max(max(max(X2,max(X3,max(X4,max(X5,max(X6,X1))))),X7),X8),X9)))).
+%
+%cnf(i_0_937, plain, (le(X1,max(max(max(X2,max(max(max(max(max(X1,X3),X4),X5),X6),X7)),X8),X9)))).
+%
+%cnf(i_0_938, plain, (le(X1,max(max(max(X2,max(max(max(max(max(X3,X1),X4),X5),X6),X7)),X8),X9)))).
+%
+%cnf(i_0_940, plain, (le(X1,max(max(max(X2,max(max(max(max(X3,max(X1,X4)),X5),X6),X7)),X8),X9)))).
+%
+%cnf(i_0_941, plain, (le(X1,max(max(max(X2,max(max(max(max(X3,max(X4,X1)),X5),X6),X7)),X8),X9)))).
+%
+%cnf(i_0_943, plain, (le(X1,max(max(max(X2,max(max(max(X3,max(max(X1,X4),X5)),X6),X7)),X8),X9)))).
+%
+%cnf(i_0_944, plain, (le(X1,max(max(max(X2,max(max(max(X3,max(max(X4,X1),X5)),X6),X7)),X8),X9)))).
+%
+%cnf(i_0_946, plain, (le(X1,max(max(max(X2,max(max(max(X3,max(X4,max(X1,X5))),X6),X7)),X8),X9)))).
+%
+%cnf(i_0_947, plain, (le(X1,max(max(max(X2,max(max(max(X3,max(X4,max(X5,X1))),X6),X7)),X8),X9)))).
+%
+%cnf(i_0_949, plain, (le(X1,max(max(max(X2,max(max(X3,max(max(max(X1,X4),X5),X6)),X7)),X8),X9)))).
+%
+%cnf(i_0_950, plain, (le(X1,max(max(max(X2,max(max(X3,max(max(max(X4,X1),X5),X6)),X7)),X8),X9)))).
+%
+%cnf(i_0_952, plain, (le(X1,max(max(max(X2,max(max(X3,max(max(X4,max(X1,X5)),X6)),X7)),X8),X9)))).
+%
+%cnf(i_0_953, plain, (le(X1,max(max(max(X2,max(max(X3,max(max(X4,max(X5,X1)),X6)),X7)),X8),X9)))).
+%
+%cnf(i_0_955, plain, (le(X1,max(max(max(X2,max(max(X3,max(X4,max(max(X1,X5),X6))),X7)),X8),X9)))).
+%
+%cnf(i_0_956, plain, (le(X1,max(max(max(X2,max(max(X3,max(X4,max(max(X5,X1),X6))),X7)),X8),X9)))).
+%
+%cnf(i_0_958, plain, (le(X1,max(max(max(X2,max(max(X3,max(X4,max(X5,max(X1,X6)))),X7)),X8),X9)))).
+%
+%cnf(i_0_959, plain, (le(X1,max(max(max(X2,max(max(X3,max(X4,max(X5,max(X6,X1)))),X7)),X8),X9)))).
+%
+%cnf(i_0_961, plain, (le(X1,max(max(max(X2,max(X3,max(max(max(max(X1,X4),X5),X6),X7))),X8),X9)))).
+%
+%cnf(i_0_962, plain, (le(X1,max(max(max(X2,max(X3,max(max(max(max(X4,X1),X5),X6),X7))),X8),X9)))).
+%
+%cnf(i_0_964, plain, (le(X1,max(max(max(X2,max(X3,max(max(max(X4,max(X1,X5)),X6),X7))),X8),X9)))).
+%
+%cnf(i_0_965, plain, (le(X1,max(max(max(X2,max(X3,max(max(max(X4,max(X5,X1)),X6),X7))),X8),X9)))).
+%
+%cnf(i_0_967, plain, (le(X1,max(max(max(X2,max(X3,max(max(X4,max(max(X1,X5),X6)),X7))),X8),X9)))).
+%
+%cnf(i_0_968, plain, (le(X1,max(max(max(X2,max(X3,max(max(X4,max(max(X5,X1),X6)),X7))),X8),X9)))).
+%
+%cnf(i_0_970, plain, (le(X1,max(max(max(X2,max(X3,max(max(X4,max(X5,max(X1,X6))),X7))),X8),X9)))).
+%
+%cnf(i_0_971, plain, (le(X1,max(max(max(X2,max(X3,max(max(X4,max(X5,max(X6,X1))),X7))),X8),X9)))).
+%
+%cnf(i_0_973, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(max(max(X1,X5),X6),X7)))),X8),X9)))).
+%
+%cnf(i_0_974, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(max(max(X5,X1),X6),X7)))),X8),X9)))).
+%
+%cnf(i_0_976, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(max(X5,max(X1,X6)),X7)))),X8),X9)))).
+%
+%cnf(i_0_977, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(max(X5,max(X6,X1)),X7)))),X8),X9)))).
+%
+%cnf(i_0_979, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(X5,max(max(X1,X6),X7))))),X8),X9)))).
+%
+%cnf(i_0_980, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(X5,max(max(X6,X1),X7))))),X8),X9)))).
+%
+%cnf(i_0_982, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(X5,max(X6,max(X1,X7)))))),X8),X9)))).
+%
+%cnf(i_0_983, plain, (le(X1,max(max(max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,X1)))))),X8),X9)))).
+%
+%cnf(i_0_985, plain, (le(X1,max(max(X2,max(max(max(max(max(max(X1,X3),X4),X5),X6),X7),X8)),X9)))).
+%
+%cnf(i_0_986, plain, (le(X1,max(max(X2,max(max(max(max(max(max(X3,X1),X4),X5),X6),X7),X8)),X9)))).
+%
+%cnf(i_0_988, plain, (le(X1,max(max(X2,max(max(max(max(max(X3,max(X1,X4)),X5),X6),X7),X8)),X9)))).
+%
+%cnf(i_0_989, plain, (le(X1,max(max(X2,max(max(max(max(max(X3,max(X4,X1)),X5),X6),X7),X8)),X9)))).
+%
+%cnf(i_0_991, plain, (le(X1,max(max(X2,max(max(max(max(X3,max(max(X1,X4),X5)),X6),X7),X8)),X9)))).
+%
+%cnf(i_0_992, plain, (le(X1,max(max(X2,max(max(max(max(X3,max(max(X4,X1),X5)),X6),X7),X8)),X9)))).
+%
+%cnf(i_0_994, plain, (le(X1,max(max(X2,max(max(max(max(X3,max(X4,max(X1,X5))),X6),X7),X8)),X9)))).
+%
+%cnf(i_0_995, plain, (le(X1,max(max(X2,max(max(max(max(X3,max(X4,max(X5,X1))),X6),X7),X8)),X9)))).
+%
+%cnf(i_0_997, plain, (le(X1,max(max(X2,max(max(max(X3,max(max(max(X1,X4),X5),X6)),X7),X8)),X9)))).
+%
+%cnf(i_0_998, plain, (le(X1,max(max(X2,max(max(max(X3,max(max(max(X4,X1),X5),X6)),X7),X8)),X9)))).
+%
+%cnf(i_0_1000, plain, (le(X1,max(max(X2,max(max(max(X3,max(max(X4,max(X1,X5)),X6)),X7),X8)),X9)))).
+%
+%cnf(i_0_1001, plain, (le(X1,max(max(X2,max(max(max(X3,max(max(X4,max(X5,X1)),X6)),X7),X8)),X9)))).
+%
+%cnf(i_0_1003, plain, (le(X1,max(max(X2,max(max(max(X3,max(X4,max(max(X1,X5),X6))),X7),X8)),X9)))).
+%
+%cnf(i_0_1004, plain, (le(X1,max(max(X2,max(max(max(X3,max(X4,max(max(X5,X1),X6))),X7),X8)),X9)))).
+%
+%cnf(i_0_1006, plain, (le(X1,max(max(X2,max(max(max(X3,max(X4,max(X5,max(X1,X6)))),X7),X8)),X9)))).
+%
+%cnf(i_0_1007, plain, (le(X1,max(max(X2,max(max(max(X3,max(X4,max(X5,max(X6,X1)))),X7),X8)),X9)))).
+%
+%cnf(i_0_1009, plain, (le(X1,max(max(X2,max(max(X3,max(max(max(max(X1,X4),X5),X6),X7)),X8)),X9)))).
+%
+%cnf(i_0_1010, plain, (le(X1,max(max(X2,max(max(X3,max(max(max(max(X4,X1),X5),X6),X7)),X8)),X9)))).
+%
+%cnf(i_0_1012, plain, (le(X1,max(max(X2,max(max(X3,max(max(max(X4,max(X1,X5)),X6),X7)),X8)),X9)))).
+%
+%cnf(i_0_1013, plain, (le(X1,max(max(X2,max(max(X3,max(max(max(X4,max(X5,X1)),X6),X7)),X8)),X9)))).
+%
+%cnf(i_0_1015, plain, (le(X1,max(max(X2,max(max(X3,max(max(X4,max(max(X1,X5),X6)),X7)),X8)),X9)))).
+%
+%cnf(i_0_1016, plain, (le(X1,max(max(X2,max(max(X3,max(max(X4,max(max(X5,X1),X6)),X7)),X8)),X9)))).
+%
+%cnf(i_0_1018, plain, (le(X1,max(max(X2,max(max(X3,max(max(X4,max(X5,max(X1,X6))),X7)),X8)),X9)))).
+%
+%cnf(i_0_1019, plain, (le(X1,max(max(X2,max(max(X3,max(max(X4,max(X5,max(X6,X1))),X7)),X8)),X9)))).
+%
+%cnf(i_0_1021, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(max(max(X1,X5),X6),X7))),X8)),X9)))).
+%
+%cnf(i_0_1022, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(max(max(X5,X1),X6),X7))),X8)),X9)))).
+%
+%cnf(i_0_1024, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(max(X5,max(X1,X6)),X7))),X8)),X9)))).
+%
+%cnf(i_0_1025, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(max(X5,max(X6,X1)),X7))),X8)),X9)))).
+%
+%cnf(i_0_1027, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(X5,max(max(X1,X6),X7)))),X8)),X9)))).
+%
+%cnf(i_0_1028, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(X5,max(max(X6,X1),X7)))),X8)),X9)))).
+%
+%cnf(i_0_1030, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(X5,max(X6,max(X1,X7))))),X8)),X9)))).
+%
+%cnf(i_0_1031, plain, (le(X1,max(max(X2,max(max(X3,max(X4,max(X5,max(X6,max(X7,X1))))),X8)),X9)))).
+%
+%cnf(i_0_1033, plain, (le(X1,max(max(X2,max(X3,max(max(max(max(max(X1,X4),X5),X6),X7),X8))),X9)))).
+%
+%cnf(i_0_1034, plain, (le(X1,max(max(X2,max(X3,max(max(max(max(max(X4,X1),X5),X6),X7),X8))),X9)))).
+%
+%cnf(i_0_1036, plain, (le(X1,max(max(X2,max(X3,max(max(max(max(X4,max(X1,X5)),X6),X7),X8))),X9)))).
+%
+%cnf(i_0_1037, plain, (le(X1,max(max(X2,max(X3,max(max(max(max(X4,max(X5,X1)),X6),X7),X8))),X9)))).
+%
+%cnf(i_0_1039, plain, (le(X1,max(max(X2,max(X3,max(max(max(X4,max(max(X1,X5),X6)),X7),X8))),X9)))).
+%
+%cnf(i_0_1040, plain, (le(X1,max(max(X2,max(X3,max(max(max(X4,max(max(X5,X1),X6)),X7),X8))),X9)))).
+%
+%cnf(i_0_1042, plain, (le(X1,max(max(X2,max(X3,max(max(max(X4,max(X5,max(X1,X6))),X7),X8))),X9)))).
+%
+%cnf(i_0_1043, plain, (le(X1,max(max(X2,max(X3,max(max(max(X4,max(X5,max(X6,X1))),X7),X8))),X9)))).
+%
+%cnf(i_0_1045, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(max(max(X1,X5),X6),X7)),X8))),X9)))).
+%
+%cnf(i_0_1046, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(max(max(X5,X1),X6),X7)),X8))),X9)))).
+%
+%cnf(i_0_1048, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(max(X5,max(X1,X6)),X7)),X8))),X9)))).
+%
+%cnf(i_0_1049, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(max(X5,max(X6,X1)),X7)),X8))),X9)))).
+%
+%cnf(i_0_1051, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(X5,max(max(X1,X6),X7))),X8))),X9)))).
+%
+%cnf(i_0_1052, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(X5,max(max(X6,X1),X7))),X8))),X9)))).
+%
+%cnf(i_0_1054, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(X5,max(X6,max(X1,X7)))),X8))),X9)))).
+%
+%cnf(i_0_1055, plain, (le(X1,max(max(X2,max(X3,max(max(X4,max(X5,max(X6,max(X7,X1)))),X8))),X9)))).
+%
+%cnf(i_0_1057, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(max(max(X1,X5),X6),X7),X8)))),X9)))).
+%
+%cnf(i_0_1058, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(max(max(X5,X1),X6),X7),X8)))),X9)))).
+%
+%cnf(i_0_1060, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(max(X5,max(X1,X6)),X7),X8)))),X9)))).
+%
+%cnf(i_0_1061, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(max(X5,max(X6,X1)),X7),X8)))),X9)))).
+%
+%cnf(i_0_1063, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(X5,max(max(X1,X6),X7)),X8)))),X9)))).
+%
+%cnf(i_0_1064, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(X5,max(max(X6,X1),X7)),X8)))),X9)))).
+%
+%cnf(i_0_1066, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(X5,max(X6,max(X1,X7))),X8)))),X9)))).
+%
+%cnf(i_0_1067, plain, (le(X1,max(max(X2,max(X3,max(X4,max(max(X5,max(X6,max(X7,X1))),X8)))),X9)))).
+%
+%cnf(i_0_1069, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(max(max(X1,X6),X7),X8))))),X9)))).
+%
+%cnf(i_0_1070, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(max(max(X6,X1),X7),X8))))),X9)))).
+%
+%cnf(i_0_1072, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(max(X6,max(X1,X7)),X8))))),X9)))).
+%
+%cnf(i_0_1073, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(max(X6,max(X7,X1)),X8))))),X9)))).
+%
+%cnf(i_0_1075, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(X6,max(max(X1,X7),X8)))))),X9)))).
+%
+%cnf(i_0_1076, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(X6,max(max(X7,X1),X8)))))),X9)))).
+%
+%cnf(i_0_1078, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,max(X1,X8))))))),X9)))).
+%
+%cnf(i_0_1079, plain, (le(X1,max(max(X2,max(X3,max(X4,max(X5,max(X6,max(X7,max(X8,X1))))))),X9)))).
+%
+%cnf(i_0_1344, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7))).
+%
+%cnf(i_0_2191, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6))).
+%
+%cnf(i_0_2702, plain, (~le(s(X4),X1)|~le(s(X5),X4)|~le(s(X6),X5))).
+%
+%cnf(i_0_3213, plain, (~le(s(X4),X1)|~le(s(X5),X4))).
+%
+%cnf(i_0_3724, plain, (~le(s(X4),X1))).
 
-# Proof found!
-# SZS status Unsatisfiable
-# SZS output start CNFRefutation
-cnf(sos_05, axiom, (~eq(f(X1),a0)|~eq(f(X2),a0)|~eq(f(X3),a0)|~eq(f(X4),a0)|~eq(f(X5),a0)|~eq(f(X6),a0)|~eq(f(X7),a0)|~eq(f(X8),a0)|~eq(f(X9),a0)|~eq(f(X10),a0)|~eq(f(X11),a0)|~eq(f(X12),a0)|~le(s(X1),X2)|~le(s(X2),X3)|~le(s(X3),X4)|~le(s(X4),X5)|~le(s(X5),X6)|~le(s(X6),X7)|~le(s(X7),X8)|~le(s(X8),X9)|~le(s(X9),X10)|~le(s(X10),X11)|~le(s(X11),X12)), file('Problems/SYO/SYO613-1.p', sos_05)).
-cnf(sos_04, axiom, (eq(f(X1),a0)), file('Problems/SYO/SYO613-1.p', sos_04)).
-cnf(sos_01, axiom, (le(X1,X1)), file('Problems/SYO/SYO613-1.p', sos_01)).
-cnf(sos_03, axiom, (le(X2,X3)|~le(max(X1,X2),X3)), file('Problems/SYO/SYO613-1.p', sos_03)).
-cnf(sos_02, axiom, (le(X1,X3)|~le(max(X1,X2),X3)), file('Problems/SYO/SYO613-1.p', sos_02)).
-cnf(c_0_5, plain, (~eq(f(X1),a0)|~eq(f(X2),a0)|~eq(f(X3),a0)|~eq(f(X4),a0)|~eq(f(X5),a0)|~eq(f(X6),a0)|~eq(f(X7),a0)|~eq(f(X8),a0)|~eq(f(X9),a0)|~eq(f(X10),a0)|~eq(f(X11),a0)|~eq(f(X12),a0)|~le(s(X1),X2)|~le(s(X2),X3)|~le(s(X3),X4)|~le(s(X4),X5)|~le(s(X5),X6)|~le(s(X6),X7)|~le(s(X7),X8)|~le(s(X8),X9)|~le(s(X9),X10)|~le(s(X10),X11)|~le(s(X11),X12)), inference(fof_simplification,[status(thm)],[sos_05])).
-cnf(c_0_6, plain, (~eq(f(X1),a0)|~eq(f(X2),a0)|~eq(f(X3),a0)|~eq(f(X4),a0)|~eq(f(X5),a0)|~eq(f(X6),a0)|~eq(f(X7),a0)|~eq(f(X8),a0)|~eq(f(X9),a0)|~eq(f(X10),a0)|~eq(f(X11),a0)|~eq(f(X12),a0)|~le(s(X1),X2)|~le(s(X2),X3)|~le(s(X3),X4)|~le(s(X4),X5)|~le(s(X5),X6)|~le(s(X6),X7)|~le(s(X7),X8)|~le(s(X8),X9)|~le(s(X9),X10)|~le(s(X10),X11)|~le(s(X11),X12)), c_0_5).
-cnf(c_0_7, axiom, (eq(f(X1),a0)), sos_04).
-cnf(c_0_8, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10)|~le(s(X12),X11)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_6, c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7]), c_0_7])])).
-cnf(c_0_9, axiom, (le(X1,X1)), sos_01).
-cnf(c_0_10, plain, (le(X2,X3)|~le(max(X1,X2),X3)), inference(fof_simplification,[status(thm)],[sos_03])).
-cnf(c_0_11, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10)), inference(spm,[status(thm)],[c_0_8, c_0_9])).
-cnf(c_0_12, plain, (le(X2,X3)|~le(max(X1,X2),X3)), c_0_10).
-cnf(c_0_13, plain, (le(X1,X3)|~le(max(X1,X2),X3)), inference(fof_simplification,[status(thm)],[sos_02])).
-cnf(c_0_14, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)), inference(spm,[status(thm)],[c_0_11, c_0_9])).
-cnf(c_0_15, plain, (le(X1,max(X2,X1))), inference(spm,[status(thm)],[c_0_12, c_0_9])).
-cnf(c_0_16, plain, (le(X1,X3)|~le(max(X1,X2),X3)), c_0_13).
-cnf(c_0_17, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)), inference(spm,[status(thm)],[c_0_14, c_0_9])).
-cnf(c_0_18, plain, (le(X1,max(X2,max(X3,X1)))), inference(spm,[status(thm)],[c_0_12, c_0_15])).
-cnf(c_0_19, plain, (le(X1,max(X1,X2))), inference(spm,[status(thm)],[c_0_16, c_0_9])).
-cnf(c_0_20, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)), inference(spm,[status(thm)],[c_0_17, c_0_18])).
-cnf(c_0_21, plain, (le(X1,max(max(X2,X1),X3))), inference(spm,[status(thm)],[c_0_12, c_0_19])).
-cnf(c_0_22, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)), inference(spm,[status(thm)],[c_0_20, c_0_21])).
-cnf(c_0_23, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)), inference(spm,[status(thm)],[c_0_22, c_0_21])).
-cnf(c_0_24, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)), inference(spm,[status(thm)],[c_0_23, c_0_21])).
-cnf(c_0_25, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)), inference(spm,[status(thm)],[c_0_24, c_0_21])).
-cnf(c_0_26, plain, (~le(s(X1),X2)|~le(s(X3),X1)), inference(spm,[status(thm)],[c_0_25, c_0_21])).
-cnf(c_0_27, plain, (~le(s(X1),X2)), inference(spm,[status(thm)],[c_0_26, c_0_21])).
-cnf(c_0_28, plain, ($false), inference(spm,[status(thm)],[c_0_27, c_0_21]), ['proof']).
-# SZS output end CNFRefutation
+% Proof found!
+% SZS status Unsatisfiable
+% SZS output start CNFRefutation
+cnf(sos_05, axiom, (~eq(f(X1),a0)|~eq(f(X2),a0)|~eq(f(X3),a0)|~eq(f(X4),a0)|~eq(f(X5),a0)|~eq(f(X6),a0)|~eq(f(X7),a0)|~eq(f(X8),a0)|~eq(f(X9),a0)|~eq(f(X10),a0)|~eq(f(X11),a0)|~eq(f(X12),a0)|~le(s(X1),X2)|~le(s(X2),X3)|~le(s(X3),X4)|~le(s(X4),X5)|~le(s(X5),X6)|~le(s(X6),X7)|~le(s(X7),X8)|~le(s(X8),X9)|~le(s(X9),X10)|~le(s(X10),X11)|~le(s(X11),X12)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYO/SYO613-1.p', sos_05)).
+cnf(sos_04, axiom, (eq(f(X1),a0)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYO/SYO613-1.p', sos_04)).
+cnf(sos_02, axiom, (le(X1,X3)|~le(max(X1,X2),X3)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYO/SYO613-1.p', sos_02)).
+cnf(sos_01, axiom, (le(X1,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYO/SYO613-1.p', sos_01)).
+cnf(c_0_4, plain, (~eq(f(X1),a0)|~eq(f(X2),a0)|~eq(f(X3),a0)|~eq(f(X4),a0)|~eq(f(X5),a0)|~eq(f(X6),a0)|~eq(f(X7),a0)|~eq(f(X8),a0)|~eq(f(X9),a0)|~eq(f(X10),a0)|~eq(f(X11),a0)|~eq(f(X12),a0)|~le(s(X1),X2)|~le(s(X2),X3)|~le(s(X3),X4)|~le(s(X4),X5)|~le(s(X5),X6)|~le(s(X6),X7)|~le(s(X7),X8)|~le(s(X8),X9)|~le(s(X9),X10)|~le(s(X10),X11)|~le(s(X11),X12)), inference(fof_simplification,[status(thm)],[sos_05])).
+cnf(c_0_5, plain, (~eq(f(X1),a0)|~eq(f(X2),a0)|~eq(f(X3),a0)|~eq(f(X4),a0)|~eq(f(X5),a0)|~eq(f(X6),a0)|~eq(f(X7),a0)|~eq(f(X8),a0)|~eq(f(X9),a0)|~eq(f(X10),a0)|~eq(f(X11),a0)|~eq(f(X12),a0)|~le(s(X1),X2)|~le(s(X2),X3)|~le(s(X3),X4)|~le(s(X4),X5)|~le(s(X5),X6)|~le(s(X6),X7)|~le(s(X7),X8)|~le(s(X8),X9)|~le(s(X9),X10)|~le(s(X10),X11)|~le(s(X11),X12)), c_0_4).
+cnf(c_0_6, axiom, (eq(f(X1),a0)), sos_04).
+cnf(c_0_7, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|~eq(f(X11),a0)|~eq(f(X10),a0)|~eq(f(X9),a0)|~eq(f(X8),a0)|~eq(f(X7),a0)|~eq(f(X6),a0)|~eq(f(X5),a0)|~eq(f(X4),a0)|~eq(f(X3),a0)|~eq(f(X2),a0)|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_5, c_0_6])).
+cnf(c_0_8, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|~eq(f(X10),a0)|~eq(f(X9),a0)|~eq(f(X8),a0)|~eq(f(X7),a0)|~eq(f(X6),a0)|~eq(f(X5),a0)|~eq(f(X4),a0)|~eq(f(X3),a0)|~eq(f(X2),a0)|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_7, c_0_6])).
+cnf(c_0_9, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|$false|~eq(f(X9),a0)|~eq(f(X8),a0)|~eq(f(X7),a0)|~eq(f(X6),a0)|~eq(f(X5),a0)|~eq(f(X4),a0)|~eq(f(X3),a0)|~eq(f(X2),a0)|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_8, c_0_6])).
+cnf(c_0_10, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|$false|$false|~eq(f(X8),a0)|~eq(f(X7),a0)|~eq(f(X6),a0)|~eq(f(X5),a0)|~eq(f(X4),a0)|~eq(f(X3),a0)|~eq(f(X2),a0)|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_9, c_0_6])).
+cnf(c_0_11, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|$false|$false|$false|~eq(f(X7),a0)|~eq(f(X6),a0)|~eq(f(X5),a0)|~eq(f(X4),a0)|~eq(f(X3),a0)|~eq(f(X2),a0)|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_10, c_0_6])).
+cnf(c_0_12, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|$false|$false|$false|$false|~eq(f(X6),a0)|~eq(f(X5),a0)|~eq(f(X4),a0)|~eq(f(X3),a0)|~eq(f(X2),a0)|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_11, c_0_6])).
+cnf(c_0_13, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|$false|$false|$false|$false|$false|~eq(f(X5),a0)|~eq(f(X4),a0)|~eq(f(X3),a0)|~eq(f(X2),a0)|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_12, c_0_6])).
+cnf(c_0_14, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|$false|$false|$false|$false|$false|$false|~eq(f(X4),a0)|~eq(f(X3),a0)|~eq(f(X2),a0)|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_13, c_0_6])).
+cnf(c_0_15, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|$false|$false|$false|$false|$false|$false|$false|~eq(f(X3),a0)|~eq(f(X2),a0)|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_14, c_0_6])).
+cnf(c_0_16, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|$false|$false|$false|$false|$false|$false|$false|$false|~eq(f(X2),a0)|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_15, c_0_6])).
+cnf(c_0_17, plain, (le(X1,X3)|~le(max(X1,X2),X3)), inference(fof_simplification,[status(thm)],[sos_02])).
+cnf(c_0_18, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|$false|$false|$false|$false|$false|$false|$false|$false|$false|~eq(f(X1),a0)), inference(rw,[status(thm)],[c_0_16, c_0_6])).
+cnf(c_0_19, plain, (le(X1,X3)|~le(max(X1,X2),X3)), c_0_17).
+cnf(c_0_20, axiom, (le(X1,X1)), sos_01).
+cnf(c_0_21, plain, (~le(s(X11),X12)|~le(s(X10),X11)|~le(s(X9),X10)|~le(s(X8),X9)|~le(s(X7),X8)|~le(s(X6),X7)|~le(s(X5),X6)|~le(s(X4),X5)|~le(s(X3),X4)|~le(s(X2),X3)|~le(s(X1),X2)|$false|$false|$false|$false|$false|$false|$false|$false|$false|$false|$false|$false), inference(rw,[status(thm)],[c_0_18, c_0_6])).
+cnf(c_0_22, plain, (le(X1,max(X1,X2))), inference(spm,[status(thm)],[c_0_19, c_0_20])).
+cnf(c_0_23, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10)|~le(s(X12),X11)), inference(cn,[status(thm)],[c_0_21])).
+cnf(c_0_24, plain, (le(X1,max(max(X1,X2),X3))), inference(spm,[status(thm)],[c_0_19, c_0_22])).
+cnf(c_0_25, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)|~le(s(X11),X10)), inference(spm,[status(thm)],[c_0_23, c_0_24])).
+cnf(c_0_26, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)|~le(s(X10),X9)), inference(spm,[status(thm)],[c_0_25, c_0_24])).
+cnf(c_0_27, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)|~le(s(X9),X8)), inference(spm,[status(thm)],[c_0_26, c_0_24])).
+cnf(c_0_28, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)|~le(s(X8),X7)), inference(spm,[status(thm)],[c_0_27, c_0_24])).
+cnf(c_0_29, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)|~le(s(X7),X6)), inference(spm,[status(thm)],[c_0_28, c_0_24])).
+cnf(c_0_30, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)|~le(s(X6),X5)), inference(spm,[status(thm)],[c_0_29, c_0_24])).
+cnf(c_0_31, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)|~le(s(X5),X4)), inference(spm,[status(thm)],[c_0_30, c_0_24])).
+cnf(c_0_32, plain, (~le(s(X1),X2)|~le(s(X3),X1)|~le(s(X4),X3)), inference(spm,[status(thm)],[c_0_31, c_0_24])).
+cnf(c_0_33, plain, (~le(s(X1),X2)|~le(s(X3),X1)), inference(spm,[status(thm)],[c_0_32, c_0_24])).
+cnf(c_0_34, plain, (~le(s(X1),X2)), inference(spm,[status(thm)],[c_0_33, c_0_24])).
+cnf(c_0_35, plain, ($false), inference(spm,[status(thm)],[c_0_34, c_0_24]), ['proof']).
+% SZS output end CNFRefutation

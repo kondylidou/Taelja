@@ -22,16 +22,16 @@ axiom ax1 : ∀ (x y : α), mult (rd x y) y = x
 -- Axiom 2
 axiom ax2 : ∀ (x : α), mult unit x = x
 -- Axiom 3
-axiom ax3 : ∀ (x : α), mult x unit = x
+axiom ax3 : ∀ (x y : α), op_e = mult (mult (rd op_c (mult x y)) y) x
 -- Axiom 4
-axiom ax4 : ∀ (x y : α), op_e = mult (mult (rd op_c (mult x y)) y) x
+axiom ax4 : ∀ (x : α), mult x unit = x
 -- Axiom 5
 axiom ax5 : ∀ (x y : α), mult op_c (mult x y) = mult (mult op_c x) y
 
 -- Lemma 6
 theorem taelja_lemma6 : op_e = op_c := by
-  calc op_e = mult (mult (rd op_c (mult unit op_e)) op_e) unit := ax4 unit op_e
-      _ = mult (rd op_c (mult unit op_e)) op_e := ax3 (mult (rd op_c (mult unit op_e)) op_e)
+  calc op_e = mult (mult (rd op_c (mult unit op_e)) op_e) unit := ax3 unit op_e
+      _ = mult (rd op_c (mult unit op_e)) op_e := ax4 (mult (rd op_c (mult unit op_e)) op_e)
       _ = mult (rd op_c op_e) op_e := congrArg (fun t : α => mult (rd op_c t) op_e) (ax2 op_e)
       _ = op_c := ax1 op_c op_e
 

@@ -1,17 +1,23 @@
 Axiom 1: le(X,X)
-Axiom 2: eq(f(X),a0)
+Axiom 2: le(max(X,Y),Z) => le(X,Z)
+Axiom 3: le(max(X,Y),Z) => le(Y,Z)
+Axiom 4: eq(f(X),a0)
 
 Goal 1: eq(f(X),a0)
 Proof:
   have eq(f(X),a0)
-    by axiom 2
+    by axiom 4
 
-Goal 2: eq(f(s(X)),a0)
+Goal 2: eq(f(max(max(X,s(Y)),Z)),a0)
 Proof:
-  have eq(f(s(X)),a0)
-    by axiom 2
+  have eq(f(max(max(X,s(Y)),Z)),a0)
+    by axiom 4
 
-Goal 3: le(s(X),s(X))
+Goal 3: le(s(X),max(max(Y,s(X)),Z))
 Proof:
-  have le(s(X),s(X))
+  have le(max(max(Y,s(X)),Z),max(max(Y,s(X)),Z))
     by axiom 1
+  hence le(max(Y,s(X)),max(max(Y,s(X)),Z))
+    by axiom 2
+  hence le(s(X),max(max(Y,s(X)),Z))
+    by axiom 3

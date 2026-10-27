@@ -4,21 +4,21 @@ Axiom 3: is_a_theorem(equivalent(X,Y)) /\ is_a_theorem(X) => is_a_theorem(Y)
 
 Goal 1: is_a_theorem(equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c)))
 Proof:
-  have is_a_theorem(equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))),equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))))),equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c)))))))
+  have is_a_theorem(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))),equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))))),equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c)))))))
     by axiom 2
+   and is_a_theorem(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))))
+    by axiom 1
+  hence is_a_theorem(equivalent(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))),equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))))),equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))))))
+    by axiom 3
+   and is_a_theorem(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))),equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))))))
+    by axiom 2
+  hence is_a_theorem(equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c)))))
+    by axiom 3
    and is_a_theorem(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))))
     by axiom 1
-  hence is_a_theorem(equivalent(equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))),equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))))),equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))))))
+  hence is_a_theorem(equivalent(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))))
     by axiom 3
-   and is_a_theorem(equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))),equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))))))
-    by axiom 2
-  hence is_a_theorem(equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c)))))
-    by axiom 3
-   and is_a_theorem(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))))
-    by axiom 1
-  hence is_a_theorem(equivalent(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))),equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c))))
-    by axiom 3
-   and is_a_theorem(equivalent(equivalent(a,c),equivalent(equivalent(a,b),equivalent(c,b))))
+   and is_a_theorem(equivalent(equivalent(X,Y),equivalent(equivalent(X,Z),equivalent(Y,Z))))
     by axiom 1
   hence is_a_theorem(equivalent(equivalent(equivalent(a,b),equivalent(c,b)),equivalent(a,c)))
     by axiom 3

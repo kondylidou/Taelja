@@ -22,156 +22,152 @@ axiom ax1 : ∀ (x : α), le x x
 -- Axiom 2
 axiom ax2 : ∀ (x y z : α), le (max x y) z → le x z
 -- Axiom 3
-axiom ax3 : ∀ (x y z : α), le (max x y) z → le y z
--- Axiom 4
-axiom ax4 : ∀ (x : α), eq (f x) a0
+axiom ax3 : ∀ (x : α), eq (f x) a0
 
--- Lemma 5
-theorem taelja_lemma5 : ∀ (x y z : α), le x (max (max y x) z) := by
+-- Lemma 4
+theorem taelja_lemma4 : ∀ (x y z : α), le x (max (max x y) z) := by
   intro x y z
-  have h1 : le (max (max y x) z) (max (max y x) z) := ax1 (max (max y x) z)
-  have h2 : le (max y x) (max (max y x) z) := ax2 (max y x) z (max (max y x) z) h1
-  have h3 : le x (max (max y x) z) := ax3 y x (max (max y x) z) h2
+  have h1 : le (max (max x y) z) (max (max x y) z) := ax1 (max (max x y) z)
+  have h2 : le (max x y) (max (max x y) z) := ax2 (max x y) z (max (max x y) z) h1
+  have h3 : le x (max (max x y) z) := ax2 x y (max (max x y) z) h2
   exact h3
 
 -- Goal 1
 theorem taelja_goal1 : ∀ (x : α), eq (f x) a0 := by
   intro x
-  have h1 : eq (f x) a0 := ax4 x
+  have h1 : eq (f x) a0 := ax3 x
   exact h1
 
 -- Goal 2
-theorem taelja_goal2 : ∀ (x y z : α), eq (f (max (max x (s y)) z)) a0 := by
+theorem taelja_goal2 : ∀ (x y z : α), eq (f (max (max (s x) y) z)) a0 := by
   intro x y z
-  have h1 : eq (f (max (max x (s y)) z)) a0 := ax4 (max (max x (s y)) z)
+  have h1 : eq (f (max (max (s x) y) z)) a0 := ax3 (max (max (s x) y) z)
   exact h1
 
 -- Goal 3
-theorem taelja_goal3 : ∀ (x y z u v : α), eq (f (max (max x (s (max (max y (s z)) u))) v)) a0 := by
+theorem taelja_goal3 : ∀ (x y z u v : α), eq (f (max (max (s (max (max (s x) y) z)) u) v)) a0 := by
   intro x y z u v
-  have h1 : eq (f (max (max x (s (max (max y (s z)) u))) v)) a0 := ax4 (max (max x (s (max (max y (s z)) u))) v)
+  have h1 : eq (f (max (max (s (max (max (s x) y) z)) u) v)) a0 := ax3 (max (max (s (max (max (s x) y) z)) u) v)
   exact h1
 
 -- Goal 4
-theorem taelja_goal4 : ∀ (x y z u v w x1 : α), eq (f (max (max x (s (max (max y (s (max (max z (s u)) v))) w))) x1)) a0 := by
+theorem taelja_goal4 : ∀ (x y z u v w x1 : α), eq (f (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) a0 := by
   intro x y z u v w x1
-  have h1 : eq (f (max (max x (s (max (max y (s (max (max z (s u)) v))) w))) x1)) a0 := ax4 (max (max x (s (max (max y (s (max (max z (s u)) v))) w))) x1)
+  have h1 : eq (f (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) a0 := ax3 (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)
   exact h1
 
 -- Goal 5
-theorem taelja_goal5 : ∀ (x y z u v w x1 x2 x3 : α), eq (f (max (max x (s (max (max y (s (max (max z (s (max (max u (s v)) w))) x1))) x2))) x3)) a0 := by
+theorem taelja_goal5 : ∀ (x y z u v w x1 x2 x3 : α), eq (f (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) a0 := by
   intro x y z u v w x1 x2 x3
-  have h1 : eq (f (max (max x (s (max (max y (s (max (max z (s (max (max u (s v)) w))) x1))) x2))) x3)) a0 := ax4 (max (max x (s (max (max y (s (max (max z (s (max (max u (s v)) w))) x1))) x2))) x3)
+  have h1 : eq (f (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) a0 := ax3 (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)
   exact h1
 
 -- Goal 6
-theorem taelja_goal6 : ∀ (x y z u v w x1 x2 x3 x4 x5 : α), eq (f (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s w)) x1))) x2))) x3))) x4))) x5)) a0 := by
+theorem taelja_goal6 : ∀ (x y z u v w x1 x2 x3 x4 x5 : α), eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) a0 := by
   intro x y z u v w x1 x2 x3 x4 x5
-  have h1 : eq (f (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s w)) x1))) x2))) x3))) x4))) x5)) a0 := ax4 (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s w)) x1))) x2))) x3))) x4))) x5)
+  have h1 : eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) a0 := ax3 (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)
   exact h1
 
 -- Goal 7
-theorem taelja_goal7 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 : α), eq (f (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s x1)) x2))) x3))) x4))) x5))) x6))) x7)) a0 := by
+theorem taelja_goal7 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 : α), eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) a0 := by
   intro x y z u v w x1 x2 x3 x4 x5 x6 x7
-  have h1 : eq (f (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s x1)) x2))) x3))) x4))) x5))) x6))) x7)) a0 := ax4 (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s x1)) x2))) x3))) x4))) x5))) x6))) x7)
+  have h1 : eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) a0 := ax3 (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)
   exact h1
 
 -- Goal 8
-theorem taelja_goal8 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 : α), eq (f (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)) a0 := by
+theorem taelja_goal8 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 : α), eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) a0 := by
   intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9
-  have h1 : eq (f (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)) a0 := ax4 (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)
+  have h1 : eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) a0 := ax3 (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)
   exact h1
 
 -- Goal 9
-theorem taelja_goal9 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : α), eq (f (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))) a0 := by
+theorem taelja_goal9 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : α), eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) a0 := by
   intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11
-  have h1 : eq (f (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))) a0 := ax4 (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))
+  have h1 : eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) a0 := ax3 (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)
   exact h1
 
 -- Goal 10
-theorem taelja_goal10 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : α), eq (f (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))) a0 := by
-  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11
-  have h1 : eq (f (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))) a0 := ax4 (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))
+theorem taelja_goal10 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 : α), eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) a0 := by
+  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13
+  have h1 : eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) a0 := ax3 (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)
   exact h1
 
 -- Goal 11
-theorem taelja_goal11 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : α), eq (f (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))))) a0 := by
-  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11
-  have h1 : eq (f (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))))) a0 := ax4 (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))))
+theorem taelja_goal11 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 : α), eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)) a0 := by
+  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15
+  have h1 : eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)) a0 := ax3 (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)
   exact h1
 
 -- Goal 12
-theorem taelja_goal12 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : α), eq (f (s (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))))) a0 := by
-  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11
-  have h1 : eq (f (s (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))))) a0 := ax4 (s (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))))
+theorem taelja_goal12 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 : α), eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)) x16) x17)) a0 := by
+  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17
+  have h1 : eq (f (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)) x16) x17)) a0 := ax3 (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)) x16) x17)
   exact h1
 
 -- Goal 13
-theorem taelja_goal13 : ∀ (x y z : α), le (s x) (max (max y (s x)) z) := by
+theorem taelja_goal13 : ∀ (x y z : α), le (s x) (max (max (s x) y) z) := by
   intro x y z
-  have h1 : le (s x) (max (max y (s x)) z) := taelja_lemma5 (s x) y z
+  have h1 : le (s x) (max (max (s x) y) z) := taelja_lemma4 (s x) y z
   exact h1
 
 -- Goal 14
-theorem taelja_goal14 : ∀ (x y z u v : α), le (s (max (max x (s y)) z)) (max (max u (s (max (max x (s y)) z))) v) := by
+theorem taelja_goal14 : ∀ (x y z u v : α), le (s (max (max (s x) y) z)) (max (max (s (max (max (s x) y) z)) u) v) := by
   intro x y z u v
-  have h1 : le (s (max (max x (s y)) z)) (max (max u (s (max (max x (s y)) z))) v) := taelja_lemma5 (s (max (max x (s y)) z)) u v
+  have h1 : le (s (max (max (s x) y) z)) (max (max (s (max (max (s x) y) z)) u) v) := taelja_lemma4 (s (max (max (s x) y) z)) u v
   exact h1
 
 -- Goal 15
-theorem taelja_goal15 : ∀ (x y z u v w x1 : α), le (s (max (max x (s (max (max y (s z)) u))) v)) (max (max w (s (max (max x (s (max (max y (s z)) u))) v))) x1) := by
+theorem taelja_goal15 : ∀ (x y z u v w x1 : α), le (s (max (max (s (max (max (s x) y) z)) u) v)) (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1) := by
   intro x y z u v w x1
-  have h1 : le (s (max (max x (s (max (max y (s z)) u))) v)) (max (max w (s (max (max x (s (max (max y (s z)) u))) v))) x1) := taelja_lemma5 (s (max (max x (s (max (max y (s z)) u))) v)) w x1
+  have h1 : le (s (max (max (s (max (max (s x) y) z)) u) v)) (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1) := taelja_lemma4 (s (max (max (s (max (max (s x) y) z)) u) v)) w x1
   exact h1
 
 -- Goal 16
-theorem taelja_goal16 : ∀ (x y z u v w x1 x2 x3 : α), le (s (max (max x (s (max (max y (s (max (max z (s u)) v))) w))) x1)) (max (max x2 (s (max (max x (s (max (max y (s (max (max z (s u)) v))) w))) x1))) x3) := by
+theorem taelja_goal16 : ∀ (x y z u v w x1 x2 x3 : α), le (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3) := by
   intro x y z u v w x1 x2 x3
-  have h1 : le (s (max (max x (s (max (max y (s (max (max z (s u)) v))) w))) x1)) (max (max x2 (s (max (max x (s (max (max y (s (max (max z (s u)) v))) w))) x1))) x3) := taelja_lemma5 (s (max (max x (s (max (max y (s (max (max z (s u)) v))) w))) x1)) x2 x3
+  have h1 : le (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3) := taelja_lemma4 (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2 x3
   exact h1
 
 -- Goal 17
-theorem taelja_goal17 : ∀ (x y z u v w x1 x2 x3 x4 x5 : α), le (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s v)) w))) x1))) x2))) x3)) (max (max x4 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s v)) w))) x1))) x2))) x3))) x5) := by
+theorem taelja_goal17 : ∀ (x y z u v w x1 x2 x3 x4 x5 : α), le (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5) := by
   intro x y z u v w x1 x2 x3 x4 x5
-  have h1 : le (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s v)) w))) x1))) x2))) x3)) (max (max x4 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s v)) w))) x1))) x2))) x3))) x5) := taelja_lemma5 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s v)) w))) x1))) x2))) x3)) x4 x5
+  have h1 : le (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5) := taelja_lemma4 (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4 x5
   exact h1
 
 -- Goal 18
-theorem taelja_goal18 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 : α), le (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s w)) x1))) x2))) x3))) x4))) x5)) (max (max x6 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s w)) x1))) x2))) x3))) x4))) x5))) x7) := by
+theorem taelja_goal18 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 : α), le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7) := by
   intro x y z u v w x1 x2 x3 x4 x5 x6 x7
-  have h1 : le (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s w)) x1))) x2))) x3))) x4))) x5)) (max (max x6 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s w)) x1))) x2))) x3))) x4))) x5))) x7) := taelja_lemma5 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s w)) x1))) x2))) x3))) x4))) x5)) x6 x7
+  have h1 : le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7) := taelja_lemma4 (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6 x7
   exact h1
 
 -- Goal 19
-theorem taelja_goal19 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 : α), le (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s x1)) x2))) x3))) x4))) x5))) x6))) x7)) (max (max x8 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s x1)) x2))) x3))) x4))) x5))) x6))) x7))) x9) := by
+theorem taelja_goal19 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 : α), le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9) := by
   intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9
-  have h1 : le (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s x1)) x2))) x3))) x4))) x5))) x6))) x7)) (max (max x8 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s x1)) x2))) x3))) x4))) x5))) x6))) x7))) x9) := taelja_lemma5 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s x1)) x2))) x3))) x4))) x5))) x6))) x7)) x8 x9
+  have h1 : le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9) := taelja_lemma4 (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8 x9
   exact h1
 
 -- Goal 20
-theorem taelja_goal20 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : α), le (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)) (max x10 (max x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)))) := by
+theorem taelja_goal20 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : α), le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11) := by
   intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11
-  have h1 : le (max x10 (max x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)))) (max x10 (max x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)))) := ax1 (max x10 (max x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9))))
-  have h2 : le (max x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9))) (max x10 (max x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)))) := ax3 x10 (max x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9))) (max x10 (max x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)))) h1
-  have h3 : le (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)) (max x10 (max x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)))) := ax3 x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)) (max x10 (max x11 (s (max (max x (s (max (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s x2)) x3))) x4))) x5))) x6))) x7))) x8))) x9)))) h2
-  exact h3
+  have h1 : le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11) := taelja_lemma4 (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10 x11
+  exact h1
 
 -- Goal 21
-theorem taelja_goal21 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : α), le (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))) (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))) := by
-  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11
-  have h1 : le (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))) (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))) := ax1 (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))
+theorem taelja_goal21 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 : α), le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13) := by
+  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13
+  have h1 : le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13) := taelja_lemma4 (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12 x13
   exact h1
 
 -- Goal 22
-theorem taelja_goal22 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : α), le (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))) (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))) := by
-  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11
-  have h1 : le (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))) (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))) := ax1 (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))))
+theorem taelja_goal22 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 : α), le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15) := by
+  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15
+  have h1 : le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15) := taelja_lemma4 (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14 x15
   exact h1
 
 -- Goal 23
-theorem taelja_goal23 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 : α), le (s (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))))) (s (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))))) := by
-  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11
-  have h1 : le (s (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))))) (s (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11))))))) := ax1 (s (s (s (max x (max y (s (max (max z (s (max (max u (s (max (max v (s (max (max w (s (max (max x1 (s (max (max x2 (s (max (max x3 (s x4)) x5))) x6))) x7))) x8))) x9))) x10))) x11)))))))
+theorem taelja_goal23 : ∀ (x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17 : α), le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)) x16) x17) := by
+  intro x y z u v w x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 x14 x15 x16 x17
+  have h1 : le (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)) (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)) x16) x17) := taelja_lemma4 (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s (max (max (s x) y) z)) u) v)) w) x1)) x2) x3)) x4) x5)) x6) x7)) x8) x9)) x10) x11)) x12) x13)) x14) x15)) x16 x17
   exact h1
 
 end ESyo6131

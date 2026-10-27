@@ -16,7 +16,7 @@ Proof:
 = { by lemma 2 R->L }
   multiply(X,multiply(X,multiply(multiply(X,multiply(Y,Z)),multiply(identity,multiply(Z,Z)))))
 = { by lemma 2 R->L }
-  multiply(X,multiply(X,multiply(multiply(X,multiply(Y,Z)),multiply(multiply(identity,Z),multiply(identity,Z)))))
+  multiply(X,multiply(X,multiply(multiply(multiply(X,Y),multiply(identity,Z)),multiply(identity,multiply(Z,Z)))))
 = { by lemma 2 R->L }
   multiply(X,multiply(X,multiply(multiply(multiply(X,Y),multiply(identity,Z)),multiply(multiply(identity,Z),multiply(identity,Z)))))
 = { by lemma 2 R->L }

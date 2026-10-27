@@ -11,6 +11,7 @@ noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 axiom a0 : α
 
 axiom f : α → α
+axiom max : α → α → α
 axiom s : α → α
 
 axiom eq : α → α → Prop
@@ -19,24 +20,30 @@ axiom le : α → α → Prop
 -- Axiom 1
 axiom ax1 : ∀ (x : α), le x x
 -- Axiom 2
-axiom ax2 : ∀ (x : α), eq (f x) a0
+axiom ax2 : ∀ (x y z : α), le (max x y) z → le x z
+-- Axiom 3
+axiom ax3 : ∀ (x y z : α), le (max x y) z → le y z
+-- Axiom 4
+axiom ax4 : ∀ (x : α), eq (f x) a0
 
 -- Goal 1
 theorem taelja_goal1 : ∀ (x : α), eq (f x) a0 := by
   intro x
-  have h1 : eq (f x) a0 := ax2 x
+  have h1 : eq (f x) a0 := ax4 x
   exact h1
 
 -- Goal 2
-theorem taelja_goal2 : ∀ (x : α), eq (f (s x)) a0 := by
-  intro x
-  have h1 : eq (f (s x)) a0 := ax2 (s x)
+theorem taelja_goal2 : ∀ (x y z : α), eq (f (max (max x (s y)) z)) a0 := by
+  intro x y z
+  have h1 : eq (f (max (max x (s y)) z)) a0 := ax4 (max (max x (s y)) z)
   exact h1
 
 -- Goal 3
-theorem taelja_goal3 : ∀ (x : α), le (s x) (s x) := by
-  intro x
-  have h1 : le (s x) (s x) := ax1 (s x)
-  exact h1
+theorem taelja_goal3 : ∀ (x y z : α), le (s x) (max (max y (s x)) z) := by
+  intro x y z
+  have h1 : le (max (max y (s x)) z) (max (max y (s x)) z) := ax1 (max (max y (s x)) z)
+  have h2 : le (max y (s x)) (max (max y (s x)) z) := ax2 (max y (s x)) z (max (max y (s x)) z) h1
+  have h3 : le (s x) (max (max y (s x)) z) := ax3 y (s x) (max (max y (s x)) z) h2
+  exact h3
 
 end ESyo6111

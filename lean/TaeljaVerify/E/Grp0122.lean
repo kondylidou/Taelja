@@ -22,82 +22,68 @@ axiom product : α → α → α → Prop
 -- Axiom 1
 axiom ax1 : ∀ (x y : α), product x y (multiply x y)
 -- Axiom 2
-axiom ax2 : ∀ (x : α), product identity x x
+axiom ax2 : ∀ (x : α), product (inverse x) x identity
 -- Axiom 3
-axiom ax3 : ∀ (x y z u : α), product x y z → product x y u → z = u
+axiom ax3 : product a b c
 -- Axiom 4
-axiom ax4 : product a b c
+axiom ax4 : ∀ (x y z u v w : α), product x y z → product y u v → product x v w → product z u w
 -- Axiom 5
-axiom ax5 : product (inverse b) (inverse a) d
+axiom ax5 : ∀ (x : α), product x identity x
 -- Axiom 6
-axiom ax6 : ∀ (x : α), product x (inverse x) identity
+axiom ax6 : ∀ (x y z u : α), product x y z → product x y u → z = u
 -- Axiom 7
-axiom ax7 : ∀ (x y z u v w : α), product x y z → product y u v → product x v w → product z u w
+axiom ax7 : ∀ (x : α), product x (inverse x) identity
 -- Axiom 8
-axiom ax8 : ∀ (x : α), product x identity x
+axiom ax8 : ∀ (x : α), product identity x x
 -- Axiom 9
-axiom ax9 : ∀ (x : α), product (inverse x) x identity
+axiom ax9 : product (inverse b) (inverse a) d
 
 -- Lemma 10
-theorem taelja_lemma10 : ∀ (x : α), multiply identity x = x := by
+theorem taelja_lemma10 : ∀ (x : α), x = multiply x identity := by
   intro x
-  have h1 : product identity x x := ax2 x
-  have h2 : product identity x (multiply identity x) := ax1 identity x
-  have h3 : multiply identity x = x := ax3 identity x (multiply identity x) x h2 h1
+  have h1 : product x identity x := ax5 x
+  have h2 : product x identity (multiply x identity) := ax1 x identity
+  have h3 : x = multiply x identity := ax6 x identity x (multiply x identity) h1 h2
   exact h3
 
 -- Lemma 11
-theorem taelja_lemma11 : ∀ (x y z : α), product x y z → multiply x y = z := by
+theorem taelja_lemma11 : ∀ (x y z : α), product x y z → product z (inverse y) x := by
   intro x y z a1
-  have h1 : product x y (multiply x y) := ax1 x y
-  have h2 : product x y z := by assumption
-  have h3 : multiply x y = z := ax3 x y (multiply x y) z h1 h2
-  exact h3
+  have h1 : product x y z := by assumption
+  have h2 : product y (inverse y) identity := ax7 y
+  have h3 : product x identity (multiply x identity) := ax1 x identity
+  have h4 : product z (inverse y) (multiply x identity) := ax4 x y z (inverse y) identity (multiply x identity) h1 h2 h3
+  have h5 : product z (inverse y) x := Eq.mp (congrArg (fun t : α => product z (inverse y) t) (Eq.symm (taelja_lemma10 x))) h4
+  exact h5
 
 -- Lemma 12
-theorem taelja_lemma12 : multiply identity (inverse a) = multiply b d := by
-  have h1 : product b (inverse b) identity := ax6 b
-  have h2 : product (inverse b) (inverse a) d := ax5
-  have h3 : product b d (multiply b d) := ax1 b d
-  have h4 : product identity (inverse a) (multiply b d) := ax7 b (inverse b) identity (inverse a) d (multiply b d) h1 h2 h3
-  have h5 : multiply identity (inverse a) = multiply b d := taelja_lemma11 identity (inverse a) (multiply b d) h4
+theorem taelja_lemma12 : product identity (inverse b) (multiply (inverse c) a) := by
+  have h1 : product (inverse c) a (multiply (inverse c) a) := ax1 (inverse c) a
+  have h2 : product a b c := ax3
+  have h3 : product (inverse c) c identity := ax2 c
+  have h4 : product (multiply (inverse c) a) b identity := ax4 (inverse c) a (multiply (inverse c) a) b c identity h1 h2 h3
+  have h5 : product identity (inverse b) (multiply (inverse c) a) := taelja_lemma11 (multiply (inverse c) a) b identity h4
   exact h5
 
 -- Lemma 13
-theorem taelja_lemma13 : multiply b d = inverse a := by
-  calc multiply b d = multiply identity (inverse a) := Eq.symm (taelja_lemma12)
-      _ = inverse a := taelja_lemma10 (inverse a)
-
--- Lemma 14
-theorem taelja_lemma14 : product b d (inverse a) := by
-  have h1 : product b d (multiply b d) := ax1 b d
-  have h2 : product b d (inverse a) := Eq.mp (congrArg (fun t : α => product b d t) (taelja_lemma13)) h1
-  exact h2
-
--- Lemma 15
-theorem taelja_lemma15 : c = multiply a b := by
-  have h1 : product a b c := ax4
-  have h2 : product a b (multiply a b) := ax1 a b
-  have h3 : c = multiply a b := ax3 a b c (multiply a b) h1 h2
+theorem taelja_lemma13 : inverse b = multiply (inverse c) a := by
+  have h1 : product identity (inverse b) (inverse b) := ax8 (inverse b)
+  have h2 : product identity (inverse b) (multiply (inverse c) a) := taelja_lemma12
+  have h3 : inverse b = multiply (inverse c) a := ax6 identity (inverse b) (inverse b) (multiply (inverse c) a) h1 h2
   exact h3
 
--- Lemma 16
-theorem taelja_lemma16 : product c d identity := by
-  have h1 : product a b (multiply a b) := ax1 a b
-  have h2 : product b d (inverse a) := taelja_lemma14
-  have h3 : product a (inverse a) identity := ax6 a
-  have h4 : product (multiply a b) d identity := ax7 a b (multiply a b) d (inverse a) identity h1 h2 h3
-  have h5 : product c d identity := Eq.mp (congrArg (fun t : α => product t d identity) (Eq.symm (taelja_lemma15))) h4
-  exact h5
+-- Lemma 14
+theorem taelja_lemma14 : product (inverse b) (inverse a) (inverse c) := by
+  have h1 : product (inverse c) a (multiply (inverse c) a) := ax1 (inverse c) a
+  have h2 : product (inverse c) a (inverse b) := Eq.mp (congrArg (fun t : α => product (inverse c) a t) (Eq.symm (taelja_lemma13))) h1
+  have h3 : product (inverse b) (inverse a) (inverse c) := taelja_lemma11 (inverse c) a (inverse b) h2
+  exact h3
 
 -- Goal 1
 theorem taelja_goal1 : inverse c = d := by
-  have h1 : product (inverse c) c identity := ax9 c
-  have h2 : product c d identity := taelja_lemma16
-  have h3 : product (inverse c) identity (inverse c) := ax8 (inverse c)
-  have h4 : product identity d (inverse c) := ax7 (inverse c) c identity d identity (inverse c) h1 h2 h3
-  have h5 : multiply identity d = inverse c := taelja_lemma11 identity d (inverse c) h4
-  have h6 : d = inverse c := Eq.mp (congrArg (fun t : α => t = inverse c) (taelja_lemma10 d)) h5
-  exact Eq.symm (h6)
+  have h1 : product (inverse b) (inverse a) d := ax9
+  have h2 : product (inverse b) (inverse a) (inverse c) := taelja_lemma14
+  have h3 : inverse c = d := ax6 (inverse b) (inverse a) (inverse c) d h2 h1
+  exact h3
 
 end EGrp0122

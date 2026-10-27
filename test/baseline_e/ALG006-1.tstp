@@ -1,142 +1,190 @@
-# Preprocessing class: FSSSSMSSSSSNFFN.
-# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
-# No SInE strategy applied
-# Search class: FUUPS-FFSF22-SFFFFFNN
-# Configuration: G-E--_208_C18_F1_SE_CS_SP_PS_S5PRR_S0Y
-# Initializing proof state
-# Scanning for AC axioms
-#
-#cnf(i_0_8, negated_conjecture, (difference(difference(a,c),b)!=difference(difference(a,b),c))).
-#
-#cnf(i_0_5, plain, (difference(X1,difference(X2,X1))=X1)).
-#
-#cnf(i_0_6, plain, (difference(X1,difference(X1,X2))=difference(X2,difference(X2,X1)))).
-#
-#cnf(i_0_7, plain, (difference(difference(X1,X3),difference(X2,X3))=difference(difference(X1,X2),X3))).
-# Presaturation interreduction done
-#
-#cnf(i_0_8, negated_conjecture, (difference(difference(a,c),b)!=difference(difference(a,b),c))).
-#
-#cnf(i_0_5, plain, (difference(X1,difference(X2,X1))=X1)).
-#
-#cnf(i_0_9, plain, (difference(difference(X1,X2),X2)=difference(X1,X2))).
-#
-#cnf(i_0_7, plain, (difference(difference(X1,X2),difference(X3,X2))=difference(difference(X1,X3),X2))).
-#
-#cnf(i_0_6, plain, (difference(X1,difference(X1,X2))=difference(X2,difference(X2,X1)))).
-#
-#cnf(i_0_34, plain, (difference(X1,X1)=difference(difference(X2,X2),X1))).
-###
-#cnf(i_0_21, plain, (difference(difference(X1,difference(X1,X2)),X2)=difference(X2,X2))).
-###
-#cnf(i_0_42, plain, (difference(difference(X1,difference(X3,X3)),X2)=difference(X1,X2))).
-#
-#cnf(i_0_14, plain, (difference(difference(difference(X1,X3),X2),difference(X4,difference(X3,X2)))=difference(difference(difference(X1,X2),X4),difference(X3,X2)))).
-##
-#cnf(i_0_43, plain, (difference(difference(X2,X2),difference(X1,X1))=difference(X1,X1))).
-#
-#cnf(i_0_154, plain, (difference(X2,X2)=difference(X1,X1))).
-#
-#cnf(i_0_194, plain, (difference(X1,difference(X2,X2))=X1)).
-##################
-#cnf(i_0_16, plain, (difference(difference(X1,difference(X2,X3)),difference(difference(X4,X2),X3))=difference(difference(X1,difference(X4,X3)),difference(X2,X3)))).
-#
-#cnf(i_0_199, plain, (difference(difference(X2,X2),X1)=difference(X2,X2))).
-##########
-#cnf(i_0_17, plain, (difference(difference(X1,difference(X3,X2)),X2)=difference(difference(X1,X3),X2))).
-####
-#cnf(i_0_347, plain, (difference(difference(X1,X2),X1)=difference(X1,X1))).
-##############
-#cnf(i_0_395, plain, (difference(X1,difference(X1,difference(X1,X2)))=difference(X1,X2))).
-###
-#cnf(i_0_396, plain, (difference(difference(difference(X1,X2),X3),X1)=difference(X1,X1))).
-#
-#cnf(i_0_19, plain, (difference(difference(difference(X1,X2),X3),X2)=difference(difference(X1,X3),X2))).
-##########
-#cnf(i_0_403, plain, (difference(difference(X1,difference(X2,X3)),X2)=difference(X1,X2))).
-#
-#cnf(i_0_20, plain, (difference(difference(X1,X3),difference(X2,X1))=difference(X1,difference(X3,difference(X2,X1))))).
-##########
-#cnf(i_0_452, plain, (difference(X1,difference(X2,difference(X2,X1)))=difference(X1,X2))).
-#
-#cnf(i_0_22, plain, (difference(difference(X1,X2),difference(X2,difference(X2,X1)))=difference(X1,X2))).
-########
-#cnf(i_0_272, plain, (difference(difference(X1,difference(X3,difference(X3,X2))),X2)=difference(X1,X2))).
-###
-#cnf(i_0_23, plain, (difference(difference(X2,difference(X2,X1)),difference(X3,difference(X1,X2)))=difference(difference(X1,X3),difference(X1,X2)))).
-######################
-#cnf(i_0_25, plain, (difference(difference(X1,difference(X2,X3)),difference(X3,difference(X3,X2)))=difference(difference(X1,X2),difference(X2,X3)))).
-#################
-#cnf(i_0_345, plain, (difference(difference(difference(X1,difference(X1,X2)),X3),X2)=difference(X1,X1))).
-##########
-#cnf(i_0_460, plain, (difference(difference(difference(difference(X1,X2),X3),X4),X1)=difference(X1,X1))).
-########
-#cnf(i_0_469, plain, (difference(difference(X1,difference(difference(X2,X3),X4)),X2)=difference(X1,X2))).
-######
-#cnf(i_0_497, plain, (difference(difference(X3,difference(X3,difference(X1,X2))),X1)=difference(X1,X1))).
-############################################
-#cnf(i_0_549, plain, (difference(difference(X1,difference(X3,difference(X1,X2))),X2)=difference(X1,X2))).
-###
-#cnf(i_0_104, plain, (difference(difference(difference(difference(difference(X1,X3),X4),difference(X2,X3)),X5),difference(X6,difference(difference(X4,difference(X2,X3)),X5)))=difference(difference(difference(difference(difference(X1,X2),X3),X5),X6),difference(difference(X4,difference(X2,X3)),X5)))).
-###########
-#cnf(i_0_107, plain, (difference(difference(difference(X1,difference(difference(X2,X3),X4)),difference(X5,difference(X3,X4))),difference(X6,difference(difference(difference(X2,X4),X5),difference(X3,X4))))=difference(difference(difference(X1,difference(X5,difference(X3,X4))),X6),difference(difference(difference(X2,X4),X5),difference(X3,X4))))).
-############
-#cnf(i_0_575, plain, (difference(difference(X1,X2),difference(X1,difference(X2,X3)))=difference(X1,X1))).
-####################
-#cnf(i_0_2546, plain, (difference(X1,difference(X1,difference(difference(X2,X1),X3)))=difference(X1,X1))).
-#
-#cnf(i_0_115, plain, (difference(difference(difference(difference(X1,X3),X4),difference(X2,X3)),difference(X5,difference(X3,difference(X4,difference(X2,X3)))))=difference(difference(difference(difference(X1,X2),difference(X4,difference(X2,X3))),X5),difference(X3,difference(X4,difference(X2,X3)))))).
-###########
-#cnf(i_0_117, plain, (difference(difference(difference(X1,difference(X2,X3)),difference(X4,X3)),difference(X5,difference(difference(X2,X4),X3)))=difference(difference(difference(X1,difference(X4,X3)),X5),difference(difference(X2,X4),X3)))).
-#############
-#cnf(i_0_2609, plain, (difference(X1,difference(difference(X2,X1),X3))=X1)).
-###
-#cnf(i_0_3582, plain, (difference(X1,difference(X2,difference(X3,X1)))=difference(X1,X2))).
-####
-#cnf(i_0_3670, plain, (difference(difference(X1,X2),difference(X2,X3))=difference(X1,X2))).
-##
-#cnf(i_0_20, plain, (difference(difference(X1,X2),difference(X3,X1))=difference(X1,X2))).
-###########
-#cnf(i_0_115, plain, (difference(difference(difference(difference(X1,X2),X3),difference(X4,X2)),difference(X5,difference(X2,X3)))=difference(difference(difference(difference(X1,X4),difference(X3,difference(X4,X2))),X5),difference(X2,X3)))).
-###########
-#cnf(i_0_25, plain, (difference(difference(X1,difference(X2,X3)),difference(X3,difference(X3,X2)))=difference(X1,X2))).
-###########
-#cnf(i_0_122, plain, (difference(difference(difference(X1,difference(X3,X2)),X4),X2)=difference(difference(difference(X1,X3),X4),X2))).
-#########
-#cnf(i_0_3679, plain, (difference(X1,difference(X3,difference(X3,difference(X2,X1))))=X1)).
-##
-#cnf(i_0_123, plain, (difference(difference(difference(X1,difference(X2,X3)),X4),difference(X3,difference(X3,X2)))=difference(difference(X1,X2),difference(X4,difference(X3,difference(X3,X2)))))).
-#############
-#cnf(i_0_3826, plain, (difference(X1,difference(difference(difference(X2,X1),X3),X4))=X1)).
-########
-#cnf(i_0_3584, plain, (difference(difference(X1,X3),X2)=difference(difference(X1,X2),X3))).
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% G-E--_302_C18_F1_URBAN_RG_S04BN with pid 23381 completed with status 0
+% Result found by G-E--_302_C18_F1_URBAN_RG_S04BN
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FUUPS-FFSF22-SFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% SubtermCWHack with pid 23385 completed with status 0
+% Result found by SubtermCWHack
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FUUPS-FFSF22-SFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% Initializing proof state
+% Scanning for AC axioms
+%
+%cnf(i_0_5, plain, (difference(X1,difference(X2,X1))=X1)).
+%
+%cnf(i_0_9, plain, (difference(difference(X1,X2),X2)=difference(X1,X2))).
+%
+%cnf(i_0_6, plain, (difference(X1,difference(X1,X2))=difference(X2,difference(X2,X1)))).
+%
+%cnf(i_0_8, negated_conjecture, (difference(difference(a,c),b)!=difference(difference(a,b),c))).
+%
+%cnf(i_0_19, plain, (difference(difference(X2,X1),difference(X2,X1))=difference(X1,X1))).
+%
+%cnf(i_0_28, plain, (difference(X1,X1)=difference(X2,X2))).
+%
+%cnf(i_0_34, plain, (difference(X1,difference(X2,X2))=X1)).
+%%%%
+%cnf(i_0_7, plain, (difference(difference(X1,X3),difference(X2,X3))=difference(difference(X1,X2),X3))).
+%%%%%%%%%
+%cnf(i_0_37, plain, (difference(difference(X2,X2),X1)=difference(X2,X2))).
+%%
+%cnf(i_0_13, plain, (difference(difference(X1,X2),difference(X2,difference(X2,X1)))=difference(X1,X2))).
+%%%%%%%%%%%
+%cnf(i_0_14, plain, (difference(difference(X2,difference(X2,X1)),difference(X1,X2))=difference(X2,difference(X2,X1)))).
+%%
+%cnf(i_0_95, plain, (difference(difference(X1,X2),X1)=difference(X1,X1))).
+%%%%%%%
+%cnf(i_0_66, plain, (difference(difference(X1,difference(X1,X2)),X2)=difference(X2,X2))).
+%%%%%%%%%
+%cnf(i_0_168, plain, (difference(X1,difference(X1,difference(X1,X2)))=difference(X1,X2))).
+%%%%%%%
+%cnf(i_0_172, plain, (difference(difference(difference(X1,X2),X3),X1)=difference(X1,X1))).
+%%%%%%%%%%%%%%%
+%cnf(i_0_177, plain, (difference(difference(X1,difference(X2,X3)),X2)=difference(X1,X2))).
+%%%%%%%%
+%cnf(i_0_241, plain, (difference(X1,difference(X2,difference(X2,X1)))=difference(X1,X2))).
+%%%%%
+%cnf(i_0_69, plain, (difference(difference(X1,difference(X3,X2)),X2)=difference(difference(X1,X3),X2))).
+%%%%%%%%%%%
+%cnf(i_0_76, plain, (difference(difference(difference(X1,X2),X3),X2)=difference(difference(X1,X3),X2))).
+%%%%%%%%%%
+%cnf(i_0_249, plain, (difference(difference(difference(difference(X1,X2),X3),X4),X1)=difference(X1,X1))).
+%%%
+%cnf(i_0_60, plain, (difference(difference(difference(X1,X3),X2),difference(X4,difference(X3,X2)))=difference(difference(difference(X1,X2),X4),difference(X3,X2)))).
+%%%%%%%%%%%
+%cnf(i_0_65, plain, (difference(difference(X1,difference(X2,X3)),difference(difference(X4,X2),X3))=difference(difference(X1,difference(X4,X3)),difference(X2,X3)))).
+%%%%%%%%%%%
+%cnf(i_0_71, plain, (difference(difference(X1,difference(X2,X3)),difference(X3,difference(X3,X2)))=difference(difference(X1,X2),difference(X2,X3)))).
+%%%%%%%%%%%%%%%%%
+%cnf(i_0_898, plain, (difference(difference(X1,X2),difference(X2,X1))=difference(X1,X2))).
+%%%%%
+%cnf(i_0_77, plain, (difference(difference(X1,X3),difference(X2,X1))=difference(X1,difference(X3,difference(X2,X1))))).
+%%%%%%%%
+%cnf(i_0_257, plain, (difference(difference(X1,difference(difference(X2,X3),X4)),X2)=difference(X1,X2))).
+%%%
+%cnf(i_0_78, plain, (difference(difference(X2,difference(X2,X1)),difference(X3,difference(X1,X2)))=difference(difference(X1,X3),difference(X1,X2)))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_271, plain, (difference(difference(difference(X2,difference(X2,X1)),X3),X1)=difference(X1,X1))).
+%%%%%%
+%cnf(i_0_102, plain, (difference(difference(difference(X1,X2),X3),difference(X2,difference(X2,X1)))=difference(difference(X1,X2),difference(X3,difference(X2,difference(X2,X1)))))).
+%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_105, plain, (difference(difference(X1,difference(X2,difference(X2,X3))),difference(X3,X2))=difference(difference(X1,X3),difference(X3,X2)))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_278, plain, (difference(difference(X3,difference(X3,difference(X1,X2))),X1)=difference(X1,X1))).
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_217, plain, (difference(difference(X1,X2),difference(X3,difference(X1,difference(X1,X2))))=difference(difference(X1,X3),difference(X1,difference(X1,X2))))).
+%%%%%%%%%%%
+%cnf(i_0_223, plain, (difference(difference(X1,X2),difference(X2,difference(X2,X3)))=difference(difference(X1,X2),difference(X2,X3)))).
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_302, plain, (difference(difference(X1,X2),difference(X1,difference(X2,X3)))=difference(X1,X1))).
+%%%%%%%%
+%cnf(i_0_245, plain, (difference(X1,difference(X1,difference(difference(X1,X2),X3)))=difference(difference(X1,X2),X3))).
+%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_264, plain, (difference(difference(difference(difference(X1,X3),X2),X4),difference(X1,X2))=difference(X2,X2))).
+%%%%%%%%%%%
+%cnf(i_0_293, plain, (difference(X1,difference(X1,difference(X2,difference(X1,X3))))=difference(difference(X2,difference(X1,X3)),difference(X2,X1)))).
+%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_297, plain, (difference(difference(difference(X1,difference(X2,X3)),X4),X2)=difference(difference(X1,X4),X2))).
+%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_304, plain, (difference(difference(difference(X1,X2),X4),difference(X1,difference(X2,X3)))=difference(X1,X1))).
+%%%%%%%%%%%
+%cnf(i_0_305, plain, (difference(difference(X1,difference(X2,X3)),difference(X2,difference(X3,X4)))=difference(X1,difference(X2,difference(X3,X4))))).
+%%%%%%%%%%%
+%cnf(i_0_306, plain, (difference(difference(X1,difference(X3,difference(X2,X4))),X2)=difference(difference(X1,X3),X2))).
+%%%%%%%%%%%
+%cnf(i_0_312, plain, (difference(difference(X1,difference(difference(X2,X4),X3)),difference(X2,X3))=difference(X1,difference(X2,X3)))).
+%%%%%%%%%%%
+%cnf(i_0_320, plain, (difference(difference(X1,difference(X3,difference(X3,X2))),X2)=difference(X1,X2))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_340, plain, (difference(difference(X1,X2),difference(X3,difference(X2,difference(X2,X1))))=difference(difference(X1,X3),difference(X2,difference(X2,X1))))).
+%%%%%%%%%%%
+%cnf(i_0_349, plain, (difference(difference(X1,X3),difference(X2,difference(X2,X3)))=difference(difference(X1,X3),difference(X3,X2)))).
+%%%%%%%%%%%
+%cnf(i_0_359, plain, (difference(X1,difference(difference(X2,difference(X1,X3)),difference(X2,X1)))=difference(X1,difference(X2,difference(X1,X3))))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_378, plain, (difference(X1,difference(X1,difference(X2,difference(X3,X1))))=difference(difference(X2,difference(X2,X1)),difference(X3,X1)))).
+%%%%%%%%%%%
+%cnf(i_0_381, plain, (difference(X1,difference(difference(X2,difference(X2,X1)),difference(X3,X1)))=difference(X1,difference(X2,difference(X3,X1))))).
+%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_383, plain, (difference(difference(difference(X1,difference(X2,X3)),X4),X3)=difference(difference(difference(X1,X2),X4),X3))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_389, plain, (difference(difference(difference(difference(X1,X2),X3),X4),difference(X1,difference(X2,X3)))=difference(X1,X1))).
+%%%%%%%%%%%
+%cnf(i_0_390, plain, (difference(difference(X1,difference(X2,difference(X3,X4))),X4)=difference(difference(X1,difference(X2,X3)),X4))).
+%%%%%%%%%%%
+%cnf(i_0_391, plain, (difference(difference(X1,difference(difference(X2,X3),X4)),difference(X2,difference(X3,X4)))=difference(X1,difference(X2,difference(X3,X4))))).
+%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_398, plain, (difference(difference(X1,difference(difference(X2,X4),X3)),difference(X4,X3))=difference(difference(X1,difference(X2,X3)),difference(X4,X3)))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_4652, plain, (difference(X1,difference(difference(X2,X1),difference(X1,X3)))=X1)).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_6790, plain, (difference(difference(X1,X2),difference(X2,X3))=difference(X1,X2))).
+%%%%%%%%%%%%%%%
+%cnf(i_0_7179, plain, (difference(X1,difference(difference(X2,X1),X3))=X1)).
+%%
+%cnf(i_0_427, plain, (difference(difference(difference(X2,X1),X3),difference(difference(X2,X3),X1))=difference(X1,X1))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_432, plain, (difference(difference(difference(difference(X1,X2),X3),X4),X2)=difference(difference(difference(X1,X3),X4),X2))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_438, plain, (difference(difference(X1,X2),X3)=difference(difference(X1,X3),X2))).
 
-# Proof found!
-# SZS status Unsatisfiable
-# SZS output start CNFRefutation
-cnf(set_difference_1, axiom, (difference(X1,difference(X2,X1))=X1), file('Problems/ALG/ALG006-1.p', set_difference_1)).
-cnf(set_difference_2, axiom, (difference(X1,difference(X1,X2))=difference(X2,difference(X2,X1))), file('Problems/ALG/ALG006-1.p', set_difference_2)).
-cnf(set_difference_3, axiom, (difference(difference(X1,X2),X3)=difference(difference(X1,X3),difference(X2,X3))), file('Problems/ALG/ALG006-1.p', set_difference_3)).
-cnf(prove_set_difference_3_simplified, negated_conjecture, (difference(difference(a,c),b)!=difference(difference(a,b),c)), file('Problems/ALG/ALG006-1.p', prove_set_difference_3_simplified)).
+% Proof found!
+% SZS status Unsatisfiable
+% SZS output start CNFRefutation
+cnf(set_difference_1, axiom, (difference(X1,difference(X2,X1))=X1), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/ALG/ALG006-1.p', set_difference_1)).
+cnf(set_difference_2, axiom, (difference(X1,difference(X1,X2))=difference(X2,difference(X2,X1))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/ALG/ALG006-1.p', set_difference_2)).
+cnf(set_difference_3, axiom, (difference(difference(X1,X2),X3)=difference(difference(X1,X3),difference(X2,X3))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/ALG/ALG006-1.p', set_difference_3)).
+cnf(prove_set_difference_3_simplified, negated_conjecture, (difference(difference(a,c),b)!=difference(difference(a,b),c)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/ALG/ALG006-1.p', prove_set_difference_3_simplified)).
 cnf(c_0_4, axiom, (difference(X1,difference(X2,X1))=X1), set_difference_1).
 cnf(c_0_5, axiom, (difference(X1,difference(X1,X2))=difference(X2,difference(X2,X1))), set_difference_2).
 cnf(c_0_6, plain, (difference(difference(X1,X2),X2)=difference(X1,X2)), inference(spm,[status(thm)],[c_0_4, c_0_4])).
-cnf(c_0_7, axiom, (difference(difference(X1,X2),X3)=difference(difference(X1,X3),difference(X2,X3))), set_difference_3).
-cnf(c_0_8, plain, (difference(X1,X1)=difference(difference(X2,X2),X1)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_5, c_0_6]), c_0_4]), c_0_7])).
-cnf(c_0_9, plain, (difference(difference(X1,X1),difference(X2,X2))=difference(X2,X2)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_8, c_0_8]), c_0_7]), c_0_6])).
-cnf(c_0_10, plain, (difference(X1,X1)=difference(X2,X2)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_5, c_0_9]), c_0_9]), c_0_9]), c_0_9])).
-cnf(c_0_11, plain, (difference(difference(X1,X1),X2)=difference(X1,X1)), inference(spm,[status(thm)],[c_0_6, c_0_10])).
-cnf(c_0_12, plain, (difference(difference(X1,difference(X2,X3)),X3)=difference(difference(X1,X2),X3)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_7, c_0_6]), c_0_7])).
-cnf(c_0_13, plain, (difference(difference(X1,X2),X1)=difference(X1,X1)), inference(spm,[status(thm)],[c_0_7, c_0_11])).
-cnf(c_0_14, plain, (difference(X1,difference(X2,X2))=X1), inference(spm,[status(thm)],[c_0_4, c_0_10])).
-cnf(c_0_15, plain, (difference(difference(X1,difference(X2,X3)),X2)=difference(X1,X2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_12, c_0_13]), c_0_14])).
-cnf(c_0_16, plain, (difference(difference(X1,X2),difference(X1,difference(X2,X3)))=difference(X1,X1)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_13, c_0_15]), c_0_7]), c_0_11])).
-cnf(c_0_17, plain, (difference(X1,difference(X1,difference(X1,X2)))=difference(X1,X2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_5, c_0_13]), c_0_14])).
-cnf(c_0_18, plain, (difference(X1,difference(X1,difference(difference(X2,X1),X3)))=difference(X1,X1)), inference(spm,[status(thm)],[c_0_16, c_0_4])).
-cnf(c_0_19, negated_conjecture, (difference(difference(a,c),b)!=difference(difference(a,b),c)), inference(fof_simplification,[status(thm)],[prove_set_difference_3_simplified])).
-cnf(c_0_20, plain, (difference(X1,difference(difference(X2,X1),X3))=X1), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_17, c_0_18]), c_0_4])).
-cnf(c_0_21, plain, (difference(difference(difference(X1,X2),X3),X2)=difference(difference(X1,X3),X2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_7, c_0_6]), c_0_7])).
-cnf(c_0_22, negated_conjecture, (difference(difference(a,c),b)!=difference(difference(a,b),c)), c_0_19).
-cnf(c_0_23, plain, (difference(difference(X1,X2),X3)=difference(difference(X1,X3),X2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_4, c_0_20]), c_0_21])).
-cnf(c_0_24, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_22, c_0_23])]), ['proof']).
-# SZS output end CNFRefutation
+cnf(c_0_7, plain, (difference(X1,difference(X1,difference(X2,X1)))=difference(difference(X2,X1),difference(X2,X1))), inference(spm,[status(thm)],[c_0_5, c_0_6])).
+cnf(c_0_8, plain, (difference(difference(X1,X2),difference(X1,X2))=difference(X2,X2)), inference(rw,[status(thm)],[c_0_7, c_0_4])).
+cnf(c_0_9, plain, (difference(difference(X2,difference(X2,X1)),difference(X2,difference(X2,X1)))=difference(difference(X1,X2),difference(X1,X2))), inference(spm,[status(thm)],[c_0_8, c_0_5])).
+cnf(c_0_10, plain, (difference(difference(X2,X1),difference(X2,X1))=difference(difference(X1,X2),difference(X1,X2))), inference(rw,[status(thm)],[c_0_9, c_0_8])).
+cnf(c_0_11, plain, (difference(X1,X1)=difference(difference(X1,X2),difference(X1,X2))), inference(rw,[status(thm)],[c_0_10, c_0_8])).
+cnf(c_0_12, plain, (difference(X1,X1)=difference(X2,X2)), inference(rw,[status(thm)],[c_0_11, c_0_8])).
+cnf(c_0_13, axiom, (difference(difference(X1,X2),X3)=difference(difference(X1,X3),difference(X2,X3))), set_difference_3).
+cnf(c_0_14, plain, (difference(difference(X1,X1),X2)=difference(X1,X1)), inference(spm,[status(thm)],[c_0_6, c_0_12])).
+cnf(c_0_15, plain, (difference(difference(X1,X2),X1)=difference(X1,X1)), inference(spm,[status(thm)],[c_0_13, c_0_14])).
+cnf(c_0_16, plain, (difference(X1,difference(X1,difference(X1,X2)))=difference(difference(X1,X2),difference(X1,X1))), inference(spm,[status(thm)],[c_0_5, c_0_15])).
+cnf(c_0_17, plain, (difference(X1,difference(X2,X2))=X1), inference(spm,[status(thm)],[c_0_4, c_0_12])).
+cnf(c_0_18, plain, (difference(X1,difference(X1,difference(X1,X2)))=difference(X1,X2)), inference(rw,[status(thm)],[c_0_16, c_0_17])).
+cnf(c_0_19, plain, (difference(difference(X1,X2),difference(X2,X2))=difference(difference(X1,difference(X2,X3)),X2)), inference(spm,[status(thm)],[c_0_13, c_0_15])).
+cnf(c_0_20, plain, (difference(X1,difference(X2,difference(X2,X1)))=difference(X1,X2)), inference(spm,[status(thm)],[c_0_18, c_0_5])).
+cnf(c_0_21, plain, (difference(difference(X1,difference(X2,X3)),X2)=difference(X1,X2)), inference(rw,[status(thm)],[c_0_19, c_0_17])).
+cnf(c_0_22, plain, (difference(X1,difference(difference(X2,difference(X1,X3)),difference(X2,X1)))=difference(X1,difference(X2,difference(X1,X3)))), inference(spm,[status(thm)],[c_0_20, c_0_21])).
+cnf(c_0_23, plain, (difference(X1,difference(difference(difference(X2,X1),difference(X1,X3)),difference(X2,X1)))=difference(X1,difference(difference(X2,X1),difference(X1,X3)))), inference(spm,[status(thm)],[c_0_22, c_0_6])).
+cnf(c_0_24, plain, (difference(X1,difference(difference(X2,X1),difference(X2,X1)))=difference(X1,difference(difference(X2,X1),difference(X1,X3)))), inference(rw,[status(thm)],[c_0_23, c_0_15])).
+cnf(c_0_25, plain, (difference(X1,difference(X1,X1))=difference(X1,difference(difference(X2,X1),difference(X1,X3)))), inference(rw,[status(thm)],[c_0_24, c_0_8])).
+cnf(c_0_26, plain, (difference(X1,difference(difference(X2,X1),difference(X1,X3)))=X1), inference(rw,[status(thm)],[c_0_25, c_0_4])).
+cnf(c_0_27, plain, (difference(difference(difference(X1,X2),difference(X2,X3)),X2)=difference(difference(X1,X2),difference(X2,X3))), inference(spm,[status(thm)],[c_0_4, c_0_26])).
+cnf(c_0_28, plain, (difference(difference(X1,X2),difference(X3,X2))=difference(difference(difference(X1,X2),X3),X2)), inference(spm,[status(thm)],[c_0_13, c_0_6])).
+cnf(c_0_29, plain, (difference(difference(X1,X2),X2)=difference(difference(X1,X2),difference(X2,X3))), inference(rw,[status(thm)],[c_0_27, c_0_21])).
+cnf(c_0_30, plain, (difference(difference(difference(X1,X2),X3),X2)=difference(difference(X1,X3),X2)), inference(rw,[status(thm)],[c_0_28, c_0_13])).
+cnf(c_0_31, plain, (difference(difference(X1,X2),difference(X2,X3))=difference(X1,X2)), inference(rw,[status(thm)],[c_0_29, c_0_6])).
+cnf(c_0_32, plain, (difference(X1,difference(X1,difference(difference(X2,X1),X3)))=difference(difference(difference(X2,X1),X3),difference(difference(X2,X3),X1))), inference(spm,[status(thm)],[c_0_5, c_0_30])).
+cnf(c_0_33, plain, (difference(X1,difference(difference(X2,X1),X3))=X1), inference(spm,[status(thm)],[c_0_31, c_0_4])).
+cnf(c_0_34, plain, (difference(difference(difference(X1,X2),X3),difference(difference(difference(X1,X2),X3),difference(difference(X1,X3),X2)))=difference(difference(X1,X3),X2)), inference(spm,[status(thm)],[c_0_18, c_0_30])).
+cnf(c_0_35, plain, (difference(difference(difference(X1,X2),X3),difference(difference(X1,X3),X2))=difference(X2,X2)), inference(rw,[status(thm)],[c_0_32, c_0_33])).
+cnf(c_0_36, negated_conjecture, (difference(difference(a,c),b)!=difference(difference(a,b),c)), inference(fof_simplification,[status(thm)],[prove_set_difference_3_simplified])).
+cnf(c_0_37, plain, (difference(difference(difference(X1,X2),X3),difference(X2,X2))=difference(difference(X1,X3),X2)), inference(rw,[status(thm)],[c_0_34, c_0_35])).
+cnf(c_0_38, negated_conjecture, (difference(difference(a,c),b)!=difference(difference(a,b),c)), c_0_36).
+cnf(c_0_39, plain, (difference(difference(X1,X2),X3)=difference(difference(X1,X3),X2)), inference(rw,[status(thm)],[c_0_37, c_0_17])).
+cnf(c_0_40, negated_conjecture, ($false), inference(rw,[status(thm)],[c_0_38, c_0_39])).
+cnf(c_0_41, negated_conjecture, ($false), inference(cn,[status(thm)],[c_0_40]), ['proof']).
+% SZS output end CNFRefutation

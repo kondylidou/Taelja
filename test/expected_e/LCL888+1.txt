@@ -1,283 +1,282 @@
-Axiom 1: esk3_0 = ==>(esk3_0,esk2_0)
-Axiom 2: +(X,0) = X
-Axiom 3: +(X,Y) = +(Y,X)
-Axiom 4: +(+(X,Y),Z) = +(X,+(Y,Z))
-Axiom 5: >=(X,0)
-Axiom 6: >=(A,B) => >=(+(A,C),+(B,C))
-Axiom 7: >=(+(X,Y),Z) => >=(Y,==>(X,Z))
-Axiom 8: >=(U,V) /\ >=(V,U) => U = V
+Axiom 1: +(X,0) = X
+Axiom 2: >=(X,0)
+Axiom 3: >=(X,X)
+Axiom 4: +(X,Y) = +(Y,X)
+Axiom 5: >=(X,==>(Y,Z)) => >=(+(Y,X),Z)
+Axiom 6: >=(+(X,Y),Z) => >=(Y,==>(X,Z))
+Axiom 7: >=(A,B) /\ >=(B,A) => A = B
+Axiom 8: >=(C,U) => >=(==>(U,V),==>(C,V))
 Axiom 9: +(X,==>(X,Y)) = +(Y,==>(Y,X))
-Axiom 10: >=(W,X1) /\ >=(X1,X2) => >=(W,X2)
-Axiom 11: esk1_0 = ==>(esk1_0,esk2_0)
-Axiom 12: >=(X,X)
+Axiom 10: >=(W,X1) => >=(+(W,X2),+(X1,X2))
+Axiom 11: esk3_0 = ==>(esk3_0,esk2_0)
+Axiom 12: +(+(X,Y),Z) = +(X,+(Y,Z))
+Axiom 13: esk1_0 = ==>(esk1_0,esk2_0)
 
-Lemma 13: +(0,X) = X
-Proof:
-  +(0,X)
-= { by axiom 3 R->L }
-  +(X,0)
-= { by axiom 2 }
-  X
-
-Lemma 14: >=(+(X,Y),Y)
+Lemma 14: >=(0,X) => 0 = X
 Proof:
   have >=(X,0)
-    by axiom 5
-  hence >=(+(X,Y),+(0,Y))
-    by axiom 6
-  hence >=(+(X,Y),Y)
-    by rw lemma 13
-
-Lemma 15: >=(0,X) => 0 = X
-Proof:
-  have >=(X,0)
-    by axiom 5
+    by axiom 2
    and >=(0,X)
     by assumption
   hence 0 = X
-    by axiom 8
-
-Lemma 16: ==>(X,==>(Y,X)) = 0
-Proof:
-  have >=(+(+(Y,0),X),X)
-    by lemma 14
-  hence >=(+(Y,+(0,X)),X)
-    by rw axiom 4
-  hence >=(+(Y,+(X,0)),X)
-    by rw axiom 3
-  hence >=(+(X,0),==>(Y,X))
-    by axiom 7
-  hence >=(0,==>(X,==>(Y,X)))
-    by axiom 7
-  hence ==>(X,==>(Y,X)) = 0
-    by lemma 15
-
-Lemma 17: >=(X,==>(Y,X))
-Proof:
-  have >=(+(Y,X),X)
-    by lemma 14
-  hence >=(X,==>(Y,X))
     by axiom 7
 
-Lemma 18: >=(+(X,Y),X)
+Lemma 15: +(0,X) = X
 Proof:
-  have >=(+(Y,X),X)
-    by lemma 14
-  hence >=(+(X,Y),X)
-    by rw axiom 3
-
-Lemma 19: +(X,==>(X,0)) = ==>(0,X)
-Proof:
-  +(X,==>(X,0))
-= { by axiom 9 R->L }
-  +(0,==>(0,X))
-= { by lemma 13 }
-  ==>(0,X)
-
-Lemma 20: +(X,+(==>(X,0),Y)) = +(==>(0,X),Y)
-Proof:
-  +(X,+(==>(X,0),Y))
+  +(0,X)
 = { by axiom 4 R->L }
-  +(+(X,==>(X,0)),Y)
-= { by lemma 19 }
-  +(==>(0,X),Y)
-
-Lemma 21: >=(+(==>(0,X),Y),X)
-Proof:
-  have >=(+(X,+(==>(X,0),Y)),X)
-    by lemma 18
-  hence >=(+(==>(0,X),Y),X)
-    by rw lemma 20
-
-Lemma 22: 0 = ==>(X,0)
-Proof:
-  have >=(+(X,0),0)
-    by axiom 5
-  hence >=(0,==>(X,0))
-    by axiom 7
-  hence 0 = ==>(X,0)
-    by lemma 15
-
-Lemma 23: ==>(0,X) = X
-Proof:
-  ==>(0,X)
-= { by lemma 19 R->L }
-  +(X,==>(X,0))
-= { by lemma 22 R->L }
   +(X,0)
-= { by axiom 2 }
+= { by axiom 1 }
   X
 
-Lemma 24: >=(esk2_0,esk3_0)
+Lemma 16: >=(==>(X,Y),Z) /\ >=(+(X,Z),Y) => ==>(X,Y) = Z
 Proof:
-  have >=(esk2_0,==>(esk3_0,esk2_0))
-    by lemma 17
-  hence >=(esk2_0,esk3_0)
-    by rw axiom 1 R->L
-
-Lemma 25: 0 = ==>(esk2_0,esk3_0)
-Proof:
-  have >=(+(==>(0,esk2_0),0),esk2_0)
-    by lemma 21
-   and >=(esk2_0,esk3_0)
-    by lemma 24
-  hence >=(+(==>(0,esk2_0),0),esk3_0)
-    by axiom 10
-  hence >=(+(esk2_0,0),esk3_0)
-    by rw lemma 23
-  hence >=(0,==>(esk2_0,esk3_0))
-    by axiom 7
-  hence 0 = ==>(esk2_0,esk3_0)
-    by lemma 15
-
-Lemma 26: +(esk3_0,esk3_0) = esk2_0
-Proof:
-  +(esk3_0,esk3_0)
-= { by axiom 1 }
-  +(esk3_0,==>(esk3_0,esk2_0))
-= { by axiom 9 }
-  +(esk2_0,==>(esk2_0,esk3_0))
-= { by lemma 25 R->L }
-  +(esk2_0,0)
-= { by axiom 2 }
-  esk2_0
-
-Lemma 27: >=(+(==>(X,Y),Z),==>(X,+(Y,Z)))
-Proof:
-  have >=(+(Y,==>(Y,X)),Y)
-    by lemma 18
-  hence >=(+(X,==>(X,Y)),Y)
-    by rw axiom 9
-  hence >=(+(+(X,==>(X,Y)),Z),+(Y,Z))
+  have >=(+(X,Z),Y)
+    by assumption
+  hence >=(Z,==>(X,Y))
     by axiom 6
-  hence >=(+(X,+(==>(X,Y),Z)),+(Y,Z))
-    by rw axiom 4
-  hence >=(+(==>(X,Y),Z),==>(X,+(Y,Z)))
+   and >=(==>(X,Y),Z)
+    by assumption
+  hence ==>(X,Y) = Z
     by axiom 7
 
-Lemma 28: >=(esk2_0,esk1_0)
+Lemma 17: >=(+(0,+(X,0)),+(X,0))
 Proof:
-  have >=(esk2_0,==>(esk1_0,esk2_0))
+  have >=(+(X,0),+(X,0))
+    by axiom 3
+  hence >=(+(0,+(X,0)),+(X,0))
+    by rw lemma 15 R->L
+
+Lemma 18: ==>(0,+(X,0)) = +(X,0)
+Proof:
+  have >=(==>(0,+(X,0)),==>(0,+(X,0)))
+    by axiom 3
+  hence >=(+(0,==>(0,+(X,0))),+(X,0))
+    by axiom 5
+  hence >=(==>(0,+(X,0)),+(X,0))
+    by rw lemma 15
+   and >=(+(0,+(X,0)),+(X,0))
     by lemma 17
-  hence >=(esk2_0,esk1_0)
-    by rw axiom 11 R->L
+  hence ==>(0,+(X,0)) = +(X,0)
+    by lemma 16
 
-Lemma 29: 0 = ==>(esk2_0,esk1_0)
+Lemma 19: ==>(X,==>(Y,X)) = 0
 Proof:
-  have >=(+(==>(0,esk2_0),0),esk2_0)
-    by lemma 21
-   and >=(esk2_0,esk1_0)
-    by lemma 28
-  hence >=(+(==>(0,esk2_0),0),esk1_0)
-    by axiom 10
-  hence >=(+(esk2_0,0),esk1_0)
-    by rw lemma 23
-  hence >=(0,==>(esk2_0,esk1_0))
-    by axiom 7
-  hence 0 = ==>(esk2_0,esk1_0)
-    by lemma 15
-
-Lemma 30: +(esk1_0,esk1_0) = esk2_0
-Proof:
-  +(esk1_0,esk1_0)
-= { by axiom 11 }
-  +(esk1_0,==>(esk1_0,esk2_0))
-= { by axiom 9 }
-  +(esk2_0,==>(esk2_0,esk1_0))
-= { by lemma 29 R->L }
-  +(esk2_0,0)
-= { by axiom 2 }
-  esk2_0
-
-Lemma 31: >=(==>(esk1_0,esk3_0),==>(esk3_0,esk1_0))
-Proof:
-  have >=(+(==>(esk1_0,esk3_0),esk3_0),==>(esk1_0,+(esk3_0,esk3_0)))
-    by lemma 27
-  hence >=(+(==>(esk1_0,esk3_0),esk3_0),==>(esk1_0,esk2_0))
-    by rw lemma 26
-  hence >=(+(esk3_0,==>(esk1_0,esk3_0)),==>(esk1_0,esk2_0))
-    by rw axiom 3
-  hence >=(+(esk3_0,==>(esk1_0,esk3_0)),esk1_0)
-    by rw axiom 11 R->L
-  hence >=(==>(esk1_0,esk3_0),==>(esk3_0,esk1_0))
-    by axiom 7
-
-Lemma 32: ==>(esk3_0,esk1_0) = ==>(esk1_0,esk3_0)
-Proof:
-  have >=(+(==>(esk3_0,esk1_0),esk1_0),==>(esk3_0,+(esk1_0,esk1_0)))
-    by lemma 27
-  hence >=(+(==>(esk3_0,esk1_0),esk1_0),==>(esk3_0,esk2_0))
-    by rw lemma 30
-  hence >=(+(esk1_0,==>(esk3_0,esk1_0)),==>(esk3_0,esk2_0))
-    by rw axiom 3
-  hence >=(+(esk1_0,==>(esk3_0,esk1_0)),esk3_0)
-    by rw axiom 1 R->L
-  hence >=(==>(esk3_0,esk1_0),==>(esk1_0,esk3_0))
-    by axiom 7
-   and >=(==>(esk1_0,esk3_0),==>(esk3_0,esk1_0))
-    by lemma 31
-  hence ==>(esk3_0,esk1_0) = ==>(esk1_0,esk3_0)
+  have >=(Y,0)
+    by axiom 2
+  hence >=(==>(0,+(X,0)),==>(Y,+(X,0)))
     by axiom 8
+  hence >=(+(X,0),==>(Y,+(X,0)))
+    by rw lemma 18
+  hence >=(0,==>(X,==>(Y,+(X,0))))
+    by axiom 6
+  hence >=(0,==>(X,==>(Y,X)))
+    by rw axiom 1
+  hence ==>(X,==>(Y,X)) = 0
+    by lemma 14
 
-Lemma 33: +(esk1_0,esk3_0) = esk2_0
+Lemma 20: >=(+(X,Y),Y)
 Proof:
-  +(esk1_0,esk3_0)
-= { by axiom 2 R->L }
-  +(esk1_0,+(esk3_0,0))
-= { by lemma 16 R->L }
-  +(esk1_0,+(esk3_0,==>(esk3_0,==>(esk1_0,esk3_0))))
-= { by axiom 9 R->L }
-  +(esk1_0,+(==>(esk1_0,esk3_0),==>(==>(esk1_0,esk3_0),esk3_0)))
+  have >=(X,0)
+    by axiom 2
+  hence >=(+(X,Y),+(0,Y))
+    by axiom 10
+  hence >=(+(X,Y),Y)
+    by rw lemma 15
+
+Lemma 21: +(X,+(Y,Z)) = +(Z,+(X,Y))
+Proof:
+  +(X,+(Y,Z))
+= { by axiom 12 R->L }
+  +(+(X,Y),Z)
 = { by axiom 4 R->L }
-  +(+(esk1_0,==>(esk1_0,esk3_0)),==>(==>(esk1_0,esk3_0),esk3_0))
-= { by axiom 9 R->L }
-  +(+(esk3_0,==>(esk3_0,esk1_0)),==>(==>(esk1_0,esk3_0),esk3_0))
-= { by axiom 4 }
-  +(esk3_0,+(==>(esk3_0,esk1_0),==>(==>(esk1_0,esk3_0),esk3_0)))
-= { by lemma 32 }
-  +(esk3_0,+(==>(esk1_0,esk3_0),==>(==>(esk1_0,esk3_0),esk3_0)))
-= { by axiom 9 R->L }
-  +(esk3_0,+(esk3_0,==>(esk3_0,==>(esk1_0,esk3_0))))
-= { by axiom 4 R->L }
-  +(+(esk3_0,esk3_0),==>(esk3_0,==>(esk1_0,esk3_0)))
-= { by lemma 26 }
-  +(esk2_0,==>(esk3_0,==>(esk1_0,esk3_0)))
-= { by lemma 16 }
-  +(esk2_0,0)
-= { by axiom 2 }
-  esk2_0
+  +(Z,+(X,Y))
 
-Lemma 34: >=(X,==>(Y,+(Y,X)))
+Lemma 22: +(X,+(==>(X,Y),Z)) = +(Y,+(==>(Y,X),Z))
 Proof:
-  have >=(+(Y,X),+(Y,X))
-    by axiom 12
-  hence >=(X,==>(Y,+(Y,X)))
-    by axiom 7
+  +(X,+(==>(X,Y),Z))
+= { by axiom 12 R->L }
+  +(+(X,==>(X,Y)),Z)
+= { by axiom 9 }
+  +(+(Y,==>(Y,X)),Z)
+= { by axiom 12 }
+  +(Y,+(==>(Y,X),Z))
 
-Lemma 35: >=(==>(esk1_0,+(esk1_0,esk3_0)),esk3_0)
+Lemma 23: >=(+(esk3_0,X),esk2_0) => >=(X,esk3_0)
 Proof:
-  have >=(esk1_0,==>(esk3_0,+(esk3_0,esk1_0)))
-    by lemma 34
-  hence >=(esk1_0,==>(esk3_0,+(esk1_0,esk3_0)))
-    by rw axiom 3
-  hence >=(esk1_0,==>(esk3_0,esk2_0))
-    by rw lemma 33
-  hence >=(esk1_0,esk3_0)
+  have >=(+(esk3_0,X),esk2_0)
+    by assumption
+  hence >=(X,==>(esk3_0,esk2_0))
+    by axiom 6
+  hence >=(X,esk3_0)
+    by rw axiom 11 R->L
+
+Lemma 24: >=(+(esk1_0,X),esk2_0) => >=(X,esk1_0)
+Proof:
+  have >=(+(esk1_0,X),esk2_0)
+    by assumption
+  hence >=(X,==>(esk1_0,esk2_0))
+    by axiom 6
+  hence >=(X,esk1_0)
+    by rw axiom 13 R->L
+
+Lemma 25: >=(X,Y) => 0 = ==>(X,Y)
+Proof:
+  have >=(X,Y)
+    by assumption
+  hence >=(+(X,0),Y)
     by rw axiom 1 R->L
-  hence >=(==>(esk1_0,esk2_0),esk3_0)
-    by rw axiom 11
-  hence >=(==>(esk1_0,+(esk1_0,esk3_0)),esk3_0)
-    by rw lemma 33 R->L
+  hence >=(0,==>(X,Y))
+    by axiom 6
+  hence 0 = ==>(X,Y)
+    by lemma 14
+
+Lemma 26: >=(X,Y) => +(Y,==>(Y,X)) = X
+Proof:
+  have +(X,==>(X,Y)) = +(Y,==>(Y,X))
+    by axiom 9
+  hence +(X,0) = +(Y,==>(Y,X))
+    by rw lemma 25 R->L
+  hence X = +(Y,==>(Y,X))
+    by rw axiom 1
+
+Lemma 27: +(esk3_0,esk3_0) = esk2_0
+Proof:
+  have >=(+(esk3_0,esk2_0),esk2_0)
+    by lemma 20
+  hence >=(esk2_0,esk3_0)
+    by lemma 23
+  hence +(esk3_0,==>(esk3_0,esk2_0)) = esk2_0
+    by lemma 26
+  hence +(esk3_0,esk3_0) = esk2_0
+    by rw axiom 11 R->L
+
+Lemma 28: >=(+(X,+(==>(X,esk1_0),Y)),esk2_0) => >=(+(==>(esk1_0,X),Y),esk1_0)
+Proof:
+  have >=(+(X,+(==>(X,esk1_0),Y)),esk2_0)
+    by assumption
+  hence >=(+(esk1_0,+(==>(esk1_0,X),Y)),esk2_0)
+    by rw lemma 22 R->L
+  hence >=(+(==>(esk1_0,X),Y),esk1_0)
+    by lemma 24
+
+Lemma 29: +(esk1_0,esk1_0) = esk2_0
+Proof:
+  have >=(+(esk1_0,esk2_0),esk2_0)
+    by lemma 20
+  hence >=(esk2_0,esk1_0)
+    by lemma 24
+  hence +(esk1_0,==>(esk1_0,esk2_0)) = esk2_0
+    by lemma 26
+  hence +(esk1_0,esk1_0) = esk2_0
+    by rw axiom 13 R->L
+
+Lemma 30: >=(+(esk3_0,==>(esk1_0,esk3_0)),esk1_0)
+Proof:
+  have >=(+(==>(esk3_0,esk1_0),esk2_0),esk2_0)
+    by lemma 20
+  hence >=(+(==>(esk3_0,esk1_0),+(esk3_0,esk3_0)),esk2_0)
+    by rw lemma 27 R->L
+  hence >=(+(esk3_0,+(==>(esk3_0,esk1_0),esk3_0)),esk2_0)
+    by rw lemma 21
+  hence >=(+(==>(esk1_0,esk3_0),esk3_0),esk1_0)
+    by lemma 28
+  hence >=(+(esk3_0,==>(esk1_0,esk3_0)),esk1_0)
+    by rw axiom 4
+
+Lemma 31: ==>(esk3_0,esk1_0) = ==>(esk1_0,esk3_0)
+Proof:
+  have >=(+(==>(esk1_0,esk3_0),esk2_0),esk2_0)
+    by lemma 20
+  hence >=(+(==>(esk1_0,esk3_0),+(esk1_0,esk1_0)),esk2_0)
+    by rw lemma 29 R->L
+  hence >=(+(esk1_0,+(==>(esk1_0,esk3_0),esk1_0)),esk2_0)
+    by rw lemma 21
+  hence >=(+(esk3_0,+(==>(esk3_0,esk1_0),esk1_0)),esk2_0)
+    by rw lemma 22 R->L
+  hence >=(+(==>(esk3_0,esk1_0),esk1_0),esk3_0)
+    by lemma 23
+  hence >=(+(esk1_0,==>(esk3_0,esk1_0)),esk3_0)
+    by rw axiom 4
+  hence >=(==>(esk3_0,esk1_0),==>(esk1_0,esk3_0))
+    by axiom 6
+   and >=(+(esk3_0,==>(esk1_0,esk3_0)),esk1_0)
+    by lemma 30
+  hence ==>(esk3_0,esk1_0) = ==>(esk1_0,esk3_0)
+    by lemma 16
+
+Lemma 32: >=(esk1_0,esk3_0)
+Proof:
+  have >=(esk2_0,esk2_0)
+    by axiom 3
+  hence >=(+(esk2_0,0),esk2_0)
+    by rw axiom 1 R->L
+  hence >=(+(esk2_0,==>(esk3_0,==>(esk1_0,esk3_0))),esk2_0)
+    by rw lemma 19 R->L
+  hence >=(+(esk2_0,==>(esk3_0,==>(esk3_0,esk1_0))),esk2_0)
+    by rw lemma 31 R->L
+  hence >=(+(+(esk3_0,esk3_0),==>(esk3_0,==>(esk3_0,esk1_0))),esk2_0)
+    by rw lemma 27 R->L
+  hence >=(+(esk3_0,+(esk3_0,==>(esk3_0,==>(esk3_0,esk1_0)))),esk2_0)
+    by rw axiom 12
+  hence >=(+(esk3_0,+(==>(esk3_0,esk1_0),==>(==>(esk3_0,esk1_0),esk3_0))),esk2_0)
+    by rw axiom 9
+  hence >=(+(==>(esk1_0,esk3_0),==>(==>(esk3_0,esk1_0),esk3_0)),esk1_0)
+    by lemma 28
+  hence >=(+(==>(esk1_0,esk3_0),==>(==>(esk1_0,esk3_0),esk3_0)),esk1_0)
+    by rw lemma 31
+  hence >=(+(esk3_0,==>(esk3_0,==>(esk1_0,esk3_0))),esk1_0)
+    by rw axiom 9
+  hence >=(+(esk3_0,0),esk1_0)
+    by rw lemma 19
+  hence >=(esk3_0,esk1_0)
+    by rw axiom 1
+  hence >=(==>(esk1_0,esk2_0),==>(esk3_0,esk2_0))
+    by axiom 8
+  hence >=(esk1_0,==>(esk3_0,esk2_0))
+    by rw axiom 13 R->L
+  hence >=(esk1_0,esk3_0)
+    by rw axiom 11 R->L
 
 Goal 1: esk1_0 = esk3_0
 Proof:
-  have >=(esk3_0,==>(esk1_0,+(esk1_0,esk3_0)))
-    by lemma 34
-   and >=(==>(esk1_0,+(esk1_0,esk3_0)),esk3_0)
-    by lemma 35
-  hence esk3_0 = ==>(esk1_0,+(esk1_0,esk3_0))
+  have >=(esk2_0,esk2_0)
+    by axiom 3
+  hence >=(+(esk2_0,0),esk2_0)
+    by rw axiom 1 R->L
+  hence >=(+(esk2_0,==>(esk3_0,==>(esk1_0,esk3_0))),esk2_0)
+    by rw lemma 19 R->L
+  hence >=(+(esk2_0,==>(esk3_0,==>(esk3_0,esk1_0))),esk2_0)
+    by rw lemma 31 R->L
+  hence >=(+(+(esk3_0,esk3_0),==>(esk3_0,==>(esk3_0,esk1_0))),esk2_0)
+    by rw lemma 27 R->L
+  hence >=(+(esk3_0,+(esk3_0,==>(esk3_0,==>(esk3_0,esk1_0)))),esk2_0)
+    by rw axiom 12
+  hence >=(+(esk3_0,+(==>(esk3_0,esk1_0),==>(==>(esk3_0,esk1_0),esk3_0))),esk2_0)
+    by rw axiom 9
+  hence >=(+(==>(esk1_0,esk3_0),==>(==>(esk3_0,esk1_0),esk3_0)),esk1_0)
+    by lemma 28
+  hence >=(+(==>(esk1_0,esk3_0),==>(==>(esk1_0,esk3_0),esk3_0)),esk1_0)
+    by rw lemma 31
+  hence >=(+(esk3_0,==>(esk3_0,==>(esk1_0,esk3_0))),esk1_0)
+    by rw axiom 9
+  hence >=(+(esk3_0,0),esk1_0)
+    by rw lemma 19
+  hence >=(esk3_0,esk1_0)
+    by rw axiom 1
+  hence >=(==>(esk1_0,esk2_0),==>(esk3_0,esk2_0))
     by axiom 8
-  hence esk3_0 = ==>(esk1_0,esk2_0)
-    by rw lemma 33
-  hence esk3_0 = esk1_0
+  hence >=(esk1_0,==>(esk3_0,esk2_0))
+    by rw axiom 13 R->L
+  hence >=(esk1_0,esk3_0)
     by rw axiom 11 R->L
+  hence >=(==>(esk3_0,esk2_0),==>(esk1_0,esk2_0))
+    by axiom 8
+  hence >=(==>(esk3_0,esk2_0),esk1_0)
+    by rw axiom 13 R->L
+  hence >=(esk3_0,esk1_0)
+    by rw axiom 11 R->L
+   and >=(esk1_0,esk3_0)
+    by lemma 32
+  hence esk1_0 = esk3_0
+    by axiom 7

@@ -20,12 +20,12 @@ axiom k3 : α → α → α → Prop
 axiom k4 : α → Prop
 axiom l0 : α → Prop
 axiom l2 : α → α → Prop
+axiom l4 : α → Prop
 axiom m0 : α → α → α → Prop
 axiom m1 : α → α → α → Prop
 axiom m2 : α → Prop
 axiom m3 : α → α → α → Prop
 axiom n0 : α → α → Prop
-axiom n1 : α → α → α → Prop
 axiom n2 : α → Prop
 axiom n3 : α → Prop
 axiom n4 : α → α → Prop
@@ -33,6 +33,7 @@ axiom n5 : α → α → Prop
 axiom p0 : α → α → Prop
 axiom p1 : α → α → α → Prop
 axiom p2 : α → α → α → Prop
+axiom p3 : α → α → α → Prop
 axiom p4 : α → α → α → Prop
 axiom q0 : α → α → Prop
 axiom q1 : α → α → α → Prop
@@ -41,275 +42,357 @@ axiom q3 : α → α → Prop
 axiom q4 : α → α → Prop
 axiom r0 : α → Prop
 axiom r1 : α → Prop
-axiom r2 : α → Prop
 axiom r3 : α → α → α → Prop
 axiom r4 : α → Prop
 axiom s0 : α → Prop
 axiom s1 : α → Prop
 
 -- Axiom 1
-axiom ax1 : l0 a
+axiom ax1 : k0 e
 -- Axiom 2
-axiom ax2 : k0 e
+axiom ax2 : n0 d c
 -- Axiom 3
-axiom ax3 : s0 d
+axiom ax3 : ∀ (x y : α), n0 d x → k0 y → p1 x x y
 -- Axiom 4
-axiom ax4 : k0 e → s0 d → q1 d d d
+axiom ax4 : r0 e
 -- Axiom 5
-axiom ax5 : ∀ (x : α), q0 x d
+axiom ax5 : ∀ (x y : α), r0 e → p1 x y e → p2 e x y
 -- Axiom 6
-axiom ax6 : ∀ (x y : α), q0 x y → s0 d → q1 d y d → r1 x
+axiom ax6 : ∀ (x : α), p0 b x
 -- Axiom 7
-axiom ax7 : ∀ (x : α), r1 x → l0 x → r2 x
+axiom ax7 : ∀ (x y : α), p0 x y → p1 y y y
 -- Axiom 8
-axiom ax8 : ∀ (x : α), p0 b x
+axiom ax8 : ∀ (x y z : α), p1 x y z → n2 z
 -- Axiom 9
-axiom ax9 : ∀ (x y : α), m0 x d y
+axiom ax9 : ∀ (x : α), n2 x → m3 x x x
 -- Axiom 10
-axiom ax10 : ∀ (x : α), p0 x x → s1 x
+axiom ax10 : ∀ (x y z u : α), m3 x y z → p2 u x z → p3 u x x
 -- Axiom 11
-axiom ax11 : ∀ (x y z : α), q0 x y → s1 z → s1 x
+axiom ax11 : r0 b
 -- Axiom 12
-axiom ax12 : ∀ (x y z u : α), p0 x x → s1 y → m0 z y u → l2 u u
+axiom ax12 : l0 a
 -- Axiom 13
-axiom ax13 : ∀ (x y z : α), r2 x → s1 y → l2 z z → q3 x x
+axiom ax13 : k0 b
 -- Axiom 14
-axiom ax14 : n0 b a
+axiom ax14 : ∀ (x y : α), l0 x → k0 y → m1 x y x
 -- Axiom 15
-axiom ax15 : ∀ (x y : α), n0 x y → q1 y y y
+axiom ax15 : q0 a b
 -- Axiom 16
-axiom ax16 : n0 d c
+axiom ax16 : s0 b
 -- Axiom 17
-axiom ax17 : ∀ (x y : α), n0 x y → k1 y
+axiom ax17 : ∀ (x y : α), p0 x y → s0 x → m1 x y x
 -- Axiom 18
-axiom ax18 : ∀ (x y : α), l0 x → k0 y → m1 x y x
+axiom ax18 : ∀ (x : α), m0 a x a
 -- Axiom 19
-axiom ax19 : ∀ (x y : α), m1 x y x → p2 y x y
+axiom ax19 : ∀ (x y z : α), m0 a x a → q0 y z → m1 z c z → m1 y a z
 -- Axiom 20
-axiom ax20 : ∀ (x y z : α), k1 x → p2 e y z → p2 y z z
+axiom ax20 : ∀ (x y z u : α), m1 x y z → m1 x u y → m1 z y y
 -- Axiom 21
-axiom ax21 : ∀ (x y z : α), p2 x y z → r3 x z x
+axiom ax21 : ∀ (x y z : α), r0 x → m1 y z z → q1 y y z
 -- Axiom 22
-axiom ax22 : ∀ (x y : α), q3 x x → q1 a a y → r3 x e y → k4 e
+axiom ax22 : n0 a b
 -- Axiom 23
-axiom ax23 : ∀ (x y : α), p0 x y → p1 y y y
+axiom ax23 : ∀ (x y : α), k0 x → p1 y y y → q2 y x x
 -- Axiom 24
-axiom ax24 : ∀ (x y z : α), p1 x y z → n2 z
+axiom ax24 : ∀ (x y z : α), q2 x y z → n0 x y → q3 y z
 -- Axiom 25
-axiom ax25 : ∀ (x : α), n2 x → m3 x x x
+axiom ax25 : ∀ (x y : α), n0 x y → k1 y
 -- Axiom 26
-axiom ax26 : ∀ (x y : α), k4 x → m3 y y y → n4 y y
+axiom ax26 : ∀ (x y : α), m1 x y x → p2 y x y
 -- Axiom 27
-axiom ax27 : ∀ (x : α), p1 x x x → q2 x x x
+axiom ax27 : ∀ (x y z : α), k1 x → p2 e y z → p2 y z z
 -- Axiom 28
-axiom ax28 : n0 e b
+axiom ax28 : ∀ (x y z : α), p2 x y z → r3 x z x
 -- Axiom 29
-axiom ax29 : k1 b → m2 b
+axiom ax29 : ∀ (x y : α), q3 x x → q1 a a y → r3 x e y → k4 e
 -- Axiom 30
-axiom ax30 : ∀ (x : α), m0 a x a
+axiom ax30 : ∀ (x y : α), k4 x → m3 y y y → n4 y y
 -- Axiom 31
-axiom ax31 : l0 a → p1 a a a
+axiom ax31 : ∀ (x y : α), p3 x y y → n4 x x → n4 x y
 -- Axiom 32
-axiom ax32 : ∀ (x y z u : α), m0 x y z → p1 x y z → p1 y u x
+axiom ax32 : ∀ (x y : α), m0 x d y
 -- Axiom 33
-axiom ax33 : ∀ (x y z u : α), p1 x y z → m2 u → m2 y → k3 z z x
+axiom ax33 : ∀ (x : α), p0 x x → s1 x
 -- Axiom 34
-axiom ax34 : ∀ (x y z u v : α), k3 x x y → q2 z u y → m3 z v z → q4 y u
+axiom ax34 : ∀ (x : α), q0 x d
 -- Axiom 35
-axiom ax35 : r0 e
+axiom ax35 : ∀ (x y z : α), q0 x y → s1 z → s1 x
 -- Axiom 36
-axiom ax36 : ∀ (x y z : α), p0 x y → r0 z → m1 z y z
+axiom ax36 : ∀ (x y z u : α), p0 x x → s1 y → m0 z y u → l2 u u
 -- Axiom 37
-axiom ax37 : ∀ (x y z : α), p2 x y z → n3 z
+axiom ax37 : l0 c
 -- Axiom 38
-axiom ax38 : n0 e e
+axiom ax38 : ∀ (x y : α), k1 x → l0 c → l2 x y → q2 y c x
 -- Axiom 39
-axiom ax39 : ∀ (x : α), r0 x → n1 x x x
+axiom ax39 : k1 b → m2 b
 -- Axiom 40
-axiom ax40 : ∀ (x y : α), k1 x → n1 y y x → q2 y y y
+axiom ax40 : ∀ (x y z u : α), m0 x y z → p1 x y z → p1 y u x
 -- Axiom 41
-axiom ax41 : ∀ (x y z : α), q2 x y z → n0 x y → q3 y z
+axiom ax41 : ∀ (x y z u : α), p1 x y z → m2 u → m2 y → k3 z z x
 -- Axiom 42
-axiom ax42 : ∀ (x y z u : α), n3 x → q3 y z → p0 u x → r4 x
+axiom ax42 : ∀ (x y z u v : α), k3 x x y → q2 z u y → m3 z v z → q4 y u
 -- Axiom 43
-axiom ax43 : ∀ (x : α), r4 x → n5 x x
+axiom ax43 : ∀ (x y z : α), m0 x y z → q1 z z z
 -- Axiom 44
-axiom ax44 : ∀ (x y z : α), q3 x y → n3 z → p4 z z z
+axiom ax44 : s0 d
 -- Axiom 45
-axiom ax45 : ∀ (x y z u v : α), q4 x y → n4 z y → p4 u u v → n5 u v → n5 z v
-
--- Lemma 46
-theorem taelja_lemma46 : s1 b := by
-  have h1 : p0 b b := ax8 b
-  have h2 : s1 b := ax10 b h1
-  exact h2
-
--- Lemma 47
-theorem taelja_lemma47 : ∀ (x : α), s1 x := by
-  intro x
-  have h1 : q0 x d := ax5 x
-  have h2 : s1 b := taelja_lemma46
-  have h3 : s1 x := ax11 x d b h1 h2
-  exact h3
-
--- Lemma 48
-theorem taelja_lemma48 : ∀ (x : α), p1 x x x := by
-  intro x
-  have h1 : p0 b x := ax8 x
-  have h2 : p1 x x x := ax23 b x h1
-  exact h2
-
--- Lemma 49
-theorem taelja_lemma49 : ∀ (x : α), m3 x x x := by
-  intro x
-  have h1 : p1 x x x := taelja_lemma48 x
-  have h2 : n2 x := ax24 x x x h1
-  have h3 : m3 x x x := ax25 x h2
-  exact h3
-
--- Lemma 50
-theorem taelja_lemma50 : m2 b := by
-  have h1 : n0 e b := ax28
-  have h2 : k1 b := ax17 e b h1
-  have h3 : m2 b := ax29 h2
-  exact h3
-
--- Lemma 51
-theorem taelja_lemma51 : ∀ (x : α), n3 x := by
-  intro x
-  have h1 : p0 b x := ax8 x
-  have h2 : r0 e := ax35
-  have h3 : m1 e x e := ax36 b x e h1 h2
-  have h4 : p2 x e x := ax19 e x h3
-  have h5 : n3 x := ax37 x e x h4
-  exact h5
-
--- Lemma 52
-theorem taelja_lemma52 : n1 e e e := by
-  have h1 : r0 e := ax35
-  have h2 : n1 e e e := ax39 e h1
-  exact h2
-
--- Lemma 53
-theorem taelja_lemma53 : q3 e e := by
-  have h1 : n0 e e := ax38
-  have h2 : k1 e := ax17 e e h1
-  have h3 : n1 e e e := taelja_lemma52
-  have h4 : q2 e e e := ax40 e e h2 h3
-  have h5 : n0 e e := ax38
-  have h6 : q3 e e := ax41 e e e h4 h5
-  exact h6
-
--- Lemma 54
-theorem taelja_lemma54 : q1 d d d := by
-  have h1 : k0 e := ax2
-  have h2 : s0 d := ax3
-  have h3 : q1 d d d := ax4 h1 h2
-  exact h3
-
--- Lemma 55
-theorem taelja_lemma55 : ∀ (x : α), l2 x x := by
-  intro x
-  have y : α := taelja_elem
-  have h1 : p0 b b := ax8 b
-  have h2 : s1 d := taelja_lemma47 d
-  have h3 : m0 y d x := ax9 y x
-  have h4 : l2 x x := ax12 b d y x h1 h2 h3
-  exact h4
-
--- Lemma 56
-theorem taelja_lemma56 : p2 e a e := by
-  have h1 : l0 a := ax1
-  have h2 : k0 e := ax2
-  have h3 : m1 a e a := ax18 a e h1 h2
-  have h4 : p2 e a e := ax19 a e h3
-  exact h4
+axiom ax45 : ∀ (x y : α), q0 x y → s0 d → q1 d y d → r1 x
+-- Axiom 46
+axiom ax46 : ∀ (x : α), n2 x → p3 x x x
+-- Axiom 47
+axiom ax47 : ∀ (x y z : α), p3 x y z → l4 z
+-- Axiom 48
+axiom ax48 : ∀ (x y z : α), r1 x → l4 y → q4 y z → q4 x x
+-- Axiom 49
+axiom ax49 : n0 e e
+-- Axiom 50
+axiom ax50 : ∀ (x : α), p1 x x x → q2 x x x
+-- Axiom 51
+axiom ax51 : ∀ (x : α), n2 x → k1 e → p2 x x x
+-- Axiom 52
+axiom ax52 : ∀ (x y z : α), p2 x y z → n3 z
+-- Axiom 53
+axiom ax53 : ∀ (x y z u : α), n3 x → q3 y z → p0 u x → r4 x
+-- Axiom 54
+axiom ax54 : ∀ (x : α), r4 x → n5 x x
+-- Axiom 55
+axiom ax55 : ∀ (x y : α), p3 x x y → p4 y y y
+-- Axiom 56
+axiom ax56 : ∀ (x y z u v : α), q4 x y → n4 z y → p4 u u v → n5 u v → n5 z v
 
 -- Lemma 57
-theorem taelja_lemma57 : q1 a a a := by
-  have h1 : n0 b a := ax14
-  have h2 : q1 a a a := ax15 b a h1
+theorem taelja_lemma57 : ∀ (x : α), p1 x x x := by
+  intro x
+  have h1 : p0 b x := ax6 x
+  have h2 : p1 x x x := ax7 b x h1
   exact h2
 
 -- Lemma 58
-theorem taelja_lemma58 : r3 a e a := by
-  have h1 : n0 d c := ax16
-  have h2 : k1 c := ax17 d c h1
-  have h3 : p2 e a e := taelja_lemma56
-  have h4 : p2 a e e := ax20 c a e h2 h3
-  have h5 : r3 a e a := ax21 a e e h4
-  exact h5
+theorem taelja_lemma58 : ∀ (x : α), n2 x := by
+  intro x
+  have h1 : p1 x x x := taelja_lemma57 x
+  have h2 : n2 x := ax8 x x x h1
+  exact h2
 
 -- Lemma 59
-theorem taelja_lemma59 : p1 a a a := by
-  have h1 : l0 a := ax1
-  have h2 : p1 a a a := ax31 h1
+theorem taelja_lemma59 : ∀ (x : α), m3 x x x := by
+  intro x
+  have h1 : n2 x := taelja_lemma58 x
+  have h2 : m3 x x x := ax9 x h1
   exact h2
 
 -- Lemma 60
-theorem taelja_lemma60 : p1 a e a := by
-  have h1 : m0 a a a := ax30 a
-  have h2 : p1 a a a := taelja_lemma59
-  have h3 : p1 a e a := ax32 a a a e h1 h2
+theorem taelja_lemma60 : ∀ (x : α), m1 b x b := by
+  intro x
+  have h1 : p0 b x := ax6 x
+  have h2 : s0 b := ax16
+  have h3 : m1 b x b := ax17 b x h1 h2
   exact h3
 
 -- Lemma 61
-theorem taelja_lemma61 : q2 e e e := by
-  have h1 : p1 e e e := taelja_lemma48 e
-  have h2 : q2 e e e := ax27 e h1
+theorem taelja_lemma61 : k1 b := by
+  have h1 : n0 a b := ax22
+  have h2 : k1 b := ax25 a b h1
   exact h2
 
 -- Lemma 62
-theorem taelja_lemma62 : n4 e e := by
-  have x : α := taelja_elem
-  have y : α := taelja_elem
-  have h1 : q0 a d := ax5 a
-  have h2 : s0 d := ax3
-  have h3 : q1 d d d := taelja_lemma54
-  have h4 : r1 a := ax6 a d h1 h2 h3
-  have h5 : l0 a := ax1
-  have h6 : r2 a := ax7 a h4 h5
-  have h7 : s1 x := taelja_lemma47 x
-  have h8 : l2 y y := taelja_lemma55 y
-  have h9 : q3 a a := ax13 a x y h6 h7 h8
-  have h10 : q1 a a a := taelja_lemma57
-  have h11 : r3 a e a := taelja_lemma58
-  have h12 : k4 e := ax22 a a h9 h10 h11
-  have h13 : m3 e e e := taelja_lemma49 e
-  have h14 : n4 e e := ax26 e e h12 h13
-  exact h14
+theorem taelja_lemma62 : m2 b := by
+  have h1 : k1 b := taelja_lemma61
+  have h2 : m2 b := ax39 h1
+  exact h2
 
 -- Lemma 63
-theorem taelja_lemma63 : p4 a a a := by
-  have h1 : q3 e e := taelja_lemma53
-  have h2 : n3 a := taelja_lemma51 a
-  have h3 : p4 a a a := ax44 e e a h1 h2
-  exact h3
+theorem taelja_lemma63 : ∀ (x : α), p3 x x x := by
+  intro x
+  have h1 : n2 x := taelja_lemma58 x
+  have h2 : p3 x x x := ax46 x h1
+  exact h2
 
 -- Lemma 64
-theorem taelja_lemma64 : n5 a a := by
-  have h1 : n3 a := taelja_lemma51 a
-  have h2 : q3 e e := taelja_lemma53
-  have h3 : p0 b a := ax8 a
-  have h4 : r4 a := ax42 a e e b h1 h2 h3
-  have h5 : n5 a a := ax43 a h4
+theorem taelja_lemma64 : p1 c c e := by
+  have h1 : n0 d c := ax2
+  have h2 : k0 e := ax1
+  have h3 : p1 c c e := ax3 c e h1 h2
+  exact h3
+
+-- Lemma 65
+theorem taelja_lemma65 : p2 e c c := by
+  have h1 : r0 e := ax4
+  have h2 : p1 c c e := taelja_lemma64
+  have h3 : p2 e c c := ax5 c c h1 h2
+  exact h3
+
+-- Lemma 66
+theorem taelja_lemma66 : m1 a a b := by
+  have x : α := taelja_elem
+  have h1 : m0 a x a := ax18 x
+  have h2 : q0 a b := ax15
+  have h3 : m1 b c b := taelja_lemma60 c
+  have h4 : m1 a a b := ax19 x a b h1 h2 h3
+  exact h4
+
+-- Lemma 67
+theorem taelja_lemma67 : m1 a b b := by
+  have h1 : l0 a := ax12
+  have h2 : k0 b := ax13
+  have h3 : m1 a b a := ax14 a b h1 h2
+  have h4 : m1 a a b := taelja_lemma66
+  have h5 : m1 a b b := ax20 a b a a h3 h4
   exact h5
+
+-- Lemma 68
+theorem taelja_lemma68 : p2 e b e := by
+  have h1 : m1 b e b := taelja_lemma60 e
+  have h2 : p2 e b e := ax26 b e h1
+  exact h2
+
+-- Lemma 69
+theorem taelja_lemma69 : q1 a a b := by
+  have h1 : r0 b := ax11
+  have h2 : m1 a b b := taelja_lemma67
+  have h3 : q1 a a b := ax21 b a b h1 h2
+  exact h3
+
+-- Lemma 70
+theorem taelja_lemma70 : r3 b e b := by
+  have h1 : n0 d c := ax2
+  have h2 : k1 c := ax25 d c h1
+  have h3 : p2 e b e := taelja_lemma68
+  have h4 : p2 b e e := ax27 c b e h2 h3
+  have h5 : r3 b e b := ax28 b e e h4
+  exact h5
+
+-- Lemma 71
+theorem taelja_lemma71 : n4 e e := by
+  have h1 : k0 b := ax13
+  have h2 : p1 a a a := taelja_lemma57 a
+  have h3 : q2 a b b := ax23 b a h1 h2
+  have h4 : n0 a b := ax22
+  have h5 : q3 b b := ax24 a b b h3 h4
+  have h6 : q1 a a b := taelja_lemma69
+  have h7 : r3 b e b := taelja_lemma70
+  have h8 : k4 e := ax29 b b h5 h6 h7
+  have h9 : m3 e e e := taelja_lemma59 e
+  have h10 : n4 e e := ax30 e e h8 h9
+  exact h10
+
+-- Lemma 72
+theorem taelja_lemma72 : s1 b := by
+  have h1 : p0 b b := ax6 b
+  have h2 : s1 b := ax33 b h1
+  exact h2
+
+-- Lemma 73
+theorem taelja_lemma73 : s1 d := by
+  have h1 : q0 d d := ax34 d
+  have h2 : s1 b := taelja_lemma72
+  have h3 : s1 d := ax35 d d b h1 h2
+  exact h3
+
+-- Lemma 74
+theorem taelja_lemma74 : l2 b b := by
+  have x : α := taelja_elem
+  have h1 : p0 b b := ax6 b
+  have h2 : s1 d := taelja_lemma73
+  have h3 : m0 x d b := ax32 x b
+  have h4 : l2 b b := ax36 b d x b h1 h2 h3
+  exact h4
+
+-- Lemma 75
+theorem taelja_lemma75 : p1 a b a := by
+  have h1 : m0 a a a := ax18 a
+  have h2 : p1 a a a := taelja_lemma57 a
+  have h3 : p1 a b a := ax40 a a a b h1 h2
+  exact h3
+
+-- Lemma 76
+theorem taelja_lemma76 : q2 b c b := by
+  have h1 : k1 b := taelja_lemma61
+  have h2 : l0 c := ax37
+  have h3 : l2 b b := taelja_lemma74
+  have h4 : q2 b c b := ax38 b b h1 h2 h3
+  exact h4
+
+-- Lemma 77
+theorem taelja_lemma77 : q1 d d d := by
+  have x : α := taelja_elem
+  have h1 : m0 x d d := ax32 x d
+  have h2 : q1 d d d := ax43 x d d h1
+  exact h2
+
+-- Lemma 78
+theorem taelja_lemma78 : l4 b := by
+  have h1 : p3 b b b := taelja_lemma63 b
+  have h2 : l4 b := ax47 b b b h1
+  exact h2
+
+-- Lemma 79
+theorem taelja_lemma79 : q4 b c := by
+  have h1 : m0 a b a := ax18 b
+  have h2 : p1 a b a := taelja_lemma75
+  have h3 : p1 b b a := ax40 a b a b h1 h2
+  have h4 : m2 b := taelja_lemma62
+  have h5 : m2 b := taelja_lemma62
+  have h6 : k3 a a b := ax41 b b a b h3 h4 h4
+  have h7 : q2 b c b := taelja_lemma76
+  have h8 : m3 b b b := taelja_lemma59 b
+  have h9 : q4 b c := ax42 a b b c b h6 h7 h8
+  exact h9
+
+-- Lemma 80
+theorem taelja_lemma80 : k1 e := by
+  have h1 : n0 e e := ax49
+  have h2 : k1 e := ax25 e e h1
+  exact h2
+
+-- Lemma 81
+theorem taelja_lemma81 : q3 e e := by
+  have h1 : p1 e e e := taelja_lemma57 e
+  have h2 : q2 e e e := ax50 e h1
+  have h3 : n0 e e := ax49
+  have h4 : q3 e e := ax24 e e e h2 h3
+  exact h4
+
+-- Lemma 82
+theorem taelja_lemma82 : n4 e c := by
+  have h1 : m3 c c c := taelja_lemma59 c
+  have h2 : p2 e c c := taelja_lemma65
+  have h3 : p3 e c c := ax10 c c c e h1 h2
+  have h4 : n4 e e := taelja_lemma71
+  have h5 : n4 e c := ax31 e c h3 h4
+  exact h5
+
+-- Lemma 83
+theorem taelja_lemma83 : p4 a a a := by
+  have h1 : p3 a a a := taelja_lemma63 a
+  have h2 : p4 a a a := ax55 a a h1
+  exact h2
+
+-- Lemma 84
+theorem taelja_lemma84 : n5 a a := by
+  have h1 : n2 a := taelja_lemma58 a
+  have h2 : k1 e := taelja_lemma80
+  have h3 : p2 a a a := ax51 a h1 h2
+  have h4 : n3 a := ax52 a a a h3
+  have h5 : q3 e e := taelja_lemma81
+  have h6 : p0 b a := ax6 a
+  have h7 : r4 a := ax53 a e e b h4 h5 h6
+  have h8 : n5 a a := ax54 a h7
+  exact h8
 
 -- Goal 1
 theorem taelja_goal1 : n5 e a := by
-  have h1 : m0 a e a := ax30 e
-  have h2 : p1 a e a := taelja_lemma60
-  have h3 : p1 e b a := ax32 a e a b h1 h2
-  have h4 : m2 b := taelja_lemma50
-  have h5 : m2 b := taelja_lemma50
-  have h6 : k3 a a e := ax33 e b a b h3 h4 h4
-  have h7 : q2 e e e := taelja_lemma61
-  have h8 : m3 e e e := taelja_lemma49 e
-  have h9 : q4 e e := ax34 a e e e e h6 h7 h8
-  have h10 : n4 e e := taelja_lemma62
-  have h11 : p4 a a a := taelja_lemma63
-  have h12 : n5 a a := taelja_lemma64
-  have h13 : n5 e a := ax45 e e e a a h9 h10 h11 h12
-  exact h13
+  have h1 : q0 c d := ax34 c
+  have h2 : s0 d := ax44
+  have h3 : q1 d d d := taelja_lemma77
+  have h4 : r1 c := ax45 c d h1 h2 h3
+  have h5 : l4 b := taelja_lemma78
+  have h6 : q4 b c := taelja_lemma79
+  have h7 : q4 c c := ax48 c b c h4 h5 h6
+  have h8 : n4 e c := taelja_lemma82
+  have h9 : p4 a a a := taelja_lemma83
+  have h10 : n5 a a := taelja_lemma84
+  have h11 : n5 e a := ax56 c c e a a h7 h8 h9 h10
+  exact h11
 
 end ESyn1631

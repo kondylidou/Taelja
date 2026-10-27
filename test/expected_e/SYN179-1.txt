@@ -1,31 +1,55 @@
-Axiom 1: r0(b)
-Axiom 2: p0(b,X)
-Axiom 3: m0(X,d,Y)
-Axiom 4: p0(Z,X) /\ r0(A) /\ m0(Y,X,Z) => l1(X,Y)
-Axiom 5: p0(X,X) => s1(X)
+Axiom 1: n0(d,c)
+Axiom 2: n0(c,d)
+Axiom 3: n0(X,Y) => k1(Y)
+Axiom 4: p0(b,Y)
+Axiom 5: p0(Y,Y) => s1(Y)
 Axiom 6: q0(a,b)
-Axiom 7: q0(X,Y) /\ s1(Z) => s1(X)
+Axiom 7: q0(Y,X) /\ s1(Z) => s1(Y)
 Axiom 8: s0(d)
 Axiom 9: s1(a) /\ s0(d) => s2(d)
-Axiom 10: n0(e,e)
-Axiom 11: l1(Y,X) => q2(X,X,Y)
-Axiom 12: q2(Z,X,Y) /\ n0(Z,X) => q3(X,Y)
-Axiom 13: m0(Z,A,A) /\ m0(Y,Z,X) => n1(X,X,Y)
-Axiom 14: n1(Z,X,Y) /\ s2(X) /\ q3(Y,X) => q3(X,Y)
+Axiom 10: m0(Y,d,X)
+Axiom 11: q0(Y,d)
+Axiom 12: p0(X,X) /\ s1(Z) /\ m0(A,Z,Y) => l2(Y,Y)
+Axiom 13: l0(c)
+Axiom 14: k1(X) /\ l0(c) /\ l2(X,Y) => q2(Y,c,X)
+Axiom 15: q2(Z,Y,X) /\ n0(Z,Y) => q3(Y,X)
+Axiom 16: s0(b)
+Axiom 17: s0(b) /\ l0(Y) /\ p0(b,X) => n1(Y,X,Y)
+Axiom 18: n1(Z,Y,X) /\ s2(Y) /\ q3(X,Y) => q3(Y,X)
 
-Lemma 15: s1(b)
+Lemma 19: s1(b)
 Proof:
   have p0(b,b)
-    by axiom 2
+    by axiom 4
   hence s1(b)
     by axiom 5
 
-Lemma 16: s2(d)
+Lemma 20: s1(d)
+Proof:
+  have q0(d,d)
+    by axiom 11
+   and s1(b)
+    by lemma 19
+  hence s1(d)
+    by axiom 7
+
+Lemma 21: l2(d,d)
+Proof:
+  have p0(b,b)
+    by axiom 4
+   and s1(d)
+    by lemma 20
+   and m0(X,d,d)
+    by axiom 10
+  hence l2(d,d)
+    by axiom 12
+
+Lemma 22: s2(d)
 Proof:
   have q0(a,b)
     by axiom 6
    and s1(b)
-    by lemma 15
+    by lemma 19
   hence s1(a)
     by axiom 7
    and s0(d)
@@ -33,34 +57,36 @@ Proof:
   hence s2(d)
     by axiom 9
 
-Lemma 17: q3(e,d)
+Lemma 23: q3(c,d)
 Proof:
-  have p0(b,d)
+  have n0(c,d)
     by axiom 2
-   and r0(b)
-    by axiom 1
-   and m0(e,d,b)
+  hence k1(d)
     by axiom 3
-  hence l1(d,e)
-    by axiom 4
-  hence q2(e,e,d)
-    by axiom 11
-   and n0(e,e)
-    by axiom 10
-  hence q3(e,d)
-    by axiom 12
-
-Goal 1: q3(d,e)
-Proof:
-  have m0(d,d,d)
-    by axiom 3
-   and m0(e,d,d)
-    by axiom 3
-  hence n1(d,d,e)
+   and l0(c)
     by axiom 13
-   and s2(d)
-    by lemma 16
-   and q3(e,d)
-    by lemma 17
-  hence q3(d,e)
+   and l2(d,d)
+    by lemma 21
+  hence q2(d,c,d)
     by axiom 14
+   and n0(d,c)
+    by axiom 1
+  hence q3(c,d)
+    by axiom 15
+
+Goal 1: q3(d,c)
+Proof:
+  have s0(b)
+    by axiom 16
+   and l0(c)
+    by axiom 13
+   and p0(b,d)
+    by axiom 4
+  hence n1(c,d,c)
+    by axiom 17
+   and s2(d)
+    by lemma 22
+   and q3(c,d)
+    by lemma 23
+  hence q3(d,c)
+    by axiom 18

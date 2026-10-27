@@ -1,167 +1,314 @@
-# Preprocessing class: FSMSSMSSSSSNFFN.
-# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
-# No SInE strategy applied
-# Search class: FHUSM-FFSS21-SFFFFFNN
-# Configuration: G-E--_208_C18_F1_SE_CS_SP_PS_S5PRR_S4d
-# Initializing proof state
-# Scanning for AC axioms
-#
-#cnf(i_0_26, negated_conjecture, (~subgroup_member(c))).
-#
-#cnf(i_0_23, hypothesis, (subgroup_member(a))).
-#
-#cnf(i_0_24, hypothesis, (subgroup_member(b))).
-#
-#cnf(i_0_25, hypothesis, (product(a,b,c))).
-#
-#cnf(i_0_15, plain, (product(X1,identity,X1))).
-#
-#cnf(i_0_14, plain, (product(identity,X1,X1))).
-#
-#cnf(i_0_17, plain, (product(X1,inverse(X1),identity))).
-#
-#cnf(i_0_22, plain, (subgroup_member(X3)|~subgroup_member(X2)|~subgroup_member(X1)|~product(X1,inverse(X2),X3))).
-#
-#cnf(i_0_16, plain, (product(inverse(X1),X1,identity))).
-#
-#cnf(i_0_18, plain, (product(X1,X2,multiply(X1,X2)))).
-#
-#cnf(i_0_19, plain, (X3=X4|~product(X1,X2,X4)|~product(X1,X2,X3))).
-#
-#cnf(i_0_21, plain, (product(X3,X4,X6)|~product(X2,X4,X5)|~product(X1,X5,X6)|~product(X1,X2,X3))).
-#
-#cnf(i_0_20, plain, (product(X1,X5,X6)|~product(X3,X4,X6)|~product(X2,X4,X5)|~product(X1,X2,X3))).
-# Presaturation interreduction done
-#
-#cnf(i_0_26, negated_conjecture, (~subgroup_member(c))).
-#
-#cnf(i_0_23, hypothesis, (subgroup_member(a))).
-#
-#cnf(i_0_24, hypothesis, (subgroup_member(b))).
-#
-#cnf(i_0_25, hypothesis, (product(a,b,c))).
-#
-#cnf(i_0_15, plain, (product(X1,identity,X1))).
-#
-#cnf(i_0_14, plain, (product(identity,X1,X1))).
-#
-#cnf(i_0_22, plain, (subgroup_member(X1)|~subgroup_member(X2)|~subgroup_member(X3)|~product(X3,inverse(X2),X1))).
-#
-#cnf(i_0_17, plain, (product(X1,inverse(X1),identity))).
-#
-#cnf(i_0_16, plain, (product(inverse(X1),X1,identity))).
-#
-#cnf(i_0_18, plain, (product(X1,X2,multiply(X1,X2)))).
-#
-#cnf(i_0_28, plain, (subgroup_member(identity)|~subgroup_member(X1))).
-#
-#cnf(i_0_32, hypothesis, (subgroup_member(identity))).
-#
-#cnf(i_0_27, plain, (subgroup_member(inverse(X1))|~subgroup_member(X1))).
-##
-#cnf(i_0_19, plain, (X1=X2|~product(X3,X4,X2)|~product(X3,X4,X1))).
-#
-#cnf(i_0_34, hypothesis, (X1=c|~product(a,b,X1))).
-#
-#cnf(i_0_21, plain, (product(X1,X2,X3)|~product(X4,X2,X5)|~product(X6,X5,X3)|~product(X6,X4,X1))).
-#
-#cnf(i_0_20, plain, (product(X1,X2,X3)|~product(X4,X5,X3)|~product(X6,X5,X2)|~product(X1,X6,X4))).
-#
-#cnf(i_0_36, plain, (X1=X2|~product(identity,X2,X1))).
-#
-#cnf(i_0_38, plain, (X1=X2|~product(X2,identity,X1))).
-#
-#cnf(i_0_53, plain, (inverse(identity)=identity)).
-##
-#cnf(i_0_40, hypothesis, (multiply(a,b)=c)).
-#
-#cnf(i_0_54, plain, (multiply(identity,X1)=X1)).
-#
-#cnf(i_0_56, plain, (multiply(X1,identity)=X1)).
-#
-#cnf(i_0_30, plain, (subgroup_member(multiply(X1,inverse(X2)))|~subgroup_member(X2)|~subgroup_member(X1))).
-##
-#cnf(i_0_60, plain, (subgroup_member(X1)|~subgroup_member(X2)|~product(X2,identity,X1))).
-#
-#cnf(i_0_35, plain, (X1=identity|~product(inverse(X2),X2,X1))).
-##
-#cnf(i_0_37, plain, (X1=identity|~product(X2,inverse(X2),X1))).
-#
-#cnf(i_0_72, plain, (multiply(inverse(X1),X1)=identity)).
-##
-#cnf(i_0_75, plain, (multiply(X1,inverse(X1))=identity)).
-#
-#cnf(i_0_39, plain, (X1=multiply(X2,X3)|~product(X2,X3,X1))).
-#
-#cnf(i_0_41, hypothesis, (product(X1,b,X2)|~product(X3,c,X2)|~product(X3,a,X1))).
-#
-#cnf(i_0_42, plain, (product(X1,X2,X3)|~product(X4,inverse(X2),X1)|~product(X4,identity,X3))).
-#
-#cnf(i_0_90, hypothesis, (product(X1,b,c)|~product(identity,a,X1))).
-#
-#cnf(i_0_94, plain, (product(X1,X2,X3)|~product(X3,inverse(X2),X1))).
-#
-#cnf(i_0_98, plain, (product(X1,identity,X2)|~product(X2,identity,X1))).
-###
-#cnf(i_0_99, plain, (product(identity,X1,inverse(inverse(X1))))).
-#
-#cnf(i_0_118, plain, (inverse(inverse(X1))=X1)).
-#
-#cnf(i_0_124, plain, (subgroup_member(X1)|~subgroup_member(inverse(X1)))).
-##
-#cnf(i_0_128, plain, (subgroup_member(multiply(X1,X2))|~subgroup_member(inverse(X2))|~subgroup_member(X1))).
-#
-#cnf(i_0_43, plain, (product(X1,X2,X3)|~product(X4,identity,X1)|~product(X4,X2,X3))).
-#
-#cnf(i_0_138, plain, (subgroup_member(multiply(X1,X2))|~subgroup_member(X1)|~subgroup_member(X2))).
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with pid 23487 completed with status 0
+% Result found by G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FHUSM-FFSS21-SFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% SubtermCWHack with pid 23488 completed with status 0
+% Result found by SubtermCWHack
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FHUSM-FFSS21-SFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% Initializing proof state
+% Scanning for AC axioms
+%
+%cnf(i_0_23, hypothesis, (subgroup_member(a))).
+%
+%cnf(i_0_24, hypothesis, (subgroup_member(b))).
+%
+%cnf(i_0_26, negated_conjecture, (~subgroup_member(c))).
+%
+%cnf(i_0_25, hypothesis, (product(a,b,c))).
+%
+%cnf(i_0_15, plain, (product(X1,identity,X1))).
+%
+%cnf(i_0_14, plain, (product(identity,X1,X1))).
+%
+%cnf(i_0_17, plain, (product(X1,inverse(X1),identity))).
+%
+%cnf(i_0_16, plain, (product(inverse(X1),X1,identity))).
+%
+%cnf(i_0_18, plain, (product(X1,X2,multiply(X1,X2)))).
+%
+%cnf(i_0_22, plain, (subgroup_member(X3)|~subgroup_member(X2)|~subgroup_member(X1)|~product(X1,inverse(X2),X3))).
+%
+%cnf(i_0_19, plain, (X3=X4|~product(X1,X2,X4)|~product(X1,X2,X3))).
+%
+%cnf(i_0_30, plain, (subgroup_member(identity)|~subgroup_member(X1))).
+%
+%cnf(i_0_37, plain, (subgroup_member(identity))).
+%
+%cnf(i_0_28, plain, (subgroup_member(inverse(X1))|~subgroup_member(X1))).
+%
+%cnf(i_0_31, plain, (X1=c|~product(a,b,X1))).
+%
+%cnf(i_0_39, plain, (multiply(a,b)=c)).
+%
+%cnf(i_0_33, plain, (X1=X2|~product(identity,X2,X1))).
+%
+%cnf(i_0_41, plain, (inverse(identity)=identity)).
+%
+%cnf(i_0_42, plain, (multiply(identity,X1)=X1)).
+%
+%cnf(i_0_35, plain, (X1=X2|~product(X2,identity,X1))).
+%
+%cnf(i_0_49, plain, (multiply(X1,identity)=X1)).
+%
+%cnf(i_0_21, plain, (product(X3,X4,X6)|~product(X2,X4,X5)|~product(X1,X5,X6)|~product(X1,X2,X3))).
+%%
+%cnf(i_0_32, plain, (X1=identity|~product(inverse(X2),X2,X1))).
+%
+%cnf(i_0_59, plain, (multiply(inverse(X1),X1)=identity)).
+%%
+%cnf(i_0_34, plain, (X1=identity|~product(X2,inverse(X2),X1))).
+%
+%cnf(i_0_65, plain, (multiply(X1,inverse(X1))=identity)).
+%%
+%cnf(i_0_46, plain, (subgroup_member(X1)|~subgroup_member(X2)|~product(X2,identity,X1))).
+%
+%cnf(i_0_29, plain, (subgroup_member(multiply(X1,inverse(X2)))|~subgroup_member(X2)|~subgroup_member(X1))).
+%%
+%cnf(i_0_20, plain, (product(X1,X5,X6)|~product(X3,X4,X6)|~product(X2,X4,X5)|~product(X1,X2,X3))).
+%
+%cnf(i_0_36, plain, (X1=multiply(X2,X3)|~product(X2,X3,X1))).
+%
+%cnf(i_0_51, plain, (product(X1,b,X2)|~product(X3,c,X2)|~product(X3,a,X1))).
+%
+%cnf(i_0_89, plain, (product(X1,b,c)|~product(identity,a,X1))).
+%
+%cnf(i_0_88, plain, (product(X1,b,identity)|~product(inverse(c),a,X1))).
+%
+%cnf(i_0_93, plain, (product(multiply(inverse(c),a),b,identity))).
+%
+%cnf(i_0_95, plain, (multiply(multiply(inverse(c),a),b)=identity)).
+%
+%cnf(i_0_90, plain, (product(X1,b,multiply(X2,c))|~product(X2,a,X1))).
+%%
+%cnf(i_0_99, plain, (multiply(X1,c)=c|~product(X1,a,a))).
+%
+%cnf(i_0_108, plain, (c=identity|~product(inverse(c),a,a))).
+%
+%cnf(i_0_52, plain, (product(X1,X2,X3)|~product(X4,inverse(X2),X1)|~product(X4,identity,X3))).
+%
+%cnf(i_0_109, plain, (product(X1,c,c)|~product(X1,a,a))).
+%
+%cnf(i_0_115, plain, (product(identity,X1,X2)|~product(X1,identity,X2))).
+%%
+%cnf(i_0_101, plain, (multiply(X1,c)=b|~product(X1,a,identity))).
+%
+%cnf(i_0_127, plain, (c=b|~product(identity,a,identity))).
+%
+%cnf(i_0_126, plain, (b=identity|~product(inverse(c),a,identity))).
+%
+%cnf(i_0_128, plain, (product(X1,c,b)|~product(X1,a,identity))).
+%%%%
+%cnf(i_0_53, plain, (product(X1,X2,X3)|~product(X4,identity,X1)|~product(X4,X2,X3))).
+%
+%cnf(i_0_113, plain, (product(inverse(X1),X1,X2)|~product(identity,identity,X2))).
+%
+%cnf(i_0_146, plain, (subgroup_member(X1)|~product(identity,identity,X1))).
+%%%%%%
+%cnf(i_0_94, plain, (X1=identity|~product(multiply(inverse(c),a),b,X1))).
+%
+%cnf(i_0_100, plain, (multiply(X1,c)=identity|~product(X1,a,inverse(b)))).
+%
+%cnf(i_0_160, plain, (c=identity|~product(identity,a,inverse(b)))).
+%
+%cnf(i_0_54, plain, (product(X1,inverse(X2),X3)|~product(X4,identity,X3)|~product(X4,X2,X1))).
+%
+%cnf(i_0_161, plain, (product(X1,c,identity)|~product(X1,a,inverse(b)))).
+%
+%cnf(i_0_165, plain, (product(X1,inverse(X2),identity)|~product(identity,X2,X1))).
+%
+%cnf(i_0_171, plain, (inverse(X1)=identity|~product(identity,X1,identity))).
+%%%%%
+%cnf(i_0_178, plain, (product(X1,identity,identity)|~product(identity,identity,X1))).
+%
+%cnf(i_0_180, plain, (product(a,b,identity)|~product(identity,c,identity))).
+%%
+%cnf(i_0_55, plain, (product(X1,identity,X2)|~product(X4,X3,X2)|~product(X4,X3,X1))).
+%%
+%cnf(i_0_187, plain, (product(X1,identity,identity)|~product(identity,X1,identity))).
+%
+%cnf(i_0_207, plain, (product(X1,identity,c)|~product(a,b,X1))).
+%
+%cnf(i_0_212, plain, (product(X1,identity,X2)|~product(identity,X2,X1))).
+%
+%cnf(i_0_218, plain, (product(X1,identity,X2)|~product(X2,identity,X1))).
+%%
+%cnf(i_0_229, plain, (product(b,identity,c)|~product(identity,a,identity))).
+%
+%cnf(i_0_247, plain, (~product(identity,a,identity))).
+%%%
+%cnf(i_0_56, plain, (product(X1,X2,X3)|~product(X5,multiply(X4,X2),X3)|~product(X5,X4,X1))).
+%
+%cnf(i_0_168, plain, (product(X1,inverse(X2),X3)|~product(X3,X2,X1))).
+%
+%cnf(i_0_275, plain, (X1=identity|~product(X1,X2,X2))).
+%%
+%cnf(i_0_266, plain, (X1=inverse(X2)|~product(X1,X2,identity))).
+%
+%cnf(i_0_286, plain, (inverse(inverse(X1))=X1)).
+%
+%cnf(i_0_291, plain, (subgroup_member(X1)|~subgroup_member(inverse(X1)))).
+%%
+%cnf(i_0_284, plain, (multiply(inverse(c),a)=inverse(b))).
+%
+%cnf(i_0_305, plain, (product(inverse(c),a,inverse(b)))).
+%%
+%cnf(i_0_77, plain, (product(X1,X2,c)|~product(X3,b,X2)|~product(X1,X3,a))).
+%
+%cnf(i_0_280, plain, (inverse(X1)=identity|~product(identity,identity,X1))).
+%%%%%%%
+%cnf(i_0_283, plain, (inverse(b)=a|~product(identity,c,identity))).
+%%%
+%cnf(i_0_78, plain, (product(X1,X2,identity)|~product(X1,X4,inverse(X3))|~product(X4,X3,X2))).
+%%%%%
+%cnf(i_0_318, plain, (product(X1,b,c)|~product(X1,identity,a))).
+%
+%cnf(i_0_373, plain, (c=b|~product(identity,identity,a))).
+%
+%cnf(i_0_324, plain, (inverse(b)=a|~product(identity,identity,c))).
+%%%
+%cnf(i_0_329, plain, (identity=X1|~product(identity,identity,inverse(X1)))).
+%
+%cnf(i_0_79, plain, (product(X1,X2,X3)|~product(X1,X4,identity)|~product(X4,X3,X2))).
+%%%
+%cnf(i_0_331, plain, (product(identity,X1,identity)|~product(identity,identity,X1))).
+%
+%cnf(i_0_344, plain, (product(b,a,identity)|~product(identity,c,identity))).
+%%
+%cnf(i_0_351, plain, (inverse(a)=b|~product(identity,c,identity))).
+%%
+%cnf(i_0_372, plain, (c=identity|~product(inverse(b),identity,a))).
+%%%
+%cnf(i_0_80, plain, (product(X1,X2,identity)|~product(X4,inverse(X3),X2)|~product(X1,X4,X3))).
+%
+%cnf(i_0_374, plain, (product(c,identity,b)|~product(identity,identity,a))).
+%%%
+%cnf(i_0_381, plain, (product(b,a,identity)|~product(identity,identity,c))).
+%
+%cnf(i_0_382, plain, (product(a,b,identity)|~product(identity,identity,c))).
+%%%
+%cnf(i_0_388, plain, (inverse(a)=b|~product(identity,identity,c))).
+%%%
+%cnf(i_0_81, plain, (product(X1,X2,X3)|~product(X4,identity,X2)|~product(X1,X4,X3))).
+%
+%cnf(i_0_407, plain, (product(identity,X1,X2)|~product(identity,X2,X1))).
+%%%%%%
+%cnf(i_0_447, plain, (product(X1,identity,identity)|~product(X1,X2,X2))).
+%%
+%cnf(i_0_460, plain, (product(b,identity,c)|~product(identity,identity,a))).
+%
+%cnf(i_0_526, plain, (~product(identity,identity,a))).
+%
+%cnf(i_0_82, plain, (product(X1,X2,multiply(X3,X4))|~product(X5,X4,X2)|~product(X1,X5,X3))).
+%%%%%%%%%%
+%cnf(i_0_210, plain, (product(X1,identity,identity)|~product(inverse(X2),X2,X1))).
+%
+%cnf(i_0_102, plain, (X1=multiply(X2,c)|~product(X3,b,X1)|~product(X2,a,X3))).
+%%%%
+%cnf(i_0_216, plain, (product(X1,identity,identity)|~product(X2,inverse(X2),X1))).
+%%%%
+%cnf(i_0_267, plain, (product(X1,identity,inverse(X2))|~product(X1,X2,identity))).
+%
+%cnf(i_0_590, plain, (subgroup_member(inverse(X1))|~product(identity,X1,identity))).
+%
+%cnf(i_0_613, plain, (subgroup_member(X1)|~product(identity,X1,identity))).
+%
+%cnf(i_0_103, plain, (multiply(X1,c)=multiply(X2,b)|~product(X1,a,X2))).
+%
+%cnf(i_0_627, plain, (multiply(inverse(a),c)=b)).
+%
+%cnf(i_0_632, plain, (product(inverse(a),c,b))).
+%%
+%cnf(i_0_618, plain, (subgroup_member(X1)|~product(identity,inverse(X1),identity))).
+%%%%%%%
+%cnf(i_0_104, plain, (product(X1,b,X2)|~product(X5,multiply(X4,c),X2)|~product(X4,a,X3)|~product(X5,X3,X1))).
+%%%%
+%cnf(i_0_635, plain, (c=b|~product(inverse(a),a,a))).
+%%%
+%cnf(i_0_640, plain, (X1=b|~product(inverse(a),c,X1))).
+%%
+%cnf(i_0_648, plain, (product(b,c,b)|~product(identity,c,identity))).
+%
+%cnf(i_0_649, plain, (product(b,c,b)|~product(identity,identity,c))).
+%
+%cnf(i_0_105, plain, (product(X1,X2,multiply(X3,c))|~product(X5,b,X2)|~product(X3,a,X4)|~product(X1,X5,X4))).
+%%
+%cnf(i_0_268, plain, (product(inverse(X1),identity,identity)|~product(identity,X1,identity))).
+%%%%%%
+%cnf(i_0_294, plain, (product(X1,inverse(X1),X2)|~product(identity,identity,X2))).
+%%%
+%cnf(i_0_110, plain, (product(X1,b,c)|~product(X2,a,a)|~product(X2,a,X1))).
+%%%%%%%%
+%cnf(i_0_296, plain, (subgroup_member(multiply(X1,X2))|~subgroup_member(inverse(X2))|~subgroup_member(X1))).
+%
+%cnf(i_0_757, plain, (~subgroup_member(inverse(b)))).
 
-# Proof found!
-# SZS status Unsatisfiable
-# SZS output start CNFRefutation
-cnf(total_function2, axiom, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), file('TPTP/Axioms/GRP003-0.ax', total_function2)).
-cnf(associativity2, axiom, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), file('TPTP/Axioms/GRP003-0.ax', associativity2)).
-cnf(right_identity, axiom, (product(X1,identity,X1)), file('TPTP/Axioms/GRP003-0.ax', right_identity)).
-cnf(left_inverse, axiom, (product(inverse(X1),X1,identity)), file('TPTP/Axioms/GRP003-0.ax', left_inverse)).
-cnf(total_function1, axiom, (product(X1,X2,multiply(X1,X2))), file('TPTP/Axioms/GRP003-0.ax', total_function1)).
-cnf(left_identity, axiom, (product(identity,X1,X1)), file('TPTP/Axioms/GRP003-0.ax', left_identity)).
-cnf(closure_of_product_and_inverse, axiom, (subgroup_member(X3)|~subgroup_member(X1)|~subgroup_member(X2)|~product(X1,inverse(X2),X3)), file('TPTP/Axioms/GRP003-2.ax', closure_of_product_and_inverse)).
-cnf(right_inverse, axiom, (product(X1,inverse(X1),identity)), file('TPTP/Axioms/GRP003-0.ax', right_inverse)).
-cnf(b_is_in_subgroup, hypothesis, (subgroup_member(b)), file('Problems/GRP/GRP035-3.p', b_is_in_subgroup)).
-cnf(a_times_b_is_c, hypothesis, (product(a,b,c)), file('Problems/GRP/GRP035-3.p', a_times_b_is_c)).
-cnf(prove_c_is_in_subgroup, negated_conjecture, (~subgroup_member(c)), file('Problems/GRP/GRP035-3.p', prove_c_is_in_subgroup)).
-cnf(a_is_in_subgroup, hypothesis, (subgroup_member(a)), file('Problems/GRP/GRP035-3.p', a_is_in_subgroup)).
+% Proof found!
+% SZS status Unsatisfiable
+% SZS output start CNFRefutation
+cnf(associativity2, axiom, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', associativity2)).
+cnf(total_function2, axiom, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function2)).
+cnf(right_inverse, axiom, (product(X1,inverse(X1),identity)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_inverse)).
+cnf(right_identity, axiom, (product(X1,identity,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', right_identity)).
+cnf(total_function1, axiom, (product(X1,X2,multiply(X1,X2))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', total_function1)).
+cnf(left_identity, axiom, (product(identity,X1,X1)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-0.ax', left_identity)).
+cnf(closure_of_product_and_inverse, axiom, (subgroup_member(X3)|~subgroup_member(X1)|~subgroup_member(X2)|~product(X1,inverse(X2),X3)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Axioms/GRP003-2.ax', closure_of_product_and_inverse)).
+cnf(a_times_b_is_c, hypothesis, (product(a,b,c)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP035-3.p', a_times_b_is_c)).
+cnf(a_is_in_subgroup, hypothesis, (subgroup_member(a)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP035-3.p', a_is_in_subgroup)).
+cnf(b_is_in_subgroup, hypothesis, (subgroup_member(b)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP035-3.p', b_is_in_subgroup)).
+cnf(prove_c_is_in_subgroup, negated_conjecture, (~subgroup_member(c)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP035-3.p', prove_c_is_in_subgroup)).
+cnf(c_0_11, plain, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), inference(fof_simplification,[status(thm)],[associativity2])).
 cnf(c_0_12, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), inference(fof_simplification,[status(thm)],[total_function2])).
-cnf(c_0_13, plain, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), inference(fof_simplification,[status(thm)],[associativity2])).
-cnf(c_0_14, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), c_0_12).
-cnf(c_0_15, axiom, (product(X1,identity,X1)), right_identity).
-cnf(c_0_16, plain, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), c_0_13).
-cnf(c_0_17, axiom, (product(inverse(X1),X1,identity)), left_inverse).
-cnf(c_0_18, plain, (X1=X2|~product(X2,identity,X1)), inference(spm,[status(thm)],[c_0_14, c_0_15])).
-cnf(c_0_19, axiom, (product(X1,X2,multiply(X1,X2))), total_function1).
-cnf(c_0_20, plain, (product(X1,X2,X3)|~product(X4,inverse(X2),X1)|~product(X4,identity,X3)), inference(spm,[status(thm)],[c_0_16, c_0_17])).
-cnf(c_0_21, plain, (multiply(X1,identity)=X1), inference(spm,[status(thm)],[c_0_18, c_0_19])).
-cnf(c_0_22, axiom, (product(identity,X1,X1)), left_identity).
+cnf(c_0_13, plain, (product(X3,X4,X6)|~product(X1,X2,X3)|~product(X2,X4,X5)|~product(X1,X5,X6)), c_0_11).
+cnf(c_0_14, axiom, (product(X1,inverse(X1),identity)), right_inverse).
+cnf(c_0_15, plain, (X3=X4|~product(X1,X2,X3)|~product(X1,X2,X4)), c_0_12).
+cnf(c_0_16, axiom, (product(X1,identity,X1)), right_identity).
+cnf(c_0_17, plain, (product(X1,inverse(X2),X3)|~product(X4,identity,X3)|~product(X4,X2,X1)), inference(spm,[status(thm)],[c_0_13, c_0_14])).
+cnf(c_0_18, axiom, (product(X1,X2,multiply(X1,X2))), total_function1).
+cnf(c_0_19, plain, (X1=X2|~product(X2,identity,X1)), inference(spm,[status(thm)],[c_0_15, c_0_16])).
+cnf(c_0_20, axiom, (product(identity,X1,X1)), left_identity).
+cnf(c_0_21, plain, (product(X1,inverse(X2),multiply(X3,identity))|~product(X3,X2,X1)), inference(spm,[status(thm)],[c_0_17, c_0_18])).
+cnf(c_0_22, plain, (multiply(X1,identity)=X1), inference(spm,[status(thm)],[c_0_19, c_0_18])).
 cnf(c_0_23, plain, (subgroup_member(X3)|~subgroup_member(X1)|~subgroup_member(X2)|~product(X1,inverse(X2),X3)), inference(fof_simplification,[status(thm)],[closure_of_product_and_inverse])).
-cnf(c_0_24, plain, (product(X1,X2,X3)|~product(X3,inverse(X2),X1)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_20, c_0_19]), c_0_21])).
-cnf(c_0_25, plain, (X1=X2|~product(identity,X2,X1)), inference(spm,[status(thm)],[c_0_14, c_0_22])).
+cnf(c_0_24, plain, (X1=X2|~product(identity,X2,X1)), inference(spm,[status(thm)],[c_0_15, c_0_20])).
+cnf(c_0_25, plain, (product(X1,inverse(X2),X3)|~product(X3,X2,X1)), inference(rw,[status(thm)],[c_0_21, c_0_22])).
 cnf(c_0_26, plain, (subgroup_member(X3)|~subgroup_member(X1)|~subgroup_member(X2)|~product(X1,inverse(X2),X3)), c_0_23).
-cnf(c_0_27, axiom, (product(X1,inverse(X1),identity)), right_inverse).
-cnf(c_0_28, plain, (X1=multiply(X2,X3)|~product(X2,X3,X1)), inference(spm,[status(thm)],[c_0_14, c_0_19])).
-cnf(c_0_29, plain, (product(identity,X1,inverse(inverse(X1)))), inference(spm,[status(thm)],[c_0_24, c_0_17])).
-cnf(c_0_30, plain, (multiply(identity,X1)=X1), inference(spm,[status(thm)],[c_0_25, c_0_19])).
-cnf(c_0_31, plain, (subgroup_member(identity)|~subgroup_member(X1)), inference(spm,[status(thm)],[c_0_26, c_0_27])).
-cnf(c_0_32, hypothesis, (subgroup_member(b)), b_is_in_subgroup).
-cnf(c_0_33, plain, (subgroup_member(multiply(X1,inverse(X2)))|~subgroup_member(X2)|~subgroup_member(X1)), inference(spm,[status(thm)],[c_0_26, c_0_19])).
-cnf(c_0_34, plain, (inverse(inverse(X1))=X1), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_28, c_0_29]), c_0_30])).
-cnf(c_0_35, hypothesis, (subgroup_member(identity)), inference(spm,[status(thm)],[c_0_31, c_0_32])).
-cnf(c_0_36, hypothesis, (product(a,b,c)), a_times_b_is_c).
-cnf(c_0_37, plain, (subgroup_member(multiply(X1,X2))|~subgroup_member(inverse(X2))|~subgroup_member(X1)), inference(spm,[status(thm)],[c_0_33, c_0_34])).
-cnf(c_0_38, plain, (subgroup_member(inverse(X1))|~subgroup_member(X1)), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_26, c_0_22]), c_0_35])])).
-cnf(c_0_39, hypothesis, (X1=c|~product(a,b,X1)), inference(spm,[status(thm)],[c_0_14, c_0_36])).
-cnf(c_0_40, negated_conjecture, (~subgroup_member(c)), inference(fof_simplification,[status(thm)],[prove_c_is_in_subgroup])).
-cnf(c_0_41, plain, (subgroup_member(multiply(X1,X2))|~subgroup_member(X1)|~subgroup_member(X2)), inference(spm,[status(thm)],[c_0_37, c_0_38])).
-cnf(c_0_42, hypothesis, (multiply(a,b)=c), inference(spm,[status(thm)],[c_0_39, c_0_19])).
-cnf(c_0_43, hypothesis, (subgroup_member(a)), a_is_in_subgroup).
-cnf(c_0_44, negated_conjecture, (~subgroup_member(c)), c_0_40).
-cnf(c_0_45, hypothesis, ($false), inference(sr,[status(thm)],[inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_41, c_0_42]), c_0_43]), c_0_32])]), c_0_44]), ['proof']).
-# SZS output end CNFRefutation
+cnf(c_0_27, plain, (X1=inverse(X2)|~product(X1,X2,identity)), inference(spm,[status(thm)],[c_0_24, c_0_25])).
+cnf(c_0_28, hypothesis, (product(a,b,c)), a_times_b_is_c).
+cnf(c_0_29, plain, (subgroup_member(multiply(X1,inverse(X2)))|~subgroup_member(X2)|~subgroup_member(X1)), inference(spm,[status(thm)],[c_0_26, c_0_18])).
+cnf(c_0_30, plain, (inverse(inverse(X1))=X1), inference(spm,[status(thm)],[c_0_27, c_0_14])).
+cnf(c_0_31, plain, (X1=c|~product(a,b,X1)), inference(spm,[status(thm)],[c_0_15, c_0_28])).
+cnf(c_0_32, plain, (subgroup_member(multiply(X1,X2))|~subgroup_member(inverse(X2))|~subgroup_member(X1)), inference(spm,[status(thm)],[c_0_29, c_0_30])).
+cnf(c_0_33, plain, (multiply(a,b)=c), inference(spm,[status(thm)],[c_0_31, c_0_18])).
+cnf(c_0_34, plain, (subgroup_member(c)|~subgroup_member(inverse(b))|~subgroup_member(a)), inference(spm,[status(thm)],[c_0_32, c_0_33])).
+cnf(c_0_35, hypothesis, (subgroup_member(a)), a_is_in_subgroup).
+cnf(c_0_36, plain, (subgroup_member(identity)|~subgroup_member(X1)), inference(spm,[status(thm)],[c_0_26, c_0_14])).
+cnf(c_0_37, hypothesis, (subgroup_member(b)), b_is_in_subgroup).
+cnf(c_0_38, plain, (subgroup_member(c)|~subgroup_member(inverse(b))|$false), inference(rw,[status(thm)],[c_0_34, c_0_35])).
+cnf(c_0_39, negated_conjecture, (~subgroup_member(c)), inference(fof_simplification,[status(thm)],[prove_c_is_in_subgroup])).
+cnf(c_0_40, plain, (subgroup_member(inverse(X1))|~subgroup_member(X1)|~subgroup_member(identity)), inference(spm,[status(thm)],[c_0_26, c_0_20])).
+cnf(c_0_41, plain, (subgroup_member(identity)), inference(spm,[status(thm)],[c_0_36, c_0_37])).
+cnf(c_0_42, plain, (subgroup_member(c)|~subgroup_member(inverse(b))), inference(cn,[status(thm)],[c_0_38])).
+cnf(c_0_43, negated_conjecture, (~subgroup_member(c)), c_0_39).
+cnf(c_0_44, plain, (subgroup_member(inverse(X1))|~subgroup_member(X1)|$false), inference(rw,[status(thm)],[c_0_40, c_0_41])).
+cnf(c_0_45, plain, (~subgroup_member(inverse(b))), inference(sr,[status(thm)],[c_0_42, c_0_43])).
+cnf(c_0_46, plain, (subgroup_member(inverse(X1))|~subgroup_member(X1)), inference(cn,[status(thm)],[c_0_44])).
+cnf(c_0_47, plain, (~subgroup_member(b)), inference(spm,[status(thm)],[c_0_45, c_0_46])).
+cnf(c_0_48, plain, ($false), inference(rw,[status(thm)],[c_0_47, c_0_37])).
+cnf(c_0_49, plain, ($false), inference(cn,[status(thm)],[c_0_48]), ['proof']).
+% SZS output end CNFRefutation

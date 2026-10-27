@@ -17,7 +17,7 @@ Lemma 8: implies(X,implies(implies(X,Y),Y)) = truth
 Proof:
   implies(X,implies(implies(X,Y),Y))
 = { by axiom 1 R->L }
-  implies(X,implies(implies(X,Y),implies(truth,Y)))
+  implies(implies(truth,X),implies(implies(X,Y),Y))
 = { by axiom 1 R->L }
   implies(implies(truth,X),implies(implies(X,Y),implies(truth,Y)))
 = { by axiom 3 }
@@ -45,7 +45,7 @@ Lemma 11: implies(X,implies(Y,X)) = truth
 Proof:
   implies(X,implies(Y,X))
 = { by axiom 1 R->L }
-  implies(implies(truth,X),implies(Y,X))
+  implies(truth,implies(X,implies(Y,X)))
 = { by axiom 1 R->L }
   implies(truth,implies(implies(truth,X),implies(Y,X)))
 = { by lemma 10 R->L }
@@ -53,70 +53,64 @@ Proof:
 = { by axiom 3 }
   truth
 
-Lemma 12: implies(not(truth),X) = truth
+Lemma 12: implies(implies(implies(X,Y),Z),implies(Y,Z)) = truth
+Proof:
+  implies(implies(implies(X,Y),Z),implies(Y,Z))
+= { by axiom 1 R->L }
+  implies(truth,implies(implies(implies(X,Y),Z),implies(Y,Z)))
+= { by lemma 11 R->L }
+  implies(implies(Y,implies(X,Y)),implies(implies(implies(X,Y),Z),implies(Y,Z)))
+= { by axiom 3 }
+  truth
+
+Lemma 13: implies(not(truth),X) = truth
 Proof:
   implies(not(truth),X)
 = { by axiom 1 R->L }
   implies(truth,implies(not(truth),X))
 = { by lemma 7 R->L }
   implies(implies(implies(not(X),not(truth)),X),implies(not(truth),X))
-= { by axiom 1 R->L }
-  implies(truth,implies(implies(implies(not(X),not(truth)),X),implies(not(truth),X)))
-= { by lemma 11 R->L }
-  implies(implies(not(truth),implies(not(X),not(truth))),implies(implies(implies(not(X),not(truth)),X),implies(not(truth),X)))
-= { by axiom 3 }
-  truth
-
-Lemma 13: not(not(truth)) = truth
-Proof:
-  not(not(truth))
-= { by axiom 1 R->L }
-  implies(truth,not(not(truth)))
-= { by lemma 7 R->L }
-  implies(implies(implies(not(not(truth)),not(truth)),not(truth)),not(not(truth)))
-= { by axiom 4 R->L }
-  implies(implies(implies(not(truth),not(not(truth))),not(not(truth))),not(not(truth)))
-= { by axiom 4 }
-  implies(implies(not(not(truth)),implies(not(truth),not(not(truth)))),implies(not(truth),not(not(truth))))
-= { by lemma 11 }
-  implies(truth,implies(not(truth),not(not(truth))))
-= { by axiom 1 }
-  implies(not(truth),not(not(truth)))
 = { by lemma 12 }
   truth
 
-Lemma 14: implies(not(implies(X,not(truth))),X) = truth
+Lemma 14: implies(implies(X,not(truth)),not(truth)) = X
+Proof:
+  implies(implies(X,not(truth)),not(truth))
+= { by axiom 4 }
+  implies(implies(not(truth),X),X)
+= { by lemma 13 }
+  implies(truth,X)
+= { by axiom 1 }
+  X
+
+Lemma 15: implies(not(implies(X,not(truth))),X) = truth
 Proof:
   implies(not(implies(X,not(truth))),X)
+= { by lemma 14 R->L }
+  implies(not(implies(X,not(truth))),implies(implies(X,not(truth)),not(truth)))
 = { by axiom 1 R->L }
-  implies(not(implies(X,not(truth))),implies(truth,X))
-= { by lemma 12 R->L }
-  implies(not(implies(X,not(truth))),implies(implies(not(truth),X),X))
-= { by axiom 1 R->L }
-  implies(implies(truth,not(implies(X,not(truth)))),implies(implies(not(truth),X),X))
-= { by lemma 13 R->L }
-  implies(implies(not(not(truth)),not(implies(X,not(truth)))),implies(implies(not(truth),X),X))
-= { by axiom 4 R->L }
-  implies(implies(not(not(truth)),not(implies(X,not(truth)))),implies(implies(X,not(truth)),not(truth)))
-= { by axiom 2 }
+  implies(truth,implies(not(implies(X,not(truth))),implies(implies(X,not(truth)),not(truth))))
+= { by axiom 2 R->L }
+  implies(implies(implies(not(not(truth)),not(implies(X,not(truth)))),implies(implies(X,not(truth)),not(truth))),implies(not(implies(X,not(truth))),implies(implies(X,not(truth)),not(truth))))
+= { by lemma 12 }
   truth
 
-Lemma 15: implies(X,implies(not(X),not(truth))) = truth
+Lemma 16: implies(X,implies(not(X),not(truth))) = truth
 Proof:
   implies(X,implies(not(X),not(truth)))
 = { by axiom 1 R->L }
   implies(truth,implies(X,implies(not(X),not(truth))))
-= { by lemma 14 R->L }
+= { by lemma 15 R->L }
   implies(implies(not(implies(not(X),not(truth))),not(X)),implies(X,implies(not(X),not(truth))))
 = { by axiom 2 }
   truth
 
-Lemma 16: implies(not(X),not(truth)) = X
+Lemma 17: implies(not(X),not(truth)) = X
 Proof:
   implies(not(X),not(truth))
 = { by axiom 1 R->L }
   implies(truth,implies(not(X),not(truth)))
-= { by lemma 15 R->L }
+= { by lemma 16 R->L }
   implies(implies(X,implies(not(X),not(truth))),implies(not(X),not(truth)))
 = { by axiom 4 R->L }
   implies(implies(implies(not(X),not(truth)),X),X)
@@ -125,14 +119,14 @@ Proof:
 = { by axiom 1 }
   X
 
-Lemma 17: implies(X,not(truth)) = not(X)
+Lemma 18: implies(X,not(truth)) = not(X)
 Proof:
   implies(X,not(truth))
-= { by lemma 16 R->L }
+= { by lemma 17 R->L }
   implies(implies(not(X),not(truth)),not(truth))
 = { by axiom 4 R->L }
   implies(implies(not(truth),not(X)),not(X))
-= { by lemma 12 }
+= { by lemma 13 }
   implies(truth,not(X))
 = { by axiom 1 }
   not(X)
@@ -144,15 +138,15 @@ Proof:
   not(not(big_V(not(x),not(y))))
 = { by axiom 5 }
   not(not(implies(implies(not(x),not(y)),not(y))))
-= { by lemma 17 R->L }
-  not(implies(implies(implies(not(x),not(y)),not(y)),not(truth)))
-= { by lemma 17 R->L }
-  implies(implies(implies(implies(not(x),not(y)),not(y)),not(truth)),not(truth))
 = { by axiom 4 }
-  implies(implies(not(truth),implies(implies(not(x),not(y)),not(y))),implies(implies(not(x),not(y)),not(y)))
-= { by lemma 12 }
-  implies(truth,implies(implies(not(x),not(y)),not(y)))
-= { by axiom 1 }
+  not(not(implies(implies(not(y),not(x)),not(x))))
+= { by lemma 18 R->L }
+  not(implies(implies(implies(not(y),not(x)),not(x)),not(truth)))
+= { by lemma 18 R->L }
+  implies(implies(implies(implies(not(y),not(x)),not(x)),not(truth)),not(truth))
+= { by lemma 14 }
+  implies(implies(not(y),not(x)),not(x))
+= { by axiom 4 R->L }
   implies(implies(not(x),not(y)),not(y))
 = { by axiom 5 R->L }
   big_V(not(x),not(y))

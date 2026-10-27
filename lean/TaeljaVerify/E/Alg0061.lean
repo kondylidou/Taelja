@@ -15,94 +15,104 @@ axiom c : α
 axiom difference : α → α → α
 
 -- Axiom 1
-axiom ax1 : ∀ (x y z : α), difference (difference x y) z = difference (difference x z) (difference y z)
+axiom ax1 : ∀ (x y : α), difference x (difference y x) = x
 -- Axiom 2
-axiom ax2 : ∀ (x y : α), difference x (difference y x) = x
+axiom ax2 : ∀ (x y : α), difference x (difference x y) = difference y (difference y x)
 -- Axiom 3
-axiom ax3 : ∀ (x y : α), difference x (difference x y) = difference y (difference y x)
+axiom ax3 : ∀ (x y z : α), difference (difference x y) z = difference (difference x z) (difference y z)
 
 -- Lemma 4
 theorem taelja_lemma4 : ∀ (x y : α), difference (difference x y) y = difference x y := by
   intro x y
-  calc difference (difference x y) y = difference (difference x y) (difference y (difference x y)) := congrArg (fun t : α => difference (difference x y) t) (Eq.symm (ax2 y x))
-      _ = difference x y := ax2 (difference x y) y
+  calc difference (difference x y) y = difference (difference x y) (difference y (difference x y)) := congrArg (fun t : α => difference (difference x y) t) (Eq.symm (ax1 y x))
+      _ = difference x y := ax1 (difference x y) y
 
 -- Lemma 5
-theorem taelja_lemma5 : ∀ (x y : α), difference x x = difference (difference y y) x := by
+theorem taelja_lemma5 : ∀ (x y : α), difference (difference x y) (difference x y) = difference y y := by
   intro x y
-  calc difference x x = difference x (difference x (difference y x)) := congrArg (fun t : α => difference x t) (Eq.symm (ax2 x y))
-      _ = difference (difference y x) (difference (difference y x) x) := ax3 x (difference y x)
-      _ = difference (difference y x) (difference y x) := congrArg (fun t : α => difference (difference y x) t) (taelja_lemma4 y x)
-      _ = difference (difference y y) x := Eq.symm (ax1 y y x)
+  calc difference (difference x y) (difference x y) = difference (difference x y) (difference (difference x y) y) := congrArg (fun t : α => difference (difference x y) t) (Eq.symm (taelja_lemma4 x y))
+      _ = difference y (difference y (difference x y)) := Eq.symm (ax2 y (difference x y))
+      _ = difference y y := congrArg (fun t : α => difference y t) (ax1 y x)
 
 -- Lemma 6
-theorem taelja_lemma6 : ∀ (x y : α), difference (difference x x) (difference y y) = difference y y := by
+theorem taelja_lemma6 : ∀ (x y : α), difference x x = difference y y := by
   intro x y
-  calc difference (difference x x) (difference y y) = difference (difference y y) (difference y y) := Eq.symm (taelja_lemma5 (difference y y) x)
-      _ = difference (difference y y) y := Eq.symm (ax1 y y y)
-      _ = difference y y := taelja_lemma4 y y
+  calc difference x x = difference (difference y x) (difference y x) := Eq.symm (taelja_lemma5 y x)
+      _ = difference (difference y (difference y x)) (difference y (difference y x)) := Eq.symm (taelja_lemma5 y (difference y x))
+      _ = difference (difference x (difference x y)) (difference y (difference y x)) := congrArg (fun t : α => difference t (difference y (difference y x))) (Eq.symm (ax2 x y))
+      _ = difference (difference x (difference x y)) (difference x (difference x y)) := congrArg (fun t : α => difference (difference x (difference x y)) t) (Eq.symm (ax2 x y))
+      _ = difference (difference x y) (difference x y) := taelja_lemma5 x (difference x y)
+      _ = difference y y := taelja_lemma5 x y
 
 -- Lemma 7
-theorem taelja_lemma7 : ∀ (x y : α), difference x x = difference y y := by
+theorem taelja_lemma7 : ∀ (x y : α), difference x (difference y y) = x := by
   intro x y
-  calc difference x x = difference (difference y y) (difference x x) := Eq.symm (taelja_lemma6 y x)
-      _ = difference (difference y y) (difference (difference y y) (difference x x)) := congrArg (fun t : α => difference (difference y y) t) (Eq.symm (taelja_lemma6 y x))
-      _ = difference (difference x x) (difference (difference x x) (difference y y)) := Eq.symm (ax3 (difference x x) (difference y y))
-      _ = difference (difference x x) (difference y y) := congrArg (fun t : α => difference (difference x x) t) (taelja_lemma6 x y)
-      _ = difference y y := taelja_lemma6 x y
+  calc difference x (difference y y) = difference x (difference x x) := congrArg (fun t : α => difference x t) (Eq.symm (taelja_lemma6 x y))
+      _ = x := ax1 x x
 
 -- Lemma 8
-theorem taelja_lemma8 : ∀ (x y : α), difference (difference x x) y = difference x x := by
+theorem taelja_lemma8 : ∀ (x y : α), difference (difference x y) x = difference x x := by
   intro x y
-  calc difference (difference x x) y = difference (difference y y) y := congrArg (fun t : α => difference t y) (Eq.symm (taelja_lemma7 y x))
-      _ = difference y y := taelja_lemma4 y y
-      _ = difference x x := taelja_lemma7 y x
+  calc difference (difference x y) x = difference (difference x x) (difference y x) := ax3 x y x
+      _ = difference (difference (difference y x) (difference y x)) (difference y x) := congrArg (fun t : α => difference t (difference y x)) (Eq.symm (taelja_lemma6 (difference y x) x))
+      _ = difference (difference y x) (difference y x) := taelja_lemma4 (difference y x) (difference y x)
+      _ = difference x x := taelja_lemma6 (difference y x) x
 
 -- Lemma 9
-theorem taelja_lemma9 : ∀ (x y : α), difference x (difference y y) = x := by
-  intro x y
-  calc difference x (difference y y) = difference x (difference x x) := congrArg (fun t : α => difference x t) (Eq.symm (taelja_lemma7 x y))
-      _ = x := ax2 x x
+theorem taelja_lemma9 : ∀ (x y z : α), difference (difference x (difference y z)) y = difference x y := by
+  intro x y z
+  calc difference (difference x (difference y z)) y = difference (difference x y) (difference (difference y z) y) := ax3 x (difference y z) y
+      _ = difference (difference x y) (difference y y) := congrArg (fun t : α => difference (difference x y) t) (taelja_lemma8 y z)
+      _ = difference x y := taelja_lemma7 (difference x y) y
 
 -- Lemma 10
-theorem taelja_lemma10 : ∀ (x y : α), difference (difference x y) x = difference x x := by
+theorem taelja_lemma10 : ∀ (x y : α), difference x (difference x (difference x y)) = difference x y := by
   intro x y
-  calc difference (difference x y) x = difference (difference x x) (difference y x) := ax1 x y x
-      _ = difference x x := taelja_lemma8 x (difference y x)
+  calc difference x (difference x (difference x y)) = difference (difference x y) (difference (difference x y) x) := ax2 x (difference x y)
+      _ = difference (difference x y) (difference x x) := congrArg (fun t : α => difference (difference x y) t) (taelja_lemma8 x y)
+      _ = difference x y := taelja_lemma7 (difference x y) x
 
 -- Lemma 11
-theorem taelja_lemma11 : ∀ (x y z : α), difference (difference x (difference y z)) y = difference x y := by
+theorem taelja_lemma11 : ∀ (x y z : α), difference (difference (difference x y) z) y = difference (difference x z) y := by
   intro x y z
-  calc difference (difference x (difference y z)) y = difference (difference x y) (difference (difference y z) y) := ax1 x (difference y z) y
-      _ = difference (difference x y) (difference (difference (difference y z) y) y) := congrArg (fun t : α => difference (difference x y) t) (Eq.symm (taelja_lemma4 (difference y z) y))
-      _ = difference (difference x (difference (difference y z) y)) y := Eq.symm (ax1 x (difference (difference y z) y) y)
-      _ = difference (difference x (difference y y)) y := congrArg (fun t : α => difference (difference x t) y) (taelja_lemma10 y z)
-      _ = difference x y := congrArg (fun t : α => difference t y) (taelja_lemma9 x y)
+  calc difference (difference (difference x y) z) y = difference (difference (difference x y) y) (difference z y) := ax3 (difference x y) z y
+      _ = difference (difference x y) (difference z y) := congrArg (fun t : α => difference t (difference z y)) (taelja_lemma4 x y)
+      _ = difference (difference x z) y := Eq.symm (ax3 x z y)
 
 -- Lemma 12
-theorem taelja_lemma12 : ∀ (x y z : α), difference x (difference x (difference (difference y x) z)) = difference x x := by
+theorem taelja_lemma12 : ∀ (x y z : α), difference x (difference (difference y x) (difference x z)) = x := by
   intro x y z
-  calc difference x (difference x (difference (difference y x) z)) = difference (difference x (difference y x)) (difference x (difference (difference y x) z)) := congrArg (fun t : α => difference t (difference x (difference (difference y x) z))) (Eq.symm (ax2 x y))
-      _ = difference (difference (difference x (difference (difference y x) z)) (difference y x)) (difference x (difference (difference y x) z)) := congrArg (fun t : α => difference t (difference x (difference (difference y x) z))) (Eq.symm (taelja_lemma11 x (difference y x) z))
-      _ = difference (difference x (difference (difference y x) z)) (difference x (difference (difference y x) z)) := taelja_lemma10 (difference x (difference (difference y x) z)) (difference y x)
-      _ = difference (difference x x) (difference (difference y x) z) := Eq.symm (ax1 x x (difference (difference y x) z))
-      _ = difference x x := taelja_lemma8 x (difference (difference y x) z)
+  calc difference x (difference (difference y x) (difference x z)) = difference x (difference x (difference x (difference (difference y x) (difference x z)))) := Eq.symm (taelja_lemma10 x (difference (difference y x) (difference x z)))
+      _ = difference x (difference (difference (difference y x) (difference x z)) (difference (difference (difference y x) (difference x z)) x)) := congrArg (fun t : α => difference x t) (ax2 x (difference (difference y x) (difference x z)))
+      _ = difference x (difference (difference (difference y x) (difference x z)) (difference (difference y x) x)) := congrArg (fun t : α => difference x (difference (difference (difference y x) (difference x z)) t)) (taelja_lemma9 (difference y x) x z)
+      _ = difference x (difference (difference (difference y x) (difference x z)) (difference y x)) := congrArg (fun t : α => difference x (difference (difference (difference y x) (difference x z)) t)) (taelja_lemma4 y x)
+      _ = difference x (difference (difference y x) (difference y x)) := congrArg (fun t : α => difference x t) (taelja_lemma8 (difference y x) (difference x z))
+      _ = difference x (difference x x) := congrArg (fun t : α => difference x t) (taelja_lemma5 y x)
+      _ = x := ax1 x x
 
 -- Lemma 13
 theorem taelja_lemma13 : ∀ (x y z : α), difference x (difference (difference y x) z) = x := by
   intro x y z
-  calc difference x (difference (difference y x) z) = difference (difference x (difference (difference y x) z)) (difference x x) := Eq.symm (taelja_lemma9 (difference x (difference (difference y x) z)) x)
-      _ = difference (difference x (difference (difference y x) z)) (difference (difference x (difference (difference y x) z)) x) := congrArg (fun t : α => difference (difference x (difference (difference y x) z)) t) (Eq.symm (taelja_lemma10 x (difference (difference y x) z)))
-      _ = difference x (difference x (difference x (difference (difference y x) z))) := Eq.symm (ax3 x (difference x (difference (difference y x) z)))
-      _ = difference x (difference x x) := congrArg (fun t : α => difference x t) (taelja_lemma12 x y z)
-      _ = x := ax2 x x
+  calc difference x (difference (difference y x) z) = difference (difference x (difference y x)) (difference (difference y x) z) := congrArg (fun t : α => difference t (difference (difference y x) z)) (Eq.symm (ax1 x y))
+      _ = difference (difference (difference x (difference y x)) (difference (difference y x) z)) (difference (difference y x) (difference (difference x (difference y x)) (difference (difference y x) z))) := Eq.symm (ax1 (difference (difference x (difference y x)) (difference (difference y x) z)) (difference y x))
+      _ = difference (difference (difference x (difference y x)) (difference (difference y x) z)) (difference y x) := congrArg (fun t : α => difference (difference (difference x (difference y x)) (difference (difference y x) z)) t) (taelja_lemma12 (difference y x) x z)
+      _ = difference (difference x (difference y x)) (difference y x) := taelja_lemma9 (difference x (difference y x)) (difference y x) z
+      _ = difference x (difference y x) := taelja_lemma4 x (difference y x)
+      _ = x := ax1 x y
+
+-- Lemma 14
+theorem taelja_lemma14 : ∀ (x y z : α), difference (difference (difference x y) z) (difference (difference x z) y) = difference y y := by
+  intro x y z
+  calc difference (difference (difference x y) z) (difference (difference x z) y) = difference (difference (difference x y) z) (difference (difference (difference x y) z) y) := congrArg (fun t : α => difference (difference (difference x y) z) t) (Eq.symm (taelja_lemma11 x y z))
+      _ = difference y (difference y (difference (difference x y) z)) := Eq.symm (ax2 y (difference (difference x y) z))
+      _ = difference y y := congrArg (fun t : α => difference y t) (taelja_lemma13 y x z)
 
 -- Goal 1
 theorem taelja_goal1 : difference (difference a c) b = difference (difference a b) c := by
-  calc difference (difference a c) b = difference (difference (difference a c) b) (difference c (difference (difference a c) b)) := Eq.symm (ax2 (difference (difference a c) b) c)
-      _ = difference (difference (difference a c) b) c := congrArg (fun t : α => difference (difference (difference a c) b) t) (taelja_lemma13 c a b)
-      _ = difference (difference (difference a c) c) (difference b c) := ax1 (difference a c) b c
-      _ = difference (difference a c) (difference b c) := congrArg (fun t : α => difference t (difference b c)) (taelja_lemma4 a c)
-      _ = difference (difference a b) c := Eq.symm (ax1 a b c)
+  calc difference (difference a c) b = difference (difference (difference a b) c) b := Eq.symm (taelja_lemma11 a b c)
+      _ = difference (difference (difference a b) c) (difference (difference (difference a b) c) (difference (difference (difference a b) c) b)) := Eq.symm (taelja_lemma10 (difference (difference a b) c) b)
+      _ = difference (difference (difference a b) c) (difference (difference (difference a b) c) (difference (difference a c) b)) := congrArg (fun t : α => difference (difference (difference a b) c) (difference (difference (difference a b) c) t)) (taelja_lemma11 a b c)
+      _ = difference (difference (difference a b) c) (difference b b) := congrArg (fun t : α => difference (difference (difference a b) c) t) (taelja_lemma14 a b c)
+      _ = difference (difference a b) c := taelja_lemma7 (difference (difference a b) c) b
 
 end EAlg0061

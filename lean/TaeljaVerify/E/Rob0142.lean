@@ -16,62 +16,62 @@ axiom add : α → α → α
 axiom multiply : α → α → α
 axiom negate : α → α
 
-axiom positive_integer : α → Prop
-
 -- Axiom 1
-axiom ax1 : positive_integer one
+axiom ax1 : negate (add (negate e) (negate (add d (negate e)))) = d
 -- Axiom 2
-axiom ax2 : ∀ (x : α), multiply one x = x
+axiom ax2 : ∀ (x y : α), add x y = add y x
 -- Axiom 3
-axiom ax3 : ∀ (x y z u : α), positive_integer x → negate (add y (negate z)) = u → negate (add y (negate (add z (multiply x (add y u))))) = u
+axiom ax3 : ∀ (x y z : α), add (add x y) z = add x (add y z)
 -- Axiom 4
-axiom ax4 : ∀ (x y : α), add x y = add y x
+axiom ax4 : ∀ (x y : α), negate (add (negate (add x y)) (negate (add x (negate y)))) = x
 -- Axiom 5
-axiom ax5 : ∀ (x y z : α), add (add x y) z = add x (add y z)
+axiom ax5 : ∀ (x y z : α), negate (add x (negate (add y z))) = negate (add y (negate (add x z))) → x = y
 -- Axiom 6
-axiom ax6 : negate (add (negate e) (negate (add d (negate e)))) = d
--- Axiom 7
-axiom ax7 : ∀ (x y : α), negate (add (negate (add x y)) (negate (add x (negate y)))) = x
--- Axiom 8
-axiom ax8 : ∀ (x y z : α), negate (add x (negate (add y z))) = negate (add y (negate (add x z))) → x = y
+axiom ax6 : ∀ (x : α), multiply one x = x
+
+-- Lemma 7
+theorem taelja_lemma7 : ∀ (x y : α), negate (add (negate (add x y)) (negate (add (negate y) x))) = x := by
+  intro x y
+  calc negate (add (negate (add x y)) (negate (add (negate y) x))) = negate (add (negate (add x y)) (negate (add x (negate y)))) := congrArg (fun t : α => negate (add (negate (add x y)) (negate t))) (Eq.symm (ax2 x (negate y)))
+      _ = x := ax4 x y
+
+-- Lemma 8
+theorem taelja_lemma8 : ∀ (x y : α), negate (add (negate (add x y)) (negate (add y (negate x)))) = y := by
+  intro x y
+  calc negate (add (negate (add x y)) (negate (add y (negate x)))) = negate (add (negate (add y x)) (negate (add y (negate x)))) := congrArg (fun t : α => negate (add (negate t) (negate (add y (negate x))))) (Eq.symm (ax2 y x))
+      _ = y := ax4 y x
 
 -- Lemma 9
 theorem taelja_lemma9 : ∀ (x y z : α), add x (add y z) = add y (add x z) := by
   intro x y z
-  calc add x (add y z) = add (add x y) z := Eq.symm (ax5 x y z)
-      _ = add (add y x) z := congrArg (fun t : α => add t z) (ax4 x y)
-      _ = add y (add x z) := ax5 y x z
+  calc add x (add y z) = add (add x y) z := Eq.symm (ax3 x y z)
+      _ = add (add y x) z := congrArg (fun t : α => add t z) (ax2 x y)
+      _ = add y (add x z) := ax3 y x z
 
 -- Lemma 10
 theorem taelja_lemma10 : negate (add d (negate (add e (negate (add d (negate e)))))) = negate (add d (negate e)) := by
-  calc negate (add d (negate (add e (negate (add d (negate e)))))) = negate (add d (negate (add (negate (add d (negate e))) e))) := congrArg (fun t : α => negate (add d (negate t))) (Eq.symm (ax4 (negate (add d (negate e))) e))
-      _ = negate (add (negate (add (negate (add d (negate e))) e)) d) := congrArg (fun t : α => negate t) (Eq.symm (ax4 (negate (add (negate (add d (negate e))) e)) d))
-      _ = negate (add (negate (add (negate (add d (negate e))) e)) (negate (add (negate e) (negate (add d (negate e)))))) := congrArg (fun t : α => negate (add (negate (add (negate (add d (negate e))) e)) t)) (Eq.symm (ax6))
-      _ = negate (add (negate (add (negate (add d (negate e))) e)) (negate (add (negate (add d (negate e))) (negate e)))) := congrArg (fun t : α => negate (add (negate (add (negate (add d (negate e))) e)) (negate t))) (Eq.symm (ax4 (negate (add d (negate e))) (negate e)))
-      _ = negate (add d (negate e)) := ax7 (negate (add d (negate e))) e
+  calc negate (add d (negate (add e (negate (add d (negate e)))))) = negate (add (negate (add e (negate (add d (negate e))))) d) := congrArg (fun t : α => negate t) (Eq.symm (ax2 (negate (add e (negate (add d (negate e))))) d))
+      _ = negate (add (negate (add (negate (add d (negate e))) e)) d) := congrArg (fun t : α => negate (add (negate t) d)) (Eq.symm (ax2 (negate (add d (negate e))) e))
+      _ = negate (add (negate (add (negate (add d (negate e))) e)) (negate (add (negate e) (negate (add d (negate e)))))) := congrArg (fun t : α => negate (add (negate (add (negate (add d (negate e))) e)) t)) (Eq.symm (ax1))
+      _ = negate (add d (negate e)) := taelja_lemma7 (negate (add d (negate e))) e
 
 -- Lemma 11
-theorem taelja_lemma11 : negate (add d (negate (add e (add d (negate (add d (negate e))))))) = negate (add d (negate e)) := by
-  have h1 : positive_integer one := ax1
-  have h2 : negate (add d (negate (add e (multiply one (add d (negate (add d (negate e)))))))) = negate (add d (negate e)) := ax3 one d e (negate (add d (negate e))) h1 rfl
-  have h3 : negate (add d (negate (add e (add d (negate (add d (negate e))))))) = negate (add d (negate e)) := Eq.mp (congrArg (fun t : α => negate (add d (negate (add e t))) = negate (add d (negate e))) (ax2 (add d (negate (add d (negate e)))))) h2
-  exact h3
-
--- Lemma 12
-theorem taelja_lemma12 : negate (add (negate e) (negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate (add d (negate e)))))) = negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate (add (negate e) (negate (add d (negate e)))))) := by
-  calc negate (add (negate e) (negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate (add d (negate e)))))) = negate (add (negate e) (negate (add (negate (add d (add e (negate (add d (negate e)))))) (negate (add d (negate e)))))) := congrArg (fun t : α => negate (add (negate e) (negate (add (negate t) (negate (add d (negate e))))))) (Eq.symm (taelja_lemma9 d e (negate (add d (negate e)))))
-      _ = negate (add (negate e) (negate (add (negate (add d (add e (negate (add d (negate e)))))) (negate (add d (negate (add e (negate (add d (negate e)))))))))) := congrArg (fun t : α => negate (add (negate e) (negate (add (negate (add d (add e (negate (add d (negate e)))))) t)))) (Eq.symm (taelja_lemma10))
-      _ = negate (add (negate e) d) := congrArg (fun t : α => negate (add (negate e) t)) (ax7 d (add e (negate (add d (negate e)))))
-      _ = negate (add d (negate e)) := congrArg (fun t : α => negate t) (ax4 (negate e) d)
-      _ = negate (add d (negate (add e (add d (negate (add d (negate e))))))) := Eq.symm (taelja_lemma11)
-      _ = negate (add (negate (add e (add d (negate (add d (negate e)))))) d) := congrArg (fun t : α => negate t) (Eq.symm (ax4 (negate (add e (add d (negate (add d (negate e)))))) d))
-      _ = negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate (add (negate e) (negate (add d (negate e)))))) := congrArg (fun t : α => negate (add (negate (add e (add d (negate (add d (negate e)))))) t)) (Eq.symm (ax6))
+theorem taelja_lemma11 : negate (add (negate e) (negate (add (negate (add e (add d (negate (add d (negate e)))))) d))) = negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate (add (negate e) d))) := by
+  calc negate (add (negate e) (negate (add (negate (add e (add d (negate (add d (negate e)))))) d))) = negate (add (negate e) (negate (add (negate (add (add e d) (negate (add d (negate e))))) d))) := congrArg (fun t : α => negate (add (negate e) (negate (add (negate t) d)))) (Eq.symm (ax3 e d (negate (add d (negate e)))))
+      _ = negate (add (negate e) (negate (add (negate (add (negate (add d (negate e))) (add e d))) d))) := congrArg (fun t : α => negate (add (negate e) (negate (add (negate t) d)))) (Eq.symm (ax2 (negate (add d (negate e))) (add e d)))
+      _ = negate (add (negate e) (negate (add (negate (add (negate (add d (negate e))) (add e d))) (negate (add (negate (add e d)) (negate (add d (negate e)))))))) := congrArg (fun t : α => negate (add (negate e) (negate (add (negate (add (negate (add d (negate e))) (add e d))) t)))) (Eq.symm (taelja_lemma8 e d))
+      _ = negate (add (negate e) (negate (add d (negate e)))) := congrArg (fun t : α => negate (add (negate e) t)) (taelja_lemma7 (negate (add d (negate e))) (add e d))
+      _ = d := ax1
+      _ = negate (add (negate (add d (add e (negate (add d (negate e)))))) (negate (add d (negate (add e (negate (add d (negate e)))))))) := Eq.symm (ax4 d (add e (negate (add d (negate e)))))
+      _ = negate (add (negate (add d (add e (negate (add d (negate e)))))) (negate (add d (negate e)))) := congrArg (fun t : α => negate (add (negate (add d (add e (negate (add d (negate e)))))) t)) (taelja_lemma10)
+      _ = negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate (add d (negate e)))) := congrArg (fun t : α => negate (add (negate t) (negate (add d (negate e))))) (taelja_lemma9 d e (negate (add d (negate e))))
+      _ = negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate (add (negate e) d))) := congrArg (fun t : α => negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate t))) (Eq.symm (ax2 (negate e) d))
 
 -- Goal 1
 theorem taelja_goal1 : negate (add e (multiply one (add d (negate (add d (negate e)))))) = negate e := by
-  have h1 : negate (add (negate e) (negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate (add d (negate e)))))) = negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate (add (negate e) (negate (add d (negate e)))))) := taelja_lemma12
-  have h2 : negate e = negate (add e (add d (negate (add d (negate e))))) := ax8 (negate e) (negate (add e (add d (negate (add d (negate e)))))) (negate (add d (negate e))) h1
-  have h3 : negate e = negate (add e (multiply one (add d (negate (add d (negate e)))))) := Eq.mp (congrArg (fun t : α => negate e = negate (add e t)) (Eq.symm (ax2 (add d (negate (add d (negate e))))))) h2
+  have h1 : negate (add (negate e) (negate (add (negate (add e (add d (negate (add d (negate e)))))) d))) = negate (add (negate (add e (add d (negate (add d (negate e)))))) (negate (add (negate e) d))) := taelja_lemma11
+  have h2 : negate e = negate (add e (add d (negate (add d (negate e))))) := ax5 (negate e) (negate (add e (add d (negate (add d (negate e)))))) d h1
+  have h3 : negate e = negate (add e (multiply one (add d (negate (add d (negate e)))))) := Eq.mp (congrArg (fun t : α => negate e = negate (add e t)) (Eq.symm (ax6 (add d (negate (add d (negate e))))))) h2
   exact Eq.symm (h3)
 
 end ERob0142

@@ -25,77 +25,73 @@ axiom ax2 : ∀ (x : α), product identity x x
 -- Axiom 3
 axiom ax3 : ∀ (x y z u : α), product x y z → product x y u → z = u
 -- Axiom 4
-axiom ax4 : ∀ (x : α), product x (inverse x) identity
+axiom ax4 : ∀ (x : α), product (inverse x) x identity
 -- Axiom 5
 axiom ax5 : ∀ (x : α), product x identity x
 -- Axiom 6
-axiom ax6 : product c b identity
+axiom ax6 : product a b identity
 -- Axiom 7
 axiom ax7 : ∀ (x y z u v w : α), product x y z → product y u v → product x v w → product z u w
 -- Axiom 8
-axiom ax8 : product a b identity
+axiom ax8 : product c b identity
 -- Axiom 9
-axiom ax9 : ∀ (x : α), product (inverse x) x identity
+axiom ax9 : ∀ (x y z u v w : α), product x y z → product y u v → product z u w → product x v w
 
 -- Lemma 10
-theorem taelja_lemma10 : ∀ (x : α), multiply identity x = x := by
-  intro x
-  have h1 : product identity x x := ax2 x
-  have h2 : product identity x (multiply identity x) := ax1 identity x
-  have h3 : multiply identity x = x := ax3 identity x (multiply identity x) x h2 h1
+theorem taelja_lemma10 : ∀ (x y : α), product x identity y → y = x := by
+  intro x y a1
+  have h1 : product x identity x := ax5 x
+  have h2 : product x identity y := by assumption
+  have h3 : y = x := ax3 x identity y x h2 h1
   exact h3
 
 -- Lemma 11
-theorem taelja_lemma11 : ∀ (x y z : α), product x y z → multiply x y = z := by
-  intro x y z a1
-  have h1 : product x y (multiply x y) := ax1 x y
-  have h2 : product x y z := by assumption
-  have h3 : multiply x y = z := ax3 x y (multiply x y) z h1 h2
-  exact h3
+theorem taelja_lemma11 : multiply (inverse a) identity = inverse a := by
+  have h1 : product (inverse a) identity (multiply (inverse a) identity) := ax1 (inverse a) identity
+  have h2 : multiply (inverse a) identity = inverse a := taelja_lemma10 (inverse a) (multiply (inverse a) identity) h1
+  exact h2
 
 -- Lemma 12
-theorem taelja_lemma12 : ∀ (x y : α), product x y identity → product identity y (inverse x) := by
-  intro x y a1
-  have h1 : product (inverse x) x identity := ax9 x
-  have h2 : product x y identity := by assumption
-  have h3 : product (inverse x) identity (inverse x) := ax5 (inverse x)
-  have h4 : product identity y (inverse x) := ax7 (inverse x) x identity y identity (inverse x) h1 h2 h3
-  exact h4
+theorem taelja_lemma12 : product identity b (inverse a) := by
+  have h1 : product (inverse a) a identity := ax4 a
+  have h2 : product a b identity := ax6
+  have h3 : product (inverse a) identity (multiply (inverse a) identity) := ax1 (inverse a) identity
+  have h4 : product identity b (multiply (inverse a) identity) := ax7 (inverse a) a identity b identity (multiply (inverse a) identity) h1 h2 h3
+  have h5 : product identity b (inverse a) := Eq.mp (congrArg (fun t : α => product identity b t) (taelja_lemma11)) h4
+  exact h5
 
 -- Lemma 13
 theorem taelja_lemma13 : multiply identity b = inverse a := by
-  have h1 : product a b identity := ax8
-  have h2 : product identity b (inverse a) := taelja_lemma12 a b h1
-  have h3 : multiply identity b = inverse a := taelja_lemma11 identity b (inverse a) h2
+  have h1 : product identity b (multiply identity b) := ax1 identity b
+  have h2 : product identity b (inverse a) := taelja_lemma12
+  have h3 : multiply identity b = inverse a := ax3 identity b (multiply identity b) (inverse a) h1 h2
   exact h3
 
 -- Lemma 14
-theorem taelja_lemma14 : inverse a = b := by
-  calc inverse a = multiply identity b := Eq.symm (taelja_lemma13)
-      _ = b := taelja_lemma10 b
+theorem taelja_lemma14 : b = multiply identity b := by
+  have h1 : product identity b b := ax2 b
+  have h2 : product identity b (multiply identity b) := ax1 identity b
+  have h3 : b = multiply identity b := ax3 identity b b (multiply identity b) h1 h2
+  exact h3
 
 -- Lemma 15
-theorem taelja_lemma15 : multiply identity (inverse b) = c := by
-  have h1 : product c b identity := ax6
-  have h2 : product b (inverse b) identity := ax4 b
-  have h3 : product c identity c := ax5 c
-  have h4 : product identity (inverse b) c := ax7 c b identity (inverse b) identity c h1 h2 h3
-  have h5 : multiply identity (inverse b) = c := taelja_lemma11 identity (inverse b) c h4
-  exact h5
+theorem taelja_lemma15 : inverse a = b := by
+  calc inverse a = multiply identity b := Eq.symm (taelja_lemma13)
+      _ = b := Eq.symm (taelja_lemma14)
 
 -- Lemma 16
-theorem taelja_lemma16 : inverse b = c := by
-  calc inverse b = multiply identity (inverse b) := Eq.symm (taelja_lemma10 (inverse b))
-      _ = c := taelja_lemma15
+theorem taelja_lemma16 : product b a identity := by
+  have h1 : product (inverse a) a identity := ax4 a
+  have h2 : product b a identity := Eq.mp (congrArg (fun t : α => product t a identity) (taelja_lemma15)) h1
+  exact h2
 
 -- Goal 1
 theorem taelja_goal1 : a = c := by
-  have h1 : product (inverse a) a identity := ax9 a
-  have h2 : product b a identity := Eq.mp (congrArg (fun t : α => product t a identity) (taelja_lemma14)) h1
-  have h3 : product identity a (inverse b) := taelja_lemma12 b a h2
-  have h4 : product identity a c := Eq.mp (congrArg (fun t : α => product identity a t) (taelja_lemma16)) h3
-  have h5 : multiply identity a = c := taelja_lemma11 identity a c h4
-  have h6 : a = c := Eq.mp (congrArg (fun t : α => t = c) (taelja_lemma10 a)) h5
-  exact h6
+  have h1 : product c b identity := ax8
+  have h2 : product b a identity := taelja_lemma16
+  have h3 : product identity a a := ax2 a
+  have h4 : product c identity a := ax9 c b identity a identity a h1 h2 h3
+  have h5 : a = c := taelja_lemma10 c a h4
+  exact h5
 
 end EGrp0091

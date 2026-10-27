@@ -27,8 +27,8 @@ theorem taelja_lemma2 : ∀ (x y z : α), multiply (multiply x y) (multiply iden
 theorem taelja_lemma3 : ∀ (x y z : α), multiply x (multiply x (multiply x (multiply (multiply y z) (multiply z z)))) = y := by
   intro x y z
   calc multiply x (multiply x (multiply x (multiply (multiply y z) (multiply z z)))) = multiply x (multiply x (multiply (multiply x (multiply y z)) (multiply identity (multiply z z)))) := congrArg (fun t : α => multiply x (multiply x t)) (Eq.symm (taelja_lemma2 x (multiply y z) (multiply z z)))
-      _ = multiply x (multiply x (multiply (multiply x (multiply y z)) (multiply (multiply identity z) (multiply identity z)))) := congrArg (fun t : α => multiply x (multiply x (multiply (multiply x (multiply y z)) t))) (Eq.symm (taelja_lemma2 identity z z))
-      _ = multiply x (multiply x (multiply (multiply (multiply x y) (multiply identity z)) (multiply (multiply identity z) (multiply identity z)))) := congrArg (fun t : α => multiply x (multiply x (multiply t (multiply (multiply identity z) (multiply identity z))))) (Eq.symm (taelja_lemma2 x y z))
+      _ = multiply x (multiply x (multiply (multiply (multiply x y) (multiply identity z)) (multiply identity (multiply z z)))) := congrArg (fun t : α => multiply x (multiply x (multiply t (multiply identity (multiply z z))))) (Eq.symm (taelja_lemma2 x y z))
+      _ = multiply x (multiply x (multiply (multiply (multiply x y) (multiply identity z)) (multiply (multiply identity z) (multiply identity z)))) := congrArg (fun t : α => multiply x (multiply x (multiply (multiply (multiply x y) (multiply identity z)) t))) (Eq.symm (taelja_lemma2 identity z z))
       _ = multiply x (multiply (multiply x (multiply (multiply x y) (multiply identity z))) (multiply identity (multiply (multiply identity z) (multiply identity z)))) := congrArg (fun t : α => multiply x t) (Eq.symm (taelja_lemma2 x (multiply (multiply x y) (multiply identity z)) (multiply (multiply identity z) (multiply identity z))))
       _ = y := ax1 x y (multiply identity z)
 

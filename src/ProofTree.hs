@@ -22,22 +22,22 @@ import qualified Data.Text as Text
 import Control.Applicative ((<|>))
 import Control.Monad (forM, guard, when)
 import Data.Bifunctor (bimap)
-import Data.List (inits, isSuffixOf, nub, partition, sortBy, tails)
+import Data.List (isSuffixOf, nub, partition, sortBy)
 import Data.List.NonEmpty (toList)
 import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe, maybeToList)
 import Data.Ord (comparing)
 import Data.TPTP.Pretty ()
 import Types
-import Helpers (applySubstLit, clauseInstance, variantKey, flipLit, litSubtermCtxs, matchLitEither,
-                mapLiteralTerms, matchLit, matchLitWith, notVar, picks, polLits, replaceAllTerm,
-                rewritesFrom, suffixVarsLit, unifyTerms, instClause, resolveHead, suffixVarsClause,
+import Helpers (clauseInstance, variantKey, flipLit, litSubtermCtxs, matchLitEither,
+                mapLiteralTerms, matchLitWith, notVar, polLits, replaceAllTerm,
+                rewritesFrom, unifyTerms, instClause, resolveHead, suffixVarsClause,
                 deepApplySubstTerm, litVars, termVars, unifyApart, freeMark, markFree)
 import Conjecture
 import TptpConvert
 
 -- The refutation as a tree of named clauses. A node holds its rule and
--- premises. A node named "?" is a clause inside a nested inference, which the
--- proof never prints.
+-- premises. A node named "?" is a clause inside an inference of several
+-- premises, which the proof never prints.
 data ProofTree
   = PTLeaf String T.Declaration
   | PTNode String T.Declaration Text.Text [ProofTree]
@@ -151,13 +151,8 @@ buildProofInfo everyUse allUnits = do
   let nodes   = wantedNodes (Set.fromList (map lePos (electrons ++ nuclei))) tree
       declMap = Map.fromList [ (p, ptDeclOf t) | (p, t) <- nodes ]
       unitAt  = Map.fromList [ (p, ptNameOf t) | (p, t) <- nodes ]
-      -- the rule that concludes each clause, for a nested inference the rule
-      -- of its outermost step, so cn(rw(spm(A,B),C)) gives rw
-      ruleAt  = Map.fromList
-        [ (p, Text.unpack (lastStep n r)) | (p, PTNode n _ r _) <- nodes ]
-      lastStep n r = case maybe [] unitStepRules (Map.lookup n unitMap) of
-        rs@(_ : _) | n /= "?" -> last rs
-        _                     -> r
+      -- the rule that concludes each clause
+      ruleAt  = Map.fromList [ (p, Text.unpack r) | (p, PTNode _ _ r _) <- nodes ]
   return ProofInfo
     { piElectrons = electrons
     , piNuclei    = nuclei
@@ -211,27 +206,26 @@ buildProofTree allUnits root = nodes Map.! root
     buildNode name (decl, u) = case u of
       T.Unit _ _ (Just (src@(T.Inference (T.Atom rule) _ _), _))
         | Set.member rule coreInferenceNames ->
-            PTNode name decl rule (orderedChildren decl rule (unitStepRules u) (sourceParents src))
+            PTNode name decl rule (orderedChildren decl rule (sourceParents src))
       _ -> PTLeaf name decl
-    orderedChildren decl rule steps parents = case parents of
+    orderedChildren decl rule parents = case parents of
       [p1, p2]
         | firstParentProvides rule decl (declOf p1) (declOf p2) -> map node [p1, p2]
         | otherwise                                             -> map node [p2, p1]
       p0 : p1 : later@(_ : _) ->
-        -- An inference of several steps, as E's cn(rw(spm(A,B),L)), where p0 and
-        -- p1 combine first and each later premise simplifies. The clauses between
-        -- are replayed into "?" nodes. Failing that, each is the complement of the
-        -- last unit when the outer clause is ⊥, and the outer clause otherwise.
+        -- An inference of several premises, as Vampire's definition_unfolding
+        -- [A,B,C], where p0 and p1 combine first and each later premise
+        -- simplifies. The clauses between are replayed into "?" nodes. Failing
+        -- that, each is the complement of the last unit when the outer clause
+        -- is ⊥, and the outer clause otherwise.
         let lastP = last later
             lastD = declOf lastP
             replayed = replayNested decl (declOf p0) (map declOf (p1 : later))
-            -- each step's own rule when the inference names one per step
-            ruleOfStep j = if length steps == length later + 1 then steps !! j else rule
             -- The last premise is the provider when it is a positive unit, or
             -- when the binary-step test against the last replayed clause says
-            -- so, as for c_0_37 in csr(spm(c_0_35,c_0_36),c_0_37) on ANA027-2.
+            -- so.
             lastIsProvider = isPositiveUnitFormula lastD
-              || maybe False (\(_, ds) -> not (firstParentProvides (ruleOfStep (length later)) decl (last ds) lastD)) replayed
+              || maybe False (\(_, ds) -> not (firstParentProvides rule decl (last ds) lastD)) replayed
             -- The complement of the last unit. A provider equation has none,
             -- since a ⊥ reached by rewriting with it does not determine the
             -- clause before it.
@@ -244,15 +238,15 @@ buildProofTree allUnits root = nodes Map.! root
               | otherwise = decl
             plainUnit sign lit = T.Formula (T.Standard T.Plain) (T.CNF (T.Clause (pure (sign, lit))))
             innerDecls = maybe (replicate (length later) fallbackDecl) snd replayed
-            first = PTNode "?" (head innerDecls) (ruleOfStep 0)
+            first = PTNode "?" (head innerDecls) rule
                       (map node (if maybe False fst replayed then [p0, p1] else [p1, p0]))
-            inner = foldl (\r (j, eq, d) -> PTNode "?" d (ruleOfStep j) [node eq, r])
-                          first (zip3 [1 ..] (init later) (drop 1 innerDecls))
+            inner = foldl (\r (eq, d) -> PTNode "?" d rule [node eq, r])
+                          first (zip (init later) (drop 1 innerDecls))
         in if lastIsProvider then [node lastP, inner] else [inner, node lastP]
       _ -> map node parents
 
 -- The equation steps of the proof, each as its conclusion and two premises.
--- A nested or many-premise step is split at the clauses its replay finds, and
+-- A step of several premises is split at the clauses its replay finds, and
 -- the positive units among them are returned under new names <unit>_stepK.
 -- A clause that a conditional equation rewrote gives a unit once a step
 -- resolves its conditions, and that step reads as the rewrite itself.
@@ -306,16 +300,17 @@ equationSteps units = (concatMap fst found, concatMap snd found)
         -> Just ([s], [])
         | all equation (sourceRules src), onHeads d p1 p2 -> Just ([(n, p1, p2)], [])
       _ -> do
-        (p0, (rule0, p1) : later@(_ : _)) <- inferenceSteps src
-        d0 : ds <- mapM (lookupDecl unitMap) (p0 : p1 : map snd later)
+        guard (all equation (sourceRules src))
+        (p0, p1 : later@(_ : _)) <- inferenceSteps src
+        d0 : ds <- mapM (lookupDecl unitMap) (p0 : p1 : later)
         (_, inner) <- replayNested d d0 ds
         guard (length inner == length later)
         let name j = if j < length inner then n ++ "_step" ++ show (j + 1) else n
-            steps = (rule0, p0, p1) : [ (r, name j, p) | (j, (r, p)) <- zip [0 ..] later ]
+            steps = (p0, p1) : [ (name j, p) | (j, p) <- zip [0 ..] later ]
             stepUnits = [ (name j, c) | (j, c) <- zip [0 ..] inner, isPositiveUnitFormula c ]
             unitAt p = unit p || any ((== p) . fst) stepUnits
-        return ( [ s | (j, (r, a, b), c) <- zip3 [0 ..] steps (inner ++ [d])
-                     , equation r, isPositiveUnitFormula c, Just s <- [onUnits unitAt (name j, a, b)] ]
+        return ( [ s | (j, (a, b), c) <- zip3 [0 ..] steps (inner ++ [d])
+                     , isPositiveUnitFormula c, Just s <- [onUnits unitAt (name j, a, b)] ]
                , stepUnits )
 
 -- The rules whose steps are read as rewrites with their premises.
@@ -326,27 +321,21 @@ equationRuleNames = map Text.pack
   , "definition_unfolding"
   , "spm", "pm", "rw", "cn" ]                                         -- E
 
--- An inference as a chain of binary steps. Returns the first premise and,
--- innermost first, the rule and other premise of each step. E nests steps, as
--- sr(rw(spm(A,B),C),D), where a one-premise rule like cn is no step. Vampire
--- lists them flat, as definition_unfolding [A,B,C].
-inferenceSteps :: T.Source -> Maybe (String, [(Text.Text, String)])
-inferenceSteps (T.Inference (T.Atom r) _ ps) = case ps of
-  [T.Parent i@(T.Inference {}) _] -> inferenceSteps i
-  [T.Parent i@(T.Inference {}) _, T.Parent (T.UnitSource c) _] ->
-    fmap (++ [(r, unitNameStr c)]) <$> inferenceSteps i
-  T.Parent (T.UnitSource a) _ : more@(_ : _)
-    | Just cs <- mapM unitSource more -> Just (unitNameStr a, [ (r, c) | c <- cs ])
-  _ -> Nothing
+-- An inference of several premises as a chain of binary steps. Returns the
+-- first premise and the other premise of each step, as Vampire's
+-- definition_unfolding [A,B,C] combines A with B and then with C.
+inferenceSteps :: T.Source -> Maybe (String, [String])
+inferenceSteps (T.Inference _ _ (T.Parent (T.UnitSource a) _ : more@(_ : _)))
+  | Just cs <- mapM unitSource more = Just (unitNameStr a, cs)
   where
     unitSource (T.Parent (T.UnitSource c) _) = Just (unitNameStr c)
     unitSource _                             = Nothing
 inferenceSteps _ = Nothing
 
--- Replays a nested inference. Resolves or superposes c0 with c1, simplifies by
--- each later premise, and accepts a replay that ends in the printed clause.
--- Returns whether c0 provides in the first step, and the clauses between,
--- innermost first.
+-- Replays an inference of several premises. Resolves or superposes c0 with
+-- c1, simplifies by each later premise, and accepts a replay that ends in the
+-- printed clause. Returns whether c0 provides in the first step, and the
+-- clauses between, first step first.
 replayNested :: T.Declaration -> T.Declaration -> [T.Declaration] -> Maybe (Bool, [T.Declaration])
 replayNested outerD d0 ds = do
   outer <- convertDeclToClause outerD
@@ -369,13 +358,9 @@ replayNested outerD d0 ds = do
           key = (k, variantKey r)
           result
             | k == length steps =
-                ( listToMaybe [ ([r], σ) | final0 <- simplifyBy r (last units)
-                                         , final <- final0 : eqResolutions final0
-                                         , Just σ <- [matchClause final outer] ]
+                ( listToMaybe [ ([r], σ) | final <- simplifyBy r (last units), Just σ <- [matchClause final outer] ]
                 , failed )
-            -- an equality resolution the prover folded in, as E's er, may
-            -- precede any simplification
-            | otherwise = firstOf failed [ r' | r1 <- r : eqResolutions r, r' <- simplifyBy r1 (steps !! k) ]
+            | otherwise = firstOf failed (simplifyBy r (steps !! k))
           firstOf f [] = (Nothing, f)
           firstOf f (r' : rs) = case walk f (k + 1) r' of
             (Just (chain, σ), f') -> (Just (r : chain, σ), f')
@@ -388,11 +373,6 @@ replayNested outerD d0 ds = do
   -- along a body atom the other clause already has. Removing one copy with a
   -- unit would leave the other behind, as on MGT006-1.
   tryFrom Set.empty [ (prov, condense r0) | (prov, r0) <- resolvents c0 c1 ]
-  where
-    eqResolutions (Clause bs mh) =
-      [ instClause σ (Clause (before ++ after) mh)
-      | (before, Eq s t : after) <- zip (inits bs) (tails bs)
-      , Just σ <- [unifyTerms s t []] ]
 
 -- Every resolvent and superposition of two clauses, renamed apart. The flag is
 -- True when the first clause is the provider, the one whose head is used.
@@ -417,10 +397,9 @@ resolvents a b =
       , let bodyY' = [ l | (False, l) <- ys ]
             hdY'   = listToMaybe [ l | (True, l) <- ys ] ]
 
--- One simplification step, as E's rw, sr, csr and cn perform it. A simplifier
--- with a head resolves away a body atom of the clause and adds its own body,
--- and a unit equation rewrites in either direction. The result is condensed
--- as cn does.
+-- One simplification step by a clause with a head. It resolves away a body
+-- atom of the clause and adds its own body, and a unit equation rewrites in
+-- either direction. The result is condensed.
 simplifyBy :: Clause -> Clause -> [Clause]
 simplifyBy c u@(Clause _ (Just _)) =
   map condense $
@@ -430,15 +409,7 @@ simplifyBy c u@(Clause _ (Just _)) =
             , c' <- rewriteOnce (lhs, rhs) c ]
   where
     u' = suffixVarsClause "_u" u
--- An all-negative simplifier with a literal matching the clause's head removes
--- that head and adds its other literals, instantiated, to the body, as E's csr
--- does. With one literal this is plain simplify-reflect.
-simplifyBy c (Clause ls Nothing) =
-    [ condense (Clause (body c ++ map (applySubstLit σ) rest) Nothing)
-    | Just h <- [hd c]
-    , (l, rest) <- picks (map (suffixVarsLit "_u") ls)
-    , l' <- [l, flipLit l]
-    , Just σ <- [matchLit l' h] ]
+simplifyBy _ _ = []
 
 -- One demodulation step at one redex or at every occurrence of it. Provers
 -- record each application as its own rw step, so nothing is iterated and no
@@ -742,11 +713,6 @@ inlineAtomCongruences units
       Just eqs -> [ T.Parent (T.UnitSource e) [] | Just (T.Unit e _ _) <- map (`Map.lookup` unitMap) eqs ]
       Nothing  -> [p]
     swap p = [p]
-
--- The rule of each step of a unit's inference, the innermost first.
-unitStepRules :: T.Unit -> [Text.Text]
-unitStepRules (T.Unit _ _ (Just (src, _))) = maybe [] (map fst . snd) (inferenceSteps src)
-unitStepRules _                            = []
 
 -- The outer rule of a derived unit.
 inferenceRuleName :: T.Unit -> Maybe Text.Text

@@ -126,11 +126,11 @@ Proof:
 = { by axiom 2 }
   mult(mult(mult(X,Y),ld(Y,Y)),Y)
 = { by axiom 1 R->L }
-  mult(mult(mult(X,ld(X,mult(X,Y))),ld(Y,Y)),Y)
+  mult(mult(mult(X,Y),ld(Y,Y)),ld(X,mult(X,Y)))
 = { by lemma 15 R->L }
-  mult(mult(rd(X,ld(mult(X,Y),X)),ld(Y,Y)),Y)
+  rd(mult(mult(X,Y),ld(Y,Y)),ld(mult(X,Y),X))
 = { by axiom 1 R->L }
-  mult(mult(rd(X,ld(mult(X,Y),X)),ld(Y,Y)),ld(X,mult(X,Y)))
+  rd(mult(mult(X,ld(X,mult(X,Y))),ld(Y,Y)),ld(mult(X,Y),X))
 = { by lemma 15 R->L }
   rd(mult(rd(X,ld(mult(X,Y),X)),ld(Y,Y)),ld(mult(X,Y),X))
 = { by lemma 17 R->L }
@@ -230,7 +230,7 @@ Proof:
 = { by axiom 5 }
   ld(rd(rd(Y,rd(X,X)),rd(X,X)),Y)
 = { by lemma 23 }
-  ld(mult(rd(Y,rd(X,X)),rd(X,X)),Y)
+  ld(rd(mult(Y,rd(X,X)),rd(X,X)),Y)
 = { by lemma 23 }
   ld(mult(mult(Y,rd(X,X)),rd(X,X)),Y)
 = { by lemma 27 }

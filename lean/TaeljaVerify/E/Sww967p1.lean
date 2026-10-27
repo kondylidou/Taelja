@@ -53,56 +53,56 @@ axiom ax8 : ∀ (x y z u v : α), pred_eq_bitstring_bitstring (tuple_succ (name_
 axiom ax9 : ∀ (x : α), pred_attacker (tuple_client_A_out_9 x) → pred_attacker x
 
 -- Lemma 10
-theorem taelja_lemma10 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := by
+theorem taelja_lemma10 : ∀ (x : α), pred_attacker (name_Na x) := by
   intro x
   have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := ax1 x
   have h2 : pred_attacker (name_Na x) := ax2 name_A name_B (name_Na x) h1
-  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := ax3 (name_Na x) h2
-  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := ax4 (tuple_client_A_in_2 (name_Na x)) h3
-  have h5 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := ax5 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h4
-  have h6 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := ax6 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) h5
-  exact h6
+  exact h2
 
 -- Lemma 11
-theorem taelja_lemma11 : ∀ (x : α), pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := by
+theorem taelja_lemma11 : ∀ (x : α), pred_attacker (tuple_client_A_in_8 (name_Na x)) := by
   intro x
-  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := ax1 x
-  have h2 : pred_attacker (name_Na x) := ax2 name_A name_B (name_Na x) h1
-  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := ax3 (name_Na x) h2
-  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := ax4 (tuple_client_A_in_2 (name_Na x)) h3
-  have h5 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := ax5 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h4
-  exact h5
+  have h1 : pred_attacker (name_Na x) := taelja_lemma10 x
+  have h2 : pred_attacker (tuple_client_A_in_8 (name_Na x)) := ax6 (name_Na x) h1
+  exact h2
 
 -- Lemma 12
-theorem taelja_lemma12 : ∀ (x : α), pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := by
+theorem taelja_lemma12 : ∀ (x : α), pred_attacker (tuple_client_A_in_6 (name_Na x)) := by
   intro x
-  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := ax1 x
-  have h2 : pred_attacker (name_Na x) := ax2 name_A name_B (name_Na x) h1
-  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := ax3 (name_Na x) h2
-  have h4 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := ax4 (tuple_client_A_in_2 (name_Na x)) h3
-  exact h4
+  have h1 : pred_attacker (name_Na x) := taelja_lemma10 x
+  have h2 : pred_attacker (tuple_client_A_in_6 (name_Na x)) := ax5 (name_Na x) h1
+  exact h2
 
 -- Lemma 13
-theorem taelja_lemma13 : ∀ (x : α), pred_attacker (tuple_client_A_in_2 (name_Na x)) := by
+theorem taelja_lemma13 : ∀ (x : α), pred_attacker (tuple_client_A_in_4 (name_Na x)) := by
   intro x
-  have h1 : pred_attacker (tuple_client_A_out_1 name_A name_B (name_Na x)) := ax1 x
-  have h2 : pred_attacker (name_Na x) := ax2 name_A name_B (name_Na x) h1
-  have h3 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := ax3 (name_Na x) h2
-  exact h3
+  have h1 : pred_attacker (name_Na x) := taelja_lemma10 x
+  have h2 : pred_attacker (tuple_client_A_in_4 (name_Na x)) := ax4 (name_Na x) h1
+  exact h2
+
+-- Lemma 14
+theorem taelja_lemma14 : ∀ (x : α), pred_attacker (tuple_client_A_in_2 (name_Na x)) := by
+  intro x
+  have h1 : pred_attacker (name_Na x) := taelja_lemma10 x
+  have h2 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := ax3 (name_Na x) h1
+  exact h2
 
 -- Goal 1
 theorem taelja_goal1 : pred_attacker name_objective := by
   have x : α := taelja_elem
   have y : α := taelja_elem
-  have h1 : pred_eq_bitstring_bitstring (tuple_succ (name_Na0x27 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y)) (constr_cbc_dec_1 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas))) := ax7 (tuple_succ (name_Na0x27 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y)) (constr_cbc_dec_1 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas)))
-  have h2 : pred_attacker (tuple_client_A_in_8 (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))))) := taelja_lemma10 x
-  have h3 : pred_eq_bitstring_bitstring name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas)) := ax7 name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) name_Kas))
-  have h4 : pred_attacker (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) := taelja_lemma11 x
-  have h5 : pred_attacker (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) := taelja_lemma12 x
-  have h6 : pred_eq_bitstring_bitstring name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (name_Na x) name_Kas)) := ax7 name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (name_Na x) name_Kas))
-  have h7 : pred_eq_bitstring_bitstring (name_Na y) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (name_Na x) name_Kas)) := ax7 (name_Na y) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (name_Na x) name_Kas))
-  have h8 : pred_attacker (tuple_client_A_in_2 (name_Na x)) := taelja_lemma13 x
-  have h9 : pred_attacker (tuple_client_A_out_9 name_objective) := ax8 (tuple_client_A_in_2 (name_Na x)) (name_Na x) y (tuple_client_A_in_6 (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x)))) (tuple_client_A_in_4 (tuple_client_A_in_2 (name_Na x))) h1 h2 h3 h4 h5 h6 h7 h8
+  have z : α := taelja_elem
+  have u : α := taelja_elem
+  have v : α := taelja_elem
+  have h1 : pred_eq_bitstring_bitstring (tuple_succ (name_Na0x27 (name_Na x) (name_Na y) z)) (constr_cbc_dec_1 (name_Na u) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (name_Na v) name_Kas))) := ax7 (tuple_succ (name_Na0x27 (name_Na x) (name_Na y) z)) (constr_cbc_dec_1 (name_Na u) (constr_tuple_2_get_0x30_bitstring (constr_cbc_dec_2 (name_Na v) name_Kas)))
+  have h2 : pred_attacker (tuple_client_A_in_8 (name_Na u)) := taelja_lemma11 u
+  have h3 : pred_eq_bitstring_bitstring name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (name_Na v) name_Kas)) := ax7 name_A (constr_tuple_2_get_1 (constr_cbc_dec_2 (name_Na v) name_Kas))
+  have h4 : pred_attacker (tuple_client_A_in_6 (name_Na v)) := taelja_lemma12 v
+  have h5 : pred_attacker (tuple_client_A_in_4 (name_Na x)) := taelja_lemma13 x
+  have h6 : pred_eq_bitstring_bitstring name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (name_Na y) name_Kas)) := ax7 name_B (constr_tuple_4_get_1 (constr_cbc_dec_4 (name_Na y) name_Kas))
+  have h7 : pred_eq_bitstring_bitstring (name_Na z) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (name_Na y) name_Kas)) := ax7 (name_Na z) (constr_tuple_4_get_0x30 (constr_cbc_dec_4 (name_Na y) name_Kas))
+  have h8 : pred_attacker (tuple_client_A_in_2 (name_Na y)) := taelja_lemma14 y
+  have h9 : pred_attacker (tuple_client_A_out_9 name_objective) := ax8 (name_Na x) (name_Na y) z (name_Na u) (name_Na v) h1 h2 h3 h4 h5 h6 h7 h8
   have h10 : pred_attacker name_objective := ax9 name_objective h9
   exact h10
 

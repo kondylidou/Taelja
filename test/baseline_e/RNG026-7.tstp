@@ -1,9 +1,26 @@
 % Preprocessing class: FSMSSMSSSSSNFFN.
-% Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with pid 23707 completed with status 0
+% Result found by G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
 % (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
 % No SInE strategy applied
 % Search class: FUUPM-FFMF21-DFFFFFNN
-% Configuration: SubtermCWHack
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% SubtermCWHack with pid 23708 completed with status 0
+% Result found by SubtermCWHack
+% Preprocessing class: FSMSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FUUPM-FFMF21-DFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
 % Initializing proof state
 % Scanning for AC axioms
 % add is AC
@@ -32,7 +49,7 @@
 %cnf(i_0_41, plain, (additive_inverse(multiply(X1,X2))=multiply(X1,additive_inverse(X2)))).
 %
 %cnf(i_0_40, plain, (multiply(additive_inverse(X1),X2)=multiply(X1,additive_inverse(X2)))).
-%%
+%
 %cnf(i_0_63, plain, (add(multiply(X1,X2),multiply(X1,additive_inverse(X2)))=additive_identity)).
 %%%%
 %cnf(i_0_34, plain, (add(add(X1,X2),X3)=add(X1,add(X2,X3)))).
@@ -41,66 +58,64 @@
 %
 %cnf(i_0_97, plain, (add(additive_inverse(X1),add(X1,X2))=X2)).
 %
-%cnf(i_0_35, plain, (multiply(multiply(X1,X2),X2)=multiply(X1,multiply(X2,X2)))).
-%
 %cnf(i_0_102, plain, (add(X1,add(X2,additive_inverse(X1)))=X2)).
+%
+%cnf(i_0_35, plain, (multiply(multiply(X1,X2),X2)=multiply(X1,multiply(X2,X2)))).
 %%%%%
 %cnf(i_0_113, plain, (add(additive_inverse(X1),add(X2,X1))=X2)).
-%%%%%
+%%%%%%
 %cnf(i_0_36, plain, (multiply(multiply(X1,X1),X2)=multiply(X1,multiply(X1,X2)))).
-%%
+%
 %cnf(i_0_144, plain, (add(X1,additive_inverse(add(X1,X2)))=additive_inverse(X2))).
 %
 %cnf(i_0_147, plain, (add(X2,additive_inverse(add(X1,X2)))=additive_inverse(X1))).
 %%%%%%%
 %cnf(i_0_169, plain, (additive_inverse(add(additive_inverse(X1),X2))=add(X1,additive_inverse(X2)))).
 %
-%cnf(i_0_31, plain, (add(multiply(X1,X2),multiply(X1,X3))=multiply(X1,add(X2,X3)))).
-%
 %cnf(i_0_173, plain, (add(additive_inverse(X1),additive_inverse(X2))=additive_inverse(add(X1,X2)))).
+%
+%cnf(i_0_31, plain, (add(multiply(X1,X2),multiply(X1,X3))=multiply(X1,add(X2,X3)))).
 %%%%%%
 %cnf(i_0_184, plain, (additive_inverse(add(X2,additive_inverse(X1)))=add(X1,additive_inverse(X2)))).
-%%%%
+%%%%%
 %cnf(i_0_32, plain, (add(multiply(X1,X3),multiply(X2,X3))=multiply(add(X1,X2),X3))).
-%%%%%%%%
+%%%%%%%
 %cnf(i_0_84, plain, (add(X1,add(X2,X3))=add(X3,add(X1,X2)))).
 %%%%%%%%%
 %cnf(i_0_91, plain, (add(X2,add(X1,X3))=add(X1,add(X2,X3)))).
-%%%%%
+%%%%%%
 %cnf(i_0_43, plain, (add(multiply(X1,X3),multiply(X2,additive_inverse(X3)))=multiply(add(X1,additive_inverse(X2)),X3))).
-%%%%
+%%%
 %cnf(i_0_304, plain, (multiply(add(X1,X1),X2)=multiply(X1,add(X2,X2)))).
 %%%%%
 %cnf(i_0_352, plain, (add(X1,add(X2,X3))=add(X3,add(X2,X1)))).
-%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
 %cnf(i_0_46, negated_conjecture, (add(multiply(multiply(multiply(a,b),c),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),additive_inverse(add(multiply(multiply(a,multiply(b,c)),d),add(multiply(a,multiply(b,multiply(c,additive_inverse(d)))),multiply(add(multiply(multiply(a,b),c),multiply(a,multiply(b,additive_inverse(c)))),d))))))!=additive_identity)).
 %%%%%%%%%%%
 %cnf(i_0_72, plain, (multiply(multiply(X1,additive_inverse(X2)),X3)=multiply(multiply(X1,X2),additive_inverse(X3)))).
 %%%%%%%%%%%
-%cnf(i_0_87, plain, (add(multiply(X1,X2),add(multiply(X1,additive_inverse(X2)),X3))=X3)).
-%%%%%%
 %cnf(i_0_94, plain, (add(X1,add(X2,add(additive_inverse(add(X1,X2)),X3)))=X3)).
 %%%%
-%cnf(i_0_128, plain, (add(X1,add(X2,add(X3,additive_inverse(add(X1,X2)))))=X3)).
-%
-%cnf(i_0_118, plain, (add(multiply(X1,multiply(X2,X2)),multiply(multiply(X1,X2),additive_inverse(X2)))=additive_identity)).
+%cnf(i_0_98, plain, (add(multiply(X1,X2),add(multiply(X1,additive_inverse(X2)),X3))=X3)).
 %%%%
-%cnf(i_0_130, plain, (add(X1,add(X2,add(additive_inverse(X1),X3)))=add(X2,X3))).
-%%%%%%%
-%cnf(i_0_120, plain, (multiply(multiply(X1,X2),additive_inverse(X2))=multiply(X1,multiply(X2,additive_inverse(X2))))).
-%%%%%%
-%cnf(i_0_133, plain, (add(multiply(X1,X2),add(X3,multiply(X1,additive_inverse(X2))))=X3)).
+%cnf(i_0_120, plain, (add(X1,add(X2,add(X3,additive_inverse(add(X1,X2)))))=X3)).
 %%
-%cnf(i_0_135, plain, (add(X1,add(X2,add(X3,additive_inverse(X1))))=add(X2,X3))).
-%%%
-%cnf(i_0_121, plain, (multiply(multiply(X1,multiply(X2,X2)),X2)=multiply(multiply(X1,X2),multiply(X2,X2)))).
-%%%%%%%%%%%%%%
-%cnf(i_0_141, plain, (add(additive_inverse(X1),add(X2,add(X1,X3)))=add(X2,X3))).
-%%%%%%%%%%%%%%%%%%%
-%cnf(i_0_163, plain, (multiply(multiply(X1,multiply(X1,X2)),X2)=multiply(X1,multiply(X1,multiply(X2,X2))))).
+%cnf(i_0_122, plain, (add(X1,add(X2,add(additive_inverse(X1),X3)))=add(X2,X3))).
 %
+%cnf(i_0_125, plain, (add(multiply(X1,X2),add(X3,multiply(X1,additive_inverse(X2))))=X3)).
+%%%%%%%%%%%
+%cnf(i_0_127, plain, (add(X1,add(X2,add(X3,additive_inverse(X1))))=add(X2,X3))).
+%%%%%%%%%%%
+%cnf(i_0_134, plain, (multiply(multiply(X1,X2),additive_inverse(X2))=multiply(X1,multiply(X2,additive_inverse(X2))))).
+%%%%%%%%%%
 %cnf(i_0_362, plain, (add(additive_inverse(X2),add(X3,add(X1,X2)))=add(X1,X3))).
-%%%%%%%%%%%%%%%%%%%%%
+%
+%cnf(i_0_135, plain, (multiply(multiply(X1,multiply(X2,X2)),X2)=multiply(multiply(X1,X2),multiply(X2,X2)))).
+%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_163, plain, (multiply(multiply(X1,multiply(X1,X2)),X2)=multiply(X1,multiply(X1,multiply(X2,X2))))).
+%%%%%%%%%
+%cnf(i_0_549, plain, (add(additive_inverse(X1),add(X2,add(X1,X3)))=add(X3,X2))).
+%%
 %cnf(i_0_165, plain, (multiply(multiply(X1,multiply(X1,multiply(X1,X1))),X2)=multiply(X1,multiply(X1,multiply(X1,multiply(X1,X2)))))).
 %%%%%%%%%%%
 %cnf(i_0_170, plain, (add(X1,add(X2,additive_inverse(add(X1,add(X2,X3)))))=additive_inverse(X3))).
@@ -108,17 +123,23 @@
 %cnf(i_0_172, plain, (add(X1,add(additive_inverse(add(X1,X2)),X3))=add(additive_inverse(X2),X3))).
 %%%%%%%%%%%%%%%%%%%%%%
 %cnf(i_0_189, plain, (add(X1,add(X2,additive_inverse(add(X3,add(X1,X2)))))=additive_inverse(X3))).
-%%%%%%%%%
-%cnf(i_0_736, plain, (add(X2,add(X1,add(X3,additive_inverse(add(X1,X2)))))=X3)).
-%%
+%%%%%%%%%%%
 %cnf(i_0_191, plain, (add(X1,add(additive_inverse(add(X2,X1)),X3))=add(additive_inverse(X2),X3))).
 %%%%%%%%%%%
 %cnf(i_0_200, plain, (add(X1,additive_inverse(add(X2,add(X3,X1))))=additive_inverse(add(X2,X3)))).
 %%%%%%%%%%%
 %cnf(i_0_211, plain, (multiply(add(additive_inverse(X1),X2),additive_inverse(X3))=multiply(add(X1,additive_inverse(X2)),X3))).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%
+%cnf(i_0_736, plain, (add(X2,add(X1,add(X3,additive_inverse(add(X1,X2)))))=X3)).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %cnf(i_0_216, plain, (additive_inverse(add(X1,add(additive_inverse(X2),X3)))=add(additive_inverse(X1),add(X2,additive_inverse(X3))))).
-%%%%%%%%
+%%%%%%%%%%%
+%cnf(i_0_221, plain, (additive_inverse(add(multiply(X1,additive_inverse(X2)),X3))=add(multiply(X1,X2),additive_inverse(X3)))).
+%%%%%%%%%%%
+%cnf(i_0_234, plain, (add(additive_inverse(X1),add(additive_inverse(X2),X3))=add(additive_inverse(add(X1,X2)),X3))).
+%%%%%%%%%%%
+%cnf(i_0_247, plain, (add(additive_inverse(X1),multiply(X2,additive_inverse(X3)))=additive_inverse(add(X1,multiply(X2,X3))))).
+%%%%%%%%%%
 %cnf(i_0_336, plain, (add(X1,additive_inverse(add(X3,add(X1,X2))))=additive_inverse(add(X2,X3)))).
 
 % Proof found!
@@ -208,13 +229,3 @@ cnf(c_0_80, negated_conjecture, (multiply(multiply(multiply(a,b),c),additive_ide
 cnf(c_0_81, negated_conjecture, ($false), inference(rw,[status(thm)],[c_0_80, c_0_37])).
 cnf(c_0_82, negated_conjecture, ($false), inference(cn,[status(thm)],[c_0_81]), ['proof']).
 % SZS output end CNFRefutation
-
-% -------------------------------------------------
-% Total SizeMalloc()ed memory: 106087328 Bytes (283657 requests)
-% Total SizeFree()ed   memory: 106087328 Bytes (283657 requests)
-% New requests:  29967 ( 29672 by SecureMalloc(),    295 by SecureRealloc())
-% Total SecureMalloc()ed memory: 2874431 Bytes
-% Returned:     29966 ( 29966 by FREE(),              0 by SecureRealloc())
-% SecureRealloc(ptr):    312 (   295 Allocs,      0 Frees,     17 Reallocs)
-% -------------------------------------------------
-

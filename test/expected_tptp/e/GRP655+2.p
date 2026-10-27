@@ -1,10 +1,10 @@
 % SZS output start Proof
 fof(skolem_definition, definition, ? [X4, X5]: ~ (mult(X4, rd(X5, X5)) = X4 & mult(rd(X5, X5), X4) = X4) => ~ (mult(esk1_0, rd(esk2_0, esk2_0)) = esk1_0 & mult(rd(esk2_0, esk2_0), esk1_0) = esk1_0), introduced(definition, [new_symbols(definition, [esk1_0,esk2_0])], [])).
-fof(f05, axiom, ! [X3, X1, X2]: mult(X2, mult(X1, mult(X3, X1))) = mult(mult(mult(X2, X1), X3), X1), file('Problems/GRP/GRP655+2.p', f05)).
-fof(f03, axiom, ! [X1, X2]: mult(rd(X2, X1), X1) = X2, file('Problems/GRP/GRP655+2.p', f03)).
-fof(f02, axiom, ! [X1, X2]: ld(X2, mult(X2, X1)) = X1, file('Problems/GRP/GRP655+2.p', f02)).
-fof(f01, axiom, ! [X1, X2]: mult(X2, ld(X2, X1)) = X1, file('Problems/GRP/GRP655+2.p', f01)).
-fof(f04, axiom, ! [X1, X2]: rd(mult(X2, X1), X1) = X2, file('Problems/GRP/GRP655+2.p', f04)).
+fof(f05, axiom, ! [X3, X1, X2]: mult(X2, mult(X1, mult(X3, X1))) = mult(mult(mult(X2, X1), X3), X1), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP655+2.p', f05)).
+fof(f03, axiom, ! [X1, X2]: mult(rd(X2, X1), X1) = X2, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP655+2.p', f03)).
+fof(f02, axiom, ! [X1, X2]: ld(X2, mult(X2, X1)) = X1, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP655+2.p', f02)).
+fof(f01, axiom, ! [X1, X2]: mult(X2, ld(X2, X1)) = X1, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP655+2.p', f01)).
+fof(f04, axiom, ! [X1, X2]: rd(mult(X2, X1), X1) = X2, file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP655+2.p', f04)).
 fof(s1, plain, ! [X,Y,Z] : mult(rd(X,Y),mult(Y,mult(Z,Y))) = mult(mult(mult(rd(X,Y),Y),Z),Y), inference(instantiate, [status(thm)], [f05])).
 fof(lemma_6, lemma, ! [X,Y,Z] : mult(rd(X,Y),mult(Y,mult(Z,Y))) = mult(mult(X,Z),Y), inference(rewrite, [status(thm)], [f03, s1])).
 fof(s2, plain, ! [X,Y,Z] : ld(rd(X,Y),mult(Z,Y)) = ld(rd(X,Y),mult(mult(X,ld(X,Z)),Y)), inference(instantiate, [status(thm)], [f01])).
@@ -38,9 +38,9 @@ fof(lemma_17, lemma, ! [X,Y,Z] : mult(X,rd(ld(Y,Z),Y)) = rd(mult(rd(X,Y),Z),Y), 
 fof(s19, plain, ! [X,Y] : ld(ld(mult(X,Y),X),ld(Y,Y)) = ld(ld(mult(X,Y),X),mult(ld(mult(X,Y),X),Y)), inference(instantiate, [status(thm)], [lemma_9])).
 fof(lemma_18, lemma, ! [X,Y] : ld(ld(mult(X,Y),X),ld(Y,Y)) = Y, inference(rewrite, [status(thm)], [f02, s19])).
 fof(s20, plain, ! [X,Y] : mult(X,mult(Y,mult(ld(Y,Y),Y))) = mult(mult(mult(X,Y),ld(Y,Y)),Y), inference(instantiate, [status(thm)], [f05])).
-fof(s21, plain, ! [X,Y] : mult(X,mult(Y,mult(ld(Y,Y),Y))) = mult(mult(mult(X,ld(X,mult(X,Y))),ld(Y,Y)),Y), inference(rewrite, [status(thm)], [f02, s20])).
-fof(s22, plain, ! [X,Y] : mult(X,mult(Y,mult(ld(Y,Y),Y))) = mult(mult(rd(X,ld(mult(X,Y),X)),ld(Y,Y)),Y), inference(rewrite, [status(thm)], [lemma_15, s21])).
-fof(s23, plain, ! [X,Y] : mult(X,mult(Y,mult(ld(Y,Y),Y))) = mult(mult(rd(X,ld(mult(X,Y),X)),ld(Y,Y)),ld(X,mult(X,Y))), inference(rewrite, [status(thm)], [f02, s22])).
+fof(s21, plain, ! [X,Y] : mult(X,mult(Y,mult(ld(Y,Y),Y))) = mult(mult(mult(X,Y),ld(Y,Y)),ld(X,mult(X,Y))), inference(rewrite, [status(thm)], [f02, s20])).
+fof(s22, plain, ! [X,Y] : mult(X,mult(Y,mult(ld(Y,Y),Y))) = rd(mult(mult(X,Y),ld(Y,Y)),ld(mult(X,Y),X)), inference(rewrite, [status(thm)], [lemma_15, s21])).
+fof(s23, plain, ! [X,Y] : mult(X,mult(Y,mult(ld(Y,Y),Y))) = rd(mult(mult(X,ld(X,mult(X,Y))),ld(Y,Y)),ld(mult(X,Y),X)), inference(rewrite, [status(thm)], [f02, s22])).
 fof(s24, plain, ! [X,Y] : mult(X,mult(Y,mult(ld(Y,Y),Y))) = rd(mult(rd(X,ld(mult(X,Y),X)),ld(Y,Y)),ld(mult(X,Y),X)), inference(rewrite, [status(thm)], [lemma_15, s23])).
 fof(s25, plain, ! [X,Y] : mult(X,mult(Y,mult(ld(Y,Y),Y))) = mult(X,rd(ld(ld(mult(X,Y),X),ld(Y,Y)),ld(mult(X,Y),X))), inference(rewrite, [status(thm)], [lemma_17, s24])).
 fof(s26, plain, ! [X,Y] : mult(X,mult(Y,mult(ld(Y,Y),Y))) = mult(X,rd(Y,ld(mult(X,Y),X))), inference(rewrite, [status(thm)], [lemma_18, s25])).
@@ -72,7 +72,7 @@ fof(s42, plain, ! [X,Y] : mult(rd(X,X),rd(Y,mult(rd(X,X),Y))) = mult(rd(X,X),mul
 fof(s43, plain, ! [X,Y] : mult(rd(X,X),rd(Y,mult(rd(X,X),Y))) = mult(rd(X,X),mult(ld(rd(Y,rd(X,X)),rd(Y,rd(X,X))),rd(X,X))), inference(rewrite, [status(thm)], [lemma_22, s42])).
 fof(s44, plain, ! [X,Y] : mult(rd(X,X),rd(Y,mult(rd(X,X),Y))) = ld(rd(rd(Y,rd(X,X)),rd(X,X)),mult(rd(Y,rd(X,X)),rd(X,X))), inference(rewrite, [status(thm)], [lemma_7, s43])).
 fof(s45, plain, ! [X,Y] : mult(rd(X,X),rd(Y,mult(rd(X,X),Y))) = ld(rd(rd(Y,rd(X,X)),rd(X,X)),Y), inference(rewrite, [status(thm)], [f03, s44])).
-fof(s46, plain, ! [X,Y] : mult(rd(X,X),rd(Y,mult(rd(X,X),Y))) = ld(mult(rd(Y,rd(X,X)),rd(X,X)),Y), inference(rewrite, [status(thm)], [lemma_23, s45])).
+fof(s46, plain, ! [X,Y] : mult(rd(X,X),rd(Y,mult(rd(X,X),Y))) = ld(rd(mult(Y,rd(X,X)),rd(X,X)),Y), inference(rewrite, [status(thm)], [lemma_23, s45])).
 fof(s47, plain, ! [X,Y] : mult(rd(X,X),rd(Y,mult(rd(X,X),Y))) = ld(mult(mult(Y,rd(X,X)),rd(X,X)),Y), inference(rewrite, [status(thm)], [lemma_23, s46])).
 fof(s48, plain, ! [X,Y] : mult(rd(X,X),rd(Y,mult(rd(X,X),Y))) = ld(Y,Y), inference(rewrite, [status(thm)], [lemma_27, s47])).
 fof(lemma_28, lemma, ! [X,Y] : mult(rd(X,X),rd(Y,mult(rd(X,X),Y))) = rd(Y,Y), inference(rewrite, [status(thm)], [lemma_22, s48])).

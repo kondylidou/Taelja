@@ -1,45 +1,50 @@
-# Preprocessing class: FSSSSMSSSSSNFFN.
-# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
-# No SInE strategy applied
-# Search class: FUHNM-FFSF21-MFFFFFNN
-# partial match(1): FUHPM-FFSF21-MFFFFFNN
-# Configuration: H----_047_B31_F1_PI_AE_R4_CS_SP_S2S
-# Initializing proof state
-# Scanning for AC axioms
-#
-#cnf(i_0_9, plain, (~'E'(f(X2),s('0'))|~'E'(f(X1),'0'))).
-#
-#cnf(i_0_8, plain, ('E'(f(X1),s('0')))).
-#
-#cnf(i_0_10, plain, ('LEQ'('AP'(s('0'),X1),X2))).
-#
-#cnf(i_0_7, plain, ('E'(f('AP'(s(s('0')),X1)),'0'))).
-#
-#cnf(i_0_6, plain, ('LEQ'('AP'('0',X1),'AP'(s(s('0')),X1)))).
-#
-#cnf(i_0_9, plain, (~epred2_0|~epred1_0)).
-#
-#cnf(i_0_16, plain, (epred2_0|~'E'(f(X1),'0'))).
-#
-#cnf(i_0_17, plain, (epred2_0)).
-#
-#cnf(i_0_9, plain, (~epred1_0)).
-#
-# Proof found!
-# SZS status Unsatisfiable
-# SZS output start CNFRefutation
-cnf(clause_1_04, axiom, (~'E'(f(X1),'0')|~'E'(f(X2),s('0'))), file('Problems/SYO/SYO632-1.p', clause_1_04)).
-cnf(clause_2_02, axiom, ('E'(f('AP'(s(s('0')),X1)),'0')), file('Problems/SYO/SYO632-1.p', clause_2_02)).
-cnf(clause_0_03, axiom, ('E'(f(X1),s('0'))), file('Problems/SYO/SYO632-1.p', clause_0_03)).
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% G-E--_302_C18_F1_URBAN_RG_S04BN with pid 23848 completed with status 0
+% Result found by G-E--_302_C18_F1_URBAN_RG_S04BN
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FUHNM-FFSF21-MFFFFFNN
+% partial match(1): FUHPM-FFSF21-MFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% SubtermCWHack with pid 23849 completed with status 0
+% Result found by SubtermCWHack
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FUHNM-FFSF21-MFFFFFNN
+% partial match(1): FUHPM-FFSF21-MFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% Initializing proof state
+% Scanning for AC axioms
+%
+%cnf(i_0_8, plain, ('E'(f(X1),s('0')))).
+%
+%cnf(i_0_10, plain, ('LEQ'('AP'(s('0'),X1),X2))).
+%
+%cnf(i_0_7, plain, ('E'(f('AP'(s(s('0')),X1)),'0'))).
+%
+%cnf(i_0_9, plain, (~'E'(f(X1),'0'))).
+
+% Proof found!
+% SZS status Unsatisfiable
+% SZS output start CNFRefutation
+cnf(clause_1_04, axiom, (~'E'(f(X1),'0')|~'E'(f(X2),s('0'))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYO/SYO632-1.p', clause_1_04)).
+cnf(clause_0_03, axiom, ('E'(f(X1),s('0'))), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYO/SYO632-1.p', clause_0_03)).
+cnf(clause_2_02, axiom, ('E'(f('AP'(s(s('0')),X1)),'0')), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/SYO/SYO632-1.p', clause_2_02)).
 cnf(c_0_3, plain, (~'E'(f(X1),'0')|~'E'(f(X2),s('0'))), inference(fof_simplification,[status(thm)],[clause_1_04])).
-fof(c_0_4, plain, (~epred2_0<=>![X1]:(~'E'(f(X1),'0'))), introduced(definition)).
-fof(c_0_5, plain, (~epred1_0<=>![X2]:(~'E'(f(X2),s('0')))), introduced(definition)).
-cnf(c_0_6, plain, (~'E'(f(X1),'0')|~'E'(f(X2),s('0'))), c_0_3).
-cnf(c_0_7, plain, (epred2_0|~'E'(f(X1),'0')), inference(split_equiv,[status(thm)],[c_0_4])).
-cnf(c_0_8, axiom, ('E'(f('AP'(s(s('0')),X1)),'0')), clause_2_02).
-cnf(c_0_9, plain, (~epred2_0|~epred1_0), inference(apply_def,[status(thm)],[inference(apply_def,[status(thm)],[c_0_6, c_0_5]), c_0_4])).
-cnf(c_0_10, plain, (epred2_0), inference(spm,[status(thm)],[c_0_7, c_0_8])).
-cnf(c_0_11, axiom, ('E'(f(X1),s('0'))), clause_0_03).
-cnf(c_0_12, plain, (~epred1_0), inference(cn,[status(thm)],[inference(rw,[status(thm)],[c_0_9, c_0_10])])).
-cnf(c_0_13, plain, ($false), inference(sr,[status(thm)],[inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(split_equiv,[status(thm)],[c_0_5]), c_0_11])]), c_0_12]), ['proof']).
-# SZS output end CNFRefutation
+cnf(c_0_4, plain, (~'E'(f(X1),'0')|~'E'(f(X2),s('0'))), c_0_3).
+cnf(c_0_5, axiom, ('E'(f(X1),s('0'))), clause_0_03).
+cnf(c_0_6, plain, (~'E'(f(X1),'0')|$false), inference(rw,[status(thm)],[c_0_4, c_0_5])).
+cnf(c_0_7, axiom, ('E'(f('AP'(s(s('0')),X1)),'0')), clause_2_02).
+cnf(c_0_8, plain, (~'E'(f(X1),'0')), inference(cn,[status(thm)],[c_0_6])).
+cnf(c_0_9, plain, ($false), inference(sr,[status(thm)],[c_0_7, c_0_8]), ['proof']).
+% SZS output end CNFRefutation

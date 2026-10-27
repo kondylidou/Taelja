@@ -319,8 +319,6 @@ eBenchmarkNames =
   , "SYN179-1"
   , "SYN555-1"
   , "ALG006-1"
-  -- a permutative equation in one rw step, which the replay applies once
-  -- rather than normalising with it
   , "ALG442-1"
   -- resolution against a headless clause, whose replayed resolvent must not
   -- carry the consumer's head twice or θ loses a binding

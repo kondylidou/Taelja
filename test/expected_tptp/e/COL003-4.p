@@ -1,7 +1,7 @@
 % SZS output start Proof
-cnf(b_definition, axiom, apply(apply(apply(b, X1), X2), X3) = apply(X1, apply(X2, X3)), file('Problems/COL/COL003-4.p', b_definition)).
-cnf(w_definition, axiom, apply(apply(w, X1), X2) = apply(apply(X1, X2), X2), file('Problems/COL/COL003-4.p', w_definition)).
-cnf(strong_fixed_point, axiom, fixed_point(X1) | apply(X1, fixed_pt) != apply(fixed_pt, apply(X1, fixed_pt)), file('Problems/COL/COL003-4.p', strong_fixed_point)).
+cnf(strong_fixed_point, axiom, fixed_point(X1) | apply(X1, fixed_pt) != apply(fixed_pt, apply(X1, fixed_pt)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/COL/COL003-4.p', strong_fixed_point)).
+cnf(b_definition, axiom, apply(apply(apply(b, X1), X2), X3) = apply(X1, apply(X2, X3)), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/COL/COL003-4.p', b_definition)).
+cnf(w_definition, axiom, apply(apply(w, X1), X2) = apply(apply(X1, X2), X2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/COL/COL003-4.p', w_definition)).
 fof(s1, plain, ! [X,Y] : apply(apply(w,apply(b,X)),Y) = apply(apply(apply(b,X),Y),Y), inference(instantiate, [status(thm)], [w_definition])).
 fof(lemma_4, lemma, ! [X,Y] : apply(apply(w,apply(b,X)),Y) = apply(X,apply(Y,Y)), inference(rewrite, [status(thm)], [b_definition, s1])).
 fof(s2, plain, ! [X] : apply(apply(w,w),X) = apply(apply(w,X),X), inference(instantiate, [status(thm)], [w_definition])).

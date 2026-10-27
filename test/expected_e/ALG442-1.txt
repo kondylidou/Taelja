@@ -1,14 +1,14 @@
 Axiom 1: m(X,X,Y) = Y
-Axiom 2: r(b,a,a)
+Axiom 2: r(a,b,a)
 Axiom 3: m(X,Y,Y) = X
 Axiom 4: u(X,X,X) = X
-Axiom 5: u(X,X,Y) = v(X,X,X,Y)
-Axiom 6: v(X,X,X,Y) = v(X,X,Y,X)
-Axiom 7: v(X,X,Y,X) = v(X,Y,X,X)
-Axiom 8: v(X,Y,X,X) = v(Y,X,X,X)
-Axiom 9: r(a,a,b)
-Axiom 10: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) /\ r(X1,X2,X3) => r(v(X,A,U,X1),v(Y,B,V,X2),v(Z,C,W,X3))
-Axiom 11: r(a,b,a)
+Axiom 5: r(b,a,a)
+Axiom 6: u(X,X,Y) = v(X,X,X,Y)
+Axiom 7: v(X,X,X,Y) = v(X,X,Y,X)
+Axiom 8: v(X,X,Y,X) = v(X,Y,X,X)
+Axiom 9: v(X,Y,X,X) = v(Y,X,X,X)
+Axiom 10: r(a,a,b)
+Axiom 11: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) /\ r(X1,X2,X3) => r(v(X,A,U,X1),v(Y,B,V,X2),v(Z,C,W,X3))
 Axiom 12: u(X,X,Y) = u(X,Y,X)
 Axiom 13: u(X,X,Y) = u(Y,X,X)
 Axiom 14: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) => r(u(X,A,U),u(Y,B,V),u(Z,C,W))
@@ -17,15 +17,15 @@ Axiom 15: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) => r(m(X,A,U),m(Y,B,V),m(Z,C,W))
 Lemma 16: v(X,X,Y,X) = u(X,X,Y)
 Proof:
   v(X,X,Y,X)
-= { by axiom 6 R->L }
+= { by axiom 7 R->L }
   v(X,X,X,Y)
-= { by axiom 5 R->L }
+= { by axiom 6 R->L }
   u(X,X,Y)
 
 Lemma 17: v(X,Y,X,X) = u(X,X,Y)
 Proof:
   v(X,Y,X,X)
-= { by axiom 7 R->L }
+= { by axiom 8 R->L }
   v(X,X,Y,X)
 = { by lemma 16 }
   u(X,X,Y)
@@ -33,7 +33,7 @@ Proof:
 Lemma 18: v(X,Y,Y,Y) = u(Y,Y,X)
 Proof:
   v(X,Y,Y,Y)
-= { by axiom 8 R->L }
+= { by axiom 9 R->L }
   v(Y,X,Y,Y)
 = { by lemma 17 }
   u(Y,Y,X)
@@ -45,11 +45,11 @@ Proof:
    and r(X,Y,Z)
     by assumption
    and r(a,a,b)
-    by axiom 9
-   and r(a,a,b)
-    by axiom 9
-  hence r(v(A,X,a,a),v(B,Y,a,a),v(C,Z,b,b))
     by axiom 10
+   and r(a,a,b)
+    by axiom 10
+  hence r(v(A,X,a,a),v(B,Y,a,a),v(C,Z,b,b))
+    by axiom 11
 
 Lemma 20: r(X,Y,Z) /\ r(A,B,C) /\ r(U,V,W) => r(v(U,A,X,b),v(V,B,Y,a),v(W,C,Z,a))
 Proof:
@@ -60,9 +60,9 @@ Proof:
    and r(X,Y,Z)
     by assumption
    and r(b,a,a)
-    by axiom 2
+    by axiom 5
   hence r(v(U,A,X,b),v(V,B,Y,a),v(W,C,Z,a))
-    by axiom 10
+    by axiom 11
 
 Lemma 21: r(X,Y,Z) /\ r(A,B,C) => r(u(A,X,b),u(B,Y,a),u(C,Z,a))
 Proof:
@@ -71,14 +71,14 @@ Proof:
    and r(X,Y,Z)
     by assumption
    and r(b,a,a)
-    by axiom 2
+    by axiom 5
   hence r(u(A,X,b),u(B,Y,a),u(C,Z,a))
     by axiom 14
 
 Lemma 22: r(X,Y,Z) => r(u(X,a,b),u(Y,b,a),u(Z,a,a))
 Proof:
   have r(a,b,a)
-    by axiom 11
+    by axiom 2
    and r(X,Y,Z)
     by assumption
   hence r(u(X,a,b),u(Y,b,a),u(Z,a,a))
@@ -87,7 +87,7 @@ Proof:
 Lemma 23: r(X,Y,Z) => r(u(X,b,b),u(Y,a,a),u(Z,a,a))
 Proof:
   have r(b,a,a)
-    by axiom 2
+    by axiom 5
    and r(X,Y,Z)
     by assumption
   hence r(u(X,b,b),u(Y,a,a),u(Z,a,a))
@@ -96,7 +96,7 @@ Proof:
 Lemma 24: r(u(a,b,b),u(a,a,b),a)
 Proof:
   have r(a,b,a)
-    by axiom 11
+    by axiom 2
   hence r(u(a,b,b),u(b,a,a),u(a,a,a))
     by lemma 23
   hence r(u(a,b,b),u(b,a,a),a)
@@ -118,7 +118,7 @@ Proof:
 Lemma 26: r(X,Y,Z) => r(m(X,u(a,a,b),u(a,b,b)),Y,m(Z,u(a,a,b),a))
 Proof:
   have r(a,a,b)
-    by axiom 9
+    by axiom 10
   hence r(u(a,a,b),u(a,b,a),u(b,a,a))
     by lemma 22
   hence r(u(a,a,b),u(a,b,a),u(a,a,b))
@@ -135,15 +135,15 @@ Proof:
 Lemma 27: r(X,Y,Z) => r(X,m(Y,v(b,b,a,a),u(a,a,b)),Z)
 Proof:
   have r(a,a,b)
-    by axiom 9
+    by axiom 10
    and r(a,b,a)
-    by axiom 11
+    by axiom 2
    and r(a,b,a)
-    by axiom 11
+    by axiom 2
   hence r(v(a,a,a,b),v(b,b,a,a),v(a,a,b,a))
     by lemma 20
   hence r(u(a,a,b),v(b,b,a,a),v(a,a,b,a))
-    by rw axiom 5 R->L
+    by rw axiom 6 R->L
   hence r(u(a,a,b),v(b,b,a,a),u(a,a,b))
     by rw lemma 16
   hence r(m(u(a,a,b),u(a,a,b),u(a,b,b)),v(b,b,a,a),m(u(a,a,b),u(a,a,b),a))
@@ -161,47 +161,57 @@ Proof:
   hence r(X,m(Y,v(b,b,a,a),u(a,a,b)),Z)
     by rw axiom 3
 
-Lemma 28: r(X,Y,Z) /\ r(A,B,C) => r(u(A,X,a),u(B,Y,b),u(C,Z,a))
+Lemma 28: u(X,Y,X) = u(Y,X,X)
+Proof:
+  u(X,Y,X)
+= { by axiom 12 R->L }
+  u(X,X,Y)
+= { by axiom 13 }
+  u(Y,X,X)
+
+Lemma 29: r(X,Y,Z) /\ r(A,B,C) => r(u(A,X,a),u(B,Y,b),u(C,Z,a))
 Proof:
   have r(A,B,C)
     by assumption
    and r(X,Y,Z)
     by assumption
    and r(a,b,a)
-    by axiom 11
+    by axiom 2
   hence r(u(A,X,a),u(B,Y,b),u(C,Z,a))
     by axiom 14
 
-Lemma 29: r(u(a,a,b),a,u(a,b,b))
+Lemma 30: r(u(a,a,b),a,u(a,b,b))
 Proof:
   have r(a,a,b)
-    by axiom 9
+    by axiom 10
    and r(a,a,b)
-    by axiom 9
+    by axiom 10
   hence r(u(a,a,b),u(a,a,a),u(b,b,a))
     by lemma 21
   hence r(u(a,a,b),a,u(b,b,a))
     by rw axiom 4
+  hence r(u(a,a,b),a,u(b,a,b))
+    by rw axiom 12
   hence r(u(a,a,b),a,u(a,b,b))
-    by rw axiom 13
+    by rw lemma 28
 
-Lemma 30: r(X,Y,Z) /\ r(A,B,C) => r(m(A,X,u(a,a,b)),m(B,Y,a),m(C,Z,u(a,b,b)))
+Lemma 31: r(X,Y,Z) /\ r(A,B,C) => r(m(A,X,u(a,a,b)),m(B,Y,a),m(C,Z,u(a,b,b)))
 Proof:
   have r(A,B,C)
     by assumption
    and r(X,Y,Z)
     by assumption
    and r(u(a,a,b),a,u(a,b,b))
-    by lemma 29
+    by lemma 30
   hence r(m(A,X,u(a,a,b)),m(B,Y,a),m(C,Z,u(a,b,b)))
     by axiom 15
 
-Lemma 31: r(X,Y,Z) => r(v(X,a,b,b),v(Y,b,a,a),u(a,a,Z))
+Lemma 32: r(X,Y,Z) => r(v(X,a,b,b),v(Y,b,a,a),u(a,a,Z))
 Proof:
   have r(b,a,a)
-    by axiom 2
+    by axiom 5
    and r(a,b,a)
-    by axiom 11
+    by axiom 2
    and r(X,Y,Z)
     by assumption
   hence r(v(X,a,b,b),v(Y,b,a,a),v(Z,a,a,a))
@@ -209,21 +219,21 @@ Proof:
   hence r(v(X,a,b,b),v(Y,b,a,a),u(a,a,Z))
     by rw lemma 18
 
-Lemma 32: r(v(a,a,b,b),u(a,a,b),u(a,a,b))
+Lemma 33: r(v(a,a,b,b),u(a,a,b),u(a,a,b))
 Proof:
   have r(a,a,b)
-    by axiom 9
+    by axiom 10
   hence r(v(a,a,b,b),v(a,b,a,a),u(a,a,b))
-    by lemma 31
+    by lemma 32
   hence r(v(a,a,b,b),u(a,a,b),u(a,a,b))
     by rw lemma 17
 
-Lemma 33: r(X,Y,Z) => r(X,Y,m(Z,u(a,a,b),a))
+Lemma 34: r(X,Y,Z) => r(X,Y,m(Z,u(a,a,b),a))
 Proof:
   have r(a,b,a)
-    by axiom 11
+    by axiom 2
   hence r(v(a,a,b,b),v(b,b,a,a),u(a,a,a))
-    by lemma 31
+    by lemma 32
   hence r(v(a,a,b,b),v(b,b,a,a),a)
     by rw axiom 4
   hence r(v(a,a,b,b),m(v(b,b,a,a),v(b,b,a,a),u(a,a,b)),a)
@@ -231,7 +241,7 @@ Proof:
   hence r(v(a,a,b,b),u(a,a,b),a)
     by rw axiom 1
    and r(v(a,a,b,b),u(a,a,b),u(a,a,b))
-    by lemma 32
+    by lemma 33
   hence r(m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)),m(u(a,a,b),u(a,a,b),u(a,a,b)),m(u(a,a,b),a,a))
     by lemma 25
   hence r(m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)),u(a,a,b),m(u(a,a,b),a,a))
@@ -249,38 +259,38 @@ Proof:
   hence r(X,Y,m(Z,u(a,a,b),a))
     by rw axiom 3
 
-Lemma 34: r(X,Y,Z) /\ r(A,B,C) => r(m(A,X,a),m(B,Y,b),m(C,Z,a))
-Proof:
-  have r(A,B,C)
-    by assumption
-   and r(X,Y,Z)
-    by assumption
-   and r(a,b,a)
-    by axiom 11
-  hence r(m(A,X,a),m(B,Y,b),m(C,Z,a))
-    by axiom 15
-
 Lemma 35: r(X,Y,Z) => r(v(X,b,a,a),v(Y,a,b,b),u(a,a,Z))
 Proof:
   have r(X,Y,Z)
     by assumption
    and r(b,a,a)
+    by axiom 5
+   and r(a,b,a)
     by axiom 2
    and r(a,b,a)
-    by axiom 11
-   and r(a,b,a)
-    by axiom 11
+    by axiom 2
   hence r(v(X,b,a,a),v(Y,a,b,b),v(Z,a,a,a))
-    by axiom 10
+    by axiom 11
   hence r(v(X,b,a,a),v(Y,a,b,b),u(a,a,Z))
     by rw lemma 18
 
-Lemma 36: r(a,u(a,a,b),v(a,a,b,b))
+Lemma 36: r(X,Y,Z) /\ r(A,B,C) => r(m(A,X,b),m(B,Y,a),m(C,Z,a))
+Proof:
+  have r(A,B,C)
+    by assumption
+   and r(X,Y,Z)
+    by assumption
+   and r(b,a,a)
+    by axiom 5
+  hence r(m(A,X,b),m(B,Y,a),m(C,Z,a))
+    by axiom 15
+
+Lemma 37: r(a,u(a,a,b),v(a,a,b,b))
 Proof:
   have r(a,b,a)
-    by axiom 11
+    by axiom 2
    and r(a,b,a)
-    by axiom 11
+    by axiom 2
   hence r(v(a,a,a,a),v(b,b,a,a),v(a,a,b,b))
     by lemma 19
   hence r(u(a,a,a),v(b,b,a,a),v(a,a,b,b))
@@ -292,12 +302,12 @@ Proof:
   hence r(a,u(a,a,b),v(a,a,b,b))
     by rw axiom 1
 
-Lemma 37: r(v(b,b,a,a),a,v(a,a,b,b))
+Lemma 38: r(v(b,b,a,a),a,v(a,a,b,b))
 Proof:
   have r(b,a,a)
-    by axiom 2
+    by axiom 5
    and r(b,a,a)
-    by axiom 2
+    by axiom 5
   hence r(v(b,b,a,a),v(a,a,a,a),v(a,a,b,b))
     by lemma 19
   hence r(v(b,b,a,a),u(a,a,a),v(a,a,b,b))
@@ -305,33 +315,74 @@ Proof:
   hence r(v(b,b,a,a),a,v(a,a,b,b))
     by rw axiom 4
 
-Lemma 38: r(u(a,a,b),u(a,b,b),a)
+Lemma 39: r(u(a,a,b),u(a,b,b),a)
 Proof:
   have r(a,b,a)
-    by axiom 11
+    by axiom 2
   hence r(u(a,a,b),u(b,b,a),u(a,a,a))
     by lemma 22
   hence r(u(a,a,b),u(b,b,a),a)
     by rw axiom 4
+  hence r(u(a,a,b),u(b,a,b),a)
+    by rw axiom 12
   hence r(u(a,a,b),u(a,b,b),a)
-    by rw axiom 13
+    by rw lemma 28
 
-Lemma 39: r(v(b,b,a,a),u(a,b,b),a)
+Lemma 40: r(a,u(a,b,b),a)
+Proof:
+  have r(a,b,a)
+    by axiom 2
+   and r(a,a,b)
+    by axiom 10
+  hence r(u(a,a,a),u(a,b,b),u(b,a,a))
+    by lemma 29
+  hence r(a,u(a,b,b),u(b,a,a))
+    by rw axiom 4
+  hence r(a,u(a,b,b),u(a,a,b))
+    by rw axiom 13 R->L
+  hence r(a,u(a,b,b),m(u(a,a,b),u(a,a,b),a))
+    by lemma 34
+  hence r(a,u(a,b,b),a)
+    by rw axiom 1
+
+Lemma 41: r(v(b,b,a,a),v(a,a,b,b),a)
+Proof:
+  have r(b,a,a)
+    by axiom 5
+  hence r(v(b,b,a,a),v(a,a,b,b),u(a,a,a))
+    by lemma 35
+  hence r(v(b,b,a,a),v(a,a,b,b),a)
+    by rw axiom 4
+
+Lemma 42: r(u(a,b,b),a,u(a,a,b))
 Proof:
   have r(a,a,b)
-    by axiom 9
+    by axiom 10
+  hence r(u(a,b,b),u(a,a,a),u(b,a,a))
+    by lemma 23
+  hence r(u(a,b,b),a,u(b,a,a))
+    by rw axiom 4
+  hence r(u(a,b,b),a,u(a,a,b))
+    by rw axiom 13 R->L
+
+Lemma 43: r(v(b,b,a,a),b,a)
+Proof:
+  have r(a,a,b)
+    by axiom 10
    and r(a,a,b)
-    by axiom 9
+    by axiom 10
   hence r(u(a,a,a),u(a,a,b),u(b,b,a))
-    by lemma 28
+    by lemma 29
   hence r(a,u(a,a,b),u(b,b,a))
     by rw axiom 4
+  hence r(a,u(a,a,b),u(b,a,b))
+    by rw axiom 12
   hence r(a,u(a,a,b),u(a,b,b))
-    by rw axiom 13
+    by rw lemma 28
    and r(a,u(a,a,b),v(a,a,b,b))
-    by lemma 36
+    by lemma 37
   hence r(m(a,a,u(a,a,b)),m(u(a,a,b),u(a,a,b),a),m(v(a,a,b,b),u(a,b,b),u(a,b,b)))
-    by lemma 30
+    by lemma 31
   hence r(m(a,a,u(a,a,b)),m(u(a,a,b),u(a,a,b),a),v(a,a,b,b))
     by rw axiom 3
   hence r(u(a,a,b),m(u(a,a,b),u(a,a,b),a),v(a,a,b,b))
@@ -339,9 +390,9 @@ Proof:
   hence r(u(a,a,b),a,v(a,a,b,b))
     by rw axiom 1
    and r(v(b,b,a,a),a,v(a,a,b,b))
-    by lemma 37
+    by lemma 38
   hence r(m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(a,a,a),m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)))
-    by lemma 30
+    by lemma 31
   hence r(v(b,b,a,a),m(a,a,a),m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)))
     by rw axiom 3
   hence r(v(b,b,a,a),a,m(v(a,a,b,b),v(a,a,b,b),u(a,b,b)))
@@ -349,9 +400,9 @@ Proof:
   hence r(v(b,b,a,a),a,u(a,b,b))
     by rw axiom 1
    and r(u(a,a,b),a,u(a,b,b))
-    by lemma 29
+    by lemma 30
    and r(u(a,a,b),u(a,b,b),a)
-    by lemma 38
+    by lemma 39
   hence r(m(v(b,b,a,a),u(a,a,b),u(a,a,b)),m(a,a,u(a,b,b)),m(u(a,b,b),u(a,b,b),a))
     by axiom 15
   hence r(v(b,b,a,a),m(a,a,u(a,b,b)),m(u(a,b,b),u(a,b,b),a))
@@ -360,31 +411,23 @@ Proof:
     by rw axiom 1
   hence r(v(b,b,a,a),u(a,b,b),a)
     by rw axiom 1
-
-Lemma 40: r(v(b,b,a,a),v(a,a,b,b),a)
-Proof:
-  have r(b,a,a)
+   and r(a,u(a,b,b),a)
+    by lemma 40
+   and r(a,b,a)
     by axiom 2
-  hence r(v(b,b,a,a),v(a,a,b,b),u(a,a,a))
-    by lemma 35
-  hence r(v(b,b,a,a),v(a,a,b,b),a)
-    by rw axiom 4
+  hence r(m(v(b,b,a,a),a,a),m(u(a,b,b),u(a,b,b),b),m(a,a,a))
+    by axiom 15
+  hence r(v(b,b,a,a),m(u(a,b,b),u(a,b,b),b),m(a,a,a))
+    by rw axiom 3
+  hence r(v(b,b,a,a),m(u(a,b,b),u(a,b,b),b),a)
+    by rw axiom 1
+  hence r(v(b,b,a,a),b,a)
+    by rw axiom 1
 
-Lemma 41: r(u(a,b,b),a,u(a,a,b))
+Goal 1: r(a,a,a)
 Proof:
   have r(a,a,b)
-    by axiom 9
-  hence r(u(a,b,b),u(a,a,a),u(b,a,a))
-    by lemma 23
-  hence r(u(a,b,b),a,u(b,a,a))
-    by rw axiom 4
-  hence r(u(a,b,b),a,u(a,a,b))
-    by rw axiom 13 R->L
-
-Lemma 42: r(v(b,b,a,a),a,a)
-Proof:
-  have r(a,a,b)
-    by axiom 9
+    by axiom 10
   hence r(v(a,b,a,a),v(a,a,b,b),u(a,a,b))
     by lemma 35
   hence r(u(a,a,b),v(a,a,b,b),u(a,a,b))
@@ -396,7 +439,7 @@ Proof:
   hence r(u(a,b,b),v(a,a,b,b),a)
     by rw axiom 1
    and r(v(b,b,a,a),v(a,a,b,b),a)
-    by lemma 40
+    by lemma 41
   hence r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(v(a,a,b,b),v(a,a,b,b),u(a,a,b)),m(a,a,a))
     by lemma 25
   hence r(v(b,b,a,a),m(v(a,a,b,b),v(a,a,b,b),u(a,a,b)),m(a,a,a))
@@ -408,7 +451,7 @@ Proof:
    and r(u(a,b,b),u(a,a,b),a)
     by lemma 24
    and r(u(a,b,b),a,u(a,a,b))
-    by lemma 41
+    by lemma 42
   hence r(m(v(b,b,a,a),u(a,b,b),u(a,b,b)),m(u(a,a,b),u(a,a,b),a),m(a,a,u(a,a,b)))
     by axiom 15
   hence r(v(b,b,a,a),m(u(a,a,b),u(a,a,b),a),m(a,a,u(a,a,b)))
@@ -418,55 +461,26 @@ Proof:
   hence r(v(b,b,a,a),a,u(a,a,b))
     by rw axiom 1
   hence r(v(b,b,a,a),a,m(u(a,a,b),u(a,a,b),a))
-    by lemma 33
+    by lemma 34
   hence r(v(b,b,a,a),a,a)
     by rw axiom 1
-
-Goal 1: r(a,a,a)
-Proof:
-  have r(a,b,a)
-    by axiom 11
-   and r(a,a,b)
-    by axiom 9
-  hence r(u(a,a,a),u(a,b,b),u(b,a,a))
-    by lemma 28
-  hence r(a,u(a,b,b),u(b,a,a))
-    by rw axiom 4
-  hence r(a,u(a,b,b),u(a,a,b))
-    by rw axiom 13 R->L
-  hence r(a,u(a,b,b),m(u(a,a,b),u(a,a,b),a))
-    by lemma 33
-  hence r(a,u(a,b,b),a)
-    by rw axiom 1
-   and r(v(b,b,a,a),u(a,b,b),a)
-    by lemma 39
-  hence r(m(v(b,b,a,a),a,a),m(u(a,b,b),u(a,b,b),b),m(a,a,a))
-    by lemma 34
-  hence r(v(b,b,a,a),m(u(a,b,b),u(a,b,b),b),m(a,a,a))
-    by rw axiom 3
-  hence r(v(b,b,a,a),m(u(a,b,b),u(a,b,b),b),a)
-    by rw axiom 1
-  hence r(v(b,b,a,a),b,a)
-    by rw axiom 1
-   and r(v(b,b,a,a),a,a)
-    by lemma 42
-   and r(b,a,a)
-    by axiom 2
+   and r(v(b,b,a,a),b,a)
+    by lemma 43
   hence r(m(v(b,b,a,a),v(b,b,a,a),b),m(b,a,a),m(a,a,a))
-    by axiom 15
+    by lemma 36
   hence r(m(v(b,b,a,a),v(b,b,a,a),b),b,m(a,a,a))
     by rw axiom 3
   hence r(m(v(b,b,a,a),v(b,b,a,a),b),b,a)
     by rw axiom 1
   hence r(b,b,a)
     by rw axiom 1
-   and r(b,a,a)
+   and r(a,b,a)
     by axiom 2
-  hence r(m(b,b,a),m(a,b,b),m(a,a,a))
-    by lemma 34
-  hence r(m(b,b,a),a,m(a,a,a))
+  hence r(m(a,b,b),m(b,b,a),m(a,a,a))
+    by lemma 36
+  hence r(a,m(b,b,a),m(a,a,a))
     by rw axiom 3
-  hence r(m(b,b,a),a,a)
+  hence r(a,m(b,b,a),a)
     by rw axiom 1
   hence r(a,a,a)
     by rw axiom 1

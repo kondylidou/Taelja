@@ -47,10 +47,10 @@ theorem taelja_goal1 : theorem_ (implies (not_ p) (implies q (implies (implies p
   have h3 : theorem_ (implies (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)))) := Eq.mp (congrArg (fun t : α => theorem_ t) (Eq.symm (ax1 (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)))))) h2
   have h4 : theorem_ (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) := taelja_lemma6
   have h5 : theorem_ (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) := ax4 (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q)) (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) h3 h4
-  have h6 : theorem_ (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ (implies p q)) q))) := Eq.mp (congrArg (fun t : α => theorem_ (or_ (not_ (not_ p)) (or_ (not_ q) (or_ (not_ t) q)))) (Eq.symm (ax1 p q))) h5
-  have h7 : theorem_ (or_ (not_ (not_ p)) (or_ (not_ q) (implies (implies p q) q))) := Eq.mp (congrArg (fun t : α => theorem_ (or_ (not_ (not_ p)) (or_ (not_ q) t))) (Eq.symm (ax1 (implies p q) q))) h6
-  have h8 : theorem_ (or_ (not_ (not_ p)) (implies q (implies (implies p q) q))) := Eq.mp (congrArg (fun t : α => theorem_ (or_ (not_ (not_ p)) t)) (Eq.symm (ax1 q (implies (implies p q) q)))) h7
-  have h9 : theorem_ (implies (not_ p) (implies q (implies (implies p q) q))) := Eq.mp (congrArg (fun t : α => theorem_ t) (Eq.symm (ax1 (not_ p) (implies q (implies (implies p q) q))))) h8
+  have h6 : theorem_ (implies (not_ p) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))) := Eq.mp (congrArg (fun t : α => theorem_ t) (Eq.symm (ax1 (not_ p) (or_ (not_ q) (or_ (not_ (or_ (not_ p) q)) q))))) h5
+  have h7 : theorem_ (implies (not_ p) (implies q (or_ (not_ (or_ (not_ p) q)) q))) := Eq.mp (congrArg (fun t : α => theorem_ (implies (not_ p) t)) (Eq.symm (ax1 q (or_ (not_ (or_ (not_ p) q)) q)))) h6
+  have h8 : theorem_ (implies (not_ p) (implies q (implies (or_ (not_ p) q) q))) := Eq.mp (congrArg (fun t : α => theorem_ (implies (not_ p) (implies q t))) (Eq.symm (ax1 (or_ (not_ p) q) q))) h7
+  have h9 : theorem_ (implies (not_ p) (implies q (implies (implies p q) q))) := Eq.mp (congrArg (fun t : α => theorem_ (implies (not_ p) (implies q (implies t q)))) (Eq.symm (ax1 p q))) h8
   exact h9
 
 end ELcl2123

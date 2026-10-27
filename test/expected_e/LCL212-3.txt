@@ -29,11 +29,11 @@ Proof:
     by lemma 6
   hence theorem(or(not(not(p)),or(not(q),or(not(or(not(p),q)),q))))
     by axiom 4
-  hence theorem(or(not(not(p)),or(not(q),or(not(implies(p,q)),q))))
+  hence theorem(implies(not(p),or(not(q),or(not(or(not(p),q)),q))))
     by rw axiom 1 R->L
-  hence theorem(or(not(not(p)),or(not(q),implies(implies(p,q),q))))
+  hence theorem(implies(not(p),implies(q,or(not(or(not(p),q)),q))))
     by rw axiom 1 R->L
-  hence theorem(or(not(not(p)),implies(q,implies(implies(p,q),q))))
+  hence theorem(implies(not(p),implies(q,implies(or(not(p),q),q))))
     by rw axiom 1 R->L
   hence theorem(implies(not(p),implies(q,implies(implies(p,q),q))))
     by rw axiom 1 R->L

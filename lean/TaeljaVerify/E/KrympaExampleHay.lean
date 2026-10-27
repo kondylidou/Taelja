@@ -15,13 +15,13 @@ axiom c : α
 axiom h : α → α → α
 
 -- Axiom 1
-axiom ax1 : ∀ (x : α), h a x = c
+axiom ax1 : ∀ (x : α), h x b = x
 -- Axiom 2
-axiom ax2 : ∀ (x : α), h x b = x
+axiom ax2 : ∀ (x : α), h a x = c
 
 -- Goal 1
 theorem taelja_goal1 : a = c := by
-  calc a = h a b := Eq.symm (ax2 a)
-      _ = c := ax1 b
+  calc a = h a b := Eq.symm (ax1 a)
+      _ = c := ax2 b
 
 end EKrympaExampleHay

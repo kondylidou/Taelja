@@ -10,10 +10,12 @@ noncomputable def taelja_elem : α := Classical.choice taelja_nonempty
 
 axiom a : α
 axiom b : α
+axiom c : α
 axiom d : α
-axiom e : α
 
-axiom l1 : α → α → Prop
+axiom k1 : α → Prop
+axiom l0 : α → Prop
+axiom l2 : α → α → Prop
 axiom m0 : α → α → α → Prop
 axiom n0 : α → α → Prop
 axiom n1 : α → α → α → Prop
@@ -21,19 +23,18 @@ axiom p0 : α → α → Prop
 axiom q0 : α → α → Prop
 axiom q2 : α → α → α → Prop
 axiom q3 : α → α → Prop
-axiom r0 : α → Prop
 axiom s0 : α → Prop
 axiom s1 : α → Prop
 axiom s2 : α → Prop
 
 -- Axiom 1
-axiom ax1 : r0 b
+axiom ax1 : n0 d c
 -- Axiom 2
-axiom ax2 : ∀ (x : α), p0 b x
+axiom ax2 : n0 c d
 -- Axiom 3
-axiom ax3 : ∀ (x y : α), m0 x d y
+axiom ax3 : ∀ (x y : α), n0 x y → k1 y
 -- Axiom 4
-axiom ax4 : ∀ (x y z u : α), p0 x y → r0 z → m0 u y x → l1 y u
+axiom ax4 : ∀ (x : α), p0 b x
 -- Axiom 5
 axiom ax5 : ∀ (x : α), p0 x x → s1 x
 -- Axiom 6
@@ -45,50 +46,75 @@ axiom ax8 : s0 d
 -- Axiom 9
 axiom ax9 : s1 a → s0 d → s2 d
 -- Axiom 10
-axiom ax10 : n0 e e
+axiom ax10 : ∀ (x y : α), m0 x d y
 -- Axiom 11
-axiom ax11 : ∀ (x y : α), l1 x y → q2 y y x
+axiom ax11 : ∀ (x : α), q0 x d
 -- Axiom 12
-axiom ax12 : ∀ (x y z : α), q2 x y z → n0 x y → q3 y z
+axiom ax12 : ∀ (x y z u : α), p0 x x → s1 y → m0 z y u → l2 u u
 -- Axiom 13
-axiom ax13 : ∀ (x y z u : α), m0 x y y → m0 z x u → n1 u u z
+axiom ax13 : l0 c
 -- Axiom 14
-axiom ax14 : ∀ (x y z : α), n1 x y z → s2 y → q3 z y → q3 y z
+axiom ax14 : ∀ (x y : α), k1 x → l0 c → l2 x y → q2 y c x
+-- Axiom 15
+axiom ax15 : ∀ (x y z : α), q2 x y z → n0 x y → q3 y z
+-- Axiom 16
+axiom ax16 : s0 b
+-- Axiom 17
+axiom ax17 : ∀ (x y : α), s0 b → l0 x → p0 b y → n1 x y x
+-- Axiom 18
+axiom ax18 : ∀ (x y z : α), n1 x y z → s2 y → q3 z y → q3 y z
 
--- Lemma 15
-theorem taelja_lemma15 : s1 b := by
-  have h1 : p0 b b := ax2 b
+-- Lemma 19
+theorem taelja_lemma19 : s1 b := by
+  have h1 : p0 b b := ax4 b
   have h2 : s1 b := ax5 b h1
   exact h2
 
--- Lemma 16
-theorem taelja_lemma16 : s2 d := by
+-- Lemma 20
+theorem taelja_lemma20 : s1 d := by
+  have h1 : q0 d d := ax11 d
+  have h2 : s1 b := taelja_lemma19
+  have h3 : s1 d := ax7 d d b h1 h2
+  exact h3
+
+-- Lemma 21
+theorem taelja_lemma21 : l2 d d := by
+  have x : α := taelja_elem
+  have h1 : p0 b b := ax4 b
+  have h2 : s1 d := taelja_lemma20
+  have h3 : m0 x d d := ax10 x d
+  have h4 : l2 d d := ax12 b d x d h1 h2 h3
+  exact h4
+
+-- Lemma 22
+theorem taelja_lemma22 : s2 d := by
   have h1 : q0 a b := ax6
-  have h2 : s1 b := taelja_lemma15
+  have h2 : s1 b := taelja_lemma19
   have h3 : s1 a := ax7 a b b h1 h2
   have h4 : s0 d := ax8
   have h5 : s2 d := ax9 h3 h4
   exact h5
 
--- Lemma 17
-theorem taelja_lemma17 : q3 e d := by
-  have h1 : p0 b d := ax2 d
-  have h2 : r0 b := ax1
-  have h3 : m0 e d b := ax3 e b
-  have h4 : l1 d e := ax4 b d b e h1 h2 h3
-  have h5 : q2 e e d := ax11 d e h4
-  have h6 : n0 e e := ax10
-  have h7 : q3 e d := ax12 e e d h5 h6
+-- Lemma 23
+theorem taelja_lemma23 : q3 c d := by
+  have h1 : n0 c d := ax2
+  have h2 : k1 d := ax3 c d h1
+  have h3 : l0 c := ax13
+  have h4 : l2 d d := taelja_lemma21
+  have h5 : q2 d c d := ax14 d d h2 h3 h4
+  have h6 : n0 d c := ax1
+  have h7 : q3 c d := ax15 d c d h5 h6
   exact h7
 
 -- Goal 1
-theorem taelja_goal1 : q3 d e := by
-  have h1 : m0 d d d := ax3 d d
-  have h2 : m0 e d d := ax3 e d
-  have h3 : n1 d d e := ax13 d d e d h1 h2
-  have h4 : s2 d := taelja_lemma16
-  have h5 : q3 e d := taelja_lemma17
-  have h6 : q3 d e := ax14 d d e h3 h4 h5
-  exact h6
+theorem taelja_goal1 : q3 d c := by
+  have h1 : s0 b := ax16
+  have h2 : l0 c := ax13
+  have h3 : p0 b d := ax4 d
+  have h4 : n1 c d c := ax17 c d h1 h2 h3
+  have h5 : s2 d := taelja_lemma22
+  have h6 : q3 c d := taelja_lemma23
+  have h7 : q3 d c := ax18 c d c h4 h5 h6
+  exact h7
 
 end ESyn1791

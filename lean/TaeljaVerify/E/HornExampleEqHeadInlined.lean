@@ -18,9 +18,9 @@ axiom p : α → Prop
 axiom q : α → Prop
 
 -- Axiom 1
-axiom ax1 : ∀ (x : α), q (f x)
+axiom ax1 : ∀ (x : α), p (f x)
 -- Axiom 2
-axiom ax2 : ∀ (x : α), p (f x)
+axiom ax2 : ∀ (x : α), q (f x)
 -- Axiom 3
 axiom ax3 : ∀ (x : α), p x → q x → x = zero
 -- Axiom 4
@@ -28,8 +28,8 @@ axiom ax4 : ∀ (x : α), f x = g x
 
 -- Lemma 5
 theorem taelja_lemma5 : f a = zero := by
-  have h1 : p (f a) := ax2 a
-  have h2 : q (f a) := ax1 a
+  have h1 : p (f a) := ax1 a
+  have h2 : q (f a) := ax2 a
   have h3 : f a = zero := ax3 (f a) h1 h2
   exact h3
 

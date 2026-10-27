@@ -17,20 +17,20 @@ axiom s : α → α
 axiom E : α → α → Prop
 
 -- Axiom 1
-axiom ax1 : ∀ (x : α), E (f x) (s n_0)
+axiom ax1 : ∀ (x : α), E (f (AP (s (s n_0)) x)) n_0
 -- Axiom 2
-axiom ax2 : ∀ (x : α), E (f (AP (s (s n_0)) x)) n_0
+axiom ax2 : ∀ (x : α), E (f x) (s n_0)
 
 -- Goal 1
 theorem taelja_goal1 : ∀ (x : α), E (f (AP (s (s n_0)) x)) n_0 := by
   intro x
-  have h1 : E (f (AP (s (s n_0)) x)) n_0 := ax2 x
+  have h1 : E (f (AP (s (s n_0)) x)) n_0 := ax1 x
   exact h1
 
 -- Goal 2
 theorem taelja_goal2 : ∀ (x : α), E (f x) (s n_0) := by
   intro x
-  have h1 : E (f x) (s n_0) := ax1 x
+  have h1 : E (f x) (s n_0) := ax2 x
   exact h1
 
 end ESyo6321

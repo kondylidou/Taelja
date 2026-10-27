@@ -18,79 +18,79 @@ axiom least_upper_bound : α → α → α
 axiom multiply : α → α → α
 
 -- Axiom 1
-axiom ax1 : ∀ (x : α), multiply identity x = x
+axiom ax1 : ∀ (x : α), least_upper_bound identity x = x
 -- Axiom 2
-axiom ax2 : ∀ (x : α), multiply (inverse x) x = identity
+axiom ax2 : ∀ (x y : α), greatest_lower_bound x (least_upper_bound x y) = x
 -- Axiom 3
-axiom ax3 : ∀ (x y z : α), multiply (multiply x y) z = multiply x (multiply y z)
+axiom ax3 : ∀ (x y : α), greatest_lower_bound x y = greatest_lower_bound y x
 -- Axiom 4
-axiom ax4 : ∀ (x y : α), greatest_lower_bound x y = greatest_lower_bound y x
+axiom ax4 : ∀ (x : α), multiply (inverse x) x = identity
 -- Axiom 5
-axiom ax5 : ∀ (x : α), least_upper_bound identity x = x
+axiom ax5 : ∀ (x : α), multiply identity x = x
 -- Axiom 6
-axiom ax6 : ∀ (x y : α), greatest_lower_bound x (least_upper_bound x y) = x
+axiom ax6 : ∀ (x y z : α), multiply (multiply x y) z = multiply x (multiply y z)
 -- Axiom 7
 axiom ax7 : ∀ (x y z : α), multiply x (greatest_lower_bound y z) = greatest_lower_bound (multiply x y) (multiply x z)
 
 -- Lemma 8
-theorem taelja_lemma8 : ∀ (x y : α), multiply (inverse x) (multiply x y) = y := by
-  intro x y
-  calc multiply (inverse x) (multiply x y) = multiply (multiply (inverse x) x) y := Eq.symm (ax3 (inverse x) x y)
-      _ = multiply identity y := congrArg (fun t : α => multiply t y) (ax2 x)
-      _ = y := ax1 y
+theorem taelja_lemma8 : ∀ (x : α), greatest_lower_bound x identity = identity := by
+  intro x
+  calc greatest_lower_bound x identity = greatest_lower_bound identity x := ax3 x identity
+      _ = greatest_lower_bound identity (least_upper_bound identity x) := congrArg (fun t : α => greatest_lower_bound identity t) (Eq.symm (ax1 x))
+      _ = identity := ax2 identity x
 
 -- Lemma 9
-theorem taelja_lemma9 : ∀ (x y : α), multiply (inverse (inverse x)) y = multiply x y := by
+theorem taelja_lemma9 : ∀ (x y : α), multiply (inverse x) (multiply x y) = y := by
   intro x y
-  calc multiply (inverse (inverse x)) y = multiply (inverse (inverse x)) (multiply (inverse x) (multiply x y)) := congrArg (fun t : α => multiply (inverse (inverse x)) t) (Eq.symm (taelja_lemma8 x y))
-      _ = multiply x y := taelja_lemma8 (inverse x) (multiply x y)
+  calc multiply (inverse x) (multiply x y) = multiply (multiply (inverse x) x) y := Eq.symm (ax6 (inverse x) x y)
+      _ = multiply identity y := congrArg (fun t : α => multiply t y) (ax4 x)
+      _ = y := ax5 y
 
 -- Lemma 10
-theorem taelja_lemma10 : ∀ (x : α), multiply x identity = x := by
+theorem taelja_lemma10 : ∀ (x : α), multiply (inverse (inverse x)) identity = x := by
   intro x
-  calc multiply x identity = multiply (inverse (inverse x)) identity := Eq.symm (taelja_lemma9 x identity)
-      _ = multiply (inverse (inverse x)) (multiply (inverse x) x) := congrArg (fun t : α => multiply (inverse (inverse x)) t) (Eq.symm (ax2 x))
-      _ = x := taelja_lemma8 (inverse x) x
+  calc multiply (inverse (inverse x)) identity = multiply (inverse (inverse x)) (multiply (inverse x) x) := congrArg (fun t : α => multiply (inverse (inverse x)) t) (Eq.symm (ax4 x))
+      _ = x := taelja_lemma9 (inverse x) x
 
 -- Lemma 11
-theorem taelja_lemma11 : ∀ (x : α), inverse (inverse x) = x := by
+theorem taelja_lemma11 : ∀ (x : α), multiply (inverse (inverse (inverse x))) x = identity := by
   intro x
-  calc inverse (inverse x) = multiply (inverse (inverse x)) identity := Eq.symm (taelja_lemma10 (inverse (inverse x)))
-      _ = multiply x identity := taelja_lemma9 x identity
-      _ = x := taelja_lemma10 x
+  calc multiply (inverse (inverse (inverse x))) x = multiply (inverse (inverse (inverse x))) (multiply (inverse (inverse x)) identity) := congrArg (fun t : α => multiply (inverse (inverse (inverse x))) t) (Eq.symm (taelja_lemma10 x))
+      _ = identity := taelja_lemma9 (inverse (inverse x)) identity
 
 -- Lemma 12
-theorem taelja_lemma12 : ∀ (x y : α), multiply x (multiply (inverse x) y) = y := by
-  intro x y
-  calc multiply x (multiply (inverse x) y) = multiply (inverse (inverse x)) (multiply (inverse x) y) := congrArg (fun t : α => multiply t (multiply (inverse x) y)) (Eq.symm (taelja_lemma11 x))
-      _ = y := taelja_lemma8 (inverse x) y
+theorem taelja_lemma12 : ∀ (x : α), inverse (inverse x) = x := by
+  intro x
+  calc inverse (inverse x) = multiply (inverse (inverse (inverse (inverse x)))) identity := Eq.symm (taelja_lemma10 (inverse (inverse x)))
+      _ = multiply (inverse (inverse (inverse (inverse x)))) (multiply (inverse (inverse (inverse x))) x) := congrArg (fun t : α => multiply (inverse (inverse (inverse (inverse x)))) t) (Eq.symm (taelja_lemma11 x))
+      _ = x := taelja_lemma9 (inverse (inverse (inverse x))) x
 
 -- Lemma 13
-theorem taelja_lemma13 : ∀ (x : α), greatest_lower_bound x identity = identity := by
+theorem taelja_lemma13 : ∀ (x : α), multiply x identity = x := by
   intro x
-  calc greatest_lower_bound x identity = greatest_lower_bound identity x := Eq.symm (ax4 identity x)
-      _ = greatest_lower_bound identity (least_upper_bound identity x) := congrArg (fun t : α => greatest_lower_bound identity t) (Eq.symm (ax5 x))
-      _ = identity := ax6 identity x
-
--- Lemma 14
-theorem taelja_lemma14 : ∀ (x y : α), greatest_lower_bound x y = x := by
-  intro x y
-  calc greatest_lower_bound x y = greatest_lower_bound x (multiply x (multiply (inverse x) y)) := congrArg (fun t : α => greatest_lower_bound x t) (Eq.symm (taelja_lemma12 x y))
-      _ = greatest_lower_bound (multiply x (multiply (inverse x) y)) x := Eq.symm (ax4 (multiply x (multiply (inverse x) y)) x)
-      _ = greatest_lower_bound (multiply x (multiply (inverse x) y)) (multiply x identity) := congrArg (fun t : α => greatest_lower_bound (multiply x (multiply (inverse x) y)) t) (Eq.symm (taelja_lemma10 x))
-      _ = multiply x (greatest_lower_bound (multiply (inverse x) y) identity) := Eq.symm (ax7 x (multiply (inverse x) y) identity)
-      _ = multiply x identity := congrArg (fun t : α => multiply x t) (taelja_lemma13 (multiply (inverse x) y))
+  calc multiply x identity = multiply (inverse (inverse x)) identity := congrArg (fun t : α => multiply t identity) (Eq.symm (taelja_lemma12 x))
       _ = x := taelja_lemma10 x
 
+-- Lemma 14
+theorem taelja_lemma14 : ∀ (x : α), multiply x (inverse x) = identity := by
+  intro x
+  calc multiply x (inverse x) = multiply (inverse (inverse x)) (inverse x) := congrArg (fun t : α => multiply t (inverse x)) (Eq.symm (taelja_lemma12 x))
+      _ = identity := ax4 (inverse x)
+
 -- Lemma 15
-theorem taelja_lemma15 : ∀ (x y : α), x = y := by
-  intro x y
-  calc x = greatest_lower_bound x y := Eq.symm (taelja_lemma14 x y)
-      _ = greatest_lower_bound y x := Eq.symm (ax4 y x)
-      _ = y := taelja_lemma14 y x
+theorem taelja_lemma15 : ∀ (x : α), identity = x := by
+  intro x
+  calc identity = greatest_lower_bound x identity := Eq.symm (taelja_lemma8 x)
+      _ = greatest_lower_bound x (multiply x (inverse x)) := congrArg (fun t : α => greatest_lower_bound x t) (Eq.symm (taelja_lemma14 x))
+      _ = greatest_lower_bound (multiply x (inverse x)) x := Eq.symm (ax3 (multiply x (inverse x)) x)
+      _ = greatest_lower_bound (multiply x (inverse x)) (multiply x identity) := congrArg (fun t : α => greatest_lower_bound (multiply x (inverse x)) t) (Eq.symm (taelja_lemma13 x))
+      _ = multiply x (greatest_lower_bound (inverse x) identity) := Eq.symm (ax7 x (inverse x) identity)
+      _ = multiply x identity := congrArg (fun t : α => multiply x t) (taelja_lemma8 (inverse x))
+      _ = x := taelja_lemma13 x
 
 -- Goal 1
 theorem taelja_goal1 : multiply a b = multiply b a := by
-  calc multiply a b = multiply b a := taelja_lemma15 (multiply a b) (multiply b a)
+  calc multiply a b = identity := Eq.symm (taelja_lemma15 (multiply a b))
+      _ = multiply b a := taelja_lemma15 (multiply b a)
 
 end EGrp1921

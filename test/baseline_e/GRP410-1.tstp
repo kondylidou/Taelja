@@ -1,489 +1,715 @@
-# Preprocessing class: FSSSSMSSSSSNFFN.
-# Configuration: G-E--_302_C18_F1_URBAN_RG_S04BN
-# No SInE strategy applied
-# Search class: FUUPF-FFSF21-DFFFFFNN
-# Configuration: G-E--_208_C18_F1_SE_CS_SOS_SP_PS_S5PRR_RG_S04AN
-# Initializing proof state
-# Scanning for AC axioms
-#
-#cnf(i_0_4, negated_conjecture, (multiply(multiply(inverse(b2),b2),a2)!=a2)).
-#
-#cnf(i_0_3, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(inverse(X3),X3)))=X2)).
-# Presaturation interreduction done
-#
-#cnf(i_0_4, negated_conjecture, (multiply(multiply(inverse(b2),b2),a2)!=a2)).
-#
-#cnf(i_0_3, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(inverse(X3),X3)))=X2)).
-#
-#cnf(i_0_7, plain, (multiply(multiply(inverse(X2),multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(X3))),inverse(multiply(inverse(X3),X3)))=inverse(X3))).
-#
-#cnf(i_0_5, plain, (multiply(multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(inverse(multiply(inverse(X4),X4))))),inverse(multiply(inverse(inverse(multiply(inverse(X4),X4))),inverse(multiply(inverse(X4),X4)))))=multiply(inverse(multiply(X2,inverse(multiply(X3,X4)))),multiply(X2,inverse(X4))))).
-#
-#cnf(i_0_34, plain, (multiply(inverse(multiply(X4,inverse(multiply(multiply(X2,inverse(multiply(inverse(X3),X3))),X3)))),multiply(X4,inverse(X3)))=X2)).
-#
-#cnf(i_0_35, plain, (multiply(inverse(multiply(X5,inverse(multiply(X2,X3)))),multiply(X5,inverse(X3)))=multiply(inverse(multiply(X4,inverse(multiply(X2,X3)))),multiply(X4,inverse(X3))))).
-######
-#cnf(i_0_82, plain, (multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(multiply(X2,inverse(X4)))))=multiply(inverse(multiply(X5,inverse(X3))),multiply(X5,inverse(multiply(X2,inverse(X4))))))).
-#
-#cnf(i_0_132, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(X4)))=multiply(inverse(multiply(X6,inverse(X2))),multiply(X6,inverse(X4))))).
-##
-#cnf(i_0_6, plain, (multiply(multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(X4,multiply(inverse(X3),X3))))),X2),inverse(multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(X3),X3))))=X4)).
-#####
-#cnf(i_0_153, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,multiply(X3,inverse(X4)))))),multiply(X1,inverse(multiply(X3,inverse(X4))))),inverse(multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,inverse(X4)))))=X2)).
-##
-#cnf(i_0_156, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,inverse(multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,inverse(X4))))),multiply(X3,inverse(X4)))))),multiply(X1,inverse(multiply(X3,inverse(X4)))))=X2)).
-####
-#cnf(i_0_8, plain, (multiply(inverse(X2),multiply(multiply(inverse(multiply(X3,inverse(multiply(X2,X4)))),multiply(X3,inverse(X4))),inverse(X4)))=multiply(inverse(multiply(b2,inverse(multiply(inverse(X4),X4)))),multiply(b2,inverse(X4))))).
-###
-#cnf(i_0_260, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,multiply(X3,inverse(multiply(inverse(X4),X4))))))),multiply(X1,inverse(multiply(X3,inverse(multiply(inverse(X4),X4)))))),inverse(multiply(inverse(X6),X6)))=X2)).
-#
-#cnf(i_0_384, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X4)))),multiply(X1,inverse(X4))),inverse(multiply(inverse(X8),X8)))=X2)).
-#
-#cnf(i_0_464, plain, (multiply(X2,inverse(multiply(inverse(X4),X4)))=multiply(X2,inverse(multiply(inverse(X3),X3))))).
-#####
-#cnf(i_0_488, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,inverse(multiply(inverse(X4),X4))),X3)))),multiply(X1,inverse(X3)))=X2)).
-#
-#cnf(i_0_6, plain, (multiply(multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(X4,multiply(inverse(X3),X3))))),X2),inverse(multiply(inverse(b2),b2)))=X4)).
-#
-#cnf(i_0_581, plain, (multiply(multiply(inverse(X2),X2),inverse(multiply(inverse(b2),b2)))=inverse(multiply(inverse(X3),X3)))).
-#
-#cnf(i_0_632, plain, (inverse(multiply(inverse(X3),X3))=inverse(multiply(inverse(X2),X2)))).
-#########
-#cnf(i_0_5, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(inverse(multiply(inverse(X3),X3))))),inverse(multiply(inverse(b2),b2)))=multiply(inverse(multiply(X4,inverse(multiply(X2,X3)))),multiply(X4,inverse(X3))))).
-###
-#cnf(i_0_664, plain, (multiply(multiply(inverse(X1),X1),inverse(multiply(inverse(X3),X3)))=inverse(multiply(inverse(X2),X2)))).
-#######
-#cnf(i_0_649, plain, (inverse(multiply(inverse(X1),X1))=inverse(multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(X2),X2))))).
-#
-#cnf(i_0_337, plain, (multiply(inverse(inverse(X1)),multiply(multiply(inverse(multiply(X2,inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(X4),X4)))),multiply(b2,inverse(X4)))))),multiply(X2,inverse(multiply(multiply(inverse(multiply(X3,inverse(multiply(X1,X4)))),multiply(X3,inverse(X4))),inverse(X4))))),inverse(multiply(multiply(inverse(multiply(X3,inverse(multiply(X1,X4)))),multiply(X3,inverse(X4))),inverse(X4)))))=multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(multiply(inverse(multiply(X3,inverse(multiply(X1,X4)))),multiply(X3,inverse(X4))),inverse(X4))))))).
-###########
-#cnf(i_0_345, plain, (multiply(inverse(inverse(multiply(X1,inverse(X2)))),multiply(multiply(inverse(multiply(X3,inverse(multiply(inverse(multiply(X5,inverse(X2))),multiply(X5,inverse(X4)))))),multiply(X3,inverse(multiply(X1,inverse(X4))))),inverse(multiply(X1,inverse(X4)))))=multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(X1,inverse(X4))))))).
-################
-#cnf(i_0_840, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(inverse(X5),X5)),X4)))),multiply(X1,inverse(X4)))=multiply(inverse(X2),X2))).
-#
-#cnf(i_0_1229, plain, (multiply(inverse(X5),X5)=multiply(inverse(X4),X4))).
-#
-#cnf(i_0_1311, negated_conjecture, (multiply(multiply(inverse(X1),X1),a2)!=a2)).
-###
-#cnf(i_0_1402, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(X1),X1)),a2)!=a2)).
-#
-#cnf(i_0_425, plain, (multiply(multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(inverse(multiply(inverse(X5),X5))))),inverse(multiply(inverse(X6),X6)))=multiply(inverse(multiply(X2,inverse(multiply(X3,X4)))),multiply(X2,inverse(X4))))).
-#########
-#cnf(i_0_1410, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(X1),X1))),a2)!=a2)).
-##
-#cnf(i_0_5, plain, (multiply(inverse(multiply(b2,inverse(multiply(X2,b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(X4,inverse(multiply(X2,X3)))),multiply(X4,inverse(X3))))).
-##
-#cnf(i_0_1416, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(X2),X2)),multiply(inverse(X1),X1)),a2)!=a2)).
-#########
-#cnf(i_0_426, plain, (multiply(inverse(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3)))),multiply(multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(inverse(multiply(inverse(X5),X5))))),inverse(inverse(multiply(inverse(X5),X5)))))=multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(inverse(multiply(inverse(X5),X5))))))).
-###########
-#cnf(i_0_429, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(X4))),X2)=multiply(inverse(multiply(X6,inverse(X4))),multiply(X6,inverse(multiply(inverse(X5),X5)))))).
-###########
-#cnf(i_0_6, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(X4,multiply(inverse(X3),X3))))),multiply(b2,inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(b2),b2)))=X4)).
-##########
-#cnf(i_0_1552, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(X1),X1)))),a2)!=a2)).
-#
-#cnf(i_0_430, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(X4,multiply(inverse(X5),X5))))),multiply(b2,inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(X6),X6)))=X4)).
-###########
-#cnf(i_0_431, plain, (multiply(inverse(X1),X1)=multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(inverse(X5),X5)))))).
-###########
-#cnf(i_0_433, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X2)))),multiply(X1,inverse(X3)))=multiply(inverse(X5),multiply(multiply(inverse(multiply(X4,inverse(multiply(X5,X6)))),multiply(X4,inverse(X6))),inverse(X3))))).
-######################
-#cnf(i_0_435, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(X5)))=multiply(inverse(multiply(X6,inverse(multiply(inverse(X4),X4)))),multiply(X6,inverse(X5))))).
-#########
-#cnf(i_0_2008, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(X1),X1))))),a2)!=a2)).
-##
-#cnf(i_0_437, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(inverse(X3),X3))))=multiply(inverse(multiply(b2,inverse(X2))),multiply(b2,inverse(multiply(inverse(b2),b2)))))).
-####
-#cnf(i_0_1400, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(multiply(inverse(X1),X1)),multiply(inverse(X2),X2))),a2)!=a2)).
-#######
-#cnf(i_0_440, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(X4))),inverse(multiply(inverse(X5),X5)))=inverse(X4))).
-#######
-#cnf(i_0_2664, negated_conjecture, (multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(X2),X2)))),multiply(b2,inverse(multiply(inverse(b2),b2)))),a2)!=a2)).
-####
-#cnf(i_0_455, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(X6,inverse(X3))),multiply(X6,inverse(X4)))))),multiply(X1,inverse(multiply(X2,inverse(X4))))),inverse(multiply(inverse(X5),X5)))=inverse(multiply(X2,inverse(X3))))).
-######################
-#cnf(i_0_522, plain, (multiply(multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(multiply(X2,inverse(X5))))),inverse(multiply(inverse(X6),X6)))=inverse(multiply(X2,inverse(multiply(multiply(X3,inverse(multiply(inverse(X4),X4))),X5)))))).
-###########
-#cnf(i_0_455, plain, (inverse(multiply(X5,inverse(multiply(multiply(multiply(inverse(multiply(X2,inverse(X3))),multiply(X2,inverse(X4))),inverse(multiply(inverse(b2),b2))),X4))))=inverse(multiply(X5,inverse(X3))))).
-###########
-#cnf(i_0_528, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(X4,inverse(multiply(inverse(X5),X5))),multiply(inverse(X6),X6))))),multiply(b2,inverse(multiply(inverse(b2),b2))))=X4)).
-###########
-#cnf(i_0_535, plain, (multiply(inverse(multiply(X1,inverse(multiply(X3,X6)))),multiply(X1,inverse(X6)))=multiply(inverse(multiply(X2,inverse(multiply(X3,X4)))),multiply(X2,inverse(X4))))).
-###############
-#cnf(i_0_2935, negated_conjecture, (multiply(multiply(inverse(multiply(X2,inverse(multiply(inverse(X1),X1)))),multiply(X2,inverse(multiply(inverse(X3),X3)))),a2)!=a2)).
-########
-#cnf(i_0_1395, plain, (multiply(inverse(X1),X1)=multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(X2),X2)))).
-#####################
-#cnf(i_0_790, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,multiply(inverse(X3),X3))))),multiply(X1,inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(X4),X4)))=X2)).
-#####
-#cnf(i_0_3890, negated_conjecture, (multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),inverse(multiply(inverse(X4),X4))),a2)!=a2)).
-######
-#cnf(i_0_793, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,inverse(multiply(inverse(X3),X3))),multiply(inverse(X4),X4))))),multiply(X1,inverse(multiply(inverse(b2),b2))))=X2)).
-####
-#cnf(i_0_4350, negated_conjecture, (multiply(multiply(inverse(inverse(multiply(inverse(X2),X2))),inverse(multiply(inverse(X1),X1))),a2)!=a2)).
-###################################################
-#cnf(i_0_802, plain, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(inverse(multiply(X1,X2))),inverse(X2))),inverse(multiply(inverse(X3),X3)))=X1)).
-###########
-#cnf(i_0_805, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(X3)))=multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(inverse(X2)),inverse(X3))))).
-#################################
-#cnf(i_0_811, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(b2),b2)))),multiply(X1,inverse(X2))),inverse(multiply(inverse(X3),X3)))=inverse(X2))).
-############################################
-#cnf(i_0_826, plain, (multiply(inverse(multiply(multiply(inverse(X1),X1),inverse(X2))),inverse(multiply(inverse(X5),X5)))=multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(multiply(inverse(X3),X3)))))).
-#
-#cnf(i_0_5148, plain, (multiply(inverse(inverse(multiply(inverse(b2),b2))),inverse(multiply(inverse(X3),X3)))=multiply(inverse(b2),b2))).
-#####################
-#cnf(i_0_830, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X2)))),multiply(X1,inverse(X3)))=multiply(inverse(inverse(multiply(inverse(X5),X5))),multiply(multiply(inverse(X4),X4),inverse(X3))))).
-###################
-#cnf(i_0_2668, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(b2,inverse(multiply(inverse(X2),X2)))),multiply(b2,inverse(multiply(inverse(b2),b2))))))),a2)!=a2)).
-####################################
-#cnf(i_0_841, plain, (multiply(inverse(multiply(X1,inverse(inverse(multiply(inverse(X4),X4))))),multiply(X1,inverse(inverse(multiply(inverse(X3),X3)))))=inverse(inverse(multiply(inverse(X2),X2))))).
-#
-#cnf(i_0_5766, plain, (inverse(inverse(multiply(inverse(X4),X4)))=multiply(inverse(b2),b2))).
-#
-#cnf(i_0_5958, negated_conjecture, (multiply(inverse(multiply(inverse(b2),b2)),a2)!=a2)).
-#
-#cnf(i_0_6012, negated_conjecture, (multiply(inverse(multiply(inverse(X1),X1)),a2)!=a2)).
-###
-#cnf(i_0_5148, plain, (inverse(multiply(inverse(b2),b2))=multiply(inverse(b2),b2))).
-#####
-#cnf(i_0_830, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X2)))),multiply(X1,inverse(X3)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(X5),X5),inverse(X3))))).
-###############
-#cnf(i_0_5968, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(X2),X2)),a2)!=a2)).
-#
-#cnf(i_0_6334, negated_conjecture, (multiply(multiply(multiply(inverse(X2),X2),multiply(inverse(X1),X1)),a2)!=a2)).
-######
-#cnf(i_0_805, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(X3)))=multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(X2)),inverse(X3))))).
-#
-#cnf(i_0_6162, plain, (inverse(multiply(inverse(X1),X1))=multiply(inverse(X1),X1))).
-##########
-#cnf(i_0_433, plain, (multiply(inverse(X4),multiply(multiply(inverse(multiply(X5,inverse(multiply(X4,X6)))),multiply(X5,inverse(X6))),inverse(X3)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X3))))).
-#######
-#cnf(i_0_6463, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(b2),b2))=multiply(inverse(b2),b2))).
-####
-#cnf(i_0_811, plain, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X2))),multiply(inverse(X3),X3))=inverse(X2))).
-#
-#cnf(i_0_6464, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(X3),X3))=multiply(inverse(b2),b2))).
-#####################
-#cnf(i_0_426, plain, (multiply(inverse(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3)))),multiply(multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,multiply(inverse(b2),b2))),multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
-##
-#cnf(i_0_6529, negated_conjecture, (multiply(multiply(multiply(inverse(X1),X1),multiply(multiply(inverse(X2),X2),multiply(inverse(X2),X2))),a2)!=a2)).
-#########
-#cnf(i_0_345, plain, (multiply(inverse(inverse(multiply(X1,inverse(X2)))),multiply(multiply(inverse(multiply(X3,inverse(multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(X5)))))),multiply(X3,inverse(multiply(X1,inverse(X5))))),inverse(multiply(X1,inverse(X5)))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(X1,inverse(X5))))))).
-#
-#cnf(i_0_6694, plain, (multiply(multiply(inverse(X2),X2),multiply(inverse(X1),X1))=multiply(inverse(X2),X2))).
-##########
-#cnf(i_0_337, plain, (multiply(inverse(inverse(X1)),multiply(multiply(inverse(multiply(X2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X3)))))),multiply(X2,inverse(multiply(multiply(inverse(multiply(X4,inverse(multiply(X1,X3)))),multiply(X4,inverse(X3))),inverse(X3))))),inverse(multiply(multiply(inverse(multiply(X4,inverse(multiply(X1,X3)))),multiply(X4,inverse(X3))),inverse(X3)))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(multiply(X4,inverse(multiply(X1,X3)))),multiply(X4,inverse(X3))),inverse(X3))))))).
-######
-#cnf(i_0_3546, plain, (inverse(multiply(X1,inverse(multiply(multiply(inverse(X5),X5),X3))))=inverse(multiply(X1,inverse(X3))))).
-#####
-#cnf(i_0_522, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(X3,inverse(X4))))),multiply(inverse(X5),X5))=inverse(multiply(X3,inverse(multiply(multiply(X2,multiply(inverse(X6),X6)),X4)))))).
-######
-#cnf(i_0_7158, plain, (inverse(multiply(inverse(inverse(multiply(multiply(inverse(X1),X1),X2))),inverse(X2)))=multiply(inverse(b2),b2))).
-#####
-#cnf(i_0_790, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,multiply(inverse(X3),X3))))),multiply(X1,multiply(inverse(b2),b2))),multiply(inverse(X4),X4))=X2)).
-########
-#cnf(i_0_6563, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(b2,multiply(inverse(X1),X1))),multiply(b2,multiply(inverse(b2),b2)))))),a2)!=a2)).
-###
-#cnf(i_0_425, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,multiply(inverse(b2),b2))),multiply(inverse(X4),X4))=multiply(inverse(multiply(X5,inverse(multiply(X2,X6)))),multiply(X5,inverse(X6))))).
-###########
-#cnf(i_0_384, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),multiply(inverse(X4),X4))=X2)).
-#####
-#cnf(i_0_7080, negated_conjecture, (multiply(multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(multiply(multiply(inverse(X2),X2),X3)))),a2)!=a2)).
-######
-#cnf(i_0_826, plain, (multiply(inverse(multiply(multiply(inverse(X1),X1),inverse(X2))),multiply(inverse(X3),X3))=multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,multiply(inverse(X5),X5))))).
-##
-#cnf(i_0_7826, negated_conjecture, (multiply(multiply(inverse(multiply(X1,multiply(inverse(X2),X2))),multiply(X1,multiply(inverse(X3),X3))),a2)!=a2)).
-#########
-#cnf(i_0_790, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(X2,multiply(inverse(X3),X3)),b2)))),multiply(b2,inverse(b2)))=X2)).
-###########
-#cnf(i_0_426, plain, (multiply(inverse(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3)))),multiply(inverse(multiply(b2,inverse(multiply(X2,b2)))),multiply(b2,inverse(b2))))=multiply(inverse(b2),b2))).
-######################
-#cnf(i_0_1166, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(X1,multiply(inverse(X2),X2)),X3)))),multiply(b2,inverse(X3)))=X1)).
-#################################
-#cnf(i_0_1173, plain, (multiply(inverse(multiply(inverse(inverse(X1)),inverse(X2))),multiply(inverse(b2),b2))=multiply(inverse(multiply(X3,inverse(X2))),multiply(X3,inverse(X1))))).
-#################################################
-#cnf(i_0_7832, negated_conjecture, (multiply(multiply(multiply(inverse(X3),X3),multiply(inverse(inverse(X1)),inverse(multiply(multiply(inverse(X2),X2),X1)))),a2)!=a2)).
-############################
-#cnf(i_0_1199, plain, (multiply(inverse(multiply(X1,multiply(inverse(b2),b2))),multiply(X1,multiply(inverse(X2),X2)))=multiply(inverse(X3),X3))).
-###########
-#cnf(i_0_1200, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,multiply(inverse(b2),b2)),X4)))),multiply(X1,inverse(X4)))=X2)).
-#################################
-#cnf(i_0_1221, plain, (multiply(inverse(multiply(X1,multiply(inverse(X5),X5))),multiply(X1,multiply(inverse(b2),b2)))=multiply(inverse(X4),X4))).
-#######################################################
-#cnf(i_0_1262, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(inverse(inverse(multiply(multiply(X2,multiply(inverse(X3),X3)),X4))),inverse(X4)))))=multiply(inverse(X5),X5))).
-###########
-#cnf(i_0_1263, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(X5,inverse(X2))),multiply(X5,inverse(X3)))))),multiply(X1,inverse(multiply(inverse(inverse(X2)),inverse(X3)))))=multiply(inverse(X4),X4))).
-#################################
-#cnf(i_0_1283, plain, (multiply(multiply(inverse(X4),X4),multiply(inverse(inverse(multiply(multiply(X1,multiply(inverse(X2),X2)),X3))),inverse(X3)))=X1)).
-###########
-#cnf(i_0_1284, plain, (multiply(multiply(inverse(X4),X4),multiply(inverse(inverse(multiply(multiply(inverse(X1),X1),X2))),inverse(X2)))=multiply(inverse(X3),X3))).
-######################
-#cnf(i_0_1290, plain, (multiply(inverse(multiply(inverse(inverse(X1)),inverse(X2))),multiply(inverse(X4),X4))=multiply(inverse(multiply(X3,inverse(X2))),multiply(X3,inverse(X1))))).
-######################
-#cnf(i_0_1294, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(X3)))=multiply(multiply(inverse(X4),X4),multiply(inverse(inverse(X2)),inverse(X3))))).
-#############################################################################
-#cnf(i_0_1319, plain, (multiply(inverse(multiply(X1,multiply(inverse(X4),X4))),multiply(X1,multiply(inverse(X2),X2)))=multiply(inverse(X3),X3))).
-###################################################################################
-#cnf(i_0_7112, plain, (inverse(multiply(X1,inverse(inverse(multiply(multiply(inverse(X3),X3),X4)))))=inverse(multiply(X1,inverse(inverse(X4)))))).
-##################
-#cnf(i_0_10922, negated_conjecture, (multiply(multiply(inverse(multiply(X1,inverse(inverse(X3)))),multiply(X1,inverse(inverse(multiply(multiply(inverse(X2),X2),X3))))),a2)!=a2)).
-###############
-#cnf(i_0_11034, plain, (inverse(multiply(inverse(inverse(inverse(multiply(multiply(inverse(X1),X1),X2)))),inverse(inverse(X2))))=multiply(inverse(b2),b2))).
-#######################################
-#cnf(i_0_10967, plain, (inverse(multiply(X1,inverse(inverse(inverse(multiply(multiply(inverse(X3),X3),X4))))))=inverse(multiply(X1,inverse(inverse(inverse(X4))))))).
-#########
-#cnf(i_0_11324, negated_conjecture, (multiply(multiply(inverse(multiply(X1,inverse(inverse(inverse(X3))))),multiply(X1,inverse(inverse(inverse(multiply(multiply(inverse(X2),X2),X3)))))),a2)!=a2)).
-##################################
-#cnf(i_0_1766, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(b2,inverse(X3))),multiply(b2,multiply(inverse(b2),b2)))))),multiply(X1,inverse(multiply(X2,multiply(inverse(X4),X4))))),inverse(X5))),inverse(multiply(X2,inverse(X3))))=multiply(inverse(multiply(X6,inverse(X5))),multiply(X6,multiply(inverse(X7),X7))))).
-##############
-#cnf(i_0_7071, negated_conjecture, (multiply(multiply(multiply(inverse(X1),X1),multiply(inverse(multiply(X2,inverse(X4))),multiply(X2,inverse(multiply(multiply(inverse(X3),X3),X4))))),a2)!=a2)).
-###########
-#cnf(i_0_7091, negated_conjecture, (multiply(multiply(multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(multiply(multiply(inverse(X2),X2),X3)))),multiply(inverse(X4),X4)),a2)!=a2)).
-########
-#cnf(i_0_1793, plain, (multiply(inverse(multiply(b2,inverse(X4))),multiply(b2,multiply(inverse(b2),b2)))=multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,multiply(inverse(X9),X9))))).
-###
-#cnf(i_0_12020, negated_conjecture, (multiply(inverse(multiply(multiply(inverse(X3),X3),inverse(multiply(multiply(inverse(X2),multiply(inverse(X5),X5)),X2)))),a2)!=a2)).
-########
-#cnf(i_0_1794, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(b2,inverse(X2))),multiply(b2,multiply(inverse(b2),b2)))))),multiply(X1,inverse(multiply(inverse(inverse(X2)),multiply(inverse(X3),X3)))))=multiply(inverse(X4),X4))).
-###########
-#cnf(i_0_1798, plain, (multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(multiply(X2,multiply(inverse(X3),X3))))),multiply(b2,multiply(inverse(b2),b2))),inverse(X4))),X2)=multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,multiply(inverse(X6),X6))))).
-###########
-#cnf(i_0_1804, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(X2,multiply(inverse(X3),X3)),multiply(inverse(X4),X4))))),multiply(b2,multiply(inverse(b2),b2)))=X2)).
-##################################
-#cnf(i_0_11445, plain, (inverse(multiply(inverse(inverse(inverse(inverse(multiply(multiply(inverse(X1),X1),X2))))),inverse(inverse(inverse(X2)))))=multiply(inverse(b2),b2))).
-##########
-#cnf(i_0_1815, plain, (multiply(inverse(multiply(multiply(inverse(multiply(inverse(multiply(X9,inverse(X5))),multiply(X9,multiply(inverse(X10),X10)))),multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(X2,X3)),X4)))),multiply(X1,inverse(X4))),inverse(X5))),inverse(X3))),inverse(X6))),X2)=multiply(inverse(multiply(X7,inverse(X6))),multiply(X7,multiply(inverse(X8),X8))))).
-###########
-#cnf(i_0_1820, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(inverse(multiply(X7,inverse(X5))),multiply(X7,multiply(inverse(X8),X8))),X6)))),multiply(X1,inverse(X6)))=inverse(multiply(multiply(inverse(b2),b2),inverse(X5))))).
-##
-#cnf(i_0_7276, negated_conjecture, (multiply(multiply(multiply(inverse(X1),X1),inverse(multiply(X3,inverse(multiply(multiply(multiply(X3,inverse(X4)),multiply(inverse(X5),X5)),X4))))),a2)!=a2)).
-#########
-#cnf(i_0_1822, plain, (multiply(inverse(multiply(inverse(multiply(X7,inverse(X6))),multiply(X7,multiply(inverse(X8),X8)))),multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(multiply(X2,multiply(inverse(X3),X3)),X4)),X5)))),multiply(X1,inverse(X5))),inverse(X6))),inverse(X4)))=X2)).
-##
-#cnf(i_0_7837, negated_conjecture, (multiply(multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(multiply(multiply(inverse(X4),X4),multiply(multiply(inverse(X2),X2),X3))))),a2)!=a2)).
-######
-#cnf(i_0_12204, negated_conjecture, (multiply(inverse(multiply(multiply(inverse(X1),X1),inverse(multiply(multiply(inverse(multiply(b2,inverse(X3))),multiply(b2,multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(X3)))))),a2)!=a2)).
-###
-#cnf(i_0_1823, plain, (multiply(inverse(multiply(inverse(multiply(X7,inverse(X5))),multiply(X7,multiply(inverse(X8),X8)))),multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(multiply(inverse(X2),X2),X3)),X4)))),multiply(X1,inverse(X4))),inverse(X5))),inverse(X3)))=multiply(inverse(X6),X6))).
-###########
-#cnf(i_0_1828, plain, (multiply(inverse(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(X8))),inverse(X4))),multiply(inverse(multiply(X9,inverse(X8))),multiply(X9,multiply(inverse(X10),X10))))=multiply(inverse(multiply(b2,inverse(X4))),multiply(b2,multiply(inverse(b2),b2))))).
-###########
-#cnf(i_0_1830, plain, (multiply(inverse(multiply(inverse(multiply(b2,inverse(X4))),multiply(b2,multiply(inverse(b2),b2)))),multiply(inverse(multiply(X7,inverse(X4))),multiply(X7,multiply(inverse(X8),X8))))=multiply(inverse(X6),X6))).
-###########
-#cnf(i_0_1831, plain, (multiply(inverse(multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X3)))),multiply(X1,inverse(X3))),inverse(X4))),inverse(X5))),multiply(inverse(multiply(X7,inverse(X4))),multiply(X7,multiply(inverse(X8),X8))))=multiply(inverse(multiply(X6,inverse(X5))),multiply(X6,inverse(X2))))).
-######################
-#cnf(i_0_1837, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(X3)))=multiply(inverse(multiply(inverse(multiply(X7,inverse(X6))),multiply(X7,multiply(inverse(X8),X8)))),multiply(inverse(multiply(multiply(inverse(multiply(X4,inverse(multiply(inverse(X2),X5)))),multiply(X4,inverse(X5))),inverse(X6))),inverse(X3))))).
-#################################
-#cnf(i_0_1845, plain, (multiply(inverse(multiply(inverse(multiply(X9,inverse(X7))),multiply(X9,multiply(inverse(X10),X10)))),multiply(inverse(multiply(multiply(inverse(multiply(X5,inverse(multiply(inverse(X4),X6)))),multiply(X5,inverse(X6))),inverse(X7))),multiply(inverse(X8),X8)))=multiply(inverse(multiply(b2,inverse(X4))),multiply(b2,multiply(inverse(b2),b2))))).
-######
-#cnf(i_0_8784, plain, (multiply(inverse(multiply(X1,multiply(inverse(b2),b2))),multiply(X1,inverse(X4)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X4))))).
-#
-#cnf(i_0_16845, plain, (multiply(inverse(multiply(b2,inverse(inverse(X1)))),multiply(b2,multiply(inverse(b2),b2)))=inverse(multiply(inverse(inverse(X1)),multiply(inverse(b2),b2))))).
-##
-#cnf(i_0_16865, plain, (multiply(inverse(multiply(inverse(inverse(X1)),multiply(inverse(b2),b2))),multiply(inverse(b2),b2))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X1))))).
-###
-#cnf(i_0_10330, plain, (multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(multiply(multiply(inverse(X1),X1),X2))))=multiply(inverse(b2),b2))).
-##########
-#cnf(i_0_1850, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(X9,inverse(X5))),multiply(X9,multiply(inverse(X10),X10)))))),multiply(X1,inverse(X3))),inverse(X6))),inverse(multiply(multiply(inverse(multiply(X2,inverse(multiply(X3,X4)))),multiply(X2,inverse(X4))),inverse(X5))))=multiply(inverse(multiply(X7,inverse(X6))),multiply(X7,multiply(inverse(X8),X8))))).
-########
-#cnf(i_0_16911, negated_conjecture, (multiply(inverse(multiply(multiply(inverse(X1),X1),inverse(multiply(inverse(multiply(inverse(inverse(X2)),multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(inverse(X2))))))),a2)!=a2)).
-###
-#cnf(i_0_1857, plain, (multiply(inverse(multiply(X7,inverse(X4))),multiply(X7,multiply(inverse(X8),X8)))=multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,multiply(inverse(X6),X6))))).
-#################################################################
-#cnf(i_0_16852, negated_conjecture, (multiply(inverse(multiply(multiply(inverse(X1),X1),inverse(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X2))),multiply(inverse(inverse(X2)),multiply(inverse(b2),b2)))))),a2)!=a2)).
-##
-#cnf(i_0_10968, plain, (inverse(multiply(X1,inverse(inverse(inverse(inverse(multiply(multiply(inverse(X3),X3),X4)))))))=inverse(multiply(X1,inverse(inverse(inverse(inverse(X4)))))))).
-######################
-#cnf(i_0_16928, plain, (inverse(multiply(inverse(inverse(multiply(multiply(inverse(X1),X1),X2))),multiply(inverse(b2),b2)))=inverse(multiply(inverse(inverse(X2)),multiply(inverse(b2),b2))))).
-##########
-#cnf(i_0_1878, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(X4)),multiply(inverse(X5),X5)))=multiply(inverse(multiply(b2,inverse(X4))),multiply(b2,multiply(inverse(b2),b2))))).
-###########
-#cnf(i_0_1879, plain, (multiply(multiply(inverse(X6),X6),multiply(inverse(inverse(X4)),multiply(inverse(X5),X5)))=multiply(inverse(multiply(b2,inverse(X4))),multiply(b2,multiply(inverse(b2),b2))))).
-######
-#cnf(i_0_7795, plain, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(X4),X4),inverse(X2))),multiply(inverse(X3),X3))=inverse(X2))).
-#############
-#cnf(i_0_18609, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(inverse(X2)),multiply(inverse(b2),b2))),multiply(inverse(inverse(multiply(multiply(inverse(X1),X1),X2))),multiply(inverse(b2),b2))),a2)!=a2)).
-###################################
-#cnf(i_0_19075, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(inverse(multiply(inverse(inverse(X2)),multiply(inverse(b2),b2)))),multiply(inverse(b2),b2))),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(X2))),multiply(b2,multiply(inverse(b2),b2))))),multiply(inverse(b2),b2))),a2)!=a2)).
-#
-#cnf(i_0_1903, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(multiply(X2,inverse(X5))))),inverse(X6))),inverse(multiply(X2,inverse(multiply(multiply(X3,multiply(inverse(X4),X4)),X5)))))=multiply(inverse(multiply(X7,inverse(X6))),multiply(X7,multiply(inverse(X8),X8))))).
-##########
-#cnf(i_0_19107, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(inverse(multiply(inverse(inverse(inverse(X1))),multiply(inverse(b2),b2)))),multiply(inverse(b2),b2))),multiply(inverse(inverse(inverse(multiply(inverse(inverse(X1)),multiply(inverse(b2),b2))))),multiply(inverse(b2),b2))),a2)!=a2)).
-#
-#cnf(i_0_1904, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,multiply(inverse(X8),X8))),multiply(X1,inverse(multiply(X2,inverse(X4))))),inverse(X5))),inverse(multiply(X2,inverse(X4))))=multiply(inverse(multiply(X6,inverse(X5))),multiply(X6,multiply(inverse(X7),X7))))).
-###########
-#cnf(i_0_1905, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(X8,inverse(X3))),multiply(X8,inverse(X4)))))),multiply(X1,inverse(multiply(X2,inverse(X4))))),inverse(X5))),inverse(multiply(X2,inverse(X3))))=multiply(inverse(multiply(X6,inverse(X5))),multiply(X6,multiply(inverse(X7),X7))))).
-######################
-#cnf(i_0_1909, plain, (multiply(inverse(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X2))),inverse(X3))),inverse(X2))=multiply(inverse(multiply(X4,inverse(X3))),multiply(X4,multiply(inverse(X5),X5))))).
-###########
-#cnf(i_0_1910, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,multiply(inverse(X6),X6))),multiply(X1,inverse(X2))),inverse(X3))),inverse(X2))=multiply(inverse(multiply(X4,inverse(X3))),multiply(X4,multiply(inverse(X5),X5))))).
-##################
-#cnf(i_0_18544, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(inverse(inverse(X5)),multiply(inverse(b2),b2))),multiply(inverse(inverse(multiply(multiply(inverse(X4),X4),X5))),multiply(inverse(b2),b2)))),a2)!=a2)).
-####################################
-#cnf(i_0_21638, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(inverse(inverse(multiply(inverse(inverse(X2)),multiply(inverse(b2),b2)))),multiply(inverse(b2),b2))),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(X2))),multiply(b2,multiply(inverse(b2),b2))))),multiply(inverse(b2),b2)))),a2)!=a2)).
-###########
-#cnf(i_0_21672, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(inverse(inverse(multiply(inverse(inverse(inverse(X1))),multiply(inverse(b2),b2)))),multiply(inverse(b2),b2))),multiply(inverse(inverse(inverse(multiply(inverse(inverse(X1)),multiply(inverse(b2),b2))))),multiply(inverse(b2),b2)))),a2)!=a2)).
-##
-#cnf(i_0_16916, plain, (multiply(inverse(multiply(b2,inverse(inverse(X1)))),multiply(b2,multiply(inverse(X2),X2)))=inverse(multiply(inverse(inverse(X1)),multiply(inverse(X2),X2))))).
-##############################
-#cnf(i_0_18612, negated_conjecture, (multiply(multiply(multiply(inverse(multiply(inverse(inverse(X2)),multiply(inverse(b2),b2))),multiply(inverse(inverse(multiply(multiply(inverse(X1),X1),X2))),multiply(inverse(b2),b2))),multiply(inverse(b2),b2)),a2)!=a2)).
-##################################
-#cnf(i_0_21865, negated_conjecture, (multiply(multiply(multiply(inverse(multiply(inverse(inverse(multiply(inverse(inverse(X2)),multiply(inverse(b2),b2)))),multiply(inverse(b2),b2))),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(X2))),multiply(b2,multiply(inverse(b2),b2))))),multiply(inverse(b2),b2))),multiply(inverse(b2),b2)),a2)!=a2)).
-###########
-#cnf(i_0_21900, negated_conjecture, (multiply(multiply(multiply(inverse(multiply(inverse(inverse(multiply(inverse(inverse(inverse(X1))),multiply(inverse(b2),b2)))),multiply(inverse(b2),b2))),multiply(inverse(inverse(inverse(multiply(inverse(inverse(X1)),multiply(inverse(b2),b2))))),multiply(inverse(b2),b2))),multiply(inverse(b2),b2)),a2)!=a2)).
-##############################################################
-#cnf(i_0_17018, plain, (inverse(multiply(multiply(inverse(X3),X3),inverse(multiply(multiply(inverse(X2),multiply(inverse(X5),X5)),X2))))=multiply(inverse(b2),b2))).
-###################
-#cnf(i_0_22084, negated_conjecture, (multiply(inverse(multiply(multiply(inverse(X2),multiply(inverse(X3),X3)),X2)),a2)!=a2)).
-###########################################
-#cnf(i_0_22248, negated_conjecture, (multiply(inverse(inverse(multiply(multiply(inverse(X1),multiply(inverse(X2),X2)),X1))),a2)!=a2)).
-####################
-#cnf(i_0_2587, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(X6,inverse(X2))),multiply(X6,multiply(inverse(X7),X7)))))),multiply(X1,inverse(multiply(b2,multiply(inverse(b2),b2))))),inverse(X3))),inverse(multiply(b2,inverse(X2))))=multiply(inverse(multiply(X4,inverse(X3))),multiply(X4,multiply(inverse(X5),X5))))).
-########################
-#cnf(i_0_22170, plain, (multiply(inverse(X2),multiply(inverse(X3),X3))=inverse(X2))).
-#########
-#cnf(i_0_1845, plain, (multiply(inverse(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,multiply(inverse(X3),X3)))),inverse(multiply(multiply(inverse(multiply(X4,inverse(multiply(inverse(X5),X6)))),multiply(X4,inverse(X6))),inverse(X2))))=multiply(inverse(multiply(b2,inverse(X5))),multiply(b2,multiply(inverse(b2),b2))))).
-#
-#cnf(i_0_23154, plain, (inverse(inverse(inverse(X1)))=inverse(X1))).
-##########
-#cnf(i_0_826, plain, (inverse(multiply(multiply(inverse(X1),X1),inverse(X2)))=multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,multiply(inverse(X5),X5))))).
-###########
-#cnf(i_0_1290, plain, (multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(X1)))=inverse(multiply(inverse(inverse(X1)),inverse(X2))))).
-###########
-#cnf(i_0_16865, plain, (multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X1)))=inverse(X1))).
-###########
-#cnf(i_0_16916, plain, (multiply(inverse(multiply(b2,inverse(inverse(X1)))),multiply(b2,multiply(inverse(X2),X2)))=inverse(X1))).
-###########
-#cnf(i_0_1879, plain, (multiply(multiply(inverse(X1),X1),inverse(inverse(X2)))=inverse(multiply(multiply(inverse(b2),b2),inverse(X2))))).
-###########
-#cnf(i_0_16928, plain, (inverse(multiply(multiply(inverse(X1),X1),X2))=inverse(X2))).
-###########
-#cnf(i_0_1815, plain, (multiply(inverse(multiply(multiply(inverse(X2),multiply(inverse(multiply(inverse(multiply(inverse(inverse(X7)),inverse(multiply(inverse(multiply(X5,X6)),X7)))),inverse(X2))),inverse(X6))),inverse(X8))),X5)=inverse(inverse(X8)))).
-###########
-#cnf(i_0_1831, plain, (multiply(inverse(multiply(inverse(multiply(inverse(multiply(inverse(inverse(X3)),inverse(multiply(inverse(X2),X3)))),inverse(X4))),inverse(X5))),inverse(inverse(X4)))=inverse(multiply(inverse(inverse(X2)),inverse(X5))))).
-##########
-#cnf(i_0_23947, negated_conjecture, (multiply(multiply(inverse(X1),inverse(inverse(X1))),a2)!=a2)).
-#
-#cnf(i_0_1909, plain, (multiply(inverse(multiply(inverse(X1),inverse(X2))),inverse(X1))=inverse(inverse(X2)))).
-###########
-#cnf(i_0_1903, plain, (multiply(inverse(multiply(inverse(multiply(inverse(inverse(multiply(X3,inverse(X4)))),inverse(X2))),inverse(X5))),inverse(multiply(X3,inverse(multiply(multiply(X2,multiply(inverse(X6),X6)),X4)))))=inverse(inverse(X5)))).
-###########
-#cnf(i_0_1905, plain, (multiply(inverse(multiply(inverse(multiply(inverse(inverse(multiply(X5,inverse(X4)))),inverse(inverse(multiply(inverse(inverse(X4)),inverse(X3)))))),inverse(X6))),inverse(multiply(X5,inverse(X3))))=inverse(inverse(X6)))).
-##
-#cnf(i_0_23954, negated_conjecture, (multiply(inverse(multiply(inverse(X1),inverse(inverse(X1)))),a2)!=a2)).
-#########
-#cnf(i_0_1798, plain, (multiply(inverse(multiply(inverse(inverse(multiply(X1,multiply(inverse(X2),X2)))),inverse(X3))),X1)=inverse(inverse(X3)))).
-#######
-#cnf(i_0_25527, negated_conjecture, (inverse(inverse(multiply(a2,multiply(inverse(X1),X1))))!=a2)).
-####
-#cnf(i_0_1910, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,multiply(inverse(X2),X2))),multiply(X1,inverse(X3))),inverse(X4))),inverse(X3))=inverse(inverse(X4)))).
-###########
-#cnf(i_0_425, plain, (inverse(multiply(inverse(inverse(X5)),inverse(multiply(X2,X5))))=inverse(inverse(X2)))).
-######################
-#cnf(i_0_2587, plain, (multiply(inverse(multiply(inverse(multiply(inverse(inverse(multiply(b2,multiply(inverse(b2),b2)))),inverse(X3))),inverse(X5))),inverse(multiply(b2,inverse(X3))))=inverse(inverse(X5)))).
-#####
-#cnf(i_0_23949, negated_conjecture, (multiply(inverse(inverse(multiply(inverse(X1),inverse(inverse(X1))))),a2)!=a2)).
-######
-#cnf(i_0_1766, plain, (multiply(inverse(multiply(inverse(multiply(inverse(inverse(multiply(X3,multiply(inverse(X4),X4)))),inverse(X2))),inverse(X5))),inverse(multiply(X3,inverse(X2))))=inverse(inverse(X5)))).
-#
-#cnf(i_0_25224, plain, (multiply(multiply(inverse(b2),b2),inverse(X2))=inverse(X2))).
-##########
-#cnf(i_0_1804, plain, (inverse(inverse(multiply(multiply(X1,multiply(inverse(X2),X2)),multiply(inverse(X3),X3))))=X1)).
-#
-#cnf(i_0_26228, plain, (inverse(inverse(X1))=X1)).
-###
-#cnf(i_0_25527, negated_conjecture, (multiply(a2,multiply(inverse(X1),X1))!=a2)).
-#######
-#cnf(i_0_1845, plain, (multiply(inverse(X2),inverse(multiply(inverse(multiply(X6,inverse(multiply(inverse(X5),X6)))),inverse(X2))))=X5)).
-#
-#cnf(i_0_26386, plain, (multiply(multiply(inverse(b2),b2),X1)=X1)).
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% G-E--_302_C18_F1_URBAN_RG_S04BN with pid 23511 completed with status 0
+% Result found by G-E--_302_C18_F1_URBAN_RG_S04BN
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FUUPF-FFSF21-DFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% SubtermCWHack with pid 23512 completed with status 8
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 7s (1) cores
+% G-E--_302_C18_F1_URBAN_RG_S04BN with pid 23561 completed with status 0
+% Result found by G-E--_302_C18_F1_URBAN_RG_S04BN
+% Preprocessing class: FSSSSMSSSSSNFFN.
+% Scheduled 1 strats onto 1 cores with 60 seconds (60 total)
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 60s (1) cores
+% (lift_lambdas = 1, lambda_to_forall = 1,unroll_only_formulas = 1, sine = Auto)
+% No SInE strategy applied
+% Search class: FUUPF-FFSF21-DFFFFFNN
+% Scheduled 7 strats onto 1 cores with 60 seconds (60 total)
+% Starting SubtermCWHack with 6s (1) cores
+% SubtermCWHack with pid 23512 completed with status 8
+% Starting G-E--_302_C18_F1_URBAN_RG_S04BN with 7s (1) cores
+% Initializing proof state
+% Scanning for AC axioms
+%
+%cnf(i_0_4, negated_conjecture, (multiply(multiply(inverse(b2),b2),a2)!=a2)).
+%
+%cnf(i_0_3, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(inverse(X3),X3)))=X2)).
+%
+%cnf(i_0_7, plain, (multiply(multiply(inverse(X2),multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(X3))),inverse(multiply(inverse(X3),X3)))=inverse(X3))).
+%
+%cnf(i_0_12, plain, (multiply(multiply(inverse(inverse(X3)),multiply(multiply(inverse(X1),multiply(multiply(inverse(multiply(X2,inverse(multiply(X1,X3)))),multiply(X2,inverse(X3))),inverse(X3))),inverse(X3))),inverse(multiply(inverse(X3),X3)))=inverse(X3))).
+%
+%cnf(i_0_6, plain, (multiply(multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(X4,multiply(inverse(X3),X3))))),X2),inverse(multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(X3),X3))))=X4)).
+%%
+%cnf(i_0_5, plain, (multiply(multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(inverse(multiply(inverse(X4),X4))))),inverse(multiply(inverse(inverse(multiply(inverse(X4),X4))),inverse(multiply(inverse(X4),X4)))))=multiply(inverse(multiply(X2,inverse(multiply(X3,X4)))),multiply(X2,inverse(X4))))).
+%
+%cnf(i_0_80, plain, (multiply(inverse(multiply(X4,inverse(multiply(multiply(X2,inverse(multiply(inverse(X3),X3))),X3)))),multiply(X4,inverse(X3)))=X2)).
+%
+%cnf(i_0_81, plain, (multiply(inverse(multiply(X5,inverse(multiply(X2,X3)))),multiply(X5,inverse(X3)))=multiply(inverse(multiply(X4,inverse(multiply(X2,X3)))),multiply(X4,inverse(X3))))).
+%%%
+%cnf(i_0_109, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(multiply(X4,inverse(multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(X3),X3)))),multiply(inverse(X3),X3))))),X2)=X4)).
+%
+%cnf(i_0_212, plain, (multiply(inverse(multiply(X1,inverse(X5))),multiply(X1,inverse(X3)))=multiply(inverse(multiply(X6,inverse(X5))),multiply(X6,inverse(X3))))).
+%%%%
+%cnf(i_0_115, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(X4),X4)))),multiply(X1,inverse(X4)))=multiply(inverse(X2),multiply(multiply(inverse(multiply(X3,inverse(multiply(X2,X4)))),multiply(X3,inverse(X4))),inverse(X4))))).
+%%%%%%%
+%cnf(i_0_250, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,multiply(X3,inverse(X4)))))),multiply(X1,inverse(multiply(X3,inverse(X4))))),inverse(multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,inverse(X4)))))=X2)).
+%%
+%cnf(i_0_410, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,multiply(X3,inverse(X4)))))),multiply(X1,inverse(multiply(X3,inverse(X4))))),inverse(multiply(inverse(X7),X7)))=X2)).
+%
+%cnf(i_0_463, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X4)))),multiply(X1,inverse(X4))),inverse(multiply(inverse(X8),X8)))=X2)).
+%
+%cnf(i_0_535, plain, (multiply(inverse(X2),X2)=multiply(inverse(X5),X5))).
+%
+%cnf(i_0_605, negated_conjecture, (multiply(multiply(inverse(X1),X1),a2)!=a2)).
+%%%%%%
+%cnf(i_0_254, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,inverse(multiply(inverse(b2),b2))),multiply(X3,inverse(X4)))))),multiply(X1,inverse(multiply(X3,inverse(X4)))))=X2)).
+%%%%%%%%%%%
+%cnf(i_0_582, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(inverse(X3),X3),X2)))),multiply(X1,inverse(X2)))=inverse(inverse(multiply(inverse(X2),X2))))).
+%%%
+%cnf(i_0_725, plain, (multiply(inverse(inverse(multiply(inverse(X3),X3))),inverse(multiply(inverse(X4),X4)))=multiply(inverse(X2),X2))).
+%%%%%%%%%%%%%%%
+%cnf(i_0_686, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,inverse(multiply(inverse(b2),b2))),X6)))),multiply(X1,inverse(X6)))=X2)).
+%%%%%%%%
+%cnf(i_0_521, plain, (multiply(multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(inverse(multiply(inverse(X5),X5))))),inverse(multiply(inverse(X6),X6)))=multiply(inverse(multiply(X2,inverse(multiply(X3,X4)))),multiply(X2,inverse(X4))))).
+%%%
+%cnf(i_0_879, plain, (multiply(inverse(multiply(inverse(inverse(X1)),inverse(multiply(multiply(X2,inverse(multiply(inverse(b2),b2))),X1)))),multiply(inverse(b2),b2))=X2)).
+%
+%cnf(i_0_5, plain, (multiply(inverse(multiply(b2,inverse(multiply(X2,b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(X4,inverse(multiply(X2,X3)))),multiply(X4,inverse(X3))))).
+%%%%
+%cnf(i_0_1032, plain, (multiply(inverse(multiply(inverse(inverse(X1)),inverse(multiply(multiply(inverse(b2),b2),X1)))),multiply(inverse(b2),b2))=inverse(inverse(multiply(inverse(b2),b2))))).
+%%%
+%cnf(i_0_525, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(multiply(X4,inverse(multiply(inverse(b2),b2))),multiply(inverse(X5),X5))))),X2)=X4)).
+%
+%cnf(i_0_527, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(X4))),X2)=multiply(inverse(multiply(X6,inverse(X4))),multiply(X6,inverse(multiply(inverse(X5),X5)))))).
+%%%
+%cnf(i_0_1082, plain, (multiply(inverse(multiply(inverse(inverse(X2)),inverse(multiply(X1,X2)))),multiply(inverse(b2),b2))=multiply(inverse(multiply(b2,inverse(multiply(X1,b2)))),multiply(b2,inverse(b2))))).
+%
+%cnf(i_0_525, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(X4,inverse(multiply(inverse(b2),b2))),multiply(inverse(X5),X5))))),multiply(b2,inverse(multiply(inverse(b2),b2))))=X4)).
+%%%%
+%cnf(i_0_1434, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(inverse(X1),X1))))),multiply(b2,inverse(multiply(inverse(b2),b2))))=inverse(inverse(multiply(inverse(b2),b2))))).
+%%%
+%cnf(i_0_528, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(X4,multiply(inverse(X5),X5))))),multiply(b2,inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(X6),X6)))=X4)).
+%
+%cnf(i_0_531, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X2)))),multiply(X1,inverse(X3)))=multiply(inverse(X5),multiply(multiply(inverse(multiply(X4,inverse(multiply(X5,X6)))),multiply(X4,inverse(X6))),inverse(X3))))).
+%%%
+%cnf(i_0_1451, plain, (multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(b2),b2)))=inverse(multiply(inverse(b2),b2)))).
+%%%%
+%cnf(i_0_1692, plain, (multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),inverse(b2)))=multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(b2))))).
+%
+%cnf(i_0_1671, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(b2),b2))).
+%%%
+%cnf(i_0_533, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(inverse(X3),X3))))=multiply(inverse(multiply(b2,inverse(X2))),multiply(b2,inverse(multiply(inverse(b2),b2)))))).
+%
+%cnf(i_0_536, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(X5)))=multiply(inverse(multiply(X6,inverse(multiply(inverse(X4),X4)))),multiply(X6,inverse(X5))))).
+%
+%cnf(i_0_1761, negated_conjecture, (multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(b2),b2)))),multiply(X1,inverse(multiply(inverse(X2),X2)))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_1734, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2))))),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2))),inverse(multiply(inverse(b2),b2)))=inverse(b2))).
+%%%
+%cnf(i_0_539, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(X4))),inverse(multiply(inverse(X5),X5)))=inverse(X4))).
+%
+%cnf(i_0_543, plain, (multiply(inverse(multiply(X1,inverse(multiply(X3,X5)))),multiply(X1,inverse(X5)))=multiply(inverse(multiply(X2,inverse(multiply(X3,X4)))),multiply(X2,inverse(X4))))).
+%%%%%
+%cnf(i_0_2006, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(b2),b2)),a2)!=a2)).
+%%%%%%
+%cnf(i_0_546, plain, (multiply(multiply(inverse(inverse(multiply(inverse(X1),X1))),multiply(multiply(inverse(X2),X2),inverse(multiply(inverse(X1),X1)))),inverse(multiply(inverse(b2),b2)))=inverse(multiply(inverse(X1),X1)))).
+%
+%cnf(i_0_557, plain, (multiply(multiply(inverse(multiply(X1,inverse(X3))),multiply(X1,inverse(multiply(X2,inverse(X4))))),inverse(multiply(inverse(X5),X5)))=inverse(multiply(X2,inverse(multiply(multiply(X3,inverse(multiply(inverse(X4),X4))),X4)))))).
+%%%
+%cnf(i_0_1728, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2)))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(inverse(inverse(multiply(b2,inverse(b2)))),inverse(multiply(inverse(b2),b2)))),multiply(inverse(b2),b2)))).
+%%%%
+%cnf(i_0_1713, plain, (multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),inverse(b2)))),inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(b2)))))),multiply(inverse(b2),b2))=multiply(inverse(multiply(b2,inverse(multiply(inverse(inverse(multiply(inverse(b2),b2))),b2)))),multiply(b2,inverse(b2))))).
+%
+%cnf(i_0_2027, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2))))),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(inverse(inverse(inverse(multiply(inverse(b2),b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2)))).
+%%%
+%cnf(i_0_559, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(X6,inverse(X3))),multiply(X6,inverse(X4)))))),multiply(X1,inverse(multiply(X2,inverse(X4))))),inverse(multiply(inverse(X5),X5)))=inverse(multiply(X2,inverse(X3))))).
+%%
+%cnf(i_0_2317, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(X1),X1)),multiply(inverse(X2),X2)),a2)!=a2)).
+%%%%%%
+%cnf(i_0_2667, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2))))),multiply(multiply(inverse(multiply(inverse(inverse(multiply(b2,inverse(b2)))),inverse(multiply(inverse(b2),b2)))),multiply(inverse(b2),b2)),inverse(b2))),inverse(b2))),inverse(multiply(inverse(b2),b2)))=inverse(b2))).
+%%%%
+%cnf(i_0_578, plain, (multiply(multiply(inverse(multiply(inverse(X4),X4)),multiply(inverse(inverse(multiply(X1,X2))),inverse(X2))),inverse(multiply(inverse(X3),X3)))=X1)).
+%
+%cnf(i_0_579, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(X2),multiply(multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(inverse(multiply(X2,X1))),inverse(X1))),inverse(X1))),inverse(X1))),inverse(multiply(inverse(X1),X1)))=inverse(X1))).
+%%%
+%cnf(i_0_2660, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2)))),b2)))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(inverse(inverse(multiply(b2,inverse(b2)))),inverse(multiply(inverse(multiply(inverse(inverse(multiply(b2,inverse(b2)))),inverse(multiply(inverse(b2),b2)))),multiply(inverse(b2),b2))))),multiply(inverse(b2),b2)))).
+%%%%
+%cnf(i_0_2051, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2))))),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2))),inverse(b2))),inverse(b2))),inverse(b2))),inverse(multiply(inverse(b2),b2)))=inverse(b2))).
+%%%%
+%cnf(i_0_583, plain, (multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(inverse(multiply(multiply(X1,inverse(multiply(inverse(X2),X2))),X2))),inverse(X2)))=X1)).
+%
+%cnf(i_0_587, plain, (multiply(inverse(multiply(inverse(inverse(X1)),inverse(multiply(multiply(X2,inverse(multiply(inverse(X1),X1))),X1)))),multiply(inverse(X3),X3))=X2)).
+%%%
+%cnf(i_0_2682, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),inverse(b2)))),inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(b2)))))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(inverse(inverse(multiply(inverse(b2),b2))),inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(inverse(multiply(inverse(b2),b2))),b2)))),multiply(b2,inverse(b2)))))),multiply(inverse(b2),b2)))).
+%%%%
+%cnf(i_0_2714, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2))))),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2)))),multiply(multiply(inverse(multiply(inverse(inverse(inverse(multiply(inverse(b2),b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2)),inverse(b2))),inverse(b2))),inverse(multiply(inverse(b2),b2)))=inverse(b2))).
+%%%%
+%cnf(i_0_589, plain, (multiply(inverse(multiply(inverse(inverse(X1)),inverse(X2))),multiply(inverse(X4),X4))=multiply(inverse(multiply(X3,inverse(X2))),multiply(X3,inverse(X1))))).
+%%%%
+%cnf(i_0_1728, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2)))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(b2,inverse(b2))))))).
+%
+%cnf(i_0_1713, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(b2)))))),multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),inverse(b2)))))=multiply(inverse(multiply(b2,inverse(multiply(inverse(inverse(multiply(inverse(b2),b2))),b2)))),multiply(b2,inverse(b2))))).
+%%%
+%cnf(i_0_3821, plain, (inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2))))=inverse(multiply(b2,inverse(b2))))).
+%
+%cnf(i_0_3915, negated_conjecture, (multiply(multiply(inverse(multiply(b2,inverse(b2))),multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2)))),a2)!=a2)).
+%%%
+%cnf(i_0_591, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(X1))),inverse(X1))),inverse(multiply(inverse(X1),X1)))=inverse(X1))).
+%
+%cnf(i_0_593, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(X3)))=multiply(inverse(multiply(inverse(X4),X4)),multiply(inverse(inverse(X2)),inverse(X3))))).
+%%%
+%cnf(i_0_3951, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(b2,inverse(b2))))))).
+%
+%cnf(i_0_2027, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2))))),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,inverse(inverse(multiply(inverse(b2),b2))))))).
+%%%
+%cnf(i_0_3881, plain, (multiply(inverse(multiply(b2,inverse(b2))),multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2))))=multiply(inverse(b2),b2))).
+%%%%%%%%
+%cnf(i_0_3950, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(b2,inverse(b2))))),inverse(b2))),inverse(b2))),inverse(multiply(inverse(b2),b2)))=inverse(b2))).
+%
+%cnf(i_0_2660, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(b2,inverse(b2)))))))),multiply(b2,inverse(multiply(b2,inverse(b2)))))=multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),b2)))),b2)))),multiply(b2,inverse(b2))))).
+%%%%%%%
+%cnf(i_0_602, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(X4),X4)))),multiply(X1,inverse(X2))),inverse(multiply(inverse(X3),X3)))=inverse(X2))).
+%
+%cnf(i_0_603, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(multiply(X2,inverse(multiply(inverse(X3),X3)))),multiply(X2,inverse(X1))),inverse(X1))),inverse(X1))),inverse(multiply(inverse(X1),X1)))=inverse(X1))).
+%%%
+%cnf(i_0_4741, plain, (multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))=inverse(multiply(inverse(b2),b2)))).
+%
+%cnf(i_0_2682, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(b2)))))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(inverse(multiply(inverse(b2),b2))),b2)))),multiply(b2,inverse(b2)))))),multiply(b2,inverse(multiply(inverse(b2),b2)))))).
+%%%
+%cnf(i_0_4809, plain, (inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),b2))))=inverse(multiply(b2,inverse(b2))))).
+%
+%cnf(i_0_4895, negated_conjecture, (multiply(multiply(inverse(multiply(b2,inverse(b2))),multiply(b2,inverse(multiply(multiply(inverse(b2),b2),b2)))),a2)!=a2)).
+%%%
+%cnf(i_0_614, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,inverse(multiply(inverse(X4),X4))),X3)))),multiply(X1,inverse(X3)))=X2)).
+%
+%cnf(i_0_617, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(X1))),inverse(X1))),inverse(multiply(inverse(X4),X4)))=inverse(X1))).
+%%%
+%cnf(i_0_4926, plain, (inverse(inverse(multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%
+%cnf(i_0_1692, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(b2)))=multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(inverse(b2),b2)),inverse(b2))))).
+%%%
+%cnf(i_0_5198, negated_conjecture, (multiply(inverse(multiply(inverse(b2),b2)),a2)!=a2)).
+%
+%cnf(i_0_5162, plain, (inverse(multiply(inverse(b2),b2))=multiply(inverse(b2),b2))).
+%%
+%cnf(i_0_5307, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(b2),b2)),a2)!=a2)).
+%%%
+%cnf(i_0_5340, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(X1),X1)),a2)!=a2)).
+%
+%cnf(i_0_4741, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(b2),b2))=multiply(inverse(b2),b2))).
+%%
+%cnf(i_0_1734, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2))),multiply(inverse(b2),b2))=inverse(b2))).
+%%%%%%%%%%
+%cnf(i_0_4915, plain, (inverse(inverse(multiply(inverse(X2),X2)))=multiply(inverse(b2),b2))).
+%
+%cnf(i_0_5362, plain, (multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(b2)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))).
+%
+%cnf(i_0_3950, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(multiply(b2,inverse(b2))))),inverse(b2))),inverse(b2))),multiply(inverse(b2),b2))=inverse(b2))).
+%%%%
+%cnf(i_0_5369, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(b2,inverse(b2))),multiply(b2,inverse(multiply(multiply(inverse(b2),b2),b2))))),a2)!=a2)).
+%%
+%cnf(i_0_5389, negated_conjecture, (multiply(multiply(multiply(inverse(X2),X2),multiply(inverse(X1),X1)),a2)!=a2)).
+%
+%cnf(i_0_637, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(X1))),inverse(X1))),inverse(multiply(inverse(X1),X1)))=inverse(X1))).
+%%%%
+%cnf(i_0_5491, plain, (multiply(inverse(multiply(b2,inverse(b2))),multiply(b2,inverse(multiply(multiply(inverse(b2),b2),b2))))=multiply(inverse(b2),b2))).
+%%
+%cnf(i_0_5468, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(X1),X1))),a2)!=a2)).
+%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_4913, plain, (multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(X1),X1)))=multiply(inverse(b2),b2))).
+%%
+%cnf(i_0_2051, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(b2)),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2))),inverse(b2))),inverse(b2))),inverse(b2))),multiply(inverse(b2),b2))=inverse(b2))).
+%%%%%%%
+%cnf(i_0_663, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(X1))),inverse(X1))),inverse(multiply(inverse(X4),X4)))=inverse(X1))).
+%
+%cnf(i_0_910, plain, (multiply(multiply(multiply(inverse(multiply(X5,inverse(X2))),multiply(X5,multiply(inverse(b2),b2))),inverse(multiply(inverse(X7),X7))),inverse(multiply(inverse(X4),X4)))=X2)).
+%%
+%cnf(i_0_6043, plain, (multiply(multiply(inverse(b2),b2),b2)=b2)).
+%%
+%cnf(i_0_2714, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(inverse(inverse(b2)),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2)))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))),inverse(b2))),multiply(inverse(b2),b2))=inverse(b2))).
+%%%%%%%
+%cnf(i_0_916, plain, (multiply(multiply(inverse(multiply(X5,inverse(X2))),multiply(X5,multiply(inverse(b2),b2))),inverse(multiply(inverse(X7),X7)))=multiply(inverse(multiply(X4,inverse(multiply(X2,X3)))),multiply(X4,inverse(X3))))).
+%%%%%
+%cnf(i_0_1434, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(inverse(X1),X1))))),multiply(b2,multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%%%%%%%%%%
+%cnf(i_0_6056, plain, (multiply(multiply(inverse(X1),X1),b2)=b2)).
+%%%%%%%%%%%
+%cnf(i_0_5557, negated_conjecture, (multiply(multiply(multiply(inverse(X1),X1),multiply(multiply(inverse(b2),b2),multiply(inverse(X4),X4))),a2)!=a2)).
+%
+%cnf(i_0_5728, plain, (inverse(multiply(inverse(X2),X2))=multiply(inverse(b2),b2))).
+%%
+%cnf(i_0_602, plain, (multiply(multiply(inverse(multiply(X1,multiply(inverse(b2),b2))),multiply(X1,inverse(X3))),multiply(inverse(b2),b2))=inverse(X3))).
+%%%%%%%
+%cnf(i_0_1261, plain, (multiply(inverse(multiply(b2,inverse(X4))),multiply(b2,multiply(inverse(b2),b2)))=multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,multiply(inverse(b2),b2))))).
+%%%
+%cnf(i_0_6487, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(X2),X2))=multiply(inverse(b2),b2))).
+%%
+%cnf(i_0_528, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(X1,multiply(inverse(X2),X2))))),multiply(b2,multiply(inverse(b2),b2))),multiply(inverse(b2),b2))=X1)).
+%
+%cnf(i_0_6402, negated_conjecture, (multiply(multiply(multiply(inverse(X1),X1),multiply(multiply(inverse(X3),X3),multiply(inverse(X2),X2))),a2)!=a2)).
+%%%%%%%%%%
+%cnf(i_0_6534, plain, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(b2),b2))=inverse(b2))).
+%
+%cnf(i_0_663, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(X1))),inverse(X1))),multiply(inverse(b2),b2))=inverse(X1))).
+%%%
+%cnf(i_0_6705, plain, (multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),multiply(inverse(b2),b2))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))).
+%%%%
+%cnf(i_0_1313, plain, (multiply(inverse(multiply(X7,inverse(X4))),multiply(X7,multiply(inverse(b2),b2)))=multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,multiply(inverse(b2),b2))))).
+%%%%
+%cnf(i_0_6647, plain, (multiply(inverse(inverse(b2)),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))).
+%%%%
+%cnf(i_0_6479, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2)))))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(b2),b2))).
+%%%%%
+%cnf(i_0_1321, plain, (multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(X4))),multiply(inverse(X6),X6))=multiply(inverse(multiply(b2,inverse(X4))),multiply(b2,multiply(inverse(b2),b2))))).
+%%%
+%cnf(i_0_6739, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2)))))),multiply(b2,multiply(inverse(b2),b2))),multiply(inverse(b2),b2))=multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))).
+%%%%
+%cnf(i_0_6481, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))).
+%
+%cnf(i_0_6824, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2)))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))),inverse(b2))),multiply(inverse(b2),b2))=inverse(b2))).
+%%%%
+%cnf(i_0_1328, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(X4)),multiply(inverse(b2),b2)))=multiply(inverse(multiply(b2,inverse(X4))),multiply(b2,multiply(inverse(b2),b2))))).
+%%%
+%cnf(i_0_6480, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(multiply(b2,inverse(b2)))))))),multiply(b2,inverse(multiply(b2,inverse(b2)))))=multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),b2)))),b2)))),multiply(b2,inverse(b2))))).
+%
+%cnf(i_0_463, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),multiply(inverse(b2),b2))=X2)).
+%%%
+%cnf(i_0_6967, plain, (inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))))=inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))))).
+%
+%cnf(i_0_7073, negated_conjecture, (multiply(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2)))))),a2)!=a2)).
+%%%%%%%%
+%cnf(i_0_582, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(inverse(X2),X2),X3)))),multiply(X1,inverse(X3)))=multiply(inverse(b2),b2))).
+%%%
+%cnf(i_0_7063, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))))),a2)!=a2)).
+%%%%%
+%cnf(i_0_1355, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,multiply(inverse(b2),b2))),multiply(X1,inverse(X2))),inverse(X3))),inverse(X2))=multiply(inverse(multiply(X4,inverse(X3))),multiply(X4,multiply(inverse(b2),b2))))).
+%%%
+%cnf(i_0_7025, plain, (inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))))=multiply(inverse(b2),b2))).
+%%%%
+%cnf(i_0_7327, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2)))))),a2)!=a2)).
+%
+%cnf(i_0_7317, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))))),a2)!=a2)).
+%%%%
+%cnf(i_0_1361, plain, (multiply(inverse(multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(X1,X2))),inverse(X2))),inverse(X3))),X1)=multiply(inverse(multiply(X4,inverse(X3))),multiply(X4,multiply(inverse(b2),b2))))).
+%%%
+%cnf(i_0_7337, plain, (inverse(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2)))))=inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))))).
+%%%%%
+%cnf(i_0_7584, negated_conjecture, (multiply(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))),a2)!=a2)).
+%%%%%%%%
+%cnf(i_0_557, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(X3,inverse(X4))))),multiply(inverse(b2),b2))=inverse(multiply(X3,inverse(multiply(multiply(X2,multiply(inverse(b2),b2)),X4)))))).
+%%%%
+%cnf(i_0_7577, plain, (multiply(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))),b2)=b2)).
+%%%%%%%
+%cnf(i_0_7682, plain, (multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2)))))=multiply(inverse(b2),b2))).
+%%%%
+%cnf(i_0_7066, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2)))))),b2)=b2)).
+%%%%
+%cnf(i_0_1419, plain, (multiply(inverse(multiply(X3,inverse(multiply(multiply(X1,multiply(inverse(b2),b2)),multiply(inverse(X2),X2))))),multiply(X3,multiply(inverse(b2),b2)))=X1)).
+%%%%
+%cnf(i_0_7100, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),multiply(b2,multiply(inverse(b2),b2))),multiply(inverse(b2),b2))=multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))).
+%
+%cnf(i_0_546, plain, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(X2),X2),multiply(inverse(b2),b2))),multiply(inverse(b2),b2))=multiply(inverse(b2),b2))).
+%%%
+%cnf(i_0_7741, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))))=multiply(inverse(b2),b2))).
+%%%%%%
+%cnf(i_0_7623, negated_conjecture, (multiply(inverse(multiply(X2,inverse(multiply(multiply(multiply(X2,inverse(X3)),multiply(inverse(b2),b2)),X3)))),a2)!=a2)).
+%
+%cnf(i_0_7854, plain, (multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(X2),X2),multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%%
+%cnf(i_0_603, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(multiply(X2,multiply(inverse(b2),b2))),multiply(X2,inverse(X1))),inverse(X1))),inverse(X1))),multiply(inverse(b2),b2))=inverse(X1))).
+%%%
+%cnf(i_0_7920, negated_conjecture, (multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))))),a2)!=a2)).
+%%
+%cnf(i_0_7909, negated_conjecture, (multiply(inverse(multiply(X1,inverse(multiply(multiply(multiply(X1,inverse(X2)),multiply(inverse(X3),X3)),X2)))),a2)!=a2)).
+%%%%%
+%cnf(i_0_7924, plain, (inverse(multiply(multiply(inverse(X2),X2),multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%%
+%cnf(i_0_579, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(X2),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(X2,X1))),inverse(X1))),inverse(X1))),inverse(X1))),multiply(inverse(b2),b2))=inverse(X1))).
+%%%%%%%
+%cnf(i_0_1435, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(X2),X2),multiply(inverse(X1),X1))))),multiply(b2,multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%%%%
+%cnf(i_0_7709, plain, (multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2))))))=multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),multiply(inverse(b2),b2))),multiply(inverse(b2),b2)))).
+%
+%cnf(i_0_521, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,multiply(inverse(b2),b2))),multiply(inverse(b2),b2))=multiply(inverse(multiply(X5,inverse(multiply(X2,X6)))),multiply(X5,inverse(X6))))).
+%%%%
+%cnf(i_0_7100, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))).
+%%%
+%cnf(i_0_1550, plain, (multiply(inverse(multiply(X1,multiply(inverse(b2),b2))),multiply(X1,inverse(X3)))=multiply(inverse(multiply(X7,multiply(inverse(b2),b2))),multiply(X7,inverse(X3))))).
+%%%%
+%cnf(i_0_8534, plain, (multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(b2)))=multiply(multiply(inverse(b2),b2),inverse(b2)))).
+%
+%cnf(i_0_6534, plain, (multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),multiply(inverse(b2),b2))=inverse(b2))).
+%%%%%%%%%%%
+%cnf(i_0_5362, plain, (multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(b2)))=multiply(multiply(inverse(b2),b2),inverse(b2)))).
+%
+%cnf(i_0_6647, plain, (multiply(inverse(inverse(b2)),multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))=multiply(multiply(inverse(b2),b2),inverse(b2)))).
+%%%%%%%%%%%%
+%cnf(i_0_528, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(X1,multiply(inverse(X2),X2)),b2)))),multiply(b2,inverse(b2)))=X1)).
+%%%%%%%%%%%
+%cnf(i_0_8665, plain, (multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),multiply(inverse(b2),b2))),multiply(inverse(b2),b2))=multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))))).
+%
+%cnf(i_0_559, plain, (inverse(multiply(X5,inverse(multiply(multiply(multiply(inverse(multiply(X2,inverse(X3))),multiply(X2,inverse(X4))),multiply(inverse(b2),b2)),X4))))=inverse(multiply(X5,inverse(X3))))).
+%%%%%%%
+%cnf(i_0_1613, plain, (multiply(inverse(multiply(X1,multiply(inverse(b2),b2))),multiply(X1,inverse(X3)))=multiply(inverse(inverse(X4)),multiply(multiply(inverse(multiply(X5,multiply(inverse(b2),b2))),multiply(X5,inverse(X4))),inverse(X3))))).
+%%%
+%cnf(i_0_8695, plain, (multiply(multiply(multiply(inverse(X1),X1),inverse(b2)),multiply(inverse(X1),X1))=inverse(b2))).
+%%%%%%%%%
+%cnf(i_0_1621, plain, (multiply(inverse(multiply(X1,multiply(inverse(b2),b2))),multiply(X1,inverse(X3)))=multiply(inverse(X4),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(X4,X5))),inverse(X5))),inverse(X3))))).
+%%%%%%%%
+%cnf(i_0_8660, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))),inverse(b2))),multiply(inverse(b2),b2))=inverse(b2))).
+%%%%%%%
+%cnf(i_0_8770, plain, (inverse(multiply(inverse(inverse(X1)),inverse(multiply(multiply(inverse(X2),X2),X1))))=multiply(inverse(b2),b2))).
+%
+%cnf(i_0_8806, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),b2)))),multiply(b2,inverse(b2)))=inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),multiply(inverse(b2),b2))))).
+%%%%
+%cnf(i_0_8791, plain, (multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))),inverse(b2)))=multiply(multiply(inverse(b2),b2),inverse(b2)))).
+%
+%cnf(i_0_9545, plain, (inverse(multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))),multiply(inverse(b2),b2)))=inverse(inverse(b2)))).
+%%%%
+%cnf(i_0_1644, plain, (multiply(inverse(multiply(inverse(inverse(X1)),multiply(inverse(b2),b2))),multiply(inverse(X6),X6))=multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(X1))))).
+%%%%
+%cnf(i_0_9623, negated_conjecture, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))),multiply(inverse(b2),b2))),a2)!=a2)).
+%%%
+%cnf(i_0_9605, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))),multiply(inverse(b2),b2)))),a2)!=a2)).
+%
+%cnf(i_0_9611, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))),multiply(inverse(b2),b2))),b2)=b2)).
+%%%%%%%
+%cnf(i_0_9742, plain, (multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))),multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%%%%%
+%cnf(i_0_9764, plain, (multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))),inverse(inverse(b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2))=inverse(inverse(b2)))).
+%%%%%
+%cnf(i_0_9443, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(X1)),inverse(multiply(multiply(inverse(X2),X2),X1)))),a2)!=a2)).
+%
+%cnf(i_0_7160, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(multiply(inverse(X1),X1),X2))),inverse(X2)))=multiply(inverse(b2),b2))).
+%%%%%%%%%
+%cnf(i_0_1660, plain, (multiply(inverse(multiply(b2,multiply(inverse(b2),b2))),multiply(b2,inverse(X2)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X2))))).
+%%%
+%cnf(i_0_9850, plain, (inverse(multiply(inverse(inverse(multiply(multiply(inverse(X2),X2),X3))),inverse(X3)))=multiply(inverse(b2),b2))).
+%%
+%cnf(i_0_1644, plain, (multiply(inverse(multiply(inverse(inverse(X1)),multiply(inverse(b2),b2))),multiply(inverse(X2),X2))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X1))))).
+%%%%%%%%%%%
+%cnf(i_0_9922, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2)))))))),multiply(b2,inverse(multiply(b2,inverse(b2)))))=multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),b2)))),b2)))),multiply(b2,inverse(b2))))).
+%%%%
+%cnf(i_0_10171, plain, (inverse(multiply(b2,inverse(multiply(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2)),b2))))=inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),b2)))))).
+%
+%cnf(i_0_10247, negated_conjecture, (multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),b2)))),multiply(b2,inverse(multiply(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2)),b2)))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_9924, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),b2)))),multiply(b2,inverse(b2)))=inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),multiply(inverse(b2),b2))))).
+%
+%cnf(i_0_10225, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),b2)))),multiply(b2,inverse(multiply(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2)),b2))))),a2)!=a2)).
+%%%
+%cnf(i_0_9923, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),inverse(b2))),inverse(b2))),multiply(inverse(b2),b2))=inverse(b2))).
+%
+%cnf(i_0_10341, plain, (multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),inverse(b2))),inverse(b2)))=multiply(multiply(inverse(b2),b2),inverse(b2)))).
+%%%%%%%
+%cnf(i_0_10363, plain, (inverse(multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),inverse(b2))),multiply(inverse(b2),b2)))=inverse(inverse(b2)))).
+%
+%cnf(i_0_10446, negated_conjecture, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),inverse(b2))),multiply(inverse(b2),b2))),a2)!=a2)).
+%%%
+%cnf(i_0_10424, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),inverse(b2))),multiply(inverse(b2),b2)))),a2)!=a2)).
+%
+%cnf(i_0_10431, plain, (multiply(multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),inverse(b2))),multiply(inverse(b2),b2))),b2)=b2)).
+%%%%%%%
+%cnf(i_0_9786, plain, (multiply(inverse(inverse(inverse(b2))),multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))),inverse(inverse(b2)))),inverse(inverse(b2))))=multiply(inverse(multiply(b2,inverse(multiply(inverse(inverse(b2)),b2)))),multiply(b2,inverse(b2))))).
+%%%%
+%cnf(i_0_10510, plain, (inverse(multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2)))=inverse(inverse(inverse(b2))))).
+%
+%cnf(i_0_10593, negated_conjecture, (multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_10600, plain, (inverse(multiply(inverse(inverse(inverse(b2))),multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2))))=multiply(inverse(b2),b2))).
+%
+%cnf(i_0_10571, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(inverse(b2))),multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2)))),a2)!=a2)).
+%%%%
+%cnf(i_0_10682, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(inverse(b2))),multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2))))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_10578, plain, (multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2))),b2)=b2)).
+%%%%
+%cnf(i_0_10749, plain, (multiply(inverse(inverse(inverse(b2))),multiply(multiply(inverse(inverse(inverse(b2))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%%%%%%
+%cnf(i_0_9848, negated_conjecture, (multiply(multiply(multiply(inverse(X3),X3),multiply(inverse(inverse(X1)),inverse(multiply(multiply(inverse(X2),X2),X1)))),a2)!=a2)).
+%%
+%cnf(i_0_10495, plain, (multiply(inverse(inverse(b2)),multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),inverse(b2))),multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%%%%%
+%cnf(i_0_10232, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),b2)))),multiply(b2,inverse(multiply(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2)),b2)))),b2)=b2)).
+%%%%%%%%%%%
+%cnf(i_0_10871, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),b2)))),multiply(b2,inverse(multiply(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2)),b2))))=multiply(inverse(b2),b2))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_10769, plain, (multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2))))),multiply(inverse(b2),b2))=inverse(inverse(inverse(b2))))).
+%%%%%%%%
+%cnf(i_0_10916, plain, (multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2)))))=multiply(inverse(multiply(b2,inverse(multiply(inverse(inverse(inverse(b2))),b2)))),multiply(b2,inverse(b2))))).
+%%%%
+%cnf(i_0_10938, plain, (inverse(multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2))))),multiply(inverse(b2),b2)))=inverse(inverse(inverse(inverse(b2)))))).
+%
+%cnf(i_0_11022, negated_conjecture, (multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2))))),multiply(inverse(b2),b2))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_11029, plain, (inverse(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2))))),multiply(inverse(b2),b2))))=multiply(inverse(b2),b2))).
+%
+%cnf(i_0_11000, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2))))),multiply(inverse(b2),b2)))),a2)!=a2)).
+%%%%
+%cnf(i_0_11112, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2))))),multiply(inverse(b2),b2))))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_11007, plain, (multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2))))),multiply(inverse(b2),b2))),b2)=b2)).
+%%%%
+%cnf(i_0_11179, plain, (multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(inverse(inverse(inverse(inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(b2))))),inverse(inverse(inverse(b2))))),multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%%%%%%%%%%%%%%%%
+%cnf(i_0_1892, plain, (multiply(inverse(multiply(X2,multiply(inverse(b2),b2))),multiply(X2,inverse(X1)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X1))))).
+%
+%cnf(i_0_1894, plain, (multiply(inverse(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X2))),inverse(X3))),inverse(X2))=multiply(inverse(multiply(X4,inverse(X3))),multiply(X4,multiply(inverse(b2),b2))))).
+%%%%
+%cnf(i_0_602, plain, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X2))),multiply(inverse(b2),b2))=inverse(X2))).
+%%%%%%%%%%%
+%cnf(i_0_8266, plain, (multiply(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),multiply(inverse(b2),b2))=inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))).
+%
+%cnf(i_0_1613, plain, (multiply(inverse(inverse(X3)),multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X3))),inverse(X2)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X2))))).
+%%%%%%%%%%%%
+%cnf(i_0_1621, plain, (multiply(inverse(X3),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(X3,X4))),inverse(X4))),inverse(X2)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X2))))).
+%%%
+%cnf(i_0_11524, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(inverse(b2)),b2)))),multiply(b2,inverse(b2)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))).
+%
+%cnf(i_0_11533, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(inverse(inverse(b2))),b2)))),multiply(b2,inverse(b2)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(inverse(b2))))))).
+%%%%%%%%%%%%%%
+%cnf(i_0_8062, negated_conjecture, (multiply(inverse(multiply(inverse(inverse(X1)),inverse(multiply(multiply(multiply(inverse(X3),X3),multiply(inverse(X2),X2)),X1)))),a2)!=a2)).
+%%
+%cnf(i_0_1933, plain, (multiply(inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(X1))),inverse(b2))=multiply(inverse(multiply(X2,inverse(X1))),multiply(X2,multiply(inverse(b2),b2))))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_1942, plain, (multiply(inverse(inverse(b2)),multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(X3)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X3))))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_9638, plain, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))),multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(b2),b2))),multiply(inverse(b2),b2))=multiply(inverse(b2),b2))).
+%%%%
+%cnf(i_0_11986, plain, (multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))),multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%
+%cnf(i_0_12022, plain, (inverse(multiply(multiply(inverse(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))),multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%%%%%%%%%%%
+%cnf(i_0_12137, plain, (multiply(inverse(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))),multiply(multiply(inverse(b2),b2),inverse(b2)))=multiply(inverse(b2),b2))).
+%
+%cnf(i_0_12159, plain, (inverse(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))))=inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))).
+%%%%%%%
+%cnf(i_0_12262, plain, (inverse(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))))=multiply(inverse(b2),b2))).
+%
+%cnf(i_0_12252, negated_conjecture, (multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))),a2)!=a2)).
+%%%
+%cnf(i_0_12227, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))))),a2)!=a2)).
+%%%%%%%%
+%cnf(i_0_12234, plain, (multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))),b2)=b2)).
+%
+%cnf(i_0_12333, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))))),a2)!=a2)).
+%%%%
+%cnf(i_0_12334, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))))))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_12408, plain, (multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2))))=multiply(inverse(b2),b2))).
+%%%%%%%%%%%
+%cnf(i_0_9415, plain, (multiply(inverse(X1),X1)=multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(X2)),inverse(multiply(multiply(inverse(X3),X3),X2)))))).
+%%%%%%%%%
+%cnf(i_0_2155, plain, (multiply(inverse(multiply(X1,inverse(multiply(X2,multiply(inverse(b2),b2))))),multiply(X1,multiply(inverse(b2),b2)))=multiply(inverse(multiply(X4,inverse(multiply(X2,X5)))),multiply(X4,inverse(X5))))).
+%
+%cnf(i_0_2157, plain, (multiply(inverse(multiply(X3,inverse(multiply(inverse(b2),X4)))),multiply(X3,inverse(X4)))=multiply(multiply(inverse(b2),b2),inverse(b2)))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_2167, plain, (multiply(inverse(multiply(X4,inverse(multiply(X2,X5)))),multiply(X4,inverse(X5)))=multiply(inverse(multiply(b2,inverse(multiply(X2,multiply(inverse(X3),X3))))),multiply(b2,multiply(inverse(b2),b2))))).
+%
+%cnf(i_0_2168, plain, (multiply(inverse(multiply(X6,inverse(multiply(inverse(X2),X7)))),multiply(X6,inverse(X7)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X2))))).
+%%%
+%cnf(i_0_13199, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),multiply(b2,multiply(inverse(b2),b2)))))),multiply(b2,multiply(inverse(b2),b2)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))))).
+%
+%cnf(i_0_9922, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2)))))))),multiply(b2,inverse(multiply(b2,inverse(b2)))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(b2))),b2)))))))).
+%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_8530, plain, (multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2))))),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2))=inverse(multiply(b2,inverse(b2))))).
+%%%
+%cnf(i_0_7622, negated_conjecture, (multiply(multiply(multiply(inverse(X1),X1),inverse(multiply(X3,inverse(multiply(multiply(multiply(X3,inverse(X4)),multiply(inverse(b2),b2)),X4))))),a2)!=a2)).
+%%%%%%%%%
+%cnf(i_0_13481, plain, (multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2))))),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2)))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(b2))))))).
+%%%%
+%cnf(i_0_13565, plain, (inverse(multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2))))),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2)))=inverse(inverse(multiply(b2,inverse(b2)))))).
+%
+%cnf(i_0_13668, negated_conjecture, (multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2))))),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_13677, plain, (inverse(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2))))),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2))))=multiply(inverse(b2),b2))).
+%
+%cnf(i_0_13640, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2))))),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2)))),a2)!=a2)).
+%%%%
+%cnf(i_0_13773, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2))))),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2))))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_13648, plain, (multiply(multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2))))),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2))),b2)=b2)).
+%%%%
+%cnf(i_0_13774, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2))))),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2))))))),a2)!=a2)).
+%
+%cnf(i_0_13863, plain, (multiply(inverse(inverse(multiply(b2,inverse(b2)))),multiply(multiply(inverse(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2))))),multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2))))),inverse(multiply(b2,inverse(b2))))),multiply(inverse(b2),b2)))=multiply(inverse(b2),b2))).
+%%%%%%%%%%%%%%
+%cnf(i_0_8059, negated_conjecture, (multiply(inverse(multiply(X1,inverse(multiply(multiply(multiply(X1,multiply(inverse(b2),b2)),multiply(inverse(X3),X3)),multiply(inverse(X2),X2))))),a2)!=a2)).
+%%%%%%
+%cnf(i_0_9736, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(X1,inverse(inverse(b2)))),multiply(X1,multiply(inverse(b2),b2))),inverse(b2))),multiply(inverse(b2),b2)))),a2)!=a2)).
+%%%%%%%%%%%%%%%%%
+%cnf(i_0_10822, negated_conjecture, (multiply(multiply(multiply(inverse(X1),X1),multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(X3),X3),multiply(inverse(X2),X2))))),a2)!=a2)).
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_2253, plain, (multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3)))=multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(X2,X4))),inverse(X4))))).
+%%%%
+%cnf(i_0_14231, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))).
+%%%%
+%cnf(i_0_14480, plain, (inverse(multiply(inverse(inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))))=multiply(inverse(b2),b2))).
+%
+%cnf(i_0_14576, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_14590, plain, (inverse(inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))))=inverse(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))))).
+%%%%
+%cnf(i_0_14736, negated_conjecture, (multiply(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))),inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))),a2)!=a2)).
+%
+%cnf(i_0_14708, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))),inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_14241, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))),inverse(multiply(b2,inverse(b2)))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2)))))))).
+%%%%%%%%%%%%%
+%cnf(i_0_14709, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))),inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))))))),a2)!=a2)).
+%%%%
+%cnf(i_0_14716, plain, (multiply(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))),inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))),b2)=b2)).
+%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_14313, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))))).
+%%%%%%%%%%%%
+%cnf(i_0_14763, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))),inverse(inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))))))).
+%%%%%%%%%%%%
+%cnf(i_0_14618, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))))),multiply(b2,multiply(inverse(b2),b2)))=multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))))),multiply(b2,multiply(inverse(b2),b2))))).
+%%%%%
+%cnf(i_0_14727, plain, (multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))),inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))))=multiply(inverse(b2),b2))).
+%%%%%%%%%
+%cnf(i_0_7195, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(multiply(b2,inverse(X3))),multiply(b2,multiply(inverse(b2),b2)))),multiply(inverse(multiply(X4,inverse(X3))),multiply(X4,multiply(inverse(b2),b2)))),a2)!=a2)).
+%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_14903, plain, (inverse(multiply(b2,inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))))=inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))))))).
+%%%%%%
+%cnf(i_0_13507, negated_conjecture, (multiply(multiply(multiply(inverse(X1),X1),inverse(multiply(X2,inverse(multiply(multiply(multiply(X2,inverse(X3)),multiply(inverse(X4),X4)),X3))))),a2)!=a2)).
+%%%%%%
+%cnf(i_0_15224, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))))),multiply(b2,inverse(inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))))))).
+%%%%%%%%%%%%%
+%cnf(i_0_15195, negated_conjecture, (multiply(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))))),multiply(b2,inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))))),a2)!=a2)).
+%
+%cnf(i_0_7198, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,multiply(inverse(b2),b2)))),multiply(inverse(multiply(b2,inverse(X2))),multiply(b2,multiply(inverse(b2),b2)))),a2)!=a2)).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_15166, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))))),multiply(b2,inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))))),a2)!=a2)).
+%%%%%%%%%
+%cnf(i_0_8030, negated_conjecture, (multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(X1),X1),inverse(b2)))),inverse(multiply(multiply(inverse(X1),X1),multiply(multiply(inverse(X1),X1),multiply(multiply(inverse(X1),X1),inverse(b2))))))),a2)!=a2)).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_3774, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(X2)),inverse(X1)))=multiply(inverse(multiply(b2,inverse(X2))),multiply(b2,inverse(X1))))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_14231, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2)))))).
+%%%%%%%%%%%%
+%cnf(i_0_14241, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2)))))),multiply(b2,inverse(multiply(b2,inverse(b2)))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),b2)))))))).
+%%%%%%%%%%%%
+%cnf(i_0_14313, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))),multiply(b2,inverse(multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(b2)))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(b2),b2),inverse(b2))))))).
+%%%%%%%%%%
+%cnf(i_0_10051, plain, (multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(multiply(multiply(inverse(X1),X1),X2))))=multiply(inverse(b2),b2))).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%cnf(i_0_14754, plain, (multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))))))).
+%%%%%%%%%%%%
+%cnf(i_0_15906, plain, (inverse(multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))=inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))))).
+%%%%
+%cnf(i_0_16005, negated_conjecture, (multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))),a2)!=a2)).
+%
+%cnf(i_0_15976, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_16048, plain, (multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),multiply(inverse(b2),b2)))=multiply(inverse(multiply(b2,inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))),multiply(b2,multiply(inverse(b2),b2))))).
+%
+%cnf(i_0_15977, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2)))))))),a2)!=a2)).
+%%%%%%%%%%%
+%cnf(i_0_16032, plain, (multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(inverse(b2)))),multiply(inverse(b2),b2))=multiply(multiply(inverse(b2),b2),inverse(b2)))).
+%%%%%
+%cnf(i_0_16139, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(inverse(b2)))),inverse(inverse(b2)))),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2))),multiply(inverse(b2),b2)))),a2)!=a2)).
+%%%%%%%
+%cnf(i_0_16129, plain, (multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(inverse(b2))))=multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))))).
+%
+%cnf(i_0_16183, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(b2)),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(b2))),multiply(multiply(inverse(multiply(multiply(inverse(multiply(b2,inverse(inverse(b2)))),multiply(b2,multiply(inverse(b2),b2))),inverse(inverse(b2)))),multiply(multiply(inverse(b2),b2),inverse(b2))),inverse(b2))),multiply(inverse(b2),b2)))),a2)!=a2)).
+%%%%%%%%%%%%
+%cnf(i_0_16013, negated_conjecture, (multiply(inverse(multiply(inverse(inverse(multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))),inverse(b2)))),inverse(multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))),multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(inverse(b2))))),multiply(inverse(inverse(multiply(multiply(inverse(b2),b2),inverse(b2)))),inverse(multiply(multiply(multiply(inverse(b2),b2),inverse(b2)),inverse(b2))))),inverse(b2))))))),a2)!=a2)).
+%
+%cnf(i_0_8066, negated_conjecture, (multiply(inverse(multiply(X5,inverse(multiply(multiply(multiply(multiply(inverse(multiply(X1,inverse(multiply(a2,X2)))),multiply(X1,inverse(X2))),inverse(X3)),multiply(inverse(X4),X4)),X3)))),multiply(X5,multiply(inverse(b2),b2)))!=a2)).
 
-# Proof found!
-# SZS status Unsatisfiable
-# SZS output start CNFRefutation
-cnf(single_axiom, axiom, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(inverse(X3),X3)))=X2), file('Problems/GRP/GRP410-1.p', single_axiom)).
-cnf(prove_these_axioms_2, negated_conjecture, (multiply(multiply(inverse(b2),b2),a2)!=a2), file('Problems/GRP/GRP410-1.p', prove_these_axioms_2)).
+% Proof found!
+% SZS status Unsatisfiable
+% SZS output start CNFRefutation
+cnf(single_axiom, axiom, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(inverse(X3),X3)))=X2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP410-1.p', single_axiom)).
+cnf(prove_these_axioms_2, negated_conjecture, (multiply(multiply(inverse(b2),b2),a2)!=a2), file('/Users/kondylidou/Desktop/TPTP-v9.2.1/Problems/GRP/GRP410-1.p', prove_these_axioms_2)).
 cnf(c_0_2, axiom, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(inverse(X3),X3)))=X2), single_axiom).
 cnf(c_0_3, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(inverse(multiply(inverse(X3),X3))))),inverse(multiply(inverse(inverse(multiply(inverse(X3),X3))),inverse(multiply(inverse(X3),X3)))))=multiply(inverse(multiply(X4,inverse(multiply(X2,X3)))),multiply(X4,inverse(X3)))), inference(spm,[status(thm)],[c_0_2, c_0_2])).
-cnf(c_0_4, plain, (multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3)))=multiply(inverse(multiply(X4,inverse(multiply(X2,X3)))),multiply(X4,inverse(X3)))), inference(spm,[status(thm)],[c_0_3, c_0_3])).
-cnf(c_0_5, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,inverse(multiply(inverse(X3),X3))),X3)))),multiply(X1,inverse(X3)))=X2), inference(spm,[status(thm)],[c_0_2, c_0_3])).
-cnf(c_0_6, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(X3,inverse(X4)))))=multiply(inverse(multiply(X5,inverse(X2))),multiply(X5,inverse(multiply(X3,inverse(X4)))))), inference(spm,[status(thm)],[c_0_4, c_0_5])).
-cnf(c_0_7, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(X3)))=multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(X3)))), inference(spm,[status(thm)],[c_0_6, c_0_2])).
+cnf(c_0_4, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,inverse(multiply(inverse(X3),X3))),X3)))),multiply(X1,inverse(X3)))=X2), inference(spm,[status(thm)],[c_0_2, c_0_3])).
+cnf(c_0_5, plain, (multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3)))=multiply(inverse(multiply(X4,inverse(multiply(X2,X3)))),multiply(X4,inverse(X3)))), inference(spm,[status(thm)],[c_0_3, c_0_3])).
+cnf(c_0_6, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(multiply(X4,inverse(multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(X3),X3)))),multiply(inverse(X3),X3))))),X2)=X4), inference(spm,[status(thm)],[c_0_4, c_0_2])).
+cnf(c_0_7, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(X3)))=multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(X3)))), inference(spm,[status(thm)],[c_0_5, c_0_6])).
 cnf(c_0_8, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,multiply(X3,inverse(X4)))))),multiply(X1,inverse(multiply(X3,inverse(X4))))),inverse(multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,inverse(X4)))))=X2), inference(spm,[status(thm)],[c_0_2, c_0_7])).
-cnf(c_0_9, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,multiply(X3,inverse(multiply(inverse(X4),X4))))))),multiply(X1,inverse(multiply(X3,inverse(multiply(inverse(X4),X4)))))),inverse(multiply(inverse(X5),X5)))=X2), inference(spm,[status(thm)],[c_0_8, c_0_2])).
-cnf(c_0_10, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(inverse(X4),X4)))=X2), inference(spm,[status(thm)],[c_0_9, c_0_9])).
-cnf(c_0_11, plain, (multiply(multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(X4,multiply(inverse(X3),X3))))),X2),inverse(multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(X3),X3))))=X4), inference(spm,[status(thm)],[c_0_2, c_0_2])).
-cnf(c_0_12, plain, (multiply(X1,inverse(multiply(inverse(X2),X2)))=multiply(X1,inverse(multiply(inverse(X3),X3)))), inference(spm,[status(thm)],[c_0_10, c_0_5])).
-cnf(c_0_13, plain, (multiply(multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(X4,multiply(inverse(X3),X3))))),X2),inverse(multiply(inverse(b2),b2)))=X4), inference(rw,[status(thm)],[c_0_11, c_0_12])).
-cnf(c_0_14, plain, (multiply(multiply(inverse(X1),X1),inverse(multiply(inverse(b2),b2)))=inverse(multiply(inverse(X2),X2))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_13, c_0_12]), c_0_10])).
-cnf(c_0_15, plain, (inverse(multiply(inverse(X1),X1))=inverse(multiply(inverse(X2),X2))), inference(spm,[status(thm)],[c_0_14, c_0_14])).
-cnf(c_0_16, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,inverse(multiply(inverse(X3),X3))),X4)))),multiply(X1,inverse(X4)))=X2), inference(spm,[status(thm)],[c_0_5, c_0_12])).
-cnf(c_0_17, plain, (multiply(multiply(inverse(X1),X1),inverse(multiply(inverse(X2),X2)))=inverse(multiply(inverse(X3),X3))), inference(spm,[status(thm)],[c_0_14, c_0_15])).
-cnf(c_0_18, plain, (multiply(multiply(inverse(X1),multiply(multiply(inverse(multiply(X2,inverse(multiply(X1,X3)))),multiply(X2,inverse(X3))),inverse(X3))),inverse(multiply(inverse(X3),X3)))=inverse(X3)), inference(spm,[status(thm)],[c_0_2, c_0_2])).
-cnf(c_0_19, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(X4))),X2)=multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,inverse(multiply(inverse(X6),X6))))), inference(spm,[status(thm)],[c_0_7, c_0_10])).
-cnf(c_0_20, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(inverse(X2),X2)),X3)))),multiply(X1,inverse(X3)))=multiply(inverse(X4),X4)), inference(spm,[status(thm)],[c_0_16, c_0_17])).
-cnf(c_0_21, plain, (multiply(inverse(X1),multiply(multiply(inverse(multiply(X2,inverse(multiply(X1,X3)))),multiply(X2,inverse(X3))),inverse(X3)))=multiply(inverse(multiply(b2,inverse(multiply(inverse(X3),X3)))),multiply(b2,inverse(X3)))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_2, c_0_18]), c_0_3])).
-cnf(c_0_22, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(X1,multiply(inverse(X2),X2))))),multiply(b2,inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(X3),X3)))=X1), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_10, c_0_10]), c_0_19])).
-cnf(c_0_23, plain, (multiply(inverse(X1),X1)=multiply(inverse(X2),X2)), inference(spm,[status(thm)],[c_0_20, c_0_20])).
-cnf(c_0_24, plain, (multiply(inverse(multiply(multiply(inverse(X1),X1),inverse(X2))),inverse(multiply(inverse(X3),X3)))=multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(multiply(inverse(X5),X5))))), inference(spm,[status(thm)],[c_0_7, c_0_17])).
-cnf(c_0_25, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(b2),b2)))),multiply(X1,inverse(X2))),inverse(multiply(inverse(X3),X3)))=inverse(X2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_10, c_0_17]), c_0_17])).
-cnf(c_0_26, plain, (multiply(inverse(X1),X1)=multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(inverse(X2),X2))))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_21, c_0_10]), c_0_19]), c_0_22]), c_0_23])).
-cnf(c_0_27, plain, (multiply(inverse(multiply(X1,inverse(inverse(multiply(inverse(X2),X2))))),multiply(X1,inverse(inverse(multiply(inverse(X3),X3)))))=inverse(inverse(multiply(inverse(X4),X4)))), inference(spm,[status(thm)],[c_0_16, c_0_17])).
-cnf(c_0_28, plain, (multiply(inverse(inverse(multiply(inverse(b2),b2))),inverse(multiply(inverse(X1),X1)))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_24, c_0_25]), c_0_17]), c_0_25]), c_0_23])).
-cnf(c_0_29, plain, (inverse(inverse(multiply(inverse(X1),X1)))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_26, c_0_27]), c_0_26])).
-cnf(c_0_30, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(multiply(X2,inverse(X3))),multiply(X2,inverse(X4)))))),multiply(X1,inverse(multiply(X5,inverse(X4))))),inverse(multiply(inverse(X6),X6)))=inverse(multiply(X5,inverse(X3)))), inference(spm,[status(thm)],[c_0_10, c_0_7])).
-cnf(c_0_31, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(X3,inverse(X4))))),inverse(multiply(inverse(X5),X5)))=inverse(multiply(X3,inverse(multiply(multiply(X2,inverse(multiply(inverse(X6),X6))),X4))))), inference(spm,[status(thm)],[c_0_10, c_0_16])).
-cnf(c_0_32, plain, (inverse(multiply(inverse(b2),b2))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_28, c_0_29]), c_0_17])).
-cnf(c_0_33, plain, (inverse(multiply(X1,inverse(multiply(multiply(multiply(inverse(multiply(X2,inverse(X3))),multiply(X2,inverse(X4))),inverse(multiply(inverse(b2),b2))),X4))))=inverse(multiply(X1,inverse(X3)))), inference(rw,[status(thm)],[c_0_30, c_0_31])).
-cnf(c_0_34, plain, (inverse(multiply(inverse(X1),X1))=multiply(inverse(X1),X1)), inference(spm,[status(thm)],[c_0_32, c_0_23])).
-cnf(c_0_35, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(X3)))=multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(inverse(X2)),inverse(X3)))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_7, c_0_17]), c_0_17])).
-cnf(c_0_36, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X2)))),multiply(X1,inverse(X3)))=multiply(inverse(inverse(multiply(inverse(X4),X4))),multiply(multiply(inverse(X5),X5),inverse(X3)))), inference(spm,[status(thm)],[c_0_7, c_0_17])).
-cnf(c_0_37, plain, (inverse(multiply(X1,inverse(multiply(multiply(inverse(X2),X2),X3))))=inverse(multiply(X1,inverse(X3)))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_33, c_0_20]), c_0_10]), c_0_34])).
-cnf(c_0_38, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(X3)))=multiply(multiply(inverse(b2),b2),multiply(inverse(inverse(X2)),inverse(X3)))), inference(rw,[status(thm)],[c_0_35, c_0_32])).
-cnf(c_0_39, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X2)))),multiply(X1,inverse(X3)))=multiply(inverse(X4),multiply(multiply(inverse(multiply(X5,inverse(multiply(X4,X6)))),multiply(X5,inverse(X6))),inverse(X3)))), inference(spm,[status(thm)],[c_0_7, c_0_10])).
-cnf(c_0_40, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X2)))),multiply(X1,inverse(X3)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(X4),X4),inverse(X3)))), inference(rw,[status(thm)],[c_0_36, c_0_29])).
-cnf(c_0_41, plain, (multiply(inverse(multiply(inverse(inverse(X1)),inverse(X2))),multiply(inverse(X3),X3))=multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(X1)))), inference(spm,[status(thm)],[c_0_7, c_0_23])).
-cnf(c_0_42, plain, (inverse(multiply(inverse(inverse(multiply(multiply(inverse(X1),X1),X2))),inverse(X2)))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_37, c_0_20]), c_0_20]), c_0_34])).
-cnf(c_0_43, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(X1),X1))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_38, c_0_23]), c_0_23])).
-cnf(c_0_44, plain, (multiply(inverse(X1),multiply(multiply(inverse(multiply(X2,inverse(multiply(X1,X3)))),multiply(X2,inverse(X3))),inverse(X4)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X4)))), inference(rw,[status(thm)],[c_0_39, c_0_40])).
-cnf(c_0_45, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,multiply(inverse(b2),b2)),X3)))),multiply(X1,inverse(X3)))=X2), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_16, c_0_20]), c_0_34]), c_0_37]), c_0_23]), c_0_34])).
-cnf(c_0_46, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(X3,inverse(X4))))),multiply(inverse(X5),X5))=inverse(multiply(X3,inverse(multiply(multiply(X2,multiply(inverse(X6),X6)),X4))))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_31, c_0_34]), c_0_34])).
-cnf(c_0_47, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(multiply(inverse(X3),X3),X2))))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_41, c_0_42]), c_0_43])).
-cnf(c_0_48, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),multiply(inverse(X4),X4))=X2), inference(rw,[status(thm)],[c_0_10, c_0_34])).
-cnf(c_0_49, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(X1,multiply(inverse(X2),X2)),multiply(inverse(X3),X3))))),multiply(b2,multiply(inverse(b2),b2)))=X1), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_16, c_0_19]), c_0_34]), c_0_19]), c_0_34])).
-cnf(c_0_50, plain, (multiply(inverse(multiply(X1,multiply(inverse(b2),b2))),multiply(X1,inverse(X2)))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X2)))), inference(spm,[status(thm)],[c_0_44, c_0_45])).
-cnf(c_0_51, plain, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X1))),multiply(inverse(X2),X2))=inverse(X1)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_25, c_0_40]), c_0_34])).
-cnf(c_0_52, plain, (inverse(multiply(multiply(inverse(X1),X1),inverse(multiply(multiply(inverse(X2),multiply(inverse(X3),X3)),X2))))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_46, c_0_47]), c_0_43])).
-cnf(c_0_53, plain, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(X1),X1),inverse(X2))),multiply(inverse(X3),X3))=inverse(X2)), inference(spm,[status(thm)],[c_0_48, c_0_40])).
-cnf(c_0_54, plain, (multiply(inverse(multiply(b2,inverse(inverse(X1)))),multiply(b2,multiply(inverse(b2),b2)))=inverse(multiply(inverse(inverse(X1)),multiply(inverse(b2),b2)))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_49, c_0_50]), c_0_51])).
-cnf(c_0_55, negated_conjecture, (multiply(multiply(inverse(b2),b2),a2)!=a2), inference(fof_simplification,[status(thm)],[prove_these_axioms_2])).
-cnf(c_0_56, plain, (multiply(inverse(X1),multiply(inverse(X2),X2))=inverse(X1)), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_48, c_0_52]), c_0_53])).
-cnf(c_0_57, plain, (multiply(inverse(multiply(b2,inverse(inverse(X1)))),multiply(b2,multiply(inverse(X2),X2)))=inverse(multiply(inverse(inverse(X1)),multiply(inverse(X2),X2)))), inference(spm,[status(thm)],[c_0_54, c_0_23])).
-cnf(c_0_58, plain, (inverse(multiply(X1,inverse(inverse(multiply(multiply(inverse(X2),X2),X3)))))=inverse(multiply(X1,inverse(inverse(X3))))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_37, c_0_37]), c_0_37])).
-cnf(c_0_59, negated_conjecture, (multiply(multiply(inverse(b2),b2),a2)!=a2), c_0_55).
-cnf(c_0_60, plain, (multiply(inverse(multiply(multiply(inverse(X1),X1),inverse(X2))),multiply(inverse(X3),X3))=multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,multiply(inverse(X5),X5)))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_24, c_0_34]), c_0_34])).
-cnf(c_0_61, plain, (multiply(inverse(multiply(inverse(inverse(X1)),multiply(inverse(b2),b2))),multiply(inverse(b2),b2))=multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X1)))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_50, c_0_20]), c_0_20])).
-cnf(c_0_62, plain, (inverse(inverse(inverse(X1)))=inverse(X1)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_49, c_0_56]), c_0_56]), c_0_57]), c_0_56])).
-cnf(c_0_63, plain, (inverse(multiply(inverse(inverse(multiply(multiply(inverse(X1),X1),X2))),multiply(inverse(b2),b2)))=inverse(multiply(inverse(inverse(X2)),multiply(inverse(b2),b2)))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_54, c_0_58]), c_0_54])).
-cnf(c_0_64, negated_conjecture, (multiply(multiply(inverse(X1),X1),a2)!=a2), inference(spm,[status(thm)],[c_0_59, c_0_23])).
-cnf(c_0_65, plain, (inverse(multiply(inverse(X1),X1))=inverse(multiply(inverse(multiply(inverse(X2),X2)),multiply(inverse(X3),X3)))), inference(spm,[status(thm)],[c_0_15, c_0_15])).
-cnf(c_0_66, plain, (multiply(inverse(multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X1))),inverse(X2))),inverse(X1))=multiply(inverse(multiply(X3,inverse(X2))),multiply(X3,multiply(inverse(X4),X4)))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_19, c_0_20]), c_0_34]), c_0_37]), c_0_23]), c_0_34]), c_0_50]), c_0_34])).
-cnf(c_0_67, plain, (inverse(multiply(multiply(inverse(X1),X1),inverse(X2)))=multiply(inverse(multiply(X3,inverse(X2))),multiply(X3,multiply(inverse(X4),X4)))), inference(rw,[status(thm)],[c_0_60, c_0_56])).
-cnf(c_0_68, plain, (multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),inverse(X1)))=inverse(X1)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_61, c_0_56]), c_0_56]), c_0_62])).
-cnf(c_0_69, plain, (inverse(multiply(multiply(inverse(X1),X1),X2))=inverse(X2)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_63, c_0_56]), c_0_56]), c_0_62]), c_0_62])).
-cnf(c_0_70, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(X1),X1)),a2)!=a2), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_64, c_0_65]), c_0_65])).
-cnf(c_0_71, plain, (multiply(inverse(multiply(inverse(X1),inverse(X2))),inverse(X1))=inverse(inverse(X2))), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_66, c_0_67]), c_0_68]), c_0_69])).
-cnf(c_0_72, plain, (inverse(multiply(inverse(inverse(inverse(multiply(multiply(inverse(X1),X1),X2)))),inverse(inverse(X2))))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_58, c_0_20]), c_0_20]), c_0_34])).
-cnf(c_0_73, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(X1),X1))),a2)!=a2), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_70, c_0_65]), c_0_65])).
-cnf(c_0_74, plain, (multiply(multiply(inverse(b2),b2),inverse(X1))=inverse(X1)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_71, c_0_72]), c_0_62]), c_0_69]), c_0_62])).
-cnf(c_0_75, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(X1),X1)))),a2)!=a2), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_73, c_0_65]), c_0_65])).
-cnf(c_0_76, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(inverse(X3),X3))))=multiply(inverse(multiply(b2,inverse(X2))),multiply(b2,inverse(multiply(inverse(b2),b2))))), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_7, c_0_10]), c_0_19])).
-cnf(c_0_77, plain, (inverse(inverse(multiply(multiply(X1,multiply(inverse(X2),X2)),multiply(inverse(X3),X3))))=X1), inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_49, c_0_67]), c_0_74])).
-cnf(c_0_78, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(multiply(b2,inverse(multiply(inverse(X1),X1)))),multiply(b2,inverse(multiply(inverse(b2),b2))))))),a2)!=a2), inference(spm,[status(thm)],[c_0_75, c_0_76])).
-cnf(c_0_79, plain, (inverse(inverse(X1))=X1), inference(spm,[status(thm)],[c_0_62, c_0_77])).
-cnf(c_0_80, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),multiply(multiply(inverse(b2),b2),multiply(inverse(multiply(b2,multiply(inverse(X1),X1))),multiply(b2,multiply(inverse(b2),b2)))))),a2)!=a2), inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_78, c_0_34]), c_0_34])).
-cnf(c_0_81, plain, (multiply(multiply(inverse(b2),b2),X1)=X1), inference(spm,[status(thm)],[c_0_74, c_0_79])).
-cnf(c_0_82, plain, (multiply(inverse(multiply(X1,multiply(inverse(X2),X2))),multiply(X1,multiply(inverse(X3),X3)))=multiply(inverse(X4),X4)), inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(spm,[status(thm)],[c_0_20, c_0_23]), c_0_34]), c_0_34])).
-cnf(c_0_83, negated_conjecture, ($false), inference(cn,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[inference(rw,[status(thm)],[c_0_80, c_0_81]), c_0_82]), c_0_43]), c_0_43]), c_0_81])]), ['proof']).
-# SZS output end CNFRefutation
+cnf(c_0_9, plain, (multiply(multiply(inverse(X1),multiply(multiply(inverse(multiply(X2,inverse(multiply(X1,X3)))),multiply(X2,inverse(X3))),inverse(X3))),inverse(multiply(inverse(X3),X3)))=inverse(X3)), inference(spm,[status(thm)],[c_0_2, c_0_2])).
+cnf(c_0_10, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,multiply(X3,inverse(X4)))))),multiply(X1,inverse(multiply(X3,inverse(X4))))),inverse(multiply(inverse(X5),X5)))=X2), inference(spm,[status(thm)],[c_0_8, c_0_6])).
+cnf(c_0_11, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X2)))),multiply(X1,inverse(X2)))=multiply(inverse(X3),multiply(multiply(inverse(multiply(X4,inverse(multiply(X3,X2)))),multiply(X4,inverse(X2))),inverse(X2)))), inference(spm,[status(thm)],[c_0_4, c_0_9])).
+cnf(c_0_12, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(inverse(X4),X4)))=X2), inference(spm,[status(thm)],[c_0_10, c_0_10])).
+cnf(c_0_13, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(inverse(multiply(inverse(X4),X4)),multiply(inverse(X4),X4))))),X2)=multiply(inverse(X5),multiply(multiply(inverse(multiply(X6,inverse(multiply(X5,multiply(inverse(X4),X4))))),multiply(X6,inverse(multiply(inverse(X4),X4)))),inverse(multiply(inverse(X4),X4))))), inference(spm,[status(thm)],[c_0_11, c_0_12])).
+cnf(c_0_14, plain, (multiply(inverse(X2),X2)=multiply(inverse(X5),multiply(multiply(inverse(multiply(X6,inverse(multiply(X5,multiply(inverse(X4),X4))))),multiply(X6,inverse(multiply(inverse(X4),X4)))),inverse(multiply(inverse(X4),X4))))), inference(rw,[status(thm)],[c_0_13, c_0_12])).
+cnf(c_0_15, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(multiply(X4,inverse(multiply(inverse(multiply(inverse(X5),X5)),multiply(inverse(X5),X5)))),multiply(inverse(X5),X5))))),X2)=X4), inference(spm,[status(thm)],[c_0_4, c_0_12])).
+cnf(c_0_16, plain, (multiply(inverse(X1),X1)=multiply(inverse(X2),X2)), inference(rw,[status(thm)],[c_0_14, c_0_12])).
+cnf(c_0_17, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(multiply(multiply(X4,inverse(multiply(inverse(b2),b2))),multiply(inverse(X5),X5))))),X2)=X4), inference(rw,[status(thm)],[c_0_15, c_0_16])).
+cnf(c_0_18, plain, (multiply(inverse(multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(X4))),X2)=multiply(inverse(multiply(X5,inverse(X4))),multiply(X5,inverse(multiply(inverse(X6),X6))))), inference(spm,[status(thm)],[c_0_7, c_0_12])).
+cnf(c_0_19, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(inverse(X2),X2),X3)))),multiply(X1,inverse(X3)))=inverse(inverse(multiply(inverse(X3),X3)))), inference(spm,[status(thm)],[c_0_4, c_0_16])).
+cnf(c_0_20, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(X1,inverse(multiply(inverse(b2),b2))),multiply(inverse(X2),X2))))),multiply(b2,inverse(multiply(inverse(b2),b2))))=X1), inference(rw,[status(thm)],[c_0_17, c_0_18])).
+cnf(c_0_21, plain, (multiply(inverse(inverse(multiply(inverse(X1),X1))),inverse(multiply(inverse(X2),X2)))=multiply(inverse(X3),X3)), inference(spm,[status(thm)],[c_0_12, c_0_19])).
+cnf(c_0_22, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(X2),X2))),inverse(multiply(inverse(X3),X3))),multiply(inverse(X1),X1))))),multiply(b2,inverse(multiply(inverse(b2),b2))))=inverse(inverse(multiply(inverse(b2),b2)))), inference(spm,[status(thm)],[c_0_20, c_0_21])).
+cnf(c_0_23, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(X2),multiply(multiply(inverse(multiply(X3,inverse(multiply(X2,X1)))),multiply(X3,inverse(X1))),inverse(X1))),inverse(X1))),inverse(multiply(inverse(X1),X1)))=inverse(X1)), inference(spm,[status(thm)],[c_0_2, c_0_9])).
+cnf(c_0_24, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),multiply(inverse(X1),X1))))),multiply(b2,inverse(multiply(inverse(b2),b2))))=inverse(inverse(multiply(inverse(b2),b2)))), inference(rw,[status(thm)],[c_0_22, c_0_21])).
+cnf(c_0_25, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(inverse(multiply(inverse(X3),X3))))),inverse(multiply(inverse(X4),X4)))=multiply(inverse(multiply(X5,inverse(multiply(X2,X6)))),multiply(X5,inverse(X6)))), inference(spm,[status(thm)],[c_0_12, c_0_12])).
+cnf(c_0_26, plain, (multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(inverse(multiply(inverse(b2),b2))),inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(b2),b2))))=inverse(multiply(inverse(b2),b2))), inference(spm,[status(thm)],[c_0_23, c_0_24])).
+cnf(c_0_27, plain, (multiply(inverse(multiply(b2,inverse(multiply(X1,b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(X2,inverse(multiply(X1,X3)))),multiply(X2,inverse(X3)))), inference(rw,[status(thm)],[c_0_3, c_0_25])).
+cnf(c_0_28, plain, (multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(inverse(multiply(inverse(b2),b2))),inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(b2),b2)))=inverse(multiply(inverse(b2),b2))), inference(rw,[status(thm)],[c_0_26, c_0_16])).
+cnf(c_0_29, plain, (multiply(inverse(multiply(b2,inverse(multiply(X1,b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(inverse(inverse(X2)),inverse(multiply(X1,X2)))),multiply(inverse(inverse(multiply(inverse(X3),X3))),inverse(multiply(inverse(X4),X4))))), inference(spm,[status(thm)],[c_0_27, c_0_21])).
+cnf(c_0_30, plain, (multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(b2),b2)),inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(b2),b2)))=inverse(multiply(inverse(b2),b2))), inference(rw,[status(thm)],[c_0_28, c_0_16])).
+cnf(c_0_31, plain, (multiply(inverse(multiply(inverse(inverse(X1)),inverse(multiply(X2,X1)))),multiply(inverse(b2),b2))=multiply(inverse(multiply(b2,inverse(multiply(X2,b2)))),multiply(b2,inverse(b2)))), inference(rw,[status(thm)],[c_0_29, c_0_21])).
+cnf(c_0_32, plain, (multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),inverse(multiply(inverse(b2),b2)))=inverse(multiply(inverse(b2),b2))), inference(rw,[status(thm)],[c_0_30, c_0_16])).
+cnf(c_0_33, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(inverse(inverse(inverse(multiply(inverse(b2),b2)))),inverse(inverse(multiply(inverse(b2),b2))))),multiply(inverse(b2),b2))), inference(spm,[status(thm)],[c_0_31, c_0_32])).
+cnf(c_0_34, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(b2),b2))), inference(rw,[status(thm)],[c_0_33, c_0_16])).
+cnf(c_0_35, plain, (multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[c_0_34, c_0_16])).
+cnf(c_0_36, plain, (multiply(multiply(inverse(inverse(multiply(inverse(X1),X1))),multiply(multiply(inverse(X2),X2),inverse(multiply(inverse(X1),X1)))),inverse(multiply(inverse(multiply(inverse(X1),X1)),multiply(inverse(X1),X1))))=inverse(multiply(inverse(X1),X1))), inference(spm,[status(thm)],[c_0_23, c_0_12])).
+cnf(c_0_37, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2)))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(inverse(inverse(multiply(b2,inverse(b2)))),inverse(multiply(inverse(b2),b2)))),multiply(inverse(b2),b2))), inference(spm,[status(thm)],[c_0_31, c_0_35])).
+cnf(c_0_38, plain, (multiply(inverse(multiply(inverse(inverse(X1)),inverse(X2))),multiply(inverse(X3),X3))=multiply(inverse(multiply(X4,inverse(X2))),multiply(X4,inverse(X1)))), inference(spm,[status(thm)],[c_0_7, c_0_16])).
+cnf(c_0_39, plain, (multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(inverse(X1)),multiply(multiply(inverse(multiply(X2,inverse(multiply(inverse(X3),X3)))),multiply(X2,inverse(X1))),inverse(X1))),inverse(X1))),inverse(multiply(inverse(X1),X1)))=inverse(X1)), inference(spm,[status(thm)],[c_0_23, c_0_16])).
+cnf(c_0_40, plain, (multiply(multiply(inverse(inverse(multiply(inverse(X1),X1))),multiply(multiply(inverse(X2),X2),inverse(multiply(inverse(X1),X1)))),inverse(multiply(inverse(b2),b2)))=inverse(multiply(inverse(X1),X1))), inference(rw,[status(thm)],[c_0_36, c_0_16])).
+cnf(c_0_41, plain, (multiply(inverse(multiply(b2,inverse(multiply(inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2)))),b2)))),multiply(b2,inverse(b2)))=multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(b2,inverse(b2)))))), inference(rw,[status(thm)],[c_0_37, c_0_38])).
+cnf(c_0_42, plain, (multiply(multiply(inverse(X2),multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),inverse(X4))),inverse(multiply(inverse(X5),X5)))=inverse(X4)), inference(spm,[status(thm)],[c_0_12, c_0_12])).
+cnf(c_0_43, plain, (multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X2)))),multiply(X1,inverse(X3)))=multiply(inverse(X4),multiply(multiply(inverse(multiply(X5,inverse(multiply(X4,X6)))),multiply(X5,inverse(X6))),inverse(X3)))), inference(spm,[status(thm)],[c_0_7, c_0_12])).
+cnf(c_0_44, plain, (multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),inverse(multiply(inverse(b2),b2))),inverse(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(b2),b2))))=inverse(multiply(inverse(b2),b2))), inference(spm,[status(thm)],[c_0_39, c_0_40])).
+cnf(c_0_45, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(multiply(b2,inverse(b2))))),inverse(multiply(inverse(X1),X1)))=inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2))))), inference(spm,[status(thm)],[c_0_12, c_0_41])).
+cnf(c_0_46, plain, (multiply(multiply(inverse(multiply(b2,inverse(multiply(inverse(b2),b2)))),multiply(b2,inverse(X1))),inverse(multiply(inverse(X2),X2)))=inverse(X1)), inference(rw,[status(thm)],[c_0_42, c_0_43])).
+cnf(c_0_47, plain, (multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(b2),b2))))=inverse(multiply(inverse(b2),b2))), inference(rw,[status(thm)],[c_0_44, c_0_16])).
+cnf(c_0_48, plain, (inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))),b2))))=inverse(multiply(b2,inverse(b2)))), inference(rw,[status(thm)],[c_0_45, c_0_46])).
+cnf(c_0_49, plain, (multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))=inverse(multiply(inverse(b2),b2))), inference(rw,[status(thm)],[c_0_47, c_0_16])).
+cnf(c_0_50, plain, (inverse(multiply(b2,inverse(multiply(multiply(inverse(inverse(multiply(inverse(b2),b2))),inverse(multiply(inverse(b2),b2))),b2))))=inverse(multiply(b2,inverse(b2)))), inference(spm,[status(thm)],[c_0_48, c_0_49])).
+cnf(c_0_51, plain, (inverse(multiply(b2,inverse(multiply(multiply(inverse(b2),b2),b2))))=inverse(multiply(b2,inverse(b2)))), inference(rw,[status(thm)],[c_0_50, c_0_16])).
+cnf(c_0_52, plain, (multiply(inverse(multiply(b2,inverse(b2))),multiply(b2,inverse(b2)))=inverse(inverse(multiply(inverse(b2),b2)))), inference(spm,[status(thm)],[c_0_19, c_0_51])).
+cnf(c_0_53, plain, (inverse(inverse(multiply(inverse(b2),b2)))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[c_0_52, c_0_16])).
+cnf(c_0_54, negated_conjecture, (multiply(multiply(inverse(b2),b2),a2)!=a2), inference(fof_simplification,[status(thm)],[prove_these_axioms_2])).
+cnf(c_0_55, plain, (multiply(multiply(inverse(multiply(b2,inverse(b2))),multiply(b2,inverse(b2))),inverse(multiply(inverse(X1),X1)))=multiply(inverse(b2),b2)), inference(spm,[status(thm)],[c_0_12, c_0_51])).
+cnf(c_0_56, plain, (multiply(inverse(inverse(multiply(inverse(X1),X1))),inverse(multiply(inverse(X2),X2)))=multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))), inference(spm,[status(thm)],[c_0_21, c_0_53])).
+cnf(c_0_57, negated_conjecture, (multiply(multiply(inverse(b2),b2),a2)!=a2), c_0_54).
+cnf(c_0_58, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(inverse(X3),X3))))=multiply(inverse(multiply(multiply(inverse(multiply(X4,inverse(multiply(X5,X6)))),multiply(X4,inverse(X6))),inverse(X2))),X5)), inference(spm,[status(thm)],[c_0_7, c_0_12])).
+cnf(c_0_59, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(X2),X2)))),multiply(X1,inverse(X3))),inverse(multiply(inverse(X4),X4)))=inverse(X3)), inference(spm,[status(thm)],[c_0_12, c_0_16])).
+cnf(c_0_60, plain, (multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(X1),X1)))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[c_0_55, c_0_16])).
+cnf(c_0_61, plain, (multiply(inverse(b2),b2)=multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(b2),b2)))), inference(rw,[status(thm)],[c_0_56, c_0_21])).
+cnf(c_0_62, negated_conjecture, (multiply(multiply(inverse(X1),X1),a2)!=a2), inference(spm,[status(thm)],[c_0_57, c_0_16])).
+cnf(c_0_63, plain, (multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(inverse(X3),X3))))=multiply(inverse(multiply(b2,inverse(X2))),multiply(b2,inverse(multiply(inverse(b2),b2))))), inference(rw,[status(thm)],[c_0_58, c_0_18])).
+cnf(c_0_64, plain, (multiply(multiply(inverse(multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(X1),X1)))),multiply(inverse(b2),b2)),inverse(multiply(inverse(X3),X3)))=inverse(multiply(inverse(X2),X2))), inference(spm,[status(thm)],[c_0_59, c_0_60])).
+cnf(c_0_65, plain, (inverse(multiply(inverse(b2),b2))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[c_0_61, c_0_49])).
+cnf(c_0_66, negated_conjecture, (multiply(multiply(inverse(multiply(X1,inverse(multiply(inverse(b2),b2)))),multiply(X1,inverse(multiply(inverse(X2),X2)))),a2)!=a2), inference(spm,[status(thm)],[c_0_62, c_0_63])).
+cnf(c_0_67, plain, (multiply(multiply(inverse(multiply(inverse(b2),b2)),multiply(inverse(b2),b2)),inverse(multiply(inverse(X3),X3)))=inverse(multiply(inverse(X2),X2))), inference(rw,[status(thm)],[c_0_64, c_0_60])).
+cnf(c_0_68, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(b2),b2))=inverse(multiply(inverse(b2),b2))), inference(rw,[status(thm)],[c_0_49, c_0_65])).
+cnf(c_0_69, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(X3),X3)),multiply(inverse(inverse(multiply(inverse(X1),X1))),inverse(multiply(inverse(X2),X2)))),a2)!=a2), inference(spm,[status(thm)],[c_0_66, c_0_21])).
+cnf(c_0_70, plain, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(b2),b2)),inverse(multiply(inverse(X3),X3)))=inverse(multiply(inverse(X2),X2))), inference(rw,[status(thm)],[c_0_67, c_0_65])).
+cnf(c_0_71, plain, (multiply(multiply(inverse(b2),b2),multiply(inverse(b2),b2))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[c_0_68, c_0_65])).
+cnf(c_0_72, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(X1),X1)),multiply(inverse(b2),b2)),a2)!=a2), inference(rw,[status(thm)],[c_0_69, c_0_21])).
+cnf(c_0_73, plain, (multiply(multiply(inverse(b2),b2),inverse(multiply(inverse(X3),X3)))=inverse(multiply(inverse(X2),X2))), inference(rw,[status(thm)],[c_0_70, c_0_71])).
+cnf(c_0_74, negated_conjecture, (multiply(multiply(inverse(multiply(inverse(X1),X1)),multiply(inverse(X2),X2)),a2)!=a2), inference(spm,[status(thm)],[c_0_72, c_0_16])).
+cnf(c_0_75, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(X3,inverse(X4))))),inverse(multiply(inverse(X5),X5)))=inverse(multiply(X3,inverse(multiply(multiply(X2,inverse(multiply(inverse(X4),X4))),X4))))), inference(spm,[status(thm)],[c_0_12, c_0_4])).
+cnf(c_0_76, plain, (inverse(multiply(inverse(X1),X1))=multiply(inverse(b2),b2)), inference(rw,[status(thm)],[c_0_73, c_0_60])).
+cnf(c_0_77, negated_conjecture, (multiply(multiply(multiply(inverse(b2),b2),multiply(inverse(X1),X1)),a2)!=a2), inference(spm,[status(thm)],[c_0_74, c_0_65])).
+cnf(c_0_78, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(X3,inverse(X4))))),multiply(inverse(b2),b2))=inverse(multiply(X3,inverse(multiply(multiply(X2,inverse(multiply(inverse(X4),X4))),X4))))), inference(rw,[status(thm)],[c_0_75, c_0_76])).
+cnf(c_0_79, negated_conjecture, (multiply(multiply(multiply(inverse(X1),X1),multiply(inverse(X2),X2)),a2)!=a2), inference(spm,[status(thm)],[c_0_77, c_0_16])).
+cnf(c_0_80, plain, (multiply(multiply(inverse(multiply(X1,inverse(X2))),multiply(X1,inverse(multiply(X3,inverse(X4))))),multiply(inverse(b2),b2))=inverse(multiply(X3,inverse(multiply(multiply(X2,multiply(inverse(b2),b2)),X4))))), inference(rw,[status(thm)],[c_0_78, c_0_76])).
+cnf(c_0_81, negated_conjecture, (multiply(inverse(multiply(X1,inverse(multiply(multiply(multiply(X1,inverse(X2)),multiply(inverse(b2),b2)),X2)))),a2)!=a2), inference(spm,[status(thm)],[c_0_79, c_0_80])).
+cnf(c_0_82, negated_conjecture, (multiply(inverse(multiply(X1,inverse(multiply(multiply(multiply(X1,inverse(X2)),multiply(inverse(X3),X3)),X2)))),a2)!=a2), inference(spm,[status(thm)],[c_0_81, c_0_16])).
+cnf(c_0_83, plain, (multiply(inverse(multiply(X3,inverse(multiply(multiply(X1,inverse(multiply(inverse(b2),b2))),multiply(inverse(X2),X2))))),multiply(X3,inverse(multiply(inverse(b2),b2))))=X1), inference(spm,[status(thm)],[c_0_7, c_0_20])).
+cnf(c_0_84, negated_conjecture, (multiply(inverse(multiply(X5,inverse(multiply(multiply(multiply(multiply(inverse(multiply(X1,inverse(multiply(a2,X2)))),multiply(X1,inverse(X2))),inverse(X3)),multiply(inverse(X4),X4)),X3)))),multiply(X5,inverse(multiply(inverse(X6),X6))))!=a2), inference(spm,[status(thm)],[c_0_82, c_0_18])).
+cnf(c_0_85, plain, (multiply(inverse(multiply(X3,inverse(multiply(multiply(X1,multiply(inverse(b2),b2)),multiply(inverse(X2),X2))))),multiply(X3,inverse(multiply(inverse(b2),b2))))=X1), inference(rw,[status(thm)],[c_0_83, c_0_76])).
+cnf(c_0_86, negated_conjecture, (multiply(inverse(multiply(X1,inverse(multiply(multiply(multiply(multiply(inverse(multiply(X2,inverse(multiply(a2,X3)))),multiply(X2,inverse(X3))),inverse(X4)),multiply(inverse(X5),X5)),X4)))),multiply(X1,multiply(inverse(b2),b2)))!=a2), inference(rw,[status(thm)],[c_0_84, c_0_76])).
+cnf(c_0_87, plain, (multiply(inverse(multiply(X1,inverse(multiply(multiply(X2,multiply(inverse(b2),b2)),multiply(inverse(X3),X3))))),multiply(X1,multiply(inverse(b2),b2)))=X2), inference(rw,[status(thm)],[c_0_85, c_0_76])).
+cnf(c_0_88, negated_conjecture, (multiply(multiply(inverse(multiply(X2,inverse(multiply(a2,X3)))),multiply(X2,inverse(X3))),inverse(multiply(inverse(X4),X4)))!=a2), inference(spm,[status(thm)],[c_0_86, c_0_87])).
+cnf(c_0_89, negated_conjecture, (multiply(multiply(inverse(multiply(X2,inverse(multiply(a2,X3)))),multiply(X2,inverse(X3))),multiply(inverse(b2),b2))!=a2), inference(rw,[status(thm)],[c_0_88, c_0_76])).
+cnf(c_0_90, plain, (multiply(multiply(inverse(multiply(X1,inverse(multiply(X2,X3)))),multiply(X1,inverse(X3))),multiply(inverse(b2),b2))=X2), inference(rw,[status(thm)],[c_0_12, c_0_76])).
+cnf(c_0_91, negated_conjecture, ($false), inference(rw,[status(thm)],[c_0_89, c_0_90])).
+cnf(c_0_92, negated_conjecture, ($false), inference(cn,[status(thm)],[c_0_91]), ['proof']).
+% SZS output end CNFRefutation

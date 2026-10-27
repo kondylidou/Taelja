@@ -16,16 +16,16 @@ axiom d : α
 axiom f : α → α
 
 -- Axiom 1
-axiom ax1 : b = c
+axiom ax1 : a = b
 -- Axiom 2
-axiom ax2 : a = b
+axiom ax2 : b = c
 -- Axiom 3
 axiom ax3 : ∀ (x : α), f x = x
 
 -- Goal 1
 theorem taelja_goal1 : c = a := by
-  calc c = b := Eq.symm (ax1)
-      _ = a := Eq.symm (ax2)
+  calc c = b := Eq.symm (ax2)
+      _ = a := Eq.symm (ax1)
 
 -- Goal 2
 theorem taelja_goal2 : f d = d := by
