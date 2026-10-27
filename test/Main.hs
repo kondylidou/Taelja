@@ -441,6 +441,12 @@ iproverBenchmarkNames =
   -- an equation iProver does not rewrite at a whole side, by its
   -- encompassment condition
   , "BOO002-1"
+  -- a superposition that puts the other side in for every subterm that has
+  -- become the unified one, also where the replacements below made one
+  , "GRP116-1"
+  -- a light normalisation, which rewrites only subterms equal to a side of
+  -- an equation, with the same variables
+  , "GRP461-1"
   , "ALG006-1"
   , "ALG210+2"
   , "ANA009-2"

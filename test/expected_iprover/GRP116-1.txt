@@ -1,0 +1,125 @@
+Axiom 1: multiply(X,multiply(multiply(X,multiply(multiply(X,Y),Z)),multiply(identity,multiply(Z,Z)))) = Y
+
+Lemma 2: multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),X)),multiply(identity,multiply(X,X)))) = a
+Proof:
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),X)),multiply(identity,multiply(X,X))))
+= { by axiom 1 }
+  a
+
+Lemma 3: multiply(X,multiply(multiply(X,multiply(multiply(X,Y),multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a)) = Y
+Proof:
+  multiply(X,multiply(multiply(X,multiply(multiply(X,Y),multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a))
+= { by lemma 2 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,Y),multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,a))),multiply(identity,multiply(multiply(identity,a),multiply(identity,a)))))))
+= { by axiom 1 }
+  Y
+
+Lemma 4: multiply(multiply(X,multiply(multiply(X,Y),Z)),multiply(identity,multiply(Z,Z))) = multiply(X,multiply(multiply(X,multiply(Y,multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a))
+Proof:
+  multiply(multiply(X,multiply(multiply(X,Y),Z)),multiply(identity,multiply(Z,Z)))
+= { by lemma 3 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,multiply(multiply(X,multiply(multiply(X,Y),Z)),multiply(identity,multiply(Z,Z)))),multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a))
+= { by axiom 1 }
+  multiply(X,multiply(multiply(X,multiply(Y,multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a))
+
+Lemma 5: multiply(X,multiply(X,multiply(multiply(X,multiply(Y,multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a))) = Y
+Proof:
+  multiply(X,multiply(X,multiply(multiply(X,multiply(Y,multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a)))
+= { by lemma 4 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,Y),X)),multiply(identity,multiply(X,X))))
+= { by axiom 1 }
+  Y
+
+Lemma 6: multiply(identity,multiply(a,a)) = multiply(multiply(identity,a),multiply(identity,a))
+Proof:
+  multiply(identity,multiply(a,a))
+= { by lemma 2 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,a))),multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a))
+= { by lemma 3 }
+  multiply(multiply(identity,a),multiply(identity,a))
+
+Lemma 7: multiply(multiply(X,Y),multiply(identity,multiply(multiply(identity,a),multiply(identity,a)))) = multiply(X,multiply(Y,multiply(multiply(identity,a),multiply(identity,a))))
+Proof:
+  multiply(multiply(X,Y),multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))
+= { by axiom 1 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,multiply(multiply(X,Y),multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a)),multiply(identity,multiply(a,a))))
+= { by lemma 3 }
+  multiply(X,multiply(Y,multiply(identity,multiply(a,a))))
+= { by lemma 6 }
+  multiply(X,multiply(Y,multiply(multiply(identity,a),multiply(identity,a))))
+
+Lemma 8: multiply(X,identity) = X
+Proof:
+  multiply(X,identity)
+= { by lemma 5 R->L }
+  multiply(X,multiply(X,multiply(multiply(X,multiply(multiply(X,identity),multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a)))
+= { by lemma 7 }
+  multiply(X,multiply(X,multiply(multiply(X,multiply(X,multiply(identity,multiply(multiply(identity,a),multiply(identity,a))))),a)))
+= { by lemma 5 }
+  X
+
+Lemma 9: multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,multiply(multiply(identity,X),multiply(identity,X))))),X)) = a
+Proof:
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,multiply(multiply(identity,X),multiply(identity,X))))),X))
+= { by axiom 1 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,multiply(multiply(identity,X),multiply(identity,X))))),multiply(identity,multiply(multiply(identity,multiply(multiply(identity,X),multiply(identity,X))),multiply(identity,multiply(multiply(identity,X),multiply(identity,X)))))))
+= { by lemma 2 }
+  a
+
+Lemma 10: multiply(identity,multiply(identity,multiply(identity,a))) = a
+Proof:
+  multiply(identity,multiply(identity,multiply(identity,a)))
+= { by lemma 8 R->L }
+  multiply(identity,multiply(identity,multiply(multiply(identity,a),identity)))
+= { by lemma 8 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),identity)),identity))
+= { by lemma 8 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,identity))),identity))
+= { by lemma 8 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,multiply(identity,identity)))),identity))
+= { by lemma 8 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,multiply(identity,multiply(identity,identity))))),identity))
+= { by lemma 8 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,multiply(multiply(identity,identity),multiply(identity,identity))))),identity))
+= { by lemma 9 }
+  a
+
+Lemma 11: multiply(X,multiply(X,X)) = identity
+Proof:
+  multiply(X,multiply(X,X))
+= { by lemma 8 R->L }
+  multiply(X,multiply(X,multiply(X,identity)))
+= { by lemma 8 R->L }
+  multiply(X,multiply(X,multiply(multiply(X,identity),identity)))
+= { by lemma 8 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,identity),identity)),identity))
+= { by lemma 8 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,identity),multiply(identity,identity))),identity))
+= { by lemma 8 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,identity),multiply(identity,multiply(identity,identity)))),identity))
+= { by lemma 8 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,identity),multiply(identity,multiply(identity,multiply(identity,identity))))),identity))
+= { by lemma 8 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,identity),multiply(identity,multiply(multiply(identity,identity),multiply(identity,identity))))),identity))
+= { by axiom 1 R->L }
+  multiply(X,multiply(multiply(X,multiply(multiply(X,identity),multiply(identity,multiply(multiply(identity,identity),multiply(identity,identity))))),multiply(identity,multiply(multiply(identity,multiply(multiply(identity,identity),multiply(identity,identity))),multiply(identity,multiply(multiply(identity,identity),multiply(identity,identity)))))))
+= { by axiom 1 }
+  identity
+
+Goal 1: multiply(identity,a) = a
+Proof:
+  multiply(identity,a)
+= { by lemma 10 R->L }
+  multiply(identity,multiply(identity,multiply(identity,multiply(identity,a))))
+= { by lemma 8 R->L }
+  multiply(identity,multiply(multiply(identity,identity),multiply(identity,multiply(identity,a))))
+= { by lemma 11 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(multiply(identity,a),multiply(identity,a)))),multiply(identity,multiply(identity,a))))
+= { by lemma 6 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,multiply(a,a)))),multiply(identity,multiply(identity,a))))
+= { by lemma 10 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,multiply(multiply(identity,multiply(identity,multiply(identity,a))),a)))),multiply(identity,multiply(identity,a))))
+= { by lemma 10 R->L }
+  multiply(identity,multiply(multiply(identity,multiply(multiply(identity,a),multiply(identity,multiply(multiply(identity,multiply(identity,multiply(identity,a))),multiply(identity,multiply(identity,multiply(identity,a))))))),multiply(identity,multiply(identity,a))))
+= { by lemma 9 }
+  a

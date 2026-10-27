@@ -21,8 +21,9 @@ import qualified Data.Text as Text
 import qualified Data.TPTP as T
 
 import Types
-import Helpers (applySubstTerm, clauseInstance, clauseKey, clauseLits, fromPolLits, foldLiteralTerms, litVars, matchTerm, notVar, polLits,
-                ppTerm, putTermAt, resolveHead, subterms, suffixVarsClause, suffixVarsLit, termAt, termCtxs, termVars)
+import Helpers (applySubstTerm, clauseInstance, clauseKey, clauseLits, deepApplySubstTerm, fromPolLits, foldLiteralTerms, litAsTerm,
+                litVars, mapLiteralTerms, matchTerm, notVar, polLits, ppTerm, putTermAt, resolveHead, subterms, suffixVarsClause,
+                suffixVarsLit, termAsLit, termAt, termCtxs, termVars, unifyTerms)
 import TptpConvert (clauseToDecl, convertDeclToClause, resolutionSource, unitNameOf, unitNameStr)
 import ProofTree (matchClause, resolveCopySource, resolvents)
 
@@ -265,11 +266,13 @@ isUnitClause (Clause bs mh) = length bs + length mh == 1
 -- Replaces each demodulation, light_normalisation or theory_normalisation step
 -- of iProver by its single rewrites, each by one cited equation at one place,
 -- as Vampire prints them. theory_normalisation rewrites with the associativity
--- and commutativity axioms it cites. iProver cites the clause it rewrites
--- first. It also simplifies the result of a superposition at once by the unit
--- equations among its premises, so a superposition whose clause is none of
--- the premises' superpositions becomes the superposition and the rewrites
--- after it. A step whose rewrites are not found stays as it is.
+-- and commutativity axioms it cites. light_normalisation looks each subterm up
+-- among the equations' sides, so it rewrites only a subterm equal to one, with
+-- the same variables, as on GRP461-1. iProver cites the clause it rewrites
+-- first. Its superposition by a unit equation rewrites more than one place, so
+-- a superposition whose clause is none of the premises' superpositions becomes
+-- the superposition at one place and the rewrites at the others. A step whose
+-- rewrites are not found stays as it is.
 expandDemodulation :: [T.Unit] -> [T.Unit]
 expandDemodulation units = concatMap expand units
   where
@@ -279,16 +282,15 @@ expandDemodulation units = concatMap expand units
     expand (T.Unit n d (Just (T.Inference r@(T.Atom rule) info ps, ann)))
       | rule `elem` map Text.pack ["demodulation", "light_normalisation", "theory_normalisation"]
       , p0 : eqNames@(_ : _) <- parents, Just c0 <- clauseOf p0, Just c <- convertDeclToClause d
-      , Just steps@(_ : _) <- rewriteChain (unitEquations eqNames) c0 c
+      , Just steps@(_ : _) <- rewriteChain (rule == Text.pack "light_normalisation") (unitEquations eqNames) c0 c
       = rewrites n d info ann p0 steps
       | rule == Text.pack "superposition"
       , [p1, p2] <- parents, Just a <- clauseOf p1, Just b <- clauseOf p2, Just c <- convertDeclToClause d
-      , let results = map snd (resolvents a b)
-      , not (any (`clauseInstance` c) results)
-      , (r0, steps@(_ : _)) : _ <- [ (r0, st) | r0 <- results, Just st <- [rewriteChain (unitEquations [p1, p2]) r0 c] ]
+      , not (any ((`clauseInstance` c) . snd) (resolvents a b))
+      , (r0, later) : _ <- [ x | x@(_, later@(_ : _)) <- replacingSuperpositions a b, clauseInstance (last later) c ]
       , let sup = unitNameStr n ++ "_sup"
       = T.Unit (unitNameOf sup) (clauseToDecl r0) (Just (T.Inference r [thm] (map parent [p1, p2]), Nothing))
-        : rewrites n d info ann sup steps
+        : rewrites n d info ann sup [ (p1, cl) | cl <- later ]
       where
         parents = [ unitNameStr pn | T.Parent (T.UnitSource pn) _ <- ps ]
     expand u = [u]
@@ -300,6 +302,47 @@ expandDemodulation units = concatMap expand units
       in [ T.Unit (unitNameOf nm) (clauseToDecl cl) (Just (source [thm] prev e, Nothing)) | (nm, prev, (e, cl)) <- init named ]
          ++ [ T.Unit n d (Just (source info prev e, ann)) | (_, prev, (e, _)) <- [last named] ]
 
+-- iProver's superpositions of the unit equation a into clause b, each as the
+-- superposition at one place and the clauses after each rewrite at another.
+-- iProver unifies a side l of the equation with a subterm s of a literal of b,
+-- instantiates that literal bottom up and puts the other side in for every
+-- subterm that has become the instance of s, also where the rewrites below
+-- made one, as on GRP116-1.
+replacingSuperpositions :: Clause -> Clause -> [(Clause, [Clause])]
+replacingSuperpositions (Clause [] (Just (Eq x y))) b =
+  [ (r0, later)
+  | (l, r) <- [(x, y), (y, x)]
+  , (i, (_, lit)) <- zip [0 :: Int ..] lits
+  , Just t <- [litAsTerm lit]
+  , (p@(_ : _), s) <- places t, notVar s
+  , Just θ <- [unifyTerms l s []]
+  , let inst = deepApplySubstTerm θ
+        points = p : filter (/= p) (replaced inst (inst l) (inst r) t)
+        clauseWith u = fromPolLits [ (sg, if j == i then termAsLit lit u else mapLiteralTerms inst m)
+                                   | (j, (sg, m)) <- zip [0 ..] lits ]
+  , r0 : later <- [ map clauseWith (tail (scanl (\u q -> putTermAt q (inst r) u) (inst t) points)) ] ]
+  where
+    lits = polLits (suffixVarsClause "_q" b)
+    places u = ([], u) : case u of
+      App _ us -> [ (j : q, v) | (j, uj) <- zip [0 ..] us, (q, v) <- places uj ]
+      _        -> []
+replacingSuperpositions _ _ = []
+
+-- The places of the literal term t where iProver's superposition puts r in for
+-- l, in the order it makes the rewrites. It instantiates t bottom up and
+-- replaces each subterm that has become l. A variable's binding is not looked
+-- into.
+replaced :: (Term -> Term) -> Term -> Term -> Term -> [[Int]]
+replaced inst l r (App _ ts) = concat [ snd (go [j] tj) | (j, tj) <- zip [0 ..] ts ]
+  where
+    go path u =
+      let (u', ps) = case u of
+            App f us -> let rs = [ go (path ++ [j]) uj | (j, uj) <- zip [0 ..] us ]
+                        in (App f (map fst rs), concatMap snd rs)
+            _        -> (inst u, [])
+      in if u' == l then (r, ps ++ [path]) else (u', ps)
+replaced _ _ _ _ = []
+
 -- The single rewrites that take clause c0 to c, each with the equation it uses
 -- and the clause after it. Each literal of c0 is normalised in turn and must
 -- give a literal of c with the same sign, an equation either way round.
@@ -307,9 +350,10 @@ expandDemodulation units = concatMap expand units
 -- renaming of c's variables into c0's is built up along the way, and so is
 -- one symbol precedence. iProver orders terms by Knuth-Bendix, or for some
 -- theories by a lexicographic path ordering, which is tried when the first
--- gives no rewrites.
-rewriteChain :: [(String, (Term, Term))] -> Clause -> Clause -> Maybe [(String, Clause)]
-rewriteChain eqs c0 c = listToMaybe (concatMap chain [const kboGreater, lpoGreater])
+-- gives no rewrites. With exact set, a rewrite needs a side of the equation
+-- itself, not an instance.
+rewriteChain :: Bool -> [(String, (Term, Term))] -> Clause -> Clause -> Maybe [(String, Clause)]
+rewriteChain exact eqs c0 c = listToMaybe (concatMap chain [const kboGreater, lpoGreater])
   where
     chain greater = walk [] ([], []) (polLits c0) (polLits c)
       where
@@ -340,7 +384,7 @@ rewriteChain eqs c0 c = listToMaybe (concatMap chain [const kboGreater, lpoGreat
         arguments _ _ _ _ _ = []
         -- the normal forms of u that are target renamed
         normalAs (ren, prec) other target u =
-          [ (u', steps, (ren', prec')) | (u', steps, prec') <- normalForms eqs greater other prec u
+          [ (u', steps, (ren', prec')) | (u', steps, prec') <- normalForms exact eqs greater other prec u
                                        , Just ren' <- [renaming ren target u'] ]
 
 -- Extends a renaming of the variables of pattern p into those of term u, one
@@ -364,11 +408,13 @@ renaming ren p u = case (p, u) of
 -- is a side of an equation that is the whole clause, with other the other
 -- side, an equation that matches all of u only by renaming rewrites it only
 -- when u or the result is smaller than other, as iProver's encompassment
--- condition demands.
-normalForms :: [(String, (Term, Term))] -> ([(String, String)] -> Term -> Term -> Either (String, String) Bool)
+-- condition demands. With exact set, only a term equal to a side matches it.
+normalForms :: Bool -> [(String, (Term, Term))] -> ([(String, String)] -> Term -> Term -> Either (String, String) Bool)
             -> Maybe Term -> [(String, String)] -> Term -> [(Term, [(String, Term)], [(String, String)])]
-normalForms eqs greater other prec0 u0 = normal [] prec0 u0
+normalForms exact eqs greater other prec0 u0 = normal [] prec0 u0
   where
+    apart = if exact then id else suffixVarsLit "_e"
+    match a u = if exact then [] <$ guard (a == u) else matchTerm a u
     encompasses prec u σ r = case other of
       Just t | u == u0, all isVariable (map snd σ), length (nub (map snd σ)) == length σ ->
         greater prec t u == Right True || greater prec t r == Right True
@@ -376,7 +422,7 @@ normalForms eqs greater other prec0 u0 = normal [] prec0 u0
     isVariable (Var _) = True
     isVariable _       = False
     dirs = [ (e, a, b) | (e, (l, r)) <- eqs, (from, to) <- [(l, r), (r, l)]
-                       , Eq a b <- [suffixVarsLit "_e" (Eq from to)], all (`elem` termVars a) (termVars b) ]
+                       , Eq a b <- [apart (Eq from to)], all (`elem` termVars a) (termVars b) ]
     normal seen prec u = do
       (u1, s1, p1) <- atRoot seen prec u
       case u1 of
@@ -394,7 +440,7 @@ normalForms eqs greater other prec0 u0 = normal [] prec0 u0
     -- stopping assumes the other.
     atRoot seen prec u =
       let rs = [ (e, r, open)
-               | notVar u, (e, a, b) <- dirs, Just σ <- [matchTerm a u]
+               | notVar u, (e, a, b) <- dirs, Just σ <- [match a u]
                , let r = applySubstTerm σ b, r `notElem` (u : seen), encompasses prec u σ r
                , open <- case greater prec u r of
                    Right True -> [Nothing]

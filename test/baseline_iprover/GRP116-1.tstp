@@ -1,0 +1,107 @@
+% SZS status Unsatisfiable for GRP116-1.p
+% SZS output start CNFRefutation for GRP116-1.p
+
+tcf(c_49,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(X0,multiply(multiply(X0,multiply(multiply(X0,X1),X2)),multiply(identity,multiply(X2,X2)))) = X1),
+    file('Problems/GRP/GRP116-1.p', single_axiom)).
+
+tcf(c_50,plain, 
+    (multiply(identity,a) != a),
+    file('Problems/GRP/GRP116-1.p', prove_order3)).
+
+tcf(c_59,plain, (multiply(identity,a) = iPr_def_10),definition).
+
+tcf(c_60,plain, 
+    (iPr_def_10 != a),
+    inference(demodulation,[status(thm)],[c_50,c_59])).
+
+tcf(c_89,plain,![X0:$i]:  
+    (multiply(identity,multiply(multiply(identity,multiply(iPr_def_10,X0)),multiply(identity,multiply(X0,X0)))) = a),
+    inference(superposition,[status(thm)],[c_59,c_49])).
+
+tcf(c_94,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(X0,multiply(multiply(X0,multiply(multiply(X0,X1),multiply(identity,multiply(multiply(identity,X2),multiply(identity,X2))))),X2)) = X1),
+    inference(superposition,[status(thm)],[c_49,c_49])).
+
+tcf(c_97,plain,![X0:$i]:  
+    (multiply(identity,multiply(multiply(identity,multiply(iPr_def_10,multiply(identity,multiply(multiply(identity,X0),multiply(identity,X0))))),X0)) = a),
+    inference(superposition,[status(thm)],[c_49,c_89])).
+
+tcf(c_101,plain,![X0:$i,X1:$i]:  
+    (multiply(X0,multiply(multiply(X0,multiply(multiply(X0,X1),multiply(identity,multiply(iPr_def_10,iPr_def_10)))),a)) = X1),
+    inference(superposition,[status(thm)],[c_89,c_49])).
+
+tcf(c_107,plain, 
+    (multiply(identity,multiply(a,a)) = multiply(iPr_def_10,iPr_def_10)),
+    inference(superposition,[status(thm)],[c_89,c_101])).
+
+tcf(c_108,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(multiply(X0,multiply(multiply(X0,X1),X2)),multiply(identity,multiply(X2,X2))) = multiply(X0,multiply(multiply(X0,multiply(X1,multiply(identity,multiply(iPr_def_10,iPr_def_10)))),a))),
+    inference(superposition,[status(thm)],[c_49,c_101])).
+
+tcf(c_116,plain,![X0:$i,X1:$i]:  
+    (multiply(multiply(X0,X1),multiply(identity,multiply(iPr_def_10,iPr_def_10))) = multiply(X0,multiply(X1,multiply(identity,multiply(a,a))))),
+    inference(superposition,[status(thm)],[c_101,c_49])).
+
+tcf(c_118,plain,![X0:$i,X1:$i]:  
+    (multiply(X0,multiply(X0,multiply(multiply(X0,multiply(X1,multiply(identity,multiply(iPr_def_10,iPr_def_10)))),a))) = X1),
+    inference(demodulation,[status(thm)],[c_49,c_108])).
+
+tcf(c_222,plain,![X0:$i,X1:$i]:  
+    (multiply(multiply(X0,X1),multiply(identity,multiply(iPr_def_10,iPr_def_10))) = multiply(X0,multiply(X1,multiply(iPr_def_10,iPr_def_10)))),
+    inference(light_normalisation,[status(thm)],[c_116,c_107])).
+
+tcf(c_235,plain,![X0:$i,X1:$i,X2:$i]:  
+    (multiply(X0,multiply(X0,multiply(multiply(X0,multiply(X1,multiply(X2,multiply(iPr_def_10,iPr_def_10)))),a))) = multiply(X1,X2)),
+    inference(superposition,[status(thm)],[c_222,c_118])).
+
+tcf(c_236,plain,![X0:$i]:  
+    (multiply(X0,identity) = X0),
+    inference(demodulation,[status(thm)],[c_118,c_235])).
+
+tcf(c_240,plain, 
+    (multiply(identity,multiply(multiply(identity,multiply(iPr_def_10,identity)),identity)) = a),
+    inference(superposition,[status(thm)],[c_236,c_97])).
+
+tcf(c_243,plain, 
+    (multiply(identity,multiply(identity,iPr_def_10)) = a),
+    inference(demodulation,[status(thm)],[c_240,c_236])).
+
+tcf(c_246,plain, 
+    (multiply(identity,multiply(multiply(identity,multiply(iPr_def_10,multiply(identity,multiply(a,a)))),multiply(identity,iPr_def_10))) = a),
+    inference(superposition,[status(thm)],[c_243,c_97])).
+
+tcf(c_247,plain, 
+    (multiply(identity,multiply(multiply(identity,multiply(iPr_def_10,multiply(iPr_def_10,iPr_def_10))),multiply(identity,iPr_def_10))) = a),
+    inference(light_normalisation,[status(thm)],[c_246,c_107])).
+
+tcf(c_490,plain,![X0:$i,X1:$i]:  
+    (multiply(X0,multiply(multiply(X0,multiply(multiply(X0,X1),identity)),identity)) = X1),
+    inference(superposition,[status(thm)],[c_236,c_94])).
+
+tcf(c_616,plain,![X0:$i,X1:$i]:  
+    (multiply(X0,multiply(X0,multiply(X0,X1))) = X1),
+    inference(demodulation,[status(thm)],[c_490,c_236])).
+
+tcf(c_632,plain,![X0:$i]:  
+    (multiply(X0,multiply(X0,X0)) = identity),
+    inference(superposition,[status(thm)],[c_236,c_616])).
+
+tcf(c_661,plain, 
+    (multiply(identity,multiply(multiply(identity,identity),multiply(identity,iPr_def_10))) = a),
+    inference(demodulation,[status(thm)],[c_247,c_632])).
+
+tcf(c_708,plain, 
+    (a = iPr_def_10),
+    inference(demodulation,[status(thm)],[c_661,c_59,c_236,c_243])).
+
+tcf(c_721,plain, 
+    (iPr_def_10 != iPr_def_10),
+    inference(demodulation,[status(thm)],[c_60,c_708])).
+
+tcf(c_722,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_721])).
+
+
+% SZS output end CNFRefutation for GRP116-1.p

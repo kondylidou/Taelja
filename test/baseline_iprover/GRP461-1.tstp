@@ -1,0 +1,91 @@
+% SZS status Unsatisfiable for GRP461-1.p
+% SZS output start CNFRefutation for GRP461-1.p
+
+tcf(c_49,plain,![X0:$i,X1:$i,X2:$i]:  
+    (divide(X0,divide(divide(divide(identity,X1),X2),divide(divide(divide(X0,X0),X0),X2))) = X1),
+    file('Problems/GRP/GRP461-1.p', single_axiom)).
+
+tcf(c_50,plain,![X0:$i,X1:$i]:  
+    (divide(X0,divide(identity,X1)) = multiply(X0,X1)),
+    file('Problems/GRP/GRP461-1.p', multiply)).
+
+tcf(c_51,plain,![X0:$i]:  
+    (divide(identity,X0) = inverse(X0)),
+    file('Problems/GRP/GRP461-1.p', inverse)).
+
+tcf(c_52,plain,![X0:$i]:  
+    (divide(X0,X0) = identity),
+    file('Problems/GRP/GRP461-1.p', identity)).
+
+tcf(c_53,plain, 
+    (multiply(identity,a2) != a2),
+    file('Problems/GRP/GRP461-1.p', prove_these_axioms_2)).
+
+tcf(c_68,plain,![X0:$i,X1:$i]:  
+    (divide(X0,inverse(X1)) = multiply(X0,X1)),
+    inference(demodulation,[status(thm)],[c_50,c_51])).
+
+tcf(c_69,plain,![X0:$i,X1:$i,X2:$i]:  
+    (divide(X0,divide(divide(divide(identity,X1),X2),divide(inverse(X0),X2))) = X1),
+    inference(light_normalisation,[status(thm)],[c_49,c_51,c_52])).
+
+tcf(c_70,plain,![X0:$i,X1:$i,X2:$i]:  
+    (divide(X0,divide(divide(inverse(X1),X2),divide(inverse(X0),X2))) = X1),
+    inference(demodulation,[status(thm)],[c_69,c_51])).
+
+tcf(c_77,plain, (multiply(identity,a2) = iPr_def_10),definition).
+
+tcf(c_78,plain, 
+    (iPr_def_10 != a2),
+    inference(demodulation,[status(thm)],[c_53,c_77])).
+
+tcf(c_118,plain, 
+    (inverse(identity) = identity),
+    inference(superposition,[status(thm)],[c_52,c_51])).
+
+tcf(c_122,plain,![X0:$i]:  
+    (divide(X0,identity) = multiply(X0,identity)),
+    inference(superposition,[status(thm)],[c_118,c_68])).
+
+tcf(c_124,plain,![X0:$i]:  
+    (multiply(identity,X0) = inverse(inverse(X0))),
+    inference(superposition,[status(thm)],[c_68,c_51])).
+
+tcf(c_132,plain,![X0:$i]:  
+    (divide(X0,identity) = X0),
+    inference(superposition,[status(thm)],[c_52,c_70])).
+
+tcf(c_137,plain,![X0:$i,X1:$i]:  
+    (divide(X0,divide(divide(inverse(X1),inverse(X0)),identity)) = X1),
+    inference(superposition,[status(thm)],[c_52,c_70])).
+
+tcf(c_146,plain,![X0:$i]:  
+    (multiply(X0,identity) = X0),
+    inference(demodulation,[status(thm)],[c_122,c_132])).
+
+tcf(c_237,plain,![X0:$i,X1:$i]:  
+    (divide(X0,multiply(inverse(X1),X0)) = X1),
+    inference(demodulation,[status(thm)],[c_137,c_68,c_132])).
+
+tcf(c_247,plain,![X0:$i]:  
+    (inverse(multiply(inverse(X0),identity)) = X0),
+    inference(superposition,[status(thm)],[c_237,c_51])).
+
+tcf(c_252,plain,![X0:$i]:  
+    (multiply(identity,X0) = X0),
+    inference(demodulation,[status(thm)],[c_247,c_124,c_146])).
+
+tcf(c_256,plain, 
+    (a2 = iPr_def_10),
+    inference(demodulation,[status(thm)],[c_77,c_252])).
+
+tcf(c_259,plain, 
+    (iPr_def_10 != iPr_def_10),
+    inference(demodulation,[status(thm)],[c_78,c_256])).
+
+tcf(c_260,plain, 
+    ($false),
+    inference(equality_resolution_simp,[status(thm)],[c_259])).
+
+
+% SZS output end CNFRefutation for GRP461-1.p

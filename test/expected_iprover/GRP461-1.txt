@@ -1,0 +1,70 @@
+Axiom 1: divide(identity,X) = inverse(X)
+Axiom 2: divide(X,X) = identity
+Axiom 3: divide(X,divide(divide(divide(identity,Y),Z),divide(divide(divide(X,X),X),Z))) = Y
+Axiom 4: divide(X,divide(identity,Y)) = multiply(X,Y)
+
+Lemma 5: divide(X,divide(divide(inverse(Y),Z),divide(inverse(X),Z))) = Y
+Proof:
+  divide(X,divide(divide(inverse(Y),Z),divide(inverse(X),Z)))
+= { by axiom 1 R->L }
+  divide(X,divide(divide(divide(identity,Y),Z),divide(inverse(X),Z)))
+= { by axiom 1 R->L }
+  divide(X,divide(divide(divide(identity,Y),Z),divide(divide(identity,X),Z)))
+= { by axiom 2 R->L }
+  divide(X,divide(divide(divide(identity,Y),Z),divide(divide(divide(X,X),X),Z)))
+= { by axiom 3 }
+  Y
+
+Lemma 6: divide(X,identity) = X
+Proof:
+  divide(X,identity)
+= { by axiom 2 R->L }
+  divide(X,divide(divide(inverse(X),X),divide(inverse(X),X)))
+= { by lemma 5 }
+  X
+
+Lemma 7: divide(X,inverse(Y)) = multiply(X,Y)
+Proof:
+  divide(X,inverse(Y))
+= { by axiom 1 R->L }
+  divide(X,divide(identity,Y))
+= { by axiom 4 }
+  multiply(X,Y)
+
+Lemma 8: inverse(identity) = identity
+Proof:
+  inverse(identity)
+= { by axiom 1 R->L }
+  divide(identity,identity)
+= { by axiom 2 }
+  identity
+
+Lemma 9: multiply(X,identity) = X
+Proof:
+  multiply(X,identity)
+= { by lemma 7 R->L }
+  divide(X,inverse(identity))
+= { by lemma 8 }
+  divide(X,identity)
+= { by lemma 6 }
+  X
+
+Goal 1: multiply(identity,a2) = a2
+Proof:
+  multiply(identity,a2)
+= { by lemma 7 R->L }
+  divide(identity,inverse(a2))
+= { by axiom 1 }
+  inverse(inverse(a2))
+= { by lemma 9 R->L }
+  inverse(multiply(inverse(a2),identity))
+= { by axiom 1 R->L }
+  divide(identity,multiply(inverse(a2),identity))
+= { by lemma 7 R->L }
+  divide(identity,divide(inverse(a2),inverse(identity)))
+= { by lemma 6 R->L }
+  divide(identity,divide(divide(inverse(a2),inverse(identity)),identity))
+= { by axiom 2 R->L }
+  divide(identity,divide(divide(inverse(a2),inverse(identity)),divide(inverse(identity),inverse(identity))))
+= { by lemma 5 }
+  a2
