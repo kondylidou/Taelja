@@ -76,10 +76,10 @@ and `--twee` of that script name a binary explicitly.
 | Prover  | Source | Lookup order |
 |---------|--------|--------------|
 | Twee    | `horn` branch of <https://codeberg.org/nick8325/twee>, built with `cabal build`. | `TAELJA_TWEE`, `bin/twee`, `PATH` |
-| E       | `proof-object-steps` branch of <https://github.com/eprover/eprover>, which adds `--proof-object=3`, built with `./configure && make`. | `TAELJA_EPROVER`, `bin/eprover`, `PATH` |
+| E       | `master` of <https://github.com/eprover/eprover>, which has `--proof-object=3` since pull request 36, built with `./configure && make NODEBUG="-DNDEBUG -DFAST_EXIT"`. | `TAELJA_EPROVER`, `bin/eprover`, `PATH` |
 | Vampire | <https://github.com/vprover/vampire> | `TAELJA_VAMPIRE`, `bin/vampire`, `PATH` |
 
-Taelja has been tested with Twee 2.7, E 3.5.1 from that branch, and Vampire 5.0.1. The evaluation runs E
+Taelja has been tested with Twee 2.7, E 3.5.1 from master, and Vampire 5.0.1. The evaluation runs E
 with `--auto-schedule --proof-object=3`, so that E prints the clause after each
 simplification step.
 
