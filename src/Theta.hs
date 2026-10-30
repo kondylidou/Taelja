@@ -13,6 +13,7 @@ module Theta
   ) where
 
 import Control.Applicative ((<|>))
+import Control.DeepSeq (deepseq)
 import Control.Monad (foldM)
 import Data.Bifunctor (first)
 import Data.Containers.ListUtils (nubOrdOn)
@@ -31,10 +32,11 @@ import TptpConvert (convertDeclToClause)
 -- θ over one proof tree, by position, with the clause it applies to there. It
 -- also records the rewriting positions and how each inference replayed.
 data ThetaCtx = ThetaCtx
-  { tcRewriteAt :: Set.Set String        -- positions concluded by a rewriting rule (equationRuleNames)
-  , tcTheta     :: Map.Map String Subst  -- θ|p at each position
-  , tcStatus    :: [(String, String)]    -- how well each inference replayed (see explainStatus)
-  , tcClauses   :: Map.Map String Clause -- the clause θ|p applies to at each position
+  { tcRewriteAt :: Set.Set Pos           -- positions concluded by a rewriting rule (equationRuleNames)
+  , tcTheta     :: Map.Map Pos Subst     -- θ|p at each position
+  , tcStatus    :: [(Pos, String)]       -- how well each inference replayed (see explainStatus)
+  , tcClauses   :: Map.Map Pos Clause    -- the clause θ|p applies to at each position
+  , tcTree      :: PosTree               -- the positions' children, for the premises of a step
   }
 
 -- Theorem 1's θ'_k, θ restricted to one nucleus in the variables of its
@@ -52,16 +54,19 @@ computeNucleusTheta ctx entry =
 thetaContext :: ProofInfo -> ThetaCtx
 thetaContext info = ThetaCtx
   { tcRewriteAt = Map.keysSet (Map.filter ((`elem` equationRuleNames) . Text.pack) (piRuleAt info))
-  , tcTheta     = thetaByPosition clauses
-  , tcStatus    = explainStatus clauses
+  , tcTheta     = thetaByPosition tree clauses
+  , tcStatus    = explainStatus tree clauses
   , tcClauses   = clauses
+  , tcTree      = tree
   }
-  where clauses = thetaClauses (piDeclAt info) (piNuclei info ++ piElectrons info)
+  where
+    clauses = thetaClauses (piDeclAt info) (piNuclei info ++ piElectrons info)
+    tree = piPosTree info
 
 -- The clause θ is solved over at each position. An original axiom uses its
 -- source declaration, in whose variables its nucleus is processed, and every
 -- other position the clause printed there.
-thetaClauses :: Map.Map String T.Declaration -> [LeafEntry] -> Map.Map String Clause
+thetaClauses :: Map.Map Pos T.Declaration -> [LeafEntry] -> Map.Map Pos Clause
 thetaClauses declAt entries = Map.union entryClauses (Map.mapMaybe convertDeclToClause declAt)
   where
     entryClauses = Map.fromList [ (lePos e, c) | e <- entries, Just c <- [convertDeclToClause (if leRole e == OrigAxiom then leSrcDecl e else leDecl e)] ]
@@ -70,31 +75,32 @@ thetaClauses declAt entries = Map.union entryClauses (Map.mapMaybe convertDeclTo
 -- before it is resolved, so the electron states the rewritten atom. The atom
 -- is followed up the tree under θ, and each equation instance is found by
 -- matching, since θ fixes only what resolution binds.
-literalRewrites :: ThetaCtx -> String -> [(Literal, [(String, Dir, (Term, Term), Literal)])]
+literalRewrites :: ThetaCtx -> Pos -> [(Literal, [(Pos, Dir, (Term, Term), Literal)])]
 literalRewrites ctx pos = case groundAt ctx pos of
   Just (Clause bs _) -> [ (b, up pos b) | b <- bs ]
   Nothing            -> []
   where
-    up p cur
-      | null p    = []
-      | otherwise = case groundAt ctx q of
+    up p cur = case posParent p of
+      Nothing -> []
+      Just q -> case groundAt ctx q of
           Just (Clause qbs _)
             | any (sameLit cur) qbs -> up q cur
-            | Just eq <- equationBeside
+            | Just (sib, eq) <- equationBeside
             , run@(_ : _) <- rewriteRun cur eq qbs
             -> withEquationPos sib run ++ up q (runResult run)
             -- The literal is gone. If the equation beside it does not state
             -- it, the step rewrote it to t = t, whatever the rule is called.
             -- If it does, the same holds in a rewriting step, while in a
             -- resolution step the equation is the electron.
-            | Just (l, r) <- equationBeside
+            | Just (sib, (l, r)) <- equationBeside
             , isNothing (matchLitEither (Eq l r) cur []) || Set.member q (tcRewriteAt ctx)
             -> withEquationPos sib (closingRun cur (l, r))
           _ -> []
       where
-        q   = init p
-        sib = sibling p
-        equationBeside = headEquationAt ctx sib
+        equationBeside = do
+          sib <- posSibling (tcTree ctx) p
+          eq <- headEquationAt ctx sib
+          return (sib, eq)
 
 -- The rewrites the proof makes to the head of the clause at a position while
 -- it still has body atoms, so the derived electron states the rewritten head.
@@ -104,42 +110,36 @@ literalRewrites ctx pos = case groundAt ctx pos of
 -- followed when the equation beside it is a unit, since a step between two
 -- heads reads either way and a conditional equation's instance is cited
 -- only once its nucleus, which comes later, has proved it.
-headRewrites :: ThetaCtx -> String -> (Maybe Literal, [(String, Dir, (Term, Term), Literal)])
+headRewrites :: ThetaCtx -> Pos -> (Maybe Literal, [(Pos, Dir, (Term, Term), Literal)])
 headRewrites ctx pos = case groundAt ctx pos of
   Just (Clause _ (Just h)) -> (Just h, up pos h)
   _                        -> (Nothing, [])
   where
-    up p cur
-      | null p    = []
-      | otherwise = case groundAt ctx q of
+    up p cur = case posParent p of
+      Nothing -> []
+      Just q -> case groundAt ctx q of
           Just (Clause qbs (Just qh))
             | sameLit cur qh -> if null qbs then [] else up q cur
-            | not (null qbs), last p == '1' || unitAt sib
+            | not (null qbs), Just sib <- posSibling (tcTree ctx) p
+            , posLabel p == '1' || unitAt sib
             , Just eq <- headEquationAt ctx sib
             , run@(_ : _) <- rewriteRun cur eq [qh]
             -> withEquationPos sib run ++ up q (runResult run)
           _ -> []
-      where
-        q   = init p
-        sib = sibling p
     -- whether the clause at a position has no body
     unitAt p = case Map.lookup p (tcClauses ctx) of { Just (Clause [] _) -> True; _ -> False }
 
 -- The clause at a position under θ.
-groundAt :: ThetaCtx -> String -> Maybe Clause
+groundAt :: ThetaCtx -> Pos -> Maybe Clause
 groundAt ctx p = do
   Clause bs mh <- Map.lookup p (tcClauses ctx)
   let s = Map.findWithDefault [] p (tcTheta ctx)
   return (Clause (map (applySubstLit s) bs) (fmap (applySubstLit s) mh))
 
--- The position of the other premise of the step.
-sibling :: String -> String
-sibling p = init p ++ [if last p == '0' then '1' else '0']
-
 -- The equation at the head of the clause at a position, also when the clause
 -- has a body. E may rewrite with such a head, and the nucleus deriving it
 -- comes earlier in the tree, so it is a unit by the time it rewrites.
-headEquationAt :: ThetaCtx -> String -> Maybe (Term, Term)
+headEquationAt :: ThetaCtx -> Pos -> Maybe (Term, Term)
 headEquationAt ctx p = case Map.lookup p (tcClauses ctx) of
   Just (Clause _ (Just (Eq l r))) -> Just (l, r)
   _                               -> Nothing
@@ -149,7 +149,7 @@ sameLit :: Literal -> Literal -> Bool
 sameLit x y = x == y || x == flipLit y
 
 -- Each rewrite of a run, with the position of its equation.
-withEquationPos :: String -> [(Dir, (Term, Term), Literal)] -> [(String, Dir, (Term, Term), Literal)]
+withEquationPos :: Pos -> [(Dir, (Term, Term), Literal)] -> [(Pos, Dir, (Term, Term), Literal)]
 withEquationPos sib run = [ (sib, d, e, c) | (d, e, c) <- run ]
 
 -- The literal a run of rewrites ends with.
@@ -216,16 +216,20 @@ rewriteAlong d lit ((path, e) : rest) = (d, e, lit') : rewriteAlong d lit' rest
     new = case d of { LR -> snd e; RL -> fst e }
 
 -- θ|p for every position, in the variables of the clause there.
-thetaByPosition :: Map.Map String Clause -> Map.Map String Subst
-thetaByPosition clauses = Map.mapWithKey thetaAt clauses
+thetaByPosition :: PosTree -> Map.Map Pos Clause -> Map.Map Pos Subst
+thetaByPosition tree clauses = foldr deepseq thetas (Map.elems thetas)
   where
-    σ = solveAll (map snd (treeInferences clauses))
+    -- θ at every position is computed at once, so the solved substitution
+    -- and the renamed inferences are freed. Left lazy, they would live as
+    -- long as any position is not yet asked for.
+    thetas = Map.mapWithKey thetaAt clauses
+    σ = solveAll (map snd (treeInferences tree clauses))
 
     -- θ is grounding, so a variable no inference binds becomes a fresh
     -- constant, one per class of identified variables. computeNucleusTheta
     -- exempts head-only variables.
     thetaAt p c =
-      [ (v, ground (walkDeep σ (Var (v ++ '@' : p))))
+      [ (v, ground (walkDeep σ (Var (v ++ '@' : show (posKey p)))))
       | v <- nub (concatMap (litVars . snd) (polLits c)) ]
     ground (Var x)    = Fresh (map (\ch -> if ch == '@' then '_' else ch) x)
     ground (App f ts) = App f (map ground ts)
@@ -234,24 +238,25 @@ thetaByPosition clauses = Map.mapWithKey thetaAt clauses
 -- How well each inference replays on its own, the first tier of explainTiers
 -- that explains it or "none". Anything but strict is where θ may lose a binding,
 -- so check it first when a nucleus fails.
-explainStatus :: Map.Map String Clause -> [(String, String)]
-explainStatus clauses =
+explainStatus :: PosTree -> Map.Map Pos Clause -> [(Pos, String)]
+explainStatus tree clauses =
   [ (p, head ([ t | (t, ss) <- explainTiers inf Map.empty, not (null ss) ] ++ ["none"]))
-  | (p, inf) <- treeInferences clauses ]
+  | (p, inf) <- treeInferences tree clauses ]
 
 -- The inferences of the tree, root first, each as the literals of its
 -- conclusion at p and of its premises at p0 and p1, or p1 alone. Variables
--- are renamed apart by position as v@p. Twee reads an atom P as the equation
--- P = true, so it rewrites atoms with equations between atoms. An inference
--- with such an equation is replayed in that reading.
-treeInferences :: Map.Map String Clause -> [(String, ([(Bool, Literal)], [[(Bool, Literal)]]))]
-treeInferences clauses =
+-- are renamed apart by position as v@k, with k the position's key. Twee reads
+-- an atom P as the equation P = true, so it rewrites atoms with equations
+-- between atoms. An inference with such an equation is replayed in that
+-- reading.
+treeInferences :: PosTree -> Map.Map Pos Clause -> [(Pos, ([(Bool, Literal)], [[(Bool, Literal)]]))]
+treeInferences tree clauses =
   [ (p, atomsAsEquations (litsAt p, map litsAt kids))
-  | p <- sortOn (\q -> (length q, q)) (Map.keys clauses)
-  , let kids = filter (`Map.member` clauses) [p ++ "0", p ++ "1"]
+  | p <- sortOn (\q -> (posDepth q, q)) (Map.keys clauses)
+  , let kids = [ c | Just c <- map (posChild tree p) "01", Map.member c clauses ]
   , not (null kids) ]
   where
-    litsAt p = [ (b, suffixVarsLit ('@' : p) l) | (b, l) <- polLits (clauses Map.! p) ]
+    litsAt p = [ (b, suffixVarsLit ('@' : show (posKey p)) l) | (b, l) <- polLits (clauses Map.! p) ]
     preds = Set.fromList [ n | c <- Map.elems clauses, (_, Rel n _) <- polLits c ]
     atomic t = case t of { App f _ -> Set.member f preds; Const c -> Set.member c preds; _ -> False }
     atomsAsEquations inf@(parent, kids)
@@ -268,8 +273,13 @@ solveAll :: [([(Bool, Literal)], [[(Bool, Literal)]])] -> TreeSubst
 solveAll infs0 = fromMaybe Map.empty (search infs Map.empty)
   where
     infs = filter (not . null . (`explain` Map.empty)) infs0
+    -- An inference explained one way only leaves nothing to come back to,
+    -- so the search goes on without keeping s, which on a long proof would
+    -- keep every earlier substitution alive.
     search [] s = Just s
-    search (inf : rest) s = listToMaybe (mapMaybe (search rest) (explain inf s))
+    search (inf : rest) s = case explain inf s of
+      [s'] -> search rest s'
+      ss   -> listToMaybe (mapMaybe (search rest) ss)
 
 -- The solver's triangular substitution over the variables of the whole tree.
 -- Variables are dereferenced by walking the map, since applying an

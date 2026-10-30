@@ -508,7 +508,7 @@ blockSteps fresh facts horn k mName role stmt blk =
     stepName n  = fresh ("s" ++ show n)
     restatesFact lit0 nm = maybe False (variantLit lit0) (lookup nm facts)
 
-    rawSteps k0 (HaveHence ls) = loop k0 Nothing [] [] ls
+    rawSteps k0 (HaveHence ls) = loop k0 Nothing [] [] (toList ls)
       where
         -- cur is the line a hence continues from, extras the and lines since
         loop n _ _ acc [] = (n, reverse acc)

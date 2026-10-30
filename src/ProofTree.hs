@@ -16,6 +16,8 @@ module ProofTree
   , reachedNames
   ) where
 import qualified Data.TPTP as T
+import qualified Data.IntMap.Lazy as IntMapL
+import qualified Data.IntMap.Strict as IntMap
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
@@ -23,7 +25,8 @@ import Control.Applicative ((<|>))
 import Control.Monad (forM, guard, when)
 import Data.Bifunctor (bimap)
 import Data.List (isSuffixOf, nub, partition, sortBy)
-import Data.List.NonEmpty (toList)
+import Data.Foldable (toList)
+import qualified Data.Sequence as Seq
 import Data.Maybe (catMaybes, fromMaybe, isJust, isNothing, listToMaybe, maybeToList)
 import Data.Ord (comparing)
 import Data.TPTP.Pretty ()
@@ -57,8 +60,7 @@ buildProofInfo everyUse allUnits = do
   let tree    = buildProofTree allUnits root
       -- the clauses the conjecture grants as hypotheses
       granted = maybe [] (uncurry (++)) (conjectureHypotheses allUnits)
-      leafRows  = gatherLeaves everyUse tree
-      innerRows = gatherInner everyUse tree
+      (leafRows, innerRows, nodes) = gatherTree everyUse tree
       mkLeaf (pos, name, decl) =
         let srcName = if isNegConj decl then name
                       else let r = resolveCopySource unitMap name
@@ -110,7 +112,7 @@ buildProofInfo everyUse allUnits = do
   -- or simplify. Failing that, from the negated conjecture clause closest to
   -- the root, then an all-negative axiom, and for a negated conclusion the
   -- closest derived all-negative clause.
-  let byDepth = sortBy (comparing (\e -> (length (lePos e), lePos e)))
+  let byDepth = sortBy (comparing (\e -> (posDepth (lePos e), lePos e)))
       negatedConclusion = maybe False (\c -> null (cjGoals c) && not (null (cjNegated c))) conjecture
       clauseGoals =
         -- the source's statement, or the clause's own when the source is no
@@ -148,11 +150,13 @@ buildProofInfo everyUse allUnits = do
       Left ("unsupported conjecture, " ++ Text.unpack n
             ++ " abbreviates a formula the prover introduced that is not a conjunction of atoms, so its proof is a case split")
     lits -> Right lits
-  let nodes   = wantedNodes (Set.fromList (map lePos (electrons ++ nuclei))) tree
-      declMap = Map.fromList [ (p, ptDeclOf t) | (p, t) <- nodes ]
-      unitAt  = Map.fromList [ (p, ptNameOf t) | (p, t) <- nodes ]
+  let declMap = Map.fromList [ (p, d) | (p, _, d, _, _) <- nodes ]
+      unitAt  = Map.fromList [ (p, n) | (p, n, _, _, _) <- nodes ]
       -- the rule that concludes each clause
-      ruleAt  = Map.fromList [ (p, Text.unpack r) | (p, PTNode _ _ r _) <- nodes ]
+      ruleAt  = Map.fromList [ (p, Text.unpack r) | (p, _, _, Just r, _) <- nodes ]
+      posTree = PosTree
+        { ptChildren = IntMap.fromListWith (flip (++)) [ (posKey q, [(posLabel p, p)]) | (p, _, _, _, _) <- nodes, Just q <- [posParent p] ]
+        , ptEnd      = IntMap.fromList [ (posKey p, e) | (p, _, _, _, e) <- nodes ] }
   return ProofInfo
     { piElectrons = electrons
     , piNuclei    = nuclei
@@ -160,35 +164,8 @@ buildProofInfo everyUse allUnits = do
     , piDeclAt    = declMap
     , piUnitAt    = unitAt
     , piRuleAt    = ruleAt
+    , piPosTree   = posTree
     }
-
--- The nodes at a prefix of an entry position, and at the sibling of such a
--- prefix, with their positions. One walk down the tree finds them, since
--- listing every prefix of every position is quadratic in a deep tree.
-wantedNodes :: Set.Set String -> ProofTree -> [(String, ProofTree)]
-wantedNodes entries tree = [ ("", tree) | hit ] ++ below
-  where
-    reversed = Set.map reverse entries
-    (hit, below) = go "" tree
-    -- whether an entry is at or under the node at the reversed position rp,
-    -- and the wanted nodes under it
-    go rp t = (Set.member rp reversed || or [ h | (_, _, (h, _)) <- kids ], concat
-                [ [ (reverse (c : rp), k) | h || siblingHit c ] ++ ws | (c, k, (h, ws)) <- kids ])
-      where
-        kids = [ (c, k, go (c : rp) k) | (c, k) <- zip (childLabels (children t)) (children t) ]
-        siblingHit c = or [ h | (c', _, (h, _)) <- kids, (if c' == '0' then '1' else '0') == c ]
-    children (PTNode _ _ _ ks) = ks
-    children _                 = []
-
--- The clause at a tree node.
-ptDeclOf :: ProofTree -> T.Declaration
-ptDeclOf (PTLeaf _ d)     = d
-ptDeclOf (PTNode _ d _ _) = d
-
--- The unit name at a tree node.
-ptNameOf :: ProofTree -> String
-ptNameOf (PTLeaf n _)     = n
-ptNameOf (PTNode n _ _ _) = n
 
 -- The tree below the root, the last $false unit. A core inference is a node
 -- with its provider first and its consumer second, and any other unit is a
@@ -467,57 +444,109 @@ matchClause final outer
         now   = partners s l
         later = map (partners s) ls
 
--- The leaves with their positions. An electron is kept once, at its first
--- position in depth-first order. With everyUse a nucleus appears at every
--- position, since each occurrence may see different electrons, and a shared
--- inner node re-emits its nuclei at the new position. Without it a nucleus is
--- kept once like an electron.
-gatherLeaves :: Bool -> ProofTree -> [(String, String, T.Declaration)]
-gatherLeaves everyUse = gatherRows (\(_, _, d) -> everyUse && not (isPositiveUnitFormula d)) leaf
+-- The entries of the tree with their positions, the leaves and the inner
+-- nodes apart, and its nodes. An electron is an entry once, at its first
+-- position in depth-first order, and so is a nucleus unless everyUse is set,
+-- when it appears at every position, since each occurrence may see different
+-- electrons. Every "?" node is an entry, as each is a clause of its own. The
+-- nodes are the positions of the entries, their ancestors and the siblings
+-- of those, each with its unit, clause, rule and the key after its subtree.
+-- Positions are numbered in preorder as the tree is walked. A named node
+-- met again re-emits the entries below it that everyUse keeps, with their
+-- positions renumbered under its new one, without walking its subtree.
+-- Walking every path would take 3 x 10^11 visits on BOO023-1.
+type Row = (Pos, String, T.Declaration)
+type Node = (Pos, String, T.Declaration, Maybe Text.Text, Int)
+
+gatherTree :: Bool -> ProofTree -> ([Row], [Row], [Node])
+gatherTree everyUse tree =
+  let (_, _, _, w) = go (Pos 0 0 '/' Nothing) tree Set.empty Map.empty
+  in (toList (wLeaves w), toList (wInner w), [ own | let (own, hit, _) = wOwn w, hit ] ++ toList (wNodes w))
   where
-    leaf pos (PTLeaf n d) seen
+    -- A visit yields the units met, the memo, the next key and the walk's
+    -- result. A memo entry holds the key span of a named node's visit, its
+    -- key and depth, and the kept entries and nodes below it.
+    go pos t seen memo = case t of
+      PTNode n d rule _
+        | n /= "?", Just (size, rk, rd, kl, ki, kn) <- Map.lookup n memo ->
+            let (kl', ki', kn') = renumber (rk, rd) pos (kl, ki, kn)
+                hit = not (null kl' && null ki')
+            in (seen, memo, posKey pos + size, Walk kl' ki' kn' kl' ki' kn' ((pos, n, d, Just rule, posKey pos + size - 2), hit, hit))
+      PTNode n d rule kids ->
+        let (seen', memo', next, ws) = children pos kids seen memo (posKey pos + 2)
+            (seen'', own) = inner pos n d rule seen'
+            leaves = foldMap wLeaves ws
+            inners = foldMap wInner ws <> Seq.fromList own
+            kl = foldMap wKeptLeaves ws
+            ki = foldMap wKeptInner ws <> Seq.fromList (filter keep own)
+            rec = (pos, n, d, Just rule, next - 2)
+            kn = below (\w -> (ownNode w, keptHit w, wKeptNodes w)) ws
+            memo'' | n /= "?"  = Map.insert n (next - posKey pos, posKey pos, posDepth pos, kl, ki, kn) memo'
+                   | otherwise = memo'
+        in (seen'', memo'', next, Walk leaves inners (below (\w -> (ownNode w, allHit w, wNodes w)) ws) kl ki kn
+                                      (rec, not (null leaves && null inners), not (null kl && null ki)))
+      PTLeaf n d ->
+        let (seen', own) = leaf pos n d seen
+            kept = filter keep own
+        in (seen', memo, posKey pos + 2, Walk (Seq.fromList own) Seq.empty Seq.empty (Seq.fromList kept) Seq.empty Seq.empty
+                                              ((pos, n, d, Nothing, posKey pos), not (null own), not (null kept)))
+    ownNode w = let (own, _, _) = wOwn w in own
+    allHit w = let (_, h, _) = wOwn w in h
+    keptHit w = let (_, _, h) = wOwn w in h
+    -- the children in label order, each walked after the one before
+    children pos kids seen memo key = foldl step (seen, memo, key, []) (zip (childLabels kids) kids)
+      where
+        step (s, m, k, ws) (c, kid) =
+          let (s', m', k', w) = go (Pos k (posDepth pos + 1) c (Just pos)) kid s m
+          in (s', m', k', ws ++ [w])
+    -- the nodes below a node, each child's own node when it or its sibling
+    -- has an entry below, with the nodes further down
+    below part ws = mconcat [ Seq.fromList [ own | hit || or [ h | (j, (_, h, _)) <- parts, j /= i ] ] <> nodes
+                            | (i, (own, hit, nodes)) <- parts ]
+      where parts = zip [0 :: Int ..] (map part ws)
+    keep (_, n, d) = everyUse && (n == "?" || not (isPositiveUnitFormula d))
+    leaf pos n d seen
       | everyUse && not (isPositiveUnitFormula d) = (seen, [(pos, n, d)])
       | Set.member n seen                         = (seen, [])
       | otherwise                                 = (Set.insert n seen, [(pos, n, d)])
-    leaf _ _ seen = (seen, [])
-
--- The inner nodes with their positions, each named unit once but every "?"
--- node, since each is a clause of its own. With everyUse a named node met
--- again re-emits the "?" nodes below it.
-gatherInner :: Bool -> ProofTree -> [(String, String, T.Declaration)]
-gatherInner everyUse = gatherRows (\(_, n, _) -> everyUse && n == "?") inner
-  where
-    inner pos (PTNode n d rule _) seen
+    inner pos n d rule seen
       | rule == Text.pack "proved_conjecture" = (seen, [])
       | n == "?"                              = (seen, [(pos, n, d)])
       | Set.member n seen                     = (seen, [])
       | otherwise                             = (Set.insert n seen, [(pos, n, d)])
-    inner _ _ seen = (seen, [])
 
--- Walks the tree depth first and collects the rows emit gives for each node,
--- after those of its children, threading the set of units met. A named node
--- met again re-emits the rows below it that keep selects, at its new
--- position, without walking its subtree. Walking every path would take
--- 3 x 10^11 visits on BOO023-1.
-gatherRows :: ((String, String, T.Declaration) -> Bool)
-           -> (String -> ProofTree -> Set.Set String -> (Set.Set String, [(String, String, T.Declaration)]))
-           -> ProofTree -> [(String, String, T.Declaration)]
-gatherRows keep emit tree = let (_, _, rows) = go "" tree Set.empty Map.empty in rows
+-- The result of walking a subtree, the entries and nodes below it counting
+-- every entry and counting only the kept ones, and the node's own record
+-- with whether an entry, and whether a kept entry, is at or below it. The
+-- lists are sequences, as joining a long child's list to a short one at
+-- every level of a deep tree is quadratic.
+data Walk = Walk
+  { wLeaves     :: Seq.Seq Row
+  , wInner      :: Seq.Seq Row
+  , wNodes      :: Seq.Seq Node
+  , wKeptLeaves :: Seq.Seq Row
+  , wKeptInner  :: Seq.Seq Row
+  , wKeptNodes  :: Seq.Seq Node
+  , wOwn        :: (Node, Bool, Bool)
+  }
+
+-- Memoized entries and nodes placed under a new position, each key moved by
+-- the distance from the old root key to the new one. The positions are
+-- rebuilt so that they share their new parents.
+renumber :: (Int, Int) -> Pos -> (Seq.Seq Row, Seq.Seq Row, Seq.Seq Node) -> (Seq.Seq Row, Seq.Seq Row, Seq.Seq Node)
+renumber (rk, rd) new (leaves, inner, nodes) = (fmap row leaves, fmap row inner, fmap node nodes)
   where
-    go pos t@(PTNode n _ _ kids) seen memo
-      | n /= "?", Just rel <- Map.lookup n memo =
-          (seen, memo, [ (pos ++ p, nm, d) | (p, nm, d) <- rel ])
-      | otherwise =
-          let walk (s, m, acc) (c, kid) = let (s', m', rs) = go (pos ++ [c]) kid s m in (s', m', acc ++ rs)
-              (seen', memo', below) = foldl walk (seen, memo, []) (zip (childLabels kids) kids)
-              (seen'', own) = emit pos t seen'
-              rows = below ++ own
-              memo'' | n /= "?"  = Map.insert n [ (drop (length pos) p, nm, d) | r@(p, nm, d) <- rows, keep r ] memo'
-                     | otherwise = memo'
-          in (seen'', memo'', rows)
-    go pos leaf seen memo = let (seen', rows) = emit pos leaf seen in (seen', memo, rows)
+    shift k = k - rk + posKey new
+    rebuilt = IntMapL.fromList [ (posKey p, place p) | (p, _, _, _, _) <- toList nodes ]
+    place p = Pos (shift (posKey p)) (posDepth p - rd + posDepth new) (posLabel p) (Just (parent p))
+    parent p = case posParent p of
+      Just q | posKey q /= rk -> rebuilt IntMapL.! posKey q
+      _                       -> new
+    at p = IntMapL.findWithDefault (place p) (posKey p) rebuilt
+    row (p, n, d) = (at p, n, d)
+    node (p, n, d, r, e) = (at p, n, d, r, shift e)
 
--- The position digits of a node's children. A unary node has its child at 1.
+-- The labels of a node's children, 1 for the only premise of a unary step.
 childLabels :: [ProofTree] -> String
 childLabels [_] = "1"
 childLabels _   = ['0' ..]

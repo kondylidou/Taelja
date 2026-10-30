@@ -11,11 +11,13 @@ module LemmaBuilder
   ) where
 
 import Control.Monad (guard, when)
+import Data.Foldable (toList)
 import Data.List (intercalate, nub, stripPrefix, zip4)
 import Data.Maybe (isJust, listToMaybe, mapMaybe, maybeToList)
 import Data.Traversable (mapAccumM)
 import Data.TPTP.Pretty (Pretty (..))
 import qualified Data.Map.Strict as Map
+import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
 import qualified Data.TPTP as T
 import qualified Data.Text as Text
@@ -203,9 +205,9 @@ liftSubProof nameOverride cname c bodySk undoMap sp = do
       restsOn m b = nub ([ l | (l, nm) <- lineFacts b, nm == assumptionName, l `elem` bodySk ]
                          ++ concat [ Map.findWithDefault [] nm m | (_, nm) <- lineFacts b ])
       -- a dependent sub-lemma one hyperresolution step from the body atoms
-      oneStep (n, _, HaveHence ls@(_ : _ : _))
-        | Hence _ (ByAxiom r) <- last ls
-        , all ((== Just assumptionName) . fmap snd . lineFact) (init ls)
+      oneStep (n, _, HaveHence (ls Seq.:|> Hence _ (ByAxiom r)))
+        | not (null ls)
+        , all ((== Just assumptionName) . fmap snd . lineFact) ls
         , not (null (rests Map.! n)) = Just (n, r)
       oneStep _ = Nothing
       replaced  = Map.fromList (mapMaybe oneStep subLemmas)
@@ -229,7 +231,7 @@ liftSubProof nameOverride cname c bodySk undoMap sp = do
 
 -- The facts a block cites on have and and lines, with the cited names.
 lineFacts :: ProofBlock -> [(Literal, String)]
-lineFacts (HaveHence ls) = mapMaybe lineFact ls
+lineFacts (HaveHence ls) = mapMaybe lineFact (toList ls)
 lineFacts (EqChain _ _)  = []
 
 -- A have or and line as its fact and the name it cites.

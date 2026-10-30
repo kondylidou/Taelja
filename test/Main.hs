@@ -7,6 +7,7 @@ module Main where
 import Control.DeepSeq (force)
 import Control.Exception (evaluate)
 import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.Sequence as Seq
 import Data.Char (isAlphaNum, isDigit, isUpper, ord, toLower)
 import Data.List (isInfixOf, nub)
 import qualified Data.Text as Text
@@ -470,13 +471,13 @@ leanStepTests =
       (\_ got -> return (if want == got then Nothing
                          else Just (if want then "a correct step is not stated" else "a wrong step is stated")))
       (const (return ()))
-    blockTest want goal name ls = check want name (proofOf goal (HaveHence ls))
+    blockTest want goal name ls = check want name (proofOf goal (HaveHence (Seq.fromList ls)))
     chainTest want name steps = check want name (proofOf (Eq (f (f a)) a) (EqChain (f (f a)) steps))
     -- lemma 6, body => q(X), proved by the given lines, and the goal proved
     -- from its premise by the lemma, so the lemma is printed
     lemmaTest want body goal prems name ls = check want name
-      ((proofOf goal (HaveHence (prems ++ [Hence goal (ByAxiom "lemma 6")])))
-         { lemmas = [("lemma 6", Clause body (Just (Rel "q" [x])), HaveHence ls)] })
+      ((proofOf goal (HaveHence (Seq.fromList (prems ++ [Hence goal (ByAxiom "lemma 6")]))))
+         { lemmas = [("lemma 6", Clause body (Just (Rel "q" [x])), HaveHence (Seq.fromList ls))] })
 
 -- A proof translated to text and compared with its golden .txt file.
 mkTextTest :: String -> String -> TestTree

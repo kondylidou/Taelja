@@ -50,6 +50,7 @@ module TptpConvert
 
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.Char (isAsciiLower, isAsciiUpper, isDigit)
+import Data.IORef (IORef, atomicModifyIORef', newIORef)
 import Data.List (intercalate, intersperse, isInfixOf, isPrefixOf, nub, partition, tails)
 import Data.List.NonEmpty (NonEmpty (..), toList)
 import qualified Data.Map.Strict as Map
@@ -57,6 +58,7 @@ import qualified Data.Set as Set
 import qualified Data.Text as Text
 import qualified Data.TPTP as T
 import Data.TPTP.Parse.Text (parseTSTP)
+import System.IO.Unsafe (unsafePerformIO)
 
 import Types
 import Helpers (capitalize, quoted)
@@ -161,11 +163,24 @@ bodyLitsOf (T.Formula _ (T.FOF f)) =
   [ l | Just pairs <- [collectDisjuncts f], (T.Negative, l) <- pairs ]
 bodyLitsOf _ = []
 
+-- The symbols met so far, each with its name and its constant, so that a
+-- long proof keeps one copy of each however often it mentions it.
+symbolTable :: IORef (Map.Map Text.Text (String, Term))
+symbolTable = unsafePerformIO (newIORef Map.empty)
+{-# NOINLINE symbolTable #-}
+
+-- The one name and the one constant for a symbol.
+shared :: Text.Text -> (String, Term)
+shared t = unsafePerformIO $ atomicModifyIORef' symbolTable $ \m -> case Map.lookup t m of
+  Just e  -> (m, e)
+  Nothing -> let n = Text.unpack t; e = (n, Const n) in (Map.insert t e m, e)
+{-# NOINLINE shared #-}
+
 -- A TPTP term as a Taelja term. An integer becomes a constant.
 convertTerm :: T.Term -> Term
-convertTerm (T.Variable (T.Var v))                   = Var (Text.unpack v)
-convertTerm (T.Function (T.Defined (T.Atom f)) [])   = Const (Text.unpack f)
-convertTerm (T.Function (T.Defined (T.Atom f)) args) = App (Text.unpack f) (map convertTerm args)
+convertTerm (T.Variable (T.Var v))                   = Var (fst (shared v))
+convertTerm (T.Function (T.Defined (T.Atom f)) [])   = snd (shared f)
+convertTerm (T.Function (T.Defined (T.Atom f)) args) = App (fst (shared f)) (map convertTerm args)
 convertTerm (T.Number (T.IntegerConstant n))          = Const (show n)
 convertTerm t = error ("convertTerm: unsupported: " ++ show t)
 
@@ -181,7 +196,7 @@ tptpLitVars l = case l of
 
 -- A TPTP atom as a positive literal, or a disequality as an NEq.
 convertLit :: T.Literal -> Literal
-convertLit (T.Predicate (T.Defined (T.Atom n)) args) = Rel (Text.unpack n) (map convertTerm args)
+convertLit (T.Predicate (T.Defined (T.Atom n)) args) = Rel (fst (shared n)) (map convertTerm args)
 convertLit (T.Equality l T.Positive r)               = Eq  (convertTerm l) (convertTerm r)
 convertLit (T.Equality l T.Negative r)               = NEq (convertTerm l) (convertTerm r)
 convertLit t = error ("convertLit: unsupported: " ++ show t)

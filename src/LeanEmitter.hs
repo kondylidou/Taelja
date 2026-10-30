@@ -6,6 +6,7 @@ module LeanEmitter (emitLean) where
 
 import Control.Monad (foldM, guard, zipWithM)
 import Data.Char (isAlphaNum, isDigit, ord)
+import Data.Foldable (toList)
 import Data.List (intercalate, nub, (\\))
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe, listToMaybe, maybeToList)
@@ -362,7 +363,7 @@ proofLines ctx c blk =
   [ "intro " ++ unwords (map (env Map.!) stmtVs ++ hyps) | not (null stmtVs && null hyps) ]
   ++ [ "have " ++ env Map.! v ++ " : α := taelja_elem" | v <- blockVs ]
   ++ case blk of
-       HaveHence ls    -> haveHence ctx env (zip hyps (body c)) stmt ls
+       HaveHence ls    -> haveHence ctx env (zip hyps (body c)) stmt (toList ls)
        EqChain s steps -> chainProof ctx env stmt s steps
   where
     stmt    = clauseHead c

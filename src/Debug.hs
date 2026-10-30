@@ -21,20 +21,20 @@ import System.IO (hPutStrLn, stderr)
 import Helpers (padRight)
 import ProofTree (RuleReading (..), inferenceReading)
 import TptpConvert (unitNameStr)
-import Types (ProofInfo(..), LeafEntry(..), LeafRole(..))
+import Types (ProofInfo(..), LeafEntry(..), LeafRole(..), Pos(..), posChild)
 
--- Prints the proof tree, rebuilt from node positions. A child's position adds
--- one digit to its parent's, 0 for the provider and 1 for the consumer.
+-- Prints the proof tree, rebuilt from node positions, with the provider as
+-- the left child and the consumer as the right.
 dumpProofTree :: ProofInfo -> IO ()
 dumpProofTree info = do
   hPutStrLn stderr "Proof tree (left=provider, right=consumer):"
-  go "" "" ""
+  go (Pos 0 0 '/' Nothing) "" ""
   where
     byPos = Map.fromListWith (++) [ (lePos e, [e]) | e <- piElectrons info ++ piNuclei info ]
     -- linePrefix draws this node's line and contPrefix the lines below it
     go pos linePrefix contPrefix = do
       let entries  = Map.findWithDefault [] pos byPos
-          children = [ c | d <- ['0' .. '9'], let c = pos ++ [d], Map.member c byPos ]
+          children = [ c | Just c <- map (posChild (piPosTree info) pos) ['0' .. '9'] ]
           label    = if null entries then "(internal)" else intercalate " | " (map nodeLabel entries)
       hPutStrLn stderr (linePrefix ++ label)
       mapM_ (\(i, child) ->

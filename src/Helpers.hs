@@ -11,6 +11,7 @@ import Data.Function (on)
 import Data.List ((\\), groupBy, inits, intercalate, intersperse, isPrefixOf, isSuffixOf, nub, partition, sortOn, tails)
 import Data.Maybe (fromMaybe, isJust)
 import qualified Data.Map.Strict as Map
+import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
 
 import Types
@@ -39,13 +40,22 @@ unrigidTerm (Fresh x)  = Var x
 unrigidTerm (App f ts) = App f (map unrigidTerm ts)
 unrigidTerm t          = t
 
--- The fresh constants of a literal back to their variables.
+-- The fresh constants of a literal back to their variables. A literal
+-- without them is left as it is, so it stays shared.
 unrigidLit :: Literal -> Literal
-unrigidLit = mapLiteralTerms unrigidTerm
+unrigidLit l
+  | any hasFresh (foldLiteralTerms pure l) = mapLiteralTerms unrigidTerm l
+  | otherwise                              = l
+  where
+    hasFresh (Fresh _)  = True
+    hasFresh (App _ ts) = any hasFresh ts
+    hasFresh _          = False
 
--- The fresh constants of a block back to their variables.
+-- The fresh constants of a chain back to their variables. Have and hence
+-- lines are made without them, so a block of lines is left as it is.
 unrigidBlock :: ProofBlock -> ProofBlock
-unrigidBlock = mapBlockTerms unrigidTerm
+unrigidBlock blk@(HaveHence _) = blk
+unrigidBlock blk               = mapBlockTerms unrigidTerm blk
 
 -- The results of a function on each argument term of a literal, joined.
 foldLiteralTerms :: (Term -> [a]) -> Literal -> [a]
@@ -64,7 +74,7 @@ mapLiteralTerms f (NRel n ts) = NRel n (map f ts)
 -- Map over the terms a block prints. The equations a chain cites are left
 -- alone, since their variables are their own.
 mapShownTerms :: (Term -> Term) -> ProofBlock -> ProofBlock
-mapShownTerms f (HaveHence ls)    = HaveHence (map (mapLineLit (mapLiteralTerms f)) ls)
+mapShownTerms f (HaveHence ls)    = HaveHence (fmap (mapLineLit (mapLiteralTerms f)) ls)
 mapShownTerms f (EqChain s steps) = EqChain (f s) [ (rw, f t) | (rw, t) <- steps ]
 
 -- Map over every term of a block, including the equations a chain cites.
@@ -101,10 +111,13 @@ applySubstLit subst = mapLiteralTerms (applySubstTerm subst)
 
 -- Instantiate a stored block by the substitution that matched its head.
 -- Block variables not in the head are local, and those named like a variable
--- in σ's range are renamed first so σ does not capture them.
+-- in σ's range are renamed first so σ does not capture them. The fresh
+-- constants σ brings in become variables, as in the unit table. An empty σ
+-- leaves the block shared.
 instantiateBlock :: Literal -> Subst -> ProofBlock -> ProofBlock
-instantiateBlock hd σ block =
-  mapBlockTerms (applySubstTerm σ) (renameBlock renaming block)
+instantiateBlock hd σ block
+  | null σ    = block
+  | otherwise = mapBlockTerms (unrigidTerm . applySubstTerm σ) (renameBlock renaming block)
   where
     headVars  = nub (litVars hd)
     rangeVars = nub (concatMap (termVars . snd) σ)
@@ -372,10 +385,10 @@ freeAxiomNames :: (String -> Bool) -> [String]
 freeAxiomNames taken = [ nm | i <- [1 :: Int ..], let nm = "axiom " ++ show i, not (taken nm) ]
 
 -- The position of the provider beside a consumer at a right child.
-providerSibling :: String -> Maybe String
-providerSibling pos
-  | "1" `isSuffixOf` pos = Just (init pos ++ "0")
-  | otherwise            = Nothing
+providerSibling :: PosTree -> Pos -> Maybe Pos
+providerSibling tree pos
+  | posLabel pos == '1' = posSibling tree pos
+  | otherwise           = Nothing
 
 -- A name with underscores appended until the predicate leaves it free.
 underscoreApart :: (String -> Bool) -> String -> String
@@ -527,7 +540,7 @@ falsumLit = Rel "$false" []
 -- either orientation. A chain from an atom to true ends on that atom.
 blockConcludes :: Literal -> ProofBlock -> Bool
 blockConcludes lit blk = case blk of
-  HaveHence ls@(_ : _) -> ok (lineLit (last ls))
+  HaveHence (_ Seq.:|> l) -> ok (lineLit l)
   EqChain start steps@(_ : _) ->
     let t = snd (last steps)
     in ok (Eq start t) || (t == Const "true" && isRelLit lit && start == atomTerm lit)
@@ -563,7 +576,7 @@ lineLit (Hence l _) = l
 
 -- Whether a block has no lines or no steps.
 isEmptyBlock :: ProofBlock -> Bool
-isEmptyBlock (HaveHence []) = True
+isEmptyBlock (HaveHence Seq.Empty) = True
 isEmptyBlock (EqChain _ []) = True
 isEmptyBlock _              = False
 
@@ -573,13 +586,20 @@ isEqChain (EqChain {}) = True
 isEqChain _            = False
 
 -- A clause's text with variables named by first occurrence, so variants that
--- list their literals in the same order get the same key. A free variable
--- keeps its mark.
+-- list their literals in the same order get the same key.
 variantKey :: Clause -> String
-variantKey (Clause bs mh) = show (Clause (map ren bs) (fmap ren mh))
+variantKey = show . variantForm
+
+-- A clause with its variables named by first occurrence, so variants that
+-- list their literals in the same order are equal. A free variable keeps its
+-- mark. A ground clause is left as it is, so it shares its terms.
+variantForm :: Clause -> Clause
+variantForm c@(Clause bs mh)
+  | null vs   = c
+  | otherwise = Clause (map ren bs) (fmap ren mh)
   where
-    ren = renameLit [ (v, "v" ++ show i ++ (if freeMark `isSuffixOf` v then freeMark else ""))
-                    | (v, i) <- zip (nub (concatMap litVars bs ++ maybe [] litVars mh)) [0 :: Int ..] ]
+    vs  = nub (concatMap litVars bs ++ maybe [] litVars mh)
+    ren = renameLit [ (v, "v" ++ show i ++ (if freeMark `isSuffixOf` v then freeMark else "")) | (v, i) <- zip vs [0 :: Int ..] ]
 
 -- The mark of a variable a rewrite brings in free, which a later rewrite of
 -- the same step may bind.
@@ -677,7 +697,7 @@ blockRefNames (EqChain _ steps) = [ rwName rw | (rw, _) <- steps ]
 
 -- A block with each name it cites renamed.
 renameRefsBlock :: (String -> String) -> ProofBlock -> ProofBlock
-renameRefsBlock ren (HaveHence ls) = HaveHence (map go ls)
+renameRefsBlock ren (HaveHence ls) = HaveHence (fmap go ls)
   where
     go (Have lit nm)            = Have lit (ren nm)
     go (And lit nm)             = And lit (ren nm)
@@ -687,10 +707,15 @@ renameRefsBlock ren (HaveHence ls) = HaveHence (map go ls)
 renameRefsBlock ren (EqChain s steps) =
   EqChain s [ (rw { rwName = ren (rwName rw) }, t) | (rw, t) <- steps ]
 
--- Adds a line to the end of a have/hence block. A chain cannot take one.
+-- Adds a line to the end of a have/hence block, with its fresh constants
+-- back to variables. A chain cannot take one.
 appendLine :: ProofBlock -> ProofLine -> ProofBlock
-appendLine (HaveHence ls) l = HaveHence (ls ++ [l])
+appendLine (HaveHence ls) l = HaveHence (ls Seq.|> mapLineLit unrigidLit l)
 appendLine (EqChain {})   _ = error "appendLine: cannot extend EqChain"
+
+-- The one-line block citing a name for a literal.
+haveLine :: Literal -> String -> ProofBlock
+haveLine lit nm = HaveHence (Seq.singleton (Have (unrigidLit lit) nm))
 
 -- A term as the proof prints it. Each subterm is written in front of the rest,
 -- as appending makes deep terms quadratic.
