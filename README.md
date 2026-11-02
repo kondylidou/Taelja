@@ -13,10 +13,7 @@ is introduced as a lemma. For a conjecture of the form `H1 & ... & Hn => G`,
 the hypotheses are listed with the axioms and `G` is the goal.
 
 Taelja supports the Horn fragment, which is determined on the problem as
-stated. Every axiom and the conjecture must be a Horn clause. A proof that
-contains a non-Horn clause, or an inference other than resolution,
-superposition, demodulation, and equality resolution, is rejected with a
-message that identifies it.
+stated. Every axiom and the conjecture must be a Horn clause.
 
 ## Example
 
@@ -72,12 +69,6 @@ Proof:
     by axiom 5
 ```
 
-Lemma 6 is an equation, proved by a chain that rewrites `g(X)` with axiom 1
-and then with axiom 2. Lemma 7 applies the Horn clause of axiom 3 to the
-instance `g(a) = a` of lemma 6. The goal follows from `s(a)` and lemma 7 by
-axiom 5. Lemma 7 is a lemma of its own because it is the second premise of
-that step.
-
 ## Building
 
 Building requires Cabal 3 and GHC 9.6 to 9.12.
@@ -86,13 +77,13 @@ Building requires Cabal 3 and GHC 9.6 to 9.12.
 cabal build
 ```
 
-The examples run Taelja with `cabal run taelja --`. The command
-`cabal install` installs the binary `taelja` instead.
+After `cabal install`, the binary `taelja` can replace `cabal run taelja --`
+in the commands of this README.
 
 ## Producing an input proof
 
-Taelja itself calls no prover. It reads the proof that a prover prints in
-TSTP format. Taelja has been tested with Vampire 5.0.1, E 3.5.1, and
+Taelja reads the TSTP proof that a prover prints and calls no prover
+itself. It has been tested with Vampire 5.0.1, E 3.5.1, and
 Twee 2.7. The directory `bin/` contains builds of these three provers for
 macOS on Apple silicon.
 
@@ -105,9 +96,8 @@ vampire --proof tptp --avatar off problem.p > proof.tstp
 ```
 
 **E** (`master` of <https://github.com/eprover/eprover>). With
-`--proof-object=3`, available since pull request 36, E prints the clause
-after each simplification step, which Taelja reads. A release build is made
-with `./configure && make NODEBUG="-DNDEBUG -DFAST_EXIT" MEMDEBUG= DEBUGGER=`.
+`--proof-object=3`, E prints the clause after each simplification step,
+which Taelja reads.
 
 ```
 eprover --auto-schedule --proof-object=3 --tstp-format problem.p > proof.tstp
@@ -138,8 +128,8 @@ cabal run taelja -- [options] proof.tstp
 | `--lean-out=FILE` | Additionally write the Lean file to `FILE`. |
 | `--debug` | Additionally print the proof tree and the matching traces. |
 
-The command `taelja --horn-problem problem.p` reports whether a problem
-belongs to the supported fragment.
+The command `cabal run taelja -- --horn-problem problem.p` reports whether a
+problem belongs to the supported fragment.
 
 ## Verification with Lean
 
