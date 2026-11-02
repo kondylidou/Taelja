@@ -50,7 +50,7 @@ module TptpConvert
 
 import Data.Attoparsec.Text (eitherResult, feed)
 import Data.Char (isAsciiLower, isAsciiUpper, isDigit)
-import Data.IORef (IORef, atomicModifyIORef', newIORef)
+import Data.IORef (IORef, atomicModifyIORef', newIORef, readIORef)
 import Data.List (intercalate, intersperse, isInfixOf, isPrefixOf, nub, partition, tails)
 import Data.List.NonEmpty (NonEmpty (..), toList)
 import qualified Data.Map.Strict as Map
@@ -169,11 +169,19 @@ symbolTable :: IORef (Map.Map Text.Text (String, Term))
 symbolTable = unsafePerformIO (newIORef Map.empty)
 {-# NOINLINE symbolTable #-}
 
--- The one name and the one constant for a symbol.
+-- The one name and the one constant for a symbol. The table is read before
+-- it is changed, since working out the symbol's text may itself look up
+-- symbols, and a lookup inside the change would wait for the change.
 shared :: Text.Text -> (String, Term)
-shared t = unsafePerformIO $ atomicModifyIORef' symbolTable $ \m -> case Map.lookup t m of
-  Just e  -> (m, e)
-  Nothing -> let n = Text.unpack t; e = (n, Const n) in (Map.insert t e m, e)
+shared t = unsafePerformIO $ do
+  m <- readIORef symbolTable
+  case Map.lookup t m of
+    Just e  -> return e
+    Nothing -> do
+      let n = Text.unpack t
+          e = (n, Const n)
+      atomicModifyIORef' symbolTable (\m' -> (Map.insert t e m', ()))
+      return e
 {-# NOINLINE shared #-}
 
 -- A TPTP term as a Taelja term. An integer becomes a constant.

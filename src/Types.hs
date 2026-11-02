@@ -3,6 +3,7 @@
 module Types where
 
 import Control.DeepSeq (NFData)
+import Data.Ord (Down (..))
 import GHC.Generics (Generic)
 import qualified Data.IntMap.Strict as IntMap
 import qualified Data.Map.Strict as Map
@@ -59,11 +60,13 @@ data Pos = Pos
   , posParent :: Maybe Pos
   }
 
+-- Positions after two nested subtrees that end on the same node share their
+-- key, and the deeper one comes first, as its path does.
 instance Eq Pos where
-  a == b = posKey a == posKey b
+  a == b = posKey a == posKey b && posDepth a == posDepth b
 
 instance Ord Pos where
-  compare a b = compare (posKey a) (posKey b)
+  compare a b = compare (posKey a, Down (posDepth a)) (posKey b, Down (posDepth b))
 
 instance Show Pos where
   show = posString

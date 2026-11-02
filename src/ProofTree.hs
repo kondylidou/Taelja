@@ -532,17 +532,17 @@ data Walk = Walk
 
 -- Memoized entries and nodes placed under a new position, each key moved by
 -- the distance from the old root key to the new one. The positions are
--- rebuilt so that they share their new parents.
+-- rebuilt so that they share their new parents. The old root itself, whose
+-- own entry may be kept, becomes the new position.
 renumber :: (Int, Int) -> Pos -> (Seq.Seq Row, Seq.Seq Row, Seq.Seq Node) -> (Seq.Seq Row, Seq.Seq Row, Seq.Seq Node)
 renumber (rk, rd) new (leaves, inner, nodes) = (fmap row leaves, fmap row inner, fmap node nodes)
   where
     shift k = k - rk + posKey new
     rebuilt = IntMapL.fromList [ (posKey p, place p) | (p, _, _, _, _) <- toList nodes ]
-    place p = Pos (shift (posKey p)) (posDepth p - rd + posDepth new) (posLabel p) (Just (parent p))
-    parent p = case posParent p of
-      Just q | posKey q /= rk -> rebuilt IntMapL.! posKey q
-      _                       -> new
-    at p = IntMapL.findWithDefault (place p) (posKey p) rebuilt
+    place p = Pos (shift (posKey p)) (posDepth p - rd + posDepth new) (posLabel p) (at <$> posParent p)
+    at p
+      | posKey p == rk = new
+      | otherwise      = IntMapL.findWithDefault (place p) (posKey p) rebuilt
     row (p, n, d) = (at p, n, d)
     node (p, n, d, r, e) = (at p, n, d, r, shift e)
 
