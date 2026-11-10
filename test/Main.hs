@@ -385,6 +385,9 @@ eBenchmarkNames =
   -- printed by E with --proof-object=3, one inference per simplification
   -- step. Replaying E's nested steps had timed out on it.
   , "RNG026-7"
+  -- Nick's 8-bit counter, whose short proof needs non-unit lemmas, each
+  -- citing the one before
+  , "counting_binary"
   ]
 
 -- The Lean module name of a proof. A TPTP name keeps its separator as a

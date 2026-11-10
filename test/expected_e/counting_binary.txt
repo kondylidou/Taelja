@@ -1,0 +1,123 @@
+Axiom 1: p(zero,zero,zero,zero,zero,zero,zero,zero)
+Axiom 2: p(X,Y,Z,A,B,C,U,zero) => p(X,Y,Z,A,B,C,U,one)
+Axiom 3: p(X,Y,Z,A,B,C,zero,one) => p(X,Y,Z,A,B,C,one,zero)
+Axiom 4: p(X,Y,Z,A,B,zero,one,one) => p(X,Y,Z,A,B,one,zero,zero)
+Axiom 5: p(X,Y,Z,A,zero,one,one,one) => p(X,Y,Z,A,one,zero,zero,zero)
+Axiom 6: p(X,Y,Z,zero,one,one,one,one) => p(X,Y,Z,one,zero,zero,zero,zero)
+Axiom 7: p(X,Y,zero,one,one,one,one,one) => p(X,Y,one,zero,zero,zero,zero,zero)
+Axiom 8: p(X,zero,one,one,one,one,one,one) => p(X,one,zero,zero,zero,zero,zero,zero)
+Axiom 9: p(zero,one,one,one,one,one,one,one) => p(one,zero,zero,zero,zero,zero,zero,zero)
+
+Lemma 10: p(X,Y,Z,A,B,C,zero,zero) => p(X,Y,Z,A,B,C,one,one)
+Proof:
+  have p(X,Y,Z,A,B,C,zero,zero)
+    by assumption
+  hence p(X,Y,Z,A,B,C,zero,one)
+    by axiom 2
+  hence p(X,Y,Z,A,B,C,one,zero)
+    by axiom 3
+  hence p(X,Y,Z,A,B,C,one,one)
+    by axiom 2
+
+Lemma 11: p(X,Y,Z,A,B,zero,zero,zero) => p(X,Y,Z,A,B,one,one,one)
+Proof:
+  have p(X,Y,Z,A,B,zero,zero,zero)
+    by assumption
+  hence p(X,Y,Z,A,B,zero,one,one)
+    by lemma 10
+  hence p(X,Y,Z,A,B,one,zero,zero)
+    by axiom 4
+  hence p(X,Y,Z,A,B,one,one,one)
+    by lemma 10
+
+Lemma 12: p(X,Y,Z,A,zero,zero,zero,zero) => p(X,Y,Z,A,one,one,one,one)
+Proof:
+  have p(X,Y,Z,A,zero,zero,zero,zero)
+    by assumption
+  hence p(X,Y,Z,A,zero,one,one,one)
+    by lemma 11
+  hence p(X,Y,Z,A,one,zero,zero,zero)
+    by axiom 5
+  hence p(X,Y,Z,A,one,one,one,one)
+    by lemma 11
+
+Lemma 13: p(X,Y,Z,zero,zero,zero,zero,zero) => p(X,Y,Z,one,one,one,one,one)
+Proof:
+  have p(X,Y,Z,zero,zero,zero,zero,zero)
+    by assumption
+  hence p(X,Y,Z,zero,one,one,one,one)
+    by lemma 12
+  hence p(X,Y,Z,one,zero,zero,zero,zero)
+    by axiom 6
+  hence p(X,Y,Z,one,one,one,one,one)
+    by lemma 12
+
+Lemma 14: p(X,Y,zero,zero,zero,zero,zero,zero) => p(X,Y,one,one,one,one,one,one)
+Proof:
+  have p(X,Y,zero,zero,zero,zero,zero,zero)
+    by assumption
+  hence p(X,Y,zero,one,one,one,one,one)
+    by lemma 13
+  hence p(X,Y,one,zero,zero,zero,zero,zero)
+    by axiom 7
+  hence p(X,Y,one,one,one,one,one,one)
+    by lemma 13
+
+Goal 1: p(one,one,one,one,one,one,one,one)
+Proof:
+  have p(zero,zero,zero,zero,zero,zero,zero,zero)
+    by axiom 1
+  hence p(zero,zero,zero,zero,zero,zero,zero,one)
+    by axiom 2
+  hence p(zero,zero,zero,zero,zero,zero,one,zero)
+    by axiom 3
+  hence p(zero,zero,zero,zero,zero,zero,one,one)
+    by axiom 2
+  hence p(zero,zero,zero,zero,zero,one,zero,zero)
+    by axiom 4
+  hence p(zero,zero,zero,zero,zero,one,one,one)
+    by lemma 10
+  hence p(zero,zero,zero,zero,one,zero,zero,zero)
+    by axiom 5
+  hence p(zero,zero,zero,zero,one,one,one,one)
+    by lemma 11
+  hence p(zero,zero,zero,one,zero,zero,zero,zero)
+    by axiom 6
+  hence p(zero,zero,zero,one,one,one,one,one)
+    by lemma 12
+  hence p(zero,zero,one,zero,zero,zero,zero,zero)
+    by axiom 7
+  hence p(zero,zero,one,one,one,one,one,one)
+    by lemma 13
+  hence p(zero,one,zero,zero,zero,zero,zero,zero)
+    by axiom 8
+  hence p(zero,one,one,one,one,one,one,one)
+    by lemma 14
+  hence p(one,zero,zero,zero,zero,zero,zero,zero)
+    by axiom 9
+  hence p(one,zero,one,one,one,one,one,one)
+    by lemma 14
+  hence p(one,one,zero,zero,zero,zero,zero,zero)
+    by axiom 8
+  hence p(one,one,zero,one,one,one,one,one)
+    by lemma 13
+  hence p(one,one,one,zero,zero,zero,zero,zero)
+    by axiom 7
+  hence p(one,one,one,zero,one,one,one,one)
+    by lemma 12
+  hence p(one,one,one,one,zero,zero,zero,zero)
+    by axiom 6
+  hence p(one,one,one,one,zero,one,one,one)
+    by lemma 11
+  hence p(one,one,one,one,one,zero,zero,zero)
+    by axiom 5
+  hence p(one,one,one,one,one,zero,one,one)
+    by lemma 10
+  hence p(one,one,one,one,one,one,zero,zero)
+    by axiom 4
+  hence p(one,one,one,one,one,one,zero,one)
+    by axiom 2
+  hence p(one,one,one,one,one,one,one,zero)
+    by axiom 3
+  hence p(one,one,one,one,one,one,one,one)
+    by axiom 2
